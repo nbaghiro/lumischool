@@ -26,7 +26,8 @@
         "test:school": "node --import ./tools/scripts/resolve.ts --test 'school/**/__tests__/*.test.ts'",
         "art": "node --import ./tools/scripts/resolve.ts tools/scripts/art.ts",
         "pack": "node --import ./tools/scripts/resolve.ts tools/pack.ts",
-        "levels:baseline": "node --import ./tools/scripts/resolve.ts tools/scripts/levels-baseline.ts"
+        "levels:baseline": "node --import ./tools/scripts/resolve.ts tools/scripts/levels-baseline.ts",
+        "map:snapshots": "node --import ./tools/scripts/resolve.ts tools/scripts/map-snapshots.ts"
     },
     "dependencies": {
         "@fontsource-variable/shantell-sans": "^5.3.0",

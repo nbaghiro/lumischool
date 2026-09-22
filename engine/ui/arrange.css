@@ -1,0 +1,139 @@
+/* A question answered by arranging the drawing (arrange.tsx): buttons laid over the pieces and the
+   places they go, and the bar under the scene. The drawing stays as it prints; this is the screen's
+   own layer. */
+.ar-tile {
+    position: relative;
+}
+.ar-tile svg.scene-svg {
+    touch-action: none;
+}
+.ar-hands {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.ar-hands button,
+.ar-knife {
+    position: absolute;
+    pointer-events: auto;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    border-radius: 10px;
+    touch-action: none;
+    /* laid by its middle, and never smaller than a finger on the screen, whatever the roll's zoom */
+    transform: translate(-50%, -50%);
+    min-width: calc(44px * var(--iz, 1));
+    min-height: calc(44px * var(--iz, 1));
+}
+.ar-piece {
+    z-index: 2;
+    cursor: grab;
+}
+.ar-piece[aria-pressed="true"] {
+    box-shadow: 0 0 0 3px var(--pen);
+    background: color-mix(in srgb, var(--glow) 25%, transparent);
+}
+.ar-place {
+    z-index: 1;
+    cursor: pointer;
+}
+.ar-place.over {
+    background: color-mix(in srgb, var(--glow) 35%, transparent);
+}
+.ar-hands button:disabled {
+    cursor: default;
+}
+.ar-knife {
+    z-index: 1;
+    cursor: crosshair;
+    appearance: none;
+    -webkit-appearance: none;
+    opacity: 0;
+}
+.ar-knife:focus-visible {
+    opacity: 1;
+    background: transparent;
+}
+.ar-knife::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 0;
+    height: 0;
+}
+.ar-knife::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border: 0;
+}
+.ar-knife::-webkit-slider-runnable-track,
+.ar-knife::-moz-range-track {
+    background: transparent;
+}
+.ar-knife:disabled {
+    cursor: default;
+}
+.ar-knife-art {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+}
+.ar-knife-art svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.ar-hands button:focus-visible,
+.ar-knife:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 2px;
+}
+.ar-ghost {
+    position: fixed;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    z-index: 20;
+    opacity: 0.92;
+    filter: drop-shadow(0 6px 8px #1b25402e);
+}
+.ar-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+.ar-again {
+    min-height: 56px;
+    padding: 0 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font: 700 19px / 1 var(--f-read);
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid color-mix(in srgb, var(--ink) 30%, #fff);
+}
+.ar-again:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+.ar-again:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 3px;
+}
+.ar[data-state="right"] .ls-said {
+    color: var(--ok);
+}
+.ar[data-state="again"] .ls-said {
+    color: var(--pen);
+}
+@media print {
+    .ar-hands,
+    .ar-bar,
+    .ls-said,
+    .ls-hints {
+        display: none;
+    }
+}

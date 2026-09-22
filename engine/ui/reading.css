@@ -1,0 +1,44 @@
+/* A world's roll for reading (reading.tsx): a sheet's card on the roll, which holds the lesson's own
+   paper once the roll has come near it, and where a sheet is drawn to be measured, out of sight. */
+.rd-measure {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    visibility: hidden;
+    pointer-events: none;
+}
+.rd-sheet {
+    gap: 14px;
+    padding: 0 28px 28px;
+}
+/* A card holding the lesson's own paper: the paper spans the card and carries the corner, and the
+   card's own first face steps aside. */
+.rd-sheet.rd-read {
+    padding: 0;
+}
+.rd-sheet.rd-read > .rd-first {
+    display: none;
+}
+.rd-first {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.rd-title {
+    margin: 0;
+    font: 700 34px / 1.1 var(--f-hand);
+}
+.rd-pic {
+    display: grid;
+    place-items: center;
+    height: 220px;
+    overflow: hidden;
+}
+.rd-pic svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}

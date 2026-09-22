@@ -1,0 +1,346 @@
+/* A world's term drawn as a place (engine/ui/place.tsx): the trail with a stop for each day, each
+   day's paper above its stop, the guide at today and the moment at the trail's end. The world itself
+   is painted by the same painter as the roll, so the ground, the path and what stands beside it take
+   their rules from world.css; what is here is the trail's own: the plates, the paper and its postcard,
+   the stamp, the marker for the day still to come and the guide's token. */
+
+.pl {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.pl.ready {
+    opacity: 1;
+}
+.pl-host {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: clip;
+    touch-action: none;
+    background: var(--paper);
+}
+.pl-host:focus {
+    outline: none;
+}
+/* The canvas the paper is drawn on, the layer the camera moves and the layers in it, which the roll's
+   host gives its own (world.css) and which a place needs in the same shape: without them the world is
+   a block in the flow under the paper, and everything in it is drawn a screen too low. */
+.pl-host > canvas.paper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.pl-host > .world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+}
+.pl-host .j-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.pl-host .j-layer > * {
+    position: absolute;
+}
+
+/* the land past the next stop fades to paper: the ground's washes sit in a box of their own that is masked */
+.pl-fade {
+    overflow: visible;
+}
+.pl-fade > .l-ground {
+    position: absolute;
+    top: 0;
+}
+
+.pl-walked {
+    position: absolute;
+    overflow: visible;
+    pointer-events: none;
+}
+.pl-walked .pl-hl {
+    fill: none;
+    stroke-width: 96;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.42;
+    mix-blend-mode: multiply;
+}
+.pl-walked .pl-pencil {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 26 26;
+}
+
+/* a stop: a plate on the trail that stays readable far out, today's glowing */
+.pl-plate {
+    position: absolute;
+    overflow: visible;
+    pointer-events: none;
+    transform: scale(clamp(1, calc(var(--mgrow, 1) * 0.85), 3));
+    transform-origin: 50% 50%;
+}
+.pl-plate.today {
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--glow) 90%, transparent));
+}
+.pl-plate.today > g {
+    animation: pl-beat 2.6s ease-in-out infinite;
+    transform-origin: 0 0;
+}
+@keyframes pl-beat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+.pl-plate.pressed > g {
+    animation: pl-press 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both;
+}
+@keyframes pl-press {
+    from {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* a stop's button: never smaller than 44 px on screen, whatever the camera is at */
+.pl-stop {
+    position: absolute;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    width: max(240px, calc(44px * var(--iz, 1)));
+    height: max(240px, calc(44px * var(--iz, 1)));
+    translate: calc((240px - max(240px, calc(44px * var(--iz, 1)))) / 2)
+        calc((240px - max(240px, calc(44px * var(--iz, 1)))) / 2);
+}
+.pl-stop:disabled {
+    cursor: default;
+}
+.pl-stop:focus {
+    outline: none;
+}
+.pl-stop:focus-visible {
+    box-shadow: 0 0 0 calc(3px * var(--iz, 1)) var(--pen);
+}
+
+/* A day's paper: the box the day's number gave it, which its postcard stands in until the day's own
+   sheet arrives and fills the same box, so nothing moves when the paper lands. */
+.pl-paper {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    transform: rotate(var(--lean, -1deg));
+    transform-origin: 50% 100%;
+    pointer-events: none;
+}
+.pl-paper > .j-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    box-shadow:
+        0 0 0 2px rgba(43, 47, 55, 0.18),
+        0 18px 34px -22px rgba(27, 37, 64, 0.55);
+}
+
+/* the postcard: the day's question in the child's words, its name small under it, the day said in
+   words, and on a finished day a stamp from the place itself */
+.pl-card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px 28px 30px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow:
+        0 0 0 2px rgba(43, 47, 55, 0.18),
+        0 18px 34px -22px rgba(27, 37, 64, 0.55);
+}
+.pl-card .hook {
+    font: 650 52px/1.12 var(--f-hand);
+    color: var(--ink);
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+.pl-card .name {
+    font: 500 26px/1.2 var(--f-read);
+    color: var(--ink-soft);
+}
+.pl-card .name:empty {
+    display: none;
+}
+.pl-card .when {
+    margin-top: auto;
+    text-wrap: balance;
+    font: 700 34px var(--f-hand);
+    color: var(--pen);
+    transform: rotate(-1.5deg);
+    transform-origin: 0 50%;
+}
+.pl-paper.today .pl-card {
+    box-shadow:
+        0 0 0 4px var(--ink),
+        0 0 0 20px color-mix(in srgb, var(--glow) 55%, transparent),
+        0 22px 40px -22px rgba(27, 37, 64, 0.6);
+}
+.pl-paper.today .pl-card .when {
+    color: var(--ink);
+    background: linear-gradient(transparent 52%, var(--glow) 52%);
+    padding-inline: 6px;
+}
+/* once the day's own sheet is there it is what the stop says, and far out the sheet's own cover is
+   read instead, as it is on the roll (world.css) */
+.pl-paper.drawn .pl-card {
+    display: none;
+}
+
+/* the stamp: the world's own creature in a ring, pressed at a slant */
+.pl-stamp {
+    position: absolute;
+    right: -30px;
+    bottom: -36px;
+    width: 150px;
+    height: 150px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 8px double var(--pen);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--pen);
+    font: 700 30px var(--f-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transform: rotate(var(--tilt, -10deg));
+    pointer-events: none;
+}
+.pl-stamp .pl-stamp-art {
+    position: absolute;
+    filter: grayscale(1) opacity(0.75);
+}
+.pl-stamp.pressed {
+    animation: pl-stamp 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both;
+}
+@keyframes pl-stamp {
+    from {
+        transform: rotate(var(--tilt, -10deg)) scale(1.9);
+        opacity: 0;
+    }
+    to {
+        transform: rotate(var(--tilt, -10deg)) scale(1);
+        opacity: 1;
+    }
+}
+
+/* the day still to come: a marker standing in the world rather than an empty card, which says where
+   the child goes next and keeps the lesson's name back until it is today */
+.pl-paper.next {
+    --lean: 0deg;
+    align-items: center;
+    justify-content: flex-end;
+}
+.pl-marker {
+    order: 2;
+    width: 300px;
+    height: 460px;
+    overflow: visible;
+}
+.pl-paper.next .line {
+    order: 1;
+    max-width: 100%;
+    padding: 12px 18px 14px;
+    border-radius: 12px;
+    background: #fff;
+    font: 650 34px/1.15 var(--f-hand);
+    color: var(--ink);
+    text-align: center;
+    box-shadow:
+        0 0 0 2.5px var(--ink-soft),
+        0 12px 22px -16px rgba(27, 37, 64, 0.45);
+}
+
+/* far out the place is its plates, its landmarks and the guide; what a stop says waits for a step in */
+.pl-world[data-level="far"] .pl-paper:not(.drawn),
+.pl-world[data-level="far"] .j-reach,
+.pl-world[data-level="far"] .j-note:not(.inked) {
+    display: none;
+}
+.pl-world[data-level="day"] .pl-paper {
+    transform: rotate(var(--lean, -1deg));
+}
+
+/* the guide where the child is, in a pool of lamplight, and who walks behind */
+.pl-token {
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+.pl-token .who {
+    position: absolute;
+    left: -115px;
+    top: -236px;
+    width: 230px;
+    transform: scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
+    transform-origin: 50% 100%;
+}
+.pl-token .follower {
+    position: absolute;
+}
+.pl-token.left .who {
+    scale: -1 1;
+}
+.pl-token .ow-here {
+    left: 90px;
+    top: -330px;
+}
+.pl-world[data-level="days"] .pl-token .ow-here,
+.pl-world[data-level="day"] .pl-token .ow-here {
+    display: none;
+}
+.pl-token .follower.pl-joined {
+    animation: pl-join 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s both;
+}
+@keyframes pl-join {
+    from {
+        translate: -240px 0;
+        opacity: 0;
+    }
+    to {
+        translate: 0 0;
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pl,
+    .pl-plate.today > g,
+    .pl-plate.pressed > g,
+    .pl-stamp.pressed,
+    .pl-token .follower.pl-joined {
+        animation: none;
+        transition: none;
+    }
+}

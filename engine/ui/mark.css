@@ -1,0 +1,38 @@
+/* The logo in a bar (mark.tsx): the guide's bird beside the word, at the sizes the logo's own lockup
+   gives them, and a little smaller on a phone, where the bar is shared with the way in. */
+
+:where(.bar-mark) {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    min-height: 44px;
+    color: inherit;
+    text-decoration: none;
+}
+.bar-mark-bird {
+    flex: none;
+    width: 42px;
+    height: 42px;
+}
+.bar-mark .logo {
+    height: 24px;
+}
+
+@media (max-width: 420px) {
+    .bar-mark-bird {
+        width: 36px;
+        height: 36px;
+    }
+    .bar-mark .logo {
+        height: 20px;
+    }
+}
+@media (max-width: 370px) {
+    .bar-mark-bird {
+        width: 32px;
+        height: 32px;
+    }
+    .bar-mark .logo {
+        height: 17px;
+    }
+}

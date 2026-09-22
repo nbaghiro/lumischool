@@ -1,0 +1,55 @@
+/* The way back out of a canvas (wayout.tsx), in the top corner of the roll and of the place: out of
+   sight until a hand moves over the paper or a finger lifts from it, and never there while the paper
+   moves. It is low against the paper, soft ink on near-white with the grid's own ring, and still a
+   whole button a child can read and press: 48 px tall, and 44 on a phone. The keyboard and a reader
+   reach it on focus as before. Under reduced motion it appears and goes without a fade. */
+
+.wo {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    z-index: 12;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+    font: 600 16px var(--f-read);
+    color: var(--ink-soft);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 0 0 1.5px var(--grid);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+}
+.wo.on,
+.wo:hover,
+.wo:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+/* a hand resting on it keeps it, and it goes once the hand leaves */
+.wo:hover {
+    color: var(--ink);
+    background: #fff;
+}
+.wo:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+    .wo {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 14px;
+        font-size: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wo {
+        transition: none;
+    }
+}

@@ -1,0 +1,196 @@
+/* The children as a page shows them (kids.tsx): stamps a child taps, a list on a grown-up's card. */
+
+.kid-stamps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(20px, 3vw, 46px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.kid-stamp {
+    --tilt: 0deg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 6px 10px;
+    font: inherit;
+    color: var(--ink);
+    background: none;
+    border: 0;
+    border-radius: 12px;
+    rotate: var(--tilt);
+    cursor: pointer;
+    transition: translate 0.18s ease;
+}
+.kid-stamp:hover {
+    translate: 0 -4px;
+}
+.kid-stamp:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 4px;
+}
+.kid-stamp-art,
+.kid-portrait {
+    position: relative;
+    display: block;
+    width: clamp(150px, 14vw, 200px);
+    aspect-ratio: 4 / 5;
+    filter: drop-shadow(0 10px 12px color-mix(in srgb, var(--ink) 22%, transparent));
+}
+.kid-portrait {
+    width: 104px;
+    rotate: 3deg;
+}
+.kid-stamp-paper {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+.kid-stamp-pic {
+    position: absolute;
+    left: 19%;
+    right: 19%;
+    top: 17%;
+    bottom: 16%;
+}
+.kid-stamp-name {
+    padding: 2px 14px;
+    font: 700 clamp(28px, 2.6vw, 38px) / 1.05 var(--f-hand);
+    font-variation-settings:
+        "INFM" 100,
+        "BNCE" 30;
+    background: color-mix(in srgb, var(--card) 92%, transparent);
+    border-radius: 10px;
+}
+
+/* The title of who is learning, on a strip of paper. */
+.strip {
+    position: relative;
+    padding: 12px 34px 14px;
+    background: var(--card);
+    rotate: -1deg;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 12px 26px -18px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.page .strip h1 {
+    font: 700 clamp(34px, 4vw, 54px) / 1.05 var(--f-hand);
+    font-variation-settings:
+        "INFM" 100,
+        "BNCE" 40;
+    letter-spacing: 0;
+    text-align: center;
+}
+
+.kid-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.kid-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    font-weight: 700;
+}
+/* A list whose rows each offer something: every row shares the list's columns, so each action is as
+   wide as the widest and they line up; on a phone the action takes its own line at full width. */
+.kid-list:has(> li > .kid-list-act) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) max-content;
+    gap: 10px 14px;
+}
+.kid-list.views:has(> li > .kid-list-act) {
+    grid-template-columns: minmax(0, 1fr) max-content;
+}
+.kid-list:has(> li > .kid-list-act) > li {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: center;
+}
+.kid-list-act .btn {
+    width: 100%;
+    white-space: nowrap;
+}
+.kid-list small {
+    display: block;
+    font-weight: 400;
+    color: var(--ink-soft);
+}
+.kid-list-pic {
+    position: relative;
+    flex: none;
+    width: 56px;
+    height: 48px;
+}
+
+@media (max-width: 700px) {
+    .kid-list:has(> li > .kid-list-act) {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+    .kid-list.views:has(> li > .kid-list-act) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .kid-list-act {
+        grid-column: 1 / -1;
+    }
+    .kid-stamps {
+        gap: 6px 10px;
+    }
+    .kid-stamp {
+        padding: 4px 2px 8px;
+    }
+    .kid-stamp-art {
+        width: min(108px, 28vw);
+    }
+    .kid-stamp-name {
+        padding: 0 8px;
+        font-size: 24px;
+    }
+    .kid-portrait {
+        width: 64px;
+    }
+    .strip {
+        padding: 10px 18px 12px;
+    }
+}
+
+/* Five children or more stay on one row where a screen is wide enough for them. */
+.kid-stamps:has(> li:nth-child(5)) .kid-stamp-art {
+    width: clamp(108px, 9.5vw, 140px);
+}
+
+/* A phone on its side: the stamps are sized by the height, so a row fits under the title. */
+@media (max-height: 520px) {
+    .kid-stamps {
+        gap: 6px 14px;
+    }
+    .kid-stamp-art,
+    .kid-stamps:has(> li:nth-child(5)) .kid-stamp-art {
+        width: min(96px, 22vh);
+    }
+    .kid-stamp-name {
+        padding: 0 8px;
+        font-size: 22px;
+    }
+    .strip {
+        padding: 8px 18px 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kid-stamp {
+        transition: none;
+    }
+    .kid-stamp:hover {
+        translate: none;
+    }
+}

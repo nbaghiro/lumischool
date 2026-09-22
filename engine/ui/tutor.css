@@ -1,0 +1,269 @@
+/* The guide as a child's help (tutor.tsx): the guide on a button, and the card it opens with its lines,
+   their speakers and the asks. In a sheet the card stands in the flow under a question's strip, on
+   the paper's own cream; over the map it is a card like the walk's lines. Every target is at least
+   48 px, 44 on a phone. Nothing here moves under reduced motion. */
+
+.tu-guide {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    color: var(--pen);
+}
+.tu-guide svg.guide {
+    width: 100%;
+    height: 100%;
+}
+.tu-mark {
+    position: absolute;
+    display: none;
+    overflow: visible;
+    color: var(--pen);
+}
+.tu-guide.speaking .tu-mark {
+    display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .tu-guide.speaking .tu-mark path:nth-child(2) {
+        animation: tu-arc 1.1s ease-in-out infinite 0.15s;
+    }
+    .tu-guide.speaking .tu-mark path:nth-child(3) {
+        animation: tu-arc 1.1s ease-in-out infinite 0.3s;
+    }
+}
+@keyframes tu-arc {
+    0%,
+    100% {
+        opacity: 0.35;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* The guide on a button: the bar's, the strip's and the map's. */
+.tu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+    gap: 4px;
+    padding: 2px 8px 2px 2px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    cursor: pointer;
+}
+.tu-label {
+    font: 700 16px / 1 var(--f-read);
+}
+.tu-btn:hover,
+.tu-btn[aria-expanded="true"] {
+    background: color-mix(in srgb, var(--glow) 35%, transparent);
+}
+.tu-btn:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 2px;
+}
+/* lit after a wrong try, so a child who is stuck finds it */
+.tu-btn.lit {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--glow) 70%, transparent);
+    background: color-mix(in srgb, var(--glow) 22%, transparent);
+}
+
+/* The card. */
+.tu-card {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--glow) 12%, #fffdf3);
+    box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--glow) 55%, var(--grid));
+    color: var(--ink);
+}
+.tu-card-guide {
+    margin-top: -4px;
+}
+.tu-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+}
+.tu-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.tu-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.tu-words {
+    flex: 1;
+    min-width: 0;
+    font: 650 18px / 1.3 var(--f-hand);
+}
+.tu-line.hint .tu-words,
+.tu-line.said .tu-words {
+    font-weight: 600;
+    font-size: 18px;
+}
+.tu-line.fixed .tu-words {
+    color: var(--ink-soft);
+}
+.tu-speak {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: -8px 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pen);
+    cursor: pointer;
+}
+.tu-speak:hover {
+    background: color-mix(in srgb, var(--pen) 12%, transparent);
+}
+.tu-speak:focus-visible,
+.tu-ask:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 2px;
+}
+/* a small speaker, drawn in the pen: a box with a cone and one arc */
+.tu-ear {
+    display: block;
+    width: 22px;
+    height: 18px;
+    background:
+        linear-gradient(currentColor, currentColor) 0 5px / 6px 8px no-repeat,
+        conic-gradient(
+                from 150deg at 100% 50%,
+                transparent 0 60deg,
+                currentColor 60deg 120deg,
+                transparent 120deg
+            )
+            2px 0 / 11px 18px no-repeat,
+        radial-gradient(circle at 0 50%, transparent 5px, currentColor 5px 7px, transparent 7px)
+            15px 0 / 7px 18px no-repeat;
+}
+.tu-asks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tu-ask {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 16px;
+    border: 2px solid color-mix(in srgb, var(--ink) 30%, #fff);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    font: 700 18px / 1 var(--f-read);
+    cursor: pointer;
+}
+.tu-ask:hover {
+    border-color: var(--pen);
+}
+.tu-ask.off {
+    border-color: transparent;
+    background: transparent;
+    color: var(--ink-soft);
+}
+.tu-ask.more {
+    border-color: transparent;
+    background: transparent;
+    color: var(--ink-soft);
+}
+/* the mark beside each ask's word, drawn in the pen so a child who reads pictures first knows it */
+.tu-pic {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    color: var(--pen);
+}
+.tu-ask.show .tu-pic {
+    /* a lantern: a box lit from below */
+    background:
+        linear-gradient(currentColor, currentColor) 50% 0 / 6px 3px no-repeat,
+        radial-gradient(
+            circle at 50% 60%,
+            var(--glow) 0 5px,
+            currentColor 5px 6.5px,
+            transparent 6.5px
+        );
+}
+.tu-ask.where .tu-pic {
+    /* a pointing hand: a ring round a dot */
+    background: radial-gradient(
+        circle at 50% 50%,
+        currentColor 0 3px,
+        transparent 3px 6px,
+        currentColor 6px 8px,
+        transparent 8px
+    );
+}
+.tu-ask.easier .tu-pic {
+    /* a smaller sheet */
+    background:
+        linear-gradient(currentColor, currentColor) 3px 5px / 8px 2px no-repeat,
+        linear-gradient(currentColor, currentColor) 3px 9px / 8px 2px no-repeat,
+        linear-gradient(currentColor, currentColor) 3px 13px / 5px 2px no-repeat,
+        linear-gradient(transparent, transparent) 0 0 / 100% 100% no-repeat;
+    box-shadow: inset 0 0 0 2px currentColor;
+    border-radius: 2px;
+    width: 14px;
+}
+.tu-ask.next .tu-pic {
+    /* an arrow on: a line with a head */
+    background:
+        linear-gradient(currentColor, currentColor) 0 8px / 12px 2px no-repeat,
+        linear-gradient(45deg, transparent 50%, currentColor 50%) 8px 3px / 8px 8px no-repeat;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.tu-ask.grown-up .tu-pic {
+    /* a grown-up: a head over shoulders */
+    background:
+        radial-gradient(circle at 50% 30%, currentColor 0 4px, transparent 4px),
+        radial-gradient(ellipse at 50% 120%, currentColor 0 8px, transparent 8px);
+}
+
+@media (max-width: 700px) {
+    .tu-card {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+    }
+    .tu-words {
+        font-size: 18px;
+    }
+    .tu-ask {
+        min-height: 44px;
+        padding: 0 12px;
+        font-size: 16px;
+    }
+    .tu-label {
+        font-size: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tu-guide.speaking .tu-mark path {
+        animation: none;
+    }
+}

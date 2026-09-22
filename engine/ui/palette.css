@@ -1,0 +1,63 @@
+/* The one palette. There is no dark mode: the work is drawings on paper, tuned once against paper,
+   and a visitor's system preference is deliberately not consulted.
+
+   The root set is the desk the work sits on. Every drawing surface carries the paper set instead:
+   white squared paper in full colour, which is also what prints. `.squared` also paints the 5 mm
+   grid, `.paper` is the same paper without it, and `.on-paper` paints nothing, for something sitting
+   on a parent that already drew the grid, since two grids from two corners never line up. */
+:root {
+    --paper: #f4f6f8;
+    --grid: #dce3ea;
+    --margin: #e8a1a8;
+    --ink: #22262e;
+    --ink-soft: #5b6270;
+    --pen: #2a4bbf;
+    --glow: #ffd64a;
+    --glow-ink: #5a4300;
+    --sky: #8cc7ef;
+    --mint: #93d5b3;
+    --berry: #f39cbf;
+    --tang: #f7aa57;
+    --ok: #23845a;
+    --card: #ffffff;
+    --shade: #1b25400f;
+    --sq: 20px;
+    /* the grid an ink-only sheet prints, which PRINT in engine/paper.ts matches */
+    --print-grid: #e2e2e2;
+    --f-hand: "Shantell Sans Variable", "Comic Neue", "Chalkboard SE", cursive;
+    --f-read: "Andika", "Atkinson Hyperlegible", Verdana, sans-serif;
+    --f-mono: "Spline Sans Mono Variable", ui-monospace, Menlo, monospace;
+    color-scheme: light;
+}
+
+.squared,
+.paper,
+.paper-light,
+.on-paper {
+    --paper: #ffffff;
+    --grid: #c9d9e8;
+    --margin: #e59aa3;
+    --ink: #2b2f37;
+    --ink-soft: #5b6270;
+    --pen: #2a4bbf;
+    --glow: #ffd64a;
+    --glow-ink: #5a4300;
+    --sky: #8cc7ef;
+    --mint: #93d5b3;
+    --berry: #f39cbf;
+    --tang: #f7aa57;
+    --ok: #23845a;
+    --card: #ffffff;
+    color-scheme: light;
+    color: var(--ink);
+}
+
+/* A drawing is drawn into a box of its own (svg.ts), and a nested SVG viewport hides what reaches
+   past it, so every mark a drawing makes outside the box it declares is cut off: a guide's halo, a
+   bubble's tail pointing at the speaker beside it, the number written under a bead string's cut.
+   The drawings were composed on the shelf, which has said `overflow: visible` since they were drawn,
+   so this is the surface they were made for. It lives here because this is the one stylesheet every
+   surface carries. A drawing that wants to be cut off clips itself, as the fretboard's neck does. */
+svg.visual {
+    overflow: visible;
+}

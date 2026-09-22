@@ -1,0 +1,405 @@
+/* The page both apps share (page.tsx), in design B: the site's bar, the country's map as the ground
+   under it, and the postcards over the map, placed as the site places its sheet. Light only, every
+   target at least 44 px, and nothing moves under reduced motion. */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--paper);
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    font: 400 16px / 1.6 var(--f-read);
+    -webkit-text-size-adjust: 100%;
+}
+
+.page {
+    --rule: color-mix(in srgb, var(--ink) 14%, var(--paper));
+    --rule-firm: color-mix(in srgb, var(--ink) 30%, var(--paper));
+    --gut: clamp(16px, 3vw, 44px);
+    --wrap: 1280px;
+    /* the site's bar, which the map under it starts below; apps/site/site.css has the same */
+    --bar-h: 62px;
+    --t-small: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    overflow-x: clip;
+    background: var(--paper);
+    color: var(--ink);
+}
+.page h1,
+.page h2,
+.page h3 {
+    margin: 0;
+    font-family: var(--f-read);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+}
+.page h2 {
+    font-size: clamp(19px, 1.5vw, 22px);
+    line-height: 1.2;
+}
+.page p {
+    margin: 0;
+}
+.page :focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 3px;
+}
+.page [tabindex="-1"]:focus {
+    outline: none;
+}
+.page .kicker {
+    font: 500 11px / 1.3 var(--f-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+.page-skip {
+    position: absolute;
+    left: -9999px;
+    z-index: 40;
+}
+.page-skip:focus {
+    left: 12px;
+    top: 9px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    background: var(--glow);
+    color: var(--glow-ink);
+}
+
+/* The bar, as the site's: the mark on the left and what the screen puts at the end on the right. */
+.page-top {
+    position: relative;
+    z-index: 3;
+    background: var(--paper);
+}
+.page-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px clamp(16px, 2.2vw, 34px);
+    max-width: var(--wrap);
+    min-height: var(--bar-h);
+    margin-inline: auto;
+    padding-inline: var(--gut);
+}
+.page-end {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+/* What kept a sign-out from happening, on a slip under the button, over the cards rather than
+   moving them. */
+.page-said {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: min(340px, calc(100vw - 24px));
+    border-radius: 10px;
+    box-shadow: 0 18px 36px -22px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.page-end button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font: 700 15px / 1 var(--f-read);
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.page-end button:hover {
+    color: var(--ink);
+}
+/* Sign out is the one control in the bar that ends something, so it carries a ring rather than
+   reading as another word beside the places; a real family looked for it and did not find it. */
+.page-end button.out {
+    border: 1.5px solid var(--rule-firm);
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    color: var(--ink);
+}
+.page-end button.out:hover {
+    border-color: var(--ink);
+}
+/* The grown-ups' tab in a child's corner: held, it opens what only a grown-up should (flow 7). */
+.page-end button.gate {
+    position: relative;
+    overflow: hidden;
+    padding: 0 14px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    border: 1.5px dashed color-mix(in srgb, var(--ink) 30%, var(--card));
+    -webkit-touch-callout: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+.page-end button.gate::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--glow) 60%, transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+}
+.page-end button.gate.holding::before {
+    transform: scaleX(1);
+    transition: transform 2s linear;
+}
+.page-end button.gate span {
+    position: relative;
+}
+
+/* The map, the ground of the whole window for as long as the page is open: fixed to the viewport, the
+   cards scrolling over it and the bar's paper hiding its top strip until the bar scrolls away, and
+   keeping its places clear of the cards (backdrop.tsx). Its height is the large viewport's, so a
+   phone's toolbar folding away does not resize the box and aim the map again on every scroll. The
+   map's own classes arrive with it and place their box, so the page's placement is the weightier. */
+.page > .page-ground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+    height: 100lvh;
+}
+
+/* The cards stand where the site's sheet stands, and as far from the bar. */
+.page-main {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    width: 100%;
+    max-width: var(--wrap);
+    margin-inline: auto;
+    padding: clamp(24px, 16vw - 110px, 128px) var(--gut) 32px;
+}
+/* one under another, so the right of the map, where the site frames the harbour, stays clear */
+.page-cards {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    width: fit-content;
+    max-width: 100%;
+}
+.page-main.centered .page-cards {
+    width: 100%;
+    align-items: center;
+}
+/* A stage fills the page under the bar: no gutter, no wrap, and its one child takes the height. */
+.page-main.stage {
+    display: flex;
+    flex-direction: column;
+    max-width: none;
+    padding: 0;
+    min-height: calc(100svh - var(--bar-h));
+}
+.page-main.stage .page-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1;
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    gap: 0;
+}
+.page-main.stage .page-cards > * {
+    flex: 1;
+    min-height: 0;
+}
+.page:has(.page-main.stage) .page-foot {
+    display: none;
+}
+
+/* A wide screen, such as the grown-ups' home: the cards take the whole width of a wider wrap. */
+.page.wide {
+    --wrap: 1440px;
+}
+.page-main.wide {
+    padding-top: clamp(20px, 3vw, 40px);
+}
+.page-main.wide .page-cards {
+    width: 100%;
+    align-items: stretch;
+}
+/* a wide stage, the grown-ups' map: the bar keeps the wide wrap, and the stage keeps its edges */
+.page-main.stage.wide {
+    padding-top: 0;
+}
+/* What a screen puts in the bar between the mark and its end, which takes the room between them. */
+.page-nav {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-width: 0;
+}
+
+/* The footnotes, centred under the cards with the halo the map gives its own names. */
+.page-foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 22px;
+    padding: 6px var(--gut) 18px;
+    font-size: var(--t-small);
+    color: var(--ink-soft);
+    text-align: center;
+    text-shadow:
+        0 0 3px var(--paper),
+        0 0 6px var(--paper),
+        0 0 12px var(--paper);
+}
+
+/* A child's screen: its parts down the middle. */
+.page-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(16px, 3vh, 30px);
+    width: 100%;
+}
+.offline-note {
+    padding: 8px 18px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    background: var(--card);
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1.5px var(--rule-firm);
+}
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.4em;
+    font-size: 16px;
+}
+.part {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.nowrap {
+    white-space: nowrap;
+}
+
+/* An index card pinned beside the postcard, for what is so only on a developer's computer. */
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(100%, 344px);
+    padding: 26px 24px 22px;
+    background-color: var(--card);
+    background-image:
+        linear-gradient(
+            transparent 46px,
+            color-mix(in srgb, var(--berry) 55%, var(--card)) 46px,
+            color-mix(in srgb, var(--berry) 55%, var(--card)) 47.5px,
+            transparent 47.5px
+        ),
+        repeating-linear-gradient(
+            transparent 0 27px,
+            color-mix(in srgb, var(--sky) 45%, var(--card)) 27px 28px
+        );
+    background-position:
+        0 0,
+        0 19px;
+    border-radius: 3px;
+    outline: 1.5px dashed color-mix(in srgb, var(--ink) 30%, var(--card));
+    outline-offset: 5px;
+    box-shadow:
+        0 1px 0 var(--rule),
+        0 20px 40px -30px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.card h2 {
+    font-size: 21px;
+}
+
+/* On a phone a short page's cards come first, taped over the top edge of a short strip of the map
+   under them; a wide page keeps the map as the ground of the whole window, as on a desk. */
+@media (max-width: 700px) {
+    .page-bar {
+        gap: 8px;
+        padding-inline: 12px;
+    }
+    .page-end {
+        gap: 2px;
+    }
+    .page-end button {
+        padding: 0 12px;
+        font-size: 14.5px;
+    }
+    .page-main {
+        order: 1;
+        flex: none;
+        padding: 16px 16px 0;
+    }
+    .page-main.stage {
+        flex: 1;
+        padding: 0;
+        min-height: calc(100svh - var(--bar-h));
+    }
+    .page-main.wide {
+        padding-top: 16px;
+    }
+    .page-main.stage.wide {
+        padding-top: 0;
+    }
+    .page:not(.wide) > .page-ground {
+        position: relative;
+        order: 2;
+        top: auto;
+        height: clamp(300px, 84vw, 380px);
+        margin-top: -26px;
+    }
+    .page-foot {
+        order: 3;
+        flex-direction: column;
+    }
+    .card {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-end button.gate.holding::before {
+        transition: none;
+    }
+}

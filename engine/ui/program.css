@@ -1,0 +1,87 @@
+/* A program built on a sheet: the drawing as it prints, the blocks to add, the slots, the tools, and
+   Run it. Every control is at least 44 pixels high. */
+
+.pg-tile svg.scene-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.pg-tray,
+.pg-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.pg-block,
+.pg-tools button {
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font: 600 16px / 1 var(--f-read);
+}
+.pg-block {
+    border: 2px solid color-mix(in srgb, var(--sky) 70%, var(--ink));
+    background: color-mix(in srgb, var(--sky) 45%, #fff);
+    color: var(--ink);
+}
+.pg-tools button {
+    border: 1.5px solid color-mix(in srgb, var(--ink) 35%, #fff);
+    background: #fff;
+    color: var(--ink);
+}
+.pg-block:disabled,
+.pg-tools button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+.pg-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.pg-slot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1.5px dashed color-mix(in srgb, var(--ink) 30%, #fff);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    text-align: start;
+    cursor: pointer;
+    font: 600 17px / 1 var(--f-read);
+}
+.pg-slot:disabled {
+    cursor: default;
+    color: var(--ink-soft);
+}
+.pg-slot[aria-pressed="true"] {
+    border-style: solid;
+    border-color: var(--pen);
+    box-shadow: inset 0 0 0 1px var(--pen);
+}
+.pg-n {
+    min-width: 1.4em;
+    font: 500 14px / 1 var(--f-mono);
+    color: var(--ink-soft);
+}
+.pg-words {
+    padding-left: calc(var(--depth, 0) * 1.6em);
+}
+.pg-block:focus-visible,
+.pg-slot:focus-visible,
+.pg-tools button:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 3px;
+}

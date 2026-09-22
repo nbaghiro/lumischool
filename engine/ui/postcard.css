@@ -1,0 +1,395 @@
+/* The postcard (postcard.tsx): plain white card on the map, the message and the address either side
+   of a pencil rule, taped at two corners as the site's sheet is. The card stands square, since a
+   tilted page of text is hard to read once the pages fill up; only its tapes and stamp sit at an
+   angle. Light only, and nothing moves under reduced motion. */
+
+.postcard {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.5px minmax(0, 290px);
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "msg rule addr"
+        "links rule addr";
+    gap: 0 28px;
+    width: min(100%, 700px);
+    min-height: 360px;
+    padding: 30px 32px 26px;
+    background: var(--card);
+    border-radius: 5px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
+        0 18px 36px -20px color-mix(in srgb, var(--ink) 42%, transparent);
+}
+.postcard.one {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "msg"
+        "links";
+    width: min(100%, 520px);
+    min-height: 0;
+}
+.postcard.one.wide {
+    width: min(100%, 700px);
+}
+.postcard.note {
+    gap: 8px;
+    width: min(100%, 470px);
+    padding: 24px 28px 22px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 14px 30px -20px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.postcard-rule {
+    grid-area: rule;
+    background: color-mix(in srgb, var(--ink) 22%, var(--card));
+    border-radius: 1px;
+}
+.postcard-msg,
+.postcard-addr {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+.postcard-msg {
+    grid-area: msg;
+}
+.postcard-addr {
+    grid-area: addr;
+}
+.postcard-links {
+    grid-area: links;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-top: 10px;
+}
+.postcard.one .postcard-msg {
+    padding-right: 110px;
+}
+.postcard.one.note .postcard-msg {
+    padding-right: 0;
+}
+/* A postmark beside the stamp floats wider than a stamp alone: 26px in, the stamp's 78px and the
+   postmark's 152px less its 70px overlap, less the card's 32px padding, and a gap. In step with
+   .postcard-float, .stamp and .postmark; the phone hides the postmark and keeps its own room. */
+@media (min-width: 701px) {
+    .postcard.one:has(.postcard-float .postmark) .postcard-msg {
+        padding-right: 168px;
+    }
+}
+
+/* The tape, torn at both ends, across the card's top corners. */
+.postcard-tape {
+    position: absolute;
+    top: -14px;
+    left: -20px;
+    width: 92px;
+    height: 28px;
+    background: var(--glow);
+    opacity: 0.62;
+    mix-blend-mode: multiply;
+    clip-path: polygon(
+        0 12%,
+        5% 0,
+        12% 8%,
+        50% 3%,
+        88% 7%,
+        95% 0,
+        100% 14%,
+        97% 52%,
+        100% 90%,
+        93% 100%,
+        50% 94%,
+        6% 100%,
+        0 86%,
+        3% 50%
+    );
+    rotate: -7deg;
+    pointer-events: none;
+}
+.postcard-tape.r {
+    left: auto;
+    right: -20px;
+    rotate: 6deg;
+}
+
+/* The corner: a postmark cancelling the stamp, and the stamp showing the world the camera is at. */
+.postcard-corner {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    height: 104px;
+    margin-bottom: 2px;
+    pointer-events: none;
+}
+.postcard-float {
+    position: absolute;
+    top: 22px;
+    right: 26px;
+}
+.postcard-corner > span,
+.postcard-choice-corner > span {
+    display: block;
+}
+/* Drawn larger than it was, so the town and the date read at the card's own size, and pulled further
+   into the stamp by the same amount, so the card's corner takes the 82px it always took. The ring
+   ends 70px along, and the stamp starts at 82px, so no letter of either word can fall behind it; what
+   goes under the stamp is the tail of the waves, which is what waves are for. */
+.postmark {
+    position: relative;
+    z-index: 1;
+    width: 152px;
+    height: 76px;
+    margin: 20px -70px 0 0;
+    opacity: 0.96;
+}
+.stamp {
+    width: 78px;
+    height: 98px;
+    rotate: 3deg;
+}
+/* A blank stamp with a drawing laid in its frame, under the value in the frame's top corner. */
+.stamp.drawn {
+    position: relative;
+}
+.stamp.drawn > .stamp-paper,
+.stamp.drawn > .stamp-picture {
+    position: absolute;
+    inset: 0;
+}
+.stamp.drawn > .stamp-picture {
+    inset: 32% 22% 17%;
+}
+
+.postcard .kicker {
+    font: 500 11px / 1.3 var(--f-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.page .postcard-title {
+    font: 700 clamp(30px, 2.6vw, 40px) / 1.08 var(--f-hand);
+    font-variation-settings:
+        "INFM" 70,
+        "BNCE" 20;
+    letter-spacing: 0;
+}
+.postcard-lead {
+    max-width: 34ch;
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+.postcard-ps {
+    max-width: 32ch;
+    margin-top: 6px;
+    font: 600 16px / 1.45 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+    color: var(--pen);
+}
+.postcard-to {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 4px;
+}
+.postcard-to-label {
+    font: 500 10.5px / 1.2 var(--f-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.postcard-to-who {
+    padding: 6px 2px 4px;
+    overflow-wrap: anywhere;
+    font: 600 19px / 1.2 var(--f-hand);
+    font-variation-settings: "INFM" 50;
+    color: var(--ink);
+    border-bottom: 1.5px solid color-mix(in srgb, var(--ink) 30%, var(--card));
+}
+
+/* The reply, laid over the card that asked for it. */
+.postcard.under {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    filter: saturate(0.85);
+}
+.postcard.under .postcard-addr {
+    visibility: hidden;
+}
+.postcard.reply {
+    z-index: 1;
+    margin: 46px 0 0 54px;
+}
+
+/* A note with the cards it introduces under it, as which family has them. */
+.postcard-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+}
+
+/* A column of cards, each addressed to a family. */
+.postcard-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(100%, 560px);
+    margin-left: clamp(0px, 3vw, 44px);
+}
+.postcard-choice {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.5px 96px;
+    gap: 0 22px;
+    align-items: center;
+    width: 100%;
+    min-height: 150px;
+    padding: 20px 24px;
+    text-align: left;
+    font: 400 15.5px / 1.4 var(--f-read);
+    color: var(--ink);
+    background: var(--card);
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
+        0 18px 34px -22px color-mix(in srgb, var(--ink) 45%, transparent);
+    transition:
+        translate 0.18s ease,
+        box-shadow 0.18s ease;
+}
+.postcard-stack > :nth-child(2n) {
+    margin-left: clamp(0px, 5vw, 70px);
+}
+.postcard-choice .postcard-rule {
+    align-self: stretch;
+}
+.postcard-choice:hover {
+    translate: 0 -3px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
+        0 24px 40px -22px color-mix(in srgb, var(--ink) 50%, transparent);
+}
+.postcard-choice:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 6px;
+}
+.postcard-choice[aria-disabled="true"] {
+    cursor: progress;
+}
+.postcard-choice-words {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.postcard-choice-name {
+    font: 700 28px / 1.1 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+}
+.postcard-choice-corner {
+    display: flex;
+    justify-content: center;
+}
+.postcard-choice-corner .stamp {
+    width: 72px;
+    height: 90px;
+}
+
+@media (max-width: 700px) {
+    .postcard,
+    .postcard.one {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+        grid-template-areas:
+            "msg"
+            "rule"
+            "addr"
+            "links";
+        gap: 16px;
+        width: 100%;
+        min-height: 0;
+        padding: 24px 20px 20px;
+    }
+    .postcard.one {
+        grid-template-areas:
+            "msg"
+            "links";
+    }
+    .postcard-rule {
+        height: 1.5px;
+    }
+    .postcard-links {
+        padding-top: 0;
+    }
+    .postcard-msg,
+    .postcard.one .postcard-msg {
+        padding-right: 86px;
+    }
+    .postcard-corner,
+    .postcard-float {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        height: auto;
+    }
+    .postcard-corner > .postmark {
+        display: none;
+    }
+    .stamp {
+        width: 62px;
+        height: 78px;
+    }
+    .postcard.under {
+        display: none;
+    }
+    .postcard.reply {
+        margin: 0;
+    }
+    .postcard-stack,
+    .postcard-stack > :nth-child(2n) {
+        margin-left: 0;
+    }
+    .postcard-choice {
+        grid-template-columns: minmax(0, 1fr) 72px;
+        min-height: 120px;
+        padding: 16px 18px;
+    }
+    .postcard-choice .postcard-rule {
+        display: none;
+    }
+    .postcard-choice-corner .stamp {
+        width: 58px;
+        height: 72px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .postcard-choice {
+        transition: none;
+    }
+    .postcard-choice:hover {
+        translate: none;
+    }
+}
+
+/* A wide one-sided card that holds lists, such as the family's page: only its kicker, title and lead keep
+   clear of the stamp in the corner, so the lists under them have the card's whole width. */
+.postcard.one.wide:has(.kid-list) .postcard-msg {
+    padding-right: 0;
+}
+.postcard.one.wide:has(.kid-list) .postcard-msg > :is(.kicker, .postcard-title, .postcard-lead) {
+    padding-right: 110px;
+}
+@media (max-width: 700px) {
+    .postcard.one.wide:has(.kid-list)
+        .postcard-msg
+        > :is(.kicker, .postcard-title, .postcard-lead) {
+        padding-right: 86px;
+    }
+}

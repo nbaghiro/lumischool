@@ -1,0 +1,31 @@
+/* A guide drawn by guide.ts: its marks (a beam, sparkles, the dots of a thought) sit round its box,
+   which the frame leaves room for, so nothing past the box is cut off. */
+svg.guide {
+    display: block;
+    overflow: visible;
+}
+
+/* A guide in a box (guide in guide.ts), floating a little, as the site's mark has it. */
+.ag-guide svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+.ag-float {
+    transform-origin: 50% 70%;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .ag-float {
+        animation: ag-float 3.8s ease-in-out infinite;
+    }
+}
+@keyframes ag-float {
+    0%,
+    100% {
+        transform: translateY(0) rotate(-3deg);
+    }
+    50% {
+        transform: translateY(-5px) rotate(3deg);
+    }
+}

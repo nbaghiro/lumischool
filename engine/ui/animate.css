@@ -1,0 +1,89 @@
+/* The player puts every drawing back before printing; this is the second guard, so paper never
+   shows a drawing mid-movement whatever else a page does. */
+@media print {
+    svg[data-anim] {
+        translate: none !important;
+        rotate: none !important;
+        scale: none !important;
+        transform: none !important;
+    }
+    [data-anim-frame] {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+    svg[data-anim] [data-anim-moved] {
+        transform: none !important;
+    }
+}
+
+/*
+ * The three-seed boil that gives a drawing its hand-drawn wobble (render in svg.ts, and a guide
+ * drawn by guide.ts): three frames stacked, one drawn at a time. A frame is hidden by opacity, not
+ * visibility: Chrome plays an opacity animation on the compositor, while an animation inside a
+ * frame that visibility hides counts as having no visible change and runs on the main thread, so a
+ * guide's idle in its three frames cost the page a main-thread frame at every switch of the boil,
+ * and the switches themselves another (.docs/animation.md, "Performance"). The frames after the
+ * first take no pointer, so the drawing is hit on its first frame, as it was when only the shown
+ * frame could be hit. */
+.boil > g {
+    opacity: 0;
+}
+.boil > g:first-child {
+    opacity: 1;
+}
+.boil > g:not(:first-child) {
+    pointer-events: none;
+}
+/* The three frames share one clock and the same switch points, so exactly one is drawn at every
+   instant. Offsetting one keyframe set by delays left a gap at each switch with none drawn, and a
+   display frame landing in it showed the drawing vanish. */
+.boiling > g {
+    animation: boil3 0.42s steps(1, end) infinite;
+}
+.boiling > g:nth-child(2) {
+    animation-name: boil3-last;
+}
+.boiling > g:nth-child(3) {
+    animation-name: boil3-mid;
+}
+@keyframes boil3 {
+    0% {
+        opacity: 1;
+    }
+    33.333% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes boil3-mid {
+    0% {
+        opacity: 0;
+    }
+    33.333% {
+        opacity: 1;
+    }
+    66.667% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes boil3-last {
+    0% {
+        opacity: 0;
+    }
+    66.667% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .boiling > g:nth-child(n) {
+        animation: none;
+    }
+}

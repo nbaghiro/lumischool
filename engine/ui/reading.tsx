@@ -1,0 +1,154 @@
+// A world's roll for reading (world.tsx), with its sheets drawn as the roll comes near them, from
+// wherever the page reads them, and let go of again; until its paper lands a sheet is a card with the
+// lesson's title and its first drawing. What each sheet measured is kept, so the roll is laid out
+// round it once and nothing moves under the reader. The grown-ups' map (apps/home/map.tsx) and the
+// overlay (overlay.tsx) read a world this way; a child's own roll is the child's page's (apps/kids).
+
+import "./reading.css";
+import type { SheetView, WorldView } from "../space";
+import {
+    createEffect,
+    createMemo,
+    createSignal,
+    getOwner,
+    on,
+    onCleanup,
+    runWithOwner,
+    Show,
+    type JSX,
+} from "solid-js";
+import type { Measured } from "./lesson";
+import { nearPaper } from "./paper";
+import { matches, Near } from "./viewport";
+import { World } from "./world";
+
+/** A sheet's height on the roll while it is a card rather than the lesson, in the roll's units. */
+export const CARD = 620;
+
+export interface ReadingSource {
+    /** The roll, laid out round the heights the sheets measured; `CARD` stands in until one is drawn. */
+    world(o: { narrow: boolean; height: (lesson: string) => number | null }): WorldView;
+    /** A lesson's sheet, drawn and measured for the roll to lay, or null while it cannot be read. */
+    sheet(lesson: string, o: { narrow: boolean; measureIn: HTMLElement }): Promise<Measured | null>;
+    /** What a sheet's card says until its paper lands: the corner's label and note, and its first drawing. */
+    card(lesson: string): {
+        label: string;
+        note: string;
+        picture?: (host: HTMLElement) => Promise<void>;
+    };
+}
+
+export function Reading(props: {
+    source: ReadingSource;
+    /** Where the view being left put the world on the screen, so the roll grows out of it (world.tsx). */
+    from?: DOMRect;
+    /** A lesson the roll opens at, at its day, rather than at the world's arrival. */
+    lesson?: string | null;
+    /** The heading a screen reader finds the roll by. */
+    title: string;
+    class?: string;
+    /** Out of the roll, with the box the map opens the place in, or null when it cut. */
+    onOut: (at: DOMRect | null) => void;
+}): JSX.Element {
+    const narrow = matches("(max-width: 700px)");
+    // bumped whenever paper lands or goes, so the roll lays out again round what it measured
+    const [drew, setDrew] = createSignal(0);
+    let measure: HTMLDivElement | undefined;
+    const paper = nearPaper({
+        draw: (lesson) =>
+            props.source.sheet(lesson, { narrow: narrow(), measureIn: measure ?? document.body }),
+        drawn: () => setDrew((n) => n + 1),
+    });
+    onCleanup(() => paper.forget());
+    // a phone turned draws every sheet again at its width, so nothing measured at the old one is kept
+    createEffect(on(narrow, () => paper.forget(), { defer: true }));
+    const view = createMemo(() => {
+        drew();
+        return props.source.world({
+            narrow: narrow(),
+            height: (lesson) => paper.height(lesson),
+        });
+    });
+    /** The day on the roll that holds the lesson it opens at, by the id the roll opens at. */
+    const day = (): string | undefined => {
+        const lesson = props.lesson;
+        if (!lesson) return undefined;
+        return view().layout.rows.find((r) => r.day.lessons.includes(lesson))?.day.id;
+    };
+    // the roll asks for a sheet's card more than once, so each is made once and belongs to the roll
+    // rather than to whichever of its reads asked first; the paper goes into the card that is already
+    // drawn, so the element the reader is on stays the element on the page
+    const owner = getOwner();
+    const made = new Map<string, { el: HTMLElement; slot: HTMLElement }>();
+    const card = (s: SheetView): HTMLElement | null => {
+        let had = made.get(s.lesson);
+        if (!had) {
+            const words = props.source.card(s.lesson);
+            let slot: HTMLElement | undefined;
+            const el = runWithOwner(owner, () => (
+                <article
+                    class="j-sheet squared wd-sheet rd-sheet"
+                    style={{ width: `${view().layout.o.sheet}px`, "min-height": `${CARD}px` }}
+                    data-lesson={s.lesson}
+                    aria-label={s.title}
+                >
+                    <div
+                        class="rd-paper"
+                        ref={(node) => {
+                            slot = node;
+                        }}
+                    />
+                    <div class="rd-first">
+                        <div class="j-strip">
+                            <span class="label">{words.label}</span>
+                            <span class="date hand">{words.note}</span>
+                        </div>
+                        <h2 class="rd-title hand">{s.title}</h2>
+                        <Show when={words.picture}>
+                            {(draw) => <Near class="rd-pic" draw={draw()} />}
+                        </Show>
+                    </div>
+                    <div class="j-cover" aria-hidden="true">
+                        <span class="label">{words.label}</span>
+                        <span class="t hand">{s.title}</span>
+                    </div>
+                </article>
+            ));
+            if (!(el instanceof HTMLElement) || !slot) return null;
+            had = { el, slot };
+            made.set(s.lesson, had);
+        }
+        const p = paper.sheet(s.lesson);
+        const h = paper.height(s.lesson);
+        if (h !== null) had.el.style.minHeight = `${h}px`;
+        if (p && !had.slot.contains(p.el)) {
+            had.slot.replaceChildren(p.el);
+            had.el.classList.add("rd-read");
+        } else if (!p && had.el.classList.contains("rd-read")) {
+            had.slot.replaceChildren();
+            had.el.classList.remove("rd-read");
+        }
+        return had.el;
+    };
+    return (
+        <>
+            <div
+                class="rd-measure"
+                ref={(el) => {
+                    measure = el;
+                }}
+            />
+            <World
+                view={view()}
+                from={props.from}
+                sheet={card}
+                lookBack={(near) => paper.lookBack(near)}
+                open={day()}
+                land={props.lesson ? { lesson: props.lesson, y: 0 } : undefined}
+                class={props.class}
+                title={props.title}
+                onOut={(at) => props.onOut(at)}
+            />
+        </>
+    );
+}

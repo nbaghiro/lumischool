@@ -1,0 +1,101 @@
+// The paper near the camera: drawn once when near, let go of when not, its height kept, and paper that
+// lands late or after a forget let go of rather than kept.
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { nearPaper } from "../paper";
+
+interface Fake {
+    lesson: string;
+    height: number;
+    gone: boolean;
+    dispose(): void;
+}
+
+/** A drawer whose draws land when the test says, one at a time in the order asked. */
+function drawer(): {
+    draw: (lesson: string) => Promise<Fake | null>;
+    land: (lesson: string, height?: number) => Promise<void>;
+    asked: string[];
+} {
+    const waiting = new Map<string, (p: Fake | null) => void>();
+    const asked: string[] = [];
+    return {
+        asked,
+        draw: (lesson) =>
+            new Promise((ok) => {
+                asked.push(lesson);
+                waiting.set(lesson, ok);
+            }),
+        land: async (lesson, height = 500) => {
+            const ok = waiting.get(lesson);
+            if (!ok) throw new Error(`${lesson} was not asked for`);
+            waiting.delete(lesson);
+            const p: Fake = {
+                lesson,
+                height,
+                gone: false,
+                dispose() {
+                    this.gone = true;
+                },
+            };
+            ok(lesson === "missing" ? null : p);
+            // the draw settles, and the look's own Promise.all after it
+            await new Promise((r) => setTimeout(r, 0));
+        },
+    };
+}
+
+test("paper is drawn once when near, kept while near, let go of when not, and its height stays known", async () => {
+    const d = drawer();
+    let drawn = 0;
+    const near = nearPaper({ draw: d.draw, drawn: () => drawn++ });
+    near.lookBack(["a", "b"]);
+    near.lookBack(["a", "b"]);
+    assert.deepEqual(
+        d.asked,
+        ["a", "b"],
+        "a lesson is asked for once while its draw is on its way",
+    );
+    assert.equal(near.sheet("a"), null);
+    await d.land("a", 700);
+    await d.land("b", 600);
+    assert.equal(near.sheet("a")?.height, 700);
+    assert.equal(near.height("b"), 600);
+    assert.equal(drawn, 1, "the roll hears once for the look, not once per sheet");
+    const a = near.sheet("a");
+    near.lookBack(["b"]);
+    assert.equal(near.sheet("a"), null);
+    assert.equal(a?.gone, true, "paper no longer near is let go of");
+    assert.equal(near.height("a"), 700, "what it measured is kept");
+    assert.equal(drawn, 2);
+    near.lookBack(["b", "a"]);
+    assert.deepEqual(d.asked, ["a", "b", "a"], "paper that comes near again is drawn again");
+});
+
+test("paper that lands once it is no longer near, or after a forget, is let go of; a draw that fails leaves nothing", async () => {
+    const d = drawer();
+    let drawn = 0;
+    const near = nearPaper({ draw: d.draw, drawn: () => drawn++ });
+    near.lookBack(["a", "missing"]);
+    near.lookBack([]);
+    await d.land("a");
+    assert.equal(near.sheet("a"), null, "landed after the camera left it");
+    assert.equal(drawn, 0);
+    await d.land("missing");
+    assert.equal(near.sheet("missing"), null);
+    near.lookBack(["c"]);
+    near.forget();
+    await d.land("c", 400);
+    assert.equal(near.sheet("c"), null, "landed after a forget");
+    assert.equal(near.height("c"), null, "a forget forgets the heights too");
+    near.lookBack(["c"]);
+    assert.deepEqual(
+        d.asked,
+        ["a", "missing", "c", "c"],
+        "after a forget the paper is asked for again",
+    );
+    await d.land("c", 450);
+    assert.equal(near.height("c"), 450);
+    near.forget();
+    assert.equal(near.sheet("c"), null);
+});

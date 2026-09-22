@@ -1,0 +1,533 @@
+/* A lesson on a sheet (lesson.tsx), in the roll's units: the paper is the sheet's own, and the strip
+   under a question is the screen's layer in the teacher's colours. Every box and button is 56 px, so
+   it stays a finger's size at the zoom the roll reads a sheet at. The question to do now has a band in
+   the margin and a ready box; only its pencil mark and a taken box move, and not under reduced motion. */
+
+.ls-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 0 40px;
+    background: #fff;
+    color: var(--ink);
+}
+.ls-sheet .j-strip {
+    padding-inline: 40px;
+}
+.ls-sheet.narrow .j-strip {
+    padding-inline: 20px;
+}
+.ls-head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 40px 20px;
+}
+.ls-head h2 {
+    margin: 0;
+    font: 700 40px / 1.1 var(--f-hand);
+    color: var(--ink);
+}
+.ls-goal {
+    margin: 0;
+    font: 400 18px / 1.5 var(--f-read);
+    max-width: 62ch;
+}
+.ls-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 40px;
+}
+.ls-sec h3 {
+    margin: 0;
+    font: 650 23px / 40px var(--f-hand);
+    font-variation-settings: "INFM" 80;
+    color: var(--pen);
+}
+/* Two squares to a line, as the printed sheet sets body text, so a drawing after a paragraph still
+   starts on a grid line. */
+.ls-say p {
+    margin: 0;
+    font: 400 17px / 40px var(--f-read);
+    max-width: 62ch;
+}
+.ls-sheet.big .ls-say p {
+    font-size: 21px;
+}
+.ls-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+.ls-q {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding-left: 40px;
+}
+.ls-n {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--pen);
+    color: var(--pen);
+    display: grid;
+    place-items: center;
+    font: 700 15px var(--f-hand);
+}
+.ls-n.worked {
+    border-color: var(--ok);
+    color: var(--ok);
+}
+.ls-ask {
+    margin: 0;
+    font: 400 17px / 1.5 var(--f-read);
+}
+.ls-sheet.big .ls-ask {
+    font-size: 21px;
+}
+.ls-answer,
+.ls-note {
+    margin: 0;
+    font: 400 16px / 1.45 var(--f-read);
+    color: var(--ink-soft);
+}
+.ls-answer .label {
+    margin-right: 4px;
+}
+.ls-sheet .scene-tile {
+    max-width: 100%;
+}
+/* the drawing and the marks over it share one box, the drawing's own size */
+.ls-scene {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+}
+/* A scene's own size, `--w` squares of the paper's grid: the renderer sets the width in squares and
+   the sheet turns it into pixels, since a viewBox alone has no size. The arranged and program tiles
+   carry the same rule for their own svg (arrange.css, program.css). */
+.ls-scene svg.scene-svg {
+    display: block;
+    width: calc(var(--w) * var(--sq));
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+}
+.ls-here {
+    position: absolute;
+    margin: -6px;
+    padding: 6px;
+    box-sizing: content-box;
+    border: 2.5px dashed var(--pen);
+    border-radius: 12px;
+    pointer-events: none;
+    animation: ls-here 1.8s ease-in-out infinite alternate;
+}
+@keyframes ls-here {
+    from {
+        opacity: 0.45;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* the question to do now: a band in the margin, and a box ready for the answer */
+.ls-q.current::before {
+    content: "";
+    position: absolute;
+    left: -18px;
+    top: -8px;
+    bottom: -8px;
+    width: 6px;
+    border-radius: 3px;
+    background: var(--pen);
+}
+.ls-sheet.narrow .ls-q.current::before {
+    left: -12px;
+}
+.ls-strip.ready .ls-in:not(:disabled) {
+    border: 2.5px solid var(--pen);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--pen) 14%, transparent);
+}
+.ls-strip.ready .ls-in::placeholder {
+    color: color-mix(in srgb, var(--pen) 55%, #fff);
+    font-weight: 700;
+}
+/* a try taken: the box's underline is drawn across it once */
+.ls-strip .ls-key {
+    position: relative;
+}
+.ls-strip.taken .ls-key::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--pen);
+    transform-origin: left;
+    animation: ls-taken 0.5s ease-out both;
+}
+@keyframes ls-taken {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+/* a question done: a calm tick beside its number */
+.ls-tick {
+    position: absolute;
+    left: 4px;
+    top: 34px;
+    font: 700 22px / 1 var(--f-hand);
+    color: var(--ok);
+}
+@media (prefers-reduced-motion: reduce) {
+    .ls-here,
+    .ls-inbox-in.taken::after,
+    .ls-strip.taken .ls-key::after {
+        animation: none;
+    }
+}
+
+.ls-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.ls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.ls-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 500 13px / 1 var(--f-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+}
+.ls-in {
+    min-height: 56px;
+    width: 7em;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font: 700 26px / 1 var(--f-hand);
+    font-variation-settings: "INFM" 100;
+    color: var(--pen);
+    background: #fff;
+    border: 2px solid var(--ink-soft);
+}
+.ls-sheet.big .ls-in {
+    font-size: 30px;
+    width: 6em;
+}
+.ls-in:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 3px;
+    border-color: var(--pen);
+}
+.ls-in:disabled {
+    background: transparent;
+    border-style: dashed;
+}
+
+/* Where a child writes, on the box the picture drew for it: the drawn box is the border, so what is
+   typed sits where it would be written on the printed sheet, in the same hand and size the answer is
+   written in when the question is done (scene.ts writes the key at 1.2 squares in the hand). It
+   comes after the sheet's own boxes because it stands in for them, the bigger sheet's included. */
+.ls-inbox {
+    position: absolute;
+    display: flex;
+    container-type: size;
+}
+/* The box as the picture drew it, which carries the ring: `min-width: 0`, or the input's own twenty
+   characters would set the least this may be and the box would stand wider than the printed one. */
+.ls-inbox-in {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    border-radius: 8px;
+}
+/* The writing is sized from the box itself rather than from the square, so it stays the hand the
+   answer is written in at whatever size the picture is drawn: the box is two squares tall and the
+   key is written at 1.2 of a square. An answer longer than the box scrolls inside it, as writing
+   runs on, and the box keeps the size it prints at. What the finger may land on is the hand's rule
+   rather than the paper's, so it is the 56 px the strip's own box carried, which is a finger's size
+   at the zoom the roll reads a sheet at, and reaches past a smaller box evenly on every side
+   without painting anything there. */
+.ls-sheet .ls-inbox .ls-in {
+    width: 100%;
+    min-width: 56px;
+    min-height: 56px;
+    padding: 0 4px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    text-align: center;
+    font-weight: 600;
+    font-size: 60cqh;
+}
+.ls-inbox-pick {
+    flex: 1;
+    min-width: 44px;
+    min-height: 44px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+}
+.ls-inbox-pick[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 3px var(--pen);
+}
+.ls-inbox-pick:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 3px;
+}
+/* the question to do now: its box is ready for an answer, as the strip's own box was */
+.ls-inbox-in.ready {
+    box-shadow:
+        0 0 0 2.5px var(--pen),
+        0 0 0 7px color-mix(in srgb, var(--pen) 14%, transparent);
+}
+.ls-inbox-in.ready .ls-in::placeholder {
+    color: color-mix(in srgb, var(--pen) 55%, #fff);
+    font-weight: 700;
+}
+/* a try taken: the box's underline is drawn across it once, as the strip's box does */
+.ls-inbox-in.taken::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: -4px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--pen);
+    transform-origin: left;
+    animation: ls-taken 0.5s ease-out both;
+}
+.ls-picks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    border: 0;
+}
+.ls-pick,
+.ls-go,
+.ls-hint {
+    min-height: 56px;
+    padding: 0 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font: 700 19px / 1 var(--f-read);
+}
+.ls-sheet.big .ls-pick,
+.ls-sheet.big .ls-hint {
+    font-size: 21px;
+}
+.ls-pick {
+    max-width: 100%;
+    padding-block: 8px;
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--ink-soft);
+    line-height: 1.25;
+    text-align: start;
+}
+.ls-pick[aria-pressed="true"] {
+    border-color: var(--pen);
+    color: var(--pen);
+    box-shadow: inset 0 0 0 2px var(--pen);
+}
+/* Check is pressed once a question and left alone after, so it is the smallest button the hand rule
+   allows rather than the widest thing on the sheet; the finish button at the foot keeps its size. */
+.ls-go {
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 17px;
+    background: var(--ink);
+    color: #fff;
+    border: 2px solid var(--ink);
+}
+.ls-sheet.big .ls-go {
+    min-height: 48px;
+    font-size: 19px;
+}
+.ls-go:hover {
+    background: var(--pen);
+    border-color: var(--pen);
+}
+.ls-go:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+.ls-pick:disabled {
+    cursor: default;
+}
+.ls-hint {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid color-mix(in srgb, var(--ink) 30%, #fff);
+}
+.ls-hint:hover {
+    border-color: var(--pen);
+    color: var(--pen);
+}
+.ls-hint:disabled {
+    color: color-mix(in srgb, var(--ink) 45%, #fff);
+    border-color: color-mix(in srgb, var(--ink) 18%, #fff);
+    cursor: default;
+}
+.ls-pick:focus-visible,
+.ls-go:focus-visible,
+.ls-hint:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 3px;
+}
+.ls-said {
+    margin: 0;
+    min-height: 1.5em;
+    font: 600 18px / 1.5 var(--f-read);
+    color: var(--ink);
+}
+.ls-said:empty {
+    display: none;
+}
+.ls-sheet.big .ls-said {
+    font-size: 20px;
+}
+.ls-strip[data-state="right"] .ls-said {
+    color: var(--ok);
+}
+.ls-strip[data-state="right"] .ls-in {
+    border-color: var(--ok);
+    color: var(--ok);
+}
+.ls-strip[data-state="handed-in"] .ls-said {
+    color: var(--ink-soft);
+}
+.ls-strip[data-state="again"] .ls-said {
+    color: var(--pen);
+}
+.ls-hints {
+    margin: 0;
+    padding-left: 24px;
+    font: 400 17px / 1.5 var(--f-read);
+    color: var(--ink-soft);
+}
+.ls-hints:empty {
+    display: none;
+}
+/* The guide's button at the end of the row, the easier thing drawn under its card, and the pin's word. */
+.ls-guide {
+    margin-left: auto;
+}
+.ls-easier {
+    margin: 8px 0 0;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--grid) 40%, #fff);
+}
+.ls-easier .ls-answer {
+    margin: 8px 0 0;
+}
+.ls-pin {
+    margin: 0;
+    font: 600 16px / 1.4 var(--f-read);
+    color: var(--ink-soft);
+}
+
+/* A reader's notes for grown-ups, never on a child's sheet. */
+.ls-grownups {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0 40px;
+    padding: 12px 16px;
+    border-left: 3px solid var(--pen);
+    border-radius: 0 8px 8px 0;
+    background: var(--card);
+}
+.ls-sec .ls-grownups {
+    margin: 0;
+}
+.ls-grownups p {
+    margin: 0;
+    font: 400 16px / 1.5 var(--f-read);
+    max-width: 70ch;
+}
+.ls-sheet.narrow .ls-grownups {
+    margin-inline: 20px;
+}
+
+.ls-finish {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 20px;
+    margin: 20px 40px 0;
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--glow) 22%, #fff);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--glow-ink) 25%, #fff);
+}
+.ls-finish p {
+    margin: 0;
+    flex: 1 1 16rem;
+    font: 600 18px / 1.45 var(--f-read);
+}
+.ls-finish .ls-go {
+    min-height: 56px;
+    padding-inline: 26px;
+    font-size: 19px;
+}
+
+/* The narrow roll of a phone: the same sheet at 380 wide, with less at its sides. */
+.ls-sheet.narrow .ls-head,
+.ls-sheet.narrow .ls-sec {
+    padding-inline: 20px;
+}
+.ls-sheet.narrow .ls-head h2 {
+    font-size: 32px;
+}
+.ls-sheet.narrow .ls-q {
+    padding-left: 34px;
+}
+.ls-sheet.narrow .ls-finish {
+    margin-inline: 20px;
+    padding: 16px 18px;
+}
+
+/* Where a sheet is drawn to be measured before a page lays it: in the page, so its drawings read the
+   palette, and out of sight. */
+.ls-measure {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    visibility: hidden;
+    pointer-events: none;
+}

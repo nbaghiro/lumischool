@@ -1,0 +1,629 @@
+/* The map of the worlds on a page (overworld.tsx): the squared paper and the world layer the canvas
+   view puts in the host, and the few things over it: where the guide is, the buttons, and the card
+   for a world whose way is not open yet, and then what the map's painter (map.ts) draws under .ow,
+    the class the map's world layer takes: the places and their pencil, the waves, the guide's rest,
+    the stamps and notes, and the drawings that travel the country.
+   Every target is at least 48 px, and nothing here moves under reduced motion. */
+
+.ow-host {
+    position: relative;
+    overflow: clip;
+    background: var(--paper);
+    touch-action: none;
+    cursor: grab;
+}
+.ow-host.grabbing {
+    cursor: grabbing;
+}
+.ow-host > canvas.paper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.ow-host > .world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+}
+.ow-host .j-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.ow-host .j-layer > * {
+    position: absolute;
+}
+
+/* A world is a button a finger can find at any distance: never smaller than 48 px on screen. Under
+   .ow, which the painter puts on the map's world layer wherever it draws one, so a page that draws the
+   map without the Overworld component has no browser button face on its places either. */
+.ow .m-node {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 36px;
+}
+.ow .m-node:focus {
+    outline: none;
+}
+
+.ow-host .hud {
+    position: absolute;
+    z-index: 6;
+    margin: 0;
+}
+.ow-where {
+    top: 12px;
+    left: 12px;
+    max-width: calc(100% - 24px);
+    padding: 9px 16px;
+    border-radius: 12px;
+    font: 700 16px var(--f-read);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 0 0 1.5px var(--grid),
+        0 8px 18px -14px rgba(27, 37, 64, 0.4);
+}
+.ow-where:empty {
+    display: none;
+}
+.ow-home {
+    left: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.ow-btn {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+    font: 700 16px var(--f-read);
+    color: var(--ink);
+    background: #fff;
+    box-shadow:
+        0 0 0 1.5px var(--grid),
+        0 8px 18px -12px rgba(27, 37, 64, 0.45);
+}
+.ow-btn:hover {
+    background: #fafbfc;
+}
+.ow-btn:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 2px;
+}
+.ow-btn.round {
+    width: 48px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 22px;
+}
+.ow-btn.today {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.ow-btn.today::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--glow);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--glow) 40%, transparent);
+}
+
+/* The card for a world in pencil: its name, and that its way opens as the child learns. */
+.ow-card {
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(320px, calc(100% - 24px));
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow:
+        0 0 0 1.5px var(--grid),
+        0 18px 36px -30px rgba(27, 37, 64, 0.5);
+    font: 400 16px / 1.5 var(--f-read);
+    color: var(--ink);
+}
+.ow-card p {
+    margin: 0;
+}
+.ow-card .ow-card-name {
+    font: 700 22px / 1.2 var(--f-hand);
+    color: var(--ink-soft);
+}
+.ow-card .ow-btn {
+    align-self: flex-start;
+}
+
+@media (max-width: 700px) {
+    .ow-where {
+        top: auto;
+        bottom: 70px;
+        max-width: calc(100% - 16px);
+    }
+    .ow-home {
+        left: 8px;
+        bottom: 8px;
+    }
+    .ow-card {
+        right: 8px;
+        bottom: 70px;
+        width: calc(100% - 16px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ow-host * {
+        transition: none !important;
+    }
+}
+
+/* The map of every world as an illustrated map (map.ts, .docs/overworld.md).
+
+   Everything here is under .ow, the class the map's world layer takes when it is drawn. Light only;
+   the one dark thing on the map is the patch of night over the night hill. Anything that moves stops
+   for prefers-reduced-motion. */
+
+/* The camera sets its zoom on the world layer every frame, and custom properties are inherited, so
+   every stroke under it would be styled again each frame. The layers that hold thousands of strokes
+   take fixed values instead; the labels, the guide and the buttons, which are few, still follow. On
+   the map a puff of smoke has grown as far as it grows (world.css), so the art layer holds that. */
+.ow > .m-terrain,
+.ow > .m-ground {
+    --mz: 1;
+    --miz: 1;
+    --iz: 1;
+    --mgrow: 1;
+}
+.ow > .m-art {
+    --mz: 1;
+    --miz: 1;
+    --mgrow: 1;
+    --iz: 2.4;
+}
+.ow .ow-place > * {
+    position: absolute;
+}
+.ow .j-art > svg {
+    display: block;
+    overflow: visible;
+}
+
+/* pencil where the child has not been, ink and colour where they have */
+.ow .ow-pencil {
+    opacity: 0.66;
+}
+.ow .ow-marks.ow-pencil {
+    opacity: 0.42;
+}
+.ow .ow-pencil-art {
+    filter: grayscale(1) contrast(1.08);
+    opacity: 0.52;
+}
+.ow .ow-place.ahead,
+.ow .ow-place.behind {
+    opacity: 0.44;
+}
+.ow .ow-place.next {
+    opacity: 0.7;
+}
+.ow .ow-name.behind,
+.ow .ow-name.ahead {
+    opacity: 0.58;
+}
+.ow .ow-name.next {
+    color: var(--ink-soft);
+}
+.ow .ow-node:not(.here)[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+.ow .ow-sketch {
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+/* past what a child's map has drawn, the one thing on the paper: the island's volcano, faint, smoking */
+.ow .ow-promise {
+    filter: grayscale(1);
+    opacity: 0.42;
+}
+.ow .ow-inked > svg {
+    filter: drop-shadow(0 0 26px color-mix(in srgb, var(--glow) 90%, transparent));
+}
+.ow .ow-lit > svg {
+    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--glow) 80%, transparent));
+}
+.ow .m-road.pencil {
+    opacity: 0.7;
+}
+.ow .ow-lamp.on::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 18%;
+    width: 960px;
+    height: 960px;
+    margin: -480px 0 0 -480px;
+    border-radius: 50%;
+    background: radial-gradient(color-mix(in srgb, var(--glow) 80%, transparent), transparent 66%);
+    pointer-events: none;
+}
+
+/* the sea's waves drift a little, downwind, as the harbour's water does, on transform, since a tile is
+   an svg and an svg's translate animates on the main thread */
+.ow .ow-waves {
+    animation: ow-drift 11s ease-in-out infinite alternate;
+}
+@keyframes ow-drift {
+    from {
+        transform: translateX(-22px);
+    }
+    to {
+        transform: translateX(22px);
+    }
+}
+:root.mo-hidden .ow .ow-waves {
+    animation-play-state: paused;
+}
+/* on the Worlds tab a tile's waves drift only while the tile is on screen (.mo-off, map.ts), rest
+   where the drift would be under a pixel, and stand still where the map is still. Off screen, far out
+   and under a hidden map they have no animation at all rather than a paused one, since a paused
+   animation still keeps a layer of its own for every tile, and the frame's work grows with the layers */
+.j-map.off .ow .ow-waves,
+.ow .ow-waves.mo-off,
+.ow.ow-calm .ow-waves {
+    animation: none;
+}
+/* far out, where a drift is under a pixel, the island's smoke rests as the waves do; the drawings'
+   own idles are the player's (engine/ui/animate.ts), which rests them with the map's group */
+.ow.ow-calm .mo-smoke {
+    animation-play-state: paused !important;
+}
+.j-map.ow-still .ow .ow-waves {
+    animation: none;
+}
+/* the country's small life (life.ts) moves by transforms whose keyframes write every value out, so the
+   compositor plays them and nothing is painted again; a part that turns, such as a windmill's sails,
+   is lifted into a layer of its own. It rests with the map, and a family's still world holds it still */
+.ow .ow-life {
+    pointer-events: none;
+}
+.ow .ow-go,
+.ow .ow-bob,
+.ow .ow-turn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.ow .ow-go > .j-art,
+.ow .ow-bob > .j-art {
+    position: absolute;
+}
+.ow .ow-turn > svg {
+    display: block;
+    overflow: visible;
+}
+.ow .ow-shade {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(color-mix(in srgb, var(--ink) 12%, transparent), transparent 70%);
+}
+@keyframes ow-turn {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.j-map.off .ow :is(.ow-go, .ow-bob, .ow-turn),
+:root.mo-hidden .ow :is(.ow-go, .ow-bob, .ow-turn),
+.ow.ow-calm :is(.ow-go, .ow-bob, .ow-turn) {
+    animation-play-state: paused !important;
+}
+.j-map.ow-still .ow :is(.ow-go, .ow-bob, .ow-turn) {
+    animation: none !important;
+}
+
+/* A world's name is lettered on the land under it, with a halo of paper rather than a label's box,
+   and grows a little as the camera draws back so it can still be read from the whole map. */
+.ow .ow-name {
+    position: absolute;
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    transform: translateX(-50%) scale(clamp(1, calc(var(--mgrow, 1) * 0.6), 1.6));
+    transform-origin: 50% 0;
+}
+.ow .ow-name.above {
+    transform: translate(-50%, -100%) scale(clamp(1, calc(var(--mgrow, 1) * 0.6), 1.6));
+    transform-origin: 50% 100%;
+}
+.ow .ow-name .w {
+    font: 720 150px/1 var(--f-hand);
+    font-variation-settings:
+        "INFM" 100,
+        "BNCE" 30;
+    color: var(--ink);
+    text-shadow:
+        0 0 8px #fff,
+        0 0 16px #fff,
+        0 0 24px #fff,
+        0 0 34px #fff;
+}
+.ow .ow-name.ahead .w {
+    color: var(--ink-soft);
+}
+.ow .ow-name .term {
+    font: 500 44px var(--f-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-shadow:
+        0 0 8px #fff,
+        0 0 16px #fff;
+}
+
+/* a year's name across its side of the country, as a map letters a region */
+.ow .ow-year {
+    position: absolute;
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+}
+.ow .ow-year .n {
+    font: 700 330px/1 var(--f-hand);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-shadow:
+        0 0 14px #fff,
+        0 0 28px #fff;
+}
+.ow .ow-year .arc {
+    font: 600 140px/1 var(--f-hand);
+    font-variation-settings: "INFM" 100;
+    color: var(--ink-soft);
+    text-shadow:
+        0 0 10px #fff,
+        0 0 20px #fff;
+}
+.ow .ow-year .when {
+    font: 500 70px var(--f-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.ow .ow-year.ahead {
+    opacity: 0.62;
+}
+.ow .ow-year.done .n {
+    color: var(--ink);
+    text-decoration: underline wavy color-mix(in srgb, var(--glow) 90%, var(--tang)) 22px;
+    text-underline-offset: 70px;
+}
+
+/* the stamp a world's first lesson presses on, at a slant of its own */
+.ow .ow-stamp {
+    width: 270px;
+    height: 270px;
+    font-size: 40px;
+    border-width: 12px;
+    background: rgba(255, 255, 255, 0.88);
+    transform: translate(-50%, -50%) rotate(var(--tilt, -10deg))
+        scale(clamp(1, calc(var(--mgrow, 1) * 0.55), 1.5));
+}
+.ow .ow-stamp .s {
+    max-width: 230px;
+}
+.ow .ow-stamp .d {
+    font-size: 30px;
+}
+
+/* the guide, where the child is, standing in a pool of lamplight, and a note in the teacher's pen */
+.ow-token .ow-glow {
+    position: absolute;
+    left: -300px;
+    top: -380px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(color-mix(in srgb, var(--glow) 70%, transparent), transparent 68%);
+    transform: scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
+    transform-origin: 50% 63%;
+}
+.ow-token .ow-here {
+    position: absolute;
+    left: 120px;
+    top: -300px;
+    width: max-content;
+    pointer-events: none;
+    font: 700 70px/1 var(--f-hand);
+    font-variation-settings:
+        "INFM" 100,
+        "BNCE" 40;
+    color: var(--pen);
+    text-shadow:
+        0 0 8px #fff,
+        0 0 16px #fff,
+        0 0 24px #fff;
+    transform: scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
+    transform-origin: -120px 300px;
+}
+.m-token.away .ow-here,
+.m-token.mid .ow-here {
+    display: none;
+}
+
+/* A world is a button a finger can find at any distance: its place's own box, never smaller than
+   48 px on screen and centred on the box when it grows, and when it has the keyboard it is ringed in
+   the teacher's pen. `--bw` and `--bh` are the box's size, which map.ts sets on each button. */
+.ow .ow-node {
+    border-radius: 50%;
+    width: max(var(--bw), calc(48px * var(--miz, 1))) !important;
+    height: max(var(--bh), calc(48px * var(--miz, 1))) !important;
+    translate: calc((var(--bw) - max(var(--bw), calc(48px * var(--miz, 1)))) / 2)
+        calc((var(--bh) - max(var(--bh), calc(48px * var(--miz, 1)))) / 2);
+}
+.ow .ow-node.focus {
+    box-shadow: none;
+    outline: calc(3px * var(--miz, 1)) dashed var(--pen);
+    outline-offset: calc(-6px * var(--miz, 1));
+}
+
+/* a secret is seen only close in, the way a picture in a book has things only found by looking */
+.ow .ow-secret {
+    opacity: clamp(0, calc((var(--mz, 0) - 0.3) * 14), 1);
+}
+
+.ow .ow-furniture {
+    pointer-events: none;
+}
+/*
+ * The name banner and the key are the land's own drawings, and a child drawn back to the sea is
+ * looking at the lands rather than reading a key, so they fade out once the map is drawn back past
+ * a more than three tenths out from the zoom the land fills the window at, and are back as it fills
+ * it again. The art layer they stand in pins --mz at 1 so its strokes are not styled again every
+ * frame, so the mark is the world's own data-sea, which overworld.tsx sets at that threshold. The
+ * compass keeps its place at every distance. */
+.ow .ow-title,
+.ow .ow-key {
+    transition: opacity 0.35s;
+}
+.world[data-sea="1"] .ow-title,
+.world[data-sea="1"] .ow-key {
+    opacity: 0;
+}
+.ow .ow-title > svg {
+    filter: drop-shadow(0 30px 40px rgba(27, 37, 64, 0.16));
+}
+.ow .ow-gnote {
+    width: 1500px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ow .ow-waves {
+        animation: none;
+    }
+}
+.ow .ow-life {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.mo-off .ow-turn,
+.ow-go.mo-off .ow-bob {
+    animation-play-state: paused !important;
+}
+
+/* A world or a place on the map: its stamp, a grown-up's note, the guide's token and who walks behind it. */
+.m-road.pencil {
+    opacity: 0.75;
+}
+.m-stamp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 330px;
+    height: 330px;
+    border-radius: 50%;
+    border: 14px double var(--accent);
+    background: rgba(255, 255, 255, 0.94);
+    pointer-events: none;
+    text-align: center;
+    font: 700 46px/1.02 var(--f-mono);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transform: translate(-40%, -55%) rotate(-12deg)
+        scale(clamp(1, calc(var(--mgrow, 1) * 0.6), 1.6));
+    transform-origin: 50% 50%;
+}
+.m-stamp .s {
+    max-width: 290px;
+}
+.m-stamp .d {
+    font-weight: 500;
+    font-size: 36px;
+    color: var(--ink-soft);
+}
+.m-gnote {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 1500px;
+    padding: 18px 26px;
+    border-radius: 18px;
+    background: #fff;
+    pointer-events: none;
+    box-shadow: 0 0 0 3px var(--grid);
+    font: 40px/1.3 var(--f-read);
+    color: var(--ink);
+}
+.m-gnote span:first-child {
+    font-weight: 700;
+}
+.world[data-far="1"] .m-gnote {
+    visibility: hidden;
+}
+.m-node.focus {
+    box-shadow: 0 0 0 calc(4px * var(--miz, 1)) var(--pen);
+}
+.m-token {
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+.m-token .who {
+    position: absolute;
+    left: -115px;
+    top: -236px;
+    width: 230px;
+    transform: scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
+    transform-origin: 50% 100%;
+}
+.m-token .follower {
+    position: absolute;
+}
+.m-token.away .follower {
+    display: none;
+}
+
+/* The drawings that travel the country (map.ts) are put by their transforms alone, and hold still while the map's box is off the screen. */
+.m-go {
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+.w-off,
+.w-off * {
+    animation-play-state: paused !important;
+}

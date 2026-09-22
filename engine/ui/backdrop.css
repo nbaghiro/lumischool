@@ -1,0 +1,78 @@
+/* The map behind a page (backdrop.tsx). The page sizes and places the box, and any class it gives wins
+   over these. Until the live map is drawn the box is the map's squared paper and, where one was made,
+   the snapshot of the map (snapshots/), and the live map fades in over them. */
+
+:where(.backdrop) {
+    /* The map's grid lines are 100 of its units apart (five squares of U in engine/paper.ts), and a page
+       opens with 14,400 units across a wide box and 4,600 across a phone's (OPENING in backdrop.tsx). */
+    --map-sq: calc(100vw / 144);
+    position: relative;
+    overflow: hidden;
+    background-color: var(--paper);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: var(--map-sq) var(--map-sq);
+}
+
+@media (max-width: 700px) {
+    :where(.backdrop) {
+        --map-sq: calc(100vw / 46);
+    }
+}
+
+.backdrop.fade {
+    -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 80px), transparent);
+    mask-image: linear-gradient(180deg, #000 calc(100% - 80px), transparent);
+}
+
+.backdrop > .backdrop-still {
+    position: absolute;
+    max-width: none;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* The live map is Overworld (overworld.tsx) filling the box, weightier than its own .ow-host, and
+   nothing on it is pressed or read: its buttons, its year names, the term under a place's name and
+   its title scroll are left off, and the country with nobody on it has no guide standing on it and
+   none of the secrets a child finds. */
+.backdrop > .backdrop-live {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+}
+.backdrop.drawn > .backdrop-live {
+    opacity: 1;
+}
+.backdrop > .backdrop-live .m-node,
+.backdrop > .backdrop-live .ow-year,
+.backdrop > .backdrop-live .ow-name .term,
+.backdrop > .backdrop-live .ow-title {
+    display: none;
+}
+.backdrop.country > .backdrop-live .ow-token,
+.backdrop.country > .backdrop-live .ow-secret {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .backdrop > .backdrop-live {
+        transition: none;
+    }
+}
+
+/* Before an app has put its first screen on the page, the window under the bar is squared paper. */
+body:not(:has(.backdrop))::before {
+    content: "";
+    position: fixed;
+    inset: var(--bar-h, 62px) 0 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: calc(100vw / 144) calc(100vw / 144);
+}

@@ -1,0 +1,826 @@
+/* A year's roll on a page (world.tsx): the squared paper and the world layer the canvas view puts in
+   the host, the sheets laid on the roll, the world's name over its top corner, and the buttons in a
+   bar under the roll, so nothing is laid over a sheet a child is answering, and then what the roll's
+   painter (scenery.ts) draws: the world's name and greeting, the dates, the tape, the next card, the
+   guide, what the record has lit and inked, and the world's motion (.docs/motion.md). Every target
+   is at least 48 px, and nothing here moves under reduced motion. */
+
+.wd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+    background: var(--paper);
+}
+.wd-host {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: clip;
+    background: var(--paper);
+    touch-action: none;
+    cursor: grab;
+}
+.wd-host.grabbing {
+    cursor: grabbing;
+}
+.wd-host > canvas.paper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.wd-host > .world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+}
+.wd-host .j-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.wd-host .j-layer > * {
+    position: absolute;
+}
+.wd-host .wd-sheets {
+    z-index: 1;
+}
+/* The page's own layer over the day rows (world.tsx, the `over` slot). It travels with the roll, sits
+   above the sheets, and takes no pointer itself, so the paper behind it still drags; what the page
+   puts in it takes its own. */
+.wd-host .wd-over {
+    z-index: 2;
+}
+.wd-over > .wd-over-at {
+    pointer-events: none;
+}
+.wd-over-at > * {
+    pointer-events: auto;
+}
+/* Once the roll has settled round a sheet, the guides rest with the drawings the player settles: a
+   guide's boil repaints its whole picture every frame, which a child reading does not need. */
+.wd-host.mo-rest .boiling > g,
+.wd-host.mo-rest .ag-float {
+    animation-play-state: paused !important;
+}
+
+/* The paper: a sheet on the roll, the strip of label and date along its top, and far out its cover,
+   which is a title the way a closed exercise book is its label. */
+.j-sheet {
+    margin: 0;
+    padding: 0 0 40px;
+    border-radius: 3px;
+    z-index: 1;
+    box-shadow:
+        0 0 0 1px rgba(43, 47, 55, 0.16),
+        0 2px 0 rgba(43, 47, 55, 0.05),
+        0 34px 60px -34px rgba(27, 37, 64, 0.55);
+}
+.j-sheet.today {
+    box-shadow:
+        0 0 0 1px rgba(43, 47, 55, 0.2),
+        0 2px 0 rgba(43, 47, 55, 0.05),
+        0 40px 70px -34px rgba(27, 37, 64, 0.6);
+}
+.j-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    height: 60px;
+    padding: 24px 40px 0;
+}
+.j-strip .date {
+    font: 600 22px var(--f-hand);
+    color: var(--pen);
+    transform: rotate(-1.5deg);
+}
+.j-cover {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: calc(6px * var(--iz, 1));
+    padding: 0 8%;
+    background: #fff;
+    border-radius: 3px;
+}
+.j-cover .label {
+    font-size: min(calc(11px * var(--iz, 1)), 90px);
+}
+.j-cover .t {
+    font: 700 min(calc(16px * var(--iz, 1)), 124px) / 1.04 var(--f-hand);
+    color: var(--ink);
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+.world[data-level="far"] .j-cover {
+    display: flex;
+}
+.world[data-level="far"] .j-sheet > :not(.j-cover) {
+    visibility: hidden;
+}
+
+/* A sheet as a card until the lesson side draws it: its title, its state, and Open on today's. */
+.wd-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 0 40px 40px;
+    background: #fff;
+}
+.wd-sheet .j-strip {
+    padding-inline: 0;
+}
+.wd-sheet-title {
+    margin: 0;
+    font: 700 44px / 1.1 var(--f-hand);
+    color: var(--ink);
+}
+.wd-sheet-note {
+    margin: 0;
+    font: 400 22px / 1.5 var(--f-read);
+    color: var(--ink-soft);
+}
+.wd-open {
+    align-self: flex-start;
+    font-size: 24px;
+    min-height: 64px;
+    padding-inline: 26px;
+}
+
+@media (max-width: 700px) {
+    .wd-sheet {
+        padding: 0 20px 24px;
+        gap: 12px;
+    }
+    .wd-sheet-title {
+        font-size: 30px;
+    }
+    .wd-sheet-note {
+        font-size: 17px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wd * {
+        transition: none !important;
+    }
+}
+
+/* what the roll's painter draws (scenery.ts) */
+
+.j-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.j-layer > * {
+    position: absolute;
+}
+.j-sk {
+    position: absolute;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.j-ground.ahead,
+.j-art.ahead {
+    opacity: 0.55;
+    filter: saturate(0.55);
+}
+.j-art {
+    pointer-events: none;
+}
+.j-art > svg {
+    display: block;
+    overflow: visible;
+}
+.j-art.creature > svg {
+    transform-origin: 50% 100%;
+}
+
+/* Things placed in the world sit in a layer of no width, so anything without a width of its own is
+   given one, or it wraps at every word. */
+.j-name {
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    transform: scale(clamp(min(1, var(--nmax, 1.6)), calc(var(--grow, 1) * 0.6), var(--nmax, 1.6)));
+    transform-origin: 0 0;
+}
+.j-name .term {
+    font: 500 34px var(--f-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.j-name .w {
+    font: 760 172px/0.95 var(--f-hand);
+    font-variation-settings:
+        "INFM" 80,
+        "BNCE" 40;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+}
+.j-name.ahead {
+    opacity: 0.6;
+}
+
+/* On a deep sky the name is written in the sky's own light ink (check.ts holds it to the contrast
+   rule against every colour the name can sit on). A world not reached is drawn faded, which leaves
+   its deep sky mid-tone, so its name goes on a patch of paper instead. */
+.j-name.on-deep .w {
+    color: var(--sky-ink);
+}
+.j-name.on-deep .term {
+    color: var(--sky-soft);
+}
+.j-name.patch {
+    opacity: 1;
+    padding: 12px 26px 16px;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow:
+        0 0 0 2px var(--ink-soft),
+        0 14px 26px -18px rgba(27, 37, 64, 0.5);
+}
+.j-name.patch .w {
+    color: var(--ink-soft);
+}
+
+/* A drawing standing against a deep sky has a light edge, or its pencil outline would vanish into it. */
+.j-art.deep > svg {
+    filter: drop-shadow(0 0 2.5px rgba(255, 248, 230, 0.95))
+        drop-shadow(0 0 10px rgba(255, 248, 230, 0.28));
+}
+.j-greet {
+    width: max-content;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    pointer-events: none;
+}
+.j-greet .who {
+    flex: none;
+    width: 150px;
+}
+.j-greet .say {
+    position: relative;
+    margin: 0 0 90px;
+    max-width: 470px;
+    padding: 20px 28px;
+    border-radius: 22px;
+    font: 650 36px/1.25 var(--f-hand);
+    color: var(--ink);
+    background: #fff;
+    box-shadow:
+        0 0 0 2.5px var(--ink),
+        0 14px 26px -18px rgba(27, 37, 64, 0.5);
+}
+.j-greet .say::before {
+    content: "";
+    position: absolute;
+    left: -16px;
+    bottom: 26px;
+    width: 26px;
+    height: 26px;
+    background: #fff;
+    border-left: 2.5px solid var(--ink);
+    border-bottom: 2.5px solid var(--ink);
+    transform: rotate(45deg);
+}
+.j-guide-svg {
+    display: block;
+    overflow: visible;
+    width: 100%;
+    height: auto;
+}
+
+/* The date of each day, written on a tag on the path. Far out it grows, so the days can be read
+   while flicking back through them. */
+.j-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+    padding: 10px 24px 12px;
+    border-radius: 12px;
+    background: #fff;
+    pointer-events: none;
+    box-shadow:
+        0 0 0 2px var(--ink-soft),
+        0 12px 22px -16px rgba(27, 37, 64, 0.45);
+    transform: translate(-50%, -50%) scale(min(var(--grow, 1), 5.5)) rotate(-1.5deg);
+    transform-origin: 50% 50%;
+}
+.j-date .d {
+    font: 700 30px/1.1 var(--f-hand);
+    color: var(--ink);
+    font-variation-settings: "INFM" 60;
+}
+.j-date .sub {
+    font: 500 15px var(--f-mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+}
+.j-date.today {
+    box-shadow:
+        0 0 0 3px var(--ink),
+        0 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent),
+        0 16px 26px -16px rgba(27, 37, 64, 0.5);
+}
+.j-date.today .d {
+    font-size: 40px;
+    background: linear-gradient(transparent 58%, var(--glow) 58%, var(--glow) 92%, transparent 92%);
+    padding-inline: 4px;
+}
+
+/* Tape: the one way a world touches a sheet, at its two top corners, inside its top padding. */
+.j-tape {
+    opacity: 0.62;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 2;
+    clip-path: polygon(
+        0 12%,
+        5% 0,
+        12% 8%,
+        50% 3%,
+        88% 7%,
+        95% 0,
+        100% 14%,
+        97% 52%,
+        100% 90%,
+        93% 100%,
+        50% 94%,
+        6% 100%,
+        0 86%,
+        3% 50%
+    );
+}
+
+.j-next {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 34px;
+    border-radius: 6px;
+    background: #fff;
+    border: 2.5px dashed var(--ink-soft);
+    transform: rotate(-0.8deg);
+    box-shadow: 0 16px 30px -24px rgba(27, 37, 64, 0.5);
+}
+.j-next .t {
+    font: 700 38px/1.1 var(--f-hand);
+    color: var(--ink);
+}
+
+.j-guide {
+    width: 170px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* What a landmark says beside the day it belongs to: the market stall on the day about money. */
+.j-reach {
+    /* the same envelope as the drawing it belongs to, which school/worlds/roll.ts caps at 230 units
+       so the whole of both is in the window while a child reads */
+    width: 230px;
+    margin: 0;
+    padding: 10px 16px;
+    border-radius: 12px;
+    pointer-events: none;
+    font: 650 26px/1.2 var(--f-hand);
+    color: var(--ink);
+    background: #fff;
+    box-shadow:
+        0 0 0 2px var(--ink-soft),
+        0 12px 22px -16px rgba(27, 37, 64, 0.45);
+    transform: rotate(-1.2deg);
+}
+.j-reach::before {
+    content: "";
+    position: absolute;
+    left: 24px;
+    top: -10px;
+    width: 64px;
+    height: 18px;
+    background: var(--accent);
+    opacity: 0.62;
+    mix-blend-mode: multiply;
+    transform: rotate(-4deg);
+}
+.j-art.reach > svg {
+    filter: drop-shadow(0 10px 12px rgba(27, 37, 64, 0.18));
+}
+.world[data-level="far"] .j-reach {
+    display: none;
+}
+
+/* Where one world runs out, the sign for the next. */
+.j-sign {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: #fff;
+    white-space: nowrap;
+    pointer-events: none;
+    font: 700 30px var(--f-hand);
+    color: var(--ink);
+    box-shadow:
+        0 0 0 2px var(--ink-soft),
+        0 12px 22px -16px rgba(27, 37, 64, 0.45);
+    transform: translate(-100%, -50%) scale(min(var(--grow, 1), 5)) rotate(1.5deg);
+    transform-origin: 100% 50%;
+}
+.j-sign .arrow {
+    font: 700 34px var(--f-read);
+    color: var(--pen);
+}
+.j-sign.ahead {
+    opacity: 0.8;
+}
+
+/* distance: close in everything; a step out, no creatures; far out, titles */
+.world[data-level="far"] .j-art.creature,
+.world[data-level="far"] .j-greet,
+.world[data-level="far"] .j-guide {
+    display: none;
+}
+.world[data-level="far"] .j-tape {
+    display: none;
+}
+
+/* A landmark beside a finished day is lit; the world's moment is pencil until the term is finished;
+   a secret's line shows when it is found, and always to a grown-up, who also sees where it is. */
+.j-art.reach.lit > svg {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--glow) 85%, transparent));
+}
+.j-art.moment.sketch {
+    opacity: 0.42;
+    filter: grayscale(1);
+}
+.j-art.moment.inked > svg {
+    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--glow) 90%, transparent));
+}
+.j-note {
+    width: max-content;
+    max-width: 320px;
+    margin: 0;
+    padding: 10px 16px;
+    border-radius: 12px;
+    pointer-events: none;
+    font: 650 26px/1.2 var(--f-hand);
+    color: var(--ink);
+    background: #fff;
+    box-shadow:
+        0 0 0 2px var(--ink-soft),
+        0 12px 22px -16px rgba(27, 37, 64, 0.45);
+}
+.j-note.to-left {
+    text-align: right;
+}
+.j-note:empty,
+.j-note.secret:not(.found) {
+    box-shadow: none;
+}
+.j-note .g {
+    display: block;
+    margin-top: 4px;
+    font: 18px/1.35 var(--f-read);
+    color: var(--ink-soft);
+}
+.j-note.secret {
+    visibility: hidden;
+}
+.j-note.secret.found {
+    visibility: visible;
+}
+.j-art.secret.found > svg {
+    animation: j-hop 1.4s ease-in-out 2;
+}
+/* the hop a found secret gives, twice, the one movement the world still writes as a rule of its own */
+@keyframes j-hop {
+    0%,
+    82%,
+    100% {
+        transform: translateY(0);
+    }
+    88% {
+        transform: translateY(-16px);
+    }
+    94% {
+        transform: translateY(0);
+    }
+}
+
+.j-guide .follower {
+    position: absolute;
+}
+
+/* The guides' idle plays on the root's player (engine/ui/animate.ts), and their svg's rule is engine/ui/guide.css's. */
+@media (prefers-reduced-motion: reduce) {
+    .j-art > svg {
+        animation: none !important;
+    }
+}
+
+@media (max-width: 640px) {
+    /* On a phone zooming is a pinch, and the bar at the bottom holds only what a child uses. */
+    .j-name {
+        transform: scale(clamp(1, calc(var(--grow, 1) * 0.45), var(--nmax, 1.3)));
+    }
+    .j-name .w {
+        font-size: 96px;
+    }
+    .j-name .term {
+        font-size: 26px;
+    }
+    .j-greet .say {
+        font-size: 28px;
+        max-width: 300px;
+    }
+}
+
+/* the world's motion (.docs/motion.md)
+
+   A drawing's idle (its float, its flags, its tail, its coded parts) plays through engine/ui/animate.ts
+   from the motion its drawing declares, on the compositor, and settles with the page's group while a
+   sheet has the child's attention (.docs/animation.md). What the world draws beyond the drawing is
+   here: a puff of smoke from a drawing's own anchor, the water's flow, a light that sweeps, the day's
+   events and the rare sights. Only transforms and opacity move, and anything off screen, under the
+   map or in a hidden tab is paused. The wind is from the left. */
+
+/* smoke from a drawing's own anchor, carried downwind; it grows with the inverse zoom, up to 2.4
+   times, which keeps it inside the three squares every drawing keeps from paper */
+.mo-puff {
+    --mo-k: min(max(var(--iz, 1), 1), 2.4);
+}
+.mo-smoke {
+    position: absolute;
+    width: 26px;
+    height: 18px;
+    margin: -9px 0 0 -13px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--ink-soft);
+    opacity: 0;
+    animation: mo-puff var(--mo-period, 6s) ease-out infinite;
+}
+@keyframes mo-puff {
+    0% {
+        transform: translate(0, 0) scale(calc(0.5 * var(--mo-k)));
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.85;
+    }
+    100% {
+        transform: translate(
+                calc(var(--mo-smoke-drift, 40px) * var(--mo-k)),
+                calc(var(--mo-rise, -110px) * var(--mo-k))
+            )
+            scale(calc(1.9 * var(--mo-k)));
+        opacity: 0;
+    }
+}
+
+/* The water flows downwind. Its marks are shared among four layers, each drifting steadily past
+   where it was drawn and fading in at the start and out at the end, a quarter of the way apart, so
+   the sea reads as moving water and no mark is seen to go back. The drift grows as the camera draws
+   back, further than a lift, since water keeps no clearance. Settling slows it to a stop where it is
+   (easeFlow in engine/ui/player.ts) rather than drawing it back. */
+.j-water {
+    --mo-kw: min(max(var(--iz, 1), 1), 4);
+    animation: mo-flow 9s linear calc(var(--i, 0) * -2.25s) infinite;
+}
+@keyframes mo-flow {
+    from {
+        transform: translateX(calc(-40px * var(--mo-kw)));
+        opacity: 0;
+    }
+    20%,
+    75% {
+        opacity: 1;
+    }
+    to {
+        transform: translateX(calc(40px * var(--mo-kw)));
+        opacity: 0;
+    }
+}
+
+/* a light that comes on, sweeps and goes out */
+.mo-flash {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    opacity: 0;
+}
+.mo-flash > .l,
+.mo-flash > .r {
+    position: absolute;
+    left: 0;
+    top: -60px;
+    width: 460px;
+    height: 120px;
+    transform-origin: 0 50%;
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--glow) 85%, transparent),
+        transparent
+    );
+    clip-path: polygon(0 42%, 100% 0, 100% 100%, 0 58%);
+}
+.mo-flash > .r {
+    transform: scaleX(var(--sweep, 1));
+}
+.mo-flash > .l {
+    transform: scaleX(calc(-1 * var(--sweep, 1)));
+}
+.mo-flash > .lamp {
+    position: absolute;
+    left: -42px;
+    top: -42px;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: radial-gradient(color-mix(in srgb, var(--glow) 95%, #fff), transparent 70%);
+}
+.mo-flash.long > .l,
+.mo-flash.long > .r {
+    width: 900px;
+    top: -90px;
+    height: 180px;
+}
+.mo-ring {
+    position: absolute;
+    width: 150px;
+    height: 44px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--ink-soft);
+    pointer-events: none;
+    opacity: 0;
+}
+.j-art.mo-bloom {
+    animation: mo-bloom 1.6s ease-out 1;
+}
+@keyframes mo-bloom {
+    0% {
+        filter: none;
+    }
+    35% {
+        filter: drop-shadow(0 0 26px var(--glow));
+    }
+    100% {
+        filter: none;
+    }
+}
+.j-art.mo-answer > svg {
+    filter: drop-shadow(0 0 12px var(--glow));
+}
+
+/* the rare sight: a ship crossing the far horizon, once, very slowly */
+.j-art.mo-cross {
+    animation: mo-cross 80s linear 1 forwards;
+}
+@keyframes mo-cross {
+    to {
+        translate: var(--cross-dx, -3000px) 0;
+    }
+}
+
+.mo-off .mo-smoke,
+:root.mo-hidden .mo-smoke,
+:root.mo-hidden .j-water {
+    animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mo-smoke,
+    .j-water,
+    .j-art.mo-cross,
+    .j-art.mo-bloom {
+        animation: none !important;
+    }
+    .mo-smoke {
+        display: none;
+    }
+}
+
+/* The eleven round the run (.docs/overworld.md). A world with no lessons yet says so where its first
+   sheet would be. Still water doubles what stands at its edge, faintly and upside down. And a rare
+   sight can rise out of the sky or come out and fade, as well as cross the horizon, once a visit. */
+.j-bare {
+    padding: 22px 34px;
+}
+.j-bare .g {
+    font: 500 22px/1.35 var(--f-read);
+    color: var(--ink-soft);
+}
+.j-art.reflect {
+    opacity: 0.26;
+}
+.j-art.mo-drift {
+    animation: mo-drift 70s linear 1 forwards;
+}
+@keyframes mo-drift {
+    to {
+        translate: var(--cross-dx, -3000px) var(--cross-dy, -120px);
+    }
+}
+.j-art.mo-rise {
+    animation: mo-rise 30s ease-in 1 forwards;
+}
+
+/* a shooting star: across a stretch of sky in a few seconds, in and out softly rather than blinking */
+.j-art.mo-streak {
+    opacity: 0;
+    animation: mo-streak 3.2s ease-in 1 forwards;
+}
+@keyframes mo-streak {
+    0% {
+        translate: 0 0;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        translate: var(--cross-dx, -900px) var(--cross-dy, 160px);
+        opacity: 0;
+    }
+}
+@keyframes mo-rise {
+    0% {
+        translate: 0 0;
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        translate: var(--cross-dx, 160px) var(--cross-dy, -1200px);
+        opacity: 0;
+    }
+}
+.j-art.mo-appear {
+    opacity: 0;
+    animation: mo-appear 18s ease-in-out 1 forwards;
+}
+@keyframes mo-appear {
+    0% {
+        opacity: 0;
+    }
+    28%,
+    72% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .j-art.mo-drift,
+    .j-art.mo-rise,
+    .j-art.mo-appear {
+        animation: none !important;
+        display: none;
+    }
+}
+
+/* A world as one small still picture, outside the roll and at a size the page chooses (scenery.ts,
+   paintPicture). It carries its own layer rules, since it hangs off no .wd-host, and it takes no
+   pointer, because a grown-up's page puts it inside a link. */
+.wd-picture {
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+    background: var(--card);
+}
+.wd-picture > * {
+    position: absolute;
+    left: 0;
+    top: 0;
+}

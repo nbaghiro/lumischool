@@ -1,0 +1,16 @@
+/* The logo (logo.tsx). Its height is a default with no weight, so any class a page gives it wins;
+   the drawing keeps its own proportions, and its loop may reach a little past its box. */
+
+:where(.logo) {
+    display: inline-block;
+    height: 34px;
+    line-height: 0;
+    vertical-align: middle;
+}
+
+.logo svg {
+    display: block;
+    width: auto;
+    height: 100%;
+    overflow: visible;
+}
