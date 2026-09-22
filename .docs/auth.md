@@ -1,5 +1,48 @@
 # Authentication and authorisation
 
+## Kids’ sign-in and independent tabs
+
+Parents can enable a child’s own sign-in on `/account`. Children still have no email address or
+`users` row. `kids.settings.username` is a globally unique, case-insensitive sign-in name, separate
+from the display name; new children get a name plus a random suffix. A parent can edit it or leave
+it blank when saving to generate another. `kids.settings.kidLogin` defaults to false. Enabling
+requires consent and a kids’ PIN. These changes require a parent’s email sign-in in the last ten
+minutes; a session restored through the adult PIN is insufficient.
+
+The shared **kids’ PIN** is a `kid-pin` key, HMAC-hashed with a separate domain and family id. It
+must differ from the adult family PIN in either direction. `/kids/sign-in`, linked from the marketing
+header, accepts a username and kids’ PIN. Its `kid-session` names only that child and has
+`detail.login = true`. It cannot add siblings or restore an adult session, even with the adult PIN.
+Successful sign-in clears the browser’s adult session so navigating to parent pages requires adult
+sign-in again. Failed sign-in changes no browser credentials.
+
+Current clients keep child credentials in **sessionStorage**, never localStorage or URLs, and send
+`X-Kid-Session`. An explicit header wins over the legacy cookie, including an empty or invalid header;
+it never falls back to a different child. Parent-opened views use the same transport. Existing cookie
+views can be adopted once through `/api/kid/tab`. Adult credentials remain HttpOnly cookies. Child
+tab sign-out and revocation never overwrite another tab’s child credential. A marketing link opens
+a fresh tab with `noopener`; signing into two such tabs creates two independent views. Reloading a
+tab keeps its view; duplicating a tab may copy its session until a separate sign-in replaces it.
+
+Each view’s short unsent-answer queue has its own IndexedDB database, named with the non-secret
+family/key ids. A sibling’s tab cannot send, discard or clear it. Before voluntary sign-out or a
+replacement sign-in, the current tab sends its waiting answers; without a connection it stays open.
+Revoked views discard only their own queue. Closing a tab does not revoke its server key; parents
+can close that view from the existing open-views list. There is no local copy of the child’s log.
+
+Changing a username or enabling/disabling sign-in revokes that child’s username-opened views. Setting
+the kids’ PIN revokes all username-opened views in the family. Parent-opened views keep their existing
+rules. Parents can also end individual views or all views, regardless of how they opened.
+
+Public failures use the same response for unknown names, disabled access, wrong PINs and throttling.
+`kid_login_lookup` atomically counts attempts before lookup: five per normalized username and twenty
+per network in fifteen minutes. The stored identities are peppered hashes; attempt rows expire after
+a day. Failed PIN attempts are also counted across siblings: five wrong tries impose a fifteen-minute
+wait and fifteen require a parent PIN reset. A family advisory lock serializes successful sign-in
+with configuration changes and revocation. Resetting the PIN does not bypass the public attempt limits.
+
+This section supersedes the original browser-cookie-only and parent-opened-only descriptions below.
+
 Status: proposed, September 2026, and rewritten against the data model the owner approved that month. This document says who can sign in to lumischool, how a child reaches their own pages without an account, how every request is tied to one family before anything is read, and what each caller may read and write, across every flow a family meets. It uses the seven tables of the final schema and adds none: every credential and every secret we send is a row in `keys`, and where an auth need might have wanted a table or a column of its own, the document says which of the seven holds it. The store agent owns the schema and its migration, and "The schema, as auth uses it" lists in one place what auth needs from each table and function. Every flow says what is written and what is checked, and the order of work near the end is a list of steps with what "done" means for each. Where a choice is still the owner's it is marked as a recommendation and repeated as a one-sentence question at the end.
 
 It starts from the documents that already constrain it. [product.md](product.md) sets the privacy position, [data-model.md](data-model.md) holds a family's record as one log on the server, [db.md](db.md) and the final schema hold the family, its members, its kids, its keys and its log, [structure.md](structure.md) says where a server goes when there is one, and [local.md](local.md) settles the ports and hosts.

@@ -1,5 +1,24 @@
 # The API
 
+## Kids’ sign-in
+
+| Route | Caller | Request / result |
+| --- | --- | --- |
+| `GET /api/kid-logins` | Parent | `{pinSet, kids: [{id, name, username, enabled}]}` |
+| `POST /api/kid-logins/pin` | Fresh parent | `{pin}` with four digits; 204; must differ from the adult family PIN |
+| `POST /api/kid-logins` | Fresh parent | `{kid, username, enabled}`; blank username generates one; 204 |
+| `POST /api/kid/sign-in` | Public | `{username, pin}`; `{credential}`; generic `wrong-pin` on failed or limited sign-in |
+| `GET /api/kid/tab` | Child view | `{credential}` to adopt a legacy cookie view into the tab |
+| `POST /api/kid/sign-out` | Child view | 204; ends only the supplied view |
+
+Child routes accept `X-Kid-Session`, which takes precedence over the legacy cookie with no fallback
+when invalid. Header-authenticated requests never refresh or clear a child cookie. Clients store this
+credential in sessionStorage, partition their unsent-answer queue by key id, and never put it in a URL.
+`POST /api/kid-sessions` with `{kids, tab:true}` returns `{credential}` instead of a cookie. A
+header-authenticated `/api/kid/add` also returns the updated `{credential}`. Username-opened sessions
+cannot add children or leave through the adult PIN; their view returns `others: []` and `pin: false`.
+See [auth.md](auth.md#kids-sign-in-and-independent-tabs) for revocation and rate limits.
+
 Status: the first slice, built in September 2026 against [auth.md](auth.md), which remains the specification for every flow. This page is the contract the pages are written against: every route, who may call it, what it returns and how it fails. Where the slice builds less than auth.md describes, the section "Built and not built" at the end says which parts wait.
 
 ## Transport
@@ -193,10 +212,6 @@ A browser a parent opened the children's view on holds `ls_kids` (`__Host-ls_kid
 The page in the children's view sends what a child does through a queue it keeps in the browser, in chunks well inside these limits ([auth.md](auth.md), flow 8), takes out of the queue the ids each answer names, and leaves the view only once nothing is waiting.
 
 A grown-up's session reads the same pack at `GET /api/pack`, `GET /api/pack/<digest>/lessons/<file>` and `GET /api/pack/<digest>/scenes/<file>`. The index holds what every view reads of a lesson without opening its file (id, source, title, goal, grade, unit, subject, format, drawings, skills, each level's hash, the lesson's file and its first drawing's) and nothing of its sections or items, which are in the lesson's file, since every view reads the index whole and it is held to 60 KB gzipped (16 September 2026). The pack is never a public file: a digest in a path is not access control, and every lesson file is answered under a session, so the visitor's pack on the site is a second, filtered pack of its own. That pack is written at build by `tools/first-view.ts` under `assets/site-pack-<digest>/`, every lesson at its medium level with `visitorOf` in `tools/pack.ts` leaving out the answers, the hints, the feedback, the notes for grown-ups and the draws for another day, and the site's page reads it without a session (`apps/site/school.ts`).
-
-## Seeded data
-
-`npm run db:demo` writes the Harlows into the local database: two parents, `demo-parent1@lumischool.ai` (Anna) and `demo-parent2@lumischool.ai` (Ben), a tutor, three children with half a school year of work, and the family PIN `2468`, hashed with the local pepper like any family's. The seed writes rows and nothing else. No route, page or check in the app knows the family is there, so its parents sign in with an emailed code like anyone, reading it from the local outbox below. Who is in the family and what their half-year holds is in `server/db/seed/demo-household.ts`, with what is invented listed there. `db:demo` writes nothing when the family is already there; `npm run db:demo -- --fresh` deletes it and writes it again with dates that end on the last weekday before today.
 
 ## The local outbox
 

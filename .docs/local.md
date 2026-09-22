@@ -91,10 +91,8 @@ All run at the repo root.
 | Script | What it does |
 |---|---|
 | `npm run db:up` | Starts the container, waits for the healthcheck and gives the app role its local login; fails if it is not ready in 30 seconds |
-| `npm run db:reset` | Drops everything in `lumischool`, then migrates and seeds |
+| `npm run db:reset` | Drops everything in `lumischool`, then applies migrations without adding application data |
 | `npm run db:migrate` | Applies every migration not yet applied; a second run does nothing |
-| `npm run db:seed` | Seeds one family from the real content with invented attempts, through the app role; a second run writes nothing |
-| `npm run db:demo` | Seeds the demo family, the Harlows, with half a school year that ends on the last weekday before today and a family PIN of `2468`; a second run writes nothing, and `-- --fresh` writes it again with current dates. It runs `tools/scripts/demo-work.ts` against the root notation engine and game prover; no scratchpad installation is needed |
 | `npm run pack` | Compiles every lesson of `content/curriculum/` into the pack the API serves (`tools/pack.ts`, `engine/pack.ts`), under `dist/pack/`, or the folder given as its argument. It compiles in process from `engine/notation/` (since 22 September 2026; before that it ran `.scratchpad/scripts/pack-work.ts`, which needed the scratchpad's `npm install`). The API reads the pack when it starts and again whenever `dist/pack/current` changes (`watchPack` in `server/pack.ts`), so a running API serves a new pack a moment after it is built, and nobody restarts it by hand |
 | `npm run db:psql` | Opens `psql` inside the container, as the owner, which sees every family |
 | `npm run db:down` | Stops the container and keeps the volume |
@@ -109,8 +107,7 @@ tests skip with a printed reason, so a checkout with no Docker still passes `npm
 
 Nothing at the root built without `.scratchpad/` until 22 September 2026, since the apps drew through
 the seam into it ([structure.md](structure.md), "The order from here"). The seam is gone, and
-`npm run build`, `npm run pack` and `npm run db:demo` use root modules only. The demo worker lives
-in `tools/scripts/demo-work.ts`, so a fresh clone needs no `.scratchpad/`.
+`npm run build` and `npm run pack` use root modules only, so a fresh clone needs no `.scratchpad/`.
 
 ## The scratchpad
 
@@ -167,24 +164,17 @@ Until a page's live map is drawn, its box shows the map's squared paper and a sn
 
 No email leaves this computer. The console transport prints each email in the API's terminal and keeps the last twenty in memory, `GET /api/dev/outbox` returns them while the server runs locally, and `/outbox` shows them, so to read a sign-in code, open `http://localhost:8500/outbox` in another tab. The code step also accepts the fixed code `12345678` for any address a code was just asked for on that browser, which the server refuses outside local ([auth.md](auth.md), flow 2). The sign-in screens look the same everywhere.
 
-The Harlows are ordinary data that `npm run db:demo` writes ([api.md](api.md), "Seeded data"), and their parents sign in the way anyone does. To sign in as one of them by hand:
+Start with an empty database: `npm run db:reset` rebuilds only the local container's schema and adds no application data. Open `http://localhost:8500/start`, create your family, read the code from the local outbox, and add children through the app. Set the family PIN on the account page to try entering and leaving the children's view.
 
-1. Open `http://localhost:8500/sign-in`, type `demo-parent1@lumischool.ai` for Anna Harlow or `demo-parent2@lumischool.ai` for Ben Harlow, and press Send me a code.
-2. Type the fixed local code `12345678`, or open `http://localhost:8500/outbox` in another tab, or look in the API's terminal, and type the newest code sent to that address. The family's page opens with Rosie, Leo and Ivy.
-3. To open the children's view, press Open Rosie's view on the family's page. The browser is signed out and opens `/kids` on Rosie's page. To add Leo and Ivy, hold the Grown-ups tab for two seconds, type the family PIN, 2468, and press Add Leo, then the same for Ivy; the view then opens on the children's pictures, and tapping a picture opens that child's page.
-4. To leave it, hold the Grown-ups tab for two seconds and type the family PIN, `2468`, which the seed sets; the family's page opens again as a shared session. Sign in instead also leaves it. A browser holds a grown-up's session or a children's view and never both, so to watch both sides at once, open the view in a second browser profile or a private window.
-
-When the seed changes, `npm run db:demo -- --fresh` writes the Harlows again with current dates.
-
-The API's limits apply locally too: a sign-in code once a minute and three in fifteen minutes for one address, and twenty unused codes of any kind from one network. An unused code counts until it is an hour old, so repeated runs on one computer can meet the limits; the end-to-end tests clear the expired ones before they start. The family PIN counts its own wrong tries, and after fifteen in a row it stops until a parent signs in and sets it again on the family's page.
+The API's limits apply locally too: a sign-in code once a minute and three in fifteen minutes for one address, and twenty unused codes of any kind from one network. An unused code counts until it is an hour old, so repeated runs on one computer can meet the limits; the browser tests remove the codes and families their own cases create. The family PIN counts its own wrong tries, and after fifteen in a row it stops until a parent signs in and sets it again on the family's page.
 
 In production one Render service serves the same paths on one domain, with Neon for Postgres, as [auth.md](auth.md) sets out.
 
 ## The end-to-end tests
 
-`npm run test:e2e` runs `tools/e2e/` against the running apps, with `npm run dev` serving 8500 and the Harlows seeded by `npm run db:demo`. It drives the installed Google Chrome through Playwright (`channel: "chrome"`) at a laptop's, an iPad's and a phone's size, one case at a time, and downloads no browser (`PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`). Before any case runs it checks that the apps are serving and the Harlows are in the local database, and through the local container it clears the sign-in and confirm codes that nobody used and that have expired, since those count toward the API's limits for this computer's network, and the children's views and wrong PIN tries earlier runs left in the Harlows' family. The family cases answer Rosie's sheet for today and chain within a device, so the work the Harlows' children did today is cleared again at the start of each device's run of them (`clearToday` in `tools/e2e/ready.ts`); without it the iPad and the phone met the laptop's answers. It is not part of `npm run check`, because it cannot start what it needs.
+`npm run test:e2e` runs `tools/e2e/` against `npm run dev` at `http://localhost:8500`. It uses installed Google Chrome at desktop, iPad and phone sizes, one case at a time. The tests create fresh families through signup and add children through the normal API. Each case deletes only its own test addresses and families from the local container, even when assertions fail. No database seed or shared demo account is required. Remote `E2E_BASE` values are refused because cleanup belongs to the local database.
 
-A case is a `*.e2e.ts` file in `tools/e2e/`. The steps the cases share are in `tools/e2e/steps.ts`: `signInAs` for a case that only needs a seeded parent signed in, which signs them in with the fixed local code on a page of its own once for each project and puts that session into later cases while it still works (one case still signs in with the code read from the outbox), `askForCode` with `typeCode` for a case that goes through the code flow, and `atScreen`, which waits for a screen and fails as soon as the page shows the card a screen shows when its code did not load, rather than loading the page again past it. `grown-ups.e2e.ts` fails if any grown-ups' screen shows that card. A case takes `test` from `steps.ts` rather than from Playwright, and a second device from `newDevice`, so that its pages take no hot updates from the dev server: a file saved during a run would otherwise swap modules under an open page and can leave it on a stale or empty screen.
+A case takes `test` from `steps.ts`; `signInAs` creates a fresh family, `askForCode` and `typeCode` exercise signup, and `atScreen` fails on a screen's error card. `newDevice` creates another browser context. These contexts ignore dev hot updates so edits cannot replace modules underneath a running case. Browser tests run separately from `npm run check`.
 
 ## Environment variables
 
@@ -199,7 +189,7 @@ None is needed for local work. `.env.example` at the root lists the database mod
 | `LUMISCHOOL_ENV` | unset | the API server, which starts only when it is `local`, since only the console email transport is built; `dev:api` and `dev` set it |
 | `API_PORT`, `API_HOST` | `8501`, `127.0.0.1` | the API server, to run a second checkout beside the first. Locally the host must be a loopback address, and the server refuses to start otherwise, since the local routes answer only on this computer |
 | `APP_ORIGIN` | `http://localhost:8500` | the one origin: the API server's `Origin` check and its CORS answers; locally it also accepts the scratchpad's `http://localhost:5173` |
-| `AUTH_PEPPER` | a fixed local value | the API server's key for sign-in codes, the family PIN and network hashes, which is never in the database; required once the server runs anywhere but locally, and the demo seed hashes the Harlows' PIN with the same local value |
+| `AUTH_PEPPER` | a fixed local value | the API server's key for sign-in codes, the family PIN and network hashes, which is never in the database; required once the server runs anywhere but locally |
 | `PACK_DIR` | `dist/pack` | the API server, for the pack `npm run pack` wrote (`tools/pack.ts`); without one the API starts and says so, and the routes that serve lessons and a child's record answer `503` |
 | `AUTH_DEV_CODE` | `12345678` | the API server's fixed code, which the code step accepts beside the emailed one; eight digits, and the server refuses to start with it set anywhere but locally |
 | `PRINT_BASE` | the scratchpad's dev server address | `check:print`, to print against another server |
@@ -221,7 +211,7 @@ before assuming it is the scratchpad.
 
 The database is not healthy. `docker ps --filter name=lumischool` shows its state and `docker logs
 lumischool-pg` shows why. A container that was stopped keeps its data; `npm run db:reset` rebuilds the
-contents without touching the volume, and removing the volume is the one step that loses the seed.
+contents without touching the volume. Both a reset and removing the volume erase local application data.
 
 The database tests skip. That is the intended behaviour with no database running; bring the container up
 first.

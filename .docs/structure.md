@@ -112,7 +112,6 @@ lumischool/
 │  └─ db/                          the database module                                (built)
 │     ├─ schema.ts  scope.ts  client.ts  events.ts  keys.ts  content.ts
 │     ├─ migrations/               the generated SQL, the apply path, the local role setup
-│     ├─ seed/                     the seed runner and its household
 │     └─ __tests__/                the suites and their shared test database
 ├─ content/                        data, read through one loader each, never imported by path
 │  ├─ curriculum/                  every lesson and question as notation
@@ -466,14 +465,9 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    they move into `parts/`.
 2. The data leaves the scratchpad, and the scratchpad becomes `.scratchpad/`. Done: what was the
    scratchpad's `content/` is `content/curriculum/` and its `art/` is `content/art/`, so the
-   curriculum and the hand-drawn art stay tracked, and the seed and the scratchpad both read them
-   from there. The scratchpad was then renamed `.scratchpad/`, which git ignores and the root's lint,
-   format and guards skip; the temporary `scratchpad` symlink that bridged the rename is gone. Until the drawing engine has moved, `npm run db:demo`
-   still runs a script from `.scratchpad/` and the apps still draw through the seam. Nothing
-   builds without `.scratchpad/` until `engine/parts` has moved in and the seam has gone: a fresh
-   clone, which has no `.scratchpad/`, cannot build any of the three apps or seed the demo.
-   `npm run check` ends with a production build of the three apps (`check:build`), so on such a
-   checkout it fails rather than passing.
+   curriculum and the hand-drawn art stay tracked. The scratchpad was renamed `.scratchpad/`, which
+   git ignores and the root's lint, format and guards skip. The root build and pack now use root
+   modules only. Database seeds have been removed; local families are created through signup.
 3. `engine/parts/`: every drawing, one file each in a folder for its family, and the catalogue. A
    family is the shelf a drawing is found on, so the owl in flight is
    `engine/parts/animals/owlflying.ts`, and its one declaration holds its settings with their
@@ -1816,7 +1810,7 @@ lumischool/
 ├─ forms.ts          ~300   forms generated from the vocabulary, previews, the repair loop
 ├─ ui/               5      the browser surface, the chrome, the audio mount, the palette
 ├─ http.ts           new    the request edge: read it, check the caller, shape the response
-├─ store.ts          new    schema, client, migrations, seed
+├─ store.ts          new    schema, client, migrations
 ├─ jobs.ts           new    PDF rendering, content compiles, the verifier as a service
 ├─ curriculum/  art/  apps/  scripts/  e2e/  public/  .docs/
 └─ boundaries.ts
@@ -1961,8 +1955,7 @@ already live in pure modules that the browser and the server both import, so a `
 its own to hold. Five modules for a thing that does not exist is five guesses.
 
 One `server/` module with a few long files. `http.ts` reads the request, checks the caller and shapes
-the response and makes no decisions; `store.ts` holds the schema, the client, the migrations and the
-seed; `jobs.ts` runs the PDF render and the verifier. One name, one phase boundary at the module edge,
+the response and makes no decisions; `store.ts` holds the schema, the client and the migrations; `jobs.ts` runs the PDF render and the verifier. One name, one phase boundary at the module edge,
 and it grows by lengthening a file rather than by adding a module. The objection is that three files in
 one module is three concepts in one module, and the answer is that three concepts in three files inside
 one module is exactly what the file rule asks for.
@@ -2065,7 +2058,7 @@ rather than by a guard and there is no reason to think they are all of them.
 Two modules have arrived at the root while this was being written, which is worth recording rather
 than describing a tree that no longer exists. `answer/` holds the answer and event unions, which is
 where this document puts them and which is the third of the next steps below, so that one is early
-rather than out of order. `store/` holds a schema, a client, migrations and a seed, which is a
+rather than out of order. `store/` holds a schema, a client and migrations, which is a
 backend module before there is a backend, and the section on the backend above argues against it: the
 device holds the log under the recommended data model, so there is nothing to hold server side until
 sync exists. That is a decision to confirm or reverse rather than a mistake to fix quietly, and

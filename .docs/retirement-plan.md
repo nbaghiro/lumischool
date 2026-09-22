@@ -76,8 +76,7 @@ decisions. Record the owner's answer here rather than treating recommendations a
 
 ## Reference cleanup
 
-The refreshed scan shows demo seeding already uses `tools/scripts/demo-work.ts`; the old audit's
-reported subprocess dependency is no longer present. Remaining cleanup includes:
+Database seeds and their worker have been removed; the old audit's subprocess dependency is no longer present. Remaining cleanup includes:
 
 - Remove the local 5173 CORS exception from `server/http.ts`, update origin tests and `.env.example`,
   and change the synthetic browser-test origin to the real app origin.
