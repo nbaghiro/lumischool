@@ -2,7 +2,7 @@
 // Postgres through the app role's one way in.
 
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
+import { readdirSync, readFileSync } from "node:fs";
 import { after, beforeEach, describe, it } from "node:test";
 import { setTimeout as sleep } from "node:timers/promises";
 import { and, eq, sql } from "drizzle-orm";
@@ -50,7 +50,6 @@ import {
 } from "../keys";
 import { apply } from "../migrations/migrate";
 import { content, events, families, keys, kids, members, schema, users } from "../schema";
-import { readCorpus } from "../seed/corpus";
 import { PG, codeOf, must, prepare, truncate } from "./test-db";
 
 const reason = await prepare();
@@ -1072,20 +1071,22 @@ describe("the store", { skip: reason ?? false }, () => {
 
     describe("content", () => {
         it("generates every hash from its body and keeps every name and kind in agreement with it, over the whole catalogue", async () => {
-            const corpus = readCorpus(
-                fileURLToPath(new URL("../../../content/curriculum", import.meta.url)),
+            const root = new URL("../../../content/curriculum/", import.meta.url);
+            const bodies = ["items", "lessons"].flatMap((dir) =>
+                readdirSync(new URL(`${dir}/`, root))
+                    .filter((f) => f.endsWith(".lumi"))
+                    .map((f) => readFileSync(new URL(`${dir}/${f}`, root), "utf8")),
             );
-            const bodies = [...corpus.items.values(), ...corpus.lessons].map((x) => x.body);
             bodies.push(JSON.stringify({ name: "catalogue", vocabulary: 1, revisions: [] }));
             await saveCatalogue(db().db, bodies);
             await withFamily(inF, (tx) =>
                 saveContent(
                     tx,
                     F,
-                    must(corpus.items.get("bonds.make-ten"), "bonds.make-ten").body.replace(
-                        "1..9",
-                        "1..19",
-                    ),
+                    must(
+                        bodies.find((body) => factsOf(body).name === "bonds.make-ten"),
+                        "bonds.make-ten",
+                    ).replace("1..9", "1..19"),
                 ),
             );
             const rows = await db().db.select().from(content);

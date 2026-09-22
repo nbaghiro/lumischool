@@ -3,7 +3,7 @@
 -- body, and a generated column may only call immutable functions. Postgres marks `convert_to` stable,
 -- because in general an encoding conversion could change; converting a given text to UTF-8 bytes
 -- always gives the same bytes, so this wrapper is honest in declaring itself immutable. The value is
--- the same sha256 the corpus reader in server/db/seed/corpus.ts computes over a file's text.
+-- the same sha256 computed over the UTF-8 text of a content file.
 -- =================================================================================================
 CREATE FUNCTION utf8_sha256(body text) RETURNS text LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE AS
 $$ SELECT encode(sha256(convert_to(body, 'UTF8')), 'hex') $$;
@@ -64,7 +64,7 @@ CREATE TABLE "keys" (
 	"seen_at" text,
 	"created_at" text DEFAULT utc_iso(now()) NOT NULL,
 	CONSTRAINT "keys_hash_key" UNIQUE("hash"),
-	CONSTRAINT "keys_family_null_only_before_a_family" CHECK ("keys"."family_id" is not null or "keys"."kind" in ('sign-in', 'confirm')),
+	CONSTRAINT "keys_family_null_only_before_a_family" CHECK ("keys"."family_id" is not null or "keys"."kind" in ('sign-in', 'confirm', 'kid-attempt')),
 	CONSTRAINT "keys_session_names_a_user" CHECK ("keys"."kind" not in ('session', 'shared-session') or ("keys"."user_id" is not null and "keys"."kid_id" is null)),
 	CONSTRAINT "keys_kid_session_names_a_kid_and_a_parent" CHECK ("keys"."kind" <> 'kid-session' or ("keys"."kid_id" is not null and "keys"."user_id" is not null)),
 	CONSTRAINT "keys_pin_names_no_kid" CHECK ("keys"."kind" <> 'pin' or "keys"."kid_id" is null),
@@ -119,44 +119,17 @@ ALTER TABLE "members" ADD CONSTRAINT "members_family_kid_fk" FOREIGN KEY ("famil
 CREATE INDEX "content_family_name_idx" ON "content" USING btree ("family_id","name");--> statement-breakpoint
 CREATE INDEX "events_family_idx" ON "events" USING btree ("family_id","at");--> statement-breakpoint
 CREATE INDEX "events_kid_idx" ON "events" USING btree ("kid_id","at");--> statement-breakpoint
+CREATE UNIQUE INDEX "keys_kid_pin_key" ON "keys" USING btree ("family_id") WHERE kind = 'kid-pin';--> statement-breakpoint
 CREATE UNIQUE INDEX "keys_pin_key" ON "keys" USING btree ("family_id") WHERE kind = 'pin';--> statement-breakpoint
 CREATE INDEX "keys_family_idx" ON "keys" USING btree ("family_id");--> statement-breakpoint
 CREATE INDEX "keys_email_idx" ON "keys" USING btree ("email","created_at");--> statement-breakpoint
 CREATE INDEX "keys_ip_idx" ON "keys" USING btree ("ip","created_at");--> statement-breakpoint
+CREATE UNIQUE INDEX "kids_username_key" ON "kids" USING btree (lower("settings"->>'username'));--> statement-breakpoint
 CREATE UNIQUE INDEX "members_parent_key" ON "members" USING btree ("user_id","family_id") WHERE kid_id is null;--> statement-breakpoint
 CREATE UNIQUE INDEX "members_tutor_key" ON "members" USING btree ("user_id","family_id","kid_id") WHERE kid_id is not null;--> statement-breakpoint
 CREATE INDEX "members_family_idx" ON "members" USING btree ("family_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_key" ON "users" USING btree (lower("email"));
 --> statement-breakpoint
--- =================================================================================================
--- Isolation, and the rules that are about more than one row. Everything from here to the end of the
--- file is hand-written, apart from the policy block, which is generated from server/db/scope.ts. drizzle-kit
--- neither generates nor diffs any of it, because it cannot express `force row level security`, the
--- functions the policies call, security-definer functions or triggers. .docs/db.md explains each
--- piece, and `npm run check:db` fails if a table with `family_id` is left without forced security
--- and a policy.
---
--- This is the one clean initial migration, written 22 September 2026. It supersedes four migrations
--- that stood before it (0000_initial, 0001_sign_in, 0002_kid_sessions, 0003_quick_red_shift), each
--- replaced or followed in turn before the first commit and before anything was deployed, and it holds
--- their net result: the seven tables, sign-in by code, kid sessions in place of tablet pairing (which
--- never shipped), and a grown-up's own settings. No database outside this machine ever held an older
--- version. From the first deploy on, a migration that has left this machine is never edited.
--- =================================================================================================
-
--- The app role: what the server connects as. Created here without a login when the environment has
--- not made it already, so the grants below always have a role to name; each environment gives it a
--- login (locally, server/db/migrations/local-roles.sql). It owns nothing and never bypasses row-level security, and
--- the last statement of this file refuses to finish if either is untrue.
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lumischool_app') THEN
-    CREATE ROLE lumischool_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE;
-  END IF;
-END
-$$;
---> statement-breakpoint
-
 -- The two settings every policy reads, set for one transaction at a time by `withFamily` in
 -- server/db/client.ts. The `nullif` matters: once a session has set a custom setting in any transaction,
 -- reading it afterwards returns '' rather than null, and ''::uuid is an error. With nullif a missing
@@ -452,6 +425,27 @@ GRANT EXECUTE ON FUNCTION utc_iso(timestamptz), app_family(), app_user(), create
   key_prove(text, text, text, timestamptz), key_use(text, text, timestamptz), my_families() TO lumischool_app;
 --> statement-breakpoint
 
+CREATE FUNCTION kid_login_lookup(p_username text, p_identity text, p_network text, p_hash text)
+RETURNS TABLE (family_id uuid, kid_id uuid)
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp AS $$
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtextextended('kid-network:' || p_network, 0));
+  PERFORM pg_advisory_xact_lock(hashtextextended('kid-login:' || p_identity, 0));
+  DELETE FROM keys WHERE kind = 'kid-attempt' AND created_at < utc_iso(now() - interval '1 day');
+  IF (SELECT count(*) FROM keys WHERE kind = 'kid-attempt' AND email = p_identity AND created_at > utc_iso(now() - interval '15 minutes')) >= 5
+     OR (SELECT count(*) FROM keys WHERE kind = 'kid-attempt' AND ip = p_network AND created_at > utc_iso(now() - interval '15 minutes')) >= 20 THEN
+    RETURN;
+  END IF;
+  INSERT INTO keys (kind, hash, email, ip) VALUES ('kid-attempt', p_hash, p_identity, p_network);
+  RETURN QUERY SELECT k.family_id, k.id FROM kids k
+    WHERE lower(k.settings->>'username') = p_username AND k.settings->>'kidLogin' = 'true';
+END $$;
+--> statement-breakpoint
+REVOKE EXECUTE ON FUNCTION kid_login_lookup(text, text, text, text) FROM PUBLIC;
+--> statement-breakpoint
+GRANT EXECUTE ON FUNCTION kid_login_lookup(text, text, text, text) TO lumischool_app;
+
+--> statement-breakpoint
 -- The last word: refuse to finish if the app role could step around any of the above.
 DO $$
 DECLARE

@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { after, describe, it } from "node:test";
 import { closeApp, open, type Store } from "../client";
-import { SCOPE } from "../scope";
+import { SCOPE, policySql } from "../scope";
 import { must, prepare } from "./test-db";
 
 const reason = await prepare();
@@ -61,5 +61,20 @@ describe("the policies in the database", { skip: reason ?? false }, () => {
         assert.equal(people.length, 4);
         for (const p of people)
             assert.match(`${p.qual ?? ""} ${p.with_check ?? ""}`, /app_user\(\)/);
+    });
+    it("matches the current policy definitions after replaying the migration history", async () => {
+        await db().raw.begin(async (tx) => {
+            const before =
+                await tx`select tablename, policyname, permissive, roles, cmd, qual, with_check
+                from pg_policies where schemaname = 'public' order by tablename, policyname`;
+            for (const row of before) {
+                await tx`drop policy ${tx(String(row.policyname))} on ${tx(String(row.tablename))}`;
+            }
+            await tx.unsafe(policySql().replaceAll("--> statement-breakpoint", ""));
+            const expected =
+                await tx`select tablename, policyname, permissive, roles, cmd, qual, with_check
+                from pg_policies where schemaname = 'public' order by tablename, policyname`;
+            assert.deepEqual([...before], [...expected]);
+        });
     });
 });

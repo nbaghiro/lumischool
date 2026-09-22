@@ -167,7 +167,7 @@ export type Written = {
         kind: K;
         data: EventData[K];
         actor: string | null;
-        /** When it happened, if not now: the seed writes a history. */
+        /** When it happened, if not now. */
         at?: string;
     };
 }[EventKind];

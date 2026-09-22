@@ -94,7 +94,7 @@ export async function familyContent(tx: FamilyTx, family: string): Promise<Conte
 
 /**
  * Saves catalogue revisions, which belong to no family and which no app role can write. This runs as
- * the owner, from the build that publishes a pack (and the seed, which stands in for it). Returns how
+ * the owner. Returns how
  * many were new.
  */
 export async function saveCatalogue(owner: Store["db"], bodies: string[]): Promise<number> {
@@ -111,13 +111,4 @@ export async function saveCatalogue(owner: Store["db"], bodies: string[]): Promi
         added += inserted.length;
     }
     return added;
-}
-
-/** A catalogue revision's id by its hash, for the seed and the tests. */
-export async function catalogueId(owner: Store["db"], hash: string): Promise<string | null> {
-    const [row] = await owner
-        .select({ id: content.id })
-        .from(content)
-        .where(and(isNull(content.family_id), eq(content.hash, hash)));
-    return row?.id ?? null;
 }

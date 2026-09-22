@@ -74,7 +74,10 @@ export const kids = pgTable(
             .notNull()
             .default(sql`'{}'::jsonb`),
     },
-    (t) => [unique("kids_family_id_id_key").on(t.family_id, t.id)],
+    (t) => [
+        unique("kids_family_id_id_key").on(t.family_id, t.id),
+        uniqueIndex("kids_username_key").on(sql`lower(${t.settings}->>'username')`),
+    ],
 ).enableRLS();
 export type Kid = typeof kids.$inferSelect;
 
@@ -162,7 +165,7 @@ export const keys = pgTable(
         // Only codes held before a family is known have none: sign-in and confirm.
         check(
             "keys_family_null_only_before_a_family",
-            sql`${t.family_id} is not null or ${t.kind} in ('sign-in', 'confirm')`,
+            sql`${t.family_id} is not null or ${t.kind} in ('sign-in', 'confirm', 'kid-attempt')`,
         ),
         check(
             "keys_session_names_a_user",
@@ -175,6 +178,9 @@ export const keys = pgTable(
             sql`${t.kind} <> 'kid-session' or (${t.kid_id} is not null and ${t.user_id} is not null)`,
         ),
         check("keys_pin_names_no_kid", sql`${t.kind} <> 'pin' or ${t.kid_id} is null`),
+        uniqueIndex("keys_kid_pin_key")
+            .on(t.family_id)
+            .where(sql`kind = 'kid-pin'`),
         // One PIN per family: setting it again replaces the row.
         uniqueIndex("keys_pin_key")
             .on(t.family_id)

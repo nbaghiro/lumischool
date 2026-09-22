@@ -1,5 +1,5 @@
 {
-  "id": "cdefb18b-bf9a-46aa-98e1-f8464eb6ce49",
+  "id": "7b640bac-e292-40ea-8d5e-5f61c28029bc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -377,6 +377,22 @@
         }
       },
       "indexes": {
+        "keys_kid_pin_key": {
+          "name": "keys_kid_pin_key",
+          "columns": [
+            {
+              "expression": "family_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "kind = 'kid-pin'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "keys_pin_key": {
           "name": "keys_pin_key",
           "columns": [
@@ -508,7 +524,7 @@
       "checkConstraints": {
         "keys_family_null_only_before_a_family": {
           "name": "keys_family_null_only_before_a_family",
-          "value": "\"keys\".\"family_id\" is not null or \"keys\".\"kind\" in ('sign-in', 'confirm')"
+          "value": "\"keys\".\"family_id\" is not null or \"keys\".\"kind\" in ('sign-in', 'confirm', 'kid-attempt')"
         },
         "keys_session_names_a_user": {
           "name": "keys_session_names_a_user",
@@ -570,7 +586,23 @@
           "default": "'{}'::jsonb"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "kids_username_key": {
+          "name": "kids_username_key",
+          "columns": [
+            {
+              "expression": "lower(\"settings\"->>'username')",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "kids_family_id_families_id_fk": {
           "name": "kids_family_id_families_id_fk",

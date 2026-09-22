@@ -13,6 +13,8 @@ export const KEY_KINDS = [
     "shared-session",
     "kid-session",
     "pin",
+    "kid-pin",
+    "kid-attempt",
     "sign-in",
     "confirm",
     "invite",
@@ -45,6 +47,8 @@ export const EXPIRY: Record<KeyKind, (k: Clock) => Date> = {
         earliest(after(k.seen_at ?? k.created_at, 30 * DAY), after(k.created_at, 90 * DAY)),
     // A family's PIN lasts until a parent sets another, or the family closes.
     pin: () => new Date(8_640_000_000_000_000),
+    "kid-pin": () => new Date(8_640_000_000_000_000),
+    "kid-attempt": (k) => after(k.created_at, DAY),
 };
 
 export const isLive = (kind: KeyKind, clock: Clock, now: Date = new Date()): boolean =>
@@ -61,6 +65,8 @@ const SEEN_STEP: Record<KeyKind, number> = {
     "shared-session": MINUTE,
     "kid-session": DAY,
     pin: 0,
+    "kid-pin": 0,
+    "kid-attempt": 0,
     "sign-in": 0,
     confirm: 0,
     invite: 0,
@@ -218,8 +224,7 @@ export async function endHeld(
 /**
  * Makes a key inside the current family and returns its credential. The secret leaves this function
  * once, in the credential, and only its hash is kept. `created_at` is given only when a session carries
- * another's (switching family is not a fresh sign-in), and `id` and `seen_at` only by a seed that
- * writes keys already in use.
+ * another's (switching family is not a fresh sign-in).
  */
 export async function issue(
     tx: FamilyTx,
@@ -412,6 +417,7 @@ export interface KidKey {
     user_id: string;
     view: string;
     created_at: string;
+    login?: boolean;
 }
 
 /**
@@ -446,6 +452,7 @@ export async function verifyKids(
                 user_id: row.user_id,
                 view,
                 created_at: row.created_at,
+                login: isRecord(row.detail) && row.detail.login === true,
             });
             if (dueToSee("kid-session", row.seen_at, now)) due.push(row.id);
         }
@@ -464,7 +471,7 @@ export async function verifyKids(
 export async function openKids(
     tx: FamilyTx,
     family: string,
-    o: { user: string; name: string | null; kids: readonly string[] },
+    o: { user: string; name: string | null; kids: readonly string[]; login?: boolean },
 ): Promise<{ view: string; keys: { kid: string; key: string; credential: string }[] }> {
     const view = randomUUID();
     const out: { kid: string; key: string; credential: string }[] = [];
@@ -474,7 +481,7 @@ export async function openKids(
             kid_id: kid,
             user_id: o.user,
             name: o.name,
-            detail: { view },
+            detail: { view, ...(o.login ? { login: true } : {}) },
         });
         out.push({ kid, key: key.id, credential: key.credential });
     }

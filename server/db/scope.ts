@@ -1,5 +1,5 @@
 // Which family's rows each table holds, stated once. The row-level policies in the migration are
-// generated from it, and server/db/__tests__/scope.test.ts fails if the migration drifts from it.
+// generated from it, and server/db/__tests__/scope.itest.ts checks the migrated database against it.
 
 interface TableScope {
     /** `id` for `families` itself, `family_id` everywhere else. */
