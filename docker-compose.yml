@@ -1,0 +1,44 @@
+# lumischool local services. Host ports use the 85xx block that .docs/structure.md reserves, which no
+# sibling project on this machine occupies: galleo is 86xx, clientbridge 87xx, llamatrade 88xx (plus
+# 5442, 5443, 6389, 9092), sourcewell 89xx, and flowmaestro sits on the conventional defaults (5432,
+# 5433, 6379, 7233, 8080, 8088, 27017). Container ports stay conventional.
+#
+# Bring it up with `npm run db:up`, which waits for the healthcheck rather than returning immediately.
+#
+# There is no Redis. Nothing in .docs/db.md names a job for it, and the trigger that would add one
+# is written down there rather than reserved here as a port nobody uses.
+services:
+    postgres:
+        # Plain postgres, no extension image: this schema needs nothing beyond gen_random_uuid(),
+        # and the vector extension galleo pulls in is for embeddings we have no plan to store.
+        # Pinned to a major because a minor upgrade is a pull and a major is a dump and restore.
+        # 18, matching the Neon project this deploys to, so a local check is a check against the
+        # version that will run the migration for real.
+        image: postgres:18
+        container_name: lumischool-pg
+        # Published on the loopback address only: the roles' local passwords are in this repository, so
+        # nothing else on the network may reach the port.
+        ports:
+            - "127.0.0.1:8502:5432"
+        # The owner role: a superuser inside the container, which runs migrations. The server connects
+        # as lumischool_app instead, which owns nothing and cannot bypass row-level security.
+        environment:
+            POSTGRES_USER: lumischool
+            POSTGRES_PASSWORD: lumischool
+            POSTGRES_DB: lumischool
+        volumes:
+            # 18's image manages a major-version-specific subdirectory of this mount itself
+            # (pg_ctlcluster-style) and refuses to start against the old .../data mount point, even
+            # an empty one, so the volume is mounted one level up from 17.
+            - lumischool-pgdata:/var/lib/postgresql
+            # Gives the app role its local login when the volume is first created. tools/scripts/db-up.sh
+            # runs the same file on every start, for a volume made before it existed.
+            - ./server/db/migrations/local-roles.sql:/docker-entrypoint-initdb.d/10-local-roles.sql:ro
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U lumischool -d lumischool"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+volumes:
+    lumischool-pgdata:
