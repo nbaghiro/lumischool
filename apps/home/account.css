@@ -1,0 +1,114 @@
+/* The account page (account.tsx): a column of postcards, each a section, on the app's own paper. */
+
+.ga {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 4vw, 54px);
+}
+.ga > .postcard {
+    align-self: center;
+    width: min(100%, 700px);
+    min-height: 0;
+}
+.ga .postcard.one .postcard-msg {
+    padding-right: 0;
+}
+.ga-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px 24px;
+    margin: 0;
+}
+.ga-facts dt {
+    font: 500 10.5px / 1.3 var(--f-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.ga-facts dd {
+    margin: 2px 0 0;
+    font-size: 16px;
+}
+.ga-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.ga-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 10px 0;
+    border-top: 1px solid var(--rule);
+}
+.ga-row-words {
+    display: flex;
+    flex: 1 1 18em;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.ga-row-words span {
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+.ga-row.own b::after {
+    content: "";
+}
+.ga-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding-left: 20px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.ga-stamp {
+    display: flex;
+}
+.ga-stamp .kid-portrait {
+    width: 90px;
+    aspect-ratio: 1;
+    rotate: -2deg;
+}
+.ga-pictures {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.ga-picture {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 4px 6px;
+    font: 500 13px / 1.2 var(--f-read);
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.ga-picture:hover {
+    border-color: var(--ink);
+}
+.ga-picture[aria-pressed="true"] {
+    border-color: var(--pen);
+    box-shadow: inset 0 0 0 1.5px var(--pen);
+}
+.ga-picture-pic {
+    display: block;
+    width: 48px;
+    height: 48px;
+}

@@ -1,0 +1,256 @@
+/* The grown-ups' bar (bar.tsx), after the mark on every screen a signed-in grown-up opens: the family,
+   the app's places, a stamp for each child, Add a child, and the grown-up's own stamp with its menu. */
+
+.gb {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 8px clamp(10px, 1.6vw, 26px);
+    min-width: 0;
+}
+.gb-family {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    line-height: 1.15;
+}
+.gb-family b {
+    font: 700 17px / 1.2 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+    white-space: nowrap;
+}
+.gb-places {
+    display: flex;
+    gap: 2px;
+    margin-left: clamp(4px, 2vw, 30px);
+}
+.gb-places a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font: 700 15px / 1 var(--f-read);
+    color: var(--ink-soft);
+    text-decoration: none;
+}
+.gb-places a:hover {
+    color: var(--ink);
+}
+.gb-places a[aria-current] {
+    color: var(--ink);
+    background: var(--card);
+    box-shadow: inset 0 0 0 1.5px var(--rule-firm);
+}
+.gb-places .short {
+    display: none;
+}
+/* The children's stamps a third closer than their 44 px boxes would set them: the boxes touch and
+   overlap by a pixel, so the 34 px stamps stand 9 px apart and each keeps its 44 px target. */
+.gb-kids {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-left: auto;
+}
+.gb-kid + .gb-kid {
+    margin-left: -1px;
+}
+.gb-kid {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 10px;
+}
+.gb-kid .kid-portrait {
+    width: 34px;
+    rotate: 0deg;
+    filter: none;
+}
+a.gb-kid:hover .kid-portrait {
+    translate: 0 -2px;
+}
+.gb-add {
+    flex: none;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 15px;
+}
+.gb-kids + .gb-add,
+.gb-places + .gb-add {
+    margin-left: auto;
+}
+.gb-kids + .gb-add {
+    margin-left: 0;
+}
+
+/* What the Add a child dialog said, under the bar, on a screen with no line of its own for it. */
+.gb-said {
+    position: absolute;
+    top: 100%;
+    right: var(--gut);
+    z-index: 4;
+    max-width: min(420px, calc(100vw - 2 * var(--gut)));
+    margin-top: 6px;
+}
+
+/* The grown-up's own stamp, and the menu under it: who is signed in, Account and Sign out. */
+/* On the bar's centre line with the children's stamps and Add a child, and as close to the button
+   as the children's stamps are. */
+.gb-me {
+    position: relative;
+    display: flex;
+    flex: none;
+    margin-left: -6px;
+}
+.gb-me-b {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.gb-me-b:hover .kid-portrait,
+.gb-me-b[aria-expanded="true"] .kid-portrait {
+    translate: 0 -2px;
+}
+/* Square, 44 px, larger than a child's 34 by 43 and shaped apart from it; the stamp is the whole
+   44 px target, inside the bar's 62 px. */
+.gb-me-b .kid-portrait {
+    width: 44px;
+    aspect-ratio: 1;
+    rotate: 0deg;
+    filter: none;
+}
+.gb-me-stamp .kid-stamp-pic {
+    inset: 17% 17% 15%;
+}
+.gb-me-pop {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: min(260px, calc(100vw - 24px));
+    padding: 12px 8px 8px;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 18px 36px -20px color-mix(in srgb, var(--ink) 50%, transparent);
+    animation: gb-pop 140ms ease-out;
+}
+@keyframes gb-pop {
+    from {
+        translate: 0 -4px;
+        opacity: 0;
+    }
+}
+.gb-me-who {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0 10px 8px;
+    border-bottom: 1px solid var(--rule);
+}
+.gb-me-who b {
+    font: 700 16px / 1.2 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+}
+.gb-me-who span {
+    overflow: hidden;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.gb-me-pop [role="menu"] {
+    display: flex;
+    flex-direction: column;
+    outline: 0;
+}
+.gb-me-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 10px;
+    font: 700 15px / 1 var(--f-read);
+    color: var(--ink);
+    text-align: left;
+    text-decoration: none;
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.gb-me-item:hover,
+.gb-me-item:focus-visible {
+    background: color-mix(in srgb, var(--sky) 22%, transparent);
+}
+/* the slip that says why a sign-out did not happen sits under the menu, as it sat under the pill */
+.gb-me-pop .page-said {
+    position: static;
+    width: auto;
+    margin-top: 4px;
+    box-shadow: none;
+}
+
+@media (max-width: 1100px) {
+    .gb-kids {
+        display: none;
+    }
+    .gb-family .kicker {
+        display: none;
+    }
+    .gb-places + .gb-add {
+        margin-left: auto;
+    }
+}
+@media (max-width: 700px) {
+    .gb {
+        gap: 4px;
+    }
+    .gb-family,
+    .gb-add {
+        display: none;
+    }
+    /* the places scroll under the thumb, so the grown-up's stamp keeps its place at the end */
+    .gb-places {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin-left: auto;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .gb-places a {
+        flex: none;
+        padding: 0 10px;
+        font-size: 14px;
+    }
+    .gb-places .long {
+        display: none;
+    }
+    .gb-places .short {
+        display: inline;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a.gb-kid:hover .kid-portrait,
+    .gb-me-b:hover .kid-portrait,
+    .gb-me-b[aria-expanded="true"] .kid-portrait {
+        translate: none;
+    }
+    .gb-me-pop {
+        animation: none;
+    }
+}

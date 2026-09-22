@@ -1,0 +1,110 @@
+/* The cards a change is made on (cards.tsx): a postcard lifted off the calendar or off Change the
+   plan in the page's dialog (engine/ui/dialog.css), with the picture in its title and its body's
+   rows, and the choices a card and the calendar's head lay out as a seg. */
+
+.gc-seg {
+    width: auto;
+}
+.gc-quiet {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+}
+/* the buttons share a bottom line: the group with a legend above it stands its legend over its own
+   buttons rather than pushing them below the plain buttons beside it */
+.gc-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 12px;
+}
+.gc-tools .btn {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 15px;
+}
+
+/* a lesson the pack has no first drawing for shows its track's tape and initial rather than a hole */
+.gc-plain {
+    font: 700 26px / 1 var(--f-hand);
+    color: color-mix(in srgb, var(--m, var(--sky)) 70%, var(--ink));
+}
+
+/* The card a change is made on: a postcard lifted off the calendar in the page's dialog
+   (engine/ui/dialog.css), with the picture in its title and its body's rows. */
+.gc-card .postcard.one .postcard-msg {
+    padding-right: 36px;
+    gap: 12px;
+}
+.gc-card .postcard-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-right: 0;
+    font-size: clamp(24px, 2.2vw, 30px);
+}
+.gc-card-pic {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 64px;
+    height: 52px;
+    overflow: hidden;
+}
+.gc-card-pic svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.gc-card-pic.gc-plain {
+    width: auto;
+    padding: 0 8px;
+}
+.gc-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.gc-card-fact {
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+.gc-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.gc-row input,
+.gc-row select {
+    min-height: 44px;
+    padding: 0 10px;
+    font: 400 15px / 1.2 var(--f-read);
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 8px;
+}
+.gc-row input[type="text"] {
+    flex: 1 1 14em;
+}
+.gc-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 14.5px;
+}
+.gc-check input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--pen);
+}
+.gc-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.gc-term-n {
+    width: 5em;
+    font-weight: 700;
+}

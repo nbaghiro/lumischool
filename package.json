@@ -24,6 +24,7 @@
         "test:server": "node --import ./tools/scripts/resolve.ts --test --test-concurrency=1 server/__tests__/*.test.ts server/__tests__/*.itest.ts",
         "test:engine": "node --import ./tools/scripts/resolve.ts --test 'engine/**/__tests__/*.test.ts'",
         "test:school": "node --import ./tools/scripts/resolve.ts --test 'school/**/__tests__/*.test.ts'",
+        "test:apps": "node --import ./tools/scripts/resolve.ts --test 'apps/**/__tests__/*.test.ts'",
         "art": "node --import ./tools/scripts/resolve.ts tools/scripts/art.ts",
         "pack": "node --import ./tools/scripts/resolve.ts tools/pack.ts",
         "levels:baseline": "node --import ./tools/scripts/resolve.ts tools/scripts/levels-baseline.ts",

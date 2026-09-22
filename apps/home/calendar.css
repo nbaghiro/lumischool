@@ -1,0 +1,647 @@
+/* The family's calendar (calendar.tsx): the week as a sheet of stickers, the month on squared paper,
+   the year as its terms, and the cards a change is made on. Light only, every target at least 44 px,
+   and nothing moves under reduced motion. */
+
+.gc {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 40px);
+}
+.gc > .postcard {
+    align-self: center;
+    width: min(100%, 760px);
+    min-height: 0;
+}
+/* The card above the sheets keeps a postcard's shape with a third less air: the count as its one
+   line, and which view and whose side by side, each legend above its own group. */
+.gc > .postcard.one.wide {
+    padding-top: 20px;
+    padding-bottom: 18px;
+}
+.gc > .postcard .postcard-msg {
+    gap: 6px;
+}
+.gc-filters {
+    gap: 6px 28px;
+    margin-top: 4px;
+}
+.gc-filters .gc-seg {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.gc-seg legend {
+    width: 100%;
+    padding: 0 0 4px;
+    font: 500 10.5px / 1.2 var(--f-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.gc-seg .btn,
+.gc-days .btn {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 15px;
+}
+
+/* The sheet each view is drawn on, taped over the map as the other cards are. */
+.gc-sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: clamp(16px, 2vw, 28px);
+    background: var(--card);
+    border-radius: 6px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 22px 40px -28px color-mix(in srgb, var(--ink) 50%, transparent);
+}
+.gc-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 20px;
+}
+.gc-title {
+    font: 700 clamp(26px, 2.4vw, 34px) / 1.05 var(--f-hand) !important;
+    font-variation-settings:
+        "INFM" 70,
+        "BNCE" 20;
+}
+
+/* The week: a column a day and a row a child, or the other way round. */
+.gc-grid {
+    display: grid;
+    grid-template-columns: 132px repeat(var(--cols, 5), minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+}
+.gc-corner {
+    min-height: 1px;
+}
+.gc-dayhead {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-height: 56px;
+    padding: 6px 10px;
+    color: var(--ink);
+    text-align: left;
+    background: none;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.gc-dayhead:hover {
+    background: color-mix(in srgb, var(--glow) 20%, transparent);
+}
+.gc-date {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+.gc-date b {
+    font: 700 28px / 1 var(--f-hand);
+    font-variation-settings: "INFM" 100;
+}
+.gc-date span {
+    font: 500 10.5px / 1.2 var(--f-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.gc-dayhead.today .gc-date b {
+    padding: 0 6px;
+    background: linear-gradient(transparent 56%, var(--glow) 56%, var(--glow) 92%, transparent 92%);
+}
+.gc-todayword {
+    font: 600 13px var(--f-hand);
+    color: var(--pen);
+}
+.gc-offnote {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+}
+.gc-kidhead {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 4px;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+.gc-kidhead b {
+    font: 700 20px / 1.1 var(--f-hand);
+    color: var(--ink);
+}
+.gc-kidhead .link {
+    min-height: 44px;
+    font-size: 13.5px;
+}
+.gc-cell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 120px;
+    padding: 8px 8px 52px;
+    border-radius: 10px;
+    border: 1.5px dashed var(--grid);
+}
+.gc-cell.off {
+    background-image: repeating-linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--ink) 6%, transparent) 0 6px,
+        transparent 6px 12px
+    );
+}
+.gc-cell.rest {
+    border-style: none;
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+.gc-cell.over {
+    border-color: var(--pen);
+    background: color-mix(in srgb, var(--sky) 18%, transparent);
+}
+.gc-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.gc-sticker {
+    position: relative;
+}
+.gc-sticker-in {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 118px;
+    min-height: 44px;
+    padding: 10px 8px 8px;
+    color: var(--ink);
+    text-align: left;
+    background: #fff;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
+        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.gc-sticker-in:hover {
+    box-shadow: 0 0 0 1.5px var(--pen);
+}
+.gc-tape {
+    position: absolute;
+    top: -5px;
+    left: 12px;
+    width: 46px;
+    height: 11px;
+    border-radius: 1px;
+    background: color-mix(in srgb, var(--m, var(--sky)) 72%, transparent);
+    mix-blend-mode: multiply;
+    rotate: -2deg;
+}
+.gc-pic {
+    display: grid;
+    place-items: center;
+    height: 56px;
+    overflow: hidden;
+}
+.gc-pic svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.gc-sticker-title {
+    font: 700 12.5px / 1.2 var(--f-read);
+}
+.gc-sticker-sub {
+    font: 400 11.5px / 1.25 var(--f-read);
+    color: var(--ink-soft);
+}
+.gc-sticker.missed .gc-sticker-in {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.gc-sticker.missed .gc-pic {
+    opacity: 0.45;
+}
+.gc-sticker.done .gc-sticker-in,
+.gc-sticker.late .gc-sticker-in {
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ok) 40%, transparent),
+        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.gc-tag {
+    font: 600 13px / 1.3 var(--f-hand);
+    color: var(--pen);
+}
+.gc-tag.off {
+    color: var(--ink-soft);
+}
+.gc-more {
+    position: absolute;
+    left: 8px;
+    bottom: 4px;
+    width: 44px;
+    height: 44px;
+    font: 700 20px / 1 var(--f-read);
+    color: var(--ink-soft);
+    background: none;
+    border: 1.5px dashed var(--grid);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.gc-more:hover {
+    color: var(--pen);
+    border-color: var(--pen);
+}
+.gc-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px 24px;
+    padding-top: 12px;
+    border-top: 1.5px dashed var(--grid);
+}
+.gc-carried {
+    max-width: 62ch;
+    font-size: 14px;
+}
+.gc-carried ul {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.1em;
+}
+
+/* The month: one sheet of squared paper, the days ruled on it in the hand font, each lesson a strip
+   of its subject's tape (done filled, planned outlined, missed hatched, so a state reads in ink
+   alone), weekends and breaks rested and days off hatched as the week's cells are, days before the
+   year begins faded, and the day the family is on looped in pencil. */
+.gc-month {
+    --sq: 20px;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: var(--paper);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: var(--sq) var(--sq);
+    border: 1px solid var(--grid);
+    border-radius: 2px;
+}
+.gc-month-name {
+    padding: 6px 8px 2px;
+    font: 500 10.5px / 1.2 var(--f-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.gc-month-day {
+    position: relative;
+    border-top: 1.5px solid color-mix(in srgb, var(--ink) 22%, var(--grid));
+    border-left: 1.5px solid color-mix(in srgb, var(--ink) 22%, var(--grid));
+}
+/* the seven names come first, so every eighth child from the first is a Monday */
+.gc-month-day:nth-child(7n + 1) {
+    border-left: 0;
+}
+.gc-month-day.weekend,
+.gc-month-day.rest {
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.gc-month-day.off {
+    background-image: repeating-linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--ink) 6%, transparent) 0 6px,
+        transparent 6px 12px
+    );
+}
+.gc-month-day.out .gc-month-in {
+    opacity: 0.45;
+}
+.gc-month-day.before .gc-month-in {
+    opacity: 0.3;
+}
+.gc-month-in {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-height: 92px;
+    padding: 6px 7px 8px;
+    color: var(--ink);
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+.gc-month-in:hover,
+.gc-month-in:focus-visible {
+    background: color-mix(in srgb, var(--sky) 20%, transparent);
+}
+.gc-month-date {
+    font: 700 17px / 1 var(--f-hand);
+}
+.gc-month-note {
+    align-self: flex-start;
+    padding: 1px 8px 2px;
+    font: 600 12px / 1.3 var(--f-hand);
+    color: var(--glow-ink);
+    background: color-mix(in srgb, var(--glow) 70%, transparent);
+    mix-blend-mode: multiply;
+    rotate: -2deg;
+}
+.gc-month-off,
+.gc-month-printed {
+    font-size: 11px;
+    color: var(--ink-soft);
+}
+.gc-strips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+.gc-strips-name {
+    margin-right: 1px;
+    font: 700 11px / 1 var(--f-read);
+    color: var(--ink-soft);
+}
+.gc-strip {
+    --tape: color-mix(in srgb, var(--m, var(--sky)) 72%, transparent);
+    --edge: color-mix(in srgb, var(--m, var(--sky)) 70%, var(--ink));
+    display: block;
+    width: 26px;
+    height: 9px;
+    border: 1.5px solid var(--edge);
+    border-radius: 1px;
+    background: var(--tape);
+    rotate: -2deg;
+}
+.gc-strip.planned {
+    background: transparent;
+}
+.gc-strip.part {
+    background: linear-gradient(90deg, var(--tape) 50%, transparent 50%);
+}
+.gc-strip.missed {
+    background: repeating-linear-gradient(45deg, var(--edge) 0 1.5px, transparent 1.5px 4.5px);
+    border-color: color-mix(in srgb, var(--edge) 55%, transparent);
+}
+/* the loop fills the day's box; its drawing keeps its own shape inside it, so the box is chosen to
+   match the day's, wide on a screen and tall on a phone */
+.gc-month-loop {
+    position: absolute;
+    inset: -6px -4px;
+    pointer-events: none;
+}
+.gc-month-loop-in {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+.gc-month-loop-in svg {
+    display: block;
+}
+
+/* The year: its terms, each child under them. */
+.gc-terms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+}
+.gc-term {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px 16px;
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+}
+.gc-term h3 {
+    font: 700 20px / 1.1 var(--f-hand);
+}
+.gc-term-kid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1.5px dashed var(--grid);
+}
+.gc-term-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    font: 700 18px / 1.1 var(--f-hand);
+}
+.gc-term-name span {
+    font: 400 13px / 1.2 var(--f-read);
+    color: var(--ink-soft);
+}
+.gc-tracks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13.5px;
+}
+.gc-tracks li {
+    display: flex;
+    flex-direction: column;
+}
+.gc-tracks span {
+    color: var(--ink-soft);
+}
+.gc-catch {
+    color: var(--pen) !important;
+}
+.gc-term-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* the world's picture keeps the painter's ratio, and clips what the scaled picture puts outside it */
+.gc-world {
+    flex: none;
+    width: 96px;
+    aspect-ratio: 1500 / 980;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--card);
+}
+.gc-weeks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.gc-week {
+    /* a week is pressed to open it, so it is a target of its own and not a mark 24 px wide */
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: var(--card);
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 4px;
+    cursor: pointer;
+}
+.gc-week.done {
+    background: color-mix(in srgb, var(--mint) 70%, var(--card));
+}
+.gc-week.part {
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--mint) 70%, var(--card)) 50%,
+        var(--card) 50%
+    );
+}
+.gc-week.missed {
+    border-style: dotted;
+}
+.gc-week.none {
+    background-image: repeating-linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--ink) 6%, transparent) 0 4px,
+        transparent 4px 8px
+    );
+}
+.gc-week.now {
+    border-color: var(--pen);
+    border-width: 2px;
+}
+@media (pointer: coarse), (max-width: 700px) {
+    .gc-week {
+        width: 44px;
+    }
+}
+
+/* What the calendar has recorded. */
+.gc-log {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(100%, 76ch);
+    margin-inline: auto;
+}
+.gc-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+}
+.gc-log-list li {
+    display: flex;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+}
+.gc-log-when {
+    flex: none;
+    width: 6em;
+    font: 500 12.5px var(--f-mono);
+    color: var(--ink-soft);
+}
+
+.gc-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.gc-stack-day {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.gc-stack-who {
+    font: 700 16px / 1.1 var(--f-hand);
+}
+
+@media (max-width: 900px) {
+    .gc-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .gc-corner {
+        display: none;
+    }
+    .gc-cell {
+        min-height: 0;
+    }
+    .gc-month-in {
+        min-height: 68px;
+    }
+}
+
+/* Print this month: the sheet alone, in ink. The tapes keep their fill, outline and hatch, which is
+   what carries a state, in the printer's grey rather than the subject's colour, and the paper's
+   squares, the rests and the hatching are asked to print, since a browser drops backgrounds. */
+@media print {
+    .page:has(.gc) :is(.page-top, .page-ground, .page-foot, .page-skip, .page-nav) {
+        display: none;
+    }
+    .page-main:has(.gc) {
+        max-width: none;
+        padding: 0;
+    }
+    .gc > :not(.gc-sheet),
+    .gc-tools {
+        display: none;
+    }
+    .gc-sheet {
+        rotate: 0deg;
+        box-shadow: none;
+    }
+    .gc-month,
+    .gc-month-day,
+    .gc-strip,
+    .gc-month-note {
+        print-color-adjust: exact;
+    }
+    .gc-strip {
+        --tape: #6b6b6b;
+        --edge: #222;
+    }
+    .gc-month-note {
+        color: #222;
+        background: #e6e6e6;
+        mix-blend-mode: normal;
+    }
+    .gc-month-day.weekend,
+    .gc-month-day.rest {
+        background: #f2f2f2;
+    }
+    .gc-month-day.off {
+        background-image: repeating-linear-gradient(45deg, #c4c4c4 0 4px, transparent 4px 10px);
+    }
+    /* the pencil loop round today prints as pencil, not as the pen's blue */
+    .gc-month-loop svg path {
+        stroke: #222;
+    }
+}

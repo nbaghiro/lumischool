@@ -1,0 +1,348 @@
+/* Change the plan (plan.tsx): the family's subjects as one flat sheet per child, side by side where
+   they fit, with the head card above and the terms as a note under them. Light only, every target
+   at least 44 px, and nothing moves under reduced motion. */
+
+.gp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(20px, 3vw, 32px);
+}
+.gp > .postcard {
+    align-self: center;
+    width: min(100%, 700px);
+    min-height: 0;
+}
+.gp-said {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.gp-said-acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 18px;
+}
+
+/* One sheet per child: three across, two from 1100 px, one from 760 px; a family of one has one
+   sheet, centred. */
+.gp-sheets {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+    gap: clamp(18px, 2.2vw, 30px);
+    align-items: start;
+    width: 100%;
+}
+.gp-sheets:has(> :only-child) {
+    max-width: 600px;
+}
+.gp-sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    padding: 24px 20px 18px;
+    background: var(--card);
+    border-radius: 5px;
+    scroll-margin-top: 16px;
+    container-type: inline-size;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
+        0 18px 36px -20px color-mix(in srgb, var(--ink) 42%, transparent);
+}
+.gp-who {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 8px;
+    padding-bottom: 6px;
+}
+.gp-name {
+    margin: 0;
+    font: 700 clamp(32px, 2.6vw, 40px) / 1 var(--f-hand) !important;
+    font-variation-settings:
+        "INFM" 100,
+        "BNCE" 30;
+}
+.gp-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 5px;
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+}
+.gp-who .kid-portrait {
+    width: 56px;
+    margin: -4px -2px 0 0;
+}
+
+/* A subject: its name over its marker, the scale of days a week beside it, and the rail under. */
+.gp-subj {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 0 12px;
+    border-top: 1.5px dashed var(--grid);
+}
+.gp-subj-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 10px;
+}
+.gp-subj-name {
+    align-self: center;
+    margin: 0;
+    font: 700 18.5px / 1.1 var(--f-hand) !important;
+    border-bottom: 4px solid color-mix(in srgb, var(--m, var(--sky)) 72%, transparent);
+}
+.gp-scale {
+    display: flex;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+/* the scale stands beside the subject's name where the sheet is wide enough for the widest name,
+   and under it otherwise, the same for every subject on the sheet */
+@container (max-width: 384px) {
+    .gp-scale {
+        width: 100%;
+    }
+}
+.gp-scale button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font: 700 15px / 1 var(--f-hand);
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.gp-scale button.off {
+    font-size: 12.5px;
+}
+.gp-scale button[aria-pressed="true"] {
+    color: var(--card);
+    background: var(--ink);
+}
+.gp-scale button:hover {
+    background: color-mix(in srgb, var(--ink) 8%, var(--card));
+}
+.gp-scale button[aria-pressed="true"]:hover {
+    background: var(--ink);
+}
+.gp-fact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+}
+.gp-fact b {
+    font-weight: 700;
+    color: var(--ink);
+}
+.gp-rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+.gp-rail i {
+    display: block;
+    width: 11px;
+    height: 11px;
+    background: var(--card);
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 2px;
+}
+.gp-rail i.done {
+    background: var(--m, var(--sky));
+    border-color: var(--ink);
+}
+.gp-rail i.now {
+    background: color-mix(in srgb, var(--pen) 22%, var(--card));
+    border: 2px solid var(--pen);
+}
+.gp-catch {
+    margin: 0;
+    padding-left: 10px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--ink);
+    border-left: 3px solid var(--glow);
+}
+
+/* The subjects not planned this year, each a press away from once a week. */
+.gp-more {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 0 8px;
+    border-top: 1.5px dashed var(--grid);
+}
+.gp-more .kicker,
+.gp-worlds .kicker,
+.gp-terms .kicker {
+    margin: 0;
+}
+.gp-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.gp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 14px 0 12px;
+    font: 700 15px / 1 var(--f-hand);
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px dashed var(--rule-firm);
+    border-radius: 999px;
+    cursor: pointer;
+}
+.gp-chip::before {
+    content: "+";
+    font: 700 18px / 1 var(--f-hand);
+    color: var(--pen);
+}
+.gp-chip span {
+    font: 400 12.5px var(--f-read);
+    color: var(--ink-soft);
+}
+.gp-chip:hover {
+    border-style: solid;
+}
+
+/* Where a term has a world made for it and no work in it yet, one line each. */
+.gp-worlds {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 0 4px;
+    border-top: 1.5px dashed var(--grid);
+}
+.gp-worlds p {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 12px;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* The card a term's world is chosen on: the worlds as pictures, the one in force pressed. */
+.gp-world-picks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.gp-world-pick {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 176px;
+    padding: 6px 6px 8px;
+    text-align: left;
+    color: var(--ink);
+    background: var(--card);
+    border: 2px solid var(--rule-firm);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.gp-world-pick[aria-pressed="true"] {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 2px var(--ink);
+}
+.gp-world-pic {
+    display: block;
+    width: 160px;
+    height: 110px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--paper);
+}
+.gp-world-pic svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.gp-world-name {
+    padding: 4px 4px 0;
+    font: 700 16px / 1.1 var(--f-hand);
+}
+.gp-world-sub {
+    padding: 0 4px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+}
+
+/* The family's terms, one note under the sheets. */
+.gp-terms {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: min(100%, 560px);
+    padding: 22px 24px 18px;
+    background: var(--card);
+    border-radius: 5px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
+        0 18px 36px -20px color-mix(in srgb, var(--ink) 42%, transparent);
+}
+.gp-terms ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 18px;
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+    list-style: none;
+}
+.gp-terms li b {
+    font: 700 16px var(--f-hand);
+}
+.gp-terms-acts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 16px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+}
+
+@media (max-width: 1100px) {
+    .gp-sheets {
+        grid-template-columns: repeat(min(var(--n, 2), 2), minmax(0, 1fr));
+    }
+}
+@media (max-width: 760px) {
+    .gp-sheets {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+@media (max-width: 700px) {
+    .gp-sheet {
+        padding: 22px 18px 14px;
+    }
+    .gp-terms {
+        padding: 20px 18px 16px;
+    }
+}

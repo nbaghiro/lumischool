@@ -1,0 +1,22 @@
+/* The grown-ups' map (map.tsx): the map of every world, and a world's roll as written, each filling
+   the page under the bar as the child's map does. */
+.mp {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+.mp-map,
+.mp-world {
+    flex: 1;
+    min-height: 0;
+}
+/* the school as written is the whole country, so the map has no "this year" to come home to */
+.mp-map .ow-home {
+    display: none;
+}
+.mp-note {
+    margin: 0;
+    padding: 32px var(--gut);
+}

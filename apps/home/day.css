@@ -1,0 +1,117 @@
+/* Printing a whole day (day.tsx): the card that says what will print, and the sheets under it in the
+   order they come out, each starting its own page on paper. Light only, every target at least 44 px. */
+
+.gd {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--bar-h));
+    padding: clamp(16px, 2.5vw, 32px);
+    gap: clamp(20px, 3vw, 36px);
+    background-color: var(--paper);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+.gd-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 8px 16px;
+    align-self: center;
+    width: min(100%, 900px);
+    padding: 12px;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.gd-part {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.gd-part legend {
+    font: 500 10.5px / 1.2 var(--f-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+}
+.gd-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.gd-day {
+    min-height: 44px;
+}
+.gd-line {
+    flex: 1 1 240px;
+    margin: 0;
+    font-size: 15px;
+}
+.gd-sheets {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 36px);
+    align-items: center;
+}
+.gd-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.gd-whose {
+    margin: 0;
+    font: 500 12px / 1.2 var(--f-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+@media print {
+    .page:has(.gd) :is(.page-top, .page-ground, .page-foot, .page-skip, .page-nav) {
+        display: none;
+    }
+    .page-main:has(.gd) {
+        max-width: none;
+        padding: 0;
+    }
+    .page-cards:has(.gd),
+    .gd {
+        width: 100%;
+        max-width: none;
+        gap: 0;
+    }
+    .gd {
+        min-height: 0;
+        padding: 0;
+        background: none;
+    }
+    /* The controls are the grown-up's screen, not part of what comes out of the printer. */
+    .gd-controls {
+        display: none;
+    }
+    /* every sheet starts its own page, so one child's pages never begin on another's */
+    .gd-sheet {
+        break-before: page;
+        gap: 4px;
+    }
+    .gd-sheet:first-child {
+        break-before: auto;
+    }
+    .gd-sheets .ls-sheet {
+        width: 100% !important;
+        box-shadow: none;
+        rotate: none;
+    }
+    /* a drawing kept short enough to share a page with what is above it, and never split */
+    .gd-sheets :is(.scene-tile, .ls-q) {
+        break-inside: avoid;
+    }
+    .gd-sheets .scene-tile svg {
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 14cm;
+    }
+}
