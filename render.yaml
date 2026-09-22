@@ -1,0 +1,46 @@
+# Render Blueprint for lumischool. One web service (Node) runs server/http.ts, which serves the built
+# apps AND /api on one origin (see .docs/auth.md, "Hosts"). Postgres is Neon (external); set
+# DATABASE_URL and APP_DATABASE_URL in the dashboard.
+services:
+    - type: web
+      name: lumischool
+      runtime: node
+      region: ohio # sits with the Neon project's aws-us-east-2; galleo's pair is oregon and aws-us-west-2
+      plan: starter # `free` spins down after 15 min idle and silently drops preDeployCommand; `standard` (2 GB) if the build OOMs
+      branch: main
+      autoDeploy: true
+      # Migrations run at the END of the build (&&: a failed build never reaches them; a failed
+      # migration fails the build, so the old deploy stays live). galleo keeps them here on the same
+      # plan; preDeployCommand is the alternative once the plan is settled (.docs/db.md).
+      # `--include=dev`: NODE_ENV=production below makes `npm ci` skip devDependencies, and the build
+      # needs vite and @resvg/resvg-js (tools/brand.ts) from there. `pack` runs AFTER `build`, since
+      # `vite build` empties dist/ and the pack is written under dist/pack.
+      buildCommand: npm ci --include=dev && npm run build && npm run pack && npm run db:migrate
+      startCommand: npm start # node --import ./tools/scripts/resolve.ts server/http.ts, with LUMISCHOOL_ENV from the env below
+      healthCheckPath: /api/health
+      envVars:
+          - key: NODE_ENV
+            value: production
+          - key: LUMISCHOOL_ENV # configFrom: secure cookies, the real origin, a required pepper, no dev code
+            value: production
+          - key: DB_CONNECT_TIMEOUT # seconds; long enough for a suspended Neon compute to wake
+            value: "15"
+          - key: DB_STATEMENT_TIMEOUT # milliseconds, set per transaction by withFamily
+            value: "10000"
+          - key: PACK_DIR # where `npm run pack` wrote, relative to the repo root Render runs from
+            value: dist/pack
+          - key: CLIENT_IP_HEADER # the trusted proxy header for the network limits; verified by the forged-header test
+            value: cf-connecting-ip
+          - key: AUTH_PEPPER
+            generateValue: true # Render mints a strong secret once; rotating it voids every code and PIN hash
+          # --- secrets: set in the Render dashboard (never committed) ---
+          - key: DATABASE_URL # Neon DIRECT connection string, the owner role: migrations and the catalogue only
+            sync: false
+          - key: APP_DATABASE_URL # Neon POOLED connection string, role lumischool_app (NOBYPASSRLS): what answers requests
+            sync: false
+          - key: APP_ORIGIN # the public origin, e.g. https://lumischool.onrender.com, then the custom domain
+            sync: false
+          - key: RESEND_API_KEY # sign-in codes and every other email; production refuses to start without it
+            sync: false
+          - key: RESEND_FROM # the From address; no default, since the sending domain is not finalized
+            sync: false
