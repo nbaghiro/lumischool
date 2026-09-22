@@ -1,0 +1,6 @@
+/* The guide on the bar of a child's page (bar.tsx), at the end of the room between the mark and the
+   grown-ups' tab, 48 px, still. */
+.kid-bar {
+    justify-content: flex-end;
+    padding-right: 6px;
+}

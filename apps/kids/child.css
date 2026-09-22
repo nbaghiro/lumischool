@@ -1,0 +1,46 @@
+/* A child's map fills the page under the bar (child.tsx). The one thing over it is the line for when
+   the internet is away, and the way back to the pictures for a family with more than one child. On a
+   phone that strip sits above the map instead, so nothing is laid over a sheet. Today's sheets are
+   drawn and measured out of sight (lesson.tsx) before the roll is laid out round them. */
+.kid-map {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+.kid-map-world {
+    flex: 1;
+    min-height: 0;
+}
+.kid-map-note {
+    margin: 0;
+    padding: 32px var(--gut);
+}
+.kid-map-over {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 7;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: calc(100% - 24px);
+}
+.kid-map-over:empty {
+    display: none;
+}
+.kid-map-over .offline-note {
+    margin: 0;
+}
+@media (max-width: 700px) {
+    .kid-map-over {
+        position: static;
+        order: -1;
+        align-items: stretch;
+        max-width: none;
+        padding: 8px;
+        gap: 8px;
+    }
+}
