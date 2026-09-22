@@ -1,0 +1,811 @@
+/* The site: the sample child's map edge to edge under a sheet taped onto it, and the sections below
+   it. Light only, every target at least 44 px, and what moves stops under reduced motion. The
+   pictures are drawn into the boxes this file sizes, so a picture arriving never moves the page. */
+
+* {
+    box-sizing: border-box;
+}
+
+.site {
+    --rule: color-mix(in srgb, var(--ink) 14%, var(--paper));
+    --rule-firm: color-mix(in srgb, var(--ink) 30%, var(--paper));
+    --field: color-mix(in srgb, var(--mint) 12%, var(--paper));
+
+    --t-display: clamp(28px, 2.65vw, 38px);
+    --t-h2: clamp(22px, 2.4vw, 33px);
+    --t-h3: clamp(17px, 1.2vw, 19px);
+    --t-lead: clamp(16.5px, 1.1vw, 19px);
+    --t-body: 16px;
+    --t-small: 14px;
+    --t-label: 11px;
+
+    --gut: clamp(16px, 3vw, 44px);
+    --gap: clamp(16px, 1.6vw, 26px);
+    --wrap: 1280px;
+    /* the bar's height, which the sticky map below it keeps clear of */
+    --bar-h: 62px;
+
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 var(--t-body) / 1.6 var(--f-read);
+}
+
+.site h1,
+.site h2,
+.site h3 {
+    margin: 0;
+    font-family: var(--f-read);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+}
+.site h1 {
+    font-size: var(--t-display);
+    line-height: 1.07;
+}
+.site h2 {
+    font-size: var(--t-h2);
+    line-height: 1.14;
+}
+.site h3 {
+    font-size: var(--t-h3);
+    line-height: 1.25;
+}
+.site p {
+    margin-block: 0;
+}
+.site :focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 3px;
+}
+.site .kicker {
+    font: 500 var(--t-label) / 1.3 var(--f-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.site .lead {
+    font-size: var(--t-lead);
+    line-height: 1.55;
+}
+.site .note {
+    font-size: var(--t-small);
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+
+.site-skip {
+    position: absolute;
+    left: -9999px;
+}
+.site-skip:focus {
+    left: 12px;
+    top: 12px;
+    z-index: 40;
+    background: var(--glow);
+    color: var(--glow-ink);
+    padding: 8px 14px;
+}
+
+/* The engine's components name their pictures for a screen reader with a heading of class `sr`
+   (world.tsx, overworld.tsx), which must never draw. */
+.site .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* a picture's box is white paper before anything is drawn in it */
+.site .paper {
+    background-color: var(--paper);
+}
+
+.site-wrap {
+    width: 100%;
+    max-width: var(--wrap);
+    margin-inline: auto;
+    padding-inline: var(--gut);
+}
+
+.site .btn {
+    white-space: nowrap;
+}
+.site .acts {
+    gap: 10px;
+}
+
+/* The bar looks the same at the top of the page as it does once it is stuck over the sections. */
+.site-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--paper);
+    border-bottom: 1.5px solid transparent;
+    transition: border-color 0.2s ease;
+}
+.site-bar.moved {
+    border-bottom-color: var(--rule-firm);
+}
+.site-bar-in {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px clamp(16px, 2.2vw, 34px);
+    min-height: var(--bar-h);
+}
+.site-secnav {
+    display: flex;
+    gap: clamp(14px, 1.8vw, 28px);
+    margin-left: clamp(10px, 2vw, 34px);
+}
+.site-secnav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font: 600 15px / 1 var(--f-read);
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+.site-secnav a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--glow);
+}
+/* The way in: a quiet link and the button when signed out, the one button back when signed in. */
+.site-ways {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+/* the bar's button is the shared one at the bar's size */
+.site-ways .btn {
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 14.5px;
+}
+.site-in {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font: 600 15px / 1 var(--f-read);
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+.site-in:hover {
+    color: var(--ink);
+    border-bottom-color: var(--glow);
+}
+
+/* The opening: the map runs edge to edge, sized to the composition it holds rather than to the
+   window, and fades into the page below rather than stopping at an edge. */
+.site-opening {
+    position: relative;
+    scroll-margin-top: var(--bar-h);
+    /* the tape runs past the sheet's corners, and never past the page's edge */
+    overflow-x: clip;
+}
+.site-map {
+    height: clamp(560px, 60vw, 900px);
+}
+.site-over {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    padding-block: clamp(24px, 16vw - 110px, 128px) clamp(20px, 3vw, 44px);
+    pointer-events: none;
+}
+.site-sheet {
+    position: relative;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(10px, 1vw, 15px);
+    max-width: 31rem;
+    padding: clamp(20px, 2.2vw, 30px);
+    background-color: var(--card);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 10px 26px -12px color-mix(in srgb, var(--ink) 30%, transparent);
+    rotate: -0.6deg;
+}
+.site-sheet .lead {
+    max-width: 34ch;
+}
+.site-sheet .under {
+    max-width: 46ch;
+    font-size: var(--t-small);
+    color: var(--ink-soft);
+    text-wrap: balance;
+}
+/* two strips of the journal's tape across the sheet's top corners, torn at both ends as the
+   journal's own (.j-tape) is */
+.site-tape {
+    position: absolute;
+    top: -14px;
+    left: -20px;
+    width: 92px;
+    height: 28px;
+    background: var(--glow);
+    opacity: 0.62;
+    mix-blend-mode: multiply;
+    clip-path: polygon(
+        0 12%,
+        5% 0,
+        12% 8%,
+        50% 3%,
+        88% 7%,
+        95% 0,
+        100% 14%,
+        97% 52%,
+        100% 90%,
+        93% 100%,
+        50% 94%,
+        6% 100%,
+        0 86%,
+        3% 50%
+    );
+    rotate: -7deg;
+}
+.site-tape.r {
+    left: auto;
+    right: -20px;
+    rotate: 6deg;
+}
+/* the map's lines run under the caption, so it takes the halo the map gives its own names */
+.site-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+    text-shadow:
+        0 0 3px var(--paper),
+        0 0 6px var(--paper),
+        0 0 12px var(--paper);
+}
+/* On a phone the sheet comes first, taped over the top edge of the map, and the map below it is the
+   harbour and its bay. */
+@media (max-width: 700px) {
+    .site-opening {
+        display: flex;
+        flex-direction: column;
+    }
+    .site-over {
+        position: relative;
+        order: -1;
+        padding-block: 16px 0;
+        margin-bottom: -26px;
+    }
+    .site-sheet {
+        max-width: none;
+        rotate: -0.4deg;
+    }
+    .site-map {
+        height: clamp(380px, 112vw, 480px);
+    }
+    .site-cap {
+        position: relative;
+        bottom: auto;
+        min-height: calc(3 * 1.55em);
+        padding-bottom: 14px;
+    }
+}
+
+.site-facts {
+    border-bottom: 1.5px solid var(--rule-firm);
+    background: var(--paper);
+}
+/* as tall as a fact before the facts are read from the corpus */
+.site-facts-in {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    min-height: calc(2 * clamp(14px, 1.6vw, 22px) + clamp(26px, 2.6vw, 38px) + 7px + 1.45 * 14px);
+}
+.site-fact {
+    padding-block: clamp(14px, 1.6vw, 22px);
+    padding-inline: var(--gap);
+}
+.site-fact:first-child {
+    padding-inline-start: 0;
+}
+.site-fact:last-child {
+    padding-inline-end: 0;
+}
+.site-fact + .site-fact {
+    border-left: 1.5px solid var(--rule-firm);
+}
+.site-fact .n {
+    display: block;
+    font: 700 clamp(26px, 2.6vw, 38px) / 1 var(--f-read);
+    letter-spacing: -0.02em;
+}
+.site-fact .k {
+    display: block;
+    max-width: 27ch;
+    min-height: 1.45em;
+    margin-top: 7px;
+    font-size: var(--t-small);
+    line-height: 1.45;
+    color: var(--ink-soft);
+}
+
+.site-sec {
+    padding-block: clamp(46px, 5.4vw, 96px);
+    border-bottom: 1.5px solid var(--rule);
+    /* a link to a section lands below the sticky bar rather than under it */
+    scroll-margin-top: var(--bar-h);
+}
+.site-sec.field {
+    background: var(--field);
+}
+.site-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: clamp(26px, 3vw, 46px);
+}
+.site-head .kicker {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+/* the section's number is set larger than its label, as a figure */
+.site-head .num {
+    font: 700 14px var(--f-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+}
+.site-head h2 {
+    max-width: 26ch;
+}
+.site-head .lead {
+    max-width: 64ch;
+    color: var(--ink-soft);
+}
+figure.site-fig {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+}
+figure.site-fig figcaption {
+    max-width: 90ch;
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+
+/* The day as a still picture (page.tsx): today's sheet in the middle of the frame, with the world
+   that stands beside it round it. The page measures `--k`, the scale that brings what stands beside
+   today's sheet inside the frame, and `--lift`, how far the roll is drawn up it. The roll's box is
+   taller than the frame by the most it is ever lifted, so its foot never shows, and the world's name
+   is not drawn over it, since the caption below says where the day is. */
+.site-roll {
+    position: relative;
+    height: clamp(420px, 52vw, 660px);
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 14px;
+    overflow: clip;
+    -webkit-mask-image: linear-gradient(180deg, #000 86%, transparent);
+    mask-image: linear-gradient(180deg, #000 86%, transparent);
+}
+.site-roll .site-roll-world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(100% / var(--k, 1));
+    height: calc((100% + 240px) / var(--k, 1));
+    transform-origin: 0 0;
+    transform: translateY(calc(-1 * var(--lift, 0px))) scale(var(--k, 1));
+}
+.site-roll .wd-where {
+    display: none;
+}
+.site-day-foot {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--gap) clamp(24px, 3vw, 56px);
+    align-items: start;
+    margin-top: clamp(26px, 3vw, 44px);
+    padding-top: clamp(22px, 2.4vw, 34px);
+    border-top: 1.5px solid var(--rule-firm);
+}
+/* One question drawn a few of the ways it can be drawn, side by side. */
+.site-versions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.site-version {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: clamp(130px, 13vw, 180px);
+    padding: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 10px;
+}
+/* a scene drawn alone in a box: its width in squares, at the square the box's size gives it (sample.ts) */
+.site-version > svg.scene-svg,
+.site-mount > svg.scene-svg {
+    display: block;
+    width: calc(var(--w) * var(--sq));
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+}
+.site-version:nth-child(odd) {
+    rotate: -1.2deg;
+}
+.site-version:nth-child(even) {
+    rotate: 1deg;
+}
+/* The lesson printed: the sheet as a child has it, in the printer's ink (sample.ts), scaled to the
+   width of a box as tall as an A4 sheet is for that width, which clips the sheet at the page's foot. */
+.site-print {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #fff;
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 10px;
+    box-shadow: 0 16px 30px -26px var(--shade);
+}
+.site-print .ls-sheet {
+    box-shadow: none;
+    border-radius: 0;
+}
+.site-day-print {
+    justify-self: end;
+    width: 100%;
+    max-width: 340px;
+}
+
+.site-journey {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(24px, 3vw, 56px);
+    align-items: start;
+}
+/* room under the last stop, so the map is still fully in view when that stop reaches the middle */
+.site-steps {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 22vh;
+}
+.site-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    min-height: min(48vh, 480px);
+    padding-block: 28px;
+    padding-left: 22px;
+}
+/* the stop the map is at: a mark on the path down the left of the stops */
+.site-step::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    border-left: 2.5px dashed var(--rule-firm);
+}
+.site-step.on::before {
+    border-left-style: solid;
+    border-left-color: var(--ink);
+}
+.site-step p:not(.kicker):not(.note) {
+    max-width: 52ch;
+}
+.site-journey-map {
+    position: sticky;
+    top: calc(var(--bar-h) + 22px);
+    height: min(calc(100vh - var(--bar-h) - 44px), 760px);
+}
+.site-journey-map > .site-window {
+    height: 100%;
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 14px;
+    overflow: clip;
+}
+.site-journey-world {
+    height: 100%;
+}
+
+.site-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+}
+.site-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px 18px;
+    background: var(--card);
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 12px;
+}
+/* the world's tape at the card's top, the one way a world touches paper in the journal */
+.site-card::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -11px;
+    width: 86px;
+    height: 22px;
+    margin-left: -43px;
+    background: var(--accent);
+    opacity: 0.62;
+    mix-blend-mode: multiply;
+    transform: rotate(-2.5deg);
+}
+/* a place of the sample child's map alone (page.tsx MapPicture): the card's heading names its world,
+   so the map's names and its buttons are not drawn */
+.site-pic {
+    position: relative;
+    height: 200px;
+    overflow: clip;
+    border-radius: 8px;
+}
+.site-pic-map {
+    height: 100%;
+}
+.site-pic .ow-name,
+.site-pic .ow-year,
+.site-pic .ow-title,
+.site-pic .m-node {
+    display: none;
+}
+.site-card .state {
+    font-weight: 700;
+    font-size: var(--t-small);
+}
+.site-card.here .state {
+    color: var(--pen);
+}
+.site-card.ahead .state {
+    color: var(--ink-soft);
+}
+.site-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 4px 0 0;
+    padding-left: 18px;
+    font-size: var(--t-small);
+    line-height: 1.5;
+}
+/* What the map never does, said as a row of short plain facts: labels with a highlighter stroke
+   under each, not buttons. */
+.site-never {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    margin: clamp(26px, 3vw, 44px) 0 0;
+    padding: 0;
+    list-style: none;
+}
+.site-never li {
+    padding: 2px 4px;
+    font: 700 clamp(16px, 1.3vw, 19px) / 1.3 var(--f-read);
+    background: linear-gradient(
+        transparent 58%,
+        color-mix(in srgb, var(--glow) 55%, transparent) 58%,
+        color-mix(in srgb, var(--glow) 55%, transparent) 92%,
+        transparent 92%
+    );
+}
+.site .site-change {
+    max-width: 60ch;
+    margin-top: 18px;
+}
+
+.site-subjects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: var(--gap);
+}
+.site-subject {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px 16px;
+    background: var(--card);
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 12px;
+}
+.site-subject .art {
+    position: relative;
+    height: 96px;
+    margin-bottom: 8px;
+}
+.site-subject .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+/* a subject drawn from the shelf rather than stood in from a world, sized to the tile */
+.site-subject .art > svg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: auto;
+    max-width: 150px;
+    height: 100%;
+}
+.site-subject .count {
+    font: 500 var(--t-label) / 1 var(--f-mono);
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+.site .site-rest {
+    max-width: 70ch;
+    margin-top: 18px;
+}
+
+.site-lessons {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+}
+.site-lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: clamp(12px, 1.2vw, 18px);
+    background: var(--paper);
+    border: 1.5px solid var(--rule-firm);
+    border-radius: 14px;
+}
+.site-lesson .site-pic,
+.site-mount {
+    height: 170px;
+    border-radius: 10px;
+}
+.site-mount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--rule);
+}
+
+.site-foot {
+    padding-block: clamp(34px, 3.6vw, 60px) 72px;
+}
+.site-foot .note {
+    max-width: 34ch;
+    margin-top: 12px;
+}
+
+@media (max-width: 1080px) {
+    .site-cards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .site-card {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        grid-template-rows: auto auto auto 1fr;
+        column-gap: 18px;
+    }
+    .site-card .site-pic {
+        grid-row: 1 / -1;
+        height: 100%;
+        min-height: 190px;
+    }
+    .site-lessons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    /* The map goes above the stops and stays there as they scroll under it. */
+    .site-journey {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+    .site-journey-map {
+        order: -1;
+        z-index: 3;
+        top: var(--bar-h);
+        height: clamp(260px, 44vh, 420px);
+        margin-inline: calc(-1 * var(--gut));
+        padding: 0 var(--gut) 10px;
+        background: var(--field);
+    }
+    .site-steps {
+        padding-bottom: 0;
+    }
+    .site-step {
+        min-height: 50vh;
+    }
+}
+@media (max-width: 760px) {
+    .site-secnav {
+        display: none;
+    }
+    .site-facts-in {
+        gap: clamp(14px, 4vw, 22px) var(--gap);
+    }
+    .site-fact,
+    .site-fact + .site-fact {
+        border-left: 0;
+        padding-inline: 0;
+    }
+    .site-day-foot {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .site-day-print {
+        justify-self: start;
+    }
+    .site-card {
+        display: flex;
+    }
+    .site-card .site-pic {
+        height: 190px;
+    }
+}
+@media (max-width: 700px) {
+    .site-roll {
+        height: 520px;
+    }
+}
+/* the logo and the way in share a phone's bar, so both give a little (mark.css sizes the logo) */
+@media (max-width: 420px) {
+    .site-bar-in {
+        column-gap: 12px;
+    }
+}
+@media (max-width: 370px) {
+    .site-ways .btn {
+        padding: 0 12px;
+    }
+}
+@media (max-width: 520px) {
+    .site-lessons {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .site-subjects {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+    .site-subject {
+        padding: 12px;
+    }
+    .site-subject .art {
+        height: 72px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-bar {
+        transition: none;
+    }
+}
