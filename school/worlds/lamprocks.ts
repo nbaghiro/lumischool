@@ -1,0 +1,137 @@
+// The lamp rocks: pink granite islets at the north mouth of the strait, past the harbour's lighthouse,
+// where small lamps flash patterns to bring the boats in. A place the first coding lessons bring a
+// child to in any year.
+import type { World } from "./types";
+
+export const lampRocks: World = {
+    id: "lamp-rocks",
+    name: "The lamp rocks",
+    about: "Pink granite rocks in the sea at the blue hour, with sea thrift in the cracks, puffins on the ledges and a lamp station whose lamps flash patterns to guide the boats. A place for the first coding lessons, in any year.",
+    mood: "the blue hour at sea",
+    arrive: "These are the lamp rocks. Watch the lamps.",
+    light: {
+        ground: "berry",
+        sky: "sky",
+        low: "berry",
+        accent: "glow",
+        wash: 0.7,
+        deep: "gloaming",
+    },
+    ground: "granite",
+    path: "cards",
+    horizon: {
+        far: [
+            { art: "lighthouse", at: 0.12, k: 0.4, sink: -10 },
+            { art: "boat", at: 0.36, k: 0.6, sink: 40 },
+            { art: "lamp-station", at: 0.72, k: 0.55, sink: -6, params: { lamps: 3, lit: 1 } },
+        ],
+        gate: "lamp-station",
+    },
+    landmarks: ["lamp-station", "bunting", "boat", "lighthouse"],
+    creatures: ["puffins", "seal", "gull", "crabs"],
+    weather: "starry",
+    seasons: ["autumn"],
+    guide: "glow",
+    reaches: [
+        { art: "lamp-station", when: ["art:lamps"], says: "Lamps on and off can count." },
+        {
+            art: "lamp-station",
+            when: ["art:tune", "art:chimebars"],
+            says: "Each lamp rings a note in turn.",
+        },
+        { art: "lighthouse", when: ["skill:coding.data"], says: "Every light has a colour code." },
+        {
+            art: "bunting",
+            when: ["skill:coding.events"],
+            says: "When the flag goes up, the boats start.",
+        },
+        { art: "boat", when: ["art:turtle"], says: "Steer the boat: forward, then turn." },
+        { art: "seal", when: ["skill:coding.debugging"], says: "One step is wrong. Find it." },
+        {
+            art: "puffins",
+            when: ["skill:coding.repetition"],
+            says: "Each puffin dips, rises, dips again.",
+        },
+        {
+            art: "gull",
+            when: ["skill:coding.sequences"],
+            says: "Do each step in order, one by one.",
+        },
+    ],
+    offers: {
+        landmarks: ["lamp-station", "bunting", "boat", "lighthouse"],
+        creatures: ["puffins", "seal", "gull", "crabs"],
+        grounds: ["berry", "sky"],
+        guides: ["glow", "firefly", "bird"],
+        weather: ["starry", "breezy"],
+    },
+    wants: [
+        {
+            what: "Signal flags on a mast",
+            why: "A string of flags that spells a message, one flag a letter, which is a code a child can read without a lamp.",
+        },
+        {
+            what: "A limpet on the rock",
+            why: "Something small to find at low tide beside the lamps, and a creature that holds on through every wave.",
+        },
+    ],
+    chapter: {
+        story: "Not a term's world but a place the first coding lessons bring a child to, in any year. A path of arrow cards leads over the granite to a lamp station, where each lamp waits for its own pattern.",
+        moment: {
+            art: "lamp-station",
+            says: "Every lamp flashes its own pattern.",
+            params: { lamps: 5, lit: 1 },
+            before: { lamps: 5, lit: 0 },
+        },
+        secret: { art: "seal", says: "A seal asleep on the warm rock." },
+        by: "sea",
+        rare: { art: "gannet", way: "sky", from: "right" },
+    },
+    site: {
+        kind: "track",
+        hosts: {
+            subjects: [],
+            lessons: [
+                "coding-following-instructions",
+                "coding-one-step-at-a-time",
+                "coding-saying-it-in-order",
+                "coding-arrows-to-the-gem",
+                "coding-a-pattern-that-never-ends",
+                "coding-colour-by-code",
+                "coding-one-card-is-wrong",
+                "coding-when-the-flag-is-tapped",
+                "coding-a-message-in-flashes",
+                "coding-turning-as-well",
+                "coding-instructions-for-a-snack",
+                "coding-doing-it-again",
+                "coding-drawing-with-a-program",
+                "coding-a-dance-in-a-loop",
+                "coding-a-tune-from-a-program",
+                "coding-finding-the-mistake",
+                "coding-two-ways-to-start",
+                "coding-lamps-that-count",
+            ],
+            label: "coding, first steps",
+        },
+        land: { terrain: "lamp-rocks", near: ["harbour"] },
+    },
+    map: {
+        spots: [
+            { art: "gull-flying", x: -420, y: -300, k: 0.55, is: "life" },
+            { art: "puffins", x: 430, y: 110, k: 0.8 },
+            { art: "crabs", x: -380, y: 200, k: 0.55 },
+            {
+                art: "lamp-station",
+                x: 60,
+                y: 320,
+                k: 1.15,
+                is: "gate",
+                params: { lamps: 5, lit: 0 },
+            },
+            { art: "boat", x: -500, y: 430, k: 0.6, flip: true },
+            { art: "seal", x: 660, y: 440, k: 0.5, is: "secret" },
+        ],
+        stamp: { x: -640, y: -420 },
+        isle: true,
+    },
+};

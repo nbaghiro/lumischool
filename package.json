@@ -10,6 +10,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "test:engine": "node --import ./tools/scripts/resolve.ts --test 'engine/**/__tests__/*.test.ts'",
+        "test:school": "node --import ./tools/scripts/resolve.ts --test 'school/**/__tests__/*.test.ts'",
         "art": "node --import ./tools/scripts/resolve.ts tools/scripts/art.ts",
         "pack": "node --import ./tools/scripts/resolve.ts tools/pack.ts",
         "levels:baseline": "node --import ./tools/scripts/resolve.ts tools/scripts/levels-baseline.ts"

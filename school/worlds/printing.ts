@@ -1,0 +1,150 @@
+// The printing works: a small island below the strait where a press sets metal letters into words
+// and pages dry on lines in the wind. A place the first writing lessons, and the first lessons on
+// what things are made of, bring a child to in any year.
+import type { World } from "./types";
+
+export const printingWorks: World = {
+    id: "printing-works",
+    name: "The printing works",
+    about: "A windy island yard of cobbles with metal letters dropped between them, pages drying on lines, a shop with a sign to write and an old press that prints the island's first book. A place for the first writing lessons, and for what things are made of, in any year.",
+    mood: "a fresh windy morning",
+    arrive: "This is the printing works. Smell the ink.",
+    light: { ground: "sky", sky: "sky", low: "glow", accent: "berry", wash: 0.6 },
+    ground: "cobbles",
+    path: "type",
+    horizon: {
+        far: [
+            { art: "houses", at: 0.14, k: 0.6, params: { count: 3, windows: 2 } },
+            { art: "washing", at: 0.5, k: 0.75, params: { count: 5, pattern: 2 } },
+            { art: "hall", at: 0.84, k: 0.5, params: { rows: 2, cols: 3, lit: 0 } },
+        ],
+        gate: "printing-press",
+    },
+    landmarks: ["printing-press", "washing", "shop-front", "houses"],
+    creatures: ["dog", "gull", "hedgehog"],
+    weather: "breezy",
+    seasons: ["spring"],
+    guide: "stub",
+    reaches: [
+        {
+            art: "printing-press",
+            when: ["skill:chemistry.materials"],
+            says: "Wood, metal, paper: which one bends?",
+        },
+        {
+            art: "gull",
+            when: ["skill:writing.speech", "skill:writing.questions"],
+            says: "What does the gull say? Write it.",
+        },
+        {
+            art: "printing-press",
+            when: ["skill:writing.letter-formation", "skill:writing.joining"],
+            says: "Each letter starts in its own place.",
+        },
+        {
+            art: "printing-press",
+            when: ["skill:writing.capitals", "skill:writing.punctuation"],
+            says: "Capital letters live in the upper case.",
+        },
+        {
+            art: "shop-front",
+            when: ["skill:writing.signs", "skill:writing.labels", "skill:writing.captions"],
+            says: "Every shop needs a sign. Write it.",
+        },
+        {
+            art: "dog",
+            when: ["skill:writing.describing", "skill:writing.word-classes"],
+            says: "Describe the dog so it can be found.",
+        },
+        {
+            art: "washing",
+            when: ["skill:writing.lists", "skill:writing.sequencing", "skill:writing.instructions"],
+            says: "Hang the pages in order on the line.",
+        },
+        {
+            art: "houses",
+            when: ["skill:writing.sentences", "skill:writing.spelling"],
+            says: "Set the words in a line.",
+        },
+    ],
+    offers: {
+        landmarks: ["printing-press", "washing", "shop-front", "houses"],
+        creatures: ["dog", "gull", "hedgehog", "cat"],
+        grounds: ["sky", "glow"],
+        guides: ["stub", "hand", "bird"],
+        weather: ["breezy", "clear"],
+    },
+    wants: [
+        {
+            what: "Trays of metal letters",
+            why: "The printer's upper and lower cases, which is where capital and small letters get their names, drawn so a child can find a letter in its box.",
+        },
+        {
+            what: "Ink rollers and a stack of paper",
+            why: "What the press needs before it prints, and a picture for which materials bend, soak up ink or stay hard.",
+        },
+    ],
+    chapter: {
+        story: "Not a term's world but a place the first writing lessons bring a child to, in any year. A path of metal letters runs across a windy yard to an old press, which waits to print the island's first book.",
+        moment: {
+            art: "printing-press",
+            says: "The press prints the island's first book.",
+            params: { printed: 1 },
+            before: { printed: 0 },
+        },
+        secret: { art: "hedgehog", says: "A hedgehog asleep in the paper scraps." },
+        by: "sea",
+        rare: { art: "loose-pages", way: "sky", from: "left" },
+    },
+    site: {
+        kind: "track",
+        hosts: {
+            subjects: [],
+            lessons: [
+                "writing-letters-on-the-line",
+                "writing-where-each-letter-starts",
+                "writing-writing-a-word-you-hear",
+                "writing-a-letter-family",
+                "writing-a-capital-and-a-full-stop",
+                "writing-a-sentence-from-cards",
+                "writing-a-sentence-about-a-picture",
+                "writing-labels-and-a-caption",
+                "writing-a-list",
+                "writing-joining-letters",
+                "writing-words-that-describe",
+                "writing-describe-it-so-it-can-be-found",
+                "writing-signs-that-tell-you",
+                "writing-question-and-exclamation",
+                "writing-joined-with-and",
+                "writing-speech-bubbles",
+                "writing-the-recipe-the-kitchen-is-cooking",
+                "writing-a-place-in-a-world",
+                "chemistry-what-things-are-made-of",
+                "chemistry-hard-soft-bendy",
+                "chemistry-the-right-material",
+                "chemistry-squash-bend-twist-stretch",
+                "chemistry-looking-closely",
+                "chemistry-does-it-soak-up-water",
+                "chemistry-same-shape-different-material",
+                "chemistry-puzzles-1",
+                "chemistry-year-review-1",
+                "chemistry-materials-tested-four-ways",
+            ],
+            label: "first writing and materials",
+            needs: "A lesson on making a small book of one's own, with a cover, a title and pages in order, which the writing track has not written yet.",
+        },
+        land: { terrain: "printing-works", near: ["railway"] },
+    },
+    map: {
+        spots: [
+            { art: "gull-flying", x: 320, y: -330, k: 0.55, is: "life" },
+            { art: "washing", x: -430, y: 170, k: 0.75, params: { count: 5, pattern: 2 } },
+            { art: "shop-front", x: 460, y: 170, k: 0.6 },
+            { art: "printing-press", x: 40, y: 380, k: 1.05, is: "gate", params: { printed: 0 } },
+            { art: "dog", x: -470, y: 430, k: 0.55 },
+            { art: "hedgehog", x: 660, y: 440, k: 0.5, is: "secret" },
+        ],
+        stamp: { x: -640, y: -420 },
+        isle: true,
+    },
+};
