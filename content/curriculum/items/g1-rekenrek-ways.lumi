@@ -1,0 +1,24 @@
+# Low floor, high ceiling: any child can find one way, and finding them all is a pattern.
+item count.rekenrek-ways v=1 stars=3 skills=[counting.to-twenty, reasoning.all-the-ways] {
+  title "Every way to push them"
+  difficulty n
+  let n=4..9
+
+  scene 26x19 {
+    rekenrek frame top=0 bottom=0 at=canvas(1, 1)
+    text ask "Push {n} beads across. Put some on the top wire and some on the bottom wire, at least one on each. How many different ways are there?" narrate width=24 below=frame gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - 1)
+  feedback {
+    when (answer == n // 2) point=frame {
+      say "Three on top and one below is a different way from one on top and three below. Count both."
+    }
+    when (answer == n + 1) point=frame {
+      say "Each wire needs at least one bead, so all {n} on one wire does not count."
+    }
+  }
+  hint "Start with one bead on the top wire. How many go on the bottom?"
+  hint "Then try two on top, then three. Stop when the bottom wire would be empty."
+}

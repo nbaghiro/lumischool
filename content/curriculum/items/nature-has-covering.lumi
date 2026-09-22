@@ -1,0 +1,48 @@
+# The way in: six animals drawn, and the one with a named covering: feathers, fur, scales or a
+# shell. Feathers and a shell are seen at once; fur on a seal, which looks smooth, and scales on a
+# fish take a closer look.
+item nature.has-covering v=1 skills=[nature.sorting] {
+  title "Which one has that?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "feathers", "a hard shell", "fur", "scales")}
+  let right={pick(k, "hen", "turtle", "seal", "fish")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x26 {
+    column six at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        art h asset="hen"
+        seaturtle pt facing=1 plates=5
+        art c asset="cat"
+      }
+      row low space=1 align=end {
+        seal ps rock=1 facing=1
+        fishshoal pf rows=2 cols=3 facing=1
+        art d asset="duck"
+      }
+    }
+    text ask "Ada sorts the animals she has drawn by what covers their bodies. Which of these has {what}?" narrate width=34 below=six gap=1
+    choice pick options=["hen", "turtle", "seal", "fish"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick != right) point=ps {
+      say "The seal looks smooth because its fur is short and wet, but it is fur, and underneath is warm skin like a cat's."
+    }
+    when (k == 3 and pick != right) point=pf {
+      say "A fish is covered in small overlapping plates called scales, which is why it shines."
+    }
+    when (k <= 1 and pick != right) point=six {
+      say "Look at the outside of each animal in the drawing: feathers, a shell, fur or scales."
+    }
+  }
+  hint "Look at the outside of each animal. What is its body covered in?"
+  hint "Feathers on birds, fur on the warm-blooded ones, scales on fish, a shell on the turtle."
+}

@@ -1,0 +1,29 @@
+# The joining word is given and the child chooses what can follow it. Every ending is a sentence
+# that could be true, but only one gives a reason after because, or a turn after but.
+item writing.which-ending v=1 skills=[writing.joining-sentences] {
+  title "What comes after the joining word?"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  level easy {
+    let k={0, 2}  # because
+  }
+  level hard {
+    let k={1, 3}  # but
+  }
+  let start={if k == 0 then "Mia took her coat because" else if k == 1 then "Pip wanted to swim, but" else if k == 2 then "The dog barked because" else "Ella ran fast, but"}
+  let right={if k == 0 then "it was cold." else if k == 1 then "the pool was shut." else if k == 2 then "someone knocked at the door." else "she missed the bus."}
+  let w1={if k == 0 then "it was sunny." else if k == 1 then "he had his towel." else if k == 2 then "it was fast asleep." else "she was quick."}
+  let w2={if k == 0 then "she ate her lunch." else if k == 1 then "the water was warm." else if k == 2 then "the grass was green." else "she liked running."}
+  let o1={if r == 0 then right else w1}
+  let o2={if r == 1 then right else if r == 0 then w1 else w2}
+  let o3={if r == 2 then right else w2}
+
+  scene 24x17 {
+    text ask "{start} ... Which ending makes sense?" narrate width=23 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Is the joining word because or but?"
+  hint "Because needs a reason. But needs something that goes the other way. Try each ending."
+}

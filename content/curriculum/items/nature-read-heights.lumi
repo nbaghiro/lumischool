@@ -1,0 +1,33 @@
+# The result read off a bar chart: the height of each tray's cress in centimetres, and how much
+# taller one is than the other.
+item nature.read-heights v=1 skills=[nature.plants, data.bar-charts] {
+  title "How much taller?"
+  difficulty (a - b + (if w == 1 then 2 else 0))
+  let a=4..12 b=1..6 w=0..1
+  where (a > b)
+  let asks={pick(w, "How many centimetres taller is A than B?", "How many centimetres would B have to grow to catch A?")}
+  level easy {
+    let a=4..6 b=1..3 w=0..0
+  }
+  level hard {
+    let a=9..12 b=2..5 w=1..1
+  }
+
+  scene 34x17 {
+    bargraph g labels=["A", "B"] values=[a, b] max=12 color=mint at=canvas(1, 1)
+    text ask "After two weeks Ada measures her cress. The chart shows the height of each tray in centimetres. {asks}" narrate width=20 right-of=g gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=g {
+      say "The question wants the gap between the two bars, not the two heights added."
+    }
+    when (answer == a) point=g {
+      say "That is A's height. How much of it sticks up above B's bar?"
+    }
+  }
+  hint "Read the top of each bar against the numbers. Write both heights down."
+  hint "Take the smaller height from the bigger one."
+}

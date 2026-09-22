@@ -1,0 +1,53 @@
+lesson nature-puzzles-4 v=1 format=puzzles grade=4 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "Nature puzzles: the oasis"
+  goal "Read the scale, follow the web, compare the cycles, fit the creature to its place and sort the animals."
+
+  puzzle stars=1 {
+    show nature.scale-read st=5 w=0 easy-st=2 easy-w=0 hard-st=10 hard-w=1
+  }
+  puzzle stars=1 {
+    show nature.desert-creature k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=1 {
+    show nature.has-covering k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show nature.parts-to-km st=5 n=3 easy-st=2 easy-n=3 hard-st=10 hard-n=6
+  }
+  puzzle stars=2 {
+    show nature.arrows-into c=0 w=1 easy-c=0 easy-w=2 hard-c=1 hard-w=0
+  }
+  puzzle stars=2 {
+    show nature.which-cycle k=1 easy-k=3 hard-k=0
+  }
+  puzzle stars=2 {
+    show nature.feature-need k=2 easy-k=0 hard-k=5
+  }
+  puzzle stars=2 {
+    show nature.who-is-safe k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show nature.one-stop k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show nature.split-six k=1 easy-k=0 hard-k=2
+  }
+
+  grown-ups """
+    Let the child try each one alone first. The hints and answers are on this sheet, not on theirs.
+    Every puzzle can be started by looking closely: the numbers under the scale bar, the arrowheads
+    that touch a creature, the four cycles written out, the part of the creature the question
+    names, the covering on each animal. The scale puzzles multiply parts by what a part is worth;
+    the web puzzles count arrows in, and a creature with two foods is the one that is safe. The
+    two three-star puzzles are the ones to leave for a quiet moment: the shortest walk through one
+    of three stops, with both legs added for each, and the question that splits six animals three
+    and three, tried on each animal in turn. A puzzle left unsolved today is often solved on
+    Saturday.
+    """
+  level easy {
+    grown-ups "At this level the scale bar is read one part at a time, the creature to place is the camel, the covering to find is the hen's feathers, the walk is three parts of two kilometres, the arrows counted are the two into the gull, the cycle to find is the hen's with its chick, the feature asked about is the camel's feet, the crabs vanish and the gull is safe, the shortest stop is the tree at seven kilometres, and the six animals are split by four legs."
+  }
+  level hard {
+    grown-ups "At this level the whole bar is read at ten kilometres a part, the creature to place is the fennec fox, the covering to find is the seal's fur, the walk is six parts of ten kilometres, the arrows counted are into the tiny plants, which have none, the cycle to find is the butterfly's with its resting case, the feature asked about is the camel's hump, the small fish vanish and the seal is safe, the shortest stop is the bridge at twelve kilometres against the tree's shorter first leg, and the six animals are split by being born alive."
+  }
+}

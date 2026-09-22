@@ -1,0 +1,25 @@
+item physics.temp-read v=1 skills=[physics.heat] {
+  title "How warm is it?"
+  difficulty ((if v % 10 == 0 then 0 else 1) + v / 100)
+  let v={5, 10, 15, 20, 25, 30, 35}
+  level easy {
+    let v={10, 20, 30}
+  }
+  level hard {
+    let v={5, 15, 25, 35}
+  }
+
+  scene 22x18 {
+    text ask "What does the thermometer read, in degrees?" width=20 at=canvas(1, 1)
+    thermometer tube from=0 to=40 step=10 value=v unit="C" below=ask gap=1
+    number-input answer right-of=tube gap=2
+  }
+
+  answer v
+  feedback {
+    when (answer == v / 5) point=tube {
+      say "Read the number beside the top of the column, not how many marks up it is."
+    }
+  }
+  hint "What is the small mark halfway between two numbers worth?"
+}

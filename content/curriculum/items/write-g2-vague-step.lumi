@@ -1,0 +1,24 @@
+# Instructions are for someone who has never done the job: the step that says "it" and "there"
+# without saying what or where is the one they cannot follow, and the child says why.
+item writing.vague-step v=1 stars=2 skills=[writing.instructions, reasoning.explain] {
+  title "The step nobody could follow"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..3 r=0..2
+  let bad={if k == 0 then "Put it in." else if k == 1 then "Do the next bit." else if k == 2 then "Put that there." else "Get the thing."}
+  let g1={if k == 0 then "Pour the milk into the jug." else if k == 1 then "Fill the pot with soil." else if k == 2 then "Cut the bread in half." else "Wash your hands."}
+  let g2={if k == 0 then "Stir the tea with a spoon." else if k == 1 then "Push the seed into the soil." else if k == 2 then "Spread the jam on it." else "Crack an egg into the bowl."}
+  let o1={if r == 0 then bad else g1}
+  let o2={if r == 1 then bad else if r == 0 then g1 else g2}
+  let o3={if r == 2 then bad else g2}
+
+  scene 34x22 {
+    text ask "Zak has never done this. Which step could he not follow?" narrate width=31 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+    text ask2 "Why not?" narrate below=pick gap=1
+    choice why options=["{if k % 2 == 0 then \"It does not say what.\" else \"It has no doing word.\"}", "{if k % 2 == 0 then \"It has no doing word.\" else \"It does not say what.\"}"] below=ask2 gap=1
+  }
+
+  answer pick=bad why="It does not say what."
+  hint "Read each step as if you had never done the job. Do you know exactly what to do?"
+  hint "Which step uses words like it, that or thing without saying what they are?"
+}

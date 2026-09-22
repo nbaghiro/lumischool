@@ -1,0 +1,28 @@
+# Adding a power of ten that crosses a zero or a nine, so the digit to the left changes too.
+item place.power-more v=1 skills=[place-value.large-numbers] {
+  title "More on the chart"
+  difficulty ((if k == 10 and t == 9 or k == 100 and h == 9 or k == 1000 and a % 10 == 9 or k == 10000 and a // 10 % 10 == 9 then 3 else 0) + (if k >= 1000 then 1 else 0))
+  let a={49, 99, 109, 199, 250, 309, 499, 990} h={9, 0, 5} t={9, 5, 0} k={10, 100, 1000, 10000}
+  level easy {
+    let k={10, 100}
+    where (k == 10 and t != 9 or k == 100 and h != 9)  # one digit changes
+  }
+  level hard {
+    where (k == 10 and t == 9 or k == 100 and h == 9 or k == 1000 and a % 10 == 9 or k == 10000 and a // 10 % 10 == 9)  # the column holds a nine, so two digits change
+  }
+
+  scene 31x14 {
+    pvchart chart value="{a}{h}{t}5" show=digits at=canvas(1, 1)
+    text ask "What number is {k} more than the one on the chart?" narrate width=29 below=chart gap=1
+    number-input answer width=8 below=ask gap=1
+  }
+
+  answer (1000 * a + 100 * h + 10 * t + 5 + k)
+  feedback {
+    when (answer == 1000 * a + 100 * h + 10 * t + 5 + k / 10) point=chart {
+      say "Find the column worth {k} first, then add one to that digit."
+    }
+  }
+  hint "Which column is worth {k}?"
+  hint "Add one there. If it was a 9, what happens to the digit on its left?"
+}

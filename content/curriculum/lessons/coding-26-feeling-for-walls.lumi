@@ -1,0 +1,51 @@
+lesson coding-feeling-for-walls v=2 format=teach grade=3 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "A robot that feels for walls"
+  goal "Follow a program that asks about a wall ahead every time round a repeat, say where the robot ends, and choose the count and the turn."
+
+  look {
+    scene 25x13 {
+      row both at=canvas(1, 0) space=1 align=start {
+        blocks b code=["repeat 6", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"]
+        maze m map=["S . . #", "# # . #", "# . . #"] code=["repeat 6", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"]
+      }
+    }
+    say """
+      This program does not know the maze. Every time round it asks one question: is there a wall
+      ahead? If there is, it turns; if not, it steps forward. The edge of the grid counts as a wall.
+      """
+  }
+  do {
+    show coding.wall-ahead-now k=0 easy-k=5 hard-k=7
+    show coding.wall-ahead-now k=4 easy-k=1
+    practice coding.wall-follow count=2 seed=4 hard-seed=10
+    show coding.if-turns n=7 easy-n=6 hard-n=8
+    show coding.turns-hidden k=1 n=9 easy-k=2 easy-n=8
+    show coding.wall-turn-left k=0 n=8 easy-n=7 hard-n=9
+    show coding.wall-turn-left k=1 n=9 easy-n=7 hard-n=8
+  }
+  try stars=2 {
+    show coding.fewest-rounds k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show coding.build-wall-follower k=0 hard-k=1
+  }
+  remember {
+    say "Ask the question every time round. A turn uses up a time round."
+  }
+
+  grown-ups """
+    Walk it in a hallway with the child as the robot and a hand out in front: wall, turn; no wall,
+    step. It is the first program that reacts to where it is rather than following a route, which
+    is what a floor-cleaning robot does. When the line is not drawn, the turns have to be found by
+    walking every time round, including a turn on the spot. In the two-star question the robot
+    passes the gem's row before it reaches the gem, so count every time round. In the three-star
+    question both the turn and the count are the child's choice, and too many times round can
+    carry the robot off the flag again.
+    """
+  level easy {
+    grown-ups "At this level the robot faces right in both wall questions, the corridor to follow turns once after three squares, the drawn line has two corners in six times round, the hidden turns are two, one at the edge and one at a rock, the left-turning robots go round seven and nine times, the gem is reached in five times round, and the wall follower to build is as written."
+  }
+  level hard {
+    grown-ups "At this level the robot faces left in the first wall question and the edge of the grid is the wall in the second, the corridor to follow turns after two squares, and at seven times round the robot ends with a turn on the spot, the drawn line has three corners in eight times round, the hidden turns are as written, four, the left-turning robots go round nine and ten times, the gem takes seven times round with a turn at a dead end, and the wall follower to build starts facing right and turns left."
+  }
+}

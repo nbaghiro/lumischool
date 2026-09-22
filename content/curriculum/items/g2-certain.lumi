@@ -1,0 +1,17 @@
+# Certain, possible, impossible: a tub with only one colour in it is the case that makes the words mean something.
+item chance.certain-or-not v=1 skills=[chance.likelihood, chance.language] {
+  title "Certain, possible or impossible?"
+  difficulty (if a > 0 and b > 0 then 1 else 0)
+  let a={0, 3, 5} b={0, 2, 4}
+  where (a + b > 0)
+
+  scene 37x14 {
+    tub pot first=a second=b colors=["tang", "sky"] at=canvas(1, 1)
+    text ask "Kim picks one counter without looking. Is getting an orange counter certain, possible or impossible?" narrate width=20 right-of=pot gap=2
+    choice pick options=["certain", "possible", "impossible"] below=pot gap=1
+  }
+
+  answer pick=(if a == 0 then "impossible" else if b == 0 then "certain" else "possible")
+  hint "Are there any orange counters in the tub at all?"
+  hint "Are there any counters that are not orange?"
+}

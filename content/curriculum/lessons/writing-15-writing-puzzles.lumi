@@ -1,0 +1,59 @@
+lesson writing-puzzles v=1 format=puzzles grade=4 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Writing puzzles"
+  goal "Find a mistake and fix it, sort a hard word, punctuate speech, and write for a reader."
+
+  level easy medium {
+    puzzle stars=1 {
+      show writing.find-the-mistake k=3 easy-k=2
+      say "Read it aloud. One word is short of something it needs."
+    }
+  }
+  puzzle stars=1 {
+    show writing.write-it-right k=0 easy-k=4
+  }
+  puzzle stars=2 {
+    show writing.puzzle-sort w=1
+  }
+  puzzle stars=2 {
+    show writing.same-word-two-jobs k=1
+  }
+  puzzle stars=2 {
+    show writing.speech-marks k=2
+  }
+  puzzle stars=2 {
+    show writing.apostrophe-owners k=0 easy-k=1
+  }
+  puzzle stars=2 {
+    show writing.say-it-shorter k=2
+    say "Two of the three are shorter. Only one of them keeps everything the long sentence says."
+  }
+  puzzle stars=3 {
+    show writing.count-mistakes e1=1 e2=0 e3=1 e4=1 easy-e3=0 easy-e4=0 hard-e2=1
+  }
+  puzzle stars=3 {
+    show writing.rewrite-for-reader k=1
+  }
+  puzzle stars=3 {
+    show writing.two-speakers k=0
+  }
+  level hard {
+    puzzle stars=3 {
+      show writing.count-mistakes e1=0 e2=0 e3=0 e4=0
+    }
+  }
+
+  grown-ups """
+    These are the editing jobs a writer does on their own work: spot the error and fix it, name the
+    kind of word, punctuate speech, count every mistake, and rewrite for a reader. They are worth
+    doing slowly rather than quickly. In the mistake count, none is a possible answer in some
+    versions, so the child has to check every capital, spelling and apostrophe rather than stop at
+    the first. The last two puzzles have many right answers: read them aloud together and check
+    them against the look-for on this sheet.
+    """
+  level easy {
+    grown-ups "At this level the wrong word is we, the word to write right is Jake, the sort, the two jobs, the speech marks and the shorter sentence are as written, the coats belong to one girl, the note has one mistake, and the two makes are as written."
+  }
+  level hard {
+    grown-ups "At this level the one-star mistake makes way for a note with no mistake at all, which has to be checked word by word, the word to write right is as written, the sort, the two jobs, the speech marks and the shorter sentence are as written, the bowls belong to more than one dog, the other note has four mistakes, and the two makes are as written."
+  }
+}

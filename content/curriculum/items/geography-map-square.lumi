@@ -1,0 +1,23 @@
+item geography.map-square v=1 skills=[geography.grid-references] {
+  title "Find the square"
+  difficulty (c + r)
+  let c=1..5
+  let r=1..4
+  let t={"hut", "tree", "boat"}
+  level easy {
+    let c=1..2 r=1..2
+  }
+  level hard {
+    let c=4..5 r=3..4
+  }
+
+  scene 32x21 {
+    gridmap map cols=5 rows=4 col=c row=r thing=t at=canvas(1, 1)
+    text ask "Which square is the {t} in? Pick the letter, then write the number." width=28 below=map gap=1
+    choice column options=["A", "B", "C", "D", "E"] below=ask gap=1
+    number-input row right-of=column gap=2
+  }
+
+  answer column=(if c == 1 then "A" else if c == 2 then "B" else if c == 3 then "C" else if c == 4 then "D" else "E") row=r
+  hint "Read the letter along the top first, then the number down the side."
+}

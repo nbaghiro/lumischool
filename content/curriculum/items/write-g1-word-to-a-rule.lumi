@@ -1,0 +1,16 @@
+# Making a word that meets a rule about letter heights: there is no word to copy, so the child has
+# to think of words and check their letters.
+item writing.word-to-a-rule v=1 stars=3 skills=[writing.letter-formation, writing.spelling] {
+  title "A word that fits the rule"
+  let k=0..2
+  let rule={if k == 0 then "a tall letter and a letter with a tail, like dog" else if k == 1 then "two tall letters, like bed" else "no tall letters at all, like sun"}
+
+  scene 30x14 {
+    text ask "Write a word that has {rule}. Then write one more word like that." width=28 at=canvas(1, 1)
+    handwriting rules show="" rows=2 trace=0 width=28 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two real words other than the example that keep the rule the question gives, spelled so they can be read, with the tall letters reaching the top line, the tails going below it and the small letters stopping at the dotted line."
+  hint "Think of an animal, a toy or something to eat. Say it slowly and picture its letters."
+  hint "Check each letter against the rule before you write the word."
+}

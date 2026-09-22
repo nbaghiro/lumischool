@@ -1,0 +1,19 @@
+# A skip down from bass F goes from a line to the next line below, missing out the space between.
+item music.skip-from-landmark v=1 skills=[music.grand-staff, music.intervals] {
+  title "A skip down from F"
+
+  scene 30x16 {
+    grandstaff gs notes=["F3", "D3"] letters=false lit=["D3"] landmarks=true at=canvas(1, 0)
+    text ask "The first note is bass F. The ringed note is a skip down. Which note is it?" width=14 right-of=gs gap=1
+    choice pick options=["E", "D", "G"] below=ask gap=1
+  }
+
+  answer pick="D"
+  feedback {
+    when (pick == "E") point=gs {
+      say "E is only one step down. A skip misses a note out, from a line to the next line."
+    }
+  }
+  hint "Is the ringed note higher or lower than the F?"
+  hint "A skip misses one letter out. Say the letters going down from F."
+}

@@ -1,0 +1,25 @@
+# Reading the ruler beside a strip: how far up the highest colour travelled. The ruler's zero is on
+# the pencil line, so the reading is the band's own height.
+item chemistry.ink-furthest v=1 skills=[chemistry.separating, measuring.scales] {
+  title "How far did it travel?"
+  difficulty top
+  let n=0..4
+  let ink={pick(n, "brown", "green", "black1", "black2", "black3")}
+  let top={pick(n, 5, 6, 7, 7, 8)}
+  level easy {
+    let n=0..1
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 31x16 {
+    chromatography strip inks=["{ink}"] labels=["A"] run=1 beaker=0 ruler=1 at=canvas(1, 0)
+    text ask "How many centimetres above the pencil line did the highest colour travel?" narrate width=20 right-of=strip gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=top
+  hint "Find the band that is furthest up the paper."
+  hint "Read the ruler across from the middle of that band. Its zero is on the pencil line."
+}

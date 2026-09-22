@@ -1,0 +1,17 @@
+# The right answer moves between the three places so that its position is no clue. v2 shows the two
+# sentences as captions without a picture, which keeps the question short on the page.
+item writing.combine-sentences v=2 skills=[writing.sentences, writing.joining-sentences] {
+  title "Two sentences made into one"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 32x19 {
+    caption one text="{if k == 0 then \"The boat was old. It had three sails.\" else if k == 1 then \"The kite was red. It flew over the hill.\" else \"The hen was hungry. It ate the corn.\"}" width=30 at=canvas(1, 1)
+    text ask "Which sentence says both of them in one?" width=30 below=one gap=1
+    choice pick options=["{if k == 0 then \"The old boat had three sails.\" else if k == 1 then \"The kite flew over.\" else \"The hen was hungry it ate the corn.\"}", "{if k == 0 then \"The boat had sails.\" else if k == 1 then \"The red kite flew over the hill.\" else \"The hen ate.\"}", "{if k == 0 then \"The boat was old it had three sails.\" else if k == 1 then \"The kite was red it flew over the hill.\" else \"The hungry hen ate the corn.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The old boat had three sails." else if k == 1 then "The red kite flew over the hill." else "The hungry hen ate the corn.")
+  hint "The new sentence keeps everything the two said, and it is still one sentence with one full stop."
+  hint "Can the describing word move in front of the naming word?"
+}

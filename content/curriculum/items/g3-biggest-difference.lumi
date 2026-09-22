@@ -1,0 +1,17 @@
+# The same three cards make both numbers, so the largest gap is the largest minus the smallest.
+item sub.biggest-difference v=1 stars=3 skills=[subtraction.columns, reasoning.extremes] {
+  title "The biggest difference"
+  difficulty (max(a, b, c) - min(a, b, c))
+  let a=1..9 b=1..9 c=1..9
+  where (a != b and b != c and a != c)
+
+  scene 30x17 {
+    digitcards cards digits=[a, b, c] at=canvas(1, 1)
+    text ask "Make two three-digit numbers, each using all three cards once. Take the smaller from the bigger. What is the biggest difference you can make?" width=28 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (99 * (max(a, b, c) - min(a, b, c)))
+  hint "Which number is the biggest the cards can make? Which is the smallest?"
+  hint "Try a few pairs. Does the difference grow when the numbers are further apart?"
+}

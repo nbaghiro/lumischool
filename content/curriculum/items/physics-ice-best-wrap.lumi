@@ -1,0 +1,26 @@
+# Three iced cups after twenty minutes at 20 degrees, and the wrap that kept its ice coldest. Easy
+# sets a bare cup against wool; hard sets wraps whose readings are five apart.
+item physics.ice-best-wrap v=1 skills=[physics.heat, reasoning.compare] {
+  title "Which wrap kept it coldest?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2, 2)
+  let k=0..7
+  let w1={pick(k, "none", "paper", "wool", "foil", "cloth", "wool", "foil", "paper")}
+  let w2={pick(k, "wool", "none", "paper", "cloth", "paper", "cloth", "paper", "cloth")}
+  let w3={pick(k, "paper", "wool", "none", "none", "foil", "paper", "cloth", "foil")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=5..7
+  }
+
+  scene 20x22 {
+    wrapped cups wraps=["{w1}", "{w2}", "{w3}"] ice=1 minutes=20 at=canvas(1, 0)
+    text ask "After twenty minutes, which cup is coldest? Its wrap kept the ice best." narrate width=18 below=cups gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  check physics.forces of=cups pick=coldest
+  hint "Which thermometer has the shortest red line?"
+  hint "Read each thermometer. The lowest number is the coldest cup."
+}

@@ -1,0 +1,25 @@
+# Matching counts to a picture graph: one graph has the rows swapped, so both rows have to be read.
+item data.which-graph v=1 skills=[data.picture-graph] {
+  title "The right graph"
+  let a=2..5 b=3..5 q=0..1
+  where (a != b)
+
+  scene 36x16 {
+    row both at=canvas(1, 1) space=2 align=start {
+      column ga space=0 align=start {
+        text la "A"
+        picgraph pa labels=["Cats", "Dogs"] counts=[if q == 0 then a else b, if q == 0 then b else a] prop=star
+      }
+      column gb space=0 align=start {
+        text lb "B"
+        picgraph pb labels=["Cats", "Dogs"] counts=[if q == 0 then b else a, if q == 0 then a else b] prop=star
+      }
+    }
+    text ask "Ana saw {a} cats and {b} dogs. Which graph is right?" narrate width=34 below=both gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "A" else "B")
+  hint "Look at the cats row on each graph. How many stars does it have?"
+  hint "Does the dogs row match too?"
+}

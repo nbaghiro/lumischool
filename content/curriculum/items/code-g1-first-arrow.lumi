@@ -1,0 +1,24 @@
+# The first block of a route: the robot starts in a corner and a rock shuts one of the two ways out,
+# so exactly one of the four arrows can go first without bumping into a rock or the edge.
+item coding.first-arrow v=1 skills=[coding.sequences] {
+  title "Which way first?"
+  let k=0..3
+
+  scene 31x18 {
+    row top at=canvas(1, 0) space=2 align=start {
+      maze g cols=5 rows=3 col=(if k < 2 then 1 else 5) row=1 gems=[3, 3] rocks=[if k == 0 then 2 else if k == 1 then 1 else if k == 2 then 4 else 5, if k == 0 then 1 else if k == 1 then 2 else if k == 2 then 1 else 2]
+      blocktray t code=["right 1", "down 1", "left 1", "up 1"] per=2 words=false
+    }
+    text ask "The robot is going to the gem. Which block can it do first without bumping?" width=29 below=top gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=(if k == 1 then "A" else if k == 3 then "C" else "B")
+  feedback {
+    when (pick == "D") point=g {
+      say "Up takes the robot off the top of the grid."
+    }
+  }
+  hint "Look at the squares next to the robot. Which ones are open?"
+  hint "Which arrow points at the open square?"
+}

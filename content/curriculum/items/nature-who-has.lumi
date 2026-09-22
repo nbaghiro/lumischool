@@ -1,0 +1,47 @@
+# Two features named, and the one creature of the four that has both. At easy the pair belongs to
+# one creature alone; at hard the flippers are shared by the seal and the turtle, so both have to
+# be checked.
+item nature.who-has v=1 skills=[nature.habitats, reasoning.two-conditions] {
+  title "Which one has both?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, "wings", "claws", "flippers", "flippers")}
+  let b={pick(k, "webbed feet", "a hard shell", "a beak", "whiskers")}
+  let right={pick(k, "gull", "crab", "sea turtle", "seal")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    column four at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        seal ps rock=1 facing=1
+        gull pg flying=1
+      }
+      row low space=1 align=end {
+        crabs pc count=1
+        seaturtle pt facing=1 plates=5
+      }
+    }
+    text ask "Which of the four has {a} and {b}?" narrate width=15 right-of=four gap=2
+    choice pick options=["seal", "gull", "crab", "sea turtle"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "seal") point=ps {
+      say "The seal has flippers, but look at its face: whiskers and a mouth, not a beak."
+    }
+    when (k == 3 and pick == "sea turtle") point=pt {
+      say "The turtle has flippers, but look at its face: a beak, and no whiskers."
+    }
+    when (k == 2 and pick == "gull") point=pg {
+      say "The gull has a beak, but wings rather than flippers."
+    }
+  }
+  hint "Find every creature that has {a}. Then, of those, which has {b} too?"
+  hint "Look at the drawings: feet, flippers, wings, shells, claws and beaks are all there to see."
+}

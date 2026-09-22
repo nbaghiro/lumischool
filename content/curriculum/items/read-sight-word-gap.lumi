@@ -1,0 +1,24 @@
+# The gap is always one of the words that turn up on every page and do not sound out the way they
+# look. The picture shows who the sentence is about, so the child reads for the word that joins it
+# up rather than guessing a thing from the picture.
+item reading.sight-word-gap v=2 skills=[reading.sight-words] {
+  title "The missing word"
+  let k=0..2
+
+  scene 20x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{if k == 0 then \"cat\" else if k == 1 then \"duck\" else \"hen\"}"
+      sentence strip before="{if k == 0 then \"The cat\" else if k == 1 then \"The duck\" else \"The hen is in\"}" blank=4 after="{if k == 0 then \"asleep.\" else if k == 1 then \"quack.\" else \"hut.\"}"
+      text ask "Which word goes in the gap?" width=18
+      choice pick options=["was", "said", "the"]
+    }
+  }
+
+  answer pick=(if k == 0 then "was" else if k == 1 then "said" else "the")
+  feedback {
+    when (pick == "said" and k == 0) point=strip {
+      say "Said is for words someone says. The cat is not talking. Read it again."
+    }
+  }
+  hint "Try each word in the gap and read the whole sentence out loud."
+}

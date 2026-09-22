@@ -1,0 +1,28 @@
+# The way in: the thermometer gives the temperature and the table gives the two points, so the child
+# compares one number with two. Nothing is asked within five degrees of a point.
+item chem.state-at v=1 skills=[chemistry.states, number.negatives] {
+  title "Solid, liquid or gas?"
+  difficulty ((if thing != "water" then 1 else 0) + (if t == -80 or t == 120 then 1 else 0))
+  let thing={"water", "ethanol", "mercury"} t={-80, -40, 40, 80, 120}
+  where (not (thing == "ethanol" and t == 80) and not (thing == "mercury" and t == -40))
+  level easy {
+    let thing={"water"}
+  }
+  level hard {
+    let thing={"ethanol", "mercury"}
+    where (t == -80 or t == 120)  # ethanol still liquid at -80, mercury solid there, both gone to gas or not at 120
+  }
+
+  scene 35x19 {
+    text ask "At the temperature on the thermometer, is the {thing} a solid, a liquid or a gas?" width=28 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=3 head=["Stuff", "Melts", "Boils"] cells=["Water", 0, 100, "Ethanol", -114, 78, "Mercury", -39, 357]
+      thermometer tube from=-120 to=120 step=40 value=t unit="°C"
+      choice pick options=["a solid", "a liquid", "a gas"] stack=column
+    }
+  }
+
+  check chem.state of=tube table=data pick="of({thing})"
+  hint "Find the {thing} in the table. Is the thermometer below where it melts?"
+  hint "Is the thermometer above where it boils, or in between the two?"
+}

@@ -1,0 +1,27 @@
+# Right angles inside a shape, including the L whose inside corner is bigger than a right angle.
+item angles.count-right v=1 skills=[shapes.angles] {
+  title "How many right angles?"
+  difficulty (if s == "ell" then 2 else if s == "hexagon" then 1 else 0)
+  let s={"square", "rectangle", "isosceles", "ell", "hexagon"}
+  level easy {
+    let s={"square", "rectangle", "isosceles"}
+  }
+  level hard {
+    let s={"ell", "hexagon"}  # the inward corner, and six corners that are all too wide
+  }
+
+  scene 28x11 {
+    mirror fig shape=s line=none size=8 at=canvas(1, 1)
+    text ask "How many right angles are inside this shape?" width=14 right-of=fig gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if s == "square" or s == "rectangle" then 4 else if s == "ell" then 5 else 0)
+  feedback {
+    when (answer == 6 and s == "ell") point=fig {
+      say "One corner of this shape points inwards. It is bigger than a right angle."
+    }
+  }
+  hint "Go round the shape corner by corner. Does the corner of a page fit each one exactly?"
+  hint "A corner that points inwards is bigger than a right angle."
+}

@@ -1,0 +1,22 @@
+# Scaling a recipe: the same green needs every part multiplied, and adding the same to each is the trap.
+item art.same-green v=1 skills=[art.proportion, reasoning.multiplicative] {
+  title "The same green, more of it"
+  difficulty (a + b + m)
+  let a=1..3 b=1..2 m=2..3 p=0..2
+  where (a != b)
+  level easy {
+    let m={2}
+  }
+  level hard {
+    let m={3}
+  }
+
+  scene 34x12 {
+    text ask "Ada mixed {a} yellow and {b} blue. She wants {if m == 2 then \"twice\" else \"three times\"} as much of the very same green. Which should she mix?" width=15 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then m * a else a + m - 1} yellow and {if p == 0 then m * b else b + m - 1} blue", "{if p == 1 then m * a else (if p == 0 then a + m - 1 else m * a)} yellow and {if p == 1 then m * b else (if p == 0 then b + m - 1 else b)} blue", "{if p == 2 then m * a else m * a} yellow and {if p == 2 then m * b else b} blue"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=same as="yellow {a}+blue {b}"
+  hint "For every part of blue, how many parts of yellow are in Ada's green?"
+  hint "Which mix keeps that the same? Adding one more of each changes it."
+}

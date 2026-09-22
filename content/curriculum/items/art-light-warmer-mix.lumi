@@ -1,0 +1,36 @@
+# Two mixes of paint side by side and which of them is the warmer one, the colour a painter would
+# reach for at dusk rather than at noon. The warm mix is the first in half the versions.
+item art.light-warmer-mix v=1 skills=[art.colour, art.looking] {
+  title "Which mix is warmer?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let a1={pick(k, "red", "blue", "yellow", "blue", "red", "white")}
+  let a2={pick(k, "yellow", "white", "red", "green", "white", "blue")}
+  let b1={pick(k, "blue", "red", "blue", "red", "blue", "red")}
+  let b2={pick(k, "white", "yellow", "green", "yellow", "green", "yellow")}
+  let ans={pick(k, "The first mix", "The second mix", "The first mix", "The second mix", "The first mix", "The second mix")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 24x30 {
+    text l1 "The first mix" at=canvas(1, 0)
+    paintpots one pots=["{a1}", "{a2}"] result="mix" labels=true below=l1 gap=0
+    text l2 "The second mix" below=one gap=1
+    paintpots two pots=["{b1}", "{b2}"] result="mix" labels=true below=l2 gap=0
+    text ask "A warm colour is one of the reds, oranges and yellows, and a cool one is a blue or a green. Which of these two mixes is the warmer?" narrate width=22 below=two gap=1
+    choice pick options=["The first mix", "The second mix"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=two {
+      say "Look at the pot at the end of each row, the one the two make together, and ask whether it belongs with the fire colours or the water ones."
+    }
+  }
+  hint "Work out what each pair makes when they are mixed."
+  hint "Reds, oranges and yellows are the warm ones."
+}

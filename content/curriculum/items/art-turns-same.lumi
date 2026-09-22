@@ -1,0 +1,22 @@
+# Reasoning about the structure: a turn leaves the pattern the same only if it moves by whole repeats.
+item art.turns-same v=1 skills=[art.pattern, reasoning.fractions] {
+  title "Does it look the same?"
+  difficulty (n + d)
+  let n={4, 6, 8, 12} d={2, 3, 4}
+  level easy {
+    let d={2}  # half a turn
+  }
+  level hard {
+    let d={3, 4}
+  }
+
+  scene 32x13 {
+    radial pic repeats=n motif="leaf" missing=-1 colour=berry at=canvas(1, 1)
+    text ask "Ada turns this pattern {if d == 2 then \"half\" else if d == 3 then \"a third of\" else \"a quarter of\"} the way round. Will it look just the same as before?" width=16 right-of=pic gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if n % d == 0 then "yes" else "no")
+  hint "How many leaves are there? How many does that turn move each leaf along?"
+  hint "If the turn moves every leaf onto the place of another leaf, the pattern looks the same. Does it here?"
+}

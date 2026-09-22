@@ -1,0 +1,13 @@
+item physics.switch-state v=1 skills=[physics.circuits] {
+  title "Open or closed?"
+  let c=0..1 n=1..3
+
+  scene 29x15 {
+    circuit ring closed=c cells=n at=canvas(1, 0)
+    text ask "Is the switch open or closed?" width=13 below=ring gap=0
+    choice pick options=["Open", "Closed"] right-of=ask gap=1
+  }
+
+  answer pick=(if c == 1 then "Closed" else "Open")
+  hint "Does the switch's blade touch both dots?"
+}

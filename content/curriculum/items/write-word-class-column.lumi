@@ -1,0 +1,18 @@
+# Three columns rather than two, and the child writes the word rather than picking it, because at
+# grade three the naming is part of the answer. Only this version's word is accepted; every word is
+# six letters long, so the boxes do not say which.
+item writing.word-class-column v=3 skills=[writing.word-classes] {
+  title "Naming, doing, describing"
+  difficulty (if w == 2 or w == 5 then 1 else 0)
+  let w=0..5
+
+  scene 33x20 {
+    text ask "One word is in the wrong column. Write it." width=22 at=canvas(1, 1)
+    wordsort sort heads=["Naming", "Doing", "Describing"] words=["window", "jumped", "sticky", "kettle", "hopped", "bright"] into=[if w == 0 then 1 else 0, if w == 1 then 2 else 1, if w == 2 then 0 else 2, if w == 3 then 1 else 0, if w == 4 then 2 else 1, if w == 5 then 0 else 2] below=ask gap=1
+    word-input pick options=["{if w == 0 then \"window\" else if w == 1 then \"jumped\" else if w == 2 then \"sticky\" else if w == 3 then \"kettle\" else if w == 4 then \"hopped\" else \"bright\"}"] letters=6 below=sort gap=1
+  }
+
+  answer pick=(if w == 0 then "window" else if w == 1 then "jumped" else if w == 2 then "sticky" else if w == 3 then "kettle" else if w == 4 then "hopped" else "bright")
+  hint "A doing word is something you can do. A describing word tells you what something is like."
+  hint "Try each word after the, and after I can. Which word does not fit the test for its column?"
+}

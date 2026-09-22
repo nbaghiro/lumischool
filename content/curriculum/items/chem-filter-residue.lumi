@@ -1,0 +1,22 @@
+# The way in: count what the paper caught. The grains sit in the cone, so the drawing does half.
+item chem.filter-residue v=2 skills=[chemistry.separating] {
+  title "What stayed on the paper?"
+  difficulty r
+  let r=3..6
+  level easy {
+    let r=3..4
+  }
+  level hard {
+    let r=5..6
+  }
+
+  scene 29x16 {
+    funnel f residue=r level=2 drops=3 at=canvas(1, 0)
+    text ask "How many grains stayed on the filter paper?" width=14 right-of=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  hint "Count the grains sitting in the paper cone, above the beaker."
+  hint "Which grains could not get through the paper? Are those the ones you counted?"
+}

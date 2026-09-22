@@ -1,0 +1,23 @@
+# Scanning a short story for one tricky word, a word at a time: the counts are 1, 2, 2 and 3, and
+# every copy of the word is written the same way, never with a capital.
+item reading.count-the-word v=1 skills=[reading.sight-words] {
+  title "Find the word"
+  difficulty (if w == "was" then 3 else if w == "come" then 1 else 2)
+  let w={"said", "was", "come", "the"}
+  level easy {
+    let w={"come", "the"}
+  }
+  level hard {
+    let w={"was", "said"}
+  }
+
+  scene 32x10 {
+    passage p title="" text="Kit said the dog was wet. It was in the pond and it was cold. Kit said come here." width=30 numbers=false at=canvas(1, 1)
+    text ask "How many times can you find the word {w}?" narrate below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if w == "said" then 2 else if w == "was" then 3 else if w == "come" then 1 else 2)
+  hint "Put your finger on each word in turn, from the start."
+  hint "Every time you find {w}, say it and count one."
+}

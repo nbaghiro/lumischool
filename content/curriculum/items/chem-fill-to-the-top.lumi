@@ -1,0 +1,27 @@
+# The unknown moves: not how much is there, but how much more it takes to reach the top mark.
+item chem.fill-to-the-top v=1 skills=[chemistry.volume] {
+  title "Up to the top mark"
+  difficulty (100 - v)
+  let v={34, 46, 58, 64, 76, 82}
+  level easy {
+    let v={76, 82}
+  }
+  level hard {
+    let v={34, 46}
+  }
+
+  scene 26x17 {
+    cylinder tube max=100 step=10 minor=5 level=v unit=ml at=canvas(1, 0)
+    text ask "How many more millilitres would bring the water up to 100?" width=16 right-of=tube gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 - v)
+  feedback {
+    when (answer == v) point=tube {
+      say "That is how much is in it now. The question asks how much more it needs."
+    }
+  }
+  hint "First read the cylinder. How much is in it now?"
+  hint "What do you add to that number to make 100?"
+}

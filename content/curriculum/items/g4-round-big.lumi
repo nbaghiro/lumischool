@@ -1,0 +1,30 @@
+# No line to read the answer from: the child finds the two neighbours and the halfway point alone.
+item place.round-big v=1 skills=[place-value.rounding] {
+  title "Round a big number"
+  difficulty ((if u == "thousand" then 0 else 1) + (if u == "thousand" and r >= 499 and r <= 501 then 2 else 0) + (if u == "ten thousand" and a % 10 >= 4 and a % 10 <= 5 then 2 else 0) + (if u == "thousand" and r >= 500 and a % 10 == 9 or u == "ten thousand" and a % 10 >= 5 and a // 10 % 10 == 9 then 1 else 0))
+  let a={24, 38, 49, 65, 99, 107, 250, 384, 695, 999} r={125, 380, 499, 500, 501, 760, 945} u={"thousand", "ten thousand"}
+  level easy {
+    let r={125, 380, 760} u={"thousand"}
+    where (a % 10 != 9)  # nothing rounds up into the next ten thousand
+  }
+  level hard {
+    where (u == "thousand" and r >= 499 and r <= 501 or u == "ten thousand" and a % 10 >= 4 and a % 10 <= 5)  # the deciding digit is a four or a five
+  }
+
+  scene 26x6 {
+    text ask "Round {a},{r} to the nearest {u}." narrate width=25 at=canvas(1, 1)
+    number-input answer width=8 below=ask gap=1
+  }
+
+  answer (if u == "thousand" then 1000 * round((1000 * a + r) / 1000) else 10000 * round((1000 * a + r) / 10000))
+  feedback {
+    when (u == "thousand" and r >= 500 and answer == 1000 * a) point=ask {
+      say "The hundreds digit is 5 or more, so it rounds up to the next thousand."
+    }
+    when (u == "ten thousand" and answer == 1000 * round((1000 * a + r) / 1000) and answer != 10000 * round((1000 * a + r) / 10000)) point=ask {
+      say "That is the nearest thousand. The nearest ten thousand ends in four zeros."
+    }
+  }
+  hint "Which two whole {u}s does it sit between?"
+  hint "Which digit tells you whether it is past halfway?"
+}

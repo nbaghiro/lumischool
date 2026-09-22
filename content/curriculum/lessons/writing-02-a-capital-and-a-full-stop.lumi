@@ -1,0 +1,64 @@
+lesson writing-a-capital-and-a-full-stop v=1 format=teach grade=1 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "A capital letter and a full stop"
+  goal "Start a sentence with a capital letter and finish it with a mark."
+
+  look {
+    scene 35x17 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=centre {
+          art pic asset="cat"
+          column words space=1 align=start {
+            sentence strip before="Kim has a cat" blank=0 after="."
+            wordcards cards words=["kim", "has", "a", "cat"] picked=0
+          }
+        }
+        row talk space=1 align=centre {
+          guide g pose=point
+          bubble b "A name keeps its capital wherever it sits." width=22 from=g.hand
+        }
+      }
+    }
+    say """
+      Two words in a sentence nearly always need a capital letter. The first word needs one,
+      because the sentence is starting. A name needs one, wherever it sits. On the cards, kim is
+      still small. The mark at the end says the sentence has finished.
+      """
+  }
+  do {
+    practice writing.needs-a-capital count=1 seed=2
+    level easy {
+      worked writing.capital-count k=0 level=medium
+    }
+    practice writing.capital-count count=2 seed=3
+    practice writing.capital-fix count=2 seed=5
+    practice writing.where-it-ends count=2 hard-count=1 seed=4 hard-seed=7
+    level hard {
+      practice writing.robot-mistake-kind count=1 seed=1
+    }
+    show writing.which-mark k=2 hard-k=1
+  }
+  try stars=2 {
+    show writing.robot-mistake-kind s=1 m=1 hard-m=2
+  }
+  try stars=3 {
+    show writing.three-capitals k=0
+  }
+  remember {
+    say "Capital at the start, capital for a name, mark at the end."
+  }
+
+  grown-ups """
+    Children who can say the rule still forget it while writing, because the writing takes all of
+    their attention. Ask them to check the two capitals after they finish rather than while they go.
+    The counting questions give a sentence with no capitals at all, so the child has to find the
+    start, the names, the days and I without being told which. In the two-star question the point is
+    to say which kind of mistake the robot made; in the three-star one, let the child plan the
+    sentence out loud before any of it is written.
+    """
+  level easy {
+    grown-ups "At this level the name to write is as written, a line with four capitals is counted once in the teacher's pen before lines with two, the capital to fix is the first word or a name, the full stop goes after a long first sentence, the mark is a full stop, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the name to write is as written, the lines to count hold three or four capitals with a day of the week or I among them, the capital to fix is I or Monday, the full stop goes after red in the kite's two short sentences, one of them making way for a second robot mistake, the mark is an exclamation mark, the two-star's mistake is a missing full stop, and the three-star is as written."
+  }
+}

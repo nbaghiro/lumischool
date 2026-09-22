@@ -1,0 +1,32 @@
+# Compare, the subtraction story that is not taking away: 1.OA.A.1 counts it among the harder kinds.
+item sub.towers-difference v=1 skills=[subtraction.compare] {
+  title "How many more cubes"
+  difficulty (p - q)
+  let p=5..10 q=2..8
+  where (p > q)
+  where (p - q != q)
+  level easy {
+    let p=5..7 q=2..5
+  }
+  level hard {
+    let p=9..10 q=2..5
+  }
+
+  scene 24x19 {
+    towers two heights=[p, q] labels=true level=0 at=canvas(1, 0)
+    text ask "How many more cubes are in tower A than in tower B?" narrate width=14 right-of=two gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p - q)
+  feedback {
+    when (answer == p + q) point=two {
+      say "That is both towers together. How many more is the difference."
+    }
+    when (answer == q) point=two {
+      say "That is tower B. How many cubes of A stick up above B?"
+    }
+  }
+  hint "Look across from the top of tower B to tower A."
+  hint "Count only the cubes of A that are higher than B."
+}

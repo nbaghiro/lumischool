@@ -1,0 +1,20 @@
+# The word is heard from the picture and written with no letters to copy.
+item writing.spell-the-thing v=1 skills=[writing.spelling] {
+  title "Write the word"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..5 who={"pig", "hen", "duck"}
+  let thing={if k == 0 then "box" else if k == 1 then "bed" else if k == 2 then "rug" else if k == 3 then "log" else if k == 4 then "tub" else "mat"}
+  let where={if k == 0 or k == 4 then "in" else "on"}
+
+  scene 32x8 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "The {who} is {where} something. Write the word for it." narrate width=19
+      word-input word options=["{thing}"] letters=3
+    }
+  }
+
+  answer word=thing
+  hint "Say the word slowly. What is the first sound?"
+  hint "Now say it again and catch the middle sound, then the last."
+}

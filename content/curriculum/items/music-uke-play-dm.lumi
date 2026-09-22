@@ -1,0 +1,14 @@
+# From F to D minor two fingers stay and one is added, the easiest change after A minor to F.
+item music.uke-play-dm v=1 skills=[music.chord-changes, music.strumming] {
+  title "Play D minor"
+
+  scene 32x26 {
+    text ask "Hold F. Keep fingers 2 and 1 down, add finger 3, and strum D minor." width=30 at=canvas(1, 1)
+    chordbox card tuning=uke chord=Dm frets=3 show=fingers name=true letters=true lit=[] below=ask gap=1
+    fretboard neck tuning=uke frets=3 view=chart labels=letters strum=true right-of=card gap=2
+  }
+
+  check music.chord chord=Dm tuning=uke
+  hint "Which string does finger 3 go on? Look at the card."
+  hint "Are fingers 2 and 1 still where they were for F?"
+}

@@ -1,0 +1,17 @@
+# One step is a ruled line. The steps either side of it say what has to happen in between, and the
+# wrong choices come from the other two cards, so they are real steps in the wrong place.
+item reading.recipe-step v=1 skills=[reading.instructions] {
+  title "The missing step"
+  let k=0..2
+
+  scene 27x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      howto card title="{if k == 0 then \"Toast with honey\" else if k == 1 then \"Fruit salad\" else \"Plant a bean\"}" need=[if k == 0 then "bread" else if k == 1 then "a bowl" else "a pot", if k == 0 then "butter" else if k == 1 then "a banana" else "soil", if k == 0 then "honey" else if k == 1 then "an apple" else "a bean", if k == 0 then "a plate" else if k == 1 then "grapes" else "water"] steps=[if k == 0 then "Put the bread in the toaster." else if k == 1 then "Wash the apple and the grapes." else "Fill the pot with soil.", if k == 0 then "Spread on the butter." else if k == 1 then "Peel the banana." else "Push the bean in with your finger.", if k == 0 then "Add a spoon of honey." else if k == 1 then "Cut the fruit into small bits." else "Water it a little.", if k == 0 then "Eat it while it is warm." else if k == 1 then "Mix it all in the bowl." else "Put the pot in a sunny window."] blank=(if k == 0 then 1 else 2) width=26
+      text ask "Which step goes on the empty line?"
+      choice pick options=[if k == 0 then "Spread on the butter." else if k == 1 then "Put the bread in the toaster." else "Eat it while it is warm.", if k == 0 then "Wash the grapes." else if k == 1 then "Cut the fruit into small bits." else "Peel the banana.", if k == 0 then "Fill the pot with soil." else if k == 1 then "Push the bean in." else "Water it a little."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "Spread on the butter." else if k == 1 then "Cut the fruit into small bits." else "Water it a little.")
+  hint "Read the step before the gap and the step after it. What has to happen in between?"
+}

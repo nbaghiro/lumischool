@@ -1,0 +1,24 @@
+# A notice is read for one fact. The wrong choices are other words from the same notice or the
+# same kind of word, so the child has to find the line the question is about.
+item reading.notice v=1 skills=[reading.find-a-detail] {
+  title "Read the notice"
+  let k=0..2
+
+  scene 25x17 {
+    row all at=canvas(1, 1) space=1 align=start {
+      sign board lines=[if k == 0 then "Fair on the green" else if k == 1 then "Lost cat" else "Swimming pool", if k == 0 then "Saturday at 10" else if k == 1 then "She is called Moss" else "Shut on Monday", if k == 0 then "Bring a cake" else if k == 1 then "She is grey" else "Open 9 to 5"] kind=board color=tang
+      column q space=1 align=start {
+        text ask "{if k == 0 then \"What day is the fair?\" else if k == 1 then \"What is the cat called?\" else \"Which day is the pool shut?\"}" width=10
+        choice pick options=[if k == 1 then "Moss" else "Monday", if k == 1 then "Grey" else "Saturday", if k == 1 then "Lost" else "Sunday"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "Saturday" else if k == 1 then "Moss" else "Monday")
+  feedback {
+    when (pick == "Grey" and k == 1) point=board {
+      say "Grey is what she looks like. Read the line that says what she is called."
+    }
+  }
+  hint "Find the line of the notice the question is about, then read it carefully."
+}

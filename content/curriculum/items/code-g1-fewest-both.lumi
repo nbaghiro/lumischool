@@ -1,0 +1,16 @@
+# The audit's raise for building to the gem: a second gem and exactly the slots of the shortest
+# program. In each map no two-block program passes both gems and ends on the flag.
+item coding.fewest-both v=1 stars=3 skills=[coding.sequences, reasoning.planning] {
+  title "Both gems in three blocks"
+  let k=0..2
+
+  scene 32x14 {
+    maze g map=["{if k == 0 then \"S . * . .\" else if k == 1 then \"S * . . .\" else \"S . . * .\"}", ". . . . .", "{if k == 0 then \". . * . F\" else if k == 1 then \". * . . F\" else \"F . . * .\"}"] at=canvas(1, 0)
+    codepad answer tray=["right 1", "down 1", "left 1", "up 1"] lines=3 right-of=g gap=1
+    text ask "Pick up both gems and end on the flag. You have 3 slots." width=14 below=g gap=1
+  }
+
+  check coding.builds of=g goal=both
+  hint "Find a path that goes over both gems first. Then count its straight parts."
+  hint "Can one straight part go past both gems?"
+}

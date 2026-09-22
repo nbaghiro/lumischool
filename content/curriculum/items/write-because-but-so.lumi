@@ -1,0 +1,30 @@
+# The audit's raise: after the joining word, the child names what the second half does, so the
+# choice has to be explained rather than guessed by ear. Each version has one word that makes sense.
+item writing.because-but-so v=2 skills=[writing.joining-sentences] {
+  title "Because, but, so"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}  # because and so
+  }
+  level hard {
+    let k={1, 2}  # but, and so
+  }
+
+  scene 37x20 {
+    sentence strip before="{if k == 0 then \"The boat stayed in\" else if k == 1 then \"Mo built a sandcastle\" else \"The rocket was ready\"}" blank=6 after="{if k == 0 then \"the sea was rough.\" else if k == 1 then \"the tide came in.\" else \"we counted down.\"}" at=canvas(1, 1)
+    text ask "Which word belongs in the gap?" width=28 below=strip gap=1
+    choice pick options=["because", "but", "so"] below=ask gap=1
+    text second "What does the second half give?" width=28 below=pick gap=1
+    choice why options=["a reason", "the other way", "what came next"] below=second gap=1
+  }
+
+  answer pick=(if k == 0 then "because" else if k == 1 then "but" else "so") why=(if k == 0 then "a reason" else if k == 1 then "the other way" else "what came next")
+  feedback {
+    when (pick == "so" and k == 0) point=strip {
+      say "Did the boat staying in make the sea rough, or was the rough sea the reason it stayed in?"
+    }
+  }
+  hint "Read the sentence with each word in the gap. Which one makes sense?"
+  hint "Does the second half say why, say what came of it, or turn it round?"
+}

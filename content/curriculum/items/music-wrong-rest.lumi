@@ -1,0 +1,38 @@
+# The two-star reason: two bars meant to be in three, one with a rest of the right length and one
+# whose rest is a beat too long, so the bar comes to four. The wrong reasons blame the shorter
+# rest, or accept both.
+item music.wrong-rest v=1 stars=2 skills=[music.rhythm, music.rests, reasoning.find-the-mistake] {
+  title "The wrong rest"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "Right: a minim rest makes four", "Left: a minim rest makes four")}
+  let w1={pick(k, "Left: a crotchet rest is too short", "Right: a crotchet rest is too short")}
+  let w2={pick(k, "Neither: both are right", "Neither: both are right")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x29 {
+    row two at=canvas(0, 1) space=1 align=start {
+      notes a clef=treble notes=[G4, rest, A4] values=[1, if k == 0 then 1 else 2, 1] meter=3
+      notes b clef=treble notes=[G4, rest, A4] values=[1, if k == 0 then 2 else 1, 1] meter=3
+    }
+    text ask "Both bars are meant to be in three-time, the left one and the right one. One rest is the wrong length. Which bar is wrong, and why?" narrate width=34 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=a {
+      say "Add each bar up: crotchet, crotchet rest, crotchet is one, one, one, which is three. The bar with the minim rest adds to four."
+    }
+    when (pick == w2) point=a {
+      say "One rest is the zigzag, one beat; the other sits on the middle line, two beats. Add each bar up."
+    }
+  }
+  hint "Add up each bar: the notes and the rest. Which one comes to more than three?"
+  hint "A minim rest is two beats. One, two, one is four, and the bar only has three."
+}

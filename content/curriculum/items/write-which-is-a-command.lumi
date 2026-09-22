@@ -1,0 +1,21 @@
+item writing.which-is-a-command v=1 skills=[writing.sentences, writing.signs] {
+  title "A sentence for a sign"
+  difficulty (if k == 1 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={0, 2}
+  }
+
+  scene 30x28 {
+    art pic asset="{if k == 0 then \"duck\" else if k == 1 then \"garden\" else \"shop-front\"}" at=canvas(1, 1)
+    sign board lines=[""] kind="post" color="tang" right-of=pic gap=1
+    text ask "A sign tells people what to do. Which sentence belongs on this sign?" width=28 below=pic gap=1
+    choice pick options=["{if k == 0 then \"The ducks swim here.\" else if k == 1 then \"The gate is green.\" else \"The shop is open.\"}", "{if k == 0 then \"Please do not feed the ducks.\" else if k == 1 then \"Is the gate shut?\" else \"Is the shop open?\"}", "{if k == 0 then \"Are the ducks hungry?\" else if k == 1 then \"Shut the gate.\" else \"Please wipe your feet.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Please do not feed the ducks." else if k == 1 then "Shut the gate." else "Please wipe your feet.")
+  hint "The sentence for a sign tells you to do something. It often starts with a doing word or with Please."
+}

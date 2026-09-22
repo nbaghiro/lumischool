@@ -1,0 +1,37 @@
+# The two-star reason: a note two steps from a landmark, named with the reason, against a skip
+# counted as a step and a step counted as a line.
+item music.two-from-landmark v=1 stars=2 skills=[music.staff, reasoning.explain] {
+  title "Two steps from a landmark"
+  difficulty k
+  let k=0..2 r=0..2
+  let n={pick(k, "B4", "E4", "E4")}
+  let mark={pick(k, "treble G", "treble G", "middle C")}
+  let dir={pick(k, "above", "below", "above")}
+  let right={pick(k, "B: two steps up from G is A, then B", "E: two steps down from G is F, then E", "E: two steps up from C is D, then E")}
+  let w1={pick(k, "A: the note above G", "F: the note below G", "D: the note above C")}
+  let w2={pick(k, "D: two lines up from G", "C: two lines down from G", "G: two lines up from C")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x29 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=true at=canvas(1, 1)
+    text ask "The ringed note is two steps {dir} {mark}. Which note is it, and why?" width=14 right-of=gs gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=gs gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=gs {
+      say "That is one step. The ringed note is two steps away: a space and then a line, or a line and then a space."
+    }
+    when (pick == w2) point=gs {
+      say "Two lines apart is four steps, since a space sits between each pair of lines. Count every line and space."
+    }
+  }
+  hint "From {mark}, say the letters one at a time, {dir}, counting each line and each space."
+  hint "One step is the next letter; two steps is the letter after that."
+}

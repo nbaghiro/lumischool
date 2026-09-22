@@ -1,0 +1,71 @@
+# The curly family as one movement: c, o, a, d and g all begin with c's curl, and each is finished
+# without lifting the pencil.
+lesson writing-a-letter-family v=1 format=teach grade=1 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "A letter family"
+  goal "Write the letters that start the same way, c, o, a, d and g, each from one movement."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=1 align=end {
+        formletter c letter="c" copies=0 write=0 label=true
+        formletter a letter="a" copies=0 write=0 label=true
+        formletter d letter="d" copies=0 write=0 label=true
+        formletter g letter="g" copies=0 write=0 label=true
+      }
+    }
+    say """
+      At the printing works Tia sorts the metal letters into families. These four, and o, all
+      start the same way: near the top, curling round to the left like the start of a circle.
+      That is c. Keep going round and up and you have o; close it and go down and you have a; go
+      up tall first and you have d; go down past the line and hook back and you have g. One
+      movement each, without lifting the pencil.
+      """
+  }
+  do {
+    level easy {
+      worked writing.starts-with-curl k=0 p=0
+    }
+    practice writing.starts-with-curl count=1 seed=2 easy-seed=1 hard-seed=1
+    practice writing.curl-trace count=2 seed=1 easy-seed=1 hard-seed=1
+    practice writing.movement-parts count=1 seed=1 easy-seed=1 hard-seed=7
+    practice writing.curl-count count=1 seed=2 easy-seed=1 hard-seed=7
+    practice writing.wrong-start count=1 seed=1 easy-seed=1 hard-seed=1
+    show writing.first-stroke k=7 easy-k=6 hard-k=8
+    level hard {
+      show writing.movement-parts ch="a" p=2 level=medium
+    }
+  }
+  story {
+    show writing.letter-tray n=12 c=5 w=0 easy-n=8 easy-c=3 hard-n=16 hard-c=9 hard-w=1
+  }
+  try stars=2 {
+    show writing.tells-apart k=1 r=1 easy-k=0 hard-k=2 hard-r=2
+  }
+  try stars=3 {
+    show writing.curl-word k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "c, o, a, d and g start like c: near the top, round to the left, in one movement."
+  }
+
+  grown-ups """
+    The idea is that five letters are one movement with different endings, so a child who can
+    start c can start all of them, and the thing to watch is the start, not the finished
+    shape. The look is the four letters with their dots and arrows. The way in asks which of
+    three letters starts with the curl, read from the dots. The core traces and writes the
+    family (yours to mark: watch that the pencil starts at the dot, goes left first, and does
+    not lift), orders the parts of one letter's movement, counts the curly letters in a row,
+    finds the letter Tia started in the wrong place, and asks which way the pencil goes first.
+    The wrong idea to watch for is starting d with its tall stroke, or a with an upward stroke
+    from the line; both look fine at this size and come apart when the writing joins up. The
+    story counts the tray at the printing works, the two-star question asks which part of the
+    movement tells two look-alikes apart, and the three-star question is a word from the family
+    written for you to mark. Short bursts: five or six of one letter, then something else.
+    """
+  level easy {
+    grown-ups "At this level the curly letter among three is worked once in the teacher's pen before o and a among straight letters, the letters to trace are c, o and a, the movement to order is a or d nearly in order, the row to count has three curly letters among five, the wrong start is a letter started at the bottom, the first stroke is c's, the tray has eight letters, the look-alikes are a and d, and the word to write is dog."
+  }
+  level hard {
+    grown-ups "At this level the curly letter hides beside h and b or y and p, the letters to trace are d and g, the movement to order is g reversed with a second, a, in the core, the row to count has four curly letters among five, the wrong start is d begun with its tall stroke, the first stroke is d's, the tray has sixteen letters and asks what is left, the look-alikes are a and g, and the word is the child's own from the five letters."
+  }
+}

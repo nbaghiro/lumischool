@@ -1,0 +1,26 @@
+item fraction.half-the-candles v=1 skills=[fractions.half-of-a-number] {
+  title "Half of the candles"
+  difficulty n
+  let n=2..6
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 28x14 {
+    cake c candles=(2 * n) slices=0 at=canvas(1, 0)
+    text ask "Half of the candles are blown out. How many are still lit?" narrate width=18 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 2 * n) point=c {
+      say "That is all of the candles. Half of them went out."
+    }
+  }
+  hint "Share the candles into two equal groups."
+  hint "One group went out and one is still lit. How many are in one group?"
+}

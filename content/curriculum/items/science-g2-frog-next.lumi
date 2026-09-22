@@ -1,0 +1,21 @@
+# The life cycle with its later stages still to come: the drawings carry no names, so each stage
+# has to be recognised before the next one can be named.
+item science.frog-next v=1 skills=[science.life-cycles] {
+  title "What comes next?"
+  let s=1..3
+
+  scene 37x15 {
+    frogcycle life stage=s ring=0 names=0 at=canvas(1, 1)
+    text ask "This is how a frog grows. The dashed circles are still to come. What comes next?" width=28 below=life gap=1
+    choice pick options=["frogspawn", "tadpole", "froglet", "frog"] below=ask gap=1
+  }
+
+  answer pick=(if s == 1 then "tadpole" else if s == 2 then "froglet" else "frog")
+  feedback {
+    when (pick == "frogspawn") point=life {
+      say "Frogspawn is where it starts. Look at the last one that is drawn."
+    }
+  }
+  hint "What is the last picture that is drawn?"
+  hint "What does that one turn into as it grows?"
+}

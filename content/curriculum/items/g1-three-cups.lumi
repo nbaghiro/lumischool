@@ -1,0 +1,23 @@
+item bonds.three-cups v=1 stars=3 skills=[bonds-to-10, reasoning.extremes] {
+  title "The most in one cup"
+  difficulty t
+  let t=9..12
+
+  scene 26x20 {
+    undercup mat shown=0 cups=3 hidden=0 total=t at=canvas(1, 1)
+    text ask "Three cups hide {t} counters. Every cup hides a different number, and no cup is empty. What is the most one cup can hide?" narrate width=24 below=mat gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (t - 3)
+  feedback {
+    when (answer == t - 2) point=mat {
+      say "Then the other two cups share 2, so both would hide 1. They have to be different."
+    }
+    when (answer == t) point=mat {
+      say "Every cup has at least one counter, so no cup can hide all {t}."
+    }
+  }
+  hint "To make one cup big, make the other two as small as they can be."
+  hint "What are the two smallest different numbers you can put in them?"
+}

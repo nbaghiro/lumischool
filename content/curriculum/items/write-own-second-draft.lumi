@@ -1,0 +1,24 @@
+# The three-star: a given first draft rewritten shorter and clearer, with the repeats cut, two
+# short sentences joined and the capitals fixed, marked by a grown-up.
+item writing.own-second-draft v=1 stars=3 skills=[writing.revising, writing.composing] {
+  title "Your second draft"
+  difficulty k
+  let k=0..1
+  let t={pick(k, "on saturday we went to the beach. The sand was hot. It was very hot and not cold. We swam. The water was cold. we ate our lunch by the rocks.", "ben has a kite. The kite is red. It is a bright red kite. It flies high. It flies very high and not low. On friday it stuck in a tree. dad got it down.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x32 {
+    passage draft title="First draft" text="{t}" width=32 numbers=true at=canvas(1, 1)
+    text ask "Write this again as a second draft: cut what is said twice, join two short sentences with so, but or because, and put in the missing capitals. Keep everything the reader needs." narrate width=32 below=draft gap=1
+    writinglines lines lines=4 width=32 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A second draft shorter than the first with no repeated meaning (hot said once, red or high said once), at least two of the short sentences joined into one with so, but or because so that the joining word is true, every missing capital put back (the first words, the day, the names), and the when, the where and what happened all still there."
+  hint "First cross out the words that say a thing again. Then find two short sentences that belong together."
+  hint "Read your draft out loud: does it still say when, where and what happened?"
+}

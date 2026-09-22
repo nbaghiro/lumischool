@@ -1,0 +1,28 @@
+item coding.repeat-lines v=2 skills=[coding.repetition] {
+  title "How many lines run?"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 30x10 {
+    program p code=["pen down", "repeat {n}", "  right 2", "  down 1"] at=canvas(1, 0)
+    text ask "Not counting the repeat line, how many lines run altogether?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer=steps
+  feedback {
+    when (answer == 3) point=p {
+      say "Three lines are written, but the two inside the repeat run {n} times each."
+    }
+    when (answer == 2 * n) point=p {
+      say "Line 1 runs as well, once, before the repeat starts."
+    }
+  }
+  hint "Line 1 runs once. Lines 3 and 4 each run {n} times."
+}

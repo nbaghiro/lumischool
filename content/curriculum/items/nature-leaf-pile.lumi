@@ -1,0 +1,45 @@
+# The story: Ada and Ben's leaves from the long grass, drawn in a row, and a count that needs the
+# kinds told apart: the prickly ones, the ones that are not, or all of them.
+item nature.leaf-pile v=1 skills=[nature.leaves, addition.to-twenty] {
+  title "Ada and Ben's leaves"
+  difficulty (a + b + c + w)
+  let a=1..3 b=1..3 c=1..3 w=0..2
+  where (a + b + c <= 8)
+  let asks={pick(w, "How many prickly leaves do they have?", "How many of the leaves are not prickly?", "How many leaves do they have altogether?")}
+  let l1={if a >= 1 then "oak" else "none"}
+  let l2={if a >= 2 then "oak" else "none"}
+  let l3={if a >= 3 then "oak" else "none"}
+  let l4={if b >= 1 then "holly" else "none"}
+  let l5={if b >= 2 then "holly" else "none"}
+  let l6={if b >= 3 then "holly" else "none"}
+  let l7={if c >= 1 then "maple" else "none"}
+  let l8={if c >= 2 then "maple" else "none"}
+  let l9={if c >= 3 then "maple" else "none"}
+  level easy {
+    let a=1..2 b=1..2 c=1..2 w=0..0
+  }
+  level hard {
+    let a=2..3 b=2..3 c=2..3 w=1..2
+  }
+
+  scene 36x17 {
+    leafrow leaves kinds=[l1, l2, l3, l4, l5, l6, l7, l8, l9] labels=false at=canvas(1, 1)
+    text ask "In the long grass Ada collects {a} oak leaves and {b} holly leaves. Ben brings {c} maple leaves. {asks}" narrate width=34 below=leaves gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then b else if w == 1 then a + c else a + b + c)
+  feedback {
+    when (w == 0 and answer == a + b + c) point=leaves {
+      say "Only the holly leaves have prickles. Count the holly leaves."
+    }
+    when (w == 1 and answer == b and b != a + c) point=leaves {
+      say "Those are the prickly ones. The question wants the others: the oak and the maple leaves."
+    }
+    when (w == 2 and answer == a + b) point=leaves {
+      say "Ben's maple leaves count too. Add all three kinds."
+    }
+  }
+  hint "Which kind of leaf is prickly? Only the holly."
+  hint "Count the leaves of the kind the question wants, one kind at a time, then add if you need to."
+}

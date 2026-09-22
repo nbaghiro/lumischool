@@ -1,0 +1,53 @@
+lesson coding-following-instructions v=2 format=teach grade=1 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Following instructions on a grid"
+  goal "Run a short program one block at a time and say which square the robot stops on."
+
+  look {
+    scene 23x18 {
+      row both at=canvas(1, 0) space=1 align=start {
+        blocks b code=["right 3", "down 2"] words=false
+        maze m cols=6 rows=4 flag=[4, 3] code=["right 3", "down 2"]
+      }
+      row talk below=both gap=1 space=1 align=centre {
+        guide g pose=point
+        bubble t "Do the top block. Then the next one." width=16 from=g.hand
+      }
+    }
+    say """
+      A program is a list of instructions, and the robot does them in order from the top. On the
+      screen, press Run and watch it go. On paper, walk it with a finger, one square at a time.
+      """
+  }
+  do {
+    practice coding.number-line-robot count=2 seed=3
+    practice coding.robot-across count=2 easy-count=3 hard-count=0 seed=2
+    practice coding.hundred-steps count=2 seed=5
+    practice coding.number-to-flag count=1 seed=6
+    practice coding.robot-back count=1 easy-count=0 hard-count=3 seed=4
+  }
+  try stars=2 {
+    show coding.hundred-start s=3 a=3 b=2 easy-a=2 easy-b=1 hard-s=5 hard-a=4 hard-b=2
+  }
+  try stars=3 {
+    show coding.fewest-blocks k=0
+  }
+  remember {
+    say "Start at the top and do one block at a time."
+  }
+
+  grown-ups """
+    Draw a grid on the pavement in chalk and be the robot yourself while the child reads the blocks
+    out. Doing it wrong on purpose when they misread a block teaches more than getting it right. On
+    screen, ask for a guess before pressing Run: tapping a square marks the guess, and the run shows
+    whether it was right. The hundred square and the number line are the same idea on a page the
+    child already knows: right is one more, down is ten more, left is one less. In the two-star
+    question the robot has to be walked backwards, last block first. In the three-star question no
+    two blocks can get round the rocks, which is worth finding out by trying.
+    """
+  level easy {
+    grown-ups "At this level the grid robot goes right and then down by one or two squares, the number-line robot goes on by three or four and back by one or two, and the block that sends the grid robot back is left for another day."
+  }
+  level hard {
+    grown-ups "At this level the programs go further, one block sends the robot back two squares, and the robot walked backwards starts further along its row."
+  }
+}

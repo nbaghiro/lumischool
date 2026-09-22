@@ -1,0 +1,62 @@
+lesson chemistry-baking-cannot-be-undone v=1 format=teach grade=2 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "Baking: a change you cannot undo"
+  goal "Say which kitchen changes can be undone, like melting and dissolving, and which cannot, like baking and toasting."
+
+  look {
+    scene 22x17 {
+      beforeafter cake change="bake-cake" show=1 names=1 at=canvas(1, 0)
+      beforeafter choc change="melt-chocolate" show=1 names=1 below=cake gap=1
+    }
+    say """
+      In the kitchen Ada is baking. The butter melts in the pan, and it would set again if it went
+      cold: that change can be undone. The sugar dissolves in the milk, and it would come back if
+      the milk dried up. Then the cake mix goes in the oven, and what comes out is cake. No amount
+      of cooling turns cake back into mix. Heat that cooks makes something new, and a change that
+      makes something new cannot be undone.
+      """
+  }
+  do {
+    level easy {
+      worked chem.after-picture c="toast-bread" r=0
+    }
+    practice chem.after-picture count=2 seed=6 easy-seed=6 hard-seed=1
+    practice chem.change-undo count=2 seed=4 easy-seed=1 hard-seed=2
+    practice chem.undo-how count=2 seed=3 easy-seed=1 hard-seed=1
+    practice chem.kitchen-undo-sort count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.same-chocolate k=3 r=1 level=medium
+    }
+  }
+  story {
+    show chem.chocolate-squares a=10 b=4 w=0 easy-a=8 easy-b=3 hard-a=14 hard-b=6 hard-w=1
+  }
+  try stars=2 {
+    show chem.same-chocolate k=2 r=2 easy-k=0 hard-k=1
+  }
+  try stars=3 {
+    show chem.recipe-step k=2 easy-k=0 hard-k=1
+  }
+  remember {
+    say "Melting, freezing and dissolving can be undone. Cooking makes something new, and cannot."
+  }
+
+  grown-ups """
+    The idea is the difference between a change that can be undone (melting, freezing, boiling,
+    dissolving: the same stuff in a new state or shape) and one that cannot (toasting, frying,
+    baking, burning: something new is made). The wrong idea to watch for is that dissolved sugar
+    has gone, or that cooling a fried egg gives the raw egg back; ask whether the first thing
+    could come back. The pictures hide the after at first and show both halves later. The story
+    counts squares of chocolate melted and set. The two-star question asks whether the set
+    chocolate star, or the thawed water, is the same stuff, against the cooked egg and the toast,
+    and the reason has to name what the heat did. The three-star question reads a recipe for the
+    first step that cannot be undone, and one recipe has none, which is the harder answer. If
+    "cannot undo" still means "hard to undo" after the core, stay here another day with a real
+    ice cube and a real slice of toast, and ask what each would take to go back.
+    """
+  level easy {
+    grown-ups "At this level the toast is worked once in the teacher's pen before the fried egg and the cake, the changes to judge are melting and freezing, the ways back are cooling and warming, the stray in the columns is toast or the fried egg under can undo, eight squares of chocolate are melted and three set, the two-star is the chocolate star, and the recipe's step that cannot be undone is the baking at the end."
+  }
+  level hard {
+    grown-ups "At this level the after pictures to guess are chocolate melting, ice melting and water freezing, the changes to judge include dissolving and the dough rising, the ways back include letting the water dry up, the stray in the columns is dissolved sugar or a boiled kettle under cannot undo, a second same-or-not question sits in the core (the toast), fourteen squares are melted and the question is how many are solid again, the two-star is the frozen and thawed water, and the recipe has no step that cannot be undone."
+  }
+}

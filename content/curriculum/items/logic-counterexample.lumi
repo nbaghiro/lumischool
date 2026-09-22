@@ -1,0 +1,22 @@
+# One case is enough to show a claim is not always true, and only one of the four options is it.
+item logic.counterexample v=1 skills=[logic.quantifiers, reasoning.counterexample] {
+  title "The number that shows he is wrong"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 1, 4}  # read off: a 3 times table number that is even, a number past 20 with no 2, a two-digit number under 20
+  }
+  level hard {
+    let k={2, 3}  # the doubles have to be worked out; the 4 and 8 times tables have to be known
+  }
+  let c={if k == 0 then "Every number in the 3 times table is odd." else if k == 1 then "Every number bigger than 20 has a 2 in it." else if k == 2 then "When you double a number, the answer ends in 0 or 2." else if k == 3 then "Every number in the 4 times table is also in the 8 times table." else "Every number with two digits is bigger than 20."}
+
+  scene 30x9 {
+    text ask "Kai says: {c} Which number shows he is wrong?" width=28 at=canvas(1, 1)
+    choice pick options=[if k == 0 then 12 else if k == 1 then 25 else if k == 2 then 5 else if k == 3 then 8 else 34, if k == 0 then 9 else if k == 1 then 21 else if k == 2 then 7 else if k == 3 then 16 else 15, if k == 0 then 15 else if k == 1 then 29 else if k == 2 then 6 else if k == 3 then 24 else 26, if k == 0 then 21 else if k == 1 then 31 else if k == 2 then 10 else if k == 3 then 12 else 50] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then 12 else if k == 1 then 31 else if k == 2 then 7 else if k == 3 then 12 else 15)
+  hint "Test each number against what Kai says. Which ones fit his rule?"
+  hint "You are looking for the one number that does not fit."
+}

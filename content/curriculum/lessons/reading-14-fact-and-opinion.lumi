@@ -1,0 +1,60 @@
+lesson reading-fact-and-opinion v=1 format=teach grade=4 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "Fact and opinion"
+  goal "Tell a sentence that can be checked from one that is what somebody thinks, and say why."
+
+  look {
+    scene 25x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        sentence one before="A week has seven days" blank=0 after="."
+        row who space=1 align=centre {
+          parrot bird facing=1
+          bubble says "Green is the best colour." width=18 from=bird
+        }
+      }
+    }
+    say """
+      A fact can be checked, and everybody who checks it gets the same answer. An opinion is what
+      somebody thinks, and somebody else can disagree without being wrong. The parrot repeats both
+      kinds without knowing which is which, and both can appear in the same paragraph, which is why
+      it is worth being able to tell them apart.
+
+      Watch out for words like longest and tallest. They can be measured, so a sentence with one of
+      them can still be a fact.
+      """
+  }
+  do {
+    level easy {
+      worked reading.fact-or-opinion k=2 level=medium
+    }
+    practice reading.fact-or-opinion count=3 seed=5 easy-seed=1
+    practice reading.sign-opinion count=2 seed=3
+    practice reading.review-opinions count=2 seed=4 easy-seed=7
+    practice reading.opinion-why count=2 hard-count=1 seed=6
+    level hard {
+      practice reading.checked-and-wrong count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show reading.checked-and-wrong k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.make-it-a-fact k=0
+  }
+  remember {
+    say "A fact can be checked. An opinion is what somebody thinks, and others can disagree."
+  }
+
+  grown-ups """
+    Adverts are the best hunting ground. Read one together and separate the claims that could be
+    checked from the ones that only sound good. The two-star question separates two ideas that
+    children often join: a sentence that can be checked is a statement of fact even when checking
+    shows it is wrong. In the three-star question any checkable sentence about the same thing is
+    right; the test is whether someone could disagree with it and still be right.
+    """
+  level easy {
+    grown-ups "At this level the Nile is worked once in the teacher's pen before eight legs, twelve months, scary spiders and boring rain, the signs' opinions are lovely views and cakes too good to share, the reviews hold two or three opinions, the reasons are as written, the two-star's sentence can be checked and is right, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the sentences to judge are drawn from the Nile, the giraffe, swimming is easy and too many cars, the signs' opinions are the creamiest and the most fun on wheels, the reviews hold three opinions or none, one reason makes way for a second sentence to judge, the two-star's sentence is an opinion dressed as a fact, and the three-star is as written."
+  }
+}

@@ -1,0 +1,12 @@
+item physics.periscope-count v=1 skills=[physics.light] {
+  title "Mirrors in a periscope"
+
+  scene 28x12 {
+    periscope p tall=6 at=canvas(1, 0)
+    text ask "How many mirrors turn the light on its way from the bird to the eye?" width=10 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 2
+  hint "Follow the light from the bird. Where does it turn a corner?"
+}

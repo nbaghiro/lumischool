@@ -1,0 +1,39 @@
+# The two-star reason: two hooks each holding two bags, and one bag is on both. Comparing the two
+# bags that differ answers it without adding, which is the reason the child is asked for.
+item physics.which-hook v=1 stars=2 skills=[physics.weight, reasoning.compare] {
+  title "Which hook pulls harder?"
+  difficulty (8 - abs(b - c) + a / 2)
+  let a={2, 4} b={2, 4, 6} c={2, 4, 6}
+  where (b != c)
+  level easy {
+    where (abs(b - c) >= 4)
+  }
+  level hard {
+    where (abs(b - c) == 2)
+  }
+
+  scene 34x27 {
+    row hooks at=canvas(1, 1) space=1 align=start {
+      springscale one max=10 step=2 value=a unit=N
+      springscale two max=10 step=2 value=b unit=N
+      springscale three max=10 step=2 value=a unit=N
+      springscale four max=10 step=2 value=c unit=N
+    }
+    text la "Hook A" below=one gap=1
+    text lb "Hook B" below=three gap=1
+    text ask "Hook A holds the first two bags. Hook B holds the other two. Which hook pulls harder? Find a way to tell without adding." narrate width=32 below=la gap=1
+    choice pick options=["Hook A", "Hook B"] below=ask gap=1
+  }
+
+  answer pick=(if b > c then "Hook A" else "Hook B")
+  feedback {
+    when (pick == "Hook A" and c > b) point=four {
+      say "Both hooks hold a {a} newton bag, so that bag does not decide it. Compare the other two."
+    }
+    when (pick == "Hook B" and b > c) point=two {
+      say "Both hooks hold a {a} newton bag, so that bag does not decide it. Compare the other two."
+    }
+  }
+  hint "One bag is the same on both hooks. Which two bags are different?"
+  hint "The hook with the heavier of those two bags pulls harder. You do not need the total."
+}

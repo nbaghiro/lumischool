@@ -1,0 +1,14 @@
+item writing.list-word v=1 skills=[writing.spelling, writing.lists] {
+  title "One more thing for the list"
+  let w={"kite", "boat", "bike"}
+
+  scene 27x21 {
+    listpad pad title="For the park" items=["a hat", "a ball", ""] count=0 width=12 ticks=true at=canvas(1, 1)
+    art pic asset="{if w == \"bike\" then \"bicycle\" else w}" right-of=pad gap=1
+    text ask "Write the word for the picture, one letter in each box." width=12 below=pad gap=1
+    word-input word options=["{w}"] letters=4 below=ask gap=1
+  }
+
+  answer word=w
+  hint "Say the word slowly and write down the sounds in the order you hear them."
+}

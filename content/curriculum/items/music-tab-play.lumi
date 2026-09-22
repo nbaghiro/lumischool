@@ -1,0 +1,14 @@
+# Reading tab and playing it, with the neck laid down the same way as the tab above it, so string 1
+# is on top in both.
+item music.tab-play v=1 skills=[music.tab] {
+  title "Play the tab"
+
+  scene 30x27 {
+    tab lines tuning=guitar notes=["s1f0", "s1f1", "s1f3"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    text ask "Play the three notes in order, all on string 1." width=13 right-of=lines gap=1
+    fretboard neck tuning=guitar frets=4 view=tab labels=numbers strum=false below=lines gap=1
+  }
+
+  check music.plays notes=[E4, F4, G4]
+  hint "0 is the string played open. Then finger 1 on fret 1, then finger 3 on fret 3."
+}

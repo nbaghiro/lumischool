@@ -1,0 +1,32 @@
+# Flexible partitioning, 2.NBT: 63 is 60 and 3, but it is also 50 and 13 and 40 and 23.
+item place.partition v=1 skills=[place-value.tens-ones, place-value.regroup] {
+  title "Another way to split it"
+  difficulty (10 * d + o)
+  let t=4..9 o=1..8 d=0..2
+  level easy {
+    let d=0..1
+  }
+  level hard {
+    let d={2}
+  }
+
+  scene 18x8 {
+    arrowcards cards value=(10 * t + o) apart=true at=canvas(1, 1)
+    row eq below=cards gap=1 space=1 align=centre {
+      equation e1 "{10 * t + o} = {10 * (t - d)} +"
+      number-input rest width=3
+    }
+  }
+
+  answer rest=(o + 10 * d)
+  feedback {
+    when (rest == o and d > 0) point=eq {
+      say "{10 * (t - d)} is less than {10 * t}, so the other part has to be more than {o}."
+    }
+    when (rest == 10 * d) point=eq {
+      say "Do not forget the {o} ones."
+    }
+  }
+  hint "How much more is {10 * t + o} than {10 * (t - d)}?"
+  hint "Count on from {10 * (t - d)} in tens, then add the ones."
+}

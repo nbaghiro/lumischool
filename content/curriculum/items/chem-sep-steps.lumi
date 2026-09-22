@@ -1,0 +1,21 @@
+# Non-routine: three parts need three ways in the right order, and the sieve has to come while the
+# mix is still dry, so there is exactly one order that works.
+item chem.sep-steps v=1 stars=3 skills=[chemistry.separating, reasoning.planning] {
+  title "Three parts, one at a time"
+  let v=0..3
+
+  scene 36x17 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      mixture m things=["pebbles", "sand", "salt"] water=0 names=1
+      column side space=1 align=start {
+        text ask "Pebbles, sand and salt are mixed. Put the steps in order to get all three back. Write 1 to 4." width=22
+        sequence s items=["{if v == 0 then \"Filter out the sand\" else if v == 1 then \"Evaporate the water to get the salt\" else if v == 2 then \"Add water and stir\" else \"Sieve the dry mix to take out the pebbles\"}", "{if v == 0 then \"Sieve the dry mix to take out the pebbles\" else if v == 1 then \"Add water and stir\" else if v == 2 then \"Evaporate the water to get the salt\" else \"Filter out the sand\"}", "{if v == 0 then \"Evaporate the water to get the salt\" else if v == 1 then \"Sieve the dry mix to take out the pebbles\" else if v == 2 then \"Filter out the sand\" else \"Add water and stir\"}", "{if v == 0 then \"Add water and stir\" else if v == 1 then \"Filter out the sand\" else if v == 2 then \"Sieve the dry mix to take out the pebbles\" else \"Evaporate the water to get the salt\"}"] blanks=[a, b, c, d]
+      }
+    }
+  }
+
+  answer a=(if v == 0 then 3 else if v == 1 then 4 else if v == 2 then 2 else 1) b=(if v == 0 then 1 else if v == 1 then 2 else if v == 2 then 4 else 3) c=(if v == 0 then 4 else if v == 1 then 1 else if v == 2 then 3 else 2) d=(if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 1 else 4)
+  hint "Which step only works while the mix is dry?"
+  hint "The salt and the sand are both small. What makes one of them go through filter paper?"
+  hint "Which step has to come last, because it leaves everything that is left behind?"
+}

@@ -1,0 +1,28 @@
+# Every minute in an hour whose digits make a sum: a list that needs the tens of minutes to stop at 5.
+item time.digit-sums v=1 stars=3 skills=[time.minutes, reasoning.systematic] {
+  title "Digits that add up"
+  difficulty (s - hh)
+  let hh=1..9 s=6..14
+  level easy {
+    where (s - hh <= 4)  # every tens digit works, so nothing has to be left out
+  }
+  level hard {
+    where (s - hh >= 10)  # the minutes that would work never come, past 59
+  }
+  where ((s - hh <= 4 or s - hh >= 10) and s > hh + 1 and (if s - hh - 0 >= 0 and s - hh - 0 <= 9 then 1 else 0) + (if s - hh - 1 >= 0 and s - hh - 1 <= 9 then 1 else 0) + (if s - hh - 2 >= 0 and s - hh - 2 <= 9 then 1 else 0) + (if s - hh - 3 >= 0 and s - hh - 3 <= 9 then 1 else 0) + (if s - hh - 4 >= 0 and s - hh - 4 <= 9 then 1 else 0) + (if s - hh - 5 >= 0 and s - hh - 5 <= 9 then 1 else 0) >= 3)
+
+  scene 30x10 {
+    digital face time="{hh}:00" at=canvas(1, 1)
+    text ask "The clock shows {hh}:00. Between {hh}:00 and {hh}:59, how many times do the three digits on the clock add up to {s}?" width=18 right-of=face gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if s - hh - 0 >= 0 and s - hh - 0 <= 9 then 1 else 0) + (if s - hh - 1 >= 0 and s - hh - 1 <= 9 then 1 else 0) + (if s - hh - 2 >= 0 and s - hh - 2 <= 9 then 1 else 0) + (if s - hh - 3 >= 0 and s - hh - 3 <= 9 then 1 else 0) + (if s - hh - 4 >= 0 and s - hh - 4 <= 9 then 1 else 0) + (if s - hh - 5 >= 0 and s - hh - 5 <= 9 then 1 else 0))
+  feedback {
+    when (answer == (if s - hh - 0 >= 0 and s - hh - 0 <= 9 then 1 else 0) + (if s - hh - 1 >= 0 and s - hh - 1 <= 9 then 1 else 0) + (if s - hh - 2 >= 0 and s - hh - 2 <= 9 then 1 else 0) + (if s - hh - 3 >= 0 and s - hh - 3 <= 9 then 1 else 0) + (if s - hh - 4 >= 0 and s - hh - 4 <= 9 then 1 else 0) + (if s - hh - 5 >= 0 and s - hh - 5 <= 9 then 1 else 0) + (if s - hh - 6 >= 0 and s - hh - 6 <= 9 then 1 else 0) and s - hh - 6 >= 0 and s - hh - 6 <= 9) point=face {
+      say "The minutes only go up to 59, so the tens digit of the minutes is never more than 5."
+    }
+  }
+  hint "The hour digit is {hh}, so the two minute digits have to add up to {s - hh}."
+  hint "Try each tens digit for the minutes, 0 to 5. Which ones work?"
+}

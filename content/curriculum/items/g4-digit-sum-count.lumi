@@ -1,0 +1,22 @@
+# Every number that fits a rule, found by a system: the first digit cannot be 0, the others can.
+item place.digit-sum-count v=1 stars=3 skills=[place-value.large-numbers, reasoning.all-the-ways] {
+  title "Digits that add up"
+  difficulty (n * s)
+  let n=4..6 s=2..3
+
+  scene 27x16 {
+    pvchart chart value="{10 ^ (n - 1) + s - 1}" show=digits at=canvas(1, 1)
+    text ask "The digits of {10 ^ (n - 1) + s - 1} add up to {s}. How many {n}-digit numbers have digits that add up to {s}?" narrate width=26 below=chart gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if s == 2 then n else n * (n + 1) / 2)
+  feedback {
+    when (answer == (if s == 2 then n - 1 else n * (n + 1) / 2 - 1)) point=chart {
+      say "Did you count the number that starts with {s} and has zeros after it?"
+    }
+  }
+  hint "The first digit cannot be 0. What can it be?"
+  hint "Start with the first digit as 1. Where can the rest go? Then try 2."
+  hint "Make a list in order so none is missed and none is counted twice."
+}

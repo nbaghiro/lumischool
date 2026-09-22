@@ -1,0 +1,22 @@
+item physics.gear-way v=1 skills=[physics.machines] {
+  title "Which way does it turn?"
+  let a={12, 16, 24} b={8, 12, 16} t={-1, 1}
+  where (a != b)
+
+  scene 28x13 {
+    gears g a=a b=b turn=t show=0 at=canvas(1, 0)
+    text ask "Which way does B turn?" width=11 right-of=g gap=1
+    choice pick options=["Clockwise", "Anticlockwise"] stack=column below=ask gap=1
+  }
+
+  check physics.machine of=g pick=way(b)
+  feedback {
+    when (pick == "Clockwise" and t == 1) point=g {
+      say "Where two gears touch, their teeth push each other opposite ways."
+    }
+    when (pick == "Anticlockwise" and t == -1) point=g {
+      say "Where two gears touch, their teeth push each other opposite ways."
+    }
+  }
+  hint "Put a finger where the teeth meet. Which way does each gear push it?"
+}

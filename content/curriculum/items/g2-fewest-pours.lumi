@@ -1,0 +1,21 @@
+# The fewest full pours: use the biggest jug as often as it fits, then the next.
+item measure.fewest-pours v=1 stars=3 skills=[capacity.millilitres, reasoning.fewest] {
+  title "The fewest pours"
+  difficulty t
+  let t={300, 400, 600, 700, 800, 900}
+
+  scene 34x14 {
+    mixingbowl bowl fill=0.3 spoon=false at=canvas(1, 1)
+    text ask "You have three jugs that hold 500 ml, 200 ml and 100 ml. Each pour fills one jug to the top and tips it into the bowl. What is the fewest pours to put exactly {t} ml in the bowl?" width=18 right-of=bowl gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (t // 500 + t % 500 // 200 + t % 500 % 200 // 100)
+  feedback {
+    when (answer == t / 100) point=bowl {
+      say "That uses only the smallest jug. Can bigger jugs do it in fewer pours?"
+    }
+  }
+  hint "How many times can the 500 ml jug be used without going over?"
+  hint "Then use the 200 ml jug for as much of the rest as you can."
+}

@@ -1,0 +1,31 @@
+# Two digits with an exchange in the ones, which is the whole point of the written method.
+item columns.add-two-digit v=1 skills=[addition.columns] {
+  title "Adding with an exchange"
+  difficulty (a + b)
+  let a=23..79 b=14..58
+  where (a % 10 + b % 10 >= 10)
+  level easy medium {
+    where (a + b < 100)
+  }
+  level easy {
+    let a=23..39 b=14..29
+    where (a % 10 + b % 10 <= 12)  # the ones only just pass ten
+  }
+  level hard {
+    let a=45..89 b=36..79
+    where (a + b >= 100)  # the tens make an exchange too
+  }
+
+  scene 22x9 {
+    columns sum a=a b=b op=add at=canvas(1, 1)
+    text ask "Add the ones first, then the tens." narrate below=sum gap=1
+  }
+
+  answer sum=(a + b)
+  feedback {
+    when (sum == a + b - 10) point=sum {
+      say "The ten that came out of the ones has to be carried into the tens column."
+    }
+  }
+  hint "The ones make more than ten, so carry the ten across."
+}

@@ -1,0 +1,20 @@
+# Filter paper keeps back what has not dissolved: the one part still showing in the water is the
+# one the paper will hold.
+item chem.sep-residue v=1 skills=[chemistry.separating, chemistry.dissolving] {
+  title "Left on the paper"
+  let v=0..7
+
+  scene 27x14 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      mixture m things=["{if v == 0 then \"sand\" else if v == 1 then \"sand\" else if v == 2 then \"iron\" else if v == 3 then \"iron\" else if v == 4 then \"pebbles\" else if v == 5 then \"pebbles\" else if v == 6 then \"flour\" else \"flour\"}", "{if v == 0 then \"salt\" else if v == 1 then \"salt\" else if v == 2 then \"sugar\" else if v == 3 then \"sugar\" else if v == 4 then \"salt\" else if v == 5 then \"salt\" else if v == 6 then \"sugar\" else \"sugar\"}"] water=1 names=1
+      column side space=1 align=start {
+        text ask "This mixture is poured through filter paper. What stays on the paper?" width=16
+        choice pick options=["{if v == 0 then \"sand\" else if v == 1 then \"salt\" else if v == 2 then \"iron filings\" else if v == 3 then \"sugar\" else if v == 4 then \"pebbles\" else if v == 5 then \"salt\" else if v == 6 then \"flour\" else \"sugar\"}", "{if v == 0 then \"salt\" else if v == 1 then \"sand\" else if v == 2 then \"sugar\" else if v == 3 then \"iron filings\" else if v == 4 then \"salt\" else if v == 5 then \"pebbles\" else if v == 6 then \"sugar\" else \"flour\"}"] stack=column
+      }
+    }
+  }
+
+  check chem.separate of=m pick=residue
+  hint "Which part can you still see in the water?"
+  hint "Can a part that has dissolved be caught by paper?"
+}

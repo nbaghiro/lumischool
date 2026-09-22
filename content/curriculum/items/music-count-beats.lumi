@@ -1,0 +1,27 @@
+# Music without sound: the notation, the counting and the writing carry over; the hearing does not.
+item music.count-beats v=1 skills=[music.rhythm] {
+  title "Count the beats"
+  difficulty (a + b)
+  let a={1, 2}
+  let b={1, 2}
+  level easy {
+    where (a + b <= 3)  # four or five beats
+  }
+  level hard {
+    where (a + b >= 3)  # five or six beats
+  }
+
+  scene 28x12 {
+    text ask "How many beats are there in this bar?" width=26 at=canvas(1, 1)
+    staff bar notes=[1, a, 0.5, 0.5, b] below=ask gap=1
+    number-input answer below=bar gap=1
+  }
+
+  answer (2 + a + b)
+  feedback {
+    when (answer == 3 + a + b) point=bar.note(2) {
+      say "The two notes with flags are half a beat each, so together they make one beat."
+    }
+  }
+  hint "A filled head is one beat, an open head is two, and a flag makes it half a beat."
+}

@@ -1,0 +1,13 @@
+item physics.maze-turn v=1 skills=[physics.light] {
+  title "Up or down?"
+  let k=0..1 c={"B2", "C2", "D2"}
+
+  scene 14x20 {
+    mirrors box cols=4 rows=3 torch=2 rise=["{if k == 0 then c else \"Z9\"}"] fall=["{if k == 1 then c else \"Z9\"}"] show=0 at=canvas(1, 0)
+    text ask "When the light reaches the mirror, which way will it go?" width=13 below=box gap=0
+    choice pick options=["Up", "Down"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Up" else "Down")
+  hint "Which end of the mirror does the light hit first, the low end or the high end?"
+}

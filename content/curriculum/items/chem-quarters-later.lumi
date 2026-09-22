@@ -1,0 +1,34 @@
+# The cube some minutes on, past the last drawn saucer: a quarter every ten minutes on the
+# table, two in the sun, so the quarters left are counted down from the last picture. In the
+# sun the cube can be gone, and the answer is 0.
+item chem.quarters-later v=1 skills=[chemistry.states, reasoning.predict] {
+  title "How much is left later?"
+  difficulty ((if p == 2 then 1 else 0) + (if t == 30 or t == 15 then 1 else 0))
+  let p=1..2 t={15, 20, 30}
+  let where={pick(p - 1, "on the table", "in the sun")}
+  let rate={pick(p - 1, 1, 2)}
+  level easy {
+    let p=1..1 t={20, 30}
+  }
+  level hard {
+    let p=2..2 t={15, 20}
+  }
+
+  scene 34x19 {
+    icemelt ice every=10 count=2 place=p at=canvas(1, 0)
+    text ask "This cube is {where}. The first picture is when it was put out, the second ten minutes later. It goes on melting at the same speed. How many quarters of the cube are left after {t} minutes?" narrate width=32 below=ice gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer max(0, 4 - rate * t / 10)
+  feedback {
+    when (answer == 4 - rate and t != 10) point=ice {
+      say "That is after ten minutes, the second picture. Keep taking the same amount off for each ten minutes more."
+    }
+    when (p == 2 and answer == 4 - t / 10) point=ice {
+      say "In the sun the cube loses two quarters every ten minutes, not one. Look at how much went in the first ten."
+    }
+  }
+  hint "How many quarters went in the first ten minutes? The same goes in each ten minutes after."
+  hint "Count down from four, one ten minutes at a time, and stop at nothing."
+}

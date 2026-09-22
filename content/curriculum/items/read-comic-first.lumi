@@ -1,0 +1,19 @@
+# The panels are lettered and shuffled. The words in the bubbles and the faces are the only way to
+# put them back in order, which is reading a story for what has to come first.
+item reading.comic-first v=1 skills=[reading.sequencing] {
+  title "Which comes first?"
+  let k=0..1
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic strip who=[if k == 0 then "dog" else "gran", if k == 0 then "girl" else "gran", if k == 0 then "girl" else "boy"] says=[if k == 0 then "Woof! Woof!" else "Never mind. We have more.", if k == 0 then "You found it!" else "Let's make a cake.", if k == 0 then "Where is my ball?" else "Oh no! I dropped the eggs."] moods=[if k == 0 then "happy" else "happy", if k == 0 then "excited" else "happy", if k == 0 then "worried" else "worried"] with=[if k == 0 then "" else "boy", if k == 0 then "dog" else "boy", if k == 0 then "" else "gran"] thinks=[0, 0, 0] holds=[if k == 0 then "ball" else "", if k == 0 then "ball" else "", if k == 0 then "" else ""] labels=["A", "B", "C"]
+      row q space=1 align=centre {
+        text ask "Which picture comes first in the story?"
+        choice pick options=["A", "B", "C"]
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "C" else "B")
+  hint "Which picture could not have anything before it? Read what each one says."
+}

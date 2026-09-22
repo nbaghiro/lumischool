@@ -1,0 +1,56 @@
+# The first thing every method teaches at the keyboard, before a note is read: the fingers have
+# numbers, the thumb is 1 on both hands, and a hand in C position has a finger over each key.
+lesson music-piano-fingers v=1 format=teach grade=1 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Finger numbers and C position"
+  goal "Number the fingers from the thumb on both hands, and put the right hand in C position."
+
+  look {
+    scene 26x27 {
+      hand both side=both numbers=piano ring=0 colours=false at=canvas(2, 1)
+      piano keys from=C4 whites=8 wide=3 labels=letters fingers=[1, 2, 3, 4, 5] below=both gap=2
+    }
+    say """
+      Your fingers have numbers. Both thumbs are 1, and the little fingers are 5. Put your right
+      thumb on middle C and one finger on each white key after it, up to G. That is C position.
+      """
+  }
+  do {
+    level easy {
+      worked music.ringed-finger k=5 level=medium
+    }
+    practice music.ringed-finger count=2 seed=4
+    practice music.left-ringed count=1 seed=3
+    practice music.finger-for-key count=2 seed=5
+    practice music.key-for-finger count=1 hard-count=0 seed=2
+    level hard {
+      practice music.left-hand-finger count=1 seed=1
+    }
+    show music.play-with-fingers
+    show music.play-left-hand
+  }
+  try stars=2 {
+    show music.left-hand-finger i=1 easy-i=0
+  }
+  try stars=3 {
+    show music.two-note-pairs n=4 easy-n=3 hard-n=5
+  }
+  remember {
+    say "The thumb is 1 on both hands. In C position each finger has a key of its own."
+  }
+
+  grown-ups """
+    Sit the child so their forearm is level with the keys, with feet on the floor or on a box, and
+    let the hand rest in a gentle curve, the shape it makes on a knee. Say the numbers together,
+    wiggling each finger, before any key is pressed. A child who plays the guitar as well will meet
+    another numbering there, where the pointer finger is 1; the pictures always print the numbers.
+    The two-star question is the left hand in C position, where the numbers run the other way from
+    the letters; let the child put the hand on a table and count. In the three-star question, a list
+    that starts with every pair using finger 1 is the tidy way to find them all.
+    """
+  level easy {
+    grown-ups "At this level the little finger is named once in the teacher's pen before the thumb and the pointer, the left hand's ringed finger is as written, the fingers for D and E are asked, the ringed finger's key and the notes to play are as written, the two-star's left-hand key is C, under the little finger, and the three-star counts pairs from three fingers."
+  }
+  level hard {
+    grown-ups "At this level the fingers named are the ring finger and the little finger, the left hand's ringed finger is as written, the fingers for F and G are asked, the ringed finger's key makes way for a second left-hand finger, the notes to play are as written, the two-star is as written, and the three-star counts pairs from five fingers."
+  }
+}

@@ -1,0 +1,22 @@
+# Tenths written three ways and one half, so each has to be read as tenths before ordering.
+item decimal.tenths-order v=1 skills=[decimals.tenths, fractions.compare] {
+  title "Tenths in order"
+  difficulty (9 - max(a, b, c) + min(a, b, c) + (if min(a, b, c) < 5 and max(a, b, c) > 5 then 2 else 0))
+  let a={1, 2, 3, 4, 6, 7, 8, 9} b={1, 2, 3, 4, 6, 7, 8, 9} c={1, 2, 3, 4, 6, 7, 8, 9}
+  where (a != b and b != c and a != c)
+  level easy {
+    where (max(a, b, c) - min(a, b, c) >= 6)  # the tenths are far apart
+  }
+  level hard {
+    where (min(a, b, c) < 5 and max(a, b, c) > 5 and max(a, b, c) - min(a, b, c) <= 4)  # close together, either side of a half
+  }
+
+  scene 20x18 {
+    text ask "Put them in order, smallest first. Write 1 to 4 in the boxes." narrate width=19 at=canvas(1, 1)
+    sequence s items=["{decimals(a / 10, 1)}", "{b}/10", "1/2", "{c} tenths"] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=(1 + (if b < a then 1 else 0) + (if 5 < a then 1 else 0) + (if c < a then 1 else 0)) p2=(1 + (if a < b then 1 else 0) + (if 5 < b then 1 else 0) + (if c < b then 1 else 0)) p3=(1 + (if a < 5 then 1 else 0) + (if b < 5 then 1 else 0) + (if c < 5 then 1 else 0)) p4=(1 + (if a < c then 1 else 0) + (if b < c then 1 else 0) + (if 5 < c then 1 else 0))
+  hint "Write each one as tenths. How many tenths is one half?"
+  hint "Now put the numbers of tenths in order."
+}

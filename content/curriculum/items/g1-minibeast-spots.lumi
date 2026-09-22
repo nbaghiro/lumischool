@@ -1,0 +1,25 @@
+item data.minibeast-spots v=1 skills=[multiplication.equal-groups] {
+  title "Spots on the ladybirds"
+  difficulty s
+  let s=2..7
+  level easy {
+    let s=2..3
+  }
+  level hard {
+    let s=6..7
+  }
+
+  scene 26x16 {
+    minibeasts row kinds=["ladybird", "ladybird", "ladybird"] spots=s legs=false at=canvas(1, 1)
+    text ask "Every ladybird has the same spots. How many spots altogether?" width=24 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (3 * s)
+  feedback {
+    when (answer == s) point=row {
+      say "That is one ladybird. There are three of them, each with {s} spots."
+    }
+  }
+  hint "Count the spots on one, then count that many for each of the three."
+}

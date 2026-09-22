@@ -1,0 +1,31 @@
+# The when block is the start of a program, not a step in it: the flag starts the script, and the
+# square the rabbit reaches is worked out by running the script under the flag.
+item coding.stage-where v=1 skills=[coding.events] {
+  title "When the flag is tapped"
+  difficulty (a + b)
+  let a=1..3 b=2..3
+  level easy {
+    let a=1..3 b={2}
+  }
+  level hard {
+    let a=2..3 b=2..3
+    where (a + b >= 5)
+  }
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "right {b}", "jump"]
+      stage s cols=7 col=a code=["when the flag is tapped", "right {b}", "jump"] upto=0
+    }
+    text ask "The flag is tapped. Which square does the rabbit end on?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=s answer=col
+  feedback {
+    when (answer == a) point=s {
+      say "The flag starts the script, so the rabbit moves {b} before it jumps."
+    }
+  }
+  hint "Start on square {a}. Then do the blocks under the flag."
+}

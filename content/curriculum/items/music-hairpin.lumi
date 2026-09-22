@@ -1,0 +1,17 @@
+item music.hairpin v=1 skills=[music.dynamics] {
+  title "The sign that opens out"
+
+  scene 24x13 {
+    dynamics marks marks=["cresc"] words=false ring=-1 at=canvas(1, 1)
+    text ask "This sign opens out as it goes. What does it mean?" width=14 right-of=marks gap=1
+    choice pick options=["getting louder", "getting softer"] stack=column below=ask gap=1
+  }
+
+  answer pick="getting louder"
+  feedback {
+    when (pick == "getting softer") point=marks {
+      say "A sign that closes up means getting softer. This one opens out, so the music grows."
+    }
+  }
+  hint "The lines spread apart, the way a sound grows bigger."
+}

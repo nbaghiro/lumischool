@@ -1,0 +1,30 @@
+# Bonds to one in tenths, the decimal version of bonds to ten.
+item decimal.make-one v=1 skills=[decimals.tenths, bonds-to-10] {
+  title "Make one whole"
+  difficulty (if k == 5 then 0 else if k == 1 or k == 9 then 1 else if k == 2 or k == 8 then 2 else 3)
+  let k=1..9
+  level easy {
+    let k={1, 5, 9}
+  }
+  level hard {
+    let k={3, 4, 6, 7}
+  }
+
+  scene 22x9 {
+    unknown eq terms=["{decimals(k / 10, 1)}", "+", "?", "=", "1"] at=canvas(1, 1)
+    text ask "What number goes in the box?" narrate below=eq gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer decimals((10 - k) / 10, 1)
+  feedback {
+    when (answer == 10 - k) point=eq {
+      say "The answer is tenths, so it needs its point: 0.{10 - k}."
+    }
+    when (answer == decimals((11 - k) / 10, 1)) point=eq {
+      say "Check it: add your number to {decimals(k / 10, 1)}. Do you get exactly one?"
+    }
+  }
+  hint "How many tenths make one whole?"
+  hint "You have {k} tenths. How many more tenths make ten tenths?"
+}

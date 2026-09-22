@@ -1,0 +1,23 @@
+# Every note a given distance from any landmark, counted once: two landmarks can share a neighbour,
+# and a landmark can itself be the neighbour of another, which is the thinking the count needs.
+item music.near-landmarks-count v=1 stars=3 skills=[music.grand-staff, reasoning.all-the-ways] {
+  title "Near a landmark"
+  difficulty k
+  let k=1..4
+  let far={if k == 1 then "one step" else if k == 2 then "a skip" else if k == 3 then "three steps" else "four steps"}
+
+  scene 32x16 {
+    grandstaff gs notes=["F3", "C4", "G4"] letters=true lit=[] landmarks=true at=canvas(1, 0)
+    text ask "How many different notes are exactly {far} up or down from a landmark? Count each note once." width=15 right-of=gs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 2 then 4 else if k == 4 then 5 else 6)
+  feedback {
+    when (answer == 6 and (k == 2 or k == 4)) point=gs {
+      say "Some notes are {far} from two landmarks at once. Did you count one of them twice?"
+    }
+  }
+  hint "Start with bass F. Which two notes are {far} from it?"
+  hint "Do the same for middle C and treble G, then cross out any note you already have."
+}

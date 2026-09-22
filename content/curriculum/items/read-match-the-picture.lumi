@@ -1,0 +1,22 @@
+# The two wrong sentences are wrong in different ways: one says the wrong place, and one could
+# never happen at all. Spotting the silly one is checking that what was read makes sense.
+item reading.match-the-picture v=1 skills=[reading.sentence-meaning] {
+  title "Which sentence fits?"
+  let s=0..2
+
+  scene 19x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      picturecards card who=[if s == 0 then "pig" else if s == 1 then "dog" else "duck"] where=[if s == 0 then "in" else if s == 1 then "on" else "by"] thing=[if s == 0 then "tub" else if s == 1 then "bed" else "box"] letters=false
+      text ask "Which sentence fits the picture?" width=18
+      choice pick options=[if s == 0 then "The pig is in the tub." else if s == 1 then "The dog is under the bed." else "The duck is in the box.", if s == 0 then "The tub is in the pig." else if s == 1 then "The dog is on the bed." else "The box is on the duck.", if s == 0 then "The pig is on the log." else if s == 1 then "The bed is on the dog." else "The duck is by the box."] stack=column
+    }
+  }
+
+  answer pick=(if s == 0 then "The pig is in the tub." else if s == 1 then "The dog is on the bed." else "The duck is by the box.")
+  feedback {
+    when (pick == "The tub is in the pig." or pick == "The bed is on the dog." or pick == "The box is on the duck.") point=card {
+      say "Read it again. Could that really happen?"
+    }
+  }
+  hint "Read each sentence, then look at the picture. Only one says what you can see."
+}

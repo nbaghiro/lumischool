@@ -1,0 +1,16 @@
+# The marks have been left out, so the child has to hear where the first thought stops. The
+# audit's raise for the sentence-end item.
+item reading.where-it-ends v=1 skills=[reading.punctuation, reading.sentence-meaning] {
+  title "Where does it stop?"
+  let k=0..3 p=0..2
+
+  scene 30x13 {
+    sentence strip before="{if k == 0 then \"where is my hat it is on the bed\" else if k == 1 then \"the dog is wet it was in the pond\" else if k == 2 then \"can you see the fox it is in the box\" else \"the sun is up it is a hot day\"}" blank=0 after="" at=canvas(1, 1)
+    text ask "After which word does the first sentence stop?" narrate width=28 below=strip gap=1
+    choice pick options=["{if p == 0 then (if k == 0 then \"hat\" else if k == 1 then \"wet\" else if k == 2 then \"fox\" else \"up\") else (if k == 0 then \"my\" else if k == 1 then \"dog\" else if k == 2 then \"see\" else \"sun\")}", "{if p == 1 then (if k == 0 then \"hat\" else if k == 1 then \"wet\" else if k == 2 then \"fox\" else \"up\") else (if k == 0 then \"bed\" else if k == 1 then \"pond\" else if k == 2 then \"box\" else \"day\")}", "{if p == 2 then (if k == 0 then \"hat\" else if k == 1 then \"wet\" else if k == 2 then \"fox\" else \"up\") else (if k == 0 then \"it\" else if k == 1 then \"was\" else if k == 2 then \"it\" else \"hot\")}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "hat" else if k == 1 then "wet" else if k == 2 then "fox" else "up")
+  hint "This is two sentences with no marks. Read it out loud. Where do you want to stop and take a breath?"
+  hint "The second sentence starts with it. Which word comes just before?"
+}

@@ -1,0 +1,19 @@
+# The same four-bridge network sorts some orders and not others, so whether it sorted has to be
+# checked, not assumed. After the four bridges line 2 holds the smaller of the two pair maxima and line 3
+# the bigger of the two pair minima, so the order is right exactly when line 2 is below line 3.
+item coding.net-sorted-or-not v=1 stars=2 skills=[coding.algorithms, reasoning.claims] {
+  title "Did it sort them?"
+  difficulty ((if min(max(a, b), max(c, d)) > max(min(a, b), min(c, d)) then 2 else 0) + (if a > b then 1 else 0) + (if c > d then 1 else 0))
+  let a=1..4 b=1..4 c=1..4 d=1..4
+  where (a != b and a != c and a != d and b != c and b != d and c != d)
+
+  scene 32x15 {
+    sortnet n inputs=[a, b, c, d] pairs=[1, 2, 3, 4, 1, 3, 2, 4] at=canvas(1, 0)
+    text ask "Kit says this network puts any four numbers in order. Do these four come out in order, smallest on the left?" width=17 right-of=n gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if min(max(a, b), max(c, d)) > max(min(a, b), min(c, d)) then "no" else "yes")
+  hint "Walk all four numbers to the bottom before you decide."
+  hint "Look at the two middle lines at the bottom. Is the left one smaller?"
+}

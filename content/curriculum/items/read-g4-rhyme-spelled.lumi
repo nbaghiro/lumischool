@@ -1,0 +1,30 @@
+# A rhyme is a sound, not a spelling: the right answer is spelled differently, and one wrong
+# answer is spelled like the word but does not rhyme.
+item reading.rhyme-by-sound v=1 skills=[reading.rhyme, reading.phonics] {
+  title "Rhymes by sound"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=0..4 w={if k == 0 then "light" else if k == 1 then "blue" else if k == 2 then "late" else if k == 3 then "bear" else "road"}
+  level easy {
+    let k={0, 1, 4}  # bite, shoe, code
+  }
+  level hard {
+    let k={2, 3}  # eight and hair, whose spellings hide the rhyme
+  }
+
+  scene 26x7 {
+    text ask "Which word rhymes with {w}?" narrate width=24 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "lift" else if k == 1 then "shoe" else if k == 2 then "lake" else if k == 3 then "hear" else "rod", if k == 0 then "bite" else if k == 1 then "blow" else if k == 2 then "eight" else if k == 3 then "hair" else "code", if k == 0 then "eight" else if k == 1 then "bloom" else if k == 2 then "hat" else if k == 3 then "bead" else "reed"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "bite" else if k == 1 then "shoe" else if k == 2 then "eight" else if k == 3 then "hair" else "code")
+  feedback {
+    when (pick == "eight" and k == 0) point=pick {
+      say "Eight has the same letters as light, but say them both. Do they sound the same at the end?"
+    }
+    when (pick == "hear" or pick == "blow" or pick == "rod") point=pick {
+      say "It looks like {w}, but a rhyme is about the sound. Say both words aloud."
+    }
+  }
+  hint "Say {w} aloud, then each word after it."
+  hint "Listen to the end of each word, not the letters."
+}

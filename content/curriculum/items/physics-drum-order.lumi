@@ -1,0 +1,26 @@
+# The drums are hit once each, softly, harder and hardest, in a shuffled order. Each drum's place
+# from quiet to loud is exactly how hard it was hit, which the rice shows and the answer states.
+item physics.drum-order v=1 skills=[physics.sound] stars=3 {
+  title "Quiet to loud"
+  let f=0..2
+
+  scene 29x29 {
+    column all at=canvas(1, 0) space=1 align=start {
+      row top space=1 align=start {
+        ricedrum a hit=(if f == 0 then 3 else 1) tag="A"
+        ricedrum b hit=(if f == 1 then 3 else 2) tag="B"
+      }
+      row bottom space=1 align=start {
+        ricedrum c hit=(if f == 2 then 3 else if f == 0 then 1 else 2) tag="C"
+        column q space=1 align=start {
+          text ask "Number the drums from the quietest, 1, to the loudest, 3." width=14
+          sequence order items=["A", "B", "C"] blanks=[ra, rb, rc]
+        }
+      }
+    }
+  }
+
+  answer ra=(if f == 0 then 3 else 1) rb=(if f == 1 then 3 else 2) rc=(if f == 2 then 3 else if f == 0 then 1 else 2)
+  hint "Find the drum whose rice jumps highest. Is that the quietest or the loudest?"
+  hint "Now which of the other two has the lower jumps?"
+}

@@ -1,0 +1,20 @@
+item physics.prism-missing v=1 skills=[physics.light] {
+  title "The missing colour"
+  difficulty k
+  let k=1..4
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={3, 4}
+  }
+
+  scene 28x18 {
+    prism p blank=k at=canvas(1, 0)
+    text ask "Which colour belongs in the gap?" width=15 below=p gap=1
+    choice pick options=["orange", "yellow", "green", "blue"] below=ask gap=1
+  }
+
+  check physics.light of=p pick=missing
+  hint "Which colours are on either side of the gap?"
+}

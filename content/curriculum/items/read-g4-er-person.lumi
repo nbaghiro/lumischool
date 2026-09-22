@@ -1,0 +1,16 @@
+# The audit's raise: er at the end of a word is not always the suffix for a person. The odd word
+# moves place from version to version.
+item reading.er-not-a-person v=1 skills=[reading.morphology] {
+  title "Not a person"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 30x7 {
+    text ask "In which word does er NOT mean a person who does something?" width=29 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "teacher" else if k == 1 then "corner" else if k == 2 then "farmer" else "player", if k == 0 then "painter" else if k == 1 then "baker" else if k == 2 then "faster" else "reader", if k == 0 then "bigger" else if k == 1 then "singer" else if k == 2 then "driver" else "silver"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "bigger" else if k == 1 then "corner" else if k == 2 then "faster" else "silver")
+  hint "Take er off each word. What is left?"
+  hint "Is what is left a thing somebody does?"
+}

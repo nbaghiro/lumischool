@@ -1,0 +1,11 @@
+item writing.plan-a-mountain v=1 skills=[writing.planning, writing.composing] {
+  title "Plan a story on the mountain"
+  let t={"the owl who lost its hoot", "the kite that would not come down"}
+
+  scene 36x26 {
+    storymountain hill stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["", "", "", "", ""] ring=-1 at=canvas(1, 1)
+    text ask "Plan a story about {t}. A few words on each card." width=33 below=hill gap=1
+  }
+
+  check writing.by-eye look-for="A note on every card rather than a sentence, in an order that tells one story: the problem card says what goes wrong, the fixing card says how it is put right, and the ending follows from the fix rather than stopping suddenly."
+}

@@ -1,0 +1,37 @@
+# Making ten is a strategy for adding past ten, which is what the bonds are for.
+item add.bridge-ten v=1 skills=[addition.making-ten] {
+  title "Fill the ten first"
+  difficulty (10 - a)
+  let a=6..9 b=3..9
+  where (a + b > 10)
+  where (2 * a + b != 20)  # then what moves across and what stays behind are the same
+  level easy {
+    let a=8..9 b=3..6  # one or two counters move across
+  }
+  level hard {
+    let a=6..7 b=5..9  # three or four move across
+  }
+
+  scene 30x10 {
+    row frames at=canvas(1, 1) space=2 {
+      tenframe first count=a color=berry
+      tenframe second count=b color=sky
+    }
+    row eq below=frames gap=1 space=1 align=centre {
+      equation sums "{a} + {b} = 10 + {?left} ="
+      number-input sum width=3
+    }
+  }
+
+  answer left=(a + b - 10) sum=(a + b)
+  feedback {
+    when (left == 10 - a) point=second {
+      say "That is how many move across to fill the first frame. How many are still in the second frame?"
+    }
+    when (sum == a + b + 1 or sum == a + b - 1) point=frames {
+      say "The first frame is ten. Count on what is left in the second frame."
+    }
+  }
+  hint "How many empty squares are there in the first frame?"
+  hint "Move that many across. Now the first frame is ten; what is left in the second?"
+}

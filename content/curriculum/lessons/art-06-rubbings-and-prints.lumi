@@ -1,0 +1,54 @@
+lesson art-rubbings-and-prints v=1 format=teach grade=2 unit=2 subject=art levels=[easy, medium, hard] {
+  title "Rubbings and prints"
+  goal "Make a rubbing of a textured thing, match a rubbing to what made it, and tell a rubbing from a print by which way it faces."
+
+  look {
+    scene 25x10 {
+      rubbing r veins=[3, 5, 4] made=1 colour="green" at=canvas(1, 1)
+    }
+    say """
+      A rubbing shows the bumps under the paper. Lay paper over a leaf and rub the side of a crayon
+      across it, and the edge and the veins appear. Bark, coins and the bottom of a shoe make
+      rubbings too. A print is different: the block is inked and pressed face down on the paper.
+      """
+  }
+  do {
+    practice art.which-leaf-rubbed count=2 seed=5
+    practice art.rubbing-way-round count=2 seed=1
+    level easy {
+      worked art.print-faces m="fish" level=medium
+    }
+    practice art.print-faces count=2 easy-count=1 seed=1 easy-seed=7
+    practice art.rubbed-or-printed count=2 seed=2
+  }
+  try stars=2 {
+    show art.blank-rubbing
+  }
+  try stars=3 {
+    show art.make-a-rubbing
+  }
+  remember {
+    say "A rubbing shows what is under the paper, the same way round. A print comes out the other way round."
+  }
+
+  grown-ups """
+    The matching question is marked by the machine: the leaves have different numbers of veins, and
+    counting them is how the rubbing is matched. The later questions compare a rubbing with a print
+    of the same block. A rubbing is taken from on top, so it faces the way the block does; a print is
+    the block turned over, so it faces the other way. The question that shows only a block and a
+    result asks the child to reason back from which way the shape faces to how it was made.
+
+    The rubbings are the child's. Peel the paper off a wax crayon and use its side, and hold the
+    paper still with the other hand; thin paper works better than thick. A screen cannot make a
+    rubbing, so on screen the child prints leaves instead.
+
+    Respond by naming the texture: "You can see every vein, and the edge is darker where the leaf
+    was thickest." Ask what else in the house might make a good rubbing.
+    """
+  level easy {
+    grown-ups "At this level the leaves to tell apart have few veins, the way a rubbing faces is as written, a fish's print is worked once in the teacher's pen before the bird's, the pictures to call rubbed or printed are rubbings, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the leaves to tell apart have many veins, the way a rubbing faces is as written, the prints to face are as written, the pictures to call rubbed or printed are prints, which face the other way, and the two-star and three-star are as written, since the two-star has one version."
+  }
+}

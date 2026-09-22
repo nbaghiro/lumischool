@@ -1,0 +1,18 @@
+# A poem says some things without saying them straight. The lamp does not sweep anything, and
+# the child works out what the words make you see.
+item reading.poem-meaning v=1 skills=[reading.poetry, reading.inference] {
+  title "What the poem means"
+  difficulty k
+  let k=0..1
+
+  scene 27x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      poem p title="The lighthouse" lines=["At night the lamp goes round and round,", "it sweeps the sea without a sound.", "The ships far out can see the light", "and keep away from rocks at night."] rhymes=[0, 0, 1, 1] blank=-1 beats=[] width=26
+      text ask "{if k == 0 then \"In the poem, the lamp sweeps the sea. What does that mean?\" else \"Why do the ships keep away from the rocks?\"}" width=26
+      choice pick options=[if k == 0 then "The light moves across the water." else "The keeper shouts to them.", if k == 0 then "Someone brushes the waves." else "The light shows where the rocks are.", if k == 0 then "The wind blows the sea away." else "The lamp is too hot."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "The light moves across the water." else "The light shows where the rocks are.")
+  hint "Picture what the poem describes. What would you see from a ship at night?"
+}

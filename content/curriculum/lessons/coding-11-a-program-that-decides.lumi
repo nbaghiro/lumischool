@@ -1,0 +1,53 @@
+lesson coding-a-program-that-decides v=3 format=teach grade=3 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "A program that makes a decision"
+  goal "Follow a decision, say which way it goes, and work out its question from what it did."
+
+  look {
+    scene 23x25 {
+      column all at=canvas(1, 0) space=1 align=start {
+        program p code=["if the number is more than 5", "  say shout", "otherwise", "  say whisper"] title="what to do"
+        fork f ask="Is the number more than 5?" yes="shout" no="whisper" cond="the number is more than 5" n=7 lit=true
+      }
+    }
+    say """
+      Up to now every line has run. An if changes that: line 1 asks a question, and only one of the
+      two ways under it happens. Here the number is 7, which is more than 5, so the path goes the
+      yes way and whisper never runs at all.
+      """
+  }
+  do {
+    show coding.fork-way n=8 t=5 easy-n=9 easy-t=4 hard-n=6 hard-t=6
+    show coding.decision n=4 easy-n=10 hard-n=6
+    show coding.decision-threshold t=5 easy-t=3 hard-t=6
+    show coding.three-ways n=5 a=7 b=3 easy-n=9 hard-n=7
+    show coding.decision-threshold t=7 easy-t=4 hard-t=8
+    show coding.three-ways n=3 a=6 b=4 easy-n=2 hard-n=4
+    show coding.clap-count a=8 b=4 easy-a=6 hard-b=2
+    show coding.decision-count m=9 easy-m=8 hard-m=10
+  }
+  try stars=2 {
+    show coding.which-input-breaks t=6 m=1 easy-m=0 hard-m=2
+  }
+  try stars=3 {
+    show coding.find-both-numbers s=2 c=3 easy-s=1 easy-c=2 hard-s=3 hard-c=4
+  }
+  remember {
+    say "An if picks one way. The other way does not run at all."
+  }
+
+  grown-ups """
+    "More than 5" not including 5 itself is the part worth labouring: ask what the program does
+    for 5, then for 6. Conditions are the idea children this age find hardest, so a real fork in a
+    real path, walked, helps more than a second explanation. Later questions write the number as n
+    and put one decision inside another, where the second question is only asked when the first
+    says no. In the two-star question, try each number near the one in line 1 and say what Sam
+    wants for it. In the three-star question any first guess for A and B can be tried against the
+    counts and then moved.
+    """
+  level easy {
+    grown-ups "At this level the numbers sit well away from the number in the question: nine against more than four, ten against more than six, nine and two in the programs with two decisions, the line 1 numbers to find are three and four, two numbers clap, the shouts are counted to eight, Sam's program is out by the plain one, more than six for six or more, and one number shouts and two clap in the three-star."
+  }
+  level hard {
+    grown-ups "At this level the number is the number in the question itself, six against more than six twice, which is not more, seven against more than seven and four against more than four in the programs with two decisions, the line 1 numbers to find are six and eight, six numbers clap, the shouts are counted to ten, Sam's program says at least seven, and three numbers shout and four clap in the three-star."
+  }
+}

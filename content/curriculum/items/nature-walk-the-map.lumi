@@ -1,0 +1,34 @@
+# The story: Ada and Ben walking the whole path, which has four straight parts of the same length,
+# so the distance is a count of equal parts.
+item nature.walk-the-map v=1 skills=[nature.maps, multiplication.equal-groups] {
+  title "How far to the X?"
+  difficulty s
+  let s=2..5 p=0..1
+  let t1={pick(p, "left", "right")}
+  let t2={pick(p, "right", "left")}
+  let t3={pick(p, "left", "right")}
+  level easy {
+    let s=2..3
+  }
+  level hard {
+    let s=4..5
+  }
+
+  scene 36x18 {
+    treasuremap map stops=["tree", "rock", "bridge"] turns=[t1, t2, t3] heading="right" step=s names=true at=canvas(1, 1)
+    text ask "Ada and Ben walk the path from the boat to the X. It has four straight parts, and each part is {s} squares long. How many squares do they walk altogether?" narrate width=16 right-of=map gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (4 * s)
+  feedback {
+    when (answer == 3 * s) point=map {
+      say "There are three landmarks but four straight parts: the last part goes from the bridge to the X."
+    }
+    when (answer == s + 4) point=map {
+      say "Each of the four parts is {s} squares long. Count {s} four times over."
+    }
+  }
+  hint "Count the straight parts of the path: boat to tree, tree to rock, rock to bridge, bridge to X."
+  hint "Each part is {s} squares. Add {s} and {s} and {s} and {s}."
+}

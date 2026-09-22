@@ -1,0 +1,11 @@
+item writing.make-a-list v=1 skills=[writing.lists, writing.composing] {
+  title "A list of your own"
+
+  scene 31x14 {
+    listpad pad title="For the harbour" items=["", "", "", ""] count=0 width=16 ticks=true at=canvas(1, 1)
+    art sun asset="boat" right-of=pad gap=1
+    text ask "Write four things to take to the harbour, one on each line." width=12 below=sun gap=1
+  }
+
+  check writing.by-eye look-for="Four things, one to a line, each a word or two rather than a sentence. At grade one a spelling that follows the sounds (bukit for bucket) is a good attempt and is not corrected on this page."
+}

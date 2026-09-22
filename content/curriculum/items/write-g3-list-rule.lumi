@@ -1,0 +1,14 @@
+# A list to write to two rules at once, read by a grown-up.
+item writing.list-rule v=1 stars=3 skills=[writing.punctuation, writing.composing] {
+  title "A list with describing words"
+  let t={"a trip to the snow", "a night in a tent", "a day by the sea"}
+
+  scene 32x15 {
+    text ask "Write one sentence that lists four things you would take on {t}. Give every thing a describing word, like a warm hat." width=30 at=canvas(1, 1)
+    writinglines lines lines=2 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence with four things, each with a describing word in front of it, a comma after each of the first two things, the word and before the last, and a capital and a full stop."
+  hint "Write your four things on a list first, each with its describing word."
+  hint "How many commas does a list of four need, if and joins the last two?"
+}

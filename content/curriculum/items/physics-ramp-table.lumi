@@ -1,0 +1,25 @@
+item physics.ramp-table v=1 skills=[physics.motion] {
+  title "Higher slope, further roll"
+  difficulty (a + d)
+  let a=6..9 d=3..5
+  level easy {
+    let a=6..7 d=3..4
+  }
+  level hard {
+    let a=8..9 d=4..5
+  }
+
+  scene 30x15 {
+    table data cols=2 head=["Height", "Rolled"] cells=["2 cm", a, "4 cm", a + d, "6 cm", a + 2 * d] at=canvas(1, 1)
+    text ask "How much further did the ball roll from 6 cm than from 2 cm?" width=22 below=data gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (2 * d)
+  feedback {
+    when (answer == d) point=data {
+      say "Compare the last row with the first row, not with the middle one."
+    }
+  }
+  hint "What are the first and the last distances?"
+}

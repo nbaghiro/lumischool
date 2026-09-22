@@ -1,0 +1,27 @@
+# Ten more worked out in the head, 2.NBT.8, then compared: sometimes the two sides are equal.
+item compare.ten-more v=1 skills=[place-value.compare, place-value.add-tens] {
+  title "Ten more, then compare"
+  difficulty (3 - abs(e))
+  let x={23, 36, 41, 48, 57, 62, 75, 84} e={-3, -1, 0, 1, 3}
+  level easy {
+    let e={-3, 3}
+  }
+  level hard {
+    let e={-1, 0, 1}
+  }
+
+  scene 23x14 {
+    compare pair left="{x} + 10" right="{x + 10 + e}" sign="?" at=canvas(1, 1)
+    text ask "Which sign makes this true?" narrate below=pair gap=1
+    choice pick options=["<", ">", "="] below=ask gap=1
+  }
+
+  answer pick=(if e == 0 then "=" else if e > 0 then "<" else ">")
+  feedback {
+    when (pick == "=" and e != 0) point=pair {
+      say "Work out {x} + 10 first. Is it exactly the same as the other side?"
+    }
+  }
+  hint "What is {x} + 10? Which digit changes?"
+  hint "Now you have two numbers. Which is bigger, or are they the same?"
+}

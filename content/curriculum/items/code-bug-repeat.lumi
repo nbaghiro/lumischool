@@ -1,0 +1,22 @@
+item coding.bug-repeat v=2 skills=[coding.debugging] stars=1 {
+  title "The repeat is wrong"
+  difficulty (g * s)
+  let s=2..3 g=3..6 e=1..2
+
+  scene 31x7 {
+    blocks p code=["repeat {g - e}", "  forward {s}"] at=canvas(1, 0)
+    text ask "The robot should move {g * s} squares. What should the repeat number be?" width=18 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer g
+  feedback {
+    when (answer == g - e) point=p {
+      say "That is the number the program has now, and it moves the robot {(g - e) * s} squares."
+    }
+    when (answer == g * s) point=p {
+      say "That is the distance, not how many times the block runs."
+    }
+  }
+  hint "Each time round moves {s} squares. How many times round make {g * s}?"
+}

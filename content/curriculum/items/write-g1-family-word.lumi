@@ -1,0 +1,16 @@
+# A word written to a rule about letter families: the child has to think of words and check how
+# each of their letters starts.
+item writing.family-word v=1 stars=3 skills=[writing.letter-formation, writing.spelling] {
+  title "A word from the families"
+  let k=0..2
+  let rule={if k == 0 then "only curly letters, like dog" else if k == 1 then "only curly and ladder letters, like cat" else "a zigzag letter in it, like box"}
+
+  scene 32x14 {
+    text ask "Write two words that have {rule}. Start every letter at the right place." width=30 at=canvas(1, 1)
+    handwriting rules show="" rows=2 trace=0 width=30 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two real words other than the example that keep the rule (curly letters are c a d o s g q e f, ladder letters l i t j u y, zigzag letters v w x z), spelled so they can be read, with each letter started at its dot and moving the way its family moves."
+  hint "Say some short words out loud. Which families are their letters in?"
+  hint "Check every letter against the rule before you write the word."
+}

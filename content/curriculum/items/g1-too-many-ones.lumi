@@ -1,0 +1,30 @@
+# More than nine loose cubes: ten of them are another ten, which is 1.NBT.B.2a.
+item place.too-many-ones v=1 skills=[place-value.tens-ones, place-value.regroup] {
+  title "More than nine ones"
+  difficulty (10 * t + o)
+  let t=1..4 o=10..16
+  level easy {
+    let t=1..2 o=10..12
+  }
+  level hard {
+    let t=3..4 o=14..16
+  }
+
+  scene 26x7 {
+    placevalue blocks tens=t ones=o at=canvas(1, 1)
+    text ask "How many cubes are there?" narrate right-of=blocks gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * t + o)
+  feedback {
+    when (answer == 100 * t + o) point=blocks {
+      say "There are more than nine single cubes. Ten of them make another ten."
+    }
+    when (answer == 10 * t + o - 10) point=blocks {
+      say "Count every single cube as well as the rods."
+    }
+  }
+  hint "Count the rods in tens first."
+  hint "Now count on the single cubes. Ten of them are worth one more rod."
+}

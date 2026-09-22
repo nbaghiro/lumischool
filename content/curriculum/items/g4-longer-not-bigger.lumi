@@ -1,0 +1,26 @@
+# The misconception that more digits means bigger, tested against a reason.
+item decimal.longer-not-bigger v=1 stars=2 skills=[decimals.compare, reasoning.find-the-mistake] {
+  title "Is the longer one bigger"
+  difficulty (c - 10 * (a - b))
+  let a=3..8 b=1..7 c=1..9 p=0..1
+  where (b < a)
+  level hard {
+    where (a - b == 1 and c >= 7)  # the two numbers are within three hundredths
+  }
+
+  scene 30x14 {
+    text ask "Leo says the number with more digits is bigger, because {b}{c} is bigger than {a}. Which is really bigger?" narrate width=29 at=canvas(1, 1)
+    text pa "A:   {if p == 0 then decimals(b / 10 + c / 100, 2) else decimals(a / 10, 1)}" below=ask gap=1
+    text pb "B:   {if p == 0 then decimals(a / 10, 1) else decimals(b / 10 + c / 100, 2)}" below=pa gap=0
+    choice pick options=["A", "B", "the same"] below=pb gap=1
+  }
+
+  answer pick=(if p == 0 then "B" else "A")
+  feedback {
+    when (pick != "the same" and pick == (if p == 0 then "A" else "B")) point=pa {
+      say "Compare the tenths first: {b} tenths against {a} tenths."
+    }
+  }
+  hint "How many tenths does each number have?"
+  hint "Write the shorter number with two digits after the point. Now compare."
+}

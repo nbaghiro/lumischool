@@ -1,0 +1,31 @@
+# Adding n to n doubles it, so the numbers grow faster than a child expects: the audit's raise for
+# trace-value.
+item coding.trace-double v=1 skills=[coding.tracing, coding.variables] {
+  title "n adds itself"
+  difficulty (a * 2 ^ r)
+  let a=1..5 r=2..3
+  level easy {
+    let a=1..3 r={2}
+  }
+  level hard {
+    let a=3..5 r={3}
+  }
+
+  scene 35x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["set n to {a}", "repeat {r}", "  add n to n"]
+      tracetable tr code=["set n to {a}", "repeat {r}", "  add n to n"] show=value name=n filled=3
+    }
+    text ask "What is n at the end?" width=14 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="value(n)"
+  feedback {
+    when (answer == a + r * a) point=tr {
+      say "Each time round, n adds what it holds now, not what it held at the start."
+    }
+  }
+  hint "Add n to n: if n is 3, what does it become?"
+  hint "Fill the table one row at a time. Each add row uses the n from the row above."
+}

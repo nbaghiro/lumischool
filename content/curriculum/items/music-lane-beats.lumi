@@ -1,0 +1,28 @@
+# Tab spaced by time: printed, the lane rules each beat across, so how long a note lasts can be read
+# from how far it is from the next one. The note lane had no lesson before this.
+item music.lane-beats v=1 skills=[music.tab, music.note-values] {
+  title "How long is the line?"
+  difficulty (a + b + c)
+  let a=1..2 b=1..2 c=1..2
+  level easy {
+    where (a + b + c <= 4)
+  }
+  level hard {
+    where (a + b + c >= 5)
+  }
+
+  scene 32x20 {
+    lane line tuning=guitar notes=["s1f0", "s1f1", "s1f3"] values=[a, b, c] view=tab past=0 ring=-1 names=true at=canvas(1, 1)
+    text ask "Each beat is a gap between two ruled lines. How many beats does the whole line last?" width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a + b + c)
+  feedback {
+    when (answer == 3 and a + b + c > 3) point=line {
+      say "That counts the notes. Some notes last longer than one beat."
+    }
+  }
+  hint "How many ruled lines does the first note cross before the next one starts?"
+  hint "Add up the beats for each note."
+}

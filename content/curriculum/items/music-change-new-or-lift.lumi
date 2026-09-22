@@ -1,0 +1,23 @@
+# Changes in both directions: A minor to F adds a finger and F to A minor lifts it, so the same pair
+# is read two ways. The pairs are chosen so exactly one finger goes down new or lifts off.
+item music.change-new-or-lift v=1 skills=[music.chord-changes] {
+  title "The finger that moves"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1}  # a finger goes down new
+  }
+  level hard {
+    let k={2, 3}  # a finger lifts off
+  }
+
+  scene 28x15 {
+    chordchange change tuning=uke from=(if k == 0 then "Am" else if k == 1 then "F" else if k == 2 then "Dm" else "F") to=(if k == 0 then "F" else if k == 1 then "Dm" else if k == 2 then "F" else "Am") frets=3 at=canvas(1, 1)
+    text ask "{if k < 2 then \"Which finger goes down new for this change?\" else \"Which finger lifts off for this change?\"}" width=14 right-of=change gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 or k == 3 then 1 else 3)
+  hint "{if k < 2 then \"Which dot has no ring round it?\" else \"Which ring is dashed, with no dot inside?\"}"
+  hint "Read the number on it."
+}

@@ -1,0 +1,39 @@
+# The three-star: how many puffs until the clock is bare, from the seeds it has and the seeds a
+# puff takes. When the puffs do not come out exactly, the last few seeds still need a puff of
+# their own, which is the point the child has to find.
+item nature.puffs-until-bare v=1 stars=3 skills=[nature.seeds, reasoning.systematic] {
+  title "Until the clock is bare"
+  difficulty (s // b + (if s % b == 0 then 0 else 1) + (if s % b == 0 then 0 else 1))
+  let s=6..16 b=3..5
+  where (s > b)
+  let full={s // b}
+  let rest={s % b}
+  level easy {
+    let s=6..9 b=3..3
+  }
+  level hard {
+    let s=13..16 b=4..5
+    where (s % b != 0)
+  }
+
+  scene 34x17 {
+    dandelion clock seeds=s blown=0 flower=0 at=canvas(1, 1)
+    text ask "Ada's dandelion clock has {s} seeds. Every puff blows {b} seeds away. How many puffs until the clock is bare?" narrate width=20 right-of=clock gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if rest == 0 then full else full + 1)
+  feedback {
+    when (rest != 0 and answer == full) point=clock {
+      say "After {full} puffs, {rest} seeds are still on the clock. They need a puff too, even a small one."
+    }
+    when (answer == s - b and s - b != (if rest == 0 then full else full + 1)) point=clock {
+      say "That is how many seeds are left after one puff. Count the puffs, not the seeds."
+    }
+    when (answer == s) point=clock {
+      say "A puff takes {b} seeds at once, so it takes fewer puffs than there are seeds."
+    }
+  }
+  hint "Take {b} seeds away, and that is one puff. Take {b} more: two puffs. Keep going and count the puffs."
+  hint "When fewer than {b} are left, does the clock still need a puff to be bare?"
+}

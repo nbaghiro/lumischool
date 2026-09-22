@@ -1,0 +1,29 @@
+# The rest of the bar filled with quavers, two to a beat, so the missing beats have to be doubled:
+# answering with the beats is the mistake.
+item music.quavers-to-fill v=1 skills=[music.rhythm] {
+  title "Fill it with quavers"
+  difficulty (4 - x - y)
+  let x=1..2 y=1..2
+  where (x + y <= 3)
+  level easy {
+    where (x + y == 3)  # two quavers
+  }
+  level hard {
+    where (x + y == 2)  # four quavers
+  }
+
+  scene 26x14 {
+    staff bar notes=[x, y] at=canvas(1, 1)
+    text ask "This bar has 4 beats. How many quavers would fill the rest of it?" width=24 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * (4 - x - y))
+  feedback {
+    when (answer == 4 - x - y) point=bar {
+      say "That is how many beats are missing. A quaver is only half a beat."
+    }
+  }
+  hint "How many beats are missing from the bar?"
+  hint "A quaver is half a beat. How many halves make that many beats?"
+}

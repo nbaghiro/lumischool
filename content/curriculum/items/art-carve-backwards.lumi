@@ -1,0 +1,15 @@
+# Working backwards from the print to the block, which is how a printmaker has to think.
+item art.carve-backwards v=1 stars=2 skills=[art.printing, reasoning.work-backwards] {
+  title "Carve it the other way"
+  difficulty (if d == "left" then 1 else 0)
+  let m={"fish", "bird"} d={"left", "right"}
+
+  scene 32x9 {
+    text ask "Ada wants the {m} in her print to face {d}. Which way must the {m} face when she carves it on the block?" width=16 at=canvas(1, 1)
+    choice pick options=["left", "right"] right-of=ask gap=2
+  }
+
+  answer pick=(if d == "left" then "right" else "left")
+  hint "What happens to the way a shape faces when the block is printed?"
+  hint "Start from the print and turn it back over. Which way does the {m} face now?"
+}

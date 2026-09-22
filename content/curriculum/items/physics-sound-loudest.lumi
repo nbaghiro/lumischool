@@ -1,0 +1,36 @@
+# The same knock crossing two different things, and which ear hears it better. Sound carries best
+# through a solid, then through water, then through air, so the table beats the water and the water
+# beats the air.
+item physics.sound-loudest v=1 skills=[physics.sound, reasoning.compare] {
+  title "Which ear hears it better?"
+  difficulty (if gap > 1 then 0 else 1)
+  let k=0..5
+  let ta={pick(k, 0, 1, 2, 1, 0, 2)}
+  let tb={pick(k, 1, 0, 1, 2, 2, 0)}
+  let ans={pick(k, "B", "A", "B", "A", "B", "A")}
+  let gap={pick(k, 2, 2, 1, 1, 1, 1)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 26x27 {
+    text la "A" at=canvas(1, 0)
+    stringphone one mode=through through=ta rings=1 right-of=la gap=1
+    text lb "B" below=la gap=8
+    stringphone two mode=through through=tb rings=1 right-of=lb gap=1
+    text ask "The same knock is made at both. Which ear hears it better?" narrate width=22 below=two gap=1
+    choice pick options=["A", "B"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=ask {
+      say "Sound carries best through something solid, then through water, and least well through air."
+    }
+  }
+  hint "What is between the knock and the ear in each one?"
+  hint "The closer together the bits of a thing are, the better they pass the shaking on."
+}

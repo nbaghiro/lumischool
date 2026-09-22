@@ -1,0 +1,54 @@
+# The core: one picture of Sam and Pip's garden, and six things that happen in it. The easy three
+# are the plain movers (the wind on the windsock, Sam's hand on the swing, an apple's fall); the
+# hard three are the traps: the spring that pushes after the hand has let go, the swing that sways
+# with nobody near it, and the swing that comes down on its own.
+item physics.what-moves-it v=1 skills=[physics.forces] {
+  title "What moves it?"
+  difficulty pick(k, 0, 0, 1, 2, 1, 2)
+  let k=0..5
+  let ask={pick(k, "The windsock stands out straight. What moves it?", "Sam gives the swing a push to start it. What moves it?", "An apple comes off the tree and lands on the grass. What moves it down?", "Pip pushes the spring down and lets go. It jumps up again. What pushes it up?", "Nobody touches the swing, but it sways. What moves it?", "Pip lets go of the swing at the top. It comes down. What moves it down?")}
+  let right={pick(k, "the wind", "a hand", "a fall", "a spring", "the wind", "a fall")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 32x33 {
+    column garden at=canvas(0, 0) space=1 align=start {
+      row top space=2 align=end {
+        windsock sock wind=1
+        swing seat seats=1
+        children kids count=2 names=["Sam", "Pip"]
+      }
+      row bottom space=2 align=end {
+        squash spring thing=spring action=squash after=1
+        tree apple fruit=5 fallen=2
+      }
+    }
+    text ask "{ask}" narrate width=30 below=garden gap=1
+    choice pick options=["a hand", "the wind", "a spring", "a fall"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 3 and pick == "a hand") point=spring {
+      say "Pip's hand pushed the spring down. Then she let go, so her hand was not touching it any more. The squashed spring pushed itself back up."
+    }
+    when (k == 4 and pick == "a hand") point=seat {
+      say "Nobody is touching the swing. Look at the windsock: the air is moving, and moving air pushes things."
+    }
+    when (k == 5 and pick == "a hand") point=seat {
+      say "Pip let go, so her hand is not moving it. Nothing holds the swing up at the top, so it falls back down."
+    }
+    when (k == 2 and pick == "the wind") point=apple {
+      say "The wind can shake an apple loose, but it is not what takes it down. Nothing holds it up, so it falls."
+    }
+    when (k == 0 and pick == "a hand") point=sock {
+      say "Nobody is holding the windsock. The wind blows through it and pushes it out straight."
+    }
+  }
+  hint "Is a hand touching it? Is the wind blowing on it?"
+  hint "If nothing holds a thing up, it falls. If a spring has been squashed, it pushes back."
+}

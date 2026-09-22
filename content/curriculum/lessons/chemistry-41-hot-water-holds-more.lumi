@@ -1,0 +1,67 @@
+lesson chemistry-hot-water-holds-more v=1 format=teach grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Hot water holds more"
+  goal "Read how much salt dissolves in cold and hot water, and say what happens as the water cools."
+
+  look {
+    scene 30x13 {
+      row all at=canvas(1, 0) space=2 align=end {
+        beaker cold max=200 step=50 level=150 unit=ml solid=12 rod=false label="10 °C"
+        beaker hot max=200 step=50 level=150 unit=ml solid=0 rod=false label="60 °C"
+      }
+    }
+    say """
+      Ana fills two cups from geyser valley: one from the cold stream and one from the hot pool.
+      She stirs salt into each, a spoon at a time, until grains stay on the floor. The cold cup
+      stops at three spoons. The hot cup takes eight. Hot water holds more salt than cold, and
+      when the hot cup cools, the salt it can no longer hold comes back out, and grows on a string
+      as crystals.
+      """
+  }
+  do {
+    level easy {
+      worked chem.more-spoons w=0 s=0 n=4
+    }
+    practice chem.more-spoons count=1 seed=1 easy-seed=1 hard-seed=1
+    practice chem.spoons-table count=2 seed=8 easy-seed=4 hard-seed=7
+    practice chem.predict-row count=1 seed=2 easy-seed=1 hard-seed=7
+    practice chem.crystals-when-cool count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.spoons-out count=1 seed=7 easy-seed=1 hard-seed=1
+    practice chem.crystal-why count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.grains-left k=1 r=1 level=medium
+    }
+  }
+  story {
+    show chem.geyser-pool c=2 w=0 easy-c=1 hard-c=3 hard-w=1
+  }
+  try stars=2 {
+    show chem.grains-left k=0 r=2 hard-k=2
+  }
+  try stars=3 {
+    show chem.biggest-crystal k=0 r=2 hard-k=1 hard-r=3
+  }
+  remember {
+    say "Hot water holds more salt than cold. As it cools, the salt it cannot hold comes out as crystals."
+  }
+
+  grown-ups """
+    The idea is that the same water dissolves more salt when it is hot, and that cooling brings
+    the extra back out. The table of spoons against temperature is the lesson's picture, and the
+    questions read it for a row, the temperature that held most, the gap between the hottest and
+    coldest rows, and a row Ana did not test, which is answered by the rows either side. The
+    string in the jar is where the salt goes when the water cools, and the same string gives the
+    salt back when the cup is warmed. The wrong idea to watch for is that the salt goes into the
+    air with the water; only water evaporates, and the salt stays in the cup, dissolved or as
+    crystals. The story counts the spoons that come out of two cups, the two-star question gives
+    two beakers with the same salt and asks what differed, and the three-star question picks the
+    start for the biggest crystal, which is the hottest water with as much salt as it will hold.
+    If the child picks the cup with the most spoons rather than the most dissolved, stay here
+    another day with two cups and a spoon and count out loud.
+    """
+  level easy {
+    grown-ups "At this level the beakers are worked once in the teacher's pen, the way in asks only which beaker dissolved all its salt, the table is read for one row or the most, the row not tested sits between two rows, the salt's way out is the string, the cup cools all the way to ten degrees, the story is one cup, the two beakers differ by temperature with the grains in B, and the biggest crystal's rivals are plainly weaker."
+  }
+  level hard {
+    grown-ups "At this level the way in asks which beaker would take more spoons, the table is read for the most and for the gap between the hottest and coldest rows, the row not tested is fifty or eighty degrees, the crystals are warmed back into the water, the cup cools only to twenty degrees, a second pair of beakers sits in the core, the story is three cups and the salt still dissolved, the two beakers differ by how much water there was, and the biggest crystal hides among starts that are hot but not full."
+  }
+}

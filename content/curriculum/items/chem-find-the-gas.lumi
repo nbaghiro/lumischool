@@ -1,0 +1,27 @@
+# Two jars of the same particles in two states, and the question names one of the two states, so
+# the child reads both pictures and not just the emptiest one.
+item chem.find-the-gas v=2 skills=[chemistry.states] {
+  title "Which jar is it?"
+  difficulty ((if q == 0 and a == 1 or q == 1 and b == 1 then 2 else 0) + (if abs(a - b) == 1 then 1 else 0))
+  let a=0..2 b=0..2 q=0..1
+  where (a != b)
+  level easy {
+    where (abs(a - b) == 2)  # a solid beside a gas
+  }
+  level hard {
+    where (abs(a - b) == 1 and (q == 0 and a == 1 or q == 1 and b == 1))  # the liquid, beside a solid or a gas
+  }
+
+  scene 36x14 {
+    particles one spread=a count=16 name=0 at=canvas(1, 0)
+    text la "A" below=one gap=0
+    particles two spread=b count=16 name=0 right-of=one gap=2
+    text lb "B" below=two gap=0
+    text ask "Which jar holds a {if (if q == 0 then a else b) == 0 then \"solid\" else if (if q == 0 then a else b) == 1 then \"liquid\" else \"gas\"}?" width=12 right-of=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "A" else "B")
+  hint "Say what state each jar shows before you choose."
+  hint "Packed in rows, heaped at the bottom, or spread all over: which one matches the question?"
+}

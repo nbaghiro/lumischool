@@ -1,0 +1,15 @@
+# Making something to a rule, marked by a grown-up: three words the child chooses, each with a set
+# number of beats.
+item reading.beat-hunt v=1 stars=3 skills=[reading.syllables] {
+  title "A beat hunt"
+  let k=0..3
+
+  scene 32x18 {
+    text ask "Think of three things you could find in {if k == 0 then \"your kitchen\" else if k == 1 then \"a park\" else if k == 2 then \"your bedroom\" else \"a shop\"}: one with 1 beat, one with 2 beats and one with 3 beats. Write them on the lines." narrate width=30 at=canvas(1, 1)
+    writinglines lines lines=3 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Three real words for things in that place, the first clapped with one beat (cup, bed), the second with two (kettle, pillow) and the third with three (banana, computer). Clap each one with the child; a word in the wrong place is worth talking about, not just marking."
+  hint "Walk round the place in your head. What do you see?"
+  hint "Clap each thing you think of. Which ones have three beats?"
+}

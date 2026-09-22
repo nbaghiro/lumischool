@@ -1,0 +1,15 @@
+item physics.two-faults v=1 skills=[physics.circuits] stars=3 {
+  title "How many faults?"
+  difficulty (1 - c + l + e)
+  let c=0..1 l=0..1 e=0..1
+
+  scene 17x21 {
+    series ring cells=(if e == 1 then 0 else 2) closed=c loose=l show=0 at=canvas(1, 0)
+    text ask "How many things must be put right before the bulb lights?" width=15 below=ring gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.circuit of=ring answer=faults
+  hint "Check the switch, then the clips, then the cells. Is each one right?"
+  hint "Count every one that is wrong. If none is, the answer is 0."
+}

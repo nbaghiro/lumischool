@@ -1,0 +1,35 @@
+# Two changes in one short passage, so the child reads for both numbers and chains them: the
+# audit's raise for count-in-passage.
+item reading.ducks-now v=1 skills=[reading.comprehension] {
+  title "How many now?"
+  difficulty (n + m + p)
+  let n=5..9 m=2..4 p=1..3
+  where (m != p and n - m + p != n)
+  level easy {
+    where (n + m + p <= 9)
+  }
+  level hard {
+    where (n + m + p >= 13)
+  }
+
+  scene 33x16 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage story text="{n} ducks swam on the pond. {m} of them flew off to the river. Then {p} more ducks came down and landed on the water." width=16 numbers=false
+      pond pool pads=3 fish=0 frog=false
+    }
+    text ask "How many ducks are on the pond now?" narrate width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (n - m + p)
+  feedback {
+    when (answer == n - m) point=story {
+      say "Some ducks came back down after the others flew off. Read the last sentence again."
+    }
+    when (answer == n + m + p) point=story {
+      say "The ducks that flew off to the river are not on the pond any more."
+    }
+  }
+  hint "Find the three numbers in the passage. What happened with each one?"
+  hint "Start with the ducks at the beginning. Take away the ones that left, then add the ones that came."
+}

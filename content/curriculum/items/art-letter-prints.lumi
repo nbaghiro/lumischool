@@ -1,0 +1,15 @@
+# A letter prints true only if a mirror down its middle leaves it the same.
+item art.letter-prints v=1 skills=[art.printing, art.symmetry] {
+  title "Letters on a block"
+  difficulty k
+  let k=0..3
+
+  scene 32x9 {
+    text ask "Ada carves one capital letter on a block, the ordinary way round. Which letter will still print the right way round?" width=16 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"A\" else if k == 1 then \"F\" else if k == 2 then \"N\" else \"S\"}", "{if k == 0 then \"R\" else if k == 1 then \"T\" else if k == 2 then \"Z\" else \"J\"}", "{if k == 0 then \"S\" else if k == 1 then \"J\" else if k == 2 then \"M\" else \"H\"}"] right-of=ask gap=2
+  }
+
+  check art.print pick=true
+  hint "A print is the block turned over. What does turning a letter over do to it?"
+  hint "Imagine a mirror standing down the middle of each letter. Which one looks the same in it?"
+}

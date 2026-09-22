@@ -1,0 +1,16 @@
+# Evidence at the level of one word: the writer chose a strong verb, and the child points to it.
+item reading.strong-word v=1 skills=[reading.vocabulary, reading.evidence] {
+  title "The word that shows it"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 34x14 {
+    passage p text="{if k == 0 then \"The wind tore at our tent all night and bent the young trees nearly flat.\" else if k == 1 then \"Mia grabbed the last bun off the plate before anyone else could move.\" else if k == 2 then \"The river crept past the house, so slowly that the leaves on it hardly moved.\" else \"Grandpa roared with laughter until the tears ran down his cheeks.\"}" width=33 numbers=false at=canvas(1, 1)
+    text ask "{if k == 0 then \"Which word shows the wind was very strong?\" else if k == 1 then \"Which word shows Mia was very quick?\" else if k == 2 then \"Which word shows the river was very slow?\" else \"Which word shows Grandpa laughed very loudly?\"}" below=p gap=1
+    choice pick options=[if k == 0 then "tent" else if k == 1 then "grabbed" else if k == 2 then "past" else "until", if k == 0 then "tore" else if k == 1 then "plate" else if k == 2 then "house" else "roared", if k == 0 then "night" else if k == 1 then "anyone" else if k == 2 then "crept" else "cheeks"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "tore" else if k == 1 then "grabbed" else if k == 2 then "crept" else "roared")
+  hint "Look for the word that tells you how something moved or sounded."
+  hint "Swap each choice for a plainer word. Which swap makes the sentence weaker?"
+}

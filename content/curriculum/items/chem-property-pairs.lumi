@@ -1,0 +1,18 @@
+# All the ways: pairs of things that are both one thing. Three bendy things make three pairs and
+# four make six, which a child finds by pointing at every pair rather than by a rule.
+item chem.property-pairs v=1 stars=3 skills=[chemistry.materials, reasoning.all-the-ways] {
+  title "Pairs that are both"
+  difficulty (if k == 2 then 0 else if k == 1 then 2 else 1)
+  let k=0..3
+
+  scene 22x12 {
+    text ask "How many different pairs of things can you make that are both {if k == 0 then \"bendy\" else if k == 1 then \"waterproof\" else if k == 2 then \"hard\" else \"stretchy\"}?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"rubber-band\" else if k == 1 then \"raincoat\" else if k == 2 then \"brick\" else \"wool-sock\"}", "{if k == 0 then \"wooden-block\" else if k == 1 then \"rubber-boot\" else if k == 2 then \"wool-sock\" else \"rubber-band\"}", "{if k == 0 then \"wool-hat\" else if k == 1 then \"towel\" else if k == 2 then \"pebble\" else \"brick\"}", "{if k == 0 then \"towel\" else if k == 1 then \"metal-can\" else if k == 2 then \"metal-key\" else \"wool-hat\"}", "{if k == 0 then \"metal-key\" else if k == 1 then \"plastic-bottle\" else if k == 2 then \"paper-bag\" else \"glass-jar\"}"] below=ask gap=0
+    number-input answer below=row gap=0
+  }
+
+  check chem.materials of=row answer="pairs({if k == 0 then \"bendy\" else if k == 1 then \"waterproof\" else if k == 2 then \"hard\" else \"stretchy\"})"
+  hint "Which of the things are {if k == 0 then \"bendy\" else if k == 1 then \"waterproof\" else if k == 2 then \"hard\" else \"stretchy\"}? Say their letters."
+  hint "Pair the first one with each of the others, then the second with the ones after it."
+  hint "Does B with C count as a new pair if you already have C with B?"
+}

@@ -1,0 +1,15 @@
+item coding.pixel-rows v=1 skills=[coding.repetition] {
+  title "How tall is the tree?"
+  difficulty n
+  let n=2..4
+
+  scene 37x15 {
+    program c code=["2 white 2 green 2 white", "repeat {n}", "  1 white 4 green 1 white", "2 white 2 orange 2 white"] at=canvas(1, 0)
+    pixels p cols=6 rows=(n + 2) code=["2 white 2 green 2 white", "repeat {n}", "  1 white 4 green 1 white", "2 white 2 orange 2 white"] beside=false right-of=c gap=1
+    text ask "How many rows does the program paint?" width=16 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer=rows
+  hint "Line 1 paints one row, the last line one more, and line 3 paints {n}."
+}

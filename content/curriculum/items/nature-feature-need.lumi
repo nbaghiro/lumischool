@@ -1,0 +1,49 @@
+# A feature and the need it answers: the camel's wide feet for sand, its hump of fat for days
+# without food, the fennec's big ears for letting heat out, the seal's fat for the cold, the
+# gull's webbed feet for the water. The feet and the fat are plain; the hump and the ears are the
+# ones children guess wrong.
+item nature.feature-need v=1 skills=[nature.habitats, reasoning.explain] {
+  title "What is it for?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let who={pick(k, "camel", "seal", "gull", "camel", "fennec fox", "camel")}
+  let part={pick(k, "wide soft feet", "thick layer of fat", "webbed feet", "long eyelashes", "huge ears", "hump")}
+  let right={pick(k, "walking on soft sand without sinking", "keeping warm in the cold sea", "paddling on the water", "keeping blowing sand out of its eyes", "letting heat out of its body", "storing fat for days with nothing to eat")}
+  let o1={pick(k, "digging for water", "floating on the water", "gripping the rocks", "seeing in the dark", "hearing better than any other animal", "storing water for the desert")}
+  let o2={pick(k, "running fast", "swimming fast", "keeping warm", "looking pretty", "keeping the sun off its head", "carrying loads")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x24 {
+    row four at=canvas(1, 1) space=1 align=end {
+      camel pc count=1 resting=0 facing=1
+      fennec pf facing=1
+      seal ps rock=1 facing=1
+      gull pg flying=0
+    }
+    text ask "What {if k == 1 or k == 5 then \"is\" else \"are\"} the {who}'s {part} for?" narrate width=34 below=four gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 5 and pick == o1) point=pc {
+      say "The hump is fat, not water. A camel drinks a great deal at once and holds the water in its body, and the hump feeds it when there is no grass."
+    }
+    when (k == 4 and pick != right) point=pf {
+      say "The ears do hear well, but their size is for the heat: blood flows through the big thin ears and the heat goes out into the night air."
+    }
+    when (k == 1 and pick != right) point=ps {
+      say "The sea is cold. The fat under the seal's skin is a coat it cannot take off."
+    }
+    when (k <= 3 and k != 1 and pick != right) point=four {
+      say "Think about the place the creature lives in. What does the place throw at it: sand, heat, cold, water?"
+    }
+  }
+  hint "Where does the {who} live? What is hard about living there?"
+  hint "Its {part} answer one of those hard things. Which one?"
+}

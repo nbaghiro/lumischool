@@ -1,0 +1,18 @@
+# Every bar that can be written from a few note values, listed in order: 3 beats or 4, with or
+# without the dotted minim. Listing by the first note is the tidy way.
+item music.all-the-bars v=1 stars=3 skills=[music.rhythm, reasoning.all-the-ways] {
+  title "Every bar you can write"
+  difficulty (t + d)
+  let t=3..4 d=0..1
+  let notes={if d == 1 then "crotchets (1 beat), minims (2 beats) and dotted minims (3 beats)" else "crotchets (1 beat) and minims (2 beats)"}
+
+  scene 30x15 {
+    staff show notes=[1, 2] beats=0 at=canvas(1, 1)
+    text ask "Write bars of {t} beats using only {notes}. The order counts. How many different bars can you write?" width=28 below=show gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if t == 3 then if d == 1 then 4 else 3 else if d == 1 then 7 else 5)
+  hint "Start every bar with a crotchet and list the ways to finish it. Then start with a minim."
+  hint "Write each bar as numbers, such as 1 1 2 or 2 2, so you can check none is missing."
+}

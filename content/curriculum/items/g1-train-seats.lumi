@@ -1,0 +1,25 @@
+item groups.train-seats v=1 skills=[multiplication.equal-groups] {
+  title "Seats on the train"
+  difficulty (c * w)
+  let c=2..5 w=3..5
+  level easy {
+    let c=2..3 w={3}
+  }
+  level hard {
+    let c=4..5 w=4..5
+  }
+
+  scene 36x16 {
+    train engine carriages=c windows=w on=0 at=canvas(0, 1)
+    text ask "Every carriage has {w} seats. How many seats has the whole train?" width=30 below=engine gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * w)
+  feedback {
+    when (answer == c + w) point=engine {
+      say "Carriages of {w} are equal groups, so count {w} once for each carriage."
+    }
+  }
+  hint "Count {w} for the first carriage, then {w} more for the next."
+}

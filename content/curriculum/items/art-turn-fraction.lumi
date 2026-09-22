@@ -1,0 +1,22 @@
+# A radial repeat is equal turns: one repeat is a unit fraction of a whole turn.
+item art.turn-fraction v=1 skills=[art.pattern, reasoning.fractions] {
+  title "How far round is the next one?"
+  difficulty n
+  let n={3, 4, 6, 8} m={"leaf", "drop"}
+  level easy {
+    let n={3, 4}
+  }
+  level hard {
+    let n={6, 8}
+  }
+
+  scene 37x17 {
+    radial pic repeats=n motif=m missing=-1 colour=sky at=canvas(1, 1)
+    text ask "Turn the pattern until each {m} sits where the next one was. What fraction of a whole turn is that?" width=16 right-of=pic gap=1
+    choice pick options=["a third", "a quarter", "a sixth", "an eighth"] below=pic gap=1
+  }
+
+  answer pick=(if n == 3 then "a third" else if n == 4 then "a quarter" else if n == 6 then "a sixth" else "an eighth")
+  hint "How many {m}s are there round the middle?"
+  hint "A whole turn goes past every one of them. Into how many equal parts does that cut the turn?"
+}

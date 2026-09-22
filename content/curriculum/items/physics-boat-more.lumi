@@ -1,0 +1,20 @@
+item physics.boat-more v=1 skills=[physics.floating] {
+  title "How many more?"
+  difficulty (k + s)
+  let k=0..2 s=5..6
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x14 {
+    boat bt cargo=k side=s sits=1 at=canvas(1, 0)
+    text ask "Each block makes the boat sit a square deeper. How many more blocks can it take and still float?" narrate width=13 right-of=bt gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=bt answer=more
+  hint "How many squares of the side are still above the water?"
+}

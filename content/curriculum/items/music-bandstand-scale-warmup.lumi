@@ -1,0 +1,36 @@
+# The story: Ana warms up at the bandstand piano with the C major scale, one note to a beat, and the
+# beats or the semitone steps are counted. Up and down does not play the top C twice.
+item music.bandstand-scale-warmup v=1 skills=[music.keys, music.counting-beats] {
+  title "Ana's warm-up"
+  difficulty (r + q)
+  let q=0..1 r=0..2
+  let how={pick(r, "up once", "up and back down, playing the top C once", "up and down twice without stopping, playing each top C once")}
+  let right={pick(q * 3 + r, 8, 15, 29, 2, 4, 8)}
+  level easy {
+    let r=0..1 q=0..0
+  }
+  level hard {
+    let r=1..2 q=1..1
+  }
+
+  scene 36x26 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      text ask "Ana plays the C major scale {how}, one note to a beat. How many {if q == 0 then \"beats\" else \"semitone steps\"} does she play?" narrate width=22
+    }
+    notes scale clef=treble notes=[C4, D4, E4, F4, G4, A4, B4, C5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 below=top gap=1
+    number-input answer below=scale gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and r == 1 and answer == 16) point=scale {
+      say "The top C is played once, as the last note up and the first note down."
+    }
+    when (q == 1 and answer == 2 * right) point=scale {
+      say "Count the steps between notes, E to F and B to C, not the notes on each side."
+    }
+  }
+  hint "{if q == 0 then \"How many notes going up? Then how many more coming down?\" else \"How many semitones in one scale going up?\"}"
+  hint "{if q == 0 then \"Coming down, the top C is already played.\" else \"Going down there are just as many as going up.\"}"
+}

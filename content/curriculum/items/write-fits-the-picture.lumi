@@ -1,0 +1,30 @@
+# Three sentences and one picture: the sentence whose describing words are true of the picture.
+item writing.fits-the-picture v=1 skills=[writing.sentences, writing.word-classes] {
+  title "Which sentence fits?"
+  difficulty (if k == "sandcastle" then 1 else 0)
+  let k={"boat", "sandcastle", "kite"} r=0..2
+  let right={if k == "boat" then "A small boat bobs on the calm water." else if k == "sandcastle" then "A tall sandcastle stands on the soft sand." else "A bright kite flies in the wide sky."}
+  let w1={if k == "boat" then "A tall boat stands on the dry sand." else if k == "sandcastle" then "A wet sandcastle floats on the sea." else "A heavy kite sleeps on the wet rock."}
+  let w2={if k == "boat" then "A noisy boat climbs the steep hill." else if k == "sandcastle" then "A tiny sandcastle hides in the dark shed." else "A dark kite swims in the deep sea."}
+  level easy {
+    let k={"boat", "kite"}
+  }
+  level hard {
+    let k={"sandcastle", "kite"}
+  }
+
+  scene 34x25 {
+    art pic asset="{k}" at=canvas(1, 1)
+    text ask "Which sentence fits the picture? Check every describing word against it." narrate width=18 right-of=pic gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=pic gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pic {
+      say "Read the describing words one at a time and look for each in the picture. One wrong word and the sentence does not fit."
+    }
+  }
+  hint "Take each sentence's describing words in turn. Is the picture's thing really like that?"
+  hint "The sentence that fits has every word true of the picture, not just the naming word."
+}

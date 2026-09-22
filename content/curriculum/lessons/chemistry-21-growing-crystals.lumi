@@ -1,0 +1,58 @@
+lesson chemistry-growing-crystals v=1 format=teach grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Growing crystals"
+  goal "Count and compare crystals as they grow, say where the salt in them came from and where the water went, and tell salt crystals from sugar ones."
+
+  look {
+    scene 25x14 {
+      row two at=canvas(1, 0) space=2 align=end {
+        crystalstring early days=1 crystals=2 kind=salt
+        crystalstring late days=7 crystals=7 kind=salt
+      }
+    }
+    say """
+      A grown-up stirs as much salt as will dissolve into warm water, and a string hangs in the jar
+      from a pencil. Over the days the water slowly evaporates into the air. There is less and less
+      water to hold the salt, so the salt comes out of the water as crystals on the string, a
+      little bigger each day. The water goes; the salt stays and shows.
+      """
+  }
+  do {
+    practice chem.crystal-count count=2 seed=3 easy-seed=1 hard-seed=1
+    practice chem.crystal-more count=2 seed=6 hard-seed=3
+    practice chem.crystal-why count=2 seed=2
+    practice chem.crystal-which count=2 hard-count=1 seed=4
+    level hard {
+      practice chem.crystal-reason count=1 seed=2
+    }
+    level easy {
+      worked chem.crystals-before b=8 nb=9 x=3 level=medium
+    }
+    practice chem.crystals-before count=1 seed=2
+  }
+  try stars=2 {
+    show chem.crystal-reason k=1 f=1 easy-k=0
+  }
+  try stars=3 {
+    show chem.crystal-catch-up p=2 q=10 easy-p=4 easy-q=8 hard-q=12
+  }
+  remember {
+    say "As the water evaporates, the salt that was dissolved in it comes out as crystals."
+  }
+
+  grown-ups """
+    A grown-up makes the salty water with hot water from the kettle; the jar then sits on a
+    windowsill for a week, and a photograph every few days makes the growth easy to compare. Nothing
+    in the jar is tasted. The first questions, counting the crystals on the string, are the way in.
+    The core compares two days, works back to an earlier day, explains where the water went and where
+    the salt came from, and tells salt's cubes from sugar's slanted blocks through a lens. The
+    two-star question predicts which jar grows more and asks for the reason: the one that loses its
+    water faster. The three-star question has no method on the page: a small crystal growing fast
+    catches up with a big one growing slowly, and a table of the days finds when.
+    """
+  level easy {
+    grown-ups "At this level three to five crystals hang on the string, the days differ by four crystals or fewer, the water level and the salt's source are as written, the crystals are salt or sugar as written, counting back three days is worked once in the teacher's pen before a string of six or seven with two more than before, the two-star has a warm windowsill against a cold cupboard, and the three-star's crystals meet on day 3."
+  }
+  level hard {
+    grown-ups "At this level six to eight crystals hang on the string, the days differ by six crystals or more, the water level and the salt's source are as written, the crystals are salt or sugar as written, the string has eight or nine crystals with four more than before, the two-star has a lid against no lid, asked for both jars, and the three-star's crystals meet on day 6."
+  }
+}

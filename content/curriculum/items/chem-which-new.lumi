@@ -1,0 +1,32 @@
+# One change of the pair makes a new material and the other only changes state or dissolves, so the
+# child has to judge both before choosing.
+item chem.which-new v=1 skills=[chemistry.changes] {
+  title "Which one makes something new?"
+  difficulty ((if a == "rise-dough" or a == "fizz" or a == "rust-nail" then 1 else 0) + (if b == "dissolve-sugar" or b == "boil-water" then 1 else 0))
+  let a={"toast-bread", "cook-egg", "bake-cake", "burn-candle", "rust-nail", "fizz", "rise-dough"} b={"melt-ice", "freeze-water", "melt-chocolate", "boil-water", "dissolve-sugar"} s=0..1
+  level easy {
+    let a={"toast-bread", "cook-egg", "bake-cake", "burn-candle"} b={"melt-ice", "freeze-water", "melt-chocolate"}
+  }
+  level hard {
+    let a={"rise-dough", "fizz", "rust-nail"} b={"dissolve-sugar", "boil-water"}
+  }
+
+  scene 32x17 {
+    text ask "One of these changes makes a new material. Which one?" width=31 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      column align=centre {
+        beforeafter left change=(if s == 0 then a else b) show=1 names=1
+        text la "A"
+      }
+      column align=centre {
+        beforeafter right change=(if s == 0 then b else a) show=1 names=1
+        text lb "B"
+      }
+    }
+    choice pick options=["A", "B"] below=kit gap=0
+  }
+
+  answer pick=(if s == 0 then "A" else "B")
+  hint "For each one, is the stuff after still the same stuff?"
+  hint "Which one could you change back, and which one could you not?"
+}

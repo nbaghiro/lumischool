@@ -1,0 +1,26 @@
+# The story: the paper shapes cut for a still life, counted.
+item art.shapes-story v=1 stars=1 skills=[art.shape, addition.to-twenty] {
+  title "Cutting the shapes"
+  difficulty (if w == 0 then 0 else 1)
+  let a=2..4 b=1..2 c=2..3 w=0..1
+  level easy {
+    let a=2..3 b=1..1 w=0..0
+  }
+  level hard {
+    let a=4..4 b=2..2 c=3..3 w=1..1
+  }
+
+  scene 34x10 {
+    text ask "At the painter's hut Ada cuts {a} circles for apples, {b} {if b == 1 then \"box\" else \"boxes\"} for the table and a jug, and {c} tubes for cups. {if w == 0 then \"How many shapes has she cut?\" else \"Then she cuts one more circle for every tube. How many shapes has she cut in all?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a + b + c else a + b + c + c)
+  feedback {
+    when (w == 1 and answer == a + b + c) point=ask {
+      say "One more circle for each of the {c} tubes: {c} more shapes."
+    }
+  }
+  hint "{if w == 0 then \"Add the circles, the boxes and the tubes.\" else \"Add the three kinds, then one more circle for each tube.\"}"
+  hint "{if w == 0 then \"{a} and {b} and {c}.\" else \"{a} and {b} and {c}, then {c} more.\"}"
+}

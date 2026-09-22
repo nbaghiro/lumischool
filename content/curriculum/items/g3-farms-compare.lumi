@@ -1,0 +1,33 @@
+# Comparing, not taking away something that left: how many more one farm has than another.
+item sub.farms-compare v=1 skills=[subtraction.columns, subtraction.compare] {
+  title "How many more sheep"
+  difficulty (if a % 100 < b % 100 then 1 else 0)
+  let a=(412..896 by 4) b=(155..389 by 3)
+  where (a % 10 < b % 10 and a != 2 * b)
+  level easy {
+    let a=(412..596 by 4) b=(155..290 by 3)
+    where (a % 100 >= b % 100)
+  }
+  level hard {
+    let a=(700..896 by 4) b=(255..389 by 3)
+    where (a % 100 < b % 100)
+  }
+
+  scene 32x18 {
+    row farms at=canvas(1, 1) space=2 align=end {
+      animals ash kind=sheep count=4 label="Ash Farm"
+      barn shed windows=2 hay=1
+    }
+    text ask "Ash Farm has {a} sheep. Oak Farm has {b} sheep. How many more sheep does Ash Farm have?" width=28 below=farms gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=ask {
+      say "How many more is the gap between the two numbers, so take the smaller from the bigger."
+    }
+  }
+  hint "Which farm has more? How can you find the gap between two numbers?"
+  hint "Take {b} away from {a}. Check with an adding sum."
+}

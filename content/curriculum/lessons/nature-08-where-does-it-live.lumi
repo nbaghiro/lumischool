@@ -1,0 +1,72 @@
+lesson nature-where-does-it-live v=1 format=teach grade=2 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Where does it live?"
+  goal "Match each creature to its home, and say what the home gives it."
+
+  look {
+    scene 36x25 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row water space=2 align=end {
+          pond pool pads=3 fish=2 frog=true
+          cobweb web spokes=8 spider=1
+        }
+        row land space=2 align=end {
+          seasontrees tree seasons=["summer"] names=0
+          minibeasts crawl kinds=["snail", "bee"] legs=false
+          art wise asset="owl"
+        }
+      }
+    }
+    say """
+      Every creature in the marsh has a home, and the home gives it what it needs. The fish
+      lives in the pond, because it breathes water. The spider lives in its web, because flies
+      get caught there. The owl sleeps in a hole in the willow tree, high up and hidden. The
+      snail hides under damp leaves, because the sun would dry it out, and the bee lives where
+      the flowers are, because the flowers are its food.
+      """
+  }
+  do {
+    level easy {
+      worked nature.creature-home k=0
+    }
+    practice nature.creature-home count=2 seed=6 easy-seed=7 easy-count=1 hard-seed=1
+    practice nature.big-home count=2 seed=7 easy-seed=1 hard-seed=1
+    practice nature.home-gives count=2 seed=2 easy-seed=1 hard-seed=1
+    practice nature.match-homes count=1 seed=1 easy-seed=7 hard-seed=3
+    level hard {
+      show nature.wrong-home k=3
+    }
+  }
+  story {
+    show nature.marsh-walk w=2 n=2 b=3 easy-w=1 easy-n=2 easy-b=2 hard-w=4 hard-n=3 hard-b=2
+  }
+  try stars=2 {
+    show nature.wrong-home k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.home-for-two k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A home gives a creature what it needs: the water it breathes, the food it eats, a safe place to sleep."
+  }
+
+  grown-ups """
+    A home is not just where a creature is seen; it is what the creature needs, and the second
+    half of the lesson asks for the need every time. The wrong idea to watch for is that every
+    creature at the pond lives in it: the heron stands at the edge and breathes air, the frog
+    breathes air and goes into the water for its spawn, and only the fish breathes the water. In
+    the matching question, ask the child to say the reason for each line, not only the number.
+    The story counts spiders one to a web and birds a few to a nest, so watch for a nest being
+    counted as a creature. In the two-star question Ben has drawn a creature in the wrong home,
+    and the reason should come back as breathing: air or water. The three-star question has two
+    rules, the same home and neither eats the other, and every wrong pair fails exactly one of
+    them; the way in is to cross out pairs against one rule, then the other. If the homes are
+    still guessed after the core, stay here another day and look for three homes outside: a web,
+    a hole, a damp place under a stone, and ask what each one gives.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the spider's web) opens the core, the small creature placed is the bee, the bigger creatures are the duck and the cat, the pond gives the fish its water and the web gives the spider its flies, the story has one web and two nests of two birds, Ben has drawn a hedgehog at the bottom of the pond, and the tank is shared by a fish and a pond snail."
+  }
+  level hard {
+    grown-ups "At this level the small creatures placed are the ant and the snail, the bigger creatures are the owl and the hedgehog, the pond gives the frog somewhere for its spawn and the heron its fish, a second reasoning question sits in the core (a heron drawn under the water), the story has four webs and three nests of two birds, Ben has drawn a spider at the bottom of the pond, and the tank is shared by a frog and a pond snail, with the frog's food to check."
+  }
+}

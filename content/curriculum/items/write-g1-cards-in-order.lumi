@@ -1,0 +1,29 @@
+# The audit's raise for words-in-order: single words and no full stop showing. The first word keeps
+# its capital, since with a and the both in lower case "a dog ... the mat" and "the dog ... a mat"
+# were both right and only one was keyed.
+item writing.cards-in-order v=2 skills=[writing.sentences] {
+  title "Six cards, one sentence"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3 q=0..2
+  let who={if k == 0 then "dog" else if k == 1 then "fox" else if k == 2 then "cat" else "hen"}
+  let where={if k == 0 then "on" else if k == 1 then "in" else if k == 2 then "under" else "by"}
+  let thing={if k == 0 then "mat" else if k == 1 then "box" else if k == 2 then "table" else "log"}
+  let r0={if k == 0 and q == 0 then "on" else if k == 0 and q == 1 then "is" else if k == 0 and q == 2 then "mat" else if k == 1 and q == 0 then "in" else if k == 1 and q == 1 then "is" else if k == 1 and q == 2 then "box" else if k == 2 and q == 0 then "under" else if k == 2 and q == 1 then "is" else if k == 2 and q == 2 then "table" else if k == 3 and q == 0 then "by" else if k == 3 and q == 1 then "is" else "log"}
+  let r1={if k == 0 and q == 0 then "A" else if k == 0 and q == 1 then "the" else if k == 0 and q == 2 then "on" else if k == 1 and q == 0 then "A" else if k == 1 and q == 1 then "the" else if k == 1 and q == 2 then "in" else if k == 2 and q == 0 then "A" else if k == 2 and q == 1 then "the" else if k == 2 and q == 2 then "under" else if k == 3 and q == 0 then "A" else if k == 3 and q == 1 then "the" else "by"}
+  let r2={if k == 0 and q == 0 then "mat" else if k == 0 and q == 1 then "A" else if k == 0 and q == 2 then "dog" else if k == 1 and q == 0 then "box" else if k == 1 and q == 1 then "A" else if k == 1 and q == 2 then "fox" else if k == 2 and q == 0 then "table" else if k == 2 and q == 1 then "A" else if k == 2 and q == 2 then "cat" else if k == 3 and q == 0 then "log" else if k == 3 and q == 1 then "A" else "hen"}
+  let r3={if k == 0 and q == 0 then "dog" else if k == 0 and q == 1 then "mat" else if k == 0 and q == 2 then "the" else if k == 1 and q == 0 then "fox" else if k == 1 and q == 1 then "box" else if k == 1 and q == 2 then "the" else if k == 2 and q == 0 then "cat" else if k == 2 and q == 1 then "table" else if k == 2 and q == 2 then "the" else if k == 3 and q == 0 then "hen" else if k == 3 and q == 1 then "log" else "the"}
+  let r4={if k == 0 and q == 0 then "the" else if k == 0 and q == 1 then "dog" else if k == 0 and q == 2 then "is" else if k == 1 and q == 0 then "the" else if k == 1 and q == 1 then "fox" else if k == 1 and q == 2 then "is" else if k == 2 and q == 0 then "the" else if k == 2 and q == 1 then "cat" else if k == 2 and q == 2 then "is" else if k == 3 and q == 0 then "the" else if k == 3 and q == 1 then "hen" else "is"}
+  let r5={if k == 0 and q == 0 then "is" else if k == 0 and q == 1 then "on" else if k == 0 and q == 2 then "A" else if k == 1 and q == 0 then "is" else if k == 1 and q == 1 then "in" else if k == 1 and q == 2 then "A" else if k == 2 and q == 0 then "is" else if k == 2 and q == 1 then "under" else if k == 2 and q == 2 then "A" else if k == 3 and q == 0 then "is" else if k == 3 and q == 1 then "by" else "A"}
+
+  scene 32x24 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "Number the words 1 to 6 so they make a sentence about the picture." narrate width=18
+      sequence s items=["{r0}", "{r1}", "{r2}", "{r3}", "{r4}", "{r5}"] blanks=[b0, b1, b2, b3, b4, b5]
+    }
+  }
+
+  answer b0=(if q == 0 then 4 else if q == 1 then 3 else 6) b1=(if q == 0 then 1 else if q == 1 then 5 else 4) b2=(if q == 0 then 6 else if q == 1 then 1 else 2) b3=(if q == 0 then 2 else if q == 1 then 6 else 5) b4=(if q == 0 then 5 else if q == 1 then 2 else 3) b5=(if q == 0 then 3 else if q == 1 then 4 else 1)
+  hint "Say the sentence about the picture out loud first."
+  hint "Which word comes first in your sentence? Find it and write 1."
+}

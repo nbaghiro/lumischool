@@ -1,0 +1,30 @@
+# The unknown moved from the total to a part: ? + a = w, which is solved by taking away.
+item add.bar-missing-part v=1 skills=[addition.columns, addition.change-unknown] {
+  title "The other part"
+  difficulty (b + (if (a + b) % 100 < a % 100 then 300 else 0))
+  let a=(215..485 by 5) b=(135..395 by 5)
+  where (a + b < 1000 and a != b)
+  level easy {
+    let a=(215..285 by 5) b=(135..195 by 5)
+    where ((a + b) % 100 >= a % 100 and (a + b) % 10 >= a % 10)  # no ten and no hundred exchanged
+  }
+  level hard {
+    let a=(315..485 by 5) b=(255..395 by 5)
+    where ((a + b) % 100 < a % 100)  # taking the first week away needs a hundred exchanged
+  }
+
+  scene 30x15 {
+    barmodel bar whole=(a + b) parts=[a, ?] at=canvas(1, 1)
+    text ask "A school raised {a + b} dollars in two weeks. The first week raised {a} dollars. How much did the second week raise?" width=28 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == 2 * a + b) point=bar {
+      say "{a + b} is already the whole. The part you want is smaller than it."
+    }
+  }
+  hint "Which part of the bar do you know, and which is missing?"
+  hint "What do you add to {a} to make {a + b}? You can count on, or take away."
+}

@@ -1,0 +1,39 @@
+# A repeat with a count stops, and a repeat for ever does not: two light lines repeated 2, 3 or 4
+# times light 4, 6 or 8 times; repeated for ever, the lamp never stops. Reading "for ever" is ranked
+# with the plain count of 2, since the look teaches it; 3 and 4 times round are more to count.
+item coding.forever-how-many v=1 skills=[coding.repetition] {
+  title "When does it stop?"
+  difficulty (if h == 1 or h == 2 then 1 else 0)
+  let h=0..3
+  let head={pick(h, "repeat 2", "repeat 3", "repeat 4", "repeat for ever")}
+  let right={pick(h, "4", "6", "8", "it never stops")}
+  level easy {
+    let h={0, 3}
+  }
+  level hard {
+    let h={1, 2}
+  }
+
+  scene 33x21 {
+    program p code=["{head}", "  light red", "  light green"] title="Lamp 2" at=canvas(1, 1)
+    column side space=1 align=start right-of=p gap=2 {
+      text ask "How many lights does this program show?" narrate width=14
+      choice pick options=["4", "6", "8", "it never stops"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (h == 3 and pick != right) point=p {
+      say "Repeat for ever has no number, so it goes back to the top every time and never finishes."
+    }
+    when (h < 3 and pick == "it never stops") point=p {
+      say "This repeat has a number. It stops after that many times round."
+    }
+    when (h < 3 and pick != right and pick != "it never stops") point=p {
+      say "Each time round lights two lights. How many times round does the repeat say?"
+    }
+  }
+  hint "How many lights does one time round show?"
+  hint "Does the repeat say a number, or for ever?"
+}

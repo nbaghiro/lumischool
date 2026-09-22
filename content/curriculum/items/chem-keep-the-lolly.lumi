@@ -1,0 +1,45 @@
+# The three-star: where to keep an ice lolly longest, from four places, where two things count,
+# how cold the place is and whether the sun reaches it. No rule on the page ranks the places,
+# and one of them passes one test and fails the other.
+item chem.keep-the-lolly v=1 stars=3 skills=[chemistry.states, reasoning.constraints] {
+  title "Keep the lolly longest"
+  difficulty k
+  let k=0..2 r=0..3
+  let right={pick(k, "in the freezer", "in a cool box in the shade", "in a cool box in the shade, lid shut")}
+  let o1={pick(k, "in the fridge", "in a cool box in the sun", "in a cool box in the shade, lid open")}
+  let o2={pick(k, "in a cool box", "in a bag in the shade", "in a cool box in the sun, lid shut")}
+  let o3={pick(k, "in the shade", "in your pocket", "in a bag in the shade")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    icemelt ice every=10 count=2 place=0 at=canvas(1, 0)
+    text ask "Mia wants her ice lolly to last as long as it can. {if k == 0 then \"She is at home.\" else \"She is at the picnic by the marsh.\"} Where should she keep it?" narrate width=32 below=ice gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else if r == 2 then o2 else o3, if r == 0 then o1 else if r == 1 then right else if r == 2 then o3 else o2, if r == 0 then o2 else if r == 1 then o3 else if r == 2 then right else o1, if r == 0 then o3 else if r == 1 then o2 else if r == 2 then o1 else right] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=ice {
+      say "The coldest place keeps ice longest. Which of the four is coldest?"
+    }
+    when (k == 1 and pick == o1) point=ice {
+      say "A cool box helps, but the sun warms it through. Cold and out of the sun both count."
+    }
+    when (k == 2 and pick == o1) point=ice {
+      say "In the shade, but with the lid open the warm air gets in. Shut it."
+    }
+    when (k == 2 and pick == o2) point=ice {
+      say "Shut, but in the sun, which warms the box through. Both things have to be right."
+    }
+    when (k >= 1 and pick == o3) point=ice {
+      say "Shade alone is not cold. A place that is cold and shaded beats one that is only shaded."
+    }
+  }
+  hint "Two things melt a lolly: warm air round it, and the sun on it. Find the place that keeps both away."
+  hint "Test each place against both: is it cold, and is it out of the sun?"
+}

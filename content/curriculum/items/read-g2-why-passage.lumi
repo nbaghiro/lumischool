@@ -1,0 +1,16 @@
+# The reason is never written with because: it has to be put together from two sentences. The
+# wrong choices use words from the passage (grey, dinner, sun) without being reasons.
+item reading.why-passage v=1 stars=2 skills=[reading.inference, reading.comprehension] {
+  title "Why did it happen?"
+  let k=0..3 p=0..2
+
+  scene 36x22 {
+    passage story text="{if k == 0 then \"Tom looked out of the window. The sky was dark and grey. He took his coat off the hook.\" else if k == 1 then \"Lily went to the shop with two coins. She looked at the sweets for a long time. Then she put one bag back.\" else if k == 2 then \"The puppy sat by the door and cried. Kai picked up the lead. The puppy jumped and wagged its tail.\" else \"Nina's plant had dry, brown leaves. She filled a jug at the tap. The next day the leaves stood up again.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "{if k == 0 then \"Why did Tom take his coat?\" else if k == 1 then \"Why did Lily put one bag back?\" else if k == 2 then \"Why was the puppy happy at the end?\" else \"Why did the plant get better?\"}" narrate width=34 below=story gap=1
+    choice pick options=[if k == 0 then if p == 0 then "It looked like rain." else if p == 1 then "He was going to bed." else "His coat was grey." else if k == 1 then if p == 0 then "She did not like sweets." else if p == 1 then "She did not have enough money." else "The shop was shut." else if k == 2 then if p == 0 then "It was going for a walk." else if p == 1 then "It had eaten its dinner." else "Kai had gone to sleep." else if p == 0 then "Nina moved it into the sun." else if p == 1 then "Nina gave it some water." else "Nina cut off the leaves.", if k == 0 then if p == 0 then "He was going to bed." else if p == 1 then "His coat was grey." else "It looked like rain." else if k == 1 then if p == 0 then "She did not have enough money." else if p == 1 then "The shop was shut." else "She did not like sweets." else if k == 2 then if p == 0 then "It had eaten its dinner." else if p == 1 then "Kai had gone to sleep." else "It was going for a walk." else if p == 0 then "Nina gave it some water." else if p == 1 then "Nina cut off the leaves." else "Nina moved it into the sun.", if k == 0 then if p == 0 then "His coat was grey." else if p == 1 then "It looked like rain." else "He was going to bed." else if k == 1 then if p == 0 then "The shop was shut." else if p == 1 then "She did not like sweets." else "She did not have enough money." else if k == 2 then if p == 0 then "Kai had gone to sleep." else if p == 1 then "It was going for a walk." else "It had eaten its dinner." else if p == 0 then "Nina cut off the leaves." else if p == 1 then "Nina moved it into the sun." else "Nina gave it some water."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It looked like rain." else if k == 1 then "She did not have enough money." else if k == 2 then "It was going for a walk." else "Nina gave it some water.")
+  hint "The passage does not say why in so many words. What clues does it give?"
+  hint "Put two sentences together. What do they tell you when you read them side by side?"
+}

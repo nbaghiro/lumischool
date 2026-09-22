@@ -1,0 +1,44 @@
+lesson g4-long-multiplication v=1 format=worked grade=4 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Long multiplication"
+  goal "Multiply two two-digit numbers with the grid method, and use the grid to reason about products."
+
+  example {
+    worked multiply.grid
+    say """
+      Split each number into tens and ones and there are four products to find. Adding them gives
+      the answer, and nothing has been dropped.
+      """
+  }
+  exercises {
+    practice multiply.times-tens count=1 seed=3
+    practice multiply.short count=1 seed=8
+    practice multiply.grid count=1 seed=5
+    practice multiply.grid-back count=2 seed=4
+    practice multiply.missing-digit count=1 seed=6
+    practice multiply.tickets count=2 hard-count=1 seed=2 easy-seed=3
+    level hard {
+      practice multiply.which-bigger count=1 seed=4
+    }
+  }
+  try stars=2 {
+    show multiply.which-bigger t=4 s=3 a=2 b=7 easy-t=6 easy-s=2 easy-a=1 easy-b=8 hard-a=5 hard-b=6
+  }
+  try stars=3 {
+    show multiply.cards-biggest w=2 x=4 y=6 z=8 easy-w=1 easy-x=3 easy-y=5 easy-z=7 hard-z=9
+  }
+
+  grown-ups """
+    The grid is slower and safer. Keep it until the four products are automatic, then the columns
+    are just a shorter way of writing the same four. The grid read backwards (a part given, a
+    number at the top hidden) is a division inside a multiplication, and it is worth saying so. In
+    the two-star question, two of the four parts are the same in both grids, so only the other two
+    need comparing. In the three-star question there are only a few sensible ways to place the
+    cards; trying them all is the method.
+    """
+  level easy {
+    grown-ups "At this level the worked grid and the grid to fill multiply two numbers in the teens, the tens are multiplied by twenty or thirty, the short multiplication is by three or four, the hidden number at the top of the grid comes from a part of twelve or less, the hidden digit needs no carrying, the tickets cost twelve to fifteen dollars for twenty-odd children, the products compared are far apart, and the four cards are 1, 3, 5 and 7."
+  }
+  level hard {
+    grown-ups "At this level the worked grid and the grid to fill multiply numbers in the twenties and thirties, the tens are multiplied by forty to sixty, the short multiplication is by six to nine, the hidden number at the top of the grid comes from a part of thirty or more, the hidden digit carries from the ones and from the tens, the tickets cost eighteen to twenty-six dollars for thirty-odd children, the products compared differ only in parts that are close and the question is asked twice, and the four cards are 2, 4, 6 and 9."
+  }
+}

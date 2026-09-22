@@ -1,0 +1,42 @@
+# What a fair test is about: the table says what each tray got, and one column differs. That
+# column is the thing being tested, and the other columns are what was kept the same. Asking
+# for the difference is the plain half; asking what was kept the same is the harder one.
+item nature.test-about v=1 skills=[nature.plants, reasoning.fair-test] {
+  title "What is the test about?"
+  difficulty (if w == 0 then 0 else 1)
+  let k=0..2 w=0..1
+  let c1={pick(k, "yes", "yes", "yes")}
+  let c2={pick(k, "yes", "no", "yes")}
+  let d1={pick(k, "yes", "yes", "yes")}
+  let d2={pick(k, "no", "yes", "yes")}
+  let e1={pick(k, "warm", "warm", "warm")}
+  let e2={pick(k, "warm", "warm", "cold")}
+  let asks={pick(w, "What is Ada testing?", "Which two things did Ada keep the same?")}
+  let right={if w == 0 then pick(k, "water", "light", "warmth") else pick(k, "light and warmth", "water and warmth", "light and water")}
+  let o1={if w == 0 then pick(k, "light", "water", "light") else pick(k, "water and warmth", "light and warmth", "warmth and water")}
+  let o2={if w == 0 then pick(k, "warmth", "warmth", "water") else pick(k, "light and water", "light and water", "light and warmth")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 36x21 {
+    table t cols=4 head=["Tray", "Light", "Water", "Warmth"] cells=["A", c1, d1, e1, "B", c2, d2, e2] at=canvas(1, 1)
+    text ask "Ada gives her two trays of cress what the table says. {asks}" narrate width=12 right-of=t gap=2
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and w == 0) point=t {
+      say "Read down each column. A fair test changes one thing only, and that is the column where A and B differ."
+    }
+    when (pick != right and w == 1) point=t {
+      say "The things kept the same are the columns where A and B match. The one that differs is the thing being tested."
+    }
+  }
+  hint "Read across the row for A and the row for B. Which column is different?"
+  hint "The different column is the test. The matching columns are what was kept the same."
+}

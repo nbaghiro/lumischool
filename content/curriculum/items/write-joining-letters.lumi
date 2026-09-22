@@ -1,0 +1,13 @@
+item writing.joining-letters v=1 skills=[writing.joining] {
+  title "Joining letters up"
+  let w={"un", "en", "at", "up"}
+
+  scene 35x15 {
+    art pic asset="{if w == \"un\" then \"sun\" else if w == \"en\" then \"hen\" else if w == \"at\" then \"cat\" else \"cup\"}" at=canvas(1, 1)
+    text ask "Join {w} without lifting your pencil. Then write the word under the picture the same way." width=24 right-of=pic gap=1
+    handwriting pair show="{w}" rows=1 trace=2 width=24 below=ask gap=1
+    handwriting word show="{if w == \"un\" then \"sun\" else if w == \"en\" then \"hen\" else if w == \"at\" then \"cat\" else \"cup\"}" rows=1 trace=2 width=24 below=pair gap=1
+  }
+
+  check writing.by-eye look-for="The two letters are joined by one stroke that starts at the baseline, the letters stay the same size as each other rather than the second one shrinking, and the whole word is joined in the same way."
+}

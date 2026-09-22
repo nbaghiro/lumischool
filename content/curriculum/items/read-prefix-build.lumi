@@ -1,0 +1,18 @@
+# The meaning is given and the prefix is missing. Each of the four prefixes makes a real word with
+# at least one of the roots, so the child chooses by what the prefix does, not by what sounds right.
+item reading.prefix-build v=1 skills=[reading.morphology] {
+  title "Which prefix?"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 23x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      wordbricks b bricks=[if k == 0 then "re" else if k == 1 then "un" else if k == 2 then "pre" else "dis", if k == 0 then "tie" else if k == 1 then "kind" else if k == 2 then "view" else "agree"] root=1 roots=1 blank=0 word="" labels=true
+      text ask "Which prefix makes a word that means {if k == 0 then \"tie it again\" else if k == 1 then \"not kind\" else if k == 2 then \"see it before\" else \"not agree\"}?" width=22
+      choice pick options=["re", "un", "pre", "dis"]
+    }
+  }
+
+  answer pick=(if k == 0 then "re" else if k == 1 then "un" else if k == 2 then "pre" else "dis")
+  hint "Re means again. Un and dis mean not. Pre means before."
+}

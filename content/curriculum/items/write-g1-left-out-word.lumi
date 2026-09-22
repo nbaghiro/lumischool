@@ -1,0 +1,29 @@
+# Mo's sentence has one word left out, and which word moves: the doing word, the, or the word that
+# says where. Reading it against the picture is how the gap is found.
+item writing.left-out-word v=1 skills=[writing.sentences] {
+  title "The word Mo left out"
+  difficulty (if m == 2 then 2 else if m == 1 then 1 else 0)
+  let a=0..3 m=0..2
+  level easy {
+    let m={0, 1}  # is and the
+  }
+  level hard {
+    let m={1, 2}  # the and the place word
+  }
+  let who={if a == 0 then "duck" else if a == 1 then "rabbit" else if a == 2 then "hen" else "dog"}
+  let where={if a == 0 then "on" else if a == 1 then "under" else if a == 2 then "in" else "by"}
+  let thing={if a == 0 then "mat" else if a == 1 then "table" else if a == 2 then "tub" else "log"}
+  let said={if a == 0 and m == 0 then "The duck on the mat." else if a == 0 and m == 1 then "The duck is on mat." else if a == 0 and m == 2 then "The duck is the mat." else if a == 1 and m == 0 then "The rabbit under the table." else if a == 1 and m == 1 then "The rabbit is under table." else if a == 1 and m == 2 then "The rabbit is the table." else if a == 2 and m == 0 then "The hen in the tub." else if a == 2 and m == 1 then "The hen is in tub." else if a == 2 and m == 2 then "The hen is the tub." else if a == 3 and m == 0 then "The dog by the log." else if a == 3 and m == 1 then "The dog is by log." else "The dog is the log."}
+
+  scene 32x9 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "Mo wrote: {said} One word is missing. Which one?" narrate width=20
+      choice pick options=["is", "the", "{where}"]
+    }
+  }
+
+  answer pick=(if m == 0 then "is" else if m == 1 then "the" else where)
+  hint "Read Mo's sentence out loud, one word at a time."
+  hint "Where does it sound wrong? Which word would make it say what the picture shows?"
+}

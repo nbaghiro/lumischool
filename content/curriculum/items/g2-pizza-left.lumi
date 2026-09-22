@@ -1,0 +1,32 @@
+# The fraction that is left, not the one that went: the child names both parts of the fraction.
+item fraction.pizza-what-is-left v=2 skills=[fractions.equal-parts, fractions.naming] {
+  title "What is left?"
+  difficulty (n + k)
+  let n={3, 4, 6, 8} k=1..5
+  where (k < n and 2 * k != n)
+  where (not (n == 6 and (k == 2 or k == 4)) and not (n == 8 and k == 2))  # the part left is in lowest terms, so there is one right way to write it
+  level easy {
+    let n={3, 4} k=1..2
+  }
+  level hard {
+    let n={6, 8} k=3..5
+  }
+
+  scene 32x14 {
+    pizza pie slices=n taken=k toppings=true at=canvas(1, 1)
+    text ask "What fraction of the pizza is left?" narrate width=16 right-of=pie gap=2
+    equation eq "{?left} / {?whole}" below=ask gap=1
+  }
+
+  answer left=(n - k) whole=n
+  feedback {
+    when (left == k) point=pie {
+      say "That is the part that has gone. Count the slices still there."
+    }
+    when (whole == n - k) point=pie {
+      say "The bottom number is how many slices the whole pizza was cut into, gone ones too."
+    }
+  }
+  hint "How many equal slices was the whole pizza cut into?"
+  hint "How many of those slices are still there?"
+}

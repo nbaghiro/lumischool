@@ -1,0 +1,22 @@
+# The rhyme is spelled differently from the word, and the wrong choices share its first letters,
+# so the child has to listen rather than look. The audit's raise for the rhyme items.
+item reading.rhyme-spelled-different v=1 skills=[reading.rhyme] {
+  title "Rhymes that look different"
+  difficulty (if k == 2 then 2 else if k == 3 then 1 else 0)
+  let k=0..5 p=0..2
+  level easy {
+    let k={0, 1, 4, 5}  # shoe, sea, chair, toe
+  }
+  level hard {
+    let k={2, 3, 4}  # they, fly, and chair
+  }
+
+  scene 22x7 {
+    text ask "Which word rhymes with {if k == 0 then \"blue\" else if k == 1 then \"bee\" else if k == 2 then \"day\" else if k == 3 then \"pie\" else if k == 4 then \"bear\" else \"go\"}?" narrate at=canvas(1, 1)
+    choice pick options=["{if p == 0 then (if k == 0 then \"shoe\" else if k == 1 then \"sea\" else if k == 2 then \"they\" else if k == 3 then \"fly\" else if k == 4 then \"chair\" else \"toe\") else (if k == 0 then \"blow\" else if k == 1 then \"bed\" else if k == 2 then \"dog\" else if k == 3 then \"pig\" else if k == 4 then \"bean\" else \"got\")}", "{if p == 1 then (if k == 0 then \"shoe\" else if k == 1 then \"sea\" else if k == 2 then \"they\" else if k == 3 then \"fly\" else if k == 4 then \"chair\" else \"toe\") else (if k == 0 then \"bell\" else if k == 1 then \"bet\" else if k == 2 then \"dry\" else if k == 3 then \"pin\" else if k == 4 then \"beak\" else \"goat\")}", "{if p == 2 then (if k == 0 then \"shoe\" else if k == 1 then \"sea\" else if k == 2 then \"they\" else if k == 3 then \"fly\" else if k == 4 then \"chair\" else \"toe\") else (if k == 0 then \"bus\" else if k == 1 then \"bus\" else if k == 2 then \"den\" else if k == 3 then \"pet\" else if k == 4 then \"bat\" else \"gum\")}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "shoe" else if k == 1 then "sea" else if k == 2 then "they" else if k == 3 then "fly" else if k == 4 then "chair" else "toe")
+  hint "Say each word out loud after the first word."
+  hint "Listen to the end of each word. The letters may look different."
+}

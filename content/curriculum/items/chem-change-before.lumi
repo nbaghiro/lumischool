@@ -1,0 +1,17 @@
+# The way in: the before picture and what is done to it are drawn, and the child says what comes
+# out. The two wrong answers are things from other changes, so none of them is silly on its own.
+item chem.change-before v=1 skills=[chemistry.changes] {
+  title "What will it become?"
+  difficulty k
+  let k=0..4
+
+  scene 29x13 {
+    text ask "What will it be after this change?" width=24 at=canvas(1, 0)
+    beforeafter ch change=(if k == 0 then "melt-chocolate" else if k == 1 then "toast-bread" else if k == 2 then "freeze-water" else if k == 3 then "cook-egg" else "bake-cake") show=0 names=1 below=ask gap=0
+    choice pick options=["{if k == 0 then \"runny chocolate\" else if k == 1 then \"ice\" else if k == 2 then \"fried egg\" else if k == 3 then \"cake\" else \"cake\"}", "{if k == 0 then \"toast\" else if k == 1 then \"toast\" else if k == 2 then \"sweet water\" else if k == 3 then \"fried egg\" else \"ice\"}", "{if k == 0 then \"ice\" else if k == 1 then \"steam\" else if k == 2 then \"ice\" else if k == 3 then \"runny chocolate\" else \"toast\"}"] stack=column right-of=ch gap=1
+  }
+
+  answer pick=(if k == 0 then "runny chocolate" else if k == 1 then "toast" else if k == 2 then "ice" else if k == 3 then "fried egg" else "cake")
+  hint "Look at what it is now, and at the words on the arrow."
+  hint "What happens when you do that at home?"
+}

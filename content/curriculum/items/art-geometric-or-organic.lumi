@@ -1,0 +1,21 @@
+item art.geometric-or-organic v=1 skills=[art.shape] {
+  title "Geometric or organic?"
+  difficulty (if s == "cloud" or s == "fish" or s == "fern" then 1 else 0)
+  let s={"leaf", "fern", "star", "circle", "triangle", "square", "cloud", "fish"}
+  level easy {
+    let s={"leaf", "star", "circle", "triangle", "square"}
+  }
+  level hard {
+    let s={"fern", "cloud", "fish", "star"}  # the organic ones, and the star among them
+  }
+
+  scene 28x9 {
+    stencil pic shape=s show="one" colour=blue at=canvas(1, 1)
+    text ask "Is this shape geometric or organic?" width=16 right-of=pic gap=1
+    choice pick options=["geometric", "organic"] below=ask gap=1
+  }
+
+  check art.shapes of=pic pick=kind
+  hint "Look at its edges. Are they straight lines or a perfect round curve?"
+  hint "Could you find a shape like this growing in a garden or floating in the sky?"
+}

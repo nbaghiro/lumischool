@@ -1,0 +1,28 @@
+# The story: the tray of metal letters at the printing works, some of the curly family and some
+# not.
+item writing.letter-tray v=1 stars=1 skills=[writing.letter-formation, subtraction.to-twenty] {
+  title "The tray of letters"
+  difficulty (n / 6 + w)
+  let n={8, 12, 16} c=3..9 w=0..1
+  where (c < n)
+  level easy {
+    let n={8} c=3..5 w=0..0
+  }
+  level hard {
+    let n={12, 16} c=5..9 w=1..1
+  }
+
+  scene 34x10 {
+    text ask "At the printing works Sam sets out a tray of {n} metal letters. {c} of them are curly letters, which start like c. {if w == 0 then \"How many of the letters are not curly?\" else \"Tia takes the curly ones out to sort. How many are left in the tray?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - c)
+  feedback {
+    when (answer == n + c) point=ask {
+      say "The {c} curly letters are part of the {n}. Take them away, not add them on."
+    }
+  }
+  hint "Start with all {n} letters. The curly ones are some of them."
+  hint "{n} take away {c}."
+}

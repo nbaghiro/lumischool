@@ -1,0 +1,46 @@
+lesson physics-fast-and-slow v=1 format=teach grade=1 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Fast and slow"
+  goal "Say which runner was fastest from their times, find how much sooner one finished, and compare runners who went different distances."
+
+  look {
+    scene 31x24 {
+      column track at=canvas(1, 1) space=1 align=start {
+        racetrack t lanes=4 metres=100
+        stopwatch w seconds=14
+      }
+    }
+    say """
+      Two things tell you how fast something went: how far it travelled, and how long it took.
+      Over the same distance, the faster runner takes fewer seconds. In the same time, the faster
+      runner goes further.
+      """
+  }
+  do {
+    practice physics.faster-runner count=2 seed=5
+    practice physics.jump-distance count=2 seed=2
+    practice physics.race-winner count=2 seed=3
+    practice physics.time-gap count=2 seed=1
+  }
+  try stars=2 {
+    show physics.same-time-further a=40 b=60 easy-a=30 hard-b=50
+  }
+  try stars=3 {
+    show physics.same-speed d=10 k=2 easy-k=1 hard-d=20
+  }
+  remember {
+    say "Over the same distance, fewer seconds is faster. In the same time, further is faster."
+  }
+
+  grown-ups """
+    Time two walks down the same hallway, one slow and one quick, and write both times down. Children
+    often think the bigger number must be the better result, so the smaller time being the winner is
+    worth saying out loud. The last question has two runners who are just as fast although every
+    number is different, which surprises most children and is the start of the idea of speed.
+    """
+  level easy {
+    grown-ups "At this level the two runners' times are twenty seconds apart or more, the jumps land on whole metres, and Ben runs twice as far in the same time."
+  }
+  level hard {
+    grown-ups "At this level the times are ten seconds apart, the jumps land on half metres, and the two runners in the table went the same speed, which has to be worked out from doubling both numbers."
+  }
+}

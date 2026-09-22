@@ -1,0 +1,33 @@
+# The three-star count: every bar of a given length built from whole-beat pieces, where a beat is a
+# crotchet or a pair of quavers, and a minim takes two. The order counts: one pair among three beats
+# 3, among four 4, two pairs among four 6, a minim and two beats of either kind 3 x 2 x 2 = 12.
+item music.rhythm-count-bars v=1 stars=3 skills=[music.rhythm, reasoning.all-the-ways] {
+  title "Every bar Ana can write"
+  difficulty k
+  let k=0..3
+  let rule={pick(k, "three beats: one pair of quavers and crotchets for the rest", "four beats: one pair of quavers and crotchets for the rest", "four beats: two pairs of quavers and crotchets for the rest", "four beats: one minim, and each other beat a crotchet or a pair of quavers")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x18 {
+    staff bar notes=[1, 0.5, 0.5, 1, 1] at=canvas(1, 1)
+    text ask "Ana writes bars of {rule}. The order counts. The bar shown is there to show how a pair of quavers is written. How many different bars can she write?" narrate width=28 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 3, 4, 6, 12)
+  feedback {
+    when (k == 3 and answer == 3) point=bar {
+      say "That counts where the minim can go. For each place, the other two beats can each be a crotchet or a pair."
+    }
+    when (k == 2 and answer == 4) point=bar {
+      say "Two pairs can sit in more than four places. List the pairs of beats they could take."
+    }
+  }
+  hint "Write each bar as letters, C for a crotchet, Q for a pair of quavers and M for a minim, so none is missed."
+  hint "{if k == 3 then \"Start with every bar that begins with the minim, then with a pair, then with a crotchet.\" else \"Start with every bar that begins with a pair, then every bar that begins with a crotchet.\"}"
+}

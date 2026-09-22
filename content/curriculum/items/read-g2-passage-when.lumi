@@ -1,0 +1,21 @@
+# Three days and three things happening, all of them days the child could pick. The question
+# asks about the finding, and Monday (the losing) is the tempting wrong answer.
+item reading.passage-when v=1 skills=[reading.comprehension, reading.find-a-detail] {
+  title "On which day?"
+  let c=0..3 t=0..2 k=0..1
+
+  scene 36x14 {
+    passage p text="On Monday {if c == 0 then \"Pip\" else if c == 1 then \"Omar\" else if c == 2 then \"Tess\" else \"Ravi\"} lost {if c == 0 then \"her\" else if c == 1 then \"his\" else if c == 2 then \"her\" else \"his\"} {if t == 0 then \"hat\" else if t == 1 then \"scarf\" else \"glove\"}. {if k == 0 then \"On Tuesday it rained all day. On Wednesday Dad found it in the shed.\" else \"On Tuesday Dad found it in the shed. On Wednesday it rained all day.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "On which day was it found?" narrate below=p gap=1
+    choice pick options=["Monday", "Tuesday", "Wednesday"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Wednesday" else "Tuesday")
+  feedback {
+    when (pick == "Monday") point=p {
+      say "Monday is the day it was lost. Read on to find the day it turned up again."
+    }
+  }
+  hint "Find the word found in the passage."
+  hint "Read the whole sentence with found in it. Which day does it start with?"
+}

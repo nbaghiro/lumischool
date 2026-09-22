@@ -1,0 +1,59 @@
+lesson writing-because-but-so v=1 format=teach grade=4 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Because, but, so"
+  goal "Join two halves of a sentence with the word that says how they are related."
+
+  look {
+    scene 37x12 {
+      row all at=canvas(1, 1) space=2 align=centre {
+        column lines space=1 align=start {
+          caption one text="The plane flew far because it was windy." width=28
+          caption two text="The plane flew far, but it landed in a tree." width=28
+          caption three text="The plane flew far, so we ran after it." width=28
+        }
+        paperplane plane bank=0
+      }
+    }
+    say """
+      The same start can end three ways. Because gives the reason for the first half. But says the
+      second half goes against it. So gives what the first half caused. Putting the wrong word in
+      changes the meaning rather than just sounding odd.
+      """
+  }
+  do {
+    practice writing.because-but-so count=2 seed=1
+    show writing.join-with-and k=2 hard-level=medium
+    level easy {
+      worked writing.finish-the-join s=2 w=2 level=medium
+    }
+    practice writing.finish-the-join count=2 seed=3
+    practice writing.what-the-join-says count=2 seed=16
+    practice writing.join-two-best count=1 hard-count=0 seed=2
+    level hard {
+      practice writing.same-or-different count=1 seed=6
+    }
+  }
+  try stars=2 {
+    show writing.same-or-different k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show writing.three-endings k=0
+  }
+  remember {
+    say "Because: the reason. So: what happened next. But: the other way. A comma goes before so and but."
+  }
+
+  grown-ups """
+    Give the child a start of your own and ask for all three endings, one with each word. Then swap
+    the word in a sentence they have written and read both versions back. Hearing "I put my coat on
+    so it was cold" is quicker than any explanation. In the two-star question the two sentences use
+    the same words, so the child has to follow which half causes the other; ask them to point at the
+    cause in each. The three endings in the three-star question each need to make sense with their
+    word, and there are many good answers.
+    """
+  level easy {
+    grown-ups "At this level the words in the gaps are because and so, the join with and is as written, a but ending is finished once in the teacher's pen before because and so endings, the parts after the join give a reason or what came next, the join that keeps the meaning is as written, the two-star's pair comes out the same, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the words in the gaps are but and so, the join with and is as written, the endings to finish follow but, the parts after the join give the other way or what came next, the join that keeps the meaning makes way for a second pair to compare, both pairs coming out different, and the three-star is as written."
+  }
+}

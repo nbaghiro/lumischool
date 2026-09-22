@@ -1,0 +1,19 @@
+# Arrows are strums and dots are the hand going past without touching. The mistake is to count the
+# dots as strums, which is counting half beats rather than reading the pattern.
+item music.uke-count-strums v=1 skills=[music.strumming] {
+  title "How many strums?"
+
+  scene 28x13 {
+    strumtrack bar strums=D-DU-UDU counts=true chord=none ring=-1 at=canvas(1, 1)
+    text ask "Each arrow is a strum. How many strums are in this bar?" width=20 below=bar gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer 6
+  feedback {
+    when (answer == 8) point=bar {
+      say "The dots are where the hand moves past without touching the strings. Count only the arrows."
+    }
+  }
+  hint "Count the arrows, down and up together."
+}

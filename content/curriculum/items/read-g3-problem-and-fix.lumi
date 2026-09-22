@@ -1,0 +1,29 @@
+# The problem and the stop that solves it, both as numbers (the audit's raise for story-problem):
+# a try that does not work can sit between them, so the fix is not always the next stop.
+item reading.problem-and-fix v=1 skills=[reading.story-structure] {
+  title "The problem and the fix"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0}  # the beans, whose fix is the next stop; the ferry's fix is two stops on and is the two-star's map at easy
+  }
+  level hard {
+    let k={1, 2}  # pushing the bike home sits between the flat tyre and the patch
+  }
+
+  scene 35x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=[if k == 0 then "Ada plants a row of beans." else if k == 1 then "The ferry is lost in the fog." else "Nia's bike has a flat tyre.", if k == 0 then "Snails eat the first leaves." else if k == 1 then "The captain rings the bell." else "She pushes it home.", if k == 0 then "She puts eggshells round them." else if k == 1 then "The keeper lights the lamp." else "Grandad finds the hole.", if k == 0 then "Ada picks a bowl of beans." else if k == 1 then "The ferry sails home safely." else "He patches it, and Nia rides."] icons=[if k == 0 then "girl" else if k == 1 then "boat" else "girl", if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "lighthouse" else "", if k == 0 then "apple" else if k == 1 then "boat" else "sun"] heads=[] blank=-1
+      row q1 space=2 align=centre {
+        text a1 "Problem at stop"
+        number-input problem width=3
+        text a2 "Fixed at stop"
+        number-input fix width=3
+      }
+    }
+  }
+
+  answer problem=(if k == 0 then 2 else if k == 1 then 1 else 1) fix=(if k == 0 then 3 else if k == 1 then 3 else 4)
+  hint "The problem is what goes wrong. What does someone in the story need to put right?"
+  hint "Find the stop where it is put right. Something tried along the way may not work."
+}

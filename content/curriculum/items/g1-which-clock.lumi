@@ -1,0 +1,29 @@
+# Half past is read from both hands: one wrong clock has the hour hand past the next number, one
+# has the long hand at the top.
+item time.which-clock v=1 skills=[time.half-past] {
+  title "Which clock"
+  let h=1..10 q=0..2
+
+  scene 26x17 {
+    row faces at=canvas(1, 1) space=2 {
+      column fa space=0 align=centre {
+        text la "A"
+        clock ca h=(if (3 - q) % 3 == 1 then h + 1 else h) m=(if (3 - q) % 3 == 2 then 0 else 30)
+      }
+      column fb space=0 align=centre {
+        text lb "B"
+        clock cb h=(if (4 - q) % 3 == 1 then h + 1 else h) m=(if (4 - q) % 3 == 2 then 0 else 30)
+      }
+      column fc space=0 align=centre {
+        text lc "C"
+        clock cc h=(if (5 - q) % 3 == 1 then h + 1 else h) m=(if (5 - q) % 3 == 2 then 0 else 30)
+      }
+    }
+    text ask "Which clock shows half past {h}?" narrate below=faces gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "A" else if q == 1 then "B" else "C")
+  hint "At half past, where does the long hand point?"
+  hint "At half past {h}, the short hand is between which two numbers?"
+}

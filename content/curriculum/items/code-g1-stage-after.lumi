@@ -1,0 +1,25 @@
+# Stopping partway in a different world: the rabbit on the stage, where a jump and a hello are steps
+# too, so the child has to count the moves only up to the step the question names.
+item coding.stage-after v=1 skills=[coding.tracing, coding.events] {
+  title "Where is the rabbit then?"
+  difficulty (a + b + f)
+  let s=1..2 a=1..3 b=1..3 f={2, 4}
+
+  scene 31x13 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "jump", "right {b}", "say hello"] words=true
+      stage st cols=8 col=s code=["right {a}", "jump", "right {b}", "say hello"] upto=0
+    }
+    text ask "{if f == 2 then \"Which square is the rabbit on when it jumps?\" else \"Which square is the rabbit on when it says hello?\"}" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=st answer="after({f}).col"
+  feedback {
+    when (answer == s + a + b and f == 2) point=b {
+      say "The jump comes before the second move. Stop when the rabbit jumps."
+    }
+  }
+  hint "Start on the square the rabbit is on. Do the blocks from the top."
+  hint "Stop at the block the question asks about."
+}

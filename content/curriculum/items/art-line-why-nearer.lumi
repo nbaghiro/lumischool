@@ -1,0 +1,35 @@
+# Two stars: the same two things drawn twice with the weights swapped, and not only which drawing puts
+# a thing nearer but why a line's width says so at all.
+item art.line-why-nearer v=1 stars=2 skills=[art.line, art.looking, reasoning.evidence] {
+  title "Which looks nearer, and why?"
+  difficulty (if p < 2 then 0 else 1)
+  let p=0..3
+  let a={pick(p, "apple", "apple", "jug", "ball")}
+  let b={pick(p, "cup", "pear", "apple", "cup")}
+  let asked={pick(p, "the apple", "the pear", "the jug", "the cup")}
+  let ans={pick(p, "The first, its line is thicker there", "The second, its line is thicker there", "The first, its line is thicker there", "The second, its line is thicker there")}
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3}
+  }
+
+  scene 26x40 {
+    text l1 "The first drawing" at=canvas(1, 0)
+    stilllife one light="left" things=["{a}", "{b}"] lamp=false weights=["thick", "thin"] below=l1 gap=0
+    text l2 "The second drawing" below=one gap=1
+    stilllife two light="left" things=["{a}", "{b}"] lamp=false weights=["thin", "thick"] below=l2 gap=0
+    text ask "Both drawings show the same two things in the same places. In which one does {asked} look nearer, and why?" narrate width=22 below=two gap=1
+    choice pick options=["The first, its line is thicker there", "The second, its line is thicker there", "Neither, they are in the same places"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Neither, they are in the same places") point=two {
+      say "They are in the same places, but the lines are not the same. A thicker line brings a thing forward even when nothing has moved."
+    }
+  }
+  hint "Find the thing the question names in both drawings and compare its two lines."
+  hint "A thick line comes towards you and a thin one falls back."
+}

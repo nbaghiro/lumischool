@@ -1,0 +1,29 @@
+# The three times of day put in order through the day, from the drawn pictures rather than from
+# memory: morning first, then noon, then dusk. The first order is already right, the next three have
+# two pictures swapped, and the last two have all three out of place, which is the ranking.
+item art.light-order v=1 skills=[art.light, reasoning.order] {
+  title "Through the day"
+  difficulty ((if k > 0 then 1 else 0) + (if k > 3 then 1 else 0))
+  let k=0..5
+  let l1={pick(k, "morning", "noon", "morning", "dusk", "noon", "dusk")}
+  let l2={pick(k, "noon", "morning", "dusk", "noon", "dusk", "morning")}
+  let l3={pick(k, "dusk", "dusk", "noon", "morning", "morning", "noon")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 31x35 {
+    layers one labels=false ring=-1 sun=true light=l1 at=canvas(1, 0)
+    layers two labels=false ring=-1 sun=true light=l2 below=one gap=1
+    layers three labels=false ring=-1 sun=true light=l3 below=two gap=1
+    text ask "Number these from 1, the earliest in the day, to 3." narrate width=13 right-of=one gap=2
+    sequence s items=["the first picture", "the second picture", "the third picture"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=pick(k, 1, 2, 1, 3, 2, 3) b=pick(k, 2, 1, 3, 2, 3, 1) c=pick(k, 3, 3, 2, 1, 1, 2)
+  hint "Morning comes first, then noon, then dusk."
+  hint "Find the picture whose sun is low on the left: that is the morning one."
+}

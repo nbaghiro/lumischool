@@ -1,0 +1,24 @@
+# The passage starts at the end and looks back, so the order it is told in is not the order it
+# happened in. The time words (an hour before, that morning, at two) give the real order.
+item reading.flashback v=1 skills=[reading.sequencing, reading.inference] {
+  title "Told out of order"
+  difficulty (1 - d)
+  let k=0..2 d=0..1
+
+  scene 37x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"Kit was soaked to the skin when she got home. An hour before, she had set off up the hill in the sunshine. Halfway up, the clouds rolled in.\" else if k == 1 then \"Rafi's new shoes were muddy by lunch. He had put them on proudly that morning. On the way to school he had jumped in every puddle.\" else \"The cake was ready at four o'clock. Dad had started it at two, while Orla made the icing. At three, the kitchen smelled of lemon.\"}" width=36
+      text ask "Which happened {if d == 0 then \"first\" else \"last\"}?"
+      choice pick options=[if k == 0 then "Kit got home" else if k == 1 then "muddy shoes" else "cake ready", if k == 0 then "Kit set off" else if k == 1 then "new shoes on" else "Dad started", if k == 0 then "the clouds" else if k == 1 then "the puddles" else "lemon smell"]
+    }
+  }
+
+  answer pick=(if d == 0 then if k == 0 then "Kit set off" else if k == 1 then "new shoes on" else "Dad started" else if k == 0 then "Kit got home" else if k == 1 then "muddy shoes" else "cake ready")
+  feedback {
+    when (d == 0 and (pick == "Kit got home" or pick == "muddy shoes" or pick == "cake ready")) point=p {
+      say "That is told first, but read on. Did anything happen before it?"
+    }
+  }
+  hint "Is the passage told in the order things happened?"
+  hint "Look for the time words, such as before, that morning or at two."
+}

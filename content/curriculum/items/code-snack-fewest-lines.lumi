@@ -1,0 +1,37 @@
+# Three stars: the fewest lines for n of a snack with a repeat, where the steps done once stay
+# outside it. 4, 5, 5 and 6 lines; writing every step out takes 3n lines and more.
+item coding.snack-fewest-lines v=1 stars=3 skills=[coding.repetition, coding.algorithms, reasoning.constraints] {
+  title "The shortest program"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let n={pick(k, 3, 4, 3, 4)}
+  let snack={pick(k, "three slices of toast", "four jam sandwiches", "three fruit bowls", "four jam sandwiches")}
+  let s1={pick(k, "Put the bread in the toaster", "Take two slices of bread", "Wash an apple", "Take two slices of bread")}
+  let s2={pick(k, "Push the lever down", "Spread jam on one slice", "Cut it into pieces", "Spread jam on one slice")}
+  let s3={pick(k, "Take the toast out", "Put the other slice on top", "Put the pieces in a bowl", "Put the other slice on top")}
+  let once={pick(k, "Nothing else is done.", "First the robot opens the jam jar, once.", "At the end the robot pours yoghurt over all three bowls, once.", "First the robot opens the jam jar, once, and at the end it closes the jar, once.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=3..3
+  }
+
+  scene 34x23 {
+    program prog code=["{s1}", "{s2}", "{s3}"] title="Each time" at=canvas(1, 1)
+    text ask "Pip's robot makes {snack}. Each one takes the three steps on the card. {once} A repeat line, like repeat 3, counts as one line. What is the fewest lines the whole program can have?" narrate width=32 below=prog gap=1
+    number-input count below=ask gap=1
+  }
+
+  answer count=pick(k, 4, 5, 5, 6)
+  feedback {
+    when (count == 3 * n or count == 3 * n + pick(k, 0, 1, 1, 2)) point=ask {
+      say "That writes every step out. A repeat line and the three steps under it do all {n} for you."
+    }
+    when (count == 3) point=ask {
+      say "The three steps need a repeat line above them to happen {n} times."
+    }
+  }
+  hint "Write repeat {n} and put the three steps under it. How many lines is that?"
+  hint "{if k == 0 then \"Is anything done only once?\" else \"A step done only once goes outside the repeat, on a line of its own.\"}"
+}

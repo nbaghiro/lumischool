@@ -1,0 +1,16 @@
+# Reading the evidence: shadows fall away from the light, and the side away from it is darkest.
+item art.where-light v=1 skills=[art.tone, reasoning.evidence] {
+  title "Where is the light?"
+  difficulty s
+  let l={"left", "right"} s=0..2
+
+  scene 34x11 {
+    stilllife pic light=l things=["{if s == 0 then \"apple\" else if s == 1 then \"cup\" else \"box\"}", "{if s == 2 then \"apple\" else \"ball\"}", "{if s == 1 then \"box\" else \"cup\"}"] lamp=false at=canvas(1, 1)
+    text ask "The lamp has been left out of this picture. Which side is the light coming from?" width=14 right-of=pic gap=1
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=l
+  hint "Which way do the shadows on the table point?"
+  hint "A shadow falls on the side away from the light. So where must the light be?"
+}

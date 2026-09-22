@@ -1,0 +1,35 @@
+# Two tallies read in fives and compared: the difference, not the total.
+item data.tally-more v=1 skills=[data.tally, subtraction.compare] {
+  title "More cars than bikes"
+  difficulty (b - a)
+  let a=6..14 b=11..19
+  where (b > a + 1)
+  where (b - a != a)
+  level easy {
+    let a=6..8 b=11..12
+  }
+  level hard {
+    let a=6..8 b=17..19
+  }
+
+  scene 28x16 {
+    text la "Bikes" at=canvas(1, 1)
+    tally ta count=a right-of=la gap=2
+    text lb "Cars" below=la gap=2
+    tally tb count=b right-of=lb gap=2
+    text ask "Ivy made a tally of what went past her window. How many more cars than bikes went past?" narrate width=26 below=lb gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (b - a)
+  feedback {
+    when (answer == a + b) point=tb {
+      say "That is cars and bikes together. How many more is the difference."
+    }
+    when (answer == b) point=tb {
+      say "That is all the cars. Take away the bikes."
+    }
+  }
+  hint "Count each tally in fives, then the ones left over."
+  hint "Start at the number of bikes and count on to the number of cars."
+}

@@ -1,0 +1,30 @@
+# Naming a bass note from middle C down: each step down the bass staff is the letter before,
+# through B, A, G, bass F on the fourth line, E, D and C.
+item music.bass-name v=1 skills=[music.staff] {
+  title "Name the bass note"
+  difficulty (if i <= 1 then 0 else if i <= 4 then 1 else 2)
+  let i=0..6
+  let n={pick(i, "B3", "A3", "G3", "E3", "D3", "C3", "F3")}
+  let r={pick(i, "B", "A", "G", "E", "D", "C", "F")}
+  level easy {
+    let i=0..1
+  }
+  level hard {
+    let i=3..5
+  }
+
+  scene 32x21 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=true at=canvas(1, 1)
+    text ask "Middle C and bass F are marked. Which letter is the ringed note on the bass staff?" width=14 right-of=gs gap=1
+    choice pick options=["A", "B", "C", "D", "E", "F", "G"] below=gs gap=1
+  }
+
+  answer pick=r
+  feedback {
+    when (pick != r) point=gs {
+      say "Going down from middle C the letters run backwards: B, A, G, then bass F on the fourth line, then E, D, C. Count each line and space."
+    }
+  }
+  hint "Which landmark is nearer, middle C or bass F? Count steps from it, going down means the letter before."
+  hint "Down from middle C: B, A, G, F. Down from bass F: E, D, C."
+}

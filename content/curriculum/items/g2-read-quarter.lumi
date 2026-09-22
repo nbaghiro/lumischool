@@ -1,0 +1,35 @@
+# The time written as hours and minutes, so a quarter to has to be read from an hour hand that is
+# nearly at the next number.
+item time.write-quarter v=1 skills=[time.quarter-hours, time.reading-clocks] {
+  title "Write the time"
+  difficulty (m / 15 + (if m == 45 then 2 else 0))
+  let h=1..11 m={15, 30, 45}
+  level easy {
+    let m={15, 30}
+  }
+  level hard {
+    let m={45}
+  }
+
+  scene 26x8 {
+    clock face h=h m=m at=canvas(1, 1)
+    text ask "Write the time shown on the clock." narrate width=16 right-of=face gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input hour width=3
+      equation colon ":"
+      number-input minutes width=3
+    }
+  }
+
+  answer hour=h minutes=m
+  feedback {
+    when (hour == h + 1 and m == 45) point=face {
+      say "The hour hand is nearly at {h + 1} but has not reached it yet, so the hour is still {h}."
+    }
+    when (minutes == m / 5) point=face {
+      say "The long hand points at {m / 5}, but each number on the clock is 5 minutes."
+    }
+  }
+  hint "Which number has the short hand just passed?"
+  hint "Count the minutes round from 12 in fives to the long hand."
+}

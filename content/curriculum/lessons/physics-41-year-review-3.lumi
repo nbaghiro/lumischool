@@ -1,0 +1,45 @@
+lesson physics-year-review-3 v=1 format=review grade=3 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics review: the third year"
+  goal "Look back over the year: circuits, magnets, force in newtons, speed, swinging and sound."
+
+  warm-up {
+    practice physics.switch-state count=1 seed=3
+    practice physics.magnet-count count=1 seed=2 easy-seed=1 hard-seed=3
+    practice physics.net-force count=1 seed=4 easy-seed=1 hard-seed=2
+  }
+  exercises {
+    practice physics.poles-predict count=1 seed=2
+    practice physics.forces-add count=1 seed=3 easy-seed=1 hard-seed=1
+    practice physics.speed count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.conductor-lights count=1 seed=4 easy-seed=2 hard-seed=1
+    practice physics.why-dark count=1 seed=2 easy-seed=1 hard-seed=3
+    practice physics.pendulum-faster count=1 seed=3 easy-seed=1 hard-seed=2
+    practice physics.band-change count=1 seed=1 easy-seed=1 hard-seed=1
+    practice physics.read-loudness count=1 seed=2 easy-seed=3 hard-seed=1
+  }
+  puzzle stars=2 {
+    show physics.fix-it f=1 c=1 n=2 hard-f=2
+  }
+  puzzle stars=3 {
+    show physics.speed-meet a=1 b=3 t=6 easy-a=1 easy-b=2 easy-t=4 hard-a=3 hard-b=4 hard-t=5
+  }
+
+  grown-ups """
+    This is a check, not a test, to do up at the windmill before the next year's machines and
+    the sky begin. The warm-up is the first question of three lessons: a switch to read, a tray
+    beside a magnet, two pushes on one trolley. The exercises take one question each from the
+    year: what two poles do when they meet, two pushes added, a speed from a distance and a time,
+    whether a thing on the tester lights the bulb, why a loop is dark, which pendulum swings
+    faster, how a band's note changes when it is shortened, and what the sound meter reads at a
+    distance. Anything that needs the way in again is worth another week with that lesson, and
+    everything else can move on. The two puzzles are there to be enjoyed: the dark loop asks for
+    the one change that mends it, and the two walkers meet where their distances add up to the
+    road, so ask for the reason (each one's distance is speed times time) as well as the number.
+    """
+  level easy {
+    grown-ups "At this level the tray has three or four things, the pushes are small and far apart, the poles are as written, the speeds come from short distances over five seconds, the tester holds a nail, a clip, an eraser or a stick, the dark loop has an open switch, the pendulums differ plainly with the same bob, the band changes by a lot, the meter is read close to the drum, the loop to mend has an open switch, and the walkers are slow on a short road."
+  }
+  level hard {
+    grown-ups "At this level the tray has five or six things, the pushes are large and close, the speeds come from long distances over twenty seconds, the tester holds foil, a coin or a marble, the dark loop has a loose wire or no cell, the pendulums differ by a little with different bobs, the band changes by a little, the meter is read far from the drum, the loop to mend has a loose wire, and the walkers are quick on a long road."
+  }
+}

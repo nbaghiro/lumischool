@@ -1,0 +1,29 @@
+item physics.speed-compare v=1 skills=[physics.speed] {
+  title "Who was faster?"
+  difficulty ((if t == v then 0 else 2) + (4 - abs(s - u)))
+  let s={3, 4, 5, 6} u={3, 4, 5, 6} t={5, 10} v={5, 10}
+  where (s != u)
+  level easy {
+    where (t == v)
+  }
+  level hard {
+    where (t != v)
+  }
+
+  scene 32x8 {
+    table data cols=3 head=["Name", "Metres", "Seconds"] cells=["Ada", s * t, t, "Ben", u * v, v] at=canvas(1, 0)
+    text ask "Who ran more metres each second?" width=12 right-of=data gap=2
+    choice pick options=["Ada", "Ben"] below=ask gap=1
+  }
+
+  answer pick=(if s > u then "Ada" else "Ben")
+  feedback {
+    when (pick == "Ada" and s < u and s * t > u * v) point=data {
+      say "Ada went further, but she also took longer. Share each distance by its seconds."
+    }
+    when (pick == "Ben" and u < s and u * v > s * t) point=data {
+      say "Ben went further, but he also took longer. Share each distance by its seconds."
+    }
+  }
+  hint "How many metres did each of them go in one second?"
+}

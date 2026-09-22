@@ -1,0 +1,31 @@
+item sub.bus-off v=1 skills=[subtraction.counting-back] {
+  title "Getting off the bus"
+  difficulty (n + off)
+  let n=6..12 off=2..5
+  where (off < n)
+  where (n != 2 * off)  # then what is left equals what got off
+  level easy {
+    let n=6..9 off=2..3
+  }
+  level hard {
+    let n=10..12 off=4..5
+  }
+
+  scene 32x15 {
+    # A window for everyone who can be on the bus: the drawing seats at most one person a window.
+    bus ride windows=12 on=n sign="9" at=canvas(1, 1)
+    text ask "{off} people get off at the next stop. How many are left?" width=26 below=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - off)
+  feedback {
+    when (answer == n + off) point=ride {
+      say "Getting off makes the number smaller, so this is a taking away."
+    }
+    when (answer == off) point=ride {
+      say "That is how many got off. The question asks how many are still on."
+    }
+  }
+  hint "Start at {n} and count back {off}."
+}

@@ -1,0 +1,24 @@
+# The three-star: two sentences of the child's own about the harbour picture, a describing word
+# in each, marked by a grown-up.
+item writing.two-sentences v=1 stars=3 skills=[writing.sentences, writing.composing] {
+  title "Your two sentences"
+  difficulty k
+  let k=0..1
+  let task={pick(k, "Write two sentences about the harbour picture. Put one describing word in each sentence.", "Write two sentences about the harbour picture. Put a describing word in each sentence, and no colour words.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x17 {
+    art pic asset="boat" at=canvas(1, 1)
+    text ask "{task}" narrate width=18 right-of=pic gap=1
+    writingframe frame prompts=["One", "Two"] lines=2 width=32 note="" below=pic gap=1
+  }
+
+  check writing.by-eye look-for="Two sentences about the picture, each with a capital and a full stop, each with at least one describing word placed just before the thing it describes (a small boat, the calm sea) and true of the picture; at the harder level the describing words are not colours."
+  hint "Pick a thing in the picture. What is it like? Put that word before its name."
+  hint "Say the sentence out loud before you write it: capital, then the words, then the full stop."
+}

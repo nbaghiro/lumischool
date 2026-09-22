@@ -1,0 +1,63 @@
+lesson physics-sound-fades v=1 format=teach grade=3 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "Sound fades with distance"
+  goal "Read a table of loudness against distance, and say that the reading halves each time the distance doubles."
+
+  look {
+    scene 34x12 {
+      row all at=canvas(1, 0) space=2 align=start {
+        ricedrum drum hit=2
+        table t cols=2 head=["Metres away", "Meter reads"] cells=["1", "16", "2", "8", "4", "4", "8", "2"]
+      }
+    }
+    say """
+      Mia beats a drum at the mouth of the crystal cave, and Leo walks down the passage with the
+      sound meter, stopping at every lamp. Beside the drum the meter reads 16. At the first lamp,
+      2 metres away, it reads 8; at 4 metres, 4; at 8 metres, only 2. The sound spreads out as it
+      goes, so there is less of it in each place. Each time the distance doubles, the reading
+      halves.
+      """
+  }
+  do {
+    level easy {
+      worked physics.loudest-row k=0 m=0
+    }
+    practice physics.loudest-row count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.read-loudness count=2 seed=6 easy-seed=4 hard-seed=4
+    practice physics.which-distance count=2 seed=1 easy-seed=2 hard-seed=4
+    practice physics.missing-row count=2 easy-count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.double-distance count=2 seed=1 easy-seed=4 hard-seed=2
+  }
+  story {
+    show physics.cave-lamps a=5 base=16 w=0 easy-a=3 hard-a=6 hard-base=24 hard-w=1
+  }
+  try stars=2 {
+    show physics.bigger-drum k=2 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show physics.just-heard base=16 need=2 easy-base=8 easy-need=2 hard-base=16 hard-need=1
+  }
+  remember {
+    say "Sound spreads out as it goes: each time the distance doubles, the reading halves."
+  }
+
+  grown-ups """
+    The idea is that a sound spreads out from the drum and there is less of it further away, and
+    the lesson gives that one shape: the meter's reading halves each time the distance doubles.
+    The table is the lesson's picture, and the questions read it forwards (the reading at a
+    distance), backwards (the distance for a reading) and past its end. The wrong idea to watch
+    for is taking away the same amount each row, 16, 12, 8, 4; ask what half of 16 is, then half
+    of 8. The story adds the lamps' legs before the halving is seen, and the two-star question
+    compares two drums measured at different distances, where the readings have to be brought to
+    the same distance first (a reading of 6 taken at 4 metres is a big drum). The three-star
+    question builds the chain of readings until it reaches the stream's noise, and the answer is
+    the last distance that still does. If the halving is not yet a habit after the core, stay here
+    another day and make the chain out loud with a real ruler and a clap. Off the page, stand a
+    child at 1, 2 and 4 big steps from a ticking clock and ask where it is just heard.
+    """
+  level easy {
+    grown-ups "At this level a table in distance order is read once in the teacher's pen, the rows stay in distance order, the readings to find are the near rows and the small chains (8 and 16 beside the drum), the missing reading is the last row, the walk is outward to twice as far, the lamps are 3 metres apart with 16 at the first, the two drums are measured at the same distance, and Leo can hear the drum to 4 metres."
+  }
+  level hard {
+    grown-ups "At this level the table's rows are muddled, the readings to find are the far rows and the chain past the table's end (16 metres), the missing reading is a first or second row that has to be doubled back to, the walk is back towards the drum or four times as far, the lamps are 6 or 10 metres apart and the third lamp is asked about, the two drums come out the same (the one version with that answer), and Leo can hear the drum to 16 metres."
+  }
+}

@@ -1,0 +1,20 @@
+item art.paint-for-weather v=1 skills=[art.warm-cool] {
+  title "Paint for the weather"
+  difficulty (if s == "a hot desert" then 1 else 0)
+  let s={"a snowy morning", "a hot desert"} p=0..2
+  level easy {
+    let s={"a snowy morning"}
+  }
+  level hard {
+    let s={"a hot desert"}
+  }
+
+  scene 32x12 {
+    text ask "Which paint would you choose for the sky in a picture of {s}?" width=13 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then (if s == \"a snowy morning\" then \"blue and white\" else \"red and yellow\") else (if s == \"a snowy morning\" then \"red and yellow\" else \"blue and white\")}", "{if p == 1 then (if s == \"a snowy morning\" then \"blue and white\" else \"red and yellow\") else if p == 0 then (if s == \"a snowy morning\" then \"red and yellow\" else \"blue and white\") else (if s == \"a snowy morning\" then \"yellow and white\" else \"green and white\")}", "{if p == 2 then (if s == \"a snowy morning\" then \"blue and white\" else \"red and yellow\") else (if s == \"a snowy morning\" then \"yellow and white\" else \"green and white\")}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick="{if s == \"a snowy morning\" then \"cool\" else \"warm\"}"
+  hint "Does {s} feel warm or cold?"
+  hint "Mix each pair in your head. Which one gives a colour that feels that way?"
+}

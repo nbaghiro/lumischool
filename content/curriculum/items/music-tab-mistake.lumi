@@ -1,0 +1,20 @@
+# Mo's tab for a named tune has one wrong fret, and the wrong fret is always one the tune uses
+# elsewhere, so nothing stands out: each number has to be read as a note and checked.
+item music.tab-mistake v=1 stars=2 skills=[music.tab, music.note-names, reasoning.find-the-error] {
+  title "Mo's tab"
+  difficulty ((if t >= 2 then 1 else 0) + (if w >= 2 then 1 else 0))
+  let t=0..3 w=0..3 e=1..2
+
+  scene 34x20 {
+    tab lines tuning=guitar notes=["s{if t < 2 then 1 else 2}f{if w == 0 then (if t % 2 == 0 then (if e == 1 then 1 else 3) else (if e == 1 then 0 else 1)) else if t % 2 == 0 then 0 else 3}", "s{if t < 2 then 1 else 2}f{if w == 1 then (if e == 1 then 0 else 3) else 1}", "s{if t < 2 then 1 else 2}f{if w == 2 then (if t % 2 == 0 then (if e == 1 then 0 else 1) else (if e == 1 then 1 else 3)) else if t % 2 == 0 then 3 else 0}", "s{if t < 2 then 1 else 2}f{if w == 3 then (if e == 1 then 0 else 3) else 1}"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    text ask "Mo wrote tab for the tune {if t == 0 then \"E, F, G, F\" else if t == 1 then \"G, F, E, F\" else if t == 2 then \"B, C, D, C\" else \"D, C, B, C\"}. One number is wrong." width=32 below=lines gap=1
+    text q1 "Which note is wrong, 1, 2, 3 or 4?" width=18 below=ask gap=1
+    number-input which right-of=q1 gap=1
+    text q2 "What should its fret be?" width=18 below=q1 gap=1
+    number-input fix right-of=q2 gap=1
+  }
+
+  answer which=(w + 1) fix=(if w == 1 or w == 3 then 1 else if w == 0 then if t % 2 == 0 then 0 else 3 else if t % 2 == 0 then 3 else 0)
+  hint "Say the note each number plays, one at a time."
+  hint "Which note in the tab is not the note in Mo's tune?"
+}

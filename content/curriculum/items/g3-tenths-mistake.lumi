@@ -1,0 +1,29 @@
+# Adding tenths as if they were whole numbers gives 0.12 for 0.8 + 0.4: finding why is the reason.
+item decimal.tenths-mistake v=1 stars=2 skills=[decimals.tenths, reasoning.find-the-error] {
+  title "Too many tenths"
+  difficulty (a + b)
+  let a=4..9 b=3..9
+  where (a + b > 10)
+  level easy {
+    where (a + b <= 12)
+  }
+  level hard {
+    where (a + b >= 15)
+  }
+
+  scene 32x18 {
+    children kid count=1 holding="" names=["Ella"] at=canvas(1, 1)
+    bubble said "{decimals(a / 10, 1)} + {decimals(b / 10, 1)} = 0.{a + b}" width=14 from=kid right-of=kid gap=1
+    text ask "Ella's answer cannot be right. What is the right answer?" width=28 below=kid gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals((a + b) / 10, 1)
+  feedback {
+    when (answer == decimals((a + b) / 100, 2)) point=said {
+      say "That is Ella's answer. Is 0.{a + b} bigger or smaller than {decimals(a / 10, 1)} on its own?"
+    }
+  }
+  hint "Is 0.{a + b} more or less than {decimals(a / 10, 1)}? Can that be right after adding?"
+  hint "How many tenths are there altogether? Ten tenths make one whole."
+}

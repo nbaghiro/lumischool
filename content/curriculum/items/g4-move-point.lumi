@@ -1,0 +1,32 @@
+# The audit's raise for reading a point: the point moves, and the child writes where it lands.
+item coords.move-point v=1 skills=[position.coordinates, position.translation] {
+  title "Where it lands"
+  difficulty (dx + dy + (if way == "down" then 2 else 0))
+  let x=1..4 y=1..5 dx=1..3 dy=1..3 way={"up", "down"}
+  where (x + dx <= 6 and (way == "up" and y + dy <= 6 or way == "down" and y - dy >= 0))
+  level easy {
+    let way={"up"}
+    where (dx + dy <= 3)
+  }
+  level hard {
+    let way={"down"}
+    where (dx + dy >= 5)
+  }
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=x py=y mark="P" at=canvas(1, 0)
+    column q right-of=grid gap=2 space=1 align=start {
+      text ask "Move P {dx} to the right and {dy} {way}. Where does it land?" width=15
+      equation eq "( {?px} , {?py} )"
+    }
+  }
+
+  answer px=(x + dx) py=(if way == "up" then y + dy else y - dy)
+  feedback {
+    when (px == (if way == "up" then y + dy else y - dy) and py == x + dx and x + dx != (if way == "up" then y + dy else y - dy)) point=grid {
+      say "Along first, then up. The across number is written first."
+    }
+  }
+  hint "Where is P now? Write it down first."
+  hint "Moving right changes the first number. Moving up or down changes the second."
+}

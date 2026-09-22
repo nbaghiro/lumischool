@@ -1,0 +1,51 @@
+lesson physics-how-we-see v=1 format=teach grade=4 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "How we see"
+  goal "Explain that we see things because light goes from them into our eyes, and use it to explain a periscope and a rainbow."
+
+  look {
+    scene 35x24 {
+      column all at=canvas(1, 0) space=1 align=start {
+        row two space=2 align=start {
+          seeing s lamp=1 arrows=1
+          periscope p tall=6
+        }
+        prism r
+      }
+    }
+    say """
+      We see the ball because light from the lamp bounces off it and comes into our eyes. Nothing
+      comes out of the eyes. A periscope uses two mirrors to bring the light from the bird down to
+      the eye. A prism bends white light, and each colour bends by a different amount, so the white
+      light spreads into the colours of a rainbow.
+      """
+  }
+  do {
+    show physics.periscope-count
+    show physics.see-in-dark-why
+    practice physics.seeing-which count=2 seed=3
+    practice physics.periscope-which count=2 seed=1
+    practice physics.prism-missing count=2 seed=2
+  }
+  try stars=2 {
+    show physics.periscope-wrong
+  }
+  try stars=3 {
+    show physics.maze-flips m="B1" r="E3"
+  }
+  remember {
+    say "We see things when light from them comes into our eyes."
+  }
+
+  grown-ups """
+    Many children, and many adults, think the eyes send something out to what they look at. Ask
+    why we cannot see in a dark room with our eyes wide open. A periscope is easy to build from a
+    long juice carton and two small mirrors, and a glass of water in a sunny window makes a
+    rainbow on the floor.
+    """
+  level easy {
+    grown-ups "At this level the wrong seeing picture has the light stopping at the ball, and the rainbow's missing colour is orange or yellow, next to the red at the top."
+  }
+  level hard {
+    grown-ups "At this level the wrong seeing picture has the light going out of the eye to the ball, which is the common wrong idea, and the rainbow's missing colour is green or blue, further down the list."
+  }
+}

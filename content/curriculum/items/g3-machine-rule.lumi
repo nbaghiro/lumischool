@@ -1,0 +1,20 @@
+item machine.find-the-rule v=1 skills=[algebra.function-machines] {
+  title "Finding the rule"
+  difficulty (r * n)
+  let r={3, 4, 5, 6} n=2..8
+  where (r * n != r + n)
+
+  scene 32x15 {
+    machine box rule="?" input="{n}" output="{r * n}" at=canvas(1, 1)
+    text ask "{n} went in and {r * n} came out. What does the machine multiply by?" width=30 below=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  feedback {
+    when (answer == r * n - n) point=box {
+      say "That is what was added, and this machine multiplies. Ask how many lots of {n} make {r * n}."
+    }
+  }
+  hint "How many {n}s fit into {r * n}?"
+}

@@ -1,0 +1,31 @@
+# The time from one clock to another, counted in whole hours round the face.
+item time.hours-between v=1 skills=[time.intervals] {
+  title "How many hours"
+  difficulty (n + m / 30)
+  let s=1..8 n=2..4 m={0, 30}
+  where (s + n <= 12)
+  level easy {
+    let n={2} m={0}
+  }
+  level hard {
+    let n=3..4 m={30}
+  }
+
+  scene 28x16 {
+    row faces at=canvas(1, 1) space=3 align=centre {
+      clock start h=s m=m
+      clock end h=(s + n) m=m
+    }
+    text ask "The picnic starts at the first time and ends at the second. How many hours long is it?" narrate width=26 below=faces gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == s + n) point=end {
+      say "That is the time it ends. Count the hours from the start to the end."
+    }
+  }
+  hint "Where is the short hand on each clock?"
+  hint "Move the short hand on from the first time, one hour at a time, until it reaches the second."
+}

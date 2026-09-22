@@ -1,0 +1,53 @@
+lesson reading-rhymes v=1 format=teach grade=1 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Words that rhyme"
+  goal "Hear which words rhyme, and use a rhyme to finish a line."
+
+  look {
+    scene 31x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        poem p title="The hen" lines=["Here is a red hen,", "she sits in her pen.", "She lays eggs, one to ten,", "then counts them again."] rhymes=[0, 0, 0, 0] blank=-1 width=21
+        art hen asset="hen"
+      }
+    }
+    say """
+      Words that rhyme sound the same at the end. Hen, pen and ten all rhyme.
+
+      The letter at the end of each line shows the rhyme. Lines with the same letter rhyme.
+      """
+  }
+  do {
+    practice reading.rhyme-odd count=2 seed=1
+    show reading.rhyme-finish k=0
+    level easy {
+      worked reading.rhyme-spelled-different k=2 p=0 level=medium
+    }
+    practice reading.rhyme-spelled-different count=2 seed=3
+    practice reading.rhyme-count count=1 seed=2
+    show reading.rhyme-finish k=2
+    show reading.rhyme-pairs s=1 k=2
+  }
+  try stars=2 {
+    show reading.rhyme-claim k=0 easy-k=1
+  }
+  try stars=3 {
+    show reading.last-line k=1
+  }
+  remember {
+    say "Rhyming words sound the same at the end."
+  }
+
+  grown-ups """
+    Read each poem aloud first and let the child join in with the last word of each line. Rhyme is
+    heard before it is read, and a child who can hear it will find the missing word by saying the
+    choices in the gap. Every poem here was written for this lesson. Some rhymes are spelled
+    differently, such as bee and sea, so the child has to listen rather than look at the letters.
+    In the two-star question the child judges a reason as well as a pair of words. The three-star
+    question is marked by you: any last line that makes sense and rhymes is right.
+    """
+  level easy {
+    grown-ups "At this level the odd one out and the rhymes to finish are as written, day and they are matched once in the teacher's pen before shoe, sea, chair and toe, two or three cards rhyme, the pairs are as written, Kit's claim is right for the reason she gives, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the odd one out and the rhymes to finish are as written, the rhymes to match are they and fly as well as chair, three or four cards rhyme, the pairs are as written, and the two-star and three-star are as written."
+  }
+}

@@ -1,0 +1,31 @@
+# The remainder decides the answer: people left over still need a seat, so the answer rounds up.
+item division.minibuses v=1 skills=[division.remainders, problems.two-step] {
+  title "How many minibuses"
+  difficulty (c + a)
+  let c=(19..47 by 2) a=2..5 k={8, 9, 12}
+  where ((c + a) % k != 0)
+  level easy {
+    let c=(19..29 by 2)
+  }
+  level hard {
+    let c=(39..47 by 2) a=4..5 k={9, 12}
+  }
+
+  scene 33x17 {
+    bus van windows=k on=0 sign="Trip" at=canvas(1, 1)
+    text ask "{c} children and {a} grown-ups go on a trip. A minibus holds {k} people. How many minibuses are needed?" width=28 below=van gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((c + a) // k + 1)
+  feedback {
+    when (answer == (c + a) // k) point=ask {
+      say "That leaves {(c + a) % k} people behind. They need a minibus too."
+    }
+    when (answer == c // k + 1 and c // k != (c + a) // k) point=ask {
+      say "The grown-ups need seats as well."
+    }
+  }
+  hint "How many people are going altogether?"
+  hint "How many full minibuses is that? Is anyone left over?"
+}

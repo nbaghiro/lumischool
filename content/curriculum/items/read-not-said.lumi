@@ -1,0 +1,28 @@
+# Nothing in the passage says what time Ravi got home. The child has to add the walking and the
+# waiting, which is what reading between the lines actually asks of them. The clock shows the time
+# he left, which the passage does say, and nothing more.
+item reading.not-said v=2 skills=[reading.inference] {
+  title "What it does not say outright"
+  difficulty h
+  let h=5..7
+
+  scene 33x16 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage p title="To the lake" text="Ravi left home at {h} o'clock and walked for two hours to the lake. He stayed there for one hour, then walked straight home the same way." width=24
+      clock c h=h m=0
+    }
+    text ask "What time did Ravi get home?" width=22 below=top gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (h + 5)
+  feedback {
+    when (answer == h + 2) point=p {
+      say "That is when he reached the lake. He still had to stay an hour and walk home."
+    }
+    when (answer == h + 3) point=p {
+      say "The walk home takes two hours as well, because he went the same way."
+    }
+  }
+  hint "Two hours there, one hour at the lake, two hours back."
+}

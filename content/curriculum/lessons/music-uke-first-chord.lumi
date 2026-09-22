@@ -1,0 +1,59 @@
+# C is the first chord because it needs one finger. Reading its card is the whole of reading chord
+# cards: a dot is a finger, the number says which finger, and where it sits says the string and fret.
+lesson music-uke-first-chord v=1 format=teach grade=1 unit=4 subject=music levels=[easy, medium, hard] {
+  title "One finger: the C chord"
+  goal "Read a chord card for its finger, string and fret, and hold and strum C."
+
+  look {
+    scene 28x15 {
+      chordbox card tuning=uke chord=C frets=3 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+      hand fingers side=left numbers=guitar ring=3 colours=true right-of=card gap=2
+    }
+    say """
+      Your pointer finger is 1 and your ring finger is 3. The dot shows finger 3 on the A string, at
+      fret 3.
+      """
+  }
+  do {
+    show music.uke-c-finger
+    show music.uke-c-fret
+    show music.uke-c-string
+    level easy {
+      worked music.uke-finger-number k=4 level=medium
+    }
+    practice music.uke-finger-number count=1 seed=4
+    show music.uke-strum-c
+    practice music.uke-one-finger-fret count=1 seed=2
+    practice music.uke-one-finger-string count=1 seed=5
+    practice music.uke-which-card count=1 hard-count=0 seed=7
+    level hard {
+      practice music.uke-card-mistake count=1 seed=6
+    }
+  }
+  try stars=2 {
+    show music.uke-card-mistake s=1 f=2 easy-f=3 hard-s=3 hard-f=1
+  }
+  try stars=3 {
+    show music.uke-make-a-song n=3 easy-n=2 hard-n=4
+  }
+  remember {
+    say "A dot is a finger, its number says which one, and the lines say which string and fret."
+  }
+
+  grown-ups """
+    At the piano the thumb is 1; on the ukulele the pointer finger is 1 and the thumb has no number.
+    The cards always print the number, so the child reads it rather than remembering it. Press just
+    behind the fret, not on top of it, and expect a buzzing note for the first few days.
+
+    The other one-finger cards (A minor, C7, A7) are read the same way as C, which is the point of
+    showing them. In the two-star question the child checks Sam's card against C one thing at a
+    time, the string and then the fret. The three-star song is marked by ear: listen for the finger
+    lifting for the open strings and going back for the last C.
+    """
+  level easy {
+    grown-ups "At this level the C chord's finger, fret and string are as written, the little finger is numbered once in the teacher's pen before the pointer and the middle finger, the one-finger chords and the card to find are as written, the two-star's dot is in the right place, so nothing is wrong, and the three-star strums each part twice."
+  }
+  level hard {
+    grown-ups "At this level the C chord's finger, fret and string are as written, the ringed finger is the ring finger or the little finger, the one-finger chords are as written, the card to find makes way for a second wrong dot, the two-star's dot is wrong in both fret and string, and the three-star strums each part four times."
+  }
+}

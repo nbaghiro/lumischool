@@ -1,0 +1,23 @@
+# Tia gives a reason, and the reason is sometimes about how a letter looks rather than how it is
+# written. Two of the six claims are right, so the answer is not always no.
+item writing.family-claim v=1 stars=2 skills=[writing.letter-formation, reasoning.claims] {
+  title "Is Tia right?"
+  difficulty (if c == 0 or c == 2 then 2 else if c == 1 or c == 3 then 1 else 0)
+  let c=0..5
+  let ch={if c == 0 then "d" else if c == 1 then "p" else if c == 2 then "f" else if c == 3 then "y" else if c == 4 then "b" else "o"}
+  let fam={if c == 0 then "a ladder letter" else if c == 1 then "a curly letter" else if c == 2 then "a ladder letter" else if c == 3 then "a zigzag letter" else if c == 4 then "a bridge letter" else "a curly letter"}
+  let why={if c == 0 then "it is tall" else if c == 1 then "it has a round part" else if c == 2 then "it is tall" else if c == 3 then "it looks like v" else if c == 4 then "it starts down and goes up and over" else "it goes round to the left"}
+  let right={if c == 0 then "No, it is curly." else if c == 1 then "No, it is a bridge letter." else if c == 2 then "No, it is curly." else if c == 3 then "No, it is a ladder letter." else if c == 4 then "Yes." else "Yes."}
+
+  scene 32x21 {
+    formletter big letter=ch copies=0 write=0 label=false at=canvas(1, 1)
+    column q right-of=big gap=2 space=1 align=start {
+      text ask "Tia says {ch} is {fam}, because {why}. Is she right?" narrate width=22
+      choice pick options=["Yes.", "No, it is curly.", "No, it is a bridge letter.", "No, it is a ladder letter."] stack=column
+    }
+  }
+
+  answer pick=right
+  hint "A family is about how a letter starts, not how tall it is. Follow the arrows."
+  hint "Which way does the pencil go first on {ch}? Which family starts like that?"
+}

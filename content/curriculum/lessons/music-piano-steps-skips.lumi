@@ -1,0 +1,59 @@
+# Reading by steps and skips, which is how the intervallic methods read: the distance between two
+# notes on the staff, rather than the name of each one worked out from scratch.
+lesson music-piano-steps-skips v=1 format=teach grade=2 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Steps and skips"
+  goal "Tell a step from a skip on the staff, count the steps between two notes, and play them."
+
+  look {
+    scene 30x12 {
+      row both at=canvas(1, 1) space=3 align=start {
+        notes step clef=treble notes=[C4, D4] letters=true
+        notes skip clef=treble notes=[C4, E4] letters=true
+      }
+    }
+    say """
+      From a line to the space next to it is a step: C to D. From a line to the next line is a
+      skip, which misses a note out: C to E. On the keyboard a step is the next white key, and a
+      skip jumps over one.
+      """
+  }
+  do {
+    show music.step-or-skip
+    show music.step-up
+    level easy {
+      worked music.step-skip-read i=5 d=-2 level=medium
+    }
+    practice music.step-skip-read count=2 seed=6
+    show music.count-steps
+    practice music.step-count-read count=1 seed=3
+    practice music.step-up-name count=1 hard-count=0 seed=8
+    level hard {
+      practice music.wrong-step count=1 seed=2
+    }
+    show music.play-skips
+  }
+  try stars=2 {
+    show music.wrong-step s=2 p=3 easy-p=2 hard-p=4
+  }
+  try stars=3 {
+    show music.step-skip-ways k=4 easy-k=2 hard-k=5
+  }
+  remember {
+    say "Line to space is a step. Line to line, or space to space, is a skip."
+  }
+
+  grown-ups """
+    Say "step" and "skip" out loud while pointing along the staff, then play them. The aim is that
+    the child reads the distance before naming the note, which is what makes a new piece readable.
+    In the two-star question, check each move in turn rather than looking at the first and last
+    notes. The three-star question is a list: start with the tune that uses only steps, then swap
+    two steps for a skip in every place it can go. A child who notices how the counts grow from one
+    end note to the next has found something real.
+    """
+  level easy {
+    grown-ups "At this level the step, the skip and C to F are as written, a skip down is read once in the teacher's pen before steps and skips up, the steps to count go up by two or three, the next note is a step up, the notes to play are as written, the two-star's wrong note is the second, and the three-star ends on E."
+  }
+  level hard {
+    grown-ups "At this level the step, the skip and C to F are as written, the steps and skips to read go down, the steps to count go down by three or four, or up by four, the next note makes way for a second run with a wrong step, the notes to play are as written, the two-star's wrong note is the fourth, and the three-star ends on A."
+  }
+}

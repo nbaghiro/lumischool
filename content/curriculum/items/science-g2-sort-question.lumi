@@ -1,0 +1,20 @@
+# An open sorting task: any yes-or-no question that splits the four into two and two is right, and
+# the grown-up checks that it does.
+item science.sort-question v=1 stars=3 skills=[science.animals, science.sorting] {
+  title "A question that splits them"
+  let s=0..3
+  let k0={if s == 0 then "ladybird" else if s == 1 then "spider" else if s == 2 then "snail" else "bee"}
+  let k1={if s == 0 then "snail" else if s == 1 then "ant" else if s == 2 then "ant" else "spider"}
+  let k2={if s == 0 then "bee" else if s == 1 then "ladybird" else if s == 2 then "bee" else "snail"}
+  let k3={if s == 0 then "spider" else if s == 1 then "snail" else if s == 2 then "spider" else "ladybird"}
+
+  scene 32x18 {
+    minibeasts row kinds=[k0, k1, k2, k3] legs=false at=canvas(1, 1)
+    text ask "Write a question with a yes or no answer that puts two of these on the yes side and two on the no side." width=30 below=row gap=1
+    writinglines lines lines=1 width=28 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A question about something that can be seen or known about these creatures, such as whether they have six legs, eight legs or none, whether they have a shell or spots, or whether they are insects, with exactly two of the four answering yes. Ask the child to say which two are on each side; the question counts only if the split is two and two."
+  hint "What can you see on some of them and not on others?"
+  hint "Try a question, then check it on all four. Is it two and two?"
+}

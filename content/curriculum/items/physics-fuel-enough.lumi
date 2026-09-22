@@ -1,0 +1,16 @@
+item physics.fuel-enough v=1 skills=[physics.rate] stars=2 {
+  title "Far enough?"
+  difficulty ((if k % 2 == 0 then 0 else 1) + (10 - abs(50 * k - d) / 25))
+  let k={2, 3, 4, 5, 6} d={150, 200, 250}
+  where (50 * k != d)
+
+  scene 37x16 {
+    fuelgauge gauge level=(k / 8) at=canvas(1, 1)
+    text ask "A full tank is 40 litres, and the car uses a litre every 10 km. Can it go {d} km on what is left?" narrate width=24 below=gauge gap=1
+    choice pick options=["Yes", "No"] right-of=ask gap=2
+  }
+
+  answer pick=(if 50 * k > d then "Yes" else "No")
+  hint "How many litres are left?"
+  hint "How far does the car go on that many litres?"
+}

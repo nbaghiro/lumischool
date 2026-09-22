@@ -1,0 +1,45 @@
+# A major scale from a new note keeps the pattern tone, tone, semitone, tone, tone, tone, semitone,
+# and the pattern decides which keys must be black: none from C, F sharp from G, B flat from F, and
+# F sharp and C sharp from D.
+item music.scale-sharp-needed v=1 skills=[music.keys, music.intervals] {
+  title "Which note moves?"
+  difficulty (if s == 0 then 0 else if s == 3 then 2 else 1)
+  let s=0..3
+  let start={pick(s, "C", "G", "F", "D")}
+  let right={pick(s, "none", "F", "B", "F and C")}
+  let n1={pick(s, "C4", "G3", "F3", "D4")}
+  let n2={pick(s, "D4", "A3", "G3", "E4")}
+  let n3={pick(s, "E4", "B3", "A3", "F4")}
+  let n4={pick(s, "F4", "C4", "B3", "G4")}
+  let n5={pick(s, "G4", "D4", "C4", "A4")}
+  let n6={pick(s, "A4", "E4", "D4", "B4")}
+  let n7={pick(s, "B4", "F4", "E4", "C5")}
+  let n8={pick(s, "C5", "G4", "F4", "D5")}
+  level easy {
+    let s=0..1
+  }
+  level hard {
+    let s=2..3
+  }
+
+  scene 36x28 {
+    grandstaff gs notes=["{n1}", "{n2}", "{n3}", "{n4}", "{n5}", "{n6}", "{n7}", "{n8}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "Ana writes a major scale from {start} using only white keys. Its steps must go tone, tone, semitone, tone, tone, tone, semitone. Which notes must move to a black key?" narrate width=34 below=gs gap=1
+    choice pick options=["none", "F", "B", "F and C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "none" and right != "none") point=gs {
+      say "Walk the pattern from {start} on a keyboard. A tone skips a key, so the right note can be a black one."
+    }
+    when (pick != "none" and right == "none") point=gs {
+      say "From C every tone lands on a white key, and the semitones fall on E to F and B to C."
+    }
+    when (pick != right and pick != "none" and right != "none") point=gs {
+      say "Take the steps one at a time from {start}, and check where each tone lands."
+    }
+  }
+  hint "Start on {start}. A tone moves two keys along, counting the black ones. Where does each step land?"
+  hint "The third step and the seventh are semitones: the very next key."
+}

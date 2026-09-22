@@ -1,0 +1,15 @@
+item art.near-or-far v=1 skills=[art.artists, art.looking] {
+  title "Close up or across the room"
+  difficulty q
+  let q=0..1
+
+  scene 37x15 {
+    dots pic scene="sun" colours=["red", "yellow"] magnify=true at=canvas(1, 1)
+    text ask "Ada looks at this sun close up, and then from across the room. When does she see {if q == 0 then \"one orange sun\" else \"separate red and yellow dots\"}?" width=14 right-of=pic gap=1
+    choice pick options=["close up", "from across the room"] below=pic gap=1
+  }
+
+  answer pick=(if q == 0 then "from across the room" else "close up")
+  hint "What does the magnifying glass show, close up?"
+  hint "When the dots are too far away to see one by one, what does your eye do with their colours?"
+}

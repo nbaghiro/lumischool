@@ -1,0 +1,25 @@
+# The way in, played: a key and the key a semitone above it, the very next key. From E and from B the
+# next key is white; from C, F and A it is black.
+item music.scale-play-semitone v=1 skills=[music.keys, music.intervals] {
+  title "A semitone up"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let x={pick(k, "E", "B", "C", "F", "A")}
+  let a={pick(k, "E4", "B4", "C4", "F4", "A4")}
+  let b={pick(k, "F4", "C5", "Cs4", "Fs4", "As4")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 34x16 {
+    text ask "Play {x}, and then the very next key above it, a semitone higher. It may be black or white." narrate width=32 at=canvas(1, 1)
+    piano keys from=C4 whites=8 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{a}, {b}]
+  hint "A semitone is the next key up, with nothing between. Is there a black key just above {x}?"
+  hint "If there is a black key right beside {x}, that is the semitone. If not, it is the next white key."
+}

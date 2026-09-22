@@ -1,0 +1,26 @@
+# Two trays to compare without counting every bun: sometimes they are the same array turned round.
+item groups.same-or-not v=1 stars=2 skills=[multiplication.arrays, reasoning.compare-without-totalling] {
+  title "Which has more dots?"
+  difficulty (a * b + (if s == 0 then 0 else 3))
+  let a=2..5 b=3..6 s=0..2
+  where (a != b)
+
+  scene 24x17 {
+    row trays at=canvas(1, 1) space=3 align=end {
+      column ta space=0 align=centre {
+        array one rows=a cols=b color=tang
+        text la "A"
+      }
+      column tb space=0 align=centre {
+        array two rows=(if s == 0 then b else if s == 1 then a + 1 else a) cols=(if s == 0 then a else if s == 1 then b - 1 else b + 1) color=sky
+        text lb "B"
+      }
+    }
+    text ask "Which has more dots, or do they have the same?" narrate width=22 below=trays gap=1
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "the same" else if s == 1 then if (a + 1) * (b - 1) > a * b then "B" else if (a + 1) * (b - 1) < a * b then "A" else "the same" else "B")
+  hint "Write each one as rows times dots in a row."
+  hint "Is one the other turned round? If not, which multiplication is bigger?"
+}

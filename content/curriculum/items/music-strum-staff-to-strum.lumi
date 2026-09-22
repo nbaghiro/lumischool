@@ -1,0 +1,40 @@
+# The rhythm of a bar in three written on the staff, and the strum pattern that plays it: a crotchet
+# is a down with the up missed, and two quavers are a down and an up.
+item music.strum-staff-to-strum v=1 skills=[music.strumming, music.note-values] {
+  title "From the staff to the strum"
+  let k=0..2
+  let right={pick(k, "A", "B", "C")}
+
+  scene 34x36 {
+    notes bar clef=treble notes=[G4, G4, G4, G4, G4] values=[pick(k, 1, 0.5, 0.5), pick(k, 0.5, 0.5, 0.5), pick(k, 0.5, 1, 0.5), pick(k, 0.5, 0.5, 0.5), pick(k, 0.5, 0.5, 1)] meter=3 at=canvas(1, 1)
+    row low space=2 align=start below=bar gap=1 {
+      column bars space=1 align=start {
+        row ra space=1 align=centre {
+          text la "A"
+          strumtrack a strums=D-DUDU counts=true chord=none ring=-1
+        }
+        row rb space=1 align=centre {
+          text lb "B"
+          strumtrack b strums=DUD-DU counts=true chord=none ring=-1
+        }
+        row rc space=1 align=centre {
+          text lc "C"
+          strumtrack c strums=DUDUD- counts=true chord=none ring=-1
+        }
+      }
+      column side space=1 align=start {
+        text ask "Ana reads this rhythm on the staff. Which strum pattern plays it?" narrate width=12
+        choice pick options=["A", "B", "C"] stack=column
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bar {
+      say "Find the note with no flag on the staff. That beat is one long down strum, with the up missed."
+    }
+  }
+  hint "Two quavers, each with a flag, share a beat: a down and an up."
+  hint "On which beat is the note that lasts a whole beat? Find the bar with a dot on that beat's and."
+}

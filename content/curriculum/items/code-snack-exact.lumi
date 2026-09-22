@@ -1,0 +1,31 @@
+# Three ways to say one step, and the only one a robot can follow exactly. At k=4 and 5 the vague
+# steps sound exact ("enough", "the right amount", "done", "the usual time").
+item coding.snack-exact v=1 skills=[coding.algorithms, coding.sequences] {
+  title "Exactly what to do"
+  difficulty (if k < 2 then 0 else if k < 4 then 1 else 2)
+  let k=0..5
+  let o1={pick(k, "Make it nice", "Put the toast on the blue plate", "Stir the cocoa well", "Cut the apple into some pieces", "Pour enough milk into the mug", "Toast the bread for two minutes")}
+  let o2={pick(k, "Spread one spoon of jam on the bread", "Put the toast somewhere", "Stir the cocoa until it looks right", "Cut the apple into four pieces", "Pour the right amount of milk into the mug", "Toast the bread until it is done")}
+  let o3={pick(k, "Do the jam", "Sort out the toast", "Stir the cocoa ten times", "Cut the apple up small", "Pour milk up to the line on the mug", "Toast the bread for the usual time")}
+  let ans={pick(k, o2, o1, o3, o2, o3, o1)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 31x17 {
+    text ask "A robot does exactly what a step says and cannot guess. Which step can Pip's robot follow?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=ask {
+      say "How would the robot know when to stop? Find the step that says exactly how much or how long."
+    }
+  }
+  hint "For each step, ask: could two robots do it and end up with the same thing?"
+  hint "Look for a number, or something the robot can see and check."
+}

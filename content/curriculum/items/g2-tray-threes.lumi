@@ -1,0 +1,25 @@
+item groups.tray-threes v=1 skills=[multiplication.threes] {
+  title "Three rows of buns"
+  difficulty c
+  let c=3..8
+  level easy {
+    let c=3..5
+  }
+  level hard {
+    let c=7..8
+  }
+
+  scene 26x15 {
+    bakingtray tray rows=3 cols=c iced=0 at=canvas(1, 1)
+    text ask "Three rows of {c}. How many buns?" narrate below=tray gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (3 * c)
+  feedback {
+    when (answer == 3 + c) point=tray {
+      say "Rows of {c} are equal groups, so count {c} once for each row."
+    }
+  }
+  hint "Count one row, then count it again for each of the three rows."
+}

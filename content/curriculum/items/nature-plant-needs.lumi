@@ -1,0 +1,50 @@
+# What a plant needs, drawn: the sun and a rain cloud among things made by people. The cloud is
+# always there; with rain it is water, and without rain it is a trap, because a dry cloud gives the
+# bean nothing. At hard the bean already has one of the two, and the child names the other.
+item nature.plant-needs v=1 skills=[nature.growing] {
+  title "What does it need?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "sun", "boat", "cup", "kite", "sun", "sun")}
+  let r={pick(k, 0, 1, 0, 1, 1, 1)}
+  let c={pick(k, "cup", "cup", "sun", "pencil", "cup", "boat")}
+  let d={pick(k, "pencil", "kite", "hen", "cup", "cat", "pencil")}
+  let w={if r == 1 then "rain" else "cloud"}
+  let ask={pick(k, "Which one of these does Ada's bean need to grow?", "Which one of these does Ada's bean need to grow?", "Which one of these does Ada's bean need to grow?", "Which one of these does Ada's bean need to grow?", "Ada's bean has plenty of water. What else does it need?", "Ada's bean stands in the sun all day. What else does it need?")}
+  let right={pick(k, "sun", "rain", "sun", "rain", "sun", "rain")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x20 {
+    row four at=canvas(1, 1) space=1 align=end {
+      art pa asset="{a}"
+      cloud pb puffs=4 rain=r
+      art pc asset="{c}"
+      art pd asset="{d}"
+    }
+    text ask "{ask}" narrate width=34 below=four gap=1
+    choice pick options=[a, w, c, d] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (r == 0 and pick == "cloud") point=pb {
+      say "That cloud is dry. A bean needs water, which comes as rain, and light, which comes from the sun."
+    }
+    when (k == 4 and pick == "rain") point=pb {
+      say "Ada's bean has water already. What does a plant need as well as water?"
+    }
+    when (k == 5 and pick == "sun") point=pa {
+      say "The bean has its light already. What does a plant need as well as light?"
+    }
+    when (pick != right and pick != "cloud" and pick != "rain" and pick != "sun") point=four {
+      say "That was made by people, or it is an animal. It gives the bean nothing. A bean needs water and light."
+    }
+  }
+  hint "A bean needs water and light. Which picture gives it one of those?"
+  hint "Where does a plant's water come from? Where does its light come from?"
+}

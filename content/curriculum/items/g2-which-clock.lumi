@@ -1,0 +1,36 @@
+# Three clocks for one digital time: at a quarter to, the hour hand is nearly at the next number,
+# so the clock with the hour hand past the next number is wrong.
+item time.quarter-to-clock v=1 stars=2 skills=[time.quarter-hours, reasoning.explain] {
+  title "Which clock matches?"
+  difficulty h
+  let h=2..10 q=0..2
+
+  scene 30x23 {
+    digital shown time="{h}:45" suffix="" at=canvas(1, 1)
+    row faces below=shown gap=1 space=3 align=start {
+      column ca space=0 align=centre {
+        clock a h=(if q == 0 then h else if q == 1 then h + 1 else h) m=(if q == 2 then 15 else 45)
+        text la "A"
+      }
+      column cb space=0 align=centre {
+        clock b h=(if q == 0 then h + 1 else h) m=(if q == 1 then 15 else 45)
+        text lb "B"
+      }
+      column cc space=0 align=centre {
+        clock c h=(if q == 2 then h + 1 else h) m=(if q == 0 then 15 else 45)
+        text lc "C"
+      }
+    }
+    text ask "Which clock shows the same time?" narrate below=faces gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "A" else if q == 1 then "C" else "B")
+  feedback {
+    when (pick == (if q == 0 then "B" else if q == 1 then "A" else "C")) point=faces {
+      say "Look at the short hand. At {h}:45 it has not got to {h + 1} yet."
+    }
+  }
+  hint "Where is the long hand at 45 minutes past?"
+  hint "At {h}:45 the short hand is between {h} and {h + 1}, nearly at {h + 1}. Which clock shows that?"
+}

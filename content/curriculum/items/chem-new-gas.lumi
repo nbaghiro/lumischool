@@ -1,0 +1,18 @@
+# Two changes that both make a gas: boiling makes steam, which is still water, and vinegar and baking
+# soda make a gas that was not there before. The question asks for one or the other.
+item chem.new-gas v=1 stars=3 skills=[chemistry.changes, reasoning.compare] {
+  title "Which gas is new?"
+  difficulty q
+  let q=0..1
+
+  scene 30x16 {
+    beforeafter one change="boil-water" show=1 names=1 at=canvas(1, 0)
+    beforeafter two change="fizz" show=1 names=1 below=one gap=0
+    text ask "{if q == 0 then \"Which change makes a gas that was not there before?\" else \"Which change makes a gas that is still water?\"}" width=13 right-of=one gap=1
+    choice pick options=["boiling water", "vinegar and soda", "neither"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "vinegar and soda" else "boiling water")
+  hint "Both make bubbles of gas. Where does each gas come from?"
+  hint "If you cooled each gas, which one would turn back into water?"
+}

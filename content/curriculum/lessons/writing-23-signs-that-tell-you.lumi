@@ -1,0 +1,62 @@
+lesson writing-signs-that-tell-you v=1 format=teach grade=2 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Signs that tell you what to do"
+  goal "Tell a command from a statement and a question, and write a short sign."
+
+  look {
+    scene 36x22 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row town space=2 align=end {
+          art shopfront asset="shop-front"
+          houses street count=2 windows=2
+        }
+        row signs space=1 align=end {
+          sign gate lines=["Please shut", "the gate."] kind="post" color="tang"
+          sign shop lines=["Mind the step!"] kind="hanging" color="berry"
+          sign notice lines=["Market today", "Bring a bag"] kind="board" color="sky"
+        }
+      }
+    }
+    say """
+      The town is full of signs. A sign is short, so people can read it as they walk past. Most signs
+      tell you what to do: shut the gate, mind the step, bring a bag. A sentence that tells someone
+      what to do is called a command, and it starts with a doing word or with please.
+      """
+  }
+  do {
+    level easy {
+      worked writing.which-is-a-command k=0 level=medium
+    }
+    practice writing.which-is-a-command count=1 seed=1
+    practice writing.kind-of-sentence count=2 seed=3
+    practice writing.command-hard count=2 seed=2 easy-seed=1 hard-seed=1
+    practice writing.make-command count=2 hard-count=1 seed=4
+    practice writing.count-commands count=1 seed=1
+    level hard {
+      practice writing.sign-why count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show writing.sign-why k=0 r=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.write-a-sign k=1
+  }
+  remember {
+    say "A command tells you what to do. It starts with a doing word or with please."
+  }
+
+  grown-ups """
+    The choices, the counts and the typed word are marked by the machine, and the sign at the end
+    is the child's. Grade two is where children meet the kinds of sentence: telling, asking,
+    shouting and commanding. Signs are the easiest place to find commands, so look for them on a
+    walk. In the two-star question the sign is a true sentence that tells nobody what to do. In the
+    three-star question the command needs a reason joined with because, which is the next lesson's
+    joining word at work.
+    """
+  level easy {
+    grown-ups "At this level a please command is found once in the teacher's pen before shut the gate, the kinds of sentence are a plain command, a telling and an asking, the commands to choose are shut the gate and please be quiet, the commands to make lose only you, the notice has one command, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the sentences that belong on the sign start with please, the kinds of sentence include please wipe your feet and an asking that sounds like a command, the commands to choose are do not feed the ducks and mind the wet floor, the command to make is keep off the grass, the notice has two or three commands, a second sign that will not help is judged in the core, the two-star's sign says this room has books, and the three-star is as written."
+  }
+}

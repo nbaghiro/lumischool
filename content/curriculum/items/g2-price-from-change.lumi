@@ -1,0 +1,28 @@
+# The price is the unknown: the change is counted from coins, then taken from a dollar.
+item money.price-from-change v=1 skills=[money.change, subtraction.missing-part] {
+  title "What did it cost?"
+  difficulty (25 * q + 10 * d + 5 * n + p)
+  let q=0..2 d=0..2 n=0..1 p=0..4
+  where (25 * q + 10 * d + 5 * n + p >= 11 and 25 * q + 10 * d + 5 * n + p <= 89 and p > 0)
+  level easy {
+    let q={0} d=1..2 n={0}
+  }
+  level hard {
+    let q=1..2 d=1..2 n={1}
+  }
+
+  scene 30x12 {
+    coins back quarters=q dimes=d nickels=n pennies=p at=canvas(1, 1)
+    text ask "Ben paid for a snack with a one dollar bill. These coins were his change. How much did the snack cost, in cents?" narrate width=28 below=back gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 - 25 * q - 10 * d - 5 * n - p)
+  feedback {
+    when (answer == 25 * q + 10 * d + 5 * n + p) point=back {
+      say "That is the change. The snack cost the rest of the dollar."
+    }
+  }
+  hint "How many cents is the change?"
+  hint "The snack and the change together make 100 cents."
+}

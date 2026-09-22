@@ -1,0 +1,20 @@
+item money.ways-to-pay v=1 stars=3 skills=[money.count-coins, reasoning.all-the-ways] {
+  title "Dimes and nickels"
+  difficulty n
+  let n={15, 20, 25, 30, 35, 40}
+
+  scene 30x12 {
+    coins key dimes=1 nickels=1 at=canvas(1, 1)
+    text ask "Pay {n} cents with only dimes and nickels. How many different ways are there?" narrate width=28 below=key gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n // 10 + 1)
+  feedback {
+    when (answer == n // 10) point=key {
+      say "Do not forget the way with no dimes at all, only nickels."
+    }
+  }
+  hint "Start with no dimes. How many nickels make {n} cents?"
+  hint "Now try one dime, then two, until the dimes would be too much."
+}

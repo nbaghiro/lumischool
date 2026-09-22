@@ -1,0 +1,39 @@
+# The rule on its own: a listener at one distance walks to double it, or to half it, and the new
+# reading follows. At easy the walk is outward from a small reading; at hard it is back towards
+# the drum, which doubles the reading, or two doublings at once.
+item physics.double-distance v=1 skills=[physics.sound, reasoning.predict] {
+  title "Twice as far"
+  difficulty (w + (if base == 24 then 1 else 0))
+  let base={8, 16, 24} d={1, 2, 4} w=0..2
+  let asks={pick(w, "He walks on until he is twice as far away. What does the meter read there?", "He walks back until he is half as far away. What does the meter read there?", "He walks on until he is four times as far away. What does the meter read there?")}
+  level easy {
+    let base={8, 16} w=0..0
+  }
+  level hard {
+    let d={2, 4} w=1..2
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 0) space=2 align=end {
+      ricedrum drum hit=2
+      children kids count=1 names=["Ben"]
+    }
+    text ask "Ben stands {d} {if d == 1 then \"metre\" else \"metres\"} from the drum, where the meter reads {base / d}. Each time the distance doubles, the reading halves. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then base / d / 2 else if w == 1 then base / d * 2 else base / d / 4)
+  feedback {
+    when (w == 0 and answer == base / d - 2 and base / d != 4) point=kids {
+      say "The reading is halved, not taken down by two. Half of {base / d} is {base / d / 2}."
+    }
+    when (w == 1 and answer == base / d / 2) point=kids {
+      say "Ben walked back towards the drum, so it got louder. Halving the distance doubles the reading."
+    }
+    when (w == 2 and answer == base / d / 2) point=kids {
+      say "Four times as far is two doublings: the reading halves, and then halves again."
+    }
+  }
+  hint "Is Ben getting further from the drum, or nearer? Further means quieter."
+  hint "Twice as far means half the reading. Half as far means twice the reading."
+}

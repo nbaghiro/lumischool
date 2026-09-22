@@ -1,0 +1,26 @@
+# Start unknown, the hardest of the adding stories for a six-year-old: the picture shows the end.
+item add.bus-at-first v=1 stars=2 skills=[addition.start-unknown] {
+  title "How many at first"
+  difficulty (first + more)
+  let first=3..9 more=2..6
+  where (first + more <= 12)
+  where (first != more)
+
+  scene 32x17 {
+    bus ride windows=12 on=(first + more) sign="12" at=canvas(1, 1)
+    text ask "Some people were on the bus. {more} more got on, and now the bus looks like this. How many were on at first?" width=28 below=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer first
+  feedback {
+    when (answer == first + 2 * more) point=ride {
+      say "Getting on made the number bigger. To go back to the start, take the {more} away."
+    }
+    when (answer == more) point=ride {
+      say "{more} is how many got on. How many were there before they got on?"
+    }
+  }
+  hint "How many are on the bus now? Some of them got on at the stop."
+  hint "Count back {more} from the number on the bus now."
+}

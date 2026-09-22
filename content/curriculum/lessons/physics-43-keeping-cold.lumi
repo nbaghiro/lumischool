@@ -1,0 +1,67 @@
+# Keeping ice cold: a wrap slows the warmth that reaches the ice, so the best wrap is the one whose
+# cup stays coldest, read on a thermometer that stays at 0 while any ice is left.
+lesson physics-keeping-cold v=1 format=teach grade=1 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Keeping it cold"
+  goal "Say which wrapping keeps an ice cube longest, and read the thermometer to check."
+
+  look {
+    scene 35x20 {
+      row top space=2 align=start at=canvas(1, 0) {
+        wrapped cups wraps=["none", "foil", "wool"] ice=1 minutes=10
+        column side space=1 align=start {
+          beforeafter melt change=melt-ice
+          pond marsh pads=3 fish=2
+        }
+      }
+    }
+    say """
+      Mia is having a picnic by the marsh on a warm day, and she wants her drink to stay cold. Ice
+      melts when warmth reaches it, and a wrap slows the warmth down: wool lets very little through,
+      foil and paper let more in, and a cup with no wrap lets it all in. While any ice is left, the
+      water stays at 0 degrees. Once the ice has gone, the water warms up.
+      """
+  }
+  do {
+    practice physics.ice-melted-most count=1 seed=9 easy-seed=2 hard-seed=1
+    level easy {
+      worked physics.ice-reading k=1 level=medium
+    }
+    practice physics.ice-reading count=2 seed=4 easy-seed=5 hard-seed=8
+    practice physics.ice-best-wrap count=2 seed=15 easy-seed=7 hard-seed=1
+    practice physics.ice-order count=2 seed=1 easy-seed=10 hard-seed=10
+    level hard {
+      show physics.ice-what-changed c=4
+    }
+  }
+  story {
+    show physics.marsh-ice-picnic v=1 easy-v=0 hard-v=2
+  }
+  try stars=2 {
+    show physics.ice-what-changed c=2 easy-c=1 hard-c=5
+  }
+  try stars=3 {
+    show physics.ice-fewest-tests n=4 easy-n=3 hard-n=5
+  }
+  remember {
+    say "A good wrap keeps the warmth out, so the ice lasts longer and the drink stays cold."
+  }
+
+  grown-ups """
+    The wrong idea this lesson is about is that a wrap makes things warm, so a cold drink should be
+    left bare. A wrap only slows warmth down, whichever way it is going, so the wool that keeps tea
+    hot also keeps ice cold. The other thing to watch is the thermometer that still reads 0: while
+    ice is left the water cannot warm up, so the child has to look at the cubes to see which has
+    melted most, and at the readings only once some ice has gone. The two-star question asks the
+    child to find the one thing that differs between two cups by reading the words under them. The
+    three-star question needs the idea that a wrap which loses a test cannot be the best, so it need
+    not be tested again; ask the child to say that. If the readings are still guesses after the
+    core, stay here another day and go back to reading one thermometer. Off the page, wrap two ice
+    cubes in a sock and in kitchen foil, leave a third bare, and look every ten minutes.
+    """
+  level easy {
+    grown-ups "At this level the ice to find melted most is in the cup with no wrap, beside foil and wool, a reading on a half mark is worked once in the teacher's pen before two readings on the numbered marks, the wraps to compare and to order read far apart (no wrap, paper and wool), the picnic drinks are ten degrees apart, Sam's cup waited thirty minutes against ten, and Mia has three wraps to test."
+  }
+  level hard {
+    grown-ups "At this level the ice to find melted most is in paper, beside cloth and wool, with no bare cup among the three to give it away, both readings fall on half marks, the wraps to compare and to order read five degrees apart (foil, paper and cloth, or wool against cloth), Sam's room is only five degrees warmer before the two-star, where Sam's cup waited only five minutes longer, the picnic drinks are five degrees apart, and Mia has five wraps to test."
+  }
+}

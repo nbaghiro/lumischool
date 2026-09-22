@@ -1,0 +1,33 @@
+# The division is given and the number divided is the unknown, so it is multiplied back.
+item division.find-the-number v=1 skills=[division.short-with-remainder, division.inverse] {
+  title "What was divided"
+  difficulty (d * q + r)
+  let d=3..9 q=24..96 r=1..8
+  where (r < d)
+  level easy {
+    let d=3..5 q=24..40
+  }
+  level hard {
+    let d=6..9 q=60..96
+  }
+
+  scene 22x6 {
+    row sum at=canvas(1, 1) space=1 align=centre {
+      number-input n
+      equation eq "÷ {d} = {q} r {r}"
+    }
+    text ask "What number was divided?" narrate below=sum gap=1
+  }
+
+  answer n=(d * q + r)
+  feedback {
+    when (n == d * q) point=eq {
+      say "{d} × {q} is what was shared out. The {r} left over was there too."
+    }
+    when (n == d * q - r) point=eq {
+      say "The remainder was left over, so it is added back, not taken away."
+    }
+  }
+  hint "If {q} groups of {d} were made, how many is that?"
+  hint "Then put back the {r} that were left over."
+}

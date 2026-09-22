@@ -1,0 +1,26 @@
+# The story: the painter's hut, where a mat is woven from paper strips, and how many strips go across
+# it when the rows are counted.
+item art.hut-weave v=1 skills=[art.pattern, addition.to-twenty] {
+  title "The mat at the hut"
+  difficulty (rows + cols)
+  let v=0..3
+  let rows={pick(v, 3, 4, 5, 6)}
+  let cols={pick(v, 4, 5, 6, 8)}
+  let total={pick(v, 7, 9, 11, 14)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 21x24 {
+    weave mat cols=cols rows=rows start=[0, 1, 0, 1] step=1 at=canvas(1, 0)
+    text ask "Sam is weaving a paper mat at the painter's hut. How many strips of paper has he used altogether, counting the ones going down and the ones going across?" narrate width=20 below=mat gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=total
+  hint "Count the strips going down, then the ones going across."
+  hint "Add the two counts together."
+}

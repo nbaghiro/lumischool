@@ -1,0 +1,24 @@
+item tally.count v=1 skills=[data.tally] {
+  title "Reading tally marks"
+  difficulty n
+  let n=7..19
+  level easy {
+    let n=7..9
+  }
+  level hard {
+    let n=16..19
+  }
+
+  scene 18x7 {
+    tally t count=n at=canvas(1, 1)
+    text ask "How many?" narrate below=t gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n // 5 + n % 5) point=t {
+      say "Each group with a line across it is five. Count in fives, then the odd ones."
+    }
+  }
+}

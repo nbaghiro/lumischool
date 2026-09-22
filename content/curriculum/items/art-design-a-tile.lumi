@@ -1,0 +1,10 @@
+item art.design-a-tile v=1 stars=3 skills=[art.pattern, art.painting, reasoning.plan] {
+  title "A tile of your own"
+
+  scene 37x17 {
+    text ask "Design a tile and repeat it four times, two by two. Make one stem or leaf cross the edge of your tile, so it joins the next one and the edges are hard to find." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="squared" guide="none" outline="none" pots=["green", "blue", "pink", "yellow", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="The same tile painted four times in a two-by-two block, with a stem, leaf or flower that runs over the tile's edge and carries on in the next tile, planned so that the joins are hard to see, as the stems in William Morris's papers run on across theirs." notice=["The same tile four times", "A shape crossing the edge of the tile", "Joins that are hard to find"] ask="Where are the edges of your tile, and how did you hide them?"
+}

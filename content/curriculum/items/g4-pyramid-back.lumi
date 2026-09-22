@@ -1,0 +1,22 @@
+# The same wall read backwards: the top is given and the middle of the bottom row is missing, so
+# the child cannot simply add upwards.
+item puzzle.pyramid-back v=1 stars=3 skills=[reasoning.number-walls] {
+  title "Number wall, working back"
+  difficulty (a + 2 * b + c)
+  let a=2..9 b=2..9 c=2..9
+  where (a != c)
+  where (b != a and b != c)
+
+  scene 22x13 {
+    pyramid wall cells=[a, ?, c, ?, ?, a + 2 * b + c] blanks=[middle, left, right] at=canvas(1, 1)
+    text ask "Every brick is the sum of the two under it. The top brick is filled in already." narrate width=20 below=wall gap=1
+  }
+
+  answer middle=b left=(a + b) right=(b + c)
+  feedback {
+    when (middle == a + 2 * b + c - a - c) point=wall.brick(1) {
+      say "The top brick counts the middle one twice, so it is not the top take away the two ends."
+    }
+  }
+  hint "The top brick is {a} plus the missing number twice plus {c}."
+}

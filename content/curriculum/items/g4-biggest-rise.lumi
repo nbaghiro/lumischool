@@ -1,0 +1,35 @@
+# The audit's raise for the line graph: the biggest rise from one day to the next, which means
+# comparing every step rather than reading one point.
+item data.biggest-rise v=1 skills=[data.line-graphs] {
+  title "The biggest rise"
+  difficulty (10 - abs(tu - mo - th + we))
+  let mo=1..4 tu=3..8 we=1..6 th=3..9 fr=1..8
+  where (tu > mo and th > we)
+  where (tu - mo != th - we and max(tu - mo, th - we) > fr - th and max(tu - mo, th - we) > we - tu)
+  where (tu - mo >= 2 and th - we >= 2)
+  level easy {
+    where (abs(tu - mo - th + we) >= 3)  # one rise plainly beats the other
+  }
+  level hard {
+    where (abs(tu - mo - th + we) == 1)  # the two rises differ by one degree
+  }
+
+  scene 32x17 {
+    text ask "The graph shows the temperature at noon each day, in degrees." width=28 at=canvas(1, 0)
+    linegraph temps labels=["Mon", "Tue", "Wed", "Thu", "Fri"] values=[mo, tu, we, th, fr] max=10 color=berry below=ask gap=1
+    text q "What was the biggest rise from one day to the next?" narrate width=10 right-of=temps gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer max(tu - mo, th - we)
+  feedback {
+    when (answer == max(mo, tu, we, th, fr) - min(mo, tu, we, th, fr) and max(mo, tu, we, th, fr) - min(mo, tu, we, th, fr) != max(tu - mo, th - we)) point=temps {
+      say "That is from the coldest day to the warmest. The question asks about one day to the next."
+    }
+    when (answer == min(tu - mo, th - we)) point=temps {
+      say "That is a rise, but there is a bigger one. Check every day against the day before."
+    }
+  }
+  hint "Where does the line go up?"
+  hint "For each rise, count how many degrees it goes up. Which is biggest?"
+}

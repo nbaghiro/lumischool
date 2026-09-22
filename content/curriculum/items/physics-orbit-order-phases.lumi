@@ -1,0 +1,34 @@
+# Three stars: five shapes from one month, muddled, numbered from the new moon onwards. The ring with
+# its letters is drawn beside them, so the order can be worked out rather than remembered, and the
+# five are drawn in a different muddle each time.
+item physics.orbit-order-phases v=1 stars=3 skills=[physics.sky, reasoning.order, reasoning.evidence] {
+  title "A month in order"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let n1={pick(v, "full moon", "growing crescent", "shrinking gibbous", "growing half moon")}
+  let n2={pick(v, "new moon", "full moon", "growing half moon", "shrinking crescent")}
+  let n3={pick(v, "growing half moon", "new moon", "new moon", "full moon")}
+  let n4={pick(v, "shrinking crescent", "growing half moon", "full moon", "new moon")}
+  let n5={pick(v, "growing crescent", "shrinking crescent", "growing crescent", "shrinking gibbous")}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 27x39 {
+    orbit sky moon=-1 places=1 arrow=1 person=0 at=canvas(1, 0)
+    text ask "These five shapes were all seen in one month, written down in the wrong order. Number them from 1, the new moon, to 5." narrate width=26 below=sky gap=1
+    sequence s items=["{n1}", "{n2}", "{n3}", "{n4}", "{n5}"] blanks=[a, b, c, d, e] below=ask gap=1
+  }
+
+  answer a=pick(v, 4, 2, 5, 3) b=pick(v, 1, 4, 3, 5) c=pick(v, 3, 1, 1, 4) d=pick(v, 5, 3, 4, 1) e=pick(v, 2, 5, 2, 2)
+  feedback {
+    when (a == 1 and v == 0) point=sky {
+      say "The new moon is the start of the month, not the full moon. Follow the arrow round from the place between the Earth and the sun."
+    }
+  }
+  hint "Put the new moon first, then follow the arrow round the ring."
+  hint "Growing shapes come before the full moon and shrinking ones after it."
+}

@@ -1,0 +1,20 @@
+# The moon is the misconception at this age: it looks like a lamp in the sky. The answer is the
+# reason, chosen from three.
+item physics.shiny-moon v=1 skills=[physics.light] stars=2 {
+  title "Where does moonlight come from?"
+
+  scene 28x18 {
+    things t things=["sun", "moon"] letters=0 at=canvas(1, 0)
+    text ask "The moon shines at night. Where does its light come from?" width=16 right-of=t gap=1
+    choice pick options=["The moon makes it", "The sun shines on it", "The stars"] stack=column below=t gap=1
+  }
+
+  answer pick="The sun shines on it"
+  feedback {
+    when (pick == "The moon makes it") point=t {
+      say "The moon is a big ball of rock. It has no light of its own, so it sends back the sun's."
+    }
+  }
+  hint "Does the moon give out its own light, like a candle, or send some back, like a mirror?"
+  hint "Where is the nearest light that could reach it?"
+}

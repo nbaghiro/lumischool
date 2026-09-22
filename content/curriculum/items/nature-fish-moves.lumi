@@ -1,0 +1,39 @@
+# The story: Ada watching one fish in the marsh pond, and what it does with each part. The shot
+# forward is the tail and is easy; the tip to one side and the turn round a pad are the fins.
+item nature.fish-moves v=1 skills=[nature.animals] {
+  title "What Ada saw the fish do"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let does={pick(k, "gives one flick and shoots forward", "opens and shuts, opens and shuts, as it takes in water", "tips to one side, then rights itself and stays steady", "turns to swim round a lily pad")}
+  let part={pick(k, "tail", "mouth", "fin", "fin")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x23 {
+    row all at=canvas(1, 1) space=2 align=end {
+      pond pool pads=3 fish=1 frog=false
+      parts fig of=fish
+    }
+    text ask "Ada lies on the bank of the marsh pond and watches one fish. It {does}. Which part is it using?" narrate width=32 below=all gap=1
+    choice pick options=["fin", "tail", "body", "mouth"] below=ask gap=1
+  }
+
+  answer pick=part
+  feedback {
+    when (k == 0 and pick == "fin") point=fig {
+      say "A fin is for steering and staying steady. The big push comes from the flap at the back."
+    }
+    when (k >= 2 and pick == "tail") point=fig {
+      say "The tail pushes the fish forward. Turning and staying the right way up is what the fins do."
+    }
+    when (k == 1 and pick != "mouth") point=fig {
+      say "Water goes in at the front, through the part that opens and shuts under the eye."
+    }
+  }
+  hint "Look at the drawing of the fish. Which part would move to do that?"
+  hint "The tail pushes, the fins steer and steady, the mouth opens and shuts."
+}

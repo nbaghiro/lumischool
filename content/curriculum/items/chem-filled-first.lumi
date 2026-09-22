@@ -1,0 +1,36 @@
+# The way in: water poured through three pots of soil at once, and the beaker under each after a
+# minute. The one with most water is under the soil that lets water through fastest, the sand.
+# At hard the gaps between the beakers are small.
+item chem.filled-first v=1 skills=[chemistry.rocks] {
+  title "Which beaker filled first?"
+  difficulty (if gap == 1 then 1 else 0)
+  let p=0..2 gap=0..1 t=0..1
+  let sand={pick(gap, 80, 60)}
+  let loam={pick(gap, 40 - 10 * t, 45)}
+  let clay={pick(gap, 10 + 10 * t, 30)}
+  level easy {
+    let gap=0..0
+  }
+  level hard {
+    let gap=1..1
+  }
+
+  scene 34x26 {
+    row three at=canvas(0, 0) space=0 align=end {
+      beaker a max=100 step=20 level=(if p == 0 then sand else if p == 1 then clay else loam) unit=ml solid=0 rod=false label="A"
+      beaker b max=100 step=20 level=(if p == 0 then loam else if p == 1 then sand else clay) unit=ml solid=0 rod=false label="B"
+      beaker c max=100 step=20 level=(if p == 0 then clay else if p == 1 then loam else sand) unit=ml solid=0 rod=false label="C"
+    }
+    text ask "At the fossil cliffs Ben pours 100 millilitres of water through three pots of soil at the same time, one of sand, one of garden soil and one of clay, into a beaker each. This is after one minute. Which beaker filled first?" narrate width=32 below=three gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else if p == 1 then "B" else "C")
+  feedback {
+    when (pick == (if p == 0 then "C" else if p == 1 then "A" else "B")) point=three {
+      say "That beaker has the least in it, so its soil is holding the water back. The one that filled first has the most."
+    }
+  }
+  hint "The water all started at the same time. The beaker with the most in it got its water fastest."
+  hint "Read the levels against the marks and find the highest."
+}

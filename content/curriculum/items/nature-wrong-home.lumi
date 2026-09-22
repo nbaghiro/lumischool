@@ -1,0 +1,44 @@
+# The two-star reason: a creature drawn in the wrong home, and why it could not live there. The
+# hedgehog in the pond is plain; the fish in the tree turns the same reason round; the spider in
+# the pond and the heron under the water need what the child knows about each creature.
+item nature.wrong-home v=1 stars=2 skills=[nature.habitats, reasoning.explain] {
+  title "Why is that wrong?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let who={pick(k, "a hedgehog", "a fish", "a spider", "a heron")}
+  let where={pick(k, "at the bottom of the pond", "up in the tree", "at the bottom of the pond", "at the bottom of the pond")}
+  let right={pick(k, "It breathes air and would drown.", "It breathes water and would dry out.", "Its web would wash away.", "It breathes air and would drown.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x34 {
+    row all at=canvas(1, 1) space=2 align=end {
+      pond pool pads=3 fish=2 frog=true
+      seasontrees tree seasons=["summer"] names=0
+    }
+    text ask "Ben draws {who} living {where}. Ada says it could not live there. Why not?" narrate width=32 below=all gap=1
+    choice pick options=["It breathes air and would drown.", "It breathes water and would dry out.", "Its web would wash away.", "It cannot climb up there."] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "It breathes air and would drown.") point=tree {
+      say "That is the other way round. A fish breathes water. What happens to it out of the water?"
+    }
+    when (k == 3 and pick == "It breathes water and would dry out.") point=pool {
+      say "The heron stands in the shallows on its long legs, with its head in the air. It breathes air."
+    }
+    when (k == 2 and pick == "It cannot climb up there.") point=pool {
+      say "A spider can get almost anywhere. The trouble is what happens to it and its web under the water."
+    }
+    when (k == 0 and pick == "It cannot climb up there.") point=pool {
+      say "The bottom of the pond is down, not up. Think about what a hedgehog breathes."
+    }
+  }
+  hint "Does {who} breathe air or water? Where is the air, and where is the water?"
+  hint "A creature has to be able to breathe where it lives. That is the first thing a home gives it."
+}

@@ -1,0 +1,24 @@
+item physics.pulley-easier v=1 skills=[physics.machines] {
+  title "Which is easier?"
+  difficulty (4 - abs(m - k))
+  let m=1..4 k=1..4
+  where (m != k)
+  level easy {
+    where (abs(m - k) >= 2)
+  }
+  level hard {
+    where (abs(m - k) == 1)
+  }
+
+  scene 31x19 {
+    row two at=canvas(1, 0) space=2 align=start {
+      pulley a ropes=m load=48 show=0 tag="A"
+      pulley b ropes=k load=48 show=0 tag="B"
+    }
+    text ask "Which crate is easier to hold up?" width=16 below=two gap=1
+    choice pick options=["A", "B"] right-of=ask gap=2
+  }
+
+  check physics.machine of=a vs=b pick=easier
+  hint "How many ropes hold up each crate?"
+}

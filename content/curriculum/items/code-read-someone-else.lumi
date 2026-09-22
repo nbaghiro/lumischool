@@ -1,0 +1,36 @@
+item coding.read-someone-else v=2 skills=[coding.tracing] {
+  title "Somebody else's program"
+  difficulty (a + b + c)
+  let a=1..3 b=1..2 c=1..2
+  level easy {
+    where (a + b + c <= 4)
+  }
+  level hard {
+    where (a + b + c >= 6)
+  }
+
+  scene 31x21 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right {a}", "down {b}", "right {c}", "down 1"] title="mine"
+      maze g cols=6 rows=5 code=["right {a}", "down {b}", "right {c}", "down 1"] upto=0 trail=none
+    }
+    text ask "Which square does the robot stop on?" width=16 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=g col=col row=row
+  feedback {
+    when (col == 1 + a) point=p {
+      say "There is a second line going right, after the robot comes down."
+    }
+    when (row == 1 + b) point=p {
+      say "The last line goes down one more row."
+    }
+  }
+  hint "Take the lines in order and write down where the robot is after each one."
+}

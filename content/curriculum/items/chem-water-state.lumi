@@ -1,0 +1,28 @@
+# Ice, water or steam from a thermometer. No version sits less than five degrees from 0 or 100,
+# where water can be two things at once; the checker refuses those, which fixes the old 100.
+item chem.water-state v=2 skills=[chemistry.states] {
+  title "Ice, water or steam?"
+  difficulty (if v == 110 then 3 else if v == -10 or v == 5 or v == 80 then 2 else 1)
+  let v={-15, -10, 5, 20, 50, 80, 110}
+  level easy {
+    let v={-15, 20, 50}
+  }
+  level hard {
+    let v={-10, 5, 110}  # just below zero, just above it, and just past a hundred
+  }
+
+  scene 20x18 {
+    text ask "Water is at {v} degrees. Is it ice, water or steam?" width=19 at=canvas(1, 0)
+    thermometer tube from=-20 to=120 step=20 value=v unit="°C" below=ask gap=0
+    choice pick options=["Ice", "Water", "Steam"] stack=column right-of=tube gap=1
+  }
+
+  check chem.state of=tube pick=water
+  feedback {
+    when (pick == "Ice" and v > 0) point=tube {
+      say "Water freezes at 0 degrees, and the column is above zero."
+    }
+  }
+  hint "Find 0 and 100 on the thermometer. Is the red line below 0, between them, or above 100?"
+  hint "What is water like in a freezer, in a cup, and coming out of a boiling kettle? Which is this most like?"
+}

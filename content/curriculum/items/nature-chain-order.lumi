@@ -1,0 +1,41 @@
+# Three creatures numbered into a chain that starts with the plant: which is eaten by which. The
+# cards are muddled four ways.
+item nature.chain-order v=1 skills=[nature.food-chains, reasoning.order] {
+  title "Put the chain in order"
+  difficulty (if c == 0 then 0 else if c == 1 then 1 else 2)
+  let c=0..2 p=0..2
+  let x={pick(c, "seaweed", "sea grass", "tiny plants")}
+  let y={pick(c, "crab", "sea turtle", "small fish")}
+  let z={pick(c, "gull", "shark", "dolphin")}
+  let i1={pick(p, y, z, z)}
+  let i2={pick(p, x, x, y)}
+  let i3={pick(p, z, y, x)}
+  let n1={pick(p, 2, 3, 3)}
+  let n2={pick(p, 1, 1, 2)}
+  let n3={pick(p, 3, 2, 1)}
+  level easy {
+    let c=0..0
+  }
+  level hard {
+    let c=2..2
+  }
+
+  scene 34x22 {
+    row who at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      seaturtle pt facing=1 plates=5
+      fishshoal pf rows=2 cols=4 facing=1
+    }
+    text ask "These three make a food chain on the reef. Number them 1 to 3, starting with the one that is eaten first and never eats." narrate width=32 below=who gap=1
+    sequence s items=[i1, i2, i3] blanks=[q, r, t] below=ask gap=1
+  }
+
+  answer q=n1 r=n2 t=n3
+  feedback {
+    when (q == n3 and r == n2 and t == n1) point=s {
+      say "That runs the chain backwards. Number 1 is the one that never eats anything: the plant."
+    }
+  }
+  hint "Which of the three is a plant? That one is number 1: it makes its own food."
+  hint "Which one eats the plant? Then which one eats that?"
+}

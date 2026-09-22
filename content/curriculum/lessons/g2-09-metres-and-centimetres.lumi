@@ -1,0 +1,47 @@
+lesson g2-metres-and-centimetres v=1 format=teach grade=2 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Metres and centimetres"
+  goal "Measure in centimetres, read a tape in tens, and compare lengths in metres and centimetres."
+
+  look {
+    scene 28x29 {
+      ruler r cm=10 length=7 start=0 thing=ribbon at=canvas(1, 0)
+      tape roll to=100 step=10 mark=65 unit=cm showReading=false below=r gap=1
+      longjump jump to=2.4 max=4 below=roll gap=1
+    }
+    say """
+      A hundred centimetres make a metre. A long jump is measured in metres and centimetres
+      together, which is why the tape counts in tens all the way to a hundred.
+      """
+  }
+  do {
+    practice measure.ruler count=1 seed=5
+    practice measure.tape count=1 seed=8
+    practice measure.ruler-offset count=2 seed=3 hard-seed=4
+    practice measure.longer count=1 seed=4
+    practice measure.metre-more count=2 seed=6 easy-seed=2
+    practice measure.convert count=1 seed=2
+  }
+  try stars=2 {
+    show measure.compare-mixed m=1 c=5 t=1 easy-c=20 easy-t=0 hard-m=2 hard-c=8
+  }
+  try stars=3 {
+    show measure.sticks-ways L=120 easy-L=60 hard-L=150
+  }
+  remember {
+    say "One hundred centimetres is one metre. 1 m 5 cm is 105 cm, not 150 cm."
+  }
+
+  grown-ups """
+    Measure the child against the doorframe and write it down. A number that means something is
+    remembered. When the ribbon does not start at zero, its length is the difference between the
+    two ends; a child who reads the end number has not seen where it starts. The two-star question
+    is a trap on purpose: 1 m 5 cm is easy to read as 150 cm, so ask the child to write both in
+    centimetres. The three-star question is found by trying no 30 cm sticks, then one, then two.
+    """
+  level easy {
+    grown-ups "At this level the ribbon starts at one, the shelf is near a metre, the centimetres to convert stay at thirty or under, and the two ropes are the same length written two ways."
+  }
+  level hard {
+    grown-ups "At this level the ribbon starts at three or four, the shelf is far from a metre, the centimetres to convert reach the nineties, and the two ropes differ by a trick of the zeros."
+  }
+}

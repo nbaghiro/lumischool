@@ -1,0 +1,47 @@
+lesson physics-year-review-4 v=1 format=review grade=4 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics review: the fourth year"
+  goal "Look back over the year: falling and floating, brightness, rates, the see-saw, levers, pulleys and gears, seeing, and the sky."
+
+  warm-up {
+    practice physics.parachute-fall count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.brighter-of-two count=1 seed=3 easy-seed=1 hard-seed=2
+    practice physics.seesaw-balanced count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  exercises {
+    practice physics.boat-weight count=1 seed=3 easy-seed=1 hard-seed=1
+    practice physics.turbine-lamps count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.fuel-left count=1 seed=4 easy-seed=1 hard-seed=2
+    practice physics.temp-rate count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.lever-lifts count=1 seed=5 easy-seed=1 hard-seed=2
+    practice physics.pulley-pull count=1 seed=5 easy-seed=2 hard-seed=1
+    practice physics.gear-turns count=1 seed=4 easy-seed=1 hard-seed=1
+    practice physics.seeing-which count=1 seed=4 easy-seed=1 hard-seed=1
+    practice physics.moon-grows count=1 seed=4
+  }
+  puzzle stars=2 {
+    show physics.pulley-rope n=3 easy-n=2 hard-n=4
+  }
+  puzzle stars=3 {
+    show physics.gear-teeth-needed a=24 k=2 easy-a=12 easy-k=2 hard-k=3
+  }
+
+  grown-ups """
+    This is a check, not a test, to do up at the windmill at the end of the fourth year. The
+    warm-up is the first question of three lessons: a toy under a canopy that speeds up, falls
+    steadily or slows, two loops to compare for brightness, a see-saw that balances or tips. The
+    exercises take one question each from the year: the water's push on a loaded boat, how many
+    lamps the turbine lights, the fuel left on a gauge, how fast a temperature rose, whether a
+    lever lifts its stone, the pull on a rope over pulleys, how many times a small gear turns, which
+    arrows show how we see, and how the moon grows through the month. Anything that needs the way
+    in again is worth another week with that lesson, and everything else can move on. The two
+    puzzles are there to be enjoyed: the pulley question asks for the rope, not the pull, and the
+    gear question has to be worked backwards from the turns to the teeth, so ask for the reason
+    (each rope carries an equal share; the teeth divide) as well as the number.
+    """
+  level easy {
+    grown-ups "At this level the canopy's push and the toy's weight are far apart, the two loops differ plainly, the see-saw's weights are small and close to the pivot, the boat carries one to three light blocks, the turbine lights no lamp or one, the gauge is read on a mark, the temperature rises by tens, the lever's sides differ plainly, the rope runs over one or two pulleys with a light load, the small gear is not much smaller than the big one, the arrows are the plainest set, the moon is as written, the pulley puzzle has two ropes, and the gear to make has twelve teeth to divide by two."
+  }
+  level hard {
+    grown-ups "At this level the canopy's push and the toy's weight are close, the two loops differ by a cell or a bulb, the see-saw's weights are heavier and further out, the boat carries heavy blocks, the turbine lights two or three lamps, the gauge is read between marks, the temperature rises by fives, the lever's sides are close, the rope runs over three or four pulleys with a heavy load, the small gear is much smaller than the big one, the arrows have one wrong, the moon is as written, the pulley puzzle has four ropes, and the gear to make has twenty-four teeth to divide by three."
+  }
+}

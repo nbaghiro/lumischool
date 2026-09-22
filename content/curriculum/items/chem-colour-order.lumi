@@ -1,0 +1,21 @@
+# Non-routine: nobody teaches this order, but the chart holds it. Adding an alkali to an acid a
+# little at a time walks the colour along the chart, and backwards the other way.
+item chem.colour-order v=1 stars=3 skills=[chemistry.acids, reasoning.predict] {
+  title "A little at a time"
+  difficulty v
+  let v=0..3
+
+  scene 36x21 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cabbage c liquids=["{if v == 0 then \"vinegar\" else if v == 1 then \"vinegar\" else if v == 2 then \"washingsoda\" else \"washingsoda\"}"] chart=1 show=1 names=1 letters=0
+      column side space=1 align=start {
+        text ask "A grown-up adds {if v == 0 then \"washing soda\" else if v == 1 then \"washing soda\" else if v == 2 then \"vinegar\" else \"vinegar\"} to this cup a little at a time, until there is plenty. In what order do the colours come? Write 1 to 4." width=17
+        sequence s items=["{if v == 0 then \"blue\" else if v == 1 then \"purple\" else if v == 2 then \"blue\" else \"purple\"}", "{if v == 0 then \"red\" else if v == 1 then \"green\" else if v == 2 then \"red\" else \"green\"}", "{if v == 0 then \"green\" else if v == 1 then \"red\" else if v == 2 then \"green\" else \"red\"}", "{if v == 0 then \"purple\" else if v == 1 then \"blue\" else if v == 2 then \"purple\" else \"blue\"}"] blanks=[a, b, c, d]
+      }
+    }
+  }
+
+  answer a=(if v == 0 then 3 else if v == 1 then 2 else if v == 2 then 2 else 3) b=(if v == 0 then 1 else if v == 1 then 4 else if v == 2 then 4 else 1) c=(if v == 0 then 4 else if v == 1 then 1 else if v == 2 then 1 else 4) d=(if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 3 else 2)
+  hint "Which colour is the cup now? That comes first."
+  hint "Is the liquid being added an acid or an alkali? Which way along the chart will the colour move?"
+}

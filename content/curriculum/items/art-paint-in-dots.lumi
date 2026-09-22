@@ -1,0 +1,10 @@
+item art.paint-in-dots v=1 stars=3 skills=[art.artists, art.painting, reasoning.plan] {
+  title "A picture in dots"
+
+  scene 34x17 {
+    text ask "Paint a tree using only dots. Somewhere, make a colour that is not in the tray by putting two colours of dots side by side." width=11 at=canvas(1, 1)
+    paintsheet sheet w=18 h=12 paper="plain" guide="none" outline="none" pots=["red", "yellow", "blue", "green", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A picture made only of dots of about the same size, close together, with two colours side by side somewhere so they read as a third colour from across the room." notice=["A picture made only of dots", "Two colours side by side", "Dots of about the same size"] ask="Stand back. What colour do your two dots make from far away?"
+}

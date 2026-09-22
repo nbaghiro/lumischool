@@ -1,0 +1,46 @@
+lesson coding-lamps-that-count v=2 format=teach grade=2 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Lamps that count"
+  goal "Read a number from a row of lamps that are on or off, each worth double the one on its right, and light the lamps for a number."
+
+  look {
+    scene 14x9 {
+      lamps l bits=4 n=5 sum=true at=canvas(1, 0)
+    }
+    say """
+      Each lamp is on or off, and nothing in between. The lamp on the right is worth 1, and each one
+      to the left is worth double: 2, then 4, then 8. Add the lamps that are on. These say 4 and 1,
+      which is 5. A computer keeps every number like this, as lamps that are on or off.
+      """
+  }
+  do {
+    practice coding.lamps-read count=2 seed=4
+    practice coding.lamps-biggest count=1 seed=3 hard-seed=5
+    practice coding.lamps-how-many-lit count=2 seed=5 easy-seed=2 hard-seed=2
+    practice coding.lamps-switch-off count=2 seed=9
+    practice coding.lamps-bigger count=1 seed=6
+  }
+  try stars=2 {
+    show coding.lamps-shift n=5 easy-n=3 hard-n=7
+  }
+  try stars=3 {
+    show coding.lamps-exactly-two m=10 easy-m=6 hard-m=15
+  }
+  remember {
+    say "Add the lamps that are lit. Each is worth double the one on its right."
+  }
+
+  grown-ups """
+    Four cards with 8, 4, 2 and 1 dots on them, turned face up or face down, are the same lamps on
+    the table. Making every number from 0 to 15 with the four cards is a good game, and the child
+    will notice that there is only ever one way to make each one. In the two-star question, ask what
+    each lamp is worth after it moves before adding anything: every part doubles, so the number
+    doubles. In the three-star question a list of pairs of lamps, 8 and 4, 8 and 2 and so on, is the
+    way to be sure none is missed.
+    """
+  level easy {
+    grown-ups "At this level the lamps to read show three, five or six, the numbers asked about are far from eight, the lamp switched off is the two or the one, the two rows compared are three or more apart and one has a bigger lamp lit than the other, the lamps that move show three, and up to six there are three numbers with two lamps lit."
+  }
+  level hard {
+    grown-ups "At this level the lamps to read show eleven, thirteen or fourteen, three lamps lit, the numbers asked about are six, nine and eleven, near eight, the lamp switched off is the eight or the four, the two rows compared are two apart or less and share their biggest lamp, so both have to be added, the lamps that move show seven, and up to fifteen every pair of lamps counts, six."
+  }
+}

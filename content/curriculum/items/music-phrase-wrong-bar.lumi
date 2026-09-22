@@ -1,0 +1,27 @@
+# Ben's replay written down bar by bar, with one bar wrong by one note, against the staff.
+item music.phrase-wrong-bar v=1 skills=[music.staff, music.note-names, reasoning.find-the-error] {
+  title "Which bar went wrong?"
+  let w=1..4
+  let right={pick(w - 1, "bar 1", "bar 2", "bar 3", "bar 4")}
+
+  scene 34x40 {
+    column lines space=1 align=start at=canvas(1, 1) {
+      notes l1 clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4
+      notes l2 clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4
+    }
+    row low space=2 align=start below=lines gap=1 {
+      table played cols=2 head=["Bar", "Ben played"] cells=["1", pick(w - 1, "E E G G", "E E F G", "E E F G", "E E F G"), "2", pick(w - 1, "G F E D", "G F D D", "G F E D", "G F E D"), "3", pick(w - 1, "C C D E", "C C D E", "C D D E", "C C D E"), "4", pick(w - 1, "E D D", "E D D", "E D D", "E D C")]
+      text ask "Ben played the phrase and wrote down his notes, bar by bar. One bar has a wrong note. Which bar?" narrate width=14
+    }
+    choice pick options=["bar 1", "bar 2", "bar 3", "bar 4"] stack=row below=low gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=played {
+      say "Name each bar's notes from the staff, then check them against Ben's letters one at a time."
+    }
+  }
+  hint "Read bar 1 from the staff and compare it with Ben's first row."
+  hint "Go on bar by bar until one letter is different."
+}

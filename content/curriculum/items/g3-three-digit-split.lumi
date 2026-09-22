@@ -1,0 +1,31 @@
+# 347 is 300 and 47, but also 200 and 147: the split that exchanging a hundred rests on.
+item place.three-digit-split v=1 skills=[place-value.hundreds, place-value.regroup] {
+  title "Split it another way"
+  difficulty d
+  let h=2..5 t=1..9 o=1..9 d=1..2
+  where (h > d)
+  level easy {
+    let d={1}
+  }
+  level hard {
+    let h=4..5 d={2, 3}
+  }
+
+  scene 29x10 {
+    baseten blocks thousands=0 hundreds=h tens=t ones=o at=canvas(1, 1)
+    equation eq "{100 * h + 10 * t + o} = {100 * (h - d)} +" below=blocks gap=1
+    number-input rest right-of=eq gap=1
+  }
+
+  answer rest=(100 * d + 10 * t + o)
+  feedback {
+    when (rest == 10 * t + o) point=eq {
+      say "{100 * (h - d)} is less than {100 * h}, so the other part has to hold the missing hundreds too."
+    }
+    when (rest == 10 * t + o + d) point=eq {
+      say "The missing part is {d} hundreds, not {d} ones."
+    }
+  }
+  hint "How many hundreds are in {100 * (h - d)}? How many are in the whole number?"
+  hint "The hundreds that are missing go into the other part, with the tens and ones."
+}

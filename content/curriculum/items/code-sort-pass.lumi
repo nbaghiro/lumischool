@@ -1,0 +1,20 @@
+item coding.sort-pass v=1 skills=[coding.algorithms] {
+  title "One pass"
+  difficulty (i + (if k == 2 then 1 else 0))
+  let k=0..3 i=2..3
+  level easy {
+    let i={2}
+  }
+  level hard {
+    let i={3}
+  }
+
+  scene 28x20 {
+    sortcards c cards=[if k == 0 then 5 else if k == 1 then 3 else if k == 2 then 6 else 4, if k == 0 then 2 else if k == 1 then 6 else if k == 2 then 1 else 7, if k == 0 then 7 else if k == 1 then 1 else if k == 2 then 4 else 2, if k == 0 then 1 else if k == 1 then 5 else if k == 2 then 3 else 5] compare=1 swap=false at=canvas(1, 0)
+    text ask "Compare each pair from the left and swap them if the bigger card is first. After one pass, which card is in place {i}?" width=22 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=c answer="pass({i})"
+  hint "Write the four numbers down. Look at places 1 and 2, then 2 and 3, then 3 and 4, swapping as you go."
+}

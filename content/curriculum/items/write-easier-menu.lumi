@@ -1,0 +1,34 @@
+# The two-star reason: two menus with the same dishes, one laid out with headings and a price on
+# each line, one run together, and why the laid-out one is easier to read.
+item writing.easier-menu v=1 stars=2 skills=[writing.layout, reasoning.explain] {
+  title "Which menu is easier?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "A: the headings group the dishes", "B: each line is one dish and its price")}
+  let w1={pick(k, "B: it fits on fewer lines", "A: it has more words")}
+  let w2={pick(k, "Both: the dishes are the same", "Both: the prices are the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x30 {
+    row two at=canvas(0, 1) space=2 align=start {
+      sign a lines=[if k == 0 then "Drinks" else "Tea, milk $2, $1", if k == 0 then "Tea $2" else "Soup, pie $3, $4", if k == 0 then "Milk $1" else "Cake $2", if k == 0 then "Cakes" else " ", if k == 0 then "Scone $3" else " "] kind=board color=mint
+      sign b lines=[if k == 0 then "Tea $2 Milk $1" else "Drinks", if k == 0 then "Scone $3" else "Tea $2", if k == 0 then " " else "Milk $1", if k == 0 then " " else "Mains", if k == 0 then " " else "Soup $3"] kind=board color=mint
+    }
+    text ask "Two boards with the same dishes. Which menu is easier for a customer to read, and why?" narrate width=34 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "A customer looks for a drink, then for its price. Headings say where to look, and one dish to a line puts the price beside its dish. Fewer lines is not easier when things run together."
+    }
+  }
+  hint "Try to find the price of milk on each board. Which board makes it quick?"
+  hint "A menu is read by heading, then by line: one dish and its price on each."
+}

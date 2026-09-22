@@ -1,0 +1,31 @@
+# The water sits between the numbered marks, so the child works out what the small mark is worth;
+# the audit found every version on a numbered mark before.
+item measure.jug v=2 skills=[capacity.millilitres, measure.scales] {
+  title "How much in the jug"
+  difficulty l
+  let l={300, 500, 700, 900}
+  level easy {
+    let l={100, 300}
+  }
+  level hard {
+    let l={700, 900}
+  }
+
+  scene 34x13 {
+    jug pot max=1000 step=200 level=l unit=ml at=canvas(1, 1)
+    text ask "How much water is in the jug, in millilitres?" width=20 right-of=pot gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer l
+  feedback {
+    when (answer == l / 100) point=pot {
+      say "The marks count in two hundreds, so read the number the water reaches."
+    }
+    when (answer == l - 100 or answer == l + 100) point=pot {
+      say "The water is between two numbered marks. What is halfway between them?"
+    }
+  }
+  hint "Look at the mark the water comes up to. Is it a numbered mark or a small one?"
+  hint "The small mark is halfway between two numbers that are 200 apart."
+}

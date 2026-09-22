@@ -1,0 +1,33 @@
+# Two unknowns fixed by three counts: guess, run it in the head for 1 to 10, and adjust. There is
+# one answer, and a child can start by trying any pair.
+item coding.find-both-numbers v=1 stars=3 skills=[coding.decisions, reasoning.guess-and-check] {
+  title "Find both numbers"
+  difficulty (s + c)
+  let s=1..3 c=2..4
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["if n is more than A", "  say shout", "otherwise", "  if n is more than B", "    say clap", "  otherwise", "    say whisper"]
+      column q space=1 align=start {
+        text ask "It is run with n as each number from 1 to 10. It shouts {s} times, claps {c} times and whispers {10 - s - c} times. What are A and B?" width=15
+        row ra space=1 align=centre {
+          text la "A"
+          number-input na width=3
+        }
+        row rb space=1 align=centre {
+          text lb "B"
+          number-input nb width=3
+        }
+      }
+    }
+  }
+
+  answer na=(10 - s) nb=(10 - s - c)
+  feedback {
+    when (na == 10 - s + 1) point=p {
+      say "Try it: which numbers are more than {na}? Count them."
+    }
+  }
+  hint "Which numbers from 1 to 10 shout? They are the biggest ones."
+  hint "The shouting numbers are all more than A, and no smaller number is. Then do the same for B."
+}

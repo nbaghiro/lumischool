@@ -1,0 +1,33 @@
+# The end and the length are known, so the start is found by counting back.
+item time.start-unknown v=1 skills=[time.elapsed, reasoning.inverse] {
+  title "When did it start?"
+  difficulty (len + (if m < len % 60 then 15 else 0))
+  let h=2..11 m=(0..55 by 5) len=(25..95 by 5)
+  where (h * 60 + m - len >= 60)
+  level easy {
+    let len=(25..45 by 5)
+    where (m >= len)  # the start is in the same hour
+  }
+  level hard {
+    let len=(65..95 by 5)
+    where (m < len - 60)  # the start is two hours back
+  }
+
+  scene 30x11 {
+    clock ends h=h m=m at=canvas(1, 1)
+    text ask "A film ended at the time on the clock. It lasted {len} minutes. What time did it start?" width=20 right-of=ends gap=2
+    text hl "Hours" below=ends gap=1
+    number-input sh right-of=hl gap=1
+    text ml "Minutes" right-of=sh gap=2
+    number-input sm right-of=ml gap=1
+  }
+
+  answer sh=((h * 60 + m - len) // 60) sm=((h * 60 + m - len) % 60)
+  feedback {
+    when (sh * 60 + sm == h * 60 + m + len) point=ends {
+      say "That is when it would end if it started now. The film started before this, so count back."
+    }
+  }
+  hint "What time does the clock show? Count back {len} minutes from there."
+  hint "Count back to the o'clock first, then back the rest of the way."
+}

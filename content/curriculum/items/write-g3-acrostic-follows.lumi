@@ -1,0 +1,19 @@
+# Every option starts with the right letter, so the letter no longer gives the line away: the
+# child has to choose the line that is about the poem's word, the audit's raise for acrostic-line.
+item writing.acrostic-follows v=1 skills=[writing.poems] {
+  title "The line that belongs"
+  difficulty g
+  let s=0..3 g=0..1 p=0..2 w={if s == 0 then "MOON" else if s == 1 then "SNOW" else if s == 2 then "SEA" else "OWL"} l1={if s == 0 then "Mice look up" else if s == 1 then "Soft and white" else if s == 2 then "Salty waves" else "Only at night"} l2={if s == 0 then "Over the hill" else if s == 1 then "Nothing moves" else if s == 2 then "Echo on the rocks" else "Wide eyes open"} l3={if s == 0 then "Owls call out" else if s == 1 then "Only the wind" else if s == 2 then "A gull cries" else "Looking for mice"} l4={if s == 0 then "Night is here" else if s == 1 then "White roofs everywhere" else ""} ok={if g == 0 then l2 else l3} x1={if s == 0 and g == 0 then "Oranges in a bowl" else if s == 0 then "Our bus is late" else if s == 1 and g == 0 then "Nine fish in a tank" else if s == 1 then "Oranges on a plate" else if s == 2 and g == 0 then "Eggs for tea" else if s == 2 then "Apples in a box" else if g == 0 then "Wet paint on a door" else "Lemons are sour"} x2={if s == 0 and g == 0 then "Our cat likes milk" else if s == 0 then "Old socks in a drawer" else if s == 1 and g == 0 then "Nobody likes peas" else if s == 1 then "Our car is red" else if s == 2 and g == 0 then "Elephants are grey" else if s == 2 then "A red bus stops" else if g == 0 then "Windows need a clean" else "Lunch at school"}
+
+  scene 36x15 {
+    listpad poem title="{w}" items=["{l1}", "{if g == 0 then \"\" else l2}", "{if g == 1 then \"\" else l3}", "{l4}"] count=(if s <= 1 then 4 else 3) width=17 ticks=false at=canvas(1, 1)
+    column right right-of=poem gap=1 space=1 align=start {
+      text ask "Which line fills the gap?" width=17
+      choice pick options=["{if p == 0 then ok else if p == 1 then x1 else x2}", "{if p == 0 then x1 else if p == 1 then x2 else ok}", "{if p == 0 then x2 else if p == 1 then ok else x1}"] stack=column
+    }
+  }
+
+  answer pick=ok
+  hint "All three start with the right letter. Which one is about the word the poem spells?"
+  hint "Read the line above the gap, then each choice after it. Which one keeps the poem going?"
+}

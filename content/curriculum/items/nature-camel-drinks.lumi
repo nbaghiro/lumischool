@@ -1,0 +1,36 @@
+# The story: the camels at the oasis and how much they drink, litres in a bathful at a time.
+item nature.camel-drinks v=1 skills=[nature.habitats, multiplication.tables] {
+  title "The camels drink"
+  difficulty (n + l / 20)
+  let n=2..5 l={40, 60, 80, 100}
+  level easy {
+    let n=2..3 l={40, 60}
+  }
+  level hard {
+    let n=4..5 l={80, 100}
+  }
+
+  scene 34x20 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      oasis pool water=1 bloom=0
+      camel pc count=2 resting=0 facing=-1
+    }
+    text ask "At the oasis Ada watches {n} camels come to the pool after days in the desert. Each one drinks {l} litres. How many litres do they drink altogether?" narrate width=32 below=pics gap=1
+    row a below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "litres"
+    }
+  }
+
+  answer (n * l)
+  feedback {
+    when (answer == n + l) point=pc {
+      say "Each of the {n} camels drinks {l} litres. That is {l} counted {n} times."
+    }
+    when (answer == l) point=pc {
+      say "That is one camel. There are {n} of them at the pool."
+    }
+  }
+  hint "One camel drinks {l} litres. Two drink twice that. Keep going for {n}."
+  hint "Count in {l}s, {n} times."
+}

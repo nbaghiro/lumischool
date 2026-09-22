@@ -1,0 +1,30 @@
+# Three things on the table, and how many of them have a circle inside.
+item art.count-circles v=1 skills=[art.shape, art.looking] {
+  title "Count the circles"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+  let a={pick(k, "apple", "apple", "ball", "apple")}
+  let b={pick(k, "ball", "apple", "cup", "cup")}
+  let c={pick(k, "cup", "box", "box", "box")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x10 {
+    stilllife pic light="left" things=["{a}", "{b}", "{c}"] lamp=false at=canvas(1, 1)
+    text ask "Three things on the table. How many of them have a circle inside them?" narrate width=16 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 1 else 1)
+  feedback {
+    when (answer == 3) point=pic {
+      say "A cup is a tube and a box is a box. Only the round things, the apple and the ball, are circles inside."
+    }
+  }
+  hint "Take each thing in turn: is it round all over?"
+  hint "An apple and a ball are circles. A cup is a tube and a box is a box."
+}

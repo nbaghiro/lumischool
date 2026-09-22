@@ -1,0 +1,30 @@
+# The pencil comes from art/svg/pencil.svg, so a scene can hold hand-drawn art.
+item money.enough v=1 skills=[money.compare] {
+  title "Enough for the pencil"
+  difficulty (40 - abs(10 * d + p - price))
+  let d=1..4 p=0..4 price={25, 30, 35, 40}
+  level easy {
+    where (abs(10 * d + p - price) >= 8)
+  }
+  level hard {
+    where (abs(10 * d + p - price) <= 2)
+  }
+
+  scene 28x11 {
+    art pencil asset="pencil" at=canvas(1, 0)
+    text tag "The pencil costs {price} cents." right-of=pencil gap=1
+    coins purse dimes=d pennies=p below=pencil gap=1
+    text ask "Is there enough money?" narrate below=purse gap=1
+    choice pick options=["Yes", "No"] right-of=ask gap=1
+  }
+
+  answer pick=(if 10 * d + p >= price then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and 10 * d + p < price) point=purse {
+      say "Count the coins again: {10 * d + p} cents is less than {price} cents."
+    }
+    when (pick == "No" and 10 * d + p >= price) point=purse {
+      say "{10 * d + p} cents is enough to pay {price} cents."
+    }
+  }
+}

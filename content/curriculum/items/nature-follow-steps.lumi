@@ -1,0 +1,38 @@
+# Following directions on the map: the boat is where Ada lands, and the square she ends in is read
+# off the grid after so many squares right and so many down.
+item nature.follow-steps v=1 skills=[nature.maps] {
+  title "Where is she now?"
+  difficulty (a + b)
+  set cols=5 rows=4
+  let x=1..2 y=1..2 a=1..3 b=1..2
+  where (x + a <= cols and y + b <= rows)
+  let from={pick(x - 1, "A", "B")}
+  let lt={pick(x + a - 1, "A", "B", "C", "D", "E", "F")}
+  level easy {
+    set cols=4 rows=3
+    let a=1..2 b=1..1
+  }
+  level hard {
+    set cols=6 rows=5
+    let a=3..4 b=2..3
+  }
+
+  scene 36x18 {
+    gridmap map cols=cols rows=rows col=x row=y thing=boat at=canvas(1, 1)
+    text ask "Ada lands her boat in square {from}{y}. She walks {a} squares right and {b} squares down. Which square is she in now? Write the letter, then the number." narrate width=18 right-of=map gap=2
+    choice letter options=["A", "B", "C", "D", "E", "F"] below=map gap=1
+    number-input number right-of=letter gap=2
+  }
+
+  answer letter=lt number=(y + b)
+  feedback {
+    when (number == y + b + 1 or number == y + b - 1) point=map {
+      say "Start counting from the boat's square, and count the squares she moves into, not the lines."
+    }
+    when (number == x + a and letter == lt and x + a != y + b) point=map {
+      say "Going right changes the letter. Going down changes the number."
+    }
+  }
+  hint "Put your finger on the boat. Move it one square to the right for each step, and say the letters as you go."
+  hint "Now move it down, one square for each step, and read the number at the side."
+}

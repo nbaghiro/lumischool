@@ -1,0 +1,33 @@
+# The three-star: the plan that dissolves sugar fastest, from four plans that use warm water,
+# stirring and crushed sugar in different mixes, with the reason that each help speeds it up.
+# At hard two plans use two helps each, and the one with all three has to be found.
+item chem.fastest-plan v=1 stars=3 skills=[chemistry.dissolving, reasoning.constraints] {
+  title "The fastest plan"
+  difficulty k
+  let k=0..1 r=0..3
+  let right={pick(k, "warm, stirred, crushed", "warm, stirred, crushed")}
+  let o1={pick(k, "cold, still, lumps", "warm, still, crushed")}
+  let o2={pick(k, "cold, stirred, lumps", "cold, stirred, crushed")}
+  let o3={pick(k, "warm, still, lumps", "warm, stirred, lumps")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x29 {
+    beaker cup max=200 step=50 level=150 unit=ml solid=1 rod=true at=canvas(0, 0)
+    text ask "Warm or cold water, stirred or still, the sugar crushed or in lumps. Which plan dissolves the sugar fastest?" narrate width=20 right-of=cup gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else if r == 2 then o2 else o3, if r == 0 then o1 else if r == 1 then right else if r == 2 then o3 else o2, if r == 0 then o2 else if r == 1 then o3 else if r == 2 then right else o1, if r == 0 then o3 else if r == 1 then o2 else if r == 2 then o1 else right] stack=column below=cup gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=cup {
+      say "Each help speeds it up on its own: warmth, stirring and small grains. The fastest plan uses all three. Count the helps in each plan."
+    }
+  }
+  hint "Three things help: warm water, stirring, and small grains. Count how many of the three each plan uses."
+  hint "The plan with all three helps is the fastest."
+}

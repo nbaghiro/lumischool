@@ -1,0 +1,10 @@
+item art.warm-sun-cool-sea v=1 stars=3 skills=[art.warm-cool, art.painting, reasoning.plan] {
+  title "A warm sun over a cool sea"
+
+  scene 34x16 {
+    text ask "Paint a warm sun over a cool sea. Mix every colour yourself, and put one small warm thing in the sea and one cool thing in the sky." width=10 at=canvas(1, 1)
+    paintsheet sheet w=20 h=11 paper="plain" guide="none" outline="none" pots=["red", "orange", "yellow", "blue", "green", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A sun in reds, oranges or yellows over a sea in blues and greens, every colour mixed rather than taken straight from a pan, with one small warm thing placed in the cool sea and one cool thing in the warm sky, so the child has thought about where each temperature goes." notice=["A sun in warm colours", "A sea in cool colours", "Warm and cool meeting where the sea starts"] ask="Which colours did you choose for the sea, and why do they feel cool?"
+}

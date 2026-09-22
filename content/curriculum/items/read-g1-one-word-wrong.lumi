@@ -1,0 +1,20 @@
+# The sentence is nearly right: one of its three picture words is wrong, and the child checks each
+# against the card to find it.
+item reading.one-word-wrong v=1 stars=2 skills=[reading.sentence-meaning, reasoning.find-the-error] {
+  title "One word is wrong"
+  difficulty (if m == 1 then 2 else if m == 2 then 1 else 0)
+  let i=0..2 m=0..2
+
+  scene 34x15 {
+    picturecards card who=["{if i == 0 then \"dog\" else if i == 1 then \"fox\" else \"pig\"}"] where=["{if i == 0 then \"under\" else if i == 1 then \"in\" else \"on\"}"] thing=["{if i == 0 then \"table\" else if i == 1 then \"box\" else \"log\"}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      sentence strip before="The {if m == 0 then (if i == 0 then \"cat\" else if i == 1 then \"hen\" else \"duck\") else (if i == 0 then \"dog\" else if i == 1 then \"fox\" else \"pig\")} is {if m == 1 then (if i == 0 then \"on\" else \"by\") else (if i == 0 then \"under\" else if i == 1 then \"in\" else \"on\")} the {if m == 2 then (if i == 0 then \"bed\" else if i == 1 then \"tub\" else \"rug\") else (if i == 0 then \"table\" else if i == 1 then \"box\" else \"log\")}" blank=0 after="." size=19
+      text ask "One word does not match the picture. Which word?" narrate width=20
+    }
+    choice pick options=["{if m == 0 then (if i == 0 then \"cat\" else if i == 1 then \"hen\" else \"duck\") else (if i == 0 then \"dog\" else if i == 1 then \"fox\" else \"pig\")}", "{if m == 1 then (if i == 0 then \"on\" else \"by\") else (if i == 0 then \"under\" else if i == 1 then \"in\" else \"on\")}", "{if m == 2 then (if i == 0 then \"bed\" else if i == 1 then \"tub\" else \"rug\") else (if i == 0 then \"table\" else if i == 1 then \"box\" else \"log\")}"] below=q gap=1
+  }
+
+  answer pick=(if m == 0 then if i == 0 then "cat" else if i == 1 then "hen" else "duck" else if m == 1 then if i == 0 then "on" else "by" else if i == 0 then "bed" else if i == 1 then "tub" else "rug")
+  hint "Check the animal first. Is it the one in the picture?"
+  hint "Now check the little word, then the thing. Which one does not fit?"
+}

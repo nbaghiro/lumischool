@@ -1,0 +1,57 @@
+lesson nature-the-tree-through-the-year v=1 format=teach grade=1 unit=3 subject=nature levels=[easy, medium, hard] {
+  title "The tree through the year"
+  goal "Tell the four seasons apart from what a tree looks like, and say what comes next as the year goes round."
+
+  look {
+    scene 34x13 {
+      seasontrees year seasons=["spring", "summer", "autumn", "winter"] at=canvas(1, 1)
+    }
+    say """
+      This is the same tree, drawn four times in one year. In spring it has blossom. In summer it is
+      full of leaves. In autumn the leaves turn and fall to the ground. In winter it is bare. Then
+      spring comes round again, and the tree does it all once more.
+      """
+  }
+  do {
+    level easy {
+      worked nature.which-season k=2 level=medium
+    }
+    practice nature.which-season count=2 seed=4
+    practice nature.season-after count=2 seed=8
+    practice nature.seasons-until count=2 seed=4 easy-seed=2 hard-seed=8
+    practice nature.trees-in-order count=1 seed=3 easy-seed=1 hard-seed=7
+    level hard {
+      show nature.year-round k=2
+    }
+  }
+  story {
+    show nature.season-story s=0 n=2 easy-s=1 easy-n=1 hard-s=2 hard-n=3
+  }
+  try stars=2 {
+    show nature.wrong-tree k=2 easy-k=0 hard-k=4
+  }
+  try stars=3 {
+    show nature.swap-two k=1 easy-k=0 hard-k=5
+  }
+  remember {
+    say "Spring, summer, autumn, winter, and round again. The tree is the same; the year changes it."
+  }
+
+  grown-ups """
+    Two things are being learned here: reading a tree (blossom, full leaf, falling leaves, bare) and
+    the order of the year, which has no end. The common slip is at the end of the year: a child who
+    can say "autumn, winter" stops, or goes backwards, instead of coming round to spring. The
+    counting question and the story both cross that point, so watch what happens at winter. In the
+    two-star question one painting is in the wrong place; ask which season that tree really shows.
+    The three-star question is a swap, and the way in is to find the trees that are already right
+    and leave them alone. If the tree pictures are still being guessed after the core, stay here
+    another day and look at a real tree together: which of the four is it now, and what will it look
+    like next?
+    """
+  level easy {
+    grown-ups "At this level a worked example (the tree in blossom) opens the core, the seasons asked about are winter and summer, no count or story crosses the end of the year, the trees for numbering have one neighbouring pair swapped, the wrong painting is a bare tree in summer's place, and the two swapped trees stand side by side."
+  }
+  level hard {
+    grown-ups "At this level the seasons asked about are spring and autumn, every count and the story go round the end of the year, the trees stand muddled when the next season is asked, a second numbering starts from winter, the wrong painting shows falling leaves in spring's place, and the two swapped trees are the first and the last."
+  }
+}

@@ -1,0 +1,22 @@
+# The audit's raise for combine-sentences: three short sentences, and the wrong choices keep every
+# fact but join with only commas or change who did what, so length and facts cannot decide.
+item writing.combine-three v=1 skills=[writing.sentences, writing.joining-sentences] {
+  title "Three sentences made into one"
+  difficulty (if k == 0 or k == 1 then 1 else 0)
+  let k=0..3
+
+  scene 37x19 {
+    caption three text="{if k == 0 then \"The dog was muddy. It ran inside. Mum chased it.\" else if k == 1 then \"The bus was late. It was full. We waited.\" else if k == 2 then \"Kim found a shell. It was pink. She gave it to Gran.\" else \"The storm was loud. It kept us awake. We read in bed.\"}" width=36 at=canvas(1, 1)
+    text ask "Which one sentence says all three, and is written correctly?" width=36 below=three gap=1
+    choice pick options=["{if k == 0 then \"The muddy dog ran inside, and Mum chased it.\" else if k == 1 then \"The bus was late, it was full, we waited.\" else if k == 2 then \"Kim found a shell, it was pink, she gave it to Gran.\" else \"The storm was loud, it kept us awake, we read.\"}", "{if k == 0 then \"The muddy dog ran inside, Mum chased it.\" else if k == 1 then \"The late bus was full, so we waited.\" else if k == 2 then \"Gran found a pink shell and gave it to Kim.\" else \"We read in bed, so the loud storm kept us awake.\"}", "{if k == 0 then \"Mum ran inside and chased the muddy dog.\" else if k == 1 then \"We were late, so the bus was full.\" else if k == 2 then \"Kim found a pink shell and gave it to Gran.\" else \"The loud storm kept us awake, so we read in bed.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The muddy dog ran inside, and Mum chased it." else if k == 1 then "The late bus was full, so we waited." else if k == 2 then "Kim found a pink shell and gave it to Gran." else "The loud storm kept us awake, so we read in bed.")
+  feedback {
+    when (pick == "Kim found a shell, it was pink, she gave it to Gran." or pick == "The bus was late, it was full, we waited." or pick == "The storm was loud, it kept us awake, we read." or pick == "The muddy dog ran inside, Mum chased it.") point=three {
+      say "Commas alone cannot join sentences. Which choice uses a joining word, or one describing word, instead?"
+    }
+  }
+  hint "Check each choice against the three sentences. Is anyone doing something they did not do?"
+  hint "Then check the joins. Commas on their own cannot join two sentences."
+}

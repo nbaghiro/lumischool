@@ -1,0 +1,40 @@
+# The two-star reason: two puddles the same size, one in the sun and one in the shade, and which
+# dries first with the reason. The right reason is the warmth; the wrong ones sound like reasons
+# (the shade is darker, the sun makes the water hide). At hard the puddles differ in size as well,
+# so the bigger one in the sun still beats the small one in the shade only when the sizes are near.
+item chem.shade-first v=1 stars=2 skills=[chemistry.states, reasoning.explain] {
+  title "Sun or shade?"
+  difficulty (if k == 2 then 2 else k)
+  let k=0..2 r=0..2
+  let story={pick(k, "Two puddles the same size, one in the sun and one in the shade of the wall.", "Two puddles the same size, one in the sun and one in the shade. There is no wind.", "Two puddles, one in the sun and a slightly smaller one in the shade.")}
+  let right={pick(k, "Sun: warm air takes water faster", "Sun: warm air takes water faster", "Sun: warmth beats the size gap")}
+  let w1={pick(k, "Shade: it is darker there", "Shade: the sun cannot see it", "Shade: it is smaller")}
+  let w2={pick(k, "Sun: the sun drinks the water", "Sun: water hides from the light", "Sun: it is bigger")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x25 {
+    row both at=canvas(1, 0) space=3 align=end {
+      dish sunny left=3 day=1 sun=1
+      dish shady left=(if k == 2 then 2 else 3) day=1 sun=0
+    }
+    text ask "{story} Which dries first, and why?" narrate width=32 below=both gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=shady {
+      say "The shade is cooler, and cool air takes water more slowly. The shady puddle stays longer."
+    }
+    when (pick == w2) point=sunny {
+      say "The sun one does dry first, but not for that reason. The sun warms the water and the air, and warm air takes water faster."
+    }
+  }
+  hint "What is different about the air over the two puddles? One is warm and one is cool."
+  hint "Warm air takes water faster. Pick the reason that says so, not one that only sounds like a reason."
+}

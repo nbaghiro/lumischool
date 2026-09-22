@@ -1,0 +1,17 @@
+# The three-star: the whole song played through, changing on count 1 at a steady speed, which
+# only a grown-up can hear.
+item music.two-chord-song v=1 stars=3 skills=[music.chord-changes, music.strumming] {
+  title "The two-chord song"
+
+  scene 34x22 {
+    row cards at=canvas(1, 1) space=2 align=start {
+      chordbox c tuning=uke chord=C frets=3 show=fingers name=true letters=true lit=[]
+      chordbox g tuning=uke chord=G7 frets=3 show=fingers name=true letters=true lit=[]
+    }
+    text ask "Play the song to a grown-up: four strums of C, four of G7, four of C, four of G7, counting 1 2 3 4 out loud and changing chord on the 1. Keep the same speed all the way through." narrate width=32 below=cards gap=1
+  }
+
+  check writing.by-eye look-for="Sixteen strums at one steady speed, counted aloud, with every change landing on the count of 1 and no pause to move the fingers; finger 3 at fret 3 on the A string for C, and fingers 1, 2 and 3 on the E, C and A strings for G7, all four strings ringing."
+  hint "Say the count out loud. Your fingers move while you say 4, so they are ready for the 1."
+  hint "If a change is late, slow the whole song down until it is on time, then speed up."
+}

@@ -1,0 +1,34 @@
+# The story: the cliff losing centimetres to the waves each year, and how much in the years, or
+# how many years until the edge reaches the path.
+item chem.years-of-rain v=1 stars=1 skills=[chemistry.weathering, multiplication.groups] {
+  title "The cliff edge"
+  difficulty (if w == 0 then y / 25 else 2 + d)
+  let r={2, 4, 5} y={10, 25, 40} d={2, 4} w=0..1
+  level easy {
+    let r={2, 4} y={10, 25} w=0..0
+  }
+  level hard {
+    let r={4, 5} w=1..1
+  }
+
+  scene 34x17 {
+    rocks r rocks=["sandstone", "chalk"] test=0 letters=0 at=canvas(1, 0)
+    text ask "The waves at the foot of the fossil cliff take about {r} centimetres off the cliff every year. {if w == 0 then \"How many centimetres of cliff go in \" else \"The path along the top is \"}{if w == 0 then y else d}{if w == 0 then \" years?\" else \" metres from the edge. In how many years does the edge reach the path?\"}" narrate width=32 below=r gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then r * y else d * 100 / r)
+  feedback {
+    when (w == 0 and answer == r + y) point=ask {
+      say "The cliff loses {r} centimetres every one of the {y} years. That is {y} lots of {r}, not {r} added to {y}."
+    }
+    when (w == 1 and answer == d / r * 1) point=ask {
+      say "The path is {d} metres away, and the cliff goes back in centimetres. How many centimetres is {d} metres?"
+    }
+    when (w == 1 and answer == d * 100) point=ask {
+      say "That is the distance in centimetres. Each year takes {r} of them; how many years is that?"
+    }
+  }
+  hint "{if w == 0 then \"The same {r} centimetres each year. Multiply by the years.\" else \"Turn the metres into centimetres first: a metre is a hundred of them.\"}"
+  hint "{if w == 0 then \"{r} times {y}.\" else \"Then share the centimetres into lots of {r}.\"}"
+}

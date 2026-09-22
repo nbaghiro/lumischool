@@ -1,0 +1,29 @@
+# The way in: how many fingers a chord card asks for, counted as its dots. C has one, F two, G7
+# three.
+item music.chord-fingers-count v=1 skills=[music.chord-boxes] {
+  title "How many fingers?"
+  difficulty (if k == 2 then 1 else 0)
+  let k={0, 1, 2}
+  let name={pick(k, "C", "F", "G7")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 26x17 {
+    chordbox card tuning=uke chord=(if k == 0 then "C" else if k == 1 then "F" else "G7") frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Every dot on the card is a finger. How many fingers does {name} need?" width=13 right-of=card gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (k + 1)
+  feedback {
+    when (answer == 4) point=card {
+      say "The four lines are the strings, not fingers. Count the dots."
+    }
+  }
+  hint "Count the dots, not the strings."
+  hint "Each dot has a finger's number in it."
+}

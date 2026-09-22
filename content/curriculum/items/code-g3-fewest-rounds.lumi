@@ -1,0 +1,26 @@
+# The count is the unknown: the smallest repeat that leaves the robot on the gem. The robot passes
+# through squares, so the answer is the first time round that ends there. The audit's raise for
+# wall-follow; the keys were found by running every count from 1 to 14.
+item coding.fewest-rounds v=1 stars=2 skills=[coding.decisions, coding.repetition, reasoning.work-backwards] {
+  title "The fewest times round"
+  difficulty (if k == 1 then 5 else if k == 0 then 6 else 7)
+  let k=0..2
+
+  scene 32x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program b code=["repeat ?", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"]
+      maze g map=["{if k == 0 then \"S . . . #\" else if k == 1 then \"S . . # .\" else \"S . . #\"}", "{if k == 0 then \"# # # . #\" else if k == 1 then \"# # . . #\" else \"# # . #\"}", "{if k == 0 then \"# # # * .\" else if k == 1 then \"# # * # #\" else \"# * . #\"}", "{if k == 0 then \"# # # . #\" else if k == 1 then \"# # . . .\" else \"# # # #\"}"] upto=0 trail=none
+    }
+    text ask "What is the smallest number the repeat can have so that the robot stops on the gem?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 6 else if k == 1 then 5 else 7)
+  feedback {
+    when (answer == (if k == 0 then 5 else if k == 1 then 4 else 6)) point=g {
+      say "Count the time round when it turns as well. A turn uses up a time round."
+    }
+  }
+  hint "Walk it one time round at a time and write the number of each time round on its square."
+  hint "Which time round ends with the robot on the gem for the first time?"
+}

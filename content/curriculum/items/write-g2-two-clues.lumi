@@ -1,0 +1,18 @@
+# Each clue on its own fits two creatures; only one creature fits both. The creatures stay the same
+# and the clues change.
+item writing.two-clues v=1 skills=[writing.describing] {
+  title "Both clues at once"
+  let k=0..3
+  let c1={if k == 0 then "It has two eyes." else if k == 1 then "It is spotty." else if k == 2 then "It has one horn." else "It has four legs."}
+  let c2={if k == 0 then "It has four legs." else if k == 1 then "It has no horns." else if k == 2 then "It has two legs." else "It has one horn."}
+
+  scene 37x18 {
+    creatures line eyes=[2, 1, 2, 3] legs=[4, 4, 2, 2] horns=[0, 1, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=-1 at=canvas(1, 1)
+    text ask "{c1} {c2} Which creature fits both clues?" narrate width=20 below=line gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "D" else if k == 2 then "C" else "B")
+  hint "Which creatures fit the first clue?"
+  hint "Of those, which one fits the second clue too?"
+}

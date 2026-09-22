@@ -1,0 +1,31 @@
+# The story: Ben's left hand walking down from middle C, and the keys pressed counting both ends.
+item music.keys-down v=1 stars=1 skills=[music.keys, addition.to-twenty] {
+  title "Down from middle C"
+  difficulty (if w == 0 then k else k + 1)
+  let k=0..3 w=0..1
+  let x={pick(k, "F", "E", "D", "C")}
+  level easy {
+    let k=0..1 w=0..0
+  }
+  level hard {
+    let k=2..3 w=1..1
+  }
+
+  scene 34x21 {
+    grandstaff gs notes=["C4", "{if k == 0 then \"F3\" else if k == 1 then \"E3\" else if k == 2 then \"D3\" else \"C3\"}"] letters=true lit=[] landmarks=false at=canvas(1, 1)
+    text ask "At the bandstand Ben's left hand walks down from middle C one white key at a time to the {x} on the bass staff. {if w == 0 then \"How many keys does he press, counting middle C and the \" else \"Then he walks back up to middle C and presses it again. How many keys does he press in all, counting the \"}{x}{if w == 0 then \"?\" else \" once?\"}" narrate width=12 right-of=gs gap=1
+    number-input answer below=gs gap=1
+  }
+
+  answer (if w == 0 then k + 5 else 2 * (k + 5) - 1)
+  feedback {
+    when (w == 0 and answer == k + 4) point=gs {
+      say "Count middle C as the first key and the {x} as the last."
+    }
+    when (w == 1 and answer == 2 * (k + 5)) point=gs {
+      say "The {x} is pressed once, at the turn: down to it and then up from it. Count it once."
+    }
+  }
+  hint "{if w == 0 then \"Say the letters from C down to \" else \"Count the keys down first, then the keys back up, and do not count the \"}{x}{if w == 0 then \": C, B, A, G and on. Count them.\" else \" twice.\"}"
+  hint "{if w == 0 then \"Both ends count.\" else \"Down and up together, with the turning key once.\"}"
+}

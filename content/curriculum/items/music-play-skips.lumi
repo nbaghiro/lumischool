@@ -1,0 +1,11 @@
+item music.play-skips v=1 skills=[music.intervals] {
+  title "Skip, skip"
+
+  scene 26x14 {
+    text ask "Play C, then skip a key to E, then skip a key to G." width=24 at=canvas(1, 1)
+    piano keys from=C4 whites=8 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[C4, E4, G4]
+  hint "Leave out the white key in between each time."
+}

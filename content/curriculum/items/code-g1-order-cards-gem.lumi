@@ -1,0 +1,23 @@
+# The audit's raise for putting cards in order: every order of these three cards reaches the flag on
+# an open grid, so the gem is what decides. In two maps one order passes it, in two maps two orders do.
+item coding.order-cards-gem v=1 skills=[coding.sequences] {
+  title "Order the cards to get the gem"
+  difficulty (if k < 2 then 2 else 1)
+  let k=0..3
+  level easy {
+    let k=2..3
+  }
+  level hard {
+    let k=0..1
+  }
+
+  scene 29x17 {
+    text ask "Put the cards in an order that picks up the gem and ends on the flag." width=27 at=canvas(1, 0)
+    maze g map=["S . . .", "{if k == 0 then \". . * .\" else if k == 1 then \". * . .\" else if k == 2 then \". . . *\" else \". . . .\"}", "{if k == 3 then \"* . . F\" else \". . . F\"}"] below=ask gap=1
+    codepad answer tray=["right 2", "down 2", "right 1"] lines=3 once=true words=false right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=both
+  hint "Every order gets to the flag. Which way does the path have to go to walk over the gem?"
+  hint "Put a finger on the gem. Which card takes the robot there from the start?"
+}

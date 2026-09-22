@@ -1,0 +1,15 @@
+item chem.cycle-missing v=1 skills=[chemistry.water-cycle] {
+  title "The missing word"
+  difficulty b
+  let b=0..3
+
+  scene 33x18 {
+    text ask "One word is missing from the key. Which word goes in the box?" width=31 at=canvas(1, 0)
+    watercycle cycle blank=b key=1 plain=0 below=ask gap=0
+    choice pick options=["evaporation", "condensation", "precipitation", "collection"] stack=column right-of=cycle gap=1
+  }
+
+  check chem.state of=cycle pick=stage
+  hint "Find the number in the picture that goes with the empty box. What is happening there?"
+  hint "Is the water going up as vapour, turning into cloud, falling, or running back?"
+}

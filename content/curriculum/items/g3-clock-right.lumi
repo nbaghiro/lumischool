@@ -1,0 +1,35 @@
+# Three clocks, one with its hands at a right angle: the corner of the page as the tester.
+item angles.clock-right v=1 skills=[shapes.angles] {
+  title "Which clock shows a right angle?"
+  difficulty ((if x == 2 or x == 4 then 1 else 0) + (if y == 8 or y == 10 then 1 else 0))
+  let p=0..2 rh={3, 9} x={1, 2, 4, 5} y={7, 8, 10, 11}
+  level easy {
+    let x={1, 5} y={7, 11}  # the other clocks are far from a right angle
+  }
+  level hard {
+    let x={2, 4} y={8, 10}  # the other clocks are a third of a turn or a sixth
+  }
+
+  scene 30x18 {
+    row clocks at=canvas(1, 1) space=3 align=start {
+      column ca space=1 align=centre {
+        clock c1 h=(if p == 0 then rh else x) m=0
+        text l1 "A"
+      }
+      column cb space=1 align=centre {
+        clock c2 h=(if p == 1 then rh else if p == 0 then x else y) m=0
+        text l2 "B"
+      }
+      column cc space=1 align=centre {
+        clock c3 h=(if p == 2 then rh else y) m=0
+        text l3 "C"
+      }
+    }
+    text ask "On which clock do the two hands make a right angle?" width=28 below=clocks gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else if p == 1 then "B" else "C")
+  hint "Hold the corner of a page between the hands. Where does it fit exactly?"
+  hint "A right angle is a quarter of a turn. Which clock has its hands a quarter of the way round from each other?"
+}

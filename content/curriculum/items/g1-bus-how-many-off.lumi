@@ -1,0 +1,25 @@
+item sub.bus-how-many-off v=1 stars=2 skills=[subtraction.change-unknown] {
+  title "How many got off"
+  difficulty (n - left)
+  let n=8..12 left=2..7
+  where (left < n)
+  where (n - left != left)
+
+  scene 32x17 {
+    bus ride windows=12 on=left sign="9" at=canvas(1, 1)
+    text ask "{n} people were on the bus. Some got off at the stop, and now the bus looks like this. How many got off?" width=28 below=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - left)
+  feedback {
+    when (answer == left) point=ride {
+      say "{left} are still on the bus. How many are missing from the {n}?"
+    }
+    when (answer == n + left) point=ride {
+      say "Getting off makes the number smaller. Count up from {left} to {n}."
+    }
+  }
+  hint "How many are on the bus now?"
+  hint "Count up from that number to {n}. That is how many got off."
+}

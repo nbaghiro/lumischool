@@ -1,0 +1,24 @@
+item physics.three-forces v=1 skills=[physics.forces] stars=3 {
+  title "Three forces"
+  difficulty (a + b + c)
+  let a=2..6 c=2..6 b=3..9
+  where (a + c > b)
+
+  scene 20x18 {
+    forces f thing=trolley push=a pull=c oppose=b at=canvas(1, 0)
+    text ask "A push and a pull act to the right, and a force pushes back to the left. How many newtons are left over?" narrate width=18 below=f gap=0
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + c - b)
+  feedback {
+    when ((answer == a - b or answer == c - b or answer == b - a or answer == b - c) and answer != a + c - b) point=f {
+      say "Two forces go right. Put them together before taking the other one away."
+    }
+    when (answer == a + b + c) point=f {
+      say "One of the forces points the other way, so it takes away."
+    }
+  }
+  hint "Which forces go the same way?"
+  hint "Add those, then take away the one going the other way."
+}

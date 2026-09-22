@@ -1,0 +1,38 @@
+# The way in: three letters drawn with their starting dots and arrows, and the one that starts
+# like c, near the top with a curl to the left. The others start straight down or on a slant.
+item writing.starts-with-curl v=1 skills=[writing.letter-formation] {
+  title "Which one starts like c?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3 p=0..2
+  let f={pick(k, "o", "a", "d", "g")}
+  let x={pick(k, "l", "n", "h", "y")}
+  let y={pick(k, "v", "t", "b", "p")}
+  let l1={pick(p, f, x, y)}
+  let l2={pick(p, x, y, f)}
+  let l3={pick(p, y, f, x)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x21 {
+    row three at=canvas(1, 1) space=2 align=end {
+      formletter a letter=l1 copies=0 write=0 label=false
+      formletter b letter=l2 copies=0 write=0 label=false
+      formletter c letter=l3 copies=0 write=0 label=false
+    }
+    text ask "Look at the dot and the arrow on each letter. Which one starts like c, near the top and curling round to the left?" narrate width=32 below=three gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else if p == 1 then "C" else "B")
+  feedback {
+    when (pick != (if p == 0 then "A" else if p == 1 then "C" else "B")) point=three {
+      say "Find each letter's dot. The curly family starts near the top and the first arrow curls to the left, like the start of a circle."
+    }
+  }
+  hint "Where is the pink dot on each letter, and which way does the first arrow go?"
+  hint "The curly letters all begin the way c does: round to the left."
+}

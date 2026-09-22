@@ -1,0 +1,19 @@
+# The material and its reason: the four reasons are always the same four, and each version needs a
+# different one.
+item chem.why-material v=1 skills=[chemistry.materials] {
+  title "Why that material?"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 2}  # the window and the towel; medium's own seed already draws the raincoat and the hair band
+  }
+
+  scene 24x18 {
+    text ask "{if k == 0 then \"A window is made of glass. Why?\" else if k == 1 then \"A raincoat is made of plastic. Why?\" else if k == 2 then \"A towel is made of fabric. Why?\" else \"A hair band is made of rubber. Why?\"}" width=23 at=canvas(1, 0)
+    choice pick options=["It is see-through", "It keeps water out", "It soaks up water", "It stretches and goes back"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It is see-through" else if k == 1 then "It keeps water out" else if k == 2 then "It soaks up water" else "It stretches and goes back")
+  hint "What is the thing for? What has it got to do?"
+  hint "Which of these would help it do that job?"
+}

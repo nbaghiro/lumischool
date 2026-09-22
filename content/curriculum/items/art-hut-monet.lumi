@@ -1,0 +1,24 @@
+# The story: the painter's hut, where the same meadow is painted at three times in a day, and how many
+# paintings that makes over a few days.
+item art.hut-monet v=1 skills=[art.light, multiplication.groups] {
+  title "Three times a day"
+  difficulty days
+  let days=2..5
+  let total={pick(days - 2, 6, 9, 12, 15)}
+  level easy {
+    let days=2..2
+  }
+  level hard {
+    let days=5..5
+  }
+
+  scene 21x25 {
+    layers meadow labels=false ring=-1 sun=true light="morning" at=canvas(1, 0)
+    text ask "Mia paints the meadow from the painter's hut three times a day, in the morning, at noon and at dusk. She does that on {days} days one after another. How many paintings is that?" narrate width=20 below=meadow gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=total
+  hint "Three paintings on each day."
+  hint "Count in threes, once for each day."
+}

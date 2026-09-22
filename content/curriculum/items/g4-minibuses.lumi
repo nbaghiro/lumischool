@@ -1,0 +1,28 @@
+# The remainder means one more of something: a part-full bus still has to go.
+item division.buses-needed v=1 skills=[division.remainders] {
+  title "How many minibuses"
+  difficulty ((if k == 11 then 0 else 2) + n / 10)
+  let k={8, 9, 11} n=40..95
+  where (n % k != 0)
+  level easy {
+    let k={11} n=40..60
+  }
+  level hard {
+    let k={8, 9} n=70..95
+  }
+
+  scene 33x17 {
+    bus van windows=k on=0 sign="{k}" at=canvas(1, 1)
+    text ask "Each minibus has {k} seats. {n} children are going on a trip. How many minibuses are needed?" narrate width=31 below=van gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n // k + 1)
+  feedback {
+    when (answer == n // k) point=van {
+      say "That many buses are full, but {n % k} children still need a seat."
+    }
+  }
+  hint "How many children fill one bus? How many full buses can you make?"
+  hint "Is anyone left without a seat?"
+}

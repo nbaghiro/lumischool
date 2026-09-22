@@ -1,0 +1,49 @@
+lesson coding-trace-it-in-a-table v=2 format=teach grade=4 unit=7 subject=coding levels=[easy, medium, hard] {
+  title "Trace it in a table"
+  goal "Trace a program with a repeat and changing numbers in a table, one row a step, and work back from the end."
+
+  look {
+    scene 33x17 {
+      row both at=canvas(1, 0) space=1 align=start {
+        program p code=["set n to 1", "repeat 3", "  add 2 to n"]
+        tracetable tr code=["set n to 1", "repeat 3", "  add 2 to n"] show=value name=n filled=-1
+      }
+    }
+    say """
+      A trace table has a row for every step the program takes, and says what n holds after it. The
+      repeat line gets a row each time round, and n does not change on those rows. Reading down the
+      last column is watching n change.
+      """
+  }
+  do {
+    practice coding.trace-row count=1 seed=2 easy-seed=3
+    practice coding.trace-value count=2 seed=4
+    practice coding.trace-double count=2 seed=3
+    practice coding.trace-start count=1 seed=5 easy-seed=3
+    practice coding.trace-two count=1 seed=1
+    practice coding.trace-until count=1 seed=6
+  }
+  try stars=2 {
+    show coding.trace-mistake a=2 b=3 w=4 easy-w=3 hard-w=6
+  }
+  try stars=3 {
+    show coding.trace-pairs c=2 t=11 easy-c=3 easy-t=10 hard-t=14
+  }
+  remember {
+    say "One row a step. Write what n holds after each one, and when the end is given, work back up the table."
+  }
+
+  grown-ups """
+    Tracing is the skill that lets a child find a bug without a computer, and it is the one most
+    worth practising slowly. Ask for the table first and the answer second, even when the answer
+    looks obvious. In the running total, a table with a column for each name keeps them apart. In
+    the two-star question Leo changed n on a repeat row, which is the commonest tracing slip. The
+    three-star question has five pairs; a table of the five repeat counts finds them all.
+    """
+  level easy {
+    grown-ups "At this level the table is read at step 3, the first add, n adds two three times, the doubling starts from one to three and doubles twice, the start is found from a total of thirteen, the running total goes round three times, the until stops past twelve after adding four or five, Leo's first wrong row is the third, and the three-star has three pairs that reach ten in threes."
+  }
+  level hard {
+    grown-ups "At this level the table is read at step 5, the second add, n starts at three or four and adds three three times, the doubling starts from three to five and doubles three times, the start is found from a total of seventeen or more with four or five added each time, the running total is as written, since the lesson already goes round five times, the until stops past twenty after adding three, Leo's first wrong row is the sixth, a repeat row late in the table, and the three-star has three pairs that reach fourteen in twos, with two more that would start above nine."
+  }
+}

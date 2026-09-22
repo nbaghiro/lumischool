@@ -1,0 +1,28 @@
+# The first page teaches what the open strings and frets 1 and 3 play on strings 1 and 2; here the
+# child reads a place and names its note, which is how a tune in tab becomes a tune.
+item music.tab-note-name v=1 skills=[music.tab, music.note-names] {
+  title "Which note is it?"
+  difficulty (s - 1)
+  let s=1..2 f={0, 1, 3}
+  level easy {
+    let s={1}  # E, F, G
+  }
+  level hard {
+    let s={2}  # B, C, D
+  }
+
+  scene 32x11 {
+    tab lines tuning=guitar notes=["s{s}f{f}"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    text ask "Which note does this play?" width=20 right-of=lines gap=1
+    choice pick options=["E", "F", "G", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=(if s == 1 then if f == 0 then "E" else if f == 1 then "F" else "G" else if f == 0 then "B" else if f == 1 then "C" else "D")
+  feedback {
+    when (pick == (if s == 1 then "B" else "E") and f == 0) point=lines {
+      say "Check which line the number is on. The top line is string 1, the thinnest."
+    }
+  }
+  hint "Which string is it on, and what does that string play open?"
+  hint "Each fret moves the note up. What comes after the open note?"
+}

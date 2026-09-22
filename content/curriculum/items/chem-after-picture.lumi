@@ -1,0 +1,33 @@
+# The way in: a kitchen change with its after picture hidden, and what comes out. The changes
+# that make something new (toast, a fried egg, a cake) are the plain ones; the ones that can be
+# undone (chocolate melting, ice melting) ask for the same stuff in a new state.
+item chem.after-picture v=1 skills=[chemistry.changes] {
+  title "What does she get?"
+  difficulty (if c == "melt-chocolate" or c == "melt-ice" or c == "freeze-water" then 1 else 0)
+  let c={"toast-bread", "cook-egg", "bake-cake", "melt-chocolate", "melt-ice", "freeze-water"} r=0..2
+  let did={if c == "toast-bread" then "puts a slice of bread in the toaster" else if c == "cook-egg" then "cracks a raw egg into the hot pan" else if c == "bake-cake" then "puts the cake mix in the oven" else if c == "melt-chocolate" then "warms a bar of chocolate in a bowl" else if c == "melt-ice" then "leaves an ice cube on the warm table" else "puts a cup of water in the freezer"}
+  let right={if c == "toast-bread" then "toast" else if c == "cook-egg" then "a fried egg" else if c == "bake-cake" then "a cake" else if c == "melt-chocolate" then "runny chocolate" else if c == "melt-ice" then "water" else "ice"}
+  let w1={if c == "toast-bread" then "a cake" else if c == "cook-egg" then "toast" else if c == "bake-cake" then "a fried egg" else if c == "melt-chocolate" then "a chocolate cake" else if c == "melt-ice" then "steam" else "cold water"}
+  let w2={if c == "toast-bread" then "a bigger slice of bread" else if c == "cook-egg" then "a bigger raw egg" else if c == "bake-cake" then "runny chocolate" else if c == "melt-chocolate" then "chocolate crumbs" else if c == "melt-ice" then "a smaller ice cube" else "steam"}
+  level easy {
+    let c={"toast-bread", "cook-egg", "bake-cake"}
+  }
+  level hard {
+    let c={"melt-chocolate", "melt-ice", "freeze-water"}
+  }
+
+  scene 30x23 {
+    beforeafter ch change=c show=0 names=1 at=canvas(1, 0)
+    text ask "Ada {did}. What does she get?" narrate width=28 below=ch gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=ch {
+      say "Look at what was done to it. Heat and cold change things, they do not shrink them or grow them."
+    }
+  }
+  hint "What did the heat, or the cold, do to it? Picture the kitchen."
+  hint "Bread that is heated goes brown and crisp. Chocolate that is warmed goes runny. Water that is cooled goes hard."
+}

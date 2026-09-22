@@ -1,0 +1,29 @@
+# England's Year 4 asks for the rate of evaporation and temperature: warm and windy dries faster.
+item chem.evaporate-faster v=1 skills=[chemistry.evaporating] {
+  title "Which dries first?"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..2 f=0..1
+  level easy {
+    let k={0}  # a sunny windowsill against a cool cupboard
+  }
+  level hard {
+    let k={2}  # the wind against a still room
+  }
+
+  scene 29x15 {
+    text ask "Glass A is {if (f == 0) then (if k == 0 then \"on a sunny windowsill\" else if k == 1 then \"on a warm shelf above a heater\" else \"outside in the wind\") else (if k == 0 then \"in a cool cupboard\" else if k == 1 then \"in a cold garage\" else \"in a still room\")}. Glass B is {if (f == 0) then (if k == 0 then \"in a cool cupboard\" else if k == 1 then \"in a cold garage\" else \"in a still room\") else (if k == 0 then \"on a sunny windowsill\" else if k == 1 then \"on a warm shelf above a heater\" else \"outside in the wind\")}. Which will be dry first?" width=24 at=canvas(1, 0)
+    row two below=ask gap=0 space=2 align=end {
+      mixture a things=["salt", ""] water=1 names=0
+      mixture b things=["salt", ""] water=1 names=0
+    }
+    row letters below=two gap=0 space=10 align=start {
+      text la "A"
+      text lb "B"
+    }
+    choice pick options=["A", "B"] right-of=two gap=1
+  }
+
+  answer pick=(if f == 0 then "A" else "B")
+  hint "Which glass is warmer, or out in the wind?"
+  hint "Does water turn to vapour faster where it is warm and windy, or where it is cold and still?"
+}

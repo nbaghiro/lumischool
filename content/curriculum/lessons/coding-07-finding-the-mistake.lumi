@@ -1,0 +1,41 @@
+lesson coding-finding-the-mistake v=3 format=worked grade=2 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "Finding the mistake"
+  goal "Find the block that is wrong by comparing what a program drew with what it should have drawn."
+
+  example {
+    worked coding.find-the-bug w=5 b=2 easy-w=3 easy-b=2 hard-w=5 hard-b=1
+    say """
+      Run the program and watch where it stops matching the pale square. The first two sides are
+      fine; the gap appears on the way back, so the block that goes back is the one to look at.
+      """
+  }
+  exercises {
+    practice coding.bump-which-block count=2 seed=4
+    practice coding.find-the-bug count=1 seed=2 easy-seed=7
+    practice coding.robot-stops-short count=2 seed=3 easy-seed=2
+    show coding.bug-sides w=3 hard-w=4
+    say "A repeat can be the bug too: here it goes round too few times."
+    practice coding.steps-repeat count=2 seed=5
+  }
+  try stars=2 {
+    show coding.opposite-sides-bug w=4 h=2 k=3 d=-1 easy-w=3 easy-k=1 easy-d=1 hard-k=4
+  }
+  try stars=3 {
+    show coding.build-shorter k=0 hard-k=1
+  }
+
+  grown-ups """
+    A bug is not a failure, it is information: the drawing tells you which block to look at. Resist
+    pointing at the block, and ask instead where the drawing first stopped being a square. A repeat
+    that runs too few or too many times is the bug children meet most often at this age. In the
+    two-star question the wrong number does not look odd, because a rectangle has two lengths
+    anyway: ask which side is not as long as the side opposite it. The three-star question asks
+    for a program that works and is short, so the pattern has to be seen before it can be mended.
+    """
+  level easy {
+    grown-ups "At this level the worked square has sides of three, the way back is two squares short, so the gap is plain, the rock is met on the first or second block, the wrong block in the two-block program is the first, the staircases have two or three steps, and the wrong side of the rectangle is the first one and sticks out of the pale shape."
+  }
+  level hard {
+    grown-ups "At this level the worked square has sides of five and the way back is one square short, the rock is met on the third or fourth block, the wrong block is the second and the flag is further away, the staircases have three or four steps with one or two missing, the square with three sides has sides of four, the wrong side of the rectangle is the last one and stops one square short of closing, and the pattern to mend starts with a down."
+  }
+}

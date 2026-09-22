@@ -1,0 +1,38 @@
+# The rule turned round: from the loudness wanted to the distance to stand at. Louder means nearer
+# and quieter means further, and the hard version asks for the same loudness as someone else,
+# which is the same distance.
+item physics.nearer-or-further v=1 skills=[physics.sound] {
+  title "Nearer or further?"
+  difficulty pick(k, 0, 0, 1)
+  let k=0..2
+  let ask={pick(k, "Mia wants the drum to sound louder. Where should she stand?", "Mia wants the drum to sound quieter. Where should she stand?", "Ben wants to hear the drum just as loud as Mia does. Where should he stand?")}
+  let right={pick(k, "nearer to the drum", "further from the drum", "the same distance as Mia")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x30 {
+    ricedrum drum hit=2 at=canvas(1, 1)
+    children a count=1 names=["Mia"] at=canvas(22, 2)
+    text ask "{ask}" narrate width=32 below=drum gap=1
+    choice pick options=["nearer to the drum", "further from the drum", "the same distance as Mia"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "further from the drum") point=a {
+      say "Further away, the sound has faded more by the time it reaches her. To hear it louder, she goes towards the drum."
+    }
+    when (k == 1 and pick == "nearer to the drum") point=a {
+      say "Nearer the drum the sound is louder, not quieter. To hear it quieter, she goes away from it."
+    }
+    when (k == 2 and pick != "the same distance as Mia") point=a {
+      say "Nearer than Mia would be louder, and further would be quieter. Just as loud means just as far from the drum."
+    }
+  }
+  hint "Is the drum louder close by, or far away?"
+  hint "How loud a sound is depends on how far away you are from it."
+}

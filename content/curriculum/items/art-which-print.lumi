@@ -1,0 +1,21 @@
+item art.which-print v=1 skills=[art.printing, art.symmetry] {
+  title "Which print does the block make?"
+  difficulty s
+  let s=1..6 k=0..2
+  level easy {
+    let s=1..3
+  }
+  level hard {
+    let s=4..6
+  }
+
+  scene 34x14 {
+    mirrorpick m seed=s rows=4 cols=3 answer=k kind="print" at=canvas(1, 1)
+    text ask "A block is pressed onto paper. Which print does it make?" width=14 right-of=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check paint.mirror of=m pick=mirror
+  hint "Look at the square in the top left corner of the block. Where will it be in the print?"
+  hint "The paper lies face to face with the block. What happens to left and right?"
+}

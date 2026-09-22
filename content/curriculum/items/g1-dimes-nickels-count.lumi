@@ -1,0 +1,23 @@
+# Two facts about the same coins, how many and how much, with no method on the page: guess, check, adjust.
+item money.dimes-and-nickels v=1 stars=3 skills=[money.count-coins, reasoning.guess-and-check] {
+  title "How many dimes"
+  difficulty (n + d)
+  let n=3..6 d=1..5
+  where (d < n)
+  where (2 * d != n)  # then the dimes and the nickels are the same number
+
+  scene 30x12 {
+    coins key quarters=0 dimes=1 nickels=1 pennies=0 at=canvas(1, 1)
+    text ask "Kai has {n} coins. They are dimes and nickels, and together they make {5 * n + 5 * d} cents. How many dimes does he have?" narrate width=28 below=key gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == n - d) point=key {
+      say "That is how many nickels. Check: how many cents would that make?"
+    }
+  }
+  hint "Guess how many dimes. The rest of the coins are nickels. How many cents is that?"
+  hint "Too many cents? Swap a dime for a nickel. Too few? Swap a nickel for a dime."
+}

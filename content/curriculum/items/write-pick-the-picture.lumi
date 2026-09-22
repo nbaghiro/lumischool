@@ -1,0 +1,38 @@
+# The picture that fits a notice's ask, from three drawn.
+item writing.pick-the-picture v=1 skills=[writing.persuasion, writing.layout] {
+  title "Which picture?"
+  difficulty k
+  let k=0..2 p=0..2
+  let ask2={pick(k, "Keep the harbour clean", "Come to the cake sale", "Lost: a kite, red with a long tail")}
+  let good={pick(k, "boat", "birthday-table", "kite")}
+  let x={pick(k, "rocket", "bicycle", "cup")}
+  let y={pick(k, "hen", "cat", "duck")}
+  let a={pick(p, good, x, y)}
+  let b={pick(p, x, y, good)}
+  let c={pick(p, y, good, x)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x22 {
+    text ask "The notice says: {ask2}. Which picture belongs on it?" narrate width=32 at=canvas(1, 1)
+    row three below=ask gap=1 space=1 align=end {
+      art pa asset="{a}"
+      art pb asset="{b}"
+      art pc asset="{c}"
+    }
+    choice pick options=["the first", "the second", "the third"] below=three gap=1
+  }
+
+  answer pick=(if p == 0 then "the first" else if p == 1 then "the third" else "the second")
+  feedback {
+    when (pick != (if p == 0 then "the first" else if p == 1 then "the third" else "the second")) point=three {
+      say "A notice's picture shows the thing the ask is about, so a reader knows at a glance. Which picture is that thing?"
+    }
+  }
+  hint "What is the notice about? Find that thing among the pictures."
+  hint "A picture that has nothing to do with the ask only puzzles the reader."
+}

@@ -1,0 +1,27 @@
+# A run of four notes from the phrase played from the staff in C position: bar 2, or from the second
+# note of bar 2 to the first of bar 3, across the line. music.plays hears a repeated note as one, so
+# the runs are the phrase's four-note stretches with no note played twice in a row.
+item music.phrase-play-bar v=1 skills=[music.staff, music.keys] {
+  title "Play a run"
+  let s=0..1
+  let what={pick(s, "all of bar 2", "from the second note of bar 2 to the first note of bar 3")}
+  let n1={pick(s, "G4", "F4")}
+  let n2={pick(s, "F4", "E4")}
+  let n3={pick(s, "E4", "D4")}
+  let n4={pick(s, "D4", "C4")}
+
+  scene 36x37 {
+    column lines space=1 align=start at=canvas(1, 1) {
+      notes l1 clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4
+      notes l2 clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4
+    }
+    row low space=2 align=start below=lines gap=1 {
+      piano keys from=C4 whites=5 wide=3 labels=letters fingers=[1, 2, 3, 4, 5]
+      text ask "Right hand in C position. Play {what}: four notes." narrate width=17
+    }
+  }
+
+  check music.plays notes=[{n1}, {n2}, {n3}, {n4}]
+  hint "Name the four notes before you play. Where does the line break come?"
+  hint "Each finger has its own key: 1 on C up to 5 on G, so the hand does not move."
+}

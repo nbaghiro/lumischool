@@ -1,0 +1,59 @@
+# Strumming as arrows on the half beats. The first rule every teacher gives is that the hand never
+# stops: down on the numbers, up on the "and", touching the strings or not.
+lesson music-uke-strumming v=1 format=teach grade=2 unit=4 subject=music levels=[easy, medium, hard] {
+  title "Strumming on the beat"
+  goal "Read a strum pattern of down and up arrows, count its strums, and strum A minor."
+
+  look {
+    scene 22x18 {
+      strumtrack downs strums=D-D-D-D- counts=true chord=C ring=-1 at=canvas(1, 1)
+      strumtrack island strums=D-DU-UDU counts=true chord=none ring=-1 below=downs gap=1
+    }
+    say """
+      A long arrow is a strum down, on a number. A short arrow is a strum up, on the "and". A dot
+      is the hand going past.
+      """
+  }
+  do {
+    show music.strum-clap
+    show music.uke-strum-am
+    show music.uke-count-ups
+    practice music.strum-which-bar count=1 seed=2
+    level easy {
+      worked music.strum-ringed-count r=5 level=medium
+    }
+    practice music.strum-ringed-count count=1 seed=4
+    practice music.strum-ringed-kind count=1 seed=3
+    show music.uke-count-strums
+    practice music.strum-two-bars count=1 hard-count=0 seed=5
+    level hard {
+      practice music.strum-rule-breaker count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show music.strum-rule-breaker q=1 hard-q=2
+  }
+  try stars=3 {
+    show music.strum-how-many-bars u=2 easy-u=1
+  }
+  remember {
+    say "Down on the numbers, up on the and. The hand never stops."
+  }
+
+  grown-ups """
+    Count out loud together, "1 and 2 and", while the child swings the strumming hand in time
+    without touching the strings; then let it touch. Strum with the thumb going down and the nail of
+    the pointer finger coming up. The counting is checked on the page; the steadiness is yours to hear.
+
+    Clapping the strum first takes the chord away, so all that is left is the rhythm. In the
+    two-star question the rule is the whole point: a down strum belongs on a number and an up strum
+    on an and. The three-star question has no method given; a child who writes down which ands they
+    chose for each bar will not count one twice.
+    """
+  level easy {
+    grown-ups "At this level the clap, the A minor strum and the counts are as written, a ring on an and is counted once in the teacher's pen before rings on the numbers, the bar to find has all its strums counted or no up strums, the ringed mark is an arrow, the two bars are counted together or for their up strums, the two-star is as written, and the three-star adds one up strum."
+  }
+  level hard {
+    grown-ups "At this level the clap, the A minor strum and the counts are as written, the bar to find is found by its up strums, the ringed strum is on an and or late in the bar, the ringed mark is an up strum or a dot, the two bars make way for a second bar that breaks the rule, the two-star asks for the bar that keeps the rule all the way, and the three-star is as written."
+  }
+}

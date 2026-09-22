@@ -1,0 +1,24 @@
+# Half of a number run backwards: from the half that is left to the whole there was.
+item fraction.whole-from-half v=1 stars=2 skills=[fractions.half-of-a-number, reasoning.work-backwards] {
+  title "How many at the start"
+  difficulty n
+  let n=2..6
+
+  scene 28x19 {
+    cake c candles=n slices=0 at=canvas(1, 0)
+    text ask "Half of the candles went out and were taken off. These are the ones still lit. How many candles were on the cake at the start?" narrate width=26 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * n)
+  feedback {
+    when (answer == n) point=c {
+      say "That is the half still lit. The other half went out."
+    }
+    when (answer == n + 1) point=c {
+      say "Half went out, so as many went out as are still lit."
+    }
+  }
+  hint "If half went out, how many went out compared with how many are lit?"
+  hint "Put the two halves together."
+}

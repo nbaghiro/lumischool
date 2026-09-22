@@ -1,0 +1,10 @@
+item art.opposites-painting v=1 stars=3 skills=[art.complementary, art.painting, reasoning.plan] {
+  title "Opposites side by side"
+
+  scene 36x16 {
+    text ask "Paint an orange fish in a blue sea, keeping the two apart so each looks brighter. Then mix a little of each into the other for the shadows." width=11 at=canvas(1, 1)
+    paintsheet sheet w=20 h=11 paper="plain" guide="none" outline="fish" pots=["orange", "blue", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Orange and blue side by side and kept apart where they meet, so the fish stands out from the sea, and shadows made by mixing a little of each colour into its opposite, which dulls it without black." notice=["Orange and blue kept apart where they meet", "Shadows mixed from the opposite colour", "The fish standing out from the sea"] ask="What happened where the orange met the blue?"
+}

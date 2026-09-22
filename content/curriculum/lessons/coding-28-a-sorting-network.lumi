@@ -1,0 +1,45 @@
+lesson coding-a-sorting-network v=2 format=teach grade=4 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "A sorting network"
+  goal "Walk numbers through a sorting network on paper, say where each one is at any bridge, and tell when a network does not sort."
+
+  look {
+    scene 14x17 {
+      sortnet n inputs=[4, 1, 3, 2] pairs=[1, 2, 3, 4, 1, 3, 2, 4, 2, 3] outputs=true at=canvas(1, 0)
+    }
+    say """
+      Numbers go in at the top and walk down their lines. Wherever a bridge joins two lines, the two
+      numbers meet there: the smaller goes on down the left line and the bigger down the right. At
+      the bottom they come out in order, whatever order they went in.
+      """
+  }
+  do {
+    practice coding.net-bridge count=1 seed=4
+    practice coding.net-first-two count=2 seed=3 easy-seed=1 hard-seed=1
+    practice coding.net-out count=2 seed=4 hard-seed=11
+    practice coding.net-not-sorted count=3 easy-count=2 seed=2 easy-seed=4
+  }
+  try stars=2 {
+    show coding.net-sorted-or-not a=1 b=3 c=2 d=4 easy-b=2 easy-c=3 hard-a=3 hard-b=1 hard-c=4 hard-d=2
+  }
+  try stars=3 {
+    show coding.net-design k=0
+  }
+  remember {
+    say "At every bridge, the smaller goes left. Follow each number to the bottom, and check a network before you trust it."
+  }
+
+  grown-ups """
+    Chalk the network on the ground and let four people walk it holding numbers. It sorts without
+    anyone looking at more than two numbers at once, and several bridges can happen at the same
+    time, which is how a computer with many parts sorts quickly. The networks with four bridges
+    are missing the last one, so they sort some orders and not others: that is why the child has to
+    walk every number rather than write the answers in order. The three-star network needs three
+    bridges at the fewest, and there is more than one right way to place them.
+    """
+  level easy {
+    grown-ups "At this level the two numbers at the first bridge are five or more apart, the questions after the first two bridges ask about lines 1 and 2, the numbers walked to the bottom swap at two bridges only, the four-bridge network gets two sets of numbers that walk straight down it, Kit's network is given 1, 2, 3, 4, which come out in order, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the two numbers at the first bridge are two apart or less, the questions after the first two bridges ask about lines 3 and 4, the numbers walked to the bottom swap at four bridges, the four-bridge network gets numbers that swap on the way and still come out wrong, Kit's network is given 3, 1, 4, 2, which swap at every bridge and come out with the middle pair the wrong way round, and the three-star is as written."
+  }
+}

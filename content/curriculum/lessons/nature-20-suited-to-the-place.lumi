@@ -1,0 +1,70 @@
+lesson nature-suited-to-the-place v=1 format=teach grade=4 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Suited to the place"
+  goal "Say how the creatures of the desert and the cold sea are suited to heat, cold, sand and water."
+
+  look {
+    scene 36x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          oasis pool water=1 bloom=0
+          camel pc count=1 resting=0 facing=-1
+          fennec pf facing=-1
+        }
+        row low space=1 align=end {
+          seal ps rock=1 facing=1
+          gull pg flying=1
+        }
+      }
+    }
+    say """
+      Ada has seen two places that could not be more different. At the oasis the sand is hot and
+      there is no water for days: the camel crosses it on wide soft feet, keeps sand out of its
+      eyes with long lashes, and lives off the fat in its hump, and the fennec fox hunts at night
+      and lets the heat out through its huge ears. At the reef the sea is cold: the seal is
+      wrapped in a thick layer of fat and swims with flippers. Every body answers its place.
+      """
+  }
+  do {
+    level easy {
+      worked nature.desert-creature k=0
+    }
+    practice nature.desert-creature count=2 seed=3 easy-seed=7 easy-count=1 hard-seed=1
+    practice nature.feature-need count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.match-need count=1 seed=1 easy-seed=2 hard-seed=7
+    practice nature.heat-or-water count=2 seed=1 easy-seed=1 easy-count=1 hard-seed=1
+    level hard {
+      show nature.wrong-coat k=1 level=medium
+    }
+  }
+  story {
+    show nature.camel-drinks n=3 l=60 easy-n=2 easy-l=40 hard-n=5 hard-l=80
+  }
+  try stars=2 {
+    show nature.wrong-coat k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.oasis-creature k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A body answers its place: fat for the cold, wide feet for sand, big ears to let heat out, a hump to live on."
+  }
+
+  grown-ups """
+    The idea is the same as at the seashore, one grade on: a feature is an answer to what a place
+    throws at a creature, and the desert throws heat, dryness and sand. The wrong idea to watch for
+    is the camel's hump being full of water; it is fat, and the water is held through the body
+    after one enormous drink. The fennec's ears are the other one: they are for letting heat out,
+    not for hearing. The story multiplies litres. The two-star question turns a feature against
+    its owner in the wrong place, and the reason should name the feature. The three-star question
+    picks two features for two needs from a list that mixes the desert's with the cold sea's, and
+    the way in is to cross out everything made for cold or water first. If features are still
+    named without their jobs after the core, stay here another day and look at your own coat and
+    shoes: what are they for, and where would they be wrong?
+    """
+  level easy {
+    grown-ups "At this level a worked example (the camel in the desert) opens the core, the creature to place is the seal in the cold sea, the features asked about are the camel's feet and the seal's fat, the matching is as written, the heat question is the fennec's ears, two camels drink forty litres each, Ben's seal is in the desert at noon, and the creature to build walks on sand and goes without food."
+  }
+  level hard {
+    grown-ups "At this level the creatures to place are the fennec fox and the gull, the features asked about are the fennec's ears and the camel's hump, the questions are which feature keeps the camel going without a drink and which is for the sand, a second reasoning question in the core has the fennec on the ice, five camels drink eighty litres each, Ben's camel is on the ice, and the creature to build crosses a sandstorm and stays cool."
+  }
+}

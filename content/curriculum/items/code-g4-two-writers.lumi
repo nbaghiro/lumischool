@@ -1,0 +1,22 @@
+# Two programs for the same rectangle: the left one's repeat of 2 draws it when both its numbers are
+# right, and the right one's repeat of 4 draws four equal sides, which is right only when the shape
+# is a square. All four answers happen, so both programs have to be checked.
+item coding.two-writers v=1 stars=2 skills=[coding.drawing, coding.comparing] {
+  title "Which program is right?"
+  difficulty (if w != h and e == 1 then 3 else if w == h then 2 else 1)
+  let w=2..3 h=2..3 e=0..1
+
+  scene 36x19 {
+    text ask "Starting at the ring, facing right, which program draws the pale shape?" width=35 at=canvas(1, 0)
+    row all below=ask gap=1 space=1 align=start {
+      turtle t cols=(w + 1) rows=(h + 1) col=1 row=(h + 1) moves=[] target=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+      blocks pa code=["repeat 2", "  forward {w}", "  turn left", "  forward {h + e}", "  turn left"]
+      blocks pb code=["repeat 4", "  forward {w}", "  turn left"]
+    }
+    choice pick options=["left", "right", "both", "neither"] below=all gap=1
+  }
+
+  answer pick=(if w == h and e == 0 then "both" else if w == h then "right" else if e == 0 then "left" else "neither")
+  hint "Follow each program with a finger. How many sides does each one draw, and how long is each side?"
+  hint "The right one draws four sides of the same length. The left one draws two lengths. Which lengths does the pale shape have?"
+}

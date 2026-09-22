@@ -1,0 +1,69 @@
+lesson science-living-things v=2 format=teach grade=2 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "Plants and animals"
+  goal "Name the parts of a plant and of a fish, and say what each part does."
+
+  look {
+    scene 27x25 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row two space=2 align=end {
+          parts plant of=plant
+          parts fish of=fish
+        }
+        pond pool pads=3 fish=2 frog=true
+      }
+    }
+    say """
+      Ada kneels on the bank of the marsh pond. A plant grows beside her: roots down in the mud,
+      a stem, leaves, and a flower at the top. Under the water a fish swims past: a mouth at the
+      front, a body covered in scales, a fin on its back and a tail behind. Every part has a job.
+      The roots drink and the mouth eats. The stem holds the leaves up to the light, and the tail
+      pushes the fish along.
+      """
+  }
+  do {
+    level easy {
+      worked nature.plant-part k=3
+    }
+    practice nature.plant-part count=2 seed=3 easy-seed=1 easy-count=1 hard-seed=1
+    practice nature.fish-part count=2 seed=5 easy-seed=1 hard-seed=1
+    practice nature.part-job count=1 seed=4 easy-seed=1 hard-seed=7
+    practice nature.fish-job count=2 seed=7 easy-seed=1 hard-seed=1
+    practice nature.plant-or-fish count=1 seed=3 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.part-lost k=1
+    }
+  }
+  story {
+    show nature.fish-moves k=1 easy-k=0 hard-k=3
+  }
+  try stars=2 {
+    show nature.part-lost k=0 easy-k=3 hard-k=2
+  }
+  try stars=3 {
+    show nature.labels-swapped k=2 easy-k=0 hard-k=5
+  }
+  remember {
+    say "Roots drink, the stem holds the leaves up, the flower makes seeds. Fins steer, the tail pushes, the mouth eats."
+  }
+
+  grown-ups """
+    The names come first and the jobs come after, and the jobs are the point: a child who can say
+    "roots" but not "roots take in water" has learned a label. Watch for two mix-ups. On the plant,
+    the stem and the leaf are both in the middle of the drawing, and children point at the stem
+    when asked for a leaf; ask what shape a leaf is. On the fish, the fin on its back and the tail
+    are both flaps, and "which part pushes" is answered with the fin; ask which part waves from
+    side to side when a fish swims. The story is one fish doing four things, and each thing is
+    one part's job. The two-star question takes a part away and asks what stops; the child should
+    say the job, not the name. The three-star question is a deduction: two labels right and two
+    wrong means the two wrong ones swapped with each other, and the way in is to ask where the
+    pushed-off label could have gone. If the jobs are still guessed after the core, stay here
+    another day and find a plant outside: pull a weed up gently and look at its roots, then follow
+    the stem up to the leaves.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the roots) opens the core, the plant part asked for is the flower, the fish parts are the tail and the mouth, the jobs are the roots' and the tail's and the mouth's, the stray word in the columns is a flower under fish or a tail under plant, the fish in the story shoots forward with its tail, the plant in the storm loses its flower, and the swapped labels are the flower's and the roots'."
+  }
+  level hard {
+    grown-ups "At this level the plant parts asked for are the leaf and the stem, the fish parts are the fin and the body, the jobs are the stem's and the fin's and the body's, the stray word is scales under plant or a leaf under fish, a second reasoning question sits in the core (a plant with no leaves), the fish in the story turns round a lily pad with its fins, the plant in the storm loses its stem, and the swapped labels are the leaf's and the stem's."
+  }
+}

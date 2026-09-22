@@ -1,0 +1,13 @@
+item writing.which-caption v=1 skills=[writing.captions] {
+  title "The caption that fits"
+  let w={"sandcastle", "boat", "kite"}
+
+  scene 33x15 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Which caption fits the picture?" width=18 right-of=pic gap=1
+    choice pick options=["A sandcastle on the beach", "A boat on the water", "A kite in the sky"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if w == "sandcastle" then "A sandcastle on the beach" else if w == "boat" then "A boat on the water" else "A kite in the sky")
+  hint "A caption says what the picture shows, in a few words."
+}

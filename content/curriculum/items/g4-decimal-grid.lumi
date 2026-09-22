@@ -1,0 +1,27 @@
+# One hundred squares stand for one whole, so a shaded part reads straight off as hundredths.
+item decimal.hundred-grid v=1 skills=[decimals.hundredths] {
+  title "What decimal is shaded"
+  difficulty ((if k % 10 == 0 then 0 else 1) + (if k < 10 then 2 else 0) + k / 100)
+  let k={7, 12, 25, 40, 53, 68, 75, 90}
+  level easy {
+    let k={10, 20, 40, 90}  # whole tenths
+  }
+  level hard {
+    let k={3, 7, 9, 61, 97}  # a zero in the tenths place, or nearly the whole grid
+    hint "How many full rows of ten are shaded? If there are none, what does that say about the tenths digit?"
+  }
+
+  scene 26x21 {
+    grid hundred rows=10 cols=10 shade=k color=sky cell=1 at=canvas(1, 1)
+    text ask "The whole grid is one. What is shaded, as a decimal?" width=22 below=hundred gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(k / 100, 2)
+  feedback {
+    when (answer == k) point=hundred {
+      say "That is how many squares are shaded. A hundred of them make one, so each is 0.01."
+    }
+  }
+  hint "Count the shaded squares. Each one is one hundredth."
+}

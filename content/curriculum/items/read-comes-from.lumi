@@ -1,0 +1,33 @@
+# What a short form comes from: the two whole words behind can't, it's, don't, I'm, isn't.
+item reading.comes-from v=1 skills=[reading.morphology] {
+  title "What does it come from?"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..4 p=0..2
+  let short={pick(k, "can't", "it's", "don't", "I'm", "isn't")}
+  let right={pick(k, "can not", "it is", "do not", "I am", "is not")}
+  let w1={pick(k, "can it", "it sits", "do net", "I is", "is it")}
+  let w2={pick(k, "cat not", "in it", "done", "I go", "in not")}
+  let a={pick(p, right, w1, w2)}
+  let b={pick(p, w1, w2, right)}
+  let c={pick(p, w2, right, w1)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 34x7 {
+    text ask "The short form {short} is two words squeezed together. Which two?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["{a}", "{b}", "{c}"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "The letters before the apostrophe are the start of the first word. Say the two words fast: do they turn into {short}?"
+    }
+  }
+  hint "Say each pair fast. Which one becomes {short}?"
+  hint "The apostrophe stands where a letter or two were left out."
+}

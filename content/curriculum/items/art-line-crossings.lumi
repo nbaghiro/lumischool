@@ -1,0 +1,21 @@
+item art.line-crossings v=1 skills=[art.line, art.looking] {
+  title "Where the line crosses"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 30x14 {
+    linewalk walk loops=n filled=false colour=orange at=canvas(1, 1)
+    text ask "This is one line, drawn without lifting the pencil. How many times does it cross over itself?" width=11 right-of=walk gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  hint "Start at the dot and follow the line with your finger to the arrow."
+  hint "Each time your finger goes over a part of the line it has already drawn, count one."
+}

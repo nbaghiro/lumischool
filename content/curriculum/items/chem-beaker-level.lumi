@@ -1,0 +1,21 @@
+# The way in: the water sits on a numbered mark, so the reading is one step off the scale.
+item chem.beaker-level v=2 skills=[chemistry.volume] {
+  title "How much in the beaker?"
+  difficulty v
+  let v={100, 200, 300, 400}
+
+  scene 23x15 {
+    text ask "How many millilitres are in the beaker?" width=22 at=canvas(1, 0)
+    beaker glass max=400 step=100 level=v unit=ml below=ask gap=0
+    number-input answer right-of=glass gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v / 100) point=glass {
+      say "Read the number on the scale, not how many marks up from the bottom it is."
+    }
+  }
+  hint "Look at the mark the top of the water lines up with."
+  hint "Is there a number on that mark? If not, what do the marks go up in?"
+}

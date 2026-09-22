@@ -1,0 +1,42 @@
+# The two-star reason: the same island drawn from the boat and from above, and a claim about which
+# one is the map. The first two versions turn on what a map is for; the third is the harder claim,
+# that the map must be wrong because the mountain is not on it, which needs the child to say what a
+# mountain looks like from straight above.
+item nature.which-is-the-map v=1 stars=2 skills=[nature.maps, reasoning.judge-a-claim] {
+  title "Which one is the map?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let says={pick(k, "Ben says the left drawing is the map, because you can see the mountain and the trees on it. Ada says the right one is. Who is right?", "Ada says the left drawing is the map, because it shows what the island really looks like. Ben says the right one is. Who is right?", "Ben says the right drawing cannot be a map of this island, because there is no mountain on it. Ada says it is a map. Who is right?", "Both say the right drawing is the map. Ada says it is a map because it has letters and numbers round it. Ben says it is a map because it is drawn from above. Who gives the right reason?")}
+  let o1={pick(k, "Ben: a map shows how a place looks", "Ada: a map shows how a place looks", "Ben: a map must show the mountain", "Ada: the letters and numbers make it a map")}
+  let o2={pick(k, "Ada: a map is drawn from above", "Ben: a map is drawn from above", "Ada: from above a mountain is a shape", "Ben: being drawn from above makes it a map")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x29 {
+    row both at=canvas(1, 1) space=2 align=end {
+      parts side of=island
+      gridmap above cols=5 rows=4 col=4 row=2 thing=hut
+    }
+    text ask "Ada drew the island from the boat, and then from the top of the tower. {says}" narrate width=32 below=both gap=1
+    choice pick options=[o1, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=o2
+  feedback {
+    when (pick == o1 and k < 2) point=side {
+      say "This drawing shows what the island looks like, and that is not what a map is for. A map is for finding where things are, and for that you look down from above."
+    }
+    when (pick == o1 and k == 2) point=above {
+      say "Look straight down at a mountain and you do not see its height, only the ground it stands on. The map shows the mountain's place, not its shape."
+    }
+    when (pick == o1 and k == 3) point=above {
+      say "The letters and numbers help you say where a square is, but a drawing from above with no letters is still a map. Being drawn from above is what makes it one."
+    }
+  }
+  hint "Which drawing would help you find your way to the hut? That is the one that is a map."
+  hint "A map is drawn as if you were a bird straight overhead. What does a bird see of a mountain?"
+}

@@ -1,0 +1,35 @@
+# The way in: Ada's drawings of her bean, one a week, and a count of the ones that show leaves. The
+# seed has none, the shoot has its first small pair, and every later drawing has leaves, so the
+# count is one less than the drawings.
+item nature.leaves-count v=1 skills=[nature.growing] {
+  title "Which drawings show leaves?"
+  difficulty s
+  let s=2..4
+  level easy {
+    let s=2..3
+  }
+  level hard {
+    let s=3..4
+  }
+
+  scene 32x20 {
+    growstages grow stages=s numbers=false names=0 at=canvas(1, 1)
+    text ask "Ada drew her bean in the long grass each week as it grew. How many of her drawings show leaves?" narrate width=30 below=grow gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (s - 1)
+  feedback {
+    when (answer == s) point=grow {
+      say "The seed has no leaves yet. It is still under the soil."
+    }
+    when (s >= 3 and answer == 1) point=grow {
+      say "The word under a drawing is only its name. Look at the plants: the shoot has two small leaves, and the flower has leaves under it."
+    }
+    when (answer == s - 2 and s == 4) point=grow {
+      say "The shoot has two small leaves, and the last drawing has leaves under its flower. Count again."
+    }
+  }
+  hint "Look at each drawing in turn. Does it have any leaves at all?"
+  hint "Even a small pair of leaves counts."
+}

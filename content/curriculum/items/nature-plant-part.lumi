@@ -1,0 +1,39 @@
+# The way in: a lettered plant, and the part to find. The flower at the top and the roots in the
+# soil are the easy two; the stem and the leaf both sit in the middle and have to be told apart.
+item nature.plant-part v=1 skills=[nature.plants] {
+  title "Which part of the plant?"
+  difficulty (if k == 0 or k == 3 then 0 else 1)
+  let k=0..3
+  let p={pick(k, "flower", "leaf", "stem", "roots")}
+  let letter={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 30x13 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "Ada finds a plant on the bank of the marsh pond. Which letter points at the {p}?" narrate width=18 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick == "D") point=fig {
+      say "D is at the bottom, under the soil. The flower is the coloured part at the very top."
+    }
+    when (k == 3 and pick == "A") point=fig {
+      say "A is at the top, in the air. The roots are under the soil, where the water is."
+    }
+    when (k == 1 and pick == "C") point=fig {
+      say "C is the tall middle part that holds everything up. A leaf is flat and wide and grows out from it."
+    }
+    when (k == 2 and pick == "B") point=fig {
+      say "B is a leaf, flat and wide. The stem is the tall part in the middle that the leaves grow from."
+    }
+  }
+  hint "Find the soil at the bottom and the flower at the top. Is the part you want high up, low down, or in the middle?"
+  hint "The stem is the tall part in the middle. The leaves grow out from it."
+}

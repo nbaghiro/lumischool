@@ -1,0 +1,17 @@
+# Working back from what reached the wall to what was in the way: the reverse of every other
+# question in the lesson, with no sheet drawn to give it away.
+item physics.which-sheet v=1 skills=[physics.light, reasoning.backwards] stars=3 {
+  title "What was in the way?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 37x11 {
+    things t things=["torch"] letters=0 at=canvas(1, 0)
+    text ask "A sheet was held in front of a torch. {if k == 0 then \"The wall behind it was bright all over.\" else if k == 1 then \"The wall behind it had a pale shadow.\" else \"The wall behind it had a dark shadow.\"} Which sheet was it?" narrate width=16 right-of=t gap=1
+    choice pick options=["Clear glass", "Tracing paper", "Card"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Clear glass" else if k == 1 then "Tracing paper" else "Card")
+  hint "A dark shadow means how much light got through?"
+  hint "Which sheet lets that much through?"
+}

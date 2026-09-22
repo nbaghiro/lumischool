@@ -1,0 +1,32 @@
+# The ending that fits a sentence: ed for something already done, ing for something happening
+# now, read from the time word in the sentence.
+item reading.ending-fits v=1 skills=[reading.morphology, reading.grammar] {
+  title "Which ending fits?"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..5
+  let before={pick(k, "Yesterday Pip", "Right now Pip is", "Last week we", "Look, the frog is", "This morning Dad", "Listen, the birds are")}
+  let root={pick(k, "jump", "jump", "walk", "hopp", "cook", "sing")}
+  let after={pick(k, "in the puddle.", "in the puddle.", "to the shop.", "on the log.", "the eggs.", "in the tree.")}
+  let right={pick(k, "ed", "ing", "ed", "ing", "ed", "ing")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 34x13 {
+    sentence strip before="{before} {root}" blank=3 after=" {after}" answer="" size=19 at=canvas(1, 1)
+    text ask "Which ending goes in the gap, ed or ing?" narrate width=32 below=strip gap=1
+    choice pick options=["ed", "ing"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Find the word that tells you when: yesterday and last week are over, so ed; right now, look and listen are happening, so ing."
+    }
+  }
+  hint "Is it happening now, or is it already over? Look for the time word at the start."
+  hint "Over and done: ed. Happening now: ing."
+}

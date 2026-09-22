@@ -1,0 +1,32 @@
+# Eight lights, and the program among three that made them: red and green, red red green, or green
+# and red, each repeated for ever. The order inside the repeat is the order of the lights.
+item coding.forever-which-program v=1 skills=[coding.repetition, coding.sequences] {
+  title "Which program?"
+  let r=0..2
+  let seen={pick(r, "1 red 1 green 1 red 1 green 1 red 1 green 1 red 1 green", "2 red 1 green 2 red 1 green 2 red", "1 green 1 red 1 green 1 red 1 green 1 red 1 green 1 red")}
+  let right={pick(r, "A", "B", "C")}
+
+  scene 34x29 {
+    pixels lights cols=8 rows=1 code=["{seen}"] show=true beside=false at=canvas(1, 1)
+    row one space=2 align=start below=lights gap=1 {
+      program a code=["repeat for ever", "  light red", "  light green"] title="A"
+      program b code=["repeat for ever", "  light red", "  light red", "  light green"] title="B"
+    }
+    row two space=2 align=start below=one gap=1 {
+      program c code=["repeat for ever", "  light green", "  light red"] title="C"
+      column side space=1 align=start {
+        text ask "Which program made these eight lights?" narrate width=14
+        choice pick options=["A", "B", "C"] stack=row
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lights {
+      say "Read the first lights in order, then find the program whose lines say them in that order."
+    }
+  }
+  hint "What colour is the first light? Which programs start with that colour?"
+  hint "Now look at the second and third lights."
+}

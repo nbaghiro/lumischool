@@ -1,0 +1,15 @@
+# Four steps out of order, where each step needs the one before it: you cannot rinse the soap off
+# before it is on. The rows are shuffled, so the key changes.
+item reading.recipe-order v=2 skills=[reading.instructions, reading.sequencing] {
+  title "Put the steps in order"
+  let k=0..2 q=0..2
+
+  scene 32x16 {
+    text ask "{if k == 0 then \"Plant a bean\" else if k == 1 then \"A jam sandwich\" else \"Wash your hands\"}: put the steps in order. Write 1 to 4." narrate width=30 at=canvas(1, 1)
+    sequence s items=[if k == 0 then if q == 0 then "Water it a little." else if q == 1 then "Push the bean into the soil." else "Wait for a green shoot." else if k == 1 then if q == 0 then "Put the other slice on top." else if q == 1 then "Spread jam on one slice." else "Cut it in half." else if q == 0 then "Rinse the soap off." else if q == 1 then "Rub on some soap." else "Dry your hands on a towel.", if k == 0 then if q == 0 then "Fill the pot with soil." else if q == 1 then "Wait for a green shoot." else "Push the bean into the soil." else if k == 1 then if q == 0 then "Take two slices of bread." else if q == 1 then "Cut it in half." else "Spread jam on one slice." else if q == 0 then "Wet your hands under the tap." else if q == 1 then "Dry your hands on a towel." else "Rub on some soap.", if k == 0 then if q == 0 then "Wait for a green shoot." else if q == 1 then "Fill the pot with soil." else "Water it a little." else if k == 1 then if q == 0 then "Cut it in half." else if q == 1 then "Take two slices of bread." else "Put the other slice on top." else if q == 0 then "Dry your hands on a towel." else if q == 1 then "Wet your hands under the tap." else "Rinse the soap off.", if k == 0 then if q == 0 then "Push the bean into the soil." else if q == 1 then "Water it a little." else "Fill the pot with soil." else if k == 1 then if q == 0 then "Spread jam on one slice." else if q == 1 then "Put the other slice on top." else "Take two slices of bread." else if q == 0 then "Rub on some soap." else if q == 1 then "Rinse the soap off." else "Wet your hands under the tap."] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=(if q == 0 then 3 else if q == 1 then 2 else 4) b=(if q == 0 then 1 else if q == 1 then 4 else 2) c=(if q == 0 then 4 else if q == 1 then 1 else 3) d=(if q == 0 then 2 else if q == 1 then 3 else 1)
+  hint "Which step has to come first? You cannot do any of the others without it."
+  hint "For each step, ask: what must be done before this one?"
+}

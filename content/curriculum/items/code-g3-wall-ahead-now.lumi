@@ -1,0 +1,20 @@
+# The way in to sensing: one question asked once, where the edge of the grid counts as a wall.
+item coding.wall-ahead-now v=1 skills=[coding.decisions] {
+  title "Is there a wall ahead?"
+  difficulty (if k == 4 then 2 else if k == 2 or k == 6 or k == 7 then 1 else 0)
+  let k=0..7
+
+  scene 33x12 {
+    row top at=canvas(1, 0) space=2 align=start {
+      maze g map=[". . # . .", ". # . . #", ". . . # ."] col=(if k == 0 or k == 5 then 1 else if k == 1 then 2 else if k == 2 or k == 7 then 3 else if k == 3 or k == 6 then 4 else 5) row=(if k == 0 or k == 1 then 1 else if k == 2 or k == 3 or k == 6 then 2 else 3) face=(if k == 0 or k == 1 or k == 3 or k == 5 then "right" else if k == 2 then "up" else if k == 7 then "left" else "down") code=["if wall ahead", "  say stop", "otherwise", "  say go"] upto=0
+      column q space=1 align=start {
+        text ask "The robot asks: is there a wall ahead? If there is, it says stop. If not, it says go. What does it say?" width=16
+        choice pick options=["stop", "go"]
+      }
+    }
+  }
+
+  check coding.runs of=g pick=said
+  hint "Which way is the robot facing? Put your finger on the next square that way."
+  hint "Is that square a rock, or off the edge? Both count as a wall."
+}

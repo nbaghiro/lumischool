@@ -1,0 +1,21 @@
+# A chapter title has been rubbed out, and one sentence from inside the chapter is the clue to what
+# it is about: an inference from a detail to a heading.
+item reading.missing-title v=1 stars=2 skills=[reading.text-features, reading.inference] {
+  title "The missing chapter title"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..3
+
+  scene 37x19 {
+    row top at=canvas(1, 1) space=1 align=start {
+      contents page title=Contents book="{if k == 0 then \"All about volcanoes\" else if k == 1 then \"All about whales\" else if k == 2 then \"All about lighthouses\" else \"All about the moon\"}" entries=[if k == 0 then "How a volcano forms" else if k == 1 then "Kinds of whale" else if k == 2 then "The first lights" else "Moon phases", if k == 0 then "When it erupts" else if k == 1 then "What whales eat" else if k == 2 then "Life of a keeper" else "Craters and seas", if k == 0 then "Famous volcanoes" else if k == 1 then "Whale songs" else if k == 2 then "Storms and wrecks" else "Walking on the moon", if k == 0 then "Living nearby" else if k == 1 then "Baby whales" else if k == 2 then "Lighthouses today" else "Moon myths"] pages=[if k == 0 then 3 else if k == 1 then 2 else if k == 2 then 4 else 3, if k == 0 then 8 else if k == 1 then 7 else if k == 2 then 9 else 9, if k == 0 then 14 else if k == 1 then 12 else if k == 2 then 15 else 13, if k == 0 then 19 else if k == 1 then 18 else if k == 2 then 20 else 18] blank=(if k <= 1 then 1 else 2)
+      column q space=1 align=start {
+        text ask "On page {if k == 0 then 9 else if k == 1 then 8 else if k == 2 then 16 else 14} you read: {if k == 0 then \"Hot ash shot high into the sky.\" else if k == 1 then \"One gulp of krill can be as big as a car.\" else if k == 2 then \"The ship hit the rocks in the gale.\" else \"Their boots left prints in the grey dust.\"} What is the missing title?" width=15
+        choice pick options=[if k == 0 then "When it erupts" else if k == 1 then "Whales at sea" else if k == 2 then "Painting the tower" else "Moon rock", if k == 0 then "Rocks and sand" else if k == 1 then "What whales eat" else if k == 2 then "Storms and wrecks" else "Walking on the moon", if k == 0 then "Hot springs" else if k == 1 then "Whale bones" else if k == 2 then "Keeping warm" else "Night birds"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "When it erupts" else if k == 1 then "What whales eat" else if k == 2 then "Storms and wrecks" else "Walking on the moon")
+  hint "Which chapter is page {if k == 0 then 9 else if k == 1 then 8 else if k == 2 then 16 else 14} in?"
+  hint "What is the sentence about? Which title would a sentence like that belong under?"
+}

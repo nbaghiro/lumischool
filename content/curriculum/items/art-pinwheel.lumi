@@ -1,0 +1,10 @@
+item art.pinwheel v=1 stars=3 skills=[art.pattern, art.symmetry, art.painting, reasoning.plan] {
+  title "A flower and a pinwheel"
+
+  scene 37x17 {
+    text ask "Turn on the mirror in six. Paint one pattern where each part is the same on both sides, like a flower. Then paint one where every part curls the same way round, like a pinwheel." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["red", "yellow", "blue", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Two patterns that turn about the middle with the six-way mirror: in one every part is the same on both sides (petals, a snowflake), so a mirror line fits it too; in the other every part curls or leans the same way round, so it looks the same after a sixth of a turn but has no mirror line." notice=["A pattern whose parts match on both sides", "A pattern whose parts all curl one way", "Each repeated six times round the middle"] ask="If you held a mirror across each pattern, which one would look the same?"
+}

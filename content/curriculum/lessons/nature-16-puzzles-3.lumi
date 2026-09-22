@@ -1,0 +1,52 @@
+lesson nature-puzzles-3 v=1 format=puzzles grade=3 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "Nature puzzles: the reef"
+  goal "Read the map, follow the chain, fit the creature to its place and judge the test."
+
+  puzzle stars=1 {
+    show nature.what-is-in c=3 r=2 t=1 e=0 d=0 easy-c=2 easy-r=1 easy-t=0 easy-e=0 easy-d=0 hard-c=4 hard-r=3 hard-t=2 hard-e=1 hard-d=0
+  }
+  puzzle stars=1 {
+    show nature.who-eats c=1 dir=0 easy-c=0 easy-dir=0 hard-c=2 hard-dir=1
+  }
+  puzzle stars=1 {
+    show nature.lives-where k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show nature.three-moves c=2 r=1 a=2 b=1 d=1 easy-c=1 easy-r=1 easy-a=1 easy-b=1 easy-d=1 hard-c=2 hard-r=2 hard-a=3 hard-b=2 hard-d=2
+  }
+  puzzle stars=2 {
+    show nature.missing-link c=1 easy-c=0 hard-c=2
+  }
+  puzzle stars=2 {
+    show nature.part-for k=3 easy-k=0 hard-k=4
+  }
+  puzzle stars=2 {
+    show nature.test-about k=2 w=0 easy-k=0 easy-w=0 hard-k=1 hard-w=1
+  }
+  puzzle stars=2 {
+    show nature.shorter-route k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=3 {
+    show nature.chains-of-four k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show nature.plan-test k=1 easy-k=0 hard-k=2
+  }
+
+  grown-ups """
+    Let the child try each one alone first. The hints and answers are on this sheet, not on theirs.
+    Every puzzle can be started by looking closely: the letters along the top of the map and the
+    numbers down the side, the arrows in the chain read as "is eaten by", the part of the creature
+    the question names, the column of the table where the two trays differ. The route puzzles are
+    walked with a finger, one square a move, and the shorter-route puzzle turns on a route that
+    goes one way and comes back. The two three-star puzzles are the ones to leave for a quiet
+    moment: every chain of four from the facts on the page, and the plan that changes one thing
+    only. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level the square asked about holds the hut near the corner, the chain question reads forwards from the crab, the creature to place is the seal on its rock, the route is three moves of one square, the missing link is the crab between seaweed and gull, the part asked about is the gull's wings, the test is about water, Ada's route is the one that does not double back, the facts give one chain of four, and the plan to pick tests water."
+  }
+  level hard {
+    grown-ups "At this level the square asked about is next to the boat and holds nothing, the chain question asks what eats the small fish, the creature to place is the crab in the rock pool, the route goes three east, two south and two back west, the missing link is the crab between seaweed and octopus, the part asked about is the seal's fat, the question is what was kept the same, Ben's route is the shorter one because Ada doubles back, the facts give three chains of four with a chain of five to leave out, and the plan to pick tests warmth."
+  }
+}

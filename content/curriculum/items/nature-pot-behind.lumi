@@ -1,0 +1,47 @@
+# The two-star reason: two beans planted on the same day, one in flower and one stopped at a shoot,
+# and what was different between them. The story says what both beans had, so the child rules that
+# out and names the thing only Ben's bean went without. At easy the difference is said outright (a
+# dark cupboard, no water); at hard it has to be read from a sign (dry soil, frost at an open window).
+item nature.pot-behind v=1 stars=2 skills=[nature.growing, reasoning.compare] {
+  title "Why is Ben's bean behind?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let story={pick(k, "Both had water every day. Ada's pot stood by the window and Ben's stood in a dark cupboard.", "Both stood by the sunny window. Ada watered hers every day and Ben forgot to water his.", "Both stood by a window and had water every day. Ada's window was in the warm kitchen and Ben's was in the cold shed.", "Both had water every day. Ada's pot was on the windowsill and Ben's pot was under his bed.", "Both stood on the warm sunny windowsill. Ada's soil was always damp and Ben's soil was dry as dust.", "Both had water and both stood by a window. Ada's window was shut, and Ben's was open all night with the frost coming in.")}
+  let right={pick(k, "light", "water", "warmth", "light", "water", "warmth")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x27 {
+    row pots at=canvas(1, 1) space=2 align=start {
+      column left space=0 align=start {
+        text la "Ada's bean" width=19
+        growstages ada stages=3 numbers=false
+      }
+      column right space=0 align=start {
+        text lb "Ben's bean" width=13
+        growstages ben stages=2 numbers=false
+      }
+    }
+    text ask "Ada and Ben planted a bean each on the same day. {story} Ben's bean came up and then stopped. What did Ben's bean not get enough of?" narrate width=34 below=pots gap=1
+    choice pick options=["light", "water", "warmth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "water" and right != "water") point=ben {
+      say "Both beans had water, so water is not what was different. What did Ada's bean have that Ben's did not?"
+    }
+    when (pick == "light" and right != "light") point=ben {
+      say "Both beans stood in the light, so light is not what was different. What did Ada's bean have that Ben's did not?"
+    }
+    when (pick == "warmth" and right != "warmth") point=ben {
+      say "Nothing says one bean was colder than the other. Look for the thing only Ben's bean went without."
+    }
+  }
+  hint "What did both beans have? That cannot be the reason, because Ada's bean grew."
+  hint "Now find the one thing that was different for Ben's bean. A bean needs water, light and warmth."
+}

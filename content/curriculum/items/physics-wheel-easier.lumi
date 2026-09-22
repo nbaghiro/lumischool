@@ -1,0 +1,24 @@
+item physics.wheel-easier v=1 skills=[physics.machines] {
+  title "Which wheel is easier?"
+  difficulty (6 - abs(x - y))
+  let x=2..6 y=2..6
+  where (x != y)
+  level easy {
+    where (abs(x - y) >= 3)
+  }
+  level hard {
+    where (abs(x - y) == 1)
+  }
+
+  scene 30x18 {
+    row two at=canvas(1, 0) space=1 align=start {
+      wheelaxle a wheel=x axle=1 load=60 show=0 tag="A"
+      wheelaxle b wheel=y axle=1 load=60 show=0 tag="B"
+    }
+    text ask "Both hold the same load on the same axle. Which needs the smaller pull?" width=18 below=two gap=0
+    choice pick options=["A", "B"] right-of=ask gap=1
+  }
+
+  check physics.machine of=a vs=b pick=easier
+  hint "Which pull is further from the middle?"
+}

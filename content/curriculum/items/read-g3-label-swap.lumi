@@ -1,0 +1,20 @@
+# Two labels have swapped places. The part names are not ones the picture can teach, so the
+# passage is the evidence for which two are wrong.
+item reading.label-swap v=1 stars=2 skills=[reading.text-features, reading.find-the-error] {
+  title "Two labels are swapped"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 37x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="The sweeps are the long arms. The cap is on top. The loft window is halfway up, and the miller's door is at the bottom." width=36
+      labelled d of=windmill labels=[if k == 0 then "cap" else "sweep", if k == 0 then "sweep" else if k == 1 then "cap" else "loft window", if k == 1 then "miller's door" else if k == 2 then "cap" else "loft window", if k == 1 then "loft window" else "miller's door", "tower"] blank=-1 title="" caption=""
+      text ask "Two labels have been swapped. Which two?"
+      choice pick options=["sweep and cap", "loft and door", "cap and loft"]
+    }
+  }
+
+  answer pick=(if k == 0 then "sweep and cap" else if k == 1 then "loft and door" else "cap and loft")
+  hint "Check each label against the passage. Does the passage put that part where the line points?"
+  hint "When you find one wrong label, where does its word really belong?"
+}

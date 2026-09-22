@@ -1,0 +1,17 @@
+# A sign that cannot be right: two of its lines say opposite things. Which two changes, so the
+# child has to test each pair rather than spot a pattern.
+item reading.sign-mistake v=1 stars=2 skills=[reading.signs, reasoning.find-the-error] {
+  title "Something is wrong"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 36x14 {
+    sign s lines=[if k == 0 then "Cafe" else if k == 1 then "Free parking" else "No dogs", if k == 0 then "Open every day" else if k == 1 then "Car park" else "Dogs must be on a lead", if k == 0 then "Shut on Mondays" else if k == 1 then "Pay here: $2" else "Park open 8 to 8"] kind=board color=berry at=canvas(1, 1)
+    text ask "Two lines on this sign cannot both be true. Which two?" narrate width=16 right-of=s gap=2
+    choice pick options=["1 and 2", "2 and 3", "1 and 3"] below=s gap=1
+  }
+
+  answer pick=(if k == 0 then "2 and 3" else if k == 1 then "1 and 3" else "1 and 2")
+  hint "Read the lines one pair at a time."
+  hint "If the first line were true, could the next one be true as well?"
+}

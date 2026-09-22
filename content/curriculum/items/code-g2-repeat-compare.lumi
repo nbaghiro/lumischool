@@ -1,0 +1,27 @@
+# Each time round, A goes three forward and one back: seeing that a round is worth two is the step
+# that makes the comparison quick. Sometimes they end on the same square.
+item coding.repeat-compare v=1 stars=2 skills=[coding.repetition, reasoning.compare] {
+  title "Which goes further?"
+  difficulty (6 - abs(2 * a - b - c))
+  let a=2..4 b=2..5 c=1..3
+  where (a != b)
+
+  scene 31x19 {
+    row top at=canvas(1, 0) space=3 align=start {
+      column ca space=0 align=start {
+        text la "A"
+        blocks pa code=["repeat {a}", "  right 3", "  left 1"]
+      }
+      column cb space=0 align=start {
+        text lb "B"
+        blocks pb code=["repeat {b}", "  right 1", "right {c}"]
+      }
+    }
+    text ask "Both start on the same square. Which one ends further to the right?" width=30 below=top gap=1
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if 2 * a > b + c then "A" else if 2 * a < b + c then "B" else "the same")
+  hint "How far does one time round A move the robot from where it began that round?"
+  hint "Now work out how far each whole program goes, and compare."
+}

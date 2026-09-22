@@ -1,0 +1,46 @@
+lesson physics-high-and-low-loud-and-soft v=1 format=teach grade=3 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "High and low, loud and soft"
+  goal "Say how the length of a band changes its note, how the strength of a hit changes its loudness, and tell a fair test of pitch from an unfair one."
+
+  look {
+    scene 36x12 {
+      row both at=canvas(1, 0) space=2 align=start {
+        bands b lengths=[14, 9, 5] pluck=2 loud=2
+        ricedrum d hit=3
+      }
+    }
+    say """
+      A sound's pitch is how high or low it is, and its loudness is how loud or soft. They are two
+      different things. A shorter band shakes faster and sounds higher. A harder pluck or hit makes
+      the band or the skin shake further each way, and that sounds louder, but no higher.
+      """
+  }
+  do {
+    practice physics.band-highest count=2 seed=3
+    practice physics.band-lowest count=2 seed=1
+    practice physics.band-change count=2 seed=2
+    practice physics.drum-louder count=2 seed=5
+  }
+  try stars=2 {
+    show physics.band-fair x=1 y=3 a=6 b=13 easy-y=1
+  }
+  try stars=3 {
+    show physics.band-order a=8 b=14 c=5
+  }
+  remember {
+    say "Shorter is higher. Harder is louder."
+  }
+
+  grown-ups """
+    Elastic bands round a shoebox with a pencil under them as a bridge make the lesson; slide the
+    pencil and listen. Thicker bands sound lower too, which is why the fair test question matters:
+    comparing a thick long band with a thin short one cannot say which change made the difference.
+    Glasses of water tapped with a spoon are another way in, with less water giving a higher note.
+    """
+  level easy {
+    grown-ups "At this level the band's new length is far from the old, the two drums are hit softly and hard, and the two bands compared are the same thickness."
+  }
+  level hard {
+    grown-ups "At this level the band's new length is close to the old, the two drums are hit one step apart, and the two bands compared differ in thickness as well as length."
+  }
+}

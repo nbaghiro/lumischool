@@ -1,0 +1,17 @@
+# Each clue has two parts, and one part compares the creature with another, so no single part
+# picks it out. The creatures are the writing track's line-up.
+item reading.which-creature v=1 stars=2 skills=[reading.find-a-detail, reasoning.combine-clues] {
+  title "Which creature is it?"
+  difficulty (if k == 0 then 0 else if k == 2 then 2 else 1)
+  let k=0..3
+
+  scene 31x22 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=-1 at=canvas(1, 1)
+    text ask "{if k == 0 then \"Mine is spotty, like one of the others. It has no horns.\" else if k == 1 then \"Mine has two eyes. It has more horns than the stripy one.\" else if k == 2 then \"Mine has as many legs as A, but more eyes than A.\" else \"Mine is not spotty. It has fewer eyes than the stripy one.\"} Which is mine?" width=29 below=line gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "D" else if k == 1 then "B" else if k == 2 then "C" else "A")
+  hint "Use the first part of the clue. Which creatures does it leave?"
+  hint "Now use the second part on those creatures only."
+}

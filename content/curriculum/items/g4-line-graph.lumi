@@ -1,0 +1,28 @@
+item data.line v=1 skills=[data.line-graphs] {
+  title "Reading a line graph"
+  difficulty (th - tu)
+  let mo=2..9 tu=2..9 we=2..9 th=2..9 fr=2..9
+  where (th > tu)
+  where (mo != tu and we != th and fr != mo)
+  level easy {
+    where (th - tu <= 3)
+  }
+  level hard {
+    where (th - tu >= 5)
+  }
+
+  scene 30x22 {
+    text ask "The graph shows the temperature at noon each day." width=28 at=canvas(1, 0)
+    linegraph temps labels=["Mon", "Tue", "Wed", "Thu", "Fri"] values=[mo, tu, we, th, fr] max=10 color=berry below=ask gap=1
+    text q "How many degrees warmer was Thursday than Tuesday?" width=28 below=temps gap=1
+    number-input answer below=q gap=0
+  }
+
+  answer (th - tu)
+  feedback {
+    when (answer == th) point=temps.point(3) {
+      say "That is how warm Thursday was. Compare it with Tuesday."
+    }
+  }
+  hint "Find the two points on the line, then count the squares between them."
+}

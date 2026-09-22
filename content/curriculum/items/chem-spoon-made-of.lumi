@@ -1,0 +1,26 @@
+# Naming the material of one of three same-shaped things: spoons at easy, bottles and jars at
+# hard, where glass and plastic both show through and the shape has to be read with the shine.
+item chem.spoon-made-of v=1 skills=[chemistry.materials] {
+  title "What is it made of?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3 l={"A", "B", "C"}
+  let x={pick(k, "wooden-spoon", "metal-spoon", "glass-bottle", "plastic-bottle")}
+  let y={pick(k, "plastic-spoon", "wooden-spoon", "plastic-bottle", "glass-jar")}
+  let z={pick(k, "metal-spoon", "plastic-spoon", "metal-can", "metal-can")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x13 {
+    text ask "These are the same kind of thing in different materials. What is thing {l} made of?" width=31 at=canvas(1, 0)
+    materials row things=["{x}", "{y}", "{z}"] below=ask gap=0
+    choice pick options=["wood", "metal", "glass", "plastic"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="made({l})"
+  hint "Find thing {l}. Does it have a grain, a shine, or can you see through it?"
+  hint "Glass and plastic both show through, but glass shines at the edges and plastic is dull."
+}

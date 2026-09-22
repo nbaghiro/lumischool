@@ -1,0 +1,12 @@
+item physics.energy-chain v=1 skills=[physics.energy] {
+  title "Where the light comes from"
+
+  scene 28x30 {
+    turbine t wind=2 lamps=3 at=canvas(1, 0)
+    text ask "Number these from 1 to 4 in the order the energy goes, from the wind to the lamp." width=26 below=t gap=0
+    sequence order items=["electricity in the cable", "moving air", "light from the lamp", "the blades turning"] blanks=[e, m, l, b] below=ask gap=1
+  }
+
+  answer e=3 m=1 l=4 b=2
+  hint "What starts it all moving?"
+}

@@ -1,0 +1,60 @@
+lesson chemistry-new-materials v=1 format=teach grade=4 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "Changes that make something new"
+  goal "Tell a change that makes a new material from one that only changes state, read the signs of a new material, and know that nothing is lost when it happens."
+
+  look {
+    scene 30x27 {
+      row kit at=canvas(1, 0) space=1 align=end {
+        fizz before stage=0 spoons=2
+        fizz after stage=2 spoons=2
+        flask caught shape="conical" fill=0.35 bubbles=4 balloon=2
+      }
+      testtubes signs fills=[0.5, 0.5, 0.5] paints=["", "", "green"] fizz=[0, 6, 0] bungs=0 letters=1 below=kit gap=1
+    }
+    say """
+      Vinegar and baking soda make bubbles of carbon dioxide, a gas that was not there before, and
+      a balloon on the flask catches it. A change that makes a new material is not usually
+      reversible: toast cannot be untoasted. The signs are a new gas, a new colour or smell, or
+      something that cannot go back to how it was. In the test tubes, nothing has happened in A, B
+      is fizzing with a new gas, and C has turned a new colour.
+      """
+  }
+  do {
+    level easy {
+      worked chem.new-or-not c="dissolve-sugar" level=medium
+    }
+    practice chem.new-or-not count=2 seed=3
+    practice chem.which-new count=2 seed=7 easy-seed=2 hard-seed=5
+    practice chem.more-gas count=2 seed=2
+    practice chem.candle-left count=2 seed=5
+    practice chem.candle-jar count=1 seed=2
+  }
+  try stars=2 {
+    show chem.sealed-or-open w=250 q=0 easy-w=200 hard-q=1
+  }
+  try stars=3 {
+    show chem.gas-limit v=3 s=5 easy-v=4 easy-s=3 hard-v=2 hard-s=6
+  }
+  remember {
+    say "A change that makes a new material is not usually reversible, and nothing is lost: it has only changed."
+  }
+
+  grown-ups """
+    The first two questions are the way in: both halves of each change are drawn. The candle is there
+    because burning is the change children most often think makes things disappear; the wax does not
+    vanish, it becomes gases in the air, which is why a candle gets shorter. The candle under a jar
+    goes out with wax still left, because a flame needs the oxygen in the air; if the jar stands in
+    water, the water that rises is mostly the warm air cooling, not the oxygen used up. The two-star
+    question is about weight: the gas escapes from the open cup, so the cup gets lighter, while the
+    balloon keeps it in the flask, which weighs the same. The three-star question has a limit to find: the fizz stops
+    when the vinegar is used up, however much baking soda goes in. At home, baking soda and vinegar in
+    a cup on a tray is a safe experiment with goggles on. A grown-up lights and watches any candle,
+    and the candle stands in a tray of wet sand. Nothing in a science experiment is tasted.
+    """
+  level easy {
+    grown-ups "At this level sugar dissolving is judged once in the teacher's pen before ice, water, chocolate, toast, an egg and a cake, the pair to choose from is toast, an egg, a cake or a candle against ice, water or chocolate, the flasks are as written, the candle of 8 cm asks how much has burnt away, the jar over the candle is as written, the two-star asks which flask weighs less, and the three-star's vinegar takes every spoon."
+  }
+  level hard {
+    grown-ups "At this level the changes to judge are the subtle ones, sugar dissolving, water boiling, dough rising, a fizz, rust and a candle, the pair to choose from is dough, a fizz or rust against sugar dissolving or water boiling, the flasks are as written, the candle of 10 or 12 cm asks how much is left, the jar over the candle is as written, the two-star asks which flask still weighs the same, and the three-star's vinegar runs out after two of six spoons."
+  }
+}

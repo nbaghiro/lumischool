@@ -1,0 +1,14 @@
+# The three-star: three notes going up a key at a time from C, then one note back down, played
+# and proved by the pitches. Nothing is written on the staff; the child works it out on the keys.
+item music.up-then-down v=1 stars=3 skills=[music.pitch, music.keys, reasoning.planning] {
+  title "Up three, down one"
+
+  scene 30x18 {
+    piano keys from=C4 whites=8 wide=3 labels=letters lit=[C4] at=canvas(1, 1)
+    text ask "Play three notes going up, one key at a time, starting on the ringed C, and then one note going back down. Play it to a grown-up before you play it here." narrate width=28 below=keys gap=1
+  }
+
+  check music.plays notes=[C4, D4, E4, D4]
+  hint "Up is to the right. From C, the next key to the right is D."
+  hint "The three going up are C, D and E, the C counting as the first. Then one going down from E is the key to its left."
+}

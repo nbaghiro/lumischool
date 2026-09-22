@@ -1,0 +1,67 @@
+# Three lists in an information book, each for its own question: the contents page for chapters,
+# the index for every page a thing is on, the glossary for what a word means.
+lesson reading-an-index-and-a-glossary v=1 format=teach grade=4 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "An index and a glossary"
+  goal "Use a contents page, an index and a glossary to find a fact fast, and say which one to open."
+
+  look {
+    scene 36x32 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=start {
+          contents page title=Contents book="All about the sea" entries=["Tides and waves", "Fish of the shore", "Whales and dolphins", "Under the ice"] pages=[2, 6, 11, 17] blank=-1
+          table index cols=2 head=["Index", "Page"] cells=["crab", "7", "dolphin", "6, 15", "gull", "9", "krill", "13, 18", "seal", "19", "tide", "2", "whale", "11, 14"]
+        }
+        table gloss cols=2 head=["Word", "Meaning"] cells=["blowhole", "breathing hole", "calf", "a young whale", "krill", "tiny shrimps", "pod", "a whale group", "tide", "sea in and out"]
+      }
+    }
+    say """
+      An information book has three lists to find things by. The contents page at the front
+      lists the chapters in the order they come, each with the page it starts on. The index at
+      the back lists the things the book mentions, in alphabetical order, with every page each
+      is on. The glossary explains the hard words. A chapter question goes to the contents page,
+      a page question to the index, and a meaning question to the glossary.
+      """
+  }
+  do {
+    level easy {
+      worked reading.index-page k=0 p=0
+    }
+    practice reading.index-page count=1 seed=3 easy-seed=3 hard-seed=1
+    practice reading.which-list count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.index-order count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.glossary-passage count=2 seed=5 easy-seed=1 hard-seed=1
+    level hard {
+      practice reading.index-then-contents count=1 seed=2 hard-level=medium
+    }
+  }
+  try stars=2 {
+    show reading.two-pages-which k=0 r=0 hard-k=1 hard-r=1
+  }
+  try stars=3 {
+    show reading.fewest-lookups k=0 easy-k=1 hard-k=3
+  }
+  remember {
+    say "Chapters: the contents page. Pages: the index. Meanings: the glossary."
+  }
+
+  grown-ups """
+    The idea is that an information book is searched, not read through, and that each of its
+    three lists answers one kind of question: the contents page a chapter question, the index a
+    page question, the glossary a meaning question. The look shows all three for one book about
+    the sea. The way in looks a word up in the index, and the core sorts questions to their
+    list, puts index words back in alphabetical order, and uses the glossary to answer a
+    question about a passage that the passage's own words do not. The wrong idea to watch for
+    is flicking through the book from the front for a word the contents page never names; the
+    index is where that word is. The two-star question gives an index entry with two pages and
+    asks which to try first, decided by the chapter each page falls in, and the three-star
+    question plans the fewest lists to open for three questions. Any information book at home
+    does for a follow-up: ask three questions and let the child name the list before opening
+    the book.
+    """
+  level easy {
+    grown-ups "At this level a word is looked up in the index once in the teacher's pen before the child's own, the questions to sort are the plainer ones, the index words to order all start with different letters, the glossary words are in the passage as the glossary writes them, the two-star is the dolphins on pages 6 and 15, and the three-star's repeated list is the index."
+  }
+  level hard {
+    grown-ups "At this level the index is asked for seals where it says seal, the questions to sort include one whose word no chapter title names, two of the index words to order share a first letter, the glossary is used on calves and on the tide going out, an index page is traced back to its chapter, the two-star is the krill on pages 13 and 18, and the three-star's three questions need all three lists."
+  }
+}

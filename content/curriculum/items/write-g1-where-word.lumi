@@ -1,0 +1,21 @@
+# The audit's raise for which-word-fits: four place words, and pictures where two of them are close
+# (in the tub or by it, in the bed or on it), so the card has to be looked at closely.
+item writing.where-word v=1 skills=[writing.sentences] {
+  title "The word that says where"
+  difficulty (if k == 0 or k == 2 or k == 5 then 1 else 0)
+  let k=0..5
+  let who={if k == 0 then "cat" else if k == 1 then "dog" else if k == 2 then "rabbit" else if k == 3 then "hen" else if k == 4 then "pig" else "duck"}
+  let where={if k == 0 then "by" else if k == 1 then "in" else if k == 2 then "under" else if k == 3 then "on" else if k == 4 then "in" else "under"}
+  let thing={if k == 0 then "tub" else if k == 1 then "bed" else if k == 2 then "table" else if k == 3 then "box" else if k == 4 then "tub" else "bed"}
+
+  scene 34x15 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    sentence strip before="The {who} is" blank=4 after="the {thing}." right-of=card gap=1
+    text ask "Which word goes in the gap?" narrate width=20 below=card gap=1
+    choice pick options=["in", "on", "under", "by"] below=ask gap=1
+  }
+
+  answer pick=where
+  hint "Look at the card. Is the {who} inside it, on top of it, below it or next to it?"
+  hint "Read the sentence with each word in the gap. Which one matches the card?"
+}

@@ -1,0 +1,28 @@
+# Equal groups in boxes: count one box, then count that many for every box.
+item groups.boxes-equal v=1 skills=[multiplication.equal-groups] {
+  title "Boxes the same"
+  difficulty (b * p)
+  let b=2..3 p=2..5
+  where (b * p != b + p)  # 2 boxes of 2 would hide the adding mistake
+  level easy {
+    let b={2} p=3..4
+  }
+  level hard {
+    let b={3} p=4..5
+  }
+
+  scene 36x10 {
+    boxes pack boxes=b per=p loose=0 item=ball at=canvas(1, 1)
+    text ask "Every box has the same number of balls. How many balls are there?" narrate width=17 right-of=pack gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b * p)
+  feedback {
+    when (answer == b + p) point=pack {
+      say "That adds the boxes and one box of balls. Count {p} for every box."
+    }
+  }
+  hint "How many balls are in one box?"
+  hint "Count on in steps of that many, once for every box."
+}

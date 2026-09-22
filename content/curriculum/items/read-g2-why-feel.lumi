@@ -1,0 +1,17 @@
+# The cause of a feeling, where the passage gives the pieces but not the reason: the cat jumped
+# onto the table, so the tower fell. The wrong choices reuse words from the passage.
+item reading.why-feel v=1 stars=2 skills=[reading.inference, reading.characters] {
+  title "Why do they feel that way?"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 36x22 {
+    passage story text="{if k == 0 then \"The lights went out. Joe could not see his own hand. He held on tight to Mum.\" else if k == 1 then \"Pia's tower of cups was nearly as tall as her. Then the cat jumped up onto the table.\" else if k == 2 then \"Ben had practised his song every day for a week. When he stopped singing, everyone clapped and cheered.\" else \"Grandad's train was due at ten. At twelve he still had not come. Amy kept looking at the clock.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Why is {if k == 0 then \"Joe\" else if k == 1 then \"Pia\" else if k == 2 then \"Ben\" else \"Amy\"} {if k == 0 then \"scared\" else if k == 1 then \"cross\" else if k == 2 then \"proud\" else \"worried\"}?" narrate width=34 below=story gap=1
+    choice pick options=[if k == 0 then "It was dark." else if k == 1 then "The cat was hungry." else if k == 2 then "He was going home." else "Grandad was very late.", if k == 0 then "He had lost Mum." else if k == 1 then "The cat knocked her tower down." else if k == 2 then "He liked to sit down." else "She wanted to go to school.", if k == 0 then "He was cold." else if k == 1 then "Pia wanted to play outside." else if k == 2 then "People loved his song." else "The clock was broken."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It was dark." else if k == 1 then "The cat knocked her tower down." else if k == 2 then "People loved his song." else "Grandad was very late.")
+  hint "The passage does not say why. What happened just before?"
+  hint "Imagine you were there. What would make you feel that way?"
+}

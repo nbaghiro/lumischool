@@ -1,0 +1,37 @@
+lesson physics-rolling-down-a-ramp v=1 format=worked grade=2 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Rolling down a ramp"
+  goal "Measure how far a ball rolls from a slope, say what happens when the slope is raised, and pick out a fair test."
+
+  example {
+    worked physics.ramp-rolled h=3 r=12 easy-level=medium hard-level=medium
+    say """
+      Count from the foot of the slope, where the measuring starts at zero. The long marks are
+      every five centimetres, so find the nearest long mark first and then count on.
+      """
+  }
+  exercises {
+    practice physics.ramp-rolled count=3 seed=7
+    practice physics.ramp-table count=2 seed=2
+    practice physics.ramp-higher count=2 seed=3
+    practice physics.ramp-rough count=1 seed=1
+  }
+  try stars=2 {
+    show physics.ramp-predict a=7 d=4 easy-a=6 easy-d=3 hard-a=9 hard-d=5
+  }
+  try stars=3 {
+    show physics.ramp-which-fair f=2
+  }
+
+  grown-ups """
+    A book and a plank make the slope, and a marble and a tape measure do the rest. Three heights
+    and three distances are enough to see the pattern, and writing them in a table is half the
+    lesson. The fair test question gives three rows and asks which two compare height alone; any
+    two rows that differ in two ways cannot say which one made the difference.
+    """
+  level easy {
+    grown-ups "At this level the slopes are two or three centimetres high with short rolls, the two slopes compared differ by two or more, and the table goes up in threes."
+  }
+  level hard {
+    grown-ups "At this level the slopes are three or four centimetres high, the two slopes compared differ by one, the carpet takes five or six centimetres off the roll, and the table goes up in fives."
+  }
+}

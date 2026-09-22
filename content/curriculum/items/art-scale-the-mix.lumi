@@ -1,0 +1,27 @@
+item art.scale-the-mix v=1 skills=[art.proportion, reasoning.multiplicative] {
+  title "Enough for the same green"
+  difficulty (a * m + b * m)
+  let a={2, 3} b={1, 2} m=2..4
+  where (a != b)
+  level easy {
+    let m={2}
+  }
+  level hard {
+    let m={3, 4}
+  }
+
+  scene 34x12 {
+    mixingtray tray wells=["yellow {a}+blue {b}", "", ""] ring=0 labels=true at=canvas(1, 1)
+    text ask "The ringed green is {a} yellow to {b} blue. Ada has {a * m} yellow. How much blue does she need for the very same green?" width=16 right-of=tray gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b * m)
+  feedback {
+    when (answer == a * m - a + b) point=tray {
+      say "Adding the same to both changes the green. How many times more yellow does Ada have than the recipe says?"
+    }
+  }
+  hint "How many times does {a} go into {a * m}?"
+  hint "The blue has to grow the same number of times as the yellow."
+}

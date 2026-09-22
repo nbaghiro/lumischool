@@ -1,0 +1,24 @@
+# Every pair of parts for a total past ten, for the harder level of making ten. A pair and the same
+# pair turned round count once, and no cup holds more than nine, so the list stops at both ends.
+item bonds.two-cups-all-ways v=1 stars=3 skills=[addition.bridge-ten, reasoning.all-the-ways] {
+  title "Every way to share them"
+  let t=11..16
+
+  scene 26x20 {
+    undercup mat shown=0 cups=2 hidden=0 total=t at=canvas(1, 1)
+    text ask "Two cups hide {t} counters. Each cup hides from 1 to 9. How many different ways can they be shared? {t - 9} and 9 is the same way as 9 and {t - 9}." narrate width=24 below=mat gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (t // 2 - t + 10)
+  feedback {
+    when (answer == 2 * (t // 2 - t + 10) - (if t % 2 == 0 then 1 else 0)) point=mat {
+      say "Did you count a pair and the same pair turned round as two ways?"
+    }
+    when (answer == t - 1) point=mat {
+      say "A cup hides at most 9, so some of those pairs do not fit."
+    }
+  }
+  hint "Start with 9 in one cup. How many are in the other?"
+  hint "Now try 8 in the first cup, then 7. When do the pairs start to repeat?"
+}

@@ -1,0 +1,29 @@
+# The story: the band's waltz at the bandstand, counted in beats or bars.
+item music.waltz-story v=1 stars=1 skills=[music.rhythm, multiplication.groups] {
+  title "The bandstand waltz"
+  difficulty (n / 4 + w)
+  let n={4, 8, 12} w=0..1
+  level easy {
+    let n={4, 8} w=0..0
+  }
+  level hard {
+    let n={8, 12} w=1..1
+  }
+
+  scene 34x8 {
+    text ask "The band at the bandstand plays a waltz, three beats to a bar. {if w == 0 then \"The tune is \" else \"Ada counts \"}{if w == 0 then n else 3 * n}{if w == 0 then \" bars long. How many beats is that?\" else \" beats before the tune ends. How many bars is that?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 3 * n else n)
+  feedback {
+    when (w == 0 and answer == n + 3) point=ask {
+      say "Three beats for every bar, not three added on. Count in threes."
+    }
+    when (w == 1 and answer == 3 * n * 3) point=ask {
+      say "Beats into bars means sharing into threes, not multiplying."
+    }
+  }
+  hint "{if w == 0 then \"Each bar is one, two, three. How many threes?\" else \"Every three beats make a bar. How many threes in the count?\"}"
+  hint "{if w == 0 then \"Three times the bars.\" else \"The beats shared into threes.\"}"
+}

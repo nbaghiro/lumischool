@@ -1,0 +1,30 @@
+item count.beadstring-after v=1 skills=[counting.to-twenty] {
+  title "Beads after the arrow"
+  difficulty (20 - m)
+  let m=4..17
+  where (m != 10)  # then the bead's place and the beads after it are the same number
+  level easy {
+    let m=13..17
+  }
+  level hard {
+    let m=4..8
+  }
+
+  scene 26x10 {
+    beadstring line beads=20 mark=m at=canvas(1, 1)
+    text ask "How many beads come after the one the arrow points at?" narrate width=18 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (20 - m)
+  feedback {
+    when (answer == m) point=line {
+      say "That is where the arrow is. Count the beads to the right of it."
+    }
+    when (answer == 21 - m) point=line {
+      say "The bead under the arrow is not after it, so leave it out."
+    }
+  }
+  hint "There are 20 beads on the string, in groups of five."
+  hint "Count back in fives from the end of the string towards the arrow."
+}

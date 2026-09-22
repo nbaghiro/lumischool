@@ -1,0 +1,31 @@
+# The same three blocks in three orders end with three different numbers, so order matters: add
+# then double is not double then add.
+item coding.variable-order v=1 stars=2 skills=[coding.variables, coding.comparing] {
+  title "Which order?"
+  difficulty (6 - abs(a - b) + (if k == 0 then 0 else 1) + (a + b) / 10)
+  let a=2..5 b=1..6 k=0..2
+  where (a != b)
+
+  scene 36x16 {
+    row all at=canvas(1, 0) space=2 align=start {
+      column ca space=0 align=start {
+        text ta "A"
+        blocks pa code=["set n to {a}", "add {b} to n", "double n"]
+      }
+      column cb space=0 align=start {
+        text tb "B"
+        blocks pb code=["set n to {a}", "double n", "add {b} to n"]
+      }
+      column cc space=0 align=start {
+        text tc "C"
+        blocks pc code=["set n to {a}", "add {b} to n", "add {b} to n"]
+      }
+    }
+    text ask "Ivy wants n to be {if k == 0 then 2 * (a + b) else if k == 1 then 2 * a + b else a + 2 * b} at the end. Which program does it?" width=34 below=all gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else "C")
+  hint "Work out what each program ends with, one line at a time."
+  hint "In A the add comes before the double. In B it comes after. Does that change the answer?"
+}

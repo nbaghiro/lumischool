@@ -1,0 +1,29 @@
+# The part taken away is the unknown, 1.OA.D.8: 12 − ? = 5, with the plate showing what is left.
+item sub.plate-ate v=1 skills=[subtraction.change-unknown] {
+  title "How many were eaten"
+  difficulty (a - c)
+  let a=11..16 c=3..8
+  where (a - c >= 3 and a - c <= 9)
+  where (a - c != c)
+  level easy {
+    let a=11..13 c=6..8
+  }
+  level hard {
+    let a=14..16 c=3..6
+  }
+
+  scene 30x10 {
+    plate dish item=circle count=c at=canvas(1, 1)
+    text ask "There were {a} biscuits. Kim ate some, and these are left." narrate width=19 right-of=dish gap=1
+    equation eq "{a} − {?ate} = {c}" below=ask gap=1
+  }
+
+  answer ate=(a - c)
+  feedback {
+    when (ate == c) point=dish {
+      say "Those are the biscuits left. How many went from the {a}?"
+    }
+  }
+  hint "How many biscuits are left on the plate?"
+  hint "Count up from what is left to {a}."
+}

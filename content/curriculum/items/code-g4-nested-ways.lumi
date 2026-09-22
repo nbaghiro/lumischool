@@ -1,0 +1,22 @@
+# Every pair of counts whose product is n: a factor search, and the order of the counts matters
+# because swapping them is a different program.
+item coding.nested-ways v=1 stars=3 skills=[coding.repetition, reasoning.all-the-ways] {
+  title "How many programs?"
+  difficulty n
+  let n={12, 16, 18, 24, 36}
+
+  scene 36x13 {
+    program p code=["repeat ?", "  repeat ?", "    jump"] at=canvas(1, 0)
+    text ask "The robot must jump exactly {n} times. Both repeat numbers must be from 2 to 9. How many different programs can you make? Swapping the two numbers makes a different program." width=19 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if n % 2 == 0 and n / 2 <= 9 then 1 else 0) + (if n % 3 == 0 and n / 3 <= 9 then 1 else 0) + (if n % 4 == 0 and n / 4 <= 9 then 1 else 0) + (if n % 5 == 0 and n / 5 <= 9 then 1 else 0) + (if n % 6 == 0 and n / 6 <= 9 then 1 else 0) + (if n % 7 == 0 and n / 7 <= 9 then 1 else 0) + (if n % 8 == 0 and n / 8 <= 9 then 1 else 0) + (if n % 9 == 0 and n / 9 <= 9 then 1 else 0))
+  feedback {
+    when (answer == 1) point=p {
+      say "There is more than one pair of numbers that multiply to {n}."
+    }
+  }
+  hint "Which pairs of numbers from 2 to 9 multiply to make {n}?"
+  hint "Write each pair both ways round, unless both numbers are the same."
+}

@@ -1,0 +1,23 @@
+# Working backwards through two stops: a Singapore heuristic, with no method given on the page.
+item sub.work-back v=1 stars=3 skills=[subtraction.start-unknown, reasoning.work-backwards] {
+  title "Two stops"
+  difficulty (a + b + c)
+  let a=2..5 b=2..5 c=2..8
+  where (a != b)
+  where (a + b + c <= 18)
+
+  scene 32x19 {
+    bus ride windows=8 on=c sign="9" at=canvas(1, 1)
+    text ask "At the first stop {a} people got off. At the second stop {b} got off. Now there are {c} on the bus. How many were on at the start?" width=28 below=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b + c)
+  feedback {
+    when (answer == c + a or answer == c + b) point=ride {
+      say "Put back the people from both stops, not just one of them."
+    }
+  }
+  hint "Go backwards. Before the second stop, the {b} were still on the bus."
+  hint "Then go back past the first stop and put the {a} back on too."
+}

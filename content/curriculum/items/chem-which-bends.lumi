@@ -1,0 +1,29 @@
+# The property that changes with the material: of three things of one shape, the one that bends,
+# or the one you can see through, or the one that floats. The shape is the same, so only the
+# material can be the answer.
+item chem.which-bends v=1 skills=[chemistry.materials] {
+  title "Same shape, which bends?"
+  difficulty (if q == 2 then 2 else if q == 1 then 1 else 0)
+  let q=0..2 p=0..2
+  let prop={pick(q, "bendy", "see-through", "floats")}
+  let asks={pick(q, "Which one bends?", "Which one can you see through?", "Which one floats?")}
+  let a={pick(q, "plastic-bottle", "glass-jar", "wooden-block")}
+  let b={pick(q, "glass-bottle", "metal-can", "brick")}
+  let c={pick(q, "metal-key", "wooden-block", "metal-key")}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 24x13 {
+    text ask "Three things, one made of each material. {asks}" width=23 at=canvas(1, 0)
+    materials row things=["{if p == 0 then a else if p == 1 then b else c}", "{if p == 0 then b else if p == 1 then c else a}", "{if p == 0 then c else if p == 1 then a else b}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="only({prop})"
+  hint "The shapes match, so the answer is in what each one is made of. Say the material of each."
+  hint "Plastic bends and glass does not; glass shows through and metal does not; wood floats and brick sinks."
+}

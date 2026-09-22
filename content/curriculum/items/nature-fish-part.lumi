@@ -1,0 +1,39 @@
+# The fish with its four lettered parts. The tail and the mouth are at the two ends and are the
+# easy two; the fin on top and the body have to be told from each other.
+item nature.fish-part v=1 skills=[nature.animals] {
+  title "Which part of the fish?"
+  difficulty (if k == 1 or k == 3 then 0 else 1)
+  let k=0..3
+  let p={pick(k, "fin", "tail", "body", "mouth")}
+  let letter={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k={1, 3}
+  }
+  level hard {
+    let k={0, 2}
+  }
+
+  scene 32x10 {
+    parts fig of=fish at=canvas(1, 1)
+    text ask "A fish swims under the lily pads. Which letter points at its {p}?" narrate width=16 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 1 and pick == "A") point=fig {
+      say "A is the fin on the fish's back. The tail is at the very end, the part that waves from side to side."
+    }
+    when (k == 3 and pick == "B") point=fig {
+      say "B is the tail, at the back. The mouth is at the front, under the eye."
+    }
+    when (k == 0 and pick == "B") point=fig {
+      say "B is the tail. A fin is a small flap, and this one stands up on the fish's back."
+    }
+    when (k == 2 and pick == "A") point=fig {
+      say "A is a fin, a small flap on top. The body is the big middle part covered in scales."
+    }
+  }
+  hint "The mouth is at the front and the tail is at the back. Where is the part you want?"
+  hint "A fin is a small flap. The body is the big middle part with the scales."
+}

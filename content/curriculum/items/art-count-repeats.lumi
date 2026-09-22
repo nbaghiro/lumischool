@@ -1,0 +1,20 @@
+item art.count-repeats v=1 skills=[art.pattern] {
+  title "How many times round?"
+  difficulty n
+  let n=4..8 m={"leaf", "drop", "fish"}
+  level easy {
+    let n=4..5
+  }
+  level hard {
+    let n=7..8
+  }
+
+  scene 30x13 {
+    radial pic repeats=n motif=m missing=-1 colour=berry at=canvas(1, 1)
+    text ask "The {m} is repeated round the middle, turned a little each time. How many times?" width=14 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  hint "Put your finger on the top one and go round, counting, until you are back at the start."
+}

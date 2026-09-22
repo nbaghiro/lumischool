@@ -1,0 +1,57 @@
+# The grand staff read from three landmarks, bass F, middle C and treble G, with everything else a
+# step or a skip from the nearest one. This is the landmark reading the intervallic methods use.
+lesson music-piano-grand-staff v=1 format=teach grade=3 unit=1 subject=music levels=[easy, medium, hard] {
+  title "The grand staff and three landmarks"
+  goal "Find bass F, middle C and treble G on the grand staff, and read the notes a step or a skip from them."
+
+  look {
+    scene 34x17 {
+      grandstaff gs notes=["F3", "C4", "G4"] letters=true lit=[] landmarks=true at=canvas(1, 1)
+      bubble tip "The bass clef's two dots sit either side of F. The treble clef curls round G." width=14 right-of=gs gap=2
+    }
+    say """
+      A piano is read from two staves joined together. The bottom one is for the left hand and the
+      top one for the right, with middle C on its own short line between them. Learn three notes by
+      sight, bass F, middle C and treble G, and read the others as steps and skips from them.
+      """
+  }
+  do {
+    show music.name-landmark
+    practice music.landmark-alone count=1 seed=2
+    show music.step-from-landmark
+    show music.skip-from-landmark
+    level easy {
+      worked music.name-near-landmark i=0 q=0 level=medium
+    }
+    practice music.name-near-landmark count=2 seed=5 easy-seed=1 hard-seed=13
+    practice music.interval-read count=1 hard-count=0 seed=3
+    level hard {
+      practice music.wrong-clef-name count=1 seed=5
+    }
+    show music.play-landmark
+  }
+  try stars=2 {
+    show music.wrong-clef-name i=4 q=1 easy-i=6 hard-i=1
+  }
+  try stars=3 {
+    show music.near-landmarks-count k=2 easy-k=1 hard-k=4
+  }
+  remember {
+    say "Bass F, middle C and treble G are the landmarks. Count steps and skips from the nearest one."
+  }
+
+  grown-ups """
+    If a child is naming every note by counting up from middle C, bring them back to the landmarks:
+    the nearest one is never more than a skip or two away. The played question is marked by the
+    keyboard on screen, and on paper by pointing at the key. The two-star question is the mistake
+    of reading the bottom staff as if it were the top one; ask which clef the note sits under
+    before anything else. In the three-star question some notes are near two landmarks at once,
+    and noticing that is the point, so let the child count twice and then check.
+    """
+  level easy {
+    grown-ups "At this level the ringed landmark is as written, a skip below bass F is named once in the teacher's pen before the landmark alone, which is middle C or treble G, the step and the skip are as written, the notes to name sit round middle C and treble G, the intervals go up by two or three, the note to play is as written, Ana's note is bass F itself, and the three-star counts the notes a step from a landmark."
+  }
+  level hard {
+    grown-ups "At this level the ringed landmark is as written, the landmark alone is bass F or treble G, the step and the skip are as written, the notes to name sit round bass F or a skip from treble G, the intervals make way for a second note of Ana's, the note to play is as written, Ana's note is the A at the bottom of the bass staff, and the three-star counts the notes four steps from a landmark."
+  }
+}

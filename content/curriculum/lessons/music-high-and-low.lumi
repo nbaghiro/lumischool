@@ -1,0 +1,65 @@
+# High and low as a direction: to the right on the keys and up on the staff is higher. Every note
+# that sounds is drawn, so the lesson works with the volume at zero and on paper.
+lesson music-high-and-low v=1 format=teach grade=1 unit=1 subject=music levels=[easy, medium, hard] {
+  title "High and low"
+  goal "Hear and see that keys to the right sound higher, and play a high note and a low note."
+
+  look {
+    scene 32x23 {
+      piano keys from=C4 whites=8 wide=3 labels=letters lit=[C4, G4] at=canvas(1, 1)
+      notes tune clef=treble notes=[C4, G4] letters=true below=keys gap=1
+    }
+    say """
+      At the bandstand in the park Ben presses the two ringed keys. The one on the right sounds
+      higher, like a small bird; the one on the left sounds lower, like a big drum. Press them
+      yourself. On the staff the same two notes are drawn: the higher note sits higher on the
+      lines. To the right on the keys is up on the page.
+      """
+  }
+  do {
+    level easy {
+      worked music.chime-higher a=2 b=6
+    }
+    practice music.chime-higher count=2 seed=5 easy-seed=2 hard-seed=1
+    show music.play-higher-key
+    practice music.staff-higher count=2 seed=2 easy-seed=1 hard-seed=1
+    practice music.which-way count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.rank-notes count=1 seed=3 easy-seed=1 hard-seed=1
+    level hard {
+      show music.staff-higher a=6 b=5 level=medium
+    }
+  }
+  story {
+    show music.park-keys a=3 d=3 w=0 easy-a=1 easy-d=2 hard-a=4 hard-d=3 hard-w=1
+  }
+  try stars=2 {
+    show music.close-on-staff k=1 r=1 easy-k=0 hard-k=2 hard-r=2
+  }
+  try stars=3 {
+    show music.up-then-down
+  }
+  remember {
+    say "To the right is higher and to the left is lower, on the keys and up the staff."
+  }
+
+  grown-ups """
+    The idea is a direction: to the right along the keys the notes go up, and on the staff they
+    climb the lines and spaces the same way. The look is the two ringed keys and the same two
+    notes drawn, and the way in asks which of two chime bars sounds higher; let the child play both
+    before answering, since the ear should agree with the eye. The core plays the higher of two
+    ringed keys, reads two notes on the staff, chooses which way to move for a higher or a lower
+    note, and ranks three notes. The wrong idea to watch for is that the
+    first note, or the bigger-looking one, is higher; the question is always which sits further
+    right or further up. The story counts along the keys, the two-star question puts two notes a
+    step apart on the staff and asks for the reason, and the three-star question is played: three
+    notes up from C and one back down, proved by the pitches. If the child cannot hear the
+    difference, stay here another day with the two keys furthest apart and a song sung high and
+    then low.
+    """
+  level easy {
+    grown-ups "At this level a far-apart pair of bars is worked once in the teacher's pen before pairs three or more apart, the staff notes are far apart, the way to move is for a higher note, the three notes are C, E and G nearly in order, the story counts two bars to the right from bar one, and the two-star is E on the line against F in the space above it."
+  }
+  level hard {
+    grown-ups "At this level the bars to compare are next door, the staff notes are a step apart, with a second pair in the core, the way to move is for a lower note, the three notes are D, F and A out of order, the story counts three bars to the left from bar four, and the two-star is D below the bottom line against E on it."
+  }
+}

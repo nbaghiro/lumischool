@@ -1,0 +1,20 @@
+item physics.band-fair v=1 skills=[physics.sound, physics.method] stars=2 {
+  title "Is that fair?"
+  difficulty (if x == y then 0 else 1)
+  let x={1, 3} y={1, 3} a={6, 8} b={11, 13}
+
+  scene 21x18 {
+    bands bb lengths=[a, b] thick=[x, y] at=canvas(1, 0)
+    text ask "Tom says A sounds higher because it is shorter. Is comparing A and B a fair test of length?" width=19 below=bb gap=0
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  answer pick=(if x == y then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and x != y) point=bb {
+      say "The bands are different thicknesses as well as lengths, so either could make the difference."
+    }
+  }
+  hint "How are A and B different? Is it only their length?"
+  hint "A fair test changes one thing and keeps everything else the same."
+}

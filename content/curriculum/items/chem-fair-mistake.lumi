@@ -1,0 +1,19 @@
+# A reason: whether Sam's test can show what he says. When the spoons differ as well, the faster time
+# could come from either change; when they match, it is fair.
+item chem.fair-mistake v=1 stars=2 skills=[chemistry.method, reasoning.fair-test] {
+  title "Is Sam's test fair?"
+  difficulty (if v <= 1 then 2 else 1)
+  let v=0..7
+
+  scene 33x23 {
+    text ask "Sam says hot water dissolves sugar faster. Here is his test. Is it a fair test?" width=32 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=3 head=["°C", "Spoons", "Seconds"] cells=[10, if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 1 else if v == 3 then 1 else if v == 4 then 2 else if v == 5 then 2 else if v == 6 then 3 else 3, if v == 0 then 80 else if v == 1 then 95 else if v == 2 then 80 else if v == 3 then 95 else if v == 4 then 80 else if v == 5 then 95 else if v == 6 then 80 else 95, 50, if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 3 else if v == 3 then 3 else if v == 4 then 4 else if v == 5 then 4 else if v == 6 then 3 else 3, if v == 0 then 40 else if v == 1 then 45 else if v == 2 then 40 else if v == 3 then 45 else if v == 4 then 40 else if v == 5 then 45 else if v == 6 then 40 else 45]
+    }
+    choice pick options=["Yes, only the water changed", "No, he changed two things at once", "No, he needed more water"] stack=column below=kit gap=0
+  }
+
+  answer pick=(if v == 0 then "Yes, only the water changed" else if v == 1 then "Yes, only the water changed" else if v == 2 then "No, he changed two things at once" else if v == 3 then "No, he changed two things at once" else if v == 4 then "No, he changed two things at once" else if v == 5 then "No, he changed two things at once" else if v == 6 then "Yes, only the water changed" else "Yes, only the water changed")
+  hint "Which columns change between the cold cup and the hot cup?"
+  hint "If more than one thing changed, could the sugar have dissolved faster for another reason?"
+}

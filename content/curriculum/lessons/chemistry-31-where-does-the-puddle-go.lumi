@@ -1,0 +1,67 @@
+lesson chemistry-puddles-disappear v=1 format=teach grade=1 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Where does the puddle go?"
+  goal "Say that water goes into the air when it is warm and windy, and read which puddle dries first."
+
+  look {
+    scene 34x8 {
+      row week at=canvas(0, 0) space=0 align=end {
+        dish first left=4 day=1 sun=1
+        dish second left=2 day=3 sun=1
+        dish third left=0 day=5 sun=1
+      }
+    }
+    say """
+      At the oasis Nour spills a bucket on the path, and by the afternoon the puddle has gone. She
+      fills a dish and leaves it on the wall in the sun. Every day there is less in it, and on day
+      five it is dry, with a white crust where the salty water was. Nobody drank it. The water went
+      into the air, a little at a time, and it goes faster when the day is warm and the wind
+      blows.
+      """
+  }
+  do {
+    level easy {
+      worked chem.smaller-now a=4 b=1 s=0
+    }
+    practice chem.smaller-now count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.first-or-last count=2 seed=3 easy-seed=4 hard-seed=1
+    practice chem.where-water-went count=1 seed=1 easy-seed=1 hard-seed=1
+    practice chem.sunny-or-cloudy count=2 seed=2 easy-seed=1 hard-seed=4
+    practice chem.days-to-dry count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.shade-first k=1 r=1 level=medium
+    }
+  }
+  story {
+    show chem.two-bowls n=1 w=0 hard-n=2 hard-w=1
+  }
+  try stars=2 {
+    show chem.shade-first k=1 r=2 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show chem.dry-the-washing k=1 r=2 easy-k=0 easy-r=1 hard-k=2 hard-r=3
+  }
+  remember {
+    say "Water goes into the air, and it goes faster when the day is warm and the wind blows."
+  }
+
+  grown-ups """
+    The idea is that water leaves a puddle or a dish into the air, without anyone touching it,
+    and that warmth and wind make it leave faster. The wrong ideas to watch for are that the water
+    soaks through the dish, that the sun "drinks" it, or that it turns into the salt crust; the
+    salt was in the water all along and cannot follow it into the air. The pictures are the same
+    dish on different days, so ask which has less and why. The days-to-dry questions count
+    quarters lost each day, one in the shade and two in the sun, and the hard one starts with
+    three quarters so the last day is a short one. The two-star question asks which of two
+    puddles dries first and wants the reason (warm air takes water faster), not one that only
+    sounds like a reason. The three-star question picks the two things that dry washing fastest,
+    and each half of a pair has to help. If the water is still "gone nowhere" after the core, stay
+    here another day: two saucers of water, one on a warm windowsill and one in a cupboard, and a
+    pencil line at the edge each morning.
+    """
+  level easy {
+    grown-ups "At this level the two dishes are worked once in the teacher's pen with three quarters between them, the pairs differ by two quarters or more, the three pictures are asked for the first, the question is where the water went, the two days differ by warmth alone or wind alone, the dish stands in the shade and loses a quarter a day, the story asks the difference after one day, the puddles are the same size, and the washing's choice is between sun and wind and pairs that plainly fail."
+  }
+  level hard {
+    grown-ups "At this level the pairs of dishes differ by one quarter, the three pictures are asked for the last, the question is what the crust is, the two days are as windy as each other and one is warmer, the dish stands in the sun and starts with three quarters, a second sun-or-shade reason sits in the core, the story asks how much has gone from both bowls after two days, the shady puddle is slightly smaller, and the washing's choice is between wind and spreading out against the shade."
+  }
+}

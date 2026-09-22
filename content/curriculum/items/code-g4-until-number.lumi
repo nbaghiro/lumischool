@@ -1,0 +1,23 @@
+# Repeat until with a number instead of a maze: the loop keeps doubling until the question comes
+# true, and how many times that takes is the answer.
+item coding.until-number v=1 skills=[coding.repetition, coding.variables] {
+  title "Double until it is big"
+  difficulty (m / s)
+  let s=1..3 m={10, 20, 30, 50}
+  level easy {
+    let m={10, 20}
+  }
+  level hard {
+    let m={30, 50}
+  }
+
+  scene 36x8 {
+    program p code=["set n to {s}", "repeat until n is more than {m}", "  double n"] at=canvas(1, 0)
+    text ask "How many times does line 3 run?" width=10 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="ran(3)"
+  hint "Write n after each double: {s}, {2 * s}, and then?"
+  hint "Stop as soon as n is more than {m}. How many doubles was that?"
+}

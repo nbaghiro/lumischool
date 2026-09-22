@@ -1,0 +1,33 @@
+# Two rows of lamps: the one with the bigger lamp lit wins, however many small lamps the other has.
+item coding.lamps-bigger v=2 skills=[coding.data] {
+  title "Which row shows more?"
+  difficulty (8 - abs(a - b) + (if b != 3 and (a >= 8) == (b >= 8) then 4 else 0))
+  let a={4, 5, 6, 7, 8, 9} b={3, 6, 7, 8, 10, 12}
+  let p=0..1  # which row the first number goes in, so A and B are each right half the time
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 3 and (a >= 8) != (b >= 8))
+  }
+  level hard {
+    where (abs(a - b) <= 2 and b != 3 and (a >= 8) == (b >= 8))
+  }
+
+  scene 31x15 {
+    column both at=canvas(1, 0) space=1 align=start {
+      row ra space=1 align=centre {
+        text la "A"
+        lamps l1 bits=4 n=(if p == 0 then a else b)
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        lamps l2 bits=4 n=(if p == 0 then b else a)
+      }
+    }
+    text ask "Which row of lamps shows the bigger number?" width=13 right-of=both gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if (a > b) == (p == 0) then "A" else "B")
+  hint "Which row has the biggest lamp lit?"
+  hint "Add up each row if you are not sure."
+}

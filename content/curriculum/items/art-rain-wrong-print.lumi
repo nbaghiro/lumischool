@@ -1,0 +1,33 @@
+# Two stars: two prints of the same bridge in the rain, one of which has the rain falling two ways at
+# once, and which of them is wrong and why. The wrong one moves between the two.
+item art.rain-wrong-print v=1 stars=2 skills=[art.looking, reasoning.evidence] {
+  title "Which print is wrong?"
+  difficulty (if p < 2 then 0 else 1)
+  let p=0..3
+  let r1={pick(p, 2, 1, 2, 1)}
+  let r2={pick(p, 1, 2, 1, 2)}
+  let f={pick(p, 0, 0, 1, 1)}
+  let ans={pick(p, "The first, its rain falls two ways at once", "The second, its rain falls two ways at once", "The first, its rain falls two ways at once", "The second, its rain falls two ways at once")}
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3}
+  }
+
+  scene 30x32 {
+    bridge one arches=4 rain=r1 weight="both" far=f at=canvas(1, 0)
+    bridge two arches=4 rain=r2 weight="both" far=f below=one gap=1
+    text ask "Rain falling in a wind all slants the same way. One of these prints cannot be right. Which, and why?" narrate width=22 below=two gap=1
+    choice pick options=["The first, its rain falls two ways at once", "The second, its rain falls two ways at once", "Neither, rain can fall any way it likes"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Neither, rain can fall any way it likes") point=two {
+      say "Rain falling through one wind slants one way. Lines crossing each other are two rains at once, which is why the print looks wrong even before you can say why."
+    }
+  }
+  hint "Look at the slants of the rain lines in each print."
+  hint "In one print some lines cross others."
+}

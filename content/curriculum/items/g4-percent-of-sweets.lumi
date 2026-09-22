@@ -1,0 +1,30 @@
+# A percentage of an amount through the fraction it is: a quarter, a tenth, a fifth, a half.
+item percent.of-amount v=2 skills=[percentages.of-amount] {
+  title "A percent of the sweets"
+  difficulty ((if p == 50 then 0 else if p == 10 or p == 25 then 1 else if p == 20 then 2 else 3) + n / 40)
+  let p={10, 20, 25, 50, 75} n={20, 40, 60, 80}
+  level easy {
+    let p={10, 50}
+  }
+  level hard {
+    let p={20, 75} n={60, 80}
+  }
+
+  scene 21x17 {
+    percentbar bar percent=p show=true whole=0 at=canvas(1, 1)
+    text ask "A jar holds {n} sweets. {p}% of them are red. How many red sweets are there?" narrate width=19 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * p / 100)
+  feedback {
+    when (answer == p) point=ask {
+      say "{p}% is {p} out of every hundred, and there are only {n} sweets."
+    }
+    when (p != 50 and answer == n - n * p / 100) point=ask {
+      say "That is the sweets that are not red."
+    }
+  }
+  hint "What fraction is {p}%? A half, a quarter, a tenth or a fifth?"
+  hint "Find that fraction of {n}."
+}

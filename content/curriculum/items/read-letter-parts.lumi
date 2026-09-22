@@ -1,0 +1,19 @@
+# A letter has parts with jobs: who it is to, who it is from, what it says. Each question sends the
+# child to a different part of the card.
+item reading.letter-parts v=1 skills=[reading.letters] {
+  title "The parts of a postcard"
+  let k=0..2
+
+  scene 35x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      postcard card greeting="Dear Sam," text="Gran and I went to the harbour today. We saw the lighthouse and ate chips on the wall." closing="Love from" from="Nell" to=["Sam Reed", "12 Mill Lane", "Ash"] stamp=lighthouse date="3 May" lines=4
+      row q space=1 align=centre {
+        text ask "{if k == 0 then \"Who wrote this postcard?\" else if k == 1 then \"Who is it sent to?\" else \"Who went to the harbour with Nell?\"}" width=16
+        choice pick options=["Nell", "Sam", "Gran"]
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "Nell" else if k == 1 then "Sam" else "Gran")
+  hint "The name after Love from is who wrote it. The address says who it goes to."
+}

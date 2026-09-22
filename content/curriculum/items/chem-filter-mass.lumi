@@ -1,0 +1,30 @@
+# Nothing is lost in a filter: the sand that went in is the sand on the paper once it is dry.
+item chem.filter-mass v=1 skills=[chemistry.separating, chemistry.mass] {
+  title "How much sand is on the paper?"
+  difficulty (s + w / 100)
+  let s={5, 10, 15, 20} w={100, 200}
+  level easy {
+    let s={5, 10} w={100}
+  }
+  level hard {
+    let s={15, 20} w={200}
+  }
+
+  scene 33x16 {
+    funnel f residue=8 level=2 drops=3 at=canvas(1, 0)
+    text ask "{s} grams of sand is stirred into {w} grams of water and poured through filter paper. The sand on the paper is dried. How many grams of sand are on the paper?" width=18 right-of=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == s + w) point=f {
+      say "The water went through the paper into the beaker. Only the sand stayed."
+    }
+    when (answer == w) point=f {
+      say "That is the water. The question asks about the sand."
+    }
+  }
+  hint "Does any of the sand go through the paper?"
+  hint "Once the water has gone, is there more sand, less sand, or the same?"
+}

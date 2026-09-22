@@ -1,0 +1,16 @@
+# Every version has exactly one pair of rows with the same string and a different bob; of the other
+# two pairs, one changes the string and the other changes both.
+item physics.pendulum-fair v=1 skills=[physics.method] stars=3 {
+  title "Does the weight matter?"
+  let f=0..2
+
+  scene 32x18 {
+    table data cols=3 head=["Test", "String", "Bob"] cells=[1, "{if f == 1 then \"80 cm\" else \"50 cm\"}", "{if f == 0 then \"50 g\" else \"200 g\"}", 2, "{if f == 2 then \"80 cm\" else \"50 cm\"}", "{if f == 1 then \"50 g\" else \"200 g\"}", 3, "80 cm", "50 g"] at=canvas(1, 0)
+    text ask "Which two tests show whether the weight of the bob matters?" width=26 below=data gap=1
+    choice pick options=["1 and 2", "1 and 3", "2 and 3"] below=ask gap=1
+  }
+
+  answer pick=(if f == 0 then "1 and 2" else if f == 1 then "1 and 3" else "2 and 3")
+  hint "In a fair test of weight, what must stay the same?"
+  hint "Find the two rows with the same string and different bobs."
+}

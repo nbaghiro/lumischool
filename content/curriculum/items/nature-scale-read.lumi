@@ -1,0 +1,36 @@
+# The way in: the scale bar under Ada's map of the marsh, and what one part of it stands for, or
+# what the whole bar is worth. Reading one part is the plain half; the whole bar needs the parts
+# counted and multiplied.
+item nature.scale-read v=1 skills=[nature.maps, measure.scale] {
+  title "What does the scale say?"
+  difficulty (w + (if st == 10 then 1 else 0))
+  let st={1, 2, 5, 10} w=0..1
+  let asks={pick(w, "How many kilometres does one part of the scale bar stand for?", "How many kilometres does the whole scale bar stand for?")}
+  level easy {
+    let st={1, 2} w=0..0
+  }
+  level hard {
+    let st={5, 10} w=1..1
+  }
+
+  scene 34x14 {
+    mapscale map km=(4 * st) step=st at=canvas(1, 1)
+    text ask "Ada's map of the marsh has a scale bar under it, marked off in parts. {asks}" narrate width=17 right-of=map gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then st else 4 * st)
+  feedback {
+    when (w == 1 and answer == st) point=map {
+      say "That is one part. The bar has four parts, so count them all."
+    }
+    when (w == 0 and answer == 4 * st) point=map {
+      say "That is the whole bar. The question asks about one part of it."
+    }
+    when (w == 0 and answer == 4) point=map {
+      say "Four is how many parts the bar has. Read the number written under one part."
+    }
+  }
+  hint "Look at the numbers written under the scale bar. Where does the first part end?"
+  hint "One part is the first number. The whole bar is the last number."
+}

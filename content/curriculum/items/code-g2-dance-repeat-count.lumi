@@ -1,0 +1,27 @@
+# The number of beats is given and the repeat number is the unknown: the dance worked backwards.
+item coding.dance-repeat-count v=1 skills=[coding.repetition] {
+  title "How many times round?"
+  difficulty (n + k)
+  let n=2..5 k=2..3
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 32x12 {
+    blocks b code=["wave", "repeat ?", "  jump", "  spin", "{if k == 3 then \"  clap 1\" else \"bow\"}"] at=canvas(1, 0)
+    text ask "The whole dance is {if k == 3 then 1 + 3 * n else 2 + 2 * n} beats long. What number goes in the repeat?" width=18 right-of=b gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == (if k == 3 then 1 + 3 * n else 2 + 2 * n)) point=b {
+      say "That is the number of beats. Each time round the repeat is more than one beat."
+    }
+  }
+  hint "How many beats are outside the repeat?"
+  hint "How many beats does one time round the repeat take?"
+}

@@ -1,0 +1,28 @@
+# Keeping track of a place that goes up and down: the child has to hold where the rabbit is after
+# every block and compare, since the furthest point is not the end and not always the first move.
+item coding.furthest-right v=2 stars=2 skills=[coding.tracing, reasoning.compare] {
+  title "Furthest along"
+  difficulty (a + b + c + d)
+  let a=1..5 b=1..4 c=1..3 d=1..3  # these ranges make 1 and 3 each the answer about half the time
+  where (a + c - b <= 6 and a - b >= 0)
+  where (a != a - b + c)
+  where (a + c - b - d >= 0)
+
+  scene 30x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "left {b}", "right {c}", "left {d}"] numbers=true words=false
+      stage st cols=8 col=1 code=["right {a}", "left {b}", "right {c}", "left {d}"] upto=0
+    }
+    text ask "After which block is the rabbit furthest to the right?" width=28 below=top gap=1
+    choice pick options=[1, 2, 3, 4] below=ask gap=1
+  }
+
+  answer pick=(if a > a - b + c then 1 else 3)
+  feedback {
+    when (pick == 4) point=b {
+      say "The last block goes left, so the rabbit ends up further back than it was."
+    }
+  }
+  hint "Write down the square the rabbit is on after each block."
+  hint "Which of your four squares is the biggest number?"
+}

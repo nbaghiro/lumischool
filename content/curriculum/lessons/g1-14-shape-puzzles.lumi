@@ -1,0 +1,48 @@
+lesson g1-shape-puzzles v=1 format=puzzles grade=1 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Balance and shape puzzles"
+  goal "Every scale is level, every pattern carries on and every box is a sum. Work out what is missing."
+
+  puzzle stars=1 {
+    show balance.pairs c=2 k=2 hard-k=3
+  }
+  puzzle stars=1 {
+    show shape.count-sides a=2 b=1 easy-a=1 hard-b=3
+  }
+  puzzle stars=2 {
+    show pattern.next n=6 hard-n=9
+  }
+  puzzle stars=2 {
+    show balance.star-ball k=3 easy-k=2 hard-k=4
+  }
+  puzzle stars=2 {
+    show pattern.growing s=1 t=2 hard-s=2 hard-t=3
+  }
+  puzzle stars=2 {
+    show pattern.geese-v n=8 easy-n=7 hard-n=13
+  }
+  puzzle stars=3 {
+    show pattern.far-along p=14 easy-p=10 hard-p=20
+  }
+  puzzle stars=3 {
+    show matchsticks.fix
+  }
+  puzzle stars=3 {
+    show add.triangle-all x=3 y=1 z=5 easy-x=2 easy-z=3 hard-x=4 hard-y=6
+  }
+  puzzle stars=3 {
+    show money.dimes-and-nickels n=5 d=2 easy-n=3 easy-d=1 hard-n=6 hard-d=4
+  }
+
+  grown-ups """
+    Let the child try each one alone first. The hints and answers are on this sheet, not on theirs.
+    Each puzzle can be started by trying something: a number for a circle, a shape for the next
+    place, one stick to move, a number of dimes. The geese can only fly in a V when the ones behind
+    the leader share into two equal sides. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level the balance, the gap in the pattern and the growing pattern are as written, the shapes are one triangle and one square, the star balances two balls, seven geese make the V, the pattern is followed to shape 10, the matchstick is as written, the circles add to 6, and Kai has three coins with one dime."
+  }
+  level hard {
+    grown-ups "At this level three light things balance each heavy one, the shapes are two triangles and three squares, the gap comes at shape 9, the star balances four balls, the pattern grows by three from two, thirteen geese make the V, the pattern is followed to shape 20, the matchstick is as written, the circles add to 15, and Kai has six coins with four dimes."
+  }
+}

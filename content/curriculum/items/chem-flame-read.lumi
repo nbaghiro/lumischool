@@ -1,0 +1,24 @@
+# The way in: the thermometer beside the burner is read off, halfway between two numbered marks.
+item chem.flame-read v=1 skills=[chemistry.heating] {
+  title "How hot is it now?"
+  difficulty v
+  let v={30, 50, 70, 90}
+
+  scene 37x14 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      flame burner height=3 on=1 stand=false
+      thermometer tube from=0 to=120 step=20 value=v unit="°C"
+    }
+    text ask "A grown-up is heating the water. What does the thermometer read?" width=13 right-of=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v + 10 or answer == v - 10) point=tube {
+      say "The top of the column is halfway between two numbered marks."
+    }
+  }
+  hint "Which two numbered marks is the top of the column between?"
+  hint "What does each small step between the numbered marks stand for?"
+}

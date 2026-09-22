@@ -1,0 +1,30 @@
+# In a fair test one thing is changed, one thing is looked at, and everything else is kept the
+# same. The two wrong options are the thing that is changed and the thing that is looked at.
+item science.fair-test v=1 stars=2 skills=[science.fair-test, science.materials] {
+  title "Keep it fair"
+  let k=0..2 r=0..2
+  let plan={if k == 0 then "Leo wants to know which floor makes a ball bounce highest. He drops the ball onto wood, carpet and tiles" else if k == 1 then "Ava wants to know which surface lets a toy car roll furthest. She rolls the car down a ramp covered in paper, then towel, then foil" else "Sam wants to know which cloth soaks up the most water. He pours water onto cotton, wool and paper towel"}
+  let keep={if k == 0 then "how high he drops it from" else if k == 1 then "how high the ramp is" else "how much water he pours"}
+  let change={if k == 0 then "the kind of floor" else if k == 1 then "what covers the ramp" else "the kind of cloth"}
+  let look={if k == 0 then "how high the ball bounces" else if k == 1 then "how far the car rolls" else "how wet the cloth gets"}
+  let o1={if r == 0 then keep else if r == 1 then change else look}
+  let o2={if r == 0 then change else if r == 1 then look else keep}
+  let o3={if r == 0 then look else if r == 1 then keep else change}
+
+  scene 32x19 {
+    text ask "{plan}. To make the test fair, what must stay the same each time?" width=30 at=canvas(1, 1)
+    choice pick options=[o1, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=keep
+  feedback {
+    when (pick == change) point=ask {
+      say "That is the thing the test changes on purpose. What else could change by mistake?"
+    }
+    when (pick == look) point=ask {
+      say "That is what the test looks at to get its answer. It will be different each time."
+    }
+  }
+  hint "What is being changed on purpose? What is being watched?"
+  hint "Everything else has to stay the same. Which option is that?"
+}

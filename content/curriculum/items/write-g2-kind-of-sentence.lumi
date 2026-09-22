@@ -1,0 +1,24 @@
+# Telling, asking or commanding, read off a sign on a door, where the kind of sentence is the job
+# the sign is doing.
+item writing.kind-of-sentence v=1 skills=[writing.sentences] {
+  title "What kind of sentence?"
+  difficulty (if k == 3 or k == 5 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2, 4}  # a plain command, a telling, an asking
+  }
+  level hard {
+    let k={1, 3, 5}  # please wipe your feet, and an asking that sounds like a command
+  }
+  let s={if k == 0 then "Close the door." else if k == 1 then "The door is red." else if k == 2 then "Is the door open?" else if k == 3 then "Please wipe your feet." else if k == 4 then "We have a new mat." else "Where is the mat?"}
+
+  scene 32x10 {
+    sign door lines=["{s}"] kind=door color="sky" at=canvas(1, 1)
+    text ask "What kind of sentence is on the sign?" narrate width=14 right-of=door gap=2
+    choice pick options=["telling", "asking", "command"] below=door gap=1
+  }
+
+  answer pick=(if k == 0 or k == 3 then "command" else if k == 2 or k == 5 then "asking" else "telling")
+  hint "Does it tell you something, ask you something, or tell you to do something?"
+  hint "A command starts with a doing word or with please."
+}

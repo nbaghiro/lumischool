@@ -1,0 +1,65 @@
+lesson chemistry-air-is-everywhere v=1 format=teach grade=1 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Air is everywhere"
+  goal "Show that air takes up room and can be caught, squashed and let out."
+
+  look {
+    scene 34x15 {
+      row all at=canvas(1, 0) space=3 align=end {
+        flask bottle fill=0 balloon=2 tag=""
+        beaker tank max=500 step=100 level=400 unit=ml solid=0 rod=false
+        bubbles rising count=4
+      }
+    }
+    say """
+      By the marsh Ada finds an empty bottle. It is not empty: it is full of air. She fits a balloon
+      over its neck and squeezes the bottle, and the balloon stands up, because the air went into
+      it. She pushes the bottle under the water in the tank and tips it, and the air comes out as
+      bubbles while the water goes in. Air is everywhere, it takes up room, and it can be caught,
+      squashed and let out.
+      """
+  }
+  do {
+    level easy {
+      worked chem.which-has-air a=3 b=0 s=0
+    }
+    practice chem.which-has-air count=1 hard-count=2 seed=2 easy-seed=2 hard-seed=1
+    practice chem.empty-jar count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chem.bubbles-out count=2 easy-count=1 hard-count=1 seed=3 easy-seed=1 hard-seed=2
+    practice chem.dry-paper count=2 hard-count=1 seed=1 easy-seed=4 hard-seed=1
+    practice chem.squashed-balloon count=1 hard-count=0 seed=2 easy-seed=4
+    level hard {
+      show chem.squashed-balloon k=2 r=1 level=medium
+    }
+  }
+  story {
+    show chem.balloon-breaths n=3 b=3 w=0 easy-n=2 easy-b=3 hard-n=4 hard-b=4 hard-w=1
+  }
+  try stars=2 {
+    show chem.squashed-balloon k=0 r=2 easy-k=1 hard-k=0
+  }
+  try stars=3 {
+    show chem.catch-air p=2 easy-p=0 hard-p=5
+  }
+  remember {
+    say "An empty bottle is full of air. Air takes up room, and it comes out as bubbles under water."
+  }
+
+  grown-ups """
+    The idea is that air is a real thing that takes up room, even though it cannot be seen: an
+    empty jar is full of it, it holds a balloon up, it keeps water out of an upside-down jar, and
+    it escapes as bubbles. The wrong idea to watch for is "empty means nothing in it", which the
+    bubbles are there to answer; ask where the bubbles could have come from. The two-star
+    question is the squeezed balloon: it looks half the size, and the question is whether there is
+    less air, the same, or more, which turns on whether any went in or out. The three-star
+    question orders the steps for catching a bottle's air in a cup under water, where the cup has
+    to be full of water and upside down before anything else. If "empty" still means "nothing"
+    after the core, stay here another day with a bowl of water, a cup and a tissue: push the cup
+    in mouth first, and let the child feel the push back and see the tissue dry.
+    """
+  level easy {
+    grown-ups "At this level the full balloon against the flat one is worked once in the teacher's pen, the things called empty are a jar and a bottle, the bubbles question asks what they are, the paper in the jar stays dry and the question is why or what keeps the water out, the balloon questions are the ones where air was let out or blown in, the picnic has two balloons of three breaths, and the catching steps have one neighbouring pair swapped."
+  }
+  level hard {
+    grown-ups "At this level both balloons have air and the question, asked twice, is which has more, the things called empty are a bottle and a can, the bubbles question asks what takes the air's room, the jar is tipped and the paper gets wet, a second balloon question sits in the core (more breaths blown in), the picnic has four balloons of four breaths and asks what comes back out of one, the balloon is squeezed with no air let out, and the catching steps are all four muddled."
+  }
+}

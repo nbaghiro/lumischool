@@ -1,0 +1,22 @@
+# All the ways with three kinds of coin: fix the quarters first, then the dimes, and the nickels
+# make up the rest.
+item money.ways-three-coins v=1 stars=3 skills=[money.change, reasoning.all-the-ways] {
+  title "Quarters, dimes and nickels"
+  difficulty (t // 10 + 1 + (if t >= 25 then (t - 25) // 10 + 1 else 0) + (if t >= 50 then (t - 50) // 10 + 1 else 0))
+  let t={30, 35, 40, 45, 50}
+
+  scene 30x14 {
+    coins kinds quarters=1 dimes=1 nickels=1 pennies=0 at=canvas(1, 1)
+    text ask "How many different ways can you pay exactly {t} cents with quarters, dimes and nickels? You do not have to use all three kinds." narrate width=29 below=kinds gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (t // 10 + 1 + (if t >= 25 then (t - 25) // 10 + 1 else 0) + (if t >= 50 then (t - 50) // 10 + 1 else 0))
+  feedback {
+    when (answer == t // 10 + 1) point=kinds {
+      say "Those are the ways with no quarter. Now try one quarter."
+    }
+  }
+  hint "Start with no quarters. How many ways can dimes and nickels make {t}?"
+  hint "Now use one quarter. How much is left, and how many ways make that?"
+}

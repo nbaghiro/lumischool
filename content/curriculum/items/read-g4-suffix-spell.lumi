@@ -1,0 +1,28 @@
+# A root that ends in y changes it to i before most suffixes, and one root keeps its spelling, so
+# the rule has to be noticed rather than applied every time.
+item reading.suffix-spelling v=2 skills=[reading.morphology, writing.spelling] {
+  title "Spell the new word"
+  difficulty (if k == 5 then 0 else if k == 4 then 2 else 1)
+  let k=0..5
+  level easy {
+    let k={0, 3, 5}  # happiness, plentiful, hopeful
+  }
+  level hard {
+    let k={1, 2, 4}  # beautiful, laziness, penniless
+  }
+
+  scene 26x12 {
+    wordbricks b bricks=[if k == 0 then "happy" else if k == 1 then "beauty" else if k == 2 then "lazy" else if k == 3 then "plenty" else if k == 4 then "penny" else "hope", if k == 0 then "ness" else if k == 1 then "ful" else if k == 2 then "ness" else if k == 3 then "ful" else if k == 4 then "less" else "ful"] root=0 roots=1 blank=-1 word="" labels=true at=canvas(1, 1)
+    text ask "Put the two bricks together. Write the new word." width=24 below=b gap=1
+    word-input pick options=["{if k == 0 then \"happiness\" else if k == 1 then \"beautiful\" else if k == 2 then \"laziness\" else if k == 3 then \"plentiful\" else if k == 4 then \"penniless\" else \"hopeful\"}"] letters=9 below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "happiness" else if k == 1 then "beautiful" else if k == 2 then "laziness" else if k == 3 then "plentiful" else if k == 4 then "penniless" else "hopeful")
+  feedback {
+    when (pick == "happyness" or pick == "beautyful" or pick == "lazyness") point=b {
+      say "When a word ends in y, the y usually turns into i before the suffix."
+    }
+  }
+  hint "Look at the last letter of the root. Does it change when the suffix goes on?"
+  hint "Say the new word slowly, then write it one brick at a time."
+}

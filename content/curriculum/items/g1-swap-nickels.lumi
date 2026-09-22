@@ -1,0 +1,31 @@
+# Swapping coins for nickels keeps the money the same: a quarter is five nickels and a dime is two.
+item money.swap-nickels v=1 skills=[money.count-coins, money.exchange] {
+  title "Swap for nickels"
+  difficulty (5 * q + 2 * d)
+  let q=0..2 d=1..3
+  where (q + d >= 2)
+  level easy {
+    let q={0} d=2..3
+  }
+  level hard {
+    let q={2} d=2..3
+  }
+
+  scene 28x12 {
+    coins c quarters=q dimes=d nickels=0 pennies=0 at=canvas(1, 1)
+    text ask "Swap all these coins for nickels. How many nickels will you get?" narrate width=26 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (5 * q + 2 * d)
+  feedback {
+    when (answer == q + d) point=c {
+      say "That is how many coins there are now. Each one is worth more than a nickel."
+    }
+    when (answer == 25 * q + 10 * d) point=c {
+      say "That is how many cents. A nickel is 5 cents, so how many nickels is that?"
+    }
+  }
+  hint "How many nickels make a dime? How many make a quarter?"
+  hint "Swap one coin at a time and keep a count."
+}

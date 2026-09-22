@@ -1,0 +1,18 @@
+# The audit's raise for write-the-card: two cards, one sentence that says both, joined with and,
+# with one capital at the start and one full stop at the end.
+item writing.two-cards-one-sentence v=2 stars=3 skills=[writing.sentences, writing.composing] {
+  title "Two cards in one sentence"
+  let k=0..2
+  let a={if k == 0 then "fox" else if k == 1 then "hen" else "pig"}
+  let b={if k == 0 then "dog" else if k == 1 then "duck" else "rabbit"}
+
+  scene 32x17 {
+    picturecards cards who=["{a}", "{b}"] where=["in", "under"] thing=["box", "table"] letters=true at=canvas(1, 1)
+    text ask "Write one sentence that tells about both cards. Join the two parts with and." width=12 right-of=cards gap=1
+    handwriting rules show="" rows=2 trace=0 width=30 below=cards gap=1
+  }
+
+  check writing.by-eye look-for="One sentence, not two, that says where both animals on the cards are, joined with and, with one capital letter at the start and one full stop at the very end."
+  hint "Say where the first animal is. Then say and, and say where the second one is."
+  hint "How many full stops does one sentence have?"
+}

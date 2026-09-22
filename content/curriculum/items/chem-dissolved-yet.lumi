@@ -1,0 +1,20 @@
+item chem.dissolved-yet v=2 skills=[chemistry.dissolving] {
+  title "Has it all dissolved?"
+  difficulty k
+  let k=0..1 v={100, 200, 300}
+
+  scene 25x19 {
+    text ask "The salt has been stirred in. Has all of it dissolved?" width=24 at=canvas(1, 1)
+    beaker glass max=400 step=100 level=v solid=(k * 8) rod=true unit=ml below=ask gap=1
+    choice pick options=["Yes", "No"] right-of=glass gap=2
+  }
+
+  answer pick=(if k == 0 then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and k == 1) point=glass {
+      say "There are still grains on the bottom, so some of it has not dissolved."
+    }
+  }
+  hint "Look at the bottom of the beaker, not at the water."
+  hint "Can you see any grains still sitting there?"
+}

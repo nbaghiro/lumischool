@@ -1,0 +1,35 @@
+# Two stars: Pip's program with two lines the wrong way round, and which two. The snacks (juice,
+# porridge, an egg) are ones no other question in the lesson lays out in order. At r=3 to 5 the two
+# lines are not next to each other.
+item coding.snack-wrong-order v=1 stars=2 skills=[coding.debugging, coding.sequences, reasoning.evidence] {
+  title "Two lines the wrong way round"
+  difficulty (if r >= 3 then 1 else 0)
+  let r=0..5
+  let snack={pick(r, "a glass of juice", "porridge", "a boiled egg", "porridge", "a boiled egg", "a glass of juice")}
+  let l1={pick(r, "Take a glass", "Add milk to the oats", "Fill a pan with water", "Cook it for five minutes", "Fill a pan with water", "Take a glass")}
+  let l2={pick(r, "Pour juice into the glass", "Pour oats into a pan", "Put the egg in the pan", "Add milk to the oats", "Peel the egg", "Put the bottle away")}
+  let l3={pick(r, "Open the juice bottle", "Cook it for five minutes", "Peel the egg", "Pour oats into a pan", "Boil it for six minutes", "Pour juice into the glass")}
+  let l4={pick(r, "Put the bottle away", "Spoon it into a bowl", "Boil it for six minutes", "Spoon it into a bowl", "Put the egg in the pan", "Open the juice bottle")}
+  let ans={pick(r, "Lines 2 and 3", "Lines 1 and 2", "Lines 3 and 4", "Lines 1 and 3", "Lines 2 and 4", "Lines 2 and 4")}
+  level easy {
+    let r=0..2
+  }
+  level hard {
+    let r=3..5
+  }
+
+  scene 34x25 {
+    text ask "Pip's robot made a mess of {snack}. Two lines are the wrong way round. Which two?" narrate width=32 at=canvas(1, 1)
+    program prog code=["{l1}", "{l2}", "{l3}", "{l4}"] title="Pip's steps" below=ask gap=1
+    choice pick options=["Lines 1 and 2", "Lines 2 and 3", "Lines 3 and 4", "Lines 1 and 3", "Lines 2 and 4"] stack=column right-of=prog gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=prog {
+      say "Swap those two lines in your head and read all four in order. Can the robot do every step?"
+    }
+  }
+  hint "Find the first line the robot cannot do yet. What has to happen before it?"
+  hint "Swap the two lines and read the program again from the top."
+}

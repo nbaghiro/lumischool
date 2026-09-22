@@ -1,0 +1,38 @@
+# Three stars: the basket has to stop between two marks, and the table's rows do not name a height
+# that lands there, so the child reads the pattern between the rows and then picks the smallest height
+# that works. Two squares of push for every square of height, as the whole lesson uses.
+item physics.track-choose-height v=1 stars=3 skills=[physics.forces, reasoning.constraints, reasoning.fewest] {
+  title "Land it between the marks"
+  difficulty lo
+  let v=0..3
+  let lo={pick(v, 3, 5, 7, 9)}
+  let hi={pick(v, 7, 9, 11, 13)}
+  let best={pick(v, 2, 3, 4, 5)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 29x39 {
+    ramp track height=4 cup=1 pushed=8 at=canvas(1, 0)
+    table t cols=2 head=["Height", "Cup pushed"] cells=["1", "2", "2", "4", "3", "6", "4", "8"] below=track gap=1
+    text ask "Sam wants the basket to stop further than {lo} squares and nearer than {hi}. What is the smallest height he can let the marble go from?" narrate width=28 below=t gap=1
+    number-input height below=ask gap=1
+    text then "How far will the basket be pushed from that height?" narrate width=28 below=height gap=1
+    number-input pushed below=then gap=1
+  }
+
+  answer height=best pushed=(best * 2)
+  feedback {
+    when (height * 2 <= lo) point=t {
+      say "From that height the basket stops short of the first mark. Try the next height up."
+    }
+    when (height * 2 >= hi) point=t {
+      say "From that height the basket goes past the second mark. Try a lower one."
+    }
+  }
+  hint "Work out how far the basket goes from each height, using the steps in the table."
+  hint "Which of those distances is further than the first mark and nearer than the second? Take the smallest height that works."
+}

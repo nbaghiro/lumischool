@@ -1,0 +1,55 @@
+lesson chemistry-mixing-and-stirring v=2 format=teach grade=2 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "Mixing and stirring"
+  goal "Measure a liquid out with a spoon, and say what a solid does when it is stirred into water: it sinks, it floats, or it dissolves."
+
+  look {
+    scene 30x10 {
+      row kit at=canvas(1, 0) space=2 align=end {
+        spoons set sizes=["5 ml", "10 ml", "15 ml"]
+        mixture mix things=["sand", "salt", "cork"] water=1 names=1
+      }
+    }
+    say """
+      When a solid is stirred into water, one of three things happens. Sand sinks to the bottom. A
+      piece of cork floats on top. Salt dissolves: it spreads through the water in bits too small
+      to see, so the water looks clear, but the salt is still there.
+      """
+  }
+  do {
+    practice chem.dissolved-yet count=1 seed=2
+    practice chem.spoon-total count=2 seed=5
+    practice chem.what-sank count=2 seed=3 hard-seed=8
+    level easy {
+      worked chem.what-dissolved k=3 level=medium
+    }
+    practice chem.what-dissolved count=2 seed=1 easy-seed=8
+    practice chem.dissolve-or-not count=2 hard-count=1 seed=4
+    level hard {
+      practice chem.melt-or-dissolve count=1 seed=7
+    }
+  }
+  try stars=2 {
+    show chem.melt-or-dissolve c="dissolve-sugar" easy-c="melt-ice"
+  }
+  try stars=3 {
+    show chem.still-weighs g=30 w=200 easy-g=20 easy-w=100 hard-g=50 hard-w=250
+  }
+  remember {
+    say "A solid that dissolves is still in the water, spread out too small to see."
+  }
+
+  grown-ups """
+    Looking for grains on the bottom of the beaker is the way in. The spoon questions add a measure
+    to what is there already, and the three mixture questions put the unknown in different places:
+    what sank, what dissolved, and whether one thing dissolved at all. The two-star question asks
+    the child to tell melting from dissolving and say why. The three-star question asks what sweet
+    water weighs; the sugar cannot be seen, and the scale is how you show it is still there. Sugar in
+    warm water and sand in cold water, side by side, is the whole lesson. Nobody tastes anything.
+    """
+  level easy {
+    grown-ups "At this level the beaker is as written, two or three small spoons go into a hundred millilitres, the thing that sank is paired with cork, which floats, flour against sugar is worked once in the teacher's pen before pairs of salt, sugar, sand, pebbles and iron, the thing stirred in is salt, sand, sugar or pebbles, the two-star shows ice melting, and the three-star stirs twenty grams into a hundred."
+  }
+  level hard {
+    grown-ups "At this level the beaker is as written, four or five small spoons go into 150 or 200 millilitres, the thing that sank is paired with salt or sugar, which dissolved, the pairs include flour that clouds the water and cork that floats, the thing stirred in is flour or iron filings, the two-star shows sugar dissolving and then chocolate melting, and the three-star stirs fifty grams into 250."
+  }
+}

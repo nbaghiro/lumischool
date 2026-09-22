@@ -1,0 +1,14 @@
+item physics.brighter-change v=1 skills=[physics.circuits] stars=1 {
+  title "Make it brighter"
+  difficulty (c + n)
+  let c=2..3 n=1..2
+
+  scene 35x16 {
+    series ring cells=c bulbs=n at=canvas(1, 0)
+    text ask "Which change makes the bulbs brighter?" width=15 right-of=ring gap=1
+    choice pick options=["{if n == 2 then \"Take a bulb away\" else \"Add a cell\"}", "Add a bulb", "Take a cell away"] stack=column below=ask gap=1
+  }
+
+  check physics.circuit of=ring pick=brighten
+  hint "Which change gives each bulb more of the cells' push?"
+}

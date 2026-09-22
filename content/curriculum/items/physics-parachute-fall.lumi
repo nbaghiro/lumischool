@@ -1,0 +1,25 @@
+item physics.parachute-fall v=1 skills=[physics.forces] {
+  title "Faster, steady or slower?"
+  difficulty ((if w == d then 3 else 0) + (8 - abs(w - d)) / 8)
+  let c=3..6 w={4, 6, 8} d={2, 4, 6, 8}
+  level easy {
+    where (abs(w - d) >= 4)
+  }
+  level hard {
+    where (abs(w - d) <= 2)
+  }
+
+  scene 26x20 {
+    parachute p canopy=c weight=w drag=d show=0 at=canvas(1, 0)
+    text ask "The toy's weight pulls it down and the air pushes it up. What is happening to its speed?" width=12 right-of=p gap=1
+    choice pick options=["speeding up", "steady speed", "slowing down"] stack=column below=ask gap=1
+  }
+
+  check physics.forces of=p pick=fall
+  feedback {
+    when (pick == "steady speed" and w != d) point=p {
+      say "The two forces are not the same size, so they do not cancel out."
+    }
+  }
+  hint "Which force is bigger, the weight or the push of the air?"
+}

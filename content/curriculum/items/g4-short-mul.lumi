@@ -1,0 +1,23 @@
+item multiply.short v=1 skills=[multiplication.short] {
+  title "Multiply in columns"
+  difficulty (a * b)
+  let a=112..989 b=3..9
+  where (a % 10 * b >= 10)  # at least one carry out of the ones
+  level easy {
+    let a=112..299 b=3..4
+  }
+  level hard {
+    let a=500..989 b=6..9
+  }
+
+  scene 10x5 {
+    columns answer a=a b=b op=mul at=canvas(1, 0)
+  }
+
+  answer (a * b)
+  feedback {
+    when (answer == a % 10 * b + a // 10 * 10 * b // 10) point=answer {
+      say "Every digit is multiplied by {b}, not only the ones."
+    }
+  }
+}

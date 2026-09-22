@@ -1,0 +1,12 @@
+item geography.island-parts v=1 skills=[geography.map-features] {
+  title "What is on the island?"
+  let p={"hill", "river", "wood", "beach"}
+
+  scene 30x18 {
+    parts fig of=island at=canvas(1, 1)
+    text ask "Which letter points at the {p}?" width=28 below=fig gap=1
+    choice part options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer part=(if p == "hill" then "A" else if p == "river" then "B" else if p == "wood" then "C" else "D")
+}

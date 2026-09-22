@@ -1,0 +1,25 @@
+# Every real word three prefixes and three roots can make: a search with more than one right list,
+# marked by a grown-up against the words the look-for names.
+item reading.brick-words v=1 stars=3 skills=[reading.morphology, reasoning.all-the-ways] {
+  title "Every word the bricks can make"
+  let k=0..2
+
+  scene 36x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row cards space=2 align=centre {
+        text l1 "Prefixes"
+        wordcards pre words=[if k == 0 then "un" else if k == 1 then "re" else "un", if k == 0 then "re" else if k == 1 then "dis" else "pre", if k == 0 then "dis" else if k == 1 then "mis" else "re"] picked=-1
+      }
+      row cards2 space=2 align=centre {
+        text l2 "Roots"
+        wordcards roots words=[if k == 0 then "pack" else if k == 1 then "place" else "heat", if k == 0 then "tie" else if k == 1 then "like" else "lock", if k == 0 then "obey" else if k == 1 then "read" else "pay"] picked=-1
+      }
+      text ask "Put one prefix card in front of one root card. How many real words can you make? Write them all." width=35
+      writinglines w lines=2 width=35 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="The real words, with each checked by its meaning. Set one: unpack, repack, untie, retie, disobey (five). Set two: replace, displace, misplace, dislike, reread, misread (six). Set three: unlock, relock, preheat, reheat, prepay, repay (six). A real word the list has missed counts if the grown-up agrees it means prefix plus root; a made-up one such as unobey does not."
+  hint "Take the first prefix and try it with every root. Then take the next prefix."
+  hint "For each one, ask: is it a real word, and does it mean the prefix and the root together?"
+}

@@ -1,0 +1,37 @@
+# The way in: a row of lamp lights in a repeating pattern, and the colour that comes next. The first
+# two repeat every two lights, the next every three, and the last two have a colour twice in the
+# part that repeats.
+item coding.forever-next-light v=1 skills=[coding.repetition, patterns.repeating] {
+  title "What comes next?"
+  difficulty (if k <= 1 then 0 else if k == 2 then 1 else 2)
+  let k=0..4
+  let shown={pick(k, 5, 5, 5, 7, 5)}
+  let seen={pick(k, "1 red 1 green 1 red 1 green 1 red", "1 green 1 red 1 green 1 red 1 green", "1 red 1 green 1 white 1 red 1 green", "1 white 2 red 1 white 2 red 1 white", "2 red 1 green 2 red")}
+  let right={pick(k, "green", "red", "white", "red", "green")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 33x17 {
+    row top space=2 align=start at=canvas(1, 1) {
+      lighthouse tower stripes=3 beam=1
+      column side space=1 align=start {
+        pixels lights cols=shown rows=1 code=["{seen}"] show=true beside=false
+        text ask "Pip's lamp lights up in this order. What colour comes next?" narrate width=18
+        choice pick options=["red", "green", "white"] stack=row
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lights {
+      say "Find where the pattern starts again, then say the colours in order up to the gap."
+    }
+  }
+  hint "Say the colours out loud, one light at a time."
+  hint "Which colours come round again, and in what order?"
+}

@@ -1,0 +1,49 @@
+lesson chemistry-the-right-material v=1 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "The right material for the job"
+  goal "Choose a material for a job by what it is like, and say why a thing is made of the material it is."
+
+  look {
+    scene 18x7 {
+      materials rain things=["raincoat", "wool-sock", "paper-bag", "rubber-boot"] names=1 at=canvas(1, 0)
+    }
+    say """
+      A raincoat and a welly boot keep water out, so they keep you dry. A sock and a paper bag soak
+      water up. Things are made of the material that can do their job: see-through glass for a
+      window, soft fabric for a towel, hard brick for a wall.
+      """
+  }
+  do {
+    practice chem.keeps-dry count=2 seed=4
+    level easy {
+      worked chem.job-material k=3 level=medium
+    }
+    practice chem.job-material count=2 seed=3
+    practice chem.why-material count=2 seed=2
+    practice chem.silly-material count=2 seed=4
+    practice chem.soak-count count=1 seed=2
+  }
+  try stars=2 {
+    show chem.two-jobs k=0 hard-k=1
+  }
+  try stars=3 {
+    show chem.meets-all k=0 hard-k=2
+  }
+  remember {
+    say "Choose the material that can do the job."
+  }
+
+  grown-ups """
+    Test a few things at the sink: drip water on a sock, a plastic bag and a paper towel and see
+    which lets it through. The first question can be answered from the picture. The core asks for the
+    right material, the reason for one, and the one that could not do the job. The two-star question
+    needs two properties at once, and each wrong material has only one of them. The three-star
+    question gives three clues, and every wrong thing fails a different clue, so the child has to try
+    each clue in turn.
+    """
+  level easy {
+    grown-ups "At this level what keeps water out is as written, the welly boot is matched to rubber once in the teacher's pen before the window, the towel and the wall, the reasons are the window's and the towel's, the silly materials are as written, two things soak up water, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level what keeps water out is as written, the jobs to match are the welly boot, which needs two properties, and the float, the reasons are as written, the raincoat's and the hair band's, the silly materials are as written, three things soak up water, the two-star is the welly boot, and the three-star's clues include one that says what the thing is not made of."
+  }
+}

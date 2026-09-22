@@ -1,0 +1,29 @@
+# Naming a white key from the black keys round it: left of the two is C, between the two is D,
+# right of the two is E; left of the three is F, then G, A, and right of the three is B.
+item music.key-by-black v=1 skills=[music.keys] {
+  title "Which white key?"
+  difficulty (if k == 0 or k == 3 then 0 else if k == 2 or k == 6 then 1 else 2)
+  let k=0..6
+  let place={pick(k, "just to the left of a group of two black keys", "between the two black keys of a group of two", "just to the right of a group of two black keys", "just to the left of a group of three black keys", "between the first and second black keys of a group of three", "between the second and third black keys of a group of three", "just to the right of a group of three black keys")}
+  let right={pick(k, "C", "D", "E", "F", "G", "A", "B")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 4, 5}
+  }
+
+  scene 34x9 {
+    text ask "On any keyboard, the white key {place} is always the same letter. Which letter is it?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["C", "D", "E", "F", "G", "A", "B"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Start from C, the white key just left of a group of two, and count the letters along: C D E round the two, F G A B round the three."
+    }
+  }
+  hint "C sits just left of the two black keys. Count the white keys along from there, saying the letters."
+  hint "C, D, E go with the group of two; F, G, A, B go with the group of three."
+}

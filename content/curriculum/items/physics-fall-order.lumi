@@ -1,0 +1,31 @@
+# Four things half way down, numbered from the one that lands first. The columns are not in speed
+# order, so every version asks the child to rank rather than to read left to right.
+item physics.fall-order v=1 skills=[physics.forces, reasoning.order] {
+  title "First to last"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let t1={pick(v, "feather", "flat", "leaf", "parachute")}
+  let t2={pick(v, "stone", "stone", "flat", "crumpled")}
+  let t3={pick(v, "parachute", "leaf", "crumpled", "stone")}
+  let t4={pick(v, "crumpled", "feather", "parachute", "leaf")}
+  let n1={pick(v, "the feather", "the flat sheet", "the leaf", "the parachute")}
+  let n2={pick(v, "the stone", "the stone", "the flat sheet", "the paper ball")}
+  let n3={pick(v, "the parachute", "the leaf", "the paper ball", "the stone")}
+  let n4={pick(v, "the paper ball", "the feather", "the parachute", "the leaf")}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 23x35 {
+    falling four things=["{t1}", "{t2}", "{t3}", "{t4}"] time=1 show=1 names=1 at=canvas(1, 0)
+    text ask "Number these from 1, the one that lands first, to 4." narrate width=16 below=four gap=1
+    sequence s items=["{n1}", "{n2}", "{n3}", "{n4}"] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(v, 4, 3, 2, 4) b=pick(v, 1, 1, 3, 2) c=pick(v, 3, 2, 1, 1) d=pick(v, 2, 4, 4, 3)
+  hint "The one that has come down furthest so far will land first."
+  hint "Work from the top of the picture down: the one that has moved least is last."
+}

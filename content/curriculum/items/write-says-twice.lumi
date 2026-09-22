@@ -1,0 +1,29 @@
+# The way in: a first draft of three numbered sentences, one of which says the same thing twice.
+item writing.says-twice v=1 skills=[writing.editing, writing.revising] {
+  title "Which sentence says it twice?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "The dog was wet. The dog was soaking wet and not dry at all. We rubbed him with a towel.", "We walked to the beach. The sand was hot under our feet. It was very hot and warm and not cold.", "Gran's clock is old. It has stood in the hall for fifty years, and it is very old and not new. It still chimes.")}
+  let right={pick(k, "the second", "the third", "the second")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x16 {
+    passage draft title="First draft" text="{t}" width=32 numbers=true at=canvas(1, 1)
+    text ask "One sentence says the same thing twice. Which one?" narrate width=32 below=draft gap=1
+    choice pick options=["the first", "the second", "the third"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=draft {
+      say "Read each sentence and ask what it tells you that the others do not. One of them says a thing, then says it again in other words."
+    }
+  }
+  hint "Look for a sentence that says something, then says the same in other words, or says what it is not."
+  hint "Wet and not dry is wet twice. Hot and warm and not cold is hot three times."
+}

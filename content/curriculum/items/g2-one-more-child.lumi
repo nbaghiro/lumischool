@@ -1,0 +1,25 @@
+# The same grapes shared twice: the total has to be found before it can be shared again.
+item division.one-more-child v=1 stars=2 skills=[division.sharing, reasoning.two-steps] {
+  title "One more child comes"
+  difficulty (c * e)
+  let c=2..4 e=3..12
+  where (c * e % (c + 1) == 0 and e != c + 1)
+
+  scene 36x14 {
+    children kids count=c holding="" each=0 at=canvas(1, 1)
+    text ask "{c} children shared some grapes and got {e} each. Then one more child came, and all the grapes were shared again equally. How many does each child get now?" width=16 right-of=kids gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * e / (c + 1))
+  feedback {
+    when (answer == e - 1) point=kids {
+      say "Each child does not simply give one grape away. How many grapes were there in all?"
+    }
+    when (answer == c * e) point=kids {
+      say "That is how many grapes there are. Now share them between {c + 1} children."
+    }
+  }
+  hint "How many grapes were there altogether?"
+  hint "Now share that many between {c + 1} children."
+}

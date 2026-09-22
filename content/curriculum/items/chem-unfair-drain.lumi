@@ -1,0 +1,39 @@
+# The two-star reason: the same sand gave two results on two days, and what was not kept the
+# same. Each version changes one thing (the water poured, the soil in the pot, the time
+# waited), and the wrong reasons are things that would not change the result.
+item chem.unfair-drain v=1 stars=2 skills=[chemistry.rocks, reasoning.fair-test] {
+  title "What was not fair?"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..2 r=0..2
+  let story={pick(k, "On Monday Ben poured 100 millilitres through the sand and 80 came through. On Tuesday he poured 50 millilitres through the same sand and 40 came through.", "On Monday Ben filled the pot with sand to the top and 80 millilitres came through. On Tuesday the pot was only half full of sand and 90 came through.", "On Monday Ben waited one minute and 80 millilitres had come through the sand. On Tuesday he waited two minutes and 95 had come through.")}
+  let right={pick(k, "He poured different amounts of water", "There was less sand in the pot", "He waited longer the second day")}
+  let w1={pick(k, "The sand was the same both days", "The beaker was the same both days", "He used the same sand both days")}
+  let w2={pick(k, "Tuesday was a cloudier day", "The water was colder on Tuesday", "The beaker was a different colour")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x34 {
+    row two at=canvas(1, 0) space=3 align=end {
+      beaker mon max=100 step=20 level=80 unit=ml solid=0 rod=false label="Mon"
+      beaker tue max=100 step=20 level=(if k == 0 then 40 else if k == 1 then 90 else 95) unit=ml solid=0 rod=false label="Tue"
+    }
+    text ask "{story} The two results do not match. What was not kept the same?" narrate width=32 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=two {
+      say "That is something that was kept the same, so it cannot be the reason the results differ."
+    }
+    when (pick == w2) point=two {
+      say "That would make no difference to how much water runs through sand. Look for the thing in the story that changed."
+    }
+  }
+  hint "A fair test keeps everything the same but one thing. Read the story for what changed between Monday and Tuesday."
+  hint "Would that change alter how much water comes through? If so, that is the unfair part."
+}

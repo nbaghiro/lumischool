@@ -1,0 +1,43 @@
+lesson chemistry-evaporating-to-get-the-salt-back v=2 format=worked grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Evaporating to get the salt back"
+  goal "Work out how much water has gone, say where the water and the salt each go, and use what stays the same to answer a question about both."
+
+  example {
+    worked chem.evaporate a=300 b=100 easy-level=medium hard-level=medium
+    say """
+      Take what is left in the beaker away from what was in it to begin with. Nothing was added, so
+      the difference is what has gone off as steam. A dish on a sunny windowsill does the same
+      thing slowly: the water goes into the air as vapour, without boiling, and the salt stays.
+      """
+  }
+  exercises {
+    practice chem.salt-stays count=2 seed=3
+    practice chem.evaporate count=2 seed=3
+    practice chem.salt-left count=2 seed=5
+    practice chem.where-water-go count=2 seed=1
+    practice chem.evaporate-faster count=1 seed=4 hard-seed=7
+  }
+  try stars=2 {
+    show chem.salt-evidence q=1 day=4 easy-q=0
+  }
+  try stars=3 {
+    show chem.salt-concentration w=200 g=20 d=3 q=0 easy-w=100 easy-g=10 easy-d=2 easy-q=1 hard-g=30
+  }
+
+  grown-ups """
+    Salty water left in a saucer on a windowsill for a few days does this without a flame, and the
+    crust it leaves is worth looking at through a magnifying glass; it is not tasted. If the water is
+    boiled instead, a grown-up does it and the child watches in goggles. The first two questions
+    read the dish, which is the way in. The core works out how much water has gone, how much salt is
+    left, where each goes, and which of two glasses dries first. The two-star question asks which piece of
+    evidence answers a wrong idea, and the two ideas need different evidence. The three-star question
+    has two amounts in one story, and only the water changes; the salt in the dish is the salt that
+    went in, whether it is still dissolved or has come out as crystals.
+    """
+  level easy {
+    grown-ups "At this level the dishes are as written, 150 ml or less has boiled away, the salt left and where each part goes are as written, glass A is on a sunny windowsill against a cool cupboard, the two-star answers Ana with the crust in the dish, and the three-star asks how much water is left after two days."
+  }
+  level hard {
+    grown-ups "At this level the dishes are as written, 250 ml or more has boiled away, the salt left and where each part goes are as written, glass A is out in the wind against a still room, and the two-star and three-star are as written, Tom's weighing and the salt that is still all there."
+  }
+}

@@ -1,0 +1,27 @@
+# Corners are where edges meet; the hidden ones are at the ends of the dashed lines.
+item shapes.corners v=1 skills=[shapes.solids, shapes.vertices] {
+  title "How many corners?"
+  difficulty (if k == "pyramid" then 5 else if k == "prism" then 6 else 8)
+  let k={"cube", "cuboid", "pyramid", "prism"}
+  level easy {
+    let k={"pyramid", "prism"}
+  }
+  level hard {
+    let k={"cube", "cuboid"}
+  }
+
+  scene 28x10 {
+    solid shape kind=k label="" at=canvas(1, 1)
+    text ask "How many corners does this solid have? A corner is where edges meet." narrate width=16 right-of=shape gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == "pyramid" then 5 else if k == "prism" then 6 else 8)
+  feedback {
+    when (answer == 7 and (k == "cube" or k == "cuboid")) point=shape {
+      say "One corner is at the back, where the dashed lines meet."
+    }
+  }
+  hint "Count the corners on the front first, then the ones at the back."
+  hint "Follow each dashed line to its end. Is there a corner there?"
+}

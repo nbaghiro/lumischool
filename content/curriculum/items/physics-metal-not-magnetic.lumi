@@ -1,0 +1,16 @@
+# Two lessons meet here: every magnetic thing conducts, but not every conductor is magnetic, and the
+# coin and the foil are the proof. Three orders, so the answer is not always the same letter.
+item physics.metal-not-magnetic v=1 skills=[physics.materials, physics.magnets] stars=2 {
+  title "Metal, but not magnetic"
+  let x={"nail", "clip"} y={"coin", "foil"} z={"ruler", "stick"} w={"eraser", "marble"} f=0..2
+
+  scene 26x15 {
+    things t things=["{if f == 0 then x else z}", "{if f == 0 then y else x}", "{if f == 2 then y else w}", "{if f == 2 then w else if f == 0 then z else y}"] at=canvas(1, 0)
+    text ask "Which one lets electricity through, but is not pulled by a magnet?" width=25 below=t gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.things of=t pick="only(metal-not-magnetic)"
+  hint "Which of these are made of metal?"
+  hint "Of those, which would a magnet leave alone?"
+}

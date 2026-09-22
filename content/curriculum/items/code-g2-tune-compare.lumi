@@ -1,0 +1,26 @@
+# Two programs, and which plays more Cs is decided without writing either tune out: B has a C
+# outside its repeat and one inside. Sometimes they are the same.
+item coding.tune-compare v=1 stars=2 skills=[coding.repetition, reasoning.compare] {
+  title "Which plays more Cs?"
+  difficulty (4 - abs(a - b - 1))
+  let a=2..5 b=1..4
+
+  scene 25x19 {
+    row top at=canvas(1, 0) space=3 align=start {
+      column ca space=0 align=start {
+        text la "A"
+        blocks pa code=["repeat {a}", "  play C", "  play E"]
+      }
+      column cb space=0 align=start {
+        text lb "B"
+        blocks pb code=["play C", "repeat {b}", "  play G", "  play C"]
+      }
+    }
+    text ask "Which program plays more Cs?" width=14 below=top gap=1
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if a > b + 1 then "A" else if a < b + 1 then "B" else "the same")
+  hint "How many Cs does A play? Every time round the repeat plays one."
+  hint "B plays one C before its repeat. How many more come from the repeat?"
+}

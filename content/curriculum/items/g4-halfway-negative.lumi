@@ -1,0 +1,28 @@
+# Halfway between a negative and a positive number: half the distance, counted from one end.
+item number.halfway-across v=1 stars=2 skills=[number.negatives, reasoning.distance] negatives {
+  title "Halfway across zero"
+  difficulty (b - a)
+  let a={-8, -6, -5, -4, -3} b={2, 3, 4, 6, 8}
+  where ((a + b) % 2 == 0 and a + b != 0)
+  level hard {
+    where (b - a >= 12)
+  }
+
+  scene 28x12 {
+    numberline line from=a to=b step=1 at=canvas(1, 1)
+    text ask "What number is exactly halfway between {a} and {b}?" narrate width=26 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((a + b) / 2)
+  feedback {
+    when (answer == (b - a) / 2) point=line {
+      say "That is half the distance. Now count that far from {a}."
+    }
+    when (answer == (b + a * -1) / 2 * -1) point=line {
+      say "Halfway is between the two ends. Count the same number of steps in from each end."
+    }
+  }
+  hint "How far apart are {a} and {b}?"
+  hint "Walk half that distance in from {a}. Where do you stop?"
+}

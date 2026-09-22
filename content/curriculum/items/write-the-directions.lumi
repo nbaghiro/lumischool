@@ -1,0 +1,16 @@
+# v2 takes the audit's raise: at most four sentences, and a landmark named at every turn, so a
+# grown-up can walk the map using only the child's words. The map now bends two ways.
+item writing.write-the-directions v=2 stars=3 skills=[writing.directions, writing.composing] {
+  title "Write the way to the X"
+  let t={"right", "left"}
+
+  scene 36x23 {
+    treasuremap map stops=["tree", "bridge", "hut"] turns=[t, if t == "right" then "left" else "right", "on"] heading="right" step=4 names=true at=canvas(1, 1)
+    text ask "Write directions from the boat to the X in four sentences or fewer. Name the place at every turn." width=15 right-of=map gap=1
+    writinglines lines lines=3 width=35 prompt="" below=map gap=1
+  }
+
+  check writing.by-eye look-for="Four sentences or fewer, each starting with a doing word (Walk, Turn, Cross), a landmark named at every turn (turn right when you reach the tree), and every turn the right way for the walker when a grown-up follows the words alone on the map."
+  hint "Walk the path with your finger first, and say each turn out loud."
+  hint "Can two steps share one sentence? Walk to the tree and turn right there."
+}

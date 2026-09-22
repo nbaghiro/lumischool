@@ -1,0 +1,53 @@
+lesson g2-sorting-and-chance v=1 format=puzzles grade=2 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Sorting and chance puzzles"
+  goal "Sort by two rules at once, read graphs, and say how likely something is."
+
+  puzzle stars=1 {
+    show sort.where-it-goes n=16 easy-n=4
+  }
+  puzzle stars=1 {
+    show chance.tub-likely a=3 b=5 easy-a=2 easy-b=7 hard-a=6 hard-b=5
+  }
+  puzzle stars=1 {
+    show chance.certain-or-not a=5 b=0 hard-a=3 hard-b=2
+  }
+  puzzle stars=2 {
+    show pattern.next n=7 easy-n=6 hard-n=9
+  }
+  puzzle stars=2 {
+    show chance.fair-spinner n=6 k=4 easy-n=4 easy-k=1 hard-n=8 hard-k=5
+  }
+  puzzle stars=2 {
+    show graph.bars a=6 b=3 c=5 easy-a=3 easy-b=1 easy-c=2 hard-b=1 hard-c=4
+  }
+  puzzle stars=2 {
+    show graph.picture-key a=4 b=6 c=3 d="Tuesday" easy-d="Wednesday"
+  }
+  puzzle stars=2 {
+    show sort.venn-middle-count m=12 easy-m=14 hard-m=8
+  }
+  puzzle stars=2 {
+    show puzzle.digits a=6 b=3
+  }
+  puzzle stars=3 {
+    show chance.tub-add a=7 b=2 easy-a=4 easy-b=3 hard-a=8 hard-b=1
+  }
+  puzzle stars=3 {
+    show sort.neither-count k=3 T=20 easy-k=5 hard-T=30
+  }
+
+  grown-ups """
+    Two rules at once is the hard part, and the middle of the rings is where it shows. If the child
+    puts 16 in the wrong place, ask the two questions separately. For the chance puzzles, the
+    words matter: certain, possible, impossible, more likely, the same. In the tub puzzle with
+    three stars, adding blue counters until there are as many as orange makes them the same, not
+    more likely, so one more is needed. The last puzzle is found by listing the odd numbers and
+    crossing out the multiples of three; it can be done in any order, and every way in is fine.
+    """
+  level easy {
+    grown-ups "At this level the number to place is 4, in one ring, the tub holds two orange and seven blue, the certain pick is as written, the gap comes at shape 6, the spinner has four parts with one shaded, the bars are 3, 1 and 2, Wednesday's stars are read, three numbers belong in the middle, the digits are as written, two blue counters tip the tub, and the fives are sorted from 1 to 20."
+  }
+  level hard {
+    grown-ups "At this level the number to place is as written, the tub holds six orange and five blue, the pick with both colours in the tub is possible, the gap comes at shape 9, the spinner has eight parts with five shaded, the bars are 6, 1 and 4, Tuesday's stars are as written, six numbers belong in the middle, the digits are as written, eight blue counters tip the tub, and the threes are sorted from 1 to 30."
+  }
+}

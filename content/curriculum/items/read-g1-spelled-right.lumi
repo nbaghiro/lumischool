@@ -1,0 +1,15 @@
+# Tricky words are known by their spelling, so the child picks the real word from two that sound
+# the same or have the letters in the wrong order.
+item reading.spelled-right v=1 skills=[reading.sight-words] {
+  title "Which one is a real word?"
+  let k=0..5 p=0..2
+
+  scene 19x7 {
+    text ask "Which one is a real word?" narrate at=canvas(1, 1)
+    choice pick options=["{if p == 0 then (if k == 0 then \"said\" else if k == 1 then \"was\" else if k == 2 then \"they\" else if k == 3 then \"come\" else if k == 4 then \"have\" else \"you\") else (if k == 0 then \"sed\" else if k == 1 then \"woz\" else if k == 2 then \"thay\" else if k == 3 then \"cum\" else if k == 4 then \"hav\" else \"yoo\")}", "{if p == 1 then (if k == 0 then \"said\" else if k == 1 then \"was\" else if k == 2 then \"they\" else if k == 3 then \"come\" else if k == 4 then \"have\" else \"you\") else (if k == 0 then \"siad\" else if k == 1 then \"wsa\" else if k == 2 then \"tehy\" else if k == 3 then \"coem\" else if k == 4 then \"haev\" else \"yuo\")}", "{if p == 2 then (if k == 0 then \"said\" else if k == 1 then \"was\" else if k == 2 then \"they\" else if k == 3 then \"come\" else if k == 4 then \"have\" else \"you\") else (if k == 0 then \"sayd\" else if k == 1 then \"wos\" else if k == 2 then \"thei\" else if k == 3 then \"kum\" else if k == 4 then \"hafe\" else \"yu\")}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "said" else if k == 1 then "was" else if k == 2 then "they" else if k == 3 then "come" else if k == 4 then "have" else "you")
+  hint "Which one have you seen in a book?"
+  hint "Two of them sound right but do not look right. Which one looks the way you remember it?"
+}

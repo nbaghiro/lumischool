@@ -1,0 +1,23 @@
+# A turn given in quarter turns: which way the needle points afterwards, clockwise or not.
+item geography.compass-turn v=1 skills=[geography.directions, angles.turns] {
+  title "Turn the needle"
+  let s=0..3 t=1..3
+  let from={if s == 0 then "north" else if s == 1 then "east" else if s == 2 then "south" else "west"}
+  let how={if t == 1 then "a quarter turn clockwise" else if t == 2 then "a half turn" else "a quarter turn anticlockwise"}
+  let e={(s + t) % 4}
+
+  scene 32x13 {
+    compass rose needle=(90 * s) at=canvas(1, 1)
+    text ask "The needle points {from}. It makes {how}. Which way does it point now?" width=20 right-of=rose gap=2
+    choice pick options=["north", "east", "south", "west"] below=rose gap=1
+  }
+
+  answer pick=(if e == 0 then "north" else if e == 1 then "east" else if e == 2 then "south" else "west")
+  feedback {
+    when (t != 2 and pick == (if (s + 4 - t) % 4 == 0 then "north" else if (s + 4 - t) % 4 == 1 then "east" else if (s + 4 - t) % 4 == 2 then "south" else "west")) point=rose {
+      say "Clockwise goes the way the hands of a clock go: from north round to east."
+    }
+  }
+  hint "Put your finger on the needle's end. Which way do the hands of a clock go?"
+  hint "A quarter turn moves the needle to the next letter round the rose."
+}

@@ -1,0 +1,21 @@
+# The first sentence alone fits every choice; the second rules out all but one. This is the
+# audit's raise for reading.missing-word: the clue comes after the gap, in the next sentence.
+item reading.both-sentences v=1 stars=2 skills=[reading.inference, reading.vocabulary] {
+  title "The word that makes both true"
+  let k=0..3
+
+  scene 34x14 {
+    passage p text="{if k == 0 then \"The pond was _____. We could walk right across it.\" else if k == 1 then \"The shop was _____. The lights were off and a card on the door said Back at two.\" else if k == 2 then \"Grandad's radio was _____. He had to shout to be heard over it.\" else \"The path was _____. We slid along it as if we were skating.\"}" width=33 numbers=false at=canvas(1, 1)
+    text ask "Which word fits the gap?" below=p gap=1
+    choice pick options=[if k == 0 then "deep" else if k == 1 then "closed" else if k == 2 then "broken" else "long", if k == 0 then "frozen" else if k == 1 then "busy" else if k == 2 then "old" else "narrow", if k == 0 then "cold" else if k == 1 then "new" else if k == 2 then "loud" else "steep", if k == 0 then "still" else if k == 1 then "small" else if k == 2 then "small" else "icy"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "frozen" else if k == 1 then "closed" else if k == 2 then "loud" else "icy")
+  feedback {
+    when (pick == "cold" or pick == "steep") point=p {
+      say "That fits the first sentence. Does it make the second sentence true as well?"
+    }
+  }
+  hint "Every word fits the first sentence. Read the second one."
+  hint "Which word would make the second sentence happen?"
+}

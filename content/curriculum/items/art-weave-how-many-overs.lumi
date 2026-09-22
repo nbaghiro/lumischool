@@ -1,0 +1,25 @@
+# Counting the crossings a row passes over, in a weave of four to eight strips going down. A row that
+# starts over covers every other strip from the first, so with an odd number of strips it covers one
+# more than a row that starts under, and with an even number the two cover the same.
+item art.weave-how-many-overs v=1 skills=[art.pattern, counting.to-ten] {
+  title "How many overs?"
+  difficulty cols
+  let cols=4..8 s=0..1
+  let overs={pick((cols - 4) * 2 + s, 2, 2, 3, 2, 3, 3, 4, 3, 4, 4)}
+  level easy {
+    let cols=4..5
+  }
+  level hard {
+    let cols=7..8
+  }
+
+  scene 21x19 {
+    weave cloth cols=cols rows=4 start=[s, 1, 0, 1] step=1 at=canvas(1, 0)
+    text ask "Follow the first row all the way across. How many of the strips coming down does it pass over?" narrate width=20 below=cloth gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=overs
+  hint "Start at the left and touch each crossing in turn."
+  hint "Count only the crossings where the row is in front."
+}

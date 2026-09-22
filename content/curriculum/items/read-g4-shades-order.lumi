@@ -1,0 +1,22 @@
+# The audit's raise for reading.shades-place: build the whole scale, five words, rather than fill
+# one gap. Each scale is set out in its own muddle.
+item reading.shades-order v=1 skills=[reading.vocabulary] {
+  title "Least to most"
+  difficulty (if k == 2 then 2 else if k == 3 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1}  # heat and speed
+  }
+  level hard {
+    let k={2, 3}  # amounts (none, few, several, most, all) and size with medium in it
+  }
+
+  scene 24x21 {
+    text ask "Number the words 1 to 5, from the least to the most." width=22 at=canvas(1, 1)
+    sequence s items=[if k == 0 then "hot" else if k == 1 then "jog" else if k == 2 then "all" else "medium", if k == 0 then "freezing" else if k == 1 then "sprint" else if k == 2 then "few" else "gigantic", if k == 0 then "boiling" else if k == 1 then "crawl" else if k == 2 then "most" else "small", if k == 0 then "cold" else if k == 1 then "run" else if k == 2 then "none" else "tiny", if k == 0 then "warm" else if k == 1 then "walk" else if k == 2 then "several" else "large"] blanks=[p1, p2, p3, p4, p5] below=ask gap=1
+  }
+
+  answer p1=(if k == 0 then 4 else if k == 1 then 3 else if k == 2 then 5 else 3) p2=(if k == 0 then 1 else if k == 1 then 5 else if k == 2 then 2 else 5) p3=(if k == 0 then 5 else if k == 1 then 1 else if k == 2 then 4 else 2) p4=(if k == 0 then 2 else if k == 1 then 4 else if k == 2 then 1 else 1) p5=(if k == 0 then 3 else if k == 1 then 2 else if k == 2 then 3 else 4)
+  hint "Find the two ends first: the least and the most."
+  hint "Now take the middle three. Which is closest to the least?"
+}

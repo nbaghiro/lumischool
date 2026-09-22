@@ -1,0 +1,16 @@
+# Growing to an exact length: when, where and why all have to fit in ten words, so the child plans
+# and cuts at once. Many answers are right, so a grown-up marks it.
+item writing.grow-to-ten v=1 stars=3 skills=[writing.sentences, writing.composing] {
+  title "Exactly ten words"
+  let t={"The ship rocked.", "The gull landed.", "The owl called.", "The door creaked."}
+
+  scene 36x15 {
+    caption short text="{t}" width=18 at=canvas(1, 1)
+    text ask "Grow the sentence to exactly ten words. It must say when, where and why." width=35 below=short gap=1
+    writinglines lines lines=2 width=35 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence of exactly ten words that keeps the short sentence and adds a when, a where and a why (for example: At dusk, the gull landed on the roof to rest), with a comma after a when that comes first and one full stop."
+  hint "Write the short sentence, then add a when, a where and a why. Count the words."
+  hint "Too many? Swap a long answer for a shorter one. Too few? Add a describing word."
+}

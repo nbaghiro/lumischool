@@ -1,0 +1,16 @@
+# Making a line to two constraints at once, rhyme and beat, and it has to finish the poem's idea.
+# Many lines are right, so a grown-up marks it.
+item reading.finish-the-poem v=1 stars=3 skills=[reading.poetry, reading.rhyme, writing.composing] {
+  title "Finish the poem"
+  let k=0..2
+
+  scene 32x21 {
+    poem p title="{if k == 0 then \"The lighthouse keeper\" else if k == 1 then \"Market day\" else \"The volcano\"}" lines=[if k == 0 then "He climbs the stairs when day is done," else if k == 1 then "The stalls go up before it's light," else "The mountain rumbles, deep and low,", if k == 0 then "he lights the lamp and cleans the glass." else if k == 1 then "with pears and plums in shiny rows." else "a cloud of ash is in the sky.", if k == 0 then "He counts the ships out one by one," else if k == 1 then "The baker shouts, the seagulls fight," else "The people pack and turn to go,"] rhymes=[-1, -1, -1] blank=-1 beats=[4, 4, 4] width=31 at=canvas(1, 1)
+    text ask "Write a last line. It must rhyme with line 2, have four beats, and finish the poem." width=30 below=p gap=1
+    writinglines lines lines=1 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One line that rhymes with the end of line 2 (glass, rows or sky), has about four beats when read aloud, and ends the poem's idea, for example the keeper's night, the market's end or the people getting away."
+  hint "Say the last word of line 2. Write down three words that rhyme with it."
+  hint "Pick one to end your line. Clap the beats as you read it aloud."
+}

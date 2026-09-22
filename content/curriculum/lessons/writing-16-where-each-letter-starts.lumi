@@ -1,0 +1,57 @@
+lesson writing-where-each-letter-starts v=1 format=teach grade=1 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "Where each letter starts"
+  goal "Start a letter at the right place and move the pencil the right way."
+
+  look {
+    scene 33x14 {
+      row all at=canvas(1, 1) space=1 align=end {
+        formletter big letter="c" copies=2 write=1 label=true
+        art pic asset="cat"
+      }
+    }
+    say """
+      Cat starts with c. The pink dot is where the pencil starts. The arrows show which way it
+      goes. A c starts near the top and curls round to the left, like the start of a circle.
+      Letters that move the same way are a family: c is a curly letter, and so are a, d, o and s.
+      """
+  }
+  do {
+    level easy {
+      worked writing.letter-family ch="d" level=medium
+    }
+    show writing.letter-family ch="h" easy-ch="c"
+    show writing.letter-family ch="t" hard-ch="d"
+    show writing.same-family k=4 q=1 easy-k=0
+    show writing.same-family k=3 q=2
+    show writing.trace-and-write ch="k"
+    show writing.family-odd-out s=0 q=2 easy-s=1
+    show writing.family-odd-out s=3 q=1 hard-s=4
+    practice writing.first-stroke count=1 seed=4
+  }
+  try stars=2 {
+    show writing.family-claim c=1 easy-c=4 hard-c=0
+  }
+  try stars=3 {
+    show writing.family-word k=0
+  }
+  remember {
+    say "Start at the dot. Go the way the arrow goes."
+  }
+
+  grown-ups """
+    The family questions are marked by the machine; the tracing is yours to look at. Watch the
+    start rather than the finished letter. A letter started at the bottom can look fine at this
+    size and still be slow and untidy later, when it has to be joined and written quickly. Short
+    practice often is better than a page at once: five or six of one letter, then something else.
+    The odd-one-out questions are built so the odd letter looks like the others: d is tall like h
+    and b but starts with a curl. The two-star question is Tia's claim about a letter, and the point
+    is that a family is about how a letter starts, not how it looks. The three-star question has no
+    word to copy: let the child try words out loud and check each letter before writing.
+    """
+  level easy {
+    grown-ups "At this level d's curly start is shown once in the teacher's pen before c and t, the letters that start alike are h and n, the odd ones out are n among the curly letters and y among the zigzag letters, the letter to trace and the first stroke are as written, Tia is right that b is a bridge letter, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the families to name are h and d, which starts like c against its look, the letters that start alike are as written, the odd ones out are d among h, b and k, and p among the curly letters, the first stroke is the round ones and the zigzags, Tia calls d a ladder letter because it is tall, and the three-star is as written."
+  }
+}

@@ -1,0 +1,31 @@
+# The unknown is a line of the program rather than the end: the audit's raise for coding.variable.
+item coding.variable-missing v=1 skills=[coding.variables] {
+  title "The missing add"
+  difficulty (a + b + c)
+  let a=2..9 c=2..9 b=2..6
+  where (c != b)
+  level easy {
+    where (a + b + c <= 10)
+  }
+  level hard {
+    where (a + b + c >= 18)
+  }
+
+  scene 36x8 {
+    program p code=["set n to {a}", "add {c} to n", "add {b} to n"] blank=2 at=canvas(1, 0)
+    text ask "Line 2 adds a number to n. At the end n is {a + b + c}. What number does line 2 add?" width=18 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer c
+  feedback {
+    when (answer == b + c) point=p {
+      say "Line 3 adds {b} as well. Take that off too."
+    }
+    when (answer == a + c) point=p {
+      say "n starts at {a}, and line 3 adds {b}. Take both away from {a + b + c}."
+    }
+  }
+  hint "Which lines change n, and by how much, apart from line 2?"
+  hint "Start from {a + b + c} and undo line 3, then undo line 1."
+}

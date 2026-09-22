@@ -1,0 +1,29 @@
+# The walk home is not in the passage: the child has to see that the same path takes the same
+# time, then work back from the time on the clock. This is the audit's raise for reading.not-said.
+item reading.left-at-what-time v=1 skills=[reading.inference] {
+  title "When did Kofi set off?"
+  difficulty (2 * w + s)
+  let g=5..8 w=1..2 s=1..3
+  where (g - 2 * w - s >= 1)
+
+  scene 34x14 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage p text="Kofi walked to the fair and stayed there for {s} {if s == 1 then \"hour\" else \"hours\"}. The walk there took {w} {if w == 1 then \"hour\" else \"hours\"}, and he came home by the same path. He got home at {g} o'clock." width=25 numbers=false
+      clock c h=g m=0
+    }
+    text ask "At what time did Kofi set off from home?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (g - 2 * w - s)
+  feedback {
+    when (answer == g - w - s) point=p {
+      say "That leaves out the walk home. How long does the same path take on the way back?"
+    }
+    when (answer == g + 2 * w + s) point=c {
+      say "He got home at {g}, so he set off before that, not after."
+    }
+  }
+  hint "Which parts of the day does the passage tell you, and which part does it leave out?"
+  hint "He came back the same way. Work back from {g} o'clock one part at a time."
+}

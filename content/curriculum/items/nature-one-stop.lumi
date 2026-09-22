@@ -1,0 +1,44 @@
+# The three-star: the shortest way from the hide to the tower with one stop, from three stops whose
+# distances are in the table. Every stop has two legs, and the smallest total wins; the trap is the
+# stop with the shortest first leg.
+item nature.one-stop v=1 stars=3 skills=[nature.maps, reasoning.extremes, addition.to-hundred] {
+  title "One stop on the way"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let m1={pick(k, 3, 4, 5)}
+  let m2={pick(k, 6, 5, 9)}
+  let t1={pick(k, 5, 2, 2)}
+  let t2={pick(k, 2, 8, 11)}
+  let b1={pick(k, 4, 6, 6)}
+  let b2={pick(k, 5, 5, 6)}
+  let right={pick(k, "the tree", "the mill", "the bridge")}
+  let best={min(m1 + m2, t1 + t2, b1 + b2)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x24 {
+    table t cols=3 head=["Stop", "Hide to stop", "Stop to tower"] cells=["mill", "{m1} km", "{m2} km", "tree", "{t1} km", "{t2} km", "bridge", "{b1} km", "{b2} km"] at=canvas(1, 1)
+    text ask "Ada walks from the hide to the tower and must stop once, at the mill, the tree or the bridge. The table gives the distances. Which stop makes the shortest walk, and how long is it?" narrate width=32 below=t gap=1
+    choice pick options=["the mill", "the tree", "the bridge"] below=ask gap=1
+    row r below=pick gap=1 space=1 align=centre {
+      number-input total width=4
+      text unit "km"
+    }
+  }
+
+  answer pick=right total=best
+  feedback {
+    when (pick != right) point=t {
+      say "Add both legs for each stop before you compare. The stop nearest the hide is not always the shortest way round."
+    }
+    when (pick == right and total != best) point=t {
+      say "The walk is both legs added: hide to the stop, and the stop to the tower."
+    }
+  }
+  hint "For each stop, add the two legs in its row. That is the whole walk through that stop."
+  hint "Now compare the three totals. The smallest is the answer."
+}

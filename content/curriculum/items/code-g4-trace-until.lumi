@@ -1,0 +1,33 @@
+# The repeat stops when its question comes true, so how many times it goes round is worked out, not
+# read off: the trace shows where the test first passes.
+item coding.trace-until v=1 skills=[coding.tracing, coding.repetition] {
+  title "Round until it is big enough"
+  difficulty (m / b)
+  let s=1..4 b=3..5 m={12, 15, 20}
+  level easy {
+    let b=4..5 m={12}
+  }
+  level hard {
+    let b={3} m={20}
+  }
+
+  scene 32x14 {
+    program p code=["set n to {s}", "repeat until n is more than {m}", "  add {b} to n"] at=canvas(1, 0)
+    text ask "How many times does line 3 run, and what is n at the end?" width=30 below=p gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lr "times"
+      number-input times width=3
+      text ln "n"
+      number-input n width=3
+    }
+  }
+
+  check coding.runs of=p times="ran(3)" n="value(n)"
+  feedback {
+    when (n <= m) point=p {
+      say "The repeat only stops once n is more than {m}."
+    }
+  }
+  hint "Write n after each time round: {s}, then {s + b}, then what?"
+  hint "Stop as soon as n is more than {m}, and count how many adds that took."
+}

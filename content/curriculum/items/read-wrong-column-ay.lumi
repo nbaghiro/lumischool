@@ -1,0 +1,15 @@
+# The sort is already done on the page, with one word in the wrong place. It is a question a child
+# answers by eye, and it is the shape a real spelling worksheet takes.
+item reading.wrong-column-ay v=1 skills=[reading.spelling-patterns] {
+  title "One is in the wrong column"
+  let w=0..3
+
+  scene 25x21 {
+    text ask "One word is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort sort heads=["ai", "ay"] words=["rain", "day", "tail", "play"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["rain", "day", "tail", "play"] below=sort gap=1
+  }
+
+  answer pick=(if w == 0 then "rain" else if w == 1 then "day" else if w == 2 then "tail" else "play")
+  hint "Look at the letters in the middle of each word, not at what the word means."
+}

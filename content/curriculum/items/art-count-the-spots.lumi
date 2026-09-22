@@ -1,0 +1,20 @@
+item art.count-the-spots v=1 skills=[art.looking] {
+  title "Look closely"
+  difficulty s
+  let s=2..7
+  level easy {
+    let s=2..4
+  }
+  level hard {
+    let s=6..7
+  }
+
+  scene 24x8 {
+    minibeasts bug kinds=["ladybird"] spots=s legs=false at=canvas(1, 1)
+    text ask "Look closely. How many spots does the ladybird have?" width=14 right-of=bug gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  hint "Touch each spot as you count it."
+}

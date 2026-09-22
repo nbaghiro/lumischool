@@ -1,0 +1,16 @@
+# Naming the unit rather than the next print: the same strips, read as the part that comes round again.
+item art.pattern-unit v=1 skills=[art.pattern] {
+  title "The part that repeats"
+  difficulty (if u == 0 then 0 else 1)
+  let u=0..2
+
+  scene 34x17 {
+    printrow row unit=["fish", "{if u == 2 then \"shell\" else \"fish\"}", "{if u == 0 then \"shell\" else if u == 1 then \"fish\" else \"shell\"}", "shell"] colours=["blue", "{if u == 2 then \"pink\" else \"blue\"}", "{if u == 0 then \"pink\" else if u == 1 then \"blue\" else \"pink\"}", "pink"] count=8 missing=-1 at=canvas(1, 1)
+    text ask "Which part of the strip repeats?" width=12 below=row gap=1
+    choice pick options=["fish, shell", "fish, fish, shell, shell", "fish, fish, fish, shell"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=(if u == 0 then "fish, shell" else if u == 1 then "fish, fish, fish, shell" else "fish, fish, shell, shell")
+  hint "Put your finger on the first print. Where does the same order start again?"
+  hint "Say the prints out loud in groups. Which group comes round again and again?"
+}

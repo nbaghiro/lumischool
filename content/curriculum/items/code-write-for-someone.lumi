@@ -1,0 +1,26 @@
+# The program the child writes is not marked here, which is why the item also asks something that
+# can be: the sheet says who the marker is rather than pretending there is nobody to ask.
+item coding.write-for-someone v=1 skills=[coding.drawing] {
+  title "Write the program"
+  difficulty (w + h)
+  let w=3..5 h=2..4
+  where (w > h)
+  level easy {
+    let w={3, 4} h={2}
+  }
+  level hard {
+    let w={5} h=3..4
+  }
+
+  scene 37x19 {
+    row top at=canvas(1, 1) space=0 align=start {
+      turtle t cols=6 rows=6 col=1 row=6 moves=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+      writinglines pad lines=4 width=20 prompt="Write the four lines that draw it."
+    }
+    text ask "How many squares is the long side?" width=22 below=top gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer w
+  hint "Start at the ring and follow the line round, saying each move out loud."
+}

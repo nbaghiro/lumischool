@@ -1,0 +1,39 @@
+# The table with a reading missing, to fill from the pattern: each doubling of the distance halves
+# the reading. The last row missing is one step on; a middle row missing has to fit both
+# neighbours, and a first row missing has to be doubled back to.
+item physics.missing-row v=1 skills=[physics.sound, reasoning.patterns] {
+  title "Fill the missing reading"
+  difficulty (if r == 3 then 0 else if r == 0 then 2 else 1)
+  let base={8, 16, 24} r=0..3
+  let d={pick(r, 1, 2, 4, 8)}
+  level easy {
+    let r=3..3
+  }
+  level hard {
+    let r=0..1
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 0) space=2 align=start {
+      ricedrum drum hit=2
+      table t cols=2 head=["Metres away", "Meter reads"] cells=["1", "{if r == 0 then \"?\" else base}", "2", "{if r == 1 then \"?\" else base / 2}", "4", "{if r == 2 then \"?\" else base / 4}", "8", "{if r == 3 then \"?\" else base / 8}"]
+    }
+    text ask "Mia's table has a gap where the meter's battery ran out. Each time the distance doubles, the reading halves. What should the reading at {d} {if d == 1 then \"metre\" else \"metres\"} be?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (base / d)
+  feedback {
+    when (r == 3 and answer == base / 4 - 2 and base != 16) point=t {
+      say "The readings do not go down by the same amount each row. Each one is half the one above it."
+    }
+    when (r == 0 and answer == base / 2) point=t {
+      say "That is the reading at 2 metres. At 1 metre the drum is twice as close, so the reading is twice as big."
+    }
+    when (r == 1 and answer == base / 4) point=t {
+      say "That is the reading at 4 metres. The 2 metre row sits between {base} and {base / 4}: half of one, double the other."
+    }
+  }
+  hint "Look at how each reading changes from the row above. Is it taken away, or halved?"
+  hint "Half of the row above, or double the row below, gives the missing one."
+}

@@ -1,0 +1,26 @@
+# Two children write the same words with different marks; the child chooses the right one and
+# says why, which is the reason the mark is there.
+item writing.which-right v=2 stars=2 skills=[writing.punctuation, reasoning.explain] {
+  title "Who used the right mark?"
+  difficulty (if k == 1 or k == 4 then 1 else 0)
+  let k=0..5
+  let words={if k == 0 then "Can I come too" else if k == 1 then "Watch out, a wasp" else if k == 2 then "My coat is blue" else if k == 3 then "Where is the park" else if k == 4 then "Quick, the cake is burning" else "The film starts at six"}
+  let kind={if k == 0 or k == 3 then "?" else if k == 1 or k == 4 then "!" else "."}
+  let wrong={if k == 0 then "." else if k == 1 then "?" else if k == 2 then "?" else if k == 3 then "!" else if k == 4 then "?" else "?"}
+  let ana={if k % 2 == 0 then kind else wrong}
+  let ben={if k % 2 == 0 then wrong else kind}
+  let why={if kind == "?" then "It asks." else if kind == "!" then "It shouts." else "It tells."}
+
+  scene 35x13 {
+    text a "Ana wrote: {words}{ana}" narrate width=29 at=canvas(1, 1)
+    text b "Ben wrote: {words}{ben}" narrate width=29 below=a gap=0
+    text ask "Who is right?" narrate below=b gap=1
+    choice who options=["Ana", "Ben"] right-of=ask gap=1
+    text ask2 "Why?" narrate below=ask gap=2
+    choice reason options=["It asks.", "It shouts.", "It tells."] right-of=ask2 gap=1
+  }
+
+  answer who=(if k % 2 == 0 then "Ana" else "Ben") reason=why
+  hint "Read the words aloud. Are you asking, shouting or telling?"
+  hint "Now look at the marks. Which one matches the way you said it?"
+}

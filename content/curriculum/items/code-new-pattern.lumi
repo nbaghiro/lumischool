@@ -1,0 +1,42 @@
+# The three-star plan: a new message needs a pattern the key does not already use, with the
+# fewest flashes; the shortest pattern not in the key is two flashes, one long and one short.
+item coding.new-pattern v=1 stars=3 skills=[coding.sequences, reasoning.constraints] {
+  title "A new message"
+  difficulty k
+  let k=0..1 r=0..1
+  let newmsg={pick(k, "all safe", "come slowly")}
+  let right={pick(k, "short long", "long short")}
+  let w1={pick(k, "short short", "long long")}
+  let w2={pick(k, "long short long", "short long short")}
+  let w3={pick(k, "long long", "short short")}
+  let o1={if r == 0 then w1 else w2}
+  let o2={if r == 0 then right else w3}
+  let o3={if r == 0 then w2 else right}
+  let o4={if r == 0 then w3 else w1}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    text ask "Pip needs a new message: {newmsg}. Its pattern must not already be in the key, and it should use the fewest flashes. Which pattern should she choose?" narrate width=34 at=canvas(1, 1)
+    row low space=2 align=start below=ask gap=1 {
+      table key cols=2 head=["Flashes", "Means"] cells=["long short short", "come in", "short short", "stay out", "long long", "go round"]
+      choice pick options=["{o1}", "{o2}", "{o3}", "{o4}"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 or pick == w3) point=key {
+      say "That pattern is already in the key. The boat would read it as the old message."
+    }
+    when (pick == w2) point=key {
+      say "That pattern is new, but three flashes is more than needed. A pattern of two flashes that is not in the key will do."
+    }
+  }
+  hint "Cross out every pattern that is already a row of the key."
+  hint "Of the patterns left, the one with the fewest flashes is the answer."
+}

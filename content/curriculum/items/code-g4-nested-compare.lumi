@@ -1,0 +1,25 @@
+# Two programs to compare without running either: one has a clap inside the outer repeat only.
+# Sometimes they clap the same number of times, which is the version worth arguing about.
+item coding.nested-compare v=1 stars=2 skills=[coding.repetition, coding.comparing] {
+  title "Which claps more?"
+  difficulty (5 - abs(a * b + a - c * d) + (a + b + c + d) / 10)
+  let a=2..4 b=2..4 c=2..6 d=2..4
+
+  scene 32x19 {
+    row both at=canvas(1, 0) space=2 align=start {
+      program pa code=["repeat {a}", "  clap 1", "  repeat {b}", "    clap 1"] title="A"
+      program pb code=["repeat {c}", "  repeat {d}", "    clap 1"] title="B"
+    }
+    text ask "Which program claps more times?" width=20 below=both gap=1
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if a * b + a > c * d then "A" else if a * b + a < c * d then "B" else "the same")
+  feedback {
+    when (pick == "B" and a * b + a > c * d and a * b < c * d) point=pa {
+      say "A's first clap is inside the outer repeat, so it claps {a} more times on top of the {a * b}."
+    }
+  }
+  hint "How many claps does A make each time round its outer repeat?"
+  hint "Work out each total. Is one bigger, or are they the same?"
+}

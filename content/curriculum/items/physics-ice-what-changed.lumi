@@ -1,0 +1,47 @@
+# Two stars: Mia's and Sam's cups in the same wrap end at different readings, and what made the
+# difference. The captions under each cup say how long it waited and how warm its room was; only
+# one of those differs, by a lot at easy and by five at hard.
+item physics.ice-what-changed v=1 stars=2 skills=[physics.heat, physics.method, reasoning.evidence] {
+  title "What was different?"
+  difficulty (if c < 2 then 0 else if c < 4 then 1 else 2)
+  let c=0..5
+  let w={pick(c, "paper", "paper", "foil", "foil", "cloth", "paper")}
+  let r1={pick(c, 10, 20, 10, 20, 20, 20)}
+  let r2={pick(c, 25, 20, 30, 20, 25, 20)}
+  let m1={pick(c, 20, 10, 20, 10, 20, 20)}
+  let m2={pick(c, 20, 30, 20, 30, 20, 25)}
+  let ans={pick(c, "Sam's room was warmer", "Sam's cup waited longer", "Sam's room was warmer", "Sam's cup waited longer", "Sam's room was warmer", "Sam's cup waited longer")}
+  level easy {
+    let c=0..1
+  }
+  level hard {
+    let c=4..5
+  }
+
+  scene 34x32 {
+    row pair space=2 align=start at=canvas(1, 0) {
+      column mia space=0 align=centre {
+        text lm "Mia's cup"
+        wrapped a wraps=["{w}"] ice=1 room=r1 minutes=m1
+      }
+      column sam space=0 align=centre {
+        text ls "Sam's cup"
+        wrapped b wraps=["{w}"] ice=1 room=r2 minutes=m2
+      }
+    }
+    text ask "Both cups are wrapped in {w} and both had the same ice cube. Why is Sam's warmer now?" narrate width=32 below=pair gap=1
+    choice pick options=["Sam's room was warmer", "Sam's cup waited longer", "Sam's wrap lets more warmth in"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Sam's wrap lets more warmth in") point=pair {
+      say "Look at the wraps again: both cups have the same one."
+    }
+    when (pick != ans) point=pair {
+      say "Read the words under each cup. Which one is different for Sam?"
+    }
+  }
+  hint "Read what is written under each cup: how long, and how warm the room."
+  hint "Only one of those is different. That is what changed."
+}

@@ -1,0 +1,39 @@
+# Two ways from the hide to the tower: the road, in two legs written on it, and the path across the
+# marsh, in one. The road's legs have to be added before the two can be compared, and at hard the
+# road is the shorter one, against the eye.
+item nature.which-way-shorter v=1 skills=[nature.maps, reasoning.compare, addition.to-hundred] {
+  title "Which way is shorter?"
+  difficulty (if p < a + b then 0 else 1)
+  let a=4..9 b=5..12 p=8..24
+  where (p != a + b)
+  let right={if p < a + b then "the path" else "the road"}
+  let gap={abs(a + b - p)}
+  level easy {
+    let a=4..6 b=5..8 p=8..10
+  }
+  level hard {
+    let a=6..9 b=8..12 p=19..24
+  }
+
+  scene 34x22 {
+    roaddistances road stops=["hide", "mill", "tower"] legs=[a, b] unit=km at=canvas(1, 1)
+    text ask "The road from the hide to the tower goes round by the mill, with its legs written on it. The path straight across the marsh is {p} km. Which way is shorter, and by how many kilometres?" narrate width=32 below=road gap=1
+    choice pick options=["the road", "the path"] below=ask gap=1
+    row r right-of=pick gap=2 space=1 align=centre {
+      number-input diff width=4
+      text unit "km"
+    }
+  }
+
+  answer pick=right diff=gap
+  feedback {
+    when (pick != right) point=road {
+      say "Add the road's two legs first, then compare that total with the path."
+    }
+    when ((diff == a + b or diff == p) and diff != gap) point=road {
+      say "The question asks how much shorter: take the shorter way from the longer one."
+    }
+  }
+  hint "The road is {a} km and then {b} km. Add them."
+  hint "Now compare with the path. The difference is the longer take away the shorter."
+}

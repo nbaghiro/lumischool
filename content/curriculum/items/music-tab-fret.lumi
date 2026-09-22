@@ -1,0 +1,17 @@
+item music.tab-fret v=1 skills=[music.tab] {
+  title "Which fret?"
+
+  scene 30x11 {
+    tab lines tuning=guitar notes=["s2f1", "s2f3", "s1f0"] values=[] even=true letters=true ring=1 at=canvas(1, 1)
+    text ask "The number on a line is the fret to press. Which fret does the ringed number say?" width=13 right-of=lines gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 2) point=lines {
+      say "2 is the string it is on. The number written on the line is the fret."
+    }
+  }
+  hint "Read the number itself."
+}

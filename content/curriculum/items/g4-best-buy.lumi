@@ -1,0 +1,24 @@
+# Two packs of different sizes: better value is decided by the price of one pen, or of the same
+# number of pens from each, which is the reason to give.
+item money.best-buy v=1 stars=2 skills=[money.decimals, reasoning.compare-without-totalling] {
+  title "Which pack is better value"
+  difficulty (1 - abs(a / 4 - b / 6))
+  let a={1.60, 2.00, 2.40} b={2.10, 2.70, 3.00, 3.60}
+  where (a / 4 != b / 6)
+  level hard {
+    where (abs(a / 4 - b / 6) <= 0.1)
+  }
+
+  scene 30x15 {
+    row packs at=canvas(1, 1) space=3 align=start {
+      pricetag four now=(100 * a) was=0
+      pricetag six now=(100 * b) was=0
+    }
+    text ask "The first tag is for a pack of 4 pens. The second is for a pack of 6. Which pack gives more for your money?" narrate width=29 below=packs gap=1
+    choice pick options=["the pack of 4", "the pack of 6"] below=ask gap=1
+  }
+
+  answer pick=(if a / 4 < b / 6 then "the pack of 4" else "the pack of 6")
+  hint "What would 12 pens cost if you bought packs of 4? Packs of 6?"
+  hint "Or find the price of one pen in each pack."
+}

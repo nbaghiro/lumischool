@@ -1,0 +1,46 @@
+lesson g2-sharing-equally v=1 format=teach grade=2 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Sharing equally"
+  goal "Share a number equally, put things into groups, and say what is left over."
+
+  look {
+    scene 25x22 {
+      children row count=3 holding="" each=4 at=canvas(1, 1)
+      plate dish item=circle count=4 label="" right-of=row gap=2
+      tub pot first=6 second=6 colors=["berry", "sky"] below=row gap=1
+    }
+    say """
+      Twelve biscuits shared between three children is four each. Sharing and grouping are the same
+      picture read two ways: how many each, or how many groups.
+      """
+  }
+  do {
+    practice division.share-plates count=2 seed=4
+    practice division.share-jar count=2 seed=6
+    practice division.egg-boxes count=2 seed=3
+    practice division.left-over count=2 seed=8
+  }
+  try stars=2 {
+    show division.one-more-child c=3 e=8 easy-c=2 easy-e=6 hard-c=4 hard-e=10
+  }
+  try stars=3 {
+    show division.shares-two-ways a=3 b=4 m=30 easy-a=2 easy-m=20 hard-b=5 hard-m=35
+  }
+  remember {
+    say "Sharing between three means three equal groups. What cannot be shared is left over."
+  }
+
+  grown-ups """
+    Deal the biscuits out one at a time, like cards. That is what "equally" means, and it is worth
+    doing by hand before it is written down. The questions change which number is missing: the
+    total, how many each, or how many groups. The two-star question has two steps, finding all the
+    grapes and then sharing them again; a child who says "one fewer each" has not found the total.
+    In the three-star question a list of the numbers that share between the bigger group is the
+    place to start.
+    """
+  level easy {
+    grown-ups "At this level two children share, the boxes are two or three, the jar leaves one or two sweets over, and the jar that shares two ways holds under twenty."
+  }
+  level hard {
+    grown-ups "At this level four children share, the boxes are five or six, up to three sweets are left over, and the jar that shares between three and five holds thirty."
+  }
+}

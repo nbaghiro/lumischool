@@ -1,0 +1,56 @@
+lesson g4-numbers-to-a-million v=1 format=teach grade=4 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Numbers to a million, and rounding"
+  goal "Read and write numbers to a million, say what each digit is worth, and round them to the nearest hundred, thousand or ten thousand."
+
+  look {
+    scene 27x25 {
+      column all at=canvas(1, 1) space=1 align=start {
+        pvchart chart value="247850" show=digits
+        placename worth value="247850" ring=1
+        rounding line from=247800 to=247900 value=247850 show=true
+      }
+    }
+    say """
+      The columns keep going: ones, tens, hundreds, thousands, ten thousands, hundred thousands.
+      Each column is worth ten times the one on its right, so the 4 in 247,850 is worth 40,000.
+      Rounding asks which of the two nearest numbers it sits closer to, and nothing else.
+      """
+  }
+  do {
+    practice place.round-hundred count=1 seed=4
+    practice place.times-as-much count=1 seed=3
+    level easy {
+      worked place.power-more a=49 h=9 t=5 k=100 level=medium
+    }
+    practice place.power-more count=2 seed=5 easy-seed=3
+    practice place.what-was-added count=1 seed=2
+    practice place.round-big count=2 hard-count=1 seed=8
+    level hard {
+      practice place.largest-rounds-to count=1 seed=1
+    }
+    practice place.could-it-be count=1 seed=6
+  }
+  try stars=2 {
+    show place.largest-rounds-to r=2400 u="hundred" easy-r=600 hard-r=15000 hard-u="thousand"
+  }
+  try stars=3 {
+    show place.digit-sum-count n=5 s=3 easy-n=4 easy-s=2 hard-n=6
+  }
+  remember {
+    say "Each place is worth ten times the place on its right. To round, look only at the digit to the right of where you are rounding."
+  }
+
+  grown-ups """
+    Read big numbers out loud in groups of three digits. The commas are there to be spoken, not
+    just written. Adding 100 to 49,950 is where most mistakes happen, because two digits change;
+    ask which column is worth 100 before any adding. In the two-star question the number exactly
+    halfway is the trap: it rounds up, so it is not the answer. The three-star question needs a
+    list made in order, starting with the first digit as 1.
+    """
+  level easy {
+    grown-ups "At this level the hundreds are rounded from a tens digit of one, two, eight or nine, the two digits compared are one place apart, adding 100 to 49,955 is worked once in the teacher's pen before two sums that add ten or a hundred with only one digit changing, the amount added is a hundred or a thousand with no digit carrying, rounding is to the nearest thousand from a number that is not near halfway, the number rounded to 3,000 or 5,000 is found among four, the biggest number that rounds to 600 is asked, and the three-star counts the four-digit numbers whose digits add to two."
+  }
+  level hard {
+    grown-ups "At this level the hundreds are rounded from a tens digit of four or six, the two digits compared are three places apart, every sum adds to a column holding a nine so two digits change, the amount added carries as well, rounding to the nearest thousand or ten thousand turns on a four or a five, the number rounded to 12,000 or 47,000 is found among four, the biggest number that rounds to 15,000 to the nearest thousand is asked and the same question is asked again for 7,000 or 30,000, and the three-star counts the six-digit numbers whose digits add to three."
+  }
+}

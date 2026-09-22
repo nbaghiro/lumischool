@@ -1,0 +1,15 @@
+item coding.dance-missing v=1 skills=[coding.tracing] {
+  title "The missing frame"
+  difficulty b
+  let b=2..5
+
+  scene 36x14 {
+    blocks p code=["wave", "repeat 2", "  jump", "  spin", "bow"] at=canvas(1, 0)
+    dance d code=["wave", "repeat 2", "  jump", "  spin", "bow"] blank=b right-of=p gap=1
+    text ask "What does the robot do in frame {b}?" width=18 below=d gap=1
+    choice pick options=["wave", "jump", "spin", "bow"] below=ask gap=1
+  }
+
+  check coding.runs of=d pick="frame({b})"
+  hint "Say the dance out loud, one move a frame, and count along."
+}

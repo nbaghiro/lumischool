@@ -1,0 +1,28 @@
+# Sorting a tray by the magnet: how many of the things it pulls. At easy the pulled things are
+# the nail and the clip among plastic and wood; at hard the coin and the foil sit in the tray and
+# are metal but not pulled, which is the mistake to catch.
+item physics.pulled-count v=1 skills=[physics.magnets] {
+  title "How many does it pull?"
+  difficulty ((if q == "coin" then 1 else 0) + (if r == "foil" then 1 else 0))
+  let p={"nail", "clip"} q={"ruler", "coin"} r={"stick", "foil"} s={"eraser", "marble", "clip", "nail"}
+  where (s != p)
+  level easy {
+    let q={"ruler"} r={"stick"}
+  }
+  level hard {
+    let q={"coin"} r={"foil"}
+  }
+
+  scene 34x16 {
+    row all at=canvas(1, 0) space=1 align=end {
+      things t things=["{p}", "{q}", "{r}", "{s}"]
+      magnet bar mode=things count=0 sticks=0 show=0
+    }
+    text ask "Sam tries the magnet on each thing. How many of the four does it pull?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.things of=t answer=count(magnetic)
+  hint "Go along the tray. Is each one iron or steel, or something else?"
+  hint "Metal is not enough: the coin and the foil are metal and are not pulled. Iron and steel are."
+}

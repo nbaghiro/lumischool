@@ -1,0 +1,19 @@
+# A poem down the page can still be sentences. Where the first one ends is decided by the grammar,
+# which is the audit's raise for writing an acrostic line by line.
+item writing.acrostic-sentence-end v=1 skills=[writing.poems, writing.punctuation] {
+  title "Where the sentence ends"
+  difficulty (if s == 1 then 1 else 0)
+  let s=0..2
+
+  scene 35x13 {
+    listpad poem title="{if s == 0 then \"STAR\" else if s == 1 then \"LAMP\" else \"BELL\"}" items=["1. {if s == 0 then \"Stars come out\" else if s == 1 then \"Light spills out of\" else \"Bong goes the\"}", "2. {if s == 0 then \"They twinkle in\" else if s == 1 then \"A window in the dark\" else \"Echo of the\"}", "3. {if s == 0 then \"A dark sky over\" else if s == 1 then \"Mum is reading\" else \"Loud old bell\"}", "4. {if s == 0 then \"Rooftops\" else if s == 1 then \"Past midnight\" else \"Listen\"}"] count=0 width=17 ticks=false at=canvas(1, 1)
+    column right right-of=poem gap=1 space=1 align=start {
+      text ask "This poem is two sentences with the full stops left out. After which line does the first sentence end?" width=15
+      choice pick options=["1", "2", "3"]
+    }
+  }
+
+  answer pick=(if s == 0 then "1" else if s == 1 then "2" else "3")
+  hint "Read from the top. Stop after each line: is that a whole sentence yet?"
+  hint "Does the rest still make a sentence of its own?"
+}

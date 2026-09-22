@@ -1,0 +1,30 @@
+# The time between two clocks: the duration is the unknown, counted in quarters.
+item time.how-long v=1 skills=[time.quarter-hours, time.elapsed] {
+  title "How long did it take?"
+  difficulty d
+  let h=1..9 m={0, 15, 30, 45} d={30, 45, 60, 75, 90}
+  level easy {
+    let d={30, 45}
+  }
+  level hard {
+    let d={75, 90}
+  }
+
+  scene 30x16 {
+    row faces at=canvas(1, 1) space=3 align=start {
+      clock went h=h m=m
+      clock out h=(h + (m + d) // 60) m=((m + d) % 60)
+    }
+    text ask "The bread went in the oven at the first time and came out at the second. How many minutes did it bake?" narrate width=28 below=faces gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == d - 60 and d > 60) point=faces {
+      say "The long hand went all the way round once. That is 60 minutes on its own."
+    }
+  }
+  hint "How many quarter turns does the long hand make from the first clock to the second?"
+  hint "Each quarter turn is 15 minutes. A whole turn is 60."
+}

@@ -1,0 +1,34 @@
+# The two-star reason: two notices for the same thing, one with an ask and a reason, one that
+# only names the thing, and why the first persuades.
+item writing.which-persuades v=1 stars=2 skills=[writing.persuasion, reasoning.explain] {
+  title "Which notice persuades?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "A: it asks plainly and gives a reason", "B: it asks plainly and gives a reason")}
+  let w1={pick(k, "B: it is shorter, so it is read faster", "A: it is shorter, so it is read faster")}
+  let w2={pick(k, "Both: they are about the same pond", "Both: they are about the same sale")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x27 {
+    row two at=canvas(0, 1) space=2 align=start {
+      sign a lines=[if k == 0 then "SAVE OUR POND" else "Cake sale", if k == 0 then "Please keep dogs on leads" else "Saturday", if k == 0 then "Ducks are nesting in the reeds" else " "] kind=board color=sky
+      sign b lines=[if k == 0 then "The pond" else "CAKE SALE", if k == 0 then "Dogs" else "Please bring a cake to sell", if k == 0 then " " else "Every cake buys a library book"] kind=board color=sky
+    }
+    text ask "Two notices for the same thing. Which one persuades a reader to do something, and why?" narrate width=34 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "A notice persuades by asking for something and saying why. A board that only names the thing leaves the reader nothing to do and no reason to do it."
+    }
+  }
+  hint "Read each board and ask: what does it want me to do, and why should I?"
+  hint "If a board cannot answer either question, it is not persuading anyone."
+}

@@ -1,0 +1,14 @@
+item art.paint-for-far v=1 skills=[art.space, art.warm-cool, reasoning.two-steps] {
+  title "Paint for far away"
+  let p=0..2
+
+  scene 36x17 {
+    layers view labels=true ring=0 sun=false at=canvas(1, 1)
+    text ask "Every one of these paints is pale. Which is right for the ringed hills, furthest away?" width=34 below=view gap=1
+    choice pick options=["{if p == 0 then \"blue and 3 white\" else \"yellow and white\"}", "{if p == 1 then \"blue and 3 white\" else if p == 0 then \"yellow and white\" else \"red and white\"}", "{if p == 2 then \"blue and 3 white\" else \"red and white\"}"] stack=column right-of=view gap=1
+  }
+
+  check paint.mixes pick=cool
+  hint "Far away things look pale. What else does the air between you and them do to their colour?"
+  hint "Are faraway hills warmer or cooler than the ones close to you?"
+}

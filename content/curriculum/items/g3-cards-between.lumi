@@ -1,0 +1,29 @@
+# Six decimals from three cards, each checked against two limits: a count that needs a list.
+item decimal.cards-between v=1 stars=3 skills=[decimals.tenths, reasoning.systematic] {
+  title "Decimals between two numbers"
+  difficulty ((if a == lo or b == lo or c == lo then 1 else 0) + (if a == lo + 4 or b == lo + 4 or c == lo + 4 then 1 else 0))
+  let a=1..9 b=1..9 c=1..9 lo=1..5
+  where (a < b and b < c)
+  level easy {
+    where (a != lo and b != lo and c != lo and a != lo + 4 and b != lo + 4 and c != lo + 4)  # no card sits on an end of the range
+  }
+  level hard {
+    where (a == lo or b == lo or c == lo or a == lo + 4 or b == lo + 4 or c == lo + 4)  # a card sits on an end of the range, so 3.6 counts and 7.3 does not
+  }
+  where ((if 10 * a + b > 10 * lo and 10 * a + b < 10 * lo + 40 then 1 else 0) + (if 10 * b + a > 10 * lo and 10 * b + a < 10 * lo + 40 then 1 else 0) + (if 10 * a + c > 10 * lo and 10 * a + c < 10 * lo + 40 then 1 else 0) + (if 10 * c + a > 10 * lo and 10 * c + a < 10 * lo + 40 then 1 else 0) + (if 10 * b + c > 10 * lo and 10 * b + c < 10 * lo + 40 then 1 else 0) + (if 10 * c + b > 10 * lo and 10 * c + b < 10 * lo + 40 then 1 else 0) >= 2 and (if 10 * a + b > 10 * lo and 10 * a + b < 10 * lo + 40 then 1 else 0) + (if 10 * b + a > 10 * lo and 10 * b + a < 10 * lo + 40 then 1 else 0) + (if 10 * a + c > 10 * lo and 10 * a + c < 10 * lo + 40 then 1 else 0) + (if 10 * c + a > 10 * lo and 10 * c + a < 10 * lo + 40 then 1 else 0) + (if 10 * b + c > 10 * lo and 10 * b + c < 10 * lo + 40 then 1 else 0) + (if 10 * c + b > 10 * lo and 10 * c + b < 10 * lo + 40 then 1 else 0) <= 5)
+
+  scene 30x17 {
+    digitcards cards digits=[c, a, b] at=canvas(1, 1)
+    text ask "Make numbers like 3.5 with two of the cards and a point. How many of the numbers you can make are bigger than {lo} and smaller than {lo + 4}?" width=28 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if 10 * a + b > 10 * lo and 10 * a + b < 10 * lo + 40 then 1 else 0) + (if 10 * b + a > 10 * lo and 10 * b + a < 10 * lo + 40 then 1 else 0) + (if 10 * a + c > 10 * lo and 10 * a + c < 10 * lo + 40 then 1 else 0) + (if 10 * c + a > 10 * lo and 10 * c + a < 10 * lo + 40 then 1 else 0) + (if 10 * b + c > 10 * lo and 10 * b + c < 10 * lo + 40 then 1 else 0) + (if 10 * c + b > 10 * lo and 10 * c + b < 10 * lo + 40 then 1 else 0))
+  feedback {
+    when (answer == 6) point=cards {
+      say "Not all six fit. Check each one against {lo} and {lo + 4}."
+    }
+  }
+  hint "Write down all six numbers the cards make, such as {a}.{b} and {b}.{a}."
+  hint "The whole-number part is the card before the point. Which of them are between {lo} and {lo + 4}?"
+}

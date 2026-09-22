@@ -1,0 +1,22 @@
+# Every rectangle with a given area, searched for the one with the shortest way round: the one
+# nearest to a square.
+item area.smallest-perimeter v=2 stars=3 skills=[area.perimeter, number.factors, reasoning.extremes] {
+  title "The shortest way round"
+  difficulty (if n == 36 then 5 else if n == 24 or n == 30 then 4 else 3)
+  let n={12, 18, 20, 24, 30, 36}
+
+  scene 34x16 {
+    grid g rows=2 cols=6 shade=12 color=mint cell=2 at=canvas(1, 1)
+    text ask "This 2 by 6 rectangle has an area of 12 squares. Another rectangle has an area of {n} square cm and whole-number sides, and a square counts. What is the shortest perimeter it can have?" narrate width=16 right-of=g gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if n == 12 then 14 else if n == 18 or n == 20 then 18 else if n == 24 then 20 else if n == 30 then 22 else 24)
+  feedback {
+    when (answer == 2 * (n + 1)) point=ask {
+      say "That is the long thin one, 1 by {n}. Try a fatter rectangle."
+    }
+  }
+  hint "List the rectangles: 1 by {n}, 2 by what, 3 by what?"
+  hint "Work out the perimeter of each. Which shape gives the shortest?"
+}

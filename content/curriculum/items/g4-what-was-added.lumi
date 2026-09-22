@@ -1,0 +1,33 @@
+# Before and after: the change is the unknown, and a nine turning over hides it in two digits.
+item place.what-was-added v=1 skills=[place-value.large-numbers, addition.change-unknown] {
+  title "What was added"
+  difficulty ((if k == 100 and b == 9 or k == 200 and b == 9 or k == 1000 and a % 10 == 9 or k == 3000 and a % 10 >= 7 or k == 10000 and a // 10 % 10 == 9 then 3 else 0) + (if k == 200 or k == 3000 then 1 else 0))
+  let a={38, 49, 125, 299, 406, 999} b={9, 4, 0} k={100, 1000, 10000, 200, 3000}
+  level easy {
+    let k={100, 1000}
+    where (k == 100 and b != 9 or k == 1000 and a % 10 != 9)
+  }
+  level hard {
+    where (k == 100 and b == 9 or k == 200 and b == 9 or k == 1000 and a % 10 == 9 or k == 3000 and a % 10 >= 7 or k == 10000 and a // 10 % 10 == 9)
+  }
+
+  scene 31x25 {
+    column both at=canvas(1, 1) space=1 align=start {
+      text l1 "Before"
+      pvchart one value="{a}{b}70" show=digits
+      text l2 "After"
+      pvchart two value="{1000 * a + 100 * b + 70 + k}" show=digits
+    }
+    text ask "How much was added?" narrate below=both gap=1
+    number-input answer width=7 right-of=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == k / 10 or answer == k * 10) point=two {
+      say "Check which column the change is in, and what that column is worth."
+    }
+  }
+  hint "Read both numbers. Which columns are different?"
+  hint "Count on from the first number to the second, in the biggest steps you can."
+}

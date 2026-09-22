@@ -1,0 +1,28 @@
+# A telling sentence about "you" becomes a command when "You" comes off the front: the child
+# writes the doing word the command now starts with.
+item writing.make-command v=1 skills=[writing.sentences, writing.signs] {
+  title "Make it a command"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 1, 3, 4}
+  }
+  level hard {
+    let k={2}
+  }
+  let tell={if k == 0 then "You shut the gate." else if k == 1 then "You wipe your feet." else if k == 2 then "You keep off the grass." else if k == 3 then "You hold the rail." else "You wash your hands."}
+  let w={if k == 0 then "Shut" else if k == 1 then "Wipe" else if k == 2 then "Keep" else if k == 3 then "Hold" else "Wash"}
+  let rest={if k == 0 then "the gate." else if k == 1 then "your feet." else if k == 2 then "off the grass." else if k == 3 then "the rail." else "your hands."}
+
+  scene 30x11 {
+    text ask "{tell} Take away one word to make it a command for a sign. Write the word the command starts with." narrate width=28 at=canvas(1, 1)
+    row q below=ask gap=1 space=1 align=centre {
+      word-input word options=["{w}"] letters=5
+      sentence strip before="" blank=0 after="{rest}"
+    }
+  }
+
+  answer word=w
+  hint "Which word is not needed on a sign?"
+  hint "Take away You. What word is left at the front?"
+}

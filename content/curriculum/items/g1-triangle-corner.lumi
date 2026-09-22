@@ -1,0 +1,25 @@
+# Two ways in: either box next to the empty circle gives the answer, and the third box checks it.
+item add.triangle-corner v=1 stars=2 skills=[addition.to-twenty, reasoning.missing-number] {
+  title "The missing corner"
+  difficulty (x + y + z)
+  let x=2..9 y=2..9 z=2..9
+  where (x != y and y != z and x != z)
+
+  scene 29x13 {
+    sumtriangle tri a=x b=y c=z hide=a letters=false at=canvas(1, 0)
+    text ask "Each box is the sum of the two circles it joins. What number goes in the empty circle?" narrate width=12 right-of=tri gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == x + y) point=tri {
+      say "That is a box. The circle and the {y} next to it add up to the box."
+    }
+    when (answer == y) point=tri {
+      say "That is the circle at the bottom. Which number goes with {y} to make the box between them?"
+    }
+  }
+  hint "Pick a box next to the empty circle. Which two circles does it join?"
+  hint "One of them is {y}. What goes with {y} to make that box? Check it with the other box."
+}

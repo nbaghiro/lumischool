@@ -1,0 +1,27 @@
+# Compare with the smaller amount unknown: "fewer than" is a taking away, though nobody takes anything.
+item sub.fewer-than v=1 skills=[subtraction.compare] {
+  title "Fewer than Mo"
+  difficulty (a + b)
+  let a=11..18 b=2..6
+  level easy {
+    let a=11..14 b=2..3
+  }
+  level hard {
+    let a=15..18 b=5..6
+  }
+
+  scene 30x12 {
+    sweetjar jar count=a color=berry at=canvas(1, 1)
+    text ask "Mo's jar has {a} sweets. Lin has {b} fewer sweets than Mo. How many sweets does Lin have?" narrate width=20 right-of=jar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=jar {
+      say "Fewer means Lin has less than Mo, so her number is smaller than {a}."
+    }
+  }
+  hint "Who has more sweets, Mo or Lin?"
+  hint "Start at Mo's number. Which way do you count?"
+}

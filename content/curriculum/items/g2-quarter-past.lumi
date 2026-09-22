@@ -1,0 +1,19 @@
+item time.quarter-past v=1 skills=[time.quarter-hours] {
+  title "Quarter past, quarter to"
+  difficulty (if m == 45 then 1 else 0)
+  let h=1..11 m={15, 45}
+
+  scene 30x12 {
+    clock face h=h m=m at=canvas(1, 1)
+    text ask "What does this clock say?" narrate right-of=face gap=2
+    choice pick options=["quarter past", "quarter to"] below=face gap=1
+  }
+
+  answer pick=(if m == 15 then "quarter past" else "quarter to")
+  feedback {
+    when (m == 45 and pick == "quarter past") point=face {
+      say "The long hand is on the left, so the quarter is still to come."
+    }
+  }
+  hint "Long hand on the right is past. Long hand on the left is to."
+}

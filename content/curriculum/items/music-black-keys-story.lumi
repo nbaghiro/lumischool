@@ -1,0 +1,31 @@
+# The story: the bandstand keyboard's black keys counted by their groups, or its white keys from
+# the whole.
+item music.black-keys-story v=1 stars=1 skills=[music.keys, multiplication.groups] {
+  title "The bandstand keyboard"
+  difficulty (n / 2 + w)
+  let n={2, 4, 5, 7} w=0..1
+  let asks={pick(w, "How many black keys is that?", "How many white keys are there, if the keyboard has 15 more white keys than black?")}
+  level easy {
+    let n={2, 4} w=0..0
+  }
+  level hard {
+    let n={5, 7} w=1..1
+  }
+
+  scene 34x10 {
+    text ask "The keyboard at the bandstand has {n} groups of two black keys and {n} groups of three. {asks}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 5 * n else 5 * n + 15)
+  feedback {
+    when (w == 0 and answer == 2 * n) point=ask {
+      say "That is the twos only. Each group of three has three more."
+    }
+    when (w == 1 and answer == 5 * n) point=ask {
+      say "That is the black keys. The white keys are 15 more than that."
+    }
+  }
+  hint "{if w == 0 then \"A two and a three together make five black keys. How many of those pairs of groups are there?\" else \"Count the black keys first: five for each two-and-three.\"}"
+  hint "{if w == 0 then \"Five times {n}.\" else \"Then add the 15.\"}"
+}

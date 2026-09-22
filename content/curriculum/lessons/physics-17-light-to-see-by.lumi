@@ -1,0 +1,45 @@
+lesson physics-light-to-see-by v=1 format=teach grade=1 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "Light to see by"
+  goal "Say which things give out their own light, that we need light to see anything, and whether a sheet lets light through."
+
+  look {
+    scene 24x16 {
+      column all at=canvas(1, 0) space=1 align=start {
+        things t things=["candle", "torch", "lamp", "sun", "moon", "mirror"]
+        seeing room lamp=1 arrows=1
+      }
+    }
+    say """
+      A candle, a torch, a lamp and the sun give out their own light. The moon and a mirror
+      look bright, but they only send back light that came from somewhere else. To see the ball,
+      light has to bounce off it and come into your eyes.
+      """
+  }
+  do {
+    practice physics.see-in-dark count=2 seed=1
+    practice physics.sources count=2 seed=4
+    practice physics.count-sources count=2 seed=3
+    practice physics.light-through count=2 seed=2
+  }
+  try stars=2 {
+    show physics.shiny-moon
+  }
+  try stars=3 {
+    show physics.not-sources p="moon" q="mirror" r="torch" s="sun" easy-q="lamp" hard-r="foil"
+  }
+  remember {
+    say "We need light to see. Dark is when there is no light."
+  }
+
+  grown-ups """
+    Go into a room with the curtains shut and the light off, and wait a minute. Can you see the
+    toy on the floor? Now open the curtain a crack. The moon is the hard one: it looks like a
+    lamp in the sky, and it is lit by the sun, which the stretch questions come back to.
+    """
+  level easy {
+    grown-ups "At this level the thing that only sends light back is a mirror or a marble, and the tray of five holds one thing without light of its own, the moon."
+  }
+  level hard {
+    grown-ups "At this level the moon and foil are among the things, which shine but give no light of their own, and the tray of five holds three of them."
+  }
+}

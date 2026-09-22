@@ -1,0 +1,29 @@
+# The condition is the unknown: the program's answers for four numbers are given and the number in
+# line 1 is left blank, so the child reasons back from what the decision did.
+item coding.decision-threshold v=1 skills=[coding.decisions] {
+  title "What is the number in line 1?"
+  difficulty t
+  let t=3..8
+
+  scene 36x11 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["if n is more than {t}", "  say shout", "otherwise", "  say whisper"] blank=1
+      column q space=1 align=start {
+        text ask "Line 1 says if n is more than a number. When n is {t - 1} or {t} it whispers. When n is {t + 1} or {t + 2} it shouts. What number is in line 1?" width=17
+        number-input answer
+      }
+    }
+  }
+
+  answer t
+  feedback {
+    when (answer == t + 1) point=p {
+      say "{t + 1} shouts, so it is more than the number in line 1. The number in line 1 is smaller than {t + 1}."
+    }
+    when (answer == t - 1) point=p {
+      say "{t} whispers, so {t} is not more than the number in line 1."
+    }
+  }
+  hint "Which is the biggest number that whispers?"
+  hint "More than means bigger, not the same. Try your number with {t} and with {t + 1}."
+}

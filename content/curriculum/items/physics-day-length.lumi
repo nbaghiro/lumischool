@@ -1,0 +1,26 @@
+item physics.day-length v=1 skills=[physics.sky] {
+  title "How long is the day?"
+  difficulty (s - r)
+  let r={5, 6, 7, 8} s={16, 18, 20}
+  where (s - r <= 15)
+  level easy {
+    let r={7, 8} s={16}
+  }
+  level hard {
+    let r={5, 6} s={20}
+  }
+
+  scene 25x14 {
+    sunpath sky rise=r set=s at=canvas(1, 0)
+    text ask "How many hours is the sun up for?" width=18 below=sky gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (s - r)
+  feedback {
+    when (answer == s + r) point=sky {
+      say "Count on from when it rises to when it sets."
+    }
+  }
+  hint "How many hours from {r} in the morning to noon, and from noon to when it sets?"
+}

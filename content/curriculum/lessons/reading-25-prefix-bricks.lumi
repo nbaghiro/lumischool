@@ -1,0 +1,59 @@
+lesson reading-prefix-bricks v=1 format=teach grade=3 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Prefix bricks"
+  goal "Read a word with a prefix, say how the prefix changes the meaning of the root word, and use the right prefix in a sentence."
+
+  look {
+    scene 34x9 {
+      row all at=canvas(1, 1) space=1 align=end {
+        chest box open=1 coins=5
+        wordbricks a bricks=["un", "lock", "ed"] root=1 roots=1 blank=-1 word="unlocked" labels=true
+        wordbricks b bricks=["re", "build"] root=1 roots=1 blank=-1 word="rebuild" labels=true
+      }
+    }
+    say """
+      A prefix is a small part at the front of a word. It changes what the word means. Un often
+      means not, or undoes something: the chest is unlocked. Re means again: rebuild. Pre means before, dis often
+      means not, and mis means wrongly.
+
+      Cover the prefix, read the root word, then put the prefix back and think what it does. If
+      nothing is left when you cover the front, it was not a prefix at all.
+      """
+  }
+  do {
+    level easy {
+      worked reading.prefix-meaning k=4 level=medium
+    }
+    practice reading.prefix-meaning count=2 seed=2 hard-seed=10
+    show reading.prefix-build k=2 easy-k=0 hard-k=3
+    practice reading.real-prefix count=2 seed=4
+    practice reading.prefix-typed count=2 seed=3
+    practice reading.prefix-sentence count=2 hard-count=1 seed=5
+    level hard {
+      practice reading.un-two-ways count=1 seed=7
+    }
+  }
+  try stars=2 {
+    show reading.un-two-ways k=0 hard-k=3
+  }
+  try stars=3 {
+    show reading.brick-words k=0
+  }
+  remember {
+    say "A prefix goes at the front and changes the meaning."
+  }
+
+  grown-ups """
+    Ask the child to cover the prefix with a finger and read the root word first; most of the long
+    words they meet from now on come apart like this. The wrong choices in each question are what
+    the other prefixes would do, so a wrong answer tells you which prefix they mixed up. Ready and
+    uncle look as if they have prefixes, which is the point of the question about them. In the
+    two-star question, un means undo in one word only. In the three-star question, a list that
+    tries every prefix with every root finds all of them.
+    """
+  level easy {
+    grown-ups "At this level misread is worked once in the teacher's pen before unhappy, refill and preheat, the prefix to build with is re, the words that only look prefixed are uncle and dish, the words to write are untidy, preheat and repaint, the sentences want unscrew, repaint and unwrap, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the prefixes to read are pre, dis and mis, the prefix to build with is dis, the words that only look prefixed are ready, mist and press, the words to write are dishonest and misspell, whose double letters the join makes, one sentence makes way for a second un question, whose undo word is unzip, the two-star's undo word is unpack, and the three-star is as written."
+  }
+}

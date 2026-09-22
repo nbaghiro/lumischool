@@ -1,0 +1,32 @@
+# Where the burnt wax went, and what the flame leaves on the jar: the wax is turned into new
+# gases that go into the air, and the jar's inside catches the water drops and the soot.
+item chem.where-the-wax-went v=1 skills=[chemistry.burning, chemistry.changes] {
+  title "Where did the wax go?"
+  difficulty w
+  let w=0..1 r=0..2
+  let ask2={pick(w, "The candle has burnt down and there is less wax than before. Where has the missing wax gone?", "The inside of the jar is misted with tiny drops and has a smudge of black. Where did they come from?")}
+  let right={pick(w, "It became new gases and went into the air", "The flame made them from the burning wax")}
+  let w1={pick(w, "It melted and soaked into the candle", "They were in the jar before, unseen")}
+  let w2={pick(w, "It is stuck to the inside of the jar", "The candle sweated them out in the heat")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x27 {
+    candle c start=10 burnt=6 lit=0 jar=1 at=canvas(0, 0)
+    text ask "{ask2}" narrate width=20 right-of=c gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=c gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "{if w == 0 then \"Wax that had only melted would still be there, on the candle or the jar. Weigh it: the candle is lighter, so something has left as a gas.\" else \"A dry, clean jar goes over the candle and comes off misted and smudged. Only the flame was in there to make them.\"}"
+    }
+  }
+  hint "{if w == 0 then \"Burning makes new things. Are they solids, liquids or gases?\" else \"What was in the jar besides air before the candle? What did the flame do while it burnt?\"}"
+  hint "{if w == 0 then \"The flame turns the wax into gases you cannot see, and they mix into the air.\" else \"Burning wax makes water vapour, which mists the cold glass, and soot, which is the black.\"}"
+}

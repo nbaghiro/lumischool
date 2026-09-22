@@ -1,0 +1,36 @@
+# The three-star plan: a row of lights, and the fewest light lines a repeat-for-ever program needs
+# to make it. That is the length of the part that repeats: 2, 3 or 4.
+item coding.forever-fewest-lines v=1 stars=3 skills=[coding.repetition, patterns.repeating, reasoning.planning] {
+  title "The shortest program"
+  difficulty (unit - 2)
+  let k=0..3
+  let seen={pick(k, "1 red 1 white 1 red 1 white 1 red 1 white 1 red 1 white", "2 red 1 green 2 red 1 green 2 red", "1 white 2 green 1 white 2 green 1 white 1 green", "1 green 2 white 1 red 1 green 2 white 1 red")}
+  let unit={pick(k, 2, 3, 3, 4)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x17 {
+    pixels lights cols=8 rows=1 code=["{seen}"] show=true beside=false at=canvas(1, 1)
+    program p code=["repeat for ever", "  ..."] title="Pip's plan" below=lights gap=1
+    column side space=1 align=start right-of=p gap=2 {
+      text ask "Pip's program repeats for ever and makes these lights. What is the fewest light lines it can have inside the repeat?" narrate width=14
+      number-input answer
+    }
+  }
+
+  answer unit
+  feedback {
+    when (answer == 8) point=lights {
+      say "Eight lines would work, but the pattern repeats inside them. Find where the lights start again."
+    }
+    when (answer == 2 * unit and answer != 8) point=lights {
+      say "Those lines would say the pattern twice. The repeat can say it once."
+    }
+  }
+  hint "From the first light, how far along does the same order of colours start again?"
+  hint "The lines inside the repeat only need to say that part once."
+}

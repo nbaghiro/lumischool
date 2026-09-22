@@ -1,0 +1,15 @@
+# v2 drops the picture so the question fits a quarter of a page; the raise the audit asked for
+# (every choice gives a reason) is writing.letter-best-reason.
+item writing.letter-reason v=2 skills=[writing.letters, writing.joining-sentences] {
+  title "A reason to come"
+  let k=0..1
+
+  scene 36x15 {
+    text ask "{if k == 0 then \"Sam wants the owl to come to the island.\" else \"Sam wants the hedgehog to come to tea.\"} Which sentence gives a reason?" width=35 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"Please come to the island.\" else \"Please come, because Gran has made a cake.\"}", "{if k == 0 then \"Please come, because the lanterns are lit tonight.\" else \"Please come to tea.\"}", "{if k == 0 then \"The island is a long way off.\" else \"Tea is at four.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Please come, because the lanterns are lit tonight." else "Please come, because Gran has made a cake.")
+  hint "A reason answers the question why."
+  hint "Which sentence tells the reader why they should come?"
+}

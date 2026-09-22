@@ -1,0 +1,60 @@
+lesson writing-letters-on-the-line v=1 format=teach grade=1 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "Letters that sit on the line"
+  goal "Form a letter that sits on the baseline and reaches the right height."
+
+  look {
+    scene 34x12 {
+      row all at=canvas(1, 1) space=2 align=centre {
+        art pic asset="hen"
+        column lines space=1 align=start {
+          handwriting rules show="h" rows=1 trace=3 width=22
+          writinglines ruled lines=1 width=22 prompt="Now write three of your own."
+        }
+      }
+    }
+    say """
+      Hen starts with h. Every letter starts somewhere and ends somewhere. The bottom line is the
+      one the letters sit on, and nothing should sag below it. The dotted line is how high a small
+      letter goes. A tall letter, like h, carries on up to the top line.
+      """
+  }
+  do {
+    show writing.how-many-tall x="b" easy-x="c"
+    level easy {
+      worked writing.tall-in-word k=4 level=medium
+    }
+    practice writing.tall-in-word count=2 seed=3
+    show writing.height-match s=2 k=1
+    show writing.height-match s=0 k=2
+    practice writing.letter-on-the-line count=1 seed=1
+    practice writing.name-on-the-lines count=2 hard-count=1 seed=2 hard-seed=2
+    level hard {
+      practice writing.wrong-height-column count=1 seed=5
+    }
+  }
+  try stars=2 {
+    show writing.wrong-height-column s=0 m=2 easy-m=0
+  }
+  try stars=3 {
+    show writing.word-to-a-rule k=0
+  }
+  remember {
+    say "Letters sit on the line. Small letters stop at the dotted line, tall ones go to the top."
+  }
+
+  grown-ups """
+    Nothing on this page is marked by the machine, and the answer sheet says what to look for
+    instead. Watch the pencil rather than the finished letter: where the stroke starts is what
+    makes a letter easy or hard to write quickly later on. The lesson on where each letter starts
+    shows the start and the direction for every letter. The two-star question is someone else's
+    sort with one letter in the wrong column; t is the usual trap, because it is shorter than the
+    other tall letters. The three-star question has no word to copy, so let the child say a few
+    words out loud and check their letters before writing one.
+    """
+  level easy {
+    grown-ups "At this level the cards hold two tall letters, pencil's one tall letter is counted once in the teacher's pen before cup, sun and owl, which have none, the heights to match and the letters to trace are as written, the names to write are pig and fox, the two-star's stray is b, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the cards hold three tall letters, the words to count are bicycle and pencil, the heights to match and the letters to trace are as written, the name to write is rabbit, with three tall letters, and the second name makes way for a second sorted column to check, whose stray is f, the two-star's stray is t, which reaches only a little above the dotted line, and the three-star is as written."
+  }
+}

@@ -1,0 +1,31 @@
+# Money is written as a decimal, so the arithmetic stays exact and the page keeps the cents:
+# 20 minus 12.50 is shown as 7.50, not as 15/2.
+item money.change v=1 skills=[money.change] {
+  title "Change from a note"
+  difficulty (note - price)
+  let note={10, 20} price={3.45, 4.60, 6.25, 7.80, 8.05, 12.50}
+  where (price < note)
+  level easy {
+    let note={10} price={2.50, 3.50, 4.50, 6.50, 7.00, 8.50}  # whole and half dollars
+  }
+  level hard {
+    let note={20, 50} price={12.35, 17.85, 23.15, 31.60, 44.95}
+  }
+
+  scene 30x8 {
+    text ask "A meal costs {price} dollars and you pay with a {note} dollar note." width=28 at=canvas(1, 0)
+    text q "How much change do you get, in dollars?" width=28 below=ask gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (note - price)
+  feedback {
+    when (answer == price) point=q {
+      say "That is the price, not the change. Take the price away from the note."
+    }
+    when (answer == note + price) point=q {
+      say "Change is what is left, so this is a subtraction and not an addition."
+    }
+  }
+  hint "Count on from {price} to the next whole dollar first, then on to {note}."
+}

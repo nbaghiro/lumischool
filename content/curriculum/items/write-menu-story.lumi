@@ -1,0 +1,29 @@
+# The story: Sam's menu counted by its headings and dishes.
+item writing.menu-story v=1 stars=1 skills=[writing.layout, multiplication.groups] {
+  title "Sam's new menu"
+  difficulty (h + w)
+  let h=2..4 d=3..5 w=0..1
+  level easy {
+    let h=2..2 d=3..4 w=0..0
+  }
+  level hard {
+    let h=4..4 d=4..5 w=1..1
+  }
+
+  scene 34x10 {
+    text ask "Sam writes a new menu with {h} headings and {d} dishes under each one, every dish with one describing word. {if w == 0 then \"How many dishes are on the menu?\" else \"How many lines does the menu have, headings and dishes together?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then h * d else h * d + h)
+  feedback {
+    when (w == 0 and answer == h + d) point=ask {
+      say "Every heading has {d} dishes: that is {h} lots of {d}."
+    }
+    when (w == 1 and answer == h * d) point=ask {
+      say "That is the dishes. The headings are lines too."
+    }
+  }
+  hint "{if w == 0 then \"Each heading has the same number of dishes. How many lots of \" else \"Count the dishes first, then add a line for each heading. Lots of \"}{d}{if w == 0 then \"?\" else \".\"}"
+  hint "{if w == 0 then \"{h} times {d}.\" else \"{h} times {d}, then {h} more.\"}"
+}

@@ -1,0 +1,26 @@
+# One row left as an empty strip, and what the weaving does at the crossing the question names, which
+# the rows above and below settle.
+item art.weave-continue v=1 skills=[art.pattern, reasoning.evidence] {
+  title "Carry the row on"
+  difficulty (if at > 3 then 1 else 0)
+  let k=0..5
+  let blank={pick(k, 2, 3, 2, 2, 3, 3)}
+  let at={pick(k, 2, 3, 3, 5, 5, 4)}
+  let ans={pick(k, "Over", "Over", "Under", "Under", "Over", "Under")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 21x20 {
+    weave cloth cols=6 rows=4 start=[0, 1, 0, 1] step=1 blank=blank at=canvas(1, 0)
+    text ask "Row {blank} has been left empty for you to weave. At its crossing number {at}, counting from the left, should the strip go over or under?" narrate width=20 below=cloth gap=1
+    choice pick options=["Over", "Under"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Look at the rows above and below the empty one and see how they go."
+  hint "A row goes over, under, over, under all the way across, so count along from the left."
+}

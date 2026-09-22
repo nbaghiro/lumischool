@@ -1,0 +1,29 @@
+# The way in: the simple shape inside a thing on the table, as Cezanne saw it: a circle in the
+# apple and the ball, a box in the box, a tube in the cup.
+item art.shape-inside v=1 skills=[art.shape, art.looking] {
+  title "The shape inside"
+  difficulty (if t == "cup" then 1 else 0)
+  let t={"apple", "ball", "box", "cup"}
+  let right={if t == "apple" or t == "ball" then "a circle" else if t == "box" then "a box" else "a tube"}
+  level easy {
+    let t={"apple", "ball", "box"}
+  }
+  level hard {
+    let t={"cup", "box"}
+  }
+
+  scene 36x21 {
+    stilllife pic light="left" things=["{t}"] lamp=false at=canvas(1, 1)
+    text ask "Cezanne looked for the simple shape inside every thing he painted. Which shape is inside this {t}?" narrate width=16 right-of=pic gap=1
+    choice pick options=["a circle", "a box", "a tube"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pic {
+      say "Squint at the {t} until its details go. What is left: something round all over, something with flat sides and corners, or something round that goes straight up?"
+    }
+  }
+  hint "Cover the details with your hand. What plain shape is left?"
+  hint "Round all over is a circle. Flat sides and corners make a box. Round but straight up and down is a tube."
+}

@@ -1,0 +1,33 @@
+# Two rectangles with the same distance round can hold different areas: the idea that keeps
+# perimeter and area apart.
+item area.same-perimeter v=1 stars=2 skills=[perimeter.count-edges, area.count-squares, reasoning.compare] {
+  title "Same edge, different inside"
+  difficulty (a + b + (if a * b > c * (a + b - c) then 4 else 0))
+  let a=4..9 b=2..6 c=2..9
+  where (a > b and c != a and c != b and c < a + b and a + b - c != c)
+  level easy {
+    let a=5..6 b=2..3 c=3..4
+    where (a * b < c * (a + b - c))  # the second is nearer a square, so it is plainly bigger
+  }
+  level hard {
+    let a=7..9 b=4..6 c=8..9  # the second is longer than the first, and mostly holds less
+  }
+
+  scene 30x19 {
+    mirror shape shape=rectangle line=none size=5 at=canvas(1, 1)
+    text ask "Two rectangles have the same perimeter. The first is {a} cm by {b} cm. The second is {c} cm long." width=20 right-of=shape gap=2
+    text q1 "How wide is the second?" below=shape gap=2
+    number-input wide right-of=q1 gap=1
+    text q2 "Which has the bigger area?" below=q1 gap=1
+    choice pick options=["the first", "the second"] below=q2 gap=1
+  }
+
+  answer wide=(a + b - c) pick=(if a * b > c * (a + b - c) then "the first" else "the second")
+  feedback {
+    when (wide == 2 * (a + b) - c) point=q1 {
+      say "The long side and the wide side together are half the way round: {a} and {b}."
+    }
+  }
+  hint "What is half of the perimeter? The length and the width add up to that."
+  hint "Now work out both areas. Are they the same?"
+}

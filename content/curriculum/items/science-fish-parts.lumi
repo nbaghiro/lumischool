@@ -1,0 +1,12 @@
+item science.fish-parts v=1 skills=[science.animals] {
+  title "Parts of a fish"
+  let p={"fin", "tail", "body", "mouth"}
+
+  scene 30x17 {
+    parts fig of=fish at=canvas(1, 1)
+    text ask "Which letter points at the {p}?" width=28 below=fig gap=1
+    choice part options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer part=(if p == "fin" then "A" else if p == "tail" then "B" else if p == "body" then "C" else "D")
+}

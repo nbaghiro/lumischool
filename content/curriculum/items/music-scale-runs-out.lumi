@@ -1,0 +1,47 @@
+# The two-star reason: Ben plays a scale with one finger to each note from his thumb and no thumb
+# under, and runs out on the sixth note. The reason is the fingering: in C, G and D major the thumb
+# passes under after the third note.
+item music.scale-runs-out v=1 stars=2 skills=[music.fingers, reasoning.find-the-error] {
+  title "Out of fingers"
+  difficulty m
+  let m=0..2 r=0..1
+  let scale={pick(m, "C major, from C", "G major, from G", "D major, from D")}
+  let ans={pick(m, "A: thumb under after E", "E: thumb under after B", "B: thumb under after F sharp")}
+  let w1={pick(m, "F: the thumb must play F", "C: the thumb must play C", "G: the thumb must play G")}
+  let w2={"Nowhere: five fingers are enough"}
+  let n1={pick(m, "C4", "G3", "D4")}
+  let n2={pick(m, "D4", "A3", "E4")}
+  let n3={pick(m, "E4", "B3", "Fs4")}
+  let n4={pick(m, "F4", "C4", "G4")}
+  let n5={pick(m, "G4", "D4", "A4")}
+  let n6={pick(m, "A4", "E4", "B4")}
+  let n7={pick(m, "B4", "Fs4", "Cs5")}
+  let n8={pick(m, "C5", "G4", "D5")}
+  level easy {
+    let m=0..1
+  }
+  level hard {
+    let m=1..2
+  }
+
+  scene 36x42 {
+    grandstaff gs notes=["{n1}", "{n2}", "{n3}", "{n4}", "{n5}", "{n6}", "{n7}", "{n8}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    row low space=2 align=start below=gs gap=1 {
+      hand h side=right numbers=piano ring=5 colours=false
+      text ask "Ben plays {scale}, one finger to each note from his thumb, and never passes his thumb under. On which note does he run out of fingers, and what should he do?" narrate width=22
+    }
+    choice pick options=[pick(r, ans, w1), pick(r, w1, w2), pick(r, w2, ans)] stack=column below=low gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == w2) point=gs {
+      say "The scale has eight notes and the hand has five fingers. Count along the notes with Ben's fingers."
+    }
+    when (pick == w1) point=gs {
+      say "Count to Ben's finger 5 along the notes. What is the next note of the scale?"
+    }
+  }
+  hint "Put finger 1 on the first note and count along, one finger to a note."
+  hint "Which note comes after the one finger 5 plays? Where could the thumb have passed under?"
+}

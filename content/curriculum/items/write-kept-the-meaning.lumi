@@ -1,0 +1,34 @@
+# The two-star reason: two second drafts of one first draft, one shorter but missing something
+# the reader needed, one shorter and whole.
+item writing.kept-the-meaning v=1 stars=2 skills=[writing.revising, reasoning.explain] {
+  title "Which draft kept the meaning?"
+  difficulty k
+  let k=0..1 r=0..2
+  let first={pick(k, "On Saturday morning we went to the harbour. We went there to see the boats. The boats were big and tall and not small.", "Gran's clock is old. It has stood in the hall for fifty years. It is very old. It still chimes every hour.")}
+  let da={pick(k, "A: On Saturday morning we went to the harbour to see the tall boats.", "A: Gran's clock has stood in the hall for fifty years, and it still chimes every hour.")}
+  let db={pick(k, "B: We went to see the boats.", "B: Gran's old clock still chimes.")}
+  let right={pick(k, "A: no repeats, and still when and where", "A: no repeat, and still where and how long")}
+  let w1={pick(k, "B: the shortest is the clearest", "B: the shortest is the clearest")}
+  let w2={pick(k, "B: it kept every word that mattered", "B: it kept every word that mattered")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x28 {
+    passage draft title="First draft" text="{first}" width=32 numbers=false at=canvas(1, 1)
+    text ask "Two second drafts. {da} {db} Which one kept the meaning, and why?" narrate width=32 below=draft gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=draft {
+      say "Shorter is only better while nothing the reader needed has gone. Ask of the short draft: when, where, how long, what was it like? If it cannot answer, it cut too much."
+    }
+  }
+  hint "Cutting the repeats is right. Cutting the when, the where or the what is not. Which draft cut which?"
+  hint "Ask the shortest draft the reader's questions. If it cannot answer them, it lost the meaning."
+}

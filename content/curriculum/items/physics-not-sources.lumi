@@ -1,0 +1,16 @@
+item physics.not-sources v=1 skills=[physics.light] stars=3 {
+  title "Which ones only send light back?"
+  difficulty ((if p == "moon" then 1 else 0) + (if q == "mirror" then 1 else 0) + (if r == "foil" then 1 else 0) + (if s == "mirror" then 1 else 0))
+  let p={"moon", "candle"} q={"mirror", "lamp"} r={"torch", "foil"} s={"sun", "mirror"}
+  where (p != s)
+
+  scene 35x8 {
+    things t things=["{p}", "{q}", "{r}", "{s}", "candle"] at=canvas(1, 0)
+    text ask "How many of these could not light up a dark room by themselves?" width=13 right-of=t gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check physics.things of=t answer="count(not-source)"
+  hint "Which of them only send back light that comes from something else?"
+  hint "Count those. Is the moon one of them?"
+}

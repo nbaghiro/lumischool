@@ -1,0 +1,27 @@
+# Change unknown in a taking-away story, answered with the pair that makes ten.
+item bonds.balloons-away v=1 skills=[bonds-to-10, subtraction.change-unknown] {
+  title "Balloons that floated away"
+  difficulty (10 - k)
+  let k={1, 2, 3, 4, 6}
+  level easy {
+    let k={4, 6}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 28x10 {
+    balloons bunch count=k at=canvas(1, 1)
+    text ask "Nia had 10 balloons. Some floated away, and these are left. How many floated away?" narrate width=16 right-of=bunch gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 - k)
+  feedback {
+    when (answer == k) point=bunch {
+      say "Those are the ones still here. How many are missing from 10?"
+    }
+  }
+  hint "How many balloons are left?"
+  hint "That many and how many more make 10?"
+}

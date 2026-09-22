@@ -1,0 +1,15 @@
+# Speech punctuation used in making something: a short conversation with a new line for each
+# speaker and one question. Many conversations are right, so a grown-up marks it.
+item writing.two-speakers v=1 stars=3 skills=[writing.speech-punctuation, writing.composing] {
+  title "Two of them talking"
+  let k=0..2
+
+  scene 36x19 {
+    text ask "Write four lines of talk between the {if k == 0 then \"fox and the gull\" else if k == 1 then \"owl and the mouse\" else \"crab and the heron\"}. Start a new line each time the speaker changes, and make one line a question." width=35 at=canvas(1, 1)
+    writinglines lines lines=4 width=35 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Four lines, a new line for each change of speaker, the spoken words inside speech marks with their comma, question mark or full stop inside the closing mark, a saying word such as asked or said, and at least one question."
+  hint "Say the talk out loud first. Who speaks first, and what do they ask?"
+  hint "Write only the spoken words inside the marks. Who said it goes outside."
+}

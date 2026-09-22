@@ -1,0 +1,26 @@
+# The title says what a list is for. Reading three things and naming what they are for is the
+# reverse of writing a list.
+item writing.list-title v=1 skills=[writing.lists] {
+  title "A title for the list"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+  let i0={if k == 0 then "a spade" else if k == 1 then "flour" else if k == 2 then "a coat" else "a pencil"}
+  let i1={if k == 0 then "a towel" else if k == 1 then "eggs" else if k == 2 then "gloves" else "a ruler"}
+  let i2={if k == 0 then "a sun hat" else if k == 1 then "milk" else if k == 2 then "a scarf" else "a book"}
+  let right={if k == 0 then "For the beach" else if k == 1 then "For the cake" else if k == 2 then "For a cold day" else "For school"}
+  let t0={if k == 0 then "For the beach" else if k == 1 then "For a cold day" else if k == 2 then "For the beach" else "For school"}
+  let t1={if k == 0 then "For the cake" else if k == 1 then "For school" else if k == 2 then "For a cold day" else "For the beach"}
+  let t2={if k == 0 then "For a cold day" else if k == 1 then "For the cake" else if k == 2 then "For school" else "For the cake"}
+
+  scene 34x15 {
+    listpad pad title="?" items=["{i0}", "{i1}", "{i2}"] count=0 width=12 ticks=true at=canvas(1, 1)
+    column q right-of=pad gap=2 space=1 align=start {
+      text ask "What is the best title for this list?" narrate width=18
+      choice pick options=["{t0}", "{t1}", "{t2}"] stack=column
+    }
+  }
+
+  answer pick=right
+  hint "Read the three things. Where would you need all of them?"
+  hint "Check each title against every thing on the list."
+}

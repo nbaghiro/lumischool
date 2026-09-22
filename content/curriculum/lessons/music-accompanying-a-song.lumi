@@ -1,0 +1,69 @@
+# Accompanying a song on the guitar from a chord chart: the chord for each bar, the change on the
+# first word of a new bar, and the chords that fit a tune. London Bridge and Skip to My Lou are
+# traditional.
+lesson music-accompanying-a-song v=1 format=teach grade=4 unit=6 subject=music levels=[easy, medium, hard] {
+  title "Accompanying a song"
+  goal "Play the chords under a song from its chart, changing on the word where the chord changes."
+
+  look {
+    scene 32x34 {
+      row chart space=2 align=start at=canvas(1, 1) {
+        table bars cols=2 head=["Bar", "Chord"] cells=["1", "C", "2", "C", "3", "G", "4", "C", "5", "C", "6", "C", "7", "G", "8", "C"]
+        table words cols=1 head=["London Bridge"] cells=["Lon-don Bridge is", "fall-ing down,", "fall-ing down,", "fall-ing down.", "Lon-don Bridge is", "fall-ing down,", "my fair", "la-dy."]
+      }
+      row low space=2 align=start below=chart gap=1 {
+        chordbox c tuning=guitar chord=C frets=3 show=fingers name=true letters=false lit=[]
+        chordbox g tuning=guitar chord=G frets=3 show=fingers name=true letters=false lit=[]
+      }
+    }
+    say """
+      Ben plays the guitar at the bandstand while Ana sings London Bridge. The chart gives the chord
+      for every bar: C for most of the song, and G in bars 3 and 7. Ben strums four times in every
+      bar and changes chord on the first word of a new bar, so his hand is ready before the word is
+      sung.
+      """
+  }
+  do {
+    level easy {
+      worked music.song-g-bars s=0 level=medium
+    }
+    practice music.song-g-bars count=1 seed=1 easy-seed=7 hard-seed=7
+    practice music.song-change-word count=2 seed=1 hard-seed=3
+    practice music.song-strums count=2 seed=1
+    practice music.song-bar-strings count=1 seed=1 easy-seed=5 hard-seed=10
+    practice music.song-play-bar-chord count=1 seed=1 easy-seed=2 hard-seed=3
+    level hard {
+      show music.song-late-change s=1 q=1 r=1
+    }
+    practice music.bandstand-song-rounds count=1 seed=9 easy-seed=1 hard-seed=7
+  }
+  try stars=2 {
+    show music.song-late-change s=0 q=0 r=0 easy-r=1 hard-q=1
+  }
+  try stars=3 {
+    show music.song-chord-fits v=1 easy-v=0 hard-v=5
+  }
+  remember {
+    say "Change chord on the first word of the new bar, so the chord is ready when the word is sung."
+  }
+
+  grown-ups """
+    The idea is that a chord chart gives one chord to a bar, that the change comes on the first word
+    of the bar where the chord is new, and that a chord fits a bar when the tune's notes are in it.
+    The wrong ideas to watch for are counting every bar as a change, and changing a word late
+    because the hand is slow, which makes the old chord clash with the new bar's tune. In the
+    working, look for the child pointing down the chord column and stopping where it changes. The
+    two-star question is about that late change; the three-star question checks all seven chords
+    against a bar's notes and counts the ones that hold them. A child who is stuck can say the
+    chords aloud in time with the bars before playing, and go back to the way in; stay on this
+    lesson another day if the changes still come late. Playing the song through while someone sings
+    is for you to judge in the room. Off the page, sing a song you both know and let the child strum
+    C and G under it, changing where it sounds right.
+    """
+  level easy {
+    grown-ups "At this level the bars of G in London Bridge are counted once in the teacher's pen before those in Skip to My Lou, the change to find is the first to G in each song, the strums counted are of G, the bar to read and the bar to play are bars of G, the song goes round twice and its changes are counted, the two-star is as written with its answers in another order, and the three-star's bar has the notes E and G."
+  }
+  level hard {
+    grown-ups "At this level the bars of G are counted in Skip to My Lou, the changes to find are back to C, the strums counted are those before the chord first changes back to C, the bar to read is a bar of G and the bar to play a bar of C, a late change back to C in Skip to My Lou is judged before the two-star's in London Bridge, the strums of G are counted over four rounds, and the three-star's bar has only the note E."
+  }
+}

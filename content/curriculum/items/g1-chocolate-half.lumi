@@ -1,0 +1,27 @@
+item fraction.chocolate-half v=1 skills=[fractions.halves-and-quarters] {
+  title "Is half gone?"
+  difficulty (6 - abs(e - c))
+  let c=3..6 e=2..9
+  where (e <= 2 * c - 1)
+  where (e != c)
+  level easy {
+    where (abs(e - c) >= 3)
+  }
+  level hard {
+    where (abs(e - c) == 1)
+  }
+
+  scene 36x16 {
+    chocolate bar rows=2 cols=c eaten=e at=canvas(1, 1)
+    text ask "Has half the bar been eaten?" narrate below=bar gap=1
+    choice pick options=["less than half", "exactly half", "more than half"] below=ask gap=1
+  }
+
+  answer pick=(if e < c then "less than half" else "more than half")
+  feedback {
+    when (pick == "exactly half") point=bar {
+      say "Half of this bar is {c} squares, and {e} have gone."
+    }
+  }
+  hint "Half the bar is one of the two rows. Count what has gone against that."
+}

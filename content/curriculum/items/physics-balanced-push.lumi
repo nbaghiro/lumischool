@@ -1,0 +1,20 @@
+item physics.balanced-push v=1 skills=[physics.forces] stars=2 {
+  title "Which way, if any?"
+  difficulty (6 - abs(a - b))
+  let a={2, 4, 6} b={2, 4, 6}
+
+  scene 20x26 {
+    forces f thing=box push=a oppose=b labels=false at=canvas(1, 0)
+    text ask "Two children push the box from both sides. What happens?" width=18 below=f gap=1
+    choice pick options=["It moves left", "It moves right", "It stays still"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if a > b then "It moves right" else if a < b then "It moves left" else "It stays still")
+  feedback {
+    when (pick != "It stays still" and a == b) point=f {
+      say "The arrows are the same length. Two equal pushes against each other leave nothing over."
+    }
+  }
+  hint "Are the two arrows the same length?"
+  hint "If one is longer, the box goes the way that longer arrow points."
+}

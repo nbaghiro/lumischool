@@ -1,0 +1,34 @@
+# The way in: a notice on the board, and the line that asks the reader to do something, as
+# against the reason and the when-and-where.
+item writing.which-is-the-ask v=1 skills=[writing.persuasion, writing.text-features] {
+  title "Which line is the ask?"
+  difficulty k
+  let k=0..2 p=0..2
+  let ask2={pick(k, "Please keep dogs on leads", "Bring a cake to the sale", "Walk to school on Friday")}
+  let why={pick(k, "Ducks are nesting in the reeds", "The money buys books for the library", "Fewer cars make the road safer")}
+  let when={pick(k, "By the pond, all spring", "In the hall, Saturday at ten", "Meet at the gate at half past eight")}
+  let l1={pick(p, ask2, why, when)}
+  let l2={pick(p, why, when, ask2)}
+  let l3={pick(p, when, ask2, why)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x21 {
+    sign board lines=["{l1}", "{l2}", "{l3}"] kind=board color=sky at=canvas(1, 1)
+    text ask "A notice has three jobs: it asks the reader to do something, it gives a reason, and it says when and where. Which line, first, second or third, is the ask?" narrate width=32 below=board gap=1
+    choice pick options=["first", "second", "third"] below=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "first" else if p == 1 then "third" else "second")
+  feedback {
+    when (pick != (if p == 0 then "first" else if p == 1 then "third" else "second")) point=board {
+      say "The ask tells the reader what to do: keep, bring, walk. A reason says why, and the when-and-where says where to go."
+    }
+  }
+  hint "Which line tells you to do something?"
+  hint "Look for a doing word at the start: keep, bring, walk."
+}

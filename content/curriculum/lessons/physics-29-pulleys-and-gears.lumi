@@ -1,0 +1,54 @@
+lesson physics-pulleys-and-gears v=1 format=teach grade=4 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "Pulleys and gears"
+  goal "Work out the pull a pulley needs from the ropes that hold the load, and which way and how fast a gear turns."
+
+  look {
+    scene 31x26 {
+      column all at=canvas(1, 0) space=1 align=start {
+        row two space=2 align=start {
+          pulley one ropes=1 load=48
+          pulley more ropes=2 load=48
+        }
+        row turn space=2 align=start {
+          gears g a=16 b=8
+          note n "B has half as many teeth as A, so it turns twice for every turn of A, and the other way." width=17
+        }
+      }
+    }
+    say """
+      With one pulley on a beam you pull as hard as the load weighs, but you pull down instead of
+      lifting up. Hang a second pulley on the load and two ropes hold it, so each one takes half.
+      Gears pass a turn along: two gears that touch turn opposite ways, and the smaller one turns
+      more times.
+      """
+  }
+  do {
+    practice physics.pulley-pull count=2 seed=3
+    practice physics.pulley-easier count=2 seed=2
+    practice physics.gear-way count=2 seed=5
+    practice physics.gear-turns count=2 seed=1
+    show physics.pulley-rope n=4 easy-n=2
+  }
+  try stars=2 {
+    show physics.gear-third a=16 b=12 c=8 t=1
+  }
+  try stars=3 {
+    show physics.gear-teeth-needed a=24 k=3 easy-a=12 easy-k=2 hard-k=4
+  }
+  remember {
+    say "More ropes, less pull, and more rope to pull. Gears that touch turn opposite ways."
+  }
+
+  grown-ups """
+    A bicycle is the best gear there is: count the teeth on the front ring and on the back one,
+    then turn the pedals once and count how often the back wheel goes round. For pulleys, a rope
+    over a banister rail is enough to feel that one pulley changes the direction and not the
+    effort.
+    """
+  level easy {
+    grown-ups "At this level one or two ropes hold the crate, the pulleys compared differ by two ropes or more, and gear B turns two or three times for each turn of A."
+  }
+  level hard {
+    grown-ups "At this level three or four ropes hold the crate, the pulleys compared differ by one rope, and gear B turns three or four times for each turn of A."
+  }
+}

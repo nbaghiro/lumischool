@@ -1,0 +1,29 @@
+# Six numbers from three cards, each checked against a rounding: a search that needs a system.
+item place.round-cards v=1 stars=3 skills=[place-value.rounding, reasoning.systematic] {
+  title "Which cards round to it?"
+  difficulty (2 * ((if a >= 5 then 1 else 0) + (if b >= 5 then 1 else 0) + (if c >= 5 then 1 else 0)) + (if a == 9 or b == 9 or c == 9 then 1 else 0))
+  let a=1..9 b=1..9 c=1..9 t=2..9
+  where (a != b and b != c and a != c)
+  level easy {
+    where ((if a >= 5 then 1 else 0) + (if b >= 5 then 1 else 0) + (if c >= 5 then 1 else 0) <= 1)  # at most one card of five or more, so at most two numbers round up
+  }
+  level hard {
+    where ((if a >= 5 then 1 else 0) + (if b >= 5 then 1 else 0) + (if c >= 5 then 1 else 0) >= 2 and (a == 9 or b == 9 or c == 9))  # a nine among the cards, so some numbers round to a thousand
+  }
+  where ((if 100 * round((100 * a + 10 * b + c) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * a + 10 * c + b) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * b + 10 * a + c) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * b + 10 * c + a) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * c + 10 * a + b) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * c + 10 * b + a) / 100) == 100 * t then 1 else 0) >= 1)
+
+  scene 30x17 {
+    digitcards cards digits=[b, c, a] at=canvas(1, 1)
+    text ask "Make three-digit numbers with the cards, using each card once. How many of the numbers you can make round to {100 * t} to the nearest hundred?" width=28 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if 100 * round((100 * a + 10 * b + c) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * a + 10 * c + b) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * b + 10 * a + c) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * b + 10 * c + a) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * c + 10 * a + b) / 100) == 100 * t then 1 else 0) + (if 100 * round((100 * c + 10 * b + a) / 100) == 100 * t then 1 else 0))
+  feedback {
+    when (answer == 6) point=cards {
+      say "Not all six do. Check where each one sits between the hundreds."
+    }
+  }
+  hint "Write down all six numbers the cards make."
+  hint "For each one, look at the tens digit. Does it round down, or up to the next hundred?"
+}

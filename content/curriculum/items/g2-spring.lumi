@@ -1,0 +1,25 @@
+item measure.spring v=1 skills=[mass.grams] {
+  title "The spring scale"
+  difficulty v
+  let v={100, 200, 300, 400}
+  level easy {
+    let v={100, 200}
+  }
+  level hard {
+    let v={300, 400}
+  }
+
+  scene 33x15 {
+    springscale scale max=500 step=100 value=v unit=g at=canvas(1, 1)
+    text ask "How heavy is the bag, in grams?" width=22 right-of=scale gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == 500 - v) point=scale {
+      say "Read down from the top mark to where the pointer sits."
+    }
+  }
+  hint "The scale counts in hundreds from zero at the top."
+}

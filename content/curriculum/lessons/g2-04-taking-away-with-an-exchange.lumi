@@ -1,0 +1,40 @@
+lesson g2-taking-away-with-an-exchange v=1 format=worked grade=2 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Taking away with an exchange"
+  goal "Take away two-digit numbers in columns, exchanging a ten for ten ones when you need to."
+
+  example {
+    worked columns.sub-two-digit a=52 b=27 easy-level=medium hard-level=medium
+    say """
+      There are not enough ones, so one of the five tens is exchanged for ten ones. Now there are
+      twelve ones to take seven from, and four tens left.
+      """
+  }
+  exercises {
+    practice sub.exchange-or-not count=2 seed=3
+    practice columns.sub-two-digit count=2 seed=6
+    practice sub.from-hundred count=2 seed=8
+    practice sub.road-further count=2 seed=2
+  }
+  try stars=2 {
+    show sub.smaller-from-bigger ta=7 oa=3 tb=2 ob=8 easy-ta=6 easy-oa=2 easy-ob=6 hard-ta=9 hard-oa=1 hard-tb=4 hard-ob=9
+  }
+  try stars=3 {
+    show sub.no-exchange-count ta=4 oa=3 easy-ta=3 easy-oa=2 hard-ta=6 hard-oa=5
+  }
+
+  grown-ups """
+    Do the first few with real rods and ones, swapping a rod for ten cubes before writing anything
+    down. The writing makes sense once the swap has been done by hand. The first two questions ask
+    only whether an exchange is needed, which is the decision the method rests on. A hundred take
+    away a number can be done in columns or by counting up from the smaller number; both are fine.
+    The two-star question names the commonest mistake, taking the smaller digit from the bigger in
+    every column; ask the child why it does not work. In the three-star question a list organised
+    by tens digit makes the count manageable.
+    """
+  level easy {
+    grown-ups "At this level the numbers stay under sixty, the ones digits are far apart so the exchange is plain, taking from a hundred leaves a small answer, and nine numbers need no exchange in the last question."
+  }
+  level hard {
+    grown-ups "At this level the numbers reach the eighties, the ones digits are close so the exchange has to be checked, taking from a hundred leaves seventy or more, and thirty-six numbers need no exchange in the last question."
+  }
+}

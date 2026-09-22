@@ -1,0 +1,22 @@
+# Two mirrors, one in the top row and one lower down. When they share a column the light turns
+# twice and leaves by the side; when they do not, it never meets the second one.
+item physics.light-maze v=1 skills=[physics.light] {
+  title "Follow the light"
+  difficulty (if m == "B1" and k == "B3" or m == "C1" and k == "C3" or m == "D1" and k == "D3" then 2 else 1)
+  let m={"B1", "C1", "D1"} k={"B3", "C3", "D3"}
+  level easy {
+    where (m == "B1" and k != "B3" or m == "C1" and k != "C3")
+  }
+  level hard {
+    where (m == "B1" and k == "B3" or m == "C1" and k == "C3" or m == "D1")
+  }
+
+  scene 16x21 {
+    mirrors box cols=5 rows=4 torch=1 fall=["{m}", "{k}"] goals=["B2", "B3", "B4", "R3"] at=canvas(1, 0)
+    text ask "Follow the light from the torch. Which letter does it reach?" width=15 below=box gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.light of=box pick=reaches
+  hint "Which mirror does the light meet first, and which way does it send it?"
+}

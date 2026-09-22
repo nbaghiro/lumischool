@@ -1,0 +1,39 @@
+# Which are insects: a row of creatures, and the count of those with six legs. The spider and the
+# snail are the ones to leave out, and at hard both stand in a row of six.
+item nature.insect-count v=1 skills=[nature.minibeasts] {
+  title "How many insects?"
+  difficulty (if k <= 1 then 0 else if k <= 4 then 1 else 2)
+  let k=0..7
+  let s0={pick(k, "ant", "bee", "ladybird", "snail", "ant", "spider", "spider", "bee")}
+  let s1={pick(k, "ladybird", "snail", "ant", "bee", "spider", "ladybird", "bee", "snail")}
+  let s2={pick(k, "spider", "ant", "bee", "ladybird", "snail", "ant", "snail", "ant")}
+  let s3={pick(k, "none", "ladybird", "spider", "ant", "bee", "snail", "ant", "spider")}
+  let s4={pick(k, "none", "none", "none", "none", "none", "bee", "ladybird", "ant")}
+  let s5={pick(k, "none", "none", "none", "none", "none", "none", "bee", "ladybird")}
+  let insects={pick(k, 2, 3, 3, 3, 2, 3, 4, 4)}
+  let all={pick(k, 3, 4, 4, 4, 4, 5, 6, 6)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=5..7
+  }
+
+  scene 33x14 {
+    minibeasts row kinds=[s0, s1, s2, s3, s4, s5] legs=false at=canvas(1, 1)
+    text ask "An insect has six legs. How many insects are in the row?" narrate width=31 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer insects
+  feedback {
+    when (answer == all) point=row {
+      say "Not every creature here is an insect. Count the legs on each one and leave out any that do not have six."
+    }
+    when (answer == all - insects and answer != insects) point=row {
+      say "Those are the ones that are not insects. Count the ones with six legs."
+    }
+  }
+  hint "Count the legs on each creature. Six legs means an insect."
+  hint "Find the ones that are not insects first, and leave them out."
+}

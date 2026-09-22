@@ -1,0 +1,25 @@
+item physics.forces-add v=1 skills=[physics.forces] {
+  title "Forces the same way"
+  difficulty (a + b)
+  let a=2..6 b=2..6
+  level easy {
+    let a=2..3 b=2..3
+  }
+  level hard {
+    let a=5..6 b=5..6
+  }
+
+  scene 25x15 {
+    forces f thing=trolley push=a pull=b at=canvas(1, 0)
+    text ask "A push and a pull both act to the right. What is the total force, in newtons?" width=16 below=f gap=0
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a - b or answer == b - a) point=f {
+      say "Both arrows point the same way, so they add together rather than taking away."
+    }
+  }
+  hint "Which way does each arrow point?"
+}

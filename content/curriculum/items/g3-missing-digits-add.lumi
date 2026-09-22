@@ -1,0 +1,29 @@
+# Two digits hidden in different columns, so each column settles one of them, and the carry out of
+# the ones has to be reasoned about rather than written in.
+item columns.missing-digits-add v=1 stars=2 skills=[addition.columns, reasoning.missing-digits] {
+  title "Two hidden digits"
+  difficulty ((if x + e + 1 >= 10 then 2 else 0) + (if (x + e + 1) % 10 == 0 then 1 else 0))
+  let p=1..4 x=0..9 c=2..9 y=1..4 e=0..9 f=2..9
+  where (c + f >= 10)
+  where (100 * p + 10 * x + c + 100 * y + 10 * e + f < 1000)
+  level easy {
+    where (x + e + 1 < 10)  # the tens do not carry, so the hundreds digit gives the hidden hundreds straight off
+  }
+  level hard {
+    where (x + e + 1 >= 10)
+  }
+
+  scene 25x6 {
+    equation eq "{p}{?hx}{c} + {?hy}{e}{f} = {100 * p + 10 * x + c + 100 * y + 10 * e + f}" at=canvas(1, 1)
+    text ask "Find the two hidden digits." narrate below=eq gap=1
+  }
+
+  answer hx=x hy=y
+  feedback {
+    when (hx == (x + 1) % 10) point=eq {
+      say "The ones make more than ten, so a ten is carried into the tens column."
+    }
+  }
+  hint "Start with the ones column. Do the ones make more than ten?"
+  hint "In the tens column, what goes with {e} and the carried ten to give the tens digit of the answer?"
+}

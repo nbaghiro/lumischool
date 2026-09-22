@@ -1,0 +1,52 @@
+lesson writing-a-story-mountain v=1 format=teach grade=3 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "A story mountain"
+  goal "Plan a story in five parts, with a problem at the top and the fix on the way down."
+
+  look {
+    scene 36x21 {
+      storymountain hill stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["Rocket on the hill", "Count down from ten", "It will not go", "Mia finds the loose wire", "Up it goes at last"] ring=2 at=canvas(1, 1)
+    }
+    say """
+      A story climbs like a hill. It opens at the bottom, builds up, and at the top something goes
+      wrong. On the way down the problem gets fixed, and at the bottom of the other side it ends.
+      Every card is a note, not a sentence. The story gets written from the notes afterwards.
+      """
+  }
+  do {
+    level easy {
+      worked writing.mountain-stage k=4 level=medium
+    }
+    practice writing.mountain-stage count=3 seed=2
+    show writing.mountain-problem s=0 p=2 hard-s=2
+    show writing.mountain-problem s=1 p=0
+    show writing.mountain-fix s=2 p=1 easy-s=0
+    practice writing.mountain-order count=2 hard-count=1 seed=1
+    level hard {
+      practice writing.mountain-flat count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show writing.mountain-flat s=1 f=2 easy-f=0 hard-f=1
+  }
+  try stars=3 {
+    show writing.plan-a-mountain t="the owl who lost its hoot"
+  }
+  remember {
+    say "Climb to the problem. Fix it on the way down."
+  }
+
+  grown-ups """
+    Everything but the plan is marked by the machine; the plan is the child's. Check the top card
+    first: a story without a problem is a list of things that happened, and that is the commonest
+    reason a young writer's story feels flat. Then check that the ending comes from the fix. In
+    the questions about the top card every option is a problem, so the child has to find the one
+    the fixing card solves. The two-star question gives a plan with one fault and asks which fault
+    it is, which is the check to make on the child's own plan afterwards.
+    """
+  level easy {
+    grown-ups "At this level the build-up is named once in the teacher's pen before the problem, the opening and the ending, the problems at the top are as written, the fixing card is Dad's umbrella, the notes to order are as written, the two-star's story falls flat because nothing goes wrong, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the parts to name are the fixing cards and the build-up, the problem at the top includes the sea creeping closer, the fixing card is as written, one set of notes makes way for a second flat story, the two-star's story falls flat because the fix does not fix it, and the three-star is as written."
+  }
+}

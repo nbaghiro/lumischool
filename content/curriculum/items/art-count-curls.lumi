@@ -1,0 +1,22 @@
+# The print repeats one curl along the crest: how many times the block printed, read from the row.
+item art.count-curls v=1 skills=[art.pattern, art.printing] {
+  title "One curl, printed again"
+  difficulty (if n >= 8 then 1 else 0)
+  let n={5, 6, 7, 8, 9}
+  level easy {
+    let n={5, 6}
+  }
+  level hard {
+    let n={8, 9}
+  }
+
+  scene 34x13 {
+    printrow row unit=["shell"] colours=["blue"] count=n missing=0 wrong=0 at=canvas(1, 1)
+    text ask "Hokusai cut one curl into his block and printed it again and again along the top of the wave. How many times was it printed in this row?" narrate width=32 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  hint "Touch each curl as you count it. They are all the same block."
+  hint "One block, printed once for every curl."
+}

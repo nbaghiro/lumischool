@@ -1,0 +1,23 @@
+# Filter paper keeps back only what has not dissolved, so the child decides which part of the
+# mixture that is before choosing.
+item chem.filter-what-stays v=1 skills=[chemistry.separating] {
+  title "What stays on the paper?"
+  difficulty (if u == "flour" then 2 else if u == "iron" then 1 else 0)
+  let u={"sand", "iron", "flour"} d={"salt", "sugar"} o=0..1
+  level easy {
+    let u={"sand", "iron"}
+  }
+  level hard {
+    let u={"flour", "iron"}  # flour clouds the water and still stays on the paper
+  }
+
+  scene 23x15 {
+    text ask "This mixture is poured through filter paper. What stays on the paper?" width=22 at=canvas(1, 0)
+    mixture mix things=["{u}", "{d}"] water=1 names=1 below=ask gap=0
+    choice pick options=["{if o == 0 then (if u == \"iron\" then \"iron filings\" else u) else d}", "{if o == 0 then d else (if u == \"iron\" then \"iron filings\" else u)}", "nothing"] stack=column right-of=mix gap=1
+  }
+
+  check chem.separate of=mix pick=residue
+  hint "Which part of the mixture has dissolved? Can you still see it in the picture?"
+  hint "Filter paper has holes far too small to see. Which part is too big to get through them?"
+}

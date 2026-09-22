@@ -1,0 +1,23 @@
+# A spinner whose shaded share changes, so the answer is not the same every time; the audit found
+# the old version's answer was yes in every variant.
+item chance.fair-spinner v=3 skills=[chance.likelihood] {
+  title "Shaded or white?"
+  difficulty (n - abs(2 * k - n))
+  let n={4, 6, 8} k=1..7
+  where (k < n)
+
+  scene 32x11 {
+    fraction dial n=n k=k at=canvas(1, 1)
+    text ask "A spinner has {n} equal parts, and {k} {if k == 1 then \"is\" else \"are\"} shaded. Is the arrow more likely to stop on shaded or on white, or is it the same?" width=24 right-of=dial gap=2
+    choice pick options=["shaded", "white", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if 2 * k == n then "the same" else if 2 * k > n then "shaded" else "white")
+  feedback {
+    when (pick == "the same" and 2 * k != n) point=dial {
+      say "Count the white parts too. Are there as many white parts as shaded ones?"
+    }
+  }
+  hint "How many parts are white?"
+  hint "The colour with more equal parts is more likely."
+}

@@ -1,0 +1,36 @@
+# Reading the table of jars: the candle burns longer under a bigger jar, since the jar holds more
+# air. One jar's seconds, the gap between the biggest and the smallest, or a jar not tested.
+item chem.jar-times v=1 skills=[chemistry.burning, data.tables] {
+  title "Under three jars"
+  difficulty w
+  let w=0..2 t=0..1 j=0..2
+  let t1={pick(t, 5, 6)}
+  let t2={pick(t, 10, 12)}
+  let t3={pick(t, 20, 24)}
+  let jar={pick(j, 250, 500, 1000)}
+  let secs={pick(j, t1, t2, t3)}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 34x19 {
+    table data cols=2 head=["Jar", "Seconds alight"] cells=["250 ml", "{t1}", "500 ml", "{t2}", "1000 ml", "{t3}"] at=canvas(1, 0)
+    text ask "Leo's grown-up put three jars over the same candle in turn and timed how long it stayed alight under each. {if w == 0 then \"How many seconds did it burn under the \" else if w == 1 then \"How many seconds longer did it burn under the 1000 ml jar than the 250 ml jar?\" else \"About how many seconds would it burn under a 750 ml jar?\"}{if w == 0 then jar else \"\"}{if w == 0 then \" ml jar?\" else \"\"}" narrate width=32 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then secs else if w == 1 then t3 - t1 else (t2 + t3) / 2)
+  feedback {
+    when (w == 1 and answer == t3) point=data {
+      say "That is the big jar's time on its own. Take the small jar's time away from it."
+    }
+    when (w == 2 and (answer == t2 or answer == t3)) point=data {
+      say "750 ml is between 500 and 1000, so its time sits between their times. Twice the air gives twice the seconds."
+    }
+  }
+  hint "{if w == 0 then \"Find the jar's row and read its seconds.\" else if w == 1 then \"Read both rows, then take the smaller from the bigger.\" else \"750 ml is halfway between 500 and 1000. Where does its time fall?\"}"
+  hint "Each jar holds a set amount of air, and the candle uses it up at the same rate whatever the jar."
+}

@@ -1,0 +1,27 @@
+# The child checks someone else's blending against the sound buttons: one sound was misread, and
+# the question is which, so the whole word has to be compared, not only its start.
+item reading.blend-mistake v=1 stars=2 skills=[reading.blending, reasoning.find-the-error] {
+  title "Which sound went wrong?"
+  difficulty (if k == 1 or k == 4 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 2, 3, 5}  # the first or the last sound wrong
+  }
+  level hard {
+    let k={1, 4}  # the middle sound wrong
+  }
+
+  scene 30x19 {
+    row top at=canvas(1, 1) space=2 align=centre {
+      soundbuttons sb graphemes=["{if k == 0 then \"c\" else if k == 1 then \"d\" else if k == 2 then \"s\" else if k == 3 then \"p\" else if k == 4 then \"m\" else \"h\"}", "{if k == 0 then \"a\" else if k == 1 or k == 5 then \"o\" else if k == 2 or k == 4 then \"u\" else \"e\"}", "{if k == 0 then \"t\" else if k == 1 then \"g\" else if k == 2 then \"n\" else if k == 3 then \"g\" else if k == 4 then \"d\" else \"p\"}"] count=false
+      face kid mood=happy hair=1 name="Pip"
+      bubble says "{if k == 0 then \"cap\" else if k == 1 then \"dig\" else if k == 2 then \"bun\" else if k == 3 then \"pet\" else if k == 4 then \"mad\" else \"top\"}" width=6 from=kid
+    }
+    text ask "Pip read the sounds and said this word. Which sound did Pip get wrong?" narrate width=28 below=top gap=1
+    choice pick options=["the first", "the middle", "the last"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 3 then "the last" else if k == 1 or k == 4 then "the middle" else "the first")
+  hint "Say the sounds on the buttons. Then say Pip's word."
+  hint "Put the two words side by side. Where are they different?"
+}

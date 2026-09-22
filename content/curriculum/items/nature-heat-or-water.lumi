@@ -1,0 +1,41 @@
+# Which of a creature's features is for the heat, and which for going without water: the camel's
+# hump against its eyelashes and feet, the fennec's ears against its fur.
+item nature.heat-or-water v=1 skills=[nature.habitats, reasoning.two-conditions] {
+  title "For the heat, or for the water?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let asks={pick(k, "Which feature of the fennec fox is for letting the heat out?", "Which feature of the camel helps it go for days without a drink?", "Which feature of the camel is for the sand rather than the heat?")}
+  let right={pick(k, "its huge ears", "it drinks a bathful at once and keeps it in its body", "its wide soft feet")}
+  let o1={pick(k, "its sandy fur", "its hump, which is full of water", "its long eyelashes")}
+  let o2={pick(k, "its bushy tail", "its wide feet", "its hump")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x21 {
+    row two at=canvas(1, 1) space=2 align=end {
+      camel pc count=1 resting=0 facing=1
+      fennec pf facing=1
+    }
+    text ask "{asks}" narrate width=16 right-of=two gap=2
+    choice pick options=[o1, right, o2] stack=column below=two gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == o1) point=pc {
+      say "The hump is fat, not water. The water is held all through the camel's body after one enormous drink."
+    }
+    when (k == 2 and pick != right) point=pc {
+      say "The eyelashes keep sand out of the eyes and the hump is food. The feet are the part that meets the sand at every step."
+    }
+    when (k == 0 and pick != right) point=pf {
+      say "The ears are huge and thin. Blood runs through them and the heat goes out."
+    }
+  }
+  hint "Think about what the feature touches: the air, the ground, or the inside of the body."
+  hint "Heat leaves through thin skin. Water is kept inside. Sand is met by the feet and the eyes."
+}

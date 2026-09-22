@@ -1,0 +1,28 @@
+# The story: the crystal caves, where a tap on the rock reaches an ear held against it sooner than the
+# same tap crossing the cave's air, and how many seconds sooner.
+item physics.caves-listen v=1 skills=[physics.sound, subtraction.to-twenty] {
+  title "A tap in the caves"
+  difficulty (air - rock)
+  let v=0..3
+  let rock={pick(v, 1, 1, 2, 1)}
+  let air={pick(v, 3, 5, 7, 9)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 35x24 {
+    row top space=2 align=start at=canvas(1, 0) {
+      stringphone through mode=through through=1 rings=1
+      stalactites cave pairs=3 joined=1 rock=1
+    }
+    text ask "Deep in the crystal caves Mia taps the wall. Sam has one ear on the rock and hears the tap after {rock} seconds. Through the cave's air the same tap takes {air} seconds. How many seconds sooner does the rock bring it?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=(air - rock)
+  hint "Find both times in the question first."
+  hint "Take the shorter time away from the longer one."
+}

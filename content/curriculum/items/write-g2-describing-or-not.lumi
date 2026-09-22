@@ -1,0 +1,19 @@
+# The same word as a thing in one sentence and as a describing word in the other: the job a word
+# does in its sentence decides what kind of word it is.
+item writing.describing-or-not v=1 stars=2 skills=[writing.word-classes, reasoning.explain] {
+  title "The same word, two jobs"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..3 p=0..1
+  let w={if k == 0 then "cold" else if k == 1 then "light" else if k == 2 then "fair" else "sweet"}
+  let thing={if k == 0 then "I have a cold." else if k == 1 then "Turn on the light." else if k == 2 then "We went to the fair." else "I ate a sweet."}
+  let desc={if k == 0 then "The snow is cold." else if k == 1 then "The box is light." else if k == 2 then "The game was fair." else "The cake is sweet."}
+
+  scene 30x11 {
+    text ask "In which sentence is {w} a describing word?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then thing else desc}", "{if p == 0 then desc else thing}"] stack=column below=ask gap=1
+  }
+
+  answer pick=desc
+  hint "Put the in front of {w}. In which sentence could it be a thing?"
+  hint "In the other sentence, what is {w} telling you about?"
+}

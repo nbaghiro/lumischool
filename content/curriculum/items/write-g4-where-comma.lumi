@@ -1,0 +1,24 @@
+# A when or where at the front of a sentence is followed by a comma; the child finds where the
+# front part ends, which is not always after the same number of words. The three words are in the
+# sentence's order, and the right one is first, second or last.
+item writing.where-comma-goes v=1 skills=[writing.commas, writing.sentences] {
+  title "Where does the comma go?"
+  difficulty (if k == 3 or k == 4 then 2 else if k == 1 or k == 2 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 5}  # after the storm, early this morning, without a word
+  }
+  level hard {
+    let k={2, 3, 4}  # under the old bridge, as the sun set, in the middle of the night
+  }
+
+  scene 30x11 {
+    caption line text="{if k == 0 then \"After the storm we went outside.\" else if k == 1 then \"Early this morning the hens laid four eggs.\" else if k == 2 then \"Under the old bridge a heron was fishing.\" else if k == 3 then \"As the sun set the bats flew out.\" else if k == 4 then \"In the middle of the night the dog barked.\" else \"Without a word Sam left the room.\"}" width=29 at=canvas(1, 1)
+    text ask "The sentence needs one comma. Which word comes just before it?" width=29 below=line gap=1
+    choice pick options=["{if k == 0 then \"storm\" else if k == 1 then \"Early\" else if k == 2 then \"old\" else if k == 3 then \"set\" else if k == 4 then \"In\" else \"Without\"}", "{if k == 0 then \"we\" else if k == 1 then \"this\" else if k == 2 then \"bridge\" else if k == 3 then \"bats\" else if k == 4 then \"middle\" else \"word\"}", "{if k == 0 then \"went\" else if k == 1 then \"morning\" else if k == 2 then \"heron\" else if k == 3 then \"flew\" else if k == 4 then \"night\" else \"Sam\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "storm" else if k == 1 then "morning" else if k == 2 then "bridge" else if k == 3 then "set" else if k == 4 then "night" else "word")
+  hint "Find who or what the sentence is about, and what they did. Where does that part start?"
+  hint "The comma goes at the end of the part that tells when or where, just before the main part."
+}

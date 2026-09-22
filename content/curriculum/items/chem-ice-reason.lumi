@@ -1,0 +1,16 @@
+# A reason, chosen from three: the reason changes with the place, so the child reads the question.
+item chem.ice-reason v=1 stars=2 skills=[chemistry.states, reasoning.explain] {
+  title "Why there?"
+  difficulty p
+  let p={0, 2}
+
+  scene 25x22 {
+    icemelt ice every=10 count=3 place=p at=canvas(1, 0)
+    text ask "{if p == 0 then \"Why did this ice not melt at all?\" else \"Why did this ice melt so fast?\"}" width=24 below=ice gap=0
+    choice pick options=["It stayed colder than 0 degrees", "It got warmer there", "It was in the dark"] stack=column below=ask gap=0
+  }
+
+  answer pick=(if p == 0 then "It stayed colder than 0 degrees" else "It got warmer there")
+  hint "Where was the ice? Is that a warm place or a cold one?"
+  hint "Ice melts when it gets warmer than 0 degrees. Did that happen here?"
+}

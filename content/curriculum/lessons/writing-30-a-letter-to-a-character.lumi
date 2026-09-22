@@ -1,0 +1,52 @@
+lesson writing-a-letter-to-a-character v=1 format=teach grade=4 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A letter to a character"
+  goal "Write a letter with a greeting, a body that tells and asks, and a sign-off."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 1) space=1 align=end {
+        letterpage page greeting="Dear Owl," body="We have reached the top of the island and the lanterns are lit. Please come tonight, because we would like you to see them." lines=0 closing="Love from Sam" width=22
+        art pic asset="owl"
+      }
+    }
+    say """
+      A letter starts with who it is to, and a comma. Then it tells the reader something and often
+      asks for something. A reason makes the asking work: please come, because the lanterns are
+      lit. It ends with who it is from.
+      """
+  }
+  do {
+    show writing.letter-order
+    practice writing.letter-reason count=1 seed=1
+    level easy {
+      worked writing.letter-leave-out k=0 level=medium
+    }
+    practice writing.letter-leave-out count=1 seed=2 hard-seed=5
+    practice writing.letter-reply count=2 seed=3
+    practice writing.polite-request count=3 seed=1
+  }
+  try stars=2 {
+    show writing.letter-best-reason k=1 easy-k=0
+  }
+  try stars=3 {
+    show writing.write-to-a-character k=0
+  }
+  remember {
+    say "Who it is to, what you want to say, and who it is from."
+  }
+
+  grown-ups """
+    The parts, the reasons and the replies are marked by the machine; the letter is the child's. The
+    two-star question gives every choice a reason, so the child has to think about what this reader
+    likes. The three-star letter has to persuade: read it back as the character would and ask
+    whether it would come. The owl is the island's secret in the journal, so a child at the end of
+    grade four may already know it. If the child writes to a real person instead of a character, so
+    much the better, and it can be posted.
+    """
+  level easy {
+    grown-ups "At this level the parts to order and the reason are as written, a letter whose stray line sits in the middle is sorted once in the teacher's pen before one whose stray line is at the end, the replies answer when and where, the requests are as written, the two-star's reader is the owl, who wants the lanterns, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the parts to order and the reason are as written, the stray line sits in the middle of the letter, the replies answer a worry, the requests are as written, the two-star's reader is the hedgehog, who wants quiet, and the three-star is as written."
+  }
+}

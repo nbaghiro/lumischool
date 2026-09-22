@@ -1,0 +1,19 @@
+item writing.how-many-tall v=1 skills=[writing.letter-formation] {
+  title "Which letters are tall?"
+  difficulty (if x == "b" or x == "d" or x == "k" then 1 else 0)
+  let x={"b", "c", "d", "e", "k", "s"}
+
+  scene 32x12 {
+    lettercards cards letters=["a", "{x}", "n", "h", "o", "t"] at=canvas(1, 1)
+    text ask "A tall letter reaches the top line. How many of these are tall?" width=24 below=cards gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (if x == "b" or x == "d" or x == "k" then 3 else 2)
+  feedback {
+    when (answer == 6) point=cards {
+      say "Count only the tall ones. The letters a, n and o stop at the dotted line."
+    }
+  }
+  hint "The tall ones are b, d, f, h, k, l and t."
+}

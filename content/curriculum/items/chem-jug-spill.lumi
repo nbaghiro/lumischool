@@ -1,0 +1,39 @@
+# The story: a jug knocked over at the printing works, the cloth that soaks some of it up, and
+# what is left on the floor. At hard two cloths are used in turn.
+item chem.jug-spill v=1 stars=1 skills=[chemistry.materials, subtraction.to-twenty] {
+  title "The jug on the press"
+  difficulty (a + (if w == 1 then 6 else 0))
+  let a=6..14 b=3..6 w=0..1
+  where (a + b <= 18)
+  let asks={pick(w, "How many millilitres are on the floor after the cloth alone?", "How many millilitres are on the floor after both?")}
+  level easy {
+    let a=6..9 w=0..0
+  }
+  level hard {
+    let a=10..14 w=1..1
+  }
+
+  scene 34x28 {
+    row all at=canvas(1, 1) space=2 align=end {
+      beaker jug max=20 step=5 level=20 unit=ml solid=0 rod=false
+      materials row things=["towel", "paper-bag"] letters=0
+    }
+    text ask "Ada knocks the jug off the printing press, and all 20 millilitres run over the floor. She drops a cloth on the spill, and it soaks up {a} millilitres. Then she drops a paper towel, which soaks up {b} millilitres more. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 20 - a else 20 - a - b)
+  feedback {
+    when (answer == a and (w == 0 and a != 10 or w == 1 and 2 * a + b != 20)) point=jug {
+      say "That is what the cloth soaked up. The floor has what is left of the 20."
+    }
+    when (w == 1 and answer == 20 - a) point=row {
+      say "That is after the cloth alone. The paper towel soaked up {b} more, so take those away too."
+    }
+    when (w == 1 and answer == 20 - b) point=row {
+      say "Both cloths soaked some up: {a} and then {b}. Take both away from the 20."
+    }
+  }
+  hint "The jug held 20. How much did the cloth take away from the floor?"
+  hint "20 take away {a}{if w == 1 then \", and then take away the towel's too\" else \", and stop there\"}."
+}

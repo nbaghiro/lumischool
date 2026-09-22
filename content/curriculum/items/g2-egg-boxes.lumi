@@ -1,0 +1,27 @@
+# Grouping: the size of each group is known and the number of groups is the unknown.
+item division.egg-boxes v=1 skills=[division.grouping] {
+  title "Boxes of six"
+  difficulty b
+  let b=2..6
+  level easy {
+    let b=2..4
+  }
+  level hard {
+    let b=4..6
+  }
+
+  scene 32x11 {
+    eggbox box rows=2 cols=3 eggs=6 at=canvas(1, 1)
+    text ask "A box holds 6 eggs. The hens laid {6 * b} eggs. How many boxes can be filled?" narrate width=18 right-of=box gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == 6 * b - 6) point=box {
+      say "That is how many eggs are left after one box. Count the boxes, not the eggs."
+    }
+  }
+  hint "One box is 6 eggs. How many eggs fill two boxes?"
+  hint "Count in sixes up to {6 * b}. Each six is one box."
+}

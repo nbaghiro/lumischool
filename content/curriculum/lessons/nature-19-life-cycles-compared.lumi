@@ -1,0 +1,68 @@
+lesson nature-life-cycles-compared v=1 format=teach grade=4 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "Life cycles compared"
+  goal "Compare the frog, the butterfly, the bean and the hen, and say what every life cycle has."
+
+  look {
+    scene 34x22 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row pics space=2 align=end {
+          frogcycle life stage=4 ring=1 names=1
+          art bird asset="hen"
+        }
+        growstages bean stages=4 numbers=false names=1
+      }
+    }
+    say """
+      Ada lines up four lives round the marsh: the frog in its ring, the butterfly in the reeds,
+      the bean on the windowsill and the hen at the farm gate. They look nothing alike, and yet
+      every one goes the same way round: a start, an egg or a seed; a young one that eats and
+      grows; and a grown one that makes the next start. The butterfly adds a stage the others do
+      not have, a resting stage inside a case, and the hen has only three. Compare them stage by
+      stage and the pattern shows.
+      """
+  }
+  do {
+    level easy {
+      worked nature.stage-named w=0
+    }
+    practice nature.stage-named count=2 seed=1 easy-seed=7 easy-count=1 hard-seed=1
+    practice nature.match-cycles count=1 seed=1 easy-seed=2 hard-seed=5
+    practice nature.which-cycle count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.cycle-days count=2 seed=1 easy-seed=1 hard-seed=2
+    level hard {
+      show nature.missing-stage k=2
+    }
+  }
+  story {
+    show nature.spawn-count n=24 w=1 easy-n=16 easy-w=0 hard-n=40 hard-w=1
+  }
+  try stars=2 {
+    show nature.missing-stage k=3 easy-k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.shortest-cycle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Every life cycle has a start, a young one that grows, and a grown one that makes the next start."
+  }
+
+  grown-ups """
+    The idea is the pattern under four different lives: a start, a young one, a grown one, and
+    round again. The wrong idea to watch for is matching stages by what they look like rather
+    than by their job, so the froglet is paired with the chrysalis because both are "in between";
+    ask what each stage is doing (eating and growing, resting and changing, laying). The cycle
+    questions are read off the four written lists, so a child who reads carefully needs no
+    memory. The day counts add a table's rows, and the second version leaves the egg out. The
+    story takes half and then a quarter. The two-star question fills a missing stage from the
+    pattern; the three-star question adds the days of three cycles and keeps the smallest total,
+    and the trap is the cycle with the quickest egg. If stages are still matched by looks after
+    the core, stay here another day and draw all four cycles as rings on one sheet, one under
+    the other, with the jobs written between.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the frogspawn as the egg) opens the core, the stage described is the tadpole, the matching is as written, the cycles to find are the bean with its seed and the hen with its chick, the days are added for the whole cycle, the story asks how many of sixteen eggs hatch, Ben's hen cycle is missing its chick, and the fly is the shortest cycle at ten days."
+  }
+  level hard {
+    grown-ups "At this level the stages described are the tadpole and the froglet, the matching is as written, the cycles to find are the butterfly with its resting case and the frog with its life in water, the days are added from hatching so the egg's row is left out, a second reasoning question in the core is a bean missing its leaves, the story asks how many of forty eggs become frogs, Ben's butterfly cycle is missing its chrysalis, and the frog is the shortest cycle at twenty-two days against the butterfly's quicker egg."
+  }
+}

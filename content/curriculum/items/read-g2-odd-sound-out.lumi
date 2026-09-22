@@ -1,0 +1,16 @@
+# The trap is spelling: the odd one out looks like the others (said has ai, head has ea, cow has
+# ow) but does not say the sound. Letters and sounds have to be told apart.
+item reading.odd-sound-out v=1 stars=2 skills=[reading.vowel-teams, reasoning.odd-one-out] {
+  title "Which one does not say it?"
+  difficulty (if k == 3 then 2 else if k == 0 or k == 1 then 1 else 0)
+  let k=0..3 p=0..3
+
+  scene 29x9 {
+    text ask "Three of these words have {if k == 0 then \"the ay sound in day\" else if k == 1 then \"the ee sound in see\" else if k == 2 then \"the oa sound in boat\" else \"the igh sound in high\"}. Which word does not?" narrate width=27 at=canvas(1, 1)
+    choice pick options=[if k == 0 then if p == 0 then "rain" else if p == 1 then "play" else if p == 2 then "cake" else "said" else if k == 1 then if p == 0 then "sheep" else if p == 1 then "beach" else if p == 2 then "key" else "head" else if k == 2 then if p == 0 then "boat" else if p == 1 then "snow" else if p == 2 then "bone" else "cow" else if p == 0 then "night" else if p == 1 then "pie" else if p == 2 then "kite" else "weigh", if k == 0 then if p == 0 then "play" else if p == 1 then "cake" else if p == 2 then "said" else "rain" else if k == 1 then if p == 0 then "beach" else if p == 1 then "key" else if p == 2 then "head" else "sheep" else if k == 2 then if p == 0 then "snow" else if p == 1 then "bone" else if p == 2 then "cow" else "boat" else if p == 0 then "pie" else if p == 1 then "kite" else if p == 2 then "weigh" else "night", if k == 0 then if p == 0 then "cake" else if p == 1 then "said" else if p == 2 then "rain" else "play" else if k == 1 then if p == 0 then "key" else if p == 1 then "head" else if p == 2 then "sheep" else "beach" else if k == 2 then if p == 0 then "bone" else if p == 1 then "cow" else if p == 2 then "boat" else "snow" else if p == 0 then "kite" else if p == 1 then "weigh" else if p == 2 then "night" else "pie", if k == 0 then if p == 0 then "said" else if p == 1 then "rain" else if p == 2 then "play" else "cake" else if k == 1 then if p == 0 then "head" else if p == 1 then "sheep" else if p == 2 then "beach" else "key" else if k == 2 then if p == 0 then "cow" else if p == 1 then "boat" else if p == 2 then "snow" else "bone" else if p == 0 then "weigh" else if p == 1 then "night" else if p == 2 then "pie" else "kite"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "said" else if k == 1 then "head" else if k == 2 then "cow" else "weigh")
+  hint "Say each word out loud. Do not look at the letters yet."
+  hint "One word has letters that look right but a sound that is different. Which one?"
+}

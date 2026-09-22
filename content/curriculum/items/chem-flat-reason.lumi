@@ -1,0 +1,17 @@
+# A reason for the flat part of a curve: the heat is going into the change of state, not into
+# making it hotter. Melting and boiling give two different right answers from one list.
+item chem.flat-reason v=1 stars=2 skills=[chemistry.states, reasoning.explain] {
+  title "Why does it stay flat?"
+  difficulty w
+  let w=0..1
+
+  scene 37x18 {
+    heatcurve curve temps=[if w == 0 then -20 else 20, if w == 0 then -10 else 40, if w == 0 then 0 else 60, if w == 0 then 0 else 80, if w == 0 then 0 else 100, if w == 0 then 10 else 100, if w == 0 then 20 else 100] every=5 min=(if w == 0 then -20 else 0) max=(if w == 0 then 20 else 120) step=(if w == 0 then 10 else 20) at=canvas(1, 0)
+    text ask "{if w == 0 then \"Ice was warmed.\" else \"Water was heated in a pan.\"} Why does the line stay flat for a while?" width=13 right-of=curve gap=1
+    choice pick options=["The ice is melting", "The water is boiling", "The thermometer broke"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then "The ice is melting" else "The water is boiling")
+  hint "What temperature is the flat part at? What happens to water at that temperature?"
+  hint "If the heat is not making it hotter, what else could the heat be doing?"
+}

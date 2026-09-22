@@ -1,0 +1,55 @@
+lesson g4-graphs-and-the-mean v=1 format=teach grade=4 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Line graphs, tables and the mean"
+  goal "Read a line graph, a table and a dot plot, and find and use the mean of a small set of numbers."
+
+  look {
+    scene 35x15 {
+      linegraph graph labels=["Mon", "Tue", "Wed", "Thu"] values=[3, 6, 5, 9] max=10 color=berry at=canvas(1, 1)
+      scoreboard board home=Reds away=Blues scores=[3, 2] note="half time" right-of=graph gap=2
+    }
+    say """
+      A line graph joins the points because what happens between them matters. The mean is the
+      total shared out equally, which is why it can land between two of the numbers.
+      """
+  }
+  do {
+    practice data.dot-plot count=1 seed=6
+    practice data.line count=1 seed=3
+    practice data.table count=1 seed=2
+    practice data.biggest-rise count=1 seed=4
+    practice data.dot-plot count=1 hard-count=0 seed=11
+    level hard {
+      practice data.mean-change count=1 seed=4
+    }
+    level easy {
+      worked data.mean-missing a=3 b=5 c=6 m=5 level=medium
+    }
+    practice data.mean-missing count=1 seed=9 easy-seed=3
+    practice data.level-out count=1 seed=8
+    practice data.mean count=1 seed=7
+  }
+  try stars=2 {
+    show data.mean-change n=4 m=6 x=3 easy-n=3 easy-m=5 easy-x=10 hard-n=5 hard-m=5 hard-x=5
+  }
+  try stars=3 {
+    show data.mean-extreme m=6 easy-m=4 hard-m=8
+  }
+  remember {
+    say "The mean is the total divided by how many there are. Levelling the towers is the same thing done with cubes."
+  }
+
+  grown-ups """
+    Temperatures over a week are the easiest real line graph. Read one off the weather and ask what
+    happened between two readings. Levelling towers of cubes is the mean before it is a sum: move
+    cubes from tall to short until they match. When the mean is given and a value is missing, the
+    total comes first. In the two-star question the new value is compared with the mean, and no
+    working out is needed. In the three-star question make the other towers as short as they can
+    be, all different.
+    """
+  level easy {
+    grown-ups "At this level the dot plots ask for the children with more than three goals, one column, Thursday is three degrees warmer or fewer, Blue read five more books or fewer, one rise plainly beats the other, the hidden tower is worked once in the teacher's pen before one with a mean of four, the towers level out from sixteen cubes or fewer, the rain is two to six millimetres a day, the new child has ten stickers against a mean of five, and the three-star's mean is four."
+  }
+  level hard {
+    grown-ups "At this level the dot plot asks for the children with more than one goal, three columns to add, Thursday is five degrees warmer or more, Blue read nine more books or more, the two rises differ by one degree, the hidden tower has a mean of six, the towers level out from twenty-four cubes or more, the rain is seven to twelve millimetres a day, the new child has exactly the mean, so nothing changes, and a second child within two of the mean is asked, and the three-star's mean is eight."
+  }
+}

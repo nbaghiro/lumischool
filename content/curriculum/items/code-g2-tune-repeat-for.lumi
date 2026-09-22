@@ -1,0 +1,27 @@
+# The length of the tune is given and the repeat number is the unknown.
+item coding.tune-repeat-for v=1 skills=[coding.repetition] {
+  title "How long is the repeat?"
+  difficulty (n + w)
+  let n=2..5 w=2..3
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 30x12 {
+    blocks b code=["play G", "repeat ?", "  play C", "  play E", "{if w == 3 then \"  play G\" else \"play C5\"}"] at=canvas(1, 0)
+    text ask "The tune plays {if w == 3 then 1 + 3 * n else 2 + 2 * n} notes in all. What number goes in the repeat?" width=18 right-of=b gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == (if w == 3 then 1 + 3 * n else 2 + 2 * n)) point=b {
+      say "That is every note. The repeat plays more than one note each time round."
+    }
+  }
+  hint "How many notes are played outside the repeat?"
+  hint "How many notes does one time round the repeat play?"
+}

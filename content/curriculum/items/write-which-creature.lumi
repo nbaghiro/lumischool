@@ -1,0 +1,15 @@
+# Each description names features that only one creature has, which is what makes it a good one.
+item writing.which-creature v=1 skills=[writing.describing] {
+  title "Which creature is it?"
+  let k=0..3
+
+  scene 36x23 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=-1 at=canvas(1, 1)
+    sentence says before="{if k == 0 then \"Mine has one eye and no horns.\" else if k == 1 then \"Mine is spotty and has two horns.\" else if k == 2 then \"Mine is stripy with three eyes.\" else \"Mine is spotty and has six legs.\"}" blank=0 after="" below=line gap=1
+    text ask "Which one is it?" width=9 right-of=says gap=1
+    choice pick options=["A", "B", "C", "D"] below=says gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else if k == 2 then "C" else "D")
+  hint "Check each creature against every part of the sentence. Only one fits all of it."
+}

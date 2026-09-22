@@ -1,0 +1,60 @@
+lesson reading-what-the-word-means v=1 format=teach grade=3 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "What the word means here"
+  goal "Work out what a word means from the sentence it sits in, and tell a saying from words that mean exactly what they say."
+
+  look {
+    scene 34x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          passage p title="Up the hill" text="At the top we found a spring and filled our bottles." width=18
+          art hills asset="hills"
+        }
+        wordcards cards words=["spring", "slick", "steep"] picked=0
+      }
+    }
+    say """
+      A word can mean more than one thing, and the sentence around it decides which. Spring is a
+      season, and it is also water coming up out of the ground. Nothing but the sentence tells you
+      which one is meant.
+
+      Some sentences do not mean exactly what their words say. Over the moon means very happy, not
+      up in space.
+      """
+  }
+  do {
+    show reading.word-meaning k=1 easy-k=0 hard-k=2
+    level easy {
+      worked reading.which-meaning k=0 s=2 level=medium
+    }
+    practice reading.which-meaning count=2 seed=6
+    practice reading.which-sentence-uses count=2 seed=2
+    practice reading.made-up-word count=2 hard-count=1 seed=3
+    level hard {
+      practice reading.literal-or-not count=1 seed=1
+    }
+    show reading.really-means k=0 easy-k=1 hard-k=3
+  }
+  try stars=2 {
+    show reading.literal-or-not k=1 easy-k=2 hard-k=0
+  }
+  try stars=3 {
+    show reading.invent-a-word k=0
+  }
+  remember {
+    say "Read the whole sentence the word is in. The sentence picks the meaning."
+  }
+
+  grown-ups """
+    When the child meets a word they do not know, read the sentence again without stopping at it
+    and then ask what would make sense there. Guessing from context is the skill, not looking it up.
+    The made-up words make the point: nobody knows them, so the sentence is the only clue. In the
+    two-star question, ask of each sentence whether it could happen word for word. The three-star
+    question turns it round: the child writes the clues for a word of their own.
+    """
+  level easy {
+    grown-ups "At this level the word in the passage is steep, a spring in the ground is worked once in the teacher's pen before the senses children use most (the season, a lamp, a game, an elephant's trunk, the rides), the made-up words are a zib and a flim, the saying is raining cats and dogs, the two-star's sentence is the same one, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the word in the passage is slick, the senses are the rarer ones (a spring in the ground, a light blue coat, socks that match, a trunk in the attic, fair hair), one made-up word makes way for a second sentence that does not mean what it says, the made-up word is the grunkle, the saying is a piece of cake, the two-star's sentence is Kit over the moon, and the three-star is as written."
+  }
+}

@@ -1,0 +1,20 @@
+# Melting and dissolving are the two words children most often swap. The reason in each option is
+# what tells them apart: heat on its own, or a solid spreading through a liquid.
+item chem.melt-or-dissolve v=1 stars=2 skills=[chemistry.dissolving, reasoning.explain] {
+  title "Melted or dissolved?"
+  difficulty (if c == "melt-ice" then 0 else if c == "melt-chocolate" then 1 else 2)
+  let c={"dissolve-sugar", "melt-chocolate", "melt-ice"}
+  level hard {
+    let c={"dissolve-sugar", "melt-chocolate"}
+  }
+
+  scene 29x20 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "Did it melt or dissolve, and how do you know?" width=15 below=ch gap=0
+    choice pick options=["It dissolved: it spread through the water", "It melted: warmth made it runny"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if c == "dissolve-sugar" then "It dissolved: it spread through the water" else "It melted: warmth made it runny")
+  hint "Was there water for it to spread into, or did it change on its own?"
+  hint "What does dissolving need to spread into? What does melting need?"
+}

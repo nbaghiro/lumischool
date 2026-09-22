@@ -1,0 +1,21 @@
+item art.tone-for-side v=1 skills=[art.tone, art.tints] {
+  title "Paint for the light and the shade"
+  difficulty (if s == "away from the lamp" then 1 else 0)
+  let s={"facing the lamp", "away from the lamp"} p=0..2
+  level easy {
+    let s={"facing the lamp"}
+  }
+  level hard {
+    let s={"away from the lamp"}
+  }
+
+  scene 36x13 {
+    stilllife pic light="left" things=["ball"] lamp=true at=canvas(1, 1)
+    text ask "Ada is painting the blue ball. Which paint is right for the side {s}?" width=12 right-of=pic gap=1
+    choice pick options=["{if p == 0 then \"blue and white\" else \"blue and black\"}", "{if p == 1 then \"blue and white\" else if p == 0 then \"blue and black\" else \"blue\"}", "{if p == 2 then \"blue and white\" else \"blue\"}"] below=pic gap=1
+  }
+
+  check paint.mixes pick="{if s == \"facing the lamp\" then \"lighter\" else \"darker\"}"
+  hint "Is the side {s} the lightest part of the ball or the darkest?"
+  hint "Which paint makes blue lighter, and which makes it darker?"
+}

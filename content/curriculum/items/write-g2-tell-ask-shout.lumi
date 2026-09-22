@@ -1,0 +1,17 @@
+# Three sentences of three kinds about one picture: the marks are the constraint, and a grown-up
+# checks that each sentence really does what its mark says.
+item writing.tell-ask-shout v=1 stars=3 skills=[writing.punctuation, writing.composing] {
+  title "Tell, ask and shout"
+  let k=0..3
+  let pic={if k == 0 then "rocket" else if k == 1 then "sandcastle" else if k == 2 then "treehouse" else "bicycle"}
+
+  scene 36x24 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    text ask "Write three sentences about the picture: one that tells, one that asks and one that shouts. End each one with the right mark." width=20 right-of=pic gap=1
+    writinglines lines lines=3 width=34 prompt="" below=pic gap=1
+  }
+
+  check writing.by-eye look-for="Three sentences about the picture, each starting with a capital: one that tells and ends with a full stop, one that asks and ends with a question mark, and one that is a shout or a surprise and ends with one exclamation mark."
+  hint "What can you see? Tell me in a sentence."
+  hint "What would you like to ask about it? What might someone shout?"
+}

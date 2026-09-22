@@ -1,0 +1,18 @@
+# Tab lies the neck on its side with string 1 on top, which is the chord card turned a quarter turn.
+item music.tab-string v=1 skills=[music.tab] {
+  title "Which string?"
+
+  scene 30x11 {
+    tab lines tuning=guitar notes=["s2f1", "s2f3", "s1f0"] values=[] even=true letters=true ring=1 at=canvas(1, 1)
+    text ask "The top line is string 1. Which string is the ringed number on?" width=13 right-of=lines gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 2
+  feedback {
+    when (answer == 5) point=lines {
+      say "That counts from the bottom. In tab the top line is string 1, the thinnest."
+    }
+  }
+  hint "Count the lines from the top: the top line is 1."
+}

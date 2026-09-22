@@ -1,0 +1,23 @@
+# The left hand, where the thumb is on the right of the picture: counting from the left gives the
+# little finger's side, which is the mistake.
+item music.left-ringed v=1 skills=[music.fingers] {
+  title "Which finger on the left hand?"
+  difficulty k
+  let k=1..5
+  where (k != 3)
+
+  scene 22x13 {
+    hand pic side=left numbers=none ring=k colours=false at=canvas(1, 1)
+    text ask "This is a left hand. The thumb is finger 1. Which finger is ringed?" width=11 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == 6 - k) point=pic {
+      say "That is counting from the little finger. Find the thumb first, then count from it."
+    }
+  }
+  hint "Where is the thumb on this hand, on the left or on the right?"
+  hint "Start at the thumb and count along to the ringed finger."
+}

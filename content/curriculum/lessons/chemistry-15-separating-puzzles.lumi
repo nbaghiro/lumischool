@@ -1,0 +1,38 @@
+lesson chemistry-separating-puzzles v=2 format=puzzles grade=4 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Separating puzzles"
+  goal "Choose the way that gets each part of a mixture out on its own, give the reason it works, and plan the steps for a mixture of three."
+
+  puzzle stars=1 {
+    practice chem.sep-sieve count=1 easy-count=2 hard-count=0 seed=3
+    practice chem.sep-get count=2 hard-count=1 seed=3
+    practice chem.sep-residue count=1 easy-count=2 hard-count=0 seed=5
+  }
+  puzzle stars=2 {
+    practice chem.sep-sieve-works count=1 hard-count=2 seed=4
+    practice chem.sep-why count=1 hard-count=2 seed=2
+    practice chem.mixture-count count=2 easy-count=1 hard-count=3 seed=3
+  }
+  puzzle stars=3 {
+    level medium hard {
+      show chem.sep-steps v=1
+    }
+    show chem.sep-salt-mass g=40 q=2 easy-g=20 easy-q=1 hard-g=50 hard-q=3
+  }
+
+  grown-ups """
+    The rule behind every puzzle is what each part does: a magnet pulls out what is magnetic, filter
+    paper keeps back what has not dissolved, evaporating the water leaves every solid behind, and a
+    sieve sorts dry things by size. The one-star puzzles are the way in; the first can be read off the
+    sieve. The two-star puzzles ask for a reason: whether a sieve with holes that size will work, and
+    why each way works. The three-star puzzles need a plan and a surprise: pebbles, sand and salt come
+    apart in one order only, because the sieve has to be used while the mix is dry, and the salt left
+    in the dish weighs what went in however much water has gone. At home, a grown-up does any heating;
+    salty water left in a saucer on a sunny windowsill for a few days does the evaporating safely.
+    """
+  level easy {
+    grown-ups "At this level the one-star puzzles come twice each, there are fewer particles to compare, the salt has had one day in the dish, and the plan for three parts is left for another day."
+  }
+  level hard {
+    grown-ups "At this level there is one way in, more of the puzzles ask for a reason, the particles to compare reach twenty, and the salt has had three days of evaporating, which makes half the salt the answer a child expects."
+  }
+}

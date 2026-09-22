@@ -1,0 +1,36 @@
+# A rectangle with one corner cut away. Area and perimeter are asked together, because the useful
+# fact at this age is that the cut changes the area but not the distance round the edge.
+item area.compound v=1 skills=[area.composite] {
+  title "A corner cut off"
+  difficulty (w * h - cut * deep)
+  let w=6..11 h=5..9 cut=2..5 deep=2..4
+  where (cut < w - 1)
+  where (deep < h - 1)
+  where (w * h - cut * deep != 2 * (w + h))
+  level easy {
+    let w=6..8 h=5..6 cut=2..3 deep=2..3
+  }
+  level hard {
+    let w=9..11 h=7..9 cut=3..5 deep=3..4
+  }
+
+  scene 25x19 {
+    lshape shape squares w=w h=h cut=cut deep=deep corner=top-right cell=1 at=canvas(0, 0)
+    text al "Area, in square centimetres" width=18 below=shape gap=1
+    number-input area right-of=al gap=1
+    text pl "Right round the edge, in centimetres" width=18 below=al gap=1
+    number-input edge right-of=pl gap=1
+  }
+
+  answer area=(w * h - cut * deep) edge=(2 * (w + h))
+  feedback {
+    when (area == w * h) point=shape.centre {
+      say "The cut-out corner is not part of the shape. Take its {cut} by {deep} squares away."
+    }
+    when (edge == 2 * (w + h) - 2 * cut) point=shape.corner(2) {
+      say "Walk right round the edge. The cut takes two sides away and puts two back."
+    }
+  }
+  hint "Count the squares for the area, or split the shape into two rectangles."
+  hint "For the edge, walk round the outside and add all six sides."
+}

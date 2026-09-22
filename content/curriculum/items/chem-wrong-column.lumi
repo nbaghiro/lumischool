@@ -1,0 +1,18 @@
+# One word sits in the wrong column and the child says which. The words are things that are only
+# ever one material (a nail, a key, a log, a twig), because a spoon or a door can be metal or wood
+# and the child who says so is right.
+item chem.wrong-column v=1 skills=[chemistry.materials] {
+  title "The word in the wrong column"
+  difficulty w
+  let w=0..3
+
+  scene 24x21 {
+    text ask "One thing is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort s heads=["metal", "wood"] words=["nail", "log", "key", "twig"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["nail", "log", "key", "twig"] below=s gap=1
+  }
+
+  answer pick=(if w == 0 then "nail" else if w == 1 then "log" else if w == 2 then "key" else "twig")
+  hint "Say what each thing is made of, then check the heading above it."
+  hint "Which thing could never be made of the material in the heading above it?"
+}

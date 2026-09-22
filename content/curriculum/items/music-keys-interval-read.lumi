@@ -1,0 +1,31 @@
+# Two notes on the grand staff, sometimes on different staves, and the distance between them in
+# steps: crossing middle C is where children lose count.
+item music.interval-read v=1 skills=[music.grand-staff, music.intervals] {
+  title "How far apart?"
+  difficulty (abs(d) + (if d < 0 then 1 else 0))
+  let i=0..12 d={-5, -4, -3, -2, 2, 3, 4, 5}
+  where (i + d >= 0 and i + d <= 12)
+  level easy {
+    let d={2, 3}
+  }
+  level hard {
+    let d={-5, -4, 5}
+  }
+  let a={if i == 0 then "D3" else if i == 1 then "E3" else if i == 2 then "F3" else if i == 3 then "G3" else if i == 4 then "A3" else if i == 5 then "B3" else if i == 6 then "C4" else if i == 7 then "D4" else if i == 8 then "E4" else if i == 9 then "F4" else if i == 10 then "G4" else if i == 11 then "A4" else "B4"}
+  let b={if i + d == 0 then "D3" else if i + d == 1 then "E3" else if i + d == 2 then "F3" else if i + d == 3 then "G3" else if i + d == 4 then "A3" else if i + d == 5 then "B3" else if i + d == 6 then "C4" else if i + d == 7 then "D4" else if i + d == 8 then "E4" else if i + d == 9 then "F4" else if i + d == 10 then "G4" else if i + d == 11 then "A4" else "B4"}
+
+  scene 29x16 {
+    grandstaff gs notes=["{a}", "{b}"] letters=false lit=[] landmarks=true at=canvas(1, 0)
+    text ask "How many steps is it from the first note to the second?" width=15 right-of=gs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer abs(d)
+  feedback {
+    when (answer == abs(d) + 1) point=gs {
+      say "Count the moves between the notes, not the notes themselves."
+    }
+  }
+  hint "Name the first note from its nearest landmark."
+  hint "Now move one line or space at a time to the second note, counting each move."
+}

@@ -1,0 +1,16 @@
+# A V of geese has one leader and the same number on each side, so only an odd number can fly in one.
+item pattern.geese-v v=1 stars=2 skills=[number.odd-even, reasoning.structure] {
+  title "Flying in a V"
+  difficulty n
+  let n=6..13
+
+  scene 32x11 {
+    geese flock count=7 at=canvas(1, 1)
+    text ask "Geese fly in a V: one at the front and the same number on each side. Can {n} geese make a V like this?" narrate width=16 right-of=flock gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if n % 2 == 1 then "yes" else "no")
+  hint "Take away the goose at the front. How many are left?"
+  hint "Can those be shared into two equal sides?"
+}

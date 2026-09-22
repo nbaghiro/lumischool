@@ -1,0 +1,29 @@
+item coding.shape-perimeter v=2 skills=[coding.drawing] {
+  title "All the way round"
+  difficulty (w + h)
+  let w=3..5 h=2..4
+  where (w > h)
+  level easy {
+    let w=3..4 h=2..3
+  }
+
+  scene 31x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right {w}", "up {h}", "left {w}", "down {h}"]
+      turtle t cols=6 rows=5 col=1 row=5 moves=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+    }
+    text ask "How many squares does the turtle travel all the way round?" width=20 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=t answer=moves
+  feedback {
+    when (answer == w + h) point=p {
+      say "There are two sides of {w} and two sides of {h}, so all four lines count."
+    }
+    when (answer == w * h) point=t {
+      say "The question is the distance round the edge, not the squares inside."
+    }
+  }
+  hint "Add the four numbers in the program."
+}

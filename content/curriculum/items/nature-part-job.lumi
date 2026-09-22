@@ -1,0 +1,40 @@
+# What a plant needs, read off its parts: the roots drink water from the soil, the leaves catch the
+# light, the stem holds them up to it, and the flower makes the seeds. The letters name nothing, so
+# the child has to know what each part is for.
+item nature.part-job v=1 skills=[nature.growing] {
+  title "Which part?"
+  difficulty (if k == 0 then 0 else if k == 2 then 2 else 1)
+  let k=0..3
+  let job={pick(k, "drinks up water from the soil", "catches the light", "holds the leaves up to the light", "makes the seeds")}
+  let letter={pick(k, "D", "B", "C", "A")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 30x13 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "Which part of Ada's bean {job}?" narrate width=18 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick == "A") point=fig {
+      say "A is the flower, up in the air. The water is down in the soil. Which part is in the soil?"
+    }
+    when (k == 1 and pick == "A") point=fig {
+      say "The flower is for making seeds. The wide flat parts are the ones that catch the light."
+    }
+    when (k == 2 and pick == "B") point=fig {
+      say "That is a leaf. The tall part in the middle holds the leaves up."
+    }
+    when (k == 3 and pick == "D") point=fig {
+      say "D is under the soil. Seeds are made where the flower is."
+    }
+  }
+  hint "Find the soil at the bottom and the flower at the top. Where is the part you want?"
+  hint "Roots drink, leaves catch light, the stem holds them up, the flower makes seeds."
+}

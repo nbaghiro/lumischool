@@ -1,0 +1,35 @@
+# An index is alphabetical, so four of its words can be put back in order; two that share a
+# first letter are ordered by the second.
+item reading.index-order v=1 skills=[reading.text-features, reading.letters] {
+  title "Index order"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let wa={pick(k, "whale", "seal", "tide", "dune")}
+  let wb={pick(k, "crab", "krill", "seal", "crab")}
+  let wc={pick(k, "tide", "dolphin", "tern", "dolphin")}
+  let wd={pick(k, "gull", "whale", "crab", "gull")}
+  let a={pick(k, 4, 3, 4, 3)}
+  let b={pick(k, 1, 2, 2, 1)}
+  let c={pick(k, 3, 1, 3, 2)}
+  let d={pick(k, 2, 4, 1, 4)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x18 {
+    text ask "Four words have fallen out of the index. Number them 1 to 4 in alphabetical order, the order the index keeps." narrate width=32 at=canvas(1, 1)
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=a r=b t=c u=d
+  feedback {
+    when (k >= 2 and q + r + t + u == 10 and (if k == 2 then t > a else q < c)) point=s {
+      say "{if k == 2 then \"Tern and tide both start with t. Look at the second letter: e comes before i.\" else \"Dolphin and dune both start with d. Look at the second letter: o comes before u.\"}"
+    }
+  }
+  hint "Say the alphabet and find each word's first letter in it."
+  hint "{if k >= 2 then \"Two words start with the same letter. The second letter decides.\" else \"The word whose first letter comes earliest in the alphabet is number 1.\"}"
+}

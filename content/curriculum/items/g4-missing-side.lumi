@@ -1,0 +1,31 @@
+# Area given, one side unknown: the multiplication run backwards.
+item area.missing-side v=1 skills=[area.rectangles, division.inverse] {
+  title "The missing side"
+  difficulty (a * b)
+  let a=3..9 b=4..12
+  where (a != b)
+  level easy {
+    let a=3..5 b=4..6
+  }
+  level hard {
+    let a=6..9 b=8..12
+  }
+
+  scene 30x10 {
+    mirror patch shape=rectangle line=none size=6 at=canvas(1, 1)
+    text ask "A rectangle has an area of {a * b} square centimetres. One side is {a} cm long. How long is the other side?" narrate width=19 right-of=patch gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == a * b - a) point=ask {
+      say "Area is one side times the other. What times {a} makes {a * b}?"
+    }
+    when (answer == a * b / 2 - a and a * b / 2 - a != b) point=ask {
+      say "That would be right for a perimeter. This is an area."
+    }
+  }
+  hint "What do you multiply {a} by to get {a * b}?"
+  hint "Divide the area by the side you know."
+}

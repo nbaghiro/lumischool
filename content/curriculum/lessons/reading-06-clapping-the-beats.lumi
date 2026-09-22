@@ -1,0 +1,65 @@
+lesson reading-clapping-the-beats v=1 format=teach grade=2 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Clapping the beats in a word"
+  goal "Clap the beats in a word, and split a word into its beats."
+
+  look {
+    scene 24x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          minibeasts bug kinds=["butterfly"]
+          syllables a parts=["but", "ter", "fly"]
+        }
+        row two space=2 align=end {
+          rabbits r count=1 facing=1
+          wordtrain train parts=["rab", "bit"] word="rabbit"
+        }
+      }
+    }
+    say """
+      Every word is made of beats. Say butterfly and clap once for each beat: but, ter, fly. That is
+      three claps. Rabbit has two: rab, bit.
+
+      The arcs show where each beat starts and stops, and the train gives each beat a carriage.
+      """
+  }
+  do {
+    practice reading.syllable-train count=1 seed=2
+    level easy {
+      worked reading.clap-count w="strength" level=medium
+    }
+    practice reading.clap-count count=2 seed=4 easy-seed=14
+    practice reading.middle-beat count=1 seed=3
+    show reading.beats-match k=1
+    show reading.beats-column w=1
+    show reading.most-beats x="garden" p=0
+  }
+  story {
+    practice reading.which-sentence-beats count=1 seed=5
+  }
+  try stars=2 {
+    show reading.beats-trap k=1 p=1 easy-k=4
+  }
+  try stars=3 {
+    show reading.beat-hunt k=0
+  }
+  remember {
+    say "Clap the word. One clap for every beat."
+  }
+
+  grown-ups """
+    Clapping is easier than counting. Say the word at a normal speed rather than slowly, because
+    stretching a word out adds beats that are not there. Splitting a long word into its beats is
+    also how a child will read one later, a beat at a time.
+
+    The counting questions use words whose length does not match their beats: strength is long
+    with one beat and idea is short with three. The two-star question asks the child to disagree
+    with Kim, and in some versions Kim is right, so clapping has to decide. The three-star question
+    is marked by you: clap each word the child writes together.
+    """
+  level easy {
+    grown-ups "At this level the missing beat is in a two-beat word, strength's one beat is clapped once in the teacher's pen before words of two or three beats, the middle beat is one consonant and a vowel, the matches, the column, the most beats and the story are as written, Kim is right that crocodile has more beats than frog, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the missing beat is in sandcastle or bicycle, the words to clap are one beat in a long cluster or four beats, the middle beat is umbrella's brel, the matches, the column, the most beats and the story are as written, and the two-star and three-star are as written."
+  }
+}

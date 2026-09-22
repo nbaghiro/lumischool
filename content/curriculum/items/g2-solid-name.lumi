@@ -1,0 +1,18 @@
+item shapes.name-solid v=1 skills=[shapes.solids] {
+  title "Naming a solid"
+  let k={"cube", "sphere", "cone", "cylinder"}
+
+  scene 36x13 {
+    solid shape kind=k label="" at=canvas(1, 1)
+    text ask "What is this solid called?" narrate right-of=shape gap=2
+    choice pick options=["cube", "sphere", "cone", "cylinder"] below=shape gap=1
+  }
+
+  answer pick=k
+  feedback {
+    when (k == "cube" and pick == "cylinder") point=shape {
+      say "A cylinder has two round ends. Count the flat faces on this one."
+    }
+  }
+  hint "Look at the faces: flat squares, one curved surface, or a point."
+}

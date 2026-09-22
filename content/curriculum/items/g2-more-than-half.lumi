@@ -1,0 +1,21 @@
+# Every number that fits between two fractions of a bar: half and three quarters are found first.
+item fraction.between-half-and-three-quarters v=1 stars=3 skills=[fractions.of-a-set, reasoning.all-the-ways] {
+  title "More than half, less than three quarters"
+  difficulty n
+  let n={8, 12, 16, 20}
+
+  scene 32x15 {
+    grid bar rows=2 cols=(n / 2) shade=0 color=berry at=canvas(1, 1)
+    text ask "Colour more than half of the {n} squares, but less than three quarters. How many different numbers of squares could you colour?" width=30 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n / 4 - 1)
+  feedback {
+    when (answer == n / 4 + 1) point=bar {
+      say "Exactly half and exactly three quarters do not count. The number has to be between them."
+    }
+  }
+  hint "How many squares is half of {n}? How many is a quarter?"
+  hint "Three quarters is three of those quarters. Which numbers are between half and that?"
+}

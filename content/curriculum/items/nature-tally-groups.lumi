@@ -1,0 +1,33 @@
+# The story: Ada's tally of the animals she saw in a day, sorted into groups, and a count that
+# needs two groups added or the groups compared.
+item nature.tally-groups v=1 skills=[nature.sorting, data.tally] {
+  title "Ada's tally"
+  difficulty (b + f + w)
+  let b=3..8 f=2..6 s=1..4 w=0..1
+  where (s < b)
+  let asks={pick(w, "How many animals with feathers or fur did she see?", "How many more animals with feathers than with scales did she see?")}
+  level easy {
+    let b=3..5 f=2..4 w=0..0
+  }
+  level hard {
+    let b=6..8 f=4..6 w=1..1
+  }
+
+  scene 36x14 {
+    table t cols=2 head=["Group", "Seen"] cells=["feathers", "{b}", "fur", "{f}", "scales", "{s}"] at=canvas(1, 1)
+    text ask "Ada keeps a tally of the animals she sees in a day at the reef and the farm, sorted by their covering. {asks}" narrate width=18 right-of=t gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then b + f else b - s)
+  feedback {
+    when (w == 0 and answer == b + f + s) point=t {
+      say "Only two of the groups are asked for: feathers and fur. Leave the scales out."
+    }
+    when (w == 1 and answer == b + s) point=t {
+      say "How many more means the difference: take the scales from the feathers."
+    }
+  }
+  hint "Find the rows the question names. Read their numbers."
+  hint "Add for 'or', take away for 'how many more'."
+}

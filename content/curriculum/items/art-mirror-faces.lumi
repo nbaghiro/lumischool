@@ -1,0 +1,14 @@
+item art.mirror-faces v=1 skills=[art.symmetry] {
+  title "Which way does the copy face?"
+  let m={"fish", "bird"}
+
+  scene 30x11 {
+    stamps pic motif=m show="print" colour=blue flip=false made="print" at=canvas(1, 1)
+    text ask "Ada paints this {m} with the mirror on. Which way does its copy on the other side of the line face?" width=20 right-of=pic gap=2
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=(if m == "fish" then "right" else "left")
+  hint "Which way is the {m} facing now?"
+  hint "Hold a real mirror beside it, or imagine one. Does the copy face towards the mirror or away from it?"
+}

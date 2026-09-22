@@ -1,0 +1,27 @@
+# Using a fact you know to get one you do not: twice as many rows is twice as many buns.
+item groups.double-rows v=1 skills=[multiplication.fours, multiplication.threes] {
+  title "Twice as many rows"
+  difficulty (r * c)
+  let r=2..4 c={3, 4}
+  level easy {
+    let r={2}
+  }
+  level hard {
+    let r={4}
+  }
+
+  scene 28x8 {
+    array dots rows=r cols=c color=mint at=canvas(1, 1)
+    text ask "{r} rows of {c} is {r * c}. How many are in {2 * r} rows of {c}?" narrate width=18 right-of=dots gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * r * c)
+  feedback {
+    when (answer == r * c + c) point=dots {
+      say "That is only one more row. There are {r} more rows."
+    }
+  }
+  hint "How many times more rows are there?"
+  hint "Twice as many rows means twice as many buns. What is double {r * c}?"
+}

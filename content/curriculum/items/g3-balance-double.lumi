@@ -1,0 +1,30 @@
+# Double one factor and halve the other: equality read as a balance, not a sum to work out.
+item times.balance-double v=1 stars=2 skills=[multiplication.tables, reasoning.equivalence] {
+  title "Double and halve"
+  difficulty (a * b)
+  let a=2..6 b={4, 6, 8, 10, 12}
+  level easy {
+    let a=2..3 b={4, 6}
+  }
+  level hard {
+    let a=4..6 b={10, 12}
+  }
+
+  scene 20x17 {
+    balanceeq scales left="{a} × {b}" right="{2 * a} × ?" at=canvas(1, 1)
+    text ask "Both sides are equal. What is hidden?" narrate below=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b / 2)
+  feedback {
+    when (answer == b) point=scales {
+      say "The other side has {2 * a}, which is double {a}. So it needs fewer lots of it."
+    }
+    when (answer == 2 * b) point=scales {
+      say "{2 * a} is more than {a}, so the hidden number has to be less than {b}, not more."
+    }
+  }
+  hint "Is {2 * a} more or less than {a}? How many times as much?"
+  hint "If one number doubles, what has to happen to the other to keep the answer the same?"
+}

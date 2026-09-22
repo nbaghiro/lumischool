@@ -1,0 +1,27 @@
+# Three things on the table, one of them outlined thinly, and which of the three the drawing puts
+# furthest away. The thin line is the last of the three, so the answer moves with the order.
+item art.line-furthest v=1 skills=[art.line, art.looking] {
+  title "Which looks furthest away?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let a={pick(k, "pear", "apple", "cup", "ball", "pear", "apple")}
+  let b={pick(k, "ball", "ball", "jug", "pear", "cup", "jug")}
+  let c={pick(k, "jug", "pear", "ball", "apple", "ball", "cup")}
+  let ans={pick(k, "The jug", "The pear", "The ball", "The apple", "The ball", "The cup")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 21x35 {
+    stilllife pic light="left" things=["{a}", "{b}", "{c}"] lamp=false weights=["thick", "thick", "thin"] at=canvas(1, 0)
+    text ask "Two of these are drawn with thick lines and one with a thin line. Which one does the drawing put furthest away?" narrate width=20 below=pic gap=1
+    choice pick options=["The apple", "The ball", "The cup", "The jug", "The pear"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Find the thing whose line is thinner than the others."
+  hint "A thin line is how a drawing says something is far off."
+}

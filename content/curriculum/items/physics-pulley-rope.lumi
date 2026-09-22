@@ -1,0 +1,22 @@
+# The price of a smaller pull: every rope holding the load has to shorten, so the hand pulls that
+# many times as far. It is the first place a child meets the idea that a machine trades force for
+# distance.
+item physics.pulley-rope v=1 skills=[physics.machines] stars=2 {
+  title "How much rope?"
+  difficulty n
+  let n=2..4
+
+  scene 30x15 {
+    pulley p ropes=n load=48 at=canvas(1, 0)
+    text ask "To lift the crate by 1 metre, how many metres of rope must the hand pull down?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 1) point=p {
+      say "Every rope holding the crate has to get 1 metre shorter, and the hand pulls all of that through."
+    }
+  }
+  hint "How many ropes hold the crate up, and how much shorter must each one get?"
+}

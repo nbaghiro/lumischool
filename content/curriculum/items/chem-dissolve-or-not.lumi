@@ -1,0 +1,21 @@
+item chem.dissolve-or-not v=1 skills=[chemistry.dissolving] {
+  title "Did it dissolve?"
+  difficulty (if k == 3 then 2 else if k == 5 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2, 4}
+  }
+  level hard {
+    let k={3, 5}  # flour, and iron filings
+  }
+
+  scene 23x10 {
+    mixture mix things=["{if k == 0 then \"salt\" else if k == 1 then \"sand\" else if k == 2 then \"sugar\" else if k == 3 then \"flour\" else if k == 4 then \"pebbles\" else \"iron\"}"] water=1 names=0 at=canvas(1, 0)
+    text ask "Some {if k == 0 then \"salt\" else if k == 1 then \"sand\" else if k == 2 then \"sugar\" else if k == 3 then \"flour\" else if k == 4 then \"pebbles\" else \"iron filings\"} {if k >= 4 then \"were\" else \"was\"} stirred into the water. Did it dissolve?" width=12 right-of=mix gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 2 then "yes" else "no")
+  hint "Look at the whole glass, and then at the bottom."
+  hint "If you cannot see it anywhere, where has it gone?"
+}

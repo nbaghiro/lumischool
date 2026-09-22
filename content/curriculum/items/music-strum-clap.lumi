@@ -1,0 +1,14 @@
+# The island strum clapped, one clap for each arrow: the rhythm of the strum without the chord.
+# music.rhythm judges when each clap lands, in beats from the start of the bar.
+item music.strum-clap v=1 skills=[music.strumming, music.rhythm] {
+  title "Clap the strum"
+
+  scene 30x13 {
+    strumtrack bar strums=D-DU-UDU counts=true chord=none ring=-1 at=canvas(1, 1)
+    text ask "Count 1 and 2 and 3 and 4 and out loud. Clap once for every arrow, and stay quiet on the dots." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2.5, 3, 3.5] grade=2
+  hint "Which counts have an arrow over them? Say only those loudly."
+  hint "Is there a clap on 3? Look at the mark above the 3."
+}

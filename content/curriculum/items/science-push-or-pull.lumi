@@ -1,0 +1,16 @@
+# Every action here moves one way only: the door (which can be pushed or pulled shut) and the sock
+# (whose name said pull) are gone, which were the audit's two findings.
+item science.push-or-pull v=2 skills=[science.forces] {
+  title "Push or pull?"
+  let act={"opening a drawer", "shutting a drawer", "kicking a ball", "taking a tissue out of the box", "pressing a doorbell", "towing a sledge up a hill"}
+
+  scene 30x10 {
+    text ask "Is this a push or a pull?" width=28 at=canvas(1, 1)
+    text what "{act}" width=28 below=ask gap=1
+    choice force options=["Push", "Pull"] below=what gap=1
+  }
+
+  answer force=(if act in {"opening a drawer", "taking a tissue out of the box", "towing a sledge up a hill"} then "Pull" else "Push")
+  hint "Does the thing come towards you, or go away from you?"
+  hint "Act it out with your hands. Are they moving away from you or back towards you?"
+}

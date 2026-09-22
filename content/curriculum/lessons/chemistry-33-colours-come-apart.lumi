@@ -1,0 +1,62 @@
+# Colours come apart: a dot of ink on paper, water climbing past it, and the colours the ink was mixed
+# from left standing at different heights, so two pens that look the same on the page do not look the
+# same on the strip.
+lesson chemistry-colours-come-apart v=1 format=teach grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Colours come apart"
+  goal "Read a paper strip where an ink has come apart, and say which pen drew a dot from the colours it left."
+
+  look {
+    scene 15x16 {
+      chromatography strips inks=["black1", "black2", "black3"] labels=["A", "B", "C"] run=1 beaker=1 ruler=1 at=canvas(1, 0)
+    }
+    say """
+      Most inks are mixtures. Draw a dot near the foot of a paper strip, stand the strip in a little
+      water, and the water climbs the paper and carries the ink up with it. The colours in the mixture
+      do not travel at the same speed, so they end up as separate bands at different heights, and the
+      black dot turns out to have been yellow, pink and blue all along. Two black pens can leave
+      different bands, which is how the strips tell them apart.
+      """
+  }
+  do {
+    practice chemistry.ink-how-many count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked chemistry.ink-furthest n=2 level=medium
+    }
+    practice chemistry.ink-furthest count=2 seed=4 easy-seed=1 hard-seed=1
+    practice chemistry.ink-which-pen count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chemistry.ink-same-pen count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show chemistry.ink-two-alike p=3
+    }
+  }
+  story {
+    show chemistry.saltflats-ink v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show chemistry.ink-two-alike p=1 easy-p=0 hard-p=2
+  }
+  try stars=3 {
+    show chemistry.ink-which-wrote v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "An ink is often a mixture, and water climbing paper leaves its colours in bands at different heights."
+  }
+
+  grown-ups """
+    The idea here is that a mixture can be taken apart without changing what it is made of, and that
+    the parts can be recognised afterwards. The strips do that in front of a child: the same black dot
+    leaves different bands depending on the pen, which is why the method is used to tell inks apart in
+    earnest. Watch for a child who counts the dot on the pencil line as one of the colours, and for one
+    who reads a band's colour but not its height; the two-star question turns on height, since two pens
+    can share a colour and leave it in a different place. The three-star question gives a clue in two
+    halves and four strips, and a child who uses only the first half will be left with two. Off the
+    page, a strip of kitchen paper, a felt pen, and a saucer with a centimetre of water, which works in
+    about ten minutes and is worth doing with a black pen and a brown one side by side.
+    """
+  level easy {
+    grown-ups "At this level the ink to count comes apart into two colours, a strip's highest band is read once in the teacher's pen before two more on the shorter strips, the pen to name is one of the two-colour pens, the pair to judge is plainly two pens, the story counts four bands over two strips, the two-star pair shares its pink band, and the three-star clue rules out three strips on the first half alone."
+  }
+  level hard {
+    grown-ups "At this level the ink to count comes apart into three colours, the strips read on the ruler are the tallest two, the pen to name is a black one, the pair to judge shares a band at the same height, the core carries a second pair to tell apart, the story counts six bands over two strips, the two-star pair shares its blue band at seven, and the three-star clue needs both halves."
+  }
+}

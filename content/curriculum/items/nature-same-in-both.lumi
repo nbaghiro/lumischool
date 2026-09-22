@@ -1,0 +1,41 @@
+# The two-star reason: two cycles side by side, and the stage in one that plays the same part as a
+# stage in the other. Frogspawn and seed are both the start and is the plain pair; the frog and
+# the flower both make the next start; the tadpole and the shoot have both just begun to grow, and
+# that pair needs the child to compare what each stage is doing rather than what it looks like.
+item nature.same-in-both v=1 stars=2 skills=[nature.life-cycles, reasoning.compare] {
+  title "The same job in both"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let stage={pick(k, "the frogspawn", "the grown frog", "the tadpole", "the froglet")}
+  let right={pick(k, "seed", "flower", "shoot", "leafy stem")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x25 {
+    frogcycle life stage=4 ring=1 names=0 at=canvas(1, 1)
+    text ask "Ada says every stage of the frog has a partner in the bean that does the same job in its cycle. Which stage of the bean is the partner of {stage}?" narrate width=19 right-of=life gap=2
+    choice pick options=["seed", "shoot", "leafy stem", "flower"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "flower") point=life {
+      say "The flower comes at the end of the bean's row. The frogspawn is the start of the frog's ring. Which stage of the bean is the start?"
+    }
+    when (k == 1 and pick == "seed") point=life {
+      say "The seed is the start. The grown frog is the one that makes the next start. Which stage of the bean makes the seeds?"
+    }
+    when (k == 2 and pick == "seed") point=life {
+      say "The seed has not started growing yet. The tadpole has: it has hatched and is small. Which bean stage has just come up?"
+    }
+    when (k == 3 and pick == "flower") point=life {
+      say "The froglet is nearly grown but not finished: it still has a tail. Which bean stage is bigger than the shoot but not yet in flower?"
+    }
+  }
+  hint "Is {stage} the start, just begun, nearly grown, or grown up and making the next start?"
+  hint "Now find the stage of the bean at the same point along its row."
+}

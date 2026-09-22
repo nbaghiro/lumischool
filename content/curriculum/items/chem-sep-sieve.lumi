@@ -1,0 +1,19 @@
+# The way in: the sieve has been shaken and the picture shows what stayed in it and what fell through.
+item chem.sep-sieve v=1 skills=[chemistry.separating] {
+  title "What stayed in the sieve?"
+  let v=0..9
+
+  scene 29x14 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      sieve s mixture=["{if v == 0 then \"pebbles\" else if v == 1 then \"pebbles\" else if v == 2 then \"sand\" else if v == 3 then \"sand\" else if v == 4 then \"peas\" else if v == 5 then \"peas\" else if v == 6 then \"rice\" else if v == 7 then \"rice\" else if v == 8 then \"clips\" else \"clips\"}", "{if v == 0 then \"sand\" else if v == 1 then \"sand\" else if v == 2 then \"flour\" else if v == 3 then \"flour\" else if v == 4 then \"rice\" else if v == 5 then \"rice\" else if v == 6 then \"flour\" else if v == 7 then \"flour\" else if v == 8 then \"iron\" else \"iron\"}"] holes=(if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 1 else if v == 3 then 1 else if v == 4 then 3 else if v == 5 then 3 else if v == 6 then 2 else if v == 7 then 2 else if v == 8 then 2 else 2) shaken=1 names=1
+      column side space=1 align=start {
+        text ask "The mixture was shaken in the sieve. What stayed in the sieve?" width=14
+        choice pick options=["{if v == 0 then \"pebbles\" else if v == 1 then \"sand\" else if v == 2 then \"sand\" else if v == 3 then \"flour\" else if v == 4 then \"dried peas\" else if v == 5 then \"rice\" else if v == 6 then \"rice\" else if v == 7 then \"flour\" else if v == 8 then \"paper clips\" else \"iron filings\"}", "{if v == 0 then \"sand\" else if v == 1 then \"pebbles\" else if v == 2 then \"flour\" else if v == 3 then \"sand\" else if v == 4 then \"rice\" else if v == 5 then \"dried peas\" else if v == 6 then \"flour\" else if v == 7 then \"rice\" else if v == 8 then \"iron filings\" else \"paper clips\"}"] stack=column
+      }
+    }
+  }
+
+  check chem.separate of=s pick=stays
+  hint "Look inside the sieve, above the bowl."
+  hint "Which one is too big to fit through the holes?"
+}

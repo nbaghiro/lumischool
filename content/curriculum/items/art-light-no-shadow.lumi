@@ -1,0 +1,21 @@
+# Which of two pictures has no shadow on the ground, which is the one drawn at noon with the sun high.
+# Noon is the first picture in half the versions. The four versions are equally hard, so the item has
+# no difficulty line and the levels ask it as written.
+item art.light-no-shadow v=1 skills=[art.light, art.looking] {
+  title "Which has no shadow?"
+  let k=0..3
+  let l1={pick(k, "morning", "noon", "dusk", "noon")}
+  let l2={pick(k, "noon", "morning", "noon", "dusk")}
+  let ans={pick(k, "The second", "The first", "The second", "The first")}
+
+  scene 21x34 {
+    layers one labels=false ring=-1 sun=true light=l1 at=canvas(1, 0)
+    layers two labels=false ring=-1 sun=true light=l2 below=one gap=1
+    text ask "In one of these the tree throws a shadow along the ground, and in the other it throws none. Which one throws none?" narrate width=20 below=two gap=1
+    choice pick options=["The first", "The second"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Look at the ground beside the tree in each picture."
+  hint "A shadow lies along the ground only when the sun is low."
+}

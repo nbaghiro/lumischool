@@ -1,0 +1,35 @@
+# The story: the two-chord song in the park, two bars of each chord in turn, counted in strums or
+# in changes.
+item music.song-bars v=1 stars=1 skills=[music.chord-changes, multiplication.groups] {
+  title "The song in the park"
+  difficulty (if w == 0 then 0 else 1)
+  let w=0..1
+  let asks={pick(w, "How many strums of G7 are in the song?", "How many times does the chord change during the song?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x24 {
+    row cards at=canvas(1, 1) space=2 align=start {
+      chordbox c tuning=uke chord=C frets=3 show=fingers name=true letters=false lit=[]
+      chordbox g tuning=uke chord=G7 frets=3 show=fingers name=true letters=false lit=[]
+    }
+    text ask "At the bandstand Ada plays a song of eight bars, four strums to a bar: two bars of C, two of G7, two of C, two of G7. {asks}" narrate width=32 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 16 else 3)
+  feedback {
+    when (w == 0 and answer == 4) point=cards {
+      say "That is the bars of G7. Each bar has four strums."
+    }
+    when (w == 1 and answer == 4) point=cards {
+      say "Count the changes, not the parts: C to G7, G7 to C, C to G7. The song starts on C without changing to it."
+    }
+  }
+  hint "{if w == 0 then \"Count the bars of G7 first: two and two. Then four strums to a bar.\" else \"Write the bars out: C C G7 G7 C C G7 G7. Where does the chord change?\"}"
+  hint "{if w == 0 then \"Four bars of G7, four strums each.\" else \"A change is where the chord after a bar is different from the chord before.\"}"
+}

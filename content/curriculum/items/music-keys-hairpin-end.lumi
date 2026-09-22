@@ -1,0 +1,32 @@
+# A start mark and a hairpin, and the end has to follow from both: only one of the three offered is
+# louder, or softer, than where the music began.
+item music.hairpin-end v=1 skills=[music.dynamics] {
+  title "Where does it end?"
+  difficulty s
+  let i=1..3 s=0..1
+  level easy {
+    let s={0}  # getting louder
+  }
+  level hard {
+    let s={1}  # getting softer
+  }
+  let a={if i == 1 then "p" else if i == 2 then "mp" else "mf"}
+  let sign={if s == 0 then "cresc" else "dim"}
+  let lo={if i == 1 then "pp" else if i == 2 then "p" else "mp"}
+  let hi={if i == 1 then "mf" else if i == 2 then "f" else "ff"}
+
+  scene 27x11 {
+    dynamics marks marks=["{a}", "{sign}"] words=false ring=-1 at=canvas(1, 1)
+    text ask "The music starts {a}, then this sign comes. Which mark could come at the end?" width=13 right-of=marks gap=1
+    choice pick options=["{lo}", "{a}", "{hi}"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then hi else lo)
+  feedback {
+    when (pick == a) point=marks {
+      say "The sign means the music changes. It does not end where it started."
+    }
+  }
+  hint "Does the sign open out or close up as it goes along?"
+  hint "Opening out means getting louder, and closing up means getting softer. Which mark fits the way this sign goes?"
+}

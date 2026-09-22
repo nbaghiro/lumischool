@@ -1,0 +1,21 @@
+item chem.change-new v=1 skills=[chemistry.changes] {
+  title "Something new?"
+  difficulty (if c == "dissolve-sugar" or c == "rise-dough" or c == "fizz" or c == "rust-nail" then 2 else if c == "boil-water" or c == "burn-candle" then 1 else 0)
+  let c={"melt-ice", "freeze-water", "melt-chocolate", "boil-water", "dissolve-sugar", "toast-bread", "cook-egg", "bake-cake", "burn-candle", "rust-nail", "fizz", "rise-dough"}
+  level easy {
+    let c={"melt-ice", "freeze-water", "melt-chocolate", "toast-bread", "cook-egg", "bake-cake"}
+  }
+  level hard {
+    let c={"dissolve-sugar", "boil-water", "rise-dough", "fizz", "rust-nail", "burn-candle"}
+  }
+
+  scene 30x8 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "Does this change make a new material?" width=13 right-of=ch gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  check chem.change of=ch pick=new
+  hint "Is the stuff afterwards the same stuff as before?"
+  hint "Would you still call the stuff at the end by the same name, only runny, hard or spread out?"
+}

@@ -1,0 +1,28 @@
+# A claim about the timetable, true in some versions and false in others, so it has to be checked
+# by reading the cells rather than guessed from how it sounds.
+item reading.timetable-true v=1 skills=[reading.text-features, reading.evidence] {
+  title "True or not?"
+  difficulty (if k == 1 then 0 else 1)
+  let s={0, 5, 10} l1={10, 15} l2={12, 15, 20} l3={10, 15} k=0..2
+  where (l1 + l2 + l3 != 40 and s + l1 + l2 + l3 != 40 and l2 != l3)
+  level easy {
+    let k={1}  # two legs compared
+  }
+  level hard {
+    let k={0, 2}  # the whole journey added up, or the arrival read against a deadline
+  }
+
+  scene 37x12 {
+    row all at=canvas(1, 1) space=1 align=start {
+      table t cols=3 head=["Stop", "Bus 1", "Bus 2"] cells=["Market", "{(480 + s + 0) // 60}:{if (480 + s + 0) % 60 < 10 then \"0\" else \"\"}{(480 + s + 0) % 60}", "{(570 + s + 0) // 60}:{if (570 + s + 0) % 60 < 10 then \"0\" else \"\"}{(570 + s + 0) % 60}", "Park", "{(480 + s + l1) // 60}:{if (480 + s + l1) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1) % 60}", "{(570 + s + l1) // 60}:{if (570 + s + l1) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1) % 60}", "Library", "{(480 + s + l1 + l2) // 60}:{if (480 + s + l1 + l2) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1 + l2) % 60}", "{(570 + s + l1 + l2) // 60}:{if (570 + s + l1 + l2) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1 + l2) % 60}", "School", "{(480 + s + l1 + l2 + l3) // 60}:{if (480 + s + l1 + l2 + l3) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1 + l2 + l3) % 60}", "{(570 + s + l1 + l2 + l3) // 60}:{if (570 + s + l1 + l2 + l3) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1 + l2 + l3) % 60}"]
+      column q space=1 align=start {
+        text ask "Joss says: {if k == 0 then \"Bus 2 takes more than 40 minutes from the Market to the School.\" else if k == 1 then \"It takes longer from the Park to the Library than from the Library to the School.\" else \"Bus 1 gets to the School before 8:40.\"} Is he right?" width=18
+        choice pick options=["yes", "no"]
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then if l1 + l2 + l3 > 40 then "yes" else "no" else if k == 1 then if l2 > l3 then "yes" else "no" else if s + l1 + l2 + l3 < 40 then "yes" else "no")
+  hint "Which cells does Joss's sentence talk about? Put a finger on each one."
+  hint "Work out the times or the minutes from those cells, then check what Joss says."
+}

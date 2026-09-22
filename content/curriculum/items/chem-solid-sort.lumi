@@ -1,0 +1,16 @@
+# Solid or liquid, with powders as the trap: flour and sand pour, and each grain is still a solid.
+item chem.solid-sort v=1 skills=[chemistry.states] {
+  title "Solid or liquid?"
+  difficulty w
+  let w=0..3
+
+  scene 23x19 {
+    text ask "One thing is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort s heads=["solid", "liquid"] words=["sand", "milk", "flour", "juice"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["sand", "milk", "flour", "juice"] stack=column right-of=s gap=1
+  }
+
+  answer pick=(if w == 0 then "sand" else if w == 1 then "milk" else if w == 2 then "flour" else "juice")
+  hint "Which of these are made of tiny grains, each with its own shape?"
+  hint "Which ones take the shape of the cup they are in and have no grains at all? Is each one under the right heading?"
+}

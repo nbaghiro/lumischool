@@ -1,0 +1,22 @@
+item reading.detail-in-passage v=2 skills=[reading.comprehension] {
+  title "Reading for the answer"
+  difficulty (if k == 2 then 1 else 0)
+  let n=5..9 e=3..6 k=0..2
+
+  scene 34x16 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage p title="Ada's hens" text="Ada keeps {n} hens in the garden. Every morning she opens the hutch and counts them. On Tuesday one hen was missing, and Ada found it under the hedge with {e} eggs." width=24
+      art hen asset="hen"
+    }
+    text ask "{if k == 0 then \"How many hens does Ada keep?\" else if k == 1 then \"How many eggs did Ada find?\" else \"How many hens did Ada count on Tuesday?\"}" width=22 below=top gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (if k == 0 then n else if k == 1 then e else n - 1)
+  feedback {
+    when (answer == n and k == 2) point=p {
+      say "One hen was missing when she counted, so she counted one fewer."
+    }
+  }
+  hint "Find the sentence the question is about before you write anything."
+}

@@ -1,0 +1,26 @@
+# The story: Pip's walk across the map, added up from the key's ways.
+item reading.map-story v=1 stars=1 skills=[reading.text-features, addition.to-twenty] {
+  title "Pip's walk"
+  difficulty (a + b + w)
+  let a=2..4 b=3..5 w=0..1
+  level easy {
+    let a=2..2 b=3..4 w=0..0
+  }
+  level hard {
+    let a=4..4 b=5..5 w=1..1
+  }
+
+  scene 34x10 {
+    text ask "Pip follows the footpath {a} kilometres to the bridge, then the road {b} kilometres to the town. {if w == 0 then \"How far does she walk?\" else \"She walks back the same way. How far has she walked in all?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a + b else 2 * (a + b))
+  feedback {
+    when (w == 1 and answer == a + b) point=ask {
+      say "That is the way there. She walks the same again coming back."
+    }
+  }
+  hint "{if w == 0 then \"Add the footpath and the road.\" else \"Add the two, then double it for the way back.\"}"
+  hint "{if w == 0 then \"{a} and {b}.\" else \"{a} and {b}, twice.\"}"
+}

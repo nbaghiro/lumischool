@@ -1,0 +1,16 @@
+# Three words share a meaning and one is its opposite number: the odd one is found by meaning,
+# not by spelling, and its place in the row moves.
+item reading.odd-word-out v=1 skills=[reading.vocabulary] {
+  title "The odd word out"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 33x7 {
+    text ask "Three of these words mean nearly the same. Which is the odd one out?" width=32 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "whisper" else if k == 1 then "stroll" else if k == 2 then "giggle" else "parched", if k == 0 then "mutter" else if k == 1 then "sprint" else if k == 2 then "chuckle" else "damp", if k == 0 then "murmur" else if k == 1 then "wander" else if k == 2 then "sob" else "soaked", if k == 0 then "shout" else if k == 1 then "amble" else if k == 2 then "laugh" else "wet"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "shout" else if k == 1 then "sprint" else if k == 2 then "sob" else "parched")
+  hint "Say each word in a sentence. Which three could swap places?"
+  hint "The odd word means something else, often the opposite."
+}

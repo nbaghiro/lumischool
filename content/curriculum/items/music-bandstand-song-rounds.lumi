@@ -1,0 +1,36 @@
+# The story: at the bandstand Ana sings London Bridge several times through while Ben plays, and the
+# changes are counted. The song starts and ends on C, so going round again adds no change.
+item music.bandstand-song-rounds v=1 skills=[music.chord-changes, multiplication.groups] {
+  title "Round again"
+  difficulty (n - 2 + w)
+  let n=2..4 w=0..1
+  let right={if w == 0 then 4 * n else 8 * n}
+  level easy {
+    let n=2..3 w=0..0
+  }
+  level hard {
+    let n=3..4 w=1..1
+  }
+
+  scene 36x14 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      column side space=1 align=start {
+        text ask "Ana sings London Bridge {n} times through while Ben plays. Once through has 4 chord changes, and the song starts and ends on C. {if w == 0 then \"How many changes does Ben make in all?\" else \"Ben strums 4 times a bar and the song has 2 bars of G. How many strums of G does he play?\"}" narrate width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer right
+  feedback {
+    when (w == 0 and answer == 4 * n + n - 1) point=ask {
+      say "The song ends on C and starts on C, so going round again is not a change."
+    }
+    when (w == 1 and answer == 2 * n) point=ask {
+      say "That counts the bars of G. Each bar has four strums."
+    }
+  }
+  hint "{if w == 0 then \"How many changes are there each time through?\" else \"How many strums of G each time through?\"}"
+  hint "Every time through is the same, so it is that many, {n} times."
+}

@@ -1,0 +1,26 @@
+# Counting what a program does on its way, not only where it ends: the gems stay put and the path
+# moves, so a gem is picked up in some versions and passed by in others.
+item coding.gems-picked v=1 skills=[coding.tracing] {
+  title "How many gems?"
+  difficulty (a + b + c)
+  let a=2..3 b=1..2 c=1..2
+  level easy {
+    let a=2..3 b={1}
+  }
+  level hard {
+    let a=2..3 b={2}
+  }
+
+  scene 29x14 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}", "right {c}"] words=false numbers=true
+      maze g cols=6 rows=3 gems=[3, 1, 3, 2, 5, 3] code=["right {a}", "down {b}", "right {c}"] upto=0 trail=none
+    }
+    text ask "The robot picks up a gem when it walks over one. How many does it pick up?" width=22 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=gems
+  hint "Walk the robot one block at a time. Touch each square it goes over."
+  hint "Count a gem only if the robot walks onto its square."
+}

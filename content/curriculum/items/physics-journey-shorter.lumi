@@ -1,0 +1,21 @@
+item physics.journey-shorter v=1 skills=[physics.motion] stars=2 {
+  title "The straight road"
+  difficulty (a + b)
+  let a=6..10 b=6..10 c=8..12
+  where (c < a + b)
+
+  scene 36x11 {
+    roaddistances road stops=["Ash", "Bray", "Cole"] legs=[a, b] unit=km at=canvas(1, 0)
+    text ask "A new straight road goes from Ash to Cole in {c} km. How many km shorter is it than going by Bray?" width=13 right-of=road gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b - c)
+  feedback {
+    when (answer == a + b) point=road {
+      say "That is the way by Bray. How much less is the straight road?"
+    }
+  }
+  hint "How far is the way by Bray?"
+  hint "Now how much further is that than the straight road?"
+}

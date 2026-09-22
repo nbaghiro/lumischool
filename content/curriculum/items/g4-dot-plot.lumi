@@ -1,0 +1,27 @@
+# A dot plot counted by a rule: several columns added, not one read off.
+item data.dot-plot v=2 skills=[data.dot-plots] {
+  title "Reading a dot plot"
+  difficulty ((if k == 1 then 3 else if k == 2 then 2 else 1) + (g0 + g1 + g2 + g3 + g4) / 10)
+  let g0=0..2 g1=1..4 g2=2..5 g3=1..4 g4=0..3 k=1..3
+  level easy {
+    let k={3}  # one column to count
+  }
+  level hard {
+    let k={1}  # three columns to add
+  }
+
+  scene 32x12 {
+    dotplot plot from=0 to=4 counts=[g0, g1, g2, g3, g4] label=goals at=canvas(1, 1)
+    text ask "Each dot is one child and the number of goals they scored. How many children scored more than {k} {if k == 1 then \"goal\" else \"goals\"}?" narrate width=13 right-of=plot gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 1 then g2 + g3 + g4 else if k == 2 then g3 + g4 else g4)
+  feedback {
+    when (answer == (if k == 1 then g1 + g2 + g3 + g4 else if k == 2 then g2 + g3 + g4 else g3 + g4)) point=plot {
+      say "More than {k} does not include {k} itself."
+    }
+  }
+  hint "Which columns are more than {k}?"
+  hint "Count the dots in those columns and add them."
+}

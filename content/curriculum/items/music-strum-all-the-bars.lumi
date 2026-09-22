@@ -1,0 +1,47 @@
+# The three-star count: every bar that keeps the rule (a down or a miss on each number, an up or a
+# miss on each and) with a given number of strums and ups. The downs go on the numbers and the ups
+# on the ands independently, so the ways multiply: C(m, n - u) times C(m, u).
+item music.strum-all-the-bars v=1 stars=3 skills=[music.strumming, reasoning.all-the-ways] {
+  title "Every bar that keeps the rule"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let m={pick(k, 3, 3, 3, 3, 4, 4)}
+  let n={pick(k, 2, 2, 4, 5, 5, 6)}
+  let u={pick(k, 0, 1, 2, 2, 2, 3)}
+  let downs={pick(k, 3, 3, 3, 1, 4, 4)}
+  let ups={pick(k, 1, 3, 3, 3, 6, 4)}
+  let with={pick(k, "all of them down", "one of them up", "two of them up", "two of them up", "two of them up", "three of them up")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x26 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "in three"
+        strumtrack a strums=D-DUDU counts=true chord=none ring=-1
+      }
+      row rb space=1 align=centre {
+        text lb "in four"
+        strumtrack b strums=D-DU-UDU counts=true chord=none ring=-1
+      }
+    }
+    text ask "Each bar keeps the rule: on a number a down strum or a miss, on an and an up strum or a miss. How many different bars in {if m == 3 then \"three\" else \"four\"} have exactly {n} strums, {with}?" narrate width=34 below=bars gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (downs * ups)
+  feedback {
+    when (answer == downs and answer != downs * ups) point=ask {
+      say "That counts the ways to place the downs. Each of those can have its ups in several places too."
+    }
+    when (answer == downs + ups and answer != downs * ups) point=ask {
+      say "Every way of placing the downs goes with every way of placing the ups, so multiply rather than add."
+    }
+  }
+  hint "{pick(k, \"First find every way to put two down strums on the three numbers.\", \"First find every way to put one down strum on the three numbers.\", \"First find every way to put two down strums on the three numbers.\", \"First find every way to put three down strums on the three numbers.\", \"First find every way to put three down strums on the four numbers.\", \"First find every way to put three down strums on the four numbers.\")}"
+  hint "{pick(k, \"With no up strums, every and is a miss, so each way of placing the downs is one bar.\", \"Then every way to put one up strum on the three ands. Each down pattern goes with each up pattern.\", \"Then every way to put two up strums on the three ands. Each down pattern goes with each up pattern.\", \"Then every way to put two up strums on the three ands. Each down pattern goes with each up pattern.\", \"Then every way to put two up strums on the four ands. Each down pattern goes with each up pattern.\", \"Then every way to put three up strums on the four ands. Each down pattern goes with each up pattern.\")}"
+}

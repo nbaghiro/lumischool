@@ -1,0 +1,48 @@
+lesson coding-two-ways-to-start v=2 format=teach grade=2 unit=6 subject=coding levels=[easy, medium, hard] {
+  title "Two ways to start"
+  goal "Read a program with two when blocks, say what happens when each one is started, and follow them one after the other."
+
+  look {
+    scene 34x12 {
+      row all at=canvas(1, 0) space=1 align=start {
+        blocks b code=["when the flag is tapped", "right 2", "when tapped", "left 1", "clap 2"]
+        stage s cols=7 col=3 who=crab code=["when the flag is tapped", "right 2", "when tapped", "left 1", "clap 2"] upto=0
+      }
+    }
+    say """
+      This program has two when blocks, so it is two scripts. The flag starts the first. Tapping
+      the crab starts the second, and only the blocks under that when block run. On the screen, try
+      both: tap the flag, then tap the crab.
+      """
+  }
+  do {
+    practice coding.stage-events count=2 seed=3 hard-seed=14
+    practice coding.stage-said count=2 seed=4 hard-seed=1
+    practice coding.stage-tap-twice count=2 seed=5 easy-seed=14
+    practice coding.stage-chain count=2 seed=2
+  }
+  try stars=2 {
+    show coding.stage-back-home a=2 n=3 c=1 easy-n=2
+  }
+  try stars=3 {
+    show coding.stage-fewest-presses a=3 t=5 easy-a=2 easy-t=4 hard-a=2 hard-t=6
+  }
+  remember {
+    say "Each when block starts only the blocks under it, from wherever the character is standing."
+  }
+
+  grown-ups """
+    Two scripts on one character is harder than it looks, because children expect every block on
+    the page to run. Ask what was tapped first, then find the when block that matches it. When the
+    flag and a tap come one after the other, the second script starts where the first one stopped,
+    which is the idea the chain questions check. In the three-star question there is no method on
+    the page: let the child try flags until the crab is past the square and then count back, and
+    ask whether a different mix could be quicker.
+    """
+  level easy {
+    grown-ups "At this level the flag is what is tapped, the crab tapped twice goes right both times, the tap script after the flag goes on to the right, the way home is four squares, and the fewest taps land the crab on square four."
+  }
+  level hard {
+    grown-ups "At this level the crab or the rabbit is what is tapped, the crab tapped twice goes left both times and ends near the edge, the tap script after the flag goes back two or three squares, the way home is six squares as written, and the fewest taps land the crab on square six, which takes three flags and a step back."
+  }
+}

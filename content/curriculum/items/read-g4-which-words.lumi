@@ -1,0 +1,21 @@
+# The feeling is given; the child finds the words that show it. Pointing at the evidence is the
+# reasoning step the grade 4 benchmark asks for.
+item reading.which-words-show v=1 stars=2 skills=[reading.inference, reading.evidence] {
+  title "Which words show it?"
+  difficulty (if k == 3 then 0 else 1)
+  let k=0..3 who={if k == 0 then "Pip" else if k == 1 then "Zara" else if k == 2 then "Ned" else "Lila"}
+
+  scene 37x17 {
+    row all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"Pip read the letter again and put it on the table. Outside the rain went on. He left his cake, and his cocoa went cold.\" else if k == 1 then \"The house was dark when Zara got home. She pressed every light switch on the way up the stairs and sang loudly the whole time.\" else if k == 2 then \"Ned finished the puzzle, the one with a thousand pieces, and ran to find Dad before the last piece had even settled.\" else \"Lila had heard the same story from Grandpa four times that day. She stared at the clock and counted the ticks.\"}" width=20 numbers=false
+      column q space=1 align=start {
+        text ask "{who} feels {if k == 0 then \"sad\" else if k == 1 then \"scared\" else if k == 2 then \"proud\" else \"bored\"}. Which words show it?" width=15
+        choice pick options=[if k == 0 then "put it on the table" else if k == 1 then "every light switch" else if k == 2 then "a thousand pieces" else "four times that day", if k == 0 then "left his cake" else if k == 1 then "on the way up" else if k == 2 then "ran to find Dad" else "stared at the clock", if k == 0 then "the rain went on" else if k == 1 then "got home" else if k == 2 then "the last piece" else "from Grandpa"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "left his cake" else if k == 1 then "every light switch" else if k == 2 then "ran to find Dad" else "stared at the clock")
+  hint "Imagine you feel like {who}. What would you do?"
+  hint "Which words describe something {who} does because of the feeling?"
+}

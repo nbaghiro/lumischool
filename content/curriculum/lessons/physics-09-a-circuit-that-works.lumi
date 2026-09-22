@@ -1,0 +1,47 @@
+lesson physics-a-circuit-that-works v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "A circuit that works"
+  goal "Say whether a bulb, a buzzer or a motor will work, by following the wire all the way round."
+
+  look {
+    scene 36x12 {
+      row two at=canvas(1, 1) space=2 align=start {
+        circuit shut closed=1 cells=1
+        circuit open closed=0 cells=1
+      }
+    }
+    say """
+      Electricity only flows round a loop that is joined all the way. The cell gives the push, the
+      wire carries it, and the switch is a gap you can open and close. One gap anywhere and nothing
+      happens.
+      """
+  }
+  do {
+    practice physics.switch-state count=2 seed=2
+    practice physics.does-it-light count=2 seed=4
+    practice physics.buzzer-sounds count=2 seed=1
+    practice physics.motor-turns count=2 seed=3
+    show physics.circuit-parts
+  }
+  try stars=2 {
+    show physics.which-dark w=0 f=1 c=2 hard-f=2
+  }
+  try stars=3 {
+    show physics.buzzer-and-bulb c=2 easy-c=1 hard-c=3
+  }
+  remember {
+    say "One gap in the loop and the bulb stays dark."
+  }
+
+  grown-ups """
+    If there is a bulb, a battery and two wires in the house, build it. The moment worth catching is
+    lifting one wire off: the bulb goes out at once, which is what "a complete circuit" means. The
+    last question hides the bulb and says only that the buzzer is sounding; the answer follows from
+    the loop being whole, which is the idea the lesson rests on.
+    """
+  level easy {
+    grown-ups "At this level the faults are open switches, which show at a glance."
+  }
+  level hard {
+    grown-ups "At this level the faults are loose wires, which are found only by following the loop round."
+  }
+}

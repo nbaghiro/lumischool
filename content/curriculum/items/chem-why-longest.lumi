@@ -1,0 +1,28 @@
+# Why the candle burns longest under the biggest jar: it holds the most air, and the flame uses
+# the air up. The wrong reasons are about the glass rather than the air.
+item chem.why-longest v=1 skills=[chemistry.burning, reasoning.explain] {
+  title "Why longest under the big jar?"
+  difficulty 0
+  let r=0..2
+  let right={pick(0, "The biggest jar holds the most air")}
+  let w1={pick(0, "The flame is furthest from the glass")}
+  let w2={pick(0, "The big jar lets air in under its rim")}
+
+  scene 34x27 {
+    candle c start=10 burnt=4 lit=0 jar=1 at=canvas(0, 0)
+    text ask "Under the 1000 ml jar the candle burnt four times as long as under the 250 ml jar. Why?" narrate width=20 right-of=c gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=c gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=c {
+      say "Every jar sits sealed on the table; if air got in under the rim, the candle would never go out at all."
+    }
+    when (pick == w1) point=c {
+      say "The glass does not feed or starve the flame. What is inside the jar with the candle, and what does the flame use up?"
+    }
+  }
+  hint "What runs out when a candle is under a jar? Which jar has the most of it to begin with?"
+  hint "Four times the air lasts four times as long."
+}

@@ -1,0 +1,21 @@
+# Working back from what the eye sees to the dots that make it.
+item art.dots-which-two v=1 skills=[art.artists, art.colour-mixing, reasoning.work-backwards] {
+  title "Which dots make it?"
+  difficulty (if t == "pink" then 2 else if t == "purple" then 1 else 0)
+  let t={"orange", "purple", "pink"}
+  level easy {
+    let t={"orange", "purple"}
+  }
+  level hard {
+    let t={"purple", "pink"}
+  }
+
+  scene 32x12 {
+    text ask "Ada wants a patch that looks {t} from across the room, painted only in tiny dots of two colours side by side. Which two colours should the dots be?" width=15 at=canvas(1, 1)
+    choice pick options=["{if t == \"pink\" then \"red and white\" else \"red and yellow\"}", "{if t == \"pink\" then \"red and yellow\" else \"blue and yellow\"}", "red and blue"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=makes target="{t}" how=eye
+  hint "Which two paints would you mix on a plate to get {t}?"
+  hint "Dots side by side mix in your eye. Do those two colours still work when they are dots?"
+}

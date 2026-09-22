@@ -1,0 +1,12 @@
+item music.uke-strum-am v=1 skills=[music.chord-boxes, music.strumming] {
+  title "Strum A minor"
+
+  scene 32x29 {
+    text ask "A minor needs one finger too. Put it where the card shows and strum all four strings." width=30 at=canvas(1, 1)
+    chordbox card tuning=uke chord=Am frets=4 show=fingers name=true letters=true lit=[] below=ask gap=1
+    fretboard neck tuning=uke frets=4 view=chart labels=letters strum=true right-of=card gap=2
+  }
+
+  check music.chord chord=Am tuning=uke
+  hint "The dot is on the G string, the one on the left, at fret 2."
+}

@@ -1,0 +1,24 @@
+item physics.ramp-higher v=1 skills=[physics.motion] {
+  title "Which rolls further?"
+  difficulty (6 - abs(a - b))
+  let a=2..5 b=2..5
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 2)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+
+  scene 32x30 {
+    column two at=canvas(1, 0) space=1 align=start {
+      ramp top height=a ball=0
+      ramp bottom height=b ball=0
+    }
+    text ask "Both balls are let go from the top. Which one rolls further along the floor?" width=16 below=two gap=0
+    choice pick options=["Top", "Bottom"] right-of=ask gap=1
+  }
+
+  answer pick=(if a > b then "Top" else "Bottom")
+  hint "Which ball starts higher up?"
+}

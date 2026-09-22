@@ -1,0 +1,27 @@
+item groups.eggbox v=1 skills=[bonds-to-12] {
+  title "The empty cups"
+  difficulty (2 * c - e)
+  let c=4..6 e=3..9
+  where (e < 2 * c)
+  where (2 * c - e != e)
+  level easy {
+    let c={4, 5} e=6..9
+  }
+  level hard {
+    let c={6} e=3..5
+  }
+
+  scene 26x14 {
+    eggbox box rows=2 cols=c eggs=e at=canvas(1, 1)
+    text ask "How many cups are empty?" narrate below=box gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (2 * c - e)
+  feedback {
+    when (answer == e) point=box {
+      say "That is how many eggs there are. Count the empty cups instead."
+    }
+  }
+  hint "Count all the cups, then take away the eggs."
+}

@@ -1,0 +1,67 @@
+# The second ukulele chord, and the first change: G7 needs three fingers, and moving between C and
+# G7 on the count of 1 is the whole of playing a song.
+lesson music-uke-g7-two-chords v=1 format=teach grade=1 unit=4 subject=music levels=[easy, medium, hard] {
+  title "G7 and a two-chord song"
+  goal "Play G7 and change between C and G7 on the beat through a short song."
+
+  look {
+    scene 32x15 {
+      chordchange change tuning=uke from=C to=G7 frets=3 at=canvas(1, 1)
+      hand fingers side=left numbers=guitar ring=0 colours=true right-of=change gap=2
+    }
+    say """
+      C is one finger. G7 is three: finger 1 on the E string at fret 1, finger 2 on the C string
+      at fret 2, and finger 3 on the A string at fret 2. Finger 3 is already on the A string for
+      C, so it slides back one fret towards the head and the other two come down beside it. Count 1 2 3 4 as you
+      strum, and change on the 1.
+      """
+  }
+  do {
+    level easy {
+      worked music.chord-fingers-count k=1
+    }
+    practice music.chord-fingers-count count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.which-chord count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.g7-finger-place count=1 seed=1 easy-seed=1 hard-seed=1
+    show music.c-to-g7 w=0 hard-w=1
+    show music.play-g7
+    practice music.uke-finger-number count=1 seed=3 easy-seed=1 hard-seed=1
+    practice music.strums-before-change count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show music.c-to-g7 w=0 level=medium
+    }
+  }
+  story {
+    show music.song-bars w=0 hard-w=1
+  }
+  try stars=2 {
+    show music.change-late k=0 hard-k=1
+  }
+  try stars=3 {
+    show music.two-chord-song
+  }
+  remember {
+    say "G7 is three fingers in a row: 1, 2, 3 on E, C, A. Change chord on the count of 1."
+  }
+
+  grown-ups """
+    The idea is the first chord change: G7 is read from its card, three dots in a row across the
+    E, C and A strings, and the change from C is finger 3 sliding back one fret with two fingers
+    joining it. The look is the change card and the hand, and the way in counts a card's dots.
+    The core names a card with its name hidden, reads G7 for one finger's string and fret, asks
+    what finger 3 does at the change and which fingers are new, strums G7 (the machine hears all
+    four strings), names a ringed finger, and counts strums on the track before the change. The
+    wrong idea to watch for is a change that comes when the fingers are ready rather than on the
+    count; say the count aloud with the child and let the fingers move during 4. The story counts
+    the strums and the changes in an eight-bar song, the two-star question finds the player who
+    changed on count 2, and the three-star question is the song played through to you, with the
+    changes on the 1 and no pause. If a string buzzes, the finger is on the fret rather than
+    just behind it, or lying flat across the next string.
+    """
+  level easy {
+    grown-ups "At this level F's two dots are counted once in the teacher's pen before C or F, the hidden card is C, the finger to place is finger 1, the change question asks what finger 3 does, the ringed finger is the pointer or the middle finger, the strums before the change are counted, the story counts the strums of G7, and the two-star's late player is B."
+  }
+  level hard {
+    grown-ups "At this level the card to count is G7, the hidden card is F or G7, the finger to place is 2 or 3, the change questions ask which fingers are new and what finger 3 does, the ringed finger is the ring or little finger, the track is counted for every strum or for its bars, the story counts the changes, and the two-star's late player is A."
+  }
+}

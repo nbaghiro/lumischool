@@ -1,0 +1,28 @@
+# The feeling is never named. What the character does is the clue, which is inference from
+# actions rather than from a word such as sad.
+item reading.how-they-feel v=1 skills=[reading.inference, reading.characters] {
+  title "How does it feel?"
+  difficulty (if k == 0 or k == 2 or k == 4 then 1 else 0)
+  let k=0..5 who={if k == 0 then "Jin" else if k == 1 then "Maya" else if k == 2 then "Owen" else if k == 3 then "Tess" else if k == 4 then "Ravi" else "Nell"}
+  level easy {
+    let k={1, 3, 5}
+  }
+  level hard {
+    let k={0, 2, 4}
+  }
+
+  scene 33x14 {
+    passage p text="{if k == 0 then \"Jin had practised the song every night for a week. Waiting to go on stage, he could not keep still and kept swallowing.\" else if k == 1 then \"Maya opened the parcel from Gran, went very quiet, and then hugged her so hard that her glasses slipped.\" else if k == 2 then \"The last bus pulled away just as Owen reached the stop. He kicked the kerb and did not say a word all the way home.\" else if k == 3 then \"Tess yawned through the whole film and was fast asleep before the car had left the car park.\" else if k == 4 then \"Ravi walked round the room twice before the test began. He kept rubbing his hands on his trousers.\" else \"Nell slammed her bedroom door and threw her shoes at the wall, one after the other.\"}" width=32 numbers=false at=canvas(1, 1)
+    text ask "How does {who} feel?" below=p gap=1
+    choice pick options=["nervous", "happy", "cross", "tired"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 4 then "nervous" else if k == 1 then "happy" else if k == 2 or k == 5 then "cross" else "tired")
+  feedback {
+    when (pick == "tired" and (k == 0 or k == 4)) point=p {
+      say "Tired people are still. What is {who} doing that a tired person would not do?"
+    }
+  }
+  hint "What does {who} do? Picture someone doing that."
+  hint "Which feeling makes a person act like that?"
+}

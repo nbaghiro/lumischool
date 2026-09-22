@@ -1,0 +1,27 @@
+# The way in: the see-through thing in a row of things, each drawn in its material. At easy the
+# see-through thing is a jar or a clear plastic bottle beside soft or wooden things; at hard it is
+# glass beside metal, rubber and brick, which are hard too.
+item chem.which-clear v=1 skills=[chemistry.materials] {
+  title "Which is see-through?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3 p=0..2
+  let a={pick(k, "glass-jar", "plastic-bottle", "glass-bottle", "glass-jar")}
+  let b={pick(k, "wooden-spoon", "metal-key", "metal-can", "rubber-boot")}
+  let c={pick(k, "wool-sock", "paper-bag", "wooden-ruler", "brick")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 24x13 {
+    text ask "Sam tests things at the printing works. First test: can you see through it? Which one passes?" width=23 at=canvas(1, 0)
+    materials row things=["{if p == 0 then a else if p == 1 then b else c}", "{if p == 0 then b else if p == 1 then c else a}", "{if p == 0 then c else if p == 1 then a else b}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="only(see-through)"
+  hint "Hold each one up to the window in your head. Which one would let the light and the view through?"
+  hint "Glass and clear plastic let you see through. Wood, metal, cloth and paper do not."
+}

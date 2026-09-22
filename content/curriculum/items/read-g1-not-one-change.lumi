@@ -1,0 +1,15 @@
+# Three of the words are one step from the start word and one is two steps, and it shares a letter
+# with the start, so each word has to be checked letter by letter.
+item reading.not-one-change v=1 stars=2 skills=[reading.phonics, reasoning.find-the-odd-one] {
+  title "Not one step away"
+  let k=0..3 p=0..3
+
+  scene 30x7 {
+    text ask "Which word is not one change away from {if k == 0 then \"cat\" else if k == 1 then \"pin\" else if k == 2 then \"hen\" else \"bug\"}?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then (if k == 0 then \"hot\" else if k == 1 then \"pot\" else if k == 2 then \"pet\" else \"rag\") else (if k == 0 then \"hat\" else if k == 1 then \"tin\" else if k == 2 then \"ten\" else \"rug\")}", "{if p == 1 then (if k == 0 then \"hot\" else if k == 1 then \"pot\" else if k == 2 then \"pet\" else \"rag\") else (if k == 0 then \"cot\" else if k == 1 then \"pan\" else if k == 2 then \"hem\" else \"bag\")}", "{if p == 2 then (if k == 0 then \"hot\" else if k == 1 then \"pot\" else if k == 2 then \"pet\" else \"rag\") else (if k == 0 then \"can\" else if k == 1 then \"pit\" else if k == 2 then \"men\" else \"bun\")}", "{if p == 3 then (if k == 0 then \"hot\" else if k == 1 then \"pot\" else if k == 2 then \"pet\" else \"rag\") else (if k == 0 then \"bat\" else if k == 1 then \"win\" else if k == 2 then \"den\" else \"hug\")}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "hot" else if k == 1 then "pot" else if k == 2 then "pet" else "rag")
+  hint "Check each word against the first word, one letter at a time."
+  hint "Count how many letters are different. One word has two."
+}

@@ -1,0 +1,27 @@
+# Dividing by ten in a story: packing into tens is the same move as times ten, done backwards.
+item divide.by-ten-boxes v=1 skills=[place-value.multiply-by-ten, division.grouping] {
+  title "Boxes of ten"
+  difficulty k
+  let k=(12..96 by 3)
+  level easy {
+    let k=(12..30 by 3)
+  }
+  level hard {
+    let k=(102..198 by 3)  # more than a thousand counters, so the answer has three digits
+  }
+
+  scene 32x10 {
+    boxes pack boxes=2 per=10 loose=0 item=counter at=canvas(1, 1)
+    text ask "Counters are packed in boxes of 10, like these. How many boxes are needed for {10 * k} counters?" width=18 right-of=pack gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == 100 * k) point=pack {
+      say "Each box holds ten, so there are fewer boxes than counters, not more."
+    }
+  }
+  hint "How many counters are in 10 boxes? In 20 boxes?"
+  hint "Dividing by ten moves every digit one place to the right."
+}

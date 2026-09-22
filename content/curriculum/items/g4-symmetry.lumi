@@ -1,0 +1,27 @@
+# The shape and the mirror line are both parameters, which a word setting could not be until
+# "pick" was added to the registry; see the report.
+item shapes.symmetry v=1 skills=[shapes.symmetry] {
+  title "Is it a mirror line?"
+  difficulty (if l == "diagonal" and s != "square" and s != "ell" or s == "isosceles" and l == "horizontal" then 2 else if s == "hexagon" or s == "ell" then 1 else 0)
+  let s={"square", "rectangle", "isosceles", "ell", "hexagon"} l={"vertical", "horizontal", "diagonal"}
+  level easy {
+    where (s != "hexagon" and l != "diagonal" and not (s == "isosceles" and l == "horizontal"))
+  }
+  level hard {
+    where (s == "hexagon" or s == "rectangle" and l == "diagonal" or s == "isosceles" and l != "vertical")  # the folds that look right and are not
+  }
+
+  scene 24x17 {
+    mirror fig shape=s line=l size=7 at=canvas(1, 0)
+    text ask "Fold along the dashed line. Would the two halves match?" width=22 below=fig gap=1
+    choice pick options=["Yes", "No"] below=ask gap=0
+  }
+
+  answer pick=(if s == "ell" then "No" else if s == "square" then "Yes" else if l == "diagonal" then "No" else if s == "isosceles" and l == "horizontal" then "No" else "Yes")
+  feedback {
+    when (pick == "Yes" and s == "ell") point=fig.centre {
+      say "One half has a step in it and the other does not, so they cannot match."
+    }
+  }
+  hint "Imagine folding the shape along the dashed line and looking at what sticks out."
+}

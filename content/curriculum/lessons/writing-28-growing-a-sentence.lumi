@@ -1,0 +1,56 @@
+lesson writing-growing-a-sentence v=1 format=teach grade=4 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Growing a sentence"
+  goal "Make a short sentence longer by answering when, where and why, and join two short sentences into one."
+
+  look {
+    scene 25x18 {
+      column all at=canvas(1, 1) space=1 align=start {
+        whale w spout=1 facing=1
+        expander e kernel="The whale sang." asks=["when", "where"] answers=["at dawn", "under the ship"]
+      }
+    }
+    say """
+      A short sentence can grow. Ask it questions: when did the whale sing, where, why? Each answer
+      adds to the sentence. A when at the start is followed by a comma. The short sentence is still
+      there in the middle of the long one.
+      """
+  }
+  do {
+    level easy {
+      worked writing.which-words-tell s=0 q=1 level=medium
+    }
+    practice writing.which-words-tell count=1 seed=1
+    practice writing.which-question-answered count=2 seed=2 hard-seed=7
+    practice writing.where-comma-goes count=2 seed=3 hard-seed=7
+    practice writing.combine-sentences count=1 seed=2
+    practice writing.combine-three count=1 hard-count=0 seed=4
+    level hard {
+      practice writing.grow-for-reader count=1 seed=1
+    }
+    show writing.grow-it t="The ship rocked."
+  }
+  try stars=2 {
+    show writing.grow-for-reader k=2 easy-k=0
+  }
+  try stars=3 {
+    show writing.grow-to-ten t="The gull landed."
+  }
+  remember {
+    say "Ask when, where and why. Each answer grows the sentence."
+  }
+
+  grown-ups """
+    Growing a short sentence and joining two short ones are the two sentence exercises with the
+    best evidence behind them for children of this age. Most questions are marked by the machine;
+    the grown sentences are yours to read. Check that each is still one sentence, with one full
+    stop. In the two-star question the reader decides which question to answer, so ask the child
+    who the reader is before they choose. The ten-word sentence in the three-star question has many
+    right answers, and counting the words together is part of the fun.
+    """
+  level easy {
+    grown-ups "At this level the words that tell when are found once in the teacher's pen before where and who, the grown words answer where or when, the comma follows a short opener, the sentences to combine are as written, the sentence to grow is as written, the two-star's reader needs a where, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the words that tell are as written, the grown words answer why, the comma follows a long opener (as the sun set, in the middle of the night), the sentences to combine are as written and the three-in-one makes way for a second reader to grow for, the sentence to grow is as written, and the two-star and three-star are as written."
+  }
+}

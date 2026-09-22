@@ -1,0 +1,15 @@
+# Litres against millilitres: 2 litres is 2000 ml, so a big number of millilitres can still be less.
+item measure.holds-more v=1 stars=2 skills=[capacity.litres, reasoning.compare-units] {
+  title "Which holds more?"
+  difficulty (10 - abs(d) / 100)
+  let L={2, 3} d={-500, -100, 0, 100, 500}
+
+  scene 30x9 {
+    text ask "Bottle A holds {L} litres. Bottle B holds {1000 * L + d} millilitres. Which bottle holds more?" width=28 at=canvas(1, 1)
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if d == 0 then "the same" else if d > 0 then "B" else "A")
+  hint "How many millilitres is one litre? And {L} litres?"
+  hint "Write both bottles in millilitres, then compare."
+}

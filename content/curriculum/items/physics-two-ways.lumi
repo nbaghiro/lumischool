@@ -1,0 +1,52 @@
+# The two-star reason: one toy moves two ways, and a different push does each. The trap is the
+# hand, which a child keeps naming after it has let go. At easy it is a ball thrown up; at hard
+# the hat that nobody touched, and the swing that comes back with no push at all.
+item physics.two-ways v=1 stars=2 skills=[physics.forces, reasoning.explain] {
+  title "Two ways, two pushes"
+  difficulty pick(k, 0, 1, 2, 2, 0)
+  let k=0..4
+  let tale={pick(k, "Pip throws the ball straight up. It comes back down.", "Pip pushes the spring toy down. She lets go, and it jumps up.", "The wind blows Sam's hat off. It lands on the grass.", "Sam pushes the swing forward. It swings back by itself.", "Pip runs along, pulling the kite. Then the wind lifts it up.")}
+  let w1={pick(k, "up", "down", "off his head", "forward", "along the ground")}
+  let w2={pick(k, "down", "up", "onto the grass", "back", "up into the sky")}
+  let r1={pick(k, "a hand", "a hand", "the wind", "a hand", "a hand")}
+  let r2={pick(k, "a fall", "a spring", "a fall", "a fall", "the wind")}
+  level easy {
+    let k={0, 4}
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x33 {
+    row garden at=canvas(0, 0) space=2 align=end {
+      children kids count=2 names=["Sam", "Pip"] holding="ball"
+      swing seat seats=1
+      windsock sock wind=1
+      art kite asset="kite"
+    }
+    squash spring thing=spring action=squash after=1 below=garden gap=1
+    text tale "{tale}" narrate width=10 right-of=spring gap=1
+    text q1 "What moves it {w1}?" narrate width=30 below=spring gap=1
+    choice a options=["a hand", "the wind", "a fall", "a spring"] below=q1 gap=0
+    text q2 "What moves it {w2}?" narrate width=30 below=a gap=1
+    choice b options=["a hand", "the wind", "a fall", "a spring"] below=q2 gap=0
+  }
+
+  answer a=r1 b=r2
+  feedback {
+    when (k != 2 and b == "a hand") point=b {
+      say "The hand let go. A hand can only push what it is touching, so something else moves it after that."
+    }
+    when (k == 4 and b == "a fall") point=b {
+      say "The kite goes up, not down, so it is not falling. What pushes on a kite up in the sky?"
+    }
+    when (k == 2 and (a == "a hand" or b == "a hand")) point=kids {
+      say "Nobody touched the hat. Look at the windsock: the air is moving, and then nothing held the hat up."
+    }
+    when (k != 2 and a != "a hand") point=a {
+      say "At the start a hand is touching it. That push comes first."
+    }
+  }
+  hint "What is touching it at the start? What is touching it after the hand lets go?"
+  hint "When nothing holds a thing up, it falls. When a squashed spring is let go, it pushes."
+}

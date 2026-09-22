@@ -1,0 +1,50 @@
+# The way in: creatures on the grass beside something a person dropped. At hard a toadstool joins
+# them, which grows and has young without ever moving, so counting only what moves misses it.
+item nature.living-count v=1 skills=[nature.living] {
+  title "How many are living?"
+  difficulty (m + 2 * fungus)
+  set fungus=0
+  let m=1..4 j=0..1
+  let a={if m >= 1 then "ladybird" else "none"}
+  let b={if m >= 2 then "ant" else "none"}
+  let c={if m >= 3 then "snail" else "none"}
+  let d={if m >= 4 then "bee" else "none"}
+  let thing={if j == 0 then "cup" else "pencil"}
+  level easy {
+    let m=1..2
+  }
+  level hard {
+    set fungus=1
+    let m=3..4
+    scene 36x24 {
+      row grass at=canvas(1, 1) space=1 align=end {
+        minibeasts beasts kinds=[a, b, c, d] legs=false
+        art dropped asset="{thing}"
+      }
+      toadstools cap count=1 spots=4 below=grass gap=1
+      text ask "Someone dropped a {thing} in the long grass. How many living things are in the picture? The toadstool grows, so count it too." narrate width=34 below=cap gap=1
+      number-input answer below=ask gap=1
+    }
+  }
+
+  scene 36x16 {
+    row grass at=canvas(1, 1) space=1 align=end {
+      minibeasts beasts kinds=[a, b, c, d] legs=false
+      art dropped asset="{thing}"
+    }
+    text ask "Someone dropped a {thing} in the long grass. How many living things are in the picture?" narrate width=34 below=grass gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m + fungus)
+  feedback {
+    when (answer == m + fungus + 1) point=dropped {
+      say "The {thing} was made by people. It does not grow, eat or have young, so it is not living."
+    }
+    when (fungus == 1 and answer == m) point=beasts {
+      say "The toadstool never moves, but it grows and makes new toadstools. It is living too."
+    }
+  }
+  hint "A living thing grows, eats or drinks, and can have young. Which of these do that?"
+  hint "Count the creatures. Then decide about anything else in the picture."
+}

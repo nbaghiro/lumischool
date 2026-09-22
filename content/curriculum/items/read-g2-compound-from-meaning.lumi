@@ -1,0 +1,23 @@
+# The meaning gives both short words, and the child builds the long one and spells it: the
+# audit's raise for compound-word, which named the word with a picture.
+item reading.compound-from-meaning v=1 skills=[reading.compound-words, reading.vocabulary] {
+  title "Build the word"
+  difficulty (if i == 3 or i == 6 then 2 else if i == 0 or i == 7 then 1 else 0)
+  let i=0..7
+  level easy {
+    let i={1, 2, 4, 5}  # rainbow, snowman, bedroom, football
+  }
+  level hard {
+    let i={0, 3, 6, 7}  # treehouse, toothbrush, playground, sunflower
+  }
+
+  scene 26x9 {
+    text clue "{if i == 0 then \"A small house built up in a tree.\" else if i == 1 then \"A bow of colours you see in the sky after rain.\" else if i == 2 then \"A man you make out of snow.\" else if i == 3 then \"A brush for cleaning your teeth.\" else if i == 4 then \"The room where your bed is.\" else if i == 5 then \"A ball you kick with your foot.\" else if i == 6 then \"The ground at school where you play.\" else \"A tall flower that turns to face the sun.\"}" narrate width=24 at=canvas(1, 1)
+    text ask "Two short words make this one long word. Write it." narrate width=24 below=clue gap=1
+    word-input word options=["{if i == 0 then \"treehouse\" else if i == 1 then \"rainbow\" else if i == 2 then \"snowman\" else if i == 3 then \"toothbrush\" else if i == 4 then \"bedroom\" else if i == 5 then \"football\" else if i == 6 then \"playground\" else \"sunflower\"}"] letters=10 below=ask gap=1
+  }
+
+  answer word=(if i == 0 then "treehouse" else if i == 1 then "rainbow" else if i == 2 then "snowman" else if i == 3 then "toothbrush" else if i == 4 then "bedroom" else if i == 5 then "football" else if i == 6 then "playground" else "sunflower")
+  hint "Which two words in the clue could join up?"
+  hint "Which word goes first? Say both orders and hear which is a real word."
+}

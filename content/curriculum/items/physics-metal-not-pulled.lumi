@@ -1,0 +1,45 @@
+# The two-star reason: Ben's claim that a magnet picks up anything made of metal, and the thing on
+# the tray that shows he is wrong: the coin or the foil, metal and not pulled. In one version the
+# tray has nothing to show it, so the child has to say so.
+item physics.metal-not-pulled v=1 stars=2 skills=[physics.magnets, reasoning.counterexample] {
+  title "Is Ben right about metal?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let a={pick(k, "nail", "clip", "nail", "clip")}
+  let b={pick(k, "coin", "foil", "ruler", "nail")}
+  let c={pick(k, "ruler", "stick", "foil", "stick")}
+  let d={pick(k, "stick", "marble", "eraser", "marble")}
+  let right={pick(k, "No: the coin is metal and stays", "No: the foil is metal and stays", "No: the foil is metal and stays", "This tray cannot show it")}
+  let o1={pick(k, "Yes: the nail is metal and jumps", "Yes: the clip is metal and jumps", "Yes: the nail is metal and jumps", "No: the marble stays")}
+  let o2={pick(k, "No: the ruler stays", "No: the stick stays", "No: the eraser stays", "Yes: both metal things jump")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    row all at=canvas(1, 0) space=1 align=end {
+      things t things=["{a}", "{b}", "{c}", "{d}"]
+      magnet bar mode=things count=0 sticks=0 show=0
+    }
+    text ask "Ben says: a magnet picks up anything made of metal. Sam tries the magnet on this tray. Is Ben right?" narrate width=32 below=all gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1 and k <= 2) point=t {
+      say "One metal thing being pulled does not make Ben right about every metal thing. Is there a metal thing on the tray that the magnet leaves?"
+    }
+    when (pick == o2 and k <= 2) point=t {
+      say "That one is not metal, so it says nothing about Ben's sentence. Ben talked about metal things."
+    }
+    when (pick != right and k == 3) point=t {
+      say "To show Ben wrong you need a metal thing that is not pulled. Is there one on this tray?"
+    }
+  }
+  hint "Ben's sentence is about metal things. Find the metal things on the tray."
+  hint "Does the magnet pull every one of them? One that it leaves alone shows Ben is wrong."
+}

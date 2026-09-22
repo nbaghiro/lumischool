@@ -1,0 +1,40 @@
+# Three listeners numbered from loudest to quietest, which is the same as nearest to furthest. The
+# rows are the names in one fixed order, so the numbers have to be read from where each child
+# stands. At hard the drum is in the middle of them.
+item physics.listeners-in-order v=1 skills=[physics.sound, reasoning.order] {
+  title "Loudest to quietest"
+  difficulty (s + 2 * side)
+  set side=0
+  let k=0..5 s=0..1
+  let na={pick(k, "Mia", "Mia", "Leo", "Leo", "Ben", "Ben")}
+  let nb={pick(k, "Leo", "Ben", "Mia", "Ben", "Mia", "Leo")}
+  let nc={pick(k, "Ben", "Leo", "Ben", "Mia", "Leo", "Mia")}
+  let rben={if na == "Ben" then 1 else if nb == "Ben" then 2 else 3}
+  let rleo={if na == "Leo" then 1 else if nb == "Leo" then 2 else 3}
+  let rmia={if na == "Mia" then 1 else if nb == "Mia" then 2 else 3}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    set side=1
+    let s={1}
+  }
+
+  scene 36x28 {
+    ricedrum drum hit=2 at=canvas(if side == 0 then 1 else 9, 1)
+    children a count=1 names=["{na}"] at=canvas(if side == 0 then 15 else 23, 2)
+    children b count=1 names=["{nb}"] at=canvas(if side == 0 then if s == 0 then 25 else 21 else 1, 2)
+    children c count=1 names=["{nc}"] at=canvas(31, 2)
+    text ask "The drum is hit once. Number the children from the one who hears it loudest, 1, to the quietest, 3." narrate width=34 at=canvas(1, 14)
+    sequence s items=["Ben", "Leo", "Mia"] blanks=[qb, ql, qm] below=ask gap=1
+  }
+
+  answer qb=rben ql=rleo qm=rmia
+  feedback {
+    when (qb == 4 - rben and ql == 4 - rleo and qm == 4 - rmia) point=a {
+      say "That is quietest first. Number 1 is for the child who hears it loudest, the one closest to the drum."
+    }
+  }
+  hint "Who is closest to the drum? That child hears it loudest and gets number 1."
+  hint "Now find the one furthest away. What number does that child get?"
+}

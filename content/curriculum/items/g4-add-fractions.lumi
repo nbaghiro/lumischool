@@ -1,0 +1,40 @@
+# Grade 4 adds fractions whose denominators are related (halves and quarters, thirds and twelfths),
+# never thirds and fifths. The answer is written as two blanks, a top and a bottom, because an
+# expression can state a fraction exactly but an input box holds one number. The sum in the
+# larger parts is already in its lowest terms, so the answer a child writes by changing the first
+# fraction is the one the key holds, and no unsimplified sum is marked wrong.
+item fractions.add-related v=2 skills=[fractions.add-unlike] {
+  title "Adding related fractions"
+  difficulty (b * m)
+  let b={2, 3, 4, 5} m=2..3 a=1..4 c=1..7
+  where (a < b)
+  where (c < b * m)
+  where (a / b + c / (b * m) < 1)
+  where (gcd(a * m + c, b * m) == 1)
+  level easy {
+    let b={2, 3} m={2}  # quarters and sixths
+  }
+  level hard {
+    let b={4, 5} m={3}  # twelfths and fifteenths
+  }
+
+  scene 30x10 {
+    fraction one n=b k=a shape=bar at=canvas(1, 0)
+    fraction two n=(b * m) k=c shape=bar below=one gap=1
+    row eq below=two gap=1 space=1 align=centre {
+      equation sum "{a}/{b} + {c}/{b * m} ="
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b + c / (b * m)) bottom=den(a / b + c / (b * m))
+  feedback {
+    when (top == a + c and bottom == b + b * m) point=eq {
+      say "Only the tops are added. The bottom number says what size the parts are."
+    }
+  }
+  hint "Are the parts the same size in both bars?"
+  hint "Cut the first bar into {b * m} parts, so both fractions have the same size parts."
+}

@@ -1,0 +1,26 @@
+# The chord played from its card: every string the card plays sounds its note, and a crossed string
+# stays quiet. G plays all six, C leaves out one and D two, which is the order of difficulty.
+item music.guitar-play-open-chord v=1 skills=[music.chord-boxes, music.strumming] {
+  title "Play the chord"
+  difficulty c
+  let c=0..2
+  let chord={pick(c, "G", "C", "D")}
+  level easy {
+    let c=0..1
+  }
+  level hard {
+    let c=1..2
+  }
+
+  scene 36x29 {
+    chordbox box tuning=guitar chord=pick(c, "G", "C", "D") frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    column side space=1 align=start right-of=box gap=2 {
+      text ask "Hold {chord} on the neck and strum it, leaving out any string with a cross." width=18
+      fretboard neck tuning=guitar frets=4 view=chart labels=numbers strum=true
+    }
+  }
+
+  check music.chord chord={chord} tuning=guitar
+  hint "Put each finger on its dot first, one at a time, before you strum."
+  hint "Which strings have a cross over them? Start the strum on the next string along."
+}

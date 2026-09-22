@@ -1,0 +1,29 @@
+item count.flower-petals v=1 skills=[counting.in-fives] {
+  title "Petals in fives"
+  difficulty n
+  let n=2..6
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 32x16 {
+    flowers row count=n petals=5 at=canvas(1, 1)
+    text ask "Every flower has 5 petals. How many petals are there in all?" narrate width=24 below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (5 * n)
+  feedback {
+    when (answer == n) point=row {
+      say "That is how many flowers. Count five for each flower."
+    }
+    when (answer == 5 * n - 5) point=row {
+      say "Say five for the first flower too: 5, 10, 15."
+    }
+  }
+  hint "How many petals does one flower have?"
+  hint "Point at each flower and count in fives: 5, 10, 15."
+}

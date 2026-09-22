@@ -1,0 +1,66 @@
+# Writing a rhythm on paper: word sounds to notes, a bar of four beats built from crotchets, minims
+# and quavers, and every bar that fits a rule. The on-screen bar builder (sound.md) comes later.
+lesson music-writing-a-rhythm v=1 format=teach grade=2 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Writing a rhythm"
+  goal "Write a bar of four beats from crotchets, minims and quavers, and clap it."
+
+  look {
+    scene 22x20 {
+      row top space=2 align=start at=canvas(1, 1) {
+        bandstand stand posts=5 notes=3
+        drum d lugs=5
+      }
+      staff bar notes=[1, 0.5, 0.5, 2] below=top gap=1
+      text words "pear, ap-ple, boom" below=bar gap=1
+    }
+    say """
+      Ana writes rhythms for Ben's drum at the bandstand. A crotchet is one beat, like pear. Two
+      quavers share one beat, like ap-ple. A minim lasts two beats, like a long boom. A bar holds
+      four beats, so pear, ap-ple, boom makes one bar.
+      """
+  }
+  do {
+    practice music.rhythm-word-note count=1 seed=1 easy-seed=5 hard-seed=2
+    practice music.rhythm-words-to-bar count=2 seed=1 easy-seed=8 hard-seed=12
+    level easy {
+      worked music.rhythm-finish-bar k=3 level=medium
+    }
+    practice music.rhythm-finish-bar count=1 seed=1
+    practice music.rhythm-quaver-count count=1 seed=1
+    practice music.rhythm-too-many-bar count=1 seed=1 easy-seed=5 hard-seed=2
+    show music.rhythm-clap-bar
+    level hard {
+      show music.rhythm-which-is-right s=1 r=0
+    }
+    practice music.bandstand-drum-quavers count=1 seed=1
+  }
+  try stars=2 {
+    show music.rhythm-which-is-right s=0 r=0 easy-r=1 hard-r=1
+  }
+  try stars=3 {
+    show music.rhythm-count-bars k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "A crotchet is one beat, two quavers share a beat, and a minim is two."
+  }
+
+  grown-ups """
+    The idea is that a rhythm can be written down from its sounds: one sound in a beat is a
+    crotchet, two quick sounds are two quavers, and a sound held for two beats is a minim. The wrong
+    idea to watch for is giving every sound a whole beat, which turns ap-ple into two crotchets and
+    makes a bar too long. In the working, look for the child saying the words and counting the beats
+    on their fingers before choosing. The two-star question is that mistake written out; the
+    three-star question lists every bar that fits a rule, which is easiest written as letters. A
+    child who is stuck can clap the words first and then point at the notes, and go back to the way
+    in; stay on this lesson another day if the pairs of quavers still count as two beats. Clap each
+    bar together before the child answers, since the hearing has to come from the room. The
+    on-screen bar builder comes later; on paper the child chooses and counts. Off the page, make up
+    a bar from the names of things in the kitchen and clap it back and forth.
+    """
+  level easy {
+    grown-ups "At this level the word to match is pear, one sound, the bars to find have the pair of quavers third and then second, a bar with three beats written is finished once in the teacher's pen before one with two beats left, the quavers fill a bar of four after a crotchet, the drum bar is played twice and its beats counted, the two-star is as written with its answers in another order, and the three-star's bars have three beats and one pair of quavers."
+  }
+  level hard {
+    grown-ups "At this level the word to match is boom, held for two beats, the bar to finish starts with quavers, the quavers fill a bar of three beats, a second pair of written bars is judged before the two-star, the drum bar is played three times and its quavers counted, and the three-star's bars have a minim and two beats that can each be a crotchet or a pair of quavers."
+  }
+}

@@ -1,0 +1,32 @@
+# The audit's raise: a bar cut into 4, 5, 20 or 25 unlabelled parts, so the shaded part has to be
+# turned into hundredths first.
+item percent.bar-parts v=1 skills=[percentages.of-a-bar, fractions.equivalent] {
+  title "Parts of a bar as a percent"
+  difficulty (k + j)
+  let k={4, 5, 20, 25} j=1..19
+  where (j < k)
+  level easy {
+    let k={4, 5}  # quarters and fifths
+  }
+  level hard {
+    let k={20, 25}  # twentieths and twenty-fifths
+  }
+
+  scene 30x10 {
+    fraction bar n=k k=j shape=bar at=canvas(1, 1)
+    text ask "The whole bar is 100%. What percent of it is shaded?" narrate width=28 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * j / k)
+  feedback {
+    when (answer == j) point=bar {
+      say "That is how many parts are shaded. There are {k} parts, not 100."
+    }
+    when (answer == 10 * j) point=bar {
+      say "The bar has {k} parts, not ten. What percent is one part?"
+    }
+  }
+  hint "How many equal parts is the whole bar cut into?"
+  hint "100% shared between {k} parts is how much for each part?"
+}

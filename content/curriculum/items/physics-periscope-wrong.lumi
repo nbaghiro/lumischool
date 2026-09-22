@@ -1,0 +1,18 @@
+item physics.periscope-wrong v=1 skills=[physics.light] stars=2 {
+  title "Find the mistake"
+
+  scene 29x16 {
+    periscope p tall=6 flip=1 show=0 at=canvas(1, 0)
+    text ask "This periscope does not work. Which mirror is the wrong way round?" width=10 right-of=p gap=1
+    choice pick options=["The top one", "The bottom one"] stack=column below=ask gap=1
+  }
+
+  answer pick="The top one"
+  feedback {
+    when (pick == "The bottom one") point=p {
+      say "Follow the light in from the bird. Does the top mirror send it down the tube, or somewhere else?"
+    }
+  }
+  hint "Where does the light from the bird go when it hits the top mirror?"
+  hint "For the light to reach the eye, the two mirrors have to lean the same way."
+}

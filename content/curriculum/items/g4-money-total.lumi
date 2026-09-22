@@ -1,0 +1,28 @@
+# Dollars and cents, as the curriculum decided; the prices and the answer are unchanged.
+item money.total v=2 skills=[money.decimals] {
+  title "The whole basket"
+  difficulty (pen + pad + glue)
+  let pen={1.20, 1.35, 1.50} pad={2.40, 2.75, 3.10} glue={0.85, 0.95}
+  level easy {
+    let pen={1.20, 1.30} pad={2.40, 2.50} glue={0.10, 0.15}  # the cents never make a dollar
+  }
+  level hard {
+    let pen={2.65, 3.85} pad={4.95, 7.45} glue={1.75, 2.95}
+  }
+
+  scene 30x18 {
+    text ask "These are the prices on the shelf." width=28 at=canvas(1, 0)
+    table prices cols=2 head=["Item", "Price"] cells=["Pen", pen, "Pad", pad, "Glue", glue] below=ask gap=1
+    text q "How much are all three altogether, in dollars?" width=28 below=prices gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (pen + pad + glue)
+  feedback {
+    when (answer == pen + pad) point=prices.row(3) {
+      say "The glue is on the list too. Add all three prices."
+    }
+  }
+  hint "Line up the points. Which prices have cents that make more than a dollar together?"
+  hint "Add the dollars first, then the cents, then put them together."
+}

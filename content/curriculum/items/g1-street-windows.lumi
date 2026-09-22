@@ -1,0 +1,30 @@
+item groups.street-windows v=1 skills=[multiplication.equal-groups] {
+  title "Windows along the street"
+  difficulty (c * w)
+  let c=2..5 w=2..4
+  where (c * w != c + w)
+  level easy {
+    let c=2..3 w=2..3
+  }
+  level hard {
+    let c=4..5 w=3..4
+  }
+
+  scene 32x19 {
+    houses street count=c windows=w at=canvas(1, 1)
+    text ask "Every house has the same number of windows upstairs. How many upstairs windows are there on the street?" narrate width=28 below=street gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * w)
+  feedback {
+    when (answer == c + w) point=street {
+      say "That adds the houses and the windows. Count the windows of every house."
+    }
+    when (answer == w) point=street {
+      say "That is one house. There are {c} houses."
+    }
+  }
+  hint "How many upstairs windows does one house have?"
+  hint "Count that many for each house along the street."
+}

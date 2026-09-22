@@ -1,0 +1,14 @@
+# The way in, played: the group of two black keys nearest the middle, both pressed. The black
+# keys come in twos and threes, and the twos are where C is found.
+item music.press-the-two v=1 skills=[music.keys] {
+  title "The group of two"
+
+  scene 34x16 {
+    piano keys from=F3 whites=11 wide=3 labels=none at=canvas(1, 1)
+    text ask "The black keys come in groups of two and of three. Find a group of two and press both of its keys." narrate width=32 below=keys gap=1
+  }
+
+  check music.plays notes=[Cs4, Ds4] ordered=false
+  hint "Look for two black keys with a gap on each side of the pair."
+  hint "The pair sits above the white keys C and D."
+}

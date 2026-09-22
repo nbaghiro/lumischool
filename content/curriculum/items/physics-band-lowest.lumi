@@ -1,0 +1,14 @@
+item physics.band-lowest v=1 skills=[physics.sound] {
+  title "The lowest note"
+  let a={5, 8, 11, 14} b={5, 8, 11, 14} c={5, 8, 11, 14}
+  where (a != b and b != c and a != c)
+
+  scene 21x18 {
+    bands b lengths=[a, b, c] at=canvas(1, 0)
+    text ask "The bands are all the same. Which one makes the lowest note?" width=19 below=b gap=0
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check physics.sound of=b pick=lowest
+  hint "Which band has the longest part to shake?"
+}

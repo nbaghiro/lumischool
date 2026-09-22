@@ -1,0 +1,36 @@
+# Three bars side by side, and q asks for a different one each time: counting strums, and counting
+# the up strums only, which is the count children most often get wrong.
+item music.strum-which-bar v=1 skills=[music.strumming] {
+  title "Which bar is it?"
+  difficulty (if q == 1 then 0 else 1)
+  let q=0..3
+  level easy {
+    let q={0, 1}  # all the strums, or no up strums
+  }
+  level hard {
+    let q={2, 3}  # a number of up strums
+  }
+
+  scene 30x25 {
+    column bars at=canvas(1, 1) space=0 align=start {
+      row ra space=1 align=centre {
+        text la "A"
+        strumtrack a strums=D-D-D-D- counts=true chord=none ring=-1
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        strumtrack b strums=D-DU-UDU counts=true chord=none ring=-1
+      }
+      row rc space=1 align=centre {
+        text lc "C"
+        strumtrack c strums=DUDUDUDU counts=true chord=none ring=-1
+      }
+    }
+    text ask "{if q == 0 then \"Which bar has exactly 6 strums?\" else if q == 1 then \"Which bar has no up strums?\" else if q == 2 then \"Which bar has 4 up strums?\" else \"Which bar has 3 up strums?\"}" narrate width=28 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=column right-of=bars gap=2
+  }
+
+  answer pick=(if q == 0 or q == 3 then "B" else if q == 1 then "A" else "C")
+  hint "Count the arrows in each bar. Leave out the dots."
+  hint "An up strum is a short arrow pointing up. How many does each bar have?"
+}

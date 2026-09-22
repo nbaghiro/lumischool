@@ -1,0 +1,37 @@
+# Nearer and further on a map: the landmarks come in order along the path, so the one reached
+# first is the nearer one. Asking about the first and last is plain; the two furthest along need
+# the path followed all the way.
+item nature.nearer-on-map v=1 skills=[nature.maps, reasoning.compare] {
+  title "Which is nearer?"
+  difficulty (if q == 0 then 0 else if q == 1 then 1 else 2)
+  let p=0..3 q=0..2
+  let s1={pick(p, "tree", "rock", "hut", "cave")}
+  let s2={pick(p, "rock", "bridge", "tree", "rock")}
+  let s3={pick(p, "bridge", "tree", "pond", "tent")}
+  let t1={pick(p, "left", "right", "left", "right")}
+  let t2={pick(p, "right", "left", "right", "right")}
+  let t3={pick(p, "left", "right", "right", "left")}
+  let a={pick(q, s1, s1, s2)}
+  let b={pick(q, s3, s2, s3)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x16 {
+    treasuremap map stops=[s1, s2, s3] turns=[t1, t2, t3] heading="right" step=4 names=true at=canvas(1, 1)
+    text ask "Ada follows the path from the boat. Which does she reach first, the {a} or the {b}?" narrate width=16 right-of=map gap=2
+    choice pick options=[a, b] stack=column below=ask gap=1
+  }
+
+  answer pick=a
+  feedback {
+    when (pick == b) point=map {
+      say "Walk the path with your finger from the boat. The landmark your finger touches first is the nearer one along the path, even if the other looks closer across the page."
+    }
+  }
+  hint "Start at the boat and follow the path, not the straight line across the page."
+  hint "Which of the two does the path come to first?"
+}

@@ -1,0 +1,16 @@
+item physics.seesaw-move v=1 skills=[physics.moments] stars=2 {
+  title "One step further"
+  difficulty (a * p)
+  let a={2, 3, 4, 6} p=2..4
+  where (a * p % 2 == 0 and a * p / 2 <= 9)
+
+  scene 28x24 {
+    seesaw plank left=a atleft=p right=(a * p / 2) atright=2 at=canvas(1, 0)
+    text ask "It balances. The right weight is moved one step further out. What happens?" width=12 below=plank gap=0
+    choice pick options=["Left side down", "Right side down", "Stay level"] stack=column right-of=ask gap=1
+  }
+
+  answer pick="Right side down"
+  hint "Did the right weight change? Did its step change?"
+  hint "What happens to weight times step on the right?"
+}

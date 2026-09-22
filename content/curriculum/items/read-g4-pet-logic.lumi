@@ -1,0 +1,25 @@
+# Two clues, three children, three pets: every clue has to be used, and the second only works once
+# the first has placed the fish. p deals the pets out six ways.
+item reading.whose-pet v=1 stars=3 skills=[reading.inference, reasoning.deduction] {
+  title "Whose pet is it?"
+  let p=0..5 q=0..1 f={if p <= 1 then "Ana" else if p <= 3 then "Ben" else "Cal"} c={if p == 0 or p == 5 then "Ben" else if p == 1 or p == 3 then "Cal" else "Ana"} d={if p == 0 or p == 2 then "Cal" else if p == 1 or p == 4 then "Ben" else "Ana"}
+
+  scene 37x11 {
+    row all at=canvas(1, 1) space=2 align=start {
+      column q1 space=1 align=start {
+        text ask "Ana, Ben and Cal each have one pet: a dog, a cat or a fish. {f}'s pet has no fur. {c} does not have the dog. Who has the {if q == 0 then \"dog\" else \"cat\"}?" width=24
+        choice pick options=["Ana", "Ben", "Cal"]
+      }
+      dog pet facing=-1 ball=0
+    }
+  }
+
+  answer pick=(if q == 0 then d else c)
+  feedback {
+    when (pick == f) point=ask {
+      say "{f}'s pet has no fur. Which of the three pets has no fur?"
+    }
+  }
+  hint "Which pet has no fur? So whose pet is that?"
+  hint "Two children are left, and two pets. Use the other clue."
+}

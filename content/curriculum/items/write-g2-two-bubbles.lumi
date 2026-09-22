@@ -1,0 +1,19 @@
+# The audit's raise for fill-the-bubble: two empty bubbles in a four-picture strip, one of which has
+# to be a question, so the child writes an exchange rather than one line.
+item writing.two-bubbles v=1 stars=3 skills=[writing.speech, writing.composing] {
+  title "Write the middle of the talk"
+  let k=0..1
+  let p1={if k == 0 then "boy" else "girl"}
+  let p2={if k == 0 then "gran" else "kid"}
+  let open={if k == 0 then "I found a shell on the beach." else "My kite is stuck in the tree."}
+  let close={if k == 0 then "Let us put it on the shelf." else "There. I got it down for you."}
+
+  scene 37x18 {
+    comic strip who=["{p1}", "{p2}", "{p1}", "{p2}"] says=["{open}", "", "", "{close}"] moods=["excited", "happy", "surprised", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"] at=canvas(1, 1)
+    text ask "Write bubbles 2 and 3 so the story makes sense. One of them must be a question." narrate width=34 below=strip gap=1
+  }
+
+  check writing.by-eye look-for="Two bubbles that join picture 1 to picture 4, each starting with a capital, one of them a question ending with a question mark, and each said by the person in its picture."
+  hint "What would the person in picture 2 say back to picture 1?"
+  hint "What must happen before picture 4? Could someone ask a question there?"
+}

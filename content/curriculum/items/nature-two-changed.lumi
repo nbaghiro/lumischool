@@ -1,0 +1,47 @@
+# The two-star reason: Ben's test changed two things at once, and so it cannot say which one made
+# the difference. The versions vary which pair changed, and in one version Ben's test is fair,
+# so the child cannot just find fault.
+item nature.two-changed v=1 stars=2 skills=[nature.plants, reasoning.fair-test] {
+  title "Can Ben's test say?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let setup={pick(k, "Tray A: light and water. Tray B: dark and no water.", "Tray A: warm and watered. Tray B: cold and dry.", "Tray A: light and water. Tray B: light and no water.", "Tray A: warm with light. Tray B: cold with no light.")}
+  let claim={pick(k, "plants need light", "plants need warmth", "plants need water", "plants need light")}
+  let right={pick(k, "No: B had no water either, so it could be the water", "No: B was dry too, so it could be the water", "Yes: only the water was different", "No: B had no warmth either, so it could be the cold")}
+  let o1={pick(k, "Yes: B was in the dark and it died", "Yes: B was cold and it died", "No: the trays should have been in the dark", "Yes: B had no light and it died")}
+  let o2={pick(k, "No: a test needs three trays", "No: he should have tested one tray", "No: two things were changed", "No: a test needs three trays")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x27 {
+    row two at=canvas(1, 1) space=2 align=end {
+      crops ta stage=3 rows=2 plants=4
+      crops tb stage=0 rows=2 plants=4
+    }
+    text setup "{setup}" narrate width=32 below=two gap=1
+    text ask "Tray B died. Ben says his test shows that {claim}. Can his test say that?" narrate width=32 below=setup gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1 and k != 2) point=setup {
+      say "Two things were different between the trays. When two things change at once, the test cannot say which one did it."
+    }
+    when (pick == o2 and k == 2) point=setup {
+      say "Read the two trays again. Only one thing is different, so this test is fair."
+    }
+    when (pick == o1 and k == 2) point=setup {
+      say "Read the two trays again. What was different between A and B, and how many things was it?"
+    }
+    when (pick == o2 and k != 2) point=setup {
+      say "Two trays can make a fair test. The trouble here is what was changed between them."
+    }
+  }
+  hint "Write down every way tray B was different from tray A. How many things is that?"
+  hint "A fair test changes one thing. If two things changed, either one could be the reason."
+}

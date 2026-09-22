@@ -1,0 +1,34 @@
+# Three stars: four strips, a clue about the pen that wrote a note, and which strip it points to. The
+# clue rules out three of the four, and every strip is ruled out by something in at least one version.
+item chemistry.ink-which-wrote v=1 stars=3 skills=[chemistry.separating, reasoning.constraints, reasoning.evidence] {
+  title "Which pen wrote the note?"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let i1={pick(v, "black1", "brown", "green", "black2")}
+  let i2={pick(v, "black2", "black1", "black1", "black3")}
+  let i3={pick(v, "brown", "green", "black2", "brown")}
+  let i4={pick(v, "green", "black3", "black3", "green")}
+  let clue={pick(v, "It has no orange in it and its highest colour reached seven centimetres", "It has three colours in it and one of them is yellow", "It has no yellow in it and its highest colour reached seven centimetres", "It has three colours in it and its highest colour reached eight centimetres")}
+  let ans={pick(v, "A", "B", "C", "B")}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 31x29 {
+    chromatography four inks=["{i1}", "{i2}", "{i3}", "{i4}"] labels=["A", "B", "C", "D"] run=1 beaker=1 ruler=1 at=canvas(1, 0)
+    text ask "Four pens from the hut were tested. A note was written with one of them, and this is what is known about it: {clue}. Which strip came from the pen that wrote it?" narrate width=30 below=four gap=1
+    choice pick options=["A", "B", "C", "D"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=four {
+      say "Take the clue one part at a time and cross off every strip it rules out. One strip should be left."
+    }
+  }
+  hint "Read the clue in two halves, and use each half on all four strips."
+  hint "Cross off a strip as soon as one half of the clue rules it out."
+}

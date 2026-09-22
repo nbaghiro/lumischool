@@ -1,0 +1,20 @@
+item balance.pairs v=1 skills=[division.sharing] {
+  title "Cubes and balls"
+  difficulty (c * k)
+  let c=2..3 k=2..3
+  where (c * k <= 6)  # a pan holds six props
+  roles heavy=cube light=ball
+
+  scene 20x19 {
+    balance s left=[heavy * c] right=[light * (c * k)] at=canvas(3, 1)
+    text ask "{c} {heavy.many} balance {c * k} {light.many}. How many {light.many} balance 1 {heavy}?" narrate width=16 below=s gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer k
+  feedback {
+    when (answer == c * k) point=s.right-pan {
+      say "That is all the {light.many}. Share them between the {c} {heavy.many}."
+    }
+  }
+}

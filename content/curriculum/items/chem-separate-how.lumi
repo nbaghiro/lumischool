@@ -1,0 +1,26 @@
+# Sand sits on the bottom and can be filtered out; salt goes into the water and has to be left to
+# evaporate. The picture shows grains only when there are grains to show.
+item chem.separate-how v=2 skills=[chemistry.separating] {
+  title "How would you get it back?"
+  difficulty dis
+  let stuff={"sand", "salt"} dis=0..1 v={200, 300}
+  where (stuff == "sand" and dis == 0 or stuff == "salt" and dis == 1)
+
+  scene 30x17 {
+    text ask "A spoon of {stuff} was stirred into the water. How would you get it back?" width=28 at=canvas(1, 0)
+    beaker glass max=400 step=100 level=v solid=((1 - dis) * 10) rod=true unit=ml below=ask gap=0
+    choice pick options=["Filter it", "Let the water evaporate"] stack=column right-of=glass gap=1
+  }
+
+  answer pick=(if dis == 0 then "Filter it" else "Let the water evaporate")
+  feedback {
+    when (pick == "Filter it" and dis == 1) point=glass {
+      say "The salt has dissolved, so it would go straight through the paper with the water."
+    }
+    when (pick == "Let the water evaporate" and dis == 0) point=glass {
+      say "That would work, but the sand is still sitting on the bottom, so paper catches it without waiting."
+    }
+  }
+  hint "Look at the bottom of the beaker. Can you see any {stuff}?"
+  hint "If you cannot see it, has it dissolved? Could paper with tiny holes catch it then?"
+}

@@ -1,0 +1,37 @@
+# The three-star search: the notes of a new bar's tune, and how many of the seven guitar chords hold
+# them all. From the table: E and G, C and Em; D and B, G; A and C, Am; B and E, Em and E; B alone,
+# G, Em and E; E alone, C, Am, Em, E and A.
+item music.song-chord-fits v=1 stars=3 skills=[music.chord-changes, reasoning.all-the-ways] {
+  title "Which chords fit?"
+  difficulty (if v <= 3 then 0 else if v == 4 then 1 else 2)
+  let v=0..5
+  let tune={pick(v, "the notes E and G", "the notes D and B", "the notes A and C", "the notes B and E", "only the note B", "only the note E")}
+  level easy {
+    let v=0..2
+  }
+  level hard {
+    let v=4..5
+  }
+
+  scene 34x18 {
+    row top space=2 align=start at=canvas(1, 1) {
+      table notes cols=2 head=["Chord", "Its notes"] cells=["C", "C E G", "G", "G B D", "D", "D F sharp A", "Am", "A C E", "Em", "E G B", "E", "E G sharp B", "A", "A C sharp E"]
+      column side space=1 align=start {
+        text ask "A bar of a new song has {tune} in its tune. A chord fits when every note of the bar is in it. How many of these seven chords fit?" narrate width=14
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(v, 2, 1, 1, 2, 3, 5)
+  feedback {
+    when (answer == 1 and pick(v, 2, 1, 1, 2, 3, 5) > 1) point=notes {
+      say "There can be more than one. Check every row of the table, not just the first that fits."
+    }
+    when (answer == 7) point=notes {
+      say "A chord fits only if each note of the bar is in its row. Check the rows one at a time."
+    }
+  }
+  hint "Take the chords one at a time. Is each note of the bar in its row?"
+  hint "Keep a tally of the chords that pass, and check all seven rows."
+}

@@ -1,0 +1,38 @@
+lesson g3-year-review v=1 format=review grade=3 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Year review"
+  goal "Look back over the year: rounding, columns, tables, division, fractions, tenths, time, area and money."
+
+  warm-up {
+    practice place.round-both count=1 seed=9
+    practice times.missing-factor count=1 seed=6
+  }
+  exercises {
+    practice columns.sub-three-digit count=1 seed=8
+    practice division.remainder-small count=1 seed=4
+    practice fractions.missing-bottom count=1 seed=2
+    practice decimal.snail-tenths count=1 seed=5
+    practice time.start-unknown count=1 seed=7
+    practice area.rug-rows count=1 seed=9
+    practice money.two-items-change count=1 seed=3
+  }
+  puzzle stars=2 {
+    show machine.two-step-back a=3 b=4 n=8 easy-a=2 easy-n=3 hard-a=5 hard-n=9
+  }
+  puzzle stars=3 {
+    show multiply.biggest-product a=2 b=6 c=9 easy-a=3 easy-b=5 hard-b=8
+  }
+
+  grown-ups """
+    The written methods are the thing to check. Everything else can be revisited inside next
+    year's work, but a shaky exchange will slow down everything that follows. Several questions
+    have the unknown at the start or in the middle: the film's start time, the rug's rows, the
+    missing factor. A child who can do those has understood the operation, not only the method.
+    The two puzzles are there to be enjoyed; trying numbers and checking them is the right way in.
+    """
+  level easy {
+    grown-ups "At this level each question comes from the easy band of its lesson (the rounding, the factors, the columns, the remainders, the tenths, the times, the rug and the change at their smallest), the two machines took 3 in with a double, and the cards 3, 5 and 9 have a best product well clear of the next."
+  }
+  level hard {
+    grown-ups "At this level each question comes from the hard band of its lesson, the two machines took 9 in with a times five, and the cards 2, 8 and 9 have a best product that beats the next by little."
+  }
+}

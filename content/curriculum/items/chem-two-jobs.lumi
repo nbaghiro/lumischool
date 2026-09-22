@@ -1,0 +1,16 @@
+# A reason: two properties at once. Each wrong option has one of them but not the other, so the
+# child has to check both.
+item chem.two-jobs v=1 stars=2 skills=[chemistry.materials, reasoning.two-conditions] {
+  title "Two jobs at once"
+  difficulty k
+  let k=0..2
+
+  scene 24x8 {
+    text ask "{if k == 0 then \"An umbrella has to keep the rain out and fold up small.\" else if k == 1 then \"A welly boot has to keep water out and bend as you walk.\" else \"A bath towel has to soak up water and feel soft.\"} Which material is best?" width=23 at=canvas(1, 0)
+    choice pick options=["{if k == 0 then \"paper\" else if k == 1 then \"wood\" else \"fabric\"}", "{if k == 0 then \"plastic\" else if k == 1 then \"paper\" else \"paper\"}", "{if k == 0 then \"wood\" else if k == 1 then \"rubber\" else \"plastic\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "plastic" else if k == 1 then "rubber" else "fabric")
+  hint "Check the first job. Which materials can do it?"
+  hint "Of those, which can do the second job too?"
+}

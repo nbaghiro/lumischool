@@ -1,0 +1,27 @@
+# Two amounts, and only one of them changes: the water goes into the air and every gram of salt
+# stays in the dish, dissolved or as crystals. A quarter of the water goes each day, so the dish is
+# drawn with the quarters the story leaves.
+item chem.salt-concentration v=1 stars=3 skills=[chemistry.evaporating, chemistry.mass, reasoning.which-changes] {
+  title "Which amount changes?"
+  difficulty ((if q == 0 then 2 else 1) + d)
+  let w={100, 200} g={10, 20, 30} d={2, 3} q=0..1
+  let e={w / 4}
+
+  scene 25x16 {
+    text ask "A dish holds {w} ml of water with {g} g of salt dissolved in it. Each day {e} ml of water evaporates. After {d} days, how many {if q == 0 then \"grams of salt are in the dish\" else \"millilitres of water are left\"}?" width=24 at=canvas(1, 0)
+    dish dd left=(4 - d) day=d below=ask gap=0
+    number-input answer right-of=dd gap=1
+  }
+
+  answer (if q == 0 then g else w - e * d)
+  feedback {
+    when (q == 0 and answer == w - e * d) point=dd {
+      say "That is the water left. Does any salt go into the air?"
+    }
+    when (q == 1 and answer == g) point=dd {
+      say "That is the salt. The question asks how much water is left."
+    }
+  }
+  hint "Which one goes into the air: the water, the salt, or both?"
+  hint "For the one that goes, how much goes in {d} days? For the one that stays, what has changed?"
+}

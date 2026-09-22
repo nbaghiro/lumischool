@@ -1,0 +1,27 @@
+# Counting faces, some of them hidden at the back: the dashed edges say where they are.
+item shapes.flat-faces v=1 skills=[shapes.solids, shapes.faces] {
+  title "How many flat faces?"
+  difficulty (if k == "cone" then 0 else if k == "cylinder" then 1 else if k == "pyramid" or k == "prism" then 2 else 3)
+  let k={"cube", "cuboid", "cylinder", "cone", "pyramid", "prism"}
+  level easy {
+    let k={"cone", "cylinder", "cube"}
+  }
+  level hard {
+    let k={"cuboid", "pyramid", "prism"}
+  }
+
+  scene 28x10 {
+    solid shape kind=k label="" at=canvas(1, 1)
+    text ask "How many flat faces does this solid have? Count the ones you cannot see too." narrate width=16 right-of=shape gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == "cube" or k == "cuboid" then 6 else if k == "cylinder" then 2 else if k == "cone" then 1 else 5)
+  feedback {
+    when (answer == 3 and (k == "cube" or k == "cuboid")) point=shape {
+      say "You can see three faces. There are three more at the back and underneath."
+    }
+  }
+  hint "Count the faces you can see. The dashed lines show edges at the back."
+  hint "Is there a face underneath? And one at the back?"
+}

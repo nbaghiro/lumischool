@@ -1,0 +1,24 @@
+item physics.drum-harder v=1 skills=[physics.sound] {
+  title "Which was hit harder?"
+  difficulty (3 - abs(x - y))
+  let x=1..3 y=1..3
+  where (x != y)
+  level easy {
+    where (abs(x - y) == 2)
+  }
+  level hard {
+    where (abs(x - y) == 1)
+  }
+
+  scene 29x15 {
+    row two at=canvas(1, 0) space=1 align=start {
+      ricedrum a hit=x tag="A"
+      ricedrum b hit=y tag="B"
+    }
+    text ask "Which drum was hit harder?" width=14 below=two gap=0
+    choice pick options=["A", "B"] right-of=ask gap=2
+  }
+
+  check physics.sound of=a vs=b pick=louder
+  hint "On which drum does the rice jump higher?"
+}

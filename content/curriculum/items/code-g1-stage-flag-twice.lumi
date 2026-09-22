@@ -1,0 +1,25 @@
+# Tapping the flag again runs the script again from where the rabbit is now, not from where it began.
+item coding.stage-flag-twice v=1 stars=2 skills=[coding.events, reasoning.predict] {
+  title "Tapped two times"
+  difficulty (s + 2 * a)
+  let s=1..2 a=2..3
+  where (s + 2 * a <= 7)
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "right {a}", "jump"]
+      stage st cols=7 col=s code=["when the flag is tapped", "right {a}", "jump"] upto=0
+    }
+    text ask "Ella taps the flag. When the rabbit stops, she taps it again. Which square is the rabbit on at the end?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (s + 2 * a)
+  feedback {
+    when (answer == s + a) point=b {
+      say "That is after one tap. The second tap runs the blocks again."
+    }
+  }
+  hint "Where is the rabbit after the first tap?"
+  hint "The second tap starts from there, not from the start."
+}

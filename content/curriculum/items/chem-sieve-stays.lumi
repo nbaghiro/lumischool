@@ -1,0 +1,16 @@
+# The way in: the sieve has been shaken, so what stayed and what fell are both in the picture.
+item chem.sieve-stays v=1 skills=[chemistry.separating] {
+  title "What stayed in the sieve?"
+  difficulty k
+  let k=0..9
+
+  scene 29x14 {
+    sieve s mixture=["{if k == 0 then \"pebbles\" else if k == 1 then \"sand\" else if k == 2 then \"peas\" else if k == 3 then \"rice\" else if k == 4 then \"pebbles\" else if k == 5 then \"sand\" else if k == 6 then \"flour\" else if k == 7 then \"rice\" else if k == 8 then \"flour\" else \"rice\"}", "{if k == 0 then \"sand\" else if k == 1 then \"flour\" else if k == 2 then \"rice\" else if k == 3 then \"flour\" else if k == 4 then \"rice\" else if k == 5 then \"pebbles\" else if k == 6 then \"sand\" else if k == 7 then \"peas\" else if k == 8 then \"rice\" else \"pebbles\"}"] holes=(if k == 0 then 2 else if k == 1 then 1 else if k == 2 then 3 else if k == 3 then 2 else if k == 4 then 3 else if k == 5 then 2 else if k == 6 then 1 else if k == 7 then 3 else if k == 8 then 2 else 3) shaken=1 names=1 at=canvas(1, 0)
+    text ask "The sieve has been shaken over the bowl. What stayed in the sieve?" width=14 right-of=s gap=1
+    choice pick options=["{if k == 0 then \"pebbles\" else if k == 1 then \"sand\" else if k == 2 then \"dried peas\" else if k == 3 then \"rice\" else if k == 4 then \"pebbles\" else if k == 5 then \"sand\" else if k == 6 then \"flour\" else if k == 7 then \"rice\" else if k == 8 then \"flour\" else \"rice\"}", "{if k == 0 then \"sand\" else if k == 1 then \"flour\" else if k == 2 then \"rice\" else if k == 3 then \"flour\" else if k == 4 then \"rice\" else if k == 5 then \"pebbles\" else if k == 6 then \"sand\" else if k == 7 then \"dried peas\" else if k == 8 then \"rice\" else \"pebbles\"}"] stack=column below=ask gap=1
+  }
+
+  check chem.separate of=s pick=stays
+  hint "Look inside the sieve. What is still there?"
+  hint "Which pieces are too big to fit through the holes?"
+}

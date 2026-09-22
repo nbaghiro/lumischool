@@ -1,0 +1,50 @@
+lesson reading-story-maps v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Story maps"
+  goal "Follow a story on a map of its events, find what the character wants, the problem and the stop that really fixes it."
+
+  look {
+    scene 34x15 {
+      storymap map stops=["Pip the hen lays an egg.", "A fox creeps up to the nest.", "The dog barks at the fox.", "The egg hatches safely."] icons=["hen", "fox", "dog", "nest"] heads=["Start", "Problem", "Fix", "End"] blank=-1 at=canvas(1, 1)
+    }
+    say """
+      A story map shows a story as a path. Each stop is one thing that happens, in order.
+
+      Most stories have a start, a problem, a fix and an end. When you know where the problem is,
+      you know what the rest of the story is trying to do.
+      """
+  }
+  do {
+    level easy {
+      worked reading.story-problem k=1 level=medium
+    }
+    practice reading.story-problem count=2 seed=1
+    practice reading.map-heads count=2 seed=3
+    practice reading.story-goal count=2 seed=2
+    practice reading.problem-and-fix count=2 easy-count=1 hard-count=1 seed=4 hard-seed=7
+    level hard {
+      practice reading.which-try-worked count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.which-try-worked k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.new-middle k=1
+  }
+  remember {
+    say "Find the problem. The rest of the story is about fixing it."
+  }
+
+  grown-ups """
+    Draw a story map for a book you read together: four stops is enough. The maps in the questions
+    have no headings, so the child finds the problem from what the stops say, and the problem is
+    what the rest of the stops try to put right. In the two-star question one try fails, so the fix is not simply the stop after the problem. The
+    three-star question has many answers, as long as the new fix solves the new problem.
+    """
+  level easy {
+    grown-ups "At this level the rained-off picnic is worked once in the teacher's pen before the boat with a hole and the fallen bridge, the headings are as written, the goals are the kite and the meal, the fix is the stop after the problem, the two-star's fix is the ferry's lamp, the last try, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the problems to find are the fallen bridge and the rain, which comes at the third stop, the headings are as written, the goals are Nell's, which is only at the end, and Ben's, the fix is not the next stop, one map makes way for a second pair of tries, the two-star's fix is the broom rather than the last stop, and the three-star is as written."
+  }
+}

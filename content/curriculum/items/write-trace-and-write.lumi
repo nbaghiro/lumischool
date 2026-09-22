@@ -1,0 +1,12 @@
+item writing.trace-and-write v=1 skills=[writing.letter-formation] {
+  title "Start at the dot"
+  let ch={"c", "d", "h", "k", "o", "s"}
+
+  scene 36x19 {
+    formletter big letter=ch copies=2 write=1 label=true at=canvas(1, 1)
+    art pic asset="{if ch == \"c\" then \"cat\" else if ch == \"d\" then \"duck\" else if ch == \"h\" then \"hen\" else if ch == \"k\" then \"kite\" else if ch == \"o\" then \"owl\" else \"sun\"}" right-of=big gap=1
+    text ask "Trace the two grey letters from the dot. Then write your own in the space." width=22 below=big gap=1
+  }
+
+  check writing.by-eye look-for="Each letter starts at the dot and goes the way the arrows show, sits on the thick line, and the one written in the space looks like the ones traced."
+}

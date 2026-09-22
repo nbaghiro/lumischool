@@ -1,0 +1,21 @@
+# A jam sandwich program followed as far as line k, and what is on the plate then.
+item coding.snack-after-step v=1 skills=[coding.sequences, coding.tracing] {
+  title "What is on the plate?"
+  let k=1..4
+  let ans={pick(k - 1, "Two slices of bread", "Two slices, one with jam", "A jam sandwich", "A jam sandwich cut in half")}
+
+  scene 36x29 {
+    program prog code=["Take two slices of bread", "Spread jam on one slice", "Put the other slice on top", "Cut the sandwich in half"] title="Pip's sandwich" at=canvas(1, 1)
+    text ask "The robot has done lines 1 to {k}, and no more. What is on the plate now?" narrate width=11 right-of=prog gap=2
+    choice pick options=["Two slices of bread", "Two slices, one with jam", "A jam sandwich", "A jam sandwich cut in half"] stack=column below=prog gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=prog {
+      say "Put a finger on line 1 and move it down to line {k}, doing each step as you go."
+    }
+  }
+  hint "The robot stops after line {k}. What has it done so far?"
+  hint "Say what is on the plate after line 1, then after each line up to line {k}."
+}

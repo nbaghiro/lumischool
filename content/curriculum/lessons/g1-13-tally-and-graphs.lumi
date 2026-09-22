@@ -1,0 +1,49 @@
+lesson g1-tally-and-graphs v=1 format=teach grade=1 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Tally charts and picture graphs"
+  goal "Count in fives with a tally, read a picture graph row by row, and answer a question the chart does not show."
+
+  look {
+    scene 32x20 {
+      birdrow birds count=5 facing=[1, 1, -1, 1, -1] wire=true at=canvas(1, 0)
+      tally t count=7 below=birds gap=1
+      picgraph chart labels=["Blue", "Brown"] counts=[5, 3] prop=star right-of=t gap=2
+      minibeasts bugs kinds=["ladybird", "butterfly", "bee"] spots=7 legs=false below=chart gap=1
+    }
+    say """
+      A tally is counted in fives: four marks and one across them. A picture graph gives each thing
+      one picture, so the longest row is the biggest number.
+      """
+  }
+  do {
+    practice tally.count count=1 seed=14
+    practice data.tally-to-twenty count=1 seed=3
+    practice graph.pictures count=2 seed=6
+    practice data.which-graph count=1 seed=3
+    practice data.graph-total count=1 seed=5
+    practice data.tally-more count=1 seed=4
+    practice data.bar-more count=1 seed=7
+  }
+  try stars=2 {
+    show data.graph-what-if a=5 b=3 c=4 f="pears" easy-a=6 easy-b=2 easy-c=3 easy-f="apples" hard-f="plums"
+  }
+  try stars=3 {
+    show data.missing-row a=4 b=3 c=5 easy-a=2 easy-b=3 easy-c=1 hard-a=6 hard-b=5 hard-c=4
+  }
+  remember {
+    say "Four marks and one across make five. Count the fives, then the ones left over."
+  }
+
+  grown-ups """
+    Count something real for a week, birds on the wire or cars of one colour, and keep the tally on
+    the fridge. The bar chart is new here: it is a picture graph with the pictures joined into a
+    bar. How many more is always the gap between two rows, never one row on its own. The Try this
+    questions are about what the chart does not say: what would change, and what has gone missing.
+    Both come down to adding and comparing, once the child has decided what to add.
+    """
+  level easy {
+    grown-ups "At this level the tallies stay under ten, the graphs differ by a few, the three more go to the fruit already in front, and the missing row is found from six."
+  }
+  level hard {
+    grown-ups "At this level the tallies reach nineteen, the bars differ by five or more, the three more go to the fruit that is behind, and the missing row is found from fifteen."
+  }
+}

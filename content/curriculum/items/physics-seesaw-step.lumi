@@ -1,0 +1,26 @@
+item physics.seesaw-step v=1 skills=[physics.moments] stars=3 {
+  title "Which step must it sit on?"
+  difficulty (a * p)
+  let a={2, 3, 4, 6} p=2..5 b={2, 3, 4, 6, 8, 12}
+  where (a * p % b == 0 and a * p / b <= 5 and a * p / b >= 1 and a != b)
+  level easy {
+    let a={2, 3, 4} p=2..3 b={2, 3, 4, 6}
+  }
+  level hard {
+    let b={4, 6, 8, 12}
+  }
+
+  scene 32x17 {
+    seesaw plank left=a atleft=p right=b atright=0 at=canvas(1, 1)
+    text ask "Which step must the {b} kg weight sit on to balance?" width=24 below=plank gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (a * p / b)
+  feedback {
+    when (answer == p) point=plank {
+      say "The same step only works when the two weights are the same, and they are not."
+    }
+  }
+  hint "What is weight times step on the left?"
+}

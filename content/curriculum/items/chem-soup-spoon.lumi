@@ -1,0 +1,42 @@
+# The three-star: a material for a spoon with two things it must do, from four materials. A spoon
+# for hot soup must not go soft or hot in the hand and must not soak the soup up; the choice has
+# to be tried against both. At hard one material passes one test and fails the other.
+item chem.soup-spoon v=1 stars=3 skills=[chemistry.materials, reasoning.constraints] {
+  title "A spoon for hot soup"
+  difficulty (k + (if k == 2 then 1 else 0))
+  let k=0..2 r=0..3
+  let need={pick(k, "It must not soak up the soup, and it must not bend.", "It must not soak up the soup, and it must not get hot in your hand.", "It must not get hot in your hand, and it must not go soft in hot soup.")}
+  let right={pick(k, "metal", "wood", "wood")}
+  let o1={pick(k, "paper", "metal", "metal")}
+  let o2={pick(k, "plastic", "paper", "plastic")}
+  let o3={pick(k, "wool", "wool", "paper")}
+  let why1={pick(k, "Paper soaks up the soup.", "Metal gets hot in your hand.", "Metal gets hot in your hand.")}
+  let why2={pick(k, "Plastic bends when you press it.", "Paper soaks up the soup.", "Plastic goes soft in hot soup.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 32x18 {
+    materials row things=["wooden-spoon", "metal-spoon", "plastic-spoon"] names=1 at=canvas(1, 0)
+    text ask "Ada is making a spoon for eating hot soup. {need} Which material should she use?" narrate width=28 below=row gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else if r == 2 then o2 else o3, if r == 0 then o1 else if r == 1 then right else if r == 2 then o3 else o2, if r == 0 then o2 else if r == 1 then o3 else if r == 2 then right else o1, if r == 0 then o3 else if r == 1 then o2 else if r == 2 then o1 else right] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1) point=row {
+      say "{why1} Try the other rule on it too."
+    }
+    when (pick == o2) point=row {
+      say "{why2} A material has to pass both rules."
+    }
+    when (pick == o3) point=row {
+      say "{if k == 2 then \"Paper soaks up the soup and goes soggy.\" else \"Wool soaks up the soup and goes soggy.\"}"
+    }
+  }
+  hint "Take the first rule and cross out every material that breaks it. Then do the same with the second rule."
+  hint "What is left after both rules is the one to use."
+}

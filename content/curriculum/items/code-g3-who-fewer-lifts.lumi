@@ -1,0 +1,22 @@
+# Two ways to search compared: one child lifts from the left, the other halves. Halving usually wins,
+# but not for a number near the left end. CSTA 1B-AP-08.
+item coding.who-fewer-lifts v=1 stars=2 skills=[coding.algorithms, reasoning.compare] {
+  title "Who finds it first?"
+  difficulty (if t == 20 then 0 else if t == 14 then 1 else if t == 2 then 2 else 3)
+  let t={2, 5, 8, 14, 20}
+
+  scene 25x21 {
+    cups c cards=[2, 5, 8, 11, 14, 17, 20] open=[] target=t crossed=false at=canvas(1, 0)
+    text ask "Ada lifts the cups from the left, one at a time. Ben lifts the middle cup each time and halves what is left. They both want {t}. Who finds it in fewer lifts?" width=23 below=c gap=1
+    choice pick options=["Ada", "Ben", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if t == 2 then "Ada" else if t == 5 or t == 8 then "the same" else "Ben")
+  feedback {
+    when (pick == "Ben" and t == 2) point=c {
+      say "Count Ben's lifts for {t}: the middle, then the middle of the left three, then one more."
+    }
+  }
+  hint "How many lifts does Ada need? Count along to {t}."
+  hint "Now play Ben's way and count his lifts."
+}

@@ -1,0 +1,27 @@
+# The most area for a fixed perimeter: try the lengths in turn and see the area rise then fall.
+item area.biggest-area v=2 stars=3 skills=[perimeter.count-edges, area.count-squares, reasoning.extremes] {
+  title "The most room inside"
+  difficulty p
+  let p=(12..30 by 2)
+  level easy {
+    let p=(12..16 by 2)
+  }
+  level hard {
+    let p=(24..30 by 2)
+  }
+
+  scene 30x16 {
+    grid one rows=1 cols=(p / 2 - 1) shade=0 color=mint cell=1 at=canvas(1, 1)
+    text ask "This rectangle has a perimeter of {p} cm. Other rectangles with whole-number sides have the same perimeter, and a square counts as a rectangle. What is the biggest area any of them can have?" width=28 below=one gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p / 2 // 2 * (p / 2 - p / 2 // 2))
+  feedback {
+    when (answer == p / 2 - 1) point=one {
+      say "That is the area of the rectangle drawn. Try a shorter, wider one with the same perimeter."
+    }
+  }
+  hint "The length and the width add up to {p / 2}. Make a list: 1 and {p / 2 - 1}, 2 and {p / 2 - 2}, and so on."
+  hint "Work out the area for each pair. Which is biggest?"
+}

@@ -1,0 +1,16 @@
+# The audit's raise for make-a-list: every line has its own job, so each thing written has to meet
+# a rule, and the child plans the list rather than writing the first four things that come to mind.
+item writing.list-with-jobs v=1 stars=3 skills=[writing.lists, writing.composing] {
+  title "A list where every line has a job"
+  let k=0..2
+  let place={if k == 0 then "the beach" else if k == 1 then "the snow" else "the park"}
+
+  scene 32x13 {
+    listpad pad title="For {place}" items=["", "", "", ""] count=0 width=16 ticks=true at=canvas(1, 1)
+    text ask "Make a list for {place}: one thing to wear, one to eat, one to play with and one to keep you safe." width=14 right-of=pad gap=1
+  }
+
+  check writing.by-eye look-for="Four things, one to a line, each a word or two, and each doing its own job for this place: something to wear, something to eat, something to play with and something that keeps you safe (a sun hat or a helmet), spelled so they can be read."
+  hint "Think about the place. What would you wear there?"
+  hint "Now fill one line for each job before you start the next."
+}

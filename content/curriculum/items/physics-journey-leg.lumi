@@ -1,0 +1,25 @@
+item physics.journey-leg v=1 skills=[physics.motion] {
+  title "The missing leg"
+  difficulty (a + b)
+  let a=6..14 b=6..14
+  level easy {
+    let a=6..8 b=6..8
+  }
+  level hard {
+    let a=12..14 b=12..14
+  }
+
+  scene 30x9 {
+    table data cols=3 head=["From", "To", "Km"] cells=["Ash", "Bray", a, "Ash", "Cole", a + b] at=canvas(1, 0)
+    text ask "Bray is on the road from Ash to Cole. How far is it from Bray to Cole?" width=13 right-of=data gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == 2 * a + b) point=data {
+      say "Ash to Cole is the whole road. Bray to Cole is only the part after Bray."
+    }
+  }
+  hint "The whole road is the first leg and the second leg together. Which part do you know?"
+}

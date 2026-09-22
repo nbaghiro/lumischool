@@ -1,0 +1,23 @@
+# Number and shape claims, where the case that breaks a claim has to be looked for: the audit's
+# raise for the everyday claims this item used to carry.
+item logic.always-sometimes v=2 skills=[logic.quantifiers, reasoning.counterexample] {
+  title "Always, sometimes or never"
+  difficulty (if s in {"A multiple of 2 is a multiple of 4.", "Half of an even number is even."} then 2 else if s == "A shape with four sides is a square." then 1 else 0)
+  let s={"A number that ends in 0 is even.", "A multiple of 2 is a multiple of 4.", "Two odd numbers add up to an odd number.", "A shape with four sides is a square.", "If you add 10 to a two-digit number, its ones digit stays the same.", "Half of an even number is even.", "Three odd numbers add up to an even number."}
+  level easy {
+    let s={"A number that ends in 0 is even.", "Two odd numbers add up to an odd number.", "A shape with four sides is a square.", "If you add 10 to a two-digit number, its ones digit stays the same."}
+  }
+  level hard {
+    let s={"A multiple of 2 is a multiple of 4.", "Half of an even number is even.", "Three odd numbers add up to an even number.", "A shape with four sides is a square."}  # the claims that only 6 or 10 break, and three odds
+  }
+
+  scene 30x12 {
+    text ask "Is this always true, sometimes true, or never true?" width=28 at=canvas(1, 1)
+    text claim "{s}" width=28 below=ask gap=1
+    choice how options=["Always", "Sometimes", "Never"] below=claim gap=1
+  }
+
+  answer how=(if s in {"A number that ends in 0 is even.", "If you add 10 to a two-digit number, its ones digit stays the same."} then "Always" else if s in {"Two odd numbers add up to an odd number.", "Three odd numbers add up to an even number."} then "Never" else "Sometimes")
+  hint "Try three or four examples of your own. Do they all come out the same way?"
+  hint "If one example is true and another is false, can it be always or never?"
+}

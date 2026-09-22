@@ -1,0 +1,30 @@
+# The top number of the time signature says how many beats a bar holds, and it is not always 4:
+# the missing note is what is left of three beats or of four.
+item music.missing-in-three v=1 skills=[music.rhythm] {
+  title "What is left of the bar"
+  difficulty ((if x == 0.5 then 2 else 0) + (if t == 3 then 1 else 0))
+  let t=3..4 x={0.5, 1, 2} y={0.5, 1, 2}
+  where ((x == 0.5) == (y == 0.5))
+  where (t - x - y >= 1 and t - x - y <= 3)
+  level easy {
+    where (t == 4 and x >= 1)  # a bar of four with whole beats
+  }
+  level hard {
+    where (t == 3)  # the top number has to be read
+  }
+
+  scene 26x14 {
+    staff bar notes=[x, y] beats=t at=canvas(1, 1)
+    text ask "The top number says this bar has {t} beats. How many beats is the missing note?" width=24 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer plain(t - x - y)
+  feedback {
+    when (answer == 4 - x - y and t == 3) point=bar {
+      say "This bar has 3 beats, not 4. Look at the top number."
+    }
+  }
+  hint "What does the top number say? That is how many beats the whole bar has."
+  hint "Add up the notes you can see. How many beats are still missing?"
+}

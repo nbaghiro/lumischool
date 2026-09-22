@@ -1,0 +1,15 @@
+item art.what-line v=1 skills=[art.line] {
+  title "What kind of line?"
+  difficulty (if (i + k) % 4 == 3 then 1 else 0)
+  let k=0..3 i=0..3
+
+  scene 30x18 {
+    lines pic kinds=["{if k == 0 then \"wavy\" else if k == 1 then \"zigzag\" else if k == 2 then \"dotted\" else \"spiral\"}", "{if k == 0 then \"zigzag\" else if k == 1 then \"dotted\" else if k == 2 then \"spiral\" else \"wavy\"}", "{if k == 0 then \"dotted\" else if k == 1 then \"spiral\" else if k == 2 then \"wavy\" else \"zigzag\"}", "{if k == 0 then \"spiral\" else if k == 1 then \"wavy\" else if k == 2 then \"zigzag\" else \"dotted\"}"] colour=blue at=canvas(1, 1)
+    text ask "What kind of line is line {if i == 0 then \"A\" else if i == 1 then \"B\" else if i == 2 then \"C\" else \"D\"}?" width=12 right-of=pic gap=2
+    choice pick options=["wavy", "zigzag", "dotted", "spiral"] below=pic gap=1
+  }
+
+  answer pick=(if (i + k) % 4 == 0 then "wavy" else if (i + k) % 4 == 1 then "zigzag" else if (i + k) % 4 == 2 then "dotted" else "spiral")
+  hint "Put your finger on line {if i == 0 then \"A\" else if i == 1 then \"B\" else if i == 2 then \"C\" else \"D\"} and follow it. Does it go up and down, round and round, or jump?"
+  hint "A zigzag has points, a wavy line has smooth bumps, and a dotted line is made of dots. Which is it?"
+}

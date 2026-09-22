@@ -1,0 +1,32 @@
+# Unit fractions compared by reasoning: more pieces from the same bar makes each piece smaller.
+# The bars are drawn whole, so the answer cannot be read off the picture.
+item fraction.bigger-piece v=1 stars=2 skills=[fractions.compare, reasoning.explain] {
+  title "Whose piece is bigger?"
+  difficulty (a + b - abs(a - b))
+  let a={2, 3, 4, 6, 8} b={2, 3, 4, 6, 8}
+  where (a != b)
+
+  scene 30x17 {
+    row bars at=canvas(1, 1) space=3 align=end {
+      column ca space=0 align=centre {
+        fraction one n=1 k=0 shape=bar
+        text la "A"
+      }
+      column cb space=0 align=centre {
+        fraction two n=1 k=0 shape=bar
+        text lb "B"
+      }
+    }
+    text ask "Two bars of chocolate are the same size. Bar A is snapped into {a} equal pieces and bar B into {b}. Which bar has the bigger pieces?" width=28 below=bars gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if a < b then "A" else "B")
+  feedback {
+    when ((pick == "A") == (a > b)) point=bars {
+      say "More pieces from the same bar means each piece is smaller."
+    }
+  }
+  hint "Imagine sharing one bar between {a} people and the other between {b}."
+  hint "When a bar is shared between more people, does each person get more or less?"
+}

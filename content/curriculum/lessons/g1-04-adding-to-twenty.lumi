@@ -1,0 +1,51 @@
+lesson g1-adding-to-twenty v=1 format=teach grade=1 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Adding to twenty"
+  goal "Add by counting on from the bigger number, and find how many got on or how many there were at first."
+
+  look {
+    scene 30x21 {
+      bus ride windows=10 on=6 sign="12" at=canvas(1, 1)
+      numberline line from=0 to=20 step=1 jumps=[6, 4] below=ride gap=2
+      note n "Start at six. Count on four." width=12 below=line gap=1
+    }
+    say """
+      Six people are on the bus and four more get on. Start at six and count on: seven, eight,
+      nine, ten.
+      """
+  }
+  do {
+    practice add.bus-on count=1 seed=7
+    practice numberline.jumps count=1 seed=4
+    practice add.bus-how-many-on count=2 seed=6
+    practice add.more-than count=1 seed=4
+    practice add.three-plates count=1 seed=7
+    practice add.true-or-false count=1 seed=5
+  }
+  try stars=2 {
+    show add.bus-at-first first=5 more=4 easy-first=3 easy-more=2 hard-first=8
+    show add.triangle-corner x=6 y=4 z=7 easy-x=3 easy-y=2 easy-z=5 hard-x=8 hard-y=6 hard-z=9
+  }
+  try stars=3 {
+    show add.triangle-all x=4 y=2 z=5 easy-x=2 easy-y=1 easy-z=3 hard-x=6 hard-y=3 hard-z=5
+  }
+  remember {
+    say "Start at the bigger number and count on. To find how many got on, count on from before to after."
+  }
+
+  grown-ups """
+    The first two questions add, and the next two ask how many got on, which is the same counting on
+    with the answer in a different place. Ada's shells are a compare story: "more than" means
+    adding, though nobody is given anything. On the three plates, look for the two that make ten
+    first. True or false is about the equals sign meaning "the same as", not "the answer is". Read
+    the two-star bus question aloud: the bus shows the end of the story, and the child has to work
+    back to the start. In the triangles any box next to the empty circle gives the answer and the
+    third box checks it. The three-star triangle has no method on the page; guessing a number for A
+    and checking it is exactly the right thing to do.
+    """
+  level easy {
+    grown-ups "At this level the bus holds under ten, the jumps land under ten, the true-or-false sums are swapped or one out, and the sum triangle's circles are one to five."
+  }
+  level hard {
+    grown-ups "At this level the totals reach seventeen, the true-or-false sums move one across or are one out, and the sum triangle's circles reach nine."
+  }
+}

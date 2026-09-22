@@ -1,0 +1,25 @@
+# Three cut shapes ordered by size for a still life, the biggest at the back.
+item art.order-by-size v=1 skills=[art.shape, reasoning.order] {
+  title "Biggest at the back"
+  difficulty (if p == 0 then 0 else 1)
+  let p=0..2
+  let h1={pick(p, 2, 5, 3)}
+  let h2={pick(p, 4, 2, 5)}
+  let h3={pick(p, 6, 4, 2)}
+  level easy {
+    let p=0..0
+  }
+  level hard {
+    let p=1..2
+  }
+
+  scene 34x28 {
+    sizeorder shapes heights=[h1, h2, h3] labels=["A", "B", "C"] numbers=false at=canvas(1, 1)
+    text ask "Ada cut three shapes for a still life. She lays the biggest at the back and the smallest at the front. Number them 1 to 3, back to front." narrate width=16 right-of=shapes gap=1
+    sequence s items=["A", "B", "C"] blanks=[x, y, z] below=shapes gap=1
+  }
+
+  answer x=(if p == 0 then 3 else if p == 1 then 1 else 2) y=(if p == 0 then 2 else if p == 1 then 3 else 1) z=(if p == 0 then 1 else if p == 1 then 2 else 3)
+  hint "Find the tallest shape: that one goes at the back, number 1."
+  hint "Then the next tallest, then the smallest in front."
+}

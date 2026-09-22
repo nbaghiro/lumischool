@@ -1,0 +1,26 @@
+# Two marks side by side, never more than two apart, so the order from pp to ff has to be known
+# rather than guessed from how many letters a mark has.
+item music.softer-of-two v=1 skills=[music.dynamics] {
+  title "The softer mark"
+  difficulty ((if abs(i - j) == 1 then 1 else 0) + (if (i == 2 or i == 3) and (j == 2 or j == 3) then 1 else 0))
+  let i=0..5 j=0..5
+  where (i != j and abs(i - j) <= 2)
+  level easy {
+    where (abs(i - j) == 2)  # two steps apart
+  }
+  level hard {
+    where (abs(i - j) == 1)  # neighbours, mp against mf among them
+  }
+  let a={if i == 0 then "pp" else if i == 1 then "p" else if i == 2 then "mp" else if i == 3 then "mf" else if i == 4 then "f" else "ff"}
+  let b={if j == 0 then "pp" else if j == 1 then "p" else if j == 2 then "mp" else if j == 3 then "mf" else if j == 4 then "f" else "ff"}
+
+  scene 25x9 {
+    dynamics marks marks=["{a}", "{b}"] words=false ring=-1 at=canvas(1, 1)
+    text ask "Which of these two marks says play more softly?" width=13 right-of=marks gap=1
+    choice pick options=["{a}", "{b}"] below=ask gap=1
+  }
+
+  answer pick=(if i < j then a else b)
+  hint "p means soft and f means loud. Which mark is nearer the soft end?"
+  hint "An m in front means quite. Is quite soft softer than soft?"
+}

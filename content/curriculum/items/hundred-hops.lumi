@@ -1,0 +1,26 @@
+item hundred.hops v=1 skills=[place-value.add-tens] {
+  title "Jumps on the hundred square"
+  difficulty (10 * t + o)
+  let s=12..38 t=1..2 o=1..3
+  where (s % 10 + o <= 9)
+  level easy {
+    let t={1} o=1..2
+  }
+  level hard {
+    let t={2} o=2..3
+  }
+
+  scene 24x22 {
+    hundred h from=1 to=60 start=s add=(10 * t + o) hide=[s + 10 * t + o] at=canvas(1, 1)
+    text ask "Start on the circled number and follow the jumps. Which number is hidden?" width=22 below=h gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (s + 10 * t + o)
+  feedback {
+    when (answer == s + t + o) point=h {
+      say "A jump down the chart is ten, not one."
+    }
+  }
+  hint "Every row is ten. Going down one row adds ten."
+}

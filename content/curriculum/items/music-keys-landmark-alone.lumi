@@ -1,0 +1,24 @@
+# One landmark on its own, with no others drawn to compare it with: its place on the grand staff is
+# all there is to go on.
+item music.landmark-alone v=1 skills=[music.grand-staff] {
+  title "A landmark on its own"
+  difficulty (if i == 0 then 2 else if i == 2 then 1 else 0)
+  let i=0..2
+  level easy {
+    let i={1, 2}  # middle C or treble G
+  }
+  level hard {
+    let i={0, 2}  # bass F, the newest landmark, or treble G
+  }
+  let n={if i == 0 then "F3" else if i == 1 then "C4" else "G4"}
+
+  scene 27x16 {
+    grandstaff gs notes=["{n}"] letters=false lit=[] landmarks=false at=canvas(1, 0)
+    text ask "This note is one of the three landmarks. Which one?" width=15 right-of=gs gap=1
+    choice pick options=["bass F", "middle C", "treble G"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if i == 0 then "bass F" else if i == 1 then "middle C" else "treble G")
+  hint "Is the note on the top staff, the bottom staff, or on its own short line between them?"
+  hint "The bass clef's two dots sit either side of F. The treble clef curls round G."
+}

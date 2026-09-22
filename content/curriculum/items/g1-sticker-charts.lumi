@@ -1,0 +1,34 @@
+# A full chart is ten without counting it, then count on: the teens as ten and some more.
+item count.sticker-charts v=1 skills=[counting.to-twenty, addition.counting-on] {
+  title "Two sticker charts"
+  difficulty (k + m)
+  let k=2..6 m=2..4
+  where (k + m <= 10)
+  level easy {
+    let k=2..4 m={2}
+  }
+  level hard {
+    let k=4..6 m=3..4
+  }
+
+  scene 24x20 {
+    column charts at=canvas(1, 1) space=1 {
+      starrow full slots=10 filled=10
+      starrow part slots=10 filled=k
+    }
+    text ask "Each chart holds 10 stickers. Leo gets {m} more today. How many will he have then?" narrate width=22 below=charts gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 + k + m)
+  feedback {
+    when (answer == 10 + k) point=part {
+      say "That is how many he has now. Put the {m} new ones on too."
+    }
+    when (answer == k + m) point=full {
+      say "The full chart counts too. It is 10."
+    }
+  }
+  hint "How many stickers are on the full chart? Do you need to count them?"
+  hint "Count on from 10 along the second chart, then count on {m} more."
+}

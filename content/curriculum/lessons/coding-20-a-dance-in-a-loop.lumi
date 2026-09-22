@@ -1,0 +1,51 @@
+# The first program a child makes that is not about getting somewhere: a dance, which the robot
+# does on screen to a beat and which prints as a strip of frames to read, draw and count.
+lesson coding-a-dance-in-a-loop v=2 format=teach grade=2 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A dance in a loop"
+  goal "Read a dance written as a program with a repeat, count its moves, and work out the repeat from the dance."
+
+  look {
+    scene 30x20 {
+      column all at=canvas(1, 0) space=1 align=start {
+        blocks b code=["clap 2", "repeat 2", "  jump", "  spin", "bow"]
+        dance d code=["clap 2", "repeat 2", "  jump", "  spin", "bow"]
+      }
+    }
+    say """
+      A dance is a program too: a list of moves done in order, with a repeat for the part that comes
+      round again. The strip under the blocks shows every move, one frame each. On the screen, press
+      Run and the robot dances it.
+      """
+  }
+  do {
+    practice coding.dance-count count=1 seed=3 hard-seed=7
+    show coding.dance-missing b=4 easy-b=2 hard-b=5
+    practice coding.dance-claps-blocks count=2 seed=2
+    practice coding.dance-frame-of count=2 seed=3 easy-seed=1
+    practice coding.dance-repeat-count count=2 seed=3 hard-seed=4
+  }
+  try stars=2 {
+    show coding.dance-which-program n=2 c=3 p=1 easy-c=1 easy-p=0
+  }
+  try stars=3 {
+    show coding.dance-all-ways t=12 easy-t=6
+  }
+  remember {
+    say "A repeat in a dance is the part that comes round again."
+  }
+
+  grown-ups """
+    Dance it together, with the child reading the blocks as the caller. Then let them write a dance
+    of their own for you to follow, with one repeat in it, and follow it exactly as written. The
+    questions without a strip are the point of the lesson: the dance has to be unrolled from the
+    blocks in the head. In the two-star question, count the jumps in the strip first, since that is
+    the repeat number. In the three-star question try each repeat number in turn, 2 to 6, and ask
+    whether the claps can still come out right.
+    """
+  level easy {
+    grown-ups "At this level the dance with a strip claps once a round, the frame to name is the second, the dances without a strip go round twice, the beats asked about are the third and fourth, the repeat to find goes round two or three times, the strip has one clap before each jump and the right program is A, and six claps can be made three ways."
+  }
+  level hard {
+    grown-ups "At this level the dance with a strip claps twice a round for three rounds, the frame to name is the fifth, the dances without a strip clap three times and then twice or once a round for three or four rounds, the beats asked about are the sixth to the eighth, in the repeat's last round or the bow after it, the repeat to find goes round four or five times, and the two-star and three-star questions are as written, since their versions go no further."
+  }
+}

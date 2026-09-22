@@ -1,0 +1,22 @@
+# One word is the wrong strength for the rest of the sentence, so the sentence argues with itself.
+# Finding it is error-finding, which is reasoning rather than recall.
+item reading.wrong-strength v=1 stars=2 skills=[reading.vocabulary, reasoning.find-the-error] {
+  title "The word that does not fit"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 34x14 {
+    passage p text="{if k == 0 then \"The tiny whale was far bigger than our boat.\" else if k == 1 then \"I was furious when my friend gave me a lovely present.\" else if k == 2 then \"The icy soup burned my tongue.\" else \"We whispered so loudly that the whole street woke up.\"}" width=33 numbers=false at=canvas(1, 1)
+    text ask "Ivy wrote this. One word is the wrong strength. Which word should she change?" width=33 below=p gap=1
+    choice pick options=[if k == 0 then "tiny" else if k == 1 then "friend" else if k == 2 then "soup" else "street", if k == 0 then "bigger" else if k == 1 then "furious" else if k == 2 then "burned" else "loudly", if k == 0 then "boat" else if k == 1 then "lovely" else if k == 2 then "icy" else "whispered"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "tiny" else if k == 1 then "furious" else if k == 2 then "icy" else "whispered")
+  feedback {
+    when (pick == "bigger" or pick == "burned" or pick == "loudly" or pick == "lovely") point=p {
+      say "That word agrees with the rest of the sentence. Which word argues with it?"
+    }
+  }
+  hint "Which two words in the sentence cannot both be true?"
+  hint "Of those two, which one would you change to make the sentence make sense?"
+}

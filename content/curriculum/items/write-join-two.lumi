@@ -1,0 +1,30 @@
+# Two short sentences joined into one with the word that says how they relate: so for a result,
+# but for a surprise, because for a reason. At hard, three sentences and the first join.
+item writing.join-two v=1 skills=[writing.joining-sentences, writing.revising] {
+  title "Join the two"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+  let pair={pick(k, "The rain stopped. We went out.", "I called the cat. It did not come.", "We took the bus. It was raining.", "Ada packed a coat. The sky was grey. She never needed it.")}
+  let right={pick(k, "so", "but", "because", "because")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x16 {
+    passage draft title="First draft" text="{pair}" width=32 numbers=false at=canvas(1, 1)
+    text ask "{if k == 3 then \"The first two sentences\" else \"These two sentences\"} could be one. Which joining word says how they go together?" narrate width=32 below=draft gap=1
+    choice pick options=["so", "but", "because"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=draft {
+      say "So says the second thing followed from the first. But says it went against it. Because says the second is the reason for the first. Read the two with your word between them: is it true?"
+    }
+  }
+  hint "Ask how the two sentences go together: did the second follow from the first, go against it, or cause it?"
+  hint "So for a result, but for a surprise, because for a reason."
+}

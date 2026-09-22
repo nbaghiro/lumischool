@@ -1,0 +1,31 @@
+# The way into a repeat with a count: one move repeated, on the stage's numbered floor.
+item coding.stage-hops v=1 skills=[coding.repetition] {
+  title "Hops across the stage"
+  difficulty (n * a)
+  let n=2..4 a=1..2 w={"rabbit", "crab"}
+  where (1 + n * a <= 9)
+  level easy {
+    let n=2..3 a={1}
+  }
+  level hard {
+    let n=3..4 a={2}
+  }
+
+  scene 23x13 {
+    stage s cols=9 col=1 who=w code=["when the flag is tapped", "repeat {n}", "  right {a}"] upto=0 at=canvas(1, 0)
+    text ask "Which square does it finish on?" width=15 below=s gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=s answer=col
+  feedback {
+    when (answer == 1 + a) point=s {
+      say "That is one time round. The repeat does it {n} times."
+    }
+    when (answer == n * a) point=s {
+      say "It starts on square 1, not before the first square."
+    }
+  }
+  hint "How far does it move each time round?"
+  hint "Count along the floor from square 1, one time round at a time."
+}

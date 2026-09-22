@@ -1,0 +1,60 @@
+lesson art-pictures-made-of-dots v=1 format=teach grade=3 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Pictures made of dots"
+  goal "Learn how Georges Seurat painted in dots, work out which dots make a colour, and find where dots and paint mix differently."
+
+  look {
+    scene 22x11 {
+      dots pic scene="sun" colours=["red", "yellow"] magnify=true at=canvas(1, 1)
+    }
+    say """
+      In the 1880s the painter Georges Seurat made whole pictures from tiny dots of colour placed side
+      by side. He did not mix the colours on his palette. From across the room the dots mix in your
+      eye, so red and yellow dots look orange, and the colours stay bright.
+      """
+  }
+  do {
+    practice art.dots-in-the-sun count=1 seed=1 hard-seed=7
+    practice art.near-or-far count=1 seed=1
+    practice art.dots-from-far count=2 seed=2
+    level easy {
+      worked art.dots-which-two t="pink" level=medium
+    }
+    practice art.dots-which-two count=2 seed=1
+    practice art.dots-mistake count=2 hard-count=1 seed=2
+    level hard {
+      practice art.near-or-far count=1 seed=7
+    }
+  }
+  try stars=2 {
+    show art.dots-vs-paint
+  }
+  try stars=3 {
+    show art.paint-in-dots
+  }
+  remember {
+    say "Dots side by side mix in your eye, which adds their light. Paint stirred together takes light away. So they do not always make the same colour."
+  }
+
+  grown-ups """
+    Seurat lived from 1859 to 1891 and his paintings are long out of copyright, but the lesson shows
+    his way of working in our own drawing rather than a copy of his picture. The machine marks the
+    questions: the colour the dots make from far away is worked out by averaging their light, which
+    is what the eye does, and is not the same as mixing them as paint.
+
+    The questions go from naming the dots, to what they make, to working back from a colour to the
+    dots that make it. The two-star question rests on a real
+    surprise: blue and yellow paint make green, but blue and yellow dots look grey from across the
+    room, because the eye adds their light instead of each paint taking some away. Seurat knew this
+    and put his dots together with care. Showing a real painting of his in a book or a gallery
+    afterwards is a good way to end.
+
+    Respond by standing back together: "From here your tree looks orange, and close up it is red and
+    yellow dots." Ask which two colours they would try next.
+    """
+  level easy {
+    grown-ups "At this level the dots in the sun, near or far and the colour from far are as written, a pink from dots is planned once in the teacher's pen before an orange and a purple, the mistakes are in a purple and an orange, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the dots are in the tree, near or far and the colour from far are as written, the dots to plan make a purple and a pink, the mistake is in a pink and the second one makes way for a second near-or-far question, asked the other way round, and the two-star and three-star are as written."
+  }
+}

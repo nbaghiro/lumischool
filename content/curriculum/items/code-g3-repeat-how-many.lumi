@@ -1,0 +1,33 @@
+# The count is the unknown: the start and the flag are shown and line 1 is left blank, so the
+# child works out how many times round, which the run proves by counting line 1.
+item coding.repeat-how-many v=1 skills=[coding.repetition] {
+  title "How many times round?"
+  difficulty (n * a + n * b)
+  let n=2..4 a=1..2 b=1..2
+  where (1 + n * a <= 7 and 1 + n * b <= 6)
+  level easy {
+    let n=2..3
+    where (a == b)  # the same distance across and down each time round
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 34x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat {n}", "  right {a}", "  down {b}"] blank=1
+      maze g cols=7 rows=6 col=1 row=1 flag=[1 + n * a, 1 + n * b] code=["repeat {n}", "  right {a}", "  down {b}"] upto=0 trail=none
+    }
+    text ask "Line 1 says repeat and a number. What number takes the robot to the flag?" width=28 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check coding.runs of=g answer="ran(1)"
+  feedback {
+    when (answer == n * a and a > 1) point=g {
+      say "That is how many columns the robot moves. Each time round moves it {a} of them."
+    }
+  }
+  hint "How far across does the robot go each time round? How far down?"
+  hint "How many times round get it from its square to the flag?"
+}

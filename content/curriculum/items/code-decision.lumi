@@ -1,0 +1,25 @@
+# The number going in is what varies, and the fork shows the decision as a place where the path
+# splits: the program's own test decides the way, so the key cannot disagree with the listing.
+item coding.decision v=2 skills=[coding.decisions] {
+  title "What does it do?"
+  difficulty (6 - abs(n - 6))
+  let n=1..10
+
+  scene 35x25 {
+    program p code=["if the number is more than 6", "  say shout", "otherwise", "  say whisper"] title="what to do" at=canvas(1, 0)
+    fork f ask="Is the number more than 6?" yes="shout" no="whisper" cond="the number is more than 6" n=n below=p gap=1
+    text ask "The number is {n}. What does the program say?" width=14 right-of=f gap=1
+    choice pick options=["shout", "whisper"] below=ask gap=1
+  }
+
+  check coding.runs of=f pick=said
+  feedback {
+    when (pick == "shout" and n <= 6) point=f {
+      say "{n} is not more than 6, so the program takes the no way."
+    }
+    when (pick == "whisper" and n > 6) point=f {
+      say "{n} is more than 6, so line 1 answers yes."
+    }
+  }
+  hint "Ask the question on line 1 about {n} first. It decides which way the path goes."
+}

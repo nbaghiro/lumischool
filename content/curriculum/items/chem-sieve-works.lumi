@@ -1,0 +1,23 @@
+# Yes and no both happen: a sieve only separates when one part is smaller than the holes and the
+# other is not.
+item chem.sieve-works v=1 skills=[chemistry.separating] {
+  title "Will this sieve do it?"
+  difficulty (if k == 0 or k == 2 then 2 else if k == 4 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={1, 4, 5}
+  }
+  level hard {
+    let k={0, 2, 3}  # holes that let both through or keep both, and flour against rice
+  }
+
+  scene 31x12 {
+    sieve s mixture=["{if k == 0 then \"sand\" else if k == 1 then \"pebbles\" else if k == 2 then \"peas\" else if k == 3 then \"rice\" else if k == 4 then \"pebbles\" else \"peas\"}", "{if k == 0 then \"salt\" else if k == 1 then \"sand\" else if k == 2 then \"rice\" else if k == 3 then \"flour\" else if k == 4 then \"peas\" else \"rice\"}"] holes=(if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 1 else if k == 3 then 1 else if k == 4 then 2 else 3) shaken=0 names=1 at=canvas(1, 0)
+    text ask "This sieve has {if k == 0 then \"holes bigger than sand but smaller than rice\" else if k == 1 then \"holes bigger than sand but smaller than rice\" else if k == 2 then \"tiny holes, finer than sand\" else if k == 3 then \"tiny holes, finer than sand\" else if k == 4 then \"holes bigger than sand but smaller than rice\" else \"holes bigger than rice but smaller than a pea\"}. Will shaking it separate the two?" width=16 right-of=s gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  check chem.separate of=s pick=works
+  hint "Which of the two will go through holes that size, and which will not?"
+  hint "If both go through, or both stay, are they apart?"
+}

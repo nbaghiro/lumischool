@@ -1,0 +1,13 @@
+item music.uke-play-f v=1 skills=[music.chord-changes, music.strumming] {
+  title "Play F"
+
+  scene 32x24 {
+    text ask "Keep finger 2 where it was for A minor, add finger 1, and strum." width=30 at=canvas(1, 1)
+    chordbox card tuning=uke chord=F frets=3 show=fingers name=true letters=true lit=[] below=ask gap=1
+    fretboard neck tuning=uke frets=3 view=chart labels=letters strum=true right-of=card gap=2
+  }
+
+  check music.chord chord=F tuning=uke
+  hint "Which finger was down for A minor? Leave it there."
+  hint "Find the dot with a 1 in it. Which string and which fret is it on?"
+}

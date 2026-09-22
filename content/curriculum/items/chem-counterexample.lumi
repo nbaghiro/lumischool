@@ -1,0 +1,19 @@
+# A reason, not a count: one spoon is enough to show a rule about every spoon is wrong.
+item chem.counterexample v=1 stars=2 skills=[chemistry.materials, reasoning.counterexample] {
+  title "One spoon shows it"
+  difficulty (if k == 1 or k == 3 then 2 else if k == 4 or k == 5 then 1 else 0)
+  let k=0..5 q=0..2
+  level hard {
+    let k={1, 3}
+  }
+
+  scene 22x13 {
+    text ask "Ben says every spoon is made of {if k == 0 then \"metal\" else if k == 1 then \"metal\" else if k == 2 then \"wood\" else if k == 3 then \"wood\" else if k == 4 then \"plastic\" else \"plastic\"}. Which spoon shows he is wrong?" width=21 at=canvas(1, 0)
+    materials row things=["{if q == 0 then (if k == 0 then \"wooden-spoon\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"plastic-spoon\" else if k == 4 then \"metal-spoon\" else \"wooden-spoon\") else if q == 1 then (if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"wooden-spoon\" else if k == 4 then \"plastic-spoon\" else \"plastic-spoon\") else (if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"wooden-spoon\" else if k == 4 then \"plastic-spoon\" else \"plastic-spoon\")}", "{if q == 0 then (if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"wooden-spoon\" else if k == 4 then \"plastic-spoon\" else \"plastic-spoon\") else if q == 1 then (if k == 0 then \"wooden-spoon\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"plastic-spoon\" else if k == 4 then \"metal-spoon\" else \"wooden-spoon\") else (if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"wooden-spoon\" else if k == 4 then \"plastic-spoon\" else \"plastic-spoon\")}", "{if q == 0 then (if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"wooden-spoon\" else if k == 4 then \"plastic-spoon\" else \"plastic-spoon\") else if q == 1 then (if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"wooden-spoon\" else if k == 4 then \"plastic-spoon\" else \"plastic-spoon\") else (if k == 0 then \"wooden-spoon\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"plastic-spoon\" else if k == 4 then \"metal-spoon\" else \"wooden-spoon\")}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick=odd
+  hint "Look at each spoon. Is it made of {if k == 0 then \"metal\" else if k == 1 then \"metal\" else if k == 2 then \"wood\" else if k == 3 then \"wood\" else if k == 4 then \"plastic\" else \"plastic\"}?"
+  hint "To show a rule about every spoon is wrong, how many spoons do you need that break it?"
+}

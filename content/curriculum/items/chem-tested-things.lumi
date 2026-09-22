@@ -1,0 +1,35 @@
+# The story: the tray of tested things at the printing works, counted by the tests they passed.
+item chem.tested-things v=1 stars=1 skills=[chemistry.materials, subtraction.to-twenty] {
+  title "The tested tray"
+  difficulty (n / 6 + w)
+  let n={12, 18, 24} c=4..9 m=2..3 w=0..1
+  where (m < c)
+  where (c < n / 2)
+  let asks={pick(w, "How many of the things conducted but were not magnetic?", "How many of the things neither conducted nor were magnetic?")}
+  level easy {
+    let n={12} c=4..5 w=0..0
+  }
+  level hard {
+    let n={18, 24} c=7..9 w=1..1
+  }
+
+  scene 34x11 {
+    text ask "Sam tested {n} things from the printing works with a bulb and a magnet. {c} of them made the bulb light, and {m} of those were pulled by the magnet as well. Nothing the magnet pulled failed the bulb. {asks}" narrate width=32 at=canvas(1, 0)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then c - m else n - c)
+  feedback {
+    when (w == 0 and answer == c) point=ask {
+      say "That is everything that conducted. Take away the {m} the magnet pulled too."
+    }
+    when (w == 1 and answer == n - c - m) point=ask {
+      say "The magnetic things all conducted, so they are already inside the {c}. Take only the {c} from {n}."
+    }
+    when (w == 1 and answer == n - m) point=ask {
+      say "That takes away only the magnetic ones. Everything that conducted is out, all {c} of them."
+    }
+  }
+  hint "{if w == 0 then \"Start with the things that conducted. The magnetic ones are part of that group.\" else \"The magnetic ones are inside the group that conducted, so one taking-away does it.\"}"
+  hint "{if w == 0 then \"Take the magnetic ones from the conductors.\" else \"Take the conductors from the whole tray.\"}"
+}

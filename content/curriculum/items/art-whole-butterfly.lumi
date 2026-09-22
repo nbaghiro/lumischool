@@ -1,0 +1,22 @@
+# Checking three finished pictures for the one that is the same both sides, which is finding two mistakes.
+item art.whole-butterfly v=1 skills=[art.symmetry, reasoning.find-the-mistake] {
+  title "The same on both sides"
+  difficulty s
+  let s=1..6 k=0..2
+  level easy {
+    let s=1..3
+  }
+  level hard {
+    let s=4..6
+  }
+
+  scene 37x11 {
+    mirrorpick m seed=s rows=4 cols=3 answer=k kind="whole" at=canvas(1, 1)
+    text ask "Only one butterfly is the same on both sides of its fold. Which one?" width=11 right-of=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check paint.mirror of=m pick=mirror
+  hint "Fold each one in your head along its dashed line. Do the squares land on the same colours?"
+  hint "Check the squares right next to each fold first, then the ones at the edges."
+}

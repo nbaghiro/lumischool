@@ -1,0 +1,19 @@
+# Two missing digits in one sum. The answer is unique because 7 plus the missing ones digit always
+# carries, so the ones digit of the total fixes it.
+item puzzle.digits v=1 stars=2 skills=[reasoning.digits] {
+  title "Two missing digits"
+  let a=4..9 b=2..8
+
+  scene 26x6 {
+    equation sum "4{?ones} + {?tens}7 = {47 + a + 10 * b}" at=canvas(1, 1)
+    text ask "Each box holds one digit." narrate below=sum gap=1
+  }
+
+  answer ones=a tens=b
+  feedback {
+    when (ones + 7 < 10) point=sum {
+      say "{ones} and 7 would not reach ten, and the ones digit of the total says it does."
+    }
+  }
+  hint "Start with the ones column: which digit added to 7 ends in {(47 + a) % 10}?"
+}

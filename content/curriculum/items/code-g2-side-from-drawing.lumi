@@ -1,0 +1,32 @@
+# The drawing is finished and one block is hidden: the number is read off the picture, which is the
+# program from the picture rather than the picture from the program.
+item coding.side-from-drawing v=1 skills=[coding.drawing] {
+  title "Read the missing block from the drawing"
+  difficulty (k + w + h)
+  let w=2..4 h=1..4 k=1..4
+  where (h != w)
+  level easy {
+    let w=2..3 h=1..3 k=1..2
+  }
+  level hard {
+    let w=3..4 h=2..4 k=3..4
+  }
+
+  scene 34x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["right {w}", "up {h}", "left {w}", "down {h}"] blank=k
+      turtle t cols=6 rows=5 col=1 row=5 moves=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+    }
+    text ask "What number goes in the empty block?" width=17 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k % 2 == 1 then w else h)
+  feedback {
+    when (answer == (if k % 2 == 1 then h else w)) point=t {
+      say "That is the length of the other sides. Which way does the empty block go?"
+    }
+  }
+  hint "Which block comes before the empty one? Which way does the turtle go next?"
+  hint "Count the squares along that side of the drawing."
+}

@@ -1,0 +1,17 @@
+# Every step starts with a doing word that tells you what to do. The other choices are words from
+# the same step, so the child has to find the word that is the action.
+item reading.doing-word v=1 skills=[reading.instructions, grammar.verbs] {
+  title "The doing word"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..4
+
+  scene 28x10 {
+    text step "{if k == 0 then \"Crack two eggs into a bowl.\" else if k == 1 then \"Stir the milk with a spoon.\" else if k == 2 then \"Put the pot in a sunny window.\" else if k == 3 then \"Fold the paper in half.\" else \"Pour the water into the jug.\"}" narrate width=26 at=canvas(1, 1)
+    text ask "Which word tells you what to do?" narrate width=26 below=step gap=1
+    choice pick options=[if k == 0 then "crack" else if k == 1 then "milk" else if k == 2 then "pot" else if k == 3 then "paper" else "water", if k == 0 then "eggs" else if k == 1 then "stir" else if k == 2 then "sunny" else if k == 3 then "half" else "pour", if k == 0 then "bowl" else if k == 1 then "spoon" else if k == 2 then "put" else if k == 3 then "fold" else "jug"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "crack" else if k == 1 then "stir" else if k == 2 then "put" else if k == 3 then "fold" else "pour")
+  hint "Which word is something you could do with your hands?"
+  hint "Try saying: I can ... Which word fits?"
+}

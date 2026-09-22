@@ -1,0 +1,36 @@
+# The way in: one tab note on strings 1 to 3 in first position, named. String 1 gives E, F and G at
+# frets 0, 1 and 3; string 2 gives B, C and D; string 3 gives G and A at frets 0 and 2. The tab
+# leaves the string letters off, since for an open string the letter is the answer.
+item music.tab-first-position-note v=1 skills=[music.tab, music.note-names] {
+  title "Name the note"
+  difficulty (if k <= 2 then 0 else if k <= 5 then 1 else 2)
+  let k=0..7
+  let pl={pick(k, "s1f0", "s1f1", "s1f3", "s2f0", "s2f1", "s2f3", "s3f0", "s3f2")}
+  let right={pick(k, "E", "F", "G", "B", "C", "D", "G", "A")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..7
+  }
+
+  scene 30x15 {
+    row top space=2 align=start at=canvas(1, 1) {
+      tab line tuning=guitar notes=["{pl}"] values=[] even=true letters=false ring=-1
+      text ask "Mo wrote one note in tab. Which note is it?" narrate width=16
+    }
+    choice pick options=["A", "B", "C", "D", "E", "F", "G"] stack=row below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and k >= 3) point=line {
+      say "Check which line the number is on. The top line is string 1, then string 2, then string 3."
+    }
+    when (pick != right and k < 3) point=line {
+      say "String 1 gives E played open, F at fret 1 and G at fret 3."
+    }
+  }
+  hint "Which string is the number on, and what does that string play open?"
+  hint "Now go up the frets from the open note: what does the fret number give?"
+}

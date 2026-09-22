@@ -1,0 +1,25 @@
+# The equals sign as "the same as", 1.OA.D.7: two of the four forms are true without being the
+# same sum written twice, and two are out by one.
+item add.true-or-false v=1 skills=[addition.equality] {
+  title "True or false"
+  difficulty ((if s == 0 then 0 else if s == 1 then 2 else 1) + (a + b) / 20)
+  let a=4..9 b=3..8 s=0..3
+  where (a != b)
+  where (a + b <= 17)
+  level easy {
+    let s={0, 2}
+  }
+  level hard {
+    let s={1, 3}
+  }
+
+  scene 19x10 {
+    equation eq "{a} + {b} = {if s == 0 then b else if s == 3 then a - 1 else a + 1} + {if s == 0 then a else if s == 1 then b - 1 else if s == 2 then b else b + 2}" at=canvas(1, 1)
+    text ask "Is this true or false?" narrate below=eq gap=1
+    choice pick options=["true", "false"] below=ask gap=1
+  }
+
+  answer pick=(if s <= 1 then "true" else "false")
+  hint "Work out the left side. Then work out the right side."
+  hint "Are the two sides the same number?"
+}

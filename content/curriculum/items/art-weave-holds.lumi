@@ -1,0 +1,35 @@
+# Two stars: two weaves side by side, one of them with a row that floats over every strip instead of
+# weaving in, and which of the two would hold together if you picked it up. The floating row moves
+# between the two weaves.
+item art.weave-holds v=1 stars=2 skills=[art.pattern, reasoning.evidence] {
+  title "Which one holds together?"
+  difficulty (if p < 2 then 0 else 1)
+  let p=0..3
+  let f1={pick(p, 0, 2, 0, 3)}
+  let f2={pick(p, 3, 0, 2, 0)}
+  let ans={pick(p, "The first one", "The second one", "The first one", "The second one")}
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3}
+  }
+
+  scene 24x34 {
+    text l1 "The first weave" at=canvas(1, 0)
+    weave one cols=6 rows=4 start=[0, 1, 0, 1] step=1 float=f1 below=l1 gap=0
+    text l2 "The second weave" below=one gap=1
+    weave two cols=6 rows=4 start=[0, 1, 0, 1] step=1 float=f2 below=l2 gap=0
+    text ask "In one of these a row lies over every strip instead of weaving in and out. If you picked them both up, which one would hold together?" narrate width=22 below=two gap=1
+    choice pick options=["The first one", "The second one"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=two {
+      say "Look for the row that never goes under anything. Nothing holds it in, so it would slide straight out."
+    }
+  }
+  hint "Read each row across and find the one that is in front at every crossing."
+  hint "A row that never goes under is not woven in at all."
+}

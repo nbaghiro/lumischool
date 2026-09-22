@@ -1,0 +1,17 @@
+item physics.longer-day v=1 skills=[physics.sky] stars=2 {
+  title "Summer or winter?"
+  let w=0..1
+
+  scene 33x27 {
+    column two at=canvas(1, 0) space=1 align=start {
+      sunpath a rise=(if w == 0 then 5 else 8) set=(if w == 0 then 20 else 16)
+      sunpath b rise=(if w == 1 then 5 else 8) set=(if w == 1 then 20 else 16)
+    }
+    text ask "One of these is a summer day. Is it the top one or the bottom one?" width=17 below=two gap=0
+    choice pick options=["Top", "Bottom"] right-of=ask gap=1
+  }
+
+  answer pick=(if w == 0 then "Top" else "Bottom")
+  hint "Which sun is up for longer?"
+  hint "How many hours is the sun up on each day?"
+}

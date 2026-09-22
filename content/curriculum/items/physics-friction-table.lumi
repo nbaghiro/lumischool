@@ -1,0 +1,20 @@
+item physics.friction-table v=1 skills=[physics.friction] {
+  title "How much more grip?"
+  difficulty (if f == 1 then 8 else if f == 0 then 5 else 2)
+  let f=0..2
+  level easy {
+    let f={0, 2}
+  }
+  level hard {
+    let f={0, 1}
+  }
+
+  scene 30x11 {
+    table data cols=2 head=["Floor", "Newtons"] cells=["ice", 1, "wood", 3, "carpet", 6, "sandpaper", 9] at=canvas(1, 0)
+    text ask "How many more newtons does the shoe need on {if f == 0 then \"carpet\" else if f == 1 then \"sandpaper\" else \"wood\"} than on ice?" width=13 right-of=data gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if f == 0 then 5 else if f == 1 then 8 else 2)
+  hint "Find both floors in the table. How far is it from one number to the other?"
+}

@@ -1,0 +1,45 @@
+lesson physics-year-review-2 v=1 format=review grade=2 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics review: the second year"
+  goal "Look back over the year: floating, slopes, shadows, how far and how long, rough and smooth, and where light goes."
+
+  warm-up {
+    practice physics.float-or-sink count=1 seed=2
+    practice physics.ramp-rolled count=1 seed=5 easy-seed=1 hard-seed=1
+    practice physics.shadow-length count=1 seed=2 easy-seed=1 hard-seed=2
+  }
+  exercises {
+    practice physics.how-many-float count=1 seed=3 easy-seed=1 hard-seed=7
+    practice physics.ramp-table count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.shadow-times count=1 seed=4 easy-seed=1 hard-seed=2
+    practice physics.journey-total count=1 seed=5 easy-seed=2 hard-seed=3
+    practice physics.friction-order count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.light-through count=1 seed=1 easy-seed=1 hard-seed=2
+    practice physics.light-maze count=1 seed=4 easy-seed=2 hard-seed=1
+    practice physics.pulled-count count=1 seed=2 easy-seed=1 hard-seed=3
+  }
+  puzzle stars=2 {
+    show physics.friction-fair s=0 f=1 easy-f=0 hard-s=1
+  }
+  puzzle stars=3 {
+    show physics.journey-three a=8 b=11 c=5 easy-a=5 easy-b=7 easy-c=4 hard-a=9 hard-b=12 hard-c=7
+  }
+
+  grown-ups """
+    This is a check, not a test, to do up in the treetops before the next year's forces and
+    circuits begin. The warm-up is the first question of three lessons: a thing in the tank, a
+    ball rolled from a ramp, a shadow to measure. The exercises take one question each from the
+    year: how many of the things float, the next reading in the ramp table, how many times the
+    stick's shadow is, the whole journey from its two legs, the floors in order of their pull, what
+    a torch shines through, a beam off two mirrors, and how many things on a tray a magnet pulls.
+    Anything that needs the way in again is worth another week with that lesson, and everything
+    else can move on. The two puzzles are there to be enjoyed: the fair test asks what should have
+    been kept the same, and the middle leg has to be worked backwards from the whole journey, so
+    ask for the reason (the two known legs come off the total) as well as the number.
+    """
+  level easy {
+    grown-ups "At this level the ball rolls a short way from a low ramp, the shadow is two or three times the stick, the tank has few things in it, the ramp table goes up in threes or fours, the journey's legs are under ten, the floors differ plainly, the torch shines at a clear or a solid sheet, the beam's two mirrors sit in different columns, the tray has no coin or foil, the fair test has one change only, and the middle leg comes from small legs."
+  }
+  level hard {
+    grown-ups "At this level the ball rolls further from a higher ramp, the shadow is four or six times the stick, the tank holds more things, the ramp table goes up in fours or fives, the journey's legs are over ten, the floors differ by one place, the torch shines at a cloudy sheet, the beam's two mirrors sit in one column, the tray has a coin and foil that are metal and stay put, two things were changed in the test, and the middle leg comes from long legs."
+  }
+}

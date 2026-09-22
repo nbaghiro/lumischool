@@ -1,0 +1,50 @@
+lesson g1-halves-and-quarters v=1 format=teach grade=1 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Halves and quarters"
+  goal "Split a shape into halves and quarters, find half of a number, and say how much is left."
+
+  look {
+    scene 34x23 {
+      pizza pie slices=4 taken=1 toppings=true at=canvas(1, 1)
+      fraction round n=4 k=1 right-of=pie gap=2
+      chocolate bar rows=2 cols=4 eaten=4 below=pie gap=1
+      note n "Four equal pieces. One gone, three left." width=14 right-of=bar gap=2
+    }
+    say """
+      Halves and quarters have to be equal pieces. A quarter of the pizza has gone, so three
+      quarters are still there.
+      """
+  }
+  do {
+    practice fraction.cake-cut count=1 seed=1
+    practice fraction.pizza-quarters count=1 seed=4
+    practice fraction.chocolate-half count=1 seed=8
+    practice fraction.half-the-candles count=1 seed=3
+    practice fraction.which-part count=1 seed=4
+    practice fraction.quarter-of-set count=1 seed=2
+    practice fraction.ribbon-parts count=1 seed=5
+  }
+  try stars=2 {
+    show fraction.whole-from-half n=4 easy-n=2 hard-n=6
+    show fraction.shaded r=1 c=2 k=1 hard-r=2 hard-c=4 hard-k=2
+  }
+  try stars=3 {
+    show fraction.pizza-left s=8 k=2 easy-s=4 easy-k=1 hard-k=3
+  }
+  remember {
+    say "Two equal pieces are halves. Four equal pieces are quarters. Half of 8 is 4."
+  }
+
+  grown-ups """
+    Cut something real in half and then in half again. Equal is the word to keep insisting on. Half
+    of the candles is half of a number, which is the same idea as half of a cake. Two quarters
+    shaded is one half, which is worth saying out loud. A quarter of the apples and a piece of the
+    ribbon take the same idea to a number and to a length. In the three-star question the child has
+    to turn half of the pizza into slices before taking Mia's slices away.
+    """
+  level easy {
+    grown-ups "At this level the bar is eaten well past half or well short of it, the sets to quarter hold four or eight, the ribbon is cut in half, and the pizza of four loses half and then one slice."
+  }
+  level hard {
+    grown-ups "At this level the bar is one square from half, the circle shows two or three quarters, the ribbon is cut into quarters, and the pizza of eight loses half and then three slices."
+  }
+}

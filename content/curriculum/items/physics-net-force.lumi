@@ -1,0 +1,29 @@
+item physics.net-force v=1 skills=[physics.forces] {
+  title "The force left over"
+  difficulty (a + b)
+  let a=4..9 b=1..4
+  where (a > b)
+  level easy {
+    let a=4..6 b=1..2
+  }
+  level hard {
+    let a=7..9 b=3..4
+  }
+
+  scene 20x16 {
+    forces f thing=box push=a oppose=b at=canvas(1, 1)
+    text ask "How many newtons are left over?" width=16 below=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=f {
+      say "The arrows point at each other, so take the smaller away from the bigger."
+    }
+    when (answer == a) point=f {
+      say "Something is pushing back, so not all {a} newtons are left."
+    }
+  }
+  hint "Which way does each arrow push, and how big is each?"
+}

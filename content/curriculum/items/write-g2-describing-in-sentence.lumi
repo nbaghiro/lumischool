@@ -1,0 +1,31 @@
+# The describing word found inside a sentence, where it sits next to the thing it describes.
+item writing.describing-in-sentence v=1 skills=[writing.word-classes] {
+  title "The describing word in the sentence"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 2, 4}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let s={if k == 0 then "The mouse ate a big seed." else if k == 1 then "A tiny mouse ran home." else if k == 2 then "The mouse hid in a dark hole." else if k == 3 then "The mouse has soft fur." else "Two mice sat on a cold step."}
+  let w1={if k == 0 then "mouse" else if k == 1 then "tiny" else if k == 2 then "mouse" else if k == 3 then "mouse" else "mice"}
+  let w2={if k == 0 then "ate" else if k == 1 then "mouse" else if k == 2 then "hid" else if k == 3 then "has" else "sat"}
+  let w3={if k == 0 then "big" else if k == 1 then "ran" else if k == 2 then "dark" else if k == 3 then "soft" else "cold"}
+  let w4={if k == 0 then "seed" else if k == 1 then "home" else if k == 2 then "hole" else if k == 3 then "fur" else "step"}
+  let key={if k == 1 then "tiny" else w3}
+
+  scene 37x10 {
+    mice m count=2 facing=1 at=canvas(1, 1)
+    column q right-of=m gap=2 space=1 align=start {
+      text line "{s}" narrate width=22
+      text ask "Which word is a describing word?" narrate
+      choice pick options=["{w1}", "{w2}", "{w3}", "{w4}"]
+    }
+  }
+
+  answer pick=key
+  hint "Which word tells you what something is like?"
+  hint "Find the things in the sentence. Which word sits next to a thing and tells you more about it?"
+}

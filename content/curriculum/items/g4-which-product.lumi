@@ -1,0 +1,27 @@
+# Compare two products without totalling both: the grid shows that two parts are the same, so only
+# the other two need comparing.
+item multiply.which-bigger v=1 stars=2 skills=[multiplication.long, reasoning.compare-without-totalling] {
+  title "Which is bigger"
+  difficulty (10 - abs(t - s) - (b - a))
+  let t=2..6 s=2..6 a=1..8 b=2..9
+  where (t != s and a < b)
+  level hard {
+    where (abs(t - s) == 1 and b - a <= 2)  # the parts that differ are close
+  }
+
+  scene 30x14 {
+    text ask "Which product is bigger? The grid method can show you without finding both answers." narrate width=29 at=canvas(1, 1)
+    text pa "A:   {10 * t + a} × {10 * s + b}" below=ask gap=1
+    text pb "B:   {10 * t + b} × {10 * s + a}" below=pa gap=0
+    choice pick options=["A", "B", "the same"] below=pb gap=1
+  }
+
+  answer pick=(if t > s then "A" else "B")
+  feedback {
+    when (pick == "the same") point=pa {
+      say "They use the same digits, but not in the same places. Draw both grids and compare the parts."
+    }
+  }
+  hint "In both grids, which parts come out the same?"
+  hint "Compare only the parts that are different: {10 * t} × {b} and {a} × {10 * s} against {10 * t} × {a} and {b} × {10 * s}."
+}

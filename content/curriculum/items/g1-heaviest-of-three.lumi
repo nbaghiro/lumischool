@@ -1,0 +1,21 @@
+# Two balances, three things: the heaviest or the lightest follows from both tilts together, never
+# from one alone. Where the tilts leave the question open, it is not asked.
+item measure.heaviest-of-three v=1 skills=[measure.mass, reasoning.order] {
+  title "Two balances"
+  let t1={-1, 1} t2={-1, 1} w=0..1
+  where (not (w == 0 and t1 == -1 and t2 == 1) and not (w == 1 and t1 == 1 and t2 == -1))
+  roles x=apple y=ball z=cube
+
+  scene 32x19 {
+    row pans at=canvas(1, 1) space=2 {
+      balance s1 left=[x] right=[y] tilt=t1
+      balance s2 left=[y] right=[z] tilt=t2
+    }
+    text ask "Which is the {if w == 0 then \"heaviest\" else \"lightest\"}?" narrate below=pans gap=1
+    choice pick options=[x, y, z] below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then if t1 == -1 and t2 == -1 then "x" else if t1 == 1 and t2 == 1 then "z" else "y" else if t1 == -1 and t2 == -1 then "z" else if t1 == 1 and t2 == 1 then "x" else "y")
+  hint "On a balance the heavier side goes down. Which side is down on each one?"
+  hint "The ball is on both balances. Is it heavier or lighter than each of the others?"
+}

@@ -1,0 +1,70 @@
+# The guitar's grade four: C, G and D read from their cards and played, and the change between two
+# chords measured by the fingers that stay down and the fingers that lift.
+lesson music-open-chords-on-the-guitar v=1 format=teach grade=4 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Open chords: C, G and D"
+  goal "Play C, G and D on the guitar from their chord boxes, and change from one to the next."
+
+  look {
+    scene 36x34 {
+      row top space=1 align=start at=canvas(1, 1) {
+        chordbox c tuning=guitar chord=C frets=4 show=fingers name=true letters=true lit=[]
+        chordbox g tuning=guitar chord=G frets=4 show=fingers name=true letters=true lit=[]
+      }
+      row low space=1 align=start below=top gap=1 {
+        chordbox d tuning=guitar chord=D frets=4 show=fingers name=true letters=true lit=[]
+        hand h side=left numbers=guitar ring=0 colours=true
+        bandstand stand posts=5 notes=3
+      }
+    }
+    say """
+      Ben is learning three chords to play at the bandstand: C, G and D. A chord box is the guitar
+      stood up facing you, with the thickest string on the left. Each dot is a finger, and its
+      number says which: 1 is the pointer, 2 the middle finger, 3 the ring finger. A ring means play
+      that string open, and a cross means leave it out. A change is quicker when a finger can stay
+      down.
+      """
+  }
+  do {
+    practice music.guitar-finger-fret count=1 seed=4 easy-seed=1 hard-seed=9
+    practice music.guitar-name-card count=2 seed=1
+    practice music.guitar-play-open-chord count=1 seed=2 easy-seed=1 hard-seed=7
+    level easy {
+      worked music.guitar-fingers-stay p=0 level=medium
+    }
+    practice music.guitar-fingers-stay count=2 seed=8 hard-seed=1
+    practice music.guitar-lifts count=1 seed=1 easy-seed=2
+    level hard {
+      show music.guitar-wrong-finger c=1 w=0
+    }
+    practice music.bandstand-chord-changes count=1 seed=1
+  }
+  try stars=2 {
+    show music.guitar-wrong-finger c=0 w=1 easy-c=0 easy-w=0 hard-c=2 hard-w=2
+  }
+  try stars=3 {
+    show music.guitar-fewest-lifts v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Read a chord box dot by dot: each dot is a finger, on its string and its fret."
+  }
+
+  grown-ups """
+    The idea is that a chord box is a map of the hand: for each dot, a finger, a string and a fret,
+    and for each string above the nut, open or left out. The wrong ideas to watch for are reading
+    the finger's number as the fret (in C they happen to match, in G and D they do not), and
+    thinking a finger can stay down because its place is used in both chords, when a different
+    finger presses it in the second. In the working, look for the child naming each dot as three
+    things before answering. The two-star question compares the chord Ben wrote in tab with its
+    card, string by string; the three-star question adds up the lifts of three changes, and the
+    change from C to A minor, where two fingers stay, is the one to find first. A child who is stuck
+    can put the fingers on one at a time, saying the string and fret aloud, and go back to the way
+    in; stay on this lesson another day if the changes are still guesses. Off the page, with a real
+    guitar or a neck drawn on card, count how many clean changes from C to A minor fit in a minute.
+    """
+  level easy {
+    grown-ups "At this level the fret to read is in C, where each finger presses the fret of its own number, the cards to name are G and D, the chord to play is G, which plays every string, the change from C to A minor is worked in the teacher's pen before two more changes are asked, the lifts are counted from E minor to E, where a finger lands and none lifts, the song has two changes, the wrong number in Ben's tab of C is on string 2, and the quickest order starts on C with A minor, E minor and E."
+  }
+  level hard {
+    grown-ups "At this level the fret to read is in D, the cards to name are C and A minor, which differ by one finger, the chord to play is D, which leaves out two strings, the changes are A to D, where two different fingers use the same place, and E to E minor, the lifts are counted from A minor to E, the same shape one string over, the tab has no string names and a wrong number in G is found before the two-star's in D, the song has six changes, and the quickest order starts on E minor, where a slide saves a lift."
+  }
+}

@@ -1,0 +1,18 @@
+# The signpost read for the way to go and how far: two places, one on each arm.
+item reading.signpost-way v=1 skills=[reading.text-features, reasoning.compare] {
+  title "Read the signpost"
+  difficulty w
+  let w=0..1
+  let asks={pick(w, "Pip wants the nearer town. Which way does she turn, and how far is it, in kilometres?", "Which way is Bray, and how much further is it than Ash, in kilometres?")}
+
+  scene 34x14 {
+    signpost post at=canvas(1, 1)
+    text ask "{asks}" narrate width=16 right-of=post gap=1
+    choice pick options=["left", "right"] below=ask gap=1
+    number-input answer below=pick gap=1
+  }
+
+  answer pick=(if w == 0 then "left" else "right") answer=(if w == 0 then 3 else 4)
+  hint "Each arm carries a place and how far it is. Compare the numbers, then look which way the arm points."
+  hint "{if w == 0 then \"The smaller number is the nearer place; its arm points the way, and its number is the distance.\" else \"Bray's arm points its way; take Ash's distance from Bray's.\"}"
+}

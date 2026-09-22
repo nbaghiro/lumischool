@@ -1,0 +1,28 @@
+item columns.add-three-digit v=1 skills=[addition.columns] {
+  title "Adding three digits"
+  difficulty (a + b + (if a % 100 + b % 100 >= 100 then 500 else 0))
+  let a=234..789 b=145..698
+  where (a + b < 1000)
+  where (a % 10 + b % 10 >= 10)
+  level easy {
+    let a=234..389 b=145..298
+    where (a % 100 + b % 100 < 100)  # the ones carry, the tens do not
+  }
+  level hard {
+    let a=400..649 b=300..549
+    where (a % 100 + b % 100 >= 100)  # the tens carry too
+  }
+
+  scene 22x11 {
+    columns sum a=a b=b op=add at=canvas(1, 1)
+    text ask "Add the ones, then the tens, then the hundreds." width=20 below=sum gap=1
+  }
+
+  answer sum=(a + b)
+  feedback {
+    when (sum == a + b - 10) point=sum {
+      say "The ten carried out of the ones has to be added into the tens column."
+    }
+  }
+  hint "Work right to left, and write the carried digit under the next column."
+}

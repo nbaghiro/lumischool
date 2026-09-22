@@ -1,0 +1,40 @@
+# The three-star: the fewest arrows a web can have when every animal in it must have something to
+# eat. Every animal needs one arrow in, so the count is the number of animals, whatever the plants
+# do. The trap is counting the plant, or adding an arrow for every pair.
+item nature.smallest-web v=1 stars=3 skills=[nature.food-webs, reasoning.extremes] {
+  title "The smallest web"
+  difficulty (n - 3)
+  let n=3..5
+  let list={pick(n - 3, "seaweed, a crab, a sea snail and a gull", "seaweed, a crab, a sea snail, a gull and an octopus", "seaweed, a crab, a sea snail, a gull, an octopus and a seal")}
+  level easy {
+    let n=3..3
+  }
+  level hard {
+    let n=5..5
+  }
+
+  scene 34x21 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      gull pg flying=0
+      octopus po spots=4
+    }
+    text ask "Ada draws a web with {list} in it. Every animal must have at least one arrow pointing into it, so it has something to eat, and the seaweed makes its own food. What is the fewest arrows the web can have?" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n + 1) point=ask {
+      say "The seaweed needs no arrow: it makes its own food. Count only the animals."
+    }
+    when (answer == n - 1) point=ask {
+      say "Every animal needs its own arrow in, and there are {n} animals. Check each one has been fed."
+    }
+    when (answer > n + 1) point=ask {
+      say "One arrow into each animal is enough to feed it. Any more than one arrow per animal is more than the fewest."
+    }
+  }
+  hint "How many animals are there? Each one needs at least one arrow into it."
+  hint "Can one arrow feed two animals? No: an arrow points into one creature. So the fewest is one arrow for each animal."
+}

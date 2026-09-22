@@ -1,0 +1,17 @@
+# The audit's raise for writing an acrostic: a longer word, and whole sentences across the lines.
+item writing.acrostic-sentences v=1 stars=3 skills=[writing.poems, writing.composing] {
+  title "A poem in two sentences"
+  let w={"LIGHT", "NIGHT", "FLAME"}
+
+  scene 36x27 {
+    row top at=canvas(1, 1) space=1 align=start {
+      lantern lamp lit=1 post=1
+      text ask "Write a poem down the page for {w}. Make it two sentences that run across the lines, with a full stop only where each sentence ends." width=28
+    }
+    acrostic poem word="{w}" written=[""] width=30 below=top gap=1
+  }
+
+  check writing.by-eye look-for="A line for every letter, each starting with that letter; the poem reads as two sentences that carry on from one line to the next, with exactly two full stops, each where a sentence ends, and every line about the lantern or the night."
+  hint "Say your first sentence out loud. Where does it need a new line to start the next letter?"
+  hint "Put the full stop only when the sentence is finished, even if it is in the middle of a line."
+}

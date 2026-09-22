@@ -1,0 +1,23 @@
+# Three prefixes on one root, and the sentence decides which: the meaning has to fit what happens.
+item reading.prefix-sentence v=1 skills=[reading.morphology, reading.context] {
+  title "Which word fits the sentence?"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 1, 4}  # unscrew, repaint, unwrap
+  }
+  level hard {
+    let k={2, 3}  # preheat, disobey
+  }
+
+  scene 34x7 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text sent "{if k == 0 then \"The lid is stuck. Can you ____ it for me?\" else if k == 1 then \"My picture got wet, so I will ____ it.\" else if k == 2 then \"Please ____ the oven before the cake goes in.\" else if k == 3 then \"Mo chose to ____ the rules, so he lost a turn.\" else \"The present was hard to ____ because of all the tape.\"}" width=33
+      choice pick options=[if k == 0 then "rescrew" else if k == 1 then "unpaint" else if k == 2 then "reheat" else if k == 3 then "reobey" else "miswrap", if k == 0 then "unscrew" else if k == 1 then "prepaint" else if k == 2 then "unheat" else if k == 3 then "disobey" else "rewrap", if k == 0 then "misscrew" else if k == 1 then "repaint" else if k == 2 then "preheat" else if k == 3 then "misobey" else "unwrap"]
+    }
+  }
+
+  answer pick=(if k == 0 then "unscrew" else if k == 1 then "repaint" else if k == 2 then "preheat" else if k == 3 then "disobey" else "unwrap")
+  hint "Read the sentence with each word in the gap."
+  hint "What does each prefix do: undo, again, before, not or wrongly? Which one fits what happens?"
+}

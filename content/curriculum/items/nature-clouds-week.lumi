@@ -1,0 +1,30 @@
+# The story: a week of rain measured on the cloud islands, and how much fell over the whole week, read
+# off a chart the child adds up.
+item nature.clouds-week v=1 skills=[nature.weather, addition.to-hundred] {
+  title "A week of rain"
+  difficulty total
+  let v=0..3
+  let mon={pick(v, 10, 20, 15, 25)}
+  let tue={pick(v, 0, 15, 20, 30)}
+  let wed={pick(v, 5, 10, 25, 20)}
+  let total={pick(v, 15, 45, 60, 75)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 29x24 {
+    row top space=2 align=start at=canvas(1, 0) {
+      raingauge gauge max=50 step=10 level=wed unit=mm show=1
+      table week cols=2 head=["Day", "Rain"] cells=["Monday", "{mon} mm", "Tuesday", "{tue} mm", "Wednesday", "{wed} mm"]
+    }
+    text ask "Mia keeps the rain chart on the cloud islands and empties the gauge each evening. How many millimetres of rain fell over the three days?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=total
+  hint "Read the three numbers off the chart."
+  hint "Add them together, starting with the two that make a ten."
+}

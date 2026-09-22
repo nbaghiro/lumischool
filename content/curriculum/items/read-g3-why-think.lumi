@@ -1,0 +1,19 @@
+# An interpretive question: the passage does not say why, so more than one answer is good, and the
+# line number keeps the answer tied to the text. A grown-up marks it.
+item reading.why-think v=1 stars=3 skills=[reading.inference, reading.evidence] {
+  title "What do you think, and why?"
+  difficulty (if k == 2 then 0 else if k == 0 then 1 else 2)
+  let k=0..2
+
+  scene 37x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"Nia found a tiny bird on the path under the hedge. She did not pick it up. She ran for her grandad, who put on his garden gloves and lifted it back into the nest.\" else if k == 1 then \"Every morning Mr Okafor puts a bowl of water by his shop door. On hot days he fills it twice. The dogs on the street always stop there on the way to the park.\" else \"Luca's kite would not fly on Saturday. On Sunday the flags on the harbour wall stood straight out, and Luca ran to get his kite before breakfast.\"}" width=36
+      text ask "{if k == 0 then \"Why do you think Nia left the bird for her grandad?\" else if k == 1 then \"Why do you think Mr Okafor fills the bowl twice?\" else \"Why do you think Luca ran for his kite on Sunday?\"} Say which line helped." width=36
+      writinglines w lines=2 width=36 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A reason the passage supports, with the number of a line that backs it up. More than one answer is right. Nia did not want to hurt it, or knew a grown-up would know what to do, and the gloves show a bird is not held in bare hands (lines 2 and 3). The dogs are thirstier on hot days, or the water dries up faster (lines 1 to 3). The flags standing out show a strong wind, which the kite needed (lines 1 and 2). An answer with no line, or one the passage does not support, is not finished yet."
+  hint "The passage does not say why. What clues does it give you?"
+  hint "Pick the line that made you think of your answer. Does it really fit?"
+}

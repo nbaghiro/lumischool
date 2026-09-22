@@ -1,0 +1,24 @@
+# The way in to pixel code: one row read from the left, where the colour comes twice.
+item coding.row-red-count v=1 skills=[coding.data] {
+  title "Count the red"
+  difficulty a
+  let a=1..3 c={"red", "blue"}
+
+  scene 36x7 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["{a} {c} {7 - 2 * a} white {a} {c}"]
+      pixels g cols=7 rows=1 code=["{a} {c} {7 - 2 * a} white {a} {c}"] show=false beside=false
+    }
+    text ask "How many squares are {c}?" below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer="painted({c})"
+  feedback {
+    when (answer == a) point=p {
+      say "{c} comes twice in the line: at the start and at the end."
+    }
+  }
+  hint "Read the line from the left: a number, then a colour."
+  hint "Which numbers go with {c}? Add them."
+}

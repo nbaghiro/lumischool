@@ -1,0 +1,30 @@
+item physics.speed v=1 skills=[physics.speed] {
+  title "Metres each second"
+  difficulty d
+  let d={20, 30, 40, 60, 80, 100} t={5, 10, 20}
+  where (d % t == 0 and d / t <= 10)
+  level easy {
+    let d={20, 30, 40} t={5}
+  }
+  level hard {
+    let d={60, 80, 100} t={20}
+  }
+
+  scene 28x14 {
+    roaddistances road stops=["Start", "End"] legs=[d] unit=m at=canvas(1, 1)
+    stopwatch watch seconds=t right-of=road gap=2
+    text ask "How many metres did it go each second?" width=20 below=road gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (d / t)
+  feedback {
+    when (answer == d * t) point=watch {
+      say "The distance is shared out between the seconds, so divide rather than multiply."
+    }
+    when (answer == d) point=road {
+      say "That is the whole distance. It took {t} seconds to cover it."
+    }
+  }
+  hint "How many metres does it go in one second?"
+}

@@ -1,0 +1,32 @@
+item chem.flame-rise v=2 skills=[chemistry.heating] {
+  title "How hot after the flame?"
+  difficulty (v + 10 * m)
+  let v={20, 30, 40} m=2..5
+  level easy {
+    let m=2..3
+  }
+  level hard {
+    let v={30, 40} m=4..5
+  }
+
+  scene 37x14 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      flame burner height=4 on=1 stand=false
+      thermometer tube from=0 to=120 step=20 value=v unit="°C"
+    }
+    text ask "It rises 10 degrees a minute. What does it read after {m} minutes?" width=13 right-of=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (v + 10 * m)
+  feedback {
+    when (answer == v + m) point=tube {
+      say "Each minute adds ten degrees, not one."
+    }
+    when (answer == 10 * m) point=tube {
+      say "Start from what it reads now, {v} degrees, and add the rise."
+    }
+  }
+  hint "How much does it rise in one minute? And in {m} minutes?"
+  hint "Where does it start? What do you get when you add the rise to that?"
+}

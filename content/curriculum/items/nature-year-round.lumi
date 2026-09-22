@@ -1,0 +1,37 @@
+# Hard's second reasoning question: the year has no first season. Numbering the trees from summer
+# or from winter means going round the end of the year, and the trees are muddled as well.
+item nature.year-round v=1 stars=2 skills=[nature.seasons, reasoning.order] {
+  title "Round the year"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let start={if k == 0 then "summer" else if k == 1 then "autumn" else "winter"}
+  let off={if k == 0 then 1 else if k == 1 then 2 else 3}
+  let a={if k == 0 then "autumn" else if k == 1 then "spring" else "summer"}
+  let b={if k == 0 then "spring" else if k == 1 then "winter" else "spring"}
+  let c={if k == 0 then "winter" else if k == 1 then "summer" else "winter"}
+  let d={if k == 0 then "summer" else if k == 1 then "autumn" else "autumn"}
+  let wa={if a == "spring" then "blossom" else if a == "summer" then "full of leaves" else if a == "autumn" then "leaves falling" else "bare"}
+  let wb={if b == "spring" then "blossom" else if b == "summer" then "full of leaves" else if b == "autumn" then "leaves falling" else "bare"}
+  let wc={if c == "spring" then "blossom" else if c == "summer" then "full of leaves" else if c == "autumn" then "leaves falling" else "bare"}
+  let wd={if d == "spring" then "blossom" else if d == "summer" then "full of leaves" else if d == "autumn" then "leaves falling" else "bare"}
+  let ia={if a == "spring" then 0 else if a == "summer" then 1 else if a == "autumn" then 2 else 3}
+  let ib={if b == "spring" then 0 else if b == "summer" then 1 else if b == "autumn" then 2 else 3}
+  let ic={if c == "spring" then 0 else if c == "summer" then 1 else if c == "autumn" then 2 else 3}
+  let id={if d == "spring" then 0 else if d == "summer" then 1 else if d == "autumn" then 2 else 3}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x31 {
+    seasontrees year seasons=[a, b, c, d] names=0 at=canvas(1, 1)
+    text ask "The year goes round and round. Number the trees 1 to 4 in the order the seasons come, but this time start from {start}." narrate width=34 below=year gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=((ia - off + 4) % 4 + 1) r=((ib - off + 4) % 4 + 1) t=((ic - off + 4) % 4 + 1) u=((id - off + 4) % 4 + 1)
+  hint "Find the {start} tree first. It gets number 1."
+  hint "Keep going: after winter comes spring, and the count carries on."
+}

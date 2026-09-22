@@ -1,0 +1,35 @@
+# Heating or cooling changes how particles move and sit, never how many there are. The count in the
+# picture is the answer, which is the point: nothing is made and nothing is lost.
+item chem.same-number v=1 skills=[chemistry.particles, chemistry.conservation] {
+  title "How many now?"
+  difficulty (n / 10 + d)
+  let n={10, 12, 14, 16} d=0..1
+  level easy {
+    let n={10, 12} d={0}
+  }
+  level hard {
+    let n={14, 16} d={1}
+  }
+
+  scene 25x13 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      particles jar spread=1 count=n name=0 moving=1
+      column side space=1 align=start {
+        text ask "This liquid is {if d == 0 then \"heated until it is all gas\" else \"cooled until it is all solid\"}, with the lid kept on. How many particles are in the jar then?" width=13
+        number-input answer
+      }
+    }
+  }
+
+  answer n
+  feedback {
+    when (answer < n) point=jar {
+      say "Did any particles get out? The lid stayed on the whole time."
+    }
+    when (answer > n) point=jar {
+      say "Can heating or cooling make new particles?"
+    }
+  }
+  hint "What does heating or cooling change about particles: how they move, or how many there are?"
+  hint "The lid stays on. Can any particle get in or out?"
+}

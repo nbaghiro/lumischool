@@ -1,0 +1,26 @@
+# A path round three sides of a block, so the robot turns at every corner before it finds the flag;
+# where the flag is decides how many turns it makes. The audit's raise for until-moves.
+item coding.until-turns v=1 skills=[coding.decisions, coding.repetition] {
+  title "How many turns?"
+  difficulty (if k == 0 then 3 else if k == 1 then 2 else 1)
+  let k=0..2
+  level easy {
+    let k={2}
+  }
+  level hard {
+    let k={0}
+  }
+
+  scene 30x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"]
+      maze g map=["{if k == 1 then \". . F . .\" else \". . . . .\"}", "{if k == 0 then \"F # # # .\" else if k == 1 then \". # # # .\" else \". # # # F\"}", "# # # # .", "S . . . ."] code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"] upto=0 trail=none
+    }
+    text ask "How many times does the robot turn before it stops?" width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=turns
+  hint "Follow the robot with a finger and ask the if question before every move."
+  hint "Make a mark each time the answer is yes and the robot turns."
+}

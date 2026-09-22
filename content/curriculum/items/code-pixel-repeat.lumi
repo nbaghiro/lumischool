@@ -1,0 +1,22 @@
+item coding.pixel-repeat v=1 skills=[coding.repetition, coding.data] {
+  title "A pattern that repeats"
+  difficulty (n * (2 * p + q))
+  set p=2 q=2
+  let n=2..3
+  level easy {
+    set p=1 q=1  # one blue at each end of the first row, one in the second
+  }
+  level hard {
+    set q=3  # three blue in the second row, off centre
+  }
+
+  scene 28x23 {
+    program c code=["repeat {n}", "  {p} blue {6 - 2 * p} yellow {p} blue", "  2 yellow {q} blue {4 - q} yellow"] at=canvas(1, 0)
+    pixels p cols=6 rows=(2 * n) code=["repeat {n}", "  {p} blue {6 - 2 * p} yellow {p} blue", "  2 yellow {q} blue {4 - q} yellow"] show=false beside=false below=c gap=1
+    text ask "Colour it in. How many squares are blue?" width=12 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="painted(blue)"
+  hint "Count the blue in the two rows inside the repeat, then do that {n} times."
+}

@@ -1,0 +1,27 @@
+# More coins is not more money: Ben always has more coins, and only sometimes more cents.
+item money.who-has-more v=1 skills=[money.count-coins, money.compare] {
+  title "Who has more money"
+  difficulty (30 - abs(25 + 10 * da + 5 * na - (10 * db + 5 * nb)))
+  let da=0..1 na=0..2 db=1..3 nb=1..3
+  where (db + nb > 1 + da + na)
+  where (25 + 10 * da + 5 * na != 10 * db + 5 * nb)
+  level easy {
+    where (abs(25 + 10 * da + 5 * na - (10 * db + 5 * nb)) >= 10)
+  }
+  level hard {
+    where (abs(25 + 10 * da + 5 * na - (10 * db + 5 * nb)) <= 5)
+  }
+
+  scene 22x15 {
+    text la "Ann" at=canvas(1, 1)
+    coins ca quarters=1 dimes=da nickels=na pennies=0 right-of=la gap=1
+    text lb "Ben" below=la gap=2
+    coins cb quarters=0 dimes=db nickels=nb pennies=0 right-of=lb gap=1
+    text ask "Who has more money?" narrate below=lb gap=2
+    choice pick options=["Ann", "Ben"] below=ask gap=1
+  }
+
+  answer pick=(if 25 + 10 * da + 5 * na > 10 * db + 5 * nb then "Ann" else "Ben")
+  hint "How many cents does Ann have? Start with her quarter."
+  hint "Now count Ben's cents. Who has more cents, not more coins?"
+}

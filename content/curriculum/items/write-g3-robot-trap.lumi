@@ -1,0 +1,14 @@
+# The skill turned round: write a sentence with one mistake of each kind for the robot to find.
+item writing.robot-trap v=1 stars=3 skills=[writing.editing, writing.composing] {
+  title "A sentence to test the robot"
+  let t={"the canal", "a snowy day", "the lighthouse"}
+
+  scene 32x15 {
+    text ask "Write a sentence about {t} for the robot to check. Put in exactly one of each kind of mistake: a missing capital, a missing mark at the end, and a wrong word that sounds right." width=30 at=canvas(1, 1)
+    writinglines lines lines=2 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A sentence about the topic with exactly three mistakes, one of each kind: one word that should have a capital and does not, no mark at the end, and one word swapped for another that sounds the same (to for two, there for their). Ask the child to show where each mistake is."
+  hint "Write the sentence correctly first."
+  hint "Now take away one capital, the mark at the end, and change one word for one that sounds the same."
+}

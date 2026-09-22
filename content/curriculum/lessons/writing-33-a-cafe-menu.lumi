@@ -1,0 +1,68 @@
+# A menu as a piece of writing with a layout: headings that group, one dish and its price to a
+# line, and a describing word that sells the dish.
+lesson writing-a-cafe-menu v=1 format=teach grade=3 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A cafe menu"
+  goal "Write a menu with headings, prices and one describing word for each dish, laid out the way a real menu is."
+
+  look {
+    scene 30x13 {
+      row all at=canvas(1, 1) space=3 align=start {
+        sign board lines=["The Harbour Cafe", "Drinks", "Hot tea $2.00", "Cakes", "Fresh scone $3.50"] kind=board color=mint
+        pricetag tag now=350 was=0
+      }
+    }
+    say """
+      Sam is writing the menu for the cafe by the post office. A menu is read fast, by a hungry
+      customer: headings say where to look, each dish sits on its own line with its price at the
+      end, and one describing word before the dish makes them want it. Hot tea, fresh scone. The
+      price is written the way money is written: the sign, the dollars, a point and two figures.
+      """
+  }
+  do {
+    level easy {
+      worked writing.price-wrong k=0 r=0
+    }
+    practice writing.which-heading count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.dishes-under count=2 seed=1 easy-seed=3 hard-seed=2
+    practice writing.price-wrong count=1 seed=1 easy-seed=2 hard-seed=2
+    practice writing.sells-the-dish count=1 seed=2 easy-seed=1 hard-seed=1
+    practice writing.menu-count count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.commas-in-a-list count=1 seed=1 easy-seed=1 hard-seed=2
+    level hard {
+      show writing.sells-the-dish k=1 p=2 level=medium
+    }
+  }
+  story {
+    show writing.menu-story h=3 d=4 w=0 easy-h=2 easy-d=3 hard-h=4 hard-d=5 hard-w=1
+  }
+  try stars=2 {
+    show writing.easier-menu k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show writing.own-menu k=0 hard-k=1
+  }
+  remember {
+    say "A menu has headings, one dish and its price to a line, and a word that sells each dish."
+  }
+
+  grown-ups """
+    The idea is that a menu is writing with a layout: headings that group the dishes, one dish
+    and its price to a line, prices written as money is, and a describing word chosen to sell
+    rather than only to be true. The look is the cafe board and a price tag. The way in finds
+    the heading among the lines. The core sorts dishes under headings, fixes a price written
+    wrongly, picks the word that sells a dish, reads a board for a count and a total, and
+    counts the commas in a list of dishes. The wrong idea to watch for is that any true word
+    will do before a dish (cold soup is true of some soup); ask whether the word would make the
+    child order it. The story counts a menu by its headings and dishes, the two-star question
+    asks which of two boards is easier to read and why, and the three-star question is the
+    child's own menu on the frame, which you mark: a dish under each heading, its price written
+    properly, a selling word before it. Menus at home or in the town are worth reading together
+    for their headings and their words.
+    """
+  level easy {
+    grown-ups "At this level the price three dollars fifty is worked once in the teacher's pen, the heading is among the drinks, the dish in the wrong column is a plain one, the price to fix is three dollars fifty again with its options shuffled, the word to choose is for the soup, the board is read for a count, the commas are in a short list, the story has two headings of three or four dishes, the two-star's laid-out menu is A, and the child's menu has one dish a heading."
+  }
+  level hard {
+    grown-ups "At this level the heading is among the puddings or the mains, the dishes in the wrong column are the pie under the puddings, which could pass, and a soup or a cake, the price to fix has five cents or eighty, the word to choose is for the chips with a second, the cake's, in the core, the board is read for a total, the commas are in a longer list, the story has four headings of four or five dishes and asks for every line, the two-star's laid-out menu is B, and the child's menu has two dishes a heading with no word repeated."
+  }
+}

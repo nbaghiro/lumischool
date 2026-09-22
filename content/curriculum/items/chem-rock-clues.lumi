@@ -1,0 +1,17 @@
+# Non-routine: two clues at once, and only one rock meets both. Each clue alone fits two rocks, so
+# guessing from one clue is not enough.
+item chem.rock-clues v=1 stars=3 skills=[chemistry.rocks, reasoning.deduction] {
+  title "Which rock is it?"
+  difficulty (if k == 1 or k == 3 then 2 else 1)
+  let k=0..3
+
+  scene 18x17 {
+    text ask "{if k == 0 then \"It fizzes with vinegar, but a fingernail cannot scratch it.\" else if k == 1 then \"It keeps water out, and it does not fizz with vinegar.\" else if k == 2 then \"It soaks up water, and it does not fizz with vinegar.\" else \"It does not fizz with vinegar, and it does not float.\"} Which rock is it?" width=17 at=canvas(1, 0)
+    rocks r rocks=["{if k == 0 then \"chalk\" else if k == 1 then \"slate\" else if k == 2 then \"granite\" else \"pumice\"}", "{if k == 0 then \"marble\" else if k == 1 then \"sandstone\" else if k == 2 then \"chalk\" else \"limestone\"}", "{if k == 0 then \"granite\" else if k == 1 then \"marble\" else if k == 2 then \"sandstone\" else \"chalk\"}", "{if k == 0 then \"pumice\" else if k == 1 then \"chalk\" else if k == 2 then \"marble\" else \"basalt\"}"] test=0 letters=1 names=1 below=ask gap=0
+    choice pick options=["A", "B", "C", "D"] below=r gap=0
+  }
+
+  check chem.rocks of=r pick="fits({if k == 0 then \"fizzes not-soft\" else if k == 1 then \"not-soaks not-fizzes\" else if k == 2 then \"soaks not-fizzes\" else \"not-fizzes not-floats\"})"
+  hint "Take the first clue. Which rocks fit it?"
+  hint "Of those, which one also fits the second clue?"
+}

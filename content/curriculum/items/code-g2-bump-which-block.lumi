@@ -1,0 +1,26 @@
+# The robot bumps into a rock, and the question is which block did it: the path has to be followed
+# in the head, block by block, because the picture shows only the start. j moves the rock.
+item coding.bump-which-block v=1 skills=[coding.debugging, coding.tracing] {
+  title "Which block makes it bump?"
+  difficulty (2 * j + a + c)
+  let a=1..2 c=2..3 j=1..4
+  level easy {
+    let j=1..2
+  }
+  level hard {
+    let j=3..4
+  }
+
+  scene 36x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["right {a}", "down 2", "right {c}", "up 1"] numbers=true
+      maze g cols=6 rows=4 col=1 row=1 face=right rocks=[if j == 1 then 1 + a else if j == 2 then 1 + a else 1 + a + c, if j == 1 then 1 else if j == 4 then 2 else 3, 5, 1, 1, 4] code=["right {a}", "down 2", "right {c}", "up 1"] upto=0 trail=none
+    }
+    text ask "Which block bumps the robot into a rock?" width=19 below=top gap=1
+    choice pick options=[1, 2, 3, 4] right-of=ask gap=1
+  }
+
+  check coding.runs of=g pick=bumpline
+  hint "Move your finger along the path, one block at a time."
+  hint "Stop when the next square is a rock. Which block were you doing?"
+}

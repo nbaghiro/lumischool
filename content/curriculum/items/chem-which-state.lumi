@@ -1,0 +1,26 @@
+item chem.which-state v=2 skills=[chemistry.states] {
+  title "Which state is this?"
+  difficulty ((if s == 1 then 2 else 0) + (if m == 0 then 1 else 0))
+  let s=0..2 m=0..1
+  level easy {
+    let m={1}  # the moving marks are drawn
+  }
+  level hard {
+    let m={0}
+  }
+
+  scene 23x16 {
+    text ask "Are the particles a solid, a liquid or a gas?" width=22 at=canvas(1, 1)
+    particles jar spread=s count=16 name=0 moving=m below=ask gap=1
+    choice pick options=["Solid", "Liquid", "Gas"] stack=column right-of=jar gap=2
+  }
+
+  check chem.state of=jar pick=state
+  feedback {
+    when (pick == "Solid" and s == 2) point=jar {
+      say "In a solid the particles touch each other in rows. These are far apart."
+    }
+  }
+  hint "Look at how close the particles are. Do they touch?"
+  hint "Are they in rows, heaped at the bottom, or spread all over the jar?"
+}

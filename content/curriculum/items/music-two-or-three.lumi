@@ -1,0 +1,27 @@
+# Which group the black key just right of a white key belongs to: C and D lead into the two,
+# F, G and A into the three.
+item music.two-or-three v=1 skills=[music.keys] {
+  title "Two or three?"
+  difficulty (if k == "D" or k == "G" then 1 else 0)
+  let k={"C", "D", "F", "G", "A"}
+  level easy {
+    let k={"C", "F"}
+  }
+  level hard {
+    let k={"D", "G", "A"}
+  }
+
+  scene 34x9 {
+    text ask "The black key just to the right of {k} belongs to a group. Is it a group of two black keys or a group of three?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["a group of two", "a group of three"] below=ask gap=1
+  }
+
+  answer pick=(if k == "C" or k == "D" then "a group of two" else "a group of three")
+  feedback {
+    when (pick != (if k == "C" or k == "D" then "a group of two" else "a group of three")) point=ask {
+      say "The two black keys sit over C, D and E. The three sit over F, G, A and B. Which set is {k} in?"
+    }
+  }
+  hint "Which letters go with the group of two? C, D and E. The rest go with the three."
+  hint "Picture {k} on the keyboard: is the pair or the trio of black keys just to its right?"
+}

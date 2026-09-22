@@ -1,0 +1,27 @@
+# The equals sign as a balance: 1.OA.D.8. A child who compares the two sides needs no total.
+item add.balance-sides v=1 stars=2 skills=[addition.equals, reasoning.relational] {
+  title "Both sides the same"
+  difficulty (a + b)
+  let a=5..9 b=3..8 c=6..9
+  where (c != a)
+  where (a + b - c >= 1)
+  where (a + b <= 17)
+
+  scene 22x19 {
+    balanceeq beam left="{a} + {b}" right="{c} + ?" at=canvas(1, 1)
+    text ask "The scale is level. What number is the question mark?" narrate width=20 below=beam gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b - c)
+  feedback {
+    when (answer == a + b) point=beam {
+      say "{a} + {b} is the whole of one side. The other side already has {c}, so the missing number is less."
+    }
+    when (answer == a + b + c) point=beam {
+      say "Both sides make the same number. What goes with {c} to make {a + b}?"
+    }
+  }
+  hint "Compare {c} with {a}. Which is bigger, and by how much?"
+  hint "If one side starts with a bigger number, its other number must be smaller by the same amount."
+}

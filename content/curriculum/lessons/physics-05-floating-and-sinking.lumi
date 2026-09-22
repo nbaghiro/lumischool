@@ -1,0 +1,49 @@
+lesson physics-floating-and-sinking v=1 format=teach grade=2 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Floating and sinking"
+  goal "Sort things that float from things that sink, read how deep a boat sits, and predict when a loaded boat will sink."
+
+  look {
+    scene 30x27 {
+      column all at=canvas(1, 0) space=1 align=start {
+        tank t float=3 sunk=2
+        row boat space=2 align=start {
+          boat b cargo=2 side=5 sits=1 arrows=1
+          note n "Each block pushes the boat a square deeper. The water pushes back up just as hard." width=10
+        }
+      }
+    }
+    say """
+      Water pushes up on everything in it. When the push up is enough to hold the thing, it floats.
+      When it is not, the thing sinks to the bottom. Load a boat and it sits deeper, so the water
+      pushes up harder, until the water comes over the side.
+      """
+  }
+  do {
+    practice physics.float-or-sink count=2 seed=1
+    practice physics.how-many-float count=2 seed=4
+    practice physics.float-count-sunk count=2 seed=2
+    practice physics.boat-depth count=2 seed=3
+  }
+  try stars=2 {
+    show physics.boat-predict s=5 k=4 easy-s=6 easy-k=2
+  }
+  try stars=3 {
+    show physics.boat-carries s=6 d=1 easy-s=4 hard-d=2
+  }
+  remember {
+    say "A floating thing sits in the surface. A loaded boat sits deeper, until the water comes over the side."
+  }
+
+  grown-ups """
+    Fill a bowl and try a cork, a coin, a candle and a stone. Size is not what decides it: a large
+    piece of wood floats and a small nail does not, which is the thing most worth noticing. A plastic
+    tub makes the boat; load it with coins one at a time and mark the waterline each time. The last
+    question asks for the most it can carry, which means stopping one before the water comes in.
+    """
+  level easy {
+    grown-ups "At this level the tank holds three things, the boat sits empty or with one block, and the boat with two blocks in is well clear of the water."
+  }
+  level hard {
+    grown-ups "At this level the tank holds seven things, the boat carries two or three blocks, and the boat that already sits two squares deep has three to spare."
+  }
+}

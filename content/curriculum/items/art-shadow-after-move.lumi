@@ -1,0 +1,15 @@
+item art.shadow-after-move v=1 stars=2 skills=[art.tone, reasoning.predict] {
+  title "Move the lamp"
+  difficulty (if l == "left" then 1 else 0)
+  let l={"left", "right"}
+
+  scene 34x18 {
+    stilllife pic light=l things=["apple", "cup", "ball"] lamp=true at=canvas(1, 1)
+    text ask "Ada moves the lamp to the other side of the table. Which way will the cup's shadow point then?" width=32 below=pic gap=1
+    choice pick options=["to the left", "to the right"] below=ask gap=1
+  }
+
+  answer pick=(if l == "left" then "to the left" else "to the right")
+  hint "Which way does the cup's shadow point now, and where is the lamp?"
+  hint "When the lamp goes to the other side, which side of the cup is away from it?"
+}

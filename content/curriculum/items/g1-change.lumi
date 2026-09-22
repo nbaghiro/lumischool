@@ -1,0 +1,32 @@
+item money.change-from-quarters v=1 skills=[money.change] {
+  title "Change from two quarters"
+  difficulty (50 - price)
+  let price={15, 20, 30, 35, 40, 45}
+  level easy {
+    let price={40, 45}
+  }
+  level hard {
+    let price={15, 20}
+  }
+
+  scene 30x14 {
+    row top at=canvas(1, 1) space=3 align=centre {
+      coins paid quarters=2
+      pricetag tag now=price was=0
+    }
+    text ask "You pay with the two quarters for something that costs {price} cents. How much change do you get?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (50 - price)
+  feedback {
+    when (answer == price) point=tag {
+      say "That is the price. The change is what comes back from 50 cents."
+    }
+    when (answer == 50 + price) point=paid {
+      say "Change is less than what you paid. Take the price away from 50."
+    }
+  }
+  hint "How much are two quarters worth?"
+  hint "Count up from {price} cents to 50 cents."
+}

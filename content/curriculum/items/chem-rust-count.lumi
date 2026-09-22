@@ -1,0 +1,21 @@
+# How many of four nails rusted: only the jars with both water and air, so the count follows from what
+# is in each jar and the picture confirms it.
+item chem.rust-count v=1 skills=[chemistry.changes, chemistry.rusting] {
+  title "How many rusted?"
+  difficulty v
+  let v=0..7
+
+  scene 33x9 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      nails n jars=["{if v == 0 then \"water\" else if v == 1 then \"water\" else if v == 2 then \"painted\" else if v == 3 then \"painted\" else if v == 4 then \"oil\" else if v == 5 then \"oil\" else if v == 6 then \"salt\" else \"salt\"}", "{if v == 0 then \"dry\" else if v == 1 then \"dry\" else if v == 2 then \"water\" else if v == 3 then \"water\" else if v == 4 then \"dry\" else if v == 5 then \"dry\" else if v == 6 then \"water\" else \"water\"}", "{if v == 0 then \"oil\" else if v == 1 then \"oil\" else if v == 2 then \"salt\" else if v == 3 then \"salt\" else if v == 4 then \"painted\" else if v == 5 then \"painted\" else if v == 6 then \"oil\" else \"oil\"}", "{if v == 0 then \"salt\" else if v == 1 then \"salt\" else if v == 2 then \"dry\" else if v == 3 then \"dry\" else if v == 4 then \"water\" else if v == 5 then \"water\" else if v == 6 then \"painted\" else \"painted\"}"] days=(if v == 0 then 7 else if v == 1 then 12 else if v == 2 then 7 else if v == 3 then 12 else if v == 4 then 7 else if v == 5 then 12 else if v == 6 then 7 else 12) letters=1 names=1
+      column side space=1 align=start {
+        text ask "After {if v == 0 then \"7\" else if v == 1 then \"12\" else if v == 2 then \"7\" else if v == 3 then \"12\" else if v == 4 then \"7\" else if v == 5 then \"12\" else if v == 6 then \"7\" else \"12\"} days, how many of the nails have rusted?" width=14
+        number-input answer
+      }
+    }
+  }
+
+  check chem.change of=n answer=rusty
+  hint "Look at each nail in turn. Is any orange on it?"
+  hint "Which jars gave their nail both water and air?"
+}

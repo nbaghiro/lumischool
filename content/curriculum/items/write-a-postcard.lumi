@@ -1,0 +1,15 @@
+# v2, the audit's raise: v1 asked for three sentences with first, then and at last, which the
+# lesson's own questions already cover. The postcard now has to meet a checklist a grown-up reads.
+item writing.write-a-postcard v=2 skills=[writing.recounts, writing.composing] {
+  title "A postcard home"
+  let t={"the night the rocket went up", "the night we looked for shooting stars"}
+
+  scene 36x26 {
+    text ask "Write a postcard home about {t}. Use at least five sentences, in the order things happened. Use time words other than first, next and last, such as after that or just then. Put in one thing someone said, in speech marks, and one sentence about how you felt." width=34 at=canvas(1, 1)
+    postcard card greeting="Dear" text="" closing="Love from" from="Mo" to=["", "", ""] stamp="none" date="" lines=5 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="At least five sentences in the order things happened, with time words beyond first, next and last (after that, just then, soon); one thing someone said inside speech marks; one sentence about how the writer felt; written in the past, with the greeting and the sign-off in their places."
+  hint "Before you write, say the five things that happened in order."
+  hint "Where could someone say something? Where could you say how you felt?"
+}

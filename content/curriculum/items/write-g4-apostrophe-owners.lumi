@@ -1,0 +1,16 @@
+# Where the apostrophe sits says how many owners there are: before the s for one, after it for
+# more than one. The third choice has no apostrophe at all.
+item writing.apostrophe-owners v=1 skills=[writing.apostrophes] {
+  title "One owner or more?"
+  difficulty (if k == 0 or k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 30x15 {
+    text ask "Which sentence means the {if k == 0 then \"bowls belong to more than one dog\" else if k == 1 then \"coats belong to one girl\" else if k == 2 then \"nests belong to more than one bird\" else \"bikes belong to one boy\"}?" width=29 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"The dog's bowls are empty.\" else if k == 1 then \"The girls coats are wet.\" else if k == 2 then \"The birds' nests are high.\" else \"The boys' bikes are new.\"}", "{if k == 0 then \"The dogs' bowls are empty.\" else if k == 1 then \"The girls' coats are wet.\" else if k == 2 then \"The birds nests are high.\" else \"The boy's bikes are new.\"}", "{if k == 0 then \"The dogs bowls are empty.\" else if k == 1 then \"The girl's coats are wet.\" else if k == 2 then \"The bird's nests are high.\" else \"The boys bikes are new.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The dogs' bowls are empty." else if k == 1 then "The girl's coats are wet." else if k == 2 then "The birds' nests are high." else "The boy's bikes are new.")
+  hint "Find the owner word in each sentence. Where is its apostrophe, before the s or after it?"
+  hint "Before the s means one owner. After the s means more than one."
+}

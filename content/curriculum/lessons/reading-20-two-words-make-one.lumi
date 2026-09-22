@@ -1,0 +1,69 @@
+lesson reading-two-words-make-one v=1 format=teach grade=2 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Two words make one"
+  goal "Read a long word by finding the two short words it is made of."
+
+  look {
+    scene 29x21 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row one space=1 align=end {
+          art cup asset="cup"
+          cake cake candles=0 slices=0
+          wordbricks b bricks=["cup", "cake"] root=0 roots=2 blank=-1 word="cupcake" labels=true
+        }
+        row two space=1 align=end {
+          windmill mill sails=4 turn=0
+          wordbricks b2 bricks=["wind", "mill"] root=0 roots=2 blank=-1 word="windmill" labels=true
+        }
+      }
+    }
+    say """
+      Some long words are two short words joined together. Cup and cake make cupcake. Wind and mill
+      make windmill.
+
+      If you can read both short words, you can read the long one.
+      """
+  }
+  do {
+    show reading.compound-word w="sandcastle"
+    level easy {
+      worked reading.compound-from-meaning i=6 level=medium
+    }
+    practice reading.compound-from-meaning count=2 seed=3
+    show reading.compound-match k=2
+    show reading.compound-match k=1
+    practice reading.not-two-words count=1 seed=4
+    show reading.compound-word w="hedgehog"
+  }
+  story {
+    practice reading.which-sentence-compound count=1 hard-count=0 seed=2
+    level hard {
+      practice reading.kind-of count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.kind-of k=2 p=1
+  }
+  try stars=3 {
+    show reading.compound-make k=0
+  }
+  remember {
+    say "Look for the two short words inside a long one."
+  }
+
+  grown-ups """
+    The whole word is never written in the questions: the picture says it, and the child takes the
+    first part away to find the second. Say the word together first. Compound words are the easiest
+    long words to read, and finding them is the start of reading any long word a part at a time.
+
+    Some long words only look like two words: carrot is not a car that rots, so meaning decides.
+    The two-star question rests on one rule worth saying aloud: the second word says what the
+    thing is, so a goldfish is a fish and a fishbowl is a bowl. The three-star question has many
+    right answers; count the real words together and say the doubtful ones aloud.
+    """
+  level easy {
+    grown-ups "At this level the bricks and the pairs to join are as written, playground is built once in the teacher's pen before rainbow, snowman, bedroom and football, the word that is not two words is sister, garden or rabbit, the story is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the bricks and the pairs to join are as written, the words to build are treehouse, toothbrush, playground and sunflower, the word that is not two words is window, which starts with win, the story makes way for a second kind-of question, and the two-star and three-star are as written."
+  }
+}

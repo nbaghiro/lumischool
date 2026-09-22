@@ -1,0 +1,12 @@
+item writing.recipe-order v=1 skills=[writing.instructions] {
+  title "The steps in order"
+
+  scene 35x26 {
+    picsteps pics pictures=["eggs", "stir", "tin", "oven"] texts=["", "", "", ""] per=4 numbers=true write=false at=canvas(1, 1)
+    text ask "Number the steps 1 to 4 so they match the pictures." width=30 below=pics gap=1
+    sequence s items=["Put the tin in the oven.", "Crack the eggs into the bowl.", "Pour it into the tin.", "Stir it all together."] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=4 b=1 c=3 d=2
+  hint "Find the picture for each step, and use its number."
+}

@@ -1,0 +1,10 @@
+item art.line-walk v=1 stars=3 skills=[art.line, art.painting, reasoning.plan] {
+  title "Take a line for a walk"
+
+  scene 37x17 {
+    text ask "Take a line for a walk without lifting your pencil. Cross it over itself four times or more. Colour the shapes it closes, and never give two shapes that touch the same colour." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["red", "yellow", "blue", "black"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="One continuous line that loops back over itself at least four times, and the closed shapes it makes coloured in so that shapes sharing an edge have different colours, which takes planning once there are more than three shapes." notice=["One line that crosses itself four times", "The closed shapes coloured in", "No two touching shapes the same colour"] ask="How did you choose the colour for the last shape?"
+}

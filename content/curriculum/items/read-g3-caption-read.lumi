@@ -1,0 +1,21 @@
+# A caption adds a fact the labels and the picture cannot show. The wrong choices are things the
+# labels already tell you.
+item reading.caption-read v=1 skills=[reading.text-features] {
+  title "What the caption adds"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 37x19 {
+    row all at=canvas(1, 1) space=1 align=start {
+      labelled d of=windmill labels=["sail", "cap", "window", "door", "tower"] blank=-1 title="" caption="{if k == 0 then \"Built in 1820 of red brick.\" else if k == 1 then \"The sails turn ten times a minute.\" else \"Its flour fed the whole town.\"}"
+      column q space=1 align=start {
+        text ask "What does the caption tell you that the labels do not?" width=11
+        choice pick options=[if k == 0 then "its sails" else if k == 1 then "its cap" else "its window", if k == 0 then "its age" else if k == 1 then "its tower" else "its door", if k == 0 then "its door" else if k == 1 then "how fast" else "what it made"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "its age" else if k == 1 then "how fast" else "what it made")
+  hint "Read the caption under the drawing. What fact does it give?"
+  hint "Can you see that fact in the drawing or the labels? If you can, it is not what the caption adds."
+}

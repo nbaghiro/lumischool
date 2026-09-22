@@ -1,0 +1,13 @@
+# The four open strings, one at a time, which is a first piece in itself: G, C, E, A. The neck is
+# stood up like the chord card, so the order across the page is the order of the tuning.
+item music.uke-play-open v=1 skills=[music.uke-strings] {
+  title "The four open strings"
+
+  scene 26x22 {
+    fretboard neck tuning=uke frets=3 view=chart labels=letters strum=false at=canvas(1, 1)
+    text ask "Play the four strings one at a time, G, then C, then E, then A." width=12 right-of=neck gap=1
+  }
+
+  check music.plays notes=[G4, C4, E4, A4]
+  hint "Tap each string above the nut, where no finger goes."
+}

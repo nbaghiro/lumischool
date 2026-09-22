@@ -1,0 +1,20 @@
+item art.dots-mistake v=1 skills=[art.artists, art.colour-mixing, reasoning.find-the-mistake] {
+  title "Put the dots right"
+  difficulty (if t == "pink" then 2 else if t == "purple" then 1 else 0)
+  let t={"purple", "orange", "pink"}
+  level easy {
+    let t={"purple", "orange"}
+  }
+  level hard {
+    let t={"pink"}
+  }
+
+  scene 28x12 {
+    text ask "Ada wanted a patch that looks {t} from across the room, but she painted it in {if t == \"purple\" then \"red and yellow\" else if t == \"orange\" then \"red and blue\" else \"red and yellow\"} dots. She keeps the red. What should the other dots be?" width=15 at=canvas(1, 1)
+    choice pick options=["blue", "yellow", "white"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=makes target="{t}" with="red" how=eye
+  hint "What does her patch look like now, from far away?"
+  hint "Which colour of dot, next to red, would your eye mix into {t}?"
+}

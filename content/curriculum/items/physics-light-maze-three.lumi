@@ -1,0 +1,15 @@
+item physics.light-maze-three v=1 skills=[physics.light] stars=2 {
+  title "Three mirrors"
+  difficulty (if m == "B1" and k == "B3" or m == "C1" and k == "C3" then 3 else 1)
+  let m={"B1", "C1"} k={"B3", "C3"} r={"E3", "F3"}
+
+  scene 18x21 {
+    mirrors box cols=6 rows=4 torch=1 fall=["{m}", "{k}"] rise=["{r}"] goals=["B2", "B3", "T5", "T6"] at=canvas(1, 0)
+    text ask "Follow the light. Which letter does it reach?" width=17 below=box gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.light of=box pick=reaches
+  hint "Where is the first mirror the light meets?"
+  hint "At each mirror the light turns a corner. Where does it go next?"
+}

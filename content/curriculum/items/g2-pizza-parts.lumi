@@ -1,0 +1,18 @@
+item fraction.pizza-parts v=1 skills=[fractions.equal-parts] {
+  title "One piece gone"
+  let n={2, 3, 4}
+
+  scene 30x23 {
+    pizza pie slices=n taken=1 toppings=true at=canvas(1, 1)
+    text ask "The pizza was cut into {n} equal pieces and one has gone. What fraction went?" width=28 below=pie gap=1
+    choice pick options=[1 / 2, 1 / 3, 1 / 4] below=ask gap=1
+  }
+
+  answer pick=(1 / n)
+  feedback {
+    when (pick == 1 / 2 and n == 4) point=pie {
+      say "Count all the pieces the pizza was cut into, not the ones left."
+    }
+  }
+  hint "The bottom number is how many equal pieces there are altogether."
+}

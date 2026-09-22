@@ -1,0 +1,21 @@
+item physics.does-it-light v=1 skills=[physics.circuits] {
+  title "Does the bulb light?"
+  let c=0..1 n=1..2
+
+  scene 23x16 {
+    circuit ring closed=c cells=n at=canvas(1, 1)
+    text ask "Does the bulb light?" width=10 below=ring gap=1
+    choice pick options=["Yes", "No"] right-of=ask gap=2
+  }
+
+  answer pick=(if c == 1 then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and c == 0) point=ring {
+      say "Follow the wire all the way round. The switch has a gap in it."
+    }
+    when (pick == "No" and c == 1) point=ring {
+      say "The switch is closed, so the loop is complete and the bulb lights."
+    }
+  }
+  hint "Can you follow the wire all the way round and back to the cell?"
+}

@@ -1,0 +1,36 @@
+# The three-star: what a cliff will look like in a hundred years, from two clues about its rock
+# and its weather. The soaking cliff by the sea with freezing winters goes back and leaves a
+# beach; the granite in a warm dry valley is much the same, with roots in its cracks.
+item chem.cliff-in-a-hundred-years v=1 stars=3 skills=[chemistry.weathering, reasoning.predict] {
+  title "The cliff in a hundred years"
+  difficulty k
+  let k=0..1 r=0..2
+  let clues={pick(k, "The cliff is sandstone, which soaks up rain, and the winters here freeze hard. The sea reaches its foot at every high tide.", "The rock is granite, which the drop test shows keeps water out, in a warm valley far from the sea where it never freezes. A few trees grow in its cracks.")}
+  let right={pick(k, "Further back, a beach below", "Nearly the same, cracks wider")}
+  let w1={pick(k, "The same: rock does not change", "Worn to sand by the rain")}
+  let w2={pick(k, "Taller, with new layers on top", "Further back, a beach at its foot")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x28 {
+    rocks r rocks=["{if k == 0 then \"sandstone\" else \"granite\"}"] test=1 letters=0 at=canvas(1, 0)
+    text ask "{clues} What will this cliff most likely look like in a hundred years?" narrate width=32 below=r gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=r {
+      say "{if k == 0 then \"Rock that soaks up water and freezes every winter cracks, and the waves take the pieces. It cannot stay the same.\" else \"Rain wears rock that lets water in, and frost cracks it. This rock keeps water out and never freezes, so a hundred years hardly marks it.\"}"
+    }
+    when (pick == w2) point=r {
+      say "{if k == 0 then \"Layers were laid down under the sea long ago; a cliff in the air only loses rock. Which way does it go?\" else \"There are no waves in a valley far from the sea, and nothing to knock lumps off. Only the roots work on it.\"}"
+    }
+  }
+  hint "Take the clues one at a time: does water get in? Does it freeze? Is there anything to carry the pieces away?"
+  hint "{if k == 0 then \"Water in, frost every winter, waves at the foot: three things working on it, and every piece carried off.\" else \"Water kept out, no frost, no waves: only the roots, and they work slowly.\"}"
+}

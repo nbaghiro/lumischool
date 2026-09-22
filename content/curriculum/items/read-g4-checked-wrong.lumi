@@ -1,0 +1,22 @@
+# A sentence that can be checked is a statement of fact even when it is wrong: checking is what
+# shows it is wrong. Whether it is right or wrong is a second question.
+item reading.checked-and-wrong v=2 stars=2 skills=[reading.fact-opinion, reasoning.classify] {
+  title "Can it be checked?"
+  difficulty (if k == 2 then 2 else if k == 1 or k == 4 then 0 else 1)
+  let k=0..5
+
+  scene 34x18 {
+    text says "Jo says: {if k == 0 then \"A spider has six legs\" else if k == 1 then \"Snakes have no legs\" else if k == 2 then \"Owls are the cleverest birds\" else if k == 3 then \"A week has eight days\" else if k == 4 then \"Water freezes at 0 degrees Celsius\" else \"Snowy days are the most fun\"}." width=32 at=canvas(1, 1)
+    text ask "Which of these is true about the sentence?" width=32 below=says gap=1
+    choice pick options=["It is an opinion.", "It can be checked, and it is wrong.", "It can be checked, and it is right."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 3 then "It can be checked, and it is wrong." else if k == 1 or k == 4 then "It can be checked, and it is right." else "It is an opinion.")
+  feedback {
+    when (pick == "It is an opinion." and (k == 0 or k == 3)) point=says {
+      say "A wrong sentence is not an opinion. You can check it, and checking shows it is wrong."
+    }
+  }
+  hint "First ask: could anyone check this sentence? How?"
+  hint "If it can be checked, check it. Is it right or wrong?"
+}

@@ -1,0 +1,60 @@
+# The three-star: an empty spot for Ben where the drum will sound just as loud as it does for Mia,
+# which means the same number of squares from the drum, on the other side. Nothing on the page
+# says so. At hard Mia and Leo already hold the two spots at that distance on the left and the
+# right, and the only one left is below the drum.
+item physics.same-loudness v=1 stars=3 skills=[physics.sound, reasoning.constraints] {
+  title "Just as loud"
+  difficulty (3 * three + pick(k, 0, 1, 0, 1))
+  set three=0
+  let k=0..3
+  let mx={pick(k, 6, 1, 26, 31)}
+  let spot={pick(k, "B", "A", "C", "D")}
+  let right={pick(k, "C", "D", "B", "A")}
+  let near={pick(k, "A", "B", "D", "C")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    set three=1
+    let k=0..1
+    scene 36x31 {
+      text la "A" at=canvas(3, 0)
+      text lb "B" at=canvas(8, 0)
+      text lc "C" at=canvas(28, 0)
+      text ld "D" at=canvas(33, 0)
+      ricedrum drum hit=2 at=canvas(12, 2)
+      children mia count=1 names=["Mia"] at=canvas(mx, 2)
+      children leo count=1 names=["Leo"] at=canvas(if k == 0 then 26 else 31, 2)
+      text le "E" at=canvas(18, 15)
+      text lf "F" at=canvas(18, 20)
+      text ask "Mia stands at {spot} and Leo at {right}. Ben wants to hear the drum just as loud as they do. Which empty spot should he stand on?" narrate width=34 at=canvas(1, 23)
+      choice pick options=["A", "B", "C", "D", "E", "F"] below=ask gap=1
+    }
+  }
+
+  scene 36x23 {
+    text la "A" at=canvas(3, 0)
+    text lb "B" at=canvas(8, 0)
+    text lc "C" at=canvas(28, 0)
+    text ld "D" at=canvas(33, 0)
+    ricedrum drum hit=2 at=canvas(12, 2)
+    children mia count=1 names=["Mia"] at=canvas(mx, 2)
+    text ask "Mia stands at {spot}. Ben wants to hear the drum just as loud as Mia does. Which empty spot should he stand on?" narrate width=34 at=canvas(1, 15)
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=(if three == 1 then pick(k, "E", "F") else right)
+  feedback {
+    when (three == 0 and pick == spot) point=mia {
+      say "That is Mia's spot. Ben needs an empty one that is just as far from the drum."
+    }
+    when (three == 0 and pick == near) point=drum {
+      say "That spot is not the same distance from the drum as Mia's, so the drum would not sound the same. Count the squares from the drum to Mia, then find the empty spot with the same count."
+    }
+    when (three == 1 and (pick == "A" or pick == "B" or pick == "C" or pick == "D")) point=drum {
+      say "The empty spots at the sides are nearer or further than Mia and Leo. Count the squares from the drum to Mia, then look below the drum for a spot with the same count."
+    }
+  }
+  hint "How many squares is Mia from the drum? Count them."
+  hint "Find the empty spot that is the same number of squares from the drum."
+}

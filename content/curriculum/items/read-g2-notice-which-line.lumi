@@ -1,0 +1,19 @@
+# Evidence on a notice: the lines are counted, and the right line never uses the question's words
+# (friendly is in no line; likes to be stroked shows it).
+item reading.notice-which-line v=1 skills=[reading.find-a-detail, reading.evidence] {
+  title "Which line tells you?"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 36x13 {
+    sign s lines=[if k == 0 then "Lost cat" else if k == 1 then "Found: a teddy" else if k == 2 then "Bake sale" else "Garden club", if k == 0 then "She is called Moss" else if k == 1 then "It was on the swings" else if k == 2 then "All the money goes to the zoo" else "We meet on Mondays", if k == 0 then "She likes to be stroked" else if k == 1 then "Ask at the cafe" else if k == 2 then "Friday after school" else "Wear old clothes", if k == 0 then "She is grey with white paws" else if k == 1 then "It has a red scarf" else if k == 2 then "Cakes are 50 cents" else "New children welcome", if k == 0 then "Call Ann on 555 0123" else if k == 1 then "We will keep it safe" else if k == 2 then "Bring a bag" else "It gets very muddy"] kind=board color=glow at=canvas(1, 1)
+    column q right-of=s gap=2 space=1 align=start {
+      text ask "Which line tells you {if k == 0 then \"that the cat is friendly\" else if k == 1 then \"where you can get the teddy\" else if k == 2 then \"who the money is for\" else \"why you need old clothes\"}? Count down from the top line." narrate width=16
+      number-input line
+    }
+  }
+
+  answer line=(if k == 0 then 3 else if k == 1 then 3 else if k == 2 then 2 else 5)
+  hint "Read each line and ask: does this answer the question?"
+  hint "The words may not match the question. What would show it?"
+}

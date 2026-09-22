@@ -1,0 +1,42 @@
+# The three-star: a creature for the oasis built from two of four features, two of which belong to
+# the cold sea. Both chosen features have to answer the desert, and each wrong pair has one that
+# does not.
+item nature.oasis-creature v=1 stars=3 skills=[nature.habitats, reasoning.constraints] {
+  title "A creature for the oasis"
+  difficulty k
+  let k=0..2
+  let needs={pick(k, "walk on hot sand and go days without food", "hunt at night in the heat and go days without a drink", "cross the sand in a sandstorm and stay cool")}
+  let right={pick(k, "wide feet and a hump of fat", "big thin ears and a big drink", "long eyelashes and big thin ears")}
+  let o1={pick(k, "wide feet and a fat coat", "big thin ears and a fat coat", "long eyelashes and flippers")}
+  let o2={pick(k, "flippers and a hump of fat", "webbed feet and a big drink", "a fat coat and big thin ears")}
+  let o3={pick(k, "flippers and a fat coat", "webbed feet and a fat coat", "flippers and a fat coat")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x32 {
+    row four at=canvas(1, 1) space=1 align=end {
+      camel pc count=1 resting=0 facing=1
+      fennec pf facing=1
+      seal ps rock=1 facing=1
+      gull pg flying=1
+    }
+    text ask "Ada invents a creature for the oasis that must {needs}. She may give it two features from the camel, the fennec and the seal. Which two does it need?" narrate width=34 below=four gap=1
+    choice pick options=[o1, right, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o3) point=ps {
+      say "Both of those belong to the seal, for the cold sea. The desert is hot and dry."
+    }
+    when (pick == o1 or pick == o2) point=four {
+      say "One of those two fits the desert and one does not. Check each feature against the heat, the sand and the dryness."
+    }
+  }
+  hint "The creature has two needs. Pick one feature for each."
+  hint "Cross out every feature made for cold or for water. The desert is hot and dry."
+}

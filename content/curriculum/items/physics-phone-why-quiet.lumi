@@ -1,0 +1,36 @@
+# Two stars: a string telephone that has stopped working, either because the string has gone slack or
+# because a hand is pinching it, and which of those is the reason. With `rings` at 1 the arcs stop
+# where the sound stops, which is the easier read; at 0 there is nothing but the string to go on.
+item physics.phone-why-quiet v=1 stars=2 skills=[physics.sound, reasoning.evidence] {
+  title "Why can she not hear?"
+  difficulty (if c < 2 then 0 else 1)
+  let c=0..3
+  let tt={pick(c, 0, 1, 0, 1)}
+  let pn={pick(c, 0, 1, 0, 1)}
+  let rg={pick(c, 1, 1, 0, 0)}
+  let ans={pick(c, "The string is not pulled tight", "A hand is holding the string still", "The string is not pulled tight", "A hand is holding the string still")}
+  level easy {
+    let c={0, 1}
+  }
+  level hard {
+    let c={2, 3}
+  }
+
+  scene 25x25 {
+    stringphone phone mode=phone taut=tt pinch=pn rings=rg at=canvas(1, 0)
+    text ask "The girl is speaking into her cup as loudly as before, and the boy cannot hear her. Why not?" narrate width=22 below=phone gap=1
+    choice pick options=["The string is not pulled tight", "A hand is holding the string still", "The cups are the wrong way round"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "The cups are the wrong way round") point=phone {
+      say "Either cup can speak or listen. Look at the string between them instead."
+    }
+    when (pick != ans) point=phone {
+      say "Look at the string itself: is it pulled tight, and is anything holding it?"
+    }
+  }
+  hint "A voice travels along the string by shaking it."
+  hint "What would stop a string from shaking along its whole length?"
+}

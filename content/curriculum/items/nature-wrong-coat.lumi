@@ -1,0 +1,45 @@
+# The two-star reason: a creature in the wrong place, and what goes wrong for it first, which is
+# the feature that fitted its own place turned against it: the seal's fat in the heat, the
+# fennec's ears in the cold, the camel's feet on ice.
+item nature.wrong-coat v=1 stars=2 skills=[nature.habitats, reasoning.explain] {
+  title "What goes wrong first?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let who={pick(k, "a seal", "a fennec fox", "a camel")}
+  let where={pick(k, "in the hot desert at noon", "out on the ice in a freezing wind", "on smooth wet ice")}
+  let right={pick(k, "Its fat keeps the heat in: far too hot", "Its thin ears lose heat: too cold", "Its soft wide feet slip on the ice")}
+  let o1={pick(k, "Its flippers cannot walk on sand", "Its big ears hear the wind too loudly", "Its hump freezes solid")}
+  let o2={pick(k, "It cannot see in bright light", "Its sandy fur shows up on the snow", "It has no fish to eat")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x26 {
+    row four at=canvas(1, 1) space=1 align=end {
+      camel pc count=1 resting=0 facing=1
+      fennec pf facing=1
+      seal ps rock=1 facing=1
+      art sun asset="sun"
+    }
+    text ask "Ben imagines {who} {where}. What goes wrong for it first?" narrate width=34 below=four gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=ps {
+      say "The seal's fat is a coat for the cold sea. In the desert the same coat holds the heat in."
+    }
+    when (k == 1 and pick != right) point=pf {
+      say "The fennec's ears let heat out, which is what the desert night needs. On the ice they let out heat the fox needs to keep."
+    }
+    when (k == 2 and pick != right) point=pc {
+      say "Wide soft feet spread the camel's weight on sand. On ice there is nothing to spread into, and they slide."
+    }
+  }
+  hint "What feature helps {who} most in its own place? In this place, what does that same feature do?"
+  hint "Fat keeps heat in. Big ears let heat out. Wide feet spread on sand."
+}

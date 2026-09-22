@@ -1,0 +1,32 @@
+# The way in: two cups of sugar and water after the same minute, one stirred or warm and one
+# not, and the one whose sugar has dissolved is the one with no grains on the floor.
+item chem.which-dissolved v=1 skills=[chemistry.dissolving] {
+  title "Which one has dissolved?"
+  difficulty k
+  let k=0..1 s=0..1
+  let did={pick(k, "One was stirred and one was left still.", "One was made with warm water and one with cold.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x24 {
+    row two at=canvas(1, 0) space=3 align=end {
+      beaker a max=200 step=50 level=150 unit=ml solid=(if s == 0 then 0 else 1) rod=false label="A"
+      beaker b max=200 step=50 level=150 unit=ml solid=(if s == 0 then 1 else 0) rod=false label="B"
+    }
+    text ask "Nour puts a spoon of sugar into two cups of water at the stall. {did} After one minute, in which cup has the sugar dissolved?" narrate width=32 below=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "A" else "B")
+  feedback {
+    when (pick != (if s == 0 then "A" else "B")) point=two {
+      say "Sugar that has dissolved cannot be seen. Look for the cup with no grains left on the floor."
+    }
+  }
+  hint "Dissolved sugar is out of sight in the water. Which cup still has grains on the bottom?"
+  hint "{if k == 0 then \"Stirring moves the water past the grains and they go faster.\" else \"Warm water takes the grains faster than cold.\"}"
+}

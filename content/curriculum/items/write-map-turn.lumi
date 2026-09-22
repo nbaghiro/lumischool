@@ -1,0 +1,17 @@
+# The map is drawn from the same turns the answer reads, so the picture and the key cannot disagree.
+# The last stop always goes straight on, which keeps the X off the landing place in every version.
+# v2 draws the map a step smaller with the question beside it, so it takes half the page it did.
+item writing.map-turn v=2 skills=[writing.directions] {
+  title "Which way at the rock?"
+  let a={"left", "right"} b={"left", "right"}
+
+  scene 36x12 {
+    treasuremap map stops=["palm", "rock", "cave"] turns=[a, b, "on"] heading="right" step=4 names=true at=canvas(1, 1)
+    text ask "Walk the path from the boat. Which way do you turn at the rock?" width=14 right-of=map gap=1
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=b
+  hint "Put your finger on the path and walk it. Face the way you are going, then see which hand the path turns towards."
+  hint "Which way were you facing just before the rock?"
+}

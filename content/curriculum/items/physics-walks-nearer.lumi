@@ -1,0 +1,41 @@
+# Leo in two pictures: where he stood before, and where he stands now. Nearer is louder and
+# further is quieter. At easy he walks nearly the whole way; at hard he moves only a few steps,
+# so the two pictures have to be compared closely.
+item physics.walks-nearer v=1 skills=[physics.sound] {
+  title "Louder or quieter now?"
+  difficulty s
+  let w=0..1 s=0..2
+  let near={pick(s, 15, 17, 20)}
+  let far={pick(s, 31, 29, 26)}
+  let g1={if w == 0 then far else near}
+  let g2={if w == 0 then near else far}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 36x36 {
+    text t1 "Before" at=canvas(1, 0)
+    ricedrum d1 hit=2 at=canvas(1, 2)
+    children a count=1 names=["Leo"] at=canvas(g1, 3)
+    text t2 "Now" at=canvas(1, 15)
+    ricedrum d2 hit=2 at=canvas(1, 17)
+    children b count=1 names=["Leo"] at=canvas(g2, 18)
+    text ask "Leo has moved. Does the drum sound louder or quieter to him now?" narrate width=32 below=d2 gap=1
+    choice pick options=["louder", "quieter"] below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then "louder" else "quieter")
+  feedback {
+    when (w == 0 and pick == "quieter") point=b {
+      say "Now Leo is closer to the drum than before. The sound reaches him before it has faded, so it is louder."
+    }
+    when (w == 1 and pick == "louder") point=b {
+      say "Now Leo is further from the drum than before. The sound has spread out and faded by the time it reaches him, so it is quieter."
+    }
+  }
+  hint "Look at both pictures. Is Leo nearer to the drum now, or further away?"
+  hint "Nearer is louder. Further away is quieter."
+}

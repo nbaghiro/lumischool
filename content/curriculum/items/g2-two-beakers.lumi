@@ -1,0 +1,30 @@
+# Two readings added: the chemistry beaker borrowed for a capacity sum.
+item measure.two-beakers v=1 skills=[capacity.millilitres, addition.within-thousand] {
+  title "Pour them together"
+  difficulty (a + b)
+  let a={150, 250, 350} b={100, 200, 300, 400}
+  level easy {
+    let a={150} b={100, 200}
+  }
+  level hard {
+    let a={350} b={300, 400}
+  }
+
+  scene 30x22 {
+    row pots at=canvas(1, 1) space=3 align=start {
+      beaker one max=500 step=100 level=a unit=ml solid=0 rod=false label="A"
+      beaker two max=500 step=100 level=b unit=ml solid=0 rod=false label="B"
+    }
+    text ask "Both beakers are poured into a jug. How many millilitres are in the jug?" narrate width=28 below=pots gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a + b - 50 or answer == a + b + 50) point=one {
+      say "Beaker A is halfway between two marks. Read it again."
+    }
+  }
+  hint "Read each beaker. Beaker A is between two marks."
+  hint "Add the two amounts. Add the hundreds first, then the rest."
+}

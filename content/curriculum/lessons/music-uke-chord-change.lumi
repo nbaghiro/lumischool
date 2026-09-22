@@ -1,0 +1,58 @@
+# The hard part of chords is changing between them, and a change is only as hard as the fingers
+# that move. A minor to F keeps finger 2 where it is, which is why the pair is taught together.
+lesson music-uke-chord-change v=1 format=teach grade=2 unit=5 subject=music levels=[easy, medium, hard] {
+  title "Changing chords: the finger that stays"
+  goal "Find the finger that stays down between two chords, and change from A minor to F."
+
+  look {
+    scene 36x15 {
+      row both at=canvas(1, 1) space=1 align=start {
+        chordbox am tuning=uke chord=Am frets=3 show=fingers name=true letters=true lit=[]
+        chordchange change tuning=uke from=Am to=F frets=3
+        chordbox f tuning=uke chord=F frets=3 show=fingers name=true letters=true lit=[]
+      }
+    }
+    say """
+      From A minor to F, finger 2 stays on the G string and finger 1 goes down. The middle card
+      rings the finger that stays.
+      """
+  }
+  do {
+    show music.uke-f-fingers
+    show music.uke-finger-stays
+    show music.uke-play-f
+    level easy {
+      worked music.change-how-many-stay k=3 level=medium
+    }
+    practice music.change-how-many-stay count=2 seed=3 hard-seed=14
+    practice music.change-new-or-lift count=1 seed=2
+    practice music.change-from-cards count=1 seed=5
+    show music.uke-play-dm
+  }
+  try stars=2 {
+    show music.change-easier k=3 s=1 easy-k=0
+  }
+  try stars=3 {
+    show music.change-middle t=0 p=1
+  }
+  remember {
+    say "Keep down the finger that stays. Move only the others."
+  }
+
+  grown-ups """
+    Time one minute of changing between A minor and F, counting the changes, and write the number
+    down each day. The count going up is the progress, and the child can see it. Slow and clean
+    beats fast and buzzy.
+
+    Without the change card, a finger stays only if the same finger is on the same string at the
+    same fret in both chords; G7 and D minor share a place that two different fingers use, which is
+    the trap in one version. The two-star question asks for a reason as well as a choice, so listen
+    for "more fingers stay". The three-star question can be solved by trying pairs of cards.
+    """
+  level easy {
+    grown-ups "At this level the F chord and the finger that stays are as written, G7 to D minor is counted once in the teacher's pen before the changes between one- and two-finger chords, a finger goes down new, the cards share a finger in the same place, D minor is as written, the two-star starts from F, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the F chord and the finger that stays are as written, the changes are between two- and three-finger chords, G7 to D minor among them, a finger lifts off, the cards share no finger or a place two different fingers use, D minor is as written, and the two-star and three-star are as written; there is no second change to compare at this level, because the two-star's other versions would show the same three cards swapped."
+  }
+}

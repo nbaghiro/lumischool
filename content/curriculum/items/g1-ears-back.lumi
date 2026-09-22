@@ -1,0 +1,24 @@
+# The same count run backwards: from the ears to the rabbits.
+item count.ears-back v=1 stars=2 skills=[counting.in-twos, division.grouping] {
+  title "How many rabbits"
+  difficulty n
+  let n=4..9
+
+  scene 30x10 {
+    rabbits one count=1 facing=1 at=canvas(1, 1)
+    text ask "Each rabbit has 2 ears. In the field there are {2 * n} ears. How many rabbits are in the field?" narrate width=20 right-of=one gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 2 * n) point=one {
+      say "That is the ears. Each rabbit has two of them."
+    }
+    when (answer == 4 * n) point=one {
+      say "The ears are already counted. How many twos make {2 * n}?"
+    }
+  }
+  hint "Count in twos up to {2 * n}."
+  hint "Keep a finger up for every two you say. How many fingers?"
+}

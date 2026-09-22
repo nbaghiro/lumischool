@@ -1,0 +1,64 @@
+# Sound goes through things: a voice shakes a taut string along its whole length, and a knock crosses
+# a wooden table or a tank of water better than it crosses the air, because the closer together the
+# bits of a thing are the better they pass the shaking on.
+lesson physics-sound-through-things v=1 format=teach grade=2 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "Sound goes through things"
+  goal "Say that sound travels through string, wood and water as well as air, and work out where a knock is heard best."
+
+  look {
+    scene 21x17 {
+      stringphone phone mode=phone taut=1 pinch=0 rings=1 at=canvas(1, 0)
+      stringphone table mode=through through=1 rings=1 below=phone gap=1
+    }
+    say """
+      A sound is something shaking. Speak into a paper cup on a tight string and the shaking runs
+      along the string to the other cup, which is why a string telephone works and why it stops if
+      the string goes slack or somebody pinches it. Knock on a table with your ear against it and you
+      hear the knock through the wood. Sound goes through air, through water and through solid things,
+      and it is loudest through the solid ones.
+      """
+  }
+  do {
+    practice physics.phone-which-works count=1 seed=3 easy-seed=2 hard-seed=4
+    level easy {
+      worked physics.sound-through-what t=0 r=1 level=medium
+    }
+    practice physics.sound-through-what count=2 seed=2 easy-seed=1 hard-seed=2
+    practice physics.sound-loudest count=2 seed=8 easy-seed=1 hard-seed=1
+    practice physics.sound-order count=2 seed=8 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.phone-which-works v=3 r=0
+    }
+  }
+  story {
+    show physics.caves-listen v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show physics.phone-why-quiet c=1 easy-c=0 hard-c=3
+  }
+  try stars=3 {
+    show physics.sound-route v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Sound travels through anything that can shake: air, water, wood and a tight string. It is loudest through solid things."
+  }
+
+  grown-ups """
+    The wrong idea this lesson meets is that sound only travels through air, so that a wall or a tank
+    of water is a place where sound stops. The knock and the ear say otherwise, and the string
+    telephone is the case a child can feel: the string carries the voice, and it carries nothing at
+    all once it is slack or pinched, which is the evidence that the shaking itself is what travels.
+    Watch for a child who answers the two-star question by looking at the cups rather than the string.
+    The three-star question needs the step that air is the worst of the three, so a route with air in
+    it is the one to leave out; a child who picks a route with two solid steps has the idea. If the
+    order of air, water and wood is still guesswork after the core, stay here another day and listen
+    to a tap through a table, through a full bottle and across the room. Off the page, two cups and a
+    long string, and an ear on the table while somebody scratches the other end.
+    """
+  level easy {
+    grown-ups "At this level the arcs along the string are drawn, so the telephone that works can be seen rather than worked out, what the sound crosses is the table or the water rather than the air, the two to compare are two steps apart in the order, the three to number are already near their order, the story times are one and three seconds, and the two-star telephone is slack rather than pinched."
+  }
+  level hard {
+    grown-ups "At this level the arcs are left off, so the string itself has to be read, what the sound crosses is the air or the table, the two to compare are next to each other in the order, the three to number are in no order, the core carries a second telephone to judge with its arcs left off, the story times are one and nine seconds, and the two-star telephone is pinched rather than slack."
+  }
+}

@@ -1,0 +1,36 @@
+# The story: squares of chocolate melted for the cake, some set again in the fridge, and how many
+# are still runny, or are solid again.
+item chem.chocolate-squares v=1 stars=1 skills=[chemistry.changes, subtraction.to-twenty] {
+  title "The melted chocolate"
+  difficulty (a + (if w == 1 then 3 else 0))
+  let a=6..16 b=2..8 w=0..1
+  where (a > b)
+  let asks={pick(w, "How many squares' worth is still runny in the bowl?", "How many squares' worth of chocolate is solid again now?")}
+  level easy {
+    let a=6..9 b=2..4 w=0..0
+  }
+  level hard {
+    let a=12..16 b=5..8 w=1..1
+  }
+
+  scene 30x20 {
+    beforeafter ch change="melt-chocolate" show=1 names=1 at=canvas(1, 0)
+    text ask "Mia melts {a} squares of chocolate in a bowl for the cake. She pours {b} squares' worth into a mould and puts it in the fridge, where it sets hard. The rest stays warm and runny. {asks}" narrate width=28 below=ch gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a - b else b)
+  feedback {
+    when (w == 0 and answer == b and a != 2 * b) point=ch {
+      say "That is what went into the mould. The runny chocolate is what is left in the bowl: {a} take away {b}."
+    }
+    when (w == 1 and answer == a - b and a != 2 * b) point=ch {
+      say "That is what is still runny. The solid chocolate is the {b} squares' worth that set in the fridge."
+    }
+    when (w == 1 and answer == a) point=ch {
+      say "Only the chocolate in the fridge has set. The bowl is still warm."
+    }
+  }
+  hint "{if w == 0 then \"Take the mould's squares away from the bowl's.\" else \"Which part of the chocolate went cold and set?\"}"
+  hint "{if w == 0 then \"{a} take away {b}.\" else \"Cooling melted chocolate sets it again, so the {b} squares' worth in the fridge is solid.\"}"
+}

@@ -1,0 +1,26 @@
+# Four notes that should climb one step at a time, where one move is a skip: finding the first wrong
+# note means reading every move, not only the first and last notes.
+item music.wrong-step v=1 stars=2 skills=[music.intervals, reasoning.find-the-error] {
+  title "The move that is wrong"
+  difficulty p
+  let s=0..6 p=2..4
+  let n1={if s == 0 then "C4" else if s == 1 then "D4" else if s == 2 then "E4" else if s == 3 then "F4" else if s == 4 then "G4" else if s == 5 then "A4" else if s == 6 then "B4" else if s == 7 then "C5" else if s == 8 then "D5" else if s == 9 then "E5" else "F5"}
+  let n2={if s + 1 + (if p <= 2 then 1 else 0) == 0 then "C4" else if s + 1 + (if p <= 2 then 1 else 0) == 1 then "D4" else if s + 1 + (if p <= 2 then 1 else 0) == 2 then "E4" else if s + 1 + (if p <= 2 then 1 else 0) == 3 then "F4" else if s + 1 + (if p <= 2 then 1 else 0) == 4 then "G4" else if s + 1 + (if p <= 2 then 1 else 0) == 5 then "A4" else if s + 1 + (if p <= 2 then 1 else 0) == 6 then "B4" else if s + 1 + (if p <= 2 then 1 else 0) == 7 then "C5" else if s + 1 + (if p <= 2 then 1 else 0) == 8 then "D5" else if s + 1 + (if p <= 2 then 1 else 0) == 9 then "E5" else "F5"}
+  let n3={if s + 2 + (if p <= 3 then 1 else 0) == 0 then "C4" else if s + 2 + (if p <= 3 then 1 else 0) == 1 then "D4" else if s + 2 + (if p <= 3 then 1 else 0) == 2 then "E4" else if s + 2 + (if p <= 3 then 1 else 0) == 3 then "F4" else if s + 2 + (if p <= 3 then 1 else 0) == 4 then "G4" else if s + 2 + (if p <= 3 then 1 else 0) == 5 then "A4" else if s + 2 + (if p <= 3 then 1 else 0) == 6 then "B4" else if s + 2 + (if p <= 3 then 1 else 0) == 7 then "C5" else if s + 2 + (if p <= 3 then 1 else 0) == 8 then "D5" else if s + 2 + (if p <= 3 then 1 else 0) == 9 then "E5" else "F5"}
+  let n4={if s + 4 == 0 then "C4" else if s + 4 == 1 then "D4" else if s + 4 == 2 then "E4" else if s + 4 == 3 then "F4" else if s + 4 == 4 then "G4" else if s + 4 == 5 then "A4" else if s + 4 == 6 then "B4" else if s + 4 == 7 then "C5" else if s + 4 == 8 then "D5" else if s + 4 == 9 then "E5" else "F5"}
+
+  scene 30x26 {
+    grandstaff gs notes=["{n1}", "{n2}", "{n3}", "{n4}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "These notes should go up one step at a time, but one move is a skip. Which note is the first one in the wrong place?" width=28 below=gs gap=1
+    choice pick options=["note 2", "note 3", "note 4"] below=ask gap=1
+  }
+
+  answer pick=(if p == 2 then "note 2" else if p == 3 then "note 3" else "note 4")
+  feedback {
+    when (pick == "note 4" and p != 4) point=gs {
+      say "The last note is too high, but the skip came earlier. Check each move from the start."
+    }
+  }
+  hint "Look at the first move, from note 1 to note 2. Line to space, or line to line?"
+  hint "Check each move in turn. Which one misses a line or a space out?"
+}

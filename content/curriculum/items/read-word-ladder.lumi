@@ -1,0 +1,24 @@
+# Each word on the ladder changes one letter of the word below it. Only one of the three choices
+# is one letter from both of its neighbours, which is the whole of the puzzle.
+item reading.word-ladder v=1 skills=[reading.phonics] {
+  title "Climb the word ladder"
+  difficulty (if w == "cat" then 1 else 0)
+  let w={"cat", "hen", "cup", "sun"}
+  level easy {
+    let w={"hen", "cup", "sun"}  # the first sound changes; cat to cut changes the middle
+  }
+
+  scene 19x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row pics space=1 align=end {
+        art pic asset="{w}"
+        wordladder lad words=[w, if w == "cat" then "cut" else if w == "hen" then "pen" else if w == "cup" then "pup" else "bun", if w == "cat" then "cup" else if w == "hen" then "pin" else if w == "cup" then "pop" else "bin", if w == "cat" then "pup" else if w == "hen" then "pig" else if w == "cup" then "pot" else "pin"] blank=1 changes=1
+      }
+      text ask "Which word goes on the empty rung?" width=18
+      choice pick options=[if w == "cat" then "cut" else if w == "hen" then "ten" else if w == "cup" then "cap" else "bun", if w == "cat" then "cop" else if w == "hen" then "pen" else if w == "cup" then "cut" else "run", if w == "cat" then "hut" else if w == "hen" then "pan" else if w == "cup" then "pup" else "bus"]
+    }
+  }
+
+  answer pick=(if w == "cat" then "cut" else if w == "hen" then "pen" else if w == "cup" then "pup" else "bun")
+  hint "Try each word. It has to change just one letter of the word below it, and one letter of the word above it."
+}

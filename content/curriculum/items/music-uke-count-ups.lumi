@@ -1,0 +1,17 @@
+item music.uke-count-ups v=1 skills=[music.strumming] {
+  title "The up strums"
+
+  scene 28x13 {
+    strumtrack bar strums=D-DU-UDU counts=true chord=none ring=-1 at=canvas(1, 1)
+    text ask "An up strum is a short arrow pointing up. How many are there?" width=20 below=bar gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 6) point=bar {
+      say "That counts every arrow. The up strums are only the short ones pointing up."
+    }
+  }
+  hint "Up strums come on the and between the numbers."
+}

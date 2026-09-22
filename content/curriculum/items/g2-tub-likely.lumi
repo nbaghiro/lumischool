@@ -1,0 +1,16 @@
+# More of one colour means more likely: the counts decide, and sometimes they are equal.
+item chance.tub-likely v=1 skills=[chance.likelihood] {
+  title "Which colour is more likely?"
+  difficulty (6 - abs(a - b))
+  let a=2..7 b=2..7
+
+  scene 37x14 {
+    tub pot first=a second=b colors=["tang", "sky"] at=canvas(1, 1)
+    text ask "Mo picks one counter from the tub without looking. Which colour is he more likely to get, or is it the same?" narrate width=20 right-of=pot gap=2
+    choice pick options=["orange", "blue", "the same"] below=pot gap=1
+  }
+
+  answer pick=(if a == b then "the same" else if a > b then "orange" else "blue")
+  hint "How many orange counters are there? How many blue?"
+  hint "The colour with more counters is more likely to be picked."
+}

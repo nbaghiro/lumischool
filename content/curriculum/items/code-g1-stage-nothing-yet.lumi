@@ -1,0 +1,28 @@
+# The idea of an event: a script under a when block waits. In half the versions the flag has not
+# been tapped, and the rabbit is still where it started.
+item coding.stage-nothing-yet v=1 skills=[coding.events] {
+  title "Has it started?"
+  difficulty (s + a + t)
+  let s=1..3 a=2..4 t=0..1
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "right {a}", "jump"]
+      stage st cols=7 col=s code=["when the flag is tapped", "right {a}", "jump"] upto=0
+    }
+    text ask "{if t == 1 then \"The flag is tapped.\" else \"Nobody has tapped the flag yet.\"} Which square is the rabbit on now?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if t == 1 then s + a else s)
+  feedback {
+    when (answer == s + a and t == 0) point=b {
+      say "The blocks wait for the flag. Until it is tapped, nothing moves."
+    }
+    when (answer == s and t == 1) point=b {
+      say "The flag has been tapped, so the blocks under it have run."
+    }
+  }
+  hint "Has the flag been tapped?"
+  hint "The blocks under the flag only run after it is tapped."
+}

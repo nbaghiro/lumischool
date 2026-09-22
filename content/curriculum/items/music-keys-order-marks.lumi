@@ -1,0 +1,25 @@
+# Four marks to put in order, from two sets and three orders, so the boxes are not the same each time.
+item music.order-dynamics v=1 skills=[music.dynamics] {
+  title "Softest to loudest"
+  difficulty (if s == 0 then 1 else 0)
+  let s=0..1 q=0..2
+  level easy {
+    let s={1}  # pp, p, f, ff
+  }
+  level hard {
+    let s={0}  # p, mp, mf, f, the two m marks in the middle
+  }
+  let m1={if s == 0 then if q == 0 then "mf" else if q == 1 then "f" else "mp" else if q == 0 then "f" else if q == 1 then "pp" else "ff"}
+  let m2={if s == 0 then if q == 0 then "p" else if q == 1 then "mp" else "f" else if q == 0 then "pp" else if q == 1 then "ff" else "p"}
+  let m3={if s == 0 then if q == 0 then "f" else if q == 1 then "p" else "mf" else if q == 0 then "ff" else if q == 1 then "p" else "pp"}
+  let m4={if s == 0 then if q == 0 then "mp" else if q == 1 then "mf" else "p" else if q == 0 then "p" else if q == 1 then "f" else "f"}
+
+  scene 22x18 {
+    text ask "Put the marks in order, softest first. Write 1 to 4 in the boxes." narrate width=21 at=canvas(1, 1)
+    sequence s1 items=["{m1}", "{m2}", "{m3}", "{m4}"] blanks=[a1, a2, a3, a4] below=ask gap=1
+  }
+
+  answer a1=(if s == 0 then if q == 0 then 3 else if q == 1 then 4 else 2 else if q == 0 then 3 else if q == 1 then 1 else 4) a2=(if s == 0 then if q == 0 then 1 else if q == 1 then 2 else 4 else if q == 0 then 1 else if q == 1 then 4 else 2) a3=(if s == 0 then if q == 0 then 4 else if q == 1 then 1 else 3 else if q == 0 then 4 else if q == 1 then 2 else 1) a4=(if s == 0 then if q == 0 then 2 else if q == 1 then 3 else 1 else if q == 0 then 2 else if q == 1 then 3 else 3)
+  hint "Which mark is the softest of all? Give it 1."
+  hint "An m in front means quite. Is quite soft softer or louder than soft?"
+}

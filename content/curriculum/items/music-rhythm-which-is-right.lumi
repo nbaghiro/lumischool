@@ -1,0 +1,36 @@
+# The two-star reason: Ana writes pear, ap-ple, pear, pear two ways. Ap-ple is two quick sounds in one
+# beat, so two quavers; written as a crotchet it makes the bar five beats long.
+item music.rhythm-which-is-right v=1 stars=2 skills=[music.note-values, reasoning.explain] {
+  title "Which one is right?"
+  let s=0..1 r=0..1
+  let right={pick(s, "A: ap-ple is two quavers", "B: ap-ple is two quavers")}
+  let w1={pick(s, "B: every sound gets a beat", "A: every sound gets a beat")}
+  let w2={"Both: the words are the same"}
+
+  scene 30x29 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "A"
+        staff a notes=[1, pick(s, 0.5, 1), pick(s, 0.5, 1), 1, 1]
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        staff b notes=[1, pick(s, 1, 0.5), pick(s, 1, 0.5), 1, 1]
+      }
+    }
+    text ask "Ana writes pear, ap-ple, pear, pear two ways for a bar of four beats. Which is right, and why?" narrate width=28 below=bars gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=bars {
+      say "Count that bar's beats. Ap-ple as two crotchets makes five."
+    }
+    when (pick == w2) point=bars {
+      say "The words are the same, but only one bar makes four beats. Count them."
+    }
+  }
+  hint "Count the beats in bar A, then in bar B."
+  hint "Ap-ple is two quick sounds. How long do they take together?"
+}

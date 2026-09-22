@@ -1,0 +1,20 @@
+# Conservation of mass with a gas in it: the reaction makes the same gas in both, and only the flask
+# with the balloon keeps it, so only the open one gets lighter.
+item chem.sealed-or-open v=1 stars=2 skills=[chemistry.changes, chemistry.conservation, reasoning.explain] {
+  title "Which one gets lighter?"
+  difficulty q
+  let w={200, 250, 300} q=0..1
+
+  scene 36x21 {
+    text ask "Both flasks had the same vinegar and baking soda and weighed {w} grams before. A is open and B has a balloon on it. {if q == 0 then \"Which one weighs less afterwards?\" else \"Which one still weighs the same as before?\"}" width=34 at=canvas(1, 0)
+    row kit below=ask gap=0 space=1 align=start {
+      flask a shape="conical" fill=0.35 bubbles=6 balloon=0 tag="A"
+      flask b shape="conical" fill=0.35 bubbles=6 balloon=2 tag="B"
+      choice pick options=["A: its gas got out", "B: its gas stayed in", "Both: nothing left"] stack=column
+    }
+  }
+
+  answer pick=(if q == 0 then "A: its gas got out" else "B: its gas stayed in")
+  hint "The fizz makes a gas. Where does the gas go from flask A? Where does it go from flask B?"
+  hint "Does a gas weigh anything? What happens to the weight of something when part of it leaves?"
+}

@@ -1,0 +1,15 @@
+# Writing instructions of the child's own, four steps in an order that works. There are many right
+# answers, so a grown-up marks it.
+item reading.write-steps v=1 stars=3 skills=[reading.instructions, writing.composing] {
+  title "Write your own steps"
+  let k=0..3
+
+  scene 36x19 {
+    text ask "Write four steps for {if k == 0 then \"making a jam sandwich\" else if k == 1 then \"brushing your teeth\" else if k == 2 then \"planting a seed\" else \"feeding a pet\"}. Start each step with a doing word, like put, take or fill." narrate width=34 at=canvas(1, 1)
+    writinglines lines lines=4 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Four steps in an order that would work if someone followed them exactly, each starting with a doing word, with nothing left out that the next step needs. Try following the steps together, word for word: a step that is missing shows up straight away."
+  hint "Do it in your head first. What do you do first?"
+  hint "Read your steps back. Could someone follow them without asking you anything?"
+}

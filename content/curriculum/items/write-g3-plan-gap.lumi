@@ -1,0 +1,25 @@
+# The gap moves from the first note to the last, so the child reads the notes either side of it
+# and the options include one from the wrong end of the story and one from another story.
+item writing.plan-gap v=1 skills=[writing.planning] {
+  title "The missing note"
+  difficulty (if g == 1 then 1 else 0)
+  let s=0..2 g=0..2
+  level easy {
+    let g={0, 2}
+  }
+  level hard {
+    let g={1}
+  }
+
+  scene 37x15 {
+    listpad plan title="Plan" items=["{if g == 0 then \"\" else if s == 0 then \"Tent goes up\" else if s == 1 then \"Gran loses her key\" else \"Walk to the lighthouse\"}", "{if g == 1 then \"\" else if s == 0 then \"Rain pours down\" else if s == 1 then \"Look by the gate\" else \"Climb the stairs\"}", "{if g == 2 then \"\" else if s == 0 then \"We stay dry inside\" else if s == 1 then \"A bird has it in a nest\" else \"See boats far out\"}"] count=0 width=15 ticks=false at=canvas(1, 1)
+    column right right-of=plan gap=1 space=1 align=start {
+      text ask "Which note fills the gap in the plan?" width=20
+      choice pick options=["{if g == 0 then (if s == 0 then \"Tent goes up\" else if s == 1 then \"Gran loses her key\" else \"Walk to the lighthouse\") else if g == 1 then (if s == 0 then \"We set off home\" else if s == 1 then \"Gran opens the door\" else \"Walk back home\") else (if s == 0 then \"The bus is late\" else if s == 1 then \"The boat sails\" else \"Bake some bread\")}", "{if g == 0 then (if s == 0 then \"We pack the tent away\" else if s == 1 then \"Gran opens the door\" else \"Walk back down\") else if g == 1 then (if s == 0 then \"Rain pours down\" else if s == 1 then \"Look by the gate\" else \"Climb the stairs\") else (if s == 0 then \"We look for a spot\" else if s == 1 then \"We start to look\" else \"Set off from home\")}", "{if g == 0 then (if s == 0 then \"A cake for tea\" else if s == 1 then \"We fly a kite\" else \"Feed the hens\") else if g == 1 then (if s == 0 then \"The dog digs a hole\" else if s == 1 then \"We bake a cake\" else \"Feed the hens\") else (if s == 0 then \"We stay dry inside\" else if s == 1 then \"A bird has it in a nest\" else \"See boats far out\")}"] stack=column
+    }
+  }
+
+  answer pick=(if g == 0 then if s == 0 then "Tent goes up" else if s == 1 then "Gran loses her key" else "Walk to the lighthouse" else if g == 1 then if s == 0 then "Rain pours down" else if s == 1 then "Look by the gate" else "Climb the stairs" else if s == 0 then "We stay dry inside" else if s == 1 then "A bird has it in a nest" else "See boats far out")
+  hint "Read the notes on either side of the gap. What has to happen between them, or before, or after?"
+  hint "Cross out the note that is about a different story. Which of the two left fits this place?"
+}

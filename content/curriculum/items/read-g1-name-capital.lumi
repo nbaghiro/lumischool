@@ -1,0 +1,15 @@
+# The first word already has its capital, so the child has to know that a name takes one too.
+item reading.name-capital v=2 skills=[reading.punctuation, reading.capitals] {
+  title "Which word needs a capital?"
+  let k=0..3 p=0..2
+
+  scene 26x13 {
+    sentence strip before="{if k == 0 then \"The dog ran to sam\" else if k == 1 then \"Gran and ben sat on a log\" else if k == 2 then \"The fox saw jo in the wood\" else \"Mum met ravi at the bus\"}" blank=0 after="." at=canvas(1, 1)
+    text ask "Which word needs a capital letter?" narrate width=24 below=strip gap=1
+    choice pick options=["{if p == 0 then (if k == 0 then \"sam\" else if k == 1 then \"ben\" else if k == 2 then \"jo\" else \"ravi\") else (if k == 0 then \"dog\" else if k == 1 then \"sat\" else if k == 2 then \"fox\" else \"met\")}", "{if p == 1 then (if k == 0 then \"sam\" else if k == 1 then \"ben\" else if k == 2 then \"jo\" else \"ravi\") else (if k == 0 then \"ran\" else if k == 1 then \"log\" else if k == 2 then \"wood\" else \"bus\")}", "{if p == 2 then (if k == 0 then \"sam\" else if k == 1 then \"ben\" else if k == 2 then \"jo\" else \"ravi\") else (if k == 0 then \"to\" else if k == 1 then \"on\" else if k == 2 then \"saw\" else \"at\")}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "sam" else if k == 1 then "ben" else if k == 2 then "jo" else "ravi")
+  hint "The first word already has its capital. What else needs one?"
+  hint "Is one of the words somebody's name?"
+}

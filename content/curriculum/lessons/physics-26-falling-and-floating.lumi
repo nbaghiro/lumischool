@@ -1,0 +1,47 @@
+lesson physics-falling-and-floating v=1 format=teach grade=4 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "Falling and floating"
+  goal "Use the forces on a falling toy and a floating boat to say what they will do next, and tell a fair test of a parachute from an unfair one."
+
+  look {
+    scene 31x15 {
+      row both at=canvas(1, 0) space=2 align=start {
+        parachute p canopy=5 weight=6 drag=6
+        boat b cargo=3 side=6 sits=1 arrows=1
+      }
+    }
+    say """
+      Gravity pulls everything down: that pull is its weight. Falling through air, a thing is pushed
+      back up by the air, and a wide canopy catches more of it. When the push up is less than the
+      weight it speeds up; when they are equal it falls steadily. A floating boat is held up by the
+      water's push, which is exactly as big as its weight, however much it is carrying.
+      """
+  }
+  do {
+    practice physics.parachute-fall count=2 seed=3
+    practice physics.parachute-slower count=2 seed=1
+    practice physics.boat-weight count=2 seed=2
+    practice physics.boat-more count=2 seed=4
+  }
+  try stars=2 {
+    show physics.parachute-fair x=3 y=7 m=4 n=6 easy-n=4
+  }
+  try stars=3 {
+    show physics.parachute-steady w=8 c=5 easy-w=4 hard-w=10
+  }
+  remember {
+    say "Weight pulls down. Air and water push up. When the two are equal, nothing speeds up or slows down."
+  }
+
+  grown-ups """
+    Make two parachutes from a supermarket bag, one twice the size of the other, with the same toy on
+    each, and drop them from the top of the stairs. Then tape a coin to one toy and ask whether that
+    drop still says anything about the canopy. The steady-speed question at the end is the idea the
+    whole lesson rests on, balanced forces, and many children expect the answer to be nothing.
+    """
+  level easy {
+    grown-ups "At this level the weight and the air's push are far apart, the canopies compared differ by three squares or more, and the two drops are a fair test."
+  }
+  level hard {
+    grown-ups "At this level the weight and the push are within two newtons or equal, the canopies differ by one square, and the steady fall carries ten newtons."
+  }
+}

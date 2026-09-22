@@ -1,0 +1,30 @@
+# The audit's raise for label-the-lighthouse: the word bank has five words, two of them things
+# that are not on the picture and two that are already labelled, so the line has to be followed.
+item writing.label-from-a-bank v=1 skills=[writing.labels, writing.spelling] {
+  title "Which label goes in the box?"
+  difficulty ((if d == 1 then 1 else 0) + (if k == 2 then 1 else 0))
+  let d=0..1 k=0..4
+  let which={if d == 0 then "ship" else "windmill"}
+  let l0={if d == 0 and k == 0 then "" else if d == 0 and k == 1 then "flag" else if d == 0 and k == 2 then "flag" else if d == 0 and k == 3 then "flag" else if d == 0 and k == 4 then "flag" else if d == 1 and k == 0 then "" else if d == 1 and k == 1 then "sail" else if d == 1 and k == 2 then "sail" else if d == 1 and k == 3 then "sail" else "sail"}
+  let l1={if d == 0 and k == 0 then "sail" else if d == 0 and k == 1 then "" else if d == 0 and k == 2 then "sail" else if d == 0 and k == 3 then "sail" else if d == 0 and k == 4 then "sail" else if d == 1 and k == 0 then "cap" else if d == 1 and k == 1 then "" else if d == 1 and k == 2 then "cap" else if d == 1 and k == 3 then "cap" else "cap"}
+  let l2={if d == 0 and k == 0 then "porthole" else if d == 0 and k == 1 then "porthole" else if d == 0 and k == 2 then "" else if d == 0 and k == 3 then "porthole" else if d == 0 and k == 4 then "porthole" else if d == 1 and k == 0 then "window" else if d == 1 and k == 1 then "window" else if d == 1 and k == 2 then "" else if d == 1 and k == 3 then "window" else "window"}
+  let l3={if d == 0 and k == 0 then "hull" else if d == 0 and k == 1 then "hull" else if d == 0 and k == 2 then "hull" else if d == 0 and k == 3 then "" else if d == 0 and k == 4 then "hull" else if d == 1 and k == 0 then "door" else if d == 1 and k == 1 then "door" else if d == 1 and k == 2 then "door" else if d == 1 and k == 3 then "" else "door"}
+  let l4={if d == 0 and k == 0 then "waves" else if d == 0 and k == 1 then "waves" else if d == 0 and k == 2 then "waves" else if d == 0 and k == 3 then "waves" else if d == 0 and k == 4 then "" else if d == 1 and k == 0 then "tower" else if d == 1 and k == 1 then "tower" else if d == 1 and k == 2 then "tower" else if d == 1 and k == 3 then "tower" else ""}
+  let gone={if d == 0 and k == 0 then "flag" else if d == 0 and k == 1 then "sail" else if d == 0 and k == 2 then "porthole" else if d == 0 and k == 3 then "hull" else if d == 0 and k == 4 then "waves" else if d == 1 and k == 0 then "sail" else if d == 1 and k == 1 then "cap" else if d == 1 and k == 2 then "window" else if d == 1 and k == 3 then "door" else "tower"}
+  let b0={if d == 0 and k == 0 then "flag" else if d == 0 and k == 1 then "porthole" else if d == 0 and k == 2 then "flag" else if d == 0 and k == 3 then "chimney" else if d == 0 and k == 4 then "wheel" else if d == 1 and k == 0 then "sail" else if d == 1 and k == 1 then "window" else if d == 1 and k == 2 then "sail" else if d == 1 and k == 3 then "chimney" else "anchor"}
+  let b1={if d == 0 and k == 0 then "sail" else if d == 0 and k == 1 then "waves" else if d == 0 and k == 2 then "chimney" else if d == 0 and k == 3 then "wheel" else if d == 0 and k == 4 then "waves" else if d == 1 and k == 0 then "cap" else if d == 1 and k == 1 then "tower" else if d == 1 and k == 2 then "chimney" else if d == 1 and k == 3 then "anchor" else "tower"}
+  let b2={if d == 0 and k == 0 then "hull" else if d == 0 and k == 1 then "chimney" else if d == 0 and k == 2 then "wheel" else if d == 0 and k == 3 then "hull" else if d == 0 and k == 4 then "flag" else if d == 1 and k == 0 then "door" else if d == 1 and k == 1 then "chimney" else if d == 1 and k == 2 then "anchor" else if d == 1 and k == 3 then "door" else "sail"}
+  let b3={if d == 0 and k == 0 then "chimney" else if d == 0 and k == 1 then "wheel" else if d == 0 and k == 2 then "porthole" else if d == 0 and k == 3 then "waves" else if d == 0 and k == 4 then "porthole" else if d == 1 and k == 0 then "chimney" else if d == 1 and k == 1 then "anchor" else if d == 1 and k == 2 then "window" else if d == 1 and k == 3 then "tower" else "window"}
+  let b4={if d == 0 and k == 0 then "wheel" else if d == 0 and k == 1 then "sail" else if d == 0 and k == 2 then "hull" else if d == 0 and k == 3 then "sail" else if d == 0 and k == 4 then "chimney" else if d == 1 and k == 0 then "anchor" else if d == 1 and k == 1 then "cap" else if d == 1 and k == 2 then "door" else if d == 1 and k == 3 then "cap" else "chimney"}
+
+  scene 36x20 {
+    labelled pic of=which labels=["{l0}", "{l1}", "{l2}", "{l3}", "{l4}"] blank=-1 title="" caption="" at=canvas(1, 0)
+    text bank "Words to choose from: {b0}, {b1}, {b2}, {b3}, {b4}" width=34 below=pic gap=1
+    text ask "Write the label for the empty box." narrate width=16 below=bank gap=1
+    word-input word options=["{gone}"] letters=8 right-of=ask gap=1
+  }
+
+  answer word=gone
+  hint "Put your finger on the empty box and follow its line to the picture."
+  hint "What is the part at the end of the line called? Is it in the bank?"
+}

@@ -1,0 +1,21 @@
+# Every number that fits a rule, found by listing: the ones that end in 0 are the ones children miss.
+item place.all-the-numbers v=1 stars=3 skills=[place-value.tens-ones, reasoning.all-the-ways] {
+  title "All the numbers that fit"
+  difficulty (10 - k)
+  let k=2..6
+
+  scene 26x12 {
+    arrowcards cards value=(10 * (k + 1) + 1) apart=true at=canvas(1, 1)
+    text ask "In {10 * (k + 1) + 1} the tens digit is {k} more than the ones digit. How many numbers from 10 to 99 are like that?" width=24 below=cards gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (10 - k)
+  feedback {
+    when (answer == 9 - k) point=cards {
+      say "Did you count the number whose ones digit is 0?"
+    }
+  }
+  hint "Start with the smallest ones digit, 0. What tens digit goes with it?"
+  hint "Now try ones digit 1, then 2. When does the tens digit get too big?"
+}

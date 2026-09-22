@@ -1,0 +1,22 @@
+# Children often say the water disappeared or the sun took it; the two questions ask about the
+# water and the salt separately, and each has its own answer.
+item chem.where-water-go v=1 skills=[chemistry.evaporating] {
+  title "Where does it go?"
+  difficulty q
+  let q=0..1 left={1, 2, 3}
+
+  scene 29x15 {
+    text ask "The dish of salty water is drying out in the sun. Where does the {if q == 0 then \"water\" else \"salt\"} go?" width=24 at=canvas(1, 0)
+    dish d left=left day=(5 - left) below=ask gap=0
+    choice pick options=["Into the air as vapour", "It stays in the dish", "The sun takes it"] stack=column right-of=d gap=1
+  }
+
+  answer pick=(if q == 0 then "Into the air as vapour" else "It stays in the dish")
+  feedback {
+    when (pick == "The sun takes it") point=d {
+      say "The sun warms the water, and warm water turns to vapour faster. Where does the vapour go?"
+    }
+  }
+  hint "Is there less {if q == 0 then \"water\" else \"salt\"} in the dish each day, or the same?"
+  hint "Which part of salty water can turn into a gas, and which part cannot?"
+}

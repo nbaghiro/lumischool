@@ -1,0 +1,61 @@
+# Hiroshige's rain: weather drawn as straight lines all going one way, and distance drawn as lines
+# that thin and close up as they go back.
+lesson art-hiroshiges-rain v=1 format=teach grade=4 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Hiroshige's rain"
+  goal "Read a rainy print for its weather and its distance, and make one where the rain falls one way and the far bank falls back."
+
+  look {
+    scene 19x6 {
+      bridge print arches=4 rain=1 weight="both" far=1 at=canvas(1, 0)
+    }
+    say """
+      Utagawa Hiroshige printed a sudden shower on a bridge, and everybody who has seen it remembers
+      the rain. It is nothing but straight lines, ruled from top to bottom, all slanting the same way
+      because one wind is blowing. The distance is made the same way: the bank you are standing on is
+      drawn with heavy lines close together, and the far bank with lighter ones further apart, so it
+      falls back without anything being coloured differently.
+      """
+  }
+  do {
+    practice art.rain-directions count=1 seed=4 easy-seed=10 hard-seed=1
+    level easy {
+      worked art.rain-near-or-far w=0 arches=3 fb=0 level=medium
+    }
+    practice art.rain-near-or-far count=2 seed=8 easy-seed=1 hard-seed=1
+    practice art.rain-which-print-far count=2 seed=5 easy-seed=2 hard-seed=2
+    practice art.rain-what-differs count=2 seed=13 easy-seed=1 hard-seed=5
+    level hard {
+      show art.rain-what-differs k=7
+    }
+  }
+  story {
+    show art.hut-rain prints=4 arches=4 easy-prints=3 hard-prints=6
+  }
+  try stars=2 {
+    show art.rain-wrong-print p=1 easy-p=0 hard-p=2
+  }
+  try stars=3 {
+    show art.rain-make wind=0 easy-wind=0 hard-wind=1
+  }
+  remember {
+    say "Rain in a print is straight lines all slanting one way, and what is far away is drawn with thinner lines."
+  }
+
+  grown-ups """
+    Two ideas share this lesson and they are both about lines. The first is that weather can be drawn:
+    a shower is ruled straight lines, all the same way, because the wind is one wind, and the two-star
+    question is the test of it, since a print with rain crossing itself looks wrong before a child can
+    say why. The second is that distance is drawn with weight: heavier lines for what is near you and
+    thinner ones for what is behind. Watch for a child who says the far bank is paler
+    because it is a different colour; on a printed sheet there is no colour to change, only the lines.
+    The three-star question asks for a print of their own and both ideas have to be in it. Off the page,
+    rule rain over a pencil drawing with a ruler, all one way, and then try it again crossing and see
+    which looks like weather.
+    """
+  level easy {
+    grown-ups "At this level the rain's directions and its nearness are read on bridges of three arches, near rain is judged once in the teacher's pen before a far shower and a near one, the prints with and without the far bank have no rain across them, the prints to compare differ in how near the rain is drawn or in its directions, the story prints three times, the wrong print is the first of the two, and the print to make has the rain slanting to the right."
+  }
+  level hard {
+    grown-ups "At this level the rain's directions and its nearness are read on bridges of four arches with the far bank drawn behind, the prints with and without the far bank have rain across them, crossing in one of them, the prints to compare differ in the far bank and in how near the rain is drawn, and the core carries a third pair that differs in the rain's directions, the story prints six times, the wrong print is the first of two that both draw the far bank, and the print to make has the rain slanting steeply to the left."
+  }
+}

@@ -1,0 +1,28 @@
+# Whether the ones column needs a ten, decided before any subtracting: some versions need none.
+item sub.exchange-or-not v=1 skills=[subtraction.columns] {
+  title "Do you need to exchange?"
+  difficulty (10 - abs(a % 10 - b % 10))
+  let a=31..89 b=12..48
+  where (a > b + 9 and a % 10 != b % 10)
+  level easy {
+    where (abs(a % 10 - b % 10) >= 5)
+  }
+  level hard {
+    where (abs(a % 10 - b % 10) <= 2)
+  }
+
+  scene 22x12 {
+    equation diff "{a} − {b}" at=canvas(1, 1)
+    text ask "Before you work it out: do you need to exchange a ten?" width=20 below=diff gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if a % 10 < b % 10 then "yes" else "no")
+  feedback {
+    when (pick == "yes" and a % 10 > b % 10) point=diff {
+      say "There are {a % 10} ones on top and {b % 10} to take away. Is that enough?"
+    }
+  }
+  hint "Look only at the ones. Which number has more ones?"
+  hint "Can you take {b % 10} away from {a % 10} without going below zero?"
+}

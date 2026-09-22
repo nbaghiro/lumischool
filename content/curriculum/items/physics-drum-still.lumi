@@ -1,0 +1,18 @@
+item physics.drum-still v=1 skills=[physics.sound] {
+  title "Is it making a sound?"
+  let x=0..2
+
+  scene 15x20 {
+    ricedrum d hit=x at=canvas(1, 0)
+    text ask "Is this drum making a sound?" width=13 below=d gap=0
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  answer pick=(if x == 0 then "No" else "Yes")
+  feedback {
+    when (pick == "Yes" and x == 0) point=d {
+      say "The rice is lying still, so the skin is not shaking. No shaking, no sound."
+    }
+  }
+  hint "Is the rice lying still or jumping?"
+}

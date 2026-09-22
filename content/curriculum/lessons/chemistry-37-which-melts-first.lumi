@@ -1,0 +1,63 @@
+lesson chemistry-which-melts-first v=1 format=teach grade=2 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Which melts first?"
+  goal "Compare ice cubes in warm and cold places and say what makes melting faster."
+
+  look {
+    scene 24x19 {
+      icemelt table every=10 count=3 place=1 at=canvas(1, 0)
+      icemelt sun every=10 count=3 place=2 below=table gap=1
+    }
+    say """
+      By the marsh hut Mia puts out two ice cubes from the same tray, one on the table in the
+      shade and one on the sunny step. Every ten minutes she draws them. On the table the cube
+      loses a quarter each time; on the step it loses two, and it is a puddle after twenty
+      minutes. A third cube, back in the freezer, does not change at all. The warmer the place,
+      the faster the ice melts.
+      """
+  }
+  do {
+    level easy {
+      worked chem.smaller-cube k=0 s=0
+    }
+    practice chem.smaller-cube count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.which-thermometer count=2 hard-count=1 seed=3 easy-seed=1 hard-seed=1
+    practice chem.ice-faster count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.quarters-later count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chem.ice-melted count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.big-or-small k=0 r=1 level=medium
+    }
+  }
+  story {
+    show chem.lolly-walk a=1 b=1 w=0 easy-b=0 hard-b=2 hard-w=1
+  }
+  try stars=2 {
+    show chem.big-or-small k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show chem.keep-the-lolly k=1 r=2 easy-k=0 hard-k=2
+  }
+  remember {
+    say "The warmer the place, the faster the ice melts. In the freezer it does not melt at all."
+  }
+
+  grown-ups """
+    The idea is that melting is a change that warmth drives, so the same ice melts at different
+    speeds in different places: not at all in the freezer, a quarter every ten minutes on the
+    table, twice as fast in the sun. The wrong idea to watch for is that ice melts on its own
+    after a while, wherever it is; ask what is different about the places. The thermometers give
+    each place a number, and the questions read the cubes forwards in time past the last picture.
+    The story runs a lolly through sun and shade at two rates. The two-star question is a big
+    cube and a small one in the same place, where the small one goes first because there is less
+    of it, and at hard the places differ, so the place has to be weighed against the size. The
+    three-star question chooses where to keep a lolly against two things at once, cold and out
+    of the sun. If "the sun melts it" is still the whole story after the core, stay here another
+    day with three cubes and three saucers, and a clock.
+    """
+  level easy {
+    grown-ups "At this level the freezer against the sun is worked once in the teacher's pen before pairs far apart, the thermometers asked for are the freezer's and the sunny sill's, the cubes to read on are on the table, the lolly walks five minutes in the sun alone, the two-star is the same place with two sizes, and the lolly is kept at home, where the freezer is plainly coldest."
+  }
+  level hard {
+    grown-ups "At this level the cubes to compare are the table against the sun, the thermometer asked for is the table's, between the other two, the cubes to read on are in the sun and can be gone, a second big-or-small question sits in the core, the lolly walks in the sun and then the shade and the question is what melted, the two-star puts the small cube in the fridge, and the lolly's place has to be shaded and shut."
+  }
+}

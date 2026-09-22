@@ -1,0 +1,31 @@
+# How many spoons' worth of salt come out as a full hot cup cools to a colder row of the table.
+item chem.spoons-out v=1 skills=[chemistry.crystals, subtraction.to-twenty] {
+  title "How much comes out?"
+  difficulty (if to == 20 then 1 else 0)
+  let hot={7, 8} to={10, 20}
+  let cold={if to == 10 then 3 else 4}
+  level easy {
+    let to={10}
+  }
+  level hard {
+    let to={20}
+  }
+
+  scene 34x17 {
+    crystalstring jar days=3 crystals=4 kind=salt at=canvas(0, 0)
+    text ask "Water at 60 °C holds {hot} spoons of salt; at {to} °C it holds {cold}. A cup of 60 °C water dissolved all {hot} spoons and then cooled to {to} °C with a string in it. How many spoons' worth of salt grew on the string?" narrate width=20 right-of=jar gap=1
+    number-input answer below=jar gap=1
+  }
+
+  answer (hot - cold)
+  feedback {
+    when (answer == hot) point=jar {
+      say "That is all the salt that went in. The water at {to} °C still holds {cold} spoons of it."
+    }
+    when (answer == cold and cold != hot - cold) point=jar {
+      say "That is the salt that stays dissolved. The rest of the {hot} spoons is what came out."
+    }
+  }
+  hint "The water at {to} °C keeps {cold} spoons dissolved. The rest cannot stay in."
+  hint "Take {cold} from {hot}."
+}

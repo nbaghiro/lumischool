@@ -1,0 +1,25 @@
+item physics.pendulum-count v=1 skills=[physics.motion] {
+  title "Counting swings"
+  difficulty (n * k)
+  let n={8, 10, 12, 16} k={2, 3}
+  level easy {
+    let n={8, 10} k={2}
+  }
+  level hard {
+    let n={12, 16} k={3}
+  }
+
+  scene 26x12 {
+    pendulum p length=4 at=canvas(1, 0)
+    text ask "This pendulum swings to and fro {n} times in 10 seconds. How many times in {10 * k} seconds?" width=12 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * k)
+  feedback {
+    when (answer == n + 10 * k - 10 and n != 10) point=p {
+      say "Every ten seconds it swings {n} more times, so count in {n}s."
+    }
+  }
+  hint "How many lots of 10 seconds are in {10 * k} seconds?"
+}

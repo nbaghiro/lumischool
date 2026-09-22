@@ -1,0 +1,30 @@
+# The same number with one ten broken into ones, 1.NBT.B.2a: 53 is also 4 tens and 13 ones.
+item place.regroup-tens v=1 skills=[place-value.tens-ones, place-value.regroup] {
+  title "One ten fewer"
+  difficulty (10 * t + o)
+  let t=3..8 o=0..8
+  level easy {
+    let t=3..4 o=0..3
+  }
+  level hard {
+    let t=7..8 o=5..8
+  }
+
+  scene 26x13 {
+    placevalue rods tens=t ones=o at=canvas(1, 1)
+    text ask "{10 * t + o} is the same as {t - 1} tens and how many ones?" narrate width=24 below=rods gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (o + 10)
+  feedback {
+    when (answer == o) point=rods {
+      say "There is one ten fewer, so there have to be more ones."
+    }
+    when (answer == o + 1) point=rods {
+      say "The ten that was broken up is ten ones, not one."
+    }
+  }
+  hint "One of the rods is broken into single cubes. How many cubes is that?"
+  hint "Add those to the ones that were there already."
+}

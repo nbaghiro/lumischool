@@ -1,0 +1,53 @@
+lesson g3-tenths v=1 format=teach grade=3 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Tenths"
+  goal "Read and write tenths, as a fraction and as a decimal, and add them past one whole."
+
+  look {
+    scene 27x20 {
+      decimalsquare square hundredths=30 write=true at=canvas(1, 1)
+      numberline tenths from=0 to=1 step=0.1 right-of=square gap=2
+      fraction strip n=10 k=3 shape=bar below=square gap=2
+    }
+    say """
+      One whole cut into ten equal parts gives tenths. Three tenths is written 0.3, and the line
+      counts in tenths the same way the square is divided.
+      """
+  }
+  do {
+    practice decimal.tenths-shaded count=1 seed=4
+    practice decimal.line-tenths count=2 seed=7 easy-seed=10
+    practice decimal.make-one count=2 seed=3
+    practice decimal.tenths-order count=1 seed=5
+    level easy {
+      worked decimal.snail-tenths a=4 b=7
+    }
+    practice decimal.snail-tenths count=2 hard-count=1 seed=8 easy-seed=13
+    level hard {
+      practice decimal.tenths-mistake count=1 seed=1
+    }
+    practice decimal.hundred-grid count=1 seed=2
+  }
+  try stars=2 {
+    show decimal.tenths-mistake a=8 b=4 easy-a=5 easy-b=6 hard-a=9 hard-b=8
+  }
+  try stars=3 {
+    show decimal.cards-between a=2 b=4 c=7 lo=2 easy-a=1 easy-b=5 easy-c=8 easy-lo=3 hard-a=3 hard-b=6 hard-c=7 hard-lo=3
+  }
+  remember {
+    say "Ten tenths make one whole. Three tenths is 0.3, and 0.8 + 0.4 is 1.2."
+  }
+
+  grown-ups """
+    Say "three tenths" as often as "nought point three". The words carry the meaning that the
+    notation hides. The snail questions go past one whole, which is where tenths first behave
+    differently from whole numbers. In the two-star question, ask whether an answer can be smaller
+    than one of the numbers that were added. In the three-star question, the six numbers are best
+    written in a list first, then checked one by one.
+    """
+  level easy {
+    grown-ups "At this level the shaded square shows one to three tenths, the arrow sits on the first three tenths of the line, the numbers that make one are 0.1, 0.5 and 0.9, the four numbers to order are far apart, a snail that just passes one metre is worked once in the teacher's pen before two that reach 1.2 metres at most, the hundred grid shows whole tenths, Ella's mistake is 0.5 + 0.6, and the cards 1, 5 and 8 make two numbers between 3 and 7 with no card on an end."
+  }
+  level hard {
+    grown-ups "At this level the shaded square shows seven to nine tenths, the arrow sits past one on a line to two, the numbers that make one are 0.3, 0.4, 0.6 and 0.7, the four numbers to order sit close together either side of a half, the snail crawls 1.4 metres or more, the hundred grid shows hundredths with a zero in the tenths place or nearly the whole grid, Ella's mistake is asked twice with sums of 1.5 or more, and the cards 3, 6 and 7 sit on both ends of the range 3 to 7, so 3.6 counts and 7.3 does not."
+  }
+}

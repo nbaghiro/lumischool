@@ -1,0 +1,31 @@
+# The story: a four-note tune at the bandstand, and how many of its notes sit in spaces.
+item music.tune-count v=1 stars=1 skills=[music.staff] {
+  title "The bandstand tune"
+  difficulty k
+  let k=0..2
+  let n1={pick(k, "E4", "G4", "F4")}
+  let n2={pick(k, "F4", "A4", "A4")}
+  let n3={pick(k, "G4", "B4", "C5")}
+  let n4={pick(k, "F4", "C5", "E5")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x17 {
+    grandstaff gs notes=["{n1}", "{n2}", "{n3}", "{n4}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "Ada reads this tune at the bandstand. How many of its four notes sit in spaces?" width=12 right-of=gs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else if k == 1 then 2 else 4)
+  feedback {
+    when (k == 2 and answer == 0) point=gs {
+      say "That is the notes on lines. The question asks for the notes between two lines."
+    }
+  }
+  hint "Look at each note head in turn: is a line through it, or is it between two lines?"
+  hint "Count only the ones between two lines."
+}

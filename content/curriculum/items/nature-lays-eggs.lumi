@@ -1,0 +1,48 @@
+# Sorting by how the young are born: the ones that lay eggs and the ones born alive. Birds and fish
+# are plain; the sea turtle lays eggs though it lives at sea, and the bat is born alive though it
+# flies, which is the point.
+item nature.lays-eggs v=1 skills=[nature.sorting] {
+  title "Egg, or born alive?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let who={pick(k, "hen", "cat", "fish", "seal", "sea turtle", "bat")}
+  let right={pick(k, "from an egg", "born alive", "from an egg", "born alive", "from an egg", "born alive")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x22 {
+    column six at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        art h asset="hen"
+        seaturtle pt facing=1 plates=5
+        art c asset="cat"
+      }
+      row low space=1 align=end {
+        seal ps rock=1 facing=1
+        fishshoal pf rows=2 cols=3 facing=1
+        bats pb count=2 flying=1
+      }
+    }
+    text ask "How does a young {who} start its life?" narrate width=34 below=six gap=1
+    choice pick options=["from an egg", "born alive"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 4 and pick != right) point=pt {
+      say "A sea turtle swims all its life, but it crawls up the beach to lay its eggs in the sand."
+    }
+    when (k == 5 and pick != right) point=pb {
+      say "A bat flies like a bird, but it is furry and warm, and its young are born alive and drink milk."
+    }
+    when (k <= 3 and pick != right) point=six {
+      say "Birds, fish and turtles lay eggs. The furry, warm ones are born alive."
+    }
+  }
+  hint "Is the {who} a bird, a fish, a turtle, or a furry warm one?"
+  hint "Feathers, scales and shells go with eggs. Fur goes with being born alive."
+}

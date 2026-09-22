@@ -1,0 +1,18 @@
+item music.guitar-em-fingers v=2 skills=[music.chord-boxes] {
+  title "Fingers for E minor"
+
+  scene 28x17 {
+    chordbox box tuning=guitar chord=Em frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "How many fingers does E minor need?" width=12 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 2
+  feedback {
+    when (answer == 6) point=box {
+      say "The rings are strings played open. Only the dots are fingers."
+    }
+  }
+  hint "Count the dots on the strings."
+  hint "Are the rings at the top fingers too?"
+}

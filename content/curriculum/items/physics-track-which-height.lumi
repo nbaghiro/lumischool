@@ -1,0 +1,30 @@
+# The table read backwards: the height that pushes the cup a given distance. The distances asked are
+# all in the table, so this is reading rather than working out, and the larger ones are the harder
+# read.
+item physics.track-which-height v=1 skills=[physics.forces, reasoning.work-backwards] {
+  title "Which height?"
+  difficulty p
+  let h=1..6
+  let p={pick(h - 1, 2, 4, 6, 8, 10, 12)}
+  level easy {
+    let h=1..4
+  }
+  level hard {
+    let h=3..6
+  }
+
+  scene 25x23 {
+    table t cols=2 head=["Height", "Cup pushed"] cells=["1", "2", "2", "4", "3", "6", "4", "8", "5", "10", "6", "12"] at=canvas(1, 0)
+    text ask "Sam wants the cup pushed {p} squares. From what height should he let the marble go?" narrate width=24 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=h
+  feedback {
+    when (answer == p) point=t {
+      say "That is the distance the cup is pushed. The question asks for the height that gives it."
+    }
+  }
+  hint "Find the distance in the second column first."
+  hint "Read back across that row to the height in the first column."
+}

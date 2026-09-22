@@ -1,0 +1,19 @@
+item art.tint-or-shade v=1 skills=[art.tints] {
+  title "A tint or a shade?"
+  difficulty (if t == "black" then 1 else 0)
+  let c={"red", "blue", "green"} t={"white", "black"}
+
+  scene 35x9 {
+    paintpots pots pots=["{c}", "{t}"] result="mix" labels=true at=canvas(1, 1)
+    text ask "Is the pot at the end a tint or a shade?" width=16 right-of=pots gap=1
+    choice pick options=["tint", "shade"] below=ask gap=1
+  }
+
+  answer pick=(if t == "white" then "tint" else "shade")
+  feedback {
+    when (pick == "tint" and t == "black") point=pots {
+      say "Black makes a colour darker. A darker colour is a shade."
+    }
+  }
+  hint "Is the pot at the end lighter or darker than the {c}?"
+}

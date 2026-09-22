@@ -1,0 +1,40 @@
+# The story: Ada and Ben walking round the marsh, finding homes with creatures in them. The webs
+# hold one spider each and the nests hold a few birds each, so the count is one lot of ones and
+# one lot of equal groups.
+item nature.marsh-walk v=1 skills=[nature.habitats, multiplication.equal-groups] {
+  title "Who was at home"
+  difficulty (w + n * b)
+  let w=1..4 n=2..3 b=2..3
+  where (n * b <= 6)
+  level easy {
+    let w=1..2 n=2..2 b=2..2
+  }
+  level hard {
+    let w=3..4 n=2..3 b=2..3
+    where (n * b == 6)
+  }
+
+  scene 30x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      cobweb web spokes=8 spider=1
+      birdrow birds count=(n * b) wire=false
+    }
+    text ask "Ada and Ben walk round the marsh. In the reeds they find {w} webs, each with its spider at home. In the willow tree they find {n} nests, with {b} birds in each. How many creatures do they find at home?" narrate width=28 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (w + n * b)
+  feedback {
+    when (answer == w + n + b and n + b != n * b) point=birds {
+      say "Every nest has {b} birds in it, and there are {n} nests. Count the birds nest by nest."
+    }
+    when (answer == n * b) point=web {
+      say "The spiders are at home too, one in each web."
+    }
+    when (answer == w + n and w + n != n * b) point=birds {
+      say "A nest is a home, not a creature. Count the birds in the nests."
+    }
+  }
+  hint "How many spiders? One in each web. How many birds? {b} in each of the {n} nests."
+  hint "Add the spiders to the birds."
+}

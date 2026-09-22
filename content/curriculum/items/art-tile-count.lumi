@@ -1,0 +1,20 @@
+item art.tile-count v=1 skills=[art.pattern] {
+  title "How many tiles?"
+  difficulty (c * r)
+  let c=3..4 r=2..3
+  level easy {
+    let c={3} r={2}
+  }
+  level hard {
+    let c={4} r={3}
+  }
+
+  scene 30x11 {
+    tilerepeat wall drop=0 cols=c rows=r missing=-1 ring=-1 colour=green at=canvas(1, 1)
+    text ask "The same tile is printed over and over. How many tiles are there?" width=14 right-of=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * r)
+  hint "How many rows are there, and how many tiles in each row?"
+}

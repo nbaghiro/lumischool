@@ -1,0 +1,18 @@
+# All the ways: the child has to test every step, which is the non-routine part. The answer is how
+# many steps work, so it is one number and provable.
+item physics.seesaw-all-ways v=1 skills=[physics.moments, reasoning.systematic] stars=3 {
+  title "How many steps work?"
+  difficulty (a * p)
+  let a={2, 3, 4} p=2..4 b={2, 3, 4, 6}
+  where (a != b)
+
+  scene 28x20 {
+    seesaw plank left=a atleft=p right=0 atright=1 held=1 at=canvas(1, 0)
+    text ask "A {b} kg weight goes on the right side. On how many of the five steps would it make the right side go down?" narrate width=26 below=plank gap=0
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if b > a * p then 1 else 0) + (if 2 * b > a * p then 1 else 0) + (if 3 * b > a * p then 1 else 0) + (if 4 * b > a * p then 1 else 0) + (if 5 * b > a * p then 1 else 0))
+  hint "What is weight times step on the left?"
+  hint "Try the {b} kg weight at step 1, then 2, and so on. Which beat the left?"
+}

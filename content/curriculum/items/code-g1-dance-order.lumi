@@ -1,0 +1,22 @@
+# A dance strip read with a key: the top strip names each move, and the child finds the shaded
+# frame's move in the dance below. The checker runs the dance and names the move in that frame.
+item coding.dance-order v=1 skills=[coding.sequences] {
+  title "Which move is it?"
+  difficulty k
+  let q=0..2 k=2..4
+
+  scene 30x20 {
+    text ask "The top strip shows what each move looks like. What is the robot doing in the shaded frame of the dance?" width=28 at=canvas(1, 0)
+    row both below=ask gap=1 space=2 align=start {
+      column strips space=1 align=start {
+        dance key code=["clap", "jump", "spin", "wave"] count=true
+        dance d code=["{if q == 0 then \"clap\" else if q == 1 then \"spin\" else \"jump\"}", "{if q == 0 then \"jump\" else if q == 1 then \"wave\" else \"clap\"}", "{if q == 0 then \"spin\" else if q == 1 then \"clap\" else \"wave\"}", "{if q == 0 then \"wave\" else if q == 1 then \"jump\" else \"spin\"}"] count=false beat=k
+      }
+      choice pick options=["clap", "jump", "spin", "wave"] stack=column
+    }
+  }
+
+  check coding.runs of=d pick="frame({k})"
+  hint "Look at the shaded frame. What are the robot's arms doing?"
+  hint "Find the picture in the top strip that looks the same. Its word is under it."
+}

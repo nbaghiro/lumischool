@@ -1,0 +1,18 @@
+item time.o-clock-or-half v=1 skills=[time.reading-clocks] {
+  title "O'clock or half past"
+  let h=1..12 m={0, 30}
+
+  scene 24x12 {
+    clock face h=h m=m at=canvas(1, 1)
+    text ask "What does this clock say?" narrate right-of=face gap=1
+    choice pick options=["o'clock", "half past"] below=face gap=1
+  }
+
+  answer pick=(if m == 0 then "o'clock" else "half past")
+  feedback {
+    when (m == 0 and pick == "half past") point=face {
+      say "The long hand points straight up, so nothing has passed the hour yet."
+    }
+  }
+  hint "Look at the long hand: straight up is o'clock, straight down is half past."
+}

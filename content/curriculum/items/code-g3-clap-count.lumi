@@ -1,0 +1,29 @@
+# How many inputs go one way: the numbers between two tests, counted without a number line to read
+# them off. The audit's raise for decision-count.
+item coding.clap-count v=1 skills=[coding.decisions] {
+  title "How many clap?"
+  difficulty (a - b)
+  let a=6..8 b=2..4
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["if n is more than {a}", "  say shout", "otherwise", "  if n is more than {b}", "    say clap", "  otherwise", "    say whisper"]
+      column q space=1 align=start {
+        text ask "The program is run with n as each number from 1 to 10. For how many of them does it say clap?" width=15
+        number-input answer
+      }
+    }
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a - b + 1) point=p {
+      say "Check the two ends. Is {b} more than {b}? Is {a} more than {a}?"
+    }
+    when (answer == 10 - b) point=p {
+      say "Some of those numbers are more than {a} as well, and they shout at line 1."
+    }
+  }
+  hint "Which numbers shout? They never reach line 4."
+  hint "Of the rest, which are more than {b}?"
+}

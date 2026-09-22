@@ -1,0 +1,17 @@
+# Reading the graph for when something happened: the minute the line goes flat is the minute the
+# water starts to boil.
+item chem.boil-curve v=1 skills=[chemistry.heating, chemistry.data] {
+  title "When did it start to boil?"
+  difficulty k
+  let k=0..5
+
+  scene 35x16 {
+    heatcurve curve temps=[if k == 0 then 20 else if k == 1 then 40 else if k == 2 then 30 else if k == 3 then 10 else if k == 4 then 20 else 0, if k == 0 then 40 else if k == 1 then 60 else if k == 2 then 50 else if k == 3 then 40 else if k == 4 then 50 else 20, if k == 0 then 60 else if k == 1 then 80 else if k == 2 then 70 else if k == 3 then 70 else if k == 4 then 80 else 40, if k == 0 then 80 else if k == 1 then 100 else if k == 2 then 90 else if k == 3 then 100 else if k == 4 then 100 else 60, if k == 0 then 100 else if k == 1 then 100 else if k == 2 then 100 else if k == 3 then 100 else if k == 4 then 100 else 80, if k == 0 then 100 else if k == 1 then 100 else if k == 2 then 100 else if k == 3 then 100 else if k == 4 then 100 else 100, if k == 0 then 100 else if k == 1 then 100 else if k == 2 then 100 else if k == 3 then 100 else if k == 4 then 100 else 100] every=(if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 3 else if k == 3 then 2 else if k == 4 then 4 else 1) min=0 max=120 step=20 at=canvas(1, 0)
+    text ask "A grown-up heated a pan of water and read the thermometer every few minutes. After how many minutes did the water start to boil?" width=14 right-of=curve gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.state of=curve answer=flat-from
+  hint "Find the part of the line that stops climbing and stays flat."
+  hint "Which point is the first one on the flat part? Read the minutes under it."
+}

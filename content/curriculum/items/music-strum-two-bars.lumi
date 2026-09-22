@@ -1,0 +1,28 @@
+# Two bars read together: the second bar is shorter by one strum, so a child who counts both bars
+# as one pattern repeated gets it wrong.
+item music.strum-two-bars v=1 skills=[music.strumming] {
+  title "Two bars"
+  difficulty (if q == 1 then 2 else if q == 2 then 1 else 0)
+  let q=0..2
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q={1, 2}  # the difference needs both bars counted
+  }
+
+  scene 36x14 {
+    strumtrack bar strums=D-DU-UDUD-D-DUD- counts=true chord=none ring=-1 at=canvas(1, 1)
+    text ask "{if q == 0 then \"How many strums are there in the two bars together?\" else if q == 1 then \"How many more strums are in the first bar than in the second?\" else \"How many up strums are there in the two bars together?\"}" narrate width=34 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then 11 else if q == 1 then 1 else 4)
+  feedback {
+    when (answer == 12 and q == 0) point=bar {
+      say "The second bar is not the same as the first. Count it on its own."
+    }
+  }
+  hint "The line in the middle is where the first bar ends. Count each bar on its own."
+  hint "Leave out the dots. Short arrows pointing up are the up strums."
+}

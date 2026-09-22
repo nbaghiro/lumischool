@@ -1,0 +1,51 @@
+# The two-star reason: the same road on two maps drawn to two scales, and Ben's claim that the
+# road on the bigger map is longer. Parts times what a part is worth settles it, and in one
+# version the maps really do disagree, so the child cannot just say "the same".
+item nature.two-scales v=1 stars=2 skills=[nature.maps, measure.scale, reasoning.compare] {
+  title "Which map is right?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let pa={pick(k, 3, 4, 3)}
+  let sa={pick(k, 2, 5, 5)}
+  let pb={pick(k, 2, 10, 4)}
+  let sb={pick(k, 3, 2, 5)}
+  let right={pick(k, "Neither: both say 6 km", "Neither: both say 20 km", "No: A says 15 km and B says 20 km")}
+  let o1={pick(k, "Ben: B's road is longer", "Ben: B's road is longer", "Yes: both have a scale bar")}
+  let o2={pick(k, "Ada: A has more parts", "Ada: A has bigger parts", "Yes: 3 parts and 4 parts are close")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x35 {
+    row maps at=canvas(1, 1) space=2 align=end {
+      column ma space=0 align=start {
+        text la "Map A"
+        mapscale a km=(4 * sa) step=sa
+      }
+      column mb space=0 align=start {
+        text lb "Map B"
+        mapscale b km=(4 * sb) step=sb
+      }
+    }
+    text ask "Two maps show the same road. On map A it is {pa} parts of the bar, and a part is {sa} km. On map B it is {pb} parts, and a part is {sb} km. {pick(k, \"Ben says map B shows a longer road. Ada says both say the same. Who is right?\", \"Ben says map B shows a longer road. Ada says both say the same. Who is right?\", \"Ada says both maps say the same distance. Is she right?\")}" narrate width=34 below=maps gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1 and k <= 1) point=maps {
+      say "A road that looks longer on the paper is not longer on the ground if its parts are worth less. Work out parts times kilometres for each map."
+    }
+    when (pick == o2 and k <= 1) point=maps {
+      say "More parts, or bigger parts, is only half the sum. Multiply the parts by what a part is worth on each map."
+    }
+    when (pick != right and k == 2) point=maps {
+      say "Work each map out: parts times kilometres. The two answers are not the same, so one of the maps is drawn wrong."
+    }
+  }
+  hint "For each map, multiply the parts by the kilometres in one part."
+  hint "Compare the two answers, not the two drawings."
+}

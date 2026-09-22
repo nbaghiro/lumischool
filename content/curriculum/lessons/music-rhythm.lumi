@@ -1,0 +1,53 @@
+lesson music-rhythm v=1 format=teach grade=2 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Counting a bar"
+  goal "Count the beats in a written bar, clap it, and work out the note that finishes it."
+
+  look {
+    scene 26x9 {
+      staff bar notes=[1, 1, 0.5, 0.5, 1] at=canvas(1, 1)
+      text ask "One, two, three and four." below=bar gap=1
+    }
+    say """
+      A filled note head is one beat, an open one is two, and a note with a little flag is half a
+      beat. Clap the bar while you count.
+      """
+  }
+  do {
+    level easy {
+      worked music.count-beats a=2 b=2 level=medium
+    }
+    practice music.count-beats count=3 seed=2
+    show music.clap-bar
+    practice music.which-bar-four count=1 seed=3
+    show music.missing-beat a=1 b=1
+    practice music.missing-in-three count=1 seed=4
+    practice music.quavers-to-fill count=1 hard-count=0 seed=2
+    level hard {
+      practice music.too-many-beats count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show music.too-many-beats p=4 easy-p=1
+  }
+  try stars=3 {
+    show music.all-the-bars t=4 d=0 easy-t=3 hard-d=1
+  }
+  remember {
+    say "Count as you clap: one beat, two beats, or half a beat for a flag. The top number says how many beats a bar holds."
+  }
+
+  grown-ups """
+    The page carries the notation and the counting, not the sound. Clap or tap each bar together
+    before the child writes, because the hearing has to come from the room. The clapped question is
+    judged on the music page, which fits the child's own speed and checks each clap against where
+    the notes fall; on paper, you are the judge. In the two-star question, ask how many beats are
+    in the bar before asking which note to take out. The three-star question is a list: every bar
+    that starts with a crotchet, then every bar that starts with a minim.
+    """
+  level easy {
+    grown-ups "At this level a bar of six beats is counted once in the teacher's pen before bars of four or five, the bar to clap is as written, the right bar is as written, the missing beats are in bars of four with whole beats, two quavers fill the rest, the two-star's bar has one crotchet too many, and the three-star's bars have three beats."
+  }
+  level hard {
+    grown-ups "At this level the bars to count have five or six beats, the bar to clap is as written, the right bar is as written, the missing beats are in bars of three, some with half beats, the quavers make way for a second bar with too many beats, the two-star is as written, and the three-star's bars use dotted minims as well."
+  }
+}

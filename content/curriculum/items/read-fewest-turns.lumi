@@ -1,0 +1,32 @@
+# The three-star: the route between two squares in the fewest turns, going along the grid.
+# Two squares in the same row or column need no turn; any other pair needs one.
+item reading.fewest-turns v=1 stars=3 skills=[geography.grid-references, reasoning.plan] {
+  title "The fewest turns"
+  difficulty (if c == tc or r == tr then 0 else 1)
+  let c=1..5 r=1..4 tc=1..5 tr=1..4
+  where (c != tc or r != tr)
+  where (c + r + tc + tr < 15)
+  let letter={if c == 1 then "A" else if c == 2 then "B" else if c == 3 then "C" else if c == 4 then "D" else "E"}
+  let tletter={if tc == 1 then "A" else if tc == 2 then "B" else if tc == 3 then "C" else if tc == 4 then "D" else "E"}
+  level easy {
+    let c=1..2 r=1..2 tc=3..4 tr=1..2
+  }
+  level hard {
+    let c=1..1 r=1..1 tc=4..5 tr=3..4
+  }
+
+  scene 34x22 {
+    gridmap map cols=5 rows=4 col=c row=r thing=hut at=canvas(1, 1)
+    text ask "Pip walks from the hut in {letter}{r} to the tree in {tletter}{tr}, only along the rows and columns of the grid. Write her route as directions on paper, then say: what is the fewest turns she needs?" narrate width=32 below=map gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if c == tc or r == tr then 0 else 1)
+  feedback {
+    when (answer == 2) point=map {
+      say "Go all the way along one row first, then up or down the column: that is one turn, not two."
+    }
+  }
+  hint "Are the two squares in the same row or the same column? Then no turn is needed."
+  hint "Otherwise go along the row to the right column, then turn once and go down or up it."
+}

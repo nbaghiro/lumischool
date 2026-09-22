@@ -1,0 +1,23 @@
+# What the grains look like, read off the lens: cubes, slanted blocks, bits of rock, long grains or
+# dust. Every version needs a different word, so the choice cannot be learned.
+item chem.lens-shape v=1 skills=[chemistry.materials] {
+  title "What do the grains look like?"
+  difficulty (if g == "salt" or g == "sugar" then 1 else 0)
+  let g={"salt", "sugar", "sand", "flour", "rice"}
+  level easy {
+    let g={"sand", "flour", "rice"}
+  }
+  level hard {
+    let g={"salt", "sugar"}  # cubes against slanted blocks
+  }
+
+  scene 29x23 {
+    magnifier m kind=g count=5 at=canvas(1, 0)
+    text ask "What do the grains of {g} look like close up?" width=12 right-of=m gap=0
+    choice pick options=["cubes", "slanted blocks", "rounded bits of rock", "fine dust", "long grains"] stack=column below=ask gap=0
+  }
+
+  answer pick=(if g == "salt" then "cubes" else if g == "sugar" then "slanted blocks" else if g == "sand" then "rounded bits of rock" else if g == "flour" then "fine dust" else "long grains")
+  hint "Look inside the circle, not at the heap on the saucer."
+  hint "Are the grains square, long, lumpy, or too small to see one by one?"
+}

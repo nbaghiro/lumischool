@@ -1,0 +1,17 @@
+# The audit's raise for letter-order: one line is meant for a different reader and has to be left
+# out, and the asking line points back to the news (them, it), so the order is fixed by the words
+# and not only by where a letter starts and ends. The lines are in a different order in each version.
+item writing.letter-leave-out v=1 skills=[writing.letters, writing.audience] {
+  title "Which line is not for this letter?"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+
+  scene 37x21 {
+    text ask "Number the lines of the letter 1 to 4. One line is for somebody else: write 0 by it." width=35 at=canvas(1, 1)
+    sequence s items=["{if k == 0 then \"Please come and see them tonight, because they will all be lit.\" else if k == 1 then \"Dear Hedgehog,\" else \"Our boat has a new red sail for the race on Sunday.\"}", "{if k == 0 then \"Mr Price, my homework will be late.\" else if k == 1 then \"Gran has made a big apple cake for tea.\" else \"Please fly over and watch it, because you can see the whole bay.\"}", "{if k == 0 then \"Dear Owl,\" else if k == 1 then \"From Ada\" else \"Class 4, please line up at the door.\"}", "{if k == 0 then \"Love from Sam\" else if k == 1 then \"Dog, please stop eating my shoe.\" else \"Best wishes, Leo\"}", "{if k == 0 then \"We found some old lanterns at the top of the island.\" else if k == 1 then \"Please come and share it at four, because there is plenty.\" else \"Dear Gull,\"}"] blanks=[a, b, c, d, e] below=ask gap=1
+  }
+
+  answer a=(if k == 0 then 3 else if k == 1 then 1 else 2) b=(if k == 0 then 0 else if k == 1 then 2 else 3) c=(if k == 0 then 1 else if k == 1 then 4 else 0) d=(if k == 0 then 4 else if k == 1 then 0 else 4) e=(if k == 0 then 2 else if k == 1 then 3 else 1)
+  hint "Which line would make no sense to the reader of this letter?"
+  hint "The asking line says them or it. What does that word point back to?"
+}

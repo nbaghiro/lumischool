@@ -1,0 +1,25 @@
+item angles.measure v=1 skills=[angles.measuring] {
+  title "Reading a protractor"
+  difficulty ((if d > 90 then 2 else 0) + (if d % 30 != 0 then 1 else 0))
+  let d={30, 45, 60, 120, 135, 150}
+  level easy {
+    let d={30, 60}
+  }
+  level hard {
+    let d={135, 150}  # the outer scale, and a half mark
+  }
+
+  scene 34x18 {
+    protractor tool deg=d arms=true at=canvas(1, 1)
+    text ask "What does the protractor read, in degrees?" width=28 below=tool gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == 180 - d) point=tool {
+      say "There are two scales on a protractor. Read the one that starts at the arm on the line."
+    }
+  }
+  hint "Follow the arm to the scale that counts up from zero on that side."
+}

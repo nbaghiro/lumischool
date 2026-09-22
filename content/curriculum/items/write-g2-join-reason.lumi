@@ -1,0 +1,29 @@
+# The joining word, then the reason for it: the second pick is the child saying what the word does,
+# which is the audit's raise for and-or-but.
+item writing.join-reason v=1 stars=2 skills=[writing.joining-sentences, reasoning.explain] {
+  title "The word and the reason"
+  difficulty (if k == 2 or k == 5 then 2 else if k == 1 or k == 4 then 1 else 0)
+  let k=0..5
+  let first={if k == 0 then "Kim fed the fish" else if k == 1 then "The rocket was ready" else if k == 2 then "Sam got wet" else if k == 3 then "Gran grows beans" else if k == 4 then "The treehouse is high" else "The shop was busy"}
+  let second={if k == 0 then "she cleaned the tank." else if k == 1 then "it would not start." else if k == 2 then "it was raining." else if k == 3 then "she grows peas." else if k == 4 then "the ladder is safe." else "it was market day."}
+  let key={if k == 0 or k == 3 then "and" else if k == 1 or k == 4 then "but" else "because"}
+  let other={if k == 2 or k == 5 then "but" else "because"}
+  let why={if key == "and" then "adds more" else if key == "but" then "turns it round" else "gives a reason"}
+
+  scene 36x17 {
+    sentence strip before="{first}" blank=5 after="{second}" at=canvas(1, 1)
+    text ask "Which word fits?" narrate below=strip gap=1
+    choice word options=["{if k % 2 == 0 then key else other}", "{if k % 2 == 0 then other else key}"] right-of=ask gap=2
+    text ask2 "What does that word do here?" narrate below=ask gap=2
+    choice reason options=["adds more", "turns it round", "gives a reason"] below=ask2 gap=1
+  }
+
+  answer word=key reason=why
+  feedback {
+    when (word == key and reason != why) point=strip {
+      say "The word is right. Now say what it does: does the second half add, turn round, or say why?"
+    }
+  }
+  hint "Read the sentence with each word. Which one makes sense?"
+  hint "Does the second half add to the first, go against it, or say why the first half happened?"
+}

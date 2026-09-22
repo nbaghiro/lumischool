@@ -1,0 +1,22 @@
+# Every point that fits a rule: the pairs that add to s lie on a slanting line, and the ones with a
+# zero in them are the ones children miss.
+item coords.points-on-a-line v=1 stars=3 skills=[position.coordinates, reasoning.all-the-ways] {
+  title "Points that add up"
+  difficulty ((if s > 6 then 3 else 0) + s)
+  let s=4..8
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=(if s <= 6 then s else 6) py=(if s <= 6 then 0 else s - 6) mark="R" at=canvas(1, 0)
+    text ask "R is at ({if s <= 6 then s else 6}, {if s <= 6 then 0 else s - 6}), and its two numbers add up to {s}. How many points on this grid, with whole numbers from 0 to 6, have numbers that add up to {s}?" narrate width=15 right-of=grid gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if s <= 6 then s + 1 else 13 - s)
+  feedback {
+    when (s <= 6 and answer == s - 1) point=grid {
+      say "Did you count the points with a 0 in them, on the edges of the grid?"
+    }
+  }
+  hint "Start with the across number 0. What must the up number be?"
+  hint "Now try across 1, then 2. Mark each point. What do you notice about where they are?"
+}

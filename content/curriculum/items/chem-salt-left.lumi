@@ -1,0 +1,21 @@
+item chem.salt-left v=2 skills=[chemistry.heating, chemistry.mass] {
+  title "How much salt is left?"
+  difficulty g
+  let g={10, 20, 30, 40} v={200, 300}
+
+  scene 31x17 {
+    text ask "{g} grams of salt were stirred into the water. All the water boils away. How many grams of salt are left?" width=30 at=canvas(1, 0)
+    beaker glass max=400 step=100 level=v solid=0 rod=true unit=ml below=ask gap=0
+    flame burner height=4 on=1 stand=false right-of=glass gap=1
+    number-input answer right-of=burner gap=1
+  }
+
+  answer g
+  feedback {
+    when (answer == 0) point=glass {
+      say "The water goes, but the salt cannot. It is left behind as a crust."
+    }
+  }
+  hint "Where does the water go when it boils away? Can the salt go with it?"
+  hint "So how much of the salt that went in is still in the beaker?"
+}

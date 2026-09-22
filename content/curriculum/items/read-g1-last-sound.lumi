@@ -1,0 +1,25 @@
+# The first sound turned round: the child says the word to the end and writes its last letter.
+# None of the pictures is the cat, hen, duck or kite that the first-sound item already uses.
+item reading.last-sound v=1 skills=[reading.phonics] {
+  title "The last sound"
+  difficulty (if w == "rocket" or w == "pencil" then 2 else if w == "owl" then 1 else 0)
+  let w={"cup", "sun", "rocket", "pencil", "owl"}
+  level easy {
+    let w={"cup", "sun", "owl"}
+  }
+  level hard {
+    let w={"rocket", "pencil", "owl"}  # two beats to say before the last sound
+  }
+
+  scene 26x13 {
+    art pic asset="{w}" at=canvas(1, 1)
+    column q right-of=pic gap=2 space=1 align=start {
+      text ask "Say the word. Write the letter it ends with." width=12
+      word-input box options=["{if w == \"cup\" then \"p\" else if w == \"sun\" then \"n\" else if w == \"pencil\" then \"l\" else if w == \"owl\" then \"l\" else \"t\"}"] letters=1
+    }
+  }
+
+  answer box=(if w == "cup" then "p" else if w == "sun" then "n" else if w == "pencil" then "l" else if w == "owl" then "l" else "t")
+  hint "Say the word slowly, all the way to the end."
+  hint "What sound is left in your mouth when you stop?"
+}

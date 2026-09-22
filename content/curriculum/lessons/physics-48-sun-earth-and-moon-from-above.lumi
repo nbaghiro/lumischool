@@ -1,0 +1,62 @@
+# The sun, the Earth and the moon seen from above the north pole: sunlight from the left, half of
+# everything lit and half dark, and the moon's shape decided by where it stands on its ring rather
+# than by anything moving in front of it.
+lesson physics-sun-earth-and-moon-from-above v=1 format=teach grade=4 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "The sun, the Earth and the moon from above"
+  goal "Read a drawing of the Earth and the moon from above the pole to say which part is lit, and work out the moon's shape from where it stands."
+
+  look {
+    scene 19x16 {
+      orbit sky moon=2 places=1 arrow=1 person=1 time=0 at=canvas(1, 0)
+    }
+    say """
+      Stand above the north pole and look down. The sunlight comes from one side, so half the Earth is
+      in daylight and half is in night, and the turning Earth carries you from noon into dusk, night
+      and dawn. The moon goes round the Earth in twenty eight days, and half of it is lit too. What
+      changes is how much of that lit half we can see from where we are: none of it when the moon is
+      between us and the sun, all of it when the moon is on the far side.
+      """
+  }
+  do {
+    practice physics.orbit-daylight count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked physics.orbit-which-phase k=4 level=medium
+    }
+    practice physics.orbit-which-phase count=2 seed=3 easy-seed=1 hard-seed=2
+    practice physics.orbit-place-for-phase count=2 seed=1 easy-seed=1 hard-seed=1
+    practice physics.orbit-days-between count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.orbit-daylight t=3
+    }
+  }
+  story {
+    show physics.clouds-moon-watch v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show physics.orbit-overhead t=2 easy-t=0 hard-t=1
+  }
+  try stars=3 {
+    show physics.orbit-order-phases v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Half the moon is always lit. Its shape is how much of that lit half we can see from where the Earth is."
+  }
+
+  grown-ups """
+    The wrong idea this lesson is for is that the moon's shape is the Earth's shadow falling on it. The
+    drawing from above makes the real reason visible: the moon's lit half always faces the sun, and
+    what changes through the month is our view of it. Watch for a child who reads the picture as
+    though they were standing outside it rather than on the Earth in it; the two-star question is the
+    test, since it asks where the moon must be to be overhead at a given hour, and a child who has the
+    idea can say from it why a full moon is never overhead at noon. The three-star question wants the
+    month put in order, and growing and shrinking are the words that settle the shapes that happen
+    twice. Off the page, look for the moon in the afternoon sky, which surprises most people, and keep
+    a shape drawn on a calendar for a fortnight.
+    """
+  level easy {
+    grown-ups "At this level the child on the Earth stands at noon or at midnight, the full moon is worked once in the teacher's pen before the two plainest shapes, the places to name are the new moon and the full moon, the days asked are one step of seven, the story is seven nights, the two-star hour is noon, and the three-star's five shapes hold both ends of the month."
+  }
+  level hard {
+    grown-ups "At this level the child stands at dusk or at dawn, on the line between light and dark, the shapes to name are the crescents and the gibbous ones that happen twice in a month, the places to name are the growing and shrinking gibbous, the days asked are three steps of twenty one, the core carries a second hour to read, the story is fourteen nights, the two-star hour is dusk, and the three-star's five shapes are the middle of the month."
+  }
+}

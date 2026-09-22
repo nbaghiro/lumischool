@@ -1,0 +1,25 @@
+# The fewest blocks from two sizes of step: the rabbit's journey is made of right 2 and right 3, and
+# the shortest program uses as many threes as it can while the rest still comes out even.
+item coding.stage-fewest-blocks v=1 stars=3 skills=[coding.events, reasoning.search] {
+  title "The fewest move blocks"
+  difficulty e
+  let e=4..9
+
+  scene 34x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocktray t code=["right 2", "right 3"] per=1
+      stage st cols=9 col=1 code=[] upto=0
+    }
+    text ask "The rabbit starts on square 1. Under the flag you can use right 2 and right 3 blocks, as many as you like. What is the fewest blocks that end on square {e}?" width=32 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer ((e - 1 + 2) // 3)
+  feedback {
+    when (answer == (e - 1) // 2 and (e - 1) // 2 != (e + 1) // 3) point=t {
+      say "That works, but some right 3 blocks would do it with fewer."
+    }
+  }
+  hint "How many squares does the rabbit have to go? Can three-steps do most of it?"
+  hint "Try using right 3 as much as you can, then see what is left over."
+}

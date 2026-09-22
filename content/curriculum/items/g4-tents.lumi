@@ -1,0 +1,34 @@
+# The remainder is the answer itself here: how many are in the one tent that is not full.
+item division.last-tent v=1 skills=[division.remainders] {
+  title "The tent that is not full"
+  difficulty (k + n / 10)
+  let k={4, 6, 8} n=30..70
+  where (n % k != 0)
+  level easy {
+    let k={4} n=30..49
+  }
+  level hard {
+    let k={8} n=50..70
+  }
+
+  scene 31x15 {
+    row camp at=canvas(1, 1) space=1 align=end {
+      tent t1 lit=1
+      tent t2 lit=0
+    }
+    text ask "Each tent sleeps {k} campers. {n} campers fill the tents one at a time. How many are in the last tent, which is not full?" narrate width=29 below=camp gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n % k)
+  feedback {
+    when (answer == n // k and n // k != n % k) point=camp {
+      say "That is how many tents are full. The question asks about the campers in the last one."
+    }
+    when (answer == k - n % k and 2 * (n % k) != k) point=camp {
+      say "That is how many more would fit. How many are in it?"
+    }
+  }
+  hint "How many full tents can {n} campers make?"
+  hint "How many campers are left after the full tents?"
+}

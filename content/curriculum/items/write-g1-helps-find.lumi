@@ -1,0 +1,25 @@
+# Which sentence tells a friend which card is B: "It is under the bed" fits two cards, because it
+# does not say who. The reader's point of view is the reason.
+item writing.helps-find v=1 stars=2 skills=[writing.sentences, reasoning.reader] {
+  title "Which sentence helps a friend?"
+  difficulty (if f == 1 then 1 else 0)
+  let a=0..2 t=0..1 f=0..1 q=0..2
+  let who={if a == 0 then "dog" else if a == 1 then "cat" else "pig"}
+  let other={if a == 0 then "fox" else if a == 1 then "rabbit" else "hen"}
+  let thing={if t == 0 then "bed" else "table"}
+  let wa={if f == 0 then "on" else "under"}
+  let wb={if f == 0 then "under" else "on"}
+  let it={if a == 0 and t == 0 and f == 0 then "It is under the bed." else if a == 0 and t == 0 and f == 1 then "It is on the bed." else if a == 0 and t == 1 and f == 0 then "It is under the table." else if a == 0 and t == 1 and f == 1 then "It is on the table." else if a == 1 and t == 0 and f == 0 then "It is under the bed." else if a == 1 and t == 0 and f == 1 then "It is on the bed." else if a == 1 and t == 1 and f == 0 then "It is under the table." else if a == 1 and t == 1 and f == 1 then "It is on the table." else if a == 2 and t == 0 and f == 0 then "It is under the bed." else if a == 2 and t == 0 and f == 1 then "It is on the bed." else if a == 2 and t == 1 and f == 0 then "It is under the table." else "It is on the table."}
+  let wrong={if a == 0 and t == 0 and f == 0 then "The dog is on the bed." else if a == 0 and t == 0 and f == 1 then "The dog is under the bed." else if a == 0 and t == 1 and f == 0 then "The dog is on the table." else if a == 0 and t == 1 and f == 1 then "The dog is under the table." else if a == 1 and t == 0 and f == 0 then "The cat is on the bed." else if a == 1 and t == 0 and f == 1 then "The cat is under the bed." else if a == 1 and t == 1 and f == 0 then "The cat is on the table." else if a == 1 and t == 1 and f == 1 then "The cat is under the table." else if a == 2 and t == 0 and f == 0 then "The pig is on the bed." else if a == 2 and t == 0 and f == 1 then "The pig is under the bed." else if a == 2 and t == 1 and f == 0 then "The pig is on the table." else "The pig is under the table."}
+  let right={if a == 0 and t == 0 and f == 0 then "The dog is under the bed." else if a == 0 and t == 0 and f == 1 then "The dog is on the bed." else if a == 0 and t == 1 and f == 0 then "The dog is under the table." else if a == 0 and t == 1 and f == 1 then "The dog is on the table." else if a == 1 and t == 0 and f == 0 then "The cat is under the bed." else if a == 1 and t == 0 and f == 1 then "The cat is on the bed." else if a == 1 and t == 1 and f == 0 then "The cat is under the table." else if a == 1 and t == 1 and f == 1 then "The cat is on the table." else if a == 2 and t == 0 and f == 0 then "The pig is under the bed." else if a == 2 and t == 0 and f == 1 then "The pig is on the bed." else if a == 2 and t == 1 and f == 0 then "The pig is under the table." else "The pig is on the table."}
+
+  scene 32x21 {
+    picturecards cards who=["{who}", "{who}", "{other}"] where=["{wa}", "{wb}", "{wb}"] thing=["{thing}", "{thing}", "{thing}"] letters=true at=canvas(1, 0)
+    text ask "Which sentence tells a friend which card is B?" narrate width=30 below=cards gap=1
+    choice pick options=["{if q == 0 then it else if q == 1 then wrong else right}", "{if q == 0 then wrong else if q == 1 then right else it}", "{if q == 0 then right else if q == 1 then it else wrong}"] stack=column below=ask gap=0
+  }
+
+  answer pick=right
+  hint "Check each sentence against all three cards. How many cards does it fit?"
+  hint "A sentence that does not say who could fit more than one card."
+}

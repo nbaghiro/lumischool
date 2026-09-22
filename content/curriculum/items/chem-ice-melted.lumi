@@ -1,0 +1,22 @@
+# The way in for melting: read the first saucer with no ice left.
+item chem.ice-melted v=1 skills=[chemistry.states] {
+  title "When had it all melted?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1}  # a saucer every five minutes
+  }
+
+  scene 30x11 {
+    text ask "After how many minutes had all the ice melted?" width=24 at=canvas(1, 0)
+    icemelt ice every=(if k == 1 then 5 else 10) count=(if k == 2 then 3 else 5) place=(if k == 0 then 1 else 2) below=ask gap=0
+    number-input answer right-of=ask gap=1
+  }
+
+  check chem.change of=ice answer=melted
+  hint "Look along the saucers. Which is the first one with no ice cube on it?"
+  hint "How many minutes are written under that saucer?"
+}

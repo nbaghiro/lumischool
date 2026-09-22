@@ -1,0 +1,27 @@
+item data.tally-to-twenty v=1 skills=[data.tally, bonds-to-20] {
+  title "How many more to twenty"
+  difficulty (20 - n)
+  let n=7..18
+  where (n != 10)
+  level easy {
+    let n=16..18
+  }
+  level hard {
+    let n=7..9
+  }
+
+  scene 26x12 {
+    tally t count=n at=canvas(1, 1)
+    text ask "The tally shows the birds that came today. How many more would make 20?" narrate width=24 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (20 - n)
+  feedback {
+    when (answer == n) point=t {
+      say "That is how many came. How many more to reach 20?"
+    }
+  }
+  hint "Count the tally in fives."
+  hint "Then count on from there to 20."
+}

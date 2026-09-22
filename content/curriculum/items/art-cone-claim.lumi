@@ -1,0 +1,33 @@
+# The two-star reason: Ben names the wrong shape inside a thing, and the reason the right one is
+# right. Wrong reasons pick the shape from the colour or the size.
+item art.cone-claim v=1 stars=2 skills=[art.shape, art.looking, reasoning.claims] {
+  title "Ben's shape"
+  difficulty k
+  let k=0..1 r=0..2
+  let t={pick(k, "apple", "cup")}
+  let claim={pick(k, "the apple is a cone, because it has a point at the top", "the cup is a box, because it stands on the table")}
+  let right={pick(k, "No: it is round all over, so a circle", "No: it is round and straight-sided, so a tube")}
+  let w1={pick(k, "Yes: the stalk makes the point", "Yes: anything that stands is a box")}
+  let w2={pick(k, "No: it is red, so a circle", "No: it is small, so a circle")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x21 {
+    stilllife pic light="left" things=["{t}"] lamp=false at=canvas(1, 1)
+    text ask "Ben says {claim}. Is he right?" narrate width=16 right-of=pic gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=pic gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pic {
+      say "The shape inside a thing is about its edges, not its colour, its size or what it does. Squint and look at the outline."
+    }
+  }
+  hint "Squint at the {t}. Forget the stalk and the handle: what is the big shape of it?"
+  hint "A cone comes to a point; a box has corners; a circle is round all over; a tube is round with straight sides."
+}

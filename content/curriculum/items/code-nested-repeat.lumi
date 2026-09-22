@@ -1,0 +1,33 @@
+item coding.nested-repeat v=2 skills=[coding.repetition] stars=2 {
+  title "A repeat inside a repeat"
+  difficulty (o * i)
+  let o=2..3 i=2..3
+  # two twos is also two plus two, which would hide the adding mistake
+  where (o * i != o + i)
+  level easy {
+    where (o * i == 6)
+  }
+  level hard {
+    let o=3..4 i={3}
+  }
+
+  scene 26x13 {
+    row top at=canvas(1, 0) space=2 align=start {
+      program p code=["repeat {o}", "  repeat {i}", "    right 1", "  down 1"]
+      grid a rows=o cols=i shade=(o * i) color=sky cell=2
+    }
+    text ask "How many times does line 3 run?" width=16 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="ran(3)"
+  feedback {
+    when (answer == i) point=p {
+      say "That is one time round the outer repeat. The whole of it happens {o} times."
+    }
+    when (answer == o + i) point=p {
+      say "The inner repeat goes round {i} times every time the outer one goes round, so the counts multiply."
+    }
+  }
+  hint "The inner repeat goes {i} times, and the whole of it happens {o} times."
+}

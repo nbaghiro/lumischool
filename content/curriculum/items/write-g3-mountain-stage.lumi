@@ -1,0 +1,22 @@
+# The way in: which part of the mountain a single note belongs to.
+item writing.mountain-stage v=1 skills=[writing.planning, writing.story-structure] {
+  title "Where on the mountain?"
+  difficulty (if k == 4 then 2 else if k == 1 or k == 5 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 2, 3}  # the problem, the opening, the ending
+  }
+  level hard {
+    let k={1, 4, 5}  # the fixing cards, and the build-up between the opening and the problem
+  }
+
+  scene 34x11 {
+    caption card text="{if k == 0 then \"The boat has a hole in it\" else if k == 1 then \"Kit patches it with her coat\" else if k == 2 then \"Kit lives by the sea\" else if k == 3 then \"They sail home as the sun sets\" else if k == 4 then \"Kit rows further out to sea\" else \"A seal pushes the boat to shore\"}" width=26 at=canvas(1, 1)
+    text ask "Which part of a story mountain is this note?" width=32 below=card gap=1
+    choice pick options=["{if k == 1 or k == 3 or k == 4 then \"Build-up\" else \"Opening\"}", "{if k == 1 then \"Fixing it\" else \"Problem\"}", "{if k == 0 or k == 2 or k == 5 then \"Fixing it\" else \"Ending\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Problem" else if k == 1 or k == 5 then "Fixing it" else if k == 2 then "Opening" else if k == 3 then "Ending" else "Build-up")
+  hint "Is something going wrong, being put right, starting, or finishing?"
+  hint "Climb the mountain in your head: opening, build-up, problem, fixing it, ending."
+}

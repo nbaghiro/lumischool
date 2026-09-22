@@ -1,0 +1,31 @@
+# The story: every 250 ml of air keeps the candle alight five seconds, so a jar's seconds come
+# from its air, and a target time asks for the air.
+item chem.air-for-seconds v=1 stars=1 skills=[chemistry.burning, multiplication.groups] {
+  title "Air for the flame"
+  difficulty (v / 500 + w)
+  let v={500, 750, 1000, 1500} s={20, 40, 60} w=0..1
+  level easy {
+    let v={500, 1000} w=0..0
+  }
+  level hard {
+    let v={750, 1500} w=1..1
+  }
+
+  scene 34x18 {
+    candle c start=10 burnt=3 lit=1 jar=1 at=canvas(0, 0)
+    text ask "In the hut Leo works out that every 250 ml of air keeps his candle alight for 5 seconds. {if w == 0 then \"How many seconds will it burn under a jar of \" else \"How much air does it need to burn for \"}{if w == 0 then v else s}{if w == 0 then \" ml?\" else \" seconds, in millilitres?\"}" narrate width=20 right-of=c gap=1
+    number-input answer below=c gap=1
+  }
+
+  answer (if w == 0 then v / 250 * 5 else s / 5 * 250)
+  feedback {
+    when (w == 0 and answer == v / 250) point=c {
+      say "That is how many lots of 250 ml the jar holds. Each lot is 5 seconds."
+    }
+    when (w == 1 and answer == s / 5) point=c {
+      say "That is how many lots of 5 seconds. Each lot needs 250 ml of air."
+    }
+  }
+  hint "{if w == 0 then \"How many lots of 250 ml are in the jar? Each lot is worth 5 seconds.\" else \"How many lots of 5 seconds is that? Each lot needs 250 ml.\"}"
+  hint "{if w == 0 then \"Lots of 250, then times 5.\" else \"Lots of 5, then times 250.\"}"
+}

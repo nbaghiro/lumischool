@@ -1,0 +1,50 @@
+lesson coding-doing-it-again v=3 format=teach grade=2 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "Doing it again: repeat"
+  goal "Read a repeat, work out how far the robot goes altogether, and use a repeat to make a program fit."
+
+  look {
+    scene 22x11 {
+      row both at=canvas(1, 0) space=2 align=start {
+        blocks long code=["right 2", "right 2", "right 2"]
+        blocks short code=["repeat 3", "  right 2"]
+      }
+      note n "Both programs move the robot 6 squares." width=20 below=both gap=1
+    }
+    say """
+      Writing the same block three times works, but a repeat says it once and says how many times
+      to do it. The two programs do exactly the same thing, and the second is easier to change: to
+      go four times, you change one number.
+      """
+  }
+  do {
+    practice coding.repeat-total count=1 seed=2 hard-seed=7
+    practice coding.repeat-then count=2 seed=6 easy-seed=14 hard-seed=11
+    practice coding.repeat-count-flag count=2 seed=4
+    practice coding.repeat-body count=2 seed=5 easy-seed=1
+    show coding.build-repeat k=0 hard-k=1
+  }
+  try stars=2 {
+    show coding.repeat-compare a=3 b=4 c=3 easy-a=2 easy-c=2 hard-a=4 hard-b=5
+  }
+  try stars=3 {
+    show coding.build-steps-then k=1 easy-k=0
+  }
+  remember {
+    say "A repeat runs the blocks inside it again and again. Multiply to find the total."
+  }
+
+  grown-ups """
+    A repeat is multiplication wearing a different hat, and it is worth saying so: three lots of two
+    squares is the same six squares the times tables give. In the last question the slots are too
+    few for the long way, which is a reason to want a repeat rather than a rule about using one.
+    In the two-star question, ask how far one time round program A really moves the robot before
+    working out either total: three forward and one back is two. In the three-star build, the child
+    has to decide which blocks go inside the repeat and which go before or after it.
+    """
+  level easy {
+    grown-ups "At this level the repeats come to six or nine squares, the block after the repeat goes on to the right, the flag is four or six squares from the start, the two programs compared end two squares apart, and the last build has its repeat first and its straight part after."
+  }
+  level hard {
+    grown-ups "At this level the repeats reach twelve squares, the block after the repeat goes back to the left, the flag is eight to ten squares from the start, the staircase to build has four steps, and the two programs compared end on the same square, which is the answer a child does not expect."
+  }
+}

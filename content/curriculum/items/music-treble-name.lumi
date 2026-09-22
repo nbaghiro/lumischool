@@ -1,0 +1,30 @@
+# Naming a note anywhere on the treble staff from the nearest landmark: the lines E G B D F and
+# the spaces F A C E, with middle C and treble G marked.
+item music.treble-name v=1 skills=[music.staff] {
+  title "Name the note"
+  difficulty (if i <= 2 then 0 else if i <= 5 then 1 else 2)
+  let i=0..8
+  let n={pick(i, "E4", "F4", "A4", "B4", "C5", "D5", "E5", "F5", "G5")}
+  let r={pick(i, "E", "F", "A", "B", "C", "D", "E", "F", "G")}
+  level easy {
+    let i=0..2
+  }
+  level hard {
+    let i=4..7
+  }
+
+  scene 32x21 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=true at=canvas(1, 1)
+    text ask "Middle C and treble G are marked. Which letter is the ringed note?" width=14 right-of=gs gap=1
+    choice pick options=["A", "B", "C", "D", "E", "F", "G"] below=gs gap=1
+  }
+
+  answer pick=r
+  feedback {
+    when (pick != r) point=gs {
+      say "Count from treble G on the second line, one letter for each line and space, up or down to the ringed note."
+    }
+  }
+  hint "Which landmark is nearer, middle C or treble G? Count lines and spaces from it, one letter each."
+  hint "Going up from G: A in the space, B on the line, C, D, E, F. Going down: F, E, D, then middle C."
+}

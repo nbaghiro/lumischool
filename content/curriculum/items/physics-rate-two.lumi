@@ -1,0 +1,22 @@
+# Two things changing at different rates meet when the faster one has made up the gap: the gap
+# shrinks by the difference of the rates every hour. The rates are five degrees an hour apart, so the
+# right-hand reading always sits on a mark the thermometer draws.
+item physics.rate-two v=1 skills=[physics.rate, reasoning.model] stars=3 {
+  title "When will they match?"
+  difficulty (s + h)
+  let a={5, 10} s={1, 2, 3} h={2, 3, 4}
+  let r={s + 5}
+
+  scene 35x14 {
+    row pair at=canvas(1, 0) space=2 align=start {
+      thermometer one from=0 to=40 step=10 value=a unit="C"
+      thermometer two from=0 to=40 step=10 value=(a + (r - s) * h) unit="C"
+    }
+    text ask "The left one warms {r} degrees an hour and the right one {s}. After how many hours will they read the same?" narrate width=12 right-of=pair gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer h
+  hint "How far apart are they now?"
+  hint "By how much does the gap shrink every hour?"
+}

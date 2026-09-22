@@ -1,0 +1,20 @@
+item physics.magnet-picks v=1 skills=[physics.magnets] {
+  title "What will the magnet pick up?"
+  difficulty ((if p == "coin" then 1 else 0) + (if q == "foil" then 1 else 0))
+  let p={"nail", "coin"} q={"foil", "clip"} r={"stick", "nail"} s={"clip", "marble"}
+  level easy {
+    let p={"nail"} q={"clip"}
+  }
+  level hard {
+    let p={"coin"} q={"foil"}
+  }
+
+  scene 33x6 {
+    things t things=["{p}", "{q}", "{r}", "{s}"] at=canvas(1, 0)
+    text ask "How many of these will a magnet pick up?" width=15 right-of=t gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check physics.things of=t answer=count(magnetic)
+  hint "Which of these are made of iron or steel?"
+}

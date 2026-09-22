@@ -1,0 +1,21 @@
+# Sam's answer is a real cell of the timetable, just the wrong one. Naming which wrong cell he
+# read is the reasoning: the wrong column, the wrong row, or the start of the journey.
+item reading.timetable-mistake v=1 stars=2 skills=[reading.text-features, reading.find-the-error] {
+  title "What did Sam read?"
+  difficulty (if k == 1 then 2 else if k == 2 then 1 else 0)
+  let s={0, 5, 10} l1={10, 15} l2={12, 15, 20} l3={10, 15} k=0..2
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Sam was asked when Bus 2 gets to the Park. He said {(if k == 0 then 480 + s + l1 else if k == 1 then 570 + s + l1 + l2 else 570 + s) // 60}:{if (if k == 0 then 480 + s + l1 else if k == 1 then 570 + s + l1 + l2 else 570 + s) % 60 < 10 then \"0\" else \"\"}{(if k == 0 then 480 + s + l1 else if k == 1 then 570 + s + l1 + l2 else 570 + s) % 60}. What did he read by mistake?" width=31
+      row r space=1 align=start {
+        table t cols=3 head=["Stop", "Bus 1", "Bus 2"] cells=["Market", "{(480 + s + 0) // 60}:{if (480 + s + 0) % 60 < 10 then \"0\" else \"\"}{(480 + s + 0) % 60}", "{(570 + s + 0) // 60}:{if (570 + s + 0) % 60 < 10 then \"0\" else \"\"}{(570 + s + 0) % 60}", "Park", "{(480 + s + l1) // 60}:{if (480 + s + l1) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1) % 60}", "{(570 + s + l1) // 60}:{if (570 + s + l1) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1) % 60}", "Library", "{(480 + s + l1 + l2) // 60}:{if (480 + s + l1 + l2) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1 + l2) % 60}", "{(570 + s + l1 + l2) // 60}:{if (570 + s + l1 + l2) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1 + l2) % 60}", "School", "{(480 + s + l1 + l2 + l3) // 60}:{if (480 + s + l1 + l2 + l3) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1 + l2 + l3) % 60}", "{(570 + s + l1 + l2 + l3) // 60}:{if (570 + s + l1 + l2 + l3) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1 + l2 + l3) % 60}"]
+        choice pick options=["the Bus 1 column", "the Library row", "the Market row"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "the Bus 1 column" else if k == 1 then "the Library row" else "the Market row")
+  hint "Find the right answer first: the Park row and the Bus 2 column."
+  hint "Now find Sam's time in the timetable. Which row and which column is it in?"
+}

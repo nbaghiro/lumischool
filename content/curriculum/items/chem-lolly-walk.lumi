@@ -1,0 +1,35 @@
+# The story: an ice lolly on the walk to the marsh hut, losing a quarter every five minutes in
+# the shade and two in the sun, and how much is left after the walk's two parts.
+item chem.lolly-walk v=1 stars=1 skills=[chemistry.states, subtraction.to-twenty] {
+  title "The ice lolly"
+  difficulty (a + b + (if w == 1 then 2 else 0))
+  let a=1..1 b=0..2 w=0..1
+  let asks={pick(w, "How many quarters of the lolly are left when he sits down?", "How many quarters of the lolly melted on the walk?")}
+  level easy {
+    let a=1..1 b=0..1 w=0..0
+  }
+  level hard {
+    let a=1..1 b=1..2 w=1..1
+  }
+
+  scene 34x23 {
+    icemelt ice every=5 count=2 place=2 at=canvas(1, 0)
+    text ask "Leo buys an ice lolly, four quarters of it, and walks to the marsh hut. In the sun it loses two quarters every five minutes; in the shade of the trees it loses one. He walks {5 * a} minutes in the sun{if b > 0 then \" and then \" else \"\"}{if b > 0 then 5 * b else \"\"}{if b > 0 then \" minutes in the shade.\" else \".\"} {asks}" narrate width=32 below=ice gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 4 - 2 * a - b else 2 * a + b)
+  feedback {
+    when (w == 0 and answer == 4 - a - b and a != 0) point=ice {
+      say "The sun takes two quarters for every five minutes, not one. Count the sun's minutes at two."
+    }
+    when (w == 0 and answer == 2 * a + b and 2 * a + b != 2) point=ice {
+      say "That is what melted. The question asks what is left of the four."
+    }
+    when (w == 1 and answer == 4 - 2 * a - b and 2 * a + b != 2) point=ice {
+      say "That is what is left. The question asks what melted: the sun's share and the shade's share together."
+    }
+  }
+  hint "Take the sun's minutes first: two quarters for each five. Then the shade's: one for each five."
+  hint "{if w == 0 then \"Take both shares away from four.\" else \"Add the two shares together.\"}"
+}

@@ -1,0 +1,25 @@
+# Non-routine for a seven-year-old: the sugar cannot be seen, and the scale says it is still there.
+# The trap answer is the water alone.
+item chem.still-weighs v=1 stars=3 skills=[chemistry.dissolving, reasoning.conservation] {
+  title "Where did the weight go?"
+  difficulty (g + w)
+  let g={20, 30, 40, 50} w={100, 200, 250}
+
+  scene 24x13 {
+    mixture mix things=["sugar"] water=1 names=0 at=canvas(1, 0)
+    text ask "{g} grams of sugar are stirred into {w} grams of water until you cannot see the sugar. How much does the sweet water weigh now?" narrate width=13 right-of=mix gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (g + w)
+  feedback {
+    when (answer == w) point=mix {
+      say "You cannot see the sugar, but it is still in the water. Does it still weigh something?"
+    }
+    when (answer == w - g) point=mix {
+      say "Nothing was taken out. The sugar went in and stayed in."
+    }
+  }
+  hint "Did anything leave the glass?"
+  hint "If the sugar is still there, only spread out, does its weight go anywhere?"
+}

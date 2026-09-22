@@ -1,0 +1,16 @@
+# The way in for choosing a material: one thing in the row keeps water out.
+item chem.keeps-dry v=1 skills=[chemistry.materials] {
+  title "Which keeps water out?"
+  difficulty k
+  let k=0..3
+
+  scene 22x11 {
+    text ask "Which of these would keep water out?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"paper-bag\" else if k == 1 then \"wool-sock\" else if k == 2 then \"plastic-bottle\" else \"towel\"}", "{if k == 0 then \"towel\" else if k == 1 then \"rubber-boot\" else if k == 2 then \"paper-book\" else \"metal-can\"}", "{if k == 0 then \"raincoat\" else if k == 1 then \"cardboard-box\" else if k == 2 then \"wool-hat\" else \"paper-bag\"}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="only(waterproof)"
+  hint "Imagine it in the rain. Which one would still be dry inside?"
+  hint "Which ones would let water soak in, or pass through?"
+}

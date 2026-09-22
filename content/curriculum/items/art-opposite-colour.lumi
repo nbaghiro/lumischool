@@ -1,0 +1,14 @@
+item art.opposite-colour v=1 skills=[art.complementary] {
+  title "Opposite on the wheel"
+  difficulty k
+  let k=0..2
+
+  scene 36x15 {
+    colourwheel wheel segments=6 blank=[] ring=k labels=true split="none" at=canvas(1, 1)
+    text ask "What colour is opposite the ringed one?" width=14 right-of=wheel gap=1
+    choice pick options=["green", "blue", "purple"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "green" else if k == 1 then "blue" else "purple")
+  hint "Put your finger on the ringed colour and go straight across the middle of the wheel."
+}

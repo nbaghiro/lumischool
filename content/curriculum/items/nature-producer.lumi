@@ -1,0 +1,41 @@
+# The producer: the one in the web that makes its own food and has no arrow into it. Asked as a
+# pick from the web's names, with the plant sometimes an odd one (tiny plants, sea grass) so the
+# child cannot just find the word seaweed.
+item nature.producer v=1 skills=[nature.food-webs] {
+  title "Which one makes its own food?"
+  difficulty c
+  let c=0..2
+  let x={pick(c, "seaweed", "tiny plants", "sea grass")}
+  let y1={pick(c, "crab", "small fish", "sea turtle")}
+  let y2={pick(c, "sea snail", "shrimp", "sea snail")}
+  let z={pick(c, "gull", "seal", "gull")}
+  level easy {
+    let c=0..1
+  }
+  level hard {
+    let c=1..2
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      gull pg flying=1
+    }
+    text one "{x}  →  {y1}  →  {z}" narrate below=pics gap=1
+    text two "{x}  →  {y2}  →  {z}" narrate below=one gap=0
+    text ask "One thing in this web makes its own food from the light, and everything else eats. Which one is it?" narrate width=32 below=two gap=1
+    choice pick options=[y1, x, z] stack=column below=ask gap=1
+  }
+
+  answer pick=x
+  feedback {
+    when (pick == z) point=one {
+      say "The {z} eats two things. Look for the one that nothing points to."
+    }
+    when (pick == y1) point=one {
+      say "That one has an arrow into it, so it eats. The maker of food has no arrow in."
+    }
+  }
+  hint "Find the name with no arrowhead pointing at it."
+  hint "The one at the start of every chain is the one that makes its own food."
+}

@@ -1,0 +1,25 @@
+# High and low, the first thing an ear learns: the shorter the bar, the higher the note.
+item music.chime-higher v=1 skills=[music.pitch] {
+  title "Which bar is higher?"
+  difficulty (6 - abs(a - b))
+  let a=1..6 b=1..6
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 3)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+  let x={if a == 1 then "D" else if a == 2 then "E" else if a == 3 then "F" else if a == 4 then "G" else if a == 5 then "A" else "B"}
+  let y={if b == 1 then "D" else if b == 2 then "E" else if b == 3 then "F" else if b == 4 then "G" else if b == 5 then "A" else "B"}
+
+  scene 30x9 {
+    chimebars bars bars=8 letters=1 at=canvas(1, 1)
+    text ask "Which bar sounds higher, {x} or {y}?" width=14 right-of=bars gap=1
+    choice pick options=["{x}", "{y}"] below=ask gap=1
+  }
+
+  answer pick=(if a > b then x else y)
+  hint "Look at how long each bar is. Does a short bar sound high or low?"
+  hint "Find {x} and {y}. Which of the two is shorter?"
+}

@@ -1,0 +1,37 @@
+# A cycle has no end: after the frog comes frogspawn again, and after the flower comes a seed.
+# Asking what comes before the first stage is the same idea the other way round, and the harder
+# half, because "nothing, it is the start" is the wrong idea to catch.
+item nature.cycle-round v=1 skills=[nature.life-cycles] {
+  title "Round again"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let ask={pick(k, "What comes after the frog?", "What comes after the bean's flower?", "What came before the frogspawn?", "What came before the bean's seed?")}
+  let right={pick(k, "frogspawn", "a seed", "a frog", "a flower")}
+  let o1={pick(k, "it stops there", "it stops there", "nothing, it is the start", "nothing, it is the start")}
+  let o3={pick(k, "a tadpole", "a shoot", "a froglet", "a shoot")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 31x29 {
+    growstages bean stages=4 numbers=false names=0 at=canvas(1, 1)
+    frogcycle life stage=4 ring=1 names=0 below=bean gap=1
+    text ask "The frog and the bean both go round. {ask}" narrate width=17 right-of=life gap=2
+    choice pick options=[o1, right, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1) point=life {
+      say "A life cycle has no end. The grown one makes the start of the next one, and round it goes."
+    }
+    when (pick == o3) point=life {
+      say "That is a stage in the middle. Keep going round: the grown one makes the start of the next one."
+    }
+  }
+  hint "Follow the arrows round the ring, or the bean along its row, and then keep going."
+  hint "The grown one makes the start of the next one. What does a frog lay? What does a flower make?"
+}

@@ -1,0 +1,10 @@
+item art.three-greens v=1 skills=[art.proportion, art.painting] {
+  title "A leaf in three greens"
+
+  scene 34x17 {
+    text ask "Paint the leaf in three greens. Use more yellow in one and more blue in another." width=11 at=canvas(1, 1)
+    paintsheet sheet w=18 h=12 paper="plain" guide="none" outline="leaf" pots=["yellow", "blue", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Three greens that can be told apart (one yellower, one bluer, one between) each kept to its own part of the leaf, mixed on purpose rather than all the same." notice=["Three greens that can be told apart", "One yellower and one bluer", "Each green kept to its own part"] ask="Which green has the most yellow in it, and how can you tell?"
+}

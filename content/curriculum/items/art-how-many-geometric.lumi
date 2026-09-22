@@ -1,0 +1,16 @@
+# Sorting before counting: each piece is judged geometric or organic, then the geometric ones counted.
+item art.how-many-geometric v=1 skills=[art.shape, reasoning.two-steps] {
+  title "How many are geometric?"
+  difficulty (if s == "house" then 1 else 0)
+  let s={"boat", "fish", "house"}
+
+  scene 30x11 {
+    collage pic scene=s at=canvas(1, 1)
+    text ask "How many of the pieces in this {s} are geometric shapes?" width=12 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check art.shapes of=pic answer=geometric
+  hint "Which pieces have straight edges or a perfect round curve?"
+  hint "Point at each piece and say geometric or organic. Then count the geometric ones."
+}

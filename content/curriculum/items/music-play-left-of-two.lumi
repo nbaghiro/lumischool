@@ -1,0 +1,14 @@
+# Played: the white key just left of a group of two, which is C. The keyboard starts on F so the
+# child has to find the pair rather than the left-hand end.
+item music.play-left-of-two v=1 skills=[music.keys] {
+  title "Left of the two"
+
+  scene 34x16 {
+    piano keys from=F3 whites=11 wide=3 labels=none at=canvas(1, 1)
+    text ask "Find a group of two black keys. Press the white key just to the left of it." narrate width=32 below=keys gap=1
+  }
+
+  check music.plays notes=[C4]
+  hint "A group of two has a gap on each side. Which white key touches its left-hand black key?"
+  hint "That key is C, wherever the group of two is."
+}

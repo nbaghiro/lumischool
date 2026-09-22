@@ -1,0 +1,30 @@
+# Two legs of a journey in minutes, borrowed from the road distances drawing, then added to a time.
+item time.journey-legs v=1 skills=[time.elapsed, problems.two-step] {
+  title "When does the bus arrive?"
+  difficulty (x + y + m)
+  let x=(15..45 by 5) y=(15..45 by 5) hh=8..11 m={0, 10, 20, 30, 40}
+  level easy {
+    let x=(15..25 by 5) y=(15..25 by 5) m={0, 10}
+  }
+  level hard {
+    let x=(35..45 by 5) y=(35..45 by 5) m={30, 40}
+  }
+
+  scene 30x19 {
+    roaddistances road stops=["Ash", "Bray", "Cole"] legs=[x, y] unit=min at=canvas(1, 1)
+    text ask "The bus leaves Ash at {hh}:{if m == 0 then \"00\" else m} and goes through Bray to Cole. What time does it reach Cole?" width=28 below=road gap=1
+    text hl "Hours" below=ask gap=1
+    number-input ah right-of=hl gap=1
+    text ml "Minutes" right-of=ah gap=2
+    number-input am right-of=ml gap=1
+  }
+
+  answer ah=((hh * 60 + m + x + y) // 60) am=((hh * 60 + m + x + y) % 60)
+  feedback {
+    when (ah == hh and am == m + x + y - 60) point=road {
+      say "Going past 60 minutes takes you into the next hour."
+    }
+  }
+  hint "How long is the whole journey?"
+  hint "Count on from {hh}:{if m == 0 then \"00\" else m} to the next o'clock, then on again."
+}

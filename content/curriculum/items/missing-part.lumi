@@ -1,0 +1,24 @@
+item bonds.missing-part v=1 skills=[bonds-to-10] {
+  title "The missing part"
+  difficulty (w - p)
+  let w=6..10 p=1..5
+  where (p < w)
+  level easy {
+    let w=6..8 p=3..5
+  }
+  level hard {
+    let w=9..10 p=1..2
+  }
+
+  scene 24x9 {
+    numberbond bond whole=w parts=[p, ?] at=canvas(1, 1)
+    equation eq "{p} + {?part} = {w}" right-of=bond gap=2
+  }
+
+  answer part=(w - p)
+  feedback {
+    when (part == w + p) point=bond {
+      say "The whole is the biggest number. Take the part away from it."
+    }
+  }
+}

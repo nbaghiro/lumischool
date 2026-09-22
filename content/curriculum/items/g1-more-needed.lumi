@@ -1,0 +1,29 @@
+# Count a handful of mixed coins, then count on to a price: two steps, with the unknown as a change.
+item money.more-needed v=1 skills=[money.count-coins, subtraction.change-unknown] {
+  title "How much more"
+  difficulty (p - ((if a == "quarter" then 25 else 10) + (if b == "dime" then 10 else 5) + (if c == "nickel" then 5 else 1)))
+  let a={"quarter", "dime"} b={"dime", "nickel"} c={"nickel", "penny"} p={30, 40, 45, 50}
+  level easy {
+    where (p - ((if a == "quarter" then 25 else 10) + (if b == "dime" then 10 else 5) + (if c == "nickel" then 5 else 1)) <= 15)
+  }
+  level hard {
+    where (p - ((if a == "quarter" then 25 else 10) + (if b == "dime" then 10 else 5) + (if c == "nickel" then 5 else 1)) >= 25)
+  }
+  where (p > (if a == "quarter" then 25 else 10) + (if b == "dime" then 10 else 5) + (if c == "nickel" then 5 else 1))
+  where (p != 2 * ((if a == "quarter" then 25 else 10) + (if b == "dime" then 10 else 5) + (if c == "nickel" then 5 else 1)))  # then what she has and what she needs are the same number
+
+  scene 32x9 {
+    purse bag coins=[a, b, c] at=canvas(1, 1)
+    text ask "Jo has these coins. A toy boat costs {p} cents. How many more cents does she need?" narrate width=20 right-of=bag gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p - (if a == "quarter" then 25 else 10) - (if b == "dime" then 10 else 5) - (if c == "nickel" then 5 else 1))
+  feedback {
+    when (answer == (if a == "quarter" then 25 else 10) + (if b == "dime" then 10 else 5) + (if c == "nickel" then 5 else 1)) point=bag {
+      say "That is how much Jo has. How much more does she need to make {p}?"
+    }
+  }
+  hint "How many cents does Jo have? Start with the biggest coin."
+  hint "Count on from what she has up to {p}."
+}

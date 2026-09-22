@@ -1,0 +1,36 @@
+# The two-star reason: two letters of the family that look alike, and the part of the movement
+# that tells them apart. The wrong reasons name a part the two share.
+item writing.tells-apart v=1 stars=2 skills=[writing.letter-formation, reasoning.compare] {
+  title "What tells them apart?"
+  difficulty k
+  let k=0..2 r=0..2
+  let pa={pick(k, "a", "c", "a")}
+  let qb={pick(k, "d", "o", "g")}
+  let right={pick(k, "After the curl, d goes up tall to the top line", "o goes all the way round and joins up", "g goes down past the line and hooks left")}
+  let w1={pick(k, "d's curl goes the other way round", "c starts at the bottom and o at the top", "a has a curl and g does not")}
+  let w2={pick(k, "a has two strokes and d has one", "o is the bigger letter", "g starts on the line and a above it")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x31 {
+    row two at=canvas(1, 1) space=3 align=end {
+      formletter a letter=pa copies=0 write=0 label=true
+      formletter b letter=qb copies=0 write=0 label=true
+    }
+    text ask "{pa} and {qb} both start with the curl. Which part of the movement tells them apart?" narrate width=32 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Follow both letters' arrows from the dot. The curl is the same in both; look at what the pencil does after it."
+    }
+  }
+  hint "Both start the same way. Follow the arrows past the curl: where do they part?"
+  hint "{if k == 0 then \"One of them goes up tall before coming down.\" else if k == 1 then \"One of them closes the circle.\" else \"One of them drops below the line.\"}"
+}

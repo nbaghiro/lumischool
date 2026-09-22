@@ -1,0 +1,29 @@
+# Two clues and an empty grid: a tick, a cross, and then the rule that no two children share.
+item logic.grid-clues v=1 stars=2 skills=[logic.deduction] {
+  title "Two clues, one answer"
+  let m=0..2 x=0..2 y=0..2 d=0..2 e=0..2
+  where (x != y and d != e)
+  let z={3 - x - y}
+  let f={3 - d - e}
+  let r0={if m == 0 then "Nia" else if m == 1 then "Tom" else "Lea"}
+  let r1={if m == 0 then "Omar" else if m == 1 then "Pip" else "Zac"}
+  let r2={if m == 0 then "Rosa" else if m == 1 then "Eli" else "Ada"}
+  let c0={if m == 0 then "apple" else if m == 1 then "red" else "bus"}
+  let c1={if m == 0 then "pear" else if m == 1 then "blue" else "train"}
+  let c2={if m == 0 then "plum" else if m == 1 then "green" else "bike"}
+
+  scene 31x20 {
+    logicgrid grid rows=[r0, r1, r2] cols=[c0, c1, c2] marks=[0, 0, 0, 0, 0, 0, 0, 0, 0] at=canvas(1, 1)
+    text clues "Each child picked a different one. {if d == 0 then r0 else if d == 1 then r1 else r2} picked the {if y == 0 then c0 else if y == 1 then c1 else c2}. {if e == 0 then r0 else if e == 1 then r1 else r2} did not pick the {if z == 0 then c0 else if z == 1 then c1 else c2}. Who picked the {if z == 0 then c0 else if z == 1 then c1 else c2}?" width=29 below=grid gap=1
+    choice pick options=[r0, r1, r2] below=clues gap=1
+  }
+
+  answer pick=(if f == 0 then r0 else if f == 1 then r1 else r2)
+  feedback {
+    when (pick == (if d == 0 then r0 else if d == 1 then r1 else r2)) point=grid {
+      say "That child already picked a different one."
+    }
+  }
+  hint "Put a tick for the first clue and a cross for the second. What else does the tick rule out?"
+  hint "Each row and each column can have only one tick. Which box is the only one left?"
+}

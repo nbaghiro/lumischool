@@ -1,0 +1,23 @@
+# Two staves, one counted in three and one in four, told apart by the number at the start and by
+# where the bar lines fall.
+item music.which-in-three v=1 skills=[music.rhythm, music.time-signatures] {
+  title "Which is in three?"
+  difficulty k
+  let k=0..1
+
+  scene 34x33 {
+    notes a clef=treble notes=[G4, A4, B4, G4] values=[1, 1, 1, if k == 0 then 3 else 1] meter=(if k == 0 then 3 else 4) at=canvas(1, 1)
+    notes b clef=treble notes=[G4, A4, B4, G4] values=[1, 1, 1, if k == 0 then 1 else 3] meter=(if k == 0 then 4 else 3) below=a gap=1
+    text ask "One of these is in three-time and one in four-time. Which one is in three?" narrate width=32 below=b gap=1
+    choice pick options=["the top one", "the bottom one"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "the top one" else "the bottom one")
+  feedback {
+    when (pick != (if k == 0 then "the top one" else "the bottom one")) point=a {
+      say "The number at the start says how many beats a bar holds. Count the beats up to the first bar line: in three-time it comes after three."
+    }
+  }
+  hint "Look at the number at the start of each staff, over the 4."
+  hint "Count the beats before the bar line: one, two, three, and then the line."
+}

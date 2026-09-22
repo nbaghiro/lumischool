@@ -1,0 +1,29 @@
+# A decision inside a decision: three ways out, so the second test only matters when the first
+# says no. The audit's raise for decision.
+item coding.three-ways v=1 skills=[coding.decisions] {
+  title "Three ways out"
+  difficulty ((if n > a then 0 else if n > b then 2 else 1) + (if n == a or n == b then 1 else 0))
+  let n=1..10 a=6..7 b=3..4
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["if n is more than {a}", "  say shout", "otherwise", "  if n is more than {b}", "    say clap", "  otherwise", "    say whisper"]
+      column q space=1 align=start {
+        text ask "n is {n}. What does the program say?" width=12
+        choice pick options=["shout", "clap", "whisper"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if n > a then "shout" else if n > b then "clap" else "whisper")
+  feedback {
+    when (pick == "clap" and n > a) point=p {
+      say "Line 1 says yes for {n}, so the program never reaches line 4."
+    }
+    when (pick == "whisper" and n > b and n <= a) point=p {
+      say "Line 1 says no, and then line 4 asks again. Is {n} more than {b}?"
+    }
+  }
+  hint "Ask line 1 about {n} first."
+  hint "Only if line 1 says no does the program go on to line 4."
+}

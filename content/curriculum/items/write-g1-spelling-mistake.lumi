@@ -1,0 +1,19 @@
+# Someone else's spelling to check, and the kind of slip to name: letters swapped, a sound left out,
+# or a letter too many.
+item writing.spelling-slip v=1 stars=2 skills=[writing.spelling, reasoning.find-the-error] {
+  title "What went wrong?"
+  difficulty (if m == 2 then 1 else 0)
+  let a=0..3 m=0..2
+  let who={if a == 0 then "dog" else if a == 1 then "pig" else if a == 2 then "hen" else "fox"}
+  let bad={if a == 0 and m == 0 then "dgo" else if a == 0 and m == 1 then "dg" else if a == 0 then "doog" else if a == 1 and m == 0 then "pgi" else if a == 1 and m == 1 then "pg" else if a == 1 then "piig" else if a == 2 and m == 0 then "hne" else if a == 2 and m == 1 then "hn" else if a == 2 then "heen" else if m == 0 then "fxo" else if m == 1 then "fx" else "foox"}
+
+  scene 32x20 {
+    picturecards card who=["{who}"] where=["by"] thing=["tub"] letters=false at=canvas(1, 1)
+    text ask "Nia wrote {bad} for this animal. What went wrong?" narrate width=18 right-of=card gap=2
+    choice pick options=["Two letters are the wrong way round.", "A sound is missing.", "There is a letter too many."] stack=column below=card gap=1
+  }
+
+  answer pick=(if m == 0 then "Two letters are the wrong way round." else if m == 1 then "A sound is missing." else "There is a letter too many.")
+  hint "Say the animal's name slowly. Now read what Nia wrote, one letter at a time."
+  hint "Are all the sounds there? Are they in the right order? Is there anything extra?"
+}

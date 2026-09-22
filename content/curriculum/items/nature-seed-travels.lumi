@@ -1,0 +1,41 @@
+# How a dandelion seed gets from the clock to new ground: the wind, its parachute, where it can
+# grow, and what the clock was before. Four short questions on one drawing.
+item nature.seed-travels v=1 skills=[nature.seeds] {
+  title "Where the seeds go"
+  difficulty (if k == 0 or k == 3 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let ask={pick(k, "How do the seeds get away from the plant?", "Why does each seed have a fluffy parachute?", "Ada puffs the clock. Where can a seed grow?", "What was this dandelion before it went to seed?")}
+  let right={pick(k, "the wind carries them", "so the wind can carry it far", "wherever it lands on soil", "a yellow flower")}
+  let o1={pick(k, "they roll along the ground", "to keep it warm", "only next to its parent", "a tree")}
+  let o2={pick(k, "a bird carries each one", "to keep the rain off", "only in the pond", "a leaf")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x17 {
+    dandelion clock seeds=16 blown=5 flower=0 at=canvas(1, 1)
+    text ask "{ask}" narrate width=20 right-of=clock gap=2
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=clock {
+      say "Look at the seeds that have left the clock. They are up in the air, not on the ground."
+    }
+    when (k == 1 and pick != right) point=clock {
+      say "The fluff is not a coat. It catches the wind, the way a parachute catches the air."
+    }
+    when (k == 2 and pick == "only next to its parent") point=clock {
+      say "The wind carries a seed a long way. It can grow wherever it comes down on soil."
+    }
+    when (k == 3 and pick != right) point=clock {
+      say "A dandelion is yellow first. When the flower is over, it turns into this clock of seeds."
+    }
+  }
+  hint "Look at the seeds in the air. What is moving them, and what are they hanging from?"
+  hint "A dandelion is a flower first, then a clock. The wind blows the clock apart and each seed floats away to land somewhere new."
+}

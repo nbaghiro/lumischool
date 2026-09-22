@@ -1,0 +1,45 @@
+# Sounds and letters are not the same count: gull has four letters and three sounds, chest five
+# letters and four sounds. The names are written, so the child has to listen, not count letters.
+item reading.count-sounds v=1 skills=[reading.segmenting, reading.digraphs] {
+  title "How many sounds?"
+  difficulty (if k == 1 then 2 else if k == 3 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 2}  # tent and gull, one sound to a letter
+  }
+  level hard {
+    let k={1, 3}  # chest and seal, two letters to a sound
+  }
+
+  scene 34x12 {
+    row pics at=canvas(1, 1) space=1 align=end {
+      column ca space=0 align=centre {
+        tent t lit=0
+        text la "tent"
+      }
+      column cb space=0 align=centre {
+        chest c open=0 coins=0
+        text lb "chest"
+      }
+      column cc space=0 align=centre {
+        gull g flying=0
+        text lc "gull"
+      }
+      column cd space=0 align=centre {
+        seal s rock=0 facing=-1
+        text ld "seal"
+      }
+    }
+    text ask "Say {if k == 0 then \"tent\" else if k == 1 then \"chest\" else if k == 2 then \"gull\" else \"seal\"} slowly. How many sounds does it have?" narrate width=26 below=pics gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k <= 1 then 4 else 3)
+  feedback {
+    when (answer == 5 and k == 1 or answer == 4 and k >= 2) point=pics {
+      say "That is how many letters. Two of the letters make one sound together."
+    }
+  }
+  hint "Say the word and tap the table once for each sound."
+  hint "Do any two letters make one sound together?"
+}

@@ -1,0 +1,27 @@
+# The way in: a reading below zero on a scale in fives, where the minus is the whole point.
+item number.read-cold v=1 skills=[number.negatives] negatives {
+  title "Below zero"
+  difficulty ((if v < 0 then 2 else 0) + abs(v) / 5)
+  let v={-15, -10, -5, 5, 15}
+  level easy {
+    let v={5, 15}
+  }
+  level hard {
+    let v={-15, -10}
+  }
+
+  scene 30x15 {
+    thermometer tube from=-20 to=20 step=5 value=v unit="C" at=canvas(1, 1)
+    text ask "What temperature does the thermometer show, in degrees?" width=18 right-of=tube gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == -v and v < 0) point=tube {
+      say "The top of the red is below zero, so the reading has a minus sign."
+    }
+  }
+  hint "Find zero on the scale first."
+  hint "Is the top of the red above zero or below it?"
+}

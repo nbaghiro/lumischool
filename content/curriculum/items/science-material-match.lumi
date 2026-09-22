@@ -1,0 +1,10 @@
+item science.material-match v=1 skills=[science.materials] {
+  title "What is it made of?"
+
+  scene 26x13 {
+    text ask "Write the number of the material next to each thing." width=24 at=canvas(1, 1)
+    match m left=["spoon", "window", "jumper"] right=["glass", "wool", "metal"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=3 b=1 c=2
+}

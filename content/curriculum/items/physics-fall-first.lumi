@@ -1,0 +1,29 @@
+# The way in: two things let go together from the branch, seen when the faster has landed, and which
+# of them got there first. The order from fastest to slowest is the stone, the crumpled paper ball,
+# the leaf, the flat sheet, the parachute and the feather.
+item physics.fall-first v=1 skills=[physics.forces, reasoning.compare] {
+  title "Which lands first?"
+  difficulty (if gap > 1 then 0 else 1)
+  let d=0..5
+  let a={pick(d, "stone", "leaf", "crumpled", "leaf", "parachute", "stone")}
+  let b={pick(d, "feather", "parachute", "flat", "flat", "feather", "crumpled")}
+  let wa={pick(d, "Stone", "Leaf", "Paper ball", "Leaf", "Parachute", "Stone")}
+  let wb={pick(d, "Feather", "Parachute", "Flat sheet", "Flat sheet", "Feather", "Paper ball")}
+  let gap={pick(d, 5, 2, 2, 1, 1, 1)}
+  level easy {
+    let d=0..2
+  }
+  level hard {
+    let d=3..5
+  }
+
+  scene 19x30 {
+    falling pair things=["{a}", "{b}"] time=2 show=1 names=1 at=canvas(1, 0)
+    text ask "These two were let go together from the branch. Which one lands first?" narrate width=18 below=pair gap=1
+    choice pick options=["{wa}", "{wb}"] stack=column below=ask gap=1
+  }
+
+  answer pick=wa
+  hint "Look at how far each one has come down from the dashed line."
+  hint "The one that is further down is winning the race to the ground."
+}

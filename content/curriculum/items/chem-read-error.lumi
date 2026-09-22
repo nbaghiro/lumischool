@@ -1,0 +1,20 @@
+# Finding the mistake: the child reads the cylinder, then works out how Sam's number came about.
+item chem.read-error v=1 stars=2 skills=[chemistry.volume, reasoning.find-the-mistake] {
+  title "What went wrong?"
+  difficulty (if e == 2 then 0 else if e == 1 then 1 else 2)
+  let v={34, 46, 58, 76, 82} e=0..2
+  level hard {
+    let e={0, 1}
+  }
+
+  scene 35x17 {
+    cylinder tube max=100 step=10 minor=5 level=v unit=ml at=canvas(1, 0)
+    text ask "Sam read this cylinder as {if e == 0 then (v // 10) * 10 + (v % 10) / 2 else if e == 1 then v + 2 else (v // 10) * 10} ml. What mistake did he make?" width=24 right-of=tube gap=1
+    choice pick options=["He counted each small mark as 1 ml", "He read the top of the curve", "He stopped at the numbered mark below"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if e == 0 then "He counted each small mark as 1 ml" else if e == 1 then "He read the top of the curve" else "He stopped at the numbered mark below")
+  hint "What does the cylinder really read? Work that out first."
+  hint "Is Sam's number too big or too small, and by how much?"
+  hint "Which of the three mistakes would give a number that far out?"
+}

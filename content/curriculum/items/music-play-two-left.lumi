@@ -1,0 +1,15 @@
+# The three-star, played: a two-note left-hand pattern, low C and the G above it, twice, read
+# from the bass staff and proved by the pitches.
+item music.play-two-left v=1 stars=3 skills=[music.staff, music.keys, reasoning.planning] {
+  title "A left-hand pattern"
+
+  scene 34x28 {
+    grandstaff gs notes=["C3", "G3", "C3", "G3"] letters=false lit=[] landmarks=true at=canvas(1, 1)
+    text ask "Read the four bass notes from bass F and play them with the left hand: little finger on the low note, thumb on the high one." width=14 right-of=gs gap=1
+    piano keys from=C3 whites=8 wide=3 labels=none below=gs gap=1
+  }
+
+  check music.plays notes=[C3, G3, C3, G3]
+  hint "The low note is in the second space, three steps below bass F. The high one is one step above bass F."
+  hint "C, G, C, G: the C is the white key left of a group of two, the G is in the group of three above it."
+}

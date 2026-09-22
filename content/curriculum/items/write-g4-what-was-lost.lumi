@@ -1,0 +1,29 @@
+# The other side of cutting: the short version is given and the child says what it lost. Two of
+# the six versions lose nothing, so "something must be missing" is not a safe guess.
+item writing.what-was-lost v=1 skills=[writing.concision, writing.editing] {
+  title "What did the short one lose?"
+  difficulty (if k == 1 or k == 4 then 1 else if k == 3 then 2 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 2, 5}  # when and where, cut from the front
+  }
+  level hard {
+    let k={1, 3, 4}  # nothing lost, and who lost in the middle
+  }
+
+  scene 34x15 {
+    caption long text="{if k == 0 then \"On Saturday, Leo and his dad fixed the old gate.\" else if k == 1 then \"The girl who was called Priya ran all the way to the station.\" else if k == 2 then \"After lunch, Sam read his book under the big tree.\" else if k == 3 then \"Last night the fox ate the bread we left on the step.\" else if k == 4 then \"The bus that goes to town was late because of the snow.\" else \"In the morning, Gran planted beans by the back door.\"}" width=33 at=canvas(1, 1)
+    caption short text="{if k == 0 then \"Leo and his dad fixed the old gate.\" else if k == 1 then \"Priya ran all the way to the station.\" else if k == 2 then \"After lunch, Sam read his book.\" else if k == 3 then \"Last night the bread we left on the step was eaten.\" else if k == 4 then \"The town bus was late because of the snow.\" else \"Gran planted beans by the back door.\"}" width=33 below=long gap=1
+    text ask "The first sentence was cut down to the second. What did it lose?" width=33 below=short gap=1
+    choice pick options=["when", "where", "who", "nothing"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 5 then "when" else if k == 2 then "where" else if k == 3 then "who" else "nothing")
+  feedback {
+    when (pick == "nothing" and (k == 0 or k == 2 or k == 3 or k == 5)) point=short {
+      say "Read the first sentence part by part. Is every part still in the second one?"
+    }
+  }
+  hint "Ask the first sentence who, when and where. Then ask the second one the same questions."
+  hint "Did any question get an answer from the first sentence but not the second?"
+}

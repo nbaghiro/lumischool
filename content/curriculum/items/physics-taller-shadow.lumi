@@ -1,0 +1,35 @@
+# A shadow puzzle for the grade one sheet: Ben's stick and its shadow are drawn, and Mia's stick is
+# described. Whether her shadow is longer or shorter is predicted by following the dashed line
+# from the lamp over the top of a taller or shorter stick, and, at hard, a stick moved nearer to
+# or further from the lamp.
+item physics.taller-shadow v=1 stars=2 skills=[physics.light, reasoning.predict] {
+  title "Whose shadow is longer?"
+  difficulty pick(k, 0, 1, 2, 2)
+  let k=0..3
+  let change={pick(k, "Mia's stick is taller than Ben's.", "Mia's stick is shorter than Ben's.", "Mia's stick is the same height, but she holds it nearer the lamp.", "Mia's stick is the same height, but she holds it further from the lamp.")}
+  let right={pick(k, "longer", "shorter", "shorter", "longer")}
+
+  scene 25x25 {
+    shadows lamp tall=4 shadow=6 lamp=true marks=false at=canvas(1, 0)
+    text ask "Ben holds his stick up in the lamp's light. {change} Will Mia's shadow be longer or shorter than Ben's?" narrate width=24 below=lamp gap=1
+    choice pick options=["longer", "shorter"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "shorter") point=lamp {
+      say "Follow the dashed line from the lamp past the top of the stick. A taller stick pushes that line further along the ground."
+    }
+    when (k == 1 and pick == "longer") point=lamp {
+      say "Follow the dashed line from the lamp past the top of the stick. A shorter stick lets that line reach the ground sooner."
+    }
+    when (k == 2 and pick == "longer") point=lamp {
+      say "Nearer the lamp, the light comes down more steeply over the stick, so the shadow it throws is shorter."
+    }
+    when (k == 3 and pick == "shorter") point=lamp {
+      say "Further from the lamp, the light comes in lower over the stick, so the shadow stretches out longer."
+    }
+  }
+  hint "Follow the dashed line from the lamp, over the top of the stick, to the end of the shadow."
+  hint "Where would that line hit the ground with Mia's stick in the way instead?"
+}

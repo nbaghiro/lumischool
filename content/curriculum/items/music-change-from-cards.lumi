@@ -1,0 +1,32 @@
+# The change card is taken away: two chord cards side by side, and the child finds a finger that is
+# on the same string at the same fret in both. G7 to D minor has a place in common that two
+# different fingers use, which is not a finger that stays.
+item music.change-from-cards v=1 skills=[music.chord-changes, music.chord-boxes] {
+  title "Find the finger that stays"
+  difficulty (if k == 2 then 2 else if k == 4 or k == 5 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 3}  # a finger is in the same place on both cards
+  }
+  level hard {
+    let k={2, 4, 5}  # none stays, or a place two different fingers use
+  }
+
+  scene 36x19 {
+    row cards at=canvas(1, 1) space=1 align=start {
+      chordbox a tuning=uke chord=(if k == 0 then "Am" else if k == 1 then "F" else if k == 2 then "G7" else if k == 3 then "Am" else if k == 4 then "C" else "C7") frets=3 show=fingers name=true letters=true lit=[]
+      chordbox b tuning=uke chord=(if k == 0 then "F" else if k == 1 then "G7" else if k == 2 then "Dm" else if k == 3 then "Dm" else if k == 4 then "Am" else "C") frets=3 show=fingers name=true letters=true lit=[]
+      text ask "Which finger can stay down when you change from the first chord to the second?" width=13
+    }
+    choice pick options=["1", "2", "3", "none"] below=cards gap=1
+  }
+
+  answer pick=(if k == 0 or k == 3 then "2" else if k == 1 or k == 2 then "1" else "none")
+  feedback {
+    when (pick == "2" and k == 2) point=cards {
+      say "Finger 2 is on the C string for G7, but D minor puts finger 3 there. The same finger has to be in the same place."
+    }
+  }
+  hint "Find a dot that is on the same string at the same fret on both cards."
+  hint "Is it the same finger number on both cards?"
+}

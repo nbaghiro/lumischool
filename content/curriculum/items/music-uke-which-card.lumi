@@ -1,0 +1,31 @@
+# The place is given in words and the card has to be found: the reverse of reading a card.
+# The three cards are three of the four one-finger chords, and p says which card is the answer.
+item music.uke-which-card v=1 skills=[music.chord-boxes] {
+  title "Find the card"
+  difficulty (if (d == "C7" or d == "A7") and (o1 == "C7" or o1 == "A7" or o2 == "C7" or o2 == "A7") then 1 else 0)
+  let d={"C", "Am", "C7", "A7"} o1={"C", "Am", "C7", "A7"} o2={"C", "Am", "C7", "A7"} p=0..2
+  where (d != o1 and d != o2 and o1 != o2)
+
+  scene 36x24 {
+    row cards at=canvas(1, 1) space=2 align=start {
+      column ca space=0 align=centre {
+        text la "A"
+        chordbox a tuning=uke chord=(if p == 0 then d else o1) frets=3 show=fingers name=false letters=true lit=[]
+      }
+      column cb space=0 align=centre {
+        text lb "B"
+        chordbox b tuning=uke chord=(if p == 1 then d else if p == 0 then o1 else o2) frets=3 show=fingers name=false letters=true lit=[]
+      }
+      column cc space=0 align=centre {
+        text lc "C"
+        chordbox c tuning=uke chord=(if p == 2 then d else o2) frets=3 show=fingers name=false letters=true lit=[]
+      }
+    }
+    text ask "Finger {if d == \"C\" then 3 else if d == \"Am\" then 2 else 1} on the {if d == \"Am\" then \"G\" else if d == \"A7\" then \"C\" else \"A\"} string at fret {if d == \"C\" then 3 else if d == \"Am\" then 2 else 1}. Which card shows it?" narrate width=34 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else if p == 1 then "B" else "C")
+  hint "Which string is it on? Find the cards with a dot on that string."
+  hint "Now count the frets. Which of those cards has the dot at the right fret?"
+}

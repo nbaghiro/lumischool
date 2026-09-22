@@ -1,0 +1,14 @@
+item writing.robot-right-word v=1 skills=[writing.editing, writing.spelling] {
+  title "The word the robot meant"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+
+  scene 29x15 {
+    fixbot bot says="{if k == 0 then \"I can see there lab coats.\" else if k == 1 then \"The robot has for wheels.\" else \"Put the bulb over hear.\"}" width=18 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "One word sounds right but is the wrong word. Write the right one." width=16 below=bot gap=1
+    word-input word options=["{if k == 0 then \"their\" else if k == 1 then \"four\" else \"here\"}"] letters=5 right-of=ask gap=1
+  }
+
+  answer word=(if k == 0 then "their" else if k == 1 then "four" else "here")
+  hint "Two words can sound the same and mean different things. Which one fits this sentence?"
+}

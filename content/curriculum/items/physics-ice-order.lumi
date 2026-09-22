@@ -1,0 +1,32 @@
+# Three iced cups after twenty minutes at 20 degrees, and their wraps put in order from the one that
+# kept the ice best. The readings are no wrap 20, paper 15, foil 10, cloth 5 and wool 0; easy's
+# three are far apart, hard's five apart.
+item physics.ice-order v=1 skills=[physics.heat, reasoning.order] {
+  title "Best to worst"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let w1={pick(k, "none", "wool", "paper", "foil", "foil", "paper")}
+  let w2={pick(k, "wool", "none", "none", "cloth", "paper", "cloth")}
+  let w3={pick(k, "paper", "paper", "wool", "paper", "cloth", "foil")}
+  let n1={pick(k, "no wrap", "wool", "paper", "foil", "foil", "paper")}
+  let n2={pick(k, "wool", "no wrap", "no wrap", "cloth", "paper", "cloth")}
+  let n3={pick(k, "paper", "paper", "wool", "paper", "cloth", "foil")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 34x16 {
+    wrapped cups wraps=["{w1}", "{w2}", "{w3}"] ice=1 minutes=20 at=canvas(1, 0)
+    column side space=1 align=start right-of=cups gap=2 {
+      text ask "Number the wraps from 1, the one that kept its ice coldest, to 3." narrate width=14
+      sequence s items=["{n1}", "{n2}", "{n3}"] blanks=[a, b, c]
+    }
+  }
+
+  answer a=pick(k, 3, 1, 2, 2, 2, 3) b=pick(k, 1, 3, 3, 1, 3, 1) c=pick(k, 2, 2, 1, 3, 1, 2)
+  hint "Find the cup with the lowest reading. That wrap is number 1."
+  hint "Then the next lowest, then the highest."
+}

@@ -1,0 +1,17 @@
+item music.uke-c-fret v=1 skills=[music.chord-boxes] {
+  title "The fret for C"
+
+  scene 24x17 {
+    chordbox box tuning=uke chord=C frets=4 show=dots name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Count down from the thick line at the top. Which fret is the dot on?" width=12 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 4) point=box {
+      say "Count the spaces between the lines, not the lines: the dot is in the third space."
+    }
+  }
+  hint "The thick line is the nut. The first space under it is fret 1."
+}

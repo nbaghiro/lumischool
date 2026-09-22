@@ -1,0 +1,22 @@
+# Sorting by a feature with a trap: every one is a small creature, but only the ones with six legs
+# are insects, and a spider or a snail sits among them. The butterfly is left out because the
+# drawing shows its wings and not its legs.
+item science.not-an-insect v=1 skills=[science.animals, science.sorting] {
+  title "Which one is not an insect?"
+  let odd=0..1 p=0..3
+  let o={if odd == 0 then "spider" else "snail"}
+  let k0={if p == 0 then o else "ladybird"}
+  let k1={if p == 1 then o else if p == 0 then "ladybird" else "bee"}
+  let k2={if p == 2 then o else if p <= 1 then "bee" else "ant"}
+  let k3={if p == 3 then o else "ant"}
+
+  scene 33x15 {
+    minibeasts row kinds=[k0, k1, k2, k3] legs=false at=canvas(1, 1)
+    text ask "An insect has six legs. Which one of these is not an insect?" width=30 below=row gap=1
+    choice pick options=[k0, k1, k2, k3] below=ask gap=1
+  }
+
+  answer pick=o
+  hint "Count the legs on each one."
+  hint "Which one does not have six?"
+}

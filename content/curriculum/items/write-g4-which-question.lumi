@@ -1,0 +1,24 @@
+# The other way round from finding the words: the new words are given and the child names the
+# question they answer.
+item writing.which-question-answered v=1 skills=[writing.sentences] {
+  title "What do the new words tell?"
+  difficulty (if k == 2 or k == 5 then 2 else if k == 1 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 3, 4}  # where and when
+  }
+  level hard {
+    let k={1, 2, 5}  # why, and one when
+  }
+
+  scene 30x15 {
+    caption short text="{if k == 0 then \"The fox slept.\" else if k == 1 then \"The bell rang.\" else if k == 2 then \"Zara laughed.\" else if k == 3 then \"The kettle sang.\" else if k == 4 then \"The owl hooted.\" else \"We ran inside.\"}" width=16 at=canvas(1, 1)
+    caption grown text="{if k == 0 then \"The fox slept under the hedge.\" else if k == 1 then \"The bell rang at nine o'clock.\" else if k == 2 then \"Zara laughed because the puppy sneezed.\" else if k == 3 then \"Before breakfast, the kettle sang.\" else if k == 4 then \"The owl hooted from the top of the barn.\" else \"We ran inside because the hail was coming.\"}" width=29 below=short gap=1
+    text ask "The sentence grew. Which question do the new words answer?" width=29 below=grown gap=1
+    choice pick options=["when", "where", "why"] below=ask gap=1
+  }
+
+  answer pick=(if k == 1 or k == 3 then "when" else if k == 0 or k == 4 then "where" else "why")
+  hint "Find the words that are in the long sentence but not in the short one."
+  hint "Do those words say a time, a place, or a reason?"
+}

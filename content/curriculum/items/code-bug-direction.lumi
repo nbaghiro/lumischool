@@ -1,0 +1,24 @@
+# The audit's raise: one line goes the wrong way round a rectangle, so every number is one of the
+# rectangle's two sides and nothing in the listing stands out. The drawing has to be compared with
+# the target. The grid is sized for the wrong walk, so the turtle never bumps and gives the line
+# away, and the checker proves the bug is on that line and no other by trying every single change.
+item coding.bug-direction v=3 skills=[coding.debugging] stars=3 {
+  title "Which line is wrong?"
+  difficulty k
+  let w={3} h=1..2 k=2..4
+
+  scene 34x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      column left space=1 align=start {
+        program p code=["right {w}", "{if k == 2 then \"down\" else \"up\"} {h}", "{if k == 3 then \"right\" else \"left\"} {w}", "{if k == 4 then \"up\" else \"down\"} {h}"]
+        text ask "The turtle should draw the pale rectangle. Which line is wrong?" width=15
+        choice pick options=[1, 2, 3, 4]
+      }
+      turtle t cols=(if k == 3 then 2 * w + 1 else w + 1) rows=(if k == 2 then 3 * h + 1 else if k == 4 then 2 * h + 1 else h + 1) col=1 row=(if k == 4 then 2 * h + 1 else h + 1) moves=["right {w}", "{if k == 2 then \"down\" else \"up\"} {h}", "{if k == 3 then \"right\" else \"left\"} {w}", "{if k == 4 then \"up\" else \"down\"} {h}"] target=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+    }
+  }
+
+  check coding.runs of=t goal=target pick=wrong
+  hint "Start at the ring and follow the drawn line and the pale line together. Where do they first part?"
+  hint "Every number is right. Look at which way each line goes."
+}

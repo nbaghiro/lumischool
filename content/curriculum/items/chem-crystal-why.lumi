@@ -1,0 +1,17 @@
+# Explaining with what the lesson taught: the water leaves as vapour, and the salt in the crystals
+# was in the water all along.
+item chem.crystal-why v=1 skills=[chemistry.crystals, chemistry.evaporating] {
+  title "Where did it go, where did it come from?"
+  difficulty q
+  let q=0..1 d={5, 7} n={5, 7}
+
+  scene 37x16 {
+    crystalstring jar days=d crystals=n kind=salt at=canvas(1, 0)
+    text ask "{if q == 0 then \"The water was up to the dashed line on day 1. Why is it lower now?\" else \"Where did the salt in these crystals come from?\"}" width=22 right-of=jar gap=1
+    choice pick options=["Some water evaporated into the air", "It was dissolved in the water", "The crystals drank it"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "Some water evaporated into the air" else "It was dissolved in the water")
+  hint "What was in the jar on day 1?"
+  hint "Which part of salty water can go into the air, and which part is left behind?"
+}

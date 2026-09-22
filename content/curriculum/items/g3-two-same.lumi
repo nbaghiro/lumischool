@@ -1,0 +1,24 @@
+# Two equal unknowns and a number: take the number off, then halve.
+item algebra.two-same v=1 stars=3 skills=[algebra.unknowns, reasoning.inverse] {
+  title "Two boxes the same"
+  difficulty (n + c)
+  let n=4..15 c=3..12
+
+  scene 22x17 {
+    balanceeq scales left="? + ? + {c}" right="{2 * n + c}" at=canvas(1, 1)
+    text ask "Both boxes hide the same number. What is it?" narrate below=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 2 * n) point=scales {
+      say "That is both boxes together. Each box is half of it."
+    }
+    when (answer == n + c) point=scales {
+      say "Take the {c} off first, then share what is left between the two boxes."
+    }
+  }
+  hint "What do the two boxes make together?"
+  hint "Two equal numbers make that. What is half of it?"
+}

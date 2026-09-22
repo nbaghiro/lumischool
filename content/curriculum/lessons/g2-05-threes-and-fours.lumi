@@ -1,0 +1,49 @@
+lesson g2-threes-and-fours v=1 format=teach grade=2 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Threes and fours"
+  goal "Count in threes and fours, read an array as equal groups, and find how many groups."
+
+  look {
+    scene 30x17 {
+      bakingtray tray rows=3 cols=4 iced=0 at=canvas(1, 1)
+      array dots rows=3 cols=4 color=mint right-of=tray gap=2
+      equation eq "3 × 4 = 12" below=tray gap=1
+      note n "Three rows of four, however you draw it." width=15 right-of=eq gap=2
+    }
+    say """
+      Three rows of four is twelve whether the four are buns or dots. Counting the rows is faster
+      than counting the things.
+      """
+  }
+  do {
+    practice groups.tray-threes count=1 seed=7
+    practice groups.array count=1 seed=9
+    practice groups.sheep-legs count=2 seed=3
+    practice groups.double-rows count=1 seed=5
+    practice groups.plates-needed count=2 seed=4
+    practice groups.barn-legs count=1 seed=6
+  }
+  try stars=2 {
+    show groups.same-or-not a=3 b=5 s=1 easy-a=2 easy-b=4 easy-s=0 hard-a=4 hard-b=6
+  }
+  try stars=3 {
+    show groups.ways-to-arrange n=18 easy-n=16 hard-n=24
+  }
+  remember {
+    say "Threes: 3, 6, 9, 12. Fours: 4, 8, 12, 16. To find how many groups, count in the group size."
+  }
+
+  grown-ups """
+    Skip counting out loud in the car is the cheapest practice there is, and it makes the tables
+    arrive without drill. The plates and the barn ask the question the other way round: how many
+    groups make the total. Counting in threes or fours up to the total, and keeping track of the
+    counts on fingers, is the right way in. The two-star question can be done by working out both
+    totals, but ask first whether one is the other turned round. In the three-star question a list
+    that starts with 2 rows, then 3 rows, is what keeps the count honest.
+    """
+  level easy {
+    grown-ups "At this level the rows are three to five long, the sheep are two or three, the two trays are the same array turned round, and sixteen buns arrange three ways."
+  }
+  level hard {
+    grown-ups "At this level the rows reach eight, the barn holds up to nine sheep, the two trays differ by one dot, and twenty-four buns arrange six ways."
+  }
+}

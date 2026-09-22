@@ -1,0 +1,18 @@
+# One describing word for one feature of the ringed creature, typed: its coat or its body.
+item writing.creature-word v=1 skills=[writing.word-classes, writing.describing] {
+  title "A word for the ringed creature"
+  difficulty f
+  let k=0..3 f=0..1
+  let word={if f == 0 then if k == 0 then "plain" else if k == 2 then "stripy" else "spotty" else if k == 1 then "tall" else if k == 2 then "long" else "round"}
+  let q={if f == 0 then "Is its coat plain, spotty or stripy?" else "Is its body round, tall or long?"}
+
+  scene 37x16 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["", "", "", ""] ring=k at=canvas(1, 1)
+    text ask "Look at the ringed creature. {q} Write the word." narrate width=22 below=line gap=1
+    word-input word options=["{word}"] letters=6 right-of=ask gap=1
+  }
+
+  answer word=word
+  hint "Look only at the one in the ring."
+  hint "Compare it with the others. What is different about it?"
+}

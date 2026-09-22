@@ -1,0 +1,49 @@
+lesson coding-writing-for-someone-else v=3 format=teach grade=4 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Writing a program for someone else"
+  goal "Write the program that draws a given shape, in lines somebody else could follow exactly, and check a program someone else wrote."
+
+  look {
+    scene 34x15 {
+      row both at=canvas(1, 0) space=1 align=start {
+        turtle t cols=6 rows=6 col=1 row=6 moves=["right 4", "up 3", "left 4", "down 3"] mark=false
+        codepad w tray=[] lines=4 style=lines
+      }
+    }
+    say """
+      Reading a program is easier than writing one, because when you write it you have to decide
+      everything: which way, how far, and in what order. Write one line for each move, in the order
+      the pen goes, and leave nothing to be guessed.
+      """
+  }
+  do {
+    practice coding.cards-for-ada count=2 seed=2 hard-seed=4
+    practice coding.write-rectangle count=2 seed=3
+    practice coding.one-number-wrong count=2 seed=5
+    practice coding.write-for-someone count=1 seed=3
+    show coding.build-for-someone n=3 easy-n=2
+  }
+  try stars=2 {
+    show coding.two-writers w=3 h=2 e=1 easy-e=0
+  }
+  try stars=3 {
+    show coding.split-picture a=3 easy-a=2
+  }
+  remember {
+    say "One line for one move, in the order they happen, with every number written in."
+  }
+
+  grown-ups """
+    The program written on lines is yours to mark, and the way to mark it is to follow it exactly on
+    squared paper. If it draws the shape, it is right; if it does not, the child has found a bug in
+    their own work, which is the lesson. The programs built in the slots are marked by the machine on
+    screen. In the two-star question neither program is right: ask the child to follow each one
+    before choosing. The three-star question has six slots, which is too few to write every move, so
+    the picture has to be split into two repeats.
+    """
+  level easy {
+    grown-ups "At this level the rectangles to build and to write have sides that add to six or fewer, the wrong number is on the first or the last side, two squares short of three, the rectangle to write out has a short side of two, the staircase to build has two steps, the left program draws the pale rectangle and is the one to pick, and the three-star picture has two diagonal steps."
+  }
+  level hard {
+    grown-ups "At this level the rectangles to build and to write have sides that add to seven or more, the wrong number is on a middle side, the rectangle to write out is five by three or four, and the staircase, the two programs that are both wrong and the three-star picture are as written, since each is the item's largest or trickiest version."
+  }
+}

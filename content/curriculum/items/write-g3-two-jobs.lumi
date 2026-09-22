@@ -1,0 +1,18 @@
+# A claim and three sentences, one of which proves it wrong: a counterexample, not a sorting job.
+item writing.two-jobs v=1 stars=2 skills=[writing.word-classes, reasoning.counterexample] {
+  title "Show that Zara is wrong"
+  difficulty (if k == 5 then 2 else if k == 1 or k == 3 then 1 else 0)
+  let k=0..5 w={if k == 0 then "swim" else if k == 1 then "fish" else if k == 2 then "paint" else if k == 3 then "rain" else if k == 4 then "jump" else "dry"} was={if k == 0 or k == 4 then "a doing word" else if k == 5 then "a describing word" else "a naming word"}
+
+  scene 30x22 {
+    row top at=canvas(1, 1) space=1 align=centre {
+      face zara mood=surprised hair=2 name="Zara"
+      text ask "Zara says {w} is always {was}. Which sentence shows she is wrong?" width=21
+    }
+    choice pick options=["{if k == 0 then \"We swim on Mondays.\" else if k == 1 then \"The fish was silver.\" else if k == 2 then \"The paint is wet.\" else if k == 3 then \"It will rain soon.\" else if k == 4 then \"That was a big jump.\" else \"My socks are dry.\"}", "{if k == 0 then \"We went for a swim.\" else if k == 1 then \"We fish at the lake.\" else if k == 2 then \"Blue paint dripped.\" else if k == 3 then \"The rain was cold.\" else if k == 4 then \"Frogs jump high.\" else \"Dry the cups, please.\"}", "{if k == 0 then \"The ducks swim fast.\" else if k == 1 then \"A fish jumped out.\" else if k == 2 then \"We paint the fence.\" else if k == 3 then \"Rain fell all day.\" else if k == 4 then \"I can jump far.\" else \"The dry leaves fell.\"}"] stack=column below=top gap=1
+  }
+
+  answer pick=(if k == 0 then "We went for a swim." else if k == 1 then "We fish at the lake." else if k == 2 then "We paint the fence." else if k == 3 then "It will rain soon." else if k == 4 then "That was a big jump." else "Dry the cups, please.")
+  hint "In each sentence, what job is {w} doing?"
+  hint "Zara is wrong if you can find one sentence where {w} is not {was}."
+}

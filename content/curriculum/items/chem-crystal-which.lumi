@@ -1,0 +1,16 @@
+# Salt grows cubes and sugar grows slanted blocks, so the lens tells which water the jar held.
+item chem.crystal-which v=1 skills=[chemistry.crystals] {
+  title "Salt or sugar?"
+  difficulty (if k == "sugar" then 1 else 0)
+  let k={"salt", "sugar"} n=4..6
+
+  scene 27x14 {
+    text ask "These crystals grew on a string. Was the jar filled with salty water or sugary water?" width=26 at=canvas(1, 0)
+    magnifier lens kind=k count=n below=ask gap=0
+    choice pick options=["salty water", "sugary water"] stack=column right-of=lens gap=1
+  }
+
+  answer pick=(if k == "salt" then "salty water" else "sugary water")
+  hint "What shape are the crystals in the lens?"
+  hint "Which grows little cubes, salt or sugar?"
+}

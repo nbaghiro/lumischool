@@ -1,0 +1,16 @@
+# No time words: the order comes from what has to happen before what. Each story is set out in a
+# different muddle, so the answer is never the same four boxes.
+item reading.what-came-first v=2 stars=2 skills=[reading.sequencing, reading.inference] {
+  title "What happened first?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..3
+
+  scene 30x16 {
+    text ask "Number the sentences in the order they happened." width=29 at=canvas(1, 1)
+    sequence s items=[if k == 0 then "The kite rose high over the field." else if k == 1 then "The dough rose in the warm kitchen." else if k == 2 then "The puddles dried in the sun." else "The chick pecked a hole in its shell.", if k == 0 then "Mo tied a long tail on the kite." else if k == 1 then "The loaf came out golden and hot." else if k == 2 then "Dark clouds rolled over the hill." else "The hen sat on her eggs for weeks.", if k == 0 then "The string snapped in a gust." else if k == 1 then "Ella mixed flour, water and yeast." else if k == 2 then "Rain hammered on the roof." else "A fluffy chick stood in the straw.", if k == 0 then "Mo saw the kite land in a tree." else if k == 1 then "Ella shaped the dough and baked it." else if k == 2 then "The sky cleared by lunchtime." else "One egg began to rock."] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=(if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 4 else 3) p2=(if k == 0 then 1 else if k == 1 then 4 else if k == 2 then 1 else 1) p3=(if k == 0 then 3 else if k == 1 then 1 else if k == 2 then 2 else 4) p4=(if k == 0 then 4 else if k == 1 then 3 else if k == 2 then 3 else 2)
+  hint "Which sentence could not happen until another one had?"
+  hint "Find the very first thing, then ask what it made happen next."
+}

@@ -1,0 +1,27 @@
+# A clue is only good if it fits one thing. Counting how many houses it fits is the check the child
+# has to make on their own descriptions. v2: the clue says windows at the top, since every house
+# also has one window downstairs.
+item writing.clue-count v=2 skills=[writing.describing] {
+  title "How many does the clue fit?"
+  difficulty ((if a == w then 1 else 0) + (if b == w then 1 else 0) + (if c == w then 1 else 0) + (if d == w then 1 else 0))
+  let a=1..3 b=1..3 c=1..3 d=1..3 w=1..3
+  where ((if a == w then 1 else 0) + (if b == w then 1 else 0) + (if c == w then 1 else 0) + (if d == w then 1 else 0) >= 1)
+  where ((if a == w then 1 else 0) + (if b == w then 1 else 0) + (if c == w then 1 else 0) + (if d == w then 1 else 0) <= 3)
+  level easy {
+    where ((if a == w then 1 else 0) + (if b == w then 1 else 0) + (if c == w then 1 else 0) + (if d == w then 1 else 0) == 1)
+  }
+  level hard {
+    where ((if a == w then 1 else 0) + (if b == w then 1 else 0) + (if c == w then 1 else 0) + (if d == w then 1 else 0) >= 2)
+  }
+  let win={if w == 1 then "window" else "windows"}
+
+  scene 29x18 {
+    street row windows=[a, b, c, d] doors=[0, 1, 1, 0] chimneys=[1, 0, 1, 1] cats=[0, 0, 0, 0] numbers=["1", "3", "5", "7"] at=canvas(1, 1)
+    text ask "Ivy: 'My house has {w} {win} at the top.' How many houses could be hers?" narrate width=22 below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer ((if a == w then 1 else 0) + (if b == w then 1 else 0) + (if c == w then 1 else 0) + (if d == w then 1 else 0))
+  hint "Look at the top of each house in turn. How many windows are there?"
+  hint "Count the houses that match, not the windows."
+}

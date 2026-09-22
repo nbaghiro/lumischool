@@ -1,0 +1,24 @@
+# Every order of three cards, counted. The six orders make four different paths, and the rocks in
+# each map block some of them, so the child has to list the orders and try each one.
+item coding.orders-count v=1 stars=3 skills=[coding.sequences, reasoning.all-the-ways] {
+  title "How many orders work?"
+  let k=0..2
+
+  scene 32x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      maze g cols=5 rows=4 flag=[4, 3] rocks=[if k == 2 then 1 else 2, 2, if k == 0 then 2 else 4, if k == 0 then 2 else if k == 1 then 2 else 1]
+      blocktray t code=["right 2", "down 2", "right 1"] per=1 words=false
+    }
+    text ask "Use all three cards, each once. How many different orders get the robot to the flag without hitting a rock?" width=30 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if k == 0 then 5 else if k == 1 then 3 else 2)
+  feedback {
+    when (answer == 6) point=g {
+      say "There are six orders, but some of them walk into a rock. Try each one."
+    }
+  }
+  hint "Start with the down card first. Which orders is that?"
+  hint "Write each order down. There are six. Cross out the ones that hit a rock."
+}

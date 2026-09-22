@@ -1,0 +1,30 @@
+# Which row breaks the over and under pattern, when one of the four does. The row that goes wrong, and
+# the crossing where it does, both move.
+item art.weave-which-wrong v=1 skills=[art.pattern, reasoning.evidence] {
+  title "Which row goes wrong?"
+  difficulty (if at > 3 then 1 else 0)
+  let k=0..7
+  let bad={pick(k, 2, 3, 1, 4, 2, 3, 1, 4)}
+  let at={pick(k, 2, 3, 3, 4, 5, 4, 5, 6)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..7
+  }
+
+  scene 19x19 {
+    weave cloth cols=6 rows=4 start=[0, 1, 0, 1] step=1 wrong=bad wrongat=at at=canvas(1, 0)
+    text ask "One of these rows stops going over and under at one crossing. Which row is it?" narrate width=18 below=cloth gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=bad
+  feedback {
+    when (answer != bad) point=cloth {
+      say "Follow each row across from the left, saying over, under, over, under. The row that breaks it is the one where you say the same word twice."
+    }
+  }
+  hint "Read one row at a time, all the way across."
+  hint "In a good row the strip changes from over to under at every crossing."
+}

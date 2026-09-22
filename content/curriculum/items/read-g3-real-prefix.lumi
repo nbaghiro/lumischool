@@ -1,0 +1,24 @@
+# Words that only look as if they have a prefix (ready, uncle, dish, mist): taking the front off
+# leaves no root word, which is the test the child learns to use. The audit's raise.
+item reading.real-prefix v=1 skills=[reading.morphology] {
+  title "A real prefix or not?"
+  difficulty (if k == 0 or k == 3 or k == 4 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={1, 2}  # uncle and under against unpack; dish and distant against dislike
+  }
+  level hard {
+    let k={0, 3, 4}  # ready, mist, press
+  }
+
+  scene 30x7 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Which word is a prefix and a root word put together?" width=29
+      choice pick options=[if k == 0 then "ready" else if k == 1 then "uncle" else if k == 2 then "dislike" else if k == 3 then "mist" else "press", if k == 0 then "reread" else if k == 1 then "under" else if k == 2 then "dish" else if k == 3 then "mister" else "pretty", if k == 0 then "reach" else if k == 1 then "unpack" else if k == 2 then "distant" else if k == 3 then "misspell" else "preheat"]
+    }
+  }
+
+  answer pick=(if k == 0 then "reread" else if k == 1 then "unpack" else if k == 2 then "dislike" else if k == 3 then "misspell" else "preheat")
+  hint "Cover the first two or three letters of each word. Is a real word left?"
+  hint "Does the front part change the meaning of what is left, the way un, re, dis, mis and pre do?"
+}

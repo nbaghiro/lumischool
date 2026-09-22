@@ -1,0 +1,22 @@
+# The way in: a block with a number, used once, and where the turtle ends. The number goes wherever
+# the block says size.
+item coding.param-hop-does v=1 skills=[coding.procedures, coding.tracing] {
+  title "What does hop do?"
+  let h=2..5
+
+  scene 33x15 {
+    program prog code=["define hop size", "  up 1", "  right size", "  down 1", "hop {h}"] title="Sam's turtle" at=canvas(1, 1)
+    column side space=1 align=start right-of=prog gap=2 {
+      text ask "Lines 1 to 4 only say what hop means. The turtle does line 5. How many squares to the right of its start does it stop?" narrate width=14
+      number-input far
+    }
+  }
+
+  answer far=h
+  feedback {
+    when (far == 1) point=prog {
+      say "The turtle goes up 1 and down 1, but its move right is size, and hop {h} makes size {h}."
+    }
+  }
+  hint "In hop {h}, size stands for {h}. Read lines 2 to 4 with {h} in place of size."
+}

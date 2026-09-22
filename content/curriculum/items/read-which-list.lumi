@@ -1,0 +1,38 @@
+# Three lists, three jobs: the contents page for chapters and where they start, the index for
+# every page a thing is on, the glossary for what a word means.
+item reading.which-list v=1 skills=[reading.text-features] {
+  title "Which list?"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..5
+  let want={pick(k, "find out what the word krill means", "find the page where the chapter about the ice starts", "find every page that mentions crabs", "see how many chapters the book has", "find the pages about gulls, which no chapter title names", "check what a blowhole is")}
+  let right={pick(k, "the glossary", "the contents page", "the index", "the contents page", "the index", "the glossary")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x18 {
+    text ask "Ada wants to {want}. Which list in the book should she open?" width=34 at=canvas(1, 1)
+    row low space=1 align=start below=ask gap=1 {
+      book b lines=4 left="All about" right="the sea" page="1"
+      choice pick options=["the contents page", "the index", "the glossary"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "the contents page" and right != "the contents page") point=b {
+      say "The contents page lists the chapters and their first pages, nothing smaller than a chapter."
+    }
+    when (pick == "the index" and right != "the index") point=b {
+      say "The index lists pages, not meanings or chapters."
+    }
+    when (pick == "the glossary" and right != "the glossary") point=b {
+      say "The glossary explains words. It gives no page numbers."
+    }
+  }
+  hint "A chapter question goes to the contents page, a page question to the index, a meaning question to the glossary."
+  hint "{if k == 0 or k == 5 then \"Which list explains what a word means?\" else if k == 1 or k == 3 then \"Which list shows the chapters?\" else \"Which list gives every page a thing is on?\"}"
+}

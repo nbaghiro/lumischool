@@ -1,0 +1,14 @@
+item art.which-layer v=1 skills=[art.space] {
+  title "Far, middle or near?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 34x15 {
+    text ask "Is the ringed part far away, in the middle or near?" width=32 at=canvas(1, 1)
+    layers view labels=false ring=k sun=true below=ask gap=1
+    choice pick options=["far", "middle", "near"] stack=column right-of=view gap=2
+  }
+
+  answer pick=(if k == 0 then "far" else if k == 1 then "middle" else "near")
+  hint "Which hills are palest, and which are darkest and clearest?"
+}

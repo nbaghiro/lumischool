@@ -1,0 +1,15 @@
+# Headings on an information page, matched to the part each one heads: the reader has to find
+# what a whole part is about from its first sentence. r shuffles the headings.
+item reading.heading-match v=1 skills=[reading.text-features, reading.gist] {
+  title "Which heading goes with which part?"
+  let k=0..1 r=0..2
+
+  scene 37x15 {
+    text ask "Each sentence starts a part of a page about {if k == 0 then \"owls\" else \"frogs\"}. Write the number of its heading next to it." width=36 at=canvas(1, 1)
+    match m left=[if k == 0 then "Owls hunt at night for mice and voles." else "Frogs lay their eggs in ponds in spring.", if k == 0 then "An owl's nest is often in a hollow tree." else "A frog catches flies with its long tongue.", if k == 0 then "Young owls are called owlets." else "In winter frogs sleep in the mud."] right=[if k == 0 then if r == 0 then "Homes" else if r == 1 then "Babies" else "Food" else if r == 0 then "Food" else if r == 1 then "Winter" else "Eggs", if k == 0 then if r == 0 then "Babies" else if r == 1 then "Food" else "Babies" else if r == 0 then "Winter" else if r == 1 then "Eggs" else "Winter", if k == 0 then if r == 0 then "Food" else if r == 1 then "Homes" else "Homes" else if r == 0 then "Eggs" else if r == 1 then "Food" else "Food"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=(if r == 0 then 3 else if r == 1 then 2 else 1) b=(if r == 0 then 1 else if r == 1 then 3 else 3) c=(if r == 0 then 2 else if r == 1 then 1 else 2)
+  hint "What is each sentence about: eating, living, growing up, or the time of year?"
+  hint "A heading is one or two words for what the whole part is about."
+}

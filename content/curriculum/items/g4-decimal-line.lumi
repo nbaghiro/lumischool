@@ -1,0 +1,35 @@
+# Tenths on a line: the ticks are one square apart, so the drawing is the same width as a line
+# counting in ones, and the child reads the label rather than measuring.
+item decimal.line-tenths v=1 skills=[decimals.tenths] {
+  title "Where the arrow points"
+  difficulty k
+  let k=1..9
+  level easy {
+    let k=1..3
+  }
+  level hard {
+    let k=11..19
+    scene 26x14 {
+      numberline line from=0 to=2 step=0.1 at=canvas(1, 1)
+      text ask "What number is the arrow pointing at?" width=22 below=line gap=2
+      arrow ask line.tick(k)
+      number-input answer below=ask gap=1
+    }
+    hint "The arrow is past 1. Count the tenths on from 1."
+  }
+
+  scene 24x14 {
+    numberline line from=0 to=1 step=0.1 at=canvas(1, 1)
+    text ask "What number is the arrow pointing at?" width=22 below=line gap=2
+    arrow ask line.tick(k)
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(k / 10, 1)
+  feedback {
+    when (answer == k) point=line.tick(k) {
+      say "The ticks count in tenths: 0.1, 0.2, 0.3."
+    }
+  }
+  hint "Count the ticks from 0. Each one is a tenth."
+}

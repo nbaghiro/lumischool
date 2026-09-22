@@ -1,0 +1,61 @@
+lesson art-blue-prints v=1 format=teach grade=2 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Blue prints from the sun"
+  goal "Explain how a sun print is made, match a print to the plant that made it, and make a print of your own with shapes laid on paper."
+
+  look {
+    scene 25x11 {
+      sunprint pic pairs=[3, 5, 4] made=1 show="match" at=canvas(1, 1)
+    }
+    say """
+      Anna Atkins made a book of seaweed pictures in 1843 without drawing them, and later printed
+      ferns the same way. She laid each plant on paper that turns blue in sunlight and left it in
+      the sun. Where the plant lay, the sun could not reach, so its shape stayed white.
+      """
+  }
+  do {
+    practice art.which-fern-printed count=2 seed=3
+    practice art.sun-or-shade count=2 seed=1
+    level easy {
+      worked art.hole-or-shape s="leaf" w="card" level=medium
+    }
+    practice art.hole-or-shape count=2 seed=2
+    practice art.leaflets-both-sides count=2 hard-count=1 seed=1
+    level hard {
+      practice art.ferns-crossed count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show art.ferns-crossed k=0 easy-k=2
+  }
+  try stars=3 {
+    show art.make-a-sun-print
+  }
+  remember {
+    say "Where the sun reaches, the paper turns blue. Where a plant lies, it stays white."
+  }
+
+  grown-ups """
+    Anna Atkins (1799 to 1871) was a botanist, and her Photographs of British Algae, published in
+    parts from October 1843, is considered the first book illustrated with photographic images. The
+    paper is a cyanotype: it is coated with iron salts that turn Prussian blue in sunlight and wash
+    out white where nothing reached them. Sun print paper is sold for children and works on a sunny
+    windowsill in a few minutes.
+
+    The questions are marked by the machine. The first matches a print to its fern by counting one
+    side of each. The others ask the child to reason about where light went: which part the sun
+    reached, what a card with a hole does compared with the shape cut out of it, and how the fern's
+    two matching sides make counting its leaflets quicker. The two-star question asks what happens
+    where two ferns cross, and the answer, white, surprises children who think in paint, where two
+    layers make a colour darker.
+
+    On screen the print is made with the stencils: lay shapes on the sheet, brush blue over
+    everything, and lift them off. Respond by pointing at the white shapes and asking the child where
+    each one lay. Ask where they thought the white would be before they lifted the shapes.
+    """
+  level easy {
+    grown-ups "At this level the ferns to tell apart have few leaflets, the question asks where the sun reached, a hole in card is worked once in the teacher's pen before shapes laid on the paper, the ferns have three or four leaflets a side, the two-star asks about the paper the ferns did not cover, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the ferns to tell apart have many leaflets, the question asks where the fern lay, the cards have holes, the ferns have six or seven leaflets a side and the second count makes way for a second pair of crossed ferns, the two-star asks about the crossing, which stays white, and the three-star is as written."
+  }
+}

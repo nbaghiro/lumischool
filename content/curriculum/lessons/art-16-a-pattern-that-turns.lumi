@@ -1,0 +1,64 @@
+lesson art-a-pattern-that-turns v=1 format=teach grade=3 unit=2 subject=art levels=[easy, medium, hard] {
+  title "A pattern that turns"
+  goal "Describe a pattern that repeats round a centre in equal turns, work out the turns as fractions, and choose the mirror that paints one fastest."
+
+  look {
+    scene 28x13 {
+      row all at=canvas(1, 1) space=2 align=start {
+        radial six repeats=6 motif="leaf" missing=-1 colour=berry
+        radial eight repeats=8 motif="drop" missing=-1 colour=sky
+      }
+    }
+    say """
+      Some patterns go round instead of along. A flower, a snowflake and a rose window in a church
+      repeat one shape round a middle, turned the same amount each time. Turn the pattern by one
+      repeat and it looks just the same.
+      """
+  }
+  do {
+    practice art.count-repeats count=1 seed=1
+    level easy {
+      worked art.turn-fraction n=6 m="leaf" level=medium
+    }
+    practice art.turn-fraction count=2 seed=2
+    practice art.turns-same count=2 seed=5
+    practice art.half-turn count=2 seed=3
+    practice art.mirror-strokes count=2 hard-count=1 seed=1
+    level hard {
+      practice art.fewest-strokes count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show art.fewest-strokes n=8 easy-n=4 hard-n=12
+  }
+  try stars=3 {
+    show art.pinwheel
+  }
+  remember {
+    say "A pattern that turns repeats one shape round a middle. With six repeats, each one is a sixth of a turn from the next."
+  }
+
+  grown-ups """
+    Patterns that turn are in flowers, snowflakes, wheels and the round windows of old churches. The
+    questions are marked by the machine. After counting the repeats, the child works out how far
+    round one repeat is as a fraction of a turn, and what half a turn does, which is the grade three
+    fraction work of equal parts of a whole met in a picture. The strokes question asks how many
+    shapes Ada painted herself when the easel's mirror copied each one four or six times.
+
+    The two-star question asks which of the easel's mirrors paints a pattern in the fewest strokes.
+    It needs the child to find which of 2, 4 and 6 go exactly into the number of repeats and then
+    choose the biggest. The three-star painting asks for two patterns with the six-way mirror: one
+    whose parts are the same on both sides, which a mirror line also fits, and one whose parts all
+    curl the same way, like a pinwheel, which only turning fits. A child who cannot yet say why
+    they differ, but can paint both, has understood more than they can say.
+
+    Respond by turning the page slowly with the child and watching when the pattern looks the same
+    again. Ask how many times that happens in a whole turn.
+    """
+  level easy {
+    grown-ups "At this level the repeats round the plate are four or five, a sixth of a turn is worked once in the teacher's pen before thirds and quarters, the turns to judge are half turns, the half turn moves a leaf two or three places, the mirror strokes are as written, the two-star's pattern has four parts, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the repeats round the plate are seven or eight, the turns are sixths and eighths, the turns to judge are thirds and quarters, the half turn moves a leaf five or six places, one mirror-strokes count makes way for a second mirror to choose, the two-star's pattern has twelve parts, and the three-star is as written."
+  }
+}

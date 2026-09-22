@@ -1,0 +1,28 @@
+# An amount laid out as notes and coins, written with a point: the way in to dollars and cents.
+item money.notes-coins v=1 skills=[money.decimals, money.count-coins] {
+  title "How much is here?"
+  difficulty ((if c1 == "quarter" then 1 else 0) + (if c2 == "nickel" then 1 else 0) + (if c3 == "penny" then 2 else 0) + (if n1 == 20 then 1 else 0))
+  let n1={5, 10, 20} n2={1, 5} c1={"quarter", "dime"} c2={"dime", "nickel"} c3={"nickel", "penny"}
+  where (n1 != n2)
+  level easy {
+    let n1={5, 10} c1={"dime"} c2={"dime"} c3={"nickel"}  # twenty-five cents in coins
+  }
+  level hard {
+    let n1={20} c1={"quarter"} c3={"penny"}
+  }
+
+  scene 26x9 {
+    money cash pieces=["{n1}", "{n2}", "{c1}", "{c2}", "{c3}"] total=false at=canvas(1, 1)
+    text ask "How much money is here, in dollars?" narrate below=cash gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (n1 + n2 + (if c1 == "quarter" then 0.25 else 0.10) + (if c2 == "dime" then 0.10 else 0.05) + (if c3 == "nickel" then 0.05 else 0.01))
+  feedback {
+    when (answer == n1 + n2) point=cash {
+      say "The coins count too. Add their cents after the dollars."
+    }
+  }
+  hint "Add the notes first. How many dollars is that?"
+  hint "Now add the coins in cents, and write the cents after the point."
+}

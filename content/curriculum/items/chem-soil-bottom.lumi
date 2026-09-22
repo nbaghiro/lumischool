@@ -1,0 +1,22 @@
+# Why the order is the order: the biggest, heaviest bits sink fastest and reach the bottom first.
+item chem.soil-bottom v=1 skills=[chemistry.rocks] {
+  title "First to the bottom"
+  difficulty (1 - st)
+  let st=0..1 sa=2..3 si=1..2 cl=1..2
+  level easy {
+    let st={1}
+  }
+  level hard {
+    let st={0}  # no stones, so the sand reached the bottom first
+  }
+
+  scene 25x19 {
+    text ask "The soil was shaken up in water and left. Which part reached the bottom first?" width=24 at=canvas(1, 0)
+    soiljar j stones=st sand=sa silt=si clay=cl bits=3 names=1 below=ask gap=0
+    choice pick options=["stones", "sand", "silt", "clay"] stack=column right-of=j gap=1
+  }
+
+  answer pick=(if st > 0 then "stones" else "sand")
+  hint "Which layer is at the very bottom of the jar?"
+  hint "Things that sink fastest get to the bottom first. Are they big bits or fine ones?"
+}

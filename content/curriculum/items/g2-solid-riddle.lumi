@@ -1,0 +1,27 @@
+# Two clues that only one solid meets: the pyramid and the prism both have five faces, so the
+# corners decide.
+item shapes.solid-riddle v=1 stars=2 skills=[shapes.solids, reasoning.clues] {
+  title "Which solid am I?"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 36x16 {
+    row all at=canvas(1, 1) space=1 align=end {
+      solid s1 kind=cube label="cube"
+      solid s2 kind=pyramid label="pyramid"
+      solid s3 kind=prism label="prism"
+      solid s4 kind=cylinder label="cylinder"
+    }
+    text ask "I have {if k == 0 then 6 else if k == 3 then 2 else 5} flat faces and {if k == 0 then 8 else if k == 1 then 5 else if k == 2 then 6 else 0} corners. Which solid am I?" narrate width=34 below=all gap=1
+    choice pick options=["cube", "pyramid", "prism", "cylinder"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "cube" else if k == 1 then "pyramid" else if k == 2 then "prism" else "cylinder")
+  feedback {
+    when (k == 1 and pick == "prism" or k == 2 and pick == "pyramid") point=all {
+      say "The pyramid and the prism both have five faces. Count their corners to tell them apart."
+    }
+  }
+  hint "Which solids have the right number of flat faces?"
+  hint "If more than one fits, count the corners on each of them."
+}

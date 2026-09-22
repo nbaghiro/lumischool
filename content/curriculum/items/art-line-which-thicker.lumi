@@ -1,0 +1,28 @@
+# The way in: two things on the table, one outlined with a thick line and one with a thin one, and
+# which is which. The thick line is always the first of the two, so the answer moves with the order
+# the things are drawn in.
+item art.line-which-thicker v=1 skills=[art.line, art.looking] {
+  title "Which line is thicker?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let a={pick(k, "apple", "cup", "ball", "jug", "pear", "cup")}
+  let b={pick(k, "cup", "ball", "apple", "pear", "jug", "jug")}
+  let wa={pick(k, "The apple", "The cup", "The ball", "The jug", "The pear", "The cup")}
+  let wb={pick(k, "The cup", "The ball", "The apple", "The pear", "The jug", "The jug")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 19x17 {
+    stilllife pic light="left" things=["{a}", "{b}"] lamp=false weights=["thick", "thin"] at=canvas(1, 0)
+    text ask "One of these is drawn with a thicker line than the other. Which one?" narrate width=18 below=pic gap=1
+    choice pick options=["{wa}", "{wb}"] stack=row below=ask gap=1
+  }
+
+  answer pick=wa
+  hint "Look at the line round the edge of each thing."
+  hint "One line is twice as wide as the other."
+}

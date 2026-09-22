@@ -1,0 +1,28 @@
+item columns.sub-three-digit v=1 skills=[subtraction.columns] {
+  title "Taking away three digits"
+  difficulty (if a % 100 < b % 100 then 1 else 0)
+  let a=324..897 b=156..489
+  where (a > b)
+  where (a % 10 < b % 10)
+  level easy {
+    let a=324..589 b=156..289
+    where (a % 100 >= b % 100)  # the ones exchange, the tens do not
+  }
+  level hard {
+    let a=500..897 b=256..489
+    where (a % 100 < b % 100 and a // 10 % 10 != 0)  # the tens exchange too, and a zero in the tens is sub-zero's case
+  }
+
+  scene 22x11 {
+    columns diff a=a b=b op=sub at=canvas(1, 1)
+    text ask "Exchange a ten before you take the ones away." width=20 below=diff gap=1
+  }
+
+  answer diff=(a - b)
+  feedback {
+    when (diff == a - b + 10) point=diff {
+      say "The ten you exchanged has to come off the tens column too."
+    }
+  }
+  hint "Not enough ones, so take one ten across and write one less in the tens."
+}

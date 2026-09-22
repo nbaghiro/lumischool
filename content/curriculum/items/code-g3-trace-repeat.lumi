@@ -1,0 +1,31 @@
+# A repeat makes the table longer than the program, so a step number is not a line number:
+# the audit's raise for trace-fill.
+item coding.trace-repeat v=1 skills=[coding.tracing, coding.repetition] {
+  title "More steps than lines"
+  difficulty k
+  let a=1..2 k=3..5
+  level easy {
+    let k={3}
+  }
+  level hard {
+    let k=5..6
+  }
+
+  scene 36x23 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  down 1", "  right {a}"]
+      tracetable tr code=["repeat 2", "  down 1", "  right {a}"] cols=6 rows=4 filled=1
+    }
+    text ask "The repeat line is a step each time round. Where is the robot after step {k}?" width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=tr col="after({k}).col" row="after({k}).row"
+  hint "Write the steps in order: line 1, line 2, line 3, and then line 1 again."
+  hint "Fill the table one row at a time until you reach step {k}."
+}

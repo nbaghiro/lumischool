@@ -1,0 +1,41 @@
+# The way in: a chain of three written with its arrows, the creatures drawn above it, and one
+# question read off it: what a creature eats, or what eats it. The arrow points from the eaten to
+# the eater, which is the direction children most often turn round. Reading forwards is the easy
+# half; reading back along an arrow is the harder.
+item nature.who-eats v=1 skills=[nature.food-chains] {
+  title "Who eats what?"
+  difficulty dir
+  let c=0..2 dir=0..1
+  let a={pick(c, "seaweed", "sea grass", "tiny plants")}
+  let b={pick(c, "crab", "sea turtle", "small fish")}
+  let d={pick(c, "gull", "shark", "seal")}
+  level easy {
+    let dir=0..0
+  }
+  level hard {
+    let dir=1..1
+  }
+
+  scene 34x19 {
+    row who at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      seaturtle pt facing=1 plates=5
+      fishshoal pf rows=2 cols=4 facing=1
+    }
+    text chain "{a}  →  {b}  →  {d}" narrate below=who gap=1
+    text ask "On the reef, each arrow points to the one that eats. {pick(dir, \"What does the\", \"What eats the\")} {b}{pick(dir, \" eat?\", \"?\")}" narrate width=32 below=chain gap=1
+    choice pick options=[a, b, d] below=ask gap=1
+  }
+
+  answer pick=(if dir == 0 then a else d)
+  feedback {
+    when (pick == (if dir == 0 then d else a)) point=chain {
+      say "The arrow goes from the one that is eaten to the one that eats it. You have read it the other way round."
+    }
+    when (pick == b) point=chain {
+      say "The {b} is the one the question is about. Look at the arrow that comes into it, and the arrow that goes out."
+    }
+  }
+  hint "Put your finger on the {b}. One arrow comes in and one goes out."
+  hint "The one before the arrow is eaten. The one after the arrow does the eating."
+}

@@ -1,0 +1,21 @@
+# One number is wrong and the robot bumps, but not always on the wrong line: a short step early
+# sends the next line into a rock. The checker proves one line alone mends it.
+item coding.wrong-line-corridor v=1 stars=2 skills=[coding.debugging, coding.tracing] {
+  title "Where is the bug?"
+  difficulty (if k == 2 and e == -1 then 2 else if e == -1 then 1 else 0)
+  let k=1..4 e={-1, 1}
+  where (not (k == 4 and e == -1))
+
+  scene 34x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right {if k == 1 then 2 + e else 2}", "down {if k == 2 then 2 + e else 2}", "right {if k == 3 then 2 + e else 2}", "down {if k == 4 then 1 + e else 1}"]
+      maze g map=["S . . # # #", "# # . # # #", "# # . . . #", "# # # # F #"] code=["right {if k == 1 then 2 + e else 2}", "down {if k == 2 then 2 + e else 2}", "right {if k == 3 then 2 + e else 2}", "down {if k == 4 then 1 + e else 1}"]
+    }
+    text ask "Kim's robot was meant to reach the flag. One line has a wrong number. Which line?" width=32 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check coding.runs of=g goal=flag answer=wrong
+  hint "Where did the robot bump? Was that line wrong, or was the robot already in the wrong place?"
+  hint "Trace each line on the path the flag needs, and find the first place they differ."
+}

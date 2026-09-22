@@ -1,0 +1,29 @@
+item graph.difference v=1 skills=[data.bar-charts] {
+  title "How many more"
+  difficulty (a - b)
+  let a=3..8 b=1..6 f={"Pears", "Plums", "Peaches"}
+  where (a > b + 1)
+  level easy {
+    where (a - b <= 3)
+  }
+  level hard {
+    where (a - b >= 4)
+  }
+
+  scene 26x17 {
+    text ask "How many more children chose Apples than {f}?" narrate width=24 at=canvas(1, 0)
+    bargraph g labels=["Apples", "{f}"] values=[a, b] max=8 below=ask gap=1
+    number-input answer below=g gap=0
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=g.bar(0) {
+      say "How many more is a difference, so take the shorter bar away from the taller one."
+    }
+    when (answer == a) point=g.bar(1) {
+      say "Count only the squares between the top of one bar and the top of the other."
+    }
+  }
+  hint "Find the top of each bar and count the squares between them."
+}

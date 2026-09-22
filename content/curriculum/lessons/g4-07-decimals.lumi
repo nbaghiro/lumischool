@@ -1,0 +1,53 @@
+lesson g4-decimals v=1 format=teach grade=4 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Decimals: tenths and hundredths"
+  goal "Read tenths and hundredths, write them as fractions and as money, and multiply and divide by ten and a hundred."
+
+  look {
+    scene 31x16 {
+      decimalsquare square hundredths=35 write=true at=canvas(1, 1)
+      numberline tenths from=0 to=1 step=0.1 right-of=square gap=2
+      percentbar bar percent=35 show=true whole=100 below=tenths gap=2
+    }
+    say """
+      One whole cut into a hundred is hundredths, and ten of them make a tenth. 0.35 is three
+      tenths and five hundredths, which is also thirty-five percent of the square.
+      """
+  }
+  do {
+    practice decimal.hundred-grid count=1 seed=2
+    practice decimal.line-tenths count=1 seed=8
+    practice decimal.tenths-and-hundredths count=1 seed=4
+    level easy {
+      worked decimal.tape-metres m=85 level=medium
+    }
+    practice decimal.tape-metres count=2 hard-count=1 seed=3
+    level hard {
+      practice decimal.longer-not-bigger count=1 seed=2
+    }
+    practice decimal.dimes-dollars count=1 seed=5
+    practice decimal.times-ten count=1 seed=6
+    practice decimal.one-of-a-hundred count=1 seed=7 easy-seed=5
+  }
+  try stars=2 {
+    show decimal.longer-not-bigger a=5 b=4 c=8 p=0 easy-a=7 easy-b=2 easy-c=3 hard-a=3 hard-b=2 hard-c=9 hard-p=1
+  }
+  try stars=3 {
+    show decimal.cards-under x=2 y=6 z=8 d=0.5 easy-x=1 easy-y=4 easy-z=7 easy-d=1 hard-x=3 hard-z=9
+  }
+  remember {
+    say "Ten hundredths make a tenth. Multiplying by ten moves every digit one place left, and dividing moves it right."
+  }
+
+  grown-ups """
+    Money is the decimal a child already knows. Four dollars fifty is four and a half dollars, and
+    saying both out loud links them. The commonest mistake is to think 0.48 is bigger than 0.5
+    because 48 is bigger than 5; the two-star question is that mistake, and writing 0.5 as 0.50
+    settles it. In the three-star question, write out the numbers the cards make before choosing.
+    """
+  level easy {
+    grown-ups "At this level the hundred grid shows whole tenths, the arrow is on the first three tenths, the square shows one to three tenths and one to four hundredths, the mark at 85 centimetres is worked once in the teacher's pen before two marks in the twenties to seventies, the purse holds two to five dimes and some pennies, ten ribbons are laid end to end, ten pieces of rope come out as whole metres, Leo compares 0.23 with 0.7, and the three-star makes the biggest number under 5 from the cards 1, 4 and 7."
+  }
+  level hard {
+    grown-ups "At this level the hundred grid shows hundredths with a zero in the tenths place or nearly the whole grid, the arrow is past one on a line to two, the square shows six to eight tenths and six to nine hundredths, the marks are at 5, 8, 60 or 96 centimetres, so the decimal has a zero in it, the purse holds six to nine dimes and no pennies, a hundred ribbons are laid end to end, a hundred pieces of rope come out in hundredths of a metre, Leo compares 0.29 with 0.3 and a second pair within three hundredths is compared, and the three-star makes the biggest number under 6.5 from the cards 3, 6 and 9."
+  }
+}

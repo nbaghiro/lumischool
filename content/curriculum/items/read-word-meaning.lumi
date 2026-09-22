@@ -1,0 +1,26 @@
+# Spring is the useful one: a child who knows only the season has to take the meaning from the
+# sentence around it, which is the skill the lesson is for.
+item reading.word-meaning v=2 skills=[reading.vocabulary] {
+  title "What does it mean here?"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 36x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=start {
+        passage p title="Up the hill" text="The path was steep, so we went slowly. At the top we found a spring and filled our bottles. On the way down the rain had made the rock slick." width=20
+        art hills asset="hills"
+      }
+      text ask "In this passage, what does {if k == 0 then \"steep\" else if k == 1 then \"spring\" else \"slick\"} mean?" width=22
+      choice pick options=["going up sharply", "water coming out of the ground", "slippery"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "going up sharply" else if k == 1 then "water coming out of the ground" else "slippery")
+  feedback {
+    when (pick == "water coming out of the ground" and k == 2) point=p {
+      say "Read the sentence the word is in. It is about what the rain did to the rock."
+    }
+  }
+  hint "Read the whole sentence the word sits in. The sentence tells you which meaning it is."
+}

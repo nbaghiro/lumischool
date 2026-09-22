@@ -1,0 +1,23 @@
+# The way in: two things on a list become one sentence, and only "and" can sit between two things.
+item writing.and-between-things v=1 skills=[writing.joining-sentences] {
+  title "Two things on the list"
+  let k=0..3 r=0..2
+  let x={if k == 0 then "hat" else if k == 1 then "spade" else if k == 2 then "torch" else "map"}
+  let y={if k == 0 then "coat" else if k == 1 then "bucket" else if k == 2 then "blanket" else "drink"}
+  let o1={if r == 0 then "and" else if r == 1 then "but" else "because"}
+  let o2={if r == 0 then "because" else if r == 1 then "and" else "but"}
+  let o3={if r == 0 then "but" else if r == 1 then "because" else "and"}
+
+  scene 37x13 {
+    row top at=canvas(1, 1) space=2 align=start {
+      sentence strip before="I packed a {x}" blank=4 after="a {y}."
+      listpad list title="To pack" items=["{x}", "{y}"] count=0 width=9 ticks=false
+    }
+    text ask "Which word goes in the gap?" narrate width=12 below=top gap=0
+    choice pick options=["{o1}", "{o2}", "{o3}"] right-of=ask gap=1
+  }
+
+  answer pick="and"
+  hint "Read the sentence with each word in the gap. Which one sounds right?"
+  hint "Which word adds one more thing to a list?"
+}

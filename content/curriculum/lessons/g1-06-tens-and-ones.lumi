@@ -1,0 +1,50 @@
+lesson g1-tens-and-ones v=1 format=teach grade=1 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Tens and ones"
+  goal "Read a two-digit number as some tens and some ones, even when there are more than nine ones."
+
+  look {
+    scene 26x16 {
+      placevalue rods tens=3 ones=4 at=canvas(1, 1)
+      arrowcards cards value=34 apart=true right-of=rods gap=2
+      pvchart chart value="34" show=digits below=rods gap=2
+      text sum "30 and 4 is 34" right-of=chart gap=2
+      tick sum
+    }
+    say """
+      A rod is ten cubes stuck together, so it counts as ten. Count the rods in tens, then count
+      the single cubes on the end. Ten single cubes make one more rod.
+      """
+  }
+  do {
+    practice place-value.tens-ones count=1 seed=11
+    practice place.arrow-cards count=1 seed=8
+    practice place.too-many-ones count=2 seed=3
+    practice place.boxes-of-ten count=1 seed=5
+    practice place.compare-two-digit count=1 seed=3
+    practice place.abacus-more count=1 seed=7
+    practice place.regroup-tens count=1 seed=4
+  }
+  try stars=2 {
+    show place.digit-riddle t=4 u=5 easy-t=2 easy-u=3 hard-t=7 hard-u=8
+  }
+  try stars=3 {
+    show place.biggest-under p=3 q=5 r=8 lim=60 easy-p=2 easy-q=4 easy-r=7 easy-lim=50 hard-q=6 hard-r=9
+  }
+  remember {
+    say "The first digit says how many tens, the second how many ones. Ten ones make a ten."
+  }
+
+  grown-ups """
+    Arrow cards are worth making out of paper. The pictures with more than nine single cubes are the
+    important ones: a child who writes 213 for two rods and thirteen cubes is reading digits, not
+    tens. Breaking a ten back into ones, 53 as 4 tens and 13 ones, is the same idea the other way
+    round, and it is what taking away with an exchange will need in grade two. In the three-star
+    question it helps to write all six numbers the cards can make before choosing.
+    """
+  level easy {
+    grown-ups "At this level the numbers stay under sixty, the extra ones are ten to twelve, and the biggest number the cards can make under the limit is found in one step."
+  }
+  level hard {
+    grown-ups "At this level the numbers reach the nineties, the extra ones are fourteen to sixteen, and two of the cards' numbers have to be crossed out before the biggest under the limit is left."
+  }
+}

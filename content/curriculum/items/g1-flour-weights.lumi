@@ -1,0 +1,28 @@
+# The masses on one pan are what balances the flour, so its weight is their total, in hundreds of grams.
+item measure.flour-weights v=1 skills=[measure.mass] {
+  title "Weights that balance"
+  difficulty (a + b + c)
+  let a={100, 200, 500} b={100, 200, 500} c={100, 200}
+  where (a >= b and b >= c)
+  level easy {
+    let a={100, 200} b={100, 200} c={100}
+  }
+  level hard {
+    let a={500} b={200, 500} c={100, 200}
+  }
+
+  scene 32x9 {
+    masses set masses=[a, b, c] at=canvas(1, 1)
+    text ask "These weights balance a bag of flour. How many grams does the flour weigh?" narrate width=18 right-of=set gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b + c)
+  feedback {
+    when (answer == a) point=set {
+      say "All the weights balance the flour together, not only the biggest one."
+    }
+  }
+  hint "What does each weight say on it?"
+  hint "Add the hundreds: start with the biggest weight and count on."
+}

@@ -1,0 +1,58 @@
+lesson reading-a-poem-to-read-aloud v=1 format=teach grade=4 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "A poem to read aloud"
+  goal "Hear the beat and the rhymes in a poem, and say what its pictures in words mean."
+
+  look {
+    scene 35x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        poem p title="Rain" lines=["The rain comes tapping on the pane,", "the gutters gurgle, full and fast,", "and down the hill runs every lane,", "a little river rushing past."] rhymes=[0, 1, 0, 1] blank=-1 beats=[4, 4, 4, 4] width=24
+        cottage home windows=2 lit=1
+      }
+    }
+    say """
+      A poem is written to be read aloud. The dots in the margin count the beats in each line: this
+      poem has four in every line, so it has a steady rhythm, like the rain. The letters show which
+      lines rhyme, A with A and B with B.
+
+      Read it aloud twice, the second time a little slower.
+      """
+  }
+  do {
+    level easy {
+      worked reading.rhyme-by-sound k=2 level=medium
+    }
+    practice reading.rhyme-by-sound count=2 seed=3
+    show reading.poem-rhyme k=0
+    show reading.poem-rhyme k=2 easy-k=1
+    show reading.poem-meaning k=0 hard-k=1
+    practice reading.poem-image count=1 seed=4
+    practice reading.poem-gap count=2 hard-count=1 seed=5 hard-seed=2
+    level hard {
+      practice reading.poem-mood count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.poem-mood k=0 easy-k=1
+  }
+  try stars=3 {
+    show reading.finish-the-poem k=0
+  }
+  remember {
+    say "Read a poem aloud. Listen for the beat and the rhymes."
+  }
+
+  grown-ups """
+    Both poems were written for this lesson. Read each one aloud first, then take turns a line at a
+    time. The meaning questions ask what the words make you see, which is the question to ask of
+    any line that says something without saying it straight. A rhyme is a sound, not a spelling:
+    new and blue rhyme, light and eight do not. For the rhyme pattern, give the first line end the
+    letter A and every new sound the next letter. In the three-star question, clap the beats of
+    the child's line together.
+    """
+  level easy {
+    grown-ups "At this level late and eight are matched once in the teacher's pen before bite, shoe and code, the patterns are AABB and ABAB, the lamp sweeping the sea is as written, the pictures say what they mean, the gaps are as written, the two-star's feeling is braver, shown in what the child does, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the rhymes to match are eight and hair, whose spellings hide them, the patterns are AABB and ABCB, where two lines do not rhyme at all, the question asks why the ships keep away, the pictures are the sprinkled stars and the stiff dog, the gap to fill is below, which rhymes with snow only by sound, and the other makes way for a second poem's mood, the two-star's feeling is the end of summer, in a wish, and the three-star is as written."
+  }
+}

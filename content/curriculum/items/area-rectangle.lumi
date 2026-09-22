@@ -1,0 +1,30 @@
+item area.rectangle v=1 skills=[area.count-squares] {
+  title "Area of a rectangle"
+  difficulty (r * c)
+  let r=2..4 c=3..7
+  where (2 * (r + c) != r * c)
+  level easy {
+    let r=2..3 c=3..4
+  }
+  level hard {
+    let r={4} c=5..7
+  }
+
+  scene 32x16 {
+    grid g rows=r cols=c shade=(r * c) color=sky at=canvas(1, 1)
+    text ask "Each square is one square centimetre. What is the area?" width=26 below=g gap=1
+    number-input answer below=ask gap=0
+    tick answer solution
+    note tip "{r} rows of {c} squares is {r * c}." solution width=13 right-of=g gap=1
+  }
+
+  answer (r * c)
+  feedback {
+    when (answer == 2 * (r + c)) point=g {
+      say "That is the distance around the edge. The area is how many squares are inside."
+    }
+    when (answer == r + c) point=g {
+      say "Count every square: {r} rows of {c}."
+    }
+  }
+}

@@ -1,0 +1,30 @@
+item add.bus-on v=1 skills=[addition.counting-on] {
+  title "Getting on the bus"
+  difficulty (n + more)
+  let n=3..9 more=2..6
+  where (n + more <= 18)
+  level easy {
+    let n=3..5 more=2..3
+  }
+  level hard {
+    let n=7..9 more=5..6
+  }
+
+  scene 28x15 {
+    # A window for everyone who can be on the bus: the drawing seats at most one person a window.
+    bus ride windows=9 on=n sign="12" at=canvas(1, 1)
+    text ask "{more} more people get on. How many are on the bus now?" width=26 below=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n + more)
+  feedback {
+    when (answer == more) point=ride {
+      say "The people already on the bus count too. Start at {n} and count on."
+    }
+    when (answer == n) point=ride {
+      say "That is how many there were before. {more} more got on."
+    }
+  }
+  hint "Start at {n} and count on {more}."
+}

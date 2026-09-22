@@ -1,0 +1,29 @@
+# The cylinder is marked more finely than the beaker, so the unnumbered marks are worked out from
+# the numbered ones: 2 ml a mark on one scale and 5 ml on the other.
+item chem.cylinder-read v=1 skills=[chemistry.volume] {
+  title "Reading a measuring cylinder"
+  difficulty (1 - k + v / 100)
+  let k=0..1 v={15, 25, 34, 35, 45, 46, 58, 76, 82}
+  where (k == 0 and v in {34, 46, 58, 76, 82} or k == 1 and v in {15, 25, 35, 45})
+  level easy {
+    let k={1}  # the 50 ml cylinder, whose one small mark between numbers is worth 5 ml
+  }
+  level hard {
+    let k={0}  # the 100 ml cylinder, whose small marks are worth 2 ml and have to be counted
+  }
+
+  scene 26x17 {
+    cylinder tube max=(if k == 0 then 100 else 50) step=10 minor=(if k == 0 then 5 else 2) level=v unit=ml at=canvas(1, 0)
+    text ask "Read the bottom of the curve. How many millilitres are in the cylinder?" width=16 right-of=tube gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v + (if k == 0 then 2 else 5)) point=tube {
+      say "That is where the water climbs the glass. Read the flat bottom of the curve."
+    }
+  }
+  hint "How many small spaces are there between two numbered marks? What is each one worth?"
+  hint "Start at the numbered mark just below the curve and count up in those steps."
+}

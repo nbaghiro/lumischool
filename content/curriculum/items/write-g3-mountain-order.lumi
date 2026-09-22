@@ -1,0 +1,15 @@
+# Five notes out of order: the problem and its fix have to be found before the rest falls into place.
+item writing.mountain-order v=1 skills=[writing.planning, writing.story-structure] {
+  title "Up and down the mountain"
+  difficulty s
+  let s=0..1 q=0..1 n1={if s == 0 then "Zoe finds a lost puppy" else "The class plants beans"} n2={if s == 0 then "She takes it home" else "The shoots grow tall"} n3={if s == 0 then "It will not eat" else "Snails eat the leaves"} n4={if s == 0 then "Mum finds its old toy" else "They put up a fence of shells"} n5={if s == 0 then "The puppy eats and wags its tail" else "The beans are ready to pick"}
+
+  scene 26x19 {
+    text ask "Number the notes 1 to 5, opening to ending." width=25 at=canvas(1, 1)
+    sequence s1 items=["{if q == 0 then n3 else n4}", "{if q == 0 then n1 else n2}", "{if q == 0 then n5 else n1}", "{if q == 0 then n4 else n5}", "{if q == 0 then n2 else n3}"] blanks=[r1, r2, r3, r4, r5] below=ask gap=1
+  }
+
+  answer r1=(if q == 0 then 3 else 4) r2=(if q == 0 then 1 else 2) r3=(if q == 0 then 5 else 1) r4=(if q == 0 then 4 else 5) r5=(if q == 0 then 2 else 3)
+  hint "Find the problem first. Which note is something going wrong?"
+  hint "Which note puts it right? The ending comes after that."
+}

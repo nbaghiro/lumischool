@@ -1,0 +1,30 @@
+# One note is played inside and outside the repeat, so its count is not the number of blocks.
+item coding.tune-note-count v=1 skills=[coding.repetition] {
+  title "How many times is E played?"
+  difficulty (if s == 0 then n + 2 else 2)
+  let n=2..4 s=0..1
+  level easy {
+    let n={2}
+  }
+  level hard {
+    let n=3..4 s={0}
+  }
+
+  scene 25x15 {
+    row top at=canvas(1, 0) space=2 align=start {
+      blocks b code=["play E", "repeat {n}", "  play C", "  play {if s == 0 then \"E\" else \"G\"}", "play E"]
+      chimebars bars bars=5 letters=1
+    }
+    text ask "How many times does the tune play E?" width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if s == 0 then n + 2 else 2)
+  feedback {
+    when (answer == (if s == 0 then 3 else n + 2)) point=b {
+      say "Look at each E block. Is it inside the repeat or outside it?"
+    }
+  }
+  hint "Find every E block. Which ones are inside the repeat?"
+  hint "An E inside the repeat plays once each time round."
+}

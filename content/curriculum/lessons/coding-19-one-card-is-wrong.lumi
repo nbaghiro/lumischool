@@ -1,0 +1,50 @@
+lesson coding-one-card-is-wrong v=1 format=teach grade=1 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "One card is wrong"
+  goal "Find the card in a program that sends the robot the wrong way."
+
+  look {
+    scene 23x11 {
+      row both at=canvas(1, 0) space=1 align=start {
+        blocks b code=["right 2", "up 2", "right 2"] numbers=true words=false wrong=2
+        maze m map=["S . . # .", ". # . # .", ". # . . F", ". . . # ."] code=["right 2", "up 2", "right 2"]
+      }
+    }
+    say """
+      The robot bumped into the edge, so something in the program is wrong. Run it one card at a
+      time and watch where it first goes the wrong way. That card is the bug: it says up when the
+      path goes down.
+      """
+  }
+  do {
+    practice coding.bump-card count=2 seed=3
+    show coding.which-card k=2 easy-k=0
+    show coding.which-card k=0 easy-k=3 hard-k=1
+    practice coding.turtle-wrong-card count=2 seed=5
+    show coding.fix-number a=2 b=1 w=1 d=1 hard-a=4 hard-b=2 hard-w=2
+    show coding.fix-number a=3 b=2 w=2 d=-1 easy-a=3 easy-b=1 easy-w=1 hard-w=1
+  }
+  try stars=2 {
+    show coding.bug-hidden w=3 e=1 easy-w=1 hard-w=4 hard-e=-1
+  }
+  try stars=3 {
+    show coding.shorter-program k=0
+  }
+  remember {
+    say "Find where the robot first goes wrong. The card that did it is the bug."
+  }
+
+  grown-ups """
+    A bug is information, not a failure: where the robot went wrong says which card to look at.
+    Resist pointing at the card. Ask where the robot first stopped going the right way. The
+    turtle's pale shape and the burst where the robot hits a rock are two more ways a bug shows
+    itself. In the two-star question there is no trail to follow, so the program has to be walked
+    with a finger. The three-star question is about making a working program shorter, which is a
+    different thing from making it right.
+    """
+  level easy {
+    grown-ups "At this level the wrong card points the wrong way, so the line the robot drew shows it at once, and the bump comes on the first block."
+  }
+  level hard {
+    grown-ups "At this level the wrong card has a number one out and sits late in the program, so the whole path has to be walked to find it."
+  }
+}

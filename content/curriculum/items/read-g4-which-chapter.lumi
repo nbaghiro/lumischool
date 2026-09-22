@@ -1,0 +1,32 @@
+# The inverse of finding a page: from a page number back to the chapter it sits in, which means
+# reading the start pages as ranges rather than as single numbers.
+item reading.which-chapter v=1 skills=[reading.text-features] {
+  title "Which chapter is this page in?"
+  difficulty (o + (if c == 4 then 1 else 0))
+  let k=0..3 c=1..4 o=1..3 s1={if k == 0 then 3 else if k == 1 then 2 else if k == 2 then 4 else 3} s2={if k == 0 then 8 else if k == 1 then 7 else if k == 2 then 9 else 9} s3={if k == 0 then 14 else if k == 1 then 12 else if k == 2 then 15 else 13} s4={if k == 0 then 19 else if k == 1 then 18 else if k == 2 then 20 else 18}
+  level easy {
+    let o={1}  # the page after the chapter's start
+  }
+  level hard {
+    let o={3}  # three pages in
+  }
+
+  scene 36x15 {
+    row top at=canvas(1, 1) space=2 align=start {
+      contents page title=Contents book="{if k == 0 then \"All about volcanoes\" else if k == 1 then \"All about whales\" else if k == 2 then \"All about lighthouses\" else \"All about the moon\"}" entries=[if k == 0 then "How a volcano forms" else if k == 1 then "Kinds of whale" else if k == 2 then "The first lights" else "Moon phases", if k == 0 then "When it erupts" else if k == 1 then "What whales eat" else if k == 2 then "Life of a keeper" else "Craters and seas", if k == 0 then "Famous volcanoes" else if k == 1 then "Whale songs" else if k == 2 then "Storms and wrecks" else "Walking on the moon", if k == 0 then "Living nearby" else if k == 1 then "Baby whales" else if k == 2 then "Lighthouses today" else "Moon myths"] pages=[if k == 0 then 3 else if k == 1 then 2 else if k == 2 then 4 else 3, if k == 0 then 8 else if k == 1 then 7 else if k == 2 then 9 else 9, if k == 0 then 14 else if k == 1 then 12 else if k == 2 then 15 else 13, if k == 0 then 19 else if k == 1 then 18 else if k == 2 then 20 else 18] blank=-1
+      column q space=1 align=start {
+        text ask "You are reading page {if c == 1 then s1 + o else if c == 2 then s2 + o else if c == 3 then s3 + o else s4 + o}. On which page did that chapter start?" width=12
+        number-input answer
+      }
+    }
+  }
+
+  answer (if c == 1 then s1 else if c == 2 then s2 else if c == 3 then s3 else s4)
+  feedback {
+    when (answer == (if c == 1 then s2 else if c == 2 then s3 else if c == 3 then s4 else s4 + 5)) point=page {
+      say "That chapter starts after your page. Which chapter had already started by then?"
+    }
+  }
+  hint "Find the two start pages your page sits between."
+  hint "A chapter goes on until the next one starts. Which chapter does your page belong to?"
+}

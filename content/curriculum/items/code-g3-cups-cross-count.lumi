@@ -1,0 +1,26 @@
+# A lift that is not in the middle still rules cups out, but not half of them: the audit's raise for
+# cups-half, so the order is reasoned about rather than a left or right choice.
+item coding.cups-cross-count v=1 skills=[coding.algorithms] {
+  title "How many can go?"
+  difficulty (if t > 3 * j - 1 then j else 8 - j)
+  let j={2, 3, 5, 6} t={2, 5, 8, 11, 14, 17, 20}
+  where (t != 3 * j - 1)
+
+  scene 25x17 {
+    cups c cards=[2, 5, 8, 11, 14, 17, 20] open=[j] target=t crossed=false at=canvas(1, 0)
+    text ask "You lift cup {j} and see {3 * j - 1}. You want {t}. How many cups can you cross out, counting the one you lifted?" width=23 below=c gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if t > 3 * j - 1 then j else 8 - j)
+  feedback {
+    when (answer == (if t > 3 * j - 1 then 8 - j else j)) point=c {
+      say "{t} is {if t > 3 * j - 1 then \"bigger\" else \"smaller\"} than {3 * j - 1}, so it is on the other side. Cross out the side it cannot be on."
+    }
+    when (answer == (if t > 3 * j - 1 then j - 1 else 7 - j)) point=c {
+      say "The cup you lifted does not hide {t} either, so it can go too."
+    }
+  }
+  hint "The numbers get bigger to the right. Is {t} bigger or smaller than {3 * j - 1}?"
+  hint "Every cup on the other side of cup {j} can go. Count them, and cup {j} itself."
+}

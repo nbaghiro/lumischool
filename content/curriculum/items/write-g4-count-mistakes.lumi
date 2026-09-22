@@ -1,0 +1,22 @@
+# Proofreading for every mistake, with none as a real answer: four places can each be right or
+# wrong, so the count runs from 0 to 4 and the child has to check every one.
+item writing.count-mistakes v=2 stars=3 skills=[writing.editing, reasoning.all-the-ways] {
+  title "How many mistakes?"
+  difficulty (if e1 + e2 + e3 + e4 == 0 then 4 else e1 + e2 + e3 + e4)
+  let e1=0..1 e2=0..1 e3=0..1 e4=0..1
+
+  scene 32x12 {
+    passage note text="{if e1 == 1 then \"on\" else \"On\"} Saturday we went to the {if e2 == 1 then \"beech\" else \"beach\"} with {if e3 == 1 then \"sam\" else \"Sam\"}. We saw a crab hide in {if e4 == 1 then \"it's\" else \"its\"} shell." width=31 numbers=false at=canvas(1, 1)
+    text ask "How many mistakes are in the note? There could be none." width=22 below=note gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (e1 + e2 + e3 + e4)
+  feedback {
+    when (answer == e1 + e2 + e3 + e4 - 1) point=note {
+      say "Close. Check every capital, every spelling and every apostrophe once more."
+    }
+  }
+  hint "Check one kind of mistake at a time: capitals, then spellings, then apostrophes."
+  hint "Does every sentence start with a capital, and does every name have one?"
+}

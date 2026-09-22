@@ -1,0 +1,28 @@
+# The rings over a card are strings played open and the crosses are strings not played at all:
+# counting the rings, not the dots, across the six first guitar chords.
+item music.guitar-chord-open v=1 skills=[music.chord-boxes] {
+  title "Strings played open"
+  difficulty (if k == 3 or k == 4 or k == 6 then 1 else 0)
+  let k=0..6
+  level easy {
+    let k={0, 1, 2}  # every string played
+  }
+  level hard {
+    let k={3, 4, 6}  # strings marked not to play as well
+  }
+
+  scene 30x17 {
+    chordbox box tuning=guitar chord=(if k == 0 then "Em" else if k == 1 then "E" else if k == 2 then "Am" else if k == 3 then "A" else if k == 4 then "D" else if k == 5 then "G" else "C") frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "A ring over a string means play it open, with no finger. How many strings does {if k == 0 then \"Em\" else if k == 1 then \"E\" else if k == 2 then \"Am\" else if k == 3 then \"A\" else if k == 4 then \"D\" else if k == 5 then \"G\" else \"C\"} play open?" width=14 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else if k == 1 or k == 5 then 3 else if k == 4 then 1 else 2)
+  feedback {
+    when (answer == (if k == 0 then 2 else 3) and k != 1 and k != 5) point=box {
+      say "That counts the fingers. Count the rings above the top line."
+    }
+  }
+  hint "Look above the thick line. What is over each string?"
+  hint "A cross means the string is not played at all. Does it count?"
+}

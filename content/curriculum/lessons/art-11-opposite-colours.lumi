@@ -1,0 +1,56 @@
+lesson art-opposite-colours v=1 format=teach grade=4 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Opposite colours"
+  goal "Find opposite colours on the wheel and without one, and use opposites to make colours brighter side by side and duller mixed."
+
+  look {
+    scene 16x15 {
+      colourwheel wheel segments=6 blank=[] ring=4 labels=true split="opposite" at=canvas(1, 1)
+    }
+    say """
+      Colours straight across the wheel from each other are opposites: red and green, yellow and
+      purple, blue and orange. Side by side, each makes the other look brighter. Mixed together,
+      they cancel out and make a dull brown or grey.
+      """
+  }
+  do {
+    practice art.opposite-colour count=1 seed=1
+    practice art.opposites-mixed count=2 seed=2
+    practice art.opposite-missing count=2 seed=3
+    level easy {
+      worked art.opposite-of-mix t="purple" level=medium
+    }
+    practice art.opposite-of-mix count=2 seed=1
+    practice art.opposite-of-opposite count=2 seed=3 hard-seed=1
+  }
+  try stars=2 {
+    show art.which-pair-brown p=2
+  }
+  try stars=3 {
+    show art.opposites-painting
+  }
+  remember {
+    say "A colour's opposite is the primary it has none of, or the mix of the two primaries it is not. Side by side they are bright; mixed they are dull."
+  }
+
+  grown-ups """
+    The first questions read opposites off a labelled wheel, which any child can do. The next ones
+    take the labels away: a wheel with one colour missing, where the child works out what goes in
+    the gap from its neighbours, and a question with no wheel at all, where the opposite of a mix is
+    the primary it does not contain. That second rule is worth saying aloud together, because it
+    turns a thing to remember into a thing to work out. The machine marks all of them.
+
+    The two-star question uses opposites on purpose, to make a brown when there is none in the box.
+    The painting is the three-star question: an orange fish in a blue sea, kept apart where they
+    meet, with shadows made by mixing a little of each into the other. Painters have long dulled a
+    colour with its opposite rather than with black, and the child finds out why.
+
+    Respond by pointing at the edge between the two colours: "Where the orange touches the blue,
+    both look brighter." Ask what the shadow colour is made of.
+    """
+  level easy {
+    grown-ups "At this level the wheel and the mixed opposites are as written, the ringed colour is red, yellow, green or blue, purple's opposite is found once in the teacher's pen before orange's and green's, the opposite of the opposite is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the wheel and the mixed opposites are as written, the ringed colour is orange or purple, whose opposite comes from the primary it does not hold, the opposites to find are green's and purple's, the opposites of opposites include red's, which goes through green, and the two-star and three-star are as written."
+  }
+}

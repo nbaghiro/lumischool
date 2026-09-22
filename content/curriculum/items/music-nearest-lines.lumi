@@ -1,0 +1,32 @@
+# The two-star reason: the top line of the bass staff and the bottom line of the treble are not
+# the same note, because middle C sits on its own line between them.
+item music.nearest-lines v=1 stars=2 skills=[music.staff, reasoning.claims] {
+  title "The two nearest lines"
+  difficulty k
+  let k=0..1 r=0..2
+  let claim={pick(k, "the top line of the bass staff and the bottom line of the treble staff are the same note, because they are the nearest lines", "middle C is on the bottom line of the treble staff, because it is the lowest right-hand note")}
+  let right={pick(k, "No: A, then middle C, then E", "No: it sits on its own short line")}
+  let w1={pick(k, "Yes: the staves join there", "Yes: the lowest line, the lowest note")}
+  let w2={pick(k, "No: both lines are middle C", "No: it is the bass staff's top line")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x29 {
+    grandstaff gs notes=["A3", "C4", "E4"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "Ben says {claim}. Is he right?" width=14 right-of=gs gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=gs gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=gs {
+      say "Look at the three notes drawn: the first is on the bass top line, the last on the treble bottom line, and the middle one is middle C on its own short line between the staves. Two steps apart each way."
+    }
+  }
+  hint "Find middle C on its short line. Is it above the bass staff's top line, below the treble's bottom line, or on one of them?"
+  hint "From the bass top line, A, one step up is B in the gap, then middle C on its line, then D, then E on the treble's bottom line."
+}

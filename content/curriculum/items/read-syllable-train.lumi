@@ -1,0 +1,25 @@
+# One carriage for each beat, with the picture saying the word. The first carriage is empty, so
+# the child claps the word, hears the first beat and writes it.
+item reading.syllable-train v=1 skills=[reading.syllables] {
+  title "The missing beat"
+  difficulty (if w == "sandcastle" or w == "bicycle" then 1 else 0)
+  let w={"hedgehog", "rocket", "pencil", "sandcastle", "bicycle"}
+  level easy {
+    let w={"hedgehog", "rocket", "pencil"}
+  }
+  level hard {
+    let w={"sandcastle", "bicycle"}
+  }
+
+  scene 20x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{w}"
+      wordtrain train parts=[if w == "hedgehog" then "hedge" else if w == "rocket" then "rock" else if w == "pencil" then "pen" else if w == "sandcastle" then "sand" else "bi", if w == "hedgehog" then "hog" else if w == "rocket" then "et" else if w == "pencil" then "cil" else if w == "sandcastle" then "cas" else "cy", if w == "sandcastle" then "tle" else if w == "bicycle" then "cle" else ""] blank=0 word="{w}"
+      text ask "Clap the word. Which beat is missing?" width=18
+      word-input beat options=["{if w == \"hedgehog\" then \"hedge\" else if w == \"rocket\" then \"rock\" else if w == \"pencil\" then \"pen\" else if w == \"sandcastle\" then \"sand\" else \"bi\"}"] letters=5
+    }
+  }
+
+  answer beat=(if w == "hedgehog" then "hedge" else if w == "rocket" then "rock" else if w == "pencil" then "pen" else if w == "sandcastle" then "sand" else "bi")
+  hint "Say the word and clap once for each beat. Say the first beat on its own."
+}

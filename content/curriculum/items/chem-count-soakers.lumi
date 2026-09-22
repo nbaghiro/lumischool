@@ -1,0 +1,24 @@
+# Counting the things water soaks into, from a row of four or five. At easy the soakers are the
+# towel and the sock; at hard the row holds the raincoat and the boot, soft things that keep water
+# out, and a cardboard box, which soaks it up though it looks stiff.
+item chem.count-soakers v=1 skills=[chemistry.materials] {
+  title "How many soak it up?"
+  difficulty (if k >= 2 then 2 else 0)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x12 {
+    text ask "Water is spilt on every one of these. How many of them soak it up?" width=27 at=canvas(1, 0)
+    materials row things=["{pick(k, \"towel\", \"paper-bag\", \"raincoat\", \"rubber-boot\")}", "{pick(k, \"metal-key\", \"wool-sock\", \"cardboard-box\", \"paper-book\")}", "{pick(k, \"wool-sock\", \"glass-jar\", \"wool-hat\", \"cardboard-box\")}", "{pick(k, \"plastic-bottle\", \"metal-spoon\", \"rubber-band\", \"wool-sock\")}", "{pick(k, \"glass-jar\", \"metal-can\", \"paper-bag\", \"plastic-bottle\")}"] below=ask gap=0
+    number-input answer below=row gap=0
+  }
+
+  check chem.materials of=row answer="count(absorbent)"
+  hint "Go along the row. Is each one threads, paper or card, or something water runs off?"
+  hint "Count only the ones water goes into. Soft rubber and plastic keep it out."
+}

@@ -1,0 +1,61 @@
+lesson writing-joined-with-and v=1 format=teach grade=2 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Two sentences joined with \"and\""
+  goal "Join two short sentences into one, and choose and, but or because for what the sentence means."
+
+  look {
+    scene 33x18 {
+      row top at=canvas(1, 1) space=3 align=end {
+        heron h facing=1 reeds=3
+        gull g flying=0
+        column pair space=1 align=start {
+          sentence one before="I saw a heron" blank=0 after="."
+          sentence two before="I saw a gull" blank=0 after="."
+        }
+      }
+      sentence both before="I saw a heron and a gull" blank=0 after="." below=top gap=1
+    }
+    say """
+      Two short sentences about the same thing can be joined into one. And adds the second half to
+      the first. But turns it round, when the second half goes against the first. Because gives the
+      reason for the first half.
+      """
+  }
+  do {
+    practice writing.and-between-things count=1 seed=2
+    level easy {
+      worked writing.join-with-and k=4 level=medium
+    }
+    practice writing.join-with-and count=2 seed=2
+    practice writing.join-without-repeating count=2 seed=3
+    practice writing.which-ending count=2 seed=5
+    practice writing.too-many-ands count=1 hard-count=0 seed=1 easy-seed=7
+    level hard {
+      practice writing.join-reason count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show writing.join-reason k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show writing.three-joins k=1
+  }
+  remember {
+    say "And adds. But turns it round. Because gives the reason."
+  }
+
+  grown-ups """
+    Children join everything with and, including things that do not belong together. Reading the
+    joined sentence back aloud is what exposes it. In the questions where a word is chosen, the
+    wrong word always makes nonsense rather than just sounding a little worse, so if the child picks
+    it, read the sentence aloud with their word in it. The two-star question asks what the word
+    does as well as which word it is. In the three-star question, check each sentence against the
+    word it uses: the but sentence has to turn against its first half, and the because sentence has
+    to give a real reason.
+    """
+  level easy {
+    grown-ups "At this level the gap between things is as written, the ice cream's because is filled once in the teacher's pen before gaps that want and, the fox's second doing word is as written, the endings follow because, the robot joined three sentences, the two-star's word is and, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the gap between things is as written, the gaps want but and because, the fox's second doing word is as written, the endings follow but, the robot's ands make way for a second join with its reason, the two-star's word is because, and the three-star is as written."
+  }
+}

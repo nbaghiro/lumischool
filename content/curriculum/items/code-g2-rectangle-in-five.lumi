@@ -1,0 +1,20 @@
+# A rectangle is two lots of a long side and a short side, so five slots only fit it once the child
+# sees the repeat of two: the loop body is not the square's. The key proves it for every size.
+item coding.rectangle-in-five v=1 stars=3 skills=[coding.drawing, coding.repetition, reasoning.planning] {
+  title "A rectangle in five blocks"
+  difficulty (w + h)
+  let w=3..4 h=1..2
+  level hard {
+    let w={4} h=2..3
+  }
+
+  scene 34x18 {
+    turtle t cols=6 rows=5 col=2 row=5 face=right moves=[] target=["right {w}", "up {h}", "left {w}", "down {h}"] at=canvas(1, 0)
+    codepad answer tray=["forward 1", "turn left", "repeat 2"] lines=5 key=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] right-of=t gap=1
+    text ask "Draw the pale rectangle in 5 blocks." width=15 below=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which part of the rectangle happens twice?"
+  hint "One long side, a turn, one short side and a turn. How many times?"
+}

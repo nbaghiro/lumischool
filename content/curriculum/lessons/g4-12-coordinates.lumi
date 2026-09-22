@@ -1,0 +1,54 @@
+lesson g4-coordinates v=1 format=teach grade=4 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Coordinates and movement"
+  goal "Read and write coordinates, describe a move across a grid, and work out a point from others."
+
+  look {
+    scene 36x17 {
+      plotpoint grid max=6 quadrants=1 px=3 py=4 at=canvas(1, 1)
+      signpost post right-of=grid gap=2
+    }
+    say """
+      Along the bottom first, then up: three across and four up is written as a pair. A move to the
+      right changes the first number and a move up changes the second. A signpost gives a place in
+      words, and a grid gives it in numbers.
+      """
+  }
+  do {
+    practice coords.read-point count=1 seed=6
+    practice coords.move-point count=2 hard-count=1 seed=4 easy-seed=1
+    level hard {
+      practice coords.square-corner count=1 seed=2
+    }
+    level easy {
+      worked coords.start-point x=5 y=4 dx=2 dy=2 level=medium
+    }
+    practice coords.start-point count=1 seed=3
+    practice coords.fourth-corner count=1 seed=5
+    practice geography.map-square count=1 seed=2
+    practice coords.halfway-point count=1 seed=8
+    practice geography.route-square count=1 seed=7
+  }
+  try stars=2 {
+    show coords.square-corner a=1 b=2 s=3 easy-a=0 easy-b=0 easy-s=2 hard-a=2 hard-b=2 hard-s=4
+  }
+  try stars=3 {
+    show coords.points-on-a-line s=5 easy-s=4 hard-s=7
+  }
+  remember {
+    say "Along first, then up. Along the corridor and up the stairs. Right and left change the first number; up and down change the second."
+  }
+
+  grown-ups """
+    Battleships is the whole lesson in a game. Along and then up, said out loud every turn. When a
+    point moves back to where it started, the child undoes the move: left for right, down for up.
+    In the two-star question every side of a square is the same length, so the side along the
+    bottom says how far up the top is. In the three-star question marking the points on the grid
+    shows them lying on a slanting line, which is worth pointing out once they are found.
+    """
+  level easy {
+    grown-ups "At this level the point to read is near the corner, the moves are short and go up, undoing a move is worked once in the teacher's pen before a move of three or fewer to undo, the rectangle's fourth corner is close to the other three, the thing on the map is in the first two columns and rows, the line to halve is two long, the route is three squares or fewer, the square has a side of two from the corner, and the three-star counts the points whose numbers add to four."
+  }
+  level hard {
+    grown-ups "At this level the point to read is far from the corner, the moves add up to five or more and go down, and the move to undo adds up to five or more, the rectangle's fourth corner is far from the other three, the thing on the map is in the last two columns and rows, the line to halve is four long, the route is five or six squares, the square has a side of four from (2, 2) and a second square is asked, and the three-star counts the points whose numbers add to seven, where the across number runs out at the edge."
+  }
+}

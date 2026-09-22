@@ -1,0 +1,61 @@
+lesson art-shapes-cut-from-paper v=1 format=teach grade=1 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Shapes cut from paper"
+  goal "Tell geometric shapes from organic ones, count and sort the shapes a picture is made of, and build a picture from shapes."
+
+  look {
+    scene 36x11 {
+      row all at=canvas(1, 1) space=2 align=end {
+        collage pic scene="boat"
+        stencil geo shape="triangle" show="one" colour=red
+        stencil org shape="leaf" show="one" colour=green
+      }
+    }
+    say """
+      This boat is made of shapes cut from painted paper and laid on a sheet. Some shapes are
+      geometric: squares, triangles and circles, with straight edges or a perfect curve. Some are
+      organic, like a leaf or a cloud, with the wobbly edges things in nature have.
+      """
+  }
+  do {
+    practice art.count-the-shape count=2 seed=1
+    level easy {
+      worked art.geometric-or-organic s="cloud" level=medium
+    }
+    practice art.geometric-or-organic count=3 seed=2
+    practice art.how-many-geometric count=2 seed=1
+    practice art.pieces-for-two count=2 hard-count=1 seed=1
+    level hard {
+      practice art.more-geometric count=1 seed=5
+    }
+  }
+  try stars=2 {
+    show art.more-geometric s="fish" hard-s="house"
+  }
+  try stars=3 {
+    show art.shape-animal
+  }
+  remember {
+    say "Geometric shapes have straight edges or a perfect curve. Organic shapes are like things in nature."
+  }
+
+  grown-ups """
+    Cutting shapes from paper you have painted yourself, and moving them about before sticking them
+    down, is how many artists have worked; Henri Matisse made his last big pictures this way. It
+    lets a child try a picture several ways before choosing, which is the point of the lesson.
+
+    The questions are marked by the machine, which reads the pieces off the picture itself. The
+    later ones sort the pieces before counting them, which is two steps, and the two-star question
+    compares the two groups. For the three-star picture the easel's stencils stand in for scissors:
+    each one lays a shape on the sheet, and the child builds an animal from them. If you have real
+    paper, paint two or three sheets first, let them dry, and cut from those.
+
+    Respond by naming the shapes the child chose: "You made the body from a big circle and the tail
+    from a leaf." Ask which shape they tried first and moved.
+    """
+  level easy {
+    grown-ups "At this level the shapes to count are as written, a cloud is called organic once in the teacher's pen before the leaf, the star and the plain geometric shapes, the geometric pieces and the pieces for two are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the shapes to count are as written, the shapes to call geometric or organic are the fern, the cloud, the fish and the star, the geometric pieces are as written, one count of pieces for two makes way for a second sort, the two-star's picture is the house, with the most pieces, and the three-star is as written."
+  }
+}

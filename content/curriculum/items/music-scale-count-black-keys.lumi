@@ -1,0 +1,36 @@
+# The three-star search: a major scale built on each of the seven white keys, and how many use a
+# given number of black keys or fewer. C uses none, G and F one, D two, A three, E four, B five.
+item music.scale-count-black-keys v=1 stars=3 skills=[music.keys, music.intervals, reasoning.all-the-ways] {
+  title "Scales from every white key"
+  difficulty n
+  let n=0..3
+  let right={pick(n, 1, 3, 4, 5)}
+  let limit={pick(n, "no black keys", "one black key or none", "two black keys or fewer", "three black keys or fewer")}
+  level easy {
+    let n=0..1
+  }
+  level hard {
+    let n=2..3
+  }
+
+  scene 36x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      table steps cols=7 head=["1", "2", "3", "4", "5", "6", "7"] cells=["T", "T", "S", "T", "T", "T", "S"]
+      bandstand stand posts=5 notes=3
+    }
+    text ask "T is a tone and S a semitone. Ana builds a major scale on each white key from C to B with these seven steps. On how many of the seven white keys does the scale use {limit}?" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=steps {
+      say "Check the scale on C again: it uses no black keys at all, so it counts too."
+    }
+    when (answer == 7) point=steps {
+      say "Some scales need many black keys. Try the one on B: how many of its notes are black?"
+    }
+  }
+  hint "Build each scale from its first note, one step at a time. C needs no black keys and G needs one."
+  hint "Keep a list: each white key, and how many black keys its scale uses."
+}

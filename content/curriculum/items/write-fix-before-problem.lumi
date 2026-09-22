@@ -1,0 +1,32 @@
+# The two-star reason: a story whose parts are out of order, with the fix before the problem or
+# the ending before the fix, and what has gone wrong with it.
+item writing.fix-before-problem v=1 stars=2 skills=[writing.story-structure, reasoning.find-the-mistake] {
+  title "What went wrong with this story?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s={pick(k, "Zoe found a puppy in the park. She took it home. Gran brought its favourite food. It would not eat anything. Zoe kept the puppy and called it Bun.", "Ben took his kite up the hill. The wind lifted it high. Ben flew the kite till tea. It stuck in a tall tree. Dad fetched the long pole.")}
+  let right={pick(k, "The fix comes before the problem", "The ending comes before the fix")}
+  let w1={pick(k, "It has no problem", "It has no ending")}
+  let w2={pick(k, "The opening is missing", "The build-up is missing")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x26 {
+    passage draft title="" text="{s}" width=32 numbers=true at=canvas(1, 1)
+    text ask "Every part of the mountain is here, but the story reads oddly. What has gone wrong?" narrate width=32 below=draft gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=draft {
+      say "Find the problem sentence and the fixing sentence. On the mountain the problem is at the top and the fixing on the way down: which comes first here?"
+    }
+  }
+  hint "Name each sentence's card: opening, build-up, problem, fixing it, ending. Are they in that order?"
+  hint "A fix cannot come before the thing it fixes, and the ending comes after the fix."
+}

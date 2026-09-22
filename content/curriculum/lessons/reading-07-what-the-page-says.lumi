@@ -1,0 +1,55 @@
+lesson reading-what-the-page-says v=1 format=teach grade=2 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "What the page says"
+  goal "Read a short passage and find an answer inside it."
+
+  look {
+    scene 30x11 {
+      row all at=canvas(1, 1) space=1 align=end {
+        passage p title="Ada's hens" text="Ada keeps 6 hens in the garden. Every morning she opens the hutch and counts them." width=20
+        art hen asset="hen"
+      }
+    }
+    say """
+      Read the whole passage first, then read the question, then go back and find the part that
+      answers it. The lines are numbered so you can say where you found it.
+      """
+  }
+  do {
+    show reading.passage-who a="Ann" b="Eve"
+    practice reading.passage-when count=2 seed=3
+    practice reading.true-or-false count=2 seed=6
+    show reading.count-in-passage n=7 m=3 easy-n=5 easy-m=2 hard-n=9 hard-m=4
+    level easy {
+      worked reading.ducks-now n=7 m=3 p=2 level=medium
+    }
+    practice reading.ducks-now count=1 seed=2
+  }
+  story {
+    practice reading.which-sentence-page count=1 seed=4
+  }
+  try stars=2 {
+    show reading.why-passage k=1 p=2
+  }
+  try stars=3 {
+    show reading.ask-a-question k=0
+  }
+  remember {
+    say "The answer is in the passage. If you cannot point at it, read again."
+  }
+
+  grown-ups """
+    If the child answers from memory rather than from the passage, ask them to put a finger on the
+    words that gave them the answer. Pointing is the habit worth building.
+
+    The true or false questions borrow the passage's own words and change one detail, so they are
+    answered by reading closely rather than by spotting a word. The two-star question asks why,
+    and the reason is never written with because: two sentences have to be put together. The
+    three-star question is marked by you; a why question the child makes up is the best kind.
+    """
+  level easy {
+    grown-ups "At this level who carries the ball, the day, true or false and the sentence to find are as written, five children were on the bus and two got off, the ducks are worked once in the teacher's pen before a pond of nine or fewer counted in and out, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level who carries the ball, the day, true or false and the sentence to find are as written, nine children were on the bus and four got off, the ducks on the pond add to thirteen or more counted in and out, and the two-star and three-star are as written."
+  }
+}

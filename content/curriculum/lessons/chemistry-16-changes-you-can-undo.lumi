@@ -1,0 +1,54 @@
+lesson chemistry-changes-you-can-undo v=1 format=teach grade=2 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "Changes you can undo"
+  goal "Sort changes into those that can be undone and those that cannot, say how to undo the ones that can, and say why."
+
+  look {
+    scene 16x17 {
+      beforeafter a change="melt-chocolate" show=1 names=1 at=canvas(1, 0)
+      beforeafter b change="toast-bread" show=1 names=1 below=a gap=1
+    }
+    say """
+      Some changes can be undone. Melted chocolate sets hard again in the fridge, and it is still
+      chocolate. Other changes make a new material, and cannot be undone. Toast can never be
+      turned back into bread.
+      """
+  }
+  do {
+    practice chem.change-before count=1 seed=2
+    level easy {
+      worked chem.change-undo c="dissolve-sugar" level=medium
+    }
+    practice chem.change-undo count=2 seed=5 hard-seed=1
+    practice chem.change-new count=2 seed=1
+    practice chem.undo-how count=2 seed=1 easy-seed=2
+    practice chem.undo-sort count=2 hard-count=1 seed=4
+    level hard {
+      practice chem.undo-why count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show chem.undo-why c="dissolve-sugar" easy-c="melt-ice"
+  }
+  try stars=3 {
+    show chem.new-gas q=0 hard-q=1
+  }
+  remember {
+    say "If it is the same stuff afterwards, you can change it back. If it is new stuff, you cannot."
+  }
+
+  grown-ups """
+    Saying what the chocolate or the bread becomes is the way in. The core asks the same idea from
+    three sides: can it be undone, is a new material made, and if it can be undone, how. The
+    two-star question asks for the reason, from three kinds of change: the same stuff in a new state,
+    a solid spread through water, or a new material. The three-star question compares two changes
+    that both make a gas: steam is still water, and the gas from vinegar and baking soda was not
+    there before. A grown-up does the toasting and the frying; nobody tastes anything but food made
+    for eating.
+    """
+  level easy {
+    grown-ups "At this level the change to guess is as written, sugar dissolving is judged once in the teacher's pen before ice, water, chocolate, toast, an egg and a cake, which are plain, the way back is cooling or warming, the columns are as written, the two-star asks why melting ice can be undone, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the change to guess is as written, the changes to judge are the subtle ones, sugar dissolving, water boiling, dough rising, a fizz, rust and a candle, the way back is a cooling for steam or the water drying up for sugar, the columns are as written, the two-star is as written and a second reason is asked for another subtle change, and the three-star asks which gas is still water."
+  }
+}

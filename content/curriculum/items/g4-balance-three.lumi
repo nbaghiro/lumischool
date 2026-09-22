@@ -1,0 +1,28 @@
+# A two-step balance chain: a cube is worth a balls, a ball is worth b stars, so the child has to
+# scale twice rather than once.
+item puzzle.balance-three v=1 stars=2 skills=[reasoning.balance] {
+  title "Cubes, balls and stars"
+  difficulty (n * a * b)
+  let a=2..4 b=2..5 n=2..3
+  where (a != b)
+  where (n * a * b <= 40)
+  roles heavy=cube mid=ball light=star
+
+  scene 34x16 {
+    balance s1 left=[heavy] right=[mid * a] at=canvas(1, 0)
+    balance s2 left=[mid] right=[light * b] right-of=s1 gap=1
+    text ask "How many {light.many} would balance {n} {heavy.many}?" narrate width=32 below=s1 gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (n * a * b)
+  feedback {
+    when (answer == a * b) point=s1 {
+      say "That is one {heavy}. There are {n} of them."
+    }
+    when (answer == n * a + n * b) point=s2 {
+      say "Swap one {heavy} for {a} {mid.many}, then each {mid} for {b} {light.many}, so the two numbers multiply."
+    }
+  }
+  hint "First find how many {light.many} balance one {heavy}."
+}

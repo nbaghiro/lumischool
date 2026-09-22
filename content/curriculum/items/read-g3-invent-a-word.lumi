@@ -1,0 +1,17 @@
+# Writing the context for a made-up word is the reading skill turned round: the child has to know
+# which clues let a reader work a meaning out. Many answers are right; a grown-up marks it.
+item reading.invent-a-word v=1 stars=3 skills=[reading.context, writing.composing] {
+  title "Make up a word"
+  let k=0..2
+
+  scene 37x13 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Make up a new word for {if k == 0 then \"a kind of weather\" else if k == 1 then \"a feeling\" else \"a tool in the kitchen\"}. Write a sentence that lets a reader work out what it means, without saying what it means." width=36
+      writinglines w lines=2 width=36 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A made-up word used in a sentence whose other words give enough clues to guess its meaning, for example: The flurp was so heavy that we could not see the end of the street (a kind of fog), or Mo felt so grumbly that he kicked the door (cross). The sentence must not simply say what the word means. A sentence where the word could mean almost anything is not finished yet."
+  hint "What would a reader need to know to guess your word? Put those clues in the sentence."
+  hint "Read your sentence to someone. Can they guess what your word means?"
+}

@@ -1,0 +1,32 @@
+# Matching a strip to the pen that drew it, from a key of what each of the three black pens splits
+# into. Black 2 leaves two bands and is the plainest to match; black 1 and black 3 both leave a pink
+# band at four, so they have to be told apart higher up.
+item chemistry.ink-which-pen v=1 skills=[chemistry.separating, reasoning.evidence] {
+  title "Which pen drew it?"
+  difficulty (if ink == "black2" then 0 else 1)
+  let k=0..5
+  let ink={pick(k, "black2", "black1", "black3", "black2", "black1", "black3")}
+  let ans={pick(k, "Black 2", "Black 1", "Black 3", "Black 2", "Black 1", "Black 3")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={4, 5}
+  }
+
+  scene 30x35 {
+    chromatography strip inks=["{ink}"] labels=["A"] run=1 beaker=1 ruler=1 at=canvas(1, 0)
+    table key cols=2 head=["Pen", "Colours it splits into"] cells=["Black 1", "yellow, pink, blue", "Black 2", "orange, blue", "Black 3", "pink, green, blue"] below=strip gap=1
+    text ask "The key says what each pen's ink is made of. Which pen drew the dot on this strip?" narrate width=24 below=key gap=1
+    choice pick options=["Black 1", "Black 2", "Black 3"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=strip {
+      say "Read the colours on the strip from the bottom up, then find the row of the key with those colours in it."
+    }
+  }
+  hint "Name the colours on the strip in order from the pencil line up."
+  hint "Only one row of the key has exactly those colours."
+}

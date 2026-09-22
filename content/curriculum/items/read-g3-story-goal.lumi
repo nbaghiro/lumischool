@@ -1,0 +1,24 @@
+# What the main character wants drives the story: the stops are the tries to get it.
+item reading.story-goal v=1 skills=[reading.story-structure, reading.inference] {
+  title "What do they want?"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={1, 2}  # the kite and the meal are in the stops
+  }
+  level hard {
+    let k={0, 1}  # Nell's Gran is only at the end
+  }
+
+  scene 37x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=[if k == 0 then "Nell sets off along the river." else if k == 1 then "Ben flies his kite." else "A fox is hungry.", if k == 0 then "The bridge has fallen down." else if k == 1 then "The string snaps." else "He creeps up to the hen house.", if k == 0 then "She borrows a boat." else if k == 1 then "The kite lands in a tree." else "The hen chases him off.", if k == 0 then "Tea at Gran's house." else if k == 1 then "Dad gets it down." else "He eats berries instead."] icons=[if k == 0 then "girl" else if k == 1 then "boy" else "fox", if k == 0 then "bridge" else if k == 1 then "cloud" else "hen", if k == 0 then "boat" else if k == 1 then "tree" else "hen", if k == 0 then "cake" else if k == 1 then "boy" else "apple"] heads=[] blank=-1
+      text ask "What does {if k == 0 then \"Nell\" else if k == 1 then \"Ben\" else \"the fox\"} want in this story?"
+      choice pick options=[if k == 0 then "a new bridge" else if k == 1 then "a new string" else "a hen friend", if k == 0 then "to see Gran" else if k == 1 then "to climb" else "a new den", if k == 0 then "to row a boat" else if k == 1 then "his kite back" else "a meal"]
+    }
+  }
+
+  answer pick=(if k == 0 then "to see Gran" else if k == 1 then "his kite back" else "a meal")
+  hint "What is the character trying to get, from the first stop to the last?"
+  hint "Is the choice something they want all the way through, or only one thing that happens?"
+}

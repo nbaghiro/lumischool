@@ -1,0 +1,57 @@
+# The ukulele first, as school programmes and the children's courses start: four nylon strings,
+# small enough for a young hand, and tuned so the open strings already make a chord. The picture is
+# upright, facing the child, the same way round as every chord card they will read.
+lesson music-uke-meet v=1 format=teach grade=1 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Meet the ukulele"
+  goal "Name the parts of a ukulele and its four strings, G, C, E and A, and number them from the thinnest."
+
+  look {
+    scene 34x29 {
+      ukulele uke labels=true letters=true ring=0 at=canvas(1, 1)
+      chordbox card tuning=uke chord=none places=[] frets=3 show=dots name=false letters=true lit=[] right-of=uke gap=1
+    }
+    say """
+      A ukulele has four strings: G, C, E and A. Stand it up with the strings facing you and they go
+      G, C, E, A from left to right, the same as on a chord card. String 1 is A, the thinnest.
+      """
+  }
+  do {
+    show music.uke-string-letter
+    practice music.uke-which-string count=2 seed=3
+    show music.uke-string-number
+    level easy {
+      worked music.uke-number-of L="G" level=medium
+    }
+    practice music.uke-number-of count=2 seed=6
+    practice music.uke-parts-match count=1 hard-count=0 seed=2
+    level hard {
+      practice music.uke-string-claim count=1 seed=7
+    }
+    show music.uke-play-open
+  }
+  try stars=2 {
+    show music.uke-string-claim k=2 easy-k=1
+  }
+  try stars=3 {
+    show music.uke-low-to-high
+  }
+  remember {
+    say "Four strings, G C E A. String 1 is A, the thinnest one."
+  }
+
+  grown-ups """
+    Tune the ukulele for the child with a clip-on tuner before each practice; new strings stretch
+    and drift for the first week. Show them how to hold it, body against the tummy and the neck to
+    the left, then stand it up beside the card so they can see the strings match.
+
+    The two-star question names the usual slip, counting the strings from the left. In the
+    three-star question the G string is tuned high, so the lowest sound is the C string and the
+    order is C, E, G, A; let the child find that by listening before you say so.
+    """
+  level easy {
+    grown-ups "At this level the ringed string is the A at the edge or the E beside it, the G string's number is found once in the teacher's pen before the C and E strings, the parts and the strings to play are as written, Nia's claim is about string 1, at the edge, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the ringed string is one of the two in the middle, the numbers to find are the G and C strings, the parts make way for a second claim of Nia's, the strings to play are as written, Nia's claim is about string 2, in the middle, and the three-star is as written."
+  }
+}

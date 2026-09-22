@@ -1,0 +1,29 @@
+item writing.commas-in-a-list v=1 skills=[writing.punctuation] {
+  title "Commas in a list"
+  difficulty n
+  let n=3..5
+  level easy {
+    let n={3}
+  }
+  level hard {
+    let n={5}  # medium's own seed already draws five
+  }
+
+  scene 36x15 {
+    listpad pad title="To pack" items=["hats", "maps", "pens", "cups", "bags"] count=n width=10 ticks=true at=canvas(1, 1)
+    passage strip text="{if n == 3 then \"I packed hats maps and pens\" else if n == 4 then \"I packed hats maps pens and cups\" else \"I packed hats maps pens cups and bags\"}." width=23 numbers=false right-of=pad gap=1
+    text ask "The list became a sentence. How many commas does it need?" width=17 below=strip gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (n - 2)
+  feedback {
+    when (answer == n) point=strip {
+      say "There is no comma before and, and none after the last thing in the list."
+    }
+    when (answer == n - 1) point=strip {
+      say "The word and does the job of the last comma, so there is one fewer than you might expect."
+    }
+  }
+  hint "A comma goes between the things in the list, but not before the word and."
+}

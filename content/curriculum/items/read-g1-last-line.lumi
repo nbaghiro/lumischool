@@ -1,0 +1,16 @@
+# Open: the child finishes a poem with a line of their own that rhymes and makes sense, marked by a
+# grown-up.
+item reading.last-line v=1 stars=3 skills=[reading.rhyme, writing.composing] {
+  title "Finish the poem"
+  let k=0..2
+
+  scene 32x18 {
+    poem p title="{if k == 0 then \"The sun\" else if k == 1 then \"My cat\" else \"The frog\"}" lines=["{if k == 0 then \"The sun is hot,\" else if k == 1 then \"My cat is fat,\" else \"A frog on a log\"}", "{if k == 0 then \"I like it a lot.\" else if k == 1 then \"she sits on the mat.\" else \"sat in the fog.\"}", "{if k == 0 then \"I skip and I hop,\" else if k == 1 then \"She naps in the sun,\" else \"He sang to a bug,\"}", "and then"] rhymes=[-1, -1, -1, -1] blank=-1 width=21 at=canvas(1, 1)
+    text ask "Finish the last line. It has to rhyme with {if k == 0 then \"hop\" else if k == 1 then \"sun\" else \"bug\"}." narrate width=9 right-of=p gap=1
+    writinglines lines lines=1 width=30 prompt="" below=p gap=1
+  }
+
+  check writing.by-eye look-for="A last line that carries on from the third line, makes sense in the poem and ends with a word that rhymes with the end of the third line, such as stop, run or hug."
+  hint "Say the end of the third line. Think of words that sound the same at the end."
+  hint "Pick one that makes sense in the poem, and build the line to end with it."
+}

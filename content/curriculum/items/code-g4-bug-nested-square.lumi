@@ -1,0 +1,24 @@
+# A square drawn with a repeat inside a repeat, and one count is wrong: either the number of sides or
+# the length of each. The checker tries every change to every line and proves only one line mends it.
+item coding.bug-nested-square v=1 stars=2 skills=[coding.debugging, coding.repetition] {
+  title "Which count is wrong?"
+  let s=3..4 k=0..1
+
+  scene 36x20 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat {if k == 0 then 3 else 4}", "  repeat {if k == 1 then s - 1 else s}", "    forward 1", "  turn left"]
+      turtle t cols=6 rows=6 col=1 row=6 face=right moves=["repeat {if k == 0 then 3 else 4}", "  repeat {if k == 1 then s - 1 else s}", "    forward 1", "  turn left"] target=["repeat 4", "  repeat {s}", "    forward 1", "  turn left"]
+    }
+    text ask "Pia wanted the dashed square. One line has a wrong number. Which line?" width=34 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check coding.runs of=t goal=target answer=wrong
+  feedback {
+    when (answer == 3) point=p {
+      say "Line 3 moves one square each time, and that is right. Which line says how many times?"
+    }
+  }
+  hint "Count the sides of the dashed square, and how long each side is."
+  hint "Which line says how many sides there are, and which says how long each one is?"
+}

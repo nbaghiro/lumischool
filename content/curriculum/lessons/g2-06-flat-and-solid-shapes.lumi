@@ -1,0 +1,55 @@
+lesson g2-flat-and-solid-shapes v=1 format=teach grade=2 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Flat and solid shapes"
+  goal "Name flat shapes by their sides and solids by their faces and corners."
+
+  look {
+    scene 30x26 {
+      props flat count=4 prop=hexagon at=canvas(1, 1)
+      row solids below=flat gap=1 space=2 align=centre {
+        solid cube kind=cube label="cube"
+        solid ball kind=sphere label="sphere"
+        solid tube kind=cylinder label="cylinder"
+      }
+      row more below=solids gap=1 space=2 align=start {
+        net open solid=cube cell=2
+        geoboard pegs n=5 count=false
+      }
+    }
+    say """
+      A flat shape is named by its sides. A solid is named by its faces, and a net is the solid
+      opened out flat. Dashed lines are the edges at the back that you cannot see.
+      """
+  }
+  do {
+    practice shapes.sides count=1 seed=2
+    practice shapes.name-solid count=1 seed=2
+    practice shapes.flat-faces count=2 seed=5
+    practice shapes.corners count=1 seed=3
+    practice shapes.sides-total count=2 seed=4
+    practice shapes.more-than-four count=1 seed=7
+  }
+  try stars=2 {
+    show shapes.solid-riddle k=2 easy-k=0 hard-k=1
+  }
+  try stars=3 {
+    show shapes.tower-faces n=4 easy-n=2 hard-n=6
+  }
+  remember {
+    say "A cube has six square faces and eight corners. A cylinder has two round ends and one curved surface."
+  }
+
+  grown-ups """
+    Cereal boxes and tins are the best solids in the house. Open a box out flat and the net stops
+    being a picture. For faces and corners, a real box to turn over in the hands is worth more
+    than the drawing: the hidden faces are the ones children miss. In the two-star question the
+    pyramid and the prism both have five faces, so the corners decide. In the three-star question,
+    building a tower of two cubes and then three, and counting the painted faces each time, shows
+    the pattern.
+    """
+  level easy {
+    grown-ups "At this level the solids to count are the cone, the cylinder and the cube, the trays hold few shapes, the riddle's solid is the only one with six faces, and the tower is two cubes."
+  }
+  level hard {
+    grown-ups "At this level the solids to count are the cuboid, the pyramid and the prism, whose hidden faces and corners have to be counted, the trays hold many shapes, and the tower is six cubes."
+  }
+}

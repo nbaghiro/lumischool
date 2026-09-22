@@ -1,0 +1,26 @@
+item fraction.shaded v=1 skills=[fractions.of-a-shape] {
+  title "What fraction is shaded"
+  difficulty (r * c)
+  let r=1..2 c=2..4 k=1..6
+  where (k < r * c)
+  where (k / (r * c) in {1 / 2, 1 / 3, 2 / 3, 1 / 4, 3 / 4})
+  level easy {
+    let r={1} c={2, 4} k=1..3  # halves and quarters of one row
+  }
+  level hard {
+    let r={2} c=3..4 k=2..6
+  }
+
+  scene 26x14 {
+    grid g rows=r cols=c shade=k color=mint at=canvas(1, 1)
+    text ask "What fraction of the grid is shaded?" narrate width=24 below=g gap=1
+    choice pick options=[1 / 2, 1 / 3, 2 / 3, 1 / 4, 3 / 4] below=ask gap=1
+  }
+
+  answer pick=(k / (r * c))
+  feedback {
+    when (pick == k / (r * c - k)) point=g {
+      say "The bottom number counts every square, shaded or not."
+    }
+  }
+}

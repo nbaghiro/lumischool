@@ -1,0 +1,17 @@
+# What the sign wants you to do, said in other words: wet paint does not say do not touch, and the
+# child has to know that it means it.
+item reading.sign-what-to-do v=1 skills=[reading.signs, reading.inference] {
+  title "What should you do?"
+  difficulty (if k == 2 then 2 else if k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 33x18 {
+    sign s lines=[if k == 0 then "SHUT THE GATE" else if k == 1 then "DOGS ON LEADS" else if k == 2 then "WET PAINT" else "PLEASE TAKE ONE"] kind=hanging color=(if k == 0 then "mint" else if k == 1 then "sky" else if k == 2 then "berry" else "tang") at=canvas(1, 1)
+    text ask "What does this sign tell you to do?" narrate width=18 right-of=s gap=2
+    choice pick options=[if k == 0 then "Close the gate behind you." else if k == 1 then "Leave your dog at home." else if k == 2 then "Paint the bench." else "You may have one.", if k == 0 then "Leave the gate open." else if k == 1 then "Keep your dog on a lead." else if k == 2 then "Sit here to rest." else "Take them all.", if k == 0 then "Paint the gate." else if k == 1 then "Let your dog run free." else if k == 2 then "Do not touch it." else "Do not take any."] stack=column below=s gap=1
+  }
+
+  answer pick=(if k == 0 then "Close the gate behind you." else if k == 1 then "Keep your dog on a lead." else if k == 2 then "Do not touch it." else "You may have one.")
+  hint "Read the sign. Who put it there, and why?"
+  hint "Which choice would you do if you saw the sign?"
+}

@@ -1,0 +1,14 @@
+item physics.moon-grows v=1 skills=[physics.sky] {
+  title "Growing or shrinking?"
+  let s={1, 4} k=0..3
+  where (not (s == 1 and (k == 0 or k == 2)))
+
+  scene 34x10 {
+    moonphases m from=s step=7 count=4 at=canvas(1, 0)
+    text ask "On day {s + 7 * k}, is the lit part of the moon growing or shrinking?" width=14 below=m gap=1
+    choice pick options=["growing", "shrinking"] right-of=ask gap=1
+  }
+
+  check physics.sky of=m pick="grows({k})"
+  hint "Is the moon in the next box bigger or smaller?"
+}

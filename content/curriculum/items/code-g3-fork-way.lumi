@@ -1,0 +1,24 @@
+# The way in to a decision: the fork on its own, unlit, with the number given, so the child asks
+# the question on the sign and follows one path.
+item coding.fork-way v=1 skills=[coding.decisions] {
+  title "Which way at the fork?"
+  difficulty (5 - abs(n - t))
+  let n=1..10 t=4..7
+
+  scene 36x12 {
+    fork f ask="Is the number more than {t}?" yes="jump" no="sit" cond="the number is more than {t}" n=n lit=false at=canvas(1, 0)
+    column q right-of=f gap=2 space=1 align=start {
+      text ask "The number is {n}. What does the robot do?" width=12
+      choice pick options=["jump", "sit"]
+    }
+  }
+
+  check coding.runs of=f pick=said
+  feedback {
+    when (pick == "jump" and n == t) point=f {
+      say "{t} is not more than {t}. It is the same."
+    }
+  }
+  hint "Read the question on the sign. What is the answer for {n}, yes or no?"
+  hint "Follow the yes path or the no path to the end."
+}

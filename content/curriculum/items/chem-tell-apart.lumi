@@ -1,0 +1,36 @@
+# The two-star reason: two things that look alike, and the one test that tells their materials
+# apart. A glass bottle and a plastic bottle both show through, so seeing through tells nothing;
+# pressing does. A wooden and a plastic spoon painted the same colour: dropping them in water
+# does not help (both float), but a scratch shows the grain.
+item chem.tell-apart v=1 stars=2 skills=[chemistry.materials, reasoning.fair-test] {
+  title "Which test tells them apart?"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..2 r=0..2
+  let x={pick(k, "glass-bottle", "metal-spoon", "wooden-block")}
+  let y={pick(k, "plastic-bottle", "plastic-spoon", "plastic-spoon")}
+  let story={pick(k, "Two bottles look the same, but one is glass and one is plastic.", "Two spoons are painted silver. One is metal and one is plastic.", "A block and a spoon are painted white. One is wood and one is plastic.")}
+  let right={pick(k, "Press the sides: plastic bends, glass does not.", "Hold them: metal feels cold, plastic does not.", "Scratch the paint: wood has a grain underneath.")}
+  let w1={pick(k, "Look through them: both show through.", "Look at them: both are silver.", "Drop them in water: both float.")}
+  let w2={pick(k, "Fill them with water: both hold it.", "Put them in water: both keep it out.", "Look at them: both are white.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x23 {
+    materials row things=["{x}", "{y}"] at=canvas(1, 0)
+    text ask "{story} Which test tells you which is which?" narrate width=32 below=row gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=row {
+      say "A test only helps if the two materials do different things in it. Would both do the same here?"
+    }
+  }
+  hint "A test that both pass, or both fail, tells you nothing. Which test would they do differently?"
+  hint "Think of what each material is like: plastic bends, metal feels cold, wood has a grain."
+}

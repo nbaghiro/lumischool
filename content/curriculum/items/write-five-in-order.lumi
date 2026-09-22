@@ -1,0 +1,42 @@
+# Five sentences of one story numbered opening to ending, muddled. The problem comes before the
+# fix and the fix before the ending.
+item writing.five-in-order v=1 skills=[writing.planning, writing.story-structure, reasoning.order] {
+  title "Five parts in order"
+  difficulty (if p == 0 then 0 else if p == 1 then 1 else 2)
+  let k=0..1 p=0..2
+  let a={pick(p, 1, 2, 4)}
+  let b={pick(p, 0, 4, 1)}
+  let c={pick(p, 2, 0, 3)}
+  let d={pick(p, 4, 3, 0)}
+  let e={pick(p, 3, 1, 2)}
+  let t0={pick(k, "Leo and Gran walked to the cliffs.", "Ada built a raft from the old door.")}
+  let t1={pick(k, "They climbed the path to the top.", "She pushed it out onto the pond.")}
+  let t2={pick(k, "Gran's hat blew off the edge.", "The raft began to sink at one end.")}
+  let t3={pick(k, "Leo found it caught in a gorse bush.", "Ada paddled hard for the bank.")}
+  let t4={pick(k, "They walked home with the hat on tight.", "She dried out by the fire, raft and all.")}
+  let wa={pick(a, t0, t1, t2, t3, t4)}
+  let wb={pick(b, t0, t1, t2, t3, t4)}
+  let wc={pick(c, t0, t1, t2, t3, t4)}
+  let wd={pick(d, t0, t1, t2, t3, t4)}
+  let we={pick(e, t0, t1, t2, t3, t4)}
+  level easy {
+    let k=0..0 p=0..0
+  }
+  level hard {
+    let k=1..1 p=2..2
+  }
+
+  scene 34x21 {
+    text ask "The five parts of the story are muddled. Number them 1 to 5, opening to ending." narrate width=32 at=canvas(1, 1)
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, r, t, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1) v=(e + 1)
+  feedback {
+    when ((if a == 2 then q else if b == 2 then r else if c == 2 then t else if d == 2 then u else v) > (if a == 3 then q else if b == 3 then r else if c == 3 then t else if d == 3 then u else v)) point=s {
+      say "Something has to go wrong before it can be put right. The problem comes before the fixing."
+    }
+  }
+  hint "Find the opening (who and where) and the ending (how things are at the end) first."
+  hint "In the middle: the build-up, then the problem, then the fixing. Nothing is fixed before it goes wrong."
+}

@@ -1,0 +1,48 @@
+# A message chosen, and the program that sends it picked from three; at hard the other two have
+# the same flashes in another order, or one flash changed.
+item coding.which-program-says v=1 skills=[coding.sequences, coding.data] {
+  title "Which program says it?"
+  difficulty d
+  let m=0..2 d=0..1 r=0..2
+  let want={pick(m, "come in", "stay out", "go round")}
+  let a1={if d == 0 then "flash long" else pick(m, "flash long", "flash short", "flash long")}
+  let a2={if d == 0 then "flash short" else pick(m, "flash short", "flash short", "flash long")}
+  let a3={if d == 0 then "flash short" else pick(m, "flash short", "wait", "wait")}
+  let b1={if d == 0 then "flash short" else pick(m, "flash short", "flash long", "flash short")}
+  let b2={if d == 0 then "flash short" else pick(m, "flash long", "flash short", "flash long")}
+  let b3={if d == 0 then "wait" else pick(m, "flash short", "wait", "wait")}
+  let c1={if d == 0 then "flash long" else pick(m, "flash short", "flash short", "flash long")}
+  let c2={if d == 0 then "flash long" else pick(m, "flash short", "flash long", "flash short")}
+  let c3={if d == 0 then "wait" else pick(m, "flash long", "wait", "wait")}
+  let right={if d == 0 then pick(m, "A", "B", "C") else "A"}
+  let s1={pick(r, "A", "B", "C")}
+  let s2={pick(r, "B", "C", "A")}
+  let s3={pick(r, "C", "A", "B")}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 36x28 {
+    text ask "Pip wants to tell the boat: {want}. The key says {if m == 0 then \"long short short\" else if m == 1 then \"short short\" else \"long long\"}. Which lamp's program sends it?" narrate width=34 at=canvas(1, 1)
+    row lamps space=1 align=start below=ask gap=1 {
+      program pa code=[if s1 == "A" then a1 else if s1 == "B" then b1 else c1, if s1 == "A" then a2 else if s1 == "B" then b2 else c2, if s1 == "A" then a3 else if s1 == "B" then b3 else c3] title="Lamp 1"
+      program pb code=[if s2 == "A" then a1 else if s2 == "B" then b1 else c1, if s2 == "A" then a2 else if s2 == "B" then b2 else c2, if s2 == "A" then a3 else if s2 == "B" then b3 else c3] title="Lamp 2"
+    }
+    row low space=1 align=start below=lamps gap=1 {
+      program pc code=[if s3 == "A" then a1 else if s3 == "B" then b1 else c1, if s3 == "A" then a2 else if s3 == "B" then b2 else c2, if s3 == "A" then a3 else if s3 == "B" then b3 else c3] title="Lamp 3"
+      choice pick options=["Lamp 1", "Lamp 2", "Lamp 3"] stack=column
+    }
+  }
+
+  answer pick=(if s1 == right then "Lamp 1" else if s2 == right then "Lamp 2" else "Lamp 3")
+  feedback {
+    when (pick != (if s1 == right then "Lamp 1" else if s2 == right then "Lamp 2" else "Lamp 3")) point=lamps {
+      say "{if d == 0 then \"Read each lamp's flashes in order and find the one that matches the key's row.\" else \"The flashes have to come in the key's order, first to last. Two lamps have the right flashes in the wrong order, or one flash wrong.\"}"
+    }
+  }
+  hint "Read the key's row for {want} first, then each lamp from the top."
+  hint "{if d == 0 then \"Only one lamp has the same flashes as the key's row.\" else \"Check the first flash, then the second, then the third.\"}"
+}

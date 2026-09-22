@@ -1,0 +1,52 @@
+# The first lesson where a child writes a program rather than reading one. On screen the arrows are
+# dragged into the slots and run; on paper they are drawn in the slots and walked with a finger.
+lesson coding-arrows-to-the-gem v=1 format=teach grade=1 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Arrows to the gem"
+  goal "Write a program of arrow blocks that takes the robot past a gem to the flag."
+
+  look {
+    scene 21x9 {
+      row both at=canvas(1, 0) space=1 align=start {
+        maze m map=["S . . #", ". # * .", ". # . F"] code=["right 2", "down 1", "right 1", "down 1"] trail=steps
+        blocks b code=["right 2", "down 1", "right 1", "down 1"] words=false numbers=true
+      }
+    }
+    say """
+      Find the path with a finger first. Then write one arrow for each straight part of it, with
+      the number of squares. The numbers in rings on the grid show where each block ends.
+      """
+  }
+  do {
+    practice coding.first-arrow count=2 seed=3
+    practice coding.gems-picked count=2 seed=4
+    show coding.which-program-gem a=4 k=0 easy-a=2
+    show coding.which-program-gem a=2 k=1 hard-a=4
+    practice coding.build-arrows count=2 seed=5
+  }
+  try stars=2 {
+    show coding.gem-first xa=5 ya=2 xb=2 yb=3 easy-xa=2 easy-ya=1 easy-xb=5 easy-yb=4 hard-xa=4 hard-ya=2 hard-xb=3 hard-yb=4
+  }
+  try stars=3 {
+    show coding.fewest-both k=0
+  }
+  remember {
+    say "Plan the path, then write one arrow for each straight part."
+  }
+
+  grown-ups """
+    There is more than one right program for most of these, and a long way round that still gets
+    the gem is right too. On screen the robot stops at a rock and the child can change a block and
+    run it again, which is the habit worth building: try it, look, change one thing. On paper, walk
+    the child's arrows with a finger and stop where the robot would. Before writing, the child
+    reads programs: which way the first block can go, how many gems a path walks over, and which of
+    two orders gets the gem. In the two-star question counting both ways once shows the rule: get
+    the nearer gem first. In the three-star question there are only as many slots as the shortest
+    program needs.
+    """
+  level easy {
+    grown-ups "At this level the programs walk over fewer squares, and one gem is plainly nearer the start than the other."
+  }
+  level hard {
+    grown-ups "At this level the two ways round the gems are one square apart in length, so both have to be counted to be sure."
+  }
+}

@@ -1,0 +1,20 @@
+# Reading the title before the book: what it tells you to expect.
+item reading.title-predict v=1 skills=[reading.gist, reading.text-features] {
+  title "What will the book be about?"
+  difficulty (if k == 0 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 37x17 {
+    row all at=canvas(1, 1) space=1 align=start {
+      book b lines=4 left="{if k == 0 then \"The Night the Lamp Went Out\" else if k == 1 then \"Teddy Learns to Swim\" else if k == 2 then \"The Secret of the Old Well\" else \"Ten Things to Do on a Wet Day\"}" page="1"
+      column q space=1 align=start {
+        text ask "What is this book most likely to be about?" width=17
+        choice pick options=[if k == 0 then "a birthday party" else if k == 1 then "learning to swim" else if k == 2 then "a football match" else "a lost dog", if k == 0 then "a lighthouse in a storm" else if k == 1 then "a trip to the moon" else if k == 2 then "planting beans" else "ideas for rainy days", if k == 0 then "baking bread" else if k == 1 then "a lost key" else if k == 2 then "finding something hidden" else "how rain is made"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "a lighthouse in a storm" else if k == 1 then "learning to swim" else if k == 2 then "finding something hidden" else "ideas for rainy days")
+  hint "Read the title slowly. Which words tell you the most?"
+  hint "Which choice uses those words, or means the same as them?"
+}

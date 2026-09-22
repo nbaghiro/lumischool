@@ -1,0 +1,12 @@
+item writing.words-in-order v=1 skills=[writing.sentences] {
+  title "Words in order"
+
+  scene 29x15 {
+    picturecards card who=["fox"] where=["in"] thing=["box"] letters=false at=canvas(1, 1)
+    text ask "Number the cards 1, 2 and 3 so they make a sentence about the picture." width=17 right-of=card gap=1
+    sequence s items=["in the box.", "The fox", "is"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=3 b=1 c=2
+  hint "A sentence starts with a capital letter and ends with a full stop."
+}

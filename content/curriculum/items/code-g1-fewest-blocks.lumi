@@ -1,0 +1,16 @@
+# A wall of rocks means no two-block program gets there: both L-shaped paths from the start are
+# blocked in every map, so three blocks is the fewest, and the builder proves three is enough.
+item coding.fewest-blocks v=1 stars=3 skills=[coding.sequences, reasoning.planning] {
+  title "Only three blocks"
+  let k=0..2
+
+  scene 32x16 {
+    maze g map=["{if k == 0 then \"S . . . .\" else if k == 1 then \"S # . . .\" else \"S . . . .\"}", "{if k == 0 then \"# # # . .\" else if k == 1 then \". # . . .\" else \". # # # .\"}", "{if k == 0 then \"F . . . .\" else if k == 1 then \". # . F .\" else \". # F . .\"}", ". . . . ."] at=canvas(1, 0)
+    codepad answer tray=["right 1", "down 1", "left 1", "up 1"] lines=3 right-of=g gap=1
+    text ask "Write 3 blocks that take the robot to the flag." width=14 below=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Can two blocks get there? Try both ways round a corner."
+  hint "Find a way round the rocks first. How many straight parts does it have?"
+}

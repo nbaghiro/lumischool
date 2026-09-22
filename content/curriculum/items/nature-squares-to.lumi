@@ -1,0 +1,33 @@
+# Counting the squares from the corner to the tree, along then down, which is what a grid is for.
+item nature.squares-to v=1 skills=[nature.maps, addition.to-twenty] {
+  title "How many squares?"
+  difficulty (x + y - 2)
+  set cols=5 rows=4
+  let x=2..5 y=2..4
+  level easy {
+    set cols=4 rows=3
+    let x=2..3 y=2..3
+  }
+  level hard {
+    set cols=6 rows=5
+    let x=4..6 y=4..5
+  }
+
+  scene 36x14 {
+    gridmap map cols=cols rows=rows col=x row=y thing=tree at=canvas(1, 1)
+    text ask "Ada stands in square A1, at the top left. She walks to the tree, going only right and down, one square at a time. How many squares does she step into?" narrate width=18 right-of=map gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (x - 1 + y - 1)
+  feedback {
+    when (answer == x + y) point=map {
+      say "Ada is already in A1, so A1 is not stepped into. Count only the squares she moves to."
+    }
+    when (answer == x - 1 or answer == y - 1) point=map {
+      say "That is only the going along or only the going down. She does both."
+    }
+  }
+  hint "Count the squares from A1 along the top row to the tree's letter. Then count down to the tree."
+  hint "Add the two counts. Every step is one new square."
+}

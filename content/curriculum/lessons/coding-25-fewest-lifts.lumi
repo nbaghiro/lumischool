@@ -1,0 +1,48 @@
+lesson coding-fewest-lifts v=2 format=teach grade=3 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Finding a number in the fewest lifts"
+  goal "Find a hidden number in a row that is in order by lifting the middle cup and halving the row."
+
+  look {
+    scene 23x8 {
+      cups c cards=[2, 5, 8, 11, 14, 17, 20] open=[4] target=14 crossed=true at=canvas(1, 0)
+    }
+    say """
+      The numbers under the cups go from smallest to biggest. Lift the middle cup: it hides 11, and
+      we want 14, so every cup to the left of it can go. One lift ruled out half the row. Lift the
+      middle of what is left, and keep halving.
+      """
+  }
+  do {
+    practice coding.cups-half count=2 seed=3
+    show coding.cups-cross-count j=2 t=11 easy-t=8 hard-j=3 hard-t=2
+    show coding.cups-cross-count j=5 t=20 easy-t=2 hard-j=6
+    show coding.cups-lifts t=17 hard-t=14
+    show coding.cups-lifts t=2 easy-t=5 hard-t=20
+    show coding.cups-next t=8 easy-t=2 hard-t=14
+    show coding.cups-next t=26 easy-t=32 hard-t=20
+  }
+  try stars=2 {
+    show coding.who-fewer-lifts t=2 easy-t=20 hard-t=8
+  }
+  try stars=3 {
+    show coding.exactly-lifts k=3 easy-k=2
+  }
+  remember {
+    say "When the row is in order, lift the middle and throw half away."
+  }
+
+  grown-ups """
+    Play it with fifteen cards numbered up to 100, face down in order. Lifting one at a time from
+    the left can take fifteen goes; halving never takes more than four. The child should find that
+    out rather than be told it. A lift that is not in the middle still rules cups out, only fewer of
+    them, which is why the middle is the best cup to lift. In the two-star question halving loses
+    for a number at the far left, which is worth finding. In the three-star question, try every
+    number once and write its lifts under it: the counts go one, two, four.
+    """
+  level easy {
+    grown-ups "At this level the numbers wanted are 2, 5, 17 and 20, far from the 11 under the middle cup, the crossings out are two and three cups, both numbers to find take two lifts, the next cup to lift is worked out for 2 and 32, at the ends of the long row, Ada and Ben both want 20, which Ben finds in three lifts to Ada's seven, and the three-star asks how many numbers take exactly two lifts."
+  }
+  level hard {
+    grown-ups "At this level the numbers wanted are as written, since the lesson already draws 8 and 14, the two next to the 11, the crossings out are five and six cups, counting the lifted one, both numbers to find take three lifts, the next cup to lift is worked out for 14 and 20, either side of the 17, Ada and Ben both want 8, which they find in the same three lifts, and the three-star is as written."
+  }
+}

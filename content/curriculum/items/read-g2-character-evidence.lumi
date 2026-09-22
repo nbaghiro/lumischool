@@ -1,0 +1,16 @@
+# What a person is like is never said; it is shown by one thing they do. The child finds that
+# sentence among four, where a nearby sentence is about the same moment but shows nothing.
+item reading.character-evidence v=2 stars=2 skills=[reading.characters, reading.evidence, reading.inference] {
+  title "What shows it?"
+  let k=0..3
+
+  scene 36x13 {
+    passage p text="{if k == 0 then \"(A) Lucy walked to school with her little brother. (B) It was cold, so she gave him her gloves. (C) They were late for the bell. (D) Their teacher smiled at them anyway.\" else if k == 1 then \"(A) Omar's cat climbed up onto the shed roof. (B) It cried and would not come down. (C) Omar was scared of ladders, but he climbed up and fetched it. (D) Mum made him a cup of cocoa.\" else if k == 2 then \"(A) Ivy carried the eggs home from the farm. (B) She walked slowly and held the box with both hands. (C) The sun was going down. (D) Gran made an omelette for tea.\" else \"(A) Ravi put on his dad's big boots. (B) He walked like a penguin round the kitchen. (C) Dad was out in the garden. (D) Then Dad wanted his boots back.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Which sentence shows that {if k == 0 then \"Lucy\" else if k == 1 then \"Omar\" else if k == 2 then \"Ivy\" else \"Ravi\"} is {if k == 0 then \"kind\" else if k == 1 then \"brave\" else if k == 2 then \"careful\" else \"funny\"}?" narrate width=19 below=p gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "B" else if k == 1 then "C" else if k == 2 then "B" else "B")
+  hint "The word {if k == 0 then \"kind\" else if k == 1 then \"brave\" else if k == 2 then \"careful\" else \"funny\"} is not in the story. What would someone who is {if k == 0 then \"kind\" else if k == 1 then \"brave\" else if k == 2 then \"careful\" else \"funny\"} do?"
+  hint "Find the sentence where {if k == 0 then \"Lucy\" else if k == 1 then \"Omar\" else if k == 2 then \"Ivy\" else \"Ravi\"} does that."
+}

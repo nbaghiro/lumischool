@@ -1,0 +1,38 @@
+# The story: Mo sends Ana a secret word in tab at the bandstand, four notes whose letters spell it.
+# The two words beside the answer share its letters or its first letter, so every note has to be read.
+item music.tab-spells-word v=1 skills=[music.tab, music.note-names] {
+  title "Mo's secret word"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..5
+  let p1={pick(v, "s2f0", "s1f1", "s2f3", "s2f1", "s1f1", "s2f0")}
+  let p2={pick(v, "s1f0", "s1f0", "s1f0", "s3f2", "s3f2", "s1f0")}
+  let p3={pick(v, "s1f0", "s1f0", "s3f2", "s3f0", "s2f1", "s3f2")}
+  let p4={pick(v, "s1f1", "s2f3", "s1f1", "s1f0", "s1f0", "s2f3")}
+  let right={pick(v, "BEEF", "FEED", "DEAF", "CAGE", "FACE", "BEAD")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..5
+  }
+
+  scene 36x23 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      text ask "At the bandstand Mo sends Ana a secret word in tab. What does it spell?" narrate width=22
+    }
+    row low space=2 align=start below=top gap=1 {
+      tab word tuning=guitar notes=["{p1}", "{p2}", "{p3}", "{p4}"] values=[] even=true letters=true ring=-1
+      choice pick options=[pick(v, "FEED", "FEED", "BEAD", "CAFE", "FACE", "DEAF"), pick(v, "BEEF", "DEAF", "FADE", "CAGE", "CAFE", "BEEF"), pick(v, "BEAD", "BEEF", "DEAF", "FACE", "FADE", "BEAD")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=word {
+      say "Name the notes one at a time, from left to right, and write each letter down before you choose."
+    }
+  }
+  hint "What is the first note? Its string and fret give its letter."
+  hint "String 1 gives E, F and G, string 2 gives B, C and D, and string 3 gives G and A."
+}

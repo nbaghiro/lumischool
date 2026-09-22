@@ -1,0 +1,18 @@
+# The way in: the dish shows it, a crust at the edge while there is water and nothing but salt once
+# the water has gone.
+item chem.salt-stays v=1 skills=[chemistry.separating] {
+  title "What is in the dish?"
+  difficulty left
+  let left={0, 1, 2} day=3..7
+  where (left == 0 and day >= 5 or left > 0 and day < 5)
+
+  scene 33x13 {
+    text ask "The dish held salty water. What is in it now?" width=24 at=canvas(1, 0)
+    dish d left=left day=day below=ask gap=0
+    choice pick options=["only salt", "salty water and a little salt", "nothing at all"] stack=column right-of=d gap=1
+  }
+
+  answer pick=(if left == 0 then "only salt" else "salty water and a little salt")
+  hint "Is there any water left in the dish? Look at the bottom."
+  hint "When the water dries up, does the salt go with it, or stay behind?"
+}

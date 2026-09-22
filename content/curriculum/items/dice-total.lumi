@@ -1,0 +1,26 @@
+item groups.dice-total v=1 skills=[addition.counting-on] {
+  title "Two dice"
+  difficulty (a + b)
+  let a=2..6 b=1..5
+  where (a > b)
+  level easy {
+    let a=2..4 b=1..2
+  }
+  level hard {
+    let a=5..6 b=3..5
+  }
+
+  scene 22x7 {
+    dice pair faces=[a, b] at=canvas(1, 1)
+    text ask "How many dots altogether?" narrate below=pair gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a) point=pair.face(1) {
+      say "The second die counts too. Start at {a} and count on."
+    }
+  }
+  hint "Start with the bigger number and count on the other dots."
+}

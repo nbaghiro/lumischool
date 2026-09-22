@@ -1,0 +1,21 @@
+# The audit's raise for fact or opinion: say why a sentence is an opinion. The right reason is
+# always that someone could see it differently, worded for each sentence and in a different place.
+item reading.opinion-why v=1 skills=[reading.fact-opinion, reading.evidence] {
+  title "Why is it an opinion?"
+  let k=0..3
+
+  scene 30x18 {
+    text says "Mo says: {if k == 0 then \"Spiders are scary\" else if k == 1 then \"Rainy days are boring\" else if k == 2 then \"Swimming is easy\" else \"Our town has too many cars\"}." width=28 at=canvas(1, 1)
+    text ask "This is an opinion. Which reason shows it?" width=28 below=says gap=1
+    choice pick options=[if k == 0 then "Spiders have eight legs." else if k == 1 then "It rains a lot in winter." else if k == 2 then "Some people find swimming hard." else "Every car can be counted.", if k == 0 then "Some people like spiders." else if k == 1 then "Rain makes things wet." else if k == 2 then "Pools have a shallow end." else "Some think it has the right number.", if k == 0 then "Spiders make webs." else if k == 1 then "Some people love splashing about." else if k == 2 then "Swimming is done in water." else "Cars need roads."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Some people like spiders." else if k == 1 then "Some people love splashing about." else if k == 2 then "Some people find swimming hard." else "Some think it has the right number.")
+  feedback {
+    when (pick == "Spiders have eight legs." or pick == "Every car can be counted.") point=says {
+      say "That is true, but it is a different sentence. Which reason shows people could disagree?"
+    }
+  }
+  hint "An opinion is something people can disagree about. Which reason shows a disagreement?"
+  hint "Two of the reasons are facts about the thing. They do not say anything about what people think."
+}

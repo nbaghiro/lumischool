@@ -1,0 +1,31 @@
+# Non-routine: each water molecule needs two hydrogens and one oxygen, so whichever runs out first
+# decides, and sometimes an atom is left over.
+item chem.build-water v=1 stars=3 skills=[chemistry.atoms, reasoning.limits] {
+  title "Building water"
+  difficulty (h + o)
+  let h={4, 5, 6, 7, 8, 9} o={2, 3, 4, 5}
+  where (h // 2 != o)
+
+  scene 30x9 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      molecule m kind="water" count=1 key=1 letters=1
+      column side space=1 align=start {
+        text ask "You have {h} hydrogen atoms and {o} oxygen atoms. How many whole water molecules can you build?" width=16
+        number-input answer
+      }
+    }
+  }
+
+  answer min(h // 2, o)
+  feedback {
+    when (answer == o and h // 2 < o) point=m {
+      say "Each water needs two hydrogens. Are there enough for {o} of them?"
+    }
+    when (answer == h // 2 and o < h // 2) point=m {
+      say "Each water needs one oxygen. Are there enough for {h // 2} of them?"
+    }
+  }
+  hint "How many hydrogen atoms does one water molecule need, and how many oxygen atoms?"
+  hint "How many could you make from the hydrogen alone? From the oxygen alone?"
+  hint "Which one runs out first?"
+}

@@ -1,0 +1,25 @@
+# The street changes with the version, and every clue has two parts, one of them a "no" or a "but",
+# so each house fits at least part of some clue and only one fits all of it. The audit's raise for
+# clue-house, whose street was always the same.
+item reading.clue-street v=1 skills=[reading.find-a-detail] {
+  title "The house with two clues"
+  difficulty (if l == 0 and q != 1 or l == 2 and q == 0 then 1 else 0)
+  let l=0..2 q=0..2
+  level easy {
+    where (l == 1 or l == 0 and q == 1 or l == 2 and q >= 1)  # both parts say what the house has
+  }
+  level hard {
+    where (l == 0 and q != 1 or l == 2 and q == 0)  # one part says no chimney
+  }
+
+  scene 37x17 {
+    text says "My house has {if l == 0 then (if q == 0 then \"two windows at the top and no chimney\" else if q == 1 then \"a square door and a chimney\" else \"a cat and no chimney\") else if l == 1 then (if q == 0 then \"two windows at the top and a round door\" else if q == 1 then \"a chimney and one window at the top\" else \"a cat and a square door\") else (if q == 0 then \"one window at the top and no chimney\" else if q == 1 then \"a round door and a chimney\" else \"a cat and a chimney\")}." narrate width=10 right-of=st gap=1
+    street st windows=[if l == 0 then 1 else if l == 1 then 2 else 3, if l == 0 then 2 else if l == 1 then 3 else 1, if l == 0 then 2 else if l == 1 then 1 else 2, if l == 0 then 3 else if l == 1 then 2 else 1] doors=[if l == 1 then 0 else 1, if l == 0 then 0 else 1, if l == 2 then 0 else 1, if l == 1 then 1 else 0] chimneys=[if l == 1 then 0 else 1, if l == 2 then 0 else 1, if l == 1 then 1 else 0, if l == 2 then 1 else 0] cats=[if l == 1 then 1 else 0, if l == 0 then 1 else 0, if l == 2 then 1 else 0, 1] numbers=["{if l == 0 then 2 else if l == 1 then 1 else 10}", "{if l == 0 then 4 else if l == 1 then 3 else 12}", "{if l == 0 then 6 else if l == 1 then 5 else 14}", "{if l == 0 then 8 else if l == 1 then 7 else 16}"] at=canvas(1, 1)
+    text ask "Which house is it?" narrate below=st gap=1
+    choice pick options=["{if l == 0 then 2 else if l == 1 then 1 else 10}", "{if l == 0 then 4 else if l == 1 then 3 else 12}", "{if l == 0 then 6 else if l == 1 then 5 else 14}", "{if l == 0 then 8 else if l == 1 then 7 else 16}"] right-of=ask gap=1
+  }
+
+  answer pick=(if l == 0 then if q == 0 then "6" else if q == 1 then "4" else "8" else if l == 1 then if q == 0 then "7" else if q == 1 then "5" else "1" else if q == 0 then "12" else if q == 1 then "10" else "16")
+  hint "Read the first part of the clue. Cross out every house that does not fit it."
+  hint "Now read the second part. Which house is left?"
+}

@@ -1,0 +1,22 @@
+# Two short sentences joined three ways: one keeps the meaning and puts the comma before the
+# joining word, one moves the comma, and one uses a word that turns the meaning round.
+item writing.join-two-best v=1 skills=[writing.joining-sentences, writing.commas] {
+  title "The best way to join them"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 32x19 {
+    caption one text="{if k == 0 then \"It was dark. We lit the lamp.\" else if k == 1 then \"The path was icy. We walked slowly.\" else if k == 2 then \"The film was long. We liked every minute.\" else \"The kettle boiled. Dad made the tea.\"}" width=29 at=canvas(1, 1)
+    text ask "Which sentence joins the two and keeps the meaning?" width=29 below=one gap=1
+    choice pick options=["{if k == 0 then \"It was dark so, we lit the lamp.\" else if k == 1 then \"The path was icy, so we walked slowly.\" else if k == 2 then \"The film was long because we liked it.\" else \"The kettle boiled so, Dad made the tea.\"}", "{if k == 0 then \"It was dark because we lit the lamp.\" else if k == 1 then \"The path was icy so, we walked slowly.\" else if k == 2 then \"The film was long, but we liked every minute.\" else \"The kettle boiled because Dad made the tea.\"}", "{if k == 0 then \"It was dark, so we lit the lamp.\" else if k == 1 then \"The path was icy because we walked slowly.\" else if k == 2 then \"The film was long but, we liked every minute.\" else \"The kettle boiled, so Dad made the tea.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It was dark, so we lit the lamp." else if k == 1 then "The path was icy, so we walked slowly." else if k == 2 then "The film was long, but we liked every minute." else "The kettle boiled, so Dad made the tea.")
+  feedback {
+    when (pick == "It was dark because we lit the lamp." or pick == "The kettle boiled because Dad made the tea.") point=one {
+      say "Did lighting the lamp make it dark? Check which half caused the other."
+    }
+  }
+  hint "First check the meaning: which joining word says what really happened?"
+  hint "Then check the comma. Does it go before the joining word or after it?"
+}

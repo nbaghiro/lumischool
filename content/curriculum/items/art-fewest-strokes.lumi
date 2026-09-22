@@ -1,0 +1,16 @@
+# Choosing the mirror is choosing a number that goes into the repeats exactly, and the biggest one.
+item art.fewest-strokes v=1 stars=2 skills=[art.pattern, reasoning.strategy] {
+  title "The best mirror for the job"
+  difficulty n
+  let n={4, 6, 8, 10, 12}
+
+  scene 34x15 {
+    radial pic repeats=n motif="leaf" missing=-1 colour=berry at=canvas(1, 1)
+    text ask "The easel's mirrors copy each stroke 2, 4 or 6 times round the middle. Ada wants to paint this pattern exactly. Which mirror needs the fewest strokes?" width=17 right-of=pic gap=1
+    choice pick options=["two", "four", "six"] below=ask gap=1
+  }
+
+  answer pick=(if n % 6 == 0 then "six" else if n % 4 == 0 then "four" else "two")
+  hint "For each mirror, can it make exactly this many leaves? Try sharing the leaves into 2, 4 or 6 equal lots."
+  hint "Of the mirrors that work, which makes the most copies of each stroke?"
+}

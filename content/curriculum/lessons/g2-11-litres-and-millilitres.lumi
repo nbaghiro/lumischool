@@ -1,0 +1,47 @@
+lesson g2-litres-and-millilitres v=1 format=teach grade=2 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Litres and millilitres"
+  goal "Read a level off a jug, even between the marks, and compare how much different containers hold."
+
+  look {
+    scene 27x23 {
+      row pots at=canvas(1, 1) space=2 align=start {
+        jug pot max=1000 step=200 level=350 unit=ml
+        mixingbowl bowl fill=0.6 spoon=true
+      }
+      containers three below=pots gap=1
+    }
+    say """
+      A jug is marked in millilitres, and a thousand of them make a litre. A tall thin container
+      and a wide low one can hold the same amount, which is why we measure rather than guess.
+      """
+  }
+  do {
+    practice measure.jug count=2 seed=5
+    practice measure.jug-to-litre count=2 seed=3
+    practice measure.two-beakers count=2 seed=6
+    practice measure.glasses count=2 seed=4
+  }
+  try stars=2 {
+    show measure.holds-more L=2 d=-500 easy-d=500 hard-L=3 hard-d=-100
+  }
+  try stars=3 {
+    show measure.fewest-pours t=800 easy-t=600 hard-t=900
+  }
+  remember {
+    say "A thousand millilitres is one litre. Five hundred is half a litre."
+  }
+
+  grown-ups """
+    Pour the same water between a tall glass and a wide bowl and ask which holds more. The surprise
+    is the lesson. The water in the jugs sits between numbered marks on purpose: halfway between
+    200 and 400 is 300. In the two-star question, 1500 millilitres sounds like more than 2 litres
+    and is not; writing both in millilitres settles it. The three-star question rewards using the
+    biggest jug first.
+    """
+  level easy {
+    grown-ups "At this level the jug to read holds one or three hundred millilitres, the jug to fill to a litre already holds seven or nine hundred, the glasses are two hundred to five hundred millilitres from one litre, the two bottles differ by half a litre, and six hundred millilitres takes two pours."
+  }
+  level hard {
+    grown-ups "At this level the jug to read holds seven or nine hundred millilitres, the jug to fill to a litre holds only one or three hundred, the glasses are one hundred to two hundred and fifty millilitres from two litres, the two bottles differ by a hundred millilitres, and nine hundred millilitres takes three pours."
+  }
+}

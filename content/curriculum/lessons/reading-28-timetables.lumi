@@ -1,0 +1,59 @@
+lesson reading-timetables v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Reading a timetable"
+  goal "Read a timetable across and down to find when a bus gets to a stop, how long a journey takes, and which bus gets there in time."
+
+  look {
+    scene 26x21 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          sign stop lines=["BUS STOP", "Market"] kind=post color=sky
+          table t cols=3 head=["Stop", "Bus 1", "Bus 2"] cells=["Market", "8:00", "9:30", "Park", "8:10", "9:40", "Library", "8:25", "9:55", "School", "8:40", "10:10"]
+        }
+        bus b windows=5 on=2 sign="2"
+      }
+    }
+    say """
+      A timetable is a table of times. Each row is a stop and each column is one bus. To find when a
+      bus gets somewhere, put one finger on the row and one on the column, and slide them until they
+      meet.
+      """
+  }
+  do {
+    level easy {
+      worked reading.journey-time s=5 l1=10 l2=15 l3=15 k=0 level=medium
+    }
+    show reading.journey-time s=5 l1=10 l2=15 l3=15 k=1
+    show reading.timetable k=0
+    show reading.timetable k=1
+    show reading.journey-time s=0 l1=15 l2=20 l3=15 k=0 easy-k=2 hard-l2=12
+    practice reading.timetable-true count=2 seed=5 hard-seed=7
+    practice reading.train-table count=2 hard-count=1 seed=2
+    level hard {
+      practice reading.timetable-mistake count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.timetable-mistake k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show reading.plan-journey s=0 t=1 d=0
+  }
+  remember {
+    say "Find the row and the column. The answer is where they meet."
+  }
+
+  grown-ups """
+    If you use a bus or a train, read the real timetable at the stop together. How long a journey
+    takes needs two cells in the same column and the minutes between them, counted on past the
+    hour where it crosses one. Joss's claims are true in some versions and not in others, so
+    they have to be checked. In the two-star question Sam's time is a real cell, just the wrong
+    one. The three-star question needs the first bus after Nia arrives and the last one that still
+    gets her to school in time.
+    """
+  level easy {
+    grown-ups "At this level the whole journey is worked once in the teacher's pen before one and two legs, the timetable questions are as written, Joss's claims compare two legs, the last train is read one station down, the two-star's mistake is the Market row, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the journeys are one leg and then the whole journey with a leg of twelve minutes, the timetable questions are as written, Joss's claims add the whole journey up or read the arrival against a deadline, the last train is read two stations down and one of them makes way for a second mistake to find, the two-star's mistake is the Library row, and the three-star is as written."
+  }
+}

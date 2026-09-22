@@ -1,0 +1,21 @@
+# The three kinds are the ones a child checks their own writing for: capitals, the mark at the end,
+# and spelling.
+item writing.robot-what-is-wrong v=1 skills=[writing.editing] {
+  title "What is wrong with the robot's sentence?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 28x25 {
+    fixbot bot says="{if k == 0 then \"my robot is called Zed.\" else if k == 1 then \"I can fix the wire\" else if k == 2 then \"The bulb is to bright.\" else \"We went to the lab with ben.\"}" width=18 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "What does the robot need to fix?" width=20 below=bot gap=1
+    choice pick options=["It needs a capital letter.", "It needs a mark at the end.", "A word is spelled wrong."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 3 then "It needs a capital letter." else if k == 1 then "It needs a mark at the end." else "A word is spelled wrong.")
+  feedback {
+    when (pick == "A word is spelled wrong." and k == 3) point=bot {
+      say "Every word is spelled right. Look at the name: a name starts with a capital."
+    }
+  }
+  hint "Check three things in turn: the capitals, the mark at the end, and each word's spelling."
+}

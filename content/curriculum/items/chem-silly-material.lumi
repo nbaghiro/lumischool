@@ -1,0 +1,15 @@
+# The unknown moved again: not the right material but the one that could not do the job.
+item chem.silly-material v=1 skills=[chemistry.materials] {
+  title "The silly one"
+  difficulty k
+  let k=0..3
+
+  scene 24x8 {
+    text ask "Which material would be a silly one for {if k == 0 then \"an umbrella\" else if k == 1 then \"a window\" else if k == 2 then \"a spoon\" else \"a winter hat\"}?" width=23 at=canvas(1, 0)
+    choice pick options=["{if k == 0 then \"plastic\" else if k == 1 then \"glass\" else if k == 2 then \"metal\" else \"wool\"}", "{if k == 0 then \"paper\" else if k == 1 then \"wood\" else if k == 2 then \"wood\" else \"glass\"}", "{if k == 0 then \"rubber\" else if k == 1 then \"plastic\" else if k == 2 then \"paper\" else \"fabric\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "paper" else if k == 1 then "wood" else if k == 2 then "paper" else "glass")
+  hint "What would happen to {if k == 0 then \"an umbrella\" else if k == 1 then \"a window\" else if k == 2 then \"a spoon\" else \"a winter hat\"} made of each one?"
+  hint "Which one could not do the job at all?"
+}

@@ -1,0 +1,29 @@
+item physics.which-way v=1 skills=[physics.forces] {
+  title "Which way does it go?"
+  difficulty (6 - abs(a - b))
+  let a={2, 4, 6} b={2, 4, 6}
+  where (a != b)
+  level easy {
+    where (abs(a - b) == 4)
+  }
+  level hard {
+    where (abs(a - b) == 2)
+  }
+
+  scene 20x17 {
+    forces f thing=trolley push=a oppose=b labels=false at=canvas(1, 1)
+    text ask "Which way does the trolley move?" width=16 below=f gap=1
+    choice way options=["Left", "Right"] below=ask gap=1
+  }
+
+  answer way=(if a > b then "Right" else "Left")
+  feedback {
+    when (way == "Left" and a > b) point=f {
+      say "The longer arrow wins, and it is pushing to the right."
+    }
+    when (way == "Right" and a < b) point=f {
+      say "The arrow pushing back is the longer one, so the trolley goes left."
+    }
+  }
+  hint "Which arrow is longer?"
+}

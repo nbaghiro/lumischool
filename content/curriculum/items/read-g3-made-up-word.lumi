@@ -1,0 +1,25 @@
+# A word nobody knows, so the sentence around it is the only way in: the context skill with no
+# chance of already knowing the answer.
+item reading.made-up-word v=1 skills=[reading.vocabulary, reading.context] {
+  title "A word you have never seen"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 37x12 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text sent "{if k == 0 then \"The zib was so heavy that Pa needed both hands to lift it onto the cart.\" else if k == 1 then \"Nia wrapped the flim round her neck because the wind was so cold.\" else if k == 2 then \"The dog barked at the grunkle, and it hid under the hedge until the dog had gone.\" else \"Kofi was so plimmy after the long walk that he fell asleep in the car.\"}" width=36
+      text ask "{if k == 0 then \"What could a zib be?\" else if k == 1 then \"What could a flim be?\" else if k == 2 then \"What could a grunkle be?\" else \"What could plimmy mean?\"}"
+      choice pick options=[if k == 0 then "a feather" else if k == 1 then "a spoon" else if k == 2 then "a small animal" else "very tall", if k == 0 then "a heavy sack" else if k == 1 then "a bike" else if k == 2 then "a cloud" else "very tired", if k == 0 then "a whisper" else if k == 1 then "a scarf" else if k == 2 then "a song" else "very cross"]
+    }
+  }
+
+  answer pick=(if k == 0 then "a heavy sack" else if k == 1 then "a scarf" else if k == 2 then "a small animal" else "very tired")
+  hint "You will not know this word. What do the other words in the sentence tell you about it?"
+  hint "Try each choice in place of the word. Which one makes the sentence make sense?"
+}

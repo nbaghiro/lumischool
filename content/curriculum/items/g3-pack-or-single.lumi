@@ -1,0 +1,32 @@
+# A pack against the same number bought one at a time: sometimes the pack is not the bargain.
+item money.pack-or-single v=1 stars=2 skills=[money.decimals, reasoning.compare] {
+  title "The pack or single pens?"
+  difficulty (n * s + (if 100 * pk > n * s then 100 else 0))
+  let n={3, 4, 5} s={45, 55, 65, 75} pk={1.80, 2.10, 2.40, 2.95, 3.20}
+  where (n * s != 100 * pk and abs(n * s - 100 * pk) <= 90)
+  level easy {
+    let n={3}
+  }
+  level hard {
+    let n={5} s={45, 55}
+  }
+
+  scene 30x17 {
+    row tags at=canvas(1, 1) space=2 align=start {
+      pricetag pack now=(100 * pk) was=0
+      pricetag one now=s was=0
+    }
+    text ask "A pack of {n} pens costs the first price. One pen on its own costs the second price. Is it cheaper to buy the pack or {n} single pens, and by how much, in dollars?" width=28 below=tags gap=1
+    choice pick options=["the pack", "single pens"] below=ask gap=1
+    number-input answer right-of=pick gap=2
+  }
+
+  answer pick=(if 100 * pk < n * s then "the pack" else "single pens") answer=decimals(abs(n * s - 100 * pk) / 100, 2)
+  feedback {
+    when (pick == "the pack" and 100 * pk > n * s) point=tags {
+      say "Packs are not always cheaper. Work out what {n} single pens cost."
+    }
+  }
+  hint "What do {n} single pens cost altogether?"
+  hint "Compare that with the pack. Which is less, and by how much?"
+}

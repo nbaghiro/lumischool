@@ -1,0 +1,11 @@
+item writing.grow-it v=1 skills=[writing.sentences, writing.composing] {
+  title "Grow the sentence"
+  let t={"The ship rocked.", "The gull landed.", "The whale dived."}
+
+  scene 36x18 {
+    expander e kernel="{t}" asks=["when", "where", "why"] answers=["", "", ""] at=canvas(1, 1)
+    writinglines lines lines=1 width=34 prompt="Now write it as one long sentence." below=e gap=1
+  }
+
+  check writing.by-eye look-for="An answer under each question, then one sentence that keeps the short sentence and adds all three answers, with a comma after a when that comes first (At dawn, the ship rocked...) and one full stop at the end."
+}

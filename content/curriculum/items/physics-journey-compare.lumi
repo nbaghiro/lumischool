@@ -1,0 +1,24 @@
+item physics.journey-compare v=1 skills=[physics.motion] {
+  title "Which way is shorter?"
+  difficulty (20 - abs(a + b - c - d))
+  let a=6..10 b=8..12 c=5..9 d=10..14
+  where (a + b != c + d)
+  level easy {
+    where (abs(a + b - c - d) >= 4)
+  }
+  level hard {
+    where (abs(a + b - c - d) == 1)
+  }
+
+  scene 36x21 {
+    column two at=canvas(1, 0) space=1 align=start {
+      roaddistances top stops=["Ash", "Bray", "Cole"] legs=[a, b] unit=km
+      roaddistances bottom stops=["Ash", "Dene", "Cole"] legs=[c, d] unit=km
+    }
+    text ask "Two ways from Ash to Cole. Which way is shorter?" width=13 right-of=two gap=1
+    choice pick options=["Top", "Bottom"] below=ask gap=1
+  }
+
+  answer pick=(if a + b < c + d then "Top" else "Bottom")
+  hint "How far is each way altogether?"
+}

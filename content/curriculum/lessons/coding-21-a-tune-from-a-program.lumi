@@ -1,0 +1,48 @@
+lesson coding-a-tune-from-a-program v=2 format=teach grade=2 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A tune from a program"
+  goal "Read a tune written as play blocks with a repeat, say which notes it plays in order, and work out a repeat from the tune."
+
+  look {
+    scene 27x20 {
+      column all at=canvas(1, 0) space=1 align=start {
+        blocks b code=["play C", "play E", "play G", "play C5"]
+        tune t code=["play C", "play E", "play G", "play C5"]
+      }
+    }
+    say """
+      Each play block strikes one bar, and the program plays them in order from the top. The pen
+      numbers on the bars say which came first, second and third. On the screen, turn the sound on
+      and press Run to hear it.
+      """
+  }
+  do {
+    practice coding.tune-count count=1 seed=2 hard-seed=7
+    show coding.tune-which k=4 easy-k=2 hard-k=5
+    practice coding.tune-after-repeat count=2 seed=5 hard-seed=4
+    practice coding.tune-repeat-for count=2 seed=4 hard-seed=2
+    practice coding.tune-note-count count=2 seed=5
+  }
+  try stars=2 {
+    show coding.tune-compare a=4 b=2 easy-a=2 easy-b=4 hard-a=5 hard-b=4
+  }
+  try stars=3 {
+    show coding.tune-write t=8 x="G" easy-t=7
+  }
+  remember {
+    say "A tune is a program of notes, played in order from the top."
+  }
+
+  grown-ups """
+    If there is a glockenspiel or a keyboard in the house, play the program on it together. The
+    pen numbers on the printed bars are the paper version: the child numbers the bars in the order
+    the code strikes them. In the two-star question, count the Cs in each program without writing
+    the tunes out: B has a C before its repeat and one inside it. The three-star tune has many right
+    answers, so check it by counting its notes together, with the repeat played out in full.
+    """
+  level easy {
+    grown-ups "At this level the repeats go round two or three times, the notes asked about are the second, fourth and fifth, the E to count is inside the repeat twice or outside it, the programs compared play two Cs against five, and the tune to write has seven notes, which is one note and a repeat of two three times."
+  }
+  level hard {
+    grown-ups "At this level the repeats go round up to five times, the notes asked about are the fifth to the eighth, in the repeat's last round or after it, the E to count is inside a repeat of three or four rounds, the programs compared play five Cs each, and the tune to write is as written, eight notes, which leaves one over whatever the repeat."
+  }
+}

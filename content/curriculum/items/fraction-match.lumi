@@ -1,0 +1,27 @@
+item fraction.match v=1 skills=[fractions.equal-parts] {
+  title "The same fraction twice"
+  difficulty (n + k)
+  let n={2, 3, 4} k=1..3
+  where (k < n)
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let n={3, 4} k=2..3  # two of four shaded is written as a half
+  }
+
+  scene 30x13 {
+    fraction round n=n k=k at=canvas(1, 1)
+    fraction strip n=n k=k shape=bar right-of=round gap=2
+    arrow round strip
+    text ask "Both pictures show the same fraction. Which one is it?" narrate width=28 below=round gap=1
+    choice pick options=[1 / 2, 1 / 3, 2 / 3, 1 / 4, 3 / 4] below=ask gap=1
+  }
+
+  answer pick=(k / n)
+  feedback {
+    when (pick == k / (n - k)) point=round {
+      say "The bottom number counts every part, not only the parts left over."
+    }
+  }
+}

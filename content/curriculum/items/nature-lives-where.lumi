@@ -1,0 +1,47 @@
+# The way in: four creatures of the shore, and the one that lives in a place: on the rocks, in
+# the rock pool, in the open sea, in the air. The seal on its rock and the gull in the air are
+# seen at once; the crab in the pool and the turtle out at sea take a thought about where each
+# would be found.
+item nature.lives-where v=1 skills=[nature.habitats] {
+  title "Which one lives there?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let place={pick(k, "hauled out on the rocks", "flying over the waves", "in a rock pool when the tide is out", "far out in the open sea")}
+  let right={pick(k, "seal", "gull", "crab", "sea turtle")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x29 {
+    column four at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        seal ps rock=1 facing=1
+        gull pg flying=1
+      }
+      row low space=1 align=end {
+        crabs pc count=1
+        seaturtle pt facing=1 plates=5
+      }
+    }
+    text ask "Ada and Ben are on the rocks by the reef. Which of these creatures is found {place}?" narrate width=15 right-of=four gap=2
+    choice pick options=["seal", "gull", "crab", "sea turtle"] stack=column below=four gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "sea turtle") point=pt {
+      say "A sea turtle is too big for a pool and swims far out. The small one with a shell and claws hides under the weed when the tide goes out."
+    }
+    when (k == 3 and pick == "seal") point=ps {
+      say "A seal swims out to fish but comes back to the rocks to rest. The one that spends its whole life at sea has flippers and never comes ashore except to lay eggs."
+    }
+    when (k == 0 and pick != "seal") point=ps {
+      say "Only one of these lies on a rock to rest and warm up. Look for the one drawn on a rock."
+    }
+  }
+  hint "Look at how each creature is drawn: on a rock, in the air, in the water."
+  hint "Which one has wings? Which one has claws to hide under a stone? Which one has flippers for the open sea?"
+}

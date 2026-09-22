@@ -1,0 +1,24 @@
+# Two remainder clues and a range, with no method on the page: list the numbers that fit one clue
+# and test them against the other.
+item division.riddle v=1 stars=3 skills=[division.remainders, reasoning.guess-and-check] {
+  title "Two remainders"
+  difficulty (lcm(a, 5) * k)
+  let a={3, 4, 6} r=1..2 k=2..4
+
+  scene 30x10 {
+    text ask "I am a number between {lcm(a, 5) * k - 4} and {lcm(a, 5) * k + 8}. Divide me by {a} and the remainder is {r}. Divide me by 5 and the remainder is {r} too. What number am I?" narrate width=29 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (lcm(a, 5) * k + r)
+  feedback {
+    when (answer % 5 != r) point=ask {
+      say "Check that clue: divide your number by 5. What is left over?"
+    }
+    when (answer % a != r) point=ask {
+      say "Check that clue: divide your number by {a}. What is left over?"
+    }
+  }
+  hint "List the numbers in the range that leave {r} when divided by 5."
+  hint "Which of them also leaves {r} when divided by {a}?"
+}

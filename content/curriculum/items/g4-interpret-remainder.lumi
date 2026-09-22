@@ -1,0 +1,32 @@
+# The same division read three ways. Grade 4 loses marks here more often than on the division
+# itself, so all three readings are asked at once.
+item division.interpret v=1 skills=[division.remainders] {
+  title "What the remainder means"
+  difficulty n
+  let n=40..200 k=3..9
+  where (n % k != 0)
+  level easy {
+    let n=20..60 k=3..5
+  }
+  level hard {
+    let n=150..300 k=6..9
+  }
+
+  scene 32x11 {
+    text ask "{n} eggs are packed into boxes that hold {k} eggs." width=30 at=canvas(1, 0)
+    text q1 "How many boxes are full?" below=ask gap=1
+    number-input full right-of=q1 gap=1
+    text q2 "How many boxes are needed?" below=q1 gap=1
+    number-input need right-of=q2 gap=1
+    text q3 "How many eggs are left over?" below=q2 gap=1
+    number-input over right-of=q3 gap=1
+  }
+
+  answer full=(n // k) need=(n // k + 1) over=(n % k)
+  feedback {
+    when (need == full) point=q2 {
+      say "The eggs left over still need a box of their own."
+    }
+  }
+  hint "Work out the division once. The three answers all come from it."
+}

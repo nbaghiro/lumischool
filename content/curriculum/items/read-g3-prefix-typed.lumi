@@ -1,0 +1,26 @@
+# The child writes the whole word, so the prefix has to be chosen and spelled, not recognised.
+item reading.prefix-typed v=1 skills=[reading.morphology, writing.spelling] {
+  title "Write the word with its prefix"
+  difficulty (if k == 3 then 2 else if k == 1 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 2, 4}  # untidy, preheat, repaint
+  }
+  level hard {
+    let k={1, 3}  # dishonest and misspell, whose double letters the join makes
+  }
+
+  scene 33x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        wordbricks b bricks=["", "{if k == 0 then \"tidy\" else if k == 1 then \"honest\" else if k == 2 then \"heat\" else if k == 3 then \"spell\" else \"paint\"}"] root=1 roots=1 blank=0 word="" labels=true
+        text ask "Add a prefix to make a word that means {if k == 0 then \"not tidy\" else if k == 1 then \"not honest\" else if k == 2 then \"heat before\" else if k == 3 then \"spell wrongly\" else \"paint again\"}. Write the whole word." width=18
+      }
+      word-input w options=[if k == 0 then "untidy" else if k == 1 then "dishonest" else if k == 2 then "preheat" else if k == 3 then "misspell" else "repaint"] letters=9
+    }
+  }
+
+  answer w=(if k == 0 then "untidy" else if k == 1 then "dishonest" else if k == 2 then "preheat" else if k == 3 then "misspell" else "repaint")
+  hint "Which prefix means {if k == 0 or k == 1 then \"not\" else if k == 2 then \"before\" else if k == 3 then \"wrongly\" else \"again\"}?"
+  hint "Write the prefix first, then the root word, with nothing missed out."
+}

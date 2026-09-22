@@ -1,0 +1,21 @@
+# The way in: the marks say how the particles move, and the arrangement says the rest, so the state
+# can be read straight off the jar.
+item chem.jiggle-state v=1 skills=[chemistry.states, chemistry.particles] {
+  title "How do they move?"
+  difficulty (if s == 1 then 1 else 0)
+  let s=0..2
+
+  scene 32x12 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      particles jar spread=s count=16 name=0 moving=1
+      column side space=1 align=start {
+        text ask "Look at how the particles sit and move. Which state is this?" width=13
+        choice pick options=["solid", "liquid", "gas"]
+      }
+    }
+  }
+
+  check chem.state of=jar pick=state
+  hint "Do the particles stay in their places and jiggle, slide past each other, or fly about?"
+  hint "Are they touching, and are they in rows?"
+}

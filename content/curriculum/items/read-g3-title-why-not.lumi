@@ -1,0 +1,21 @@
+# Saying what is wrong with a title: it fits only part, it says what the passage does not, or it
+# gives the ending away. The reason changes with the passage, so the same answer is not always right.
+item reading.title-why-not v=2 stars=2 skills=[reading.gist, reading.find-the-error] {
+  title "Why is it not the best title?"
+  difficulty (if k == 3 then 2 else if k == 1 then 0 else 1)
+  let k=0..3
+
+  scene 37x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"The rain fell all night. By morning the path was a stream and the field had turned into a shallow pond.\" else if k == 1 then \"Nell looked behind the shed, under the steps and in the long grass. At last she heard a small cry from the apple tree.\" else if k == 2 then \"We weighed the flour, cracked two eggs and stirred until the batter was smooth. The kitchen smelled of warm butter.\" else \"Mo looked everywhere for his dog, Biscuit. He searched the park and the river path. As it got dark he walked home sadly, and there was Biscuit, asleep on the step.\"}" width=36
+      row q space=1 align=start {
+        text ask "Ben called this passage {if k == 0 then \"A Stream on the Path\" else if k == 1 then \"Nell's New Kitten\" else if k == 2 then \"The Smell of Butter\" else \"Biscuit Was Home All Along\"}. Why is it not the best title?" width=14
+        choice pick options=["It fits only one part.", "It says what is not there.", "It gives the ending away."] stack=column
+      }
+    }
+  }
+
+  answer pick=(if k == 0 or k == 2 then "It fits only one part." else if k == 1 then "It says what is not there." else "It gives the ending away.")
+  hint "Does Ben's title fit every sentence? Does the passage tell you everything the title says?"
+  hint "Would a reader still want to find out what happens after reading the title?"
+}

@@ -1,0 +1,48 @@
+lesson reading-finding-the-answer v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Finding the answer in the passage"
+  goal "Answer a question from a passage, say which line the answer came from, and work out what the passage does not write."
+
+  look {
+    scene 32x11 {
+      row all at=canvas(1, 1) space=1 align=end {
+        passage p title="Ada's hens" text="Ada keeps 6 hens in the garden. Every morning she opens the hutch and counts them. On Tuesday one hen was missing." width=22
+        art hen asset="hen"
+      }
+    }
+    say """
+      Read the question first this time, then read the passage looking for it. The numbers down the
+      margin are line numbers: they are there so you can say where the answer was, which is how you
+      check yourself without asking anyone.
+      """
+  }
+  do {
+    show reading.passage-line w="hutch" easy-w="garden" hard-w="hedge"
+    practice reading.which-answers count=2 seed=4
+    practice reading.canal-ducks count=2 seed=5
+    practice reading.claim-check count=2 seed=2
+    show reading.which-line k=1 easy-k=0 hard-k=3
+  }
+  try stars=2 {
+    show reading.shows-feeling k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.why-think k=0 easy-k=2 hard-k=1
+  }
+  remember {
+    say "Say which line the answer came from. If you cannot, you have not found it yet."
+  }
+
+  grown-ups """
+    A wrong answer is usually a question that was not read, not a passage that was not understood.
+    Ask the child to read the question back to you before they look for the answer. The duck
+    questions need two sentences put together, and the last one counts the heron as a bird. In the
+    two-star question the feeling is never named, so ask what Mo is doing. The three-star question
+    has more than one good answer; what matters is a line that backs it up.
+    """
+  level easy {
+    grown-ups "At this level the questions ask who, when and how many were left, the claims to check are plainly right or plainly wrong, the feeling is shown by bouncing and pointing, and the question about why has a clue the child can see in the flags."
+  }
+  level hard {
+    grown-ups "At this level the questions ask why and where, the claims to check turn on one detail or say the passage's words another way, the heron has to be counted, and the question about why the bowl is filled twice has more than one good answer."
+  }
+}

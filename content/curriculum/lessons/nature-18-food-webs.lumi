@@ -1,0 +1,67 @@
+lesson nature-food-webs v=1 format=teach grade=4 unit=6 subject=nature levels=[easy, medium, hard] {
+  title "Food webs"
+  goal "Read a web where two chains share a creature, and say what happens when one creature goes."
+
+  look {
+    scene 34x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row pics space=2 align=end {
+          coral reef fans=2 spawn=0
+          crabs crab count=1
+          gull bird flying=0
+        }
+        text one "seaweed  →  crab  →  gull"
+        text two "seaweed  →  sea snail  →  gull"
+      }
+    }
+    say """
+      On the reef Ada and Ben watch the gull. It eats crabs, and it eats sea snails, and both of
+      those eat seaweed. That is two chains with the same start and the same end, and drawn
+      together they make a web. In a web a creature can have two arrows into it, one for each
+      thing it eats. That is what keeps the gull safe: if the crabs went, it would still have the
+      snails. The seaweed has no arrow into it at all, because it makes its own food.
+      """
+  }
+  do {
+    level easy {
+      worked nature.arrows-into c=1 w=2
+    }
+    practice nature.arrows-into count=3 seed=4 easy-seed=5 easy-count=2 hard-seed=1
+    practice nature.in-both-chains count=2 seed=4 easy-seed=1 hard-seed=1
+    practice nature.producer count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.who-is-safe k=1 level=medium
+    }
+  }
+  story {
+    show nature.web-count k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.who-is-safe k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.smallest-web n=4 easy-n=3 hard-n=5
+  }
+  remember {
+    say "A web is chains that share a creature. Two arrows in means two things to eat, and a creature with two foods can lose one."
+  }
+
+  grown-ups """
+    A chain became a web when two chains share a creature, and the new idea is that an arrow in
+    means a food, so a creature's arrows in are its foods. The wrong idea to watch for is counting
+    an arrow that leaves a creature as one of its foods, or giving the plant an arrow in. In the
+    counting questions the child should put a finger on the creature and count only the
+    arrowheads that touch it. The story turns a list of facts into arrows, one per thing eaten.
+    The two-star question takes one creature out and asks which eater is safe, and the reason
+    should come back as "it has something else to eat". The three-star question asks for the
+    fewest arrows that feed every animal, which is one each, and the trap is to count the plant.
+    If arrows out are still counted as foods after the core, stay here another day and draw the
+    garden's web on a big sheet: leaf, caterpillar, snail, bird, and count the arrows into the bird.
+    """
+  level easy {
+    grown-ups "At this level a worked example (two arrows into the seal) opens the core, the arrows counted are into the middle creatures and the top, the creature in both chains is found first, the producer is the seaweed, the web has four arrows, the crabs vanish and the gull is safe because it has sea snails, and the smallest web feeds three animals."
+  }
+  level hard {
+    grown-ups "At this level the arrows counted are into the plant, which has none, and the middle creatures, the creature that eats two things is asked for, the producer is tiny plants or sea grass, a second reasoning question in the core has the sea snails vanishing, the web has seven arrows with two into the octopus, the small fish vanish and the seal is safe because it has shrimp, and the smallest web feeds five animals."
+  }
+}

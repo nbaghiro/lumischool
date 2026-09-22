@@ -1,0 +1,20 @@
+# A reason: the child works out the rule behind a sort. In each version only one of the three rules
+# splits the four things the same way, which was checked thing by thing.
+item chem.sort-rule v=1 stars=2 skills=[chemistry.materials, reasoning.rule] {
+  title "What was the rule?"
+  difficulty k
+  let k=0..2
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 26x26 {
+    text ask "Tom sorted these into two groups. What was his rule?" width=25 at=canvas(1, 1)
+    wordsort s heads=["group 1", "group 2"] words=["{if k == 0 then \"window\" else if k == 1 then \"sock\" else \"raincoat\"}", "{if k == 0 then \"jar\" else if k == 1 then \"rubber band\" else \"welly boot\"}", "{if k == 0 then \"key\" else if k == 1 then \"brick\" else \"towel\"}", "{if k == 0 then \"sock\" else if k == 1 then \"key\" else \"paper bag\"}"] into=[0, 0, 1, 1] below=ask gap=1
+    choice pick options=["{if k == 0 then \"bendy or not\" else if k == 1 then \"see-through or not\" else \"waterproof or not\"}", "{if k == 0 then \"see-through or not\" else if k == 1 then \"waterproof or not\" else \"bendy or not\"}", "{if k == 0 then \"hard or not\" else if k == 1 then \"bendy or not\" else \"hard or not\"}"] stack=column below=s gap=1
+  }
+
+  answer pick=(if k == 0 then "see-through or not" else if k == 1 then "bendy or not" else "waterproof or not")
+  hint "What do the two things in group 1 have that the two in group 2 do not?"
+  hint "Try each rule. Does it put both things in group 1 on one side and both in group 2 on the other?"
+}

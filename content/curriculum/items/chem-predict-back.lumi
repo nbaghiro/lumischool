@@ -1,0 +1,23 @@
+# The same question before the answer is drawn: the third picture waits under a question mark, so
+# the child predicts from what they know about the material.
+item chem.predict-back v=1 skills=[chemistry.materials, reasoning.predict] {
+  title "Will it go back?"
+  difficulty (if k <= 2 or k == 8 then 0 else 1)
+  let k=0..8
+  level easy {
+    let k={0, 1, 2, 8}
+  }
+  level hard {
+    let k=3..7
+  }
+
+  scene 21x15 {
+    squash s thing=(if k == 0 then "sponge" else if k == 1 then "clay" else if k == 2 then "band" else if k == 3 then "spring" else if k == 4 then "spring" else if k == 5 then "pipecleaner" else if k == 6 then "pipecleaner" else if k == 7 then "foil" else "ball") action=(if k == 0 then "squash" else if k == 1 then "squash" else if k == 2 then "stretch" else if k == 3 then "stretch" else if k == 4 then "squash" else if k == 5 then "bend" else if k == 6 then "twist" else if k == 7 then "squash" else "squash") after=0 at=canvas(1, 0)
+    text ask "When you let go, will the {if k == 0 then \"sponge\" else if k == 1 then \"clay\" else if k == 2 then \"rubber band\" else if k == 3 then \"spring\" else if k == 4 then \"spring\" else if k == 5 then \"pipe cleaner\" else if k == 6 then \"pipe cleaner\" else if k == 7 then \"foil\" else \"ball\"} go back to its shape?" width=19 below=s gap=0
+    choice pick options=["yes", "no"] below=ask gap=0
+  }
+
+  check chem.materials of=s pick=back
+  hint "What is the {if k == 0 then \"sponge\" else if k == 1 then \"clay\" else if k == 2 then \"rubber band\" else if k == 3 then \"spring\" else if k == 4 then \"spring\" else if k == 5 then \"pipe cleaner\" else if k == 6 then \"pipe cleaner\" else if k == 7 then \"foil\" else \"ball\"} made of?"
+  hint "Think of squeezing or pulling one at home. What happens when you let go?"
+}

@@ -1,0 +1,15 @@
+item art.what-two-make v=1 skills=[art.colour-mixing] {
+  title "What do two paints make?"
+  difficulty (if k == 1 then 2 else if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 35x12 {
+    paintpots pots pots=["{if k == 2 then \"red\" else \"blue\"}", "{if k == 1 then \"red\" else \"yellow\"}"] result="?" labels=true at=canvas(1, 1)
+    text ask "Mix these two. What colour do they make?" width=16 right-of=pots gap=1
+    choice pick options=["green", "orange", "purple"] below=pots gap=1
+  }
+
+  check paint.mixes of=pots pick=name
+  hint "Which two colours are in the pots? Say their names."
+  hint "Put a little of each in the tray and stir. What colour comes out?"
+}

@@ -1,0 +1,22 @@
+# The unknown moved: not which thing keeps water out, but which one does not.
+item chem.not-waterproof v=1 skills=[chemistry.materials] {
+  title "Which lets water in?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k={0}  # a paper bag
+  }
+  level hard {
+    let k={1, 2}  # a towel and a wool hat
+  }
+
+  scene 22x11 {
+    text ask "Which one is not waterproof?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"raincoat\" else if k == 1 then \"metal-can\" else \"glass-bottle\"}", "{if k == 0 then \"rubber-boot\" else if k == 1 then \"towel\" else \"wool-hat\"}", "{if k == 0 then \"paper-bag\" else if k == 1 then \"plastic-bottle\" else \"metal-key\"}", "{if k == 0 then \"glass-jar\" else if k == 1 then \"rubber-band\" else \"raincoat\"}"] below=ask gap=0
+    choice pick options=["A", "B", "C", "D"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="only(not-waterproof)"
+  hint "Imagine pouring a cup of water on each one. Which would get soaked?"
+  hint "Three of them keep the water out. Which one lets it in?"
+}

@@ -1,0 +1,70 @@
+lesson nature-legs-and-wings v=1 format=teach grade=1 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "Legs and wings"
+  goal "Sort the small creatures of the long grass by their legs and wings, and say which of them are insects."
+
+  look {
+    scene 36x20 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row line space=2 align=end {
+          minibeasts beasts kinds=["ant", "ladybird", "bee", "spider", "snail"] legs=false
+          bumblebee bumble facing=1
+        }
+        row home space=3 align=end {
+          cobweb web spokes=8 spider=1
+          ants trail count=4 carry=1
+          toadstools caps count=1 spots=5
+        }
+      }
+    }
+    say """
+      Ada lies in the long grass and looks at who lives there. The ant, the ladybird and the bee
+      have six legs each, and six legs means an insect. The spider in its web has eight legs, so it
+      is not an insect. The snail has no legs at all. Wings do not decide it: the ant has none and is
+      an insect, and a bird has wings and is not. Count the legs.
+      """
+  }
+  do {
+    level easy {
+      worked nature.count-legs k=1
+    }
+    practice nature.count-legs count=2 seed=9 easy-seed=10 hard-seed=8
+    practice nature.which-legs count=2 seed=5 easy-seed=4 hard-seed=4
+    practice nature.legs-table count=1 seed=9 easy-seed=7 hard-seed=1
+    practice nature.insect-count count=2 seed=5 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.insect-claim k=4
+    }
+  }
+  story {
+    show nature.legs-story x=0 y=3 easy-x=1 easy-y=4 hard-x=2 hard-y=3
+  }
+  try stars=2 {
+    show nature.insect-claim k=3 easy-k=0 hard-k=5
+  }
+  try stars=3 {
+    show nature.name-from-clues k=1 easy-k=0 hard-k=4
+  }
+  remember {
+    say "Six legs means an insect. The spider has eight and the snail has none, so they are not."
+  }
+
+  grown-ups """
+    The wrong idea here is that anything small that creeps or flies in the grass is an insect, and
+    its cousin, that wings are what make one. The test is six legs, and every question can be settled
+    by counting them on the drawing: the spider has eight, the snail has none, the bee's legs are
+    under its wings. Watch whether the child counts or guesses from the look of the creature; the
+    snail and the spider are drawn so that a guess goes wrong and a count goes right. In the story
+    the snail adds no legs, which is the point. In the two-star question one creature shows Ada's
+    sentence is wrong, and the child should say why that one and not the others; the cup, the pencil
+    and the boat are not creatures and say nothing either way. The three-star question names a
+    creature that is not drawn, and the way in is to cross off: each clue rules one choice out. If
+    the child still sorts by wings or by size after the core, stay here another day and go outside
+    with a jar: find three creatures, count the legs on each, and say which are insects.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the ladybird's six legs) opens the core, the legs counted are the ant's and the spider's, the rows hold one odd creature each, the story adds a ladybird's six legs and a snail's none, the snail is the creature that shows Ada is wrong, and the clues name the ant."
+  }
+  level hard {
+    grown-ups "At this level the legs counted are the snail's none and the bee's six half hidden under its wings, the spider and the snail stand together in every row so a look is not enough, a second reasoning question sits in the core with a duck among the insects, the story adds a bee's six legs and a spider's eight, an owl is the creature that shows Ada is wrong, and the clues name the butterfly."
+  }
+}

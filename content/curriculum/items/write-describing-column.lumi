@@ -1,0 +1,14 @@
+item writing.describing-column v=1 skills=[writing.word-classes] {
+  title "Naming or describing?"
+  let w=0..3
+
+  scene 33x21 {
+    text ask "One word is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort sort heads=["Naming", "Describing"] words=["kitten", "fluffy", "bucket", "heavy"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    art pic asset="cat" right-of=sort gap=2
+    choice pick options=["kitten", "fluffy", "bucket", "heavy"] below=sort gap=1
+  }
+
+  answer pick=(if w == 0 then "kitten" else if w == 1 then "fluffy" else if w == 2 then "bucket" else "heavy")
+  hint "A naming word is a thing you could point at. A describing word tells you what it is like."
+}

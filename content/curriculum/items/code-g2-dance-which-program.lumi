@@ -1,0 +1,23 @@
+# The strip is given and the program is the unknown: two programs with the same numbers swapped and
+# one with the repeat in the wrong place, and only one makes this dance. p swaps A and B.
+item coding.dance-which-program v=1 stars=2 skills=[coding.repetition, reasoning.compare] {
+  title "Which program makes this dance?"
+  difficulty (n * c + n + p)
+  let n=2..4 c=1..3 p=0..1
+  where (n != c and n * c + n <= 8)
+
+  scene 34x20 {
+    dance d code=["repeat {n}", "  clap {c}", "  jump"] at=canvas(1, 0)
+    column progs below=d gap=1 space=1 align=start {
+      text pa "A.  repeat {if p == 0 then n else c}, and inside it clap {if p == 0 then c else n}, jump"
+      text pb "B.  repeat {if p == 0 then c else n}, and inside it clap {if p == 0 then n else c}, jump"
+      text pc "C.  clap {c}, then repeat {n}, and inside it jump"
+    }
+    text ask "Which program makes this dance?" width=16 below=progs gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else "B")
+  hint "How many jumps are in the strip? That is how many times the repeat goes round."
+  hint "How many claps come before each jump?"
+}

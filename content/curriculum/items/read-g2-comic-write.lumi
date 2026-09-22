@@ -1,0 +1,16 @@
+# The last bubble is written by the child: it has to follow from the first two panels and match
+# the face. Many lines are right, so a grown-up marks it.
+item reading.comic-write v=1 stars=3 skills=[reading.comics, writing.composing] {
+  title "Finish the comic"
+  let k=0..2
+
+  scene 36x20 {
+    comic strip who=[if k == 0 then "boy" else if k == 1 then "girl" else "kid", if k == 0 then "dog" else if k == 1 then "gran" else "kid", if k == 0 then "boy" else if k == 1 then "girl" else "kid"] says=[if k == 0 then "Where has my shoe gone?" else if k == 1 then "I cannot reach the top shelf." else "It is my first swim.", if k == 0 then "Woof." else if k == 1 then "Let me help you." else "The water is cold.", if k == 0 then "" else if k == 1 then "" else ""] moods=[if k == 0 then "worried" else if k == 1 then "sad" else "worried", if k == 0 then "happy" else if k == 1 then "happy" else "scared", if k == 0 then "happy" else if k == 1 then "excited" else "excited"] with=[if k == 0 then "" else if k == 1 then "gran" else "", if k == 0 then "" else if k == 1 then "girl" else "", if k == 0 then "dog" else if k == 1 then "gran" else ""] thinks=[if k == 0 then 0 else if k == 1 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else 0] holds=[if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else ""] labels=["1", "2", "3"] at=canvas(1, 0)
+    text ask "Write what {if k == 0 then \"the boy\" else if k == 1 then \"the girl\" else \"the child\"} says in the last bubble, to fit the story and the face." narrate width=35 below=strip gap=1
+    writinglines lines lines=1 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A line that follows from the first two pictures and matches the face in the third, said in the character's own words rather than describing them, short enough for a bubble. It does not need speech marks, because the bubble is the speech marks."
+  hint "What happened in the first two pictures?"
+  hint "Look at the face in picture 3. What would someone who looks like that say?"
+}

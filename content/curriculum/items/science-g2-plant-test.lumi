@@ -1,0 +1,17 @@
+# A comparative test: two plants treated the same in every way but one, and the one that differs is
+# what the test is about.
+item science.plant-test v=1 stars=2 skills=[science.plants, science.fair-test] {
+  title "What is she testing?"
+  let v=0..2 who={"Zoe", "Omar", "Nell"}
+  let how={if v == 0 then "puts one in a dark cupboard and one on a sunny windowsill, and gives them the same water" else if v == 1 then "puts both on the same sunny windowsill, waters one every day and never waters the other" else "puts one in a warm room and one in a cold room, both by a sunny window with the same water"}
+
+  scene 36x16 {
+    growstages grow stages=3 numbers=false at=canvas(1, 1)
+    text ask "{who} grows two bean plants. {who} {how}. What is the test about?" width=15 right-of=grow gap=1
+    choice pick options=["light", "water", "warmth"] below=grow gap=1
+  }
+
+  answer pick=(if v == 0 then "light" else if v == 1 then "water" else "warmth")
+  hint "What is the same for both plants?"
+  hint "Which one thing is different? That is what the test finds out about."
+}

@@ -1,0 +1,31 @@
+# Two prints that differ in exactly one thing, and which thing that is: the rain's directions, the far
+# bank, or how near the rain is drawn.
+item art.rain-what-differs v=1 skills=[art.looking, reasoning.compare] {
+  title "What is different?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..7
+  let r1={pick(k, 1, 1, 1, 2, 1, 1, 1, 1)}
+  let r2={pick(k, 2, 1, 1, 1, 1, 1, 1, 2)}
+  let f1={pick(k, 0, 1, 0, 1, 1, 0, 1, 1)}
+  let f2={pick(k, 0, 0, 0, 1, 1, 1, 1, 1)}
+  let w1={pick(k, "both", "both", "near", "both", "near", "both", "far", "both")}
+  let w2={pick(k, "both", "both", "far", "both", "far", "both", "near", "both")}
+  let ans={pick(k, "The directions the rain falls in", "The far bank behind the arches", "How near the rain is drawn", "The directions the rain falls in", "How near the rain is drawn", "The far bank behind the arches", "How near the rain is drawn", "The directions the rain falls in")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..7
+  }
+
+  scene 23x30 {
+    bridge one arches=3 rain=r1 weight=w1 far=f1 at=canvas(1, 0)
+    bridge two arches=3 rain=r2 weight=w2 far=f2 below=one gap=1
+    text ask "These two prints are the same but for one thing. Which thing is it?" narrate width=22 below=two gap=1
+    choice pick options=["The directions the rain falls in", "The far bank behind the arches", "How near the rain is drawn"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Go through them one at a time: the rain's slants, then the banks, then the width of the rain lines."
+  hint "Two of the three are the same in both prints."
+}

@@ -1,0 +1,16 @@
+# A statement to check against the passage. The false ones borrow the passage's own words and
+# change one detail, so the child has to read closely, not match words.
+item reading.true-or-false v=1 skills=[reading.comprehension, reading.find-a-detail] {
+  title "True or false?"
+  let k=0..3 s=0..1
+
+  scene 36x12 {
+    passage p text="{if k == 0 then \"Mia and her dog went to the beach. The dog ran into the sea and came out wet. Mia laughed and threw a stick for him.\" else if k == 1 then \"Sam made a card for his gran. He drew a boat on the front. Inside he wrote Happy birthday in red pen.\" else if k == 2 then \"The bus was late, so Ana and her dad walked. They got to the library just before it shut.\" else \"Leo planted three beans in a pot. Two of them grew, but one did not come up at all.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "{if s == 0 then (if k == 0 then \"The dog got wet.\" else if k == 1 then \"Sam drew a boat on the card.\" else if k == 2 then \"Ana and her dad went on the bus.\" else \"All three beans grew.\") else (if k == 0 then \"Mia threw a ball for the dog.\" else if k == 1 then \"Sam wrote in blue pen.\" else if k == 2 then \"The library was still open when they got there.\" else \"Leo planted his beans in a pot.\")} True or false?" narrate width=21 below=p gap=1
+    choice pick options=["true", "false"] right-of=ask gap=1
+  }
+
+  answer pick=(if s == 0 then if k == 0 then "true" else if k == 1 then "true" else if k == 2 then "false" else "false" else if k == 0 then "false" else if k == 1 then "false" else if k == 2 then "true" else "true")
+  hint "Find the part of the passage the sentence is about."
+  hint "Read that part word by word. Is every detail the same?"
+}

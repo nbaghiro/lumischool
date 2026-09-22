@@ -1,0 +1,42 @@
+# The three-star: two layers for a dry seat on wet grass, chosen from four things. The bottom layer
+# must keep water out and bend flat; the top must be soft and dry to sit on. No method is on the
+# page: each thing has to be tried against both jobs, and the hard set has a waterproof thing that
+# will not lie flat.
+item chem.dry-seat v=1 stars=3 skills=[chemistry.materials, reasoning.constraints] {
+  title "A dry seat"
+  difficulty (k + p)
+  let k=0..2 p=0..2
+  let a={pick(k, "raincoat", "raincoat", "plastic-bottle")}
+  let b={pick(k, "towel", "wool-hat", "towel")}
+  let c={pick(k, "paper-bag", "paper-book", "raincoat")}
+  let d={pick(k, "metal-can", "pebble", "paper-bag")}
+  let bottom={pick(k, "A", "A", "C")}
+  let top={pick(k, "B", "B", "B")}
+  level easy {
+    let k=0..0 p=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x20 {
+    materials row things=["{if p == 0 then a else if p == 1 then d else c}", "{if p == 0 then b else if p == 1 then a else d}", "{if p == 0 then c else if p == 1 then b else a}", "{if p == 0 then d else if p == 1 then c else b}"] at=canvas(1, 0)
+    text ask "The grass is wet and Ada wants a dry seat for the picnic. She will put one thing on the grass to keep the wet out, and one soft thing on top to sit on. Which goes on the bottom, and which on top?" narrate width=32 below=row gap=1
+    text tb "On the grass:" width=12 below=ask gap=1
+    choice bottomPick options=["A", "B", "C", "D"] right-of=tb gap=1
+    text tt "On top:" width=12 below=tb gap=1
+    choice topPick options=["A", "B", "C", "D"] right-of=tt gap=1
+  }
+
+  answer bottomPick=(if p == 0 then bottom else if p == 1 then if bottom == "A" then "B" else if bottom == "B" then "C" else if bottom == "C" then "D" else "A" else if bottom == "A" then "C" else if bottom == "B" then "D" else if bottom == "C" then "A" else "B") topPick=(if p == 0 then top else if p == 1 then if top == "A" then "B" else if top == "B" then "C" else if top == "C" then "D" else "A" else if top == "A" then "C" else if top == "B" then "D" else if top == "C" then "A" else "B")
+  feedback {
+    when (k == 2 and bottomPick == (if p == 0 then "A" else if p == 1 then "B" else "C")) point=row {
+      say "The bottle keeps water out, but it will not lie flat under a seat. The raincoat keeps water out and folds."
+    }
+    when (topPick == bottomPick) point=row {
+      say "The two layers are two different things: one to keep the wet out, one to sit on."
+    }
+  }
+  hint "The bottom layer meets the wet grass. Which things keep water out? Which of those would lie flat?"
+  hint "The top layer is the seat. It should be soft, and it stays dry because of the layer under it."
+}

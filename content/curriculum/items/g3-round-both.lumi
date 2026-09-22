@@ -1,0 +1,30 @@
+# Rounding with no line to read it from: the child has to find the tens and hundreds either side.
+item place.round-both v=1 skills=[place-value.rounding] {
+  title "To the nearest ten and hundred"
+  difficulty ((if o == 4 or o == 6 then 1 else 0) + (if t == 4 or t == 5 or t == 9 then 1 else 0) + (if o > 5 and t == 4 or o > 5 and t == 9 then 2 else 0))
+  let h=1..8 t=0..9 o=1..9
+  where (o != 5 and 10 * t + o != 50)
+  level easy {
+    let t={1, 2, 3, 6, 7, 8} o={1, 2, 3, 7, 8, 9}
+  }
+  level hard {
+    let h=2..9 t={4, 9} o=6..9  # the ten rounds up into the fifties or into the next hundred
+  }
+
+  scene 33x12 {
+    pvchart chart value="{100 * h + 10 * t + o}" show=digits at=canvas(1, 1)
+    text q1 "Round {100 * h + 10 * t + o} to the nearest ten." width=16 right-of=chart gap=2
+    number-input ten below=q1 gap=1
+    text q2 "Round it to the nearest hundred." width=16 below=ten gap=1
+    number-input hundred below=q2 gap=1
+  }
+
+  answer ten=(10 * round((100 * h + 10 * t + o) / 10)) hundred=(100 * round((100 * h + 10 * t + o) / 100))
+  feedback {
+    when (hundred == 10 * round((100 * h + 10 * t + o) / 10) and hundred != 100 * round((100 * h + 10 * t + o) / 100)) point=chart {
+      say "To the nearest hundred means the answer ends in 00."
+    }
+  }
+  hint "Which two tens is it between? Which is nearer?"
+  hint "For the hundreds, look at the tens digit. Is it past the middle, 50?"
+}

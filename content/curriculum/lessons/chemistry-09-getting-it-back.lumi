@@ -1,0 +1,55 @@
+lesson chemistry-getting-it-back v=2 format=teach grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Getting it back: filtering"
+  goal "Say what filter paper keeps back and what goes through it, choose filtering or evaporating, and plan how to get two solids back."
+
+  look {
+    scene 25x16 {
+      row kit at=canvas(1, 0) space=2 align=end {
+        funnel f residue=8 level=2 drops=3
+        mixture mix things=["sand", "salt"] water=1 names=1
+      }
+    }
+    say """
+      Filter paper has holes far too small to see. Water fits through them, and so does anything
+      that has dissolved in it. A grain of sand does not, so it stays in the paper cone while the
+      water drips into the beaker below. Both halves of the answer are in the picture: what stayed,
+      and what went through.
+      """
+  }
+  do {
+    practice chem.filter-residue count=1 seed=7
+    level easy {
+      worked chem.filter-what-stays u="iron" d="sugar" o=0 level=medium
+    }
+    practice chem.filter-what-stays count=2 seed=3 easy-seed=2 hard-seed=4
+    practice chem.separate-how count=2 seed=1
+    practice chem.filter-or-not count=2 seed=4 easy-seed=1
+    practice chem.filter-mass count=1 seed=2
+  }
+  try stars=2 {
+    show chem.filter-why q=0 u="sand" d="salt" easy-q=1 hard-q=1 hard-u="flour" hard-d="sugar"
+  }
+  try stars=3 {
+    show chem.sand-salt-steps o=3
+  }
+  remember {
+    say "Filter paper keeps back what has not dissolved. What has dissolved goes through with the water."
+  }
+
+  grown-ups """
+    A coffee filter and muddy water do this at the sink in two minutes; wear goggles if anything
+    might splash, and nothing in the experiment is tasted. The first question, counting the grains
+    in the cone, is the way in. The core asks what stays on the paper, which way gets a solid back,
+    and whether paper can catch a thing at all, so the child has to decide first whether it has
+    dissolved. The sand question checks that nothing is lost: the sand on the paper weighs what went
+    in. The two-star question asks why one thing goes through and another does not, and the answer
+    changes with the question. The three-star question has no method on the page: sand and salt
+    come apart only by adding water, filtering, then letting the water evaporate, in that order.
+    """
+  level easy {
+    grown-ups "At this level three or four grains sit on the paper, iron filings and sugar are sorted once in the teacher's pen before mixtures of sand or iron with salt or sugar, the way to get it back is as written, the things to filter out are sand, pebbles and salt, five or ten grams of sand go into a hundred of water, the two-star asks why the sand stays, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level five or six grains sit on the paper, the mixtures put flour or iron filings with salt or sugar, the way to get it back is as written, the things to filter out are flour, sugar and iron filings, fifteen or twenty grams of sand go into two hundred of water, the two-star asks why the flour stays when it looks as if it dissolved, and the three-star is as written."
+  }
+}

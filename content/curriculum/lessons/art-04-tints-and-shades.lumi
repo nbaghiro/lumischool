@@ -1,0 +1,61 @@
+lesson art-tints-and-shades v=1 format=teach grade=2 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Tints and shades"
+  goal "Make a colour lighter with white and darker with black, tell a tint from a shade, and work out what went into one."
+
+  look {
+    scene 18x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        tintladder up colour=red toward=white steps=5 blank=-1 ring=-1 labels=true
+        tintladder down colour=blue toward=black steps=4 blank=-1 ring=-1 labels=true
+      }
+    }
+    say """
+      Add white to a colour and it gets lighter. That is a tint: pink is a tint of red. Add black
+      and it gets darker. That is a shade. Black is strong, so add it a drop at a time.
+      """
+  }
+  do {
+    level easy {
+      worked art.tint-or-shade c="red" t="black" level=medium
+    }
+    practice art.tint-or-shade count=2 seed=2
+    practice art.what-white-makes count=1 seed=1
+    practice art.make-a-tint count=3 seed=3
+    practice art.tint-steps count=2 hard-count=1 seed=1
+    level hard {
+      practice art.lightest-tint count=1 seed=5
+    }
+  }
+  try stars=2 {
+    show art.lightest-tint k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show art.paint-a-sky
+  }
+  remember {
+    say "White makes a tint. Black makes a shade. What matters is how much white there is for each part of colour."
+  }
+
+  grown-ups """
+    The lesson starts by naming a tint or a shade, then turns the question round: the child sees
+    the pot a mix made and works out which paint went in, and then continues a ladder whose steps
+    double the white each time. The machine marks all of these with the same mixing as the brush.
+
+    The two-star question is a trap worth falling into. Two of its mixes have the same amount of
+    white, and the lighter one is the one with less red, so the child has to compare the white with
+    the red rather than look at the white alone. Talking it through with real paint on a plate helps
+    more than the right answer does.
+
+    The sky is the child's, and it shows whether they can add white a little at a time: four or more
+    bands that step evenly from dark to light are the aim. With real paint, start from the dark blue
+    and add white, rather than the other way round, because it takes a great deal of blue to darken
+    white. Respond by describing the steps: "Your top band is the darkest, and each one after it has
+    more white." Ask which band was hardest to get right.
+    """
+  level easy {
+    grown-ups "At this level a shade is named once in the teacher's pen before the pots to call tint or shade, red and white are as written, the paint Ada added is white, the ladder goes up by two parts of white, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the pots to call tint or shade are as written, red and white are as written, the paint Ada added is black, the ladder goes up by four or eight parts of white and one ladder makes way for a second lightest pink to find, and the two-star and three-star are as written."
+  }
+}

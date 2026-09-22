@@ -1,0 +1,50 @@
+# Three stars: choosing the day to fly a kite from a week's chart, where the day has to be windy and
+# dry, and saying which rule rules each other day out. Only one day of the four meets both.
+item nature.weather-kite-day v=1 stars=3 skills=[nature.weather, reasoning.constraints, reasoning.evidence] {
+  title "A day for the kite"
+  difficulty (if near == 1 then 1 else 0)
+  let v=0..3
+  let r1={pick(v, 0, 25, 30, 5)}
+  let r2={pick(v, 20, 0, 0, 30)}
+  let r3={pick(v, 5, 5, 10, 0)}
+  let w1={pick(v, 0, 1, 1, 1)}
+  let w2={pick(v, 1, 1, 1, 1)}
+  let w3={pick(v, 1, 0, 0, 0)}
+  let ans={pick(v, "Wednesday", "Tuesday", "Tuesday", "Monday")}
+  let near={pick(v, 0, 0, 1, 1)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 33x28 {
+    row days space=2 align=start at=canvas(1, 0) {
+      column mon space=0 align=centre {
+        text lm "Monday"
+        windsock s1 wind=w1 stripes=5
+      }
+      column tue space=0 align=centre {
+        text lt "Tuesday"
+        windsock s2 wind=w2 stripes=5
+      }
+      column wed space=0 align=centre {
+        text lw "Wednesday"
+        windsock s3 wind=w3 stripes=5
+      }
+    }
+    table rain cols=2 head=["Day", "Rain"] cells=["Monday", "{r1} mm", "Tuesday", "{r2} mm", "Wednesday", "{r3} mm"] below=days gap=1
+    text ask "A kite needs a windy day with no rain to speak of, which means the windsock streaming out level and under ten millimetres in the gauge. Which of these three days should Sam choose?" narrate width=32 below=rain gap=1
+    choice pick options=["Monday", "Tuesday", "Wednesday"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=rain {
+      say "That day fails one of the two rules. Check the windsock and the rain for each day before choosing."
+    }
+  }
+  hint "Write down which days are windy, then which days are dry."
+  hint "The day you want has to be on both lists."
+}

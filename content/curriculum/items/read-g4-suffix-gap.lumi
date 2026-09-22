@@ -1,0 +1,28 @@
+# The audit's raise for reading.suffix-meaning: the sentence says what job the word does, and the
+# child writes the whole word with the suffix on. The accepted spellings are the options.
+item reading.suffix-in-sentence v=2 skills=[reading.morphology] {
+  title "Add a suffix to fill the gap"
+  difficulty (if k == 0 or k == 4 then 1 else 0)
+  let k=0..5 root={if k == 0 then "kind" else if k == 1 then "build" else if k == 2 then "harm" else if k == 3 then "care" else if k == 4 then "dark" else "play"}
+  level easy {
+    let k={1, 2, 3, 5}  # builder, harmless, careful, playful
+  }
+  level hard {
+    let k={0, 2, 4}  # kindness, harmless, darkness
+  }
+
+  scene 36x12 {
+    sentence strip before="{if k == 0 then \"She thanked him for his\" else if k == 1 then \"The\" else if k == 2 then \"It was a\" else if k == 3 then \"Be\" else if k == 4 then \"The\" else \"The puppy was so\"}" blank=6 after="{if k == 0 then \".\" else if k == 1 then \"mended the roof.\" else if k == 2 then \"joke, and nobody was hurt.\" else if k == 3 then \"with the glass jug.\" else if k == 4 then \"of the cave made it hard to see.\" else \"that it chewed my shoe.\"}" at=canvas(1, 1)
+    text ask "Add a suffix to {root} to make the word for the gap." width=34 below=strip gap=1
+    word-input pick options=["{if k == 0 then \"kindness\" else if k == 1 then \"builder\" else if k == 2 then \"harmless\" else if k == 3 then \"careful\" else if k == 4 then \"darkness\" else \"playful\"}"] letters=8 below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "kindness" else if k == 1 then "builder" else if k == 2 then "harmless" else if k == 3 then "careful" else if k == 4 then "darkness" else "playful")
+  feedback {
+    when (pick == "careless" and k == 3) point=strip {
+      say "Careless means without care. Would you tell someone to be that with a glass jug?"
+    }
+  }
+  hint "What job does the gap need: a thing, a person, or a word that describes?"
+  hint "Try each ending on {root}: ness, er, less, ful. Which one makes the sentence make sense?"
+}

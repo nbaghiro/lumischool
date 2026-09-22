@@ -1,0 +1,15 @@
+# Played: a bass note read from the staff and played with the left hand. G, one step above bass
+# F on the fourth line.
+item music.play-bass v=1 skills=[music.staff, music.keys] {
+  title "Play the bass note"
+
+  scene 26x28 {
+    grandstaff gs notes=["G3"] letters=false lit=["G3"] landmarks=true at=canvas(1, 1)
+    text ask "Name the ringed note from bass F, then play it on the keyboard with your left hand." width=14 right-of=gs gap=1
+    piano keys from=C3 whites=8 wide=3 labels=none below=gs gap=1
+  }
+
+  check music.plays notes=[G3]
+  hint "The ring is one step above bass F: the space above the fourth line."
+  hint "One step up from F is G. On the keys it is the white key between the first two black keys of a group of three, below middle C."
+}

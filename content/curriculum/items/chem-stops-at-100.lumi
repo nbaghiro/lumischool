@@ -1,0 +1,31 @@
+# The rule of the lesson: the reading climbs steadily and stops at 100 while the water boils, so
+# some versions stop short of 100 and some reach it.
+item chem.stops-at-100 v=1 skills=[chemistry.heating] {
+  title "Where does it stop?"
+  difficulty ((if v + 10 * m > 100 then 2 else 0) + m)
+  let v={40, 60, 70, 80} m={2, 3, 4, 5}
+  level easy {
+    where (v + 10 * m <= 80)  # well short of the boil
+  }
+  level hard {
+    where (v + 10 * m >= 90)  # reaches 90, or would pass 100 and stops there
+  }
+
+  scene 37x14 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      flame burner height=4 on=1 stand=false
+      thermometer tube from=0 to=120 step=20 value=v unit="°C"
+    }
+    text ask "The water is at {v} degrees and rises 10 degrees a minute until it boils. What will the thermometer read after {m} minutes?" width=13 right-of=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer min(100, v + 10 * m)
+  feedback {
+    when (answer == v + 10 * m and v + 10 * m > 100) point=tube {
+      say "Water in an open pan does not get hotter than 100 degrees. It boils instead."
+    }
+  }
+  hint "How many degrees would it rise in {m} minutes?"
+  hint "When water in an open pan starts to boil, does it keep getting hotter?"
+}

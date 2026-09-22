@@ -1,0 +1,37 @@
+# Reading the table of spoons against temperature: how many spoons dissolved at one temperature,
+# the temperature that held the most, or how many more the hottest water held than the coldest.
+item chem.spoons-table v=1 skills=[chemistry.dissolving, data.tables] {
+  title "Read the spoons"
+  difficulty (if w == 2 then 2 else w)
+  let w=0..2 r=0..3 t=0..1 g=0..1
+  let s1={pick(t, 3, 2)}
+  let s2={pick(t, 4, 3)}
+  let s3={pick(t, 6, 5)}
+  let s4={pick(t, 8, 7)}
+  let temp={pick(r, 10, 20, 40, 60)}
+  let spoons={pick(r, s1, s2, s3, s4)}
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 34x21 {
+    table data cols=2 head=["Water °C", "Spoons dissolved"] cells=["10", "{s1}", "20", "{s2}", "40", "{s3}", "60", "{s4}"] at=canvas(1, 0)
+    text ask "Ana added spoons of salt to a cup of water, stirring, until grains stayed on the floor, and wrote down how many had dissolved at each temperature. {if w == 0 then \"How many spoons dissolved at \" else if w == 1 then (if g == 0 then \"At how many degrees did the most salt dissolve?\" else \"At how many degrees did the least salt dissolve?\") else (if g == 0 then \"How many more spoons dissolved at 60 °C than at 10 °C?\" else \"How many more spoons dissolved at 40 °C than at 10 °C?\")}{if w == 0 then temp else \"\"}{if w == 0 then \" °C?\" else \"\"}" narrate width=32 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then spoons else if w == 1 then if g == 0 then 60 else 10 else if g == 0 then s4 - s1 else s3 - s1)
+  feedback {
+    when (w == 1 and (answer == s4 or answer == s1)) point=data {
+      say "That is a number of spoons. The question asks for the temperature of the water that held them."
+    }
+    when (w == 2 and (answer == s4 or answer == s3) and answer != (if g == 0 then s4 - s1 else s3 - s1)) point=data {
+      say "That is the warmer row on its own. Take the 10 °C row's spoons away from it."
+    }
+  }
+  hint "{if w == 0 then \"Find the row with that temperature and read across to its spoons.\" else if w == 1 then (if g == 0 then \"Find the biggest number of spoons, then read back to its temperature.\" else \"Find the smallest number of spoons, then read back to its temperature.\") else \"Read both rows, then take the smaller number from the bigger.\"}"
+  hint "The hotter the water, the more spoons it held."
+}

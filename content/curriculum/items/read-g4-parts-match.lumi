@@ -1,0 +1,15 @@
+# The audit's raise for reading.letter-parts: name the part each line belongs to. The parts are
+# listed in a different order each time.
+item reading.postcard-parts v=1 skills=[reading.letters, reading.text-features] {
+  title "Which part is it?"
+  let k=0..2
+
+  scene 32x16 {
+    text ask "Write the number of the part each line comes from." width=30 at=canvas(1, 1)
+    match m left=["{if k == 0 then \"Dear Uncle Tam,\" else if k == 1 then \"Dear Priya,\" else \"Dear Mr Hale,\"}", "{if k == 0 then \"We saw a seal today.\" else if k == 1 then \"The snow is deep here.\" else \"Our tent leaks a bit.\"}", "{if k == 0 then \"Love from Isla\" else if k == 1 then \"From your friend Jo\" else \"Best wishes, Omar\"}", "{if k == 0 then \"2 Quay Road\" else if k == 1 then \"9 Elm Close\" else \"5 Mill Row\"}"] right=["{if k == 0 then \"the message\" else if k == 1 then \"the address\" else \"the sign-off\"}", "{if k == 0 then \"the address\" else if k == 1 then \"the greeting\" else \"the message\"}", "{if k == 0 then \"the greeting\" else if k == 1 then \"the sign-off\" else \"the address\"}", "{if k == 0 then \"the sign-off\" else if k == 1 then \"the message\" else \"the greeting\"}"] blanks=[a, b, c, e] below=ask gap=1
+  }
+
+  answer a=(if k == 0 then 3 else if k == 1 then 2 else 4) b=(if k == 0 then 1 else if k == 1 then 4 else 2) c=(if k == 0 then 4 else if k == 1 then 3 else 1) e=(if k == 0 then 2 else if k == 1 then 1 else 3)
+  hint "Which line would come first on a postcard, and which comes just before the name?"
+  hint "The address is where the card goes. It has a street in it."
+}

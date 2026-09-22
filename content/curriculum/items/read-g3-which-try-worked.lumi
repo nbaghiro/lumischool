@@ -1,0 +1,21 @@
+# Two things are tried and only one works: the fix has to be told from an attempt that fails,
+# which means reading what each try led to, not taking the last stop or the first try.
+item reading.which-try-worked v=1 stars=2 skills=[reading.story-structure, reading.inference] {
+  title "Which try worked?"
+  difficulty (if k == 1 then 0 else if k == 2 then 1 else 2)
+  let k=0..3
+
+  scene 35x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=[if k == 0 then "Ivy's cat is stuck up a tree." else if k == 1 then "The ferry is lost in the fog." else if k == 2 then "Sam's ball is stuck on the roof." else "The hens will not go in their house.", if k == 0 then "Ivy calls, but it will not come." else if k == 1 then "The captain rings the bell." else if k == 2 then "He throws a shoe, and it sticks too." else "Ada chases them, and they run off.", if k == 0 then "Dad's ladder is too short." else if k == 1 then "The keeper lights the lamp." else if k == 2 then "Mum pokes them down with a broom." else "Ada waves her arms, and they hide.", if k == 0 then "Ivy shakes the treats and it climbs down." else if k == 1 then "The ferry follows the light home." else if k == 2 then "Sam plays football until tea." else "Ada drops corn by the door, and in they go."] icons=[if k == 0 then "girl" else if k == 1 then "boat" else if k == 2 then "boy" else "hen", if k == 0 then "" else if k == 1 then "" else if k == 2 then "ball" else "", if k == 0 then "" else if k == 1 then "lighthouse" else if k == 2 then "" else "", if k == 0 then "cat" else if k == 1 then "boat" else if k == 2 then "ball" else "hen"] heads=[] blank=-1
+      row q1 space=2 align=centre {
+        text ask "Which stop really fixes the problem?" width=26
+        number-input answer
+      }
+    }
+  }
+
+  answer (if k == 0 then 4 else if k == 1 then 3 else if k == 2 then 3 else 4)
+  hint "What is the problem? Then read each try. Does the problem go away after it?"
+  hint "A try that does not work leaves the problem where it was."
+}

@@ -1,0 +1,25 @@
+# Every option is a problem, so the right one is the problem the fixing card actually solves: the
+# audit's raise for v1, where only one option was a problem at all. Drawn as the plan on a pad so
+# the whole mountain fits beside the question.
+item writing.mountain-problem v=2 skills=[writing.planning] {
+  title "The problem at the top"
+  difficulty (if s == 2 then 1 else 0)
+  let s=0..2 p=0..2 ok={if s == 0 then "It starts to rain" else if s == 1 then "It sticks in a tree" else "The sea creeps closer"} o1={if s == 0 then "A dog takes the bread" else if s == 1 then "The string snaps" else "A crab nips his toe"} o2={if s == 0 then "Ben forgets the cups" else if s == 1 then "Mia loses her shoe" else "He drops his spade"}
+
+  scene 37x17 {
+    listpad plan title="Story mountain" items=["{if s == 0 then \"Opening: a picnic in the park\" else if s == 1 then \"Opening: Mia's kite on a hill\" else \"Opening: Omar's sandcastle\"}", "{if s == 0 then \"Build-up: Ben lays out food\" else if s == 1 then \"Build-up: it flies higher\" else \"Build-up: he adds towers\"}", "Problem: ?", "{if s == 0 then \"Fixing it: Dad opens an umbrella\" else if s == 1 then \"Fixing it: Gran brings a ladder\" else \"Fixing it: he builds a sand wall\"}", "{if s == 0 then \"Ending: they eat, snug and dry\" else if s == 1 then \"Ending: the kite flies again\" else \"Ending: the castle stays up\"}"] count=0 width=19 ticks=false at=canvas(1, 1)
+    column right right-of=plan gap=1 space=1 align=start {
+      text ask "All three are problems. Which one goes at the top?" width=15
+      choice pick options=["{if p == 0 then ok else if p == 1 then o1 else o2}", "{if p == 0 then o1 else if p == 1 then o2 else ok}", "{if p == 0 then o2 else if p == 1 then ok else o1}"] stack=column
+    }
+  }
+
+  answer pick=ok
+  feedback {
+    when (pick != ok) point=plan {
+      say "That is a problem, but would the fixing card put it right?"
+    }
+  }
+  hint "Read the fixing card. What does it put right?"
+  hint "Which problem would that fix solve?"
+}

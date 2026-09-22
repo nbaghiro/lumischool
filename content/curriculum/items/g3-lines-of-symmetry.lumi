@@ -1,0 +1,30 @@
+# How many lines of symmetry, as a number, so every possible fold has to be tried.
+item shapes.lines-of-symmetry v=2 skills=[shapes.symmetry] {
+  title "How many mirror lines?"
+  difficulty (if s == "isosceles" then 0 else if s == "square" then 1 else 2)
+  let s={"square", "rectangle", "isosceles", "hexagon"}  # the ell is nearly symmetric on its diagonal, which made 0 arguable
+  level easy {
+    let s={"square", "isosceles"}
+  }
+  level hard {
+    let s={"rectangle", "hexagon"}  # the rectangle's diagonals are the trap, and the hexagon has six
+  }
+
+  scene 28x11 {
+    mirror fig shape=s line=none size=8 at=canvas(1, 1)
+    text ask "How many lines of symmetry does this shape have?" width=14 right-of=fig gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if s == "square" then 4 else if s == "rectangle" then 2 else if s == "isosceles" then 1 else if s == "hexagon" then 6 else 0)
+  feedback {
+    when (answer == 4 and s == "rectangle") point=fig {
+      say "Try folding a rectangle of paper corner to corner. Do the halves match?"
+    }
+    when (answer == 2 and s == "square") point=fig {
+      say "A square also folds from corner to corner."
+    }
+  }
+  hint "Try a fold down the middle, then across the middle."
+  hint "Now try the folds from corner to corner. Which ones make the halves match?"
+}

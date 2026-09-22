@@ -1,0 +1,28 @@
+# The way in: an array names one factor pair of its total.
+item factors.array-rows v=1 skills=[number.factors] {
+  title "Rows in an array"
+  difficulty (r * c)
+  let r=3..6 c=4..9
+  where (r != c)
+  level easy {
+    where (r * c <= 20)
+  }
+  level hard {
+    where (r * c >= 40)
+  }
+
+  scene 28x10 {
+    array dots rows=r cols=c color=mint at=canvas(1, 1)
+    text ask "There are {r * c} dots in {r} equal rows. How many are in each row?" narrate width=14 right-of=dots gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer c
+  feedback {
+    when (answer == r * c - r) point=dots {
+      say "Share the {r * c} dots between {r} rows, so {r} times the answer makes {r * c}."
+    }
+  }
+  hint "How many rows are there?"
+  hint "What times {r} makes {r * c}?"
+}

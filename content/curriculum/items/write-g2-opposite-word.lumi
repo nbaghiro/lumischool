@@ -1,0 +1,28 @@
+# The describing word that means the opposite, typed. Each pair has one opposite a child would
+# write, so the word boxes accept only that word.
+item writing.opposite-word v=1 skills=[writing.word-classes, writing.vocabulary] {
+  title "The opposite describing word"
+  difficulty (if k == 4 or k == 5 then 2 else if k == 2 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}  # light, dry, empty
+  }
+  level hard {
+    let k={3, 4, 5}  # slow, thin, low
+  }
+  let first={if k == 0 then "The box is heavy." else if k == 1 then "My socks are wet." else if k == 2 then "The jug is full." else if k == 3 then "The hare is fast." else if k == 4 then "The rope is thick." else "The shelf is high."}
+  let start={if k == 0 then "The feather is" else if k == 1 then "Your socks are" else if k == 2 then "The cup is" else if k == 3 then "The snail is" else if k == 4 then "The string is" else "The step is"}
+  let w={if k == 0 then "light" else if k == 1 then "dry" else if k == 2 then "empty" else if k == 3 then "slow" else if k == 4 then "thin" else "low"}
+
+  scene 30x11 {
+    text ask "{first} Write the describing word that means the opposite." narrate width=28 at=canvas(1, 1)
+    row q below=ask gap=1 space=1 align=centre {
+      sentence strip before="{start}" blank=5 after="."
+      word-input word options=["{w}"] letters=5
+    }
+  }
+
+  answer word=w
+  hint "Which word in the first sentence describes? What is the opposite of it?"
+  hint "Think of the two things side by side. How are they different?"
+}

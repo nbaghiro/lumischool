@@ -1,0 +1,26 @@
+item physics.spring-newtons v=1 skills=[physics.weight] {
+  title "How many newtons?"
+  difficulty v
+  let v={2, 4, 6, 8}
+  level easy {
+    let v={2, 4}
+  }
+  level hard {
+    let v={6, 8}
+  }
+
+  scene 22x20 {
+    text ask "Mia hangs a bag on the spring balance. How hard is it pulling down, in newtons?" width=20 at=canvas(1, 1)
+    springscale scale max=10 step=2 value=v unit=N below=ask gap=1
+    number-input answer right-of=scale gap=2
+  }
+
+  answer v
+  feedback {
+    when (answer == 10 - v) point=scale {
+      say "Zero is at the top of this scale, so count down to the pointer."
+    }
+  }
+  hint "What does the scale count in, going down from zero?"
+  hint "Count down the marks in twos until you reach the pointer."
+}

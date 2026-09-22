@@ -1,0 +1,20 @@
+# A reason with a prediction: the jar that loses more water grows more crystals, and the letter
+# of that jar changes between versions.
+item chem.crystal-reason v=1 stars=2 skills=[chemistry.crystals, chemistry.evaporating, reasoning.predict] {
+  title "Which jar grows more?"
+  difficulty k
+  let k=0..1 f=0..1
+  level hard {
+    let k={1}  # the lid, which keeps the water in
+  }
+
+  scene 34x20 {
+    text ask "Two jars of the same salty water get a string each. Jar A {if f == 0 then (if k == 0 then \"sits on a warm windowsill\" else \"has no lid\") else (if k == 0 then \"sits in a cold cupboard\" else \"has a lid on\")}, and jar B {if f == 0 then (if k == 0 then \"sits in a cold cupboard\" else \"has a lid on\") else (if k == 0 then \"sits on a warm windowsill\" else \"has no lid\")}. Which grows more crystals in a week, and why?" width=28 at=canvas(1, 0)
+    crystalstring jar days=1 crystals=1 kind=salt below=ask gap=0
+    choice pick options=["A, it loses more water", "B, it loses more water", "The same, the salt is the same"] stack=column right-of=jar gap=1
+  }
+
+  answer pick=(if f == 0 then "A, it loses more water" else "B, it loses more water")
+  hint "Where do the crystals come from as the week goes on?"
+  hint "Which jar loses its water faster, and why?"
+}

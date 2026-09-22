@@ -1,0 +1,25 @@
+item physics.shadow-sheet v=1 skills=[physics.light] {
+  title "How much gets through?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 19x18 {
+    beam b sheet=k show=0 at=canvas(1, 0)
+    text ask "How much of the light gets through this sheet?" width=18 below=b gap=1
+    choice pick options=["All", "Some", "None"] below=ask gap=1
+  }
+
+  check physics.light of=b pick=through
+  feedback {
+    when (pick == "None" and k == 1) point=b {
+      say "Tracing paper lets some light through. The shadow behind it is pale, not dark."
+    }
+  }
+  hint "Could you see through it? Clearly, a little, or not at all?"
+}

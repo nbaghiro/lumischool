@@ -1,0 +1,33 @@
+# The way in: the same dish of water drawn on two days, and the picture taken later is the one
+# with less water in it, because water leaves into the air. A big gap between the two is seen at
+# once; one quarter's difference has to be looked for.
+item chem.smaller-now v=1 skills=[chemistry.states] {
+  title "Which picture is later?"
+  difficulty (4 - (a - b))
+  let a=2..4 b=0..3 s=0..1
+  where (a > b)
+  level easy {
+    where (a - b >= 2)
+  }
+  level hard {
+    where (a - b == 1)
+  }
+
+  scene 30x19 {
+    row both at=canvas(1, 0) space=3 align=end {
+      dish first left=(if s == 0 then a else b) day=1 sun=1
+      dish second left=(if s == 0 then b else a) day=1 sun=1
+    }
+    text ask "Nour left a dish of water on the wall at the oasis. These are the same dish on two different days. Which picture was drawn later?" narrate width=28 below=both gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "B" else "A")
+  feedback {
+    when (pick != (if s == 0 then "B" else "A")) point=both {
+      say "Nobody added water to the dish. Water only ever leaves it, into the air, so the later picture has less."
+    }
+  }
+  hint "Does water come into a dish left on a wall, or go out of it?"
+  hint "The picture with less water in it was drawn later."
+}

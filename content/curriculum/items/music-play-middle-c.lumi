@@ -1,0 +1,16 @@
+# No letters and no ring, so middle C is found the way a pianist finds it: by the pair of black keys,
+# not by reading a C off a lit and labelled key. The black keys are drawn only at three squares to a
+# white key, so the sheet holds about a dozen keys; these eleven, from F to B, have one C among them.
+item music.play-middle-c v=2 skills=[music.keys] {
+  title "Play middle C"
+
+  scene 34x23 {
+    notes tune clef=treble notes=[C4] letters=false at=canvas(1, 1)
+    text ask "This note is middle C. Find the C on the keyboard and press it." width=16 right-of=tune gap=1
+    piano keys from=F3 whites=11 wide=3 labels=none below=tune gap=1
+  }
+
+  check music.plays notes=[C4]
+  hint "Look at the black keys. They come in twos and threes. Find a pair of two."
+  hint "C is the white key just to the left of a pair of black keys."
+}

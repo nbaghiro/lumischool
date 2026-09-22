@@ -1,0 +1,22 @@
+# How many soak up water: the materials that are made of threads or paper do, and the rest do not.
+item chem.soak-count v=1 skills=[chemistry.materials] {
+  title "How many soak it up?"
+  difficulty (if k == 0 then 3 else 2)
+  let k=0..2
+  level easy {
+    let k=1..2
+  }
+  level hard {
+    let k={0}  # three things soak up water
+  }
+
+  scene 22x10 {
+    text ask "How many of these would soak up water?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"towel\" else if k == 1 then \"metal-can\" else \"wool-hat\"}", "{if k == 0 then \"raincoat\" else if k == 1 then \"paper-book\" else \"plastic-bottle\"}", "{if k == 0 then \"paper-bag\" else if k == 1 then \"rubber-boot\" else \"towel\"}", "{if k == 0 then \"glass-jar\" else if k == 1 then \"cardboard-box\" else \"metal-key\"}", "{if k == 0 then \"wool-sock\" else if k == 1 then \"glass-bottle\" else \"rubber-band\"}"] below=ask gap=0
+    number-input answer below=row gap=0
+  }
+
+  check chem.materials of=row answer="count(absorbent)"
+  hint "If you spilt a drink on each one, which would get wet all through?"
+  hint "Count those."
+}

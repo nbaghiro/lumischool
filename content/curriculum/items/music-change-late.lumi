@@ -1,0 +1,33 @@
+# The two-star reason: two players changed to G7, one on count 1 and one on count 2, and the
+# ring marks the strum each changed on. The one who changed on 2 was a beat late.
+item music.change-late v=1 stars=2 skills=[music.chord-changes, music.counting-beats, reasoning.evidence] {
+  title "Who changed late?"
+  difficulty k
+  let k=0..1
+  let ra={pick(k, 0, 2)}
+  let rb={pick(k, 2, 0)}
+  let right={pick(k, "B: the ring is on count 2, a beat late", "A: the ring is on count 2, a beat late")}
+  let wrong={pick(k, "A: the ring is on count 1, a beat late", "B: the ring is on count 1, a beat late")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x33 {
+    strumtrack a strums=D-D-D-D- counts=true chord=G7 ring=ra at=canvas(1, 1)
+    strumtrack b strums=D-D-D-D- counts=true chord=G7 ring=rb below=a gap=1
+    text ask "The ring marks the strum where each player changed to G7. The change should come on count 1. Who changed a beat late?" narrate width=32 below=b gap=1
+    choice pick options=[if k == 0 then right else wrong, if k == 0 then wrong else right] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=a {
+      say "Count 1 is the first strum of the bar. A ring on count 2 means the player strummed C once more before changing: one beat late."
+    }
+  }
+  hint "Find each ring. Which count is it on?"
+  hint "A change on count 1 is on time. A change on count 2 came one beat after it should have."
+}

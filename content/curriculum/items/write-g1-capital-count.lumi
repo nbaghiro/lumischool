@@ -1,0 +1,29 @@
+# The audit's raise for needs-a-capital: a sentence with no capitals at all, so the child has to
+# find every word that needs one (the start, names, days and I) without being told which.
+item writing.capital-count v=1 skills=[writing.capitals] {
+  title "How many capitals?"
+  difficulty (if k == 0 then 2 else if k == 3 or k == 4 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={1, 2}  # two capitals
+  }
+  level hard {
+    let k={0, 3, 4}  # three or four, with a day of the week or I
+  }
+  let line={if k == 0 then "on monday ana and ben went to the park." else if k == 1 then "kim and i fed the ducks at the pond." else if k == 2 then "the dog ran to tom." else if k == 3 then "on friday we saw sam at the zoo." else "pip and i made a cake for eli."}
+
+  scene 32x9 {
+    caption strip text="{line}" width=30 at=canvas(1, 1)
+    text ask "None of these words has a capital letter. How many of them should?" narrate width=22 below=strip gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else if k == 1 or k == 2 then 2 else 3)
+  feedback {
+    when (answer == 1) point=strip {
+      say "The first word needs one. Look again for names, days of the week and the word I."
+    }
+  }
+  hint "Which word starts the sentence?"
+  hint "Now look for names of people, days of the week and the word I."
+}

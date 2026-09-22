@@ -1,0 +1,46 @@
+# The story: Pip's lamp sends Dad's boat two messages, one after the other, read from the top. With a
+# wait between them the gap splits them; with no wait the key does, since every run of flashes here
+# splits into the key's rows one way only (p lists the six ordered pairs, g is the gap).
+item coding.two-messages v=1 skills=[coding.sequences, coding.data] {
+  title "Two messages for Dad"
+  difficulty (1 - g)
+  let p=0..5 g=0..1 r=0..2
+  let l1={pick(p, "flash long", "flash long", "flash short", "flash long", "flash short", "flash long")}
+  let l2={pick(p, "flash short", "flash short", "flash short", "flash long", "flash short", "flash long")}
+  let l3={if g == 1 then pick(p, "flash short", "flash short", "wait", "wait", "wait", "wait") else pick(p, "flash short", "flash short", "flash long", "flash long", "flash long", "flash short")}
+  let l4={if g == 1 then pick(p, "wait", "wait", "flash long", "flash long", "flash long", "flash short") else pick(p, "flash short", "flash long", "flash short", "flash short", "flash long", "flash short")}
+  let l5={if g == 1 then pick(p, "flash short", "flash long", "flash short", "flash short", "flash long", "flash short") else pick(p, "flash short", "flash long", "flash short", "flash short", "wait", "wait")}
+  let l6={if g == 1 then pick(p, "flash short", "flash long", "flash short", "flash short", "wait", "wait") else "wait"}
+  let right={pick(p, "come in, then stay out", "come in, then go round", "stay out, then come in", "go round, then come in", "stay out, then go round", "go round, then stay out")}
+  let swapped={pick(p, "stay out, then come in", "go round, then come in", "come in, then stay out", "come in, then go round", "go round, then stay out", "stay out, then go round")}
+  let wrong={pick(p, "come in, then go round", "come in, then stay out", "stay out, then go round", "go round, then stay out", "stay out, then come in", "go round, then come in")}
+  level easy {
+    let g=1..1
+  }
+  level hard {
+    let g=0..0
+  }
+
+  scene 36x27 {
+    row top space=1 align=start at=canvas(1, 1) {
+      table key cols=2 head=["Flashes", "Means"] cells=["long short short", "come in", "short short", "stay out", "long long", "go round"]
+      text ask "Pip's lamp sends Dad's boat two messages, one after the other. What does Dad read?" narrate width=13
+    }
+    row low space=2 align=start below=top gap=1 {
+      program p code=["{l1}", "{l2}", "{l3}", "{l4}", "{l5}", "{l6}"] title="Pip's lamp"
+      choice pick options=[pick(r, right, swapped, wrong), pick(r, swapped, wrong, right), pick(r, wrong, right, swapped)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == swapped) point=p {
+      say "The lamp's first flashes are the first message. Read the program from the top."
+    }
+    when (pick == wrong) point=key {
+      say "The first message is right. Read the flashes after it against the key again."
+    }
+  }
+  hint "Write the flashes down from the top, long or short, and leave the waits out."
+  hint "{if g == 1 then \"The wait is the gap between the two messages. Read each side against the key.\" else \"There is no gap, so use the key: which row do the first flashes match?\"}"
+}

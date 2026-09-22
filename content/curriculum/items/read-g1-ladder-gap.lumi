@@ -1,0 +1,18 @@
+# The empty rung has to be one change from the word below and one from the word above. Every ladder
+# has exactly two real words that fit, and both are accepted.
+item reading.ladder-gap v=1 skills=[reading.phonics, reasoning.constraints] {
+  title "Write the missing rung"
+  let k=0..4
+
+  scene 26x12 {
+    wordladder lad words=["{if k == 0 then \"dog\" else if k == 1 then \"cat\" else if k == 2 then \"sun\" else if k == 3 then \"hot\" else \"ten\"}", "{if k == 0 then \"dot\" else if k == 1 then \"hat\" else if k == 2 then \"bun\" else if k == 3 then \"hit\" else \"tin\"}", "{if k == 0 then \"cot\" else if k == 1 then \"hut\" else if k == 2 then \"bin\" else if k == 3 then \"pit\" else \"pin\"}"] blank=1 changes=0 at=canvas(1, 1)
+    column q right-of=lad gap=2 space=1 align=start {
+      text ask "Write a word for the empty rung. Change one letter each time." width=14
+      word-input word options=["{if k == 0 then \"dot\" else if k == 1 then \"hat\" else if k == 2 then \"bun\" else if k == 3 then \"hit\" else \"tin\"}", "{if k == 0 then \"cog\" else if k == 1 then \"cut\" else if k == 2 then \"sin\" else if k == 3 then \"pot\" else \"pen\"}"] letters=3
+    }
+  }
+
+  answer word=(if k == 0 then "dot" else if k == 1 then "hat" else if k == 2 then "bun" else if k == 3 then "hit" else "tin")
+  hint "Which letters are different between the bottom word and the top word?"
+  hint "Change just one of them first. Is it a real word?"
+}

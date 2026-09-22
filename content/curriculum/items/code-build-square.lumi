@@ -1,0 +1,16 @@
+item coding.build-square v=1 skills=[coding.drawing, coding.repetition] {
+  title "Draw the square in three blocks"
+  difficulty n
+  let n=3..4
+  level easy {
+    let n=2..3
+  }
+
+  scene 35x17 {
+    turtle t cols=7 rows=7 col=2 row=6 face=right moves=[] target=["repeat 4", "  forward {n}", "  turn left"] at=canvas(1, 0)
+    codepad answer tray=["forward 1", "turn left", "turn right", "repeat 2"] lines=3 key=["repeat 4", "  forward {n}", "  turn left"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "One side and one turn, done four times."
+}

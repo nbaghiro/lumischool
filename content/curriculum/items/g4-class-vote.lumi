@@ -1,0 +1,23 @@
+# Work back from a count to the whole: the percentages left over are the key, and no method is
+# on the page.
+item percent.class-vote v=2 stars=3 skills=[percentages.of-amount, reasoning.working-backwards] {
+  title "How many in the class"
+  difficulty (n / 20 + (if r == 25 then 1 else 0))
+  let r={20, 25} b={30, 40, 50} n={20, 40, 60, 80}
+  where (n * r % 100 == 0 and n * b % 100 == 0)
+
+  scene 30x16 {
+    sign votes lines=["Vote for a", "class colour"] kind=board color=mint at=canvas(1, 1)
+    text ask "In a vote, {r}% chose red, {b}% chose blue and the rest chose green. {n * (100 - r - b) / 100} children chose green. How many children voted?" narrate width=29 below=votes gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (r + b != 50 and answer == n * (100 - r - b) / 100 * 100 / (r + b)) point=ask {
+      say "Green is the rest, {100 - r - b}%. What does 1% stand for?"
+    }
+  }
+  hint "What percent chose green?"
+  hint "If {100 - r - b}% is {n * (100 - r - b) / 100} children, how many is 10%? How many is 100%?"
+}

@@ -1,0 +1,22 @@
+# A sorting network is a program drawn on paper: at every bridge the smaller number goes left. The
+# checker walks the numbers down the same network the drawing draws.
+item coding.net-out v=1 skills=[coding.algorithms] {
+  title "What comes out?"
+  difficulty (if k == 0 then 2 else 4)
+  let k=0..2 i=2..3
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 31x17 {
+    sortnet n inputs=[if k == 0 then 7 else if k == 1 then 4 else 9, if k == 0 then 3 else if k == 1 then 8 else 2, if k == 0 then 9 else if k == 1 then 1 else 6, if k == 0 then 5 else if k == 1 then 6 else 3] pairs=[1, 2, 3, 4, 1, 3, 2, 4, 2, 3] at=canvas(1, 0)
+    text ask "Walk each number down its line. At a bridge, the smaller goes left. Which number comes out at the bottom of line {i}?" width=16 right-of=n gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=n answer="out({i})"
+  hint "Use a finger for each number. At each bridge, swap them if the bigger one is on the left."
+}

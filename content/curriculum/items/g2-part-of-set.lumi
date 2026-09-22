@@ -1,0 +1,28 @@
+# A fraction of a number of things, 2.G.3 moving towards 3.NF: share into equal groups, take one.
+item fraction.of-a-set v=1 skills=[fractions.of-a-set] {
+  title "A part of the tray"
+  difficulty (d * c)
+  let d={2, 3, 4} c={3, 4} w={"half", "third", "quarter"}
+  where ((d == 2) == (w == "half") and (d == 3) == (w == "third") and c != d)
+  level easy {
+    let d={2, 3}
+  }
+  level hard {
+    let d={3, 4}
+  }
+
+  scene 30x14 {
+    bakingtray tray rows=d cols=c iced=0 at=canvas(1, 1)
+    text ask "One {w} of the buns get icing. How many buns is that?" narrate width=14 right-of=tray gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer c
+  feedback {
+    when (answer == d) point=tray {
+      say "{d} is how many equal parts. How many buns are in one part?"
+    }
+  }
+  hint "Split the buns into {d} equal parts. Each row can be one part."
+  hint "How many buns are in one of those parts?"
+}

@@ -1,0 +1,39 @@
+# The core: what comes next. After winter comes spring again, which is the step a child has to
+# work out rather than read off. At hard the four trees are drawn out of order, so the year has to
+# be known rather than followed from left to right.
+item nature.season-after v=1 skills=[nature.seasons, reasoning.order] {
+  title "What comes next?"
+  difficulty (if k <= 1 then 0 else if k == 2 then 1 else 2)
+  let k=0..3
+  let s={if k == 0 then "spring" else if k == 1 then "summer" else if k == 2 then "autumn" else "winter"}
+  let n={if k == 0 then "summer" else if k == 1 then "autumn" else if k == 2 then "winter" else "spring"}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+    scene 36x22 {
+      seasontrees year seasons=["autumn", "spring", "winter", "summer"] names=0 at=canvas(1, 1)
+      text ask "These trees are muddled up. The year goes spring, summer, autumn, winter, and round again. Which season comes after {s}?" narrate width=34 below=year gap=1
+      choice pick options=["spring", "summer", "autumn", "winter"] below=ask gap=1
+    }
+  }
+
+  scene 36x22 {
+    seasontrees year seasons=["spring", "summer", "autumn", "winter"] names=0 at=canvas(1, 1)
+    text ask "The year goes spring, summer, autumn, winter, and round again. Which season comes after {s}?" narrate width=34 below=year gap=1
+    choice pick options=["spring", "summer", "autumn", "winter"] below=ask gap=1
+  }
+
+  answer pick=n
+  feedback {
+    when (k == 3 and pick == "winter") point=year {
+      say "Winter is where we started. When winter ends the year goes round to the beginning again."
+    }
+    when (k == 3 and pick == "autumn") point=year {
+      say "Autumn comes before winter, not after it. Think of what happens to the tree when the cold ends."
+    }
+  }
+  hint "Find the tree that shows {s}. Which tree comes next in the year?"
+  hint "After the last season the year starts again from the first one."
+}

@@ -1,0 +1,31 @@
+item physics.seeing-which v=1 skills=[physics.light] {
+  title "How do we see?"
+  difficulty (5 - x)
+  let w=0..1 x=2..4
+  level easy {
+    let x={4}
+  }
+  level hard {
+    let x={2}
+  }
+
+  scene 37x14 {
+    row two at=canvas(0, 0) space=2 align=start {
+      seeing a arrows=(if w == 0 then 1 else x) tag="A"
+      seeing b arrows=(if w == 1 then 1 else x) tag="B"
+    }
+    text ask "Which picture shows how the child sees the ball?" width=22 below=two gap=1
+    choice pick options=["A", "B"] right-of=ask gap=2
+  }
+
+  check physics.light of=a vs=b pick=works
+  feedback {
+    when (pick == "A" and w == 1 and x == 2) point=a {
+      say "Eyes do not send anything out. Light has to come into them."
+    }
+    when (pick == "B" and w == 0 and x == 2) point=b {
+      say "Eyes do not send anything out. Light has to come into them."
+    }
+  }
+  hint "Where does the light start? Where does it have to end?"
+}

@@ -1,0 +1,28 @@
+# Which card to multiply by: the biggest card as the single digit is best, which surprises most.
+item multiply.biggest-product v=1 stars=3 skills=[multiplication.short, reasoning.extremes] {
+  title "The biggest product"
+  difficulty (16 - a * (c - b))
+  let a=1..9 b=1..9 c=1..9
+  where (a < b and b < c)
+  level easy {
+    where (a * (c - b) >= 12)  # the best product is well clear of the next
+  }
+  level hard {
+    where (a * (c - b) <= 3)  # the best product beats the next by three or less
+  }
+
+  scene 30x15 {
+    digitcards cards digits=[b, c, a] at=canvas(1, 1)
+    text ask "Use all three cards to make a two-digit number times a one-digit number. What is the biggest answer you can get?" width=28 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer max((10 * a + b) * c, (10 * b + a) * c, (10 * a + c) * b, (10 * c + a) * b, (10 * b + c) * a, (10 * c + b) * a)
+  feedback {
+    when (answer == (10 * c + b) * a) point=cards {
+      say "That makes the biggest two-digit number, but then it is only multiplied by {a}."
+    }
+  }
+  hint "There are three choices for the single card. Try each one."
+  hint "For each choice, which way round should the other two cards go?"
+}

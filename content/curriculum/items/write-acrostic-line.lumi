@@ -1,0 +1,13 @@
+item writing.acrostic-line v=1 skills=[writing.poems] {
+  title "The next line of the poem"
+  let k=0..1
+
+  scene 26x29 {
+    acrostic poem word="{if k == 0 then \"MOON\" else \"STAR\"}" written=["{if k == 0 then \"Mice look up\" else \"Shining so high\"}", "{if k == 0 then \"Over the hill\" else \"Tiny and white\"}", "", ""] width=24 at=canvas(1, 1)
+    text ask "Which line comes next?" width=11 below=poem gap=1
+    choice pick options=["{if k == 0 then \"Owls call out\" else \"All night long\"}", "{if k == 0 then \"Night is here\" else \"Right up there\"}", "{if k == 0 then \"Stars come out\" else \"Over the sea\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Owls call out" else "All night long")
+  hint "Each line starts with the next letter of the word going down."
+}

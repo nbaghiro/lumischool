@@ -1,0 +1,23 @@
+# The joining word is given and the child picks the ending: each ending fits exactly one of
+# because, so and but, so the three choices are all good endings for some sentence.
+item writing.finish-the-join v=1 skills=[writing.joining-sentences] {
+  title "Finish it to fit the word"
+  difficulty (if w == 2 then 1 else 0)
+  let s=0..3 w=0..2
+  level easy {
+    let w={0, 1}  # because and so
+  }
+  level hard {
+    let w={2}  # but
+  }
+
+  scene 26x19 {
+    caption start text="{if s == 0 then \"Leo put on his boots\" else if s == 1 then \"Ada practised the song every day\" else if s == 2 then \"The shop was closed\" else \"Jin ran to the bus stop\"}, {if w == 0 then \"because\" else if w == 1 then \"so\" else \"but\"} ..." width=25 at=canvas(1, 1)
+    text ask "Which ending fits?" width=24 below=start gap=1
+    choice pick options=["{if s == 0 then \"it was muddy outside.\" else if s == 1 then \"she wanted to sing it well.\" else if s == 2 then \"it was a holiday.\" else \"he had overslept.\"}", "{if s == 0 then \"his feet stayed dry.\" else if s == 1 then \"she knew it by heart on Friday.\" else if s == 2 then \"we went home without milk.\" else \"he caught the bus.\"}", "{if s == 0 then \"his feet still got wet.\" else if s == 1 then \"she still forgot the last line.\" else if s == 2 then \"the baker let us in at the back.\" else \"the bus had gone.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then if s == 0 then "it was muddy outside." else if s == 1 then "she wanted to sing it well." else if s == 2 then "it was a holiday." else "he had overslept." else if w == 1 then if s == 0 then "his feet stayed dry." else if s == 1 then "she knew it by heart on Friday." else if s == 2 then "we went home without milk." else "he caught the bus." else if s == 0 then "his feet still got wet." else if s == 1 then "she still forgot the last line." else if s == 2 then "the baker let us in at the back." else "the bus had gone.")
+  hint "Read the start with each ending. Which one does the joining word fit?"
+  hint "Because is followed by a reason, so by what came of it, and but by something that goes the other way."
+}

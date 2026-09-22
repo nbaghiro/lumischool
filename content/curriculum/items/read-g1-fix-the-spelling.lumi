@@ -1,0 +1,20 @@
+# Find the misspelled tricky word and write it right: the error sounds right, so only knowing the
+# word catches it.
+item reading.fix-the-spelling v=1 stars=2 skills=[reading.sight-words, reasoning.find-the-error] {
+  title "Mo's spelling mistake"
+  difficulty (if k == 2 then 2 else if k == 1 then 0 else 1)
+  let k=0..4
+
+  scene 30x18 {
+    row who at=canvas(1, 1) space=1 align=centre {
+      face kid mood=worried hair=0 name="Mo"
+      sentence strip before="{if k == 0 then \"The dog sed hello.\" else if k == 1 then \"The fox woz in the box.\" else if k == 2 then \"Thay sat on the rug.\" else if k == 3 then \"Can you cum in?\" else \"I hav a pet hen.\"}" blank=0 after=""
+    }
+    text ask "Mo wrote this. One word sounds right but is spelled wrong. Write it the right way." narrate width=28 below=who gap=1
+    word-input word options=["{if k == 0 then \"said\" else if k == 1 then \"was\" else if k == 2 then \"They\" else if k == 3 then \"come\" else \"have\"}", "{if k == 2 then \"they\" else if k == 0 then \"Said\" else if k == 1 then \"Was\" else if k == 3 then \"Come\" else \"Have\"}"] letters=4 below=ask gap=1
+  }
+
+  answer word=(if k == 0 then "said" else if k == 1 then "was" else if k == 2 then "They" else if k == 3 then "come" else "have")
+  hint "Read the sentence one word at a time. Which word looks odd?"
+  hint "How is that word spelled in your books?"
+}

@@ -1,0 +1,23 @@
+# All the ways: tunes that go down at every step from a given note, chosen from six places on two
+# strings. The trap is that string 2 at fret 3 (D) is lower than string 1 open (E).
+item music.tab-down-tunes v=1 stars=3 skills=[music.tab, music.note-names, reasoning.all-the-ways] {
+  title "Tunes that go down"
+  difficulty (n - 3 + (if st == "E" then 0 else 1))
+  let st={"G", "F", "E"} n=3..5
+  where (st == "F" and n <= 4 or st == "E" and n == 3 or st == "G" and n == 5)
+
+  scene 34x21 {
+    tab lines tuning=guitar notes=["s2f1", "s1f0", "s2f3", "s1f3", "s2f0", "s1f1"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    text ask "String 1 plays E, F and G here, and string 2 plays B, C and D, which are all lower than E. How many tunes of {n} notes start on {st} and go lower at every note? You may skip notes." width=32 below=lines gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if st == "G" then 5 else if st == "E" then 3 else if n == 3 then 6 else 4)
+  feedback {
+    when (answer == 1) point=lines {
+      say "You may skip notes, so there is more than one tune. Try leaving a different note out."
+    }
+  }
+  hint "Write the six notes in order from highest to lowest."
+  hint "After {st}, choose the other notes from the ones below it, always going down. Make a list."
+}

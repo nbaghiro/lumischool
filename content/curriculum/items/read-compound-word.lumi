@@ -1,0 +1,18 @@
+# The picture names the whole word and the first brick gives half of it, so the child says the
+# word, takes the first part away and hears what is left. The whole word is never written.
+item reading.compound-word v=1 skills=[reading.compound-words] {
+  title "Two words make one"
+  let w={"sandcastle", "treehouse", "hedgehog"}
+
+  scene 19x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{w}"
+      wordbricks b bricks=[if w == "sandcastle" then "sand" else if w == "treehouse" then "tree" else "hedge", if w == "sandcastle" then "castle" else if w == "treehouse" then "house" else "hog"] root=0 roots=2 blank=1 word="" labels=true
+      text ask "Say what the picture is. Which word goes in the empty brick?" width=18
+      word-input part options=["{if w == \"sandcastle\" then \"castle\" else if w == \"treehouse\" then \"house\" else \"hog\"}"] letters=6
+    }
+  }
+
+  answer part=(if w == "sandcastle" then "castle" else if w == "treehouse" then "house" else "hog")
+  hint "Say the whole word, then say it again without the first part."
+}

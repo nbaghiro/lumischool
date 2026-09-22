@@ -1,0 +1,37 @@
+# Where the water went: into the air, and what stays behind if it was salty. The dish is drawn
+# full on one day and empty on a later one, and the question asks either where the water is or
+# what the crust is.
+item chem.where-water-went v=1 skills=[chemistry.states] {
+  title "Where did the water go?"
+  difficulty w
+  let w=0..1 d=3..6
+  let asks={pick(w, "Nobody touched the dish. Where did the water go?", "Nobody touched the dish, and the water was salty. What is the white crust left in it?")}
+  let right={pick(w, "Into the air", "The salt that was in the water")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x25 {
+    row both at=canvas(1, 0) space=3 align=end {
+      dish first left=4 day=1 sun=1
+      dish second left=0 day=d sun=1
+    }
+    text ask "The same dish on day 1 and on day {d}. {asks}" narrate width=32 below=both gap=1
+    choice pick options=[if w == 0 then "Into the air" else "Dust from the wind", if w == 0 then "Through the bottom of the dish" else "The salt that was in the water", if w == 0 then "It turned into salt" else "Dried-up water"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (w == 0 and pick == "It turned into salt") point=second {
+      say "Water does not turn into salt. The water went into the air, and if there was salt in it, the salt stayed."
+    }
+    when (w == 1 and pick == "Dried-up water") point=second {
+      say "The water is gone, into the air. What was mixed into it could not follow, and that is the crust."
+    }
+  }
+  hint "The dish is not cracked and nobody drank from it. Water leaves a dish one way: it goes into the air."
+  hint "Salt cannot go into the air with the water. It stays behind on the dish."
+}

@@ -1,0 +1,14 @@
+# A played chord: every string G7 plays has to sound its note, which is what music.chord checks.
+item music.play-g7 v=1 skills=[music.chord-boxes, music.strumming] {
+  title "Strum G7"
+
+  scene 32x32 {
+    text ask "Put fingers 1, 2 and 3 where the card shows: 1 on the E string, 2 on the C string, 3 on the A string. Then strum down across all four strings." width=30 at=canvas(1, 1)
+    chordbox card tuning=uke chord=G7 frets=4 show=fingers name=true letters=true lit=[] below=ask gap=1
+    fretboard neck tuning=uke frets=4 view=chart labels=letters strum=true right-of=card gap=2
+  }
+
+  check music.chord chord=G7 tuning=uke
+  hint "Stand your ukulele up next to the card: the strings line up, G C E A."
+  hint "Press just behind the fret, not on it, and keep your fingers on their tips so the next string rings."
+}

@@ -1,0 +1,11 @@
+item physics.circuit-parts v=1 skills=[physics.circuits] {
+  title "What each part does"
+
+  scene 24x13 {
+    text ask "Write the number of the job next to each part." width=22 at=canvas(1, 1)
+    match m left=["the cell", "the bulb", "the switch"] right=["makes the light", "breaks the loop", "gives the push"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=3 b=1 c=2
+  hint "Which of the three parts can you turn on and off?"
+}

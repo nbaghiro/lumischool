@@ -1,0 +1,17 @@
+item coding.if-turns v=1 skills=[coding.decisions] {
+  title "How many turns?"
+  difficulty n
+  let n=6..8
+
+  scene 25x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["repeat {n}", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"]
+      maze g map=["S . . #", "# # . #", "# . . #"] code=["repeat {n}", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"] trail=line
+    }
+    text ask "How many times does the robot turn?" width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=turns
+  hint "Follow the line it drew. Each corner is a turn, and a dead end can need two."
+}

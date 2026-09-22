@@ -1,0 +1,17 @@
+# A reason: a powder pours, and the child decides from the lens whether that makes it a liquid. The
+# claim changes with the version, so the right answer is sometimes yes and sometimes no.
+item chem.pours-reason v=1 stars=2 skills=[chemistry.states, reasoning.evidence] {
+  title "Is it a liquid?"
+  difficulty (if k == 3 then 2 else if k == 0 or k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 26x17 {
+    magnifier m kind=(if k == 0 then "sand" else if k == 1 then "sugar" else if k == 2 then "salt" else "flour") count=5 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Pip\" else if k == 1 then \"Mia\" else if k == 2 then \"Ben\" else \"Zoe\"} says {if k == 0 then \"sand\" else if k == 1 then \"sugar\" else if k == 2 then \"salt\" else \"flour\"} is {if k == 0 then \"a liquid\" else if k == 1 then \"a solid\" else if k == 2 then \"a liquid\" else \"a solid\"}, because you can pour it. Is {if k == 0 then \"Pip\" else if k == 1 then \"Mia\" else if k == 2 then \"Ben\" else \"Zoe\"} right?" width=12 right-of=m gap=0
+    choice pick options=["{if k == 0 then \"Yes, it pours like water\" else if k == 1 then \"Yes, every grain keeps its shape\" else if k == 2 then \"Yes, it pours like water\" else \"Yes, every grain keeps its shape\"}", "{if k == 0 then \"No, every grain keeps its shape\" else if k == 1 then \"No, it pours like water\" else if k == 2 then \"No, every grain keeps its shape\" else \"No, it pours like water\"}"] stack=column below=m gap=0
+  }
+
+  answer pick=(if k == 0 then "No, every grain keeps its shape" else if k == 1 then "Yes, every grain keeps its shape" else if k == 2 then "No, every grain keeps its shape" else "Yes, every grain keeps its shape")
+  hint "Look at one grain in the lens. Does it keep its own shape?"
+  hint "A liquid has no grains. Does pouring alone make something a liquid?"
+}

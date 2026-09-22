@@ -1,0 +1,29 @@
+# The card with its name hidden, read from its dots: one finger at fret 3 on the A string is C,
+# three fingers in a row across C, E and A are G7.
+item music.which-chord v=1 skills=[music.chord-boxes] {
+  title "Which chord?"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k={0, 1, 2, 3}
+  let name={pick(k, "C", "F", "G7", "Am")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 28x21 {
+    chordbox card tuning=uke chord=(if k == 0 then "C" else if k == 1 then "F" else if k == 2 then "G7" else "Am") frets=4 show=fingers name=false letters=true lit=[] at=canvas(1, 1)
+    text ask "The card has lost its name. Which chord is it?" width=13 right-of=card gap=1
+    choice chosen options=["C", "F", "G7", "Am"] stack=column below=ask gap=1
+  }
+
+  answer chosen=name
+  feedback {
+    when (chosen != name) point=card {
+      say "Count the dots and see which strings they sit on. C is one finger on the A string; G7 is three fingers, one each on C, E and A."
+    }
+  }
+  hint "How many dots? C has one, F and A minor have fewer than G7."
+  hint "G7's three fingers sit on the C, E and A strings, with the E string's finger nearest the top."
+}

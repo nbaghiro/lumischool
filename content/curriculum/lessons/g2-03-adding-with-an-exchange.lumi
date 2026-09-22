@@ -1,0 +1,46 @@
+lesson g2-adding-with-an-exchange v=1 format=worked grade=2 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Adding with an exchange"
+  goal "Add two-digit numbers in columns, carrying the ten that comes out of the ones."
+
+  example {
+    worked columns.add-two-digit a=37 b=25 hard-level=medium
+    say """
+      Seven and five is twelve, which is one ten and two ones. The two goes under the ones and the
+      ten is carried into the tens column.
+      """
+  }
+  exercises {
+    level easy {
+      worked add.exchange-blocks a=26 b=17
+    }
+    practice add.exchange-blocks count=1 easy-count=2 hard-count=0 seed=4
+    practice columns.add-two-digit count=2 hard-count=3 seed=4
+    practice columns.missing-digit count=2 hard-count=1 seed=6
+    level hard {
+      practice columns.two-missing-digits count=1 seed=2
+    }
+    practice add.road-legs count=1 seed=3
+    practice sub.pool-at-first count=2 easy-count=1 seed=5
+  }
+  try stars=2 {
+    show columns.which-wrong a=37 b=26 c=34 w=1 easy-w=2 hard-a=48 hard-b=37 hard-c=45 hard-w=0
+  }
+  try stars=3 {
+    show add.cards-near-hundred p=2 q=3 r=6 s=8
+  }
+
+  grown-ups """
+    Say the carried ten out loud as a ten, not as a one. A child who says "carry the one" often has
+    no idea what it is worth. The missing digit questions are worked from the ones column: which
+    digit added to the one shown gives the right last digit, and was a ten carried? In the pool
+    story some children got out, but the answer is found by adding them back. The two-star question
+    is about checking rather than calculating: the ones digit alone gives away the wrong sum. The
+    three-star question is a search, and trying each pair of cards in the tens places is the way in.
+    """
+  level easy {
+    grown-ups "At this level the blocks come first and are worked once in the teacher's pen, the ones only just pass ten, and the wrong sum to find is the one with no exchange in it."
+  }
+  level hard {
+    grown-ups "At this level the sums pass a hundred, so the tens make an exchange as well, one question has a digit missing from each number, and the wrong sum to find is the one where the carried ten was forgotten."
+  }
+}

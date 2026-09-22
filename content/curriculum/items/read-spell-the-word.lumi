@@ -1,0 +1,24 @@
+# One box per letter, and the options line is the spelling that counts as right rather than
+# anything the child sees.
+item reading.spell-the-word v=1 skills=[reading.blending] {
+  title "Write the whole word"
+  difficulty (if w == "owl" then 1 else 0)
+  let w={"cat", "cup", "hen", "sun", "owl"}
+  level easy {
+    let w={"cat", "cup", "hen"}
+  }
+  level hard {
+    let w={"sun", "owl"}  # owl's two letters make one sound; sun rides along so the pair differs day to day
+  }
+
+  scene 19x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{w}"
+      text ask "Say the word, then write it, one letter in each box." width=18
+      word-input word options=["{w}"] letters=3
+    }
+  }
+
+  answer word=w
+  hint "Say the word slowly and write down each sound you hear."
+}

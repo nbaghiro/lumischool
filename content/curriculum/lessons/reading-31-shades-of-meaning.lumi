@@ -1,0 +1,55 @@
+lesson reading-shades-of-meaning v=1 format=teach grade=4 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Shades of meaning"
+  goal "Put words of one meaning in order of strength, and choose the word with the right strength."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        face kid mood=cross hair=2
+        wordscale scale words=["annoyed", "cross", "angry", "furious"] blank=-1 low="a little" high="a lot" color=berry
+      }
+    }
+    say """
+      Some words mean nearly the same thing but not quite. Annoyed, cross, angry and furious are all
+      about the same feeling, but each is a little stronger than the one before.
+
+      Choosing the word with the right strength says exactly what you mean.
+      """
+  }
+  do {
+    show reading.shades-place k=0
+    show reading.shades-place k=3
+    show reading.best-word k=0
+    level easy {
+      worked reading.shades-order k=2 level=medium
+    }
+    practice reading.shades-order count=2 seed=3
+    practice reading.shades-in-sentence count=2 seed=4
+    practice reading.strong-word count=1 hard-count=0 seed=2
+    level hard {
+      practice reading.wrong-strength count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.wrong-strength k=0 hard-k=1
+  }
+  try stars=3 {
+    show reading.shades-write k=0
+  }
+  remember {
+    say "Close words are not the same. Choose the one with the right strength."
+  }
+
+  grown-ups """
+    Make a scale on paper for a word the child uses a lot, such as nice or big, and find three
+    stronger and weaker words to put along it. The sentence questions give the strength in the
+    words after the gap, so reading to the end is part of the answer. In the two-star question the
+    sentence argues with itself; ask which two words cannot both be true.
+    """
+  level easy {
+    grown-ups "At this level the empty cards and the best word are as written, the scale of amounts is ordered once in the teacher's pen before the scales of heat and speed, the sentences want tapped, slammed and gobbled, whose sentences say how hard, the strong word is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the empty cards and the best word are as written, the scales to order are amounts (none, few, several, most, all) and sizes with medium in the middle, the sentences want whimpered and strolled, the strong word makes way for a second sentence that argues with itself, the two-star's wrong word is furious at a lovely present, and the three-star is as written."
+  }
+}

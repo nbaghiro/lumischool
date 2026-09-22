@@ -1,0 +1,17 @@
+# Words of one meaning in order of strength, with one card empty. Every choice means roughly the
+# right thing; only one is the right strength for the gap.
+item reading.shades-place v=1 skills=[reading.vocabulary] {
+  title "Where does it go?"
+  let k=0..3
+
+  scene 34x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      wordscale scale words=[if k == 0 then "cool" else if k == 1 then "tiny" else if k == 2 then "whisper" else "walk", if k == 0 then "warm" else if k == 1 then "small" else if k == 2 then "talk" else "jog", if k == 0 then "hot" else if k == 1 then "big" else if k == 2 then "shout" else "run", if k == 0 then "boiling" else if k == 1 then "huge" else if k == 2 then "scream" else "sprint"] blank=(if k == 0 then 1 else if k == 1 then 2 else if k == 2 then 2 else 1) low="less" high="more" color=(if k == 0 then "tang" else if k == 1 then "sky" else if k == 2 then "berry" else "mint")
+      text ask "Which word goes on the empty card?"
+      choice pick options=[if k == 0 then "warm" else if k == 1 then "little" else if k == 2 then "mutter" else "jog", if k == 0 then "freezing" else if k == 1 then "big" else if k == 2 then "hum" else "crawl", if k == 0 then "cold" else if k == 1 then "short" else if k == 2 then "shout" else "stroll"]
+    }
+  }
+
+  answer pick=(if k == 0 then "warm" else if k == 1 then "big" else if k == 2 then "shout" else "jog")
+  hint "Read the word before the gap and the word after it. The missing word is stronger than one and weaker than the other."
+}

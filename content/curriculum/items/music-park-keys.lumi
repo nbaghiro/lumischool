@@ -1,0 +1,31 @@
+# The story: Ada on the bandstand keyboard, counting keys from the left and moving along them.
+item music.park-keys v=1 stars=1 skills=[music.keys, addition.to-twenty] {
+  title "Along the keys"
+  difficulty (d + w)
+  let a=1..4 d=2..4 w=0..1
+  where (w == 0 or a > d)
+  level easy {
+    let a=1..2 d=2..3 w=0..0
+  }
+  level hard {
+    let a=4..4 d=2..3 w=1..1
+  }
+
+  scene 30x18 {
+    chimebars keys bars=8 letters=0 at=canvas(1, 1)
+    text ask "At the bandstand in the park Ada counts the chime bars from the left. She plays bar {a}, then moves {d} bars to the {if w == 0 then \"right\" else \"left\"} and plays again. Which number bar is that?" narrate width=28 below=keys gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a + d else a - d)
+  feedback {
+    when (w == 0 and answer == a - d) point=keys {
+      say "To the right the numbers go up. Count on from bar {a}."
+    }
+    when (w == 1 and answer == a + d) point=keys {
+      say "To the left the numbers go down. Count back from bar {a}."
+    }
+  }
+  hint "Put a finger on bar {a}. Move it {d} bars {if w == 0 then \"to the right\" else \"to the left\"}, one key at a time."
+  hint "{if w == 0 then \"Right is higher, and the number goes up by \" else \"Left is lower, and the number goes down by \"}{d}."
+}

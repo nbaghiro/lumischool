@@ -1,0 +1,62 @@
+lesson reading-words-we-know v=1 format=teach grade=1 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Words we know by sight"
+  goal "Read common words without sounding them out, and use one to finish a sentence."
+
+  look {
+    scene 27x20 {
+      column all at=canvas(1, 1) space=1 align=start {
+        wordcards cards words=["the", "and", "was", "said"] picked=3
+        row pics space=1 align=end {
+          art hen asset="hen"
+          art duck asset="duck"
+        }
+        sentence strip before="The hen and the duck said hello" blank=0 after="."
+      }
+    }
+    say """
+      Some words turn up on nearly every page, and some of them cannot be sounded out all the way.
+      In said, the a and the i make a sound you would not guess.
+
+      It is quicker to know words like these by heart. Read the row of cards until you know them
+      without stopping.
+      """
+  }
+  do {
+    practice reading.spelled-right count=2 hard-count=1 seed=2
+    level hard {
+      practice reading.fix-the-spelling count=1 seed=10
+    }
+    practice reading.sight-word-gap count=1 seed=1
+    practice reading.sight-word-type count=2 seed=6
+    practice reading.word-order count=1 seed=3
+    level easy {
+      worked reading.count-the-word w="was" level=medium
+    }
+    practice reading.count-the-word count=2 seed=2
+  }
+  try stars=2 {
+    show reading.fix-the-spelling k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.cards-sentence k=0
+  }
+  remember {
+    say "Some words you sound out. Some you just know."
+  }
+
+  grown-ups """
+    Four words a week is plenty. Sound out the parts that do sound out, and point to the part that
+    does not, such as the ai in said, so the child learns where the tricky letters are rather than
+    the whole word as a shape. Read the cards in a different order each time so the order is not
+    what they remember. Writing the word, rather than picking it, is the harder half: check every
+    letter. In the two-star question the wrong spelling sounds right, which is exactly why it is
+    wrong, so ask the child how the word looks in a book. The three-star question has many answers,
+    and a grown-up marks it.
+    """
+  level easy {
+    grown-ups "At this level the spellings, the gaps and the order are as written, was is counted once in the teacher's pen before come and the, which come once or twice, the spelling to fix is woz, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the spellings, the gaps and the order are as written, one real-word question makes way for a second spelling to fix, the words to count are was and said, which come two or three times, the two-star's spelling to fix is Thay, which needs its capital as well, and the three-star is as written."
+  }
+}

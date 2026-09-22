@@ -1,0 +1,26 @@
+# Two glasses, one solid dissolved and one not: the clear glass with nothing on the bottom is the
+# one that dissolved, whichever side it is on.
+item chem.cloudy-or-clear v=1 skills=[chemistry.dissolving] {
+  title "Which one dissolved?"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3 s=0..1
+  level easy {
+    let k={1, 2}  # sand in the other glass
+  }
+  level hard {
+    let k={0, 3}  # flour in the other glass
+  }
+
+  scene 28x15 {
+    text ask "A spoon of something was stirred into each glass. In which glass did it dissolve?" width=20 at=canvas(1, 0)
+    mixture one things=["{if s == 0 then (if k == 0 then \"salt\" else if k == 1 then \"sugar\" else if k == 2 then \"salt\" else \"sugar\") else (if k == 0 then \"flour\" else if k == 1 then \"sand\" else if k == 2 then \"sand\" else \"flour\")}"] water=1 names=0 below=ask gap=0
+    text la "A" below=one gap=0
+    mixture two things=["{if s == 0 then (if k == 0 then \"flour\" else if k == 1 then \"sand\" else if k == 2 then \"sand\" else \"flour\") else (if k == 0 then \"salt\" else if k == 1 then \"sugar\" else if k == 2 then \"salt\" else \"sugar\")}"] water=1 names=0 right-of=one gap=1
+    text lb "B" below=two gap=0
+    choice pick options=["A", "B"] right-of=two gap=1
+  }
+
+  answer pick=(if s == 0 then "A" else "B")
+  hint "Look at the bottom of each glass."
+  hint "A solid that dissolved leaves nothing you can see behind. Which glass is that?"
+}

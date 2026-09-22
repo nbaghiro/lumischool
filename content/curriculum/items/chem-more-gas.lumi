@@ -1,0 +1,20 @@
+# The balloon catches the gas the reaction makes, so the bigger balloon made more gas; the checker
+# compares the two balloons the drawings show.
+item chem.more-gas v=1 skills=[chemistry.changes, chemistry.gases] {
+  title "Which made more gas?"
+  difficulty v
+  let v=0..5
+
+  scene 26x19 {
+    text ask "Both flasks had vinegar and baking soda in them. Which one made more gas?" width=25 at=canvas(1, 0)
+    row kit below=ask gap=0 space=1 align=start {
+      flask a shape="conical" fill=0.35 bubbles=4 balloon=(if v == 0 then 1 else if v == 1 then 1 else if v == 2 then 2 else if v == 3 then 2 else if v == 4 then 3 else 3) tag="A"
+      flask b shape="conical" fill=0.35 bubbles=4 balloon=(if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 1 else if v == 3 then 3 else if v == 4 then 1 else 2) tag="B"
+      choice pick options=["A", "B"] stack=column
+    }
+  }
+
+  check chem.change of=a vs=b pick=more
+  hint "Where did the gas go when it was made?"
+  hint "Which balloon has more gas in it?"
+}

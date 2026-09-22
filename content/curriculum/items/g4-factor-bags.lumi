@@ -1,0 +1,29 @@
+item factors.bags v=1 skills=[number.factors] {
+  title "Identical bags"
+  difficulty (r + b)
+  let r=(12..48 by 2) b=(12..48 by 2)
+  where (gcd(r, b) > 3)
+  where (gcd(r, b) < min(r, b))
+  level easy {
+    where (r + b <= 40)
+  }
+  level hard {
+    where (r + b >= 72)
+  }
+
+  scene 32x10 {
+    text ask "{r} red counters and {b} blue counters go into identical bags, with none left over." width=30 at=canvas(1, 0)
+    text q1 "The most bags there can be" below=ask gap=1
+    number-input bags right-of=q1 gap=1
+    text q2 "Red counters in each bag" below=q1 gap=1
+    number-input each right-of=q2 gap=1
+  }
+
+  answer bags=gcd(r, b) each=(r / gcd(r, b))
+  feedback {
+    when (bags == min(r, b)) point=q1 {
+      say "Every bag has to hold both colours, so the number of bags divides {r} and {b}."
+    }
+  }
+  hint "Which numbers divide both {r} and {b}? Take the largest."
+}

@@ -1,0 +1,59 @@
+lesson reading-comic-strips v=1 format=teach grade=2 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Comic strips"
+  goal "Read a comic strip in order, and use the words and the faces to follow the story."
+
+  look {
+    scene 34x13 {
+      comic strip who=["boy", "hen", "boy"] says=["Is there an egg today?", "Not yet!", "Here it is!"] moods=["happy", "happy", "excited"] with=["hen", "boy", "hen"] thinks=[0, 1, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    }
+    say """
+      A comic tells a story in pictures. The words someone says go in a speech bubble, and its tail
+      points to who is talking. A bubble like a cloud shows what someone thinks. Read the pictures
+      in order, from left to right.
+      """
+  }
+  do {
+    show reading.comic-first k=1
+    show reading.comic-who-says k=2 j=2
+    show reading.comic-thinks k=3
+    level easy {
+      worked reading.comic-order c=1 pos=2 level=medium
+    }
+    show reading.comic-order c=4 pos=1 hard-pos=2
+    show reading.comic-bubble k=0
+    show reading.bubble-order k=1
+    show reading.bubble-order k=3
+  }
+  story {
+    show reading.comic-mood k=1 easy-k=0
+    level hard {
+      practice reading.comic-bubble-fit count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show reading.comic-bubble-fit k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.comic-write k=1
+  }
+  remember {
+    say "Read the bubbles and look at the faces. Together they tell the story."
+  }
+
+  grown-ups """
+    Comics are real reading: the order, the speakers and the feelings are all on the page to be
+    read. Read the bubbles aloud in different voices, and ask who is talking in each one before the
+    child answers.
+
+    When both people are in a picture, the tail of the bubble is the only thing that says who is
+    talking. In the ordering questions one word such as still or again fixes a picture's place. In
+    the two-star question every choice is about the same thing, so the face in the last picture
+    decides. The three-star question is marked by you: the line has to fit the story and the face.
+    """
+  level easy {
+    grown-ups "At this level the first picture, who is talking and the thought are as written, the third picture of a story is found once in the teacher's pen before the second picture of Gran's, the bubbles are as written, the feeling to find is Gran's crossness at the late bus, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the first picture, who is talking and the thought are as written, the picture to find is the third, the bubbles are as written, a second empty bubble is filled in the core, the two-star's empty bubble follows Gran's we will see, and the three-star is as written."
+  }
+}

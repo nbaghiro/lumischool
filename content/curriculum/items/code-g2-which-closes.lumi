@@ -1,0 +1,23 @@
+# Three programs that look alike, and only one comes back to the start: the other two have their
+# last two numbers swapped or one side a square short. p moves the right one about.
+item coding.which-closes v=2 stars=2 skills=[coding.drawing, reasoning.compare] {
+  title "Which one comes back?"
+  difficulty (w + h + (if p == 0 then 0 else if p == 2 then 1 else 2))
+  let w=3..4 h=2..3 p=0..2
+  where (w != h)  # a square would let the swapped numbers close it too
+
+  scene 37x17 {
+    turtle t cols=5 rows=5 col=1 row=5 moves=[] target=["right {w}", "up {h}", "left {w}", "down {h}"] at=canvas(1, 0)
+    column progs right-of=t gap=1 space=1 align=start {
+      text pa "A.  right {w}, up {h}, left {if p == 0 then w else if p == 1 then h else w}, down {if p == 0 then h else if p == 1 then w else h - 1}"
+      text pb "B.  right {w}, up {h}, left {if p == 0 then h else if p == 1 then w else w}, down {if p == 0 then w else if p == 1 then h - 1 else h}"
+      text pc "C.  right {w}, up {h}, left {if p == 0 then w else if p == 1 then w else h}, down {if p == 0 then h - 1 else if p == 1 then h else w}"
+    }
+    text ask "Which program brings the turtle back to the start?" width=24 below=t gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else if p == 1 then "C" else "B")
+  hint "The pale shape shows the way back. Try each program on it with your finger."
+  hint "To get back, the way left has to match the way right, and the way down the way up."
+}

@@ -1,0 +1,31 @@
+# What is in an empty jar, bottle or cup: air. The question children answer with "nothing"
+# until they have seen the bubbles, so the drawing is the thing on its own and the choices
+# name the mistake.
+item chem.empty-jar v=1 skills=[chemistry.states] {
+  title "What is in it?"
+  difficulty k
+  let k=0..2
+  let thing={pick(k, "glass-jar", "plastic-bottle", "metal-can")}
+  let name={pick(k, "jar", "bottle", "can")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x13 {
+    materials row things=["{thing}"] letters=0 at=canvas(1, 0)
+    text ask "Mia says this {name} is empty. What is inside it?" narrate width=28 below=row gap=1
+    choice pick options=["nothing", "air", "water"] below=ask gap=1
+  }
+
+  answer pick="air"
+  feedback {
+    when (pick == "nothing") point=row {
+      say "Air is everywhere, in every space that has nothing else in it. The {name} is full of air."
+    }
+  }
+  hint "What fills every space in the room, even the ones that look empty?"
+  hint "Push the {name} under water with its mouth down and watch what comes out."
+}

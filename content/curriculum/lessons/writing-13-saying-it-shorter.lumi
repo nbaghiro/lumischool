@@ -1,0 +1,60 @@
+lesson writing-saying-it-shorter v=1 format=teach grade=4 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Saying it shorter"
+  goal "Cut the words that do no work, without losing what the reader needs."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 1) space=1 align=centre {
+        dog pup facing=1 ball=0
+        column both space=1 align=start {
+          passage long text="The dog that lives next door sat by our gate for the whole morning." width=25
+          passage short text="The dog next door sat by our gate all morning." width=25
+        }
+      }
+    }
+    say """
+      Most first drafts are longer than they need to be. "The dog that lives next door" is six words
+      where four will do. Cutting is not about making it shorter for its own sake: it is about the
+      reader getting the meaning sooner.
+
+      The test is whether anything has gone missing. If the shorter version says the same thing, the
+      cut words were doing no work.
+      """
+  }
+  do {
+    level easy {
+      worked writing.cut-the-extra k=4 level=medium
+    }
+    practice writing.cut-the-extra count=2 seed=1
+    practice writing.say-it-shorter count=1 seed=2
+    practice writing.what-was-lost count=3 seed=4
+    practice writing.no-work-word count=2 hard-count=1 seed=3
+    level hard {
+      practice writing.cut-for-reader count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show writing.cut-for-reader k=1 easy-k=0
+  }
+  try stars=3 {
+    show writing.cut-to-twelve k=0
+  }
+  remember {
+    say "Cut the words that do no work. Check the meaning survived, and that the reader still has what they need."
+  }
+
+  grown-ups """
+    Ask the child to count the words in both versions and then say what was lost. Usually nothing
+    was, and noticing that is the lesson. Two of the three choices in each question are shorter, so
+    shorter alone is not the answer: the one that keeps all the meaning is. In the "what did it
+    lose" questions, nothing is sometimes the right answer. The two-star question turns on the
+    reader: every note is shorter, and the right one keeps what that reader needs. The three-star
+    rewrite has many right answers; count its words together and check the four facts are there.
+    """
+  level easy {
+    grown-ups "At this level at this moment in time is cut once in the teacher's pen before that lives, in colour, up and two, the shorter sentence is as written, the cuts lose when or where from the front, the words that say it again are repeat again and joined together, the two-star's note is Gran's, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the words to cut are in order, that lives and at this moment in time, the shorter sentence is as written, the cuts lose who from the middle or nothing at all, the words that say it again are first began and a free gift, one of them making way for a second note to cut for its reader, the two-star's note is the babysitter's, and the three-star is as written."
+  }
+}

@@ -1,0 +1,39 @@
+# Two stars: a gauge that has filled to its brim with the rest standing in the funnel, so the reading
+# is a floor rather than a measurement, and what can honestly be said about the day's rain.
+item nature.weather-overflowed v=1 stars=2 skills=[nature.weather, reasoning.evidence] {
+  title "The gauge overflowed"
+  difficulty (if cap == 50 then 0 else 1)
+  let n=0..3
+  let cap={pick(n, 50, 50, 30, 30)}
+  let lvl={pick(n, 70, 90, 45, 60)}
+  let ans={pick(n, "At least 50 mm, and no more can be told", "At least 50 mm, and no more can be told", "At least 30 mm, and no more can be told", "At least 30 mm, and no more can be told")}
+  let no1={pick(n, "Exactly 50 mm", "Exactly 50 mm", "Exactly 30 mm", "Exactly 30 mm")}
+  let no2={pick(n, "Less than 50 mm, some ran away", "Less than 50 mm, some ran away", "Less than 30 mm, some ran away", "Less than 30 mm, some ran away")}
+  let o1={pick(n, ans, no1, no2, no1)}
+  let o2={pick(n, no1, ans, no1, no2)}
+  let o3={pick(n, no2, no2, ans, ans)}
+  level easy {
+    let n={0, 1}
+  }
+  level hard {
+    let n={2, 3}
+  }
+
+  scene 28x35 {
+    raingauge gauge max=50 step=10 level=lvl unit=mm show=1 at=canvas(1, 0)
+    text ask "It rained all night. In the morning the tube was full to the brim, with the rest standing in the funnel and running over. What can Mia write in her chart for that day?" narrate width=26 below=gauge gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == no1) point=gauge {
+      say "The tube stops at its brim, so it cannot show any more than that however hard it rained."
+    }
+    when (pick == no2) point=gauge {
+      say "None of the rain that fell in the funnel got away before the tube was full, so the day had at least a full tube."
+    }
+  }
+  hint "What is the most this tube can ever show?"
+  hint "If more rain fell than the tube can hold, does the reading tell you how much more?"
+}

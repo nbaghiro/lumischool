@@ -1,0 +1,37 @@
+# The bubbles from a bottle pushed under water: they are the air that was in it, and the water
+# takes the room the air leaves. One version asks what the bubbles are, the other what goes into
+# the bottle as they come out.
+item chem.bubbles-out v=1 skills=[chemistry.states] {
+  title "Where do the bubbles come from?"
+  difficulty w
+  let w=0..1 n=3..6
+  let asks={pick(w, "What are the bubbles?", "What goes into the bottle as the bubbles come out?")}
+  let right={pick(w, "The air that was in the bottle", "Water, into the room the air left")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x30 {
+    row scene1 at=canvas(1, 0) space=3 align=end {
+      beaker tank max=500 step=100 level=400 unit=ml solid=0 rod=false
+      bubbles b count=n
+    }
+    text ask "Ada pushes an empty bottle under the water in the tank and tips it. {n} bubbles come up. {asks}" narrate width=32 below=scene1 gap=1
+    choice pick options=[if w == 0 then "The air that was in the bottle" else "Water, into the room the air left", if w == 0 then "Water turning into air" else "Nothing, the bottle stays empty", if w == 0 then "Soap from the tank" else "More air, from the tank"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (w == 0 and pick == "Water turning into air") point=b {
+      say "The water is not changing. The bottle was full of air, and that air is escaping up through the water."
+    }
+    when (w == 1 and pick == "Nothing, the bottle stays empty") point=tank {
+      say "The bottle was never empty: it was full of air. As the air leaves, water takes its room."
+    }
+  }
+  hint "Was the bottle really empty before it went under? What was in it?"
+  hint "Air is lighter than water, so it floats up as bubbles, and the water moves in behind it."
+}

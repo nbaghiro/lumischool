@@ -1,0 +1,27 @@
+# Every atom in the box: count the atoms in one molecule of each kind and how many of each kind there
+# are, which is two multiplications and an add when the box is a mixture.
+item chem.box-atoms v=1 skills=[chemistry.atoms, multiplication.groups] {
+  title "Every atom in the box"
+  difficulty (if v == 0 then 8 else if v == 2 or v == 5 then 12 else 15)
+  let v=0..5
+  level easy {
+    let v={0, 5}  # eight or twelve atoms
+  }
+  level hard {
+    let v={1, 2, 3}  # twelve or fifteen atoms
+  }
+
+  scene 27x10 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      atombox box a=(if v == 0 then "oxygen" else if v == 1 then "water" else if v == 2 then "nitrogen" else if v == 3 then "water" else if v == 4 then "methane" else "hydrogen") na=(if v == 0 then 4 else if v == 1 then 5 else if v == 2 then 4 else if v == 3 then 3 else if v == 4 then 3 else 3) b=(if v == 0 then "none" else if v == 1 then "none" else if v == 2 then "oxygen" else if v == 3 then "carbon-dioxide" else if v == 4 then "none" else "oxygen") nb=(if v == 0 then 0 else if v == 1 then 0 else if v == 2 then 2 else if v == 3 then 2 else if v == 4 then 0 else 3)
+      column side space=1 align=start {
+        text ask "How many atoms are in the box altogether?" width=14
+        number-input answer
+      }
+    }
+  }
+
+  check chem.atoms of=box answer=atoms
+  hint "How many atoms are in one of each kind of molecule?"
+  hint "How many molecules of each kind are there? Add up the atoms for each kind."
+}

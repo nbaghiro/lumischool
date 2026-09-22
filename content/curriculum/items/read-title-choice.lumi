@@ -1,0 +1,17 @@
+# Every title is about the passage (the audit's raise): two of them fit only one sentence, so the
+# child has to judge which one fits all of it.
+item reading.title-choice v=2 skills=[reading.gist] {
+  title "Which title fits?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 32x24 {
+    passage p text="{if k == 0 then \"The rain fell all night. By morning the path was a stream and the field had turned into a shallow pond.\" else if k == 1 then \"Nell looked behind the shed, under the steps and in the long grass. At last she heard a small cry from the apple tree.\" else \"We weighed the flour, cracked two eggs and stirred until the batter was smooth. The kitchen smelled of warm butter.\"}" width=30 at=canvas(1, 1)
+    text ask "Which title fits the whole passage?" width=22 below=p gap=1
+    choice pick options=[if k == 0 then "Rain all night" else if k == 1 then "Behind the shed" else "Baking day", if k == 0 then "The night the field flooded" else if k == 1 then "A cry in the tree" else "Two eggs", if k == 0 then "A pond in the field" else if k == 1 then "Nell's search" else "The smell of butter"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The night the field flooded" else if k == 1 then "Nell's search" else "Baking day")
+  hint "Read to the end before you choose. Which title fits every sentence?"
+  hint "Two titles fit only one part. Which part does each of them fit?"
+}

@@ -1,0 +1,15 @@
+# Played: a note read from the treble staff and found on the keys. B, a line above the
+# landmark G with the space A between.
+item music.play-treble v=1 skills=[music.staff, music.keys] {
+  title "Play the note"
+
+  scene 26x28 {
+    grandstaff gs notes=["B4"] letters=false lit=["B4"] landmarks=true at=canvas(1, 1)
+    text ask "Name the ringed note from treble G, then find it on the keyboard and play it." width=14 right-of=gs gap=1
+    piano keys from=C4 whites=8 wide=3 labels=none below=gs gap=1
+  }
+
+  check music.plays notes=[B4]
+  hint "The ringed note is on the line above treble G's line. That is two steps up: A, then B."
+  hint "On the keys B is the white key just right of the group of three black keys."
+}

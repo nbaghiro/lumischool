@@ -1,0 +1,26 @@
+# The weight before is given and the weight after is read: the change is three books, so the
+# difference is shared by three. The child has to see what changed between the two.
+item measure.books-out v=1 stars=2 skills=[mass.grams, reasoning.two-steps] {
+  title "Three books out"
+  difficulty (w + v / 10)
+  let w={100, 200} v={800, 900, 1000}
+  where (v != 4 * w)
+
+  scene 32x14 {
+    dialscale after max=1000 step=200 value=(v - 3 * w) unit=g at=canvas(1, 1)
+    text ask "A box of books weighed {v} g. Kit took out 3 books that all weigh the same. Now the box weighs what the dial shows. How heavy is one book?" width=17 right-of=after gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer w
+  feedback {
+    when (answer == 3 * w) point=after {
+      say "That is what all three books weigh. How heavy is one of them?"
+    }
+    when (answer == v - 3 * w) point=after {
+      say "That is the box now. The books are the difference between {v} g and the dial."
+    }
+  }
+  hint "What did the box lose when the books came out?"
+  hint "Three books weigh that much together. Share it into three."
+}

@@ -1,0 +1,46 @@
+lesson physics-rough-and-smooth v=1 format=teach grade=2 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "Rough and smooth"
+  goal "Measure how hard a shoe has to be pulled across different floors, say which floor grips more, and tell a fair test from an unfair one."
+
+  look {
+    scene 25x19 {
+      column two at=canvas(1, 0) space=1 align=start {
+        forcemeter wood reading=3 surface=1
+        forcemeter sand reading=9 surface=3
+      }
+    }
+    say """
+      When something slides over a floor, the floor grips it and holds it back. That grip is called
+      friction. A force meter measures how hard you have to pull to keep the shoe sliding. The
+      rougher the floor, the more it grips, and the bigger the pull.
+      """
+  }
+  do {
+    practice physics.friction-read count=2 seed=3
+    practice physics.friction-order count=2 seed=1
+    practice physics.friction-table count=2 seed=2
+    practice physics.ramp-rough count=2 seed=4
+  }
+  try stars=2 {
+    show physics.friction-fair s=1 f=0 easy-s=0 hard-f=1
+  }
+  try stars=3 {
+    show physics.friction-predict f=0 hard-f=1
+  }
+  remember {
+    say "Rough floors grip more than smooth ones. A fair test changes only one thing."
+  }
+
+  grown-ups """
+    A trainer, a length of string and a bathroom floor, a rug and a doormat make the lesson; a
+    luggage scale or a spring balance measures the pull. Keep the same shoe for every floor, which
+    is exactly what the fair test question is about. The last question has no reading to find: the
+    child has to see that the new floor's number must sit between two others.
+    """
+  level easy {
+    grown-ups "At this level the meter reads under four newtons, the two floors compared are far apart in grip, and the test to judge changes only the floor."
+  }
+  level hard {
+    grown-ups "At this level the meter reads seven to nine newtons, the floors compared sit next to each other in grip, and the test to judge changes the shoe and the floor at once."
+  }
+}

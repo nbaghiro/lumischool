@@ -1,0 +1,23 @@
+# Water boils at 100 degrees at home and at about 90 near 3000 metres up a mountain (NIST), so the
+# flat part is read off the graph rather than remembered.
+item chem.boil-temp v=1 skills=[chemistry.heating, chemistry.data] {
+  title "The flat part"
+  difficulty w
+  let w=0..1 k=0..2
+  level easy {
+    let w={0}  # at home, 100
+  }
+  level hard {
+    let w={1}  # up the mountain, 90
+  }
+
+  scene 35x16 {
+    heatcurve curve temps=[if w == 0 then if k == 0 then 20 else if k == 1 then 30 else 10 else if k == 0 then 20 else if k == 1 then 30 else 10, if w == 0 then if k == 0 then 40 else if k == 1 then 50 else 40 else if k == 0 then 40 else if k == 1 then 50 else 40, if w == 0 then if k == 0 then 60 else if k == 1 then 70 else 70 else if k == 0 then 60 else if k == 1 then 70 else 70, if w == 0 then if k == 0 then 80 else if k == 1 then 100 else 100 else if k == 0 then 80 else if k == 1 then 90 else 90, if w == 0 then if k == 0 then 100 else if k == 1 then 100 else 100 else if k == 0 then 90 else if k == 1 then 90 else 90, if w == 0 then if k == 0 then 100 else if k == 1 then 100 else 100 else if k == 0 then 90 else if k == 1 then 90 else 90, if w == 0 then if k == 0 then 100 else if k == 1 then 100 else 100 else if k == 0 then 90 else if k == 1 then 90 else 90] every=2 min=0 max=120 step=20 at=canvas(1, 0)
+    text ask "Water was heated {if w == 0 then \"at home\" else \"in a hut high up a mountain\"}. What did the thermometer read while the water was boiling?" width=14 right-of=curve gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.state of=curve answer=flat
+  hint "Which part of the line shows the water boiling?"
+  hint "Read across from that flat part to the numbers up the side."
+}

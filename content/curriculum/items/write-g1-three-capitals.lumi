@@ -1,0 +1,16 @@
+# A sentence built to a rule: it has to need three capitals, so the child has to plan a name, a
+# day or I into it before writing.
+item writing.three-capitals v=1 stars=3 skills=[writing.capitals, writing.composing] {
+  title "A sentence with three capitals"
+  let k=0..2
+  let rule={if k == 0 then "a name and a day of the week" else if k == 1 then "two names" else "a name and the word I"}
+
+  scene 32x14 {
+    text ask "Write a sentence that needs three capital letters. Put {rule} in it, and end it with a full stop." width=30 at=canvas(1, 1)
+    handwriting rules show="" rows=2 trace=0 width=30 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence with a capital at the start and two more capitals that the rule asks for (a name, a day of the week or I), no capital anywhere else, and a full stop at the end."
+  hint "Say your sentence out loud first. Who is in it, and when does it happen?"
+  hint "Count the capitals it needs before you write it."
+}

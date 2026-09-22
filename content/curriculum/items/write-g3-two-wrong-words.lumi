@@ -1,0 +1,21 @@
+# Two wrong words and no clue where: both have to be found and both mended.
+item writing.two-wrong-words v=1 stars=2 skills=[writing.editing, writing.spelling] {
+  title "Two words to mend"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..4
+
+  scene 37x18 {
+    fixbot bot says="{if k == 0 then \"We road our bikes to the see.\" else if k == 1 then \"I new the way to there house.\" else if k == 2 then \"The wind blue so hard I could not here the birds.\" else if k == 3 then \"My aunt has for dogs and won cat.\" else \"The heron flu over the rode.\"}" width=22 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "Two words are wrong. Write them the right way, in the order they come." width=30 below=bot gap=1
+    row fixes below=ask gap=1 space=2 align=centre {
+      text l1 "First:"
+      word-input one options=["{if k == 0 then \"rode\" else if k == 1 then \"knew\" else if k == 2 then \"blew\" else if k == 3 then \"four\" else \"flew\"}"] letters=5
+      text l2 "Second:"
+      word-input two options=["{if k == 0 then \"sea\" else if k == 1 then \"their\" else if k == 2 then \"hear\" else if k == 3 then \"one\" else \"road\"}"] letters=5
+    }
+  }
+
+  answer one=(if k == 0 then "rode" else if k == 1 then "knew" else if k == 2 then "blew" else if k == 3 then "four" else "flew") two=(if k == 0 then "sea" else if k == 1 then "their" else if k == 2 then "hear" else if k == 3 then "one" else "road")
+  hint "Read it aloud slowly. Each wrong word sounds right but means something else."
+  hint "When you have found one, keep going: there is another after it."
+}

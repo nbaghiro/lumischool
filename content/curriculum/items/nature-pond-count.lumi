@@ -1,0 +1,36 @@
+# The way in: the pond from above, and a count of the fish under the water or the lily pads on it.
+# The pads lie over some of the fish, so the more pads there are, the more of the fish are half
+# hidden and the closer the child has to look.
+item nature.pond-count v=1 skills=[nature.habitats] {
+  title "How many in the pond?"
+  difficulty (if w == 0 then f else p - 1)
+  let f=1..5 p=2..6 w=0..1
+  let what={pick(w, "fish are under the water", "lily pads are on the water")}
+  level easy {
+    let f=1..2 p=2..3
+  }
+  level hard {
+    let f=4..5 p=5..6
+  }
+
+  scene 33x12 {
+    pond water pads=p fish=f frog=true at=canvas(1, 1)
+    text ask "Ada looks down into the pond. How many {what}?" narrate width=17 right-of=water gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then f else p)
+  feedback {
+    when (w == 0 and answer < f) point=water {
+      say "A lily pad can lie over a fish. Look under every pad for a tail or a nose."
+    }
+    when (w == 0 and answer == f + 1) point=water {
+      say "The frog is on top of the water, not under it. Count only the fish."
+    }
+    when (w == 1 and answer == p - 1) point=water {
+      say "The frog is sitting on a pad. Count that pad too."
+    }
+  }
+  hint "Touch each one as you count it, so you do not count any twice."
+  hint "Look at the edges of the pads. Is anything half hidden under one?"
+}

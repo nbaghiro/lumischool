@@ -1,0 +1,16 @@
+# The question comes from the child: one the passage answers, and its answer. There are many right
+# ones, so a grown-up marks it.
+item reading.ask-a-question v=1 stars=3 skills=[reading.comprehension, reading.questioning] {
+  title "Your own question"
+  let k=0..2
+
+  scene 36x20 {
+    passage story text="{if k == 0 then \"Kofi has a tortoise called Rocky. Rocky eats lettuce and likes the sun. In winter he sleeps in a box of straw in the shed.\" else if k == 1 then \"The market opens at seven. Mrs Lee sells apples and pears from her van. By lunch time she has sold every apple.\" else \"Zara and her brother built a den out of sticks. It fell down twice. The third time they used string to tie the sticks.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Write a question that the passage answers. Start it with who, what, where, when or why. Then write the answer." narrate width=34 below=story gap=1
+    writinglines lines lines=2 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A real question that starts with a question word and ends with a question mark, whose answer is in the passage, and an answer that matches the passage. A why question whose answer has to be worked out (why they used string) is the best kind; say so if the child writes one."
+  hint "Pick one sentence. What question would that sentence answer?"
+  hint "Check your question: could someone who read the passage answer it?"
+}

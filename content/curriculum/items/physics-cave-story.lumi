@@ -1,0 +1,41 @@
+# The story block: three children in the crystal cave, one at the drum, one beside it and one far
+# down the tunnel by the glow-worms. The hard version brings the far one back to stand with the
+# middle one, and then the two of them hear the same.
+item physics.cave-story v=1 skills=[physics.sound] {
+  title "The drum in the cave"
+  difficulty pick(k, 1, 0, 3)
+  let k=0..2
+  let ask={pick(k, "Who hears the drum quietest?", "Who hears the drum loudest?", "Ben walks back and stands next to Mia. Now who hears the drum quieter, Mia or Ben?")}
+  let right={pick(k, "Ben", "Leo", "the same")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x32 {
+    bats roof count=3 flying=0 at=canvas(1, 0)
+    glowworms worms worms=6 at=canvas(26, 1)
+    ricedrum drum hit=3 at=canvas(1, 7)
+    children two count=2 names=["Leo", "Mia"] at=canvas(15, 8)
+    children far count=1 names=["Ben"] at=canvas(31, 8)
+    text ask "Leo, Mia and Ben are in the crystal cave. Leo hits the drum. Mia stands beside him. Ben has gone on ahead, far down the tunnel by the glow-worms. {ask}" narrate width=34 at=canvas(1, 20)
+    choice pick options=["Leo", "Mia", "Ben", "the same"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "Mia") point=two {
+      say "Mia is beside the drum, so the sound reaches her before it has faded. Who is furthest down the tunnel?"
+    }
+    when (k == 1 and pick == "Ben") point=far {
+      say "Ben is far down the tunnel. By the time the sound reaches him it has spread out and faded. Who is right at the drum?"
+    }
+    when (k == 2 and (pick == "Mia" or pick == "Ben")) point=two {
+      say "Now Ben and Mia are the same distance from the drum, so the sound has faded by the same amount when it reaches each of them."
+    }
+  }
+  hint "Find each child in the picture. Who is nearest the drum, and who is furthest?"
+  hint "The further the sound travels, the more it fades."
+}

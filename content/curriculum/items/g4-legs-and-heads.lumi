@@ -1,0 +1,23 @@
+item puzzle.legs v=1 stars=2 skills=[reasoning.two-unknowns] {
+  title "Hens and rabbits"
+  difficulty (hens + rabbits)
+  let hens=2..6 rabbits=2..6
+  where (hens != rabbits)
+
+  scene 30x12 {
+    heads field count=(hens + rabbits) at=canvas(1, 0)
+    text ask "In the field there are {hens + rabbits} heads and {2 * hens + 4 * rabbits} legs. Every hen has 2 legs and every rabbit has 4." width=28 below=field gap=1
+    text l1 "Hens" below=ask gap=1
+    number-input hen right-of=l1 gap=1
+    text l2 "Rabbits" right-of=hen gap=2
+    number-input rab right-of=l2 gap=1
+  }
+
+  answer hen=hens rab=rabbits
+  feedback {
+    when (hen + rab != hens + rabbits) point=field {
+      say "There are {hens + rabbits} heads, so the two numbers have to add up to {hens + rabbits}."
+    }
+  }
+  hint "If every animal were a hen there would be {2 * (hens + rabbits)} legs. Each rabbit adds two more."
+}

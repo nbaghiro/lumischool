@@ -1,0 +1,21 @@
+# A reason: the fair comparison is the pair that differs in one thing only, water and salty water,
+# because the dry jar differs in two ways at once.
+item chem.rust-evidence v=1 stars=2 skills=[chemistry.rusting, reasoning.fair-test] {
+  title "Two jars that show it"
+  difficulty v
+  let v=0..5
+
+  scene 31x16 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      nails n jars=["{if v == 0 then \"water\" else if v == 1 then \"water\" else if v == 2 then \"salt\" else if v == 3 then \"salt\" else if v == 4 then \"dry\" else \"dry\"}", "{if v == 0 then \"salt\" else if v == 1 then \"dry\" else if v == 2 then \"water\" else if v == 3 then \"dry\" else if v == 4 then \"water\" else \"salt\"}", "{if v == 0 then \"dry\" else if v == 1 then \"salt\" else if v == 2 then \"dry\" else if v == 3 then \"water\" else if v == 4 then \"salt\" else \"water\"}"] days=5 letters=1 names=1
+      column side space=1 align=start {
+        text ask "Which two jars show that salt makes a nail rust faster?" width=16
+        choice pick options=["A and B", "A and C", "B and C"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if v == 0 then "A and B" else if v == 1 then "A and C" else if v == 2 then "A and B" else if v == 3 then "A and C" else if v == 4 then "B and C" else "B and C")
+  hint "To show what salt does, the two jars should be the same except for one thing. What is it?"
+  hint "Which pair has water and air in both, and salt in only one?"
+}

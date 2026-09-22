@@ -1,0 +1,21 @@
+item physics.count-conductors v=1 skills=[physics.materials] {
+  title "Which would light it?"
+  difficulty ((if q == "foil" then 1 else 0) + (if r == "coin" then 1 else 0) + (if s == "marble" then 1 else 0))
+  let p={"nail", "ruler"} q={"eraser", "foil"} r={"coin", "stick"} s={"marble", "clip"}
+  level easy {
+    let q={"eraser"} r={"stick"} s={"clip"}
+  }
+  level hard {
+    let q={"foil"} r={"coin"} s={"marble"}
+  }
+
+  scene 33x6 {
+    things t things=["{p}", "{q}", "{r}", "{s}"] at=canvas(1, 0)
+    text ask "How many of these would make the bulb light?" width=15 right-of=t gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check physics.things of=t answer=count(conducts)
+  hint "Which of these are made of metal?"
+  hint "Metal lets electricity through and lights the bulb; plastic, rubber, wood and glass do not. Count the metal ones."
+}

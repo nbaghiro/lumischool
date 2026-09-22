@@ -1,0 +1,32 @@
+item measure.ruler v=1 skills=[length.centimetres] {
+  title "How long is the pencil"
+  difficulty (len + (if len > 9 then 4 else 0))
+  let len=3..9
+  level easy {
+    let len=2..4
+  }
+  level hard {
+    let len=10..13
+    scene 36x11 {
+      ruler r cm=15 length=len start=2 at=canvas(1, 0)
+      text ask "How long is the pencil?" narrate below=r gap=1
+      number-input answer right-of=ask gap=1
+      text unit "cm" right-of=answer gap=0
+    }
+    hint "The pencil does not start at 0. Where does it start, and where does it end?"
+  }
+
+  scene 26x11 {
+    ruler r cm=10 length=len at=canvas(1, 0)
+    text ask "How long is the pencil?" narrate below=r gap=1
+    number-input answer right-of=ask gap=1
+    text unit "cm" right-of=answer gap=0
+  }
+
+  answer len
+  feedback {
+    when (answer == len + 1) point=r.tick(0) {
+      say "Count the spaces between the numbers, not the marks."
+    }
+  }
+}

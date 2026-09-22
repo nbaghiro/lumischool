@@ -1,0 +1,69 @@
+lesson physics-near-and-far v=1 format=teach grade=1 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "Near and far: sound gets quieter"
+  goal "Say that a sound is louder close by and quieter far away, and read how loud a drum is from the rings drawn round it."
+
+  look {
+    scene 36x25 {
+      row roof at=canvas(0, 0) space=1 align=start {
+        stalactites rock pairs=3 joined=1 rock=1
+        crystals gems count=4 lit=1
+        glowworms worms worms=6
+      }
+      ricedrum drum hit=3 at=canvas(1, 13)
+      children near count=1 names=["Mia"] at=canvas(15, 14)
+      children far count=1 names=["Leo"] at=canvas(31, 14)
+    }
+    say """
+      Mia and Leo are deep in the crystal cave. Someone hits the drum. The skin shakes, and rings
+      of sound spread out through the air, the way ripples spread on a pond. Mia, right beside the
+      drum, hears it loud. Leo, far down the tunnel by the glow-worms, hears the same hit, but
+      quietly: the further the sound travels, the more it fades. A harder hit makes bigger rings,
+      and the drum is louder for everyone.
+      """
+  }
+  do {
+    practice physics.hears-loudest count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked physics.walks-nearer w=0 s=1 level=medium
+    }
+    practice physics.walks-nearer count=2 seed=3 easy-seed=1 hard-seed=1
+    practice physics.listeners-in-order count=2 seed=5 easy-seed=1 hard-seed=1
+    practice physics.nearer-or-further count=2 seed=5 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.leos-drum k=0
+    }
+  }
+  story {
+    show physics.cave-story k=0 easy-k=1 hard-k=2
+  }
+  try stars=2 {
+    show physics.leos-drum k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show physics.same-loudness k=1 easy-k=0 hard-k=1
+  }
+  remember {
+    say "A sound is loudest close by. The further away you are, the quieter it gets."
+  }
+
+  grown-ups """
+    The wrong idea this lesson is about is that a sound is the same everywhere, so whoever has the
+    best ears hears it best, or whoever the drummer is facing. Every question here can be settled
+    by one look: how far is this child from the drum? Watch whether the child looks at the
+    distance, or picks the child who is biggest, first in the row, or named first. The rings drawn
+    round the drum say how hard it was hit and how loud it is at the drum; they do not say who is
+    near. In the two-star question Leo compares two drums from an unfair place, and the child
+    should be able to say why standing beside one drum makes it sound louder without it being
+    louder. The three-star question has no rule on the page: the same loudness means the same
+    distance, and the child has to count squares to find it. If who hears it loudest is still
+    being guessed after the core, stay here another day and go back to the way in. Off the page,
+    have someone tap a spoon on a pan while the child walks away from it and then back, saying
+    louder or quieter at every few steps.
+    """
+  level easy {
+    grown-ups "At this level the three listeners stand in a line away from the drum with clear gaps between them, a worked example (Leo walking towards the drum) opens the core, the moves are from one end to the other, the story asks who hears the drum loudest, the two-star question has one drum hit harder with Leo in the middle, and Ben's spot is one square from the drum, across from Mia's."
+  }
+  level hard {
+    grown-ups "At this level the drum stands between the listeners, so nearest has to be judged on both sides, Leo moves only a few steps, the same-distance question joins the core, a second reasoning question (Leo standing beside one of two equal drums) sits in the core, the story brings Ben back to stand with Mia so that they hear the same, the two-star question has Leo in the middle of two equal drums, and Ben's spot is the one below the drum, six squares from it like Mia's and Leo's."
+  }
+}

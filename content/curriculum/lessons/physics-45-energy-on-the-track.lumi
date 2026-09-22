@@ -1,0 +1,67 @@
+# Energy on the marble track: a marble let go from higher up is going faster at the bottom and pushes
+# the cup further, two squares for every square of height, which the table holds and the questions
+# read forwards, backwards and past its last row.
+lesson physics-energy-on-the-track v=1 format=teach grade=4 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Energy on the track"
+  goal "Say why a marble let go from higher pushes the cup further, and read the pattern of height against distance in a table."
+
+  look {
+    scene 28x38 {
+      column all space=1 align=start at=canvas(1, 0) {
+        ramp low height=2 cup=1 pushed=4
+        ramp high height=5 cup=1 pushed=10
+        table t cols=2 head=["Height", "Cup pushed"] cells=["1", "2", "2", "4", "3", "6", "4", "8", "5", "10", "6", "12"]
+      }
+    }
+    say """
+      A marble held at the top of a track has energy because of where it is. Let it go and that
+      becomes movement: the higher it starts, the faster it is going at the bottom, and the further
+      it shoves the cup along the floor. Every square of height sends the cup two squares further, so
+      the table goes up in twos and the pattern goes on past its last row.
+      """
+  }
+  do {
+    practice physics.track-further count=1 seed=2 easy-seed=5 hard-seed=3
+    level easy {
+      worked physics.track-table-read h=6 level=medium
+    }
+    practice physics.track-table-read count=2 seed=1 easy-seed=1 hard-seed=1
+    practice physics.track-which-height count=2 seed=3 easy-seed=14 hard-seed=14
+    practice physics.track-next-row count=2 seed=3 easy-seed=2 hard-seed=5
+    level hard {
+      show physics.track-same-height s=2
+    }
+  }
+  story {
+    show physics.treetops-marble-run v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show physics.track-same-height s=1 easy-s=0 hard-s=3
+  }
+  try stars=3 {
+    show physics.track-choose-height v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "The higher the marble starts, the further the cup is pushed: two squares for every square of height."
+  }
+
+  grown-ups """
+    The wrong idea this lesson is about is that a steeper track pushes further because it looks
+    faster. The two-star question meets it head on: two tracks of the same height, one steep and one
+    gentle, push the cup exactly as far as each other, so what decides the push is where the marble
+    started and not how steep the slope is. Watch for a child who reads the table as a list of facts
+    rather than a pattern; the questions that go past the last row and the one that reads backwards
+    from a distance to a height are the ones that show it. The three-star question has no row that
+    answers it: the child has to work out the distance from a height the table does not name and then
+    choose the smallest height that lands between the marks, which is worth asking them to say aloud.
+    If the table is still read row by row after the core, stay here another day and build the table
+    together from three rolls. Off the page, a plank on books and a marble, with a paper cup at the
+    bottom, and a tape measure for how far the cup slides.
+    """
+  level easy {
+    grown-ups "At this level the two tracks to compare are four apart in height, the tallest row of the table is read once in the teacher's pen before two rows of the first four, the rows read backwards are the two of those four the child has not just read, the row past the table is one or two steps on, the story compares two goes two squares apart, and the three-star's marks are three and seven squares out."
+  }
+  level hard {
+    grown-ups "At this level the two tracks to compare are one apart in height, the rows read and read backwards are from the second half of the table and never the same row twice, the row past the table is three or four steps on, the core carries a second pair of tracks whose runs differ by little, the story compares two goes ten squares apart, and the three-star's marks are nine and thirteen squares out, so its answer is a height the table does not name."
+  }
+}

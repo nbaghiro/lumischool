@@ -1,0 +1,24 @@
+# Time as half hours to count on, read off the unused station clock.
+item time.station-wait v=1 stars=3 skills=[time.half-hours, reasoning.elapsed] {
+  title "Waiting for the train"
+  difficulty k
+  let h=2..9 k=0..2
+
+  scene 28x19 {
+    station st hour=h minute=0 at=canvas(1, 0)
+    text ask "The train leaves at half past {h + k}. How many half hours are there until it leaves?" narrate width=26 below=st gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * k + 1)
+  feedback {
+    when (answer == 2 * k) point=st {
+      say "Count the half hour from {h} o'clock to half past {h} as well."
+    }
+    when (answer == k + 1 and k > 0) point=st {
+      say "Each hour is two half hours."
+    }
+  }
+  hint "What time does the station clock show now?"
+  hint "Count on in half hours: half past {h}, then {h + 1} o'clock, and so on."
+}

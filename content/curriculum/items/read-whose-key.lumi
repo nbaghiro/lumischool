@@ -1,0 +1,35 @@
+# The two-star reason: two children read the same mark two ways, and the key settles it.
+item reading.whose-key v=1 stars=2 skills=[reading.text-features, reasoning.evidence] {
+  title "Whose reading is right?"
+  difficulty k
+  let k=0..1 r=0..2
+  let m1={pick(k, "path", "river")}
+  let m2={pick(k, "rails", "road")}
+  let l1={pick(k, "Footpath", "River")}
+  let l2={pick(k, "Railway", "Road")}
+  let claim={pick(k, "Ben says the dashed line on the map is a railway. Ada says it is a footpath.", "Ben says the blue line on the map is a road. Ada says it is a river.")}
+  let right={pick(k, "Ada: the key shows the footpath as that mark", "Ada: the key shows the river as that mark")}
+  let w1={pick(k, "Ben: railways are drawn with dashes", "Ben: roads can be any colour")}
+  let w2={pick(k, "Neither: the map does not say", "Neither: the map does not say")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x20 {
+    mapkey key title=Key marks=["{m1}", "{m2}"] labels=["{l1}", "{l2}"] at=canvas(1, 1)
+    text ask "{claim} Look at the map's key. Who is right, and why?" narrate width=16 right-of=key gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=key gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=key {
+      say "What a mark means is not a guess: the map's own key says. Find the mark in the key and read its row."
+    }
+  }
+  hint "Find the mark they are arguing about in the key. What does its row say?"
+  hint "The map does say, in its key. Whoever agrees with the key is right."
+}

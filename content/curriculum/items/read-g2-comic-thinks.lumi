@@ -1,0 +1,15 @@
+# A cloud with little circles is a thought, not a word said out loud. Which panel has it moves.
+item reading.comic-thinks v=1 skills=[reading.comics] {
+  title "Said or thought?"
+  let k=0..3
+
+  scene 36x16 {
+    comic strip who=[if k == 0 then "girl" else if k == 1 then "boy" else if k == 2 then "gran" else "kid", if k == 0 then "girl" else if k == 1 then "boy" else if k == 2 then "gran" else "kid", if k == 0 then "girl" else if k == 1 then "boy" else if k == 2 then "gran" else "kid"] says=[if k == 0 then "I will paint a cat." else if k == 1 then "Is that a spider?" else if k == 2 then "What a lot of washing." else "Can I climb that tree?", if k == 0 then "I hope Mum likes it." else if k == 1 then "Stay calm. Do not scream." else if k == 2 then "It is going to rain." else "It looks very high.", if k == 0 then "Here, Mum, this is for you." else if k == 1 then "Oh, it is only a leaf." else if k == 2 then "I had better be quick." else "I think I can do it."] moods=[if k == 0 then "happy" else if k == 1 then "scared" else if k == 2 then "tired" else "excited", if k == 0 then "worried" else if k == 1 then "scared" else if k == 2 then "worried" else "worried", if k == 0 then "excited" else if k == 1 then "happy" else if k == 2 then "happy" else "happy"] with=[if k == 0 then "" else if k == 1 then "" else if k == 2 then "" else "", if k == 0 then "" else if k == 1 then "" else if k == 2 then "" else "", if k == 0 then "" else if k == 1 then "" else if k == 2 then "" else ""] thinks=[if k == 0 then 0 else if k == 1 then 0 else if k == 2 then 1 else 0, if k == 0 then 1 else if k == 1 then 1 else if k == 2 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else if k == 2 then 0 else 1] holds=[if k == 0 then "" else if k == 1 then "" else if k == 2 then "" else "", if k == 0 then "" else if k == 1 then "" else if k == 2 then "" else "", if k == 0 then "" else if k == 1 then "" else if k == 2 then "" else ""] labels=["1", "2", "3"] at=canvas(1, 0)
+    text ask "Which picture shows a thought?" narrate width=16 below=strip gap=1
+    choice pick options=["1", "2", "3"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "2" else if k == 1 then "2" else if k == 2 then "1" else "3")
+  hint "Look at the shape of each bubble and its tail."
+  hint "A thought bubble joins on with little circles, like steam."
+}

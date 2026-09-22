@@ -1,0 +1,21 @@
+# Three stars: the child makes a rainy print of their own, with the rain all one way, a near bank and
+# a far one, and the near rain drawn wider than the far. Marked by eye against a look-for.
+item art.rain-make v=1 stars=3 skills=[art.printing, art.making] {
+  title "Make a rainy print"
+  difficulty wind
+  let wind=0..1
+  let named={pick(wind, "the rain slanting to the right", "the rain slanting steeply to the left")}
+  level easy {
+    let wind=0..0
+  }
+  level hard {
+    let wind=1..1
+  }
+
+  scene 21x27 {
+    text ask "Draw a rainy print of your own: a bridge over a river with {named}, a bank near you and a bank on the far side, and the rain nearest you drawn wider than the rain far off." narrate width=20 at=canvas(1, 0)
+    paintsheet sheet w=16 h=12 paper="squared" guide="none" outline="none" pots=["blue", "black", "white"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A print where the weather is made of straight lines and the distance is made of line weight: every rain line slanting the same way, no two directions crossing, the near bank drawn with heavier or closer lines than the far bank so the far one falls back, and the rain in front drawn wider than the rain behind it, as Hiroshige's rain does." notice=["All the rain slanting one way", "A near bank heavier than the far bank", "Nearer rain drawn wider than far rain"] ask="Which way is your wind blowing, and how did you make the far bank look far?"
+}

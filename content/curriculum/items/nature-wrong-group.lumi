@@ -1,0 +1,35 @@
+# Eight animals sorted into four columns by their covering, with one in the wrong column. The bat
+# under feathers and the seal under scales are the ones that take a thought.
+item nature.wrong-group v=1 skills=[nature.sorting] {
+  title "One is in the wrong column"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let stray={pick(k, "hen", "fish", "cat", "turtle", "bat", "seal")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 34x26 {
+    text ask "Ada sorted eight animals by what covers them. One is in the wrong column. Which one?" narrate width=32 at=canvas(1, 1)
+    wordsort s heads=["feathers", "fur", "scales", "shell"] words=["hen", "cat", "fish", "turtle", "duck", "bat", "snake", "seal"] into=[if k == 0 then 1 else 0, if k == 2 then 2 else 1, if k == 1 then 3 else 2, if k == 3 then 0 else 3, 0, if k == 4 then 0 else 1, 2, if k == 5 then 2 else 1] below=ask gap=1
+    choice pick options=[if k <= 1 then "hen" else "cat", if k <= 1 then "fish" else "turtle", if k <= 3 then "duck" else "bat", if k <= 3 then "snake" else "seal"] below=s gap=1
+  }
+
+  answer pick=stray
+  feedback {
+    when (k == 4 and pick != stray) point=s {
+      say "A bat flies, but its wings are skin and its body is furry. It goes with the fur, not the feathers."
+    }
+    when (k == 5 and pick != stray) point=s {
+      say "A seal has short fur, not scales. Wet fur looks smooth, but it is fur."
+    }
+    when (k <= 3 and pick != stray) point=s {
+      say "Read each column's heading, then each animal under it. Which one does not have what the heading says?"
+    }
+  }
+  hint "Say each heading, then each animal under it. Does that animal have that covering?"
+  hint "Feathers are for birds only. Scales are for fish and snakes. Fur is for the warm-blooded ones, even the flying one."
+}

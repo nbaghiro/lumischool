@@ -1,0 +1,23 @@
+# The child is not told how many, so every check has to be made: capitals, the end mark, and
+# every word. One version has none, which is the hardest to be sure of.
+item writing.how-many-mistakes v=1 skills=[writing.editing] {
+  title "How many mistakes?"
+  difficulty (if k == 0 or k == 3 then 2 else if k == 4 or k == 6 then 1 else 0)
+  let k=0..7
+  level easy {
+    let k={1, 2, 5, 7}  # one or two mistakes
+  }
+  level hard {
+    let k={0, 3, 4, 6}  # three, or none, or only a missing question mark
+  }
+
+  scene 30x15 {
+    fixbot bot says="{if k == 0 then \"we went to the canal with tom\" else if k == 1 then \"My sister and i fed the ducks.\" else if k == 2 then \"There are too boats on the canal\" else if k == 3 then \"on friday we saw for swans.\" else if k == 4 then \"The lock gates are very heavy.\" else if k == 5 then \"ben has two dog.\" else if k == 6 then \"Where is the key\" else \"The heron catched a fish.\"}" width=20 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "How many mistakes does the robot need to fix? It may be none." width=18 below=bot gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 or k == 3 then 3 else if k == 2 or k == 5 then 2 else if k == 4 then 0 else 1)
+  hint "Check the capitals first: the start, any name, and I."
+  hint "Now check the mark at the end. Then read each word: is it the right one?"
+}

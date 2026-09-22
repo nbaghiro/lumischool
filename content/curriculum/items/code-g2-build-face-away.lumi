@@ -1,0 +1,17 @@
+# The robot starts facing away from the path, so the program has to open with a turn, and it needs
+# a left and a right; four slots mean every move has to be a forward 2. The keys are proved.
+item coding.build-face-away v=1 stars=3 skills=[coding.sequences, reasoning.planning] {
+  title "Facing the wrong way"
+  difficulty (if k == 1 then 0 else 1)
+  let k=0..1
+
+  scene 30x19 {
+    maze g map=["{if k == 0 then \"S . . #\" else \"# # F #\"}", "# # . #", "{if k == 0 then \"# # F #\" else \"S . . #\"}"] face=(if k == 0 then "down" else "up") at=canvas(1, 0)
+    text ask "The robot is facing the wrong way. Get it to the flag in 4 blocks." width=11 below=g gap=1
+    codepad answer tray=["forward 1", "forward 2", "turn left", "turn right"] lines=4 key=["{if k == 0 then \"turn left\" else \"turn right\"}", "forward 2", "{if k == 0 then \"turn right\" else \"turn left\"}", "forward 2"] right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Which way must the robot face to set off along the path? Which turn gets it there?"
+  hint "Four blocks is two turns and two moves. How long is each straight part?"
+}

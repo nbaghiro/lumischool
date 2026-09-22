@@ -1,0 +1,44 @@
+# Two cards side by side, and the fingers that can stay down through the change: the same finger on
+# the same string and fret in both. D and A share a place, but a different finger presses it in
+# each, so nothing stays (changeOf in engine/sound/fretted.ts gives every answer here).
+item music.guitar-fingers-stay v=1 skills=[music.chord-boxes, music.chord-changes] {
+  title "The fingers that stay"
+  difficulty (if p == 2 or p == 3 then 1 else if p >= 6 then 2 else 0)
+  let p=0..7
+  let from={pick(p, "C", "Em", "C", "G", "Am", "E", "D", "A")}
+  let to={pick(p, "Am", "E", "G", "D", "C", "Em", "A", "D")}
+  let right={pick(p, "fingers 1 and 2", "fingers 2 and 3", "none", "none", "fingers 1 and 2", "fingers 2 and 3", "none", "none")}
+  level easy {
+    let p={0, 1, 2, 4}
+  }
+  level hard {
+    let p={2, 3, 5, 6, 7}
+  }
+
+  scene 32x35 {
+    row cards space=2 align=start at=canvas(1, 1) {
+      chordbox a tuning=guitar chord=pick(p, "C", "Em", "C", "G", "Am", "E", "D", "A") frets=4 show=fingers name=true letters=false lit=[]
+      chordbox b tuning=guitar chord=pick(p, "Am", "E", "G", "D", "C", "Em", "A", "D") frets=4 show=fingers name=true letters=false lit=[]
+    }
+    text ask "Ben changes from {from} to {to}. Which fingers can stay where they are?" narrate width=30 below=cards gap=1
+    choice pick options=["none", "fingers 1 and 2", "fingers 2 and 3", "all three"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "all three") point=cards {
+      say "Check each dot on the second card. Is the same finger on the same string and fret in the first?"
+    }
+    when (pick == "none" and right != "none") point=cards {
+      say "Some dots are in the same place with the same number in both cards. Those fingers stay down."
+    }
+    when (pick != "none" and pick != "all three" and right == "none" and p >= 6) point=cards {
+      say "One place is used in both cards, but a different finger presses it. That finger still has to move."
+    }
+    when (pick != "none" and pick != "all three" and right == "none" and p < 6) point=cards {
+      say "Look again at the numbers in the dots. Is any finger on the same string and fret in both cards?"
+    }
+  }
+  hint "Take the dots of the second card one at a time. Where was that finger in the first card?"
+  hint "A finger stays only if its number, its string and its fret are all the same."
+}

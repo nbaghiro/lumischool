@@ -1,0 +1,13 @@
+item coding.build-turns v=1 skills=[coding.sequences] {
+  title "Forward and turn to the flag"
+  difficulty (if k == 1 then 0 else if k == 2 then 1 else 2)
+  let k=0..2
+
+  scene 29x18 {
+    maze g map=["{if k == 0 then \"S . . #\" else if k == 1 then \". . . F\" else \"S # . .\"}", "{if k == 0 then \"# # . #\" else if k == 1 then \". # # .\" else \". # . .\"}", "{if k == 0 then \". . . F\" else if k == 1 then \"S . . .\" else \". . . F\"}"] face=(if k == 2 then "down" else "right") at=canvas(1, 0)
+    codepad answer tray=["forward 1", "turn left", "turn right"] lines=5 right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Stand up and face the way the robot faces. Say each block as you do it."
+}

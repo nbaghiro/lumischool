@@ -1,0 +1,33 @@
+# The number of tens added is the unknown, so the child compares the two tens digits.
+item add.missing-tens v=1 skills=[place-value.add-tens, addition.change-unknown] {
+  title "How many tens were added?"
+  difficulty (10 * (t + k) + o)
+  let t=1..5 o=1..9 k=2..4
+  level easy {
+    let t=1..2 k=2..3
+  }
+  level hard {
+    let t=4..5 k=3..4
+  }
+
+  scene 28x7 {
+    baseten blocks thousands=0 hundreds=0 tens=t ones=o at=canvas(1, 1)
+    row eq right-of=blocks gap=2 space=1 align=centre {
+      equation e1 "{10 * t + o} +"
+      number-input more width=3
+      equation e2 "= {10 * (t + k) + o}"
+    }
+  }
+
+  answer more=(10 * k)
+  feedback {
+    when (more == k) point=eq {
+      say "You added {k} rods. How much is {k} rods worth?"
+    }
+    when (more == 10 * (t + k) + o) point=eq {
+      say "That is the whole answer. The box is only the part that was added."
+    }
+  }
+  hint "Which digit changed, and which stayed the same?"
+  hint "How many more tens has {10 * (t + k) + o} than {10 * t + o}?"
+}

@@ -1,0 +1,24 @@
+# Five notes of the top staff read by their place, with no letters written on them: middle C on its
+# own short line, then a step at a time up to G on the second line.
+item music.staff-letter v=1 skills=[music.staff] {
+  title "Name the note"
+  difficulty i
+  let i=0..4
+  level easy {
+    let i={0, 1, 2}
+  }
+  level hard {
+    let i={2, 3, 4}  # further up the staff, further from middle C's short line
+  }
+  let n={if i == 0 then "C4" else if i == 1 then "D4" else if i == 2 then "E4" else if i == 3 then "F4" else "G4"}
+
+  scene 30x17 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=false at=canvas(1, 1)
+    text ask "Middle C sits on its own short line. The ringed note is on or near the top staff. Which letter is it?" width=19 right-of=gs gap=1
+    choice pick options=["C", "D", "E", "F", "G"] below=ask gap=1
+  }
+
+  answer pick=(if i == 0 then "C" else if i == 1 then "D" else if i == 2 then "E" else if i == 3 then "F" else "G")
+  hint "Start from middle C. Each line or space up is the next letter."
+  hint "Count up from middle C one line or space at a time, saying the letters. Which letter is the ringed note?"
+}

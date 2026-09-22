@@ -1,0 +1,22 @@
+# Four direction cards that draw a rectangle only in one order, which is a program written for
+# someone else with the lines given: the order is the whole task.
+item coding.cards-for-ada v=1 skills=[coding.sequences, coding.drawing] {
+  title "Cards for Ada's pen"
+  difficulty (w + h)
+  let w=3..5 h=2..3 k=0..1
+  level easy {
+    where (w + h <= 6)
+  }
+  level hard {
+    where (w + h >= 7)
+  }
+
+  scene 36x16 {
+    turtle t cols=(w + 1) rows=(h + 1) col=1 row=(h + 1) moves=[] target=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false at=canvas(1, 0)
+    codepad answer tray=["{if k == 0 then \"left\" else \"up\"} {if k == 0 then w else h}", "right {w}", "{if k == 0 then \"down\" else \"left\"} {if k == 0 then h else w}", "{if k == 0 then \"up\" else \"down\"} {h}"] lines=4 once=true right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "The pen starts at the ring. Which way does the first side go?"
+  hint "Go round the rectangle with a finger and say each move as you pass it."
+}

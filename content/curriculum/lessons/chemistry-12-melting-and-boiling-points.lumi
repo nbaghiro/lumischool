@@ -1,0 +1,52 @@
+lesson chemistry-melting-and-boiling-points v=2 format=teach grade=4 unit=5 subject=chemistry levels=[easy, medium, hard] {
+  title "Melting points and boiling points"
+  goal "Use a table of melting and boiling points to say what state something is in at any temperature, including below zero, and work out how far it is to the next change."
+
+  look {
+    scene 22x11 {
+      table data cols=3 head=["Stuff", "Melts", "Boils"] cells=["Water", 0, 100, "Ethanol", -114, 78, "Mercury", -39, 357, "Oxygen", -219, -183] at=canvas(1, 0)
+    }
+    say """
+      Every material melts and boils at its own temperature. Below its melting point it is a solid,
+      between the two a liquid, and above its boiling point a gas. At 20 degrees water and mercury
+      are liquids, and oxygen, which boils at 183 degrees below zero, is a gas.
+      """
+  }
+  do {
+    practice chem.furnace count=2 seed=4
+    level easy {
+      worked chem.state-at thing="ethanol" t=-80 level=medium
+    }
+    practice chem.state-at count=2 seed=2
+    practice chem.which-liquid count=2 seed=2
+    practice chem.point-gap count=2 seed=2
+  }
+  try stars=2 {
+    show chem.to-change-state v=1 easy-v=9 hard-v=2
+  }
+  try stars=3 {
+    show chem.pick-temperature v=6 easy-v=0 hard-v=7
+  }
+  remember {
+    say "Below the melting point it is solid, between the two points liquid, above the boiling point gas."
+  }
+
+  grown-ups """
+    The first two questions are the way in: read the thermometer and compare it with each melting
+    point in the table. Every table's numbers are checked against published values (the Royal
+    Society of Chemistry's periodic table and PubChem) each time the lesson is built, and no question
+    asks about a temperature within five degrees of a melting or boiling point, where the stuff can be
+    in two states at once. Sugar is left out on purpose: it breaks down before it melts cleanly. The
+    two-star question asks for a range rather than a single number, and one wrong choice goes too far
+    into the next state. The three-star question tests two temperatures against two rows at once, and
+    in one version neither works, because ethanol boils before water does. Nothing here needs heating
+    at home; ice from the freezer and a cooking thermometer show water staying at 0 degrees while it
+    melts.
+    """
+  level easy {
+    grown-ups "At this level the furnace is at 600 or below, ethanol at -80 is placed once in the teacher's pen before water at two temperatures, the question asks which thing is a gas or which is the liquid, the gap to the boil or the freeze is water's, the two-star asks how to turn water to gas, and the three-star has a temperature that fits."
+  }
+  level hard {
+    grown-ups "At this level the furnace is at 800 or above, the things are ethanol and mercury at -80 or 120, the question asks which thing is still a liquid or has frozen, the gap is to a freezing point below zero or to mercury's boil at 357, and the two-star and three-star are the oxygen and the pair that fits neither, in their other versions."
+  }
+}

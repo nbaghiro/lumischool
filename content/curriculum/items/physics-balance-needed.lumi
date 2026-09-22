@@ -1,0 +1,20 @@
+item physics.balance-needed v=1 skills=[physics.forces] stars=2 {
+  title "Hold it still"
+  difficulty (a + d)
+  let a=2..6 d=1..4
+
+  scene 20x16 {
+    forces f thing=box push=a oppose=(a + d) at=canvas(1, 0)
+    text ask "How many newtons more must the left push be so the box stays still?" width=18 below=f gap=0
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == a + d) point=f {
+      say "That is the whole push back. The left push already gives {a} of it."
+    }
+  }
+  hint "When does a box stay still with two forces on it?"
+  hint "How far apart are the two forces now?"
+}

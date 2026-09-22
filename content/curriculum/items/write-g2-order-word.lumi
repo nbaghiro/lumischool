@@ -1,0 +1,26 @@
+# First, next and last, the words that keep instructions in order when there are no numbers.
+item writing.order-word v=1 skills=[writing.instructions, writing.sequencing] {
+  title "First, next or last?"
+  difficulty (if p == 1 then 1 else 0)
+  let c=0..1 p=0..2
+  level easy {
+    let p={0, 2}
+  }
+  level hard {
+    let p={1}
+  }
+  let s0={if c == 0 then "fill a pot with soil." else "wash your hands."}
+  let s1={if c == 0 then "push a seed into it." else "spread jam on the bread."}
+  let s2={if c == 0 then "water it every day." else "cut it in half."}
+  let st={if p == 0 then s0 else if p == 1 then s1 else s2}
+
+  scene 30x15 {
+    text ask "There are three steps. This is step {p + 1}. Which word should start it?" narrate width=28 at=canvas(1, 1)
+    sentence strip before="" blank=5 after="{st}" below=ask gap=1
+    choice pick options=["First", "Next", "Last"] below=strip gap=1
+  }
+
+  answer pick=(if p == 0 then "First" else if p == 1 then "Next" else "Last")
+  hint "Is it the first step, the one in the middle, or the end?"
+  hint "Which word would you say before the step in the middle?"
+}

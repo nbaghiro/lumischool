@@ -1,0 +1,15 @@
+# Open: the child writes a clue of their own, and a grown-up checks it against every house.
+item reading.clue-for-one-house v=1 stars=3 skills=[reading.find-a-detail, writing.sentences] {
+  title "Write a clue"
+  let n={"1", "3", "5", "7"}
+
+  scene 37x18 {
+    street st windows=[2, 1, 2, 3] doors=[0, 1, 1, 0] chimneys=[1, 0, 1, 1] cats=[0, 1, 0, 0] numbers=["1", "3", "5", "7"] at=canvas(1, 1)
+    text ask "Write a clue that fits house {n} and no other house." narrate width=10 right-of=st gap=1
+    writinglines lines lines=1 width=34 prompt="" below=st gap=1
+  }
+
+  check writing.by-eye look-for="A clue about things that can be seen or counted, such as the windows at the top, the shape of the door, a chimney or a cat, that fits the named house and no other. Read the clue together and check it against every house."
+  hint "What does house {n} have that the others do not?"
+  hint "If one thing is not enough, put two things in your clue."
+}

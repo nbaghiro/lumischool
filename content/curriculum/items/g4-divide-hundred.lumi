@@ -1,0 +1,28 @@
+# The inverse of the sticker question, the audit's raise: the total for a hundred is given and one
+# is the unknown, so the digits move right.
+item decimal.one-of-a-hundred v=2 skills=[decimals.by-ten] {
+  title "The length of one"
+  difficulty ((if many == 100 then 2 else 0) + (if t % many != 0 then 1 else 0) + t / 100)
+  let t={45, 60, 125, 250, 380} many={10, 100}
+  level easy {
+    let t={60, 250, 380} many={10}  # whole metres
+  }
+  level hard {
+    let t={45, 125, 380} many={100}
+  }
+
+  scene 28x8 {
+    text ask "{many} equal pieces of rope are {t} metres long altogether. How many metres long is one piece?" narrate width=26 at=canvas(1, 1)
+    equation eq "{t} ÷ {many} =" below=ask gap=1
+    number-input one right-of=eq gap=1
+  }
+
+  answer one=decimals(t / many, 2)
+  feedback {
+    when (one == t * many) point=eq {
+      say "One piece is shorter than all {many} together, so the answer is smaller than {t}."
+    }
+  }
+  hint "Will one piece be longer or shorter than {t} metres?"
+  hint "Dividing by 10 moves every digit one place to the right. Dividing by 100 moves it two."
+}

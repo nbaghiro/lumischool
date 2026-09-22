@@ -1,0 +1,15 @@
+# Warm and cool judged on mixes, not pans: the child mixes in their head before judging.
+item art.which-is-warm v=1 skills=[art.warm-cool, reasoning.two-steps] {
+  title "Which mix is warm?"
+  difficulty p
+  let w={"red and yellow", "red and white", "yellow and white"} c={"blue and white", "yellow and blue", "red and blue"} p=0..2
+
+  scene 32x12 {
+    text ask "Which of these mixes makes a warm colour?" width=12 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then w else if p == 1 then c else \"green and white\"}", "{if p == 1 then w else if p == 2 then c else \"green and white\"}", "{if p == 2 then w else if p == 0 then c else \"green and white\"}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=warm
+  hint "Mix each one in your head. What colour does it make?"
+  hint "Is that colour more like fire and the sun, or more like water and ice?"
+}

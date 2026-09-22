@@ -1,0 +1,21 @@
+# Two changes from the same chord compared without playing either: the easier one keeps more
+# fingers down. s swaps the two cards on the right, so the answer is not always the middle card.
+item music.change-easier v=1 stars=2 skills=[music.chord-changes, reasoning.compare] {
+  title "Which change is easier?"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3 s=0..1
+
+  scene 36x20 {
+    text ask "From the first chord, is it easier to change to the second or the third?" narrate width=35 at=canvas(1, 0)
+    row cards below=ask gap=1 space=2 align=start {
+      chordbox a tuning=uke chord=(if k == 0 then "F" else if k == 1 then "Am" else if k == 2 then "G7" else "Dm") frets=3 show=fingers name=true letters=false lit=[]
+      chordbox b tuning=uke chord=(if (k == 0) == (s == 0) and k == 0 then "Dm" else if k == 0 then "C" else if k == 1 and s == 0 then "F" else if k == 1 then "C" else if k == 2 and s == 0 then "F" else if k == 2 then "C7" else if s == 0 then "F" else "Am") frets=3 show=fingers name=true letters=false lit=[]
+      chordbox c tuning=uke chord=(if k == 0 and s == 0 then "C" else if k == 0 then "Dm" else if k == 1 and s == 0 then "C" else if k == 1 then "F" else if k == 2 and s == 0 then "C7" else if k == 2 then "F" else if s == 0 then "Am" else "F") frets=3 show=fingers name=true letters=false lit=[]
+    }
+    choice pick options=["the second", "the third"] below=cards gap=1
+  }
+
+  answer pick=(if s == 0 then "the second" else "the third")
+  hint "Which fingers of the first chord are in the same place on the second card? And on the third?"
+  hint "A change is easier when more fingers can stay where they are."
+}

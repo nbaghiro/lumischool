@@ -1,0 +1,29 @@
+# The same alphabet read backwards, from the short high C down to the left, which children find
+# harder because the letters run the other way.
+item music.key-count-down v=1 skills=[music.keys] {
+  title "Count down from high C"
+  difficulty k
+  let k=1..4
+  level easy {
+    let k=1..2
+  }
+  level hard {
+    let k=3..4
+  }
+  let w={if k == 1 then "bar" else "bars"}
+
+  scene 31x12 {
+    chimebars bars bars=8 letters=0 at=canvas(1, 1)
+    text ask "The shortest bar is a high C. Which letter is {k} {w} to the left of it?" width=14 right-of=bars gap=1
+    choice pick options=["F", "G", "A", "B", "D"] below=bars gap=1
+  }
+
+  answer pick=(if k == 1 then "B" else if k == 2 then "A" else if k == 3 then "G" else "F")
+  feedback {
+    when (pick == "D") point=bars {
+      say "D comes after C. Going left, the letters go backwards."
+    }
+  }
+  hint "Going left, say the letters backwards from C. What comes before C?"
+  hint "Say one letter backwards for each bar you move. Stop when you have moved {k} {w}."
+}

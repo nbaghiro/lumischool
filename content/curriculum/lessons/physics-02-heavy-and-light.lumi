@@ -1,0 +1,64 @@
+lesson physics-heavy-and-light v=1 format=teach grade=1 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Heavy and light"
+  goal "Read how hard a bag pulls, in newtons, off a spring balance, and use the reading to say which bag is heavier."
+
+  look {
+    scene 36x15 {
+      row kit at=canvas(1, 1) space=2 align=end {
+        children kids count=2 names=["Ben", "Mia"] holding="" each=0
+        springscale s max=10 step=2 value=6 unit=N
+        dialscale d max=1000 step=200 value=400 unit=g
+      }
+    }
+    say """
+      Ben and Mia are hauling bags up to the tree platform on a rope. Weight is a pull. The Earth
+      pulls everything down, and a heavier bag is pulled harder, so it is harder to haul. A spring
+      balance measures that pull in newtons: the heavier the bag, the further the spring stretches
+      and the further down the pointer goes.
+      """
+  }
+  do {
+    level easy {
+      worked physics.spring-newtons v=4
+    }
+    practice physics.spring-newtons count=2 seed=3
+    practice physics.heavier-pull count=2 seed=4
+    practice physics.spring-between count=1 seed=1
+    practice physics.two-bags count=2 seed=2
+    practice physics.half-bag count=1 seed=2 easy-seed=1 hard-seed=3
+    level hard {
+      show physics.apples-in-bag v=8
+    }
+  }
+  story {
+    show physics.platform-bags a=4 b=2 easy-a=2 easy-b=2 hard-a=6 hard-b=4
+  }
+  try stars=2 {
+    show physics.which-hook a=2 b=4 c=6 easy-a=2 easy-b=2 easy-c=6 hard-a=4 hard-b=6 hard-c=4
+  }
+  try stars=3 {
+    show physics.most-bags t=12 easy-t=6 hard-t=18
+  }
+  remember {
+    say "A heavier bag pulls down harder, so the spring stretches further."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is reading the scale from the top down as if it were a ruler, so a
+    pointer two marks down is read as eight: the numbers go up as the pointer goes down, because the
+    stretch is the pull. Watch whether the child counts the marks in twos from zero, and whether
+    "which bag is heavier" is answered from the pointers or from the size of the drawing. A kitchen
+    scale reads grams and a spring balance reads newtons, and both are measuring the same pull;
+    there is no need to explain the difference yet. In the two-star question the child should say
+    why one bag can be ignored, and in the three-star question the most bags means starting from the
+    lightest. If the readings still need a finger on every mark after the core, stay here another
+    day and go back to the way in. Off the page, hang a bag on a rubber band and add an apple at a
+    time, watching the band stretch.
+    """
+  level easy {
+    grown-ups "At this level a worked reading opens the core, the pointers sit near the top of the scale, the two bags differ by four newtons or more, Mia's bag pulls two newtons more than Ben's two, the hooks differ by a two and a six, and the rope holds six newtons."
+  }
+  level hard {
+    grown-ups "At this level the pointers sit low on the scale, the two bags differ by two newtons, a work-back question with four apples joins the core, Mia's bag pulls ten newtons, the hooks differ by a four and a six, and the rope holds eighteen newtons, so the heaviest three fit exactly and the lightest-first rule still gives three."
+  }
+}

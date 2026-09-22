@@ -1,0 +1,29 @@
+item physics.seesaw-tips v=1 skills=[physics.moments] {
+  title "Which way will it tip?"
+  difficulty (if a != b and p != q and (a > b) != (p > q) then 2 else if a == b or p == q then 0 else 1)
+  let a={2, 3, 4, 6} p=1..5 b={2, 3, 4, 6} q=1..5
+  level easy {
+    let a={2, 3, 4} p=1..3 b={2, 3, 4} q=1..3
+    where (a == b or p == q)  # one of the two is the same, so the other decides
+  }
+  level hard {
+    where (a != b and p != q and (a > b) != (p > q))  # the heavier weight sits nearer the pivot
+  }
+
+  scene 28x24 {
+    seesaw plank left=a atleft=p right=b atright=q held=1 at=canvas(1, 0)
+    text ask "When the props are taken away, what will the plank do?" width=12 below=plank gap=0
+    choice pick options=["Left side down", "Right side down", "Stay level"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=(if a * p > b * q then "Left side down" else if a * p < b * q then "Right side down" else "Stay level")
+  feedback {
+    when (pick == "Left side down" and a > b and a * p < b * q) point=plank {
+      say "The left weight is heavier, but the right one is further out. Multiply each by its step."
+    }
+    when (pick == "Right side down" and b > a and b * q < a * p) point=plank {
+      say "The right weight is heavier, but the left one is further out. Multiply each by its step."
+    }
+  }
+  hint "What is weight times step on each side?"
+}

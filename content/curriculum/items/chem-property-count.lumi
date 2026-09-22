@@ -1,0 +1,23 @@
+# How many things in a row have a property. Every thing in each row has that property settled in
+# the table, so the count has one answer.
+item chem.property-count v=1 skills=[chemistry.materials] {
+  title "How many are like that?"
+  difficulty (if k == 1 or k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 4}  # hard things
+  }
+  level hard {
+    let k={1, 3}  # bendy and stretchy things
+  }
+
+  scene 22x10 {
+    text ask "How many of these are {if k == 0 then \"hard\" else if k == 1 then \"bendy\" else if k == 2 then \"waterproof\" else if k == 3 then \"stretchy\" else \"hard\"}?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"brick\" else if k == 1 then \"rubber-band\" else if k == 2 then \"raincoat\" else if k == 3 then \"rubber-band\" else \"pebble\"}", "{if k == 0 then \"towel\" else if k == 1 then \"wooden-block\" else if k == 2 then \"towel\" else if k == 3 then \"wool-sock\" else \"wool-sock\"}", "{if k == 0 then \"metal-can\" else if k == 1 then \"wool-hat\" else if k == 2 then \"rubber-boot\" else if k == 3 then \"metal-key\" else \"metal-key\"}", "{if k == 0 then \"paper-bag\" else if k == 1 then \"glass-jar\" else if k == 2 then \"paper-bag\" else if k == 3 then \"brick\" else \"wooden-block\"}", "{if k == 0 then \"wool-sock\" else if k == 1 then \"paper-bag\" else if k == 2 then \"wool-hat\" else if k == 3 then \"wool-hat\" else \"towel\"}"] below=ask gap=0
+    number-input answer below=row gap=0
+  }
+
+  check chem.materials of=row answer="count({if k == 0 then \"hard\" else if k == 1 then \"bendy\" else if k == 2 then \"waterproof\" else if k == 3 then \"stretchy\" else \"hard\"})"
+  hint "Think about each thing in turn. Is it {if k == 0 then \"hard\" else if k == 1 then \"bendy\" else if k == 2 then \"waterproof\" else if k == 3 then \"stretchy\" else \"hard\"}?"
+  hint "Put a finger on each one that is, and count your fingers."
+}

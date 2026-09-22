@@ -1,0 +1,14 @@
+# Always, sometimes or never: the same two paints lean warm or cool depending on their parts.
+item art.purple-depends v=1 skills=[art.warm-cool, art.proportion, reasoning.always-sometimes] {
+  title "Warm or cool, always?"
+
+  scene 32x19 {
+    mixingtray tray wells=["red 4+blue", "red+blue", "red+blue 2"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Red is warm and blue is cool. When you mix red and blue, is the colour you get warm or cool?" width=16 right-of=tray gap=1
+    choice pick options=["always warm", "always cool", "it depends on how much of each"] stack=column below=tray gap=1
+  }
+
+  answer pick="it depends on how much of each"
+  hint "Look at the three wells. Do they all look the same?"
+  hint "Which well has much more red than blue? Does it look warmer than the others?"
+}

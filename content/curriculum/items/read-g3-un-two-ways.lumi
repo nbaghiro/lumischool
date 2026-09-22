@@ -1,0 +1,18 @@
+# Un has two jobs: not (unkind) and undo (unlock). Telling them apart means thinking about what
+# each word does, not spotting the letters.
+item reading.un-two-ways v=1 stars=2 skills=[reading.morphology] {
+  title "Un does two jobs"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 30x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "In one of these words, un means undo, not just not. Which word is it?" width=29
+      choice pick options=[if k == 0 then "unkind" else if k == 1 then "untie" else if k == 2 then "unhappy" else "unlucky", if k == 0 then "unlock" else if k == 1 then "unwell" else if k == 2 then "untidy" else "unable", if k == 0 then "unfair" else if k == 1 then "unsafe" else if k == 2 then "unzip" else "unpack"]
+    }
+  }
+
+  answer pick=(if k == 0 then "unlock" else if k == 1 then "untie" else if k == 2 then "unzip" else "unpack")
+  hint "Try saying each word as not and the root. Which one does not make sense that way?"
+  hint "Which word means doing something backwards, taking back what was done?"
+}

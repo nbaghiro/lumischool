@@ -1,0 +1,18 @@
+# A long program with one slip in its pattern, and three slots: the child has to see the pattern
+# the slip breaks, mend it and write it as a repeat. The rocks leave only the staircase open, so
+# straight moves need six blocks and only the repeat fits in three. The key proves it reaches the flag.
+item coding.build-shorter v=2 stars=3 skills=[coding.debugging, coding.repetition, reasoning.planning] {
+  title "Mend it and make it short"
+  difficulty k
+  let k=0..1
+
+  scene 36x19 {
+    text ask "This program has one wrong block: {if k == 0 then \"right 2, down 1, right 2, down 1, right 1, down 1\" else \"down 1, right 2, down 1, right 1, down 1, right 2\"}. Write a program that works in 3 blocks." width=34 at=canvas(1, 0)
+    maze g map=["{if k == 0 then \"S . . # # # #\" else \"S # # # # # #\"}", "{if k == 0 then \"# # . . . # #\" else \". . . # # # #\"}", "{if k == 0 then \"# # # # . . .\" else \"# # . . . # #\"}", "{if k == 0 then \"# # # # # # F\" else \"# # # # . . F\"}"] below=ask gap=1
+    codepad answer tray=["repeat 2", "right 1", "down 1"] lines=3 key=["repeat 3", "  {if k == 0 then \"right 2\" else \"down 1\"}", "  {if k == 0 then \"down 1\" else \"right 2\"}"] right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "The program does the same two moves again and again, except once. Which block breaks the pattern?"
+  hint "Put the two moves inside a repeat. How many times round?"
+}

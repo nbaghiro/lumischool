@@ -1,0 +1,24 @@
+# The question word says what kind of answer to look for: why wants a reason, when a time, where a
+# place. All three sentences come from the same story, so only the question word decides.
+item reading.which-answers v=1 skills=[reading.comprehension] {
+  title "Which sentence answers it?"
+  difficulty (if k == 0 then 2 else if k == 1 then 1 else 0)
+  let k=0..3 q=0..2
+  level easy {
+    let k=2..3  # when and who
+  }
+  level hard {
+    let k=0..1  # why and where
+  }
+
+  scene 37x12 {
+    row all at=canvas(1, 1) space=1 align=start {
+      text ask "The question is: {if k == 0 then \"Why was Kai late for school?\" else if k == 1 then \"Where did Orla find the key?\" else if k == 2 then \"When did the ferry leave?\" else \"Who mended the fence?\"} Which sentence answers it?" width=12
+      choice pick options=[if q == 0 then if k == 0 then "The bus broke down on the hill." else if k == 1 then "It was under the doormat." else if k == 2 then "It left at ten past nine." else "Uncle Raj mended it." else if q == 1 then if k == 0 then "Kai goes to Hill Street School." else if k == 1 then "Orla looked for an hour." else if k == 2 then "The ferry was full of cars." else "The fence was by the gate." else if k == 0 then "Kai was late on Monday." else if k == 1 then "The key was for the shed." else if k == 2 then "The ferry went to the island." else "The fence was mended on Sunday.", if q == 0 then if k == 0 then "Kai was late on Monday." else if k == 1 then "The key was for the shed." else if k == 2 then "The ferry went to the island." else "The fence was mended on Sunday." else if q == 1 then if k == 0 then "The bus broke down on the hill." else if k == 1 then "It was under the doormat." else if k == 2 then "It left at ten past nine." else "Uncle Raj mended it." else if k == 0 then "Kai goes to Hill Street School." else if k == 1 then "Orla looked for an hour." else if k == 2 then "The ferry was full of cars." else "The fence was by the gate.", if q == 0 then if k == 0 then "Kai goes to Hill Street School." else if k == 1 then "Orla looked for an hour." else if k == 2 then "The ferry was full of cars." else "The fence was by the gate." else if q == 1 then if k == 0 then "Kai was late on Monday." else if k == 1 then "The key was for the shed." else if k == 2 then "The ferry went to the island." else "The fence was mended on Sunday." else if k == 0 then "The bus broke down on the hill." else if k == 1 then "It was under the doormat." else if k == 2 then "It left at ten past nine." else "Uncle Raj mended it."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "The bus broke down on the hill." else if k == 1 then "It was under the doormat." else if k == 2 then "It left at ten past nine." else "Uncle Raj mended it.")
+  hint "Look at the first word of the question. What kind of answer does it want: a reason, a place, a time or a person?"
+  hint "Which sentence gives that kind of answer? The others are about the same story but answer a different question."
+}

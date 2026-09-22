@@ -1,0 +1,14 @@
+item art.dots-in-the-sun v=1 skills=[art.artists, art.looking] {
+  title "Dots side by side"
+  difficulty (if s == "tree" then 1 else 0)
+  let s={"sun", "tree"}
+
+  scene 36x16 {
+    dots pic scene=s colours=["{if s == \"sun\" then \"red\" else \"green\"}", "yellow"] magnify=true at=canvas(1, 1)
+    text ask "The {s} is painted in dots. Which two colours are they?" width=20 below=pic gap=1
+    choice pick options=["red and yellow", "green and yellow", "red and blue"] stack=column right-of=pic gap=2
+  }
+
+  answer pick=(if s == "sun" then "red and yellow" else "green and yellow")
+  hint "Look in the magnifying glass. What colour is each dot?"
+}

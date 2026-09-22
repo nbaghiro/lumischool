@@ -1,0 +1,67 @@
+# The endings that change when a thing happens, ing for now and ed for over, and the short forms
+# with an apostrophe where letters were left out.
+lesson reading-contractions-and-endings v=1 format=teach grade=1 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Contractions and endings"
+  goal "Read words with ing and ed and short forms like can't and it's, and say what they come from."
+
+  look {
+    scene 34x9 {
+      row all at=canvas(1, 1) space=1 align=end {
+        wordbricks a bricks=["jump", "ing"] root=0 roots=1 blank=-1 word="jumping" labels=true
+        wordbricks b bricks=["jump", "ed"] root=0 roots=1 blank=-1 word="jumped" labels=true
+        wordcards c words=["can't"] picked=-1
+      }
+    }
+    say """
+      On Book Island Pip is jumping in the puddles. Yesterday she jumped in them too. The word
+      is the same, jump, with a different ending on its back: ing when it is happening now, ed
+      when it is over. And some words are two words squeezed into one: can not becomes can't,
+      with a little mark, an apostrophe, where the letters were left out.
+      """
+  }
+  do {
+    level easy {
+      worked reading.which-card-says k=0 p=0
+    }
+    practice reading.which-card-says count=1 seed=7 easy-seed=1 hard-seed=1
+    practice reading.build-ending count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.short-form count=1 seed=1 easy-seed=1 hard-seed=1
+    practice reading.ending-fits count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.comes-from count=1 seed=8 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.comes-from k=1 p=1 level=medium
+    }
+  }
+  story {
+    show reading.count-endings k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show reading.picture-ending k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show reading.fix-two-endings k=0 r=1 hard-k=1 hard-r=2
+  }
+  remember {
+    say "Ing means now and ed means over. An apostrophe stands where letters were left out."
+  }
+
+  grown-ups """
+    The idea is that a word can carry an ending that says when: ing for now, ed for over, and
+    that a short form like can't is two words with an apostrophe standing for the missing
+    letters. The look is jump with both endings and can't on a card. The way in finds the card
+    that says the word with its ending, and the core builds a word from its bricks, matches
+    pairs of words to their short forms, chooses the ending a sentence's time word asks for,
+    and says what a short form comes from. The wrong idea to watch for is that ing and ed mean
+    the same, or that the apostrophe is decoration; ask when the thing happened, and which
+    letters went missing. The story counts the endings in Pip's day, the two-star question asks
+    which of two sentences the picture shows and why, and the three-star question fixes a
+    sentence with two wrong endings. Reading a page together and pointing at every ing and ed
+    is the quickest practice there is.
+    """
+  level easy {
+    grown-ups "At this level jumping is found once in the teacher's pen before jumping and played, the bricks make jumping, looked, playing or helped, the short forms are can't, it's and isn't, the endings fit yesterday, right now and last week, the short form asked is can't, it's or don't, the story counts three ing words, the picture is the dog playing, and the sentence to fix is Pip in the puddle."
+  }
+  level hard {
+    grown-ups "At this level the cards are looking and helped, the bricks make playing, helped, walking or rained, the short forms are I'm, don't and we're, the endings fit look, this morning and listen, the short form asked is I'm or isn't with it's again in the core, the story counts ing words past morning, the picture is the duck swimming, and the sentence to fix is the frogs."
+  }
+}

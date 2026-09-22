@@ -1,0 +1,18 @@
+item physics.shadow-lamp-move v=1 skills=[physics.light] stars=2 {
+  title "Lift the lamp"
+
+  scene 24x29 {
+    shadows lamp tall=4 shadow=6 lamp=true at=canvas(1, 0)
+    text ask "The lamp is lifted higher above the stick. What happens to the shadow?" width=20 below=lamp gap=1
+    choice pick options=["It gets longer", "It gets shorter", "It stays the same"] stack=column below=ask gap=1
+  }
+
+  answer pick="It gets shorter"
+  feedback {
+    when (pick == "It gets longer") point=lamp {
+      say "Follow the dashed line from a higher lamp past the top of the stick. Where does it hit the ground now?"
+    }
+  }
+  hint "Imagine the lamp right above the stick. How long would the shadow be then?"
+  hint "Is a higher lamp more like that, or less?"
+}

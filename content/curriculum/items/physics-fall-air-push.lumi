@@ -1,0 +1,29 @@
+# Two things half way down, and which of them the air is pushing back on more. The one that has come
+# down least is the one the air is holding up, which is the idea the lesson teaches.
+item physics.fall-air-push v=1 skills=[physics.forces, reasoning.evidence] {
+  title "Which is the air holding up?"
+  difficulty (if gap > 1 then 0 else 1)
+  let d=0..5
+  let a={pick(d, "parachute", "crumpled", "flat", "flat", "leaf", "stone")}
+  let b={pick(d, "stone", "feather", "leaf", "parachute", "crumpled", "crumpled")}
+  let wa={pick(d, "Parachute", "Paper ball", "Flat sheet", "Flat sheet", "Leaf", "Stone")}
+  let wb={pick(d, "Stone", "Feather", "Leaf", "Parachute", "Paper ball", "Paper ball")}
+  let ans={pick(d, "Parachute", "Feather", "Flat sheet", "Parachute", "Leaf", "Paper ball")}
+  let gap={pick(d, 4, 4, 1, 1, 1, 1)}
+  level easy {
+    let d=0..1
+  }
+  level hard {
+    let d=2..5
+  }
+
+  scene 19x32 {
+    falling pair things=["{a}", "{b}"] time=1 show=1 names=1 at=canvas(1, 0)
+    text ask "Both were let go together, and neither has landed yet. Which one is the air pushing back on more?" narrate width=18 below=pair gap=1
+    choice pick options=["{wa}", "{wb}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Which one has come down the least since they were let go?"
+  hint "The air pushes back hardest on the one that is falling slowest."
+}

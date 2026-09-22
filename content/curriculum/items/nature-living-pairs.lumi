@@ -1,0 +1,48 @@
+# The three-star non-routine question: every pair of a living thing and a made thing, drawn as
+# lines on the sheet, which is counting all the ways. At hard a toadstool joins the creatures and has
+# to be counted as living.
+item nature.living-pairs v=1 stars=3 skills=[nature.living, reasoning.all-ways] {
+  title "Every pair"
+  difficulty (m * b + fungus * b)
+  set fungus=0
+  let m=2..3 b=2..3
+  let a={if m >= 1 then "ladybird" else "none"}
+  let c={if m >= 2 then "snail" else "none"}
+  let d={if m >= 3 then "bee" else "none"}
+  let e={if m >= 4 then "ant" else "none"}
+  level easy {
+    let m=1..2 b=1..2
+  }
+  level hard {
+    set fungus=1
+    let m=3..4 b=2..3
+    scene 36x22 {
+      row grass at=canvas(1, 1) space=2 align=end {
+        minibeasts beasts kinds=[a, c, d, e] legs=false
+        toadstools cap count=1 spots=4
+      }
+      coins dropped quarters=0 dimes=0 nickels=0 pennies=b below=grass gap=1
+      text ask "Ada finds these in the long grass. She draws a line from every living thing to every coin. How many lines does she draw?" narrate width=34 below=dropped gap=1
+      number-input answer below=ask gap=1
+    }
+  }
+
+  scene 36x20 {
+    minibeasts beasts kinds=[a, c, d, e] legs=false at=canvas(1, 1)
+    coins dropped quarters=0 dimes=0 nickels=0 pennies=b below=beasts gap=1
+    text ask "Ada finds these in the long grass. She draws a line from every living thing to every coin. How many lines does she draw?" narrate width=34 below=dropped gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((m + fungus) * b)
+  feedback {
+    when (answer == m + fungus + b and answer != (m + fungus) * b) point=beasts {
+      say "That is how many things there are. A line joins one creature to one coin, and each creature gets a line to every coin."
+    }
+    when (fungus == 1 and answer == m * b) point=beasts {
+      say "The toadstool is living, so it gets its lines too."
+    }
+  }
+  hint "Start with one creature. Draw its line to each coin. How many lines is that?"
+  hint "Now do the same for the next creature. Does every creature get the same number of lines?"
+}

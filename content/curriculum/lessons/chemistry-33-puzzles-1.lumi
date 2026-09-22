@@ -1,0 +1,70 @@
+lesson chemistry-puzzles-1 v=1 format=puzzles grade=1 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry puzzles: materials and water"
+  goal "Work out what a thing is made of, what water does to it, which shape springs back, and where a puddle goes."
+
+  puzzle stars=1 {
+    show chem.keeps-dry k=2 easy-k=0 hard-k=3
+  }
+  puzzle stars=1 {
+    show chem.springs-back k=4 easy-k=1 hard-k=6
+  }
+  level easy medium {
+    puzzle stars=1 {
+      show chem.smaller-now a=4 b=2 s=1 easy-b=0
+    }
+  }
+  level easy {
+    puzzle stars=1 {
+      show chem.which-spoon m="wood" p=2
+    }
+  }
+  puzzle stars=2 {
+    show chem.counterexample k=4 q=1 easy-k=0 hard-k=3 hard-q=2
+  }
+  puzzle stars=2 {
+    show chem.paper-hat k=2 r=0 easy-k=0 easy-r=1 hard-k=3 hard-r=2
+  }
+  puzzle stars=2 {
+    show chem.pours-reason k=2 easy-k=1 hard-k=3
+  }
+  puzzle stars=2 {
+    show chem.squashed-balloon k=2 r=0 easy-k=1 easy-r=1 hard-k=0 hard-r=2
+  }
+  puzzle stars=3 {
+    show chem.meets-all k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show chem.soup-spoon k=1 r=1 easy-k=0 easy-r=3 hard-k=2 hard-r=0
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show chem.ice-both k=0 hard-k=2
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show chem.dry-the-washing k=2 r=0
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, in the yard of the printing works or at the table;
+    the hints and answers are on this sheet, not on theirs. Every puzzle can be started by looking
+    closely: what each thing is drawn as, whether the shape comes back after the hand lets go,
+    which dish has less in it. The materials come from what things are made of, the right
+    material and same shape, different material; the shapes from squash, bend, twist, stretch;
+    the water from where the puddle goes and air is everywhere. The two-star puzzles each need a
+    reason: the one thing that shows a sentence about materials is wrong, what goes wrong when a
+    material is given the wrong job, why a heap pours the way it does, and whether a squeezed
+    balloon has less air. The three-star puzzles are the ones to leave for a quiet moment: the
+    thing that meets every clue, the material for a hot soup spoon against two rules, the two ice
+    cubes at two rates, and the two things that dry washing fastest. Ask for the reason as well as
+    the answer on each of them. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level a fourth one-star puzzle asks which spoon is wood and the two ice cubes are left for another day; the thing that keeps water out is plain, the shape that springs back is the sponge, the dishes differ by four quarters, the counterexample is the first one, the wrong job is the paper hat, the pouring heap is the plain one, the balloon had air let out, the clues fit one thing at once, and the soup spoon's rules are no soaking and no bending."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and a fourth three-star puzzle, the washing to dry; the thing that keeps water out sits among soft things, the shape to judge is the pipe cleaner, the counterexample needs the whole row read, the wrong job is the raincoat as a towel, the pouring heap is the subtlest, the balloon is squeezed with nothing let out, the clues need three things checked, the soup spoon's rules leave plastic out because it goes soft, and the two ice cubes melt at two rates."
+  }
+}

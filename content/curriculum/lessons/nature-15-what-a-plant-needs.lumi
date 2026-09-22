@@ -1,0 +1,69 @@
+lesson nature-what-a-plant-needs v=1 format=teach grade=3 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "What a plant needs"
+  goal "Compare two plants that differ in one thing only, and say what the test shows."
+
+  look {
+    scene 30x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row trays space=2 align=end {
+          crops ta stage=3 rows=2 plants=4
+          crops tb stage=1 rows=2 plants=4
+          art sun asset="sun"
+        }
+        table t cols=4 head=["Tray", "Light", "Water", "Warmth"] cells=["A", "yes", "yes", "warm", "B", "no", "yes", "warm"]
+      }
+    }
+    say """
+      In the bird hide Ada sows two trays of cress from the same packet, on the same day, in the
+      same soil. Tray A goes on the sunny windowsill and tray B into the cupboard. Both get the
+      same water and both stay warm. After two weeks A is tall and green and B is pale and thin.
+      Only one thing was different, the light, so the light is what made the difference. That is
+      a fair test: change one thing, keep everything else the same, and see what happens.
+      """
+  }
+  do {
+    level easy {
+      worked nature.taller-tray a=4 b=1
+    }
+    practice nature.taller-tray count=2 seed=1 easy-seed=3 hard-seed=1
+    practice nature.test-about count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.result-fits count=1 seed=2 easy-seed=1 hard-seed=1
+    practice nature.read-heights count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.two-changed k=2
+    }
+  }
+  story {
+    show nature.cress-weeks s=2 g=3 n=3 easy-s=1 easy-g=2 easy-n=2 hard-s=3 hard-g=4 hard-n=4
+  }
+  try stars=2 {
+    show nature.two-changed k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show nature.plan-test k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A fair test changes one thing and keeps everything else the same. Then you know what made the difference."
+  }
+
+  grown-ups """
+    The lesson is about the test, not the plant: a result only means something when one thing was
+    changed. The wrong idea to watch for is reading a result off the trays without asking what
+    was different between them, or accepting a test that changed two things. In the table
+    questions the child reads down the columns to find the one that differs, and that column is
+    the test; the columns that match are what was kept the same, and children find the second
+    question harder than the first. The result questions match the missing thing to what a plant
+    does without it: wilts, goes pale and thin, stays small. The story grows the cress the same
+    amount each week. The two-star question is Ben's test, which changed two things, and in one
+    version is fair after all; the three-star question asks for the plan that changes one thing
+    only, and the way in is to list the differences between the trays in each plan. If the test
+    is still read from the trays alone after the core, stay here another day and grow two pots of
+    cress on the sill, one watered and one not, and keep a chart.
+    """
+  level easy {
+    grown-ups "At this level a worked example (a tray in flower against one just up) opens the core, the trays to compare are two or three stages apart, the questions ask what the test is about, the missing thing is water and the cress wilts, the bars are four to six against one to three centimetres, the cress starts at one centimetre and grows two a week for two or three weeks, Ben's test changed the light and the water together, and the plan to pick tests water."
+  }
+  level hard {
+    grown-ups "At this level the trays to compare are one stage apart, the questions ask what was kept the same, the missing thing is warmth and the cress stays small, the bars are nine to twelve against two to five and the question is how much B must grow to catch up, a second reasoning question in the core is a test of Ben's that is fair, the cress starts at three centimetres and grows three or four a week for four weeks, Ben's test changed the warmth and the light together, and the plan to pick tests warmth."
+  }
+}

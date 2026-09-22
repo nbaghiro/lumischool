@@ -1,0 +1,14 @@
+item physics.dimmer-change v=1 skills=[physics.circuits] {
+  title "Make them dimmer"
+  difficulty (c + n)
+  let c=2..3 n=1..2
+
+  scene 36x16 {
+    series ring cells=c bulbs=n at=canvas(1, 0)
+    text ask "Which change makes the bulbs dimmer but keeps them lit?" width=16 right-of=ring gap=1
+    choice pick options=["{if n == 1 then \"Add a bulb\" else \"Take a cell away\"}", "Add a cell", "Open the switch"] stack=column below=ask gap=1
+  }
+
+  check physics.circuit of=ring pick=dimmer
+  hint "Opening the switch makes them dark. Which change gives each bulb a little less?"
+}

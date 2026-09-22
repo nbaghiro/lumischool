@@ -1,0 +1,39 @@
+# Where the two semitones of a major scale fall: between the third and fourth notes and between the
+# seventh and eighth, E to F and B to C in C major, B to C and F sharp to G in G major.
+item music.scale-find-semitones v=1 skills=[music.keys, music.intervals] {
+  title "Where are the semitones?"
+  difficulty m
+  let m=0..1 w=0..1
+  let scale={pick(m, "C major: C, D, E, F, G, A, B, C", "G major: G, A, B, C, D, E, F sharp, G")}
+  let which={pick(w, "first", "second")}
+  let right={pick(m * 2 + w, "E and F", "B and C", "B and C", "F sharp and G")}
+  let n1={pick(m, "C4", "G3")}
+  let n2={pick(m, "D4", "A3")}
+  let n3={pick(m, "E4", "B3")}
+  let n4={pick(m, "F4", "C4")}
+  let n5={pick(m, "G4", "D4")}
+  let n6={pick(m, "A4", "E4")}
+  let n7={pick(m, "B4", "Fs4")}
+  let n8={pick(m, "C5", "G4")}
+  level easy {
+    let m=0..0
+  }
+  level hard {
+    let m=1..1
+  }
+
+  scene 36x38 {
+    grandstaff gs notes=["{n1}", "{n2}", "{n3}", "{n4}", "{n5}", "{n6}", "{n7}", "{n8}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "Ana plays {scale}. Between which two notes is the {which} semitone?" narrate width=34 below=gs gap=1
+    choice pick options=[pick(m, "C and D", "G and A"), pick(m, "E and F", "B and C"), pick(m, "G and A", "D and E"), pick(m, "B and C", "F sharp and G")] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=gs {
+      say "Picture each step on a keyboard. A semitone has no key between its two notes, like E and F."
+    }
+  }
+  hint "Say the scale's notes in order. Which two have no black key between them on a keyboard?"
+  hint "{if w == 0 then \"The first semitone comes early, in the first four notes.\" else \"The second semitone comes at the top, in the last notes.\"}"
+}

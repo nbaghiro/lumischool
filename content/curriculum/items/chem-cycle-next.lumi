@@ -1,0 +1,22 @@
+# The order is a circle: after collection comes evaporation again, which a line of four would hide.
+item chem.cycle-next v=1 skills=[chemistry.water-cycle] {
+  title "What happens next?"
+  difficulty (if i == 3 then 1 else 0)
+  let i=0..3
+  level easy {
+    let i=0..2
+  }
+  level hard {
+    let i={2, 3}  # collection, whose next step is back at the start
+  }
+
+  scene 33x17 {
+    text ask "In the water cycle, what happens straight after {if i == 0 then \"evaporation\" else if i == 1 then \"condensation\" else if i == 2 then \"precipitation\" else \"collection\"}?" width=31 at=canvas(1, 0)
+    watercycle cycle blank=-1 key=0 plain=0 below=ask gap=0
+    choice pick options=["evaporation", "condensation", "precipitation", "collection"] stack=column right-of=cycle gap=1
+  }
+
+  answer pick=(if i == 0 then "condensation" else if i == 1 then "precipitation" else if i == 2 then "collection" else "evaporation")
+  hint "Where in the picture does that stage happen? Follow the water from there."
+  hint "Where does the water go next, and what is that stage called?"
+}

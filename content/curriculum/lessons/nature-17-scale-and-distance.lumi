@@ -1,0 +1,66 @@
+lesson nature-scale-and-distance v=1 format=teach grade=4 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "Scale and distance"
+  goal "Use a map's scale to find how far apart two places are, and how long the walk between them takes."
+
+  look {
+    scene 36x19 {
+      row all at=canvas(1, 1) space=2 align=end {
+        mapscale map km=8 step=2
+        column side space=1 align=start {
+          roaddistances road stops=["hide", "tower"] legs=[6] unit=km
+          birdhide hide slots=3
+        }
+      }
+    }
+    say """
+      Ada's map of the marsh has a scale bar under it, marked off in parts, and each part stands
+      for two kilometres on the ground. So a road that is three parts long on the paper is six
+      kilometres to walk. Ada walks a kilometre in about fifteen minutes, so six kilometres is an
+      hour and a half. A map turns a length on the paper into a distance on the ground, and the
+      distance into a time.
+      """
+  }
+  do {
+    level easy {
+      worked nature.scale-read st=2 w=0
+    }
+    practice nature.scale-read count=2 seed=4 easy-seed=1 easy-count=1 hard-seed=1
+    practice nature.parts-to-km count=2 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.two-scales k=1 level=medium
+    }
+    practice nature.which-way-shorter count=1 seed=4 easy-seed=1 hard-seed=1
+    practice nature.walk-minutes count=2 seed=3 easy-seed=1 hard-seed=1
+  }
+  story {
+    show nature.marsh-hike a=3 b=4 w=0 easy-a=2 easy-b=3 easy-w=0 hard-a=5 hard-b=6 hard-w=1
+  }
+  try stars=2 {
+    show nature.two-scales k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.one-stop k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "The scale bar says what a part is worth. Parts on the map times kilometres a part is the distance on the ground."
+  }
+
+  grown-ups """
+    The scale is a multiplication: parts on the paper times what a part is worth. The wrong idea
+    to watch for is reading the map's length as the distance, so a longer line is a longer road
+    whatever the scale, which the two-star question is built to catch. In the scale questions the
+    child reads the number under one part first, then counts parts; in the road questions the legs
+    written on the road are added before anything is compared. The time questions count fifteen
+    minutes a kilometre, so four kilometres is an hour, and the halves and quarters are where to
+    watch. The story adds, doubles and then times. The three-star question tries three stops and
+    keeps the smallest total, and the way in is a row at a time. If a longer line is still read as
+    a longer road after the core, stay here another day and draw the same walk twice on paper, once
+    big and once small, with a scale bar under each.
+    """
+  level easy {
+    grown-ups "At this level a worked example (one part of the bar, two kilometres) opens the core, the scale bar is read one part at a time, the walks are two or three parts of two kilometres, the road round the mill is plainly longer than the path, the walks take whole hours, the hike is two and three kilometres there and back, the two maps agree at six kilometres, and the shortest stop is the tree at seven kilometres, against the mill's shorter first leg."
+  }
+  level hard {
+    grown-ups "At this level the whole bar is read with parts of five or ten kilometres, the walks are five or six parts, a second reasoning question in the core has two maps that agree, the road round the mill is the shorter way against the eye, the walks take hours and quarters, the hike is five and six kilometres there and back turned into minutes, the two maps disagree and the child says by how much, and the shortest stop is the bridge at twelve kilometres against the tree's shorter first leg."
+  }
+}

@@ -1,0 +1,31 @@
+# The three-star: a sentence with two wrong endings, and the one fixed sentence among three.
+item reading.fix-two-endings v=1 stars=3 skills=[reading.morphology, reasoning.find-the-mistake] {
+  title "Two wrong endings"
+  difficulty k
+  let k=0..1 r=0..2
+  let bad={pick(k, "Yesterday Pip is jumping in the puddle and get wet.", "Look, the frogs hopped on the logs and are croak loudly.")}
+  let right={pick(k, "jumped and got", "are hopping and croaking")}
+  let w1={pick(k, "jumping and getting", "hopped and croaked")}
+  let w2={pick(k, "is jumped and got", "are hopping and croaked")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x22 {
+    passage p title="" text="{bad}" width=32 numbers=false at=canvas(1, 1)
+    text ask "Two doing words in this sentence have the wrong endings. Which pair puts both right?" narrate width=32 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Find the time word first: it says whether everything is now or over. Then every doing word in the sentence needs the ending that matches it, both of them."
+    }
+  }
+  hint "{if k == 0 then \"Yesterday is over, so both doing words need the over ending.\" else \"Look means now, so both doing words need the now ending.\"}"
+  hint "Check both doing words, not just the first one."
+}

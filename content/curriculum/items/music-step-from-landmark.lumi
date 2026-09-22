@@ -1,0 +1,19 @@
+# Reading from a landmark: a step up from treble G goes from a line to the space above it.
+item music.step-from-landmark v=1 skills=[music.grand-staff, music.intervals] {
+  title "One step up from G"
+
+  scene 30x16 {
+    grandstaff gs notes=["G4", "A4"] letters=false lit=["A4"] landmarks=true at=canvas(1, 0)
+    text ask "The first note is treble G. The ringed note is one step up. Which note is it?" width=14 right-of=gs gap=1
+    choice pick options=["F", "A", "B"] below=ask gap=1
+  }
+
+  answer pick="A"
+  feedback {
+    when (pick == "F") point=gs {
+      say "F is a step down from G. The ringed note is higher on the staff, so it is a step up."
+    }
+  }
+  hint "Is the ringed note higher or lower than the G?"
+  hint "A step is the very next letter. Which letter comes next going that way?"
+}

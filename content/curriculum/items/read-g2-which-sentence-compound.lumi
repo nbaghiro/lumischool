@@ -1,0 +1,16 @@
+# A short story full of long words made of two, and a question that has to be answered with a
+# sentence. Two versions need an inference: wet grass means rain, asleep before the end means tired.
+item reading.which-sentence-compound v=2 skills=[reading.comprehension, reading.evidence] {
+  title "Which sentence tells you?"
+  let k=0..3
+
+  scene 36x14 {
+    passage p text="{if k == 0 then \"(A) Asha woke up early on Saturday. (B) She put on her raincoat and boots. (C) Outside, the grass was still wet. (D) She walked to the farm with her dad.\" else if k == 1 then \"(A) Leo's family went to the seaside. (B) Leo built a sandcastle with a moat. (C) The sea came in and filled the moat. (D) Then a wave knocked the castle flat.\" else if k == 2 then \"(A) It was Sam's bedtime. (B) He brushed his teeth with his new toothbrush. (C) Dad read him a story about a dragon. (D) Sam was asleep before the end.\" else \"(A) Mina's class planted sunflowers. (B) They watered them every day. (C) By summer the flowers were taller than the teacher. (D) The bees loved them.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Which sentence tells you {if k == 0 then \"that it had rained in the night\" else if k == 1 then \"what Leo made on the beach\" else if k == 2 then \"that Sam was very tired\" else \"that the plants grew well\"}?" narrate width=19 below=p gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "C" else if k == 1 then "B" else if k == 2 then "D" else "C")
+  hint "Read all four sentences before you choose."
+  hint "The right sentence may not say it in the same words. Which one would show someone?"
+}

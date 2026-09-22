@@ -1,0 +1,56 @@
+# The first music lesson, and the one that sets the rule the strand keeps: every note that sounds is
+# also drawn, so the lesson works with the volume at zero and on paper.
+lesson music-keyboard v=1 format=teach grade=1 unit=1 subject=music levels=[easy, medium, hard] {
+  title "The keys and the letters"
+  goal "Find middle C on a keyboard, and read the first notes of a staff by their letters."
+
+  look {
+    scene 32x23 {
+      piano keys from=C4 whites=8 wide=3 labels=letters lit=[C4] at=canvas(1, 1)
+      notes tune clef=treble notes=[C4, D4, E4, F4, G4] letters=true below=keys gap=1
+    }
+    say """
+      The white keys go C, D, E, F, G, A, B and then C again. Middle C is the white key on
+      the left of the pair of black keys, and it is the ringed one here. Press the keys in order and
+      say the letters out loud.
+      """
+  }
+  do {
+    show music.play-middle-c
+    level easy {
+      worked music.key-count-up k=6 level=medium
+    }
+    practice music.key-count-up count=2 seed=3
+    practice music.key-count-down count=1 seed=2
+    show music.name-the-note
+    practice music.staff-letter count=2 seed=4
+    practice music.chime-higher count=1 hard-count=0 seed=5
+    level hard {
+      practice music.ben-names-keys count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show music.ben-names-keys i=1 easy-i=0 hard-i=2
+  }
+  try stars=3 {
+    show music.tunes-by-steps i=2 easy-i=0
+  }
+  remember {
+    say "The letters run C, D, E, F, G, A, B and start again. Middle C sits left of the two black keys."
+  }
+
+  grown-ups """
+    Nothing here needs an instrument. The keyboard on the screen sounds when it is pressed, and the
+    printed sheet carries the same keyboard, so the finding can be done by pointing. Say the letters
+    together before the child answers, because the naming has to be heard in the room to stick. The
+    letters are left off after the first picture on purpose: counting along from C is the skill.
+    In the two-star question, ask which of Ben's letters are not music letters at all. In the
+    three-star question it helps to write each tune down as it is found.
+    """
+  level easy {
+    grown-ups "At this level middle C and the ringed note are as written, six bars up from C is counted once in the teacher's pen before one to three bars, one or two bars down from the high C, the staff letters are C, D or E, the bars to compare are far apart, Ben starts on D, and the three-star starts on C."
+  }
+  level hard {
+    grown-ups "At this level middle C and the ringed note are as written, the bars to count run past G, where the letters start again, three or four bars down from the high C, the staff letters are E, F or G, the bars to compare make way for a second count of Ben's, Ben starts on F, and the three-star is as written."
+  }
+}

@@ -1,0 +1,51 @@
+lesson writing-speech-bubbles v=1 format=teach grade=2 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Speech bubbles"
+  goal "Write what a character says in a bubble, with the mark that matches how it is said."
+
+  look {
+    scene 35x13 {
+      comic strip who=["girl", "fox", "girl"] says=["Is that a fox?", "Yes, and I am hungry!", "Then have my apple."] moods=["surprised", "excited", "happy"] with=["", "", "fox"] thinks=[0, 0, 0] holds=["", "", "apple"] labels=["1", "2", "3"] at=canvas(1, 1)
+    }
+    say """
+      In a comic the words people say go in a bubble, and the tail points at who is talking. A
+      bubble still needs a capital letter and a mark at the end. The girl asks, so her first bubble
+      ends with a question mark. The fox shouts, so its bubble ends with an exclamation mark.
+      """
+  }
+  do {
+    level easy {
+      worked writing.bubble-mark k=1 level=medium
+    }
+    practice writing.bubble-mark count=1 seed=2
+    practice writing.reply-fits count=2 seed=3
+    practice writing.capitals-count count=2 seed=1
+    practice writing.same-words-moods count=2 seed=4
+    practice writing.speech-order count=1 hard-count=0 seed=2
+    level hard {
+      practice writing.same-words-moods count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show writing.fill-the-bubble k=0
+  }
+  try stars=3 {
+    show writing.two-bubbles k=1
+  }
+  remember {
+    say "Words that are said go in a bubble. The mark shows how they are said."
+  }
+
+  grown-ups """
+    The marks, the replies, the capitals and the order are checked by the machine. When the same
+    words sit in two bubbles, only the faces can say which one is shouted, so point at the faces if
+    the child guesses. The bubbles in the two-star and three-star questions are the child's
+    writing: what matters is that they join the picture before to the picture after, which is the
+    first step towards writing speech in a story. Read them aloud in the voices of the people.
+    """
+  level easy {
+    grown-ups "At this level a shout's mark is chosen once in the teacher's pen before a question's or a telling's, the replies answer where, who and what, the words that need a capital are the first word and one name, the moods and the order are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the mark for bubble 2 ends a shout or a question, the replies answer when and what, the words that need a capital are two names, I and a name in the middle, the order makes way for a second pair of moods, and the two-star and three-star are as written."
+  }
+}

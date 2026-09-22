@@ -1,0 +1,30 @@
+# Boxes of ten and some loose ones: tens and ones in a picture that is not rods and cubes.
+item place.boxes-of-ten v=1 skills=[place-value.tens-ones] {
+  title "Boxes of ten"
+  difficulty (10 * t + o)
+  let t=2..4 o=1..6
+  level easy {
+    let t={2} o=1..3
+  }
+  level hard {
+    let t={4} o=4..6
+  }
+
+  scene 36x16 {
+    boxes pack boxes=t per=10 loose=o item=cube at=canvas(1, 1)
+    text ask "Each box holds 10 cubes. How many cubes are there?" narrate width=30 below=pack gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * t + o)
+  feedback {
+    when (answer == t + o) point=pack {
+      say "Each box is 10 cubes, not 1. Count the boxes in tens."
+    }
+    when (answer == 10 * t) point=pack {
+      say "The loose cubes count too."
+    }
+  }
+  hint "How many boxes are there? Count them in tens."
+  hint "Then count on the loose cubes in ones."
+}

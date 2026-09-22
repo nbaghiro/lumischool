@@ -1,0 +1,10 @@
+item art.shade-a-ball v=1 stars=3 skills=[art.tone, art.drawing, reasoning.plan] {
+  title "A ball in the light"
+
+  scene 37x17 {
+    text ask "Draw a ball on a table with a lamp to one side. Shade it in at least four tones, leave a spot of white paper where the light hits, and give it a shadow on the table." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["black", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A round thing that looks solid: at least four tones from a spot of white paper on the side facing the light, through middle tones, to the darkest part on the side away from it, with a shadow on the table pointing away from the light." notice=["Four or more tones", "White paper left where the light hits", "A shadow pointing away from the light"] ask="Where did you imagine the lamp, and how can I tell from your drawing?"
+}

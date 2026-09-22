@@ -1,0 +1,25 @@
+# All the angles two set squares can make, one corner from each: list the pairs, add, and count
+# the different totals under the limit.
+item angles.corner-combos v=1 stars=3 skills=[angles.additive, reasoning.all-the-ways] {
+  title "Every angle the set squares make"
+  difficulty (if lim == 100 then 1 else if lim == 130 then 3 else 5)
+  let lim={100, 130, 160}
+
+  scene 31x21 {
+    row both at=canvas(1, 1) space=3 align=end {
+      setsquare one kind="45" labels=true
+      setsquare two kind="30" labels=true
+    }
+    text ask "Put one corner of the first set square next to one corner of the second. How many different angles smaller than {lim}° can you make this way?" narrate width=29 below=both gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if lim == 100 then 1 else if lim == 130 then 3 else 5)
+  feedback {
+    when (answer == (if lim == 100 then 2 else if lim == 130 then 5 else 8)) point=both {
+      say "The first set square has two 45° corners. Using the other one makes the same angle again."
+    }
+  }
+  hint "The first set square has corners of 45, 90 and 45. The second has 30, 60 and 90."
+  hint "Add each corner of the first to each corner of the second. Which totals are different, and which are under {lim}?"
+}

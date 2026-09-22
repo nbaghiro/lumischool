@@ -1,0 +1,35 @@
+# A bar that starts with one note and is filled with quavers, and the quavers counted: two to a beat.
+item music.rhythm-quaver-count v=1 skills=[music.note-values, music.counting-beats] {
+  title "How many quavers?"
+  difficulty (4 - t)
+  let t=3..4 m=0..1
+  let first={pick(m, "a crotchet", "a minim")}
+  let right={2 * (t - 1 - m)}
+  level easy {
+    let t=4..4
+  }
+  level hard {
+    let t=3..3
+  }
+
+  scene 30x15 {
+    row top space=2 align=start at=canvas(1, 1) {
+      staff bar notes=[pick(m, 1, 2)]
+      drum d lugs=5
+    }
+    text ask "Ben's bar has {t} beats. It starts with {first}, and the rest is all quavers. How many quavers?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == t - 1 - m) point=bar {
+      say "That counts the beats left. Two quavers fit in every beat."
+    }
+    when (answer == 2 * t) point=bar {
+      say "The first note takes up some of the beats. Count only the beats that are left."
+    }
+  }
+  hint "How many beats does {first} take? How many are left?"
+  hint "Two quavers fill one beat."
+}

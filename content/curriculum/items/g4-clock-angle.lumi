@@ -1,0 +1,30 @@
+# A clock face is a protractor with twelve steps of 30 degrees.
+item angles.clock-hands v=1 skills=[angles.degrees, angles.turn] {
+  title "The angle between the hands"
+  difficulty h
+  let h=1..5
+  level easy {
+    let h=1..3
+  }
+  level hard {
+    let h=3..5
+  }
+
+  scene 28x10 {
+    clock face h=h m=0 at=canvas(1, 1)
+    text ask "The minute hand points at 12 and the hour hand at {h}. How many degrees is the angle between them?" narrate width=18 right-of=face gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (30 * h)
+  feedback {
+    when (answer == 5 * h) point=face.centre {
+      say "That is how many minutes. A whole turn is 360 degrees shared between 12 numbers."
+    }
+    when (answer == 360 - 30 * h) point=face.centre {
+      say "That is the angle the long way round. Take the smaller angle between the hands."
+    }
+  }
+  hint "A whole turn is 360 degrees. How many degrees from one number to the next?"
+  hint "How many of those steps are there from 12 to {h}?"
+}

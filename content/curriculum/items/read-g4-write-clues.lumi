@@ -1,0 +1,15 @@
+# Writing clues is the reverse of reading them: the child has to know which details point to a
+# place without naming it. Many answers are right, so a grown-up marks it.
+item reading.write-place-clues v=1 stars=3 skills=[reading.inference, writing.composing] {
+  title "Leave a clue"
+  let k=0..3 place={if k == 0 then "on a ship at sea" else if k == 1 then "up a mountain" else if k == 2 then "in a hot forest" else "at a lighthouse"} word={if k == 0 then "sea" else if k == 1 then "mountain" else if k == 2 then "forest" else "lighthouse"}
+
+  scene 34x13 {
+    text ask "You are {place}. Write two sentences for a postcard that give it away without using the word {word}." width=33 at=canvas(1, 1)
+    writinglines lines lines=2 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two sentences with details that fit the place and would be odd anywhere else (the deck rocking or no land in sight at sea; thin cold air or the view down at the top of a mountain; monkeys or heavy heat under trees in a forest; the lamp or the stairs round and round at a lighthouse), and the place itself is never named."
+  hint "What would you see, hear or feel there that you would not at home?"
+  hint "Read your sentences back. Could they be about somewhere else as well? Add a detail that could not."
+}

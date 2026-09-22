@@ -1,0 +1,33 @@
+# The way in: four kinds of line, and the one Hokusai used for the foam at the top of the wave,
+# the line that curls over into hooks.
+item art.foam-line v=1 skills=[art.line, art.looking] {
+  title "The foam line"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let a={pick(k, "loopy", "wavy", "zigzag")}
+  let b={pick(k, "straight", "loopy", "dashed")}
+  let c={pick(k, "wavy", "zigzag", "loopy")}
+  let d={pick(k, "dotted", "spiral", "wavy")}
+  let right={pick(k, "A", "B", "C")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x14 {
+    lines kinds kinds=["{a}", "{b}", "{c}", "{d}"] colour=blue at=canvas(1, 1)
+    text ask "In Hokusai's print the top of the wave is foam that curls over into little hooks, like fingers. Which kind of line makes that foam?" narrate width=18 right-of=kinds gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kinds {
+      say "Foam that curls over makes little loops along the line. A wavy line only rises and falls; a zigzag has corners; dots and a spiral are not a row of hooks."
+    }
+  }
+  hint "Which line has little curls, one after another, like fingers reaching over?"
+  hint "The loopy line: it curls over and over along its length."
+}

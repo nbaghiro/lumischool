@@ -1,0 +1,28 @@
+item physics.temp-rate v=1 skills=[physics.rate] {
+  title "Back three hours"
+  difficulty (r + (if v % 10 == 0 then 0 else 1))
+  let v={20, 25, 30, 35} r=2..4
+  level easy {
+    let v={20, 30} r=2..3
+  }
+  level hard {
+    let v={25, 35} r=3..4
+  }
+
+  scene 28x20 {
+    text ask "It has risen {r} degrees every hour for three hours. What did it read then?" width=26 at=canvas(1, 1)
+    thermometer tube from=0 to=40 step=10 value=v unit="C" below=ask gap=1
+    number-input answer right-of=tube gap=2
+  }
+
+  answer (v - 3 * r)
+  feedback {
+    when (answer == v - r) point=tube {
+      say "Three hours, so the rise happened three times."
+    }
+    when (answer == v + 3 * r) point=tube {
+      say "Going back in time means going back down the scale."
+    }
+  }
+  hint "How many degrees did it rise in the three hours?"
+}

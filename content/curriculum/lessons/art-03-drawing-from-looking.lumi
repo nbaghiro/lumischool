@@ -1,0 +1,61 @@
+lesson art-drawing-from-looking v=1 format=teach grade=1 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Drawing from looking"
+  goal "Look closely at a thing, count and compare what you see, and draw it from looking."
+
+  look {
+    scene 18x9 {
+      row all at=canvas(1, 1) space=2 align=end {
+        art pic asset="cat"
+        minibeasts bug kinds=["ladybird"] spots=5 legs=false
+      }
+    }
+    say """
+      Artists look for longer than they draw. Look at the cat. What shapes can you see? A circle
+      for the head and two triangles for the ears. Count what you can see, then draw it.
+      """
+  }
+  do {
+    level easy {
+      worked art.count-the-spots s=7 level=medium
+    }
+    practice art.count-the-spots count=1 seed=1
+    practice art.count-the-petals count=1 seed=2
+    practice art.spots-left-out count=3 seed=2
+    practice art.petals-to-add count=2 seed=3
+    practice art.which-drawing count=2 hard-count=1 seed=1
+    level hard {
+      practice art.is-it-right count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show art.is-it-right s=6 d=1 easy-s=4 easy-d=2 hard-s=7 hard-d=-1
+  }
+  try stars=3 {
+    show art.draw-the-cat
+  }
+  remember {
+    say "Look first, and look again. Draw what you see, not what you think a cat looks like."
+  }
+
+  grown-ups """
+    The first questions count what is in a picture. The rest compare a drawing with the thing it
+    was drawn from, which is what an artist does all the time: look at the thing, look at the
+    drawing, and find what is missing. The machine marks all of them, and a child who counts both
+    and then works out the difference is doing two steps, not one.
+
+    The two-star question asks the child to judge a drawing and choose the reason. The drawing is
+    the child's and is the three-star question. At six most children draw a cat from memory, a
+    circle with two triangles on top, and that is where drawing from looking starts. Two warm-ups
+    help: drawing the cat without looking at the paper, and drawing it in one line without lifting
+    the pencil.
+
+    Respond by pointing at what the child noticed: "You gave it whiskers on both sides, and the tail
+    curls round like the one in the picture." Ask what they looked at first.
+    """
+  level easy {
+    grown-ups "At this level seven spots are counted once in the teacher's pen before two to four, the petals are four to six, one spot is left out and one or two petals, the drawings to choose from are as written, the two-star's drawing has two spots too many on a four-spot ladybird, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the spots are six or seven, the petals seven or eight, two or three spots or petals are left out, one drawing to choose makes way for a second drawing to judge, the two-star's drawing has one spot too few on a seven-spot ladybird, and the three-star is as written."
+  }
+}

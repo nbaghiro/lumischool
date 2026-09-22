@@ -1,0 +1,59 @@
+lesson writing-a-list v=1 format=teach grade=1 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A list"
+  goal "Write a list with one thing to a line, for a reason."
+
+  look {
+    scene 34x11 {
+      row all at=canvas(1, 1) space=2 align=end {
+        listpad pad title="For the picnic" items=["apples", "a cake", "a cup"] count=0 width=13 ticks=true
+        basket b item=apple count=4 label=""
+        art cup asset="cup"
+      }
+    }
+    say """
+      A list helps you remember. It has a title that says what it is for. Then it has one thing on
+      each line, and you do not need whole sentences. A box by each thing is for a tick when you
+      have it.
+      """
+  }
+  do {
+    level easy {
+      worked writing.list-odd-thing k=3 q=0 level=medium
+    }
+    show writing.list-title k=2 easy-k=0
+    practice writing.list-word count=1 seed=1
+    show writing.list-two-beats k=0
+    show writing.list-odd-thing k=0 q=2 hard-k=1
+    show writing.list-odd-thing k=3 q=1 easy-k=2
+    show writing.list-order k=0 q=1 hard-k=1
+    level hard {
+      practice writing.list-forgot count=1 seed=5
+    }
+    show writing.make-a-list
+    show writing.list-two-beats k=1
+  }
+  try stars=2 {
+    show writing.list-forgot k=1 q=2 easy-k=0
+  }
+  try stars=3 {
+    show writing.list-with-jobs k=0
+  }
+  remember {
+    say "A list has a title and one thing on each line."
+  }
+
+  grown-ups """
+    The spelled word is marked by the machine. The list at the end is the child's, and at grade one
+    a spelling that follows the sounds is a good attempt. If you can, use the list for real: pack
+    the bag from it, or take it to the shop, so the writing does a job. The two-beat words (rocket,
+    pencil) are marked by you, and a spelling that has a letter for every sound in both beats is a
+    good attempt. The two-star question asks what Ada forgot, which has to be worked out from what
+    the job needs. In the three-star list every line has its own job.
+    """
+  level easy {
+    grown-ups "At this level the title is for the beach, the word to write is as written, a toothbrush at a picnic is found once in the teacher's pen before a scarf at the beach and wellies for bed, the jobs to order are planting a seed, the list to make is as written, the two-star's forgotten thing is the bread, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the title is as written, the word to write is as written, the odd things are a toothbrush at a picnic and a spade for school, the jobs to order are baking a cake, a second forgotten thing, the soil, is found in the core, the list to make is as written, and the two-star and three-star are as written."
+  }
+}

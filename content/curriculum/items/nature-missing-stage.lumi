@@ -1,0 +1,47 @@
+# The two-star reason: a cycle with one stage missing, and the stage to name from what every cycle
+# has: an egg or seed, a young one that grows, a grown one that starts it again. The hen's chick
+# is plain; the butterfly's chrysalis and the bean's leaves need the other cycles as a guide.
+item nature.missing-stage v=1 stars=2 skills=[nature.life-cycles, reasoning.compare] {
+  title "The missing stage"
+  difficulty (if k == 0 then 0 else if k == 3 then 1 else 2)
+  # the frog's missing tadpole sits in both the medium and the hard band, the ring being drawn
+  let k=0..3
+  let chain={pick(k, "egg  →  ?  →  hen", "egg  →  caterpillar  →  ?  →  butterfly", "seed  →  shoot  →  ?  →  flower", "frogspawn  →  ?  →  froglet  →  frog")}
+  let right={pick(k, "chick", "chrysalis", "leaves", "tadpole")}
+  let o1={pick(k, "duckling", "cocoon", "roots", "frog")}
+  let o2={pick(k, "cockerel", "moth", "seed", "spawn")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..3
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      art bird asset="hen"
+      frogcycle life stage=4 ring=1 names=0
+    }
+    text chain "Ben writes: {chain}" narrate below=pics gap=1
+    text ask "One stage is missing from Ben's cycle. What is it?" narrate width=32 below=chain gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=chain {
+      say "Between the egg and the grown hen comes the young one that hatches: the chick."
+    }
+    when (k == 1 and pick != right) point=chain {
+      say "The caterpillar shuts itself in a hard case and changes inside it. That case is the chrysalis, and the butterfly comes out of it."
+    }
+    when (k == 2 and pick != right) point=chain {
+      say "The shoot grows taller and puts out leaves before it flowers. Look at the bean's row of stages."
+    }
+    when (k == 3 and pick != right) point=life {
+      say "Follow the ring: the eggs hatch into swimmers with tails, the tadpoles, before the legs come."
+    }
+  }
+  hint "Every cycle has an egg or a seed, a young one that grows, and a grown one. Which is missing here?"
+  hint "Say the cycle aloud with each choice in the gap. Which one makes it go round?"
+}

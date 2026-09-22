@@ -1,0 +1,20 @@
+# The middle of the story is missing and many middles work: it has to follow from the first stop
+# and lead to the last. A grown-up marks it against the look-for.
+item reading.fill-the-middle v=1 stars=3 skills=[reading.sequencing, reading.story-structure, writing.composing] {
+  title "Write the middle"
+  let k=0..2
+
+  scene 37x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=start {
+        storymap map stops=[if k == 0 then "Mia's kite is stuck on the roof." else if k == 1 then "Joss has no money for Gran's present." else "The lighthouse lamp goes out.", "", if k == 0 then "Mia flies her kite in the park." else if k == 1 then "Gran opens her present and smiles." else "The boats come home safely."] icons=[if k == 0 then "girl" else if k == 1 then "boy" else "lighthouse", "", if k == 0 then "sun" else if k == 1 then "cake" else "boat"] heads=[] blank=1
+        text ask "What happened at the empty stop? Write it so the story joins up." width=10
+      }
+      writinglines w lines=2 width=35 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="One or two sentences for the empty stop that follow from the first stop and lead to the last. For the kite that could be a neighbour with a ladder, or the wind blowing it down; for Gran's present, Joss making something or picking flowers from the garden; for the lighthouse, someone lighting a lantern or mending the lamp. Any middle that joins the two stops is right. One that does not explain how the story gets from the first stop to the last is not finished yet."
+  hint "What is the problem at the first stop? At the last stop, it has gone away."
+  hint "Think of one thing someone could do to fix it. There is more than one good answer."
+}

@@ -1,0 +1,29 @@
+item physics.how-many-float v=1 skills=[physics.floating] {
+  title "How many float?"
+  difficulty (f + s)
+  let f=1..4 s=1..4
+  where (f != s)
+  level easy {
+    let f=1..2 s=1..3
+  }
+  level hard {
+    let f=2..4 s=3..4
+  }
+
+  scene 32x16 {
+    tank t float=f sunk=s at=canvas(1, 1)
+    text ask "How many of the things are floating?" width=18 below=t gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer f
+  feedback {
+    when (answer == s) point=t {
+      say "Count the ones sitting in the surface, not the ones on the bottom."
+    }
+    when (answer == f + s) point=t {
+      say "That is all of them. Some of them sank."
+    }
+  }
+  hint "Which things are sitting in the top of the water?"
+}

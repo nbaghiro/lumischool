@@ -1,0 +1,25 @@
+# What a passage is mostly about, against two details that are true of it: the same judgement a
+# title asks for, before the child has to write one.
+item reading.main-idea v=1 skills=[reading.gist] {
+  title "What is it mostly about?"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0, 1}  # hedgehogs asleep and the lighthouse
+  }
+  level hard {
+    let k={1, 2}  # the lighthouse and the lock
+  }
+
+  scene 37x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"Hedgehogs sleep through the winter. In autumn they eat as much as they can. Then they find a pile of leaves or a warm corner of a shed, and they do not wake up until spring.\" else if k == 1 then \"A lighthouse helps ships at night. Its lamp turns round and round, so sailors see a flash every few seconds. Each lighthouse flashes in its own pattern, so sailors can tell which one they can see.\" else \"A lock lets a boat go up or down a hill on a canal. The boat goes in and the gates are shut behind it. Water is let in or out until the boat is at the right level, and then the other gates open.\"}" width=36
+      text ask "What is this passage mostly about?"
+      choice pick options=[if k == 0 then "what they eat" else if k == 1 then "helping ships" else "heavy gates", if k == 0 then "winter sleep" else if k == 1 then "fast lamps" else "a lock at work", if k == 0 then "sheds" else if k == 1 then "sailors' beds" else "deep water"]
+    }
+  }
+
+  answer pick=(if k == 0 then "winter sleep" else if k == 1 then "helping ships" else "a lock at work")
+  hint "Which choice is true of every sentence, not just one of them?"
+  hint "Some choices are small details. Which one covers the whole passage?"
+}

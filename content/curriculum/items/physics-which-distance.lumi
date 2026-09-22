@@ -1,0 +1,39 @@
+# The table read the other way: the reading is given and the distance has to be found. Easy has
+# the reading in the table; hard gives a reading just past the table's end, so the pattern has to
+# be carried one more step.
+item physics.which-distance v=1 skills=[physics.sound, data.tables] {
+  title "How far away is that?"
+  difficulty (if r == 4 then 2 else if r >= 2 then 1 else 0)
+  let base={8, 16, 24} r=0..4
+  let d={pick(r, 1, 2, 4, 8, 16)}
+  level easy {
+    let base={8, 16} r=0..2
+  }
+  level hard {
+    let base={16, 24} r=3..4
+  }
+
+  scene 34x20 {
+    row all at=canvas(1, 0) space=2 align=start {
+      ricedrum drum hit=2
+      table t cols=2 head=["Metres away", "Meter reads"] cells=["1", "{base}", "2", "{base / 2}", "4", "{base / 4}", "8", "{base / 8}"]
+    }
+    text ask "The drum is hit once. Ben's meter reads {base / d}. How many metres from the drum is Ben standing?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == base / d and d != base / d) point=t {
+      say "That is the reading. The question asks for the distance that goes with it, in the first column."
+    }
+    when (r == 4 and answer == 8) point=t {
+      say "At 8 metres the meter reads {base / 8}. Ben's reading is half of that, so he is twice as far."
+    }
+    when (r == 4 and answer == 10) point=t {
+      say "Each time the distance doubles the reading halves. From 8 metres, the next halving is at 16 metres, not 10."
+    }
+  }
+  hint "Find {base / d} in the meter column, or work out which row it would come after."
+  hint "The reading halves each time the distance doubles: 1, 2, 4, 8 metres, and then?"
+}

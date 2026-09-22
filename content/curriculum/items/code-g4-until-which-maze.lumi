@@ -1,0 +1,37 @@
+# The turn-left rule finds its way along any path that bends left, and goes round in circles on one
+# that bends right. One of the three mazes bends right, so the program never stops there. Each maze
+# was run with the interpreter while writing this: the two that bend left reach the flag, and the
+# one that bends right hits the runner's limit.
+item coding.until-which-maze v=1 stars=2 skills=[coding.decisions, coding.repetition, reasoning.predict] {
+  title "Which maze does it fail?"
+  difficulty k
+  let k=0..2
+
+  scene 36x24 {
+    row top at=canvas(1, 0) space=2 align=start {
+      blocks b code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"]
+      column q space=1 align=start {
+        text ask "The same program runs in all three mazes. In which maze does the robot never reach the flag?" width=19
+        choice pick options=["A", "B", "C"]
+      }
+    }
+    row mazes below=top gap=0 space=1 align=start {
+      column ca space=0 align=start {
+        text la "A"
+        maze ga map=["{if k == 0 then \"S . . .\" else \". . . F\"}", "{if k == 0 then \"# # # .\" else \". # # .\"}", "{if k == 0 then \"F . . .\" else \"S . . .\"}"]
+      }
+      column cb space=0 align=start {
+        text lb "B"
+        maze gb map=["{if k == 1 then \"S . . .\" else \"F . . .\"}", "# # # .", "{if k == 1 then \"F . . .\" else \"S . . .\"}"]
+      }
+      column cc space=0 align=start {
+        text lc "C"
+        maze gc map=["{if k == 2 then \"S . . .\" else \". . F .\"}", "{if k == 2 then \"# # # .\" else \". # # .\"}", "{if k == 2 then \"F . . .\" else \"S . . .\"}"]
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else "C")
+  hint "Follow the program in each maze. At every square, ask: is there a wall ahead?"
+  hint "The program only ever turns left. Which maze needs the robot to turn the other way?"
+}

@@ -1,0 +1,31 @@
+# The data lives in the scene, so the question and the numbers it reads can never drift apart.
+item data.table v=1 skills=[data.tables] {
+  title "Reading a table"
+  difficulty (b - d)
+  let a=8..24 b=8..24 c=8..24 d=8..24
+  where (b > d + 1)
+  where (a != b and a != c and a != d and b != c and c != d)
+  level easy {
+    where (b - d <= 5)
+  }
+  level hard {
+    where (b - d >= 9)
+  }
+
+  scene 28x21 {
+    text ask "The table shows how many books each class read last term." width=26 at=canvas(1, 0)
+    table books cols=2 head=["Class", "Books"] cells=["Red", a, "Blue", b, "Green", c, "Gold", d] below=ask gap=1
+    text q "How many more books did Blue read than Gold?" width=26 below=books gap=1
+    number-input answer below=q gap=0
+  }
+
+  answer (b - d)
+  feedback {
+    when (answer == b + d) point=books.cell(3) {
+      say "How many more is a difference, so take the smaller number away from the bigger one."
+    }
+    when (answer == b) point=books.cell(7) {
+      say "That is what Blue read. The question asks how many more than Gold."
+    }
+  }
+}

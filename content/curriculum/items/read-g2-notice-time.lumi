@@ -1,0 +1,24 @@
+# Two things to check at once, the day and the time: Saturday is open, but only in the morning.
+item reading.notice-time v=1 skills=[reading.find-a-detail, reading.signs] {
+  title "Is it open?"
+  difficulty (if d == 1 then 2 else if d == 2 then 1 else 0)
+  let d=0..3 t=0..2
+  level easy {
+    let d={0, 3}  # a weekday, open 9 to 5
+  }
+  level hard {
+    let d={1, 2}  # Saturday, open 10 to 1, and Sunday
+  }
+
+  scene 36x12 {
+    sign s lines=["Library", "Monday to Friday: 9 until 5", "Saturday: 10 until 1", "Sunday: shut"] kind=board color=sky at=canvas(1, 1)
+    column q right-of=s gap=2 space=1 align=start {
+      text ask "Can you go on {if d == 0 then \"Monday\" else if d == 1 then \"Saturday\" else if d == 2 then \"Sunday\" else \"Friday\"} at {if t == 0 then \"11 o'clock\" else if t == 1 then \"3 o'clock\" else \"12 o'clock\"}?" narrate width=16
+      choice pick options=["yes", "no"]
+    }
+  }
+
+  answer pick=(if d == 2 then "no" else if d == 1 then if t == 1 then "no" else "yes" else "yes")
+  hint "Find the line for that day first."
+  hint "Now check the time. Is it between the two times on that line?"
+}

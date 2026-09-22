@@ -1,0 +1,25 @@
+item measure.tape v=1 skills=[length.centimetres] {
+  title "Reading a tape measure"
+  difficulty (m / 10 + (if m % 10 == 0 then 0 else 3))
+  let m={15, 25, 35, 45, 55, 65, 75, 85}
+  level easy {
+    let m={20, 30, 40, 50, 60}  # on the long marks
+  }
+  level hard {
+    let m={55, 65, 75, 85, 95}
+  }
+
+  scene 32x15 {
+    tape roll to=100 step=10 mark=m unit=cm showReading=false at=canvas(1, 1)
+    text ask "What does the tape measure read, in centimetres?" width=28 below=roll gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer == m + 5) point=roll {
+      say "The long marks are tens and the short ones are fives. Count carefully past the last ten."
+    }
+  }
+  hint "Find the ten before the arrow, then count on in fives."
+}

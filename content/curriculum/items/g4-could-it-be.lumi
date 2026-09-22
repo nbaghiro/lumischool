@@ -1,0 +1,29 @@
+# The rounded number is given and the original is the unknown, so rounding has to be run backwards.
+item place.could-it-be v=1 skills=[place-value.rounding] {
+  title "Which number could it have been"
+  difficulty (r / 1000)
+  let r={3000, 5000, 8000, 12000, 47000} p=0..3
+  level easy {
+    let r={3000, 5000}
+  }
+  level hard {
+    let r={12000, 47000}
+  }
+
+  scene 30x9 {
+    text ask "A number was rounded to the nearest thousand and came out as {r}. Which of these could it have been?" narrate width=29 at=canvas(1, 1)
+    choice pick options=[if p == 0 then r + 480 else r - 520, if p == 1 then r + 480 else r + 500, if p == 2 then r + 480 else r - 1480, if p == 3 then r + 480 else r + 1050] below=ask gap=1
+  }
+
+  answer pick=(r + 480)
+  feedback {
+    when (pick == r + 500) point=pick {
+      say "{r + 500} is exactly halfway, and halfway rounds up to {r + 1000}."
+    }
+    when (pick == r - 520) point=pick {
+      say "{r - 520} is nearer to {r - 1000} than to {r}."
+    }
+  }
+  hint "Which numbers round to {r}? Where do they start and where do they stop?"
+  hint "Halfway between {r - 1000} and {r} is {r - 500}. Halfway up to the next thousand is {r + 500}."
+}

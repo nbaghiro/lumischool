@@ -1,0 +1,43 @@
+# A route of three moves given as compass directions, followed square by square from the hut.
+# North is at the top. At easy the moves are one square each; at hard they are two or three and
+# the route doubles back on one leg.
+item nature.three-moves v=1 skills=[nature.maps, geography.directions] {
+  title "Where does the route end?"
+  difficulty (a + b + d - 3 + back)
+  set back=0
+  let c=1..3 r=1..2 a=1..2 b=1..2 d=1..2
+  where (c + a <= 6 and r + b <= 5)
+  let c2={c + a}
+  let r2={r + b}
+  let c3={if back == 1 then c2 - d else c2 + d}
+  where (c3 >= 1 and c3 <= 6)
+  let third={if back == 1 then "west" else "east"}
+  let from={pick(c - 1, "A", "B", "C")}
+  let letter={pick(min(c3, 6) - 1, "A", "B", "C", "D", "E", "F")}
+  level easy {
+    let a=1..1 b=1..1 d=1..1
+  }
+  level hard {
+    set back=1
+    let a=2..3 b=2..3 d=1..2
+  }
+
+  scene 36x18 {
+    gridmap map cols=6 rows=5 col=c row=r thing=hut at=canvas(1, 1)
+    text ask "North is at the top. Ada leaves the hut in {from}{r} and walks {a} east, {b} south, then {d} {third}. Which square does she end in? Write the letter, then the number." narrate width=18 right-of=map gap=2
+    choice letter options=["A", "B", "C", "D", "E", "F"] below=map gap=1
+    number-input number right-of=letter gap=2
+  }
+
+  answer letter=letter number=r2
+  feedback {
+    when (back == 1 and letter == pick(min(c2 + d, 6) - 1, "A", "B", "C", "D", "E", "F")) point=map {
+      say "West is back the way she came, to the left. The last move takes her back towards the hut."
+    }
+    when (number == r and letter == letter) point=map {
+      say "South is down the map. The second move changes the number."
+    }
+  }
+  hint "East is to the right, south is down, west is to the left. Put a finger on the hut and take the moves one at a time."
+  hint "After all three moves, read the letter above your finger and the number beside it."
+}

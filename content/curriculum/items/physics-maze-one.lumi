@@ -1,0 +1,20 @@
+item physics.maze-one v=1 skills=[physics.light] {
+  title "One mirror"
+  difficulty (if k == 0 then r else 4 - r)
+  let r=1..3 k=0..1
+  level easy {
+    where (k == 0 and r == 1 or k == 1 and r == 3)
+  }
+  level hard {
+    where (k == 0 and r == 3 or k == 1 and r == 1)
+  }
+
+  scene 14x18 {
+    mirrors box cols=4 rows=3 torch=r rise=["{if k == 0 then \"C\" else \"Z\"}{r}"] fall=["{if k == 1 then \"C\" else \"Z\"}{r}"] goals=["T3", "R2", "B3"] at=canvas(1, 0)
+    text ask "Which letter does the light reach?" width=13 below=box gap=0
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check physics.light of=box pick=reaches
+  hint "Follow the light along its row. Which way does the mirror send it?"
+}

@@ -1,0 +1,32 @@
+# The story: Pip's day on Book Island, and how many words end in ing.
+item reading.count-endings v=1 stars=1 skills=[reading.morphology] {
+  title "Pip's day"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "Pip is jumping in the puddles. The frogs are hopping and a duck is swimming.", "Pip jumped in the puddles and splashed the frogs. Now she is running home, laughing.", "It rained all morning. Pip is looking at the drops sliding down the window, and the cat is sleeping.")}
+  let asks={pick(k, "How many words end in ing?", "How many words end in ed?", "How many words end in ing?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x13 {
+    passage p title="" text="{t}" width=32 numbers=false at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 3 else if k == 1 then 2 else 3)
+  feedback {
+    when (k == 1 and answer == 3) point=p {
+      say "Running and laughing end in ing, not ed. Count only the ed words: what Pip already did."
+    }
+    when (k == 2 and answer == 4) point=p {
+      say "Morning ends in ing but it is not a doing word with an ending: it is a word on its own. Count the doing words."
+    }
+  }
+  hint "Read the words one by one and look at the last letters."
+  hint "{if k == 1 then \"Ed is on the things already done.\" else \"Ing is on the things happening now.\"}"
+}

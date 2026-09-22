@@ -1,0 +1,22 @@
+# The message never names the place. The clues are in what Nell saw and felt, and the three
+# places are the three worlds the fourth year travels through.
+item reading.postcard-clue v=1 skills=[reading.inference, reading.letters] {
+  title "Where was she?"
+  let k=0..2
+
+  scene 35x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      postcard card greeting="Dear Sam," text="{if k == 0 then \"The waves are as tall as houses. My bunk rocks all night, and this morning a whale swam right beside us!\" else if k == 1 then \"It is so cold up here that my water bottle froze. We climbed all day, and from the top we could see the sea.\" else \"The sand is hot and there are palm trees everywhere. A parrot wakes us up each morning with its shouting.\"}" closing="Love from" from="Nell" to=["Sam Reed", "12 Mill Lane", "Ash"] stamp=none date="" lines=4
+      text ask "Where was Nell when she wrote this?"
+      choice pick options=["on a ship at sea", "up a mountain", "on a hot island"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "on a ship at sea" else if k == 1 then "up a mountain" else "on a hot island")
+  feedback {
+    when (pick == "on a ship at sea" and k == 1) point=card {
+      say "She could see the sea, but from far away. Read what froze, and what she did all day."
+    }
+  }
+  hint "The postcard never says where she is. Find the things she saw and felt, and ask where those happen."
+}

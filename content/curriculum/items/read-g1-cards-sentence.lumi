@@ -1,0 +1,19 @@
+# Open: many sentences can be made from the cards, and a grown-up checks that the one written
+# makes sense and is a sentence.
+item reading.cards-sentence v=1 stars=3 skills=[reading.sight-words, writing.sentences] {
+  title "A sentence from the cards"
+  let k=0..1
+
+  scene 32x20 {
+    column bank at=canvas(1, 1) space=0 align=start {
+      wordcards top words=["the", "was", "said", "big"] picked=-1
+      wordcards bottom words=["{if k == 0 then \"dog\" else \"fox\"}", "{if k == 0 then \"cat\" else \"hen\"}", "hello", "a"] picked=-1
+    }
+    text ask "Make a sentence with four or more of these words. Write it on the line." narrate width=30 below=bank gap=0
+    writinglines lines lines=1 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence that makes sense and uses at least four of the card words, with a capital letter at the start and a full stop or other mark at the end, such as The dog said hello or The big cat was here."
+  hint "Pick a word for who the sentence is about."
+  hint "What did they do, or what were they like? Add a capital and a full stop."
+}

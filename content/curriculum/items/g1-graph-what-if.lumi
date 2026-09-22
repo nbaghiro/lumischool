@@ -1,0 +1,20 @@
+# A question about a chart that is not on the chart: what changes if three more children choose.
+item data.graph-what-if v=1 stars=2 skills=[data.picture-graphs, reasoning.what-if] {
+  title "Three more children"
+  difficulty (if f == "apples" and a > b and a > c or f == "pears" and b > a and b > c or f == "plums" and c > a and c > b then 0 else 2)
+  let a=2..6 b=2..6 c=2..6 f={"apples", "pears", "plums"}
+  where (a != b and b != c and a != c)
+  where (a + (if f == "apples" then 3 else 0) != b + (if f == "pears" then 3 else 0))
+  where (b + (if f == "pears" then 3 else 0) != c + (if f == "plums" then 3 else 0))
+  where (a + (if f == "apples" then 3 else 0) != c + (if f == "plums" then 3 else 0))
+
+  scene 32x16 {
+    text ask "Each star is one child. Three more children choose {f}. Which fruit has the most now?" width=30 at=canvas(1, 0)
+    picgraph g labels=["Apples", "Pears", "Plums"] counts=[a, b, c] prop=star below=ask gap=1
+    choice pick options=["apples", "pears", "plums"] stack=column right-of=g gap=2
+  }
+
+  answer pick=(if a + (if f == "apples" then 3 else 0) > b + (if f == "pears" then 3 else 0) and a + (if f == "apples" then 3 else 0) > c + (if f == "plums" then 3 else 0) then "apples" else if b + (if f == "pears" then 3 else 0) > c + (if f == "plums" then 3 else 0) then "pears" else "plums")
+  hint "Add three stars to the {f} row in your head."
+  hint "Now compare the three rows again."
+}

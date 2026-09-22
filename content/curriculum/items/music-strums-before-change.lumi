@@ -1,0 +1,33 @@
+# Reading two bars of C and a bar of G7 as strum tracks: the strums of C before the change, the
+# strums in all, or the bars of C.
+item music.strums-before-change v=1 skills=[music.chord-changes, music.counting-beats] {
+  title "Counting to the change"
+  difficulty w
+  let w=0..2
+  let asks={pick(w, "How many strums of C are played before the change to G7?", "How many strums are there in all?", "How many bars of C are there before G7?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 36x28 {
+    strumtrack c1 strums=D-D-D-D-D-D-D-D- counts=true chord=C ring=-1 at=canvas(1, 1)
+    strumtrack g strums=D-D-D-D- counts=true chord=G7 ring=-1 below=c1 gap=1
+    text ask "The song starts with C and then changes to G7 on count 1. {asks}" narrate width=34 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 8 else if w == 1 then 12 else 2)
+  feedback {
+    when (w == 0 and answer == 4) point=c1 {
+      say "That is one bar of C. Count the strums on the whole C track."
+    }
+    when (w == 1 and answer == 8) point=g {
+      say "That is the C strums only. Add the G7 bar's strums."
+    }
+  }
+  hint "{if w == 2 then \"Each set of counts 1, 2, 3, 4 is one bar.\" else \"Count the down arrows.\"}"
+  hint "{if w == 0 then \"Four strums a bar, and the C track has two bars.\" else if w == 1 then \"Eight of C and four of G7.\" else \"The C track's counts run 1 to 4 and then 1 to 4 again.\"}"
+}

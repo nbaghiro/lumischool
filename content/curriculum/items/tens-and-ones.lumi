@@ -1,0 +1,28 @@
+item place-value.tens-ones v=1 skills=[place-value.tens-and-ones] {
+  title "Tens and ones"
+  difficulty (10 * t + o)
+  let t=1..5 o=1..9
+  level easy {
+    let t=1..2 o=1..5
+  }
+  level hard {
+    let t=6..9 o=5..9
+  }
+
+  scene 24x10 {
+    placevalue rods tens=t ones=o at=canvas(1, 1)
+    text ask "How many is this altogether?" narrate below=rods gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (10 * t + o)
+  feedback {
+    when (answer == t + o) point=rods.tens {
+      say "Every rod is ten cubes, not one. Count the rods in tens first: ten, twenty, thirty."
+    }
+    when (answer == 10 * t) point=rods.ones {
+      say "The single cubes count too. Add them on after the tens."
+    }
+  }
+  hint "Count the rods in tens, then count on in ones."
+}

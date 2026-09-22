@@ -1,0 +1,37 @@
+# The story: Ada's cress on the windowsill of the bird hide, growing the same amount every week,
+# and how tall it is after so many weeks.
+item nature.cress-weeks v=1 skills=[nature.plants, multiplication.tables] {
+  title "Ada's cress"
+  difficulty (g * n)
+  let s=1..3 g=2..4 n=2..4
+  level easy {
+    let g=2..2 n=2..3
+  }
+  level hard {
+    let g=3..4 n=4..4
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      growstages bean stages=3 numbers=false names=0
+      art sun asset="sun"
+    }
+    text ask "Ada keeps a tray of cress on the windowsill of the bird hide. On the first day it is {s} cm tall, and with light and water it grows {g} cm every week. How tall is it after {n} weeks?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (s + g * n)
+  feedback {
+    when (answer == g * n) point=bean {
+      say "It was already {s} cm tall before it started growing. Add that on."
+    }
+    when (answer == s + g and n != 1 and s + g != s + g * n) point=bean {
+      say "That is after one week. It grows {g} cm every week for {n} weeks."
+    }
+    when (answer == s + g + n and s + g + n != s + g * n) point=bean {
+      say "It grows {g} cm each week, so {n} weeks is {g} added {n} times."
+    }
+  }
+  hint "How much does it grow in {n} weeks? Count in {g}s, {n} times."
+  hint "Then add the {s} cm it started with."
+}

@@ -1,0 +1,39 @@
+# The two-star reason: a balloon squeezed to half its size still holds all its air, squashed into
+# less room; letting some out or blowing more in changes the amount. Each version asks whether
+# there is less, the same or more air, and why.
+item chem.squashed-balloon v=1 stars=2 skills=[chemistry.states, reasoning.explain] {
+  title "Is there less air?"
+  difficulty (if k == 0 then 2 else if k == 2 then 1 else 0)
+  let k=0..2 r=0..2
+  let story={pick(k, "Ada squeezes a full balloon in both hands until it looks half the size. She does not let any air out.", "Ada holds the neck of a full balloon open for a moment, then ties it again. It looks half the size.", "Ada blows three more breaths into a balloon and ties it. It looks bigger.")}
+  let right={pick(k, "The same air, squashed into less room", "Less air, because some came out", "More air, because she blew more in")}
+  let w1={pick(k, "Less air, because it is smaller", "The same air, just moved about", "The same air, stretched out")}
+  let w2={pick(k, "More air, because it is harder now", "More air, because the balloon is tighter", "Less air, because the balloon is thinner")}
+  level easy {
+    let k=1..2
+  }
+  level hard {
+    let k=0..0
+  }
+
+  scene 34x26 {
+    balloons one count=1 at=canvas(1, 0)
+    text ask "{story} Is there less air in the balloon now, the same, or more?" narrate width=32 below=one gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == w1) point=one {
+      say "Nothing came out. Squeezing pushes the same air into less room, and that is why it pushes back on her hands."
+    }
+    when (k == 0 and pick == w2) point=one {
+      say "It is harder because the air is squashed, not because there is more of it. No air went in."
+    }
+    when (k != 0 and pick != right) point=one {
+      say "Ask what went in or out of the balloon. Air only changes in amount when some leaves or arrives."
+    }
+  }
+  hint "Did any air go in or out of the balloon? That is the only way the amount can change."
+  hint "Squeezing changes the room the air has, not how much air there is."
+}

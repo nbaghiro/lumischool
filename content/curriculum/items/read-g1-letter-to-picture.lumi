@@ -1,0 +1,33 @@
+# Letter to sound the other way round from the first-sound item: the letter is given and the child
+# says each picture's name to find the one that starts with it.
+item reading.letter-to-picture v=1 skills=[reading.phonics] {
+  title "Which one starts with this letter?"
+  let k=0..3
+
+  scene 37x13 {
+    row pics at=canvas(1, 1) space=1 align=end {
+      column ca space=0 align=centre {
+        tent t lit=0
+        text la "A"
+      }
+      column cb space=0 align=centre {
+        dog d facing=1 ball=0
+        text lb "B"
+      }
+      column cc space=0 align=centre {
+        seal s rock=0 facing=-1
+        text lc "C"
+      }
+      column cd space=0 align=centre {
+        fox f facing=-1
+        text ld "D"
+      }
+    }
+    text ask "Which picture starts with {if k == 0 then \"t\" else if k == 1 then \"d\" else if k == 2 then \"s\" else \"f\"}?" narrate below=pics gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=2
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else if k == 2 then "C" else "D")
+  hint "Say the name of each picture out loud."
+  hint "Which name starts with the sound this letter makes?"
+}

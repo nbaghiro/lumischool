@@ -1,0 +1,27 @@
+# Two programs made of the same two blocks both reach the flag; only the order decides which one
+# walks over the gem, and k puts the gem on one path or the other.
+item coding.which-program-gem v=1 skills=[coding.tracing, coding.sequences] {
+  title "Which one gets the gem?"
+  difficulty a
+  let a=2..4 k=0..1
+
+  scene 32x14 {
+    row top at=canvas(1, 0) space=2 align=start {
+      column pa space=0 align=centre {
+        text la "A"
+        blocks ba code=["right {a}", "down 2"] words=false
+      }
+      column pb space=0 align=centre {
+        text lb "B"
+        blocks bb code=["down 2", "right {a}"] words=false
+      }
+      maze g cols=6 rows=3 flag=[1 + a, 3] gems=[if k == 0 then 1 + a else 1, 2]
+    }
+    text ask "Both programs get to the flag. Which one picks up the gem too?" width=20 below=top gap=1
+    choice pick options=["A", "B"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else "B")
+  hint "Walk program A with a finger, then program B."
+  hint "Which path goes over the gem's square?"
+}

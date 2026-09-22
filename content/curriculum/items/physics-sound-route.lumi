@@ -1,0 +1,37 @@
+# Three stars: choosing a route with two joins that carries a tap all the way, when air is the worst
+# carrier of the three and a route with air in it loses the sound. The route that works is in a
+# different place each time.
+item physics.sound-route v=1 stars=3 skills=[physics.sound, reasoning.constraints, reasoning.planning] {
+  title "A route for the tap"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let good={pick(v, "Through the rock, then along the string", "Through the water, then through the table", "Along the string, then through the table", "Through the water, then along the string")}
+  let wrong1={pick(v, "Through the air, then along the string", "Through the air, then through the water", "Along the string, then through the air", "Through the table, then through the air")}
+  let wrong2={pick(v, "Through the rock, then through the air", "Through the table, then through the air", "Through the air, then through the table", "Through the air, then along the string")}
+  let o1={pick(v, good, wrong1, wrong1, wrong2)}
+  let o2={pick(v, wrong1, good, wrong2, wrong1)}
+  let o3={pick(v, wrong2, wrong2, good, good)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 29x27 {
+    row top space=2 align=start at=canvas(1, 0) {
+      stringphone solid mode=through through=1 rings=1
+    }
+    text ask "Sam is a long way off and wants to hear Mia's tap as loudly as he can. Each of these routes has two joins in it. Which one carries the tap all the way?" narrate width=24 below=top gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=good
+  feedback {
+    when (pick != good) point=ask {
+      say "One step of that route is through the air, and air is the worst of the three at passing a sound on."
+    }
+  }
+  hint "Which of the things in these routes carries a sound worst?"
+  hint "Look for the route that never has to cross that one."
+}

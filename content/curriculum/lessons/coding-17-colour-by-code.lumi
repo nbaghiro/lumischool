@@ -1,0 +1,47 @@
+lesson coding-colour-by-code v=1 format=teach grade=1 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "Colour by code"
+  goal "Colour a picture on squared paper from a program that says each row's colours."
+
+  look {
+    scene 27x14 {
+      pixels p cols=7 rows=6 code=["1 white 2 red 1 white 2 red 1 white", "7 red", "7 red", "1 white 5 red 1 white", "2 white 3 red 2 white", "3 white 1 red 3 white"] at=canvas(1, 0)
+    }
+    say """
+      A picture on a screen is made of tiny squares, and a program can say what colour each one is.
+      Each line of this code is one row, read from the left: one white, two red, one white. Colour
+      the squares row by row and a picture appears.
+      """
+  }
+  do {
+    practice coding.pixel-missing-number count=1 seed=4
+    show coding.pixel-row r=3 easy-r=2 hard-r=4
+    practice coding.pixel-count count=2 seed=2
+    practice coding.pixel-white count=2 seed=5
+    practice coding.pixel-most-red count=2 seed=3
+  }
+  try stars=2 {
+    show coding.pixel-spoilt-row r=2 k=0 easy-r=1 hard-r=4
+  }
+  try stars=3 {
+    show coding.pixel-ways n=6 s=2 easy-n=5 easy-s=3 hard-n=7 hard-s=2
+  }
+  remember {
+    say "One line of code is one row of squares, from the left."
+  }
+
+  grown-ups """
+    Squared paper and crayons are all this needs. Afterwards, the child can make their own picture
+    and write its code for you to colour, which is the same idea the other way round. A computer
+    stores a photograph in just this way, with a number for each square's colour. Some questions
+    hide the picture, so the code has to be read rather than the squares counted, and one shows the
+    picture and asks for the code. In the two-star question a picture that matches on both sides has
+    the same number of white squares at each end of every line. In the three-star question, sliding
+    the red along one square at a time finds every row.
+    """
+  level easy {
+    grown-ups "At this level the rows asked about come first in the code, the codes paint fewer squares, and there are three ways to place the red squares."
+  }
+  level hard {
+    grown-ups "At this level the row asked about is the last one, the codes paint more squares, and there are six ways to place the red squares."
+  }
+}

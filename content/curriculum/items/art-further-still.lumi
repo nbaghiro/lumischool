@@ -1,0 +1,14 @@
+# Extending the rule past the picture: a layer even further away than the furthest one painted.
+item art.further-still v=1 stars=2 skills=[art.space, art.tints, reasoning.generalise] {
+  title "Even further away"
+  let p=0..2
+
+  scene 34x12 {
+    text ask "Ada's far hills are green and 3 white, and her near field is green. She adds mountains even further away than the far hills. Which paint should she use?" width=16 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then \"green and 8 white\" else \"green and 1 white\"}", "{if p == 1 then \"green and 8 white\" else if p == 0 then \"green and 1 white\" else \"green and black\"}", "{if p == 2 then \"green and 8 white\" else \"green and black\"}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=lighter
+  hint "Each layer further back is paler than the one in front. How pale are the far hills?"
+  hint "The mountains are further back still. Should they be paler or darker than green and 3 white?"
+}

@@ -1,0 +1,25 @@
+item times.sequence v=1 skills=[multiplication.tables] {
+  title "What comes next"
+  difficulty t
+  let s=2..9 t={3, 4, 6, 7, 8}
+  level easy {
+    let t={3, 4}
+  }
+  level hard {
+    let t={7, 8, 9}
+  }
+
+  scene 32x18 {
+    terms row terms=5 start=s step=t shape=dot at=canvas(1, 1)
+    text ask "The pattern goes up in {t}s. What is the next number?" width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (s + 5 * t)
+  feedback {
+    when (answer == s + 4 * t) point=row {
+      say "That is the last one shown. The question asks for the one after it."
+    }
+  }
+  hint "Add {t} to the last number in the row."
+}

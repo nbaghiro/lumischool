@@ -1,0 +1,27 @@
+# The way in: three things with a spill on each, and the one that is wet through. Fabric and paper
+# soak water up; metal, glass, plastic and rubber keep it out. At hard the two that keep water out
+# are the ones children take for soft (a raincoat, a rubber boot).
+item chem.wet-through v=1 skills=[chemistry.materials] {
+  title "Which one is wet through?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3 p=0..2
+  let a={pick(k, "towel", "paper-bag", "wool-sock", "paper-book")}
+  let b={pick(k, "metal-spoon", "glass-jar", "raincoat", "rubber-boot")}
+  let c={pick(k, "plastic-bottle", "metal-key", "rubber-band", "plastic-spoon")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 24x13 {
+    text ask "Ada spills water on each of these. Which one is wet all the way through?" width=23 at=canvas(1, 0)
+    materials row things=["{if p == 0 then a else if p == 1 then b else c}", "{if p == 0 then b else if p == 1 then c else a}", "{if p == 0 then c else if p == 1 then a else b}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="only(absorbent)"
+  hint "Which one is made of threads or paper? Water soaks into those."
+  hint "Metal, glass, plastic and rubber keep water on the outside. Soft is not the same as soaking."
+}

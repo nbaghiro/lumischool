@@ -1,0 +1,27 @@
+# The story: Tia's sentences about the harbour, and how many describing words are in them.
+item writing.count-describing v=1 stars=1 skills=[writing.word-classes] {
+  title "Tia's sentences"
+  difficulty k
+  let k=0..2
+  let s={pick(k, "The tall lighthouse shines over the dark sea.", "A small red boat rocks on the choppy, cold sea.", "Three noisy gulls sit on the old wooden jetty by the calm water.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x8 {
+    text ask "Tia wrote this about the harbour: {s} How many describing words did she use?" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else if k == 1 then 4 else 4)
+  feedback {
+    when (answer == (if k == 0 then 4 else if k == 1 then 6 else 7)) point=ask {
+      say "You have counted the naming words too. A describing word says what a thing is like; the thing itself is a naming word."
+    }
+  }
+  hint "Find each thing in the sentence, then look at the word just before it. Does it say what the thing is like?"
+  hint "{if k == 0 then \"Tall says what the lighthouse is like, and dark the sea.\" else if k == 1 then \"Small and red for the boat, choppy and cold for the sea.\" else \"Noisy for the gulls, old and wooden for the jetty, calm for the water. Three is a number, not a describing word here.\"}"
+}

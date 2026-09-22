@@ -1,0 +1,63 @@
+# The two-star reason: something happens to the pond, and one creature is in trouble first. The
+# child names the creature and the reason. A fish cannot leave the water and a frog's eggs need it;
+# a heron eats fish and frogs; and when the fish are gone it is the heron that goes hungry. Every
+# creature in the choices is drawn, so the wrong idea (the biggest is in trouble first, or the one
+# that cannot fly) can be looked at.
+item nature.pond-dries v=1 stars=2 skills=[nature.habitats, reasoning.explain] {
+  title "Who is in trouble first?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let event={pick(k, "It is a hot summer and the pond dries up.", "It is a hot summer and the pond dries up.", "It is a hot summer and the pond dries up.", "A heron comes to the pond every day.", "A heron comes to the pond every day.", "All the fish in the pond die.")}
+  let o1={pick(k, "fish", "frog", "fish", "fish", "frog", "heron")}
+  let o2={pick(k, "heron", "heron", "frog", "duck", "duck", "duck")}
+  let o3={pick(k, "duck", "duck", "duck", "dragonfly", "dragonfly", "dragonfly")}
+  let because={pick(k, "It breathes in the water", "Its eggs need the water", "It breathes in the water", "The heron eats it", "The heron eats it", "It eats the fish")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x35 {
+    row all at=canvas(1, 1) space=1 align=start {
+      pond pool pads=3 fish=2 frog=true
+      column birds space=1 align=start {
+        row big space=1 align=end {
+          heron tall facing=-1 reeds=2
+          art d asset="duck"
+        }
+        row little space=1 align=end {
+          kingfisher kf flying=0 facing=1
+          dragonfly df facing=1 rings=8
+        }
+      }
+    }
+    text ask "{event} Which creature is in trouble first, and why?" narrate width=34 below=all gap=1
+    row answers below=ask gap=1 space=2 align=start {
+      choice who options=[o1, o2, o3] stack=column
+      choice why options=["It breathes in the water", "Its eggs need the water", "The heron eats it", "It eats the fish"] stack=column
+    }
+  }
+
+  answer who=o1 why=because
+  feedback {
+    when (k <= 2 and who == "frog" and o1 != "frog") point=pool {
+      say "The frog can hop away to the wet grass. The fish cannot leave the water at all."
+    }
+    when (k <= 2 and (who == "heron" or who == "duck")) point=tall {
+      say "A bird can fly to another pond. Which creature cannot leave this one?"
+    }
+    when ((k == 3 or k == 4) and who != o1) point=tall {
+      say "The heron does not eat that one. What does a heron stand and wait for?"
+    }
+    when (k == 5 and who != "heron") point=tall {
+      say "The duck eats weed and the dragonfly eats flies. Which creature eats fish?"
+    }
+    when (why == "It eats the fish" and k != 5) point=pool {
+      say "That is the heron's reason, not this creature's. Why does this creature need the pond?"
+    }
+  }
+  hint "What does each creature need from the pond? Which one cannot do without it?"
+  hint "Which of them can fly or hop away, and which one is stuck?"
+}

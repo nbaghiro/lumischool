@@ -1,0 +1,80 @@
+lesson nature-who-lives-in-the-pond v=1 format=teach grade=1 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Who lives in the pond?"
+  goal "Say which creatures live in the pond, on it and beside it, and what each one needs from it."
+
+  look {
+    scene 33x22 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row water space=1 align=start {
+          pond pool pads=4 fish=3 frog=true
+          column birds space=1 align=start {
+            row big space=1 align=end {
+              heron tall facing=-1 reeds=2
+              art d asset="duck"
+            }
+            row little space=1 align=end {
+              kingfisher kf flying=0 facing=1
+              dragonfly df facing=1 rings=8
+            }
+          }
+        }
+        row edge space=2 align=end {
+          birdrow wire count=4 wire=true
+          minibeasts crawl kinds=["snail"] legs=false
+        }
+      }
+    }
+    say """
+      Ada sits very still by the pond in the marsh. Under the water the fish swim, breathing the
+      water. On top of it the lily pads float, and the frog sits on one; its eggs are laid in the
+      water. At the edge the heron stands in the shallows on its long legs, waiting for a fish or a
+      frog. The duck floats. The kingfisher dives for a fish, and the dragonfly flies over the
+      water on four wings.
+      """
+  }
+  do {
+    level easy {
+      worked nature.pond-count f=2 p=3 w=0
+    }
+    practice nature.pond-count count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.more-under-or-on count=1 seed=3 easy-seed=1 hard-seed=1
+    practice nature.under-or-on count=2 seed=4 easy-seed=1 hard-seed=7
+    practice nature.pond-visitors count=2 seed=11 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.pond-dries k=5
+    }
+  }
+  story {
+    show nature.pond-story f=2 d=3 w=0 easy-f=1 easy-d=2 easy-w=0 hard-f=3 hard-d=4 hard-w=1
+  }
+  try stars=2 {
+    show nature.pond-dries k=2 easy-k=0 hard-k=4
+  }
+  try stars=3 {
+    show nature.pond-three k=0 easy-k=2 hard-k=3
+  }
+  remember {
+    say "Fish under the water, frog and duck on top, heron at the edge: each one needs the pond."
+  }
+
+  grown-ups """
+    The pond is read in three layers: under the water, on top of it, and at the edge, and every
+    creature has its place and its reason for being there. The wrong idea to watch for is that
+    everything at a pond is "in" it: the heron stands in the shallows but lives at the edge, the
+    duck floats on top, and only the fish are under. The counting questions ask the child to look
+    under the lily pads, where part of a fish is often hidden. In the story the heron is the point:
+    it is a creature and it is a bird, and the fish are creatures but not birds. In the two-star
+    question one creature is in trouble first, and the child picks the reason as well; ask why the
+    others are not in trouble yet (they can fly or hop away). The three-star question is a small
+    food chain: the heron eats fish and frogs, the kingfisher eats fish, and the right third creature
+    is the one that nobody there eats and that eats nobody. If the layers are still muddled after
+    the core, stay here another day and visit a real pond or a puddle: what is under, what is on
+    top, what is at the edge?
+    """
+  level easy {
+    grown-ups "At this level a worked example (two fish under three pads) opens the core, the counts stay at one to three, the compared counts are far apart, the places asked about are the fish under the water and the frog on top, the creatures placed are the heron and the duck, the story counts one fish and two small birds, the drying pond troubles the fish, and the third creature for the pond joins a heron and a duck."
+  }
+  level hard {
+    grown-ups "At this level the counts go to five fish and six pads, so more of the fish are half hidden, the compared counts differ by one, the places asked about are the lily pads and the reeds, the creatures placed are the kingfisher and the dragonfly, a second reasoning question sits in the core where the fish have died and the heron goes hungry, the story asks how many of the creatures are birds, the heron's coming troubles the frog, and the third creature joins a kingfisher and a frog."
+  }
+}

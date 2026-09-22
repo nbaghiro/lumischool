@@ -1,0 +1,36 @@
+# Numbering the year: the trees are drawn out of order and the words under them describe the trees,
+# not the seasons, so a child has to read each tree before numbering it. At easy one neighbouring
+# pair is swapped and the rest stand in order; at hard all four are muddled.
+item nature.trees-in-order v=1 skills=[nature.seasons, reasoning.order] {
+  title "Number the year"
+  difficulty (if p <= 1 then 0 else if p <= 3 then 1 else 2)
+  let p=0..5
+  let a={if p == 0 then "summer" else if p == 1 then "spring" else if p == 2 then "autumn" else if p == 3 then "winter" else if p == 4 then "winter" else "autumn"}
+  let b={if p == 0 then "spring" else if p == 1 then "autumn" else if p == 2 then "spring" else if p == 3 then "summer" else if p == 4 then "autumn" else "winter"}
+  let c={if p == 0 then "autumn" else if p == 1 then "summer" else if p == 2 then "winter" else if p == 3 then "spring" else if p == 4 then "spring" else "spring"}
+  let d={if p == 0 then "winter" else if p == 1 then "winter" else if p == 2 then "summer" else if p == 3 then "autumn" else if p == 4 then "summer" else "summer"}
+  let wa={if a == "spring" then "blossom" else if a == "summer" then "full of leaves" else if a == "autumn" then "leaves falling" else "bare"}
+  let wb={if b == "spring" then "blossom" else if b == "summer" then "full of leaves" else if b == "autumn" then "leaves falling" else "bare"}
+  let wc={if c == "spring" then "blossom" else if c == "summer" then "full of leaves" else if c == "autumn" then "leaves falling" else "bare"}
+  let wd={if d == "spring" then "blossom" else if d == "summer" then "full of leaves" else if d == "autumn" then "leaves falling" else "bare"}
+  let na={if a == "spring" then 1 else if a == "summer" then 2 else if a == "autumn" then 3 else 4}
+  let nb={if b == "spring" then 1 else if b == "summer" then 2 else if b == "autumn" then 3 else 4}
+  let nc={if c == "spring" then 1 else if c == "summer" then 2 else if c == "autumn" then 3 else 4}
+  let nd={if d == "spring" then 1 else if d == "summer" then 2 else if d == "autumn" then 3 else 4}
+  level easy {
+    let p=0..1
+  }
+  level hard {
+    let p=4..5
+  }
+
+  scene 36x31 {
+    seasontrees year seasons=[a, b, c, d] names=0 at=canvas(1, 1)
+    text ask "These are Ada's tree in four seasons, but they are muddled. Number them 1 to 4 in the order the year goes, starting with spring." narrate width=34 below=year gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=na r=nb t=nc u=nd
+  hint "Which tree has blossom? That is spring, and it gets number 1."
+  hint "After spring the tree fills with leaves, then the leaves fall, then it is bare."
+}

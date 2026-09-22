@@ -1,0 +1,50 @@
+lesson coding-saying-it-in-order v=2 format=teach grade=1 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Saying it in the right order"
+  goal "Put the steps of a job, and the blocks of a program, into an order that works."
+
+  look {
+    scene 24x9 {
+      row all at=canvas(1, 0) space=2 align=start {
+        blocktray t code=["down 2", "right 2"] per=1
+        maze m map=["S . # .", ". # . .", ". . F ."] code=["down 2", "right 2"]
+      }
+    }
+    say """
+      The same two blocks in a different order take the robot somewhere else. Down then right goes
+      round the rocks; right then down walks into one. Putting the steps in order is the first half
+      of writing a program.
+      """
+  }
+  do {
+    show coding.order-morning
+    show coding.order-toast
+    show coding.dance-order q=1 k=3 easy-k=2 hard-k=4
+    practice coding.order-cards count=2 seed=4
+    show coding.dance-order q=0 k=4 easy-k=2
+    practice coding.order-cards-gem count=2 seed=2
+  }
+  try stars=2 {
+    show coding.which-swap k=1
+  }
+  try stars=3 {
+    show coding.orders-count k=1
+  }
+  remember {
+    say "Some steps must come first. Work out which ones."
+  }
+
+  grown-ups """
+    The child can use any job they do every day: feeding a pet, laying the table, getting a coat
+    on. Write their steps down in the order they say them, then follow them exactly, including the
+    ones that come out in a funny order. Some steps can swap and some cannot, which is the idea
+    in the two-star question: on an open grid any order of moves ends in the same place, and only
+    the rocks make the order matter. In the three-star question there are six orders to try; a
+    child who writes them down in a list is doing what a programmer does.
+    """
+  level easy {
+    grown-ups "At this level the shaded frame comes early in the dance, and the gem sits where two orders of the cards pass over it."
+  }
+  level hard {
+    grown-ups "At this level the shaded frame is the last in the dance, and only one order of the cards picks up the gem."
+  }
+}

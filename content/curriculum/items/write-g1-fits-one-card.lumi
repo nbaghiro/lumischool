@@ -1,0 +1,19 @@
+# A sentence written to fit one card and not the other: the child has to find what is different
+# and put exactly that into words.
+item writing.fits-one-card v=1 stars=3 skills=[writing.sentences, writing.composing] {
+  title "A sentence for card B"
+  let a=0..2 f=0..1
+  let who={if a == 0 then "duck" else if a == 1 then "fox" else "rabbit"}
+  let wa={if f == 0 then "on" else "under"}
+  let wb={if f == 0 then "under" else "on"}
+
+  scene 32x17 {
+    picturecards cards who=["{who}", "{who}"] where=["{wa}", "{wb}"] thing=["table", "table"] letters=true at=canvas(1, 1)
+    text ask "Write a sentence that fits card B but not card A." width=12 right-of=cards gap=1
+    handwriting rules show="" rows=2 trace=0 width=30 below=cards gap=1
+  }
+
+  check writing.by-eye look-for="One sentence that says where the animal is on card B (on or under the table), so that it could not be about card A, with a capital letter at the start and a full stop at the end."
+  hint "What is the same on both cards? What is different?"
+  hint "Put the different thing into your sentence."
+}

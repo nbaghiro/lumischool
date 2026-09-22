@@ -1,0 +1,10 @@
+item art.paint-with-three v=1 stars=3 skills=[art.colour-mixing, art.painting, reasoning.plan] {
+  title "Paint with three"
+
+  scene 36x16 {
+    text ask "Paint a picture with only red, yellow and blue. Mix at least two new colours in the tray, and use each one for something in your picture." width=12 at=canvas(1, 1)
+    paintsheet sheet w=20 h=11 paper="squared" guide="none" outline="none" pots=["red", "yellow", "blue"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="At least two colours the child mixed from the primaries (an orange, a green or a purple, or a lighter or darker version), each chosen for a part of the picture it suits, such as green grass or an orange sun." notice=["Two or more colours mixed from primaries", "Each mixed colour used for something", "Only red, yellow and blue from the box"] ask="Which colour did you mix, and what did you mix it from?"
+}

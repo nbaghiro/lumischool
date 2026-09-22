@@ -1,0 +1,32 @@
+# How much further, from two legs of the same road: a difference with an exchange, in context.
+item sub.road-further v=1 skills=[subtraction.difference, subtraction.columns] {
+  title "How much further?"
+  difficulty (x + y)
+  let x=41..86 y=15..39
+  where (x % 10 < y % 10 and x > y + 9)
+  level easy {
+    let x=41..59 y=15..25
+  }
+  level hard {
+    let x=70..86 y=30..39
+  }
+
+  scene 24x19 {
+    roaddistances road stops=["Fenn", "Gale", "Holt"] legs=[y, x] unit=km at=canvas(1, 1)
+    text ask "How much further is it from Gale to Holt than from Fenn to Gale?" narrate width=22 below=road gap=1
+    number-input answer below=ask gap=1
+    text unit "km" right-of=answer gap=0
+  }
+
+  answer (x - y)
+  feedback {
+    when (answer == x + y) point=road {
+      say "How much further is the gap between the two lengths, so take one away from the other."
+    }
+    when (answer == x - y + 10) point=road {
+      say "You exchanged a ten into the ones. Did you take it off the tens as well?"
+    }
+  }
+  hint "Which leg is longer? Take the shorter one away from it."
+  hint "There are not enough ones on top, so exchange a ten first."
+}

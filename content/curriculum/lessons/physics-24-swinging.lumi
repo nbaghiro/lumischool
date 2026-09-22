@@ -1,0 +1,48 @@
+lesson physics-swinging v=1 format=teach grade=3 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Swinging"
+  goal "Find the pattern in how a pendulum swings, use it to predict, and show with a fair test that the weight on the end does not matter."
+
+  look {
+    scene 37x12 {
+      row all at=canvas(1, 0) space=1 align=start {
+        pendulum short length=3 tag="A"
+        pendulum long length=7 tag="B"
+        note n "A short string swings to and fro quickly. A long one swings slowly." width=10
+      }
+    }
+    say """
+      A pendulum swings to and fro in the same time, over and over, so once you have counted its
+      swings you can say how many it will make next. What changes the time is the length of the
+      string: a shorter string swings faster. A heavier weight on the end makes no difference at
+      all, which surprises most people.
+      """
+  }
+  do {
+    practice physics.pendulum-read count=2 seed=1
+    practice physics.pendulum-faster count=3 seed=2
+    practice physics.pendulum-weight count=2 seed=3
+    practice physics.pendulum-count count=1 seed=4
+  }
+  try stars=2 {
+    show physics.pendulum-table w=0
+  }
+  try stars=3 {
+    show physics.pendulum-fair f=2
+  }
+  remember {
+    say "A shorter string swings faster. The weight on the end does not change it."
+  }
+
+  grown-ups """
+    A key on a piece of string is a pendulum. Count its swings in ten seconds, then halve the
+    string and count again, then tie on a second key and count again. The last one is the
+    surprise, and children will want to check it more than once, which is exactly what a fair
+    test is for. A garden swing works too, and the playground has a game in it.
+    """
+  level easy {
+    grown-ups "At this level the strings are short, the two pendulums compared differ by three or more in length and carry the same bob, and the swings are counted over twenty seconds."
+  }
+  level hard {
+    grown-ups "At this level the strings are long, the two pendulums compared differ by one in length and carry different bobs, and the swings are counted over thirty seconds."
+  }
+}

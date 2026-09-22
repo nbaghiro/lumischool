@@ -1,0 +1,23 @@
+# Every way to mark a short tune soft or loud, bar by bar: the list doubles with each bar, and a rule
+# about the first bar halves it again.
+item music.mark-the-bars v=1 stars=3 skills=[music.dynamics, reasoning.all-the-ways] {
+  title "Soft or loud, bar by bar"
+  difficulty (n - 2 + r)
+  let n=2..3 r=0..1
+  let rule={if r == 1 then "The first bar must be p." else "Any bar can be either."}
+
+  scene 30x11 {
+    dynamics marks marks=["p", "f"] words=true ring=-1 at=canvas(1, 1)
+    text ask "A tune has {n} bars. Every bar is marked p or f. {rule} How many different ways can the tune be marked?" width=16 right-of=marks gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if n == 2 then if r == 1 then 2 else 4 else if r == 1 then 4 else 8)
+  feedback {
+    when (answer == 2 * n and answer != (if n == 2 then if r == 1 then 2 else 4 else if r == 1 then 4 else 8)) point=ask {
+      say "Try writing every way down, bar by bar: p p, p f, and so on."
+    }
+  }
+  hint "Start with one bar. How many ways? Now add a second bar after each of those."
+  hint "Write them in a list so none is missed: p p, p f, f p..."
+}

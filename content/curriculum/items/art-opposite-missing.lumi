@@ -1,0 +1,21 @@
+item art.opposite-missing v=1 skills=[art.complementary, reasoning.two-steps] {
+  title "The missing opposite"
+  difficulty (if k == 1 or k == 5 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 2, 3, 4}
+  }
+  level hard {
+    let k={1, 5}
+  }
+
+  scene 34x19 {
+    colourwheel wheel segments=6 blank=[(k + 3) % 6] ring=k labels=true split="none" at=canvas(1, 1)
+    text ask "The colour opposite the ringed one has been left off the wheel. What is it?" width=14 right-of=wheel gap=2
+    choice pick options=["{if k == 0 then \"yellow\" else if k == 1 then \"green\" else if k == 2 then \"red\" else if k == 3 then \"red\" else if k == 4 then \"red\" else \"orange\"}", "{if k == 0 then \"green\" else if k == 1 then \"blue\" else if k == 2 then \"blue\" else if k == 3 then \"orange\" else if k == 4 then \"orange\" else \"yellow\"}", "{if k == 0 then \"blue\" else if k == 1 then \"purple\" else if k == 2 then \"purple\" else if k == 3 then \"purple\" else if k == 4 then \"yellow\" else \"green\"}"] below=wheel gap=1
+  }
+
+  answer pick=(if (k + 3) % 6 == 0 then "red" else if (k + 3) % 6 == 1 then "orange" else if (k + 3) % 6 == 2 then "yellow" else if (k + 3) % 6 == 3 then "green" else if (k + 3) % 6 == 4 then "blue" else "purple")
+  hint "Which colours sit either side of the empty space?"
+  hint "On this wheel, the colour between two others is what they make together. What do those two make?"
+}

@@ -1,0 +1,24 @@
+item physics.bigger-push v=1 skills=[physics.forces] {
+  title "Which push is bigger?"
+  difficulty (6 - abs(a - b))
+  let a={2, 4, 6} b={2, 4, 6}
+  where (a != b)
+  level easy {
+    where (abs(a - b) == 4)
+  }
+  level hard {
+    where (abs(a - b) == 2)
+  }
+
+  scene 27x16 {
+    forces one thing=box push=a labels=false at=canvas(1, 0)
+    text la "A" below=one gap=0
+    forces two thing=box push=b labels=false right-of=one gap=2
+    text lb "B" below=two gap=0
+    text ask "Which box gets the bigger push?" width=14 below=la gap=1
+    choice pick options=["A", "B"] right-of=ask gap=2
+  }
+
+  answer pick=(if a > b then "A" else "B")
+  hint "Which arrow is longer?"
+}

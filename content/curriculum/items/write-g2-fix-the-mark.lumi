@@ -1,0 +1,24 @@
+# The robot ends its sentence with the wrong mark; the child chooses the one it needs.
+item writing.fix-the-mark v=2 skills=[writing.punctuation, writing.editing] {
+  title "The robot's wrong mark"
+  difficulty (if k == 1 or k == 5 then 2 else if k == 0 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 2, 4}  # a question with a full stop, a telling with a question mark, a telling with a shout
+  }
+  level hard {
+    let k={1, 3, 5}  # shouts and a question given the wrong marks
+  }
+  let says={if k == 0 then "Is it time for lunch." else if k == 1 then "Look out, the pan is hot." else if k == 2 then "The cat is on the mat?" else if k == 3 then "Where did you put the map!" else if k == 4 then "We had soup for tea!" else "Stop, there is a car."}
+  let key={if k == 0 or k == 3 then "?" else if k == 1 or k == 5 then "!" else "."}
+
+  scene 31x15 {
+    fixbot bot says="{says}" width=18 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "The robot used the wrong mark. Which mark should it use?" narrate width=16 below=bot gap=1
+    choice pick options=[".", "?", "!"] right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Read the robot's sentence in the voice it should be said in."
+  hint "Is it telling you something, asking you something, or a shout?"
+}

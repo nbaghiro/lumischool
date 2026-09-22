@@ -1,0 +1,49 @@
+# What a body part is for: the seal's fat for the cold, its flippers for swimming, the gull's
+# webbed feet and wings, the crab's hard shell, the turtle's flippers and beak. The obvious pairs
+# come first; at hard the parts are the ones children mistake, the seal's fat and the crab's shell.
+item nature.part-for v=1 skills=[nature.habitats, nature.animals] {
+  title "What is that part for?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let who={pick(k, "gull", "seal", "sea turtle", "gull", "seal", "crab")}
+  let part={pick(k, "wings", "flippers", "flippers", "webbed feet", "thick layer of fat under its skin", "hard shell")}
+  let right={pick(k, "flying over the sea to spot fish", "swimming fast after fish", "flying through the water", "paddling on the water", "keeping warm in the cold sea", "keeping it safe from beaks and teeth")}
+  let o1={pick(k, "keeping warm on the rocks", "walking on the rocks", "digging in the sand", "gripping the rocks", "swimming fast", "keeping warm")}
+  let o2={pick(k, "catching crabs", "keeping warm", "keeping it safe", "flying", "floating on the water", "swimming fast")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x25 {
+    column four at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        seal ps rock=1 facing=1
+        gull pg flying=0
+      }
+      row low space=1 align=end {
+        crabs pc count=1
+        seaturtle pt facing=1 plates=5
+      }
+    }
+    text ask "Each part of a creature has a job. What {if k == 4 or k == 5 then \"is\" else \"are\"} the {who}'s {part} for?" narrate width=15 right-of=four gap=2
+    choice pick options=[o1, right, o2] stack=column below=four gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 4 and pick != right) point=ps {
+      say "The fat is under the skin all round the seal, like a coat it cannot take off. The sea is cold, and the fat keeps the cold out."
+    }
+    when (k == 5 and pick != right) point=pc {
+      say "A crab is soft inside. The shell is armour: a gull's beak cannot get through it."
+    }
+    when (k <= 3 and pick != right) point=four {
+      say "Look at the part on the drawing and think what it does when the creature moves."
+    }
+  }
+  hint "Find the {who} in the picture and find its {part}. What does the creature do with it?"
+  hint "Wings fly, flippers swim, webbed feet paddle, a shell keeps it safe, fat keeps it warm."
+}

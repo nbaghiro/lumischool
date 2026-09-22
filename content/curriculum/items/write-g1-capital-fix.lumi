@@ -1,0 +1,25 @@
+# One word is missing its capital, and which kind of word it is moves from version to version: the
+# first word, a name, a day of the week, or I.
+item writing.capital-fix v=1 skills=[writing.capitals] {
+  title "Put the capital back"
+  difficulty (if k == 2 then 2 else if k == 3 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 1, 4}  # the first word and names
+  }
+  level hard {
+    let k={2, 3}  # I and Monday
+  }
+  let line={if k == 0 then "the cat slept on Pip's bed." else if k == 1 then "On Tuesday we met leo at the shop." else if k == 2 then "Mia and i went to the park." else if k == 3 then "We swim on monday after school." else "Can ava come to tea?"}
+  let fix={if k == 0 then "The" else if k == 1 then "Leo" else if k == 2 then "I" else if k == 3 then "Monday" else "Ava"}
+
+  scene 32x9 {
+    caption strip text="{line}" width=30 at=canvas(1, 1)
+    text ask "One word should start with a capital letter. Write it the right way." narrate width=18 below=strip gap=1
+    word-input word options=["{fix}"] letters=6 right-of=ask gap=1
+  }
+
+  answer word=fix
+  hint "Read the sentence. Which word is the start, a name, a day, or I?"
+  hint "Does that word have its capital? Write it with one."
+}

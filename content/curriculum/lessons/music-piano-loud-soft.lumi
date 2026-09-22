@@ -1,0 +1,53 @@
+lesson music-piano-loud-soft v=1 format=teach grade=2 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Loud and soft"
+  goal "Read the marks for soft and loud, from p to ff, and the two signs for getting louder and softer."
+
+  look {
+    scene 33x7 {
+      dynamics marks marks=["p", "mp", "mf", "f"] words=true ring=-1 at=canvas(1, 1)
+      dynamics pins marks=["cresc", "dim"] words=true ring=-1 right-of=marks gap=1
+    }
+    say """
+      p means soft and f means loud. An m in front means quite: mp is quite soft and mf is quite
+      loud. A sign that opens out means getting louder, and one that closes means getting softer.
+      """
+  }
+  do {
+    show music.which-soft
+    level easy {
+      worked music.softer-of-two i=3 j=2 level=medium
+    }
+    practice music.softer-of-two count=2 seed=3
+    practice music.what-mark-means count=1 seed=2
+    show music.loudest
+    practice music.order-dynamics count=1 seed=4
+    show music.hairpin
+    practice music.hairpin-end count=1 hard-count=0 seed=5
+    level hard {
+      practice music.between-marks count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show music.between-marks i=1 q=2 easy-i=0
+  }
+  try stars=3 {
+    show music.mark-the-bars n=3 r=1 easy-n=2 easy-r=0
+  }
+  remember {
+    say "p is soft, f is loud, and m in front means quite. From soft to loud: pp, p, mp, mf, f, ff."
+  }
+
+  grown-ups """
+    Play one short tune twice, very softly and then loudly, and ask which was which. On the page the
+    marks are read and checked; the playing is heard in the room, and you are the judge of that.
+    In the two-star question, writing all six marks in a line first is the quickest way. The
+    three-star question is best done as a list, bar by bar; if the child finds a pattern in how the
+    list grows, ask what would happen with one more bar.
+    """
+  level easy {
+    grown-ups "At this level the soft mark and the loudest are as written, mp against mf is judged once in the teacher's pen before marks two steps apart, the marks to read are p and f, the order runs pp, p, f, ff, the hairpin is as written and the one to finish opens out, the two-star's answer lies between pp and mp, and the three-star has two bars with no rule."
+  }
+  level hard {
+    grown-ups "At this level the soft mark and the loudest are as written, the marks to compare are neighbours, the marks to read are mp and mf, the order has the two m marks in the middle, the hairpin is as written and the one to finish makes way for a second mark to find between two others, and the two-star and three-star are as written."
+  }
+}

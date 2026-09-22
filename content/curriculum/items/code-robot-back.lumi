@@ -1,0 +1,32 @@
+item coding.robot-back v=2 skills=[coding.sequences] {
+  title "One block goes back"
+  difficulty (a + b + back)
+  set back=1
+  let a=2..4 b=1..2
+  level hard {
+    set back=2
+    let a=3..4 b=1..2
+  }
+
+  scene 24x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}", "left {back}"] words=false
+      maze g cols=6 rows=4 code=["right {a}", "down {b}", "left {back}"] upto=0 trail=none
+    }
+    text ask "One block sends the robot back. Which square does it stop on?" width=22 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=g col=col row=row
+  feedback {
+    when (col == 1 + a) point=b {
+      say "The last block goes left, which takes one square back off the {a} the robot went right."
+    }
+  }
+  hint "Do the last block as carefully as the first. Left means back the way it came."
+}

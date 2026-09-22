@@ -1,0 +1,28 @@
+# A teen number is ten and some more, 1.NBT.B.2b, so 10 + 6 can be set against 17 without counting.
+item count.compare-teens v=1 skills=[counting.to-twenty, place-value.compare] {
+  title "Ten and some more"
+  difficulty (3 - abs(e))
+  let k=1..9 e={-2, -1, 0, 1, 2}
+  where (k + e >= 0 and k + e <= 10)
+  level easy {
+    let e={-2, 2}
+  }
+  level hard {
+    let e={-1, 0, 1}
+  }
+
+  scene 21x14 {
+    compare pair left="10 + {k}" right="{10 + k + e}" sign="?" at=canvas(1, 1)
+    text ask "Which sign goes in the box?" narrate below=pair gap=1
+    choice pick options=["<", ">", "="] below=ask gap=1
+  }
+
+  answer pick=(if e == 0 then "=" else if e > 0 then "<" else ">")
+  feedback {
+    when (pick == "=" and e != 0) point=pair {
+      say "10 + {k} is {10 + k}. Is that the same as the other side?"
+    }
+  }
+  hint "What number is 10 and {k} more?"
+  hint "Now you have two numbers. Which is bigger, or are they the same?"
+}

@@ -1,0 +1,20 @@
+# The way in to sorting: one comparison, the rule said out loud. Some pairs are already the right
+# way round, and then nothing moves.
+item coding.swap-or-not v=1 skills=[coding.algorithms] {
+  title "Swap or not?"
+  difficulty (9 - abs(a - b))
+  let a=1..9 b=1..9
+  where (a != b)
+
+  scene 26x15 {
+    sortcards c cards=[a, b] compare=1 swap=false at=canvas(1, 0)
+    column q right-of=c gap=2 space=1 align=start {
+      text ask "The rule is: swap them if the bigger card is first. Do these two swap?" width=16
+      choice pick options=["yes", "no"]
+    }
+  }
+
+  answer pick=(if a > b then "yes" else "no")
+  hint "Which card is bigger?"
+  hint "Is the bigger one on the left?"
+}

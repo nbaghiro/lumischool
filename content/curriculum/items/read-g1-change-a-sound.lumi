@@ -1,0 +1,22 @@
+# The change is given and the child makes it, at the start, in the middle or at the end, so the
+# sound has to be found in its place before it is swapped.
+item reading.change-a-sound v=1 skills=[reading.phonics, reading.blending] {
+  title "Change one sound"
+  difficulty (if k <= 2 then 0 else if k <= 5 then 2 else 1)
+  let k=0..8
+  level easy {
+    let k={0, 1, 2, 6, 7, 8}  # the first or the last sound
+  }
+  level hard {
+    let k={3, 4, 5}  # the middle sound
+  }
+
+  scene 28x6 {
+    text ask "Change the {if k <= 2 then \"first\" else if k <= 5 then \"middle\" else \"last\"} sound of {if k == 0 then \"hat\" else if k == 1 then \"pen\" else if k == 2 then \"log\" else if k == 3 then \"cat\" else if k == 4 then \"pig\" else if k == 5 then \"hop\" else if k == 6 then \"bus\" else if k == 7 then \"cap\" else \"web\"} to {if k == 0 then \"m\" else if k == 1 then \"t\" else if k == 2 then \"d\" else if k == 3 then \"u\" else if k == 4 then \"e\" else if k == 5 then \"i\" else if k == 6 then \"g\" else if k == 7 then \"t\" else \"t\"}. Write the new word." narrate width=26 at=canvas(1, 1)
+    word-input word options=["{if k == 0 then \"mat\" else if k == 1 then \"ten\" else if k == 2 then \"dog\" else if k == 3 then \"cut\" else if k == 4 then \"peg\" else if k == 5 then \"hip\" else if k == 6 then \"bug\" else if k == 7 then \"cat\" else \"wet\"}"] letters=3 below=ask gap=1
+  }
+
+  answer word=(if k == 0 then "mat" else if k == 1 then "ten" else if k == 2 then "dog" else if k == 3 then "cut" else if k == 4 then "peg" else if k == 5 then "hip" else if k == 6 then "bug" else if k == 7 then "cat" else "wet")
+  hint "Say the word slowly and find the sound you have to change."
+  hint "Put the new sound in its place and say the new word."
+}

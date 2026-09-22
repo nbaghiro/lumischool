@@ -1,0 +1,19 @@
+item physics.ramp-predict v=1 skills=[physics.method] stars=2 {
+  title "Predict the next roll"
+  difficulty (a + 3 * d)
+  let a=6..9 d=3..5
+
+  scene 30x15 {
+    table data cols=2 head=["Height", "Rolled"] cells=["2 cm", a, "4 cm", a + d, "6 cm", a + 2 * d] at=canvas(1, 1)
+    text ask "The slope goes up in equal steps. How far would the ball roll from 8 cm?" width=22 below=data gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (a + 3 * d)
+  feedback {
+    when (answer == a + 2 * d) point=data {
+      say "That is the roll from 6 cm. Eight is one step further up."
+    }
+  }
+  hint "How much further does the ball roll for each extra 2 cm?"
+}

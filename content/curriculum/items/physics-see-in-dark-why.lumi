@@ -1,0 +1,12 @@
+item physics.see-in-dark-why v=1 skills=[physics.light] {
+  title "Why can she not see it?"
+
+  scene 31x26 {
+    seeing room lamp=0 at=canvas(1, 0)
+    text ask "The lamp is off. Why can the girl not see the ball?" width=17 below=room gap=1
+    choice pick options=["No light bounces off the ball into her eyes", "Her eyes are too far from the ball", "The ball is too small to see"] stack=column below=ask gap=1
+  }
+
+  answer pick="No light bounces off the ball into her eyes"
+  hint "What has to come into our eyes for us to see something?"
+}

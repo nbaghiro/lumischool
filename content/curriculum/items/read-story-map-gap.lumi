@@ -1,0 +1,19 @@
+# One stop on the map is empty. What comes before it and after it decide what must have happened
+# there. Every choice belongs to the same story (the audit's raise), so only one of them fits both
+# the stop before the gap and the stop after it.
+item reading.story-map-gap v=2 skills=[reading.sequencing, reading.story-structure] {
+  title "What happened here?"
+  let k=0..2
+
+  scene 34x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=[if k == 0 then "Nell wants to see Gran." else if k == 1 then "A fox is hungry." else "Ben flies his kite.", if k == 0 then "The bridge has fallen down." else if k == 1 then "" else "The string snaps.", if k == 0 then "" else if k == 1 then "The hen chases him off." else "The kite lands in a tree.", if k == 0 then "Nell has tea at Gran's." else if k == 1 then "He eats berries instead." else ""] icons=[if k == 0 then "girl" else if k == 1 then "fox" else "boy", if k == 0 then "bridge" else if k == 1 then "" else "cloud", if k == 0 then "" else if k == 1 then "hen" else "tree", if k == 0 then "cake" else if k == 1 then "tree" else ""] heads=[] blank=(if k == 0 then 2 else if k == 1 then 1 else 3)
+      text ask "What happened at the empty stop?"
+      choice pick options=[if k == 0 then "She borrows a boat and rows across." else if k == 1 then "He chases a rabbit into the wood." else "Ben lets out more string.", if k == 0 then "She rings Gran to say she cannot come." else if k == 1 then "He creeps up to the hen house." else "The string snaps again.", if k == 0 then "She walks back home." else if k == 1 then "He finds some berries on a bush." else "Dad gets it down with a ladder."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "She borrows a boat and rows across." else if k == 1 then "He creeps up to the hen house." else "Dad gets it down with a ladder.")
+  hint "Read the stop before the gap and the stop after it."
+  hint "Try each choice in the gap. Which one leads to the stop after it?"
+}

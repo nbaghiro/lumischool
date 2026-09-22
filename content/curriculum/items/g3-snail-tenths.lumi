@@ -1,0 +1,31 @@
+# Two lengths in tenths of a metre added along a line, often past one whole.
+item decimal.snail-tenths v=1 skills=[decimals.tenths, addition.decimals] {
+  title "How far did the snail go?"
+  difficulty (a + b)
+  let a=3..9 b=3..9
+  where (a + b >= 8 and a + b != 10)
+  level easy {
+    where (a + b <= 12)  # under a metre, or just past it
+  }
+  level hard {
+    where (a + b >= 14)
+  }
+
+  scene 24x14 {
+    numberline line from=0 to=2 step=0.1 start=0 jumps=[a / 10, b / 10] at=canvas(1, 1)
+    text ask "A snail crawls {decimals(a / 10, 1)} m, rests, then crawls {decimals(b / 10, 1)} m. How far has it gone?" width=22 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals((a + b) / 10, 1)
+  feedback {
+    when (answer == decimals((a + b) / 100, 2)) point=line {
+      say "Ten tenths make one whole. {a + b} tenths is more than one."
+    }
+    when (answer == a + b) point=line {
+      say "These are tenths of a metre, so the answer needs its point."
+    }
+  }
+  hint "How many tenths did it crawl in all?"
+  hint "Ten tenths make one metre. How many metres and tenths is that?"
+}

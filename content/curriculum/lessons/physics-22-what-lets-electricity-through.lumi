@@ -1,0 +1,46 @@
+lesson physics-what-lets-electricity-through v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "What lets electricity through"
+  goal "Predict whether a bulb lights with a thing across the gap, and sort things into conductors and insulators."
+
+  look {
+    scene 35x12 {
+      row two at=canvas(1, 0) space=2 align=start {
+        tester metal thing=coin
+        tester plastic thing=ruler
+      }
+    }
+    say """
+      Put something across the gap and the loop is joined again, but only if electricity can get
+      through it. Metal lets it through, so metal is a conductor. Plastic, rubber, wood and glass
+      do not, so they are insulators.
+      """
+  }
+  do {
+    practice physics.conductor-lights count=3 seed=3
+    practice physics.count-conductors count=2 seed=5
+    practice physics.conductor-sort count=2 seed=2
+    practice physics.tester-which count=1 seed=2
+  }
+  try stars=2 {
+    show physics.metal-not-magnetic f=1 x="clip" y="foil" z="stick" w="marble"
+  }
+  try stars=3 {
+    show physics.tester-both x="foil" y="eraser" easy-x="nail" easy-y="stick" hard-x="marble" hard-y="coin"
+  }
+  remember {
+    say "Metals are conductors. Plastic, rubber, wood and glass are insulators."
+  }
+
+  grown-ups """
+    Two wires, a bulb and a battery with a gap between two clips make the tester, and ten minutes
+    with a drawer of odds and ends is the lesson. Predict each thing before it goes across the gap.
+    The coin and the foil are worth waiting for: a magnet leaves them alone, and they still light
+    the bulb, which separates two ideas children usually run together.
+    """
+  level easy {
+    grown-ups "At this level the things are plainly metal or plainly not: nails, clips, erasers and sticks."
+  }
+  level hard {
+    grown-ups "At this level the things are foil, coins and marbles, which look alike and are not all metal."
+  }
+}

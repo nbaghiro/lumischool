@@ -1,0 +1,24 @@
+# Two rules in a row, with the number between them left for the child to find on the way.
+item machine.two-step v=1 stars=2 skills=[algebra.function-machines, problems.two-step] {
+  title "Two machines"
+  difficulty (a * n + b)
+  let a=2..6 b=1..9 n=3..9
+
+  scene 32x12 {
+    machinechain chain rules=["× {a}", "+ {b}"] input="{n}" middle="" output="?" at=canvas(1, 1)
+    text ask "{n} goes in. What comes out of the second machine?" narrate below=chain gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a * n + b)
+  feedback {
+    when (answer == a * (n + b)) point=chain {
+      say "The first machine goes first: times {a}, then add {b}."
+    }
+    when (answer == a * n) point=chain {
+      say "That is the number between the machines. The second machine adds {b}."
+    }
+  }
+  hint "What comes out of the first machine?"
+  hint "That number goes into the second machine."
+}

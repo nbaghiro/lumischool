@@ -1,0 +1,17 @@
+# The audit's raise for find-the-mistake: the child writes the word as it should be, so finding it
+# and fixing it are both needed. Each version has its own kind of mistake.
+item writing.write-it-right v=1 skills=[writing.editing, writing.spelling] {
+  title "Write it the right way"
+  difficulty (if k == 4 then 0 else if k == 0 or k == 3 then 2 else 1)
+  let k=0..5
+
+  scene 32x10 {
+    caption draft text="{if k == 0 then \"We went to there house after school.\" else if k == 1 then \"Yesterday we walk to the park.\" else if k == 2 then \"I have two sister and a brother.\" else if k == 3 then \"The dog wagged it's tail.\" else if k == 4 then \"My friend jake came to tea.\" else \"She runned all the way home.\"}" width=30 at=canvas(1, 1)
+    text ask "One word is wrong. Write it the right way." width=30 below=draft gap=1
+    word-input fix options=["{if k == 0 then \"their\" else if k == 1 then \"walked\" else if k == 2 then \"sisters\" else if k == 3 then \"its\" else if k == 4 then \"Jake\" else \"ran\"}"] letters=7 below=ask gap=1
+  }
+
+  answer fix=(if k == 0 then "their" else if k == 1 then "walked" else if k == 2 then "sisters" else if k == 3 then "its" else if k == 4 then "Jake" else "ran")
+  hint "Read it aloud slowly. Which word sounds or looks wrong?"
+  hint "Is it the wrong spelling, the wrong time, one where it should be more, or a name?"
+}

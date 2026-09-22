@@ -1,0 +1,27 @@
+item coding.tune-count v=1 skills=[coding.repetition] {
+  title "How many notes?"
+  difficulty n
+  let n=2..4
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 27x21 {
+    blocks b code=["play C", "repeat {n}", "  play E", "  play G"] at=canvas(1, 0)
+    text ask "How many notes does the tune play?" width=14 right-of=b gap=2
+    number-input answer below=ask gap=1
+    tune t code=["play C", "repeat {n}", "  play E", "  play G"] numbers=false below=b gap=1
+  }
+
+  check coding.runs of=t answer=notes
+  feedback {
+    when (answer == 3) point=b {
+      say "Three blocks play, but the two inside the repeat play {n} times each."
+    }
+  }
+  hint "Play C once. Then E and G, again and again."
+  hint "How many notes does one time round the repeat play?"
+}

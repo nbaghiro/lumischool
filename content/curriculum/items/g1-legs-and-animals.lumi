@@ -1,0 +1,29 @@
+# A heads-and-legs problem at six: guess, count, adjust. Math Kangaroo sets these for grades 1 and 2.
+item count.legs-and-animals v=1 stars=3 skills=[counting.in-twos, reasoning.guess-and-check] {
+  title "Sheep and ducks"
+  difficulty (h + s)
+  let h=3..5 s=1..4
+  where (s < h)
+  where (2 * s != h)  # then the sheep and the ducks are the same number
+
+  scene 30x17 {
+    row key at=canvas(1, 1) space=2 align=end {
+      animals sheep kind=sheep count=1 label="4 legs"
+      animals duck kind=duck count=1 label="2 legs"
+    }
+    text ask "Some sheep and some ducks are in the field. There are {h} animals and {4 * s + 2 * (h - s)} legs. How many sheep are there?" narrate width=28 below=key gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == h - s) point=key {
+      say "That would be the ducks. Count the legs your way gives and check it makes {4 * s + 2 * (h - s)}."
+    }
+    when (answer == h) point=key {
+      say "If all {h} were sheep there would be {4 * h} legs, which is too many."
+    }
+  }
+  hint "Guess how many sheep. Count four legs for each sheep and two for each duck."
+  hint "Too many legs? Try one sheep fewer. Too few? Try one more."
+}

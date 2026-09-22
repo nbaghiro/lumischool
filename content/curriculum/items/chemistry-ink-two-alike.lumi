@@ -1,0 +1,36 @@
+# Two stars: two strips that share a band at the same height and part elsewhere, and the one band that
+# proves the pens are different. The band that proves it is on a different strip each time.
+item chemistry.ink-two-alike v=1 stars=2 skills=[chemistry.separating, reasoning.evidence] {
+  title "What proves they differ?"
+  difficulty (if p < 2 then 0 else 1)
+  let p=0..3
+  let i1={pick(p, "black1", "black3", "black1", "black2")}
+  let i2={pick(p, "black3", "black1", "black2", "black1")}
+  let ans={pick(p, "The yellow band low on A", "The yellow band low on B", "The orange band on B", "The orange band on A")}
+  let no1={pick(p, "The pink band both share", "The pink band both share", "The blue band both share", "The blue band both share")}
+  let no2={pick(p, "The dot on the pencil line", "The dot on the pencil line", "The dot on the pencil line", "The dot on the pencil line")}
+  let o1={pick(p, ans, no1, no2, no1)}
+  let o2={pick(p, no1, ans, no1, no2)}
+  let o3={pick(p, no2, no2, ans, ans)}
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3}
+  }
+
+  scene 27x35 {
+    chromatography pair inks=["{i1}", "{i2}"] labels=["A", "B"] run=1 beaker=1 ruler=1 at=canvas(1, 0)
+    text ask "These two strips look alike at first, and they were not drawn by the same pen. Which band on the paper proves it?" narrate width=26 below=pair gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == no1) point=pair {
+      say "Both strips have that band, so it cannot tell them apart. Look for a band that only one of them has."
+    }
+  }
+  hint "Find the bands the two strips share, and leave them out of it."
+  hint "What is left is on one strip only, and that is the proof."
+}

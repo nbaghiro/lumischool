@@ -1,0 +1,34 @@
+# Counting the days until the dish is empty, from how much it loses each day: a quarter a day in
+# the shade, two quarters a day in the sun. At hard the dish starts part full and is in the sun,
+# so the last day is a short one.
+item chem.days-to-dry v=1 skills=[chemistry.states, reasoning.model] {
+  title "How many days until it is dry?"
+  difficulty ((if sun == 1 then 1 else 0) + (if start == 3 then 2 else 0))
+  let sun=0..1 start={2, 3, 4}
+  let place={pick(sun, "in the shade", "in the sun")}
+  let rate={pick(sun, 1, 2)}
+  level easy {
+    let sun=0..0 start={2, 4}
+  }
+  level hard {
+    let sun=1..1 start={3, 4}
+  }
+
+  scene 34x18 {
+    dish d left=start day=1 sun=sun at=canvas(1, 0)
+    text ask "Nour's dish holds {start} quarters of water and stands {place}. In the shade it loses 1 quarter each day; in the sun it loses 2 quarters each day. After how many days is it empty?" narrate width=32 below=d gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if sun == 0 then start else if start == 3 then 2 else start / 2)
+  feedback {
+    when (sun == 1 and answer == start) point=d {
+      say "In the sun it loses 2 quarters a day, not 1, so it empties in fewer days than it has quarters."
+    }
+    when (sun == 1 and start == 3 and answer == 1) point=d {
+      say "After one day 2 quarters have gone and 1 is left. It takes a second day to lose that one."
+    }
+  }
+  hint "How many quarters go each day here? Take them off the dish one day at a time."
+  hint "Count the days until nothing is left. A day that finishes the last quarter still counts."
+}

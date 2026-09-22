@@ -1,0 +1,17 @@
+# The cards show the sentence as a child would first write it, all in small letters. The question
+# asks for the one word the rule is really about. Only this version's name counts as right: listing
+# every name here would accept Ben when the sentence is about Ana.
+item writing.needs-a-capital v=2 skills=[writing.capitals] {
+  title "The word that needs a capital"
+  let n={"Ana", "Ben", "Kim", "Tom"}
+
+  scene 32x15 {
+    wordcards cards words=[if n == "Ana" then "ana" else if n == "Ben" then "ben" else if n == "Kim" then "kim" else "tom", if n == "Ana" then "fed" else if n == "Ben" then "saw" else "has", if n == "Ana" then "the" else "a", if n == "Ana" then "hen" else if n == "Ben" then "duck" else if n == "Kim" then "cat" else "cup"] picked=-1 at=canvas(1, 1)
+    art pic asset="{if n == \"Ana\" then \"hen\" else if n == \"Ben\" then \"duck\" else if n == \"Kim\" then \"cat\" else \"cup\"}" below=cards gap=1
+    text ask "A name always starts with a capital letter. Write the name properly." width=20 right-of=pic gap=1
+    word-input pick options=["{n}"] letters=3 below=ask gap=1
+  }
+
+  answer pick=n
+  hint "A person's name is a special word, so it keeps its capital wherever it sits."
+}

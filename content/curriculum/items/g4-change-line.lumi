@@ -1,0 +1,30 @@
+# Counting up for change, the way a shop does it: to the next dollar, then to the note.
+item money.count-up v=1 skills=[money.change] {
+  title "Count up for the change"
+  difficulty (note - p)
+  let p={2.35, 3.65, 4.80, 6.15, 7.45} note={10, 20}
+  level easy {
+    let note={10}
+  }
+  level hard {
+    let p={2.35, 3.65, 4.80} note={20}
+  }
+
+  scene 32x10 {
+    change line stops=["{p}", "{decimals(ceil(p), 2)}", "{decimals(note, 2)}"] total=false at=canvas(1, 1)
+    text ask "Something costs {p} dollars. You pay with a {note} dollar note. Count up. How much change?" narrate width=15 right-of=line gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(note - p, 2)
+  feedback {
+    when (answer == ceil(p) - p) point=line {
+      say "That gets you to the next dollar. Keep counting up to {note}."
+    }
+    when (answer == note - ceil(p)) point=line {
+      say "Add the first jump, from {p} to {decimals(ceil(p), 2)}, as well."
+    }
+  }
+  hint "How much from {p} up to the next whole dollar?"
+  hint "How much from there up to {note}? Add the two jumps."
+}

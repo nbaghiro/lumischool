@@ -1,0 +1,17 @@
+# Non-routine: three settling times, and a time gone by that sits between two of them. The times
+# are the ones a gardener's jar test uses.
+item chem.soil-time v=1 stars=3 skills=[chemistry.rocks, time.elapsed, reasoning.constraints] {
+  title "What will the jar show?"
+  difficulty (if q == 1 or q == 2 then 1 else 0)
+  let q=0..3
+
+  scene 35x22 {
+    soiljar j stones=1 sand=3 silt=2 clay=1 bits=3 names=0 at=canvas(1, 0)
+    text ask "Sand settles in about a minute, silt in about two hours, and clay takes a day or more. A jar was shaken at {if q == 0 then \"9 in the morning and looked at half an hour later\" else if q == 1 then \"9 in the morning and looked at at noon\" else if q == 2 then \"10 in the morning and looked at at 11\" else \"breakfast on Monday and looked at on Thursday\"}. What had settled?" width=19 right-of=j gap=1
+    choice pick options=["Only the stones and sand", "The sand and silt, but not the clay", "Everything"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if q == 0 or q == 2 then "Only the stones and sand" else if q == 1 then "The sand and silt, but not the clay" else "Everything")
+  hint "How long was it between shaking the jar and looking at it?"
+  hint "Is that longer than a minute? Longer than two hours? Longer than a day?"
+}

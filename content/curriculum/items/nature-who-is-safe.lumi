@@ -1,0 +1,42 @@
+# The two-star reason: one creature vanishes from the web, and the child says which eater is safe
+# and why: the one with a second thing to eat. The chain has no second food and is the one in
+# trouble.
+item nature.who-is-safe v=1 stars=2 skills=[nature.food-webs, reasoning.explain] {
+  title "Who is safe?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let facts={pick(k, "Crabs and sea snails eat seaweed. Gulls eat crabs and sea snails. Octopuses eat crabs.", "Crabs and sea snails eat seaweed. Gulls eat crabs and sea snails. Octopuses eat crabs.", "Small fish and shrimp eat tiny plants. Gulls eat small fish. Seals eat small fish and shrimp.")}
+  let gone={pick(k, "crabs", "sea snails", "small fish")}
+  let right={pick(k, "The gull: it still has sea snails to eat", "The gull: it still has crabs to eat", "The seal: it still has shrimp to eat")}
+  let o1={pick(k, "The octopus: crabs are its only food", "The octopus: it never ate sea snails", "The gull: small fish were its only food")}
+  let o2={pick(k, "The seaweed: nothing eats it now", "The seaweed: the crabs still eat it", "The tiny plants: nothing changes for them")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x31 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      gull pg flying=0
+      octopus po spots=4
+    }
+    text facts "{facts}" narrate width=32 below=pics gap=1
+    text ask "One year every one of the {gone} disappears from the reef. Two creatures ate them. Which of those two is safe, and why?" narrate width=32 below=facts gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1) point=facts {
+      say "That is the one in trouble: the {gone} were its only food. Safe means it has something else to eat."
+    }
+    when (pick == o2) point=facts {
+      say "The question is about the creatures that ate the {gone}. Find the two eaters in the facts."
+    }
+  }
+  hint "Find the two creatures that eat the {gone}. Which of them eats something else as well?"
+  hint "An eater with two foods can lose one. An eater with one food cannot."
+}

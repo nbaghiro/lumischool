@@ -1,0 +1,35 @@
+# Two baskets of apples to slide across the floor. The fuller one is heavier, and a heavier thing
+# needs a bigger push to get it going: the count of apples is the whole of the reason.
+item physics.bigger-push-needed v=1 skills=[physics.forces] {
+  title "Which needs the bigger push?"
+  difficulty (8 - abs(a - b))
+  let a={2, 4, 6, 8} b={2, 4, 6, 8}
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 4)
+  }
+  level hard {
+    where (abs(a - b) == 2)
+  }
+
+  scene 27x20 {
+    basket one item=apple count=a at=canvas(1, 0)
+    text la "A" below=one gap=0
+    basket two item=apple count=b right-of=one gap=2
+    text lb "B" below=two gap=0
+    text ask "Sam slides each basket across the kitchen floor. Which one needs the bigger push?" narrate width=26 below=la gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if a > b then "A" else "B")
+  feedback {
+    when (pick == "A" and a < b) point=two {
+      say "Basket B has more apples in it, so it is heavier, and a heavier thing needs a bigger push to get it moving."
+    }
+    when (pick == "B" and a > b) point=one {
+      say "Basket A has more apples in it, so it is heavier, and a heavier thing needs a bigger push to get it moving."
+    }
+  }
+  hint "Which basket has more apples in it?"
+  hint "More apples makes it heavier. Does a heavy thing need a big push or a small one?"
+}

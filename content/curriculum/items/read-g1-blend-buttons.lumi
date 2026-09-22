@@ -1,0 +1,17 @@
+# The sounds are shown and the picture is the answer: the child blends the buttons into a word and
+# finds the animal it names, so the word has to be read, not matched letter by letter.
+item reading.blend-buttons v=1 skills=[reading.blending] {
+  title "Which animal do the sounds make?"
+  let k=0..4 p=0..2
+
+  scene 37x13 {
+    soundbuttons sb graphemes=["{if k == 0 then \"c\" else if k == 1 then \"d\" else if k == 2 then \"p\" else if k == 3 then \"f\" else \"h\"}", "{if k == 0 then \"a\" else if k == 1 or k == 3 then \"o\" else if k == 2 then \"i\" else \"e\"}", "{if k == 0 then \"t\" else if k == 1 or k == 2 then \"g\" else if k == 3 then \"x\" else \"n\"}"] count=false at=canvas(1, 1)
+    picturecards cards who=["{if p == 0 then (if k == 0 then \"cat\" else if k == 1 then \"dog\" else if k == 2 then \"pig\" else if k == 3 then \"fox\" else \"hen\") else (if k == 0 then \"dog\" else if k == 1 then \"pig\" else if k == 2 then \"fox\" else if k == 3 then \"hen\" else \"cat\")}", "{if p == 1 then (if k == 0 then \"cat\" else if k == 1 then \"dog\" else if k == 2 then \"pig\" else if k == 3 then \"fox\" else \"hen\") else (if k == 0 then \"hen\" else if k == 1 then \"cat\" else if k == 2 then \"cat\" else if k == 3 then \"dog\" else \"pig\")}", "{if p == 2 then (if k == 0 then \"cat\" else if k == 1 then \"dog\" else if k == 2 then \"pig\" else if k == 3 then \"fox\" else \"hen\") else (if k == 0 then \"pig\" else if k == 1 then \"fox\" else if k == 2 then \"hen\" else if k == 3 then \"pig\" else \"dog\")}"] where=["on", "on", "on"] thing=["mat", "mat", "mat"] letters=true right-of=sb gap=1
+    text ask "Push the sounds together. Which animal is it?" narrate width=15 below=cards gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "A" else if p == 1 then "B" else "C")
+  hint "Say the sound above each button, one at a time."
+  hint "Now say them faster until they run into a word. Which animal did you say?"
+}

@@ -1,0 +1,19 @@
+# The three landmarks are read by sight, so the ringed one is named rather than counted.
+item music.name-landmark v=1 skills=[music.grand-staff] {
+  title "Which landmark is ringed?"
+
+  scene 30x16 {
+    grandstaff gs notes=["F3", "C4", "G4"] letters=false lit=["G4"] landmarks=false at=canvas(1, 0)
+    text ask "Which landmark is ringed?" width=12 right-of=gs gap=1
+    choice pick options=["bass F", "middle C", "treble G"] stack=column below=ask gap=1
+  }
+
+  answer pick="treble G"
+  feedback {
+    when (pick == "middle C") point=gs {
+      say "Middle C sits on its own short line between the two staves. The ringed note is on the treble staff."
+    }
+  }
+  hint "Is the ringed note on the top staff, the bottom staff, or on its own line between them?"
+  hint "Which landmark lives on that staff?"
+}

@@ -1,0 +1,19 @@
+# A label names one part and a caption says what the whole picture shows. Half the versions are
+# each, so the answer is not always the same.
+item writing.label-or-caption v=1 skills=[writing.labels, writing.captions] {
+  title "Label or caption?"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..5
+  let words={if k == 0 then "sail" else if k == 1 then "The ship is in the harbour." else if k == 2 then "door" else if k == 3 then "A fox asleep by a log." else if k == 4 then "tower" else "Our boat on the lake at night."}
+  let kind={if k == 0 then "a label" else if k == 1 then "a caption" else if k == 2 then "a label" else if k == 3 then "a caption" else if k == 4 then "a label" else "a caption"}
+
+  scene 36x8 {
+    caption strip text="{words}" width=30 at=canvas(1, 1)
+    text ask "Is this a label or a caption?" narrate width=16 below=strip gap=1
+    choice pick options=["a label", "a caption"] right-of=ask gap=1
+  }
+
+  answer pick=kind
+  hint "Does it name one part, or does it say what the whole picture shows?"
+  hint "A label is usually one or two words. A caption tells you more."
+}

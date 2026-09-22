@@ -1,0 +1,22 @@
+# The question is where one number belongs. The numbers asked about are never one of the examples
+# already drawn, which the audit found gave three of the five versions away.
+item sort.where-it-goes v=2 skills=[sorting.two-rules] {
+  title "Which ring does it go in"
+  difficulty (if n == 4 or n == 13 then 0 else 1)
+  let n={3, 4, 13, 16, 18}
+
+  scene 32x20 {
+    venn rings labels=["Even", "More than 10"] left=["2", "6", "8"] both=["12", "14"] right=["11", "15"] outside=["7"] at=canvas(1, 0)
+    text ask "Where does {n} belong?" narrate below=rings gap=1
+    choice pick options=["even", "over 10", "both", "neither"] below=ask gap=1
+  }
+
+  answer pick=(if n % 2 == 0 and n > 10 then "both" else if n % 2 == 0 then "even" else if n > 10 then "over 10" else "neither")
+  feedback {
+    when (pick == "even" and n > 10 and n % 2 == 0) point=rings {
+      say "{n} is even and it is more than 10, so it is true of both rules."
+    }
+  }
+  hint "Is {n} even? Is it more than 10?"
+  hint "Check both rules one at a time, then see which part of the picture fits."
+}

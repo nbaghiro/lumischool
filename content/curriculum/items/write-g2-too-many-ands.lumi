@@ -1,0 +1,22 @@
+# A chain of ands, the commonest grade two run-on: count the short sentences it is hiding.
+item writing.too-many-ands v=1 skills=[writing.joining-sentences, writing.sentences] {
+  title "The robot's long sentence"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3
+  let says={if k == 0 then "we went to the beach and we swam and we ate lunch" else if k == 1 then "the gull landed and it took a chip and it flew off and we laughed" else if k == 2 then "Nan made soup and I cut the bread and we ate it" else "the bus was late and it was full and we had to stand and my feet hurt"}
+
+  scene 33x15 {
+    fixbot bot says="{says}" width=20 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "The robot joined everything with and. How many short sentences did it join?" narrate width=26 below=bot gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 or k == 2 then 3 else 4)
+  feedback {
+    when (answer == (if k == 0 or k == 2 then 2 else 3)) point=bot {
+      say "That is how many times it says and. Each and joins two parts, so there is one more part than there are ands."
+    }
+  }
+  hint "Put your finger on each and. What comes before it, and what comes after it?"
+  hint "Count the parts, not the ands."
+}

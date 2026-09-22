@@ -1,0 +1,69 @@
+# Strumming in four and in three: a pattern is a rhythm on the half beats, down on the numbers and up
+# on the ands, and a bar in three counts 1 and 2 and 3 and.
+lesson music-strum-patterns v=1 format=teach grade=4 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Strum patterns in four and three"
+  goal "Read a strum pattern of downs and ups, and play it in a bar of four or a bar of three."
+
+  look {
+    scene 33x26 {
+      row all space=2 align=start at=canvas(1, 1) {
+        bandstand stand posts=5 notes=3
+        column bars space=1 align=start {
+          text march "A march, in four"
+          strumtrack four strums=D-DU-UDU counts=true chord=G ring=-1
+          text waltz "A waltz, in three"
+          strumtrack three strums=D-DUDU counts=true chord=C ring=-1
+        }
+      }
+    }
+    say """
+      At the bandstand the band plays marches in four and waltzes in three, and Ana strums along. A
+      strum pattern is written as arrows on the half beats, counted 1 and 2 and 3 and. A long arrow
+      is a down strum, on a number. A short arrow is an up strum, on an and. A dot is the hand
+      moving past without touching the strings. The hand never stops, even on a dot.
+      """
+  }
+  do {
+    practice music.strum-how-many count=1 seed=2 easy-seed=1 hard-seed=7
+    practice music.strum-which-in-three count=2 seed=4 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.strum-ringed-in-three k=4 level=medium
+    }
+    practice music.strum-ringed-in-three count=2 seed=4 easy-seed=5 hard-seed=1
+    practice music.strum-staff-to-strum count=1 seed=1 easy-seed=2 hard-seed=5
+    show music.strum-tap-in-three
+    level hard {
+      show music.strum-fits-a-waltz q=1 r=0
+    }
+    practice music.bandstand-waltz-strums count=1 seed=3 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.strum-fits-a-waltz q=0 r=0 easy-r=1 hard-r=1
+  }
+  try stars=3 {
+    show music.strum-all-the-bars k=2 easy-k=1 hard-k=4
+  }
+  remember {
+    say "Down on a number, up on an and, and the hand never stops."
+  }
+
+  grown-ups """
+    The idea is that a strum pattern is a rhythm written on the half beats, and that a bar in three
+    counts 1 and 2 and 3 and where a bar in four goes on to 4 and. The wrong ideas to watch for are
+    counting the dots as strums, and telling a bar in three from a bar in four by how many strums it
+    has rather than by how far it counts. In the working, look for the child saying the counts aloud
+    while pointing along the bar. The two-star question has two patterns that start the same way, so
+    only the count decides which fits the dance. The three-star question counts every bar that keeps
+    the rule: the downs go on the numbers and the ups on the ands, and each way of placing one goes
+    with each way of placing the other. A child who is stuck can clap the counts with the hand
+    moving down and up all the time, touching the strings only on the arrows, and go back to the way
+    in; stay on this lesson another day if the counts still wander. Off the page, tap along to a
+    waltz and a march and feel where the bar starts again.
+    """
+  level easy {
+    grown-ups "At this level the beats of bar A are counted, the bars to pick are the one in four and the one with only down strums, a ringed strum is read once in the teacher's pen before two more on the numbers, the rhythm on the staff has its long note on beat 2, the waltz is four bars and every strum is counted, the two-star is as written with its answers in another order, and the three-star counts the bars in three with two strums, one of them up."
+  }
+  level hard {
+    grown-ups "At this level the up strums of bar B are counted, the bars to pick are the one in three with up strums and the one with six strums, both ringed strums fall on an and and the bar has no counts written over it, the rhythm on the staff has its long note on beat 1, a pair of patterns is judged for a march before the two-star's waltz, the waltz counts only the up strums over six bars, and the three-star counts the bars in four with five strums, two of them up."
+  }
+}

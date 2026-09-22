@@ -1,0 +1,39 @@
+# One step of the card is a blank line. The child reads the steps around it: the choice already on
+# the card is not missing, and the other belongs to a different job.
+item writing.missing-step v=1 skills=[writing.instructions, writing.sequencing] {
+  title "The missing step"
+  difficulty (if b == 1 or b == 2 then 1 else 0)
+  let c=0..1 b=0..3 r=0..2
+  level easy {
+    let b={0, 3}  # the first or the last step
+  }
+  level hard {
+    let b={1, 2}  # a middle step
+  }
+  let title={if c == 0 then "A jam sandwich" else "A cup of squash"}
+  let s0={if c == 0 then "Get two slices." else "Get a clean cup."}
+  let s1={if c == 0 then "Butter one slice." else "Pour in squash."}
+  let s2={if c == 0 then "Add the jam." else "Add cold water."}
+  let s3={if c == 0 then "Put the top on." else "Stir it well."}
+  let gone={if b == 0 then s0 else if b == 1 then s1 else if b == 2 then s2 else s3}
+  let there={if b == 0 then s2 else if b == 1 then s3 else if b == 2 then s0 else s1}
+  let other={if c == 0 then "Stir it well." else "Add the jam."}
+  let n0={if c == 0 then "bread" else "a cup"}
+  let n1={if c == 0 then "butter" else "squash"}
+  let n2={if c == 0 then "jam" else "water"}
+  let o1={if r == 0 then gone else there}
+  let o2={if r == 1 then gone else if r == 0 then there else other}
+  let o3={if r == 2 then gone else other}
+
+  scene 37x17 {
+    howto card title="{title}" need=["{n0}", "{n1}", "{n2}"] steps=["{s0}", "{s1}", "{s2}", "{s3}"] blank=b width=22 at=canvas(1, 1)
+    column q right-of=card gap=1 space=1 align=start {
+      text ask "Which step goes on the empty line?" narrate width=13
+      choice pick options=["{o1}", "{o2}", "{o3}"] stack=column
+    }
+  }
+
+  answer pick=gone
+  hint "Read the step before the empty line and the step after it."
+  hint "Is one of the choices already on the card? Does one belong to a different job?"
+}

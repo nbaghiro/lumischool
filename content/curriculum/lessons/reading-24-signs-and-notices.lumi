@@ -1,0 +1,67 @@
+lesson reading-signs-and-notices v=1 format=teach grade=2 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Signs and notices"
+  goal "Read a sign or a notice and find the one thing it tells you."
+
+  look {
+    scene 26x17 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row one space=2 align=end {
+          art shop asset="shop-front"
+          sign stop lines=["BUS STOP", "Number 12"] kind=post color=sky
+        }
+        row two space=2 align=end {
+          sign bread lines=["Fresh Bread"] kind=hanging color=berry
+          sign open lines=["OPEN"] kind=door color=mint
+        }
+      }
+    }
+    say """
+      Signs are writing you meet outside a book. They are short, because people read them as they
+      walk past. A sign tells you where you are, what a place is, or what to do.
+      """
+  }
+  do {
+    show reading.notice k=1
+    show reading.sign-where k=1 easy-k=0
+    level easy {
+      worked reading.sign-what-to-do k=2 level=medium
+    }
+    show reading.sign-what-to-do k=2 easy-k=0
+    show reading.sign-what-to-do k=1 hard-k=3
+    show reading.notice-days k=0
+    show reading.notice-days k=2
+    show reading.notice-time d=1 t=1 easy-d=0 hard-d=2
+    level hard {
+      practice reading.notice-time count=1 seed=2
+    }
+  }
+  story {
+    show reading.notice-which-line k=0 hard-k=3
+  }
+  try stars=2 {
+    show reading.sign-mistake k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.make-a-sign k=2
+  }
+  remember {
+    say "Find the line of the sign that answers your question."
+  }
+
+  grown-ups """
+    Read the signs on a walk: the name of the street, the bus stop, the shop doors. The notices here
+    all have one line that answers the question and others that are about something else, which is
+    what reading a real notice is like.
+
+    Some questions need two lines read together: the cake is for the fair, and another line says
+    when the fair is. The line questions ask which line shows something, and the right line never
+    uses the question's words. The two-star sign has two lines that cannot both be true. The
+    three-star sign is the child's own, five words or fewer; count the words together.
+    """
+  level easy {
+    grown-ups "At this level the notice is as written, the sign belongs in a park, wet paint is read once in the teacher's pen before shut the gate and dogs on leads, the days are as written, the library is open on a weekday at 3, the line to find is as written, the two-star's clash is open every day against shut on Mondays, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the notice is as written, the sign's place is as written, the signs to read are wet paint and please take one, the days are as written, the library is shut on Sunday and a second question asks about Saturday morning, the line to find says why you need old clothes, the two-star's clash is no dogs against dogs on a lead, and the three-star is as written."
+  }
+}

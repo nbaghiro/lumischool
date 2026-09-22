@@ -1,0 +1,27 @@
+# Which one cup shows an acid, or an alkali: the others are chosen so exactly one colour says so, and
+# the checker refuses a set where blue would have to be called either.
+item chem.cabbage-which v=1 skills=[chemistry.acids] {
+  title "Which cup is it?"
+  difficulty (if v <= 2 then 1 else 0)
+  let v=0..5
+  level easy {
+    let v=3..5  # which cup has an acid
+  }
+  level hard {
+    let v=0..2  # which cup has an alkali
+  }
+
+  scene 27x18 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cabbage c liquids=["{if v == 0 then \"lemon\" else if v == 1 then \"milk\" else if v == 2 then \"washingsoda\" else if v == 3 then \"washingsoda\" else if v == 4 then \"bakingsoda\" else \"milk\"}", "{if v == 0 then \"washingsoda\" else if v == 1 then \"lemon\" else if v == 2 then \"vinegar\" else if v == 3 then \"water\" else if v == 4 then \"vinegar\" else \"water\"}", "{if v == 0 then \"vinegar\" else if v == 1 then \"washingsoda\" else if v == 2 then \"lemon\" else if v == 3 then \"lemon\" else if v == 4 then \"washingsoda\" else \"bakingsoda\"}"] chart=1 show=1 names=0 letters=1
+      column side space=1 align=start {
+        text ask "Use the chart. Which cup has {if v == 0 then \"an alkali\" else if v == 1 then \"an alkali\" else if v == 2 then \"an alkali\" else if v == 3 then \"an acid\" else if v == 4 then \"an acid\" else \"an acid\"} in it?" width=8
+        choice pick options=["A", "B", "C"] stack=column
+      }
+    }
+  }
+
+  check chem.indicator of=c pick="only({if v == 0 then \"alkali\" else if v == 1 then \"alkali\" else if v == 2 then \"alkali\" else if v == 3 then \"acid\" else if v == 4 then \"acid\" else \"acid\"})"
+  hint "Find each cup's colour on the chart. Which side of 7 is its band?"
+  hint "Which cup is the only one on the {if v == 0 then \"alkali\" else if v == 1 then \"alkali\" else if v == 2 then \"alkali\" else if v == 3 then \"acid\" else if v == 4 then \"acid\" else \"acid\"} side?"
+}

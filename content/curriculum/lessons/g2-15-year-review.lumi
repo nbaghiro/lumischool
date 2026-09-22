@@ -1,0 +1,37 @@
+lesson g2-year-review v=1 format=review grade=2 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Year review"
+  goal "Look back over the year: tens and ones, columns, equal groups, fractions, measuring, money and time."
+
+  warm-up {
+    practice add.tens-and-ones count=1 seed=11
+    practice groups.tray-threes count=1 seed=5
+  }
+  exercises {
+    practice place.partition count=1 seed=6
+    practice columns.sub-two-digit count=1 seed=9
+    practice division.share-jar count=1 seed=2 hard-seed=1
+    practice fraction.of-a-set count=1 seed=3 easy-seed=5
+    practice measure.jug count=1 seed=9
+    practice money.count-coins count=1 seed=6
+    practice time.write-quarter count=1 seed=4
+  }
+  puzzle stars=2 {
+    show columns.which-wrong a=45 b=36 c=26 w=0 easy-w=2
+  }
+  puzzle stars=3 {
+    show groups.ways-to-arrange n=24 easy-n=12
+  }
+
+  grown-ups """
+    Written columns with an exchange are the thing most worth checking here. If the exchange is
+    shaky, go back to the rods for a week. The two-star puzzle checks the carried ten without any
+    sum to do: the ones digit of each total gives it away. The three-star puzzle has six answers to
+    find, and a list that starts with 2 rows is the way to be sure none is missed.
+    """
+  level easy {
+    grown-ups "At this level each question comes from the easy band of its lesson (the tens and ones, the threes, the sharing, the jug, the coins and the quarter hours at their smallest), the wrong sum is the last one, and twelve buns go on the tray."
+  }
+  level hard {
+    grown-ups "At this level each question comes from the hard band of its lesson, and the two puzzles are as written, since the wrong sum in the first place and twenty-four buns are already their hardest versions."
+  }
+}

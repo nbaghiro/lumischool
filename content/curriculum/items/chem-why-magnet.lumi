@@ -1,0 +1,16 @@
+# Three ways, three reasons: each question's answer is the difference that way of separating uses.
+item chem.why-magnet v=1 stars=2 skills=[chemistry.separating, reasoning.explain] {
+  title "Why does it work?"
+  difficulty (if q == 2 then 2 else if q == 0 then 1 else 0)
+  let q=0..2
+
+  scene 37x23 {
+    text ask "{if q == 0 then \"Why does a magnet get the iron filings out of the sand?\" else if q == 1 then \"Why does a sieve get the pebbles out of the sand?\" else \"Why does filter paper get the sand out of the salty water?\"}" width=28 at=canvas(1, 0)
+    mixture mix things=["{if q == 1 then \"pebbles\" else if q == 0 then \"iron\" else \"sand\"}", "{if q == 2 then \"salt\" else \"sand\"}"] water=(if q == 2 then 1 else 0) names=1 below=ask gap=0
+    choice pick options=["Iron is pulled by a magnet and sand is not", "The pebbles are too big to go through the holes", "The sand has not dissolved, so the paper holds it back"] stack=column below=mix gap=0
+  }
+
+  answer pick=(if q == 0 then "Iron is pulled by a magnet and sand is not" else if q == 1 then "The pebbles are too big to go through the holes" else "The sand has not dissolved, so the paper holds it back")
+  hint "What is different about the two parts of this mixture?"
+  hint "Which of those differences does this way of separating use?"
+}

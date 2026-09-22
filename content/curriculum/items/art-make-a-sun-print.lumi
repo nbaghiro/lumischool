@@ -1,0 +1,10 @@
+item art.make-a-sun-print v=1 stars=3 skills=[art.printing, art.painting, reasoning.plan] {
+  title "Make a blue print"
+
+  scene 37x17 {
+    text ask "Make a print like Anna's. Lay three shapes on the sheet, with two of them overlapping. Paint blue over everything, then lift them off. Plan where the white will be first." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["blue", "white"] stencils=["fern", "leaf", "star", "fish"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A print that is white shapes on blue: three shapes laid and lifted, two of them overlapping so that the overlap stays white too, with blue brushed right up to their edges, arranged the way the child planned." notice=["Three white shapes on blue", "Two shapes overlapping", "Blue brushed right up to the edges"] ask="Before you lifted them off, where did you think the white would be?"
+}

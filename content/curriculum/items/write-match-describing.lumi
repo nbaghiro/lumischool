@@ -1,0 +1,28 @@
+# Three things from the harbour matched to the describing word that fits each, with the words
+# shuffled. At hard the words could almost fit another thing.
+item writing.match-describing v=1 skills=[writing.word-classes, writing.vocabulary] {
+  title "The word that fits"
+  difficulty k
+  let k=0..1 r=0..2
+  let t1={pick(k, "the sea", "the sand")}
+  let t2={pick(k, "the lighthouse", "the gull")}
+  let t3={pick(k, "the sand", "the rope")}
+  let d1={pick(k, "sparkling", "soft")}
+  let d2={pick(k, "tall", "noisy")}
+  let d3={pick(k, "soft", "wet")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x15 {
+    text ask "Write the number of the describing word that fits each thing at the harbour." narrate width=32 at=canvas(1, 1)
+    match m left=["{t1}", "{t2}", "{t3}"] right=["{if r == 0 then d2 else if r == 1 then d3 else d1}", "{if r == 0 then d3 else if r == 1 then d1 else d2}", "{if r == 0 then d1 else if r == 1 then d2 else d3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else if r == 1 then 2 else 1) y=(if r == 0 then 1 else if r == 1 then 3 else 2) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Say each word before each thing: sparkling sea, sparkling lighthouse. Which sounds true?"
+  hint "{if k == 0 then \"The sea sparkles, the lighthouse is tall, the sand is soft.\" else \"The sand is soft, the gull is noisy, the rope is wet.\"}"
+}

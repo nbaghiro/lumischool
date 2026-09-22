@@ -1,0 +1,16 @@
+# The reverse of the lesson: the child writes a sentence that shows a feeling without naming it.
+# Many sentences are right, so a grown-up marks it.
+item reading.show-not-tell v=1 stars=3 skills=[reading.inference, writing.composing] {
+  title "Show it, do not say it"
+  let k=0..3
+
+  scene 36x18 {
+    face f mood=(if k == 0 then "happy" else if k == 1 then "scared" else if k == 2 then "cross" else "tired") hair=k name="{if k == 0 then \"Kit\" else if k == 1 then \"Lena\" else if k == 2 then \"Jo\" else \"Amir\"}" at=canvas(1, 1)
+    text ask "Write a sentence that shows {if k == 0 then \"Kit\" else if k == 1 then \"Lena\" else if k == 2 then \"Jo\" else \"Amir\"} is {if k == 0 then \"happy\" else if k == 1 then \"scared\" else if k == 2 then \"cross\" else \"tired\"}, but do not use the word {if k == 0 then \"happy\" else if k == 1 then \"scared\" else if k == 2 then \"cross\" else \"tired\"}. Say what {if k == 0 then \"Kit\" else if k == 1 then \"Lena\" else if k == 2 then \"Jo\" else \"Amir\"} does." narrate width=26 right-of=f gap=2
+    writinglines lines lines=2 width=34 prompt="" below=f gap=1
+  }
+
+  check writing.by-eye look-for="{if k == 0 then \"One sentence about what Kit does, says or looks like that a reader could use to tell the feeling, such as a clue in the actions or the face, with the word happy left out.\" else if k == 1 then \"One sentence about what Lena does, says or looks like that a reader could use to tell the feeling, such as a clue in the actions or the face, with the word scared left out.\" else if k == 2 then \"One sentence about what Jo does, says or looks like that a reader could use to tell the feeling, such as a clue in the actions or the face, with the word cross left out.\" else \"One sentence about what Amir does, says or looks like that a reader could use to tell the feeling, such as a clue in the actions or the face, with the word tired left out.\"}"
+  hint "Look at the face. What would someone with that face be doing?"
+  hint "Think of a time you felt like that. What did you do?"
+}

@@ -1,0 +1,61 @@
+lesson art-symmetry-with-the-mirror v=1 format=teach grade=2 unit=2 subject=art levels=[easy, medium, hard] {
+  title "Symmetry with a mirror"
+  goal "Finish a picture across a mirror line, check a picture for symmetry, and paint a butterfly with the mirror."
+
+  look {
+    scene 25x11 {
+      row all at=canvas(1, 1) space=2 align=end {
+        stamps print motif=butterfly show="print" colour=pink flip=false made="print"
+        paintsheet half w=12 h=8 paper="squared" guide="mirror" outline="butterfly" pots=[]
+      }
+    }
+    say """
+      A butterfly is the same on both sides of its body. The line down the middle is a mirror line:
+      whatever is on one side is on the other side too, turned round. A mirror, or a fold in the
+      paper, can make the second side for you.
+      """
+  }
+  do {
+    practice art.finish-the-mirror count=2 seed=4
+    level easy {
+      worked art.finish-the-mirror-big s=6 k=0 level=medium
+    }
+    practice art.finish-the-mirror-big count=2 seed=2
+    practice art.whole-butterfly count=2 seed=5
+    practice art.mirror-faces count=2 hard-count=1 seed=1
+    level hard {
+      practice art.mirror-halves count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show art.mirror-halves n=12 easy-n=6 hard-n=16
+  }
+  try stars=3 {
+    show art.paint-a-butterfly
+  }
+  remember {
+    say "A mirror turns a picture round, so left becomes right, and each square has a twin."
+  }
+
+  grown-ups """
+    The machine marks which half finishes the mirror and which whole butterfly is the same on both
+    sides. It builds the three halves from the same pattern every time, one of them the half copied
+    across without turning, which is the mistake most children make first, and one with a single
+    square changed, which only careful checking finds. On screen the mirror button paints the second
+    wing as the child paints the first. On paper, paint one side thickly, fold along the line, press,
+    and open it.
+
+    The two-star question runs the mirror backwards: from the number of squares in the finished
+    butterfly to the number the child paints. The butterfly is the three-star question, because the
+    child has to plan three shapes a wing and mix a colour before the mirror does its half.
+
+    Respond by looking at the two sides together: "The spot near the top came out on both wings, the
+    same distance from the body." Ask what the fold did to a line that crossed the middle.
+    """
+  level easy {
+    grown-ups "At this level the butterflies have one to three shapes on each wing, a big one with six shapes is finished once in the teacher's pen, the faces are as written, the two-star wants six squares in all, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the butterflies have four to six shapes on each wing, one face makes way for a second count of squares with the mirror on, the two-star wants sixteen squares in all, and the three-star is as written."
+  }
+}

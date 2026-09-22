@@ -1,0 +1,23 @@
+# The character wrote back with a question, and the child picks the line that answers it. Each
+# choice answers one of the three questions, so the question decides.
+item writing.letter-reply v=1 skills=[writing.letters, reading.comprehension] {
+  title "Answer the question in the reply"
+  difficulty (if q == 2 then 1 else 0)
+  let k=0..1 q=0..2
+  level easy {
+    let q={0, 1}  # when and where
+  }
+  level hard {
+    let q={2}  # a worry answered
+  }
+
+  scene 34x19 {
+    caption reply text="{if k == 0 then \"The owl\" else \"The hedgehog\"} wrote back: {if q == 0 then \"Which day should I come?\" else if q == 1 then \"Where will you be?\" else \"What should I bring?\"}" width=33 at=canvas(1, 1)
+    text ask "Which line from your next letter answers it?" width=33 below=reply gap=1
+    choice pick options=["{if k == 0 then \"We will be by the old tower at the top.\" else \"We will be in the garden by the pond.\"}", "{if k == 0 then \"Bring a scarf, because it is windy up there.\" else \"Bring a friend, if you like.\"}", "{if k == 0 then \"Please come on Friday, when the lanterns are lit.\" else \"Please come on Sunday, at four.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then if k == 0 then "Please come on Friday, when the lanterns are lit." else "Please come on Sunday, at four." else if q == 1 then if k == 0 then "We will be by the old tower at the top." else "We will be in the garden by the pond." else if k == 0 then "Bring a scarf, because it is windy up there." else "Bring a friend, if you like.")
+  hint "What does the question ask for: a day, a place, or a thing to bring?"
+  hint "Which line gives exactly that?"
+}

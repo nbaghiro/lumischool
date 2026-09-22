@@ -1,0 +1,43 @@
+lesson g4-long-division v=1 format=worked grade=4 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Long division"
+  goal "Divide a three-digit number by a single digit, and say what the remainder means."
+
+  example {
+    worked division.remainder
+    say """
+      Work along the number one digit at a time, carrying what is left over into the next digit.
+      Whatever is left at the end is the remainder.
+      """
+  }
+  exercises {
+    practice division.boxes-read count=1 seed=5
+    practice division.remainder count=2 seed=4 easy-seed=6
+    practice division.find-the-number count=2 hard-count=1 seed=7
+    level hard {
+      practice division.fix-the-remainder count=1 seed=2
+    }
+    practice division.interpret count=1 seed=9
+    practice division.buses-needed count=1 seed=3
+    practice division.last-tent count=1 seed=6
+  }
+  try stars=2 {
+    show division.fix-the-remainder d=6 q=38 r=2 easy-d=4 easy-q=15 easy-r=1 hard-d=9 hard-q=57 hard-r=3
+  }
+  try stars=3 {
+    show division.riddle a=4 r=2 k=2 easy-a=3 easy-r=1 hard-a=6 hard-k=4
+  }
+
+  grown-ups """
+    The remainder is where the real thinking is. Ask what it means every time: three left on the
+    plate, one more minibus needed, or the campers in the last tent. When the number divided is the
+    unknown, multiply back and put the remainder in. In the two-star question the remainder is as
+    big as the divisor or bigger, so one more group fits. In the three-star question a list of the
+    numbers that fit one clue, tested against the other, is the method.
+    """
+  level easy {
+    grown-ups "At this level the worked division and the two to do divide by three to five with two-digit answers, the boxes hold three or four cubes, the number divided is found from a quotient of forty or less, the eggs are twenty to sixty in boxes of three to five, the minibuses seat eleven, the tents sleep four, Rafi's remainder is one too many in 61 divided by 4, and the three-star number is between 26 and 38."
+  }
+  level hard {
+    grown-ups "At this level the worked division and the two to do divide by six to nine with answers in the hundreds, the boxes hold five or six cubes, the numbers divided are found from quotients of sixty or more, the eggs are 150 to 300 in boxes of six to nine, the minibuses seat eight or nine, the tents sleep eight, Rafi's remainder is 12 in 516 divided by 9 and a second wrong remainder is put right, and the three-star number is between 116 and 128."
+  }
+}

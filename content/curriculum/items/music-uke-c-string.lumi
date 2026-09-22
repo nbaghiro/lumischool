@@ -1,0 +1,17 @@
+item music.uke-c-string v=1 skills=[music.chord-boxes] {
+  title "The string for C"
+
+  scene 28x17 {
+    chordbox box tuning=uke chord=C frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Which string does the finger press for C?" width=12 right-of=box gap=1
+    choice pick options=["G", "C", "E", "A"] below=ask gap=1
+  }
+
+  answer pick="A"
+  feedback {
+    when (pick == "C") point=box {
+      say "The chord is called C, but the finger is on the string on the right, which is A."
+    }
+  }
+  hint "Look straight down from the dot to the letter under the box."
+}

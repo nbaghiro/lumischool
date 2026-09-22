@@ -1,0 +1,26 @@
+# Two rows of buns: the child counts in twos along the tray rather than one bun at a time.
+item count.tray-twos v=1 skills=[counting.in-twos] {
+  title "Buns in twos"
+  difficulty c
+  let c=3..8
+  level easy {
+    let c=3..5
+  }
+  level hard {
+    let c=7..8
+  }
+
+  scene 26x15 {
+    bakingtray tray rows=2 cols=c iced=0 at=canvas(1, 1)
+    text ask "Count the buns in twos. How many are there?" width=24 below=tray gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * c)
+  feedback {
+    when (answer == c) point=tray {
+      say "That is how many columns. Each column holds two buns."
+    }
+  }
+  hint "Two, four, six, eight: one number for each column."
+}

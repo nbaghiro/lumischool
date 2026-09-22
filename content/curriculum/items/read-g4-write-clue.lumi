@@ -1,0 +1,16 @@
+# Writing the clue is the reverse of reading one: the child has to check each part against every
+# other creature. Many clues are right, so a grown-up marks it.
+item reading.write-a-clue v=1 stars=3 skills=[reading.find-a-detail, writing.composing] {
+  title "Write your own clue"
+  let k=0..3 x={if k == 0 then "A" else if k == 1 then "B" else if k == 2 then "C" else "D"}
+
+  scene 31x26 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=-1 at=canvas(1, 1)
+    text ask "Write a clue in two parts that fits creature {x} and no other. Neither part may say its colour." width=29 below=line gap=1
+    writinglines lines lines=2 width=29 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two parts that are both true of the named creature, which together are true of no other creature, and neither part names the colour. Check each part against the other three pictures: a part that fits two creatures is fine if the other part rules one of them out."
+  hint "List what creature {x} has: eyes, legs, horns, coat and body."
+  hint "Pick a part. Which other creatures does it fit? Now find a second part that rules those out."
+}

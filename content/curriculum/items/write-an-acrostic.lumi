@@ -1,0 +1,11 @@
+item writing.write-an-acrostic v=1 skills=[writing.poems, writing.composing] {
+  title "A poem down the page"
+  let k=0..1
+
+  scene 36x14 {
+    acrostic poem word="{if k == 0 then \"KITE\" else \"BOAT\"}" written=[""] width=25 at=canvas(1, 1)
+    art pic asset="{if k == 0 then \"kite\" else \"boat\"}" right-of=poem gap=1
+  }
+
+  check writing.by-eye look-for="A line for every letter, each starting with that letter and each about the picture; the lines need not rhyme, but reading down the page should still make sense."
+}

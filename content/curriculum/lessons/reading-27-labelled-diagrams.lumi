@@ -1,0 +1,55 @@
+lesson reading-labelled-diagrams v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Labelled diagrams"
+  goal "Read a labelled diagram with its caption and glossary, and use a passage to fill in or check a label."
+
+  look {
+    scene 26x16 {
+      labelled d of=windmill labels=["sail", "cap", "window", "door", "tower"] blank=-1 title="A windmill" caption="The wind turns the sails, and they grind the grain." at=canvas(1, 1)
+    }
+    say """
+      An information page often has a picture with labels. A label names one part, and its line
+      points to that part. The title says what the picture shows, and the caption under it tells
+      you one more thing. A glossary says what the harder words mean.
+      """
+  }
+  do {
+    show reading.frog-stages s=1
+    show reading.labelled-read k=3 easy-k=0 hard-k=1
+    show reading.caption-read k=0 hard-k=2
+    level easy {
+      worked reading.glossary k=2 level=medium
+    }
+    show reading.glossary k=0
+    show reading.feature-match k=0 r=1
+    show reading.glossary k=1 hard-k=2
+    show reading.feature-match k=1 r=2
+    show reading.frog-stages s=2 hard-s=3
+    level hard {
+      practice reading.label-swap count=1 seed=5
+    }
+  }
+  try stars=2 {
+    show reading.label-swap k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.write-caption k=0
+  }
+  remember {
+    say "A label names a part, and the caption tells you one more thing."
+  }
+
+  grown-ups """
+    Information books are full of diagrams, and reading one is reading the words and the picture
+    together. In the lighthouse and windmill questions the part names (gallery, store door,
+    sweep, loft window) are ones the picture cannot teach, so the passage or the glossary has to
+    be read. In the two-star question,
+    check each label against the passage one at a time. Any caption that adds a true fact the
+    labels do not give is right for the three-star question.
+    """
+  level easy {
+    grown-ups "At this level the frog's drawing is as written, the empty label is the lantern room, at the very top, the caption is as written, the sweep is found in the glossary once in the teacher's pen before the cap and the loft, the features are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the frog's drawing stops after one stage and then three, the empty label is the gallery, placed only as just below the lantern room, the caption tells what the windmill made, the glossary is read for the sweep, the features are as written, a second pair of swapped labels, the sweep and the cap, is found in the core, the two-star's swap is the cap and the loft, which the picture cannot tell apart, and the three-star is as written."
+  }
+}

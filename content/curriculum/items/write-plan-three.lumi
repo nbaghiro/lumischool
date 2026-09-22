@@ -1,0 +1,14 @@
+# The plan is the child's own writing, so nothing here is marked. The frame says on the page how
+# many sentences are wanted and leaves room for them.
+item writing.plan-three v=1 skills=[writing.planning] {
+  title "Plan three sentences"
+  let t={"a windy day", "a trip to the market", "a birthday"}
+
+  scene 36x25 {
+    art pic asset="{if t == \"a windy day\" then \"kite\" else if t == \"a trip to the market\" then \"market-stall\" else \"birthday-table\"}" at=canvas(1, 1)
+    text ask "Plan a short piece about {t}. One note in each box, not a whole sentence." width=18 right-of=pic gap=1
+    writingframe frame prompts=["First", "Next", "Last"] lines=2 width=34 note="A grown-up reads this one." below=pic gap=1
+  }
+
+  check writing.by-eye look-for="Three notes rather than three finished sentences, in an order that makes sense, with the last box saying how the piece ends rather than repeating the first."
+}

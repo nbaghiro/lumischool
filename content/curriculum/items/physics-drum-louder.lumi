@@ -1,0 +1,32 @@
+item physics.drum-louder v=1 skills=[physics.sound] {
+  title "Which is louder?"
+  difficulty (3 - abs(x - y))
+  let x=1..3 y=1..3
+  where (x != y)
+  level easy {
+    where (abs(x - y) == 2)
+  }
+  level hard {
+    where (abs(x - y) == 1)
+  }
+
+  scene 29x15 {
+    row two at=canvas(1, 0) space=1 align=start {
+      ricedrum a hit=x tag="A"
+      ricedrum b hit=y tag="B"
+    }
+    text ask "Which drum makes the louder sound?" width=16 below=two gap=0
+    choice pick options=["A", "B"] right-of=ask gap=2
+  }
+
+  check physics.sound of=a vs=b pick=louder
+  feedback {
+    when (pick == "A" and x < y) point=b {
+      say "Look at the rice. The skin that shakes harder throws it higher and sounds louder."
+    }
+    when (pick == "B" and y < x) point=a {
+      say "Look at the rice. The skin that shakes harder throws it higher and sounds louder."
+    }
+  }
+  hint "Which skin is shaking more?"
+}

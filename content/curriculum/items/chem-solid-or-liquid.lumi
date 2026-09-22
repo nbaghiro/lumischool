@@ -1,0 +1,31 @@
+# The table is checked against the melting points in the sources, so sugar can never again be said
+# to melt at 95 degrees. Butter and wax melt over a range, so no version asks near one.
+item chem.solid-or-liquid v=1 skills=[chemistry.states] {
+  title "Solid or liquid?"
+  difficulty (100 - abs(v - (if k == "chocolate" then 34 else if k == "wax" then 60 else 37)))
+  let k={"chocolate", "wax", "butter"} v={10, 20, 50, 80, 90}
+  where (not (k == "wax" and v == 50))
+  where (not (k == "butter" and v < 45))
+  level easy {
+    where (abs(v - (if k == "chocolate" then 34 else if k == "wax" then 60 else 37)) >= 30)  # far from the melting point
+  }
+  level hard {
+    where (abs(v - (if k == "chocolate" then 34 else if k == "wax" then 60 else 37)) <= 16)  # within a few degrees of it
+  }
+
+  scene 30x20 {
+    table data cols=2 head=["Melts at about", "Degrees"] cells=["chocolate", 34, "candle wax", 60, "butter", 37] at=canvas(1, 0)
+    text ask "A bowl of {if k == \"wax\" then \"candle wax\" else k} sits in a water bath at {v} degrees. Is the {if k == \"wax\" then \"candle wax\" else k} solid or liquid?" width=19 below=data gap=1
+    choice pick options=["solid", "liquid"] below=ask gap=1
+    thermometer tube from=0 to=100 step=20 value=v unit="C" right-of=data gap=1
+  }
+
+  check chem.state of=tube pick="of({k})" table=data
+  feedback {
+    when (pick == "liquid" and v < 30) point=data {
+      say "It has to get hotter than its melting point before it melts."
+    }
+  }
+  hint "Find the {if k == \"wax\" then \"candle wax\" else k} in the table. What temperature does it melt at?"
+  hint "Is the water bath hotter or colder than that?"
+}

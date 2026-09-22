@@ -1,0 +1,23 @@
+# The children are drawn with their names under them, so the picture says who is who and the
+# passage has to be read to find out who did what.
+item reading.passage-who v=2 skills=[reading.comprehension] {
+  title "Who did it?"
+  let a={"Sam", "Ann", "Joe"} b={"Kim", "Raj", "Eve"}
+
+  scene 36x16 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage p title="Walking to school" text="{a} and {b} walk to school together. {a} carries the lunch bag and {b} carries the ball. On the way they count the red cars." width=24
+      children kids count=2 names=["{a}", "{b}"] holding="" each=0
+    }
+    text ask "Who carries the ball?" width=14 below=top gap=1
+    choice pick options=["{if a == \"Ann\" or b == \"Eve\" then b else a}", "{if a == \"Ann\" or b == \"Eve\" then a else b}"] right-of=ask gap=1
+  }
+
+  answer pick=b
+  feedback {
+    when (pick == a) point=p {
+      say "{a} is carrying the lunch bag. Find the ball in the passage and read who has it."
+    }
+  }
+  hint "Find the word ball in the passage, then read the name next to it."
+}

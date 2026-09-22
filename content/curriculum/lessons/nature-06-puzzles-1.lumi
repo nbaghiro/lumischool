@@ -1,0 +1,53 @@
+lesson nature-puzzles-1 v=1 format=puzzles grade=1 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "Nature puzzles: the long grass"
+  goal "Find the odd one out, count the legs, and put the seasons and the bean back in order."
+
+  puzzle stars=1 {
+    show nature.odd-one-out k=2 easy-k=0 hard-k=5
+  }
+  puzzle stars=1 {
+    show nature.count-legs k=2 easy-k=1 hard-k=4
+  }
+  puzzle stars=1 {
+    show nature.pond-count f=3 p=4 w=0 easy-f=2 easy-p=2 hard-f=5 hard-p=6
+  }
+  puzzle stars=2 {
+    show nature.missing-season k=1 easy-k=0 hard-k=5
+  }
+  puzzle stars=2 {
+    show nature.which-legs t=1 p=2 j=0 easy-t=0 easy-p=1 hard-t=1 hard-p=1 hard-j=1
+  }
+  puzzle stars=2 {
+    show nature.insect-count k=3 easy-k=1 hard-k=6
+  }
+  puzzle stars=2 {
+    show nature.stages-in-order p=2 easy-p=0 hard-p=5
+  }
+  puzzle stars=2 {
+    show nature.shows-shes-wrong k=1 easy-k=0 hard-k=4
+  }
+  puzzle stars=3 {
+    show nature.living-pairs m=3 b=2 easy-m=2 easy-b=2 hard-m=4 hard-b=3
+  }
+  puzzle stars=3 {
+    show nature.swap-two k=1 easy-k=0 hard-k=5
+  }
+
+  grown-ups """
+    Let the child try each one alone first. The hints and answers are on this sheet, not on theirs.
+    Every puzzle can be started by looking closely: counting legs one at a time, saying the seasons
+    along the row of trees, finding the seed card before any other. The odd one out and the
+    creature that shows Ada is wrong both turn on the three questions from the first lesson (does
+    it grow, does it eat, can it have young), and the legs puzzles turn on six legs meaning an
+    insect. The bean cards are numbered from the seed, and the picture above them leaves a stage
+    out. The two three-star puzzles are the ones to leave for a quiet moment: every line from every
+    creature to every coin, and the two trees to swap to put the year right. A puzzle left unsolved
+    today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level the odd one out is a cup among animals, the legs counted are the ladybird's, the pond has two fish under two pads, the row of trees starts in spring with summer missing, the odd creature is the spider with the snail left out of the row, the insects are counted in a row of four, the bean picture shows all four stages, the kite shows Ada is wrong, the pairs puzzle has four lines, and the two trees to swap stand side by side."
+  }
+  level hard {
+    grown-ups "At this level the odd one out is a pencil among animals, the legs counted are the snail's none, the pond has five fish under six pads, the row of trees starts in winter with summer missing, the snail has to be found in a row that holds the spider too, the insects are counted in a row of six, the bean picture shows only the seed and the shoot, a toadstool shows Ada is wrong, the pairs puzzle has fifteen lines with a toadstool to count as living, and the two trees to swap are the first and the last."
+  }
+}

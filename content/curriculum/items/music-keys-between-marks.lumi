@@ -1,0 +1,27 @@
+# One mark that sits between two others, so the whole order from pp to ff is used, not one pair.
+item music.between-marks v=1 stars=2 skills=[music.dynamics, reasoning.order] {
+  title "In between"
+  difficulty (if i == 0 then 0 else 1)
+  let i=0..2 q=0..2
+  let a={if i == 0 then "pp" else if i == 1 then "p" else "mp"}
+  let mid={if i == 0 then "p" else if i == 1 then "mp" else "mf"}
+  let b={if i == 0 then "mp" else if i == 1 then "mf" else "f"}
+  let far={if i == 0 then "f" else if i == 1 then "ff" else "ff"}
+  let o1={if q == 0 then mid else if q == 1 then far else a}
+  let o2={if q == 0 then far else if q == 1 then a else mid}
+  let o3={if q == 0 then a else if q == 1 then mid else far}
+
+  scene 26x7 {
+    text ask "Which mark is louder than {a} but softer than {b}?" width=24 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=ask gap=1
+  }
+
+  answer pick=mid
+  feedback {
+    when (pick == far) point=ask {
+      say "{far} is louder than {a}, but it is not softer than {b}."
+    }
+  }
+  hint "Which is softer, {a} or {b}? Say the marks from softest to loudest, starting with pp."
+  hint "Which mark comes after {a} and before {b} in your line?"
+}

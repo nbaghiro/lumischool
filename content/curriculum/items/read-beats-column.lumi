@@ -1,0 +1,13 @@
+item reading.beats-column v=1 skills=[reading.syllables] {
+  title "One beat or two?"
+  let w=0..3
+
+  scene 29x21 {
+    text ask "One word is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort sort heads=["1 beat", "2 beats"] words=["cat", "rabbit", "dog", "garden"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["cat", "rabbit", "dog", "garden"] below=sort gap=1
+  }
+
+  answer pick=(if w == 0 then "cat" else if w == 1 then "rabbit" else if w == 2 then "dog" else "garden")
+  hint "Clap each word. One clap goes in the first column, two in the second."
+}

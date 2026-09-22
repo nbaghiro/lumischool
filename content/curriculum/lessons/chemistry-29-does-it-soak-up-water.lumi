@@ -1,0 +1,62 @@
+lesson chemistry-does-it-soak-up-water v=1 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Does it soak up water?"
+  goal "Say which materials soak up water and which keep it out, and pick the right one for a job."
+
+  look {
+    scene 26x7 {
+      materials row things=["towel", "paper-bag", "raincoat", "metal-can"] names=1 at=canvas(1, 0)
+    }
+    say """
+      At the printing works a jug tips over on the press. Ada drops a towel on the spill and it
+      goes dark and heavy: the water has soaked in. A paper bag soaks it up too, and goes soggy.
+      Water runs straight off the raincoat and the metal can, and they stay dry inside. Things
+      made of threads, paper or card soak water up. Metal, glass, plastic and rubber keep it out,
+      even when they are soft.
+      """
+  }
+  do {
+    level easy {
+      worked chem.wet-through k=0 p=0
+    }
+    practice chem.wet-through count=2 seed=3 easy-seed=6 hard-seed=1
+    practice chem.for-a-towel count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.keeps-dry count=1 seed=3 easy-seed=1 hard-seed=2
+    practice chem.count-soakers count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chem.wrong-soak-column count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.paper-hat k=2 r=1
+    }
+  }
+  story {
+    show chem.jug-spill a=8 b=4 w=0 easy-a=6 hard-a=12 hard-b=5 hard-w=1
+  }
+  try stars=2 {
+    show chem.paper-hat k=1 r=2 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show chem.dry-seat k=1 p=1 easy-k=0 easy-p=0 hard-k=2
+  }
+  remember {
+    say "Threads, paper and card soak water up. Metal, glass, plastic and rubber keep it out."
+  }
+
+  grown-ups """
+    The idea is that whether water soaks in depends on the material, not on how soft the thing
+    is. The wrong idea to watch for is "soft, so it soaks up": a raincoat and a welly boot are
+    soft and bendy and keep water out, and the hard questions turn on exactly those. Ask what the
+    thing is made of before asking what water does to it. The story takes the cloth's millilitres
+    from the jug's twenty, then a paper towel's too. The two-star question asks what goes wrong
+    when a material is given the wrong job (a paper hat in the rain, a raincoat as a towel), and
+    the reason has to name what the material does with water. The three-star question builds a
+    dry seat from two layers, one to keep the wet out and one to sit on, and at hard the waterproof
+    bottle is a trap because it will not lie flat. If the sorting still goes by softness after
+    the core, stay here another day with a real spill: a teaspoon of water on a sock, a spoon, a
+    bag, a lid, and a finger to feel underneath each one.
+    """
+  level easy {
+    grown-ups "At this level a spill on a towel, a spoon and a bottle is worked once in the teacher's pen, the things to pick out are threads and paper against metal and glass, the counts have towels, socks and paper against hard things, the stray in the columns is a key or a brick, the cloth soaks up six millilitres of the twenty, the thing given the wrong job is the paper hat, and the seat's four things are in the look's order with the raincoat and the towel plain."
+  }
+  level hard {
+    grown-ups "At this level the things that keep water out are the soft ones (a raincoat, a rubber boot, a rubber band), a cardboard box soaks water up though it looks stiff, the stray in the columns is a raincoat or a boot under soaks up, a second wrong-job question sits in the core (a plastic cloth for the cups), the cloth and then a paper towel are taken from the twenty, the thing given the wrong job is the raincoat as a towel, and the seat's four things include a plastic bottle that keeps water out and will not lie flat."
+  }
+}

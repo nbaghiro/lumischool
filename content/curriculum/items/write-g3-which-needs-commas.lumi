@@ -1,0 +1,26 @@
+# Only a list of three or more needs commas; two things joined by and need none.
+item writing.which-needs-commas v=1 skills=[writing.punctuation] {
+  title "Which one needs commas?"
+  difficulty (if s == 2 or s == 3 then 1 else 0)
+  let s=0..3 p=0..2 a={if s == 0 then "We saw frogs newts and a heron at the pond." else if s == 1 then "Pip packed socks shorts and a sun hat." else if s == 2 then "The fox ran past the barn the gate and the well." else "Gran grew beans peas and big red tomatoes."} b={if s == 0 then "We saw frogs and newts at the pond." else if s == 1 then "Pip packed socks and a sun hat." else if s == 2 then "The fox ran past the barn and the gate." else "Gran grew beans and peas."} c={if s == 0 then "The heron stood very still." else if s == 1 then "Pip packed her bag last night." else if s == 2 then "The fox ran into the dark wood." else "Gran grew tall sunflowers."}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 34x15 {
+    text ask "The commas are missing. Which sentence needs commas?" width=28 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then a else if p == 1 then b else c}", "{if p == 0 then b else if p == 1 then c else a}", "{if p == 0 then c else if p == 1 then a else b}"] stack=column below=ask gap=1
+  }
+
+  answer pick=a
+  feedback {
+    when (pick == b) point=pick {
+      say "That list has only two things, and the word and sits between them. No comma is needed."
+    }
+  }
+  hint "Count the things in each sentence."
+  hint "When are there more gaps between things than the word and can fill?"
+}

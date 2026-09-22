@@ -1,0 +1,56 @@
+lesson writing-words-that-describe v=1 format=teach grade=2 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Words that describe"
+  goal "Tell a naming word from a describing word, find one in a sentence, and choose one that fits."
+
+  look {
+    scene 24x22 {
+      column all at=canvas(1, 1) space=1 align=start {
+        creatures line eyes=[1, 2, 3] legs=[2, 4, 2] horns=[0, 2, 1] coat=[0, 1, 2] body=[0, 1, 2] colors=["sky", "mint", "berry"] labels=["", "", ""] ring=-1
+        wordsort sort heads=["Naming", "Describing"] words=["horn", "spotty", "leg", "stripy"] into=[0, 1, 0, 1]
+      }
+    }
+    say """
+      A naming word is a thing: you could point at a horn or a leg. A describing word tells you
+      what the thing is like. Spotty is not something you can point at; it is something the
+      middle creature is.
+      """
+  }
+  do {
+    practice writing.describing-column count=1 seed=1
+    level easy {
+      worked writing.describing-hard w=1 set=0 level=medium
+    }
+    practice writing.describing-hard count=2 seed=3
+    practice writing.describing-in-sentence count=2 seed=2
+    practice writing.opposite-word count=2 hard-count=1 seed=4
+    level hard {
+      practice writing.describing-or-not count=1 seed=1
+    }
+    practice writing.creature-word count=1 seed=5 hard-seed=3
+  }
+  try stars=2 {
+    show writing.describing-or-not k=1 p=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show writing.three-describing k=0
+  }
+  remember {
+    say "A naming word is a thing. A describing word says what the thing is like."
+  }
+
+  grown-ups """
+    The test that works is putting "the" in front of the word. The horn and the leg sound right;
+    the spotty and the stripy do not. Some naming words end in y (puppy, jelly), so the ending is
+    no guide, which is why the second questions use them. In the two-star question the same word
+    is a thing in one sentence and a describing word in the other; ask what the word is doing in
+    each. In the three-star question, colours are ruled out on purpose, so the child has to look
+    for size, shape and feel. The lesson on describing a creature so it can be found puts these
+    words to work.
+    """
+  level easy {
+    grown-ups "At this level the wrong column is as written, soft in the things column is found once in the teacher's pen before columns whose stray is a thing, the describing words sit after the thing they describe, the creature's word is as written, the opposites are light, dry and empty, the two-star's word is cold, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the wrong column is as written and the strays are describing words in the things column, the describing words include tiny before its mouse, the opposites are slow, thin and low, one of them making way for a second word that is sometimes a thing, the creature's word is its body's shape, the two-star's word is fair, and the three-star is as written."
+  }
+}

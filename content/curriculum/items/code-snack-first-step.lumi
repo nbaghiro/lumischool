@@ -1,0 +1,26 @@
+# The way in: three steps of a snack, and the one a robot must do before the others. Cereal and a
+# pancake are asked only here, so the way in gives nothing away to a later question.
+item coding.snack-first-step v=1 skills=[coding.sequences, coding.algorithms] {
+  title "Which step is first?"
+  let s=0..5
+  let snack={pick(s, "a jam sandwich", "toast", "hot cocoa", "a fruit bowl", "a bowl of cereal", "a pancake")}
+  let o1={pick(s, "Spread jam on one slice", "Take the toast out", "Pour milk into a mug", "Cut the apple into pieces", "Pour milk on the cereal", "Flip the pancake")}
+  let o2={pick(s, "Take two slices of bread", "Spread butter on the toast", "Stir cocoa into the hot milk", "Put the pieces in a bowl", "Take a bowl", "Pour the batter into the pan")}
+  let o3={pick(s, "Put the other slice on top", "Put the bread in the toaster", "Warm the milk for one minute", "Wash the apple", "Pour cereal into the bowl", "Mix the batter")}
+  let ans={pick(s, o2, o3, o1, o3, o2, o3)}
+
+  scene 30x26 {
+    art pic asset="kitchen-counter" at=canvas(1, 1)
+    text ask "Pip is making {snack} for the lamp keeper. Which step comes first?" narrate width=28 below=pic gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=ask {
+      say "Could a robot do that step before any other? Think what has to be ready first."
+    }
+  }
+  hint "Which step does not need any other step done before it?"
+  hint "Say the steps in the order you would do them in the kitchen."
+}

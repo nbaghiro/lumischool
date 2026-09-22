@@ -1,0 +1,21 @@
+# The family is read off the strokes the drawing numbers, so the answer follows the same table the
+# picture is drawn from (FAMILIES in src/art/writing.ts).
+item writing.letter-family v=1 skills=[writing.letter-formation] {
+  title "Which family is the letter in?"
+  difficulty (if ch == "d" or ch == "k" then 2 else if ch == "h" or ch == "t" or ch == "l" then 1 else 0)
+  let ch={"c", "d", "h", "k", "l", "o", "t", "v", "w"}
+
+  scene 30x16 {
+    formletter big letter=ch copies=0 write=0 label=false at=canvas(1, 1)
+    text ask "Look at where the pencil goes. Which family is this letter in?" width=20 right-of=big gap=1
+    choice pick options=["ladder", "bridge", "curly", "zigzag"] below=big gap=1
+  }
+
+  answer pick=(if ch == "l" or ch == "t" then "ladder" else if ch == "h" or ch == "k" then "bridge" else if ch == "v" or ch == "w" then "zigzag" else "curly")
+  feedback {
+    when (pick == "curly" and (ch == "h" or ch == "k")) point=big {
+      say "This one goes down first and then up and over, like a bridge."
+    }
+  }
+  hint "Round and round is curly. Down, up and over is a bridge. Straight down is a ladder. Sharp corners are a zigzag."
+}

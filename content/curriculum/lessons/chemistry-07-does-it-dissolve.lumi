@@ -1,0 +1,43 @@
+lesson chemistry-does-it-dissolve v=2 format=worked grade=2 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "Does it dissolve?"
+  goal "Decide from what is left in the glass whether a solid has dissolved, count the ones that did, and say how to get each kind back."
+
+  example {
+    worked chem.dissolved-yet k=1 v=200
+    say """
+      Look at the bottom of the beaker, not at the water. A solid that has dissolved leaves nothing
+      behind that you can see, however cloudy or clear the water looks. A solid that has not
+      dissolved leaves grains you can count.
+      """
+  }
+  exercises {
+    practice chem.dissolved-yet count=2 seed=3
+    practice chem.cloudy-or-clear count=2 seed=1 easy-seed=4 hard-seed=8
+    practice chem.dissolve-table count=2 seed=5
+    practice chem.dissolve-count count=2 seed=1 easy-seed=7 hard-seed=7
+    practice chem.what-dissolved count=1 seed=6 easy-seed=7
+  }
+  try stars=2 {
+    show chem.show-still-there t="salt" easy-t="sand"
+  }
+  try stars=3 {
+    show chem.first-grains m=6 a=2 easy-m=4 easy-a=1 hard-m=8 hard-a=3
+  }
+
+  grown-ups """
+    The beaker with or without grains is the way in. The two glasses, the table and the count ask
+    the same idea three ways: the glass with nothing on the bottom, the spoons that went in less the
+    ones that did not dissolve, and the things missing from the picture. The two-star question asks
+    how to get a solid back, which depends on whether it dissolved: dry the water away for salt, catch
+    sand in paper. The three-star question is about the first spoon that stays as grains, which is
+    one more than the spoons that can still dissolve. Salt, sugar, flour and sand in four glasses of
+    the same water is a proper test; flour clouds the water without dissolving, which is the mistake
+    the page is trying to catch. Nobody tastes anything.
+    """
+  level easy {
+    grown-ups "At this level the beakers are as written, the other glass holds sand, which sits on the bottom, the table has four or five spoons with one left, one of the three things dissolves in most rows, the pair is as written, the two-star asks how to get sand back, which sank, and the three-star water takes four spoons with one in."
+  }
+  level hard {
+    grown-ups "At this level the beakers are as written, the other glass holds flour, which clouds the water without dissolving, the table has six or seven spoons with two or three left, two of the three things dissolve in most rows, the pair is as written, the two-star is as written, salt, and the three-star water takes eight spoons with three in."
+  }
+}

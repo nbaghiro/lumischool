@@ -1,0 +1,35 @@
+lesson physics-speed-from-distance-and-time v=1 format=worked grade=3 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Speed from distance and time"
+  goal "Work out metres each second from a distance and a time, and use it to predict a distance."
+
+  example {
+    worked physics.speed d=60 t=10 easy-level=medium hard-level=medium
+    say """
+      Speed is how much distance goes into one second. Sixty metres in ten seconds means the sixty
+      is shared out between the ten, which is six metres each second.
+      """
+  }
+  exercises {
+    practice physics.speed count=3 seed=1
+    practice physics.distance-from-rate count=2 seed=2
+    practice physics.speed-compare count=2 seed=3
+    practice physics.time-from-speed count=2 seed=1
+  }
+  try stars=2 {
+    show physics.speed-same s=5 u=5 t=6 v=10 easy-s=4 easy-u=6 easy-v=9 hard-t=8
+  }
+  try stars=3 {
+    show physics.speed-meet a=2 b=3 t=5 easy-a=2 easy-b=2 easy-t=4 hard-a=3 hard-b=4 hard-t=6
+  }
+
+  grown-ups """
+    Pace out ten metres in the garden or the hallway and time a walk and a run over it. Dividing by
+    the seconds gives a number the child can compare with a bicycle or a car.
+    """
+  level easy {
+    grown-ups "At this level the times are five seconds, the two runners in the table ran for the same time, and the walkers start sixteen metres apart."
+  }
+  level hard {
+    grown-ups "At this level the speed questions take twenty seconds, the runners in the table ran for different times, and the walkers start forty-two metres apart."
+  }
+}

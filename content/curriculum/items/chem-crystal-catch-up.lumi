@@ -1,0 +1,23 @@
+# No method on the page: a small crystal growing fast catches up with a big one growing slowly,
+# and a table of days, or guess and check, both find the day.
+item chem.crystal-catch-up v=1 stars=3 skills=[chemistry.crystals, reasoning.guess-and-check] {
+  title "When are they the same?"
+  difficulty (q - p)
+  let p={2, 4} q={8, 10, 12}
+
+  scene 29x14 {
+    crystalstring jar days=1 crystals=2 kind=salt at=canvas(1, 0)
+    text ask "On day 1, crystal A is {p} mm long and grows 3 mm a day. Crystal B is {q} mm long and grows 1 mm a day. On which day are they the same length?" width=16 right-of=jar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (1 + (q - p) / 2)
+  feedback {
+    when (answer == (q - p) / 2) point=jar {
+      say "That is how many days after day 1. Which day is that?"
+    }
+  }
+  hint "How long is each crystal on day 2? Is the gap between them smaller than on day 1?"
+  hint "Each day, how much does A catch up on B?"
+  hint "How many days of catching up does A need to close the gap?"
+}

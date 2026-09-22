@@ -1,0 +1,22 @@
+# A single digit beside the teen with the same last digit, so the order has to read the tens.
+item count.order-to-twenty v=1 skills=[counting.to-twenty, place-value.compare] {
+  title "Smallest first"
+  difficulty ((if z == 12 or z == 17 then 2 else 0) + (if abs(x - y) == 1 then 1 else 0))
+  let x=2..9 y=0..9 z={1, 5, 12, 17, 20}
+  where (y != x and z != x and z != 10 + x and z != 10 + y)
+  level easy {
+    let z={1, 20}
+  }
+  level hard {
+    let z={12, 17}
+  }
+
+  scene 19x18 {
+    text ask "Write 1 by the smallest number, then 2, 3 and 4." narrate width=18 at=canvas(1, 1)
+    sequence s items=["{10 + x}", "{z}", "{x}", "{10 + y}"] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=(2 + (if z < 10 + x then 1 else 0) + (if y < x then 1 else 0)) p2=(1 + (if 10 + x < z then 1 else 0) + (if x < z then 1 else 0) + (if 10 + y < z then 1 else 0)) p3=(1 + (if z < x then 1 else 0)) p4=(2 + (if x < y then 1 else 0) + (if z < 10 + y then 1 else 0))
+  hint "Which numbers are less than 10?"
+  hint "The numbers from 10 to 19 all start with 1. Look at the other digit."
+}

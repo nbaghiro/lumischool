@@ -1,0 +1,39 @@
+# Three stars: choosing two of the four on the branch so that the wait between the first landing and
+# the second is as long as it can be, which is the fastest of the four with the slowest of the four
+# rather than any two that look different. The right pair is offered in a different place each time.
+item physics.fall-longest-wait v=1 stars=3 skills=[physics.forces, reasoning.fewest, reasoning.constraints] {
+  title "The longest wait"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let t1={pick(v, "leaf", "flat", "crumpled", "parachute")}
+  let t2={pick(v, "stone", "parachute", "leaf", "crumpled")}
+  let t3={pick(v, "feather", "crumpled", "flat", "stone")}
+  let t4={pick(v, "flat", "leaf", "feather", "leaf")}
+  let right={pick(v, "The stone and the feather", "The paper ball and the parachute", "The paper ball and the feather", "The stone and the parachute")}
+  let near={pick(v, "The leaf and the flat sheet", "The leaf and the flat sheet", "The leaf and the flat sheet", "The paper ball and the leaf")}
+  let slow={pick(v, "The flat sheet and the feather", "The flat sheet and the parachute", "The flat sheet and the feather", "The leaf and the parachute")}
+  let o1={pick(v, right, near, slow, near)}
+  let o2={pick(v, near, right, near, slow)}
+  let o3={pick(v, slow, slow, right, right)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 27x36 {
+    falling four things=["{t1}", "{t2}", "{t3}", "{t4}"] time=1 show=1 names=1 at=canvas(1, 0)
+    text ask "Sam wants to drop two of these four together so that the wait between the first one landing and the second is as long as it can be. Which two should he choose?" narrate width=26 below=four gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == slow) point=four {
+      say "Those two are both slow, so they land close together. One of the pair needs to be the quickest of the four."
+    }
+  }
+  hint "The wait is longest when one lands as early as it can and the other as late as it can."
+  hint "Which of these four comes down fastest, and which comes down slowest?"
+}

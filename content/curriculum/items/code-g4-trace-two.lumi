@@ -1,0 +1,30 @@
+# Two names that change together: a counts up and t keeps a running total, so t is 1 + 2 + 3 and
+# so on. There is no table drawn: the child makes one with a column for each name.
+item coding.trace-two v=1 skills=[coding.tracing, coding.variables] {
+  title "A running total"
+  difficulty r
+  let r=3..5
+  level easy {
+    let r={3}
+  }
+
+  scene 36x12 {
+    program p code=["set a to 1", "set t to 0", "repeat {r}", "  add a to t", "  add 1 to a"] at=canvas(1, 0)
+    text ask "Make a table with a column for a and a column for t. What do they hold at the end?" width=17 right-of=p gap=2
+    row ans below=ask gap=1 space=1 align=centre {
+      text lt "t"
+      number-input t width=3
+      text la "a"
+      number-input a width=3
+    }
+  }
+
+  check coding.runs of=p t="value(t)" a="value(a)"
+  feedback {
+    when (t == r) point=p {
+      say "t adds a each time, and a gets bigger each time round, so t grows by more every time."
+    }
+  }
+  hint "What is a the first time line 4 runs? And the second time?"
+  hint "t adds 1, then 2, then 3, and so on."
+}

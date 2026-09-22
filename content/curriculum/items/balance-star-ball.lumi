@@ -1,0 +1,20 @@
+item balance.star-ball v=1 skills=[equations.balance] {
+  title "Take the same from both sides"
+  difficulty k
+  let k=2..4
+  roles mid=ball light=star
+
+  scene 20x19 {
+    balance s left=[light, mid] right=[light * (k + 1)] at=canvas(3, 1)
+    text ask "1 {light} and 1 {mid} balance {k + 1} {light.many}. How many {light.many} balance 1 {mid}?" narrate width=16 below=s gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer k
+  feedback {
+    when (answer == k + 1) point=s.left-pan {
+      say "Take one {light} off both pans first."
+    }
+  }
+  hint "What is left if you take one {light} off each side?"
+}

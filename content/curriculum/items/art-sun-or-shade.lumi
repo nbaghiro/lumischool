@@ -1,0 +1,21 @@
+item art.sun-or-shade v=1 skills=[art.printing, reasoning.evidence] {
+  title "Where the sun reached"
+  difficulty q
+  let n=3..6 q=0..1
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 32x13 {
+    sunprint pic pairs=[n] made=0 show="print" at=canvas(1, 1)
+    text ask "{if q == 0 then \"Where did the sun reach the paper?\" else \"Where did the fern lie on the paper?\"}" width=14 right-of=pic gap=1
+    choice pick options=["on the blue part", "on the white part"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "on the blue part" else "on the white part")
+  hint "This paper turns blue where sunlight falls on it. Which part turned blue?"
+  hint "Could the sun shine through a fern onto the paper underneath it?"
+}

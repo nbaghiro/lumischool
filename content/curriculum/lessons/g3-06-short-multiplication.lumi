@@ -1,0 +1,42 @@
+lesson g3-short-multiplication v=1 format=worked grade=3 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Short multiplication"
+  goal "Multiply a two- or three-digit number by a single digit, with the grid method and in columns."
+
+  example {
+    worked multiply.grid-parts t=2 o=6 b=4 hard-level=medium
+    say """
+      The grid splits the number into tens and ones and multiplies each part, so nothing is
+      forgotten. Twenty times four is eighty, six times four is twenty-four, and together they make
+      a hundred and four. The column method does the same work in less space.
+      """
+  }
+  exercises {
+    practice multiply.grid-parts count=2 seed=5
+    practice multiply.short count=3 hard-count=2 seed=5 easy-seed=4
+    practice multiply.trays count=2 seed=3
+    practice multiply.ferry-trips count=1 seed=7
+    level hard {
+      practice multiply.hidden-tens count=1 seed=4
+    }
+  }
+  try stars=2 {
+    show multiply.hidden-tens x=5 o=7 b=6 easy-x=2 easy-o=3 easy-b=4 hard-x=8 hard-b=9
+  }
+  try stars=3 {
+    show multiply.biggest-product a=3 b=5 c=8 easy-a=3 easy-b=4 easy-c=9 hard-a=1 hard-b=7 hard-c=8
+  }
+
+  grown-ups """
+    The grid is worth keeping even after the columns arrive: it is the picture that explains why
+    the columns work. In the ferry question the last trip is not full, so it is added on rather than
+    multiplied. In the two-star question, a child who tries a digit, multiplies and adjusts has
+    done exactly the right thing. In the three-star question the surprise is that 53 × 8 beats
+    85 × 3; let the child find it by trying all three single cards.
+    """
+  level easy {
+    grown-ups "At this level the grid multiplies numbers under forty by three or four, the column sums are numbers under three hundred times three or four, the trays are three or four of twelve to eighteen buns, the ferry takes fourteen or seventeen cars, the hidden digit makes 23 × 4, and with the cards 3, 4 and 9 the best product is well clear of the next."
+  }
+  level hard {
+    grown-ups "At this level the grid multiplies numbers over fifty by six to nine, the column sums are numbers over five hundred times six to nine, the trays are seven to nine of fifteen to twenty-four buns, the ferry takes twenty-six or twenty-nine cars on five or six trips, the hidden digit is asked twice with sevens to nines, and with the cards 1, 7 and 8 the best product beats the next by one."
+  }
+}

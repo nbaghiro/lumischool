@@ -1,0 +1,32 @@
+# The robot misses the flag because the repeat goes round the wrong number of times. The checker
+# tries every single change and proves only the repeat number mends it: the step never divides the
+# distance a wrong number of rounds would need.
+item coding.repeat-count-flag v=1 skills=[coding.repetition, coding.debugging] {
+  title "Round the right number of times"
+  difficulty (n * s)
+  let n=2..5 s=2..3 m=2..5
+  # a wrong round count that divides the distance would also be mended by changing the step
+  where (m != n and 1 + n * s <= 11 and n * s % m != 0)
+  level easy {
+    where (n * s <= 6)
+  }
+  level hard {
+    where (n * s >= 8)
+  }
+
+  scene 30x12 {
+    blocks bl code=["repeat {m}", "  right {s}"] at=canvas(1, 0)
+    maze g cols=11 rows=1 col=1 row=1 face=right flag=[1 + n * s, 1] code=["repeat {m}", "  right {s}"] trail=line below=bl gap=1
+    text ask "The robot should stop on the flag. What should the repeat number be?" width=16 right-of=bl gap=2
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=g goal=flag answer=fix
+  feedback {
+    when (answer == n * s) point=g {
+      say "That is how many squares to go. Each time round moves {s} squares."
+    }
+  }
+  hint "How many squares is the flag from the start?"
+  hint "Each time round moves {s} squares. How many times round make that?"
+}

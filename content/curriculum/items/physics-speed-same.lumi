@@ -1,0 +1,20 @@
+item physics.speed-same v=1 skills=[physics.speed, reasoning.compare] stars=2 {
+  title "Faster, or the same?"
+  difficulty ((if s == u then 2 else 0) + (t + v) / 10)
+  let s={4, 5, 6} u={4, 5, 6} t={6, 8} v={9, 10}
+
+  scene 32x16 {
+    table data cols=3 head=["Name", "Metres", "Seconds"] cells=["Ada", s * t, t, "Ben", u * v, v] at=canvas(1, 0)
+    text ask "Who ran faster, or were they just as fast?" width=12 right-of=data gap=2
+    choice pick options=["Ada", "Ben", "The same"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if s > u then "Ada" else if u > s then "Ben" else "The same")
+  feedback {
+    when (pick == "Ben" and s >= u) point=data {
+      say "Ben went further, but he had longer to do it. Work out each one's metres in a second."
+    }
+  }
+  hint "Can you tell who is faster just from the metres?"
+  hint "Share each runner's metres by their seconds."
+}

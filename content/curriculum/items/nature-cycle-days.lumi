@@ -1,0 +1,38 @@
+# The days each stage of a cycle takes, in a table, and the days from the egg to the grown one:
+# the stages added. At hard the question asks about a part of the cycle, so some rows are left out.
+item nature.cycle-days v=1 skills=[nature.life-cycles, addition.to-hundred] {
+  title "How many days?"
+  difficulty (if w == 0 then 0 else 1)
+  let e=2..6 c=10..20 p=7..14 w=0..1
+  let asks={pick(w, "How many days from the egg being laid to the butterfly coming out?", "How many days does the caterpillar spend eating and resting, from hatching to coming out as a butterfly?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 36x16 {
+    table t cols=2 head=["Stage", "Days"] cells=["egg", "{e}", "caterpillar", "{c}", "chrysalis", "{p}", "butterfly", "lays eggs"] at=canvas(1, 1)
+    text ask "Ada's table says how long each stage of a butterfly takes. {asks}" narrate width=16 right-of=t gap=2
+    row a below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "days"
+    }
+  }
+
+  answer (if w == 0 then e + c + p else c + p)
+  feedback {
+    when (w == 0 and answer == c + p) point=t {
+      say "The egg takes {e} days before it hatches. Count those days too."
+    }
+    when (w == 1 and answer == e + c + p) point=t {
+      say "The caterpillar has already hatched. Leave the egg's days out."
+    }
+    when (w == 0 and answer == e + c) point=t {
+      say "After the caterpillar comes the chrysalis, {p} days more, before the butterfly comes out."
+    }
+  }
+  hint "Which rows of the table does the question cover? Add only those."
+  hint "From the egg being laid means every stage; from hatching means the egg's days are over."
+}

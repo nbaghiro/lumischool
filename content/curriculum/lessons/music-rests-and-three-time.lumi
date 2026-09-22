@@ -1,0 +1,65 @@
+# Three-time and the silence in it: bars counted in threes, the dotted minim that fills one, and
+# the rest that is counted but not played.
+lesson music-rests-and-three-time v=1 format=teach grade=3 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Rests and three-time"
+  goal "Count a bar of three with a dotted minim and a rest, and clap the silence."
+
+  look {
+    scene 26x12 {
+      notes bar clef=treble notes=[G4, rest, G4, A4] values=[1, 1, 1, 3] meter=3 at=canvas(1, 1)
+    }
+    say """
+      The number at the start says three: every bar holds three beats, one, two, three, like a
+      waltz. A rest is a silence that is counted like a note: the zigzag is one beat, the block
+      on the middle line is two. The dotted minim in the second bar lasts the whole bar, because
+      the dot adds half a minim again. Count the bar out loud, and on the rest keep counting
+      but do not clap.
+      """
+  }
+  do {
+    level easy {
+      worked music.adds-to-three k=0
+    }
+    practice music.rest-beats count=1 seed=2 easy-seed=1 hard-seed=1
+    show music.which-in-three k=0 hard-k=1
+    practice music.adds-to-three count=2 seed=2 easy-seed=7 hard-seed=1
+    practice music.dotted-minim count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.rest-on-beat count=1 seed=1 easy-seed=1 hard-seed=1
+    show music.clap-three
+    level hard {
+      show music.which-in-three k=0 level=medium
+    }
+  }
+  story {
+    show music.waltz-story n=8 w=0 easy-n=4 hard-n=12 hard-w=1
+  }
+  try stars=2 {
+    show music.wrong-rest k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show music.write-three
+  }
+  remember {
+    say "Three beats a bar. A rest is counted, not clapped. A dot adds half the note again."
+  }
+
+  grown-ups """
+    The idea is that a bar of three is counted in threes and that a rest takes its share of the
+    count in silence, with the dotted minim as the note that fills a whole bar. The look is two
+    bars: a rest in the first and a dotted minim in the second. The way in reads a rest's length
+    from its sign, and the core tells three-time from four-time by the number and the bar lines,
+    checks whether three notes add up to a bar, works out the dot, finds the count a rest begins on,
+    and claps two bars with a rest (the machine hears the claps and the gap). The wrong idea to
+    watch for is clapping through the rest, or stopping the count during it; keep the count
+    going aloud together. The story counts the band's waltz in beats and bars, the two-star
+    question finds the bar whose rest is a beat too long, and the three-star question is a bar
+    of the child's own with one rest, counted to you and clapped. If the child cannot hold the
+    silence, stay another day with a bar of three crotchets and then swap one for a rest.
+    """
+  level easy {
+    grown-ups "At this level three crotchets are worked once in the teacher's pen, the rest is the one-beat one, the staves to tell apart put three-time on top, the bars to add up are crotchets and a minim, the dot is the dotted minim, the rest begins on count three, the story is four or eight bars in beats, and the two-star's wrong rest is in the right-hand bar."
+  }
+  level hard {
+    grown-ups "At this level the rest is the two-beat one between quavers, the staves to tell apart put three-time below with a second pair in the core, the bars to add up have quavers and minims, the dot is the dotted crotchet, the rest begins on count two after two quavers, the story is twenty-four or thirty-six beats in bars, and the two-star's wrong rest is in the left-hand bar."
+  }
+}

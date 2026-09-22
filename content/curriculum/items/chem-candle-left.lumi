@@ -1,0 +1,27 @@
+# Burning is a change that makes new materials: the wax that burns goes off as gases, so the candle
+# gets shorter. The ruler beside it gives both what is left and what has gone.
+item chem.candle-left v=1 skills=[chemistry.changes, measure.length] {
+  title "How much candle has gone?"
+  difficulty ((if q == "left" then 1 else 0) + b / 10)
+  let s={8, 10, 12} b=2..6 q={"burnt", "left"}
+  level easy {
+    let s={8} q={"burnt"}
+  }
+  level hard {
+    let s={10, 12} q={"left"}
+  }
+
+  scene 28x17 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      candle c start=s burnt=b lit=1 jar=0
+      column side space=1 align=start {
+        text ask "The candle was {s} cm tall when it was new. How many centimetres {if q == \"burnt\" then \"have burnt away\" else \"are left\"}?" width=17
+        number-input answer
+      }
+    }
+  }
+
+  check chem.change of=c answer="{q}"
+  hint "Where was the top of the candle when it was new? The dashed line shows it."
+  hint "Where is the top now? Count the centimetres between the two, or up from the bottom."
+}

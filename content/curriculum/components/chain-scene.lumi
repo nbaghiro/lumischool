@@ -1,0 +1,5 @@
+# Two scales side by side: heavy against mid × a, and mid against light × b.
+define chain-scene heavy mid light a b {
+  balance s1 left=[heavy] right=[mid * a] at=canvas(1, 1)
+  balance s2 left=[mid] right=[light * b] right-of=s1 gap=2
+}

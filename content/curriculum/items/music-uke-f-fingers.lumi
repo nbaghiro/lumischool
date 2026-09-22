@@ -1,0 +1,18 @@
+item music.uke-f-fingers v=1 skills=[music.chord-boxes] {
+  title "Fingers for F"
+
+  scene 24x15 {
+    chordbox box tuning=uke chord=F frets=3 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "How many fingers go down for F?" width=12 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 2
+  feedback {
+    when (answer == 4) point=box {
+      say "The rings at the top are open strings, played with no finger. Count only the dots."
+    }
+  }
+  hint "Each dot is one finger."
+  hint "The rings at the top are strings played open. Do they need a finger?"
+}

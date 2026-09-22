@@ -1,0 +1,12 @@
+item art.blank-rubbing v=1 stars=2 skills=[art.texture, reasoning.evidence] {
+  title "The rubbing that showed nothing"
+
+  scene 34x19 {
+    text ask "Ada rubbed a crayon over paper laid on a coin, on a leaf and on a smooth plate. One rubbing came out as plain colour with nothing in it. Which one, and why?" width=32 at=canvas(1, 1)
+    choice pick options=["The plate, because it has no bumps", "The coin, because it is small", "The leaf, because it is soft"] stack=column below=ask gap=1
+  }
+
+  answer pick="The plate, because it has no bumps"
+  hint "What does the crayon catch on when it rubs over the leaf?"
+  hint "Which of the three has nothing raised on it for the crayon to catch?"
+}

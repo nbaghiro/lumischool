@@ -1,0 +1,23 @@
+# One mark of the island strum is ringed, and r moves the ring along the bar, so every mark gets
+# asked: a long arrow down, a short arrow up, or a dot where the hand goes past.
+item music.strum-ringed-kind v=1 skills=[music.strumming] {
+  title "Down, up or past?"
+  difficulty (if r == 0 or r == 2 or r == 6 then 0 else 1)
+  let r=0..7
+  level easy {
+    let r={0, 2, 3, 6}  # arrows, mostly down
+  }
+  level hard {
+    let r={1, 3, 4, 5, 7}  # up strums and the dots where the hand goes past
+  }
+
+  scene 30x15 {
+    strumtrack bar strums=D-DU-UDU counts=true chord=none ring=r at=canvas(1, 1)
+    text ask "What does the hand do at the ringed mark?" narrate width=28 below=bar gap=1
+    choice pick options=["strum down", "strum up", "go past"] below=ask gap=1
+  }
+
+  answer pick=(if r == 0 or r == 2 or r == 6 then "strum down" else if r == 1 or r == 4 then "go past" else "strum up")
+  hint "Is the mark an arrow or a dot?"
+  hint "Does the arrow point down, or is it a short one pointing up?"
+}

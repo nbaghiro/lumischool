@@ -1,0 +1,31 @@
+item physics.will-it-light v=1 skills=[physics.circuits] {
+  title "Will it light?"
+  difficulty (if f == 2 then 4 else if f == 3 then 2 else if f == 1 then 1 else 0)
+  let f=0..3 c=1..2 n=1..2
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f={0, 2, 3}
+  }
+
+  scene 17x20 {
+    series ring cells=(if f == 3 then 0 else c) bulbs=n closed=(if f == 1 then 0 else 1) loose=(if f == 2 then 1 else 0) show=0 at=canvas(1, 0)
+    text ask "Will the bulbs light?" width=12 below=ring gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  check physics.circuit of=ring pick=lights
+  feedback {
+    when (pick == "Yes" and f == 1) point=ring {
+      say "The switch is open, so there is a gap in the loop."
+    }
+    when (pick == "Yes" and f == 2) point=ring {
+      say "Look at the clip by the cells. It is not touching, so the loop is broken."
+    }
+    when (pick == "Yes" and f == 3) point=ring {
+      say "There is no cell, so nothing pushes the electricity round."
+    }
+  }
+  hint "Can you follow the wire all the way round, from the cells and back?"
+}

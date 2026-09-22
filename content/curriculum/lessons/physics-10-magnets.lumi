@@ -1,0 +1,46 @@
+lesson physics-magnets v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "Magnets"
+  goal "Say which things a magnet pulls, predict what happens when two magnets meet, and follow the poles along a row of magnets."
+
+  look {
+    scene 22x20 {
+      column two at=canvas(1, 1) space=1 align=start {
+        magnet things mode=things count=4 sticks=2
+        magnet facing mode=poles same=1
+      }
+    }
+    say """
+      A magnet pulls iron and steel and nothing else, so it leaves wood, plastic and glass alone.
+      Every magnet has two ends, a north and a south. Two ends that are different pull together.
+      Two ends that are the same push apart.
+      """
+  }
+  do {
+    practice physics.magnet-count count=2 seed=9
+    practice physics.poles count=2 seed=1
+    practice physics.poles-predict count=2 seed=2
+    practice physics.magnet-picks count=2 seed=3
+  }
+  try stars=2 {
+    show physics.metal-not-magnetic f=0 x="nail" y="coin" z="ruler" w="eraser"
+  }
+  try stars=3 {
+    show physics.poles-chain e=0 x=0 y=1 easy-y=0 hard-x=1
+  }
+  remember {
+    say "Different ends pull together. The same ends push apart."
+  }
+
+  grown-ups """
+    Fridge magnets and a handful of household objects are enough. A coin is the interesting one:
+    dollar coins are not magnetic, which surprises children who expect all metal to stick. The row
+    of three magnets at the end needs one more fact the lesson only states: a magnet's two ends are
+    always different. Two bar magnets and a pencil mark on each end make it easy to check.
+    """
+  level easy {
+    grown-ups "At this level the magnet's things are few, the tray holds no metal a magnet leaves alone, and the chain of magnets pulls at every join."
+  }
+  level hard {
+    grown-ups "At this level the magnet's things are five or six, the tray holds a coin and foil that are metal but not magnetic, and the chain of magnets pushes at every join."
+  }
+}

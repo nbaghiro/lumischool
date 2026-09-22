@@ -1,0 +1,32 @@
+# Reading the river's table: the pieces near the spring are big and sharp, halfway they are
+# smaller and rounded, near the sea they are sand. Where the smallest are, where the sharp are.
+item chem.river-table v=1 skills=[chemistry.weathering, data.tables] {
+  title "Along the river"
+  difficulty w
+  let w=0..2 t=0..1
+  let s1={pick(t, 20, 30)}
+  let s2={pick(t, 5, 8)}
+  let asks={pick(w, "Where are the pieces smallest?", "Where would Ben find sharp-edged pieces?", "Where have the pieces been carried furthest?")}
+  let right={pick(w, "near the sea", "near the spring", "near the sea")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 34x26 {
+    table data cols=3 head=["Place", "Size", "Shape"] cells=["near the spring", "{s1} cm", "sharp edges", "halfway down", "{s2} cm", "rounded", "near the sea", "under 1 cm", "round grains"] at=canvas(1, 0)
+    text ask "Ben picked up pieces of rock at three places along the river from the hills to the sea. {asks}" narrate width=32 below=data gap=1
+    choice pick options=["near the spring", "halfway down", "near the sea"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "The river carries the pieces down from the hills, and the further they go, the more they are knocked and worn: smaller and rounder every mile."
+    }
+  }
+  hint "The river runs from the spring down to the sea. Read the size column from top to bottom."
+  hint "Sharp edges have not been knocked yet, so they are near where the rock broke off. Round grains have travelled furthest."
+}

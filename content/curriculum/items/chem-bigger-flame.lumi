@@ -1,0 +1,20 @@
+# A reason read off two graphs: both flatten at 100, so a bigger flame shows as a steeper climb
+# that gets there sooner, not as a higher top.
+item chem.bigger-flame v=1 stars=2 skills=[chemistry.heating, chemistry.data, reasoning.explain] {
+  title "The bigger flame"
+  difficulty (f + k)
+  let f=0..1 k=0..1
+
+  scene 32x29 {
+    text ask "Two pans of water were heated, one with a bigger flame under it. Which graph is that pan, and why?" width=31 at=canvas(1, 0)
+    heatcurve ca temps=[if f == 0 then if k == 0 then 20 else 30 else if k == 0 then 20 else 30, if f == 0 then if k == 0 then 60 else 70 else if k == 0 then 40 else 50, if f == 0 then if k == 0 then 100 else 100 else if k == 0 then 60 else 70, if f == 0 then if k == 0 then 100 else 100 else if k == 0 then 80 else 90, if f == 0 then if k == 0 then 100 else 100 else if k == 0 then 100 else 100] every=2 min=20 max=100 step=20 below=ask gap=0
+    heatcurve cb temps=[if f == 0 then if k == 0 then 20 else 30 else if k == 0 then 20 else 30, if f == 0 then if k == 0 then 40 else 50 else if k == 0 then 60 else 70, if f == 0 then if k == 0 then 60 else 70 else if k == 0 then 100 else 100, if f == 0 then if k == 0 then 80 else 90 else if k == 0 then 100 else 100, if f == 0 then if k == 0 then 100 else 100 else if k == 0 then 100 else 100] every=2 min=20 max=100 step=20 right-of=ca gap=1
+    text la "A" below=ca gap=0
+    text lb "B" below=cb gap=0
+    choice pick options=["A, because it gets to 100 sooner", "B, because it gets to 100 sooner", "The one that goes above 100"] stack=column below=la gap=0
+  }
+
+  answer pick=(if f == 0 then "A, because it gets to 100 sooner" else "B, because it gets to 100 sooner")
+  hint "Where does each line go flat? Is either one higher than the other there?"
+  hint "Which line climbs faster? What would a bigger flame change?"
+}

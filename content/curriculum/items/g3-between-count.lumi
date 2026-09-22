@@ -1,0 +1,27 @@
+# Every fraction with a given bottom number between two others: rename the ends, then count between.
+item fractions.between-count v=1 stars=3 skills=[fractions.equivalent, reasoning.all-the-ways] {
+  title "Fractions in between"
+  difficulty (d / 12 + p)
+  let p=0..2 d={12, 24}
+  level easy {
+    let d={12}  # the wall shows twelfths
+  }
+  level hard {
+    let d={24}
+  }
+
+  scene 28x19 {
+    fractionwall wall rows=[2, 3, 4, 12] shade=[0, 0] at=canvas(1, 1)
+    text ask "How many fractions with {d} as the bottom number are bigger than 1/{if p == 0 then 3 else if p == 1 then 4 else 2} and smaller than {if p == 2 then 3 else 1}/{if p == 2 then 4 else 2}?" width=26 below=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (d * (if p == 2 then 3 else 1) / (if p == 2 then 4 else 2) - d / (if p == 0 then 3 else if p == 1 then 4 else 2) - 1)
+  feedback {
+    when (answer == d * (if p == 2 then 3 else 1) / (if p == 2 then 4 else 2) - d / (if p == 0 then 3 else if p == 1 then 4 else 2) + 1) point=ask {
+      say "The two ends are not bigger and smaller than themselves, so leave them out."
+    }
+  }
+  hint "Write both end fractions with {d} as the bottom number."
+  hint "Now count the top numbers that come strictly between them."
+}

@@ -1,0 +1,43 @@
+# The core: four creatures on the line, and the one with eight legs or the one with none to find.
+# At hard the other odd one is in the row too, so the child cannot pick the creature that looks
+# different and has to count.
+item nature.which-legs v=1 skills=[nature.minibeasts] {
+  title "Which one?"
+  difficulty (t + j)
+  let t=0..1 p=0..3 j=0..1
+  let target={pick(t, "spider", "snail")}
+  let other={pick(t, "snail", "spider")}
+  let many={pick(t, "eight", "no")}
+  let f2={if j == 1 then other else "bee"}
+  let s0={if p == 0 then target else "ant"}
+  let s1={if p == 1 then target else if p < 1 then "ant" else "ladybird"}
+  let s2={if p == 2 then target else if p < 2 then "ladybird" else f2}
+  let s3={if p == 3 then target else f2}
+  level easy {
+    let j=0..0
+  }
+  level hard {
+    let j=1..1
+  }
+
+  scene 32x15 {
+    minibeasts four kinds=[s0, s1, s2, s3] legs=false at=canvas(1, 1)
+    text ask "Which one has {many} legs?" narrate width=30 below=four gap=1
+    choice pick options=[s0, s1, s2, s3] below=ask gap=1
+  }
+
+  answer pick=target
+  feedback {
+    when (t == 0 and pick == "snail") point=four {
+      say "The snail has no legs at all. You want the one with more legs than the others."
+    }
+    when (t == 1 and pick == "spider") point=four {
+      say "The spider has the most legs of all, eight. You want the one with none."
+    }
+    when (pick != target and pick != other) point=four {
+      say "That one has six legs. Count the legs on each creature in turn."
+    }
+  }
+  hint "Count the legs on each one, and say the number as you go."
+  hint "Most of them have six. You want the one that is different."
+}

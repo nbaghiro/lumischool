@@ -1,0 +1,19 @@
+# A prediction from the trend, outside the table: warmer is faster and colder is slower, and the
+# child says which side of the nearest result the new time falls.
+item chem.fair-predict v=1 skills=[chemistry.method, reasoning.predict] {
+  title "Before you try it"
+  difficulty v
+  let v=0..5
+
+  scene 33x12 {
+    text ask "The same test at {if v == 0 then \"50°\" else if v == 1 then \"10°\" else if v == 2 then \"50°\" else if v == 3 then \"10°\" else if v == 4 then \"50°\" else \"10°\"}. Would it take more or fewer seconds than at {if v == 0 then \"40°\" else if v == 1 then \"20°\" else if v == 2 then \"40°\" else if v == 3 then \"20°\" else if v == 4 then \"40°\" else \"20°\"}?" width=32 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=2 head=["Water °C", "Seconds"] cells=[20, if v == 0 then 80 else if v == 1 then 80 else if v == 2 then 70 else if v == 3 then 70 else if v == 4 then 60 else 60, 30, if v == 0 then 55 else if v == 1 then 55 else if v == 2 then 50 else if v == 3 then 50 else if v == 4 then 45 else 45, 40, if v == 0 then 40 else if v == 1 then 40 else if v == 2 then 35 else if v == 3 then 35 else if v == 4 then 30 else 30]
+      choice pick options=["more than {if v == 0 then \"40\" else if v == 1 then \"80\" else if v == 2 then \"35\" else if v == 3 then \"70\" else if v == 4 then \"30\" else \"60\"} seconds", "fewer than {if v == 0 then \"40\" else if v == 1 then \"80\" else if v == 2 then \"35\" else if v == 3 then \"70\" else if v == 4 then \"30\" else \"60\"} seconds"] stack=column
+    }
+  }
+
+  answer pick=(if v == 0 then "fewer than 40 seconds" else if v == 1 then "more than 80 seconds" else if v == 2 then "fewer than 35 seconds" else if v == 3 then "more than 70 seconds" else if v == 4 then "fewer than 30 seconds" else "more than 60 seconds")
+  hint "As the water gets warmer down the table, what happens to the seconds?"
+  hint "Is the new temperature warmer or colder than the nearest one in the table?"
+}

@@ -1,0 +1,25 @@
+item physics.shadow-length v=1 skills=[physics.light] {
+  title "How long is the shadow?"
+  difficulty s
+  let t={2, 3, 4} s={2, 3, 4, 6}
+  level easy {
+    let s={2, 3}
+  }
+  level hard {
+    let s={4, 6}
+  }
+
+  scene 24x17 {
+    shadows sun tall=t shadow=s at=canvas(1, 0)
+    text ask "How many centimetres long is the stick's shadow?" width=18 below=sun gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == t and t != s) point=sun {
+      say "That is the stick. The shadow is the dark strip on the ground."
+    }
+  }
+  hint "Which number is written under the dark strip on the ground?"
+}

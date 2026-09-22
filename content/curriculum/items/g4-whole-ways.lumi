@@ -1,0 +1,22 @@
+# All the ways to fill one row of the wall: a search with a system, where the order of the pieces
+# does not count, so each way has to be written the same way round to be counted once.
+item fraction.whole-ways v=2 stars=3 skills=[fractions.equivalent, reasoning.all-the-ways] {
+  title "Ways to make one whole"
+  difficulty (if s == "halves, thirds and sixths" then 0 else 1)
+  let s={"halves, quarters and eighths", "halves, thirds and sixths"}
+
+  scene 30x21 {
+    fractionwall wall rows=[1, 2, if s == "halves, thirds and sixths" then 3 else 4, if s == "halves, thirds and sixths" then 6 else 8] shade=[0, 0] at=canvas(1, 1)
+    text ask "How many different ways can you make one whole row from {s}? You can use each size as often as you like. {if s == \"halves, thirds and sixths\" then \"One half and three sixths\" else \"One half and two quarters\"} is one way, in any order." narrate width=29 below=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if s == "halves, quarters and eighths" then 9 else 7)
+  feedback {
+    when (answer == 1) point=wall {
+      say "There are more ways than one. Try a row with no halves in it at all."
+    }
+  }
+  hint "Start with the biggest pieces. How many ways use two halves? One half?"
+  hint "Then no halves at all. Keep a list in order so nothing is counted twice."
+}

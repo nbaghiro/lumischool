@@ -1,0 +1,24 @@
+# The audit's raise for map-turn: the walker sets off down or across the page to the left, so a
+# turn to the walker's left is not a turn to the left of the page. The answer reads the setting that
+# drew the bend.
+item writing.map-turn-heading v=1 skills=[writing.directions] {
+  title "Which way from the walker's side?"
+  difficulty (if h == "down" then 2 else if h == "left" then 1 else 0)
+  let h={"down", "left", "up"} a={"left", "right"} x={"gate", "tent", "hut"}
+  level easy {
+    let h={"up"}  # walking up the map, so left is the reader's left
+  }
+  level hard {
+    let h={"down", "left"}  # walking down or across, so the turn is not the reader's
+  }
+
+  scene 32x16 {
+    treasuremap map stops=[x, "pond"] turns=[a, "on"] heading=h step=4 names=true at=canvas(1, 1)
+    text ask "Walk the path from the boat. At the {x}, do you turn left or right?" width=14 right-of=map gap=2
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=a
+  hint "Which way are you facing as you walk up to the {x}?"
+  hint "Turn the page, or stand up and face that way. Which hand does the path bend towards?"
+}

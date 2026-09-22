@@ -1,0 +1,27 @@
+# Six numbers can be made, and a limit rules out the biggest ones: write them all, then choose.
+item decimal.cards-under v=1 stars=3 skills=[decimals.compare, reasoning.systematic] {
+  title "The biggest under the line"
+  difficulty ((if d == 1 then 0 else 2) + x)
+  let x={1, 2, 3} y={4, 5, 6} z={7, 8, 9} d={1, 0.5}
+
+  scene 28x17 {
+    digitcards cards digits=[y, x, z] at=canvas(1, 1)
+    text ask "Put one card before the point and two after it, like {x}.{y}{z}. What is the biggest number you can make that is less than {y + d}?" narrate width=26 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(max(if z + y / 10 + x / 100 < y + d then z + y / 10 + x / 100 else 0, if z + x / 10 + y / 100 < y + d then z + x / 10 + y / 100 else 0, if y + z / 10 + x / 100 < y + d then y + z / 10 + x / 100 else 0, if y + x / 10 + z / 100 < y + d then y + x / 10 + z / 100 else 0, if x + z / 10 + y / 100 < y + d then x + z / 10 + y / 100 else 0, if x + y / 10 + z / 100 < y + d then x + y / 10 + z / 100 else 0), 2)
+  feedback {
+    when (answer == z + y / 10 + x / 100) point=cards {
+      say "That is the biggest number of all, but it is not less than {y + d}."
+    }
+    when (answer == y + x / 10 + z / 100 and d == 1) point=cards {
+      say "That one starts with {y} and is less than {y + d}. Is there a bigger one that starts with {y}?"
+    }
+    when (answer == y + z / 10 + x / 100 and d == 0.5) point=cards {
+      say "{y}.{z}{x} is more than {y + d}. Look at the tenths digit."
+    }
+  }
+  hint "Which card can go first and still keep the number under {y + d}?"
+  hint "With that card first, which way round should the other two go?"
+}

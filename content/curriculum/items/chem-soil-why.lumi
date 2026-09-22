@@ -1,0 +1,17 @@
+# A reason for where each part of the soil ends up, from one list of three: the biggest sink first,
+# the finest sink last, and what floats stays on top.
+item chem.soil-why v=1 stars=2 skills=[chemistry.rocks, reasoning.explain] {
+  title "Why is it there?"
+  difficulty (if q == 1 then 1 else 0)
+  let q=0..2
+
+  scene 37x16 {
+    soiljar j stones=1 sand=3 silt=2 clay=1 bits=4 names=1 at=canvas(1, 0)
+    text ask "Why {if q == 0 then \"are the stones at the bottom\" else if q == 1 then \"is the clay on top of the silt\" else \"are the bits of plant on top of the water\"}?" width=16 right-of=j gap=1
+    choice pick options=["The biggest bits sink first", "The finest bits sink last", "Things that float stay on top"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "The biggest bits sink first" else if q == 1 then "The finest bits sink last" else "Things that float stay on top")
+  hint "Are these big bits, fine bits, or bits that do not sink at all?"
+  hint "In what order did the parts reach the bottom?"
+}

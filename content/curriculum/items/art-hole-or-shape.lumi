@@ -1,0 +1,22 @@
+# The two kinds of stencil: paint through a hole, or paint round a shape laid on the paper.
+item art.hole-or-shape v=1 skills=[art.printing, reasoning.predict] {
+  title "Through the hole or round the shape"
+  difficulty (if w == "card" then 1 else 0)
+  let s={"leaf", "star", "fish"} w={"card", "shape"}
+  level easy {
+    let w={"shape"}
+  }
+  level hard {
+    let w={"card"}
+  }
+
+  scene 32x15 {
+    stencil pic shape=s show=w colour=blue at=canvas(1, 1)
+    text ask "Ada lays this on white paper and paints blue all over it. What will she see when she lifts it off?" width=20 right-of=pic gap=2
+    choice pick options=["a blue shape on white paper", "a white shape on blue paper"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if w == "card" then "a blue shape on white paper" else "a white shape on blue paper")
+  hint "Where can the blue paint touch the paper, and where is the paper covered?"
+  hint "Is this a card with a hole cut in it, or the cut-out shape itself?"
+}

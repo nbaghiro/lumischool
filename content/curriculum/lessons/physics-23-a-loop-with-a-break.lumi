@@ -1,0 +1,45 @@
+lesson physics-a-loop-with-a-break v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "A loop with a break in it"
+  goal "Spot the circuit that will not light, and say what is wrong with it."
+
+  look {
+    scene 35x13 {
+      row two at=canvas(1, 0) space=2 align=start {
+        series whole cells=2
+        series broken cells=2 loose=1
+      }
+    }
+    say """
+      These two circuits have the same cells and the same bulb. In the second one a clip has come
+      off the cell, so the loop has a gap and the bulb stays dark. A bulb lights only when the wire
+      goes all the way round, from the cell and back again, with nothing open and nothing loose.
+      """
+  }
+  do {
+    practice physics.will-it-light count=3 seed=2
+    practice physics.why-dark count=3 seed=4
+    practice physics.which-dark count=2 seed=1
+  }
+  try stars=2 {
+    show physics.fix-it f=2 c=2 n=1 easy-f=1
+  }
+  try stars=3 {
+    show physics.two-faults c=0 l=1 e=0 easy-l=0 hard-e=1
+  }
+  remember {
+    say "Follow the wire round. An open switch, a loose clip or no cell, and the bulb stays dark."
+  }
+
+  grown-ups """
+    When a real circuit will not work, the order the child checks things in is the skill: the
+    switch, then every clip, then the cell. Let them find a fault you have made on purpose before
+    you ever tell them where it is. The last question has more than one fault, which is what real
+    circuits usually have, and finding the first one is not the end of the job.
+    """
+  level easy {
+    grown-ups "At this level the faults are an open switch or a missing cell, both plain to see, and the last circuit has one thing wrong."
+  }
+  level hard {
+    grown-ups "At this level the faults include a loose wire, which is found only by following the loop, and the last circuit has three things wrong."
+  }
+}

@@ -1,0 +1,25 @@
+# Because and so can say the same thing with the halves swapped, or say the opposite with them in
+# place: the child has to follow which half causes which, and says which came first in B.
+item writing.same-or-different v=1 stars=2 skills=[writing.joining-sentences, reasoning.cause-and-effect] {
+  title "The same, or not?"
+  difficulty (if k % 2 == 1 then 1 else 0)
+  let k=0..5
+
+  scene 36x19 {
+    caption a text="A: {if k == 0 or k == 1 then \"We stayed in because it rained.\" else if k == 2 or k == 3 then \"The dog barked because the bell rang.\" else \"Mia was tired, so she went to bed.\"}" width=33 at=canvas(1, 1)
+    caption b text="B: {if k == 0 then \"It rained, so we stayed in.\" else if k == 1 then \"We stayed in, so it rained.\" else if k == 2 then \"The bell rang, so the dog barked.\" else if k == 3 then \"The dog barked, so the bell rang.\" else if k == 4 then \"Mia went to bed because she was tired.\" else \"Mia went to bed, so she was tired.\"}" width=33 below=a gap=1
+    text q1 "Do A and B mean the same?" width=16 below=b gap=1
+    choice same options=["the same", "different"] right-of=q1 gap=1
+    text q2 "In B, what happened first?" width=33 below=q1 gap=2
+    choice first options=["{if k < 2 then \"it rained\" else if k < 4 then \"the bell rang\" else \"Mia was tired\"}", "{if k < 2 then \"we stayed in\" else if k < 4 then \"the dog barked\" else \"Mia went to bed\"}"] below=q2 gap=1
+  }
+
+  answer same=(if k % 2 == 0 then "the same" else "different") first=(if k == 0 then "it rained" else if k == 1 then "we stayed in" else if k == 2 then "the bell rang" else if k == 3 then "the dog barked" else if k == 4 then "Mia was tired" else "Mia went to bed")
+  feedback {
+    when (same == "the same" and k % 2 == 1) point=b {
+      say "The same words are in both, but read B again. What does so say came after what?"
+    }
+  }
+  hint "In each sentence, find the half that causes the other. Because comes before the cause; so comes before the result."
+  hint "Now compare: does B say the same thing caused the same result?"
+}

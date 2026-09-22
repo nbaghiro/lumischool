@@ -1,0 +1,22 @@
+# Two walkers closing a gap: their speeds add, because each second the gap shrinks by both steps.
+# No method on the page says so; drawing the gap second by second finds it.
+item physics.speed-meet v=1 skills=[physics.speed, reasoning.model] stars=3 {
+  title "When do they meet?"
+  difficulty ((a + b) * t)
+  let a={1, 2, 3} b={2, 3, 4} t={4, 5, 6}
+
+  scene 28x13 {
+    roaddistances road stops=["Ann", "Ben"] legs=[(a + b) * t] unit=m at=canvas(1, 0)
+    text ask "Ann and Ben walk towards each other. Ann walks {a} metres every second and Ben {b}. After how many seconds do they meet?" narrate width=12 right-of=road gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer t
+  feedback {
+    when (answer == (a + b) * t / a or answer == (a + b) * t / b) point=road {
+      say "That is how long one of them would take alone. They are both walking."
+    }
+  }
+  hint "How much closer do they get in one second?"
+  hint "How many of those seconds fit into the whole gap?"
+}

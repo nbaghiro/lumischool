@@ -1,0 +1,54 @@
+lesson g4-angles-with-a-protractor v=1 format=teach grade=4 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Angles with a protractor"
+  goal "Measure an angle with a protractor, estimate it first, and add angles to find one that is missing."
+
+  look {
+    scene 33x26 {
+      protractor tool deg=120 arms=true at=canvas(1, 1)
+      angle sharp deg=45 arm=5 label="45" mark=arc right-of=tool gap=2
+      setsquare square kind="45" labels=true below=tool gap=2
+      construction draw right-of=square gap=2
+    }
+    say """
+      Line the protractor's middle up with the corner and its zero along one arm. Then read the
+      scale that starts at zero on that side, not the other one. Angles add: two corners side by
+      side make one bigger angle.
+      """
+  }
+  do {
+    level easy {
+      worked angles.measure d=120 level=medium
+    }
+    practice angles.measure count=1 seed=4 hard-seed=7
+    practice angles.estimate count=1 seed=3
+    practice angles.clock-hands count=2 hard-count=1 seed=5 hard-seed=1
+    level hard {
+      practice angles.wrong-scale count=1 seed=2
+    }
+    practice angles.line count=1 seed=2
+    practice angles.turn count=1 seed=6
+    practice angles.corners-together count=2 seed=7
+  }
+  try stars=2 {
+    show angles.wrong-scale d=140 easy-d=30 hard-d=120
+  }
+  try stars=3 {
+    show angles.corner-combos lim=160 easy-lim=130
+  }
+  remember {
+    say "Middle on the corner, zero on an arm, and read the scale that starts at that arm. A straight line is 180 degrees and a whole turn is 360."
+  }
+
+  grown-ups """
+    The double scale is the only real difficulty. Ask whether the answer should be more or less
+    than ninety before reading it, and the wrong scale becomes obvious; the two-star question is
+    exactly that check. A clock face is a protractor in steps of thirty degrees. In the three-star
+    question, write every pair of corners down before adding, and cross out totals that repeat.
+    """
+  level easy {
+    grown-ups "At this level 120 degrees is read once in the teacher's pen before an angle of 30 or 60 read on the inner scale, the angles to estimate are well away from a right angle, the hour hand is at one, two or three, the angle on the line is a multiple of ten under sixty, the minute hand turns five to fifteen minutes, the set squares meet at the 45 degree corner, Omar reads 150 for an angle of 30, and the three-star counts the angles under 130."
+  }
+  level hard {
+    grown-ups "At this level the angles to read are 135 and 150, on the outer scale and on a half mark, the angles to estimate are within thirty-five degrees of a right angle, the hour hand is at three, four or five, the angle on the line ends in a five, the minute hand turns twenty-five to forty minutes, the set squares meet at the right angle, Omar reads 60 for an angle of 120 and a second wrong reading near a right angle is put right, and the three-star is as written."
+  }
+}

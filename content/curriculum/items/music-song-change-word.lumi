@@ -1,0 +1,48 @@
+# Where a change comes: on the first word of the bar whose chord is new. q is which change, the first
+# to G, the first back to C, the last to G or the last back to C.
+item music.song-change-word v=1 skills=[music.chord-changes] {
+  title "The word that changes"
+  difficulty (if q == 0 then 0 else 1)
+  let s=0..1 q=0..3
+  let song={pick(s, "London Bridge", "Skip to My Lou")}
+  let w1={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w2={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w3={pick(s, "fall-ing down,", "Lou, lou,")}
+  let w4={pick(s, "fall-ing down.", "skip to my lou,")}
+  let w5={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w6={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w7={pick(s, "my fair", "skip to my lou, my")}
+  let w8={pick(s, "la-dy.", "dar-ling.")}
+  let c4={pick(s, "C", "G")}
+  let which={pick(q, "first change to G", "first change back to C", "change to G for the last time", "change back to C for the last time")}
+  let right={pick(s * 4 + q, "bar 3, on fall-ing", "bar 4, on fall-ing", "bar 7, on my", "bar 8, on la-dy", "bar 3, on Lou", "bar 5, on Lou", "bar 7, on skip", "bar 8, on dar-ling")}
+  let early={pick(s * 4 + q, "bar 2, on fall-ing", "bar 3, on fall-ing", "bar 6, on fall-ing", "bar 7, on my", "bar 2, on skip", "bar 4, on skip", "bar 6, on skip", "bar 7, on skip")}
+  let late={pick(s * 4 + q, "bar 3, on down", "bar 4, on down", "bar 7, on fair", "bar 8, at the end", "bar 3, on the second lou", "bar 5, on the second lou", "bar 7, on my", "bar 8, at the end")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..3
+  }
+
+  scene 36x37 {
+    row chart space=2 align=start at=canvas(1, 1) {
+      table bars cols=2 head=["Bar", "Chord"] cells=["1", "C", "2", "C", "3", "G", "4", c4, "5", "C", "6", "C", "7", "G", "8", "C"]
+      table words cols=1 head=["{song}"] cells=[w1, w2, w3, w4, w5, w6, w7, w8]
+    }
+    text ask "Ben changes chord on the first word of a new bar. In {song}, where does the chord {which}?" narrate width=34 below=chart gap=1
+    choice pick options=[pick(s, early, right), pick(s, right, late), pick(s, late, early)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == early) point=bars {
+      say "That bar still has the old chord. The change comes where the chord column changes."
+    }
+    when (pick == late) point=words {
+      say "That is the right bar, but the change comes on its first word, so the chord is ready as it is sung."
+    }
+  }
+  hint "Run down the chord column. Where is the chord different from the bar before?"
+  hint "Then read the first word in that bar's row."
+}

@@ -1,0 +1,26 @@
+# Which test is fair: both answer the same question, and one of them changes a second thing as well,
+# so a difference in its times could have come from either.
+item chem.fair-which v=1 skills=[chemistry.method, reasoning.fair-test] {
+  title "Which test is fair?"
+  difficulty v
+  let v=0..3
+
+  scene 35x18 {
+    text ask "Mia wants to find out if {if v == 0 then \"hot water dissolves sugar faster than cold water\" else if v == 1 then \"hot water dissolves sugar faster than cold water\" else if v == 2 then \"stirring more makes sugar dissolve faster\" else \"stirring more makes sugar dissolve faster\"}. Which test is fair?" width=33 at=canvas(1, 0)
+    row kit below=ask gap=1 space=2 align=start {
+      column {
+        text ta "Test A"
+        table a cols=3 head=["°C", "Spoons", "Stirs"] cells=[if v == 0 then 10 else if v == 1 then 10 else if v == 2 then 20 else 20, if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 2 else 2, if v == 0 then 10 else if v == 1 then 10 else if v == 2 then 5 else 5, if v == 0 then 50 else if v == 1 then 50 else if v == 2 then 20 else 50, if v == 0 then 2 else if v == 1 then 4 else if v == 2 then 2 else 2, if v == 0 then 10 else if v == 1 then 10 else if v == 2 then 20 else 20]
+      }
+      column {
+        text tb "Test B"
+        table b cols=3 head=["°C", "Spoons", "Stirs"] cells=[if v == 0 then 10 else if v == 1 then 10 else if v == 2 then 20 else 20, if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 2 else 2, if v == 0 then 10 else if v == 1 then 10 else if v == 2 then 5 else 5, if v == 0 then 50 else if v == 1 then 50 else if v == 2 then 50 else 20, if v == 0 then 4 else if v == 1 then 2 else if v == 2 then 2 else 2, if v == 0 then 10 else if v == 1 then 10 else if v == 2 then 20 else 20]
+      }
+    }
+    choice pick options=["A", "B"] below=kit gap=0
+  }
+
+  answer pick=(if v == 0 then "A" else if v == 1 then "B" else if v == 2 then "A" else "B")
+  hint "In each test, which numbers change between the two cups?"
+  hint "If two things change at once, can you tell which one made the difference?"
+}

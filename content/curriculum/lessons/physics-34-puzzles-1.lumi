@@ -1,0 +1,69 @@
+lesson physics-puzzles-1 v=1 format=puzzles grade=1 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics puzzles: push, pull and shadow"
+  goal "Work out which push wins, which thing is heavier, what moves each thing, and whose shadow is longer."
+
+  puzzle stars=1 {
+    show physics.which-way a=4 b=2 easy-a=6 hard-b=6
+  }
+  puzzle stars=1 {
+    show physics.heavier-pull a=6 b=4 easy-a=8 easy-b=2 hard-a=4 hard-b=6
+  }
+  level easy medium {
+    puzzle stars=1 {
+      show physics.moved-by k=1 easy-k=0
+    }
+  }
+  level easy {
+    puzzle stars=1 {
+      show physics.push-or-pull p=1 n=6
+    }
+  }
+  puzzle stars=2 {
+    show physics.balanced-push a=4 b=4 easy-a=2 easy-b=6 hard-a=6 hard-b=6
+  }
+  puzzle stars=2 {
+    show physics.half-bag v=8 easy-v=4 hard-v=10
+  }
+  puzzle stars=2 {
+    show physics.two-ways k=1 easy-k=4 hard-k=2
+  }
+  puzzle stars=2 {
+    show physics.taller-shadow k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=3 {
+    show physics.tug-teams a=4 b=2 easy-a=3 hard-a=2 hard-b=4
+  }
+  puzzle stars=3 {
+    show physics.pushes-in-order p=3 easy-p=0 hard-p=4
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show physics.apples-in-bag v=8 hard-v=10
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show physics.same-loudness k=0
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, up on the tree platform or at the table; the hints and
+    answers are on this sheet, not on theirs. Every puzzle can be started by looking closely: which
+    arrow is longer, which pointer has come further down, what is touching the thing, where the
+    dashed line from the lamp goes. The pushes come from the first lesson and the bags from the
+    second; the two-way puzzle and the baskets are from the lesson on what moves things at home,
+    and the trap in both is a hand that goes on being named after it has let go. The shadow puzzle
+    is a prediction with no second picture: follow the line from the lamp over the top of a taller
+    stick and see where it lands. The three-star puzzles are the ones to leave for a quiet moment:
+    the tug of war has no picture of the answer, the baskets have no push drawn, and the bag of
+    apples has to be worked backwards from the reading. Ask for the reason as well as the answer on
+    each of them. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level a fourth one-star puzzle asks whether an arrow is a push or a pull and the bag of apples is left for another day; the trolley's arrows differ plainly, the bags differ by six newtons, the thing to find is the one the wind moves, the box is pushed harder from one side, the half bag starts at four newtons, the two ways are the kite pulled along and lifted, the shadow is a taller stick's, the teams are one child apart, and the baskets to order stand in order already."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and a fourth three-star puzzle, an empty spot below the drum where Ben would hear it just as loud as Mia and Leo; the trolley's arrows are close in length, the bags differ by two newtons, the box is pushed equally hard from both sides, the half bag starts at ten newtons, the two ways are the hat that nobody touched, the shadow is a stick held further from the lamp, the bigger team is on the right, the baskets hold six, three, five and four apples numbered from the biggest push, and the bag reads ten newtons with four apples in it."
+  }
+}

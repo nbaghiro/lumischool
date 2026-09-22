@@ -1,0 +1,24 @@
+# Three spellings that all sound close, so the choice rests on hearing every sound and knowing how
+# it is written: box is not boks, and rug has one g.
+item writing.which-spelling v=1 skills=[writing.spelling] {
+  title "The right spelling"
+  difficulty (if k == 1 or k == 4 then 1 else 0)
+  let k=0..4 who={"dog", "pig", "rabbit"}
+  let thing={if k == 0 then "box" else if k == 1 then "bed" else if k == 2 then "rug" else if k == 3 then "log" else "tub"}
+  let where={if k == 0 or k == 4 then "in" else "on"}
+  let o0={if k == 0 then "boks" else if k == 1 then "bed" else if k == 2 then "rog" else if k == 3 then "lgo" else "tup"}
+  let o1={if k == 0 then "box" else if k == 1 then "bedd" else if k == 2 then "rugg" else if k == 3 then "log" else "tubb"}
+  let o2={if k == 0 then "bocs" else if k == 1 then "bid" else if k == 2 then "rug" else if k == 3 then "lok" else "tub"}
+
+  scene 32x9 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "The {who} is {where} a {thing}. Which spelling is right?" narrate width=19
+      choice pick options=["{o0}", "{o1}", "{o2}"]
+    }
+  }
+
+  answer pick=thing
+  hint "Say the word slowly. How many sounds do you hear?"
+  hint "Which spelling has a letter for every sound, and no extra letters?"
+}

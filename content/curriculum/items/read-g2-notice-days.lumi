@@ -1,0 +1,19 @@
+# Every day in the choices is on the notice, and the question is answered by joining two lines:
+# the cake is for the fair, and the fair is on Saturday. The audit's raise for notice.
+item reading.notice-days v=1 skills=[reading.find-a-detail, reading.inference] {
+  title "Read two lines"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+
+  scene 36x17 {
+    sign board lines=[if k == 0 then "Fair on the green" else if k == 1 then "Swimming club" else "Library club", if k == 0 then "Set up on Friday" else if k == 1 then "Monday: big pool" else "Tuesday: stories", if k == 0 then "Fair on Saturday" else if k == 1 then "Wednesday: small pool" else "Thursday: making things", if k == 0 then "Tidy up on Sunday" else if k == 1 then "Friday: diving" else "Saturday: films", if k == 0 then "Bring a cake to the fair" else if k == 1 then "Bring goggles for diving" else "Bring glue for making things"] kind=board color=(if k == 0 then "tang" else if k == 1 then "sky" else "mint") at=canvas(1, 1)
+    column q right-of=board gap=2 space=1 align=start {
+      text ask "{if k == 0 then \"On which day do you bring a cake?\" else if k == 1 then \"On which day do you need goggles?\" else \"On which day do you bring glue?\"}" narrate width=15
+      choice pick options=[if k == 0 then "Friday" else if k == 1 then "Monday" else "Tuesday", if k == 0 then "Saturday" else if k == 1 then "Wednesday" else "Thursday", if k == 0 then "Sunday" else if k == 1 then "Friday" else "Saturday"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "Saturday" else if k == 1 then "Friday" else "Thursday")
+  hint "Which line says what to bring?"
+  hint "That line names a thing, not a day. Which other line gives the day for that thing?"
+}

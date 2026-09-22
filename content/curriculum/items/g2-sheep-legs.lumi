@@ -1,0 +1,30 @@
+# Legs in fours: the sheep are drawn, the legs are counted in fours, not one by one.
+item groups.sheep-legs v=1 skills=[multiplication.fours] {
+  title "Legs in the field"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 26x15 {
+    animals field kind=sheep count=n label="" at=canvas(1, 1)
+    text ask "How many legs do the sheep have altogether?" narrate width=24 below=field gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (4 * n)
+  feedback {
+    when (answer == n + 4) point=field {
+      say "Every sheep has 4 legs, so count 4 for each sheep."
+    }
+    when (answer == 2 * n) point=field {
+      say "Count all four legs on each sheep, not only the two at the front."
+    }
+  }
+  hint "How many legs does one sheep have?"
+  hint "Count in fours, one four for each sheep."
+}

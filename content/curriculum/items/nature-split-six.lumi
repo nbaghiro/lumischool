@@ -1,0 +1,39 @@
+# The three-star: six animals, and the one question of four that sorts them three and three. Each
+# question is a count over the six, so the answer is proved by counting, and the trap is a question
+# that sorts four and two. The whale at hard is the mammal without fur, which keeps fur and born
+# alive from splitting the six the same way.
+item nature.split-six v=1 stars=3 skills=[nature.sorting, reasoning.systematic] {
+  title "Three and three"
+  difficulty k
+  let k=0..2
+  let six={pick(k, "hen, duck, fox, cat, fish, sea turtle", "hen, gull, duck, fish, snake, sea turtle", "bat, whale, cat, duck, fish, frog")}
+  let right={pick(k, "Does it have four legs?", "Does it have feathers?", "Is it born alive?")}
+  let o1={pick(k, "Does it have feathers?", "Does it lay eggs?", "Does it have fur?")}
+  let o2={pick(k, "Does it lay eggs?", "Does it have scales?", "Can it fly?")}
+  let o3={pick(k, "Does it have fur?", "Does it have four legs?", "Does it have legs?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x31 {
+    row four at=canvas(1, 1) space=1 align=end {
+      art h asset="hen"
+      fox pf facing=1
+      seaturtle pt facing=1 plates=5
+    }
+    text ask "Ada plays a sorting game with six animals: {six}. She wants a yes-or-no question that puts exactly three on each side. Which question does it?" narrate width=34 below=four gap=1
+    choice pick options=[o1, right, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Ask that question of each of the six in turn and count the yeses. Only one question gives exactly three."
+    }
+  }
+  hint "Take one question and ask it of all six animals, counting the yeses."
+  hint "You want three yeses and three noes. Try each question until one gives that."
+}

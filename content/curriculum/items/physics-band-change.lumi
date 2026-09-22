@@ -1,0 +1,21 @@
+item physics.band-change v=1 skills=[physics.sound] {
+  title "Move the bridge"
+  difficulty (10 - abs(a - n))
+  let a={8, 10, 12} n={6, 9, 14}
+  where (a != n)
+  level easy {
+    where (abs(a - n) >= 4)
+  }
+  level hard {
+    where (abs(a - n) <= 2)
+  }
+
+  scene 21x16 {
+    bands b lengths=[a] pluck=0 at=canvas(1, 0)
+    text ask "The bridge is moved so the shaking part is {n} squares long. Is the note higher or lower now?" width=19 below=b gap=0
+    choice pick options=["Higher", "Lower"] below=ask gap=1
+  }
+
+  answer pick=(if n < a then "Higher" else "Lower")
+  hint "Is the shaking part now shorter or longer than {a} squares?"
+}

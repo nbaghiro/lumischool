@@ -1,0 +1,23 @@
+# Three letters from one family and one from another. The odd one out is chosen to look like the
+# others: d is tall like h, b and k but starts with a curl; y looks like v, w and x but starts
+# straight down like u.
+item writing.family-odd-out v=1 skills=[writing.letter-formation] {
+  title "Which letter is in another family?"
+  difficulty (if s == 0 or s == 4 then 1 else 0)
+  let s=0..4 q=0..3
+  let l0={if s == 0 and q == 0 then "d" else if s == 0 and q == 1 then "h" else if s == 0 and q == 2 then "h" else if s == 0 and q == 3 then "h" else if s == 1 and q == 0 then "n" else if s == 1 and q == 1 then "c" else if s == 1 and q == 2 then "c" else if s == 1 and q == 3 then "c" else if s == 2 and q == 0 then "f" else if s == 2 and q == 1 then "l" else if s == 2 and q == 2 then "l" else if s == 2 and q == 3 then "l" else if s == 3 and q == 0 then "y" else if s == 3 and q == 1 then "v" else if s == 3 and q == 2 then "v" else if s == 3 and q == 3 then "v" else if s == 4 and q == 0 then "p" else if s == 4 and q == 1 then "s" else if s == 4 and q == 2 then "s" else "s"}
+  let l1={if s == 0 and q == 0 then "h" else if s == 0 and q == 1 then "d" else if s == 0 and q == 2 then "b" else if s == 0 and q == 3 then "b" else if s == 1 and q == 0 then "c" else if s == 1 and q == 1 then "n" else if s == 1 and q == 2 then "o" else if s == 1 and q == 3 then "o" else if s == 2 and q == 0 then "l" else if s == 2 and q == 1 then "f" else if s == 2 and q == 2 then "t" else if s == 2 and q == 3 then "t" else if s == 3 and q == 0 then "v" else if s == 3 and q == 1 then "y" else if s == 3 and q == 2 then "w" else if s == 3 and q == 3 then "w" else if s == 4 and q == 0 then "s" else if s == 4 and q == 1 then "p" else if s == 4 and q == 2 then "g" else "g"}
+  let l2={if s == 0 and q == 0 then "b" else if s == 0 and q == 1 then "b" else if s == 0 and q == 2 then "d" else if s == 0 and q == 3 then "k" else if s == 1 and q == 0 then "o" else if s == 1 and q == 1 then "o" else if s == 1 and q == 2 then "n" else if s == 1 and q == 3 then "a" else if s == 2 and q == 0 then "t" else if s == 2 and q == 1 then "t" else if s == 2 and q == 2 then "f" else if s == 2 and q == 3 then "i" else if s == 3 and q == 0 then "w" else if s == 3 and q == 1 then "w" else if s == 3 and q == 2 then "y" else if s == 3 and q == 3 then "x" else if s == 4 and q == 0 then "g" else if s == 4 and q == 1 then "g" else if s == 4 and q == 2 then "p" else "e"}
+  let l3={if s == 0 and q == 0 then "k" else if s == 0 and q == 1 then "k" else if s == 0 and q == 2 then "k" else if s == 0 and q == 3 then "d" else if s == 1 and q == 0 then "a" else if s == 1 and q == 1 then "a" else if s == 1 and q == 2 then "a" else if s == 1 and q == 3 then "n" else if s == 2 and q == 0 then "i" else if s == 2 and q == 1 then "i" else if s == 2 and q == 2 then "i" else if s == 2 and q == 3 then "f" else if s == 3 and q == 0 then "x" else if s == 3 and q == 1 then "x" else if s == 3 and q == 2 then "x" else if s == 3 and q == 3 then "y" else if s == 4 and q == 0 then "e" else if s == 4 and q == 1 then "e" else if s == 4 and q == 2 then "e" else "p"}
+  let odd={if s == 0 then "d" else if s == 1 then "n" else if s == 2 then "f" else if s == 3 then "y" else "p"}
+
+  scene 24x16 {
+    lettercards cards letters=["{l0}", "{l1}", "{l2}", "{l3}"] at=canvas(1, 1)
+    text ask "Three of these start the same way. Which one is in a different family?" narrate width=22 below=cards gap=1
+    choice pick options=["{l0}", "{l1}", "{l2}", "{l3}"] below=ask gap=1
+  }
+
+  answer pick=odd
+  hint "Write each letter in the air. Where does your pencil start, and which way does it go?"
+  hint "Do not go by how tall a letter is. Go by how you start it."
+}

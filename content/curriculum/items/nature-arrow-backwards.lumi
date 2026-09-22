@@ -1,0 +1,41 @@
+# The two-star reason: Ben writes a chain, and Ada says it is wrong. The child has to say what
+# the arrows would mean if it were right, and in one version Ben is right after all, which is
+# the check against a child who always finds fault.
+item nature.arrow-backwards v=1 stars=2 skills=[nature.food-chains, reasoning.find-the-mistake] {
+  title "Is Ben's chain right?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let chain={pick(k, "gull  →  crab  →  seaweed", "seal  →  small fish  →  tiny plants", "seaweed  →  crab  →  octopus", "crab  →  seaweed  →  gull")}
+  let right={pick(k, "No: it says the seaweed eats the crab", "No: it says the tiny plants eat the fish", "Yes: each arrow points to the eater", "No: it says the seaweed eats the crab")}
+  let o1={pick(k, "Yes: the gull is the biggest, so it goes first", "Yes: the seal is the biggest, so it goes first", "No: the octopus should come first", "Yes: crabs are eaten, so they go first")}
+  let o2={pick(k, "No: a chain must have four links", "No: seals do not eat fish", "No: seaweed cannot start a chain", "No: gulls do not eat crabs")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x29 {
+    row who at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      gull pg flying=0
+      octopus po spots=4
+    }
+    text ben "Ben writes: {chain}" narrate below=who gap=1
+    text ask "Each arrow is meant to point from the eaten to the eater. Is Ben's chain right?" narrate width=32 below=ben gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1) point=ben {
+      say "The biggest creature is usually the last link, not the first. Read each arrow aloud as 'is eaten by' and see if it is true."
+    }
+    when (pick == o2) point=ben {
+      say "Read Ben's arrows one at a time as 'is eaten by'. Does the first arrow say something true?"
+    }
+  }
+  hint "Say each arrow as 'is eaten by'. The first one: who is eaten by whom?"
+  hint "A chain starts with a plant and the arrows run towards the eaters."
+}

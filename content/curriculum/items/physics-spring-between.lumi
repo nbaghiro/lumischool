@@ -1,0 +1,26 @@
+item physics.spring-between v=1 skills=[physics.weight] {
+  title "Between two marks"
+  difficulty v
+  let v={1, 3, 5, 7, 9}
+  level easy {
+    let v={1, 3}
+  }
+  level hard {
+    let v={7, 9}
+  }
+
+  scene 26x18 {
+    text ask "The pointer is between two marks. How many newtons?" width=24 at=canvas(1, 1)
+    springscale scale max=10 step=2 value=v unit=N below=ask gap=1
+    number-input answer right-of=scale gap=2
+  }
+
+  answer v
+  feedback {
+    when (answer == v + 1 or answer == v - 1) point=scale {
+      say "The pointer is halfway, so the answer is halfway between the two numbers."
+    }
+  }
+  hint "Which two numbers is the pointer between?"
+  hint "The pointer is halfway between them. Which number is halfway between those two?"
+}

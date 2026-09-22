@@ -1,0 +1,28 @@
+# A timetable read against a time: find the next bus, then the wait.
+item time.bus-wait v=1 skills=[time.elapsed, time.timetables] {
+  title "How long until the bus?"
+  difficulty (if a < 25 then 25 - a else if a < 40 then 40 - a else 55 - a)
+  let hh=7..10 a={12, 18, 21, 30, 33, 36, 44, 47, 51}
+  level easy {
+    let a={18, 21, 36, 51}
+  }
+  level hard {
+    let a={12, 30, 44}  # the wait crosses a ten
+  }
+
+  scene 32x16 {
+    table buses cols=2 head=["Bus", "Leaves"] cells=["A", "{hh}:10", "B", "{hh}:25", "C", "{hh}:40", "D", "{hh}:55"] at=canvas(1, 1)
+    digital now time="{hh}:{a}" right-of=buses gap=2
+    text ask "Ella gets to the bus stop at the time on the clock. How many minutes does she wait for the next bus?" width=18 below=now gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if a < 25 then 25 - a else if a < 40 then 40 - a else 55 - a)
+  feedback {
+    when (answer == (if a < 25 then 40 - a else if a < 40 then 55 - a else 70 - a)) point=buses {
+      say "There is an earlier bus that she can still catch."
+    }
+  }
+  hint "Which buses have already gone when Ella gets there?"
+  hint "Count on from {hh}:{a} to the next time in the table."
+}

@@ -1,0 +1,10 @@
+item art.paint-three-layers v=1 stars=3 skills=[art.space, art.painting, reasoning.plan] {
+  title "A landscape in three layers"
+
+  scene 36x17 {
+    text ask "Paint far hills, middle hills and a near field. Make the far ones palest and coolest, and put one thing in front that overlaps the middle hills." width=11 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="layers" outline="none" pots=["blue", "green", "yellow", "brown", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Three layers one behind another: the far hills palest and bluest, the middle hills greener, the near field darkest with the most detail, each layer overlapping the one behind." notice=["The far hills palest and bluest", "Each layer overlapping the one behind", "The most detail in the near field"] ask="How did you make the far hills look far away?"
+}

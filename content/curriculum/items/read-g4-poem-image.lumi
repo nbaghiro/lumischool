@@ -1,0 +1,22 @@
+# A picture in words: the options are close, so the child has to picture the line rather than
+# rule out silly answers. This is the audit's raise for reading.poem-meaning.
+item reading.poem-image v=1 skills=[reading.poetry, reading.inference] {
+  title "What the words make you see"
+  difficulty (if k == 0 or k == 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 33x17 {
+    text ask "{if k == 0 then \"A poem says the frozen pond is as hard as any floor. What does that tell you?\" else if k == 1 then \"A poem says the wind was pushing at the door. What does that tell you?\" else if k == 2 then \"A poem says the stars were sprinkled on the sky like sugar. What does that tell you?\" else \"A poem says the old dog's legs were rusty. What does that tell you?\"}" width=32 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "You could stand on the ice." else if k == 1 then "Someone was at the door." else if k == 2 then "The stars tasted sweet." else "The dog was made of metal.", if k == 0 then "The pond was made of wood." else if k == 1 then "The wind was strong against the door." else if k == 2 then "There were lots of small, bright stars." else "The dog was stiff and slow.", if k == 0 then "The pond was very deep." else if k == 1 then "The door was broken." else if k == 2 then "Someone was baking." else "The dog had been in the rain."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "You could stand on the ice." else if k == 1 then "The wind was strong against the door." else if k == 2 then "There were lots of small, bright stars." else "The dog was stiff and slow.")
+  hint "Picture the thing the poem compares it to. What is that thing like?"
+  hint "Which part of that is true of the pond, the wind, the stars or the dog?"
+}

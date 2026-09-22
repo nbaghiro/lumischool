@@ -1,0 +1,21 @@
+# Three letters, one of each height, matched to where they sit. The right-hand list turns with k,
+# so the answer is not 1, 2, 3 every time.
+item writing.height-match v=2 skills=[writing.letter-formation] {
+  title "Where does it sit?"
+  let s=0..2 k=0..2
+  let tall={if s == 0 then "d" else if s == 1 then "k" else "l"}
+  let small={if s == 0 then "o" else if s == 1 then "m" else "e"}
+  let tail={if s == 0 then "g" else if s == 1 then "p" else "y"}
+  let r0={if k == 0 then "goes up to the top line" else if k == 1 then "stops at the dotted line" else "hangs below the line"}
+  let r1={if k == 0 then "stops at the dotted line" else if k == 1 then "hangs below the line" else "goes up to the top line"}
+  let r2={if k == 0 then "hangs below the line" else if k == 1 then "goes up to the top line" else "stops at the dotted line"}
+
+  scene 30x13 {
+    text ask "Write the number that says where each letter sits." narrate width=28 at=canvas(1, 1)
+    match m left=["{tall}", "{small}", "{tail}"] right=["{r0}", "{r1}", "{r2}"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=((3 - k) % 3 + 1) b=((4 - k) % 3 + 1) c=((5 - k) % 3 + 1)
+  hint "Picture each letter on the lines. Where does its stick or its tail go?"
+  hint "Only one of the three reaches the top line. Which one?"
+}

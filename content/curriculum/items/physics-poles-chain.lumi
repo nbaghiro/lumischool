@@ -1,0 +1,16 @@
+# Two steps with no picture of the answer: a magnet's ends are always different, so knowing how one
+# end behaves tells you the other end, and that tells you the next magnet.
+item physics.poles-chain v=1 skills=[physics.magnets, reasoning.chain] stars=3 {
+  title "Three magnets in a row"
+  difficulty (x + y)
+  let e=0..1 x=0..1 y=0..1
+
+  scene 30x10 {
+    text ask "Three bar magnets lie in a row, A, B and C. A's right end is {if e == 0 then \"N\" else \"S\"}. A {if x == 0 then \"pulls B towards it\" else \"pushes B away\"}, and B {if y == 0 then \"pulls C towards it\" else \"pushes C away\"}. What is on C's left end?" narrate width=28 at=canvas(1, 0)
+    choice pick options=["N", "S"] below=ask gap=1
+  }
+
+  answer pick=(if (e + x + y) % 2 == 1 then "N" else "S")
+  hint "What must B's left end be, to behave that way with A?"
+  hint "A magnet's two ends are always different. So what is B's right end, next to C?"
+}

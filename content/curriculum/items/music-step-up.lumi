@@ -1,0 +1,18 @@
+item music.step-up v=2 skills=[music.intervals] {
+  title "Which kind of move?"
+
+  scene 26x12 {
+    notes pair clef=treble notes=[F4, G4] letters=false at=canvas(1, 1)
+    text ask "From the first note to the second: is it a step or a skip?" width=13 right-of=pair gap=1
+    choice pick options=["a step", "a skip"] below=ask gap=1
+  }
+
+  answer pick="a step"
+  feedback {
+    when (pick == "a skip") point=pair {
+      say "The first note is in a space and the second is on the line just above it, so nothing is missed out."
+    }
+  }
+  hint "Where does each note sit: on a line, or in a space?"
+  hint "A step moves to the very next line or space."
+}

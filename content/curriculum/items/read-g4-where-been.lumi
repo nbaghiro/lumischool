@@ -1,0 +1,31 @@
+# Each clue on its own fits two of the places; only one place fits every clue. The inference is
+# made from details, and no sentence names the place.
+item reading.where-had-they-been v=1 skills=[reading.inference] {
+  title "Where had they been?"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3 who={if k == 0 then "Tom" else if k == 1 then "Ama" else if k == 2 then "Lev" else "Rosa"}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+
+  scene 36x16 {
+    passage p text="{if k == 0 then \"Tom came in and left a trail of sand across the kitchen floor. His hair was stiff with salt, and the sun had turned his nose pink.\" else if k == 1 then \"Ama's boots were caked in white, and her cheeks were bright red. A pair of wet gloves was steaming on the radiator.\" else if k == 2 then \"Lev put a basket of eggs on the table and picked a feather off his sleeve. There was straw stuck to his socks.\" else \"Rosa came home with a ticket stub in her pocket and popcorn in her hood. Out in the street, she blinked at the daylight.\"}" width=32 numbers=false at=canvas(1, 1)
+    text ask "Where had {who} been?" below=p gap=1
+    choice pick options=[if k == 0 then "the beach" else if k == 1 then "out in rain" else if k == 2 then "the shop" else "a match", if k == 0 then "a sandpit" else if k == 1 then "out in snow" else if k == 2 then "the duck pond" else "the cinema", if k == 0 then "the pool" else if k == 1 then "the kitchen" else if k == 2 then "the hen house" else "the fair"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "the beach" else if k == 1 then "out in snow" else if k == 2 then "the hen house" else "the cinema")
+  feedback {
+    when (pick == "a sandpit") point=p {
+      say "A sandpit has sand, but where would the salt in his hair come from?"
+    }
+    when (pick == "the shop") point=p {
+      say "A shop sells eggs. Does a shop leave straw on your socks?"
+    }
+  }
+  hint "Find every clue the passage gives about what {who} brought home."
+  hint "Which place fits all of the clues, not just one of them?"
+}

@@ -1,0 +1,36 @@
+# The flag is marked and the numbers are missing, so the block is used backwards: how many zigzags
+# reach the right row, and how far is left to go. The audit's raise for define-where.
+item coding.define-reach v=1 skills=[coding.procedures, coding.tracing] {
+  title "Reach the flag"
+  difficulty (z + a)
+  let z=2..3 a=1..3
+  level easy {
+    where (z + a <= 4)
+  }
+  level hard {
+    where (z + a >= 5)
+  }
+
+  scene 34x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["define zigzag", "  right 1", "  down 1", "repeat ?", "  zigzag", "right ?"]
+      maze g cols=7 rows=4 col=1 row=1 flag=[1 + z + a, 1 + z]
+    }
+    text ask "What numbers go in line 4 and line 6 so the robot stops on the flag?" width=30 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text l4 "line 4"
+      number-input times width=3
+      text l6 "line 6"
+      number-input more width=3
+    }
+  }
+
+  answer times=z more=a
+  feedback {
+    when (times == z + a) point=g {
+      say "Each zigzag goes one down as well as one along. How many rows down is the flag?"
+    }
+  }
+  hint "Each zigzag moves the robot one square right and one square down. How many rows down is the flag?"
+  hint "After the zigzags, how many squares right are still left to go?"
+}

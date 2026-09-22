@@ -1,0 +1,17 @@
+# In one loop every part is on or every part is off: a buzzer sounding means the loop is whole, so
+# the bulb in the same loop must be lit. The picture hides both; the reasoning finds it.
+item physics.buzzer-and-bulb v=1 skills=[physics.circuits] stars=3 {
+  title "The buzzer is sounding"
+  difficulty c
+  let c=1..3
+
+  scene 20x30 {
+    series ring cells=c bulbs=1 buzzer=1 show=0 at=canvas(1, 0)
+    text ask "The buzzer in this circuit is sounding. Is the bulb lit?" width=18 below=ring gap=1
+    choice pick options=["Yes", "No", "You cannot tell"] stack=column below=ask gap=1
+  }
+
+  answer pick="Yes"
+  hint "What does the buzzer sounding tell you about the loop?"
+  hint "The bulb is in the same loop. What does that loop do for it?"
+}

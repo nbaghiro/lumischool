@@ -1,0 +1,19 @@
+# Strings are numbered from the thinnest, which is the one nearest the floor: on a ukulele string 1
+# is A and string 4 is G. The card stands the ukulele up facing you, so they read G C E A across.
+item music.uke-string-number v=1 skills=[music.uke-strings] {
+  title "Which string is ringed?"
+
+  scene 24x15 {
+    chordbox box tuning=uke chord=none places=[] frets=3 show=dots name=false letters=true lit=["s3f0"] at=canvas(1, 1)
+    text ask "String 1 is A, the thinnest. What number is the ringed string?" width=12 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 2) point=box {
+      say "Count from A, the string on the right: A is 1, E is 2, C is 3."
+    }
+  }
+  hint "Start at the thinnest string and count across."
+}

@@ -1,0 +1,23 @@
+# A prediction from one fact: chalk, limestone and marble are all made of the same stuff, which is
+# why they all fizz. The rocks are named, and the vinegar has not gone on yet.
+item chem.rock-predict v=1 skills=[chemistry.rocks] {
+  title "Which will fizz?"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}  # limestone, whose name says it
+  }
+  level hard {
+    let k={1, 2}  # marble
+  }
+
+  scene 18x17 {
+    text ask "Chalk fizzes with vinegar. Which of these rocks is made of the same stuff, and will fizz too?" width=17 at=canvas(1, 0)
+    rocks r rocks=["{if k == 0 then \"granite\" else if k == 1 then \"marble\" else if k == 2 then \"slate\" else \"sandstone\"}", "{if k == 0 then \"limestone\" else if k == 1 then \"sandstone\" else if k == 2 then \"pumice\" else \"granite\"}", "{if k == 0 then \"slate\" else if k == 1 then \"granite\" else if k == 2 then \"basalt\" else \"limestone\"}", "{if k == 0 then \"basalt\" else if k == 1 then \"pumice\" else if k == 2 then \"marble\" else \"slate\"}"] test=0 letters=1 names=1 below=ask gap=0
+    choice pick options=["A", "B", "C", "D"] below=r gap=0
+  }
+
+  check chem.rocks of=r pick="only(fizzes)"
+  hint "Chalk, limestone and marble are all made of the same stuff. Is one of those here?"
+  hint "Read the name under each rock."
+}

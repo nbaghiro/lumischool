@@ -1,0 +1,29 @@
+# Two timelines at once: each pan boils once it has climbed to 100, and the question is the gap
+# between them, which no rule on the page gives directly.
+item chem.two-pans v=1 stars=3 skills=[chemistry.heating, reasoning.compare] {
+  title "Two pans"
+  difficulty (b - a)
+  let a={10, 20, 30} b={40, 50, 60, 70}
+  where (2 * b != 100 + a)
+
+  scene 37x15 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      thermometer ta from=0 to=120 step=20 value=a unit="°C"
+      thermometer tb from=0 to=120 step=20 value=b unit="°C"
+    }
+    text ask "Two pans of water are heated. Pan A starts at {a} degrees and pan B at {b} degrees. Both rise 10 degrees a minute until they boil. For how many minutes is pan B boiling while pan A is not?" width=16 right-of=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((b - a) / 10)
+  feedback {
+    when (answer == (100 - a) / 10) point=kit {
+      say "That is when pan A starts to boil. When did pan B start?"
+    }
+    when (answer == (100 - b) / 10) point=kit {
+      say "That is when pan B starts to boil. How much longer does pan A take?"
+    }
+  }
+  hint "After how many minutes does pan B reach 100 degrees? And pan A?"
+  hint "Pan B boils first. How long is it until pan A catches up?"
+}

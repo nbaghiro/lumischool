@@ -1,0 +1,22 @@
+# One letter of the curly family traced twice from its dot and then written once, marked by a
+# grown-up who watches the start.
+item writing.curl-trace v=1 skills=[writing.letter-formation] {
+  title "Trace and write"
+  difficulty (if ch == "g" or ch == "d" then 1 else 0)
+  let ch={"c", "o", "a", "d", "g"}
+  level easy {
+    let ch={"c", "o", "a"}
+  }
+  level hard {
+    let ch={"d", "g"}
+  }
+
+  scene 34x21 {
+    formletter big letter=ch copies=2 write=1 label=true at=canvas(1, 1)
+    text ask "Trace the two grey letters from the dot, round to the left first, in one movement without lifting your pencil. Then write your own in the space." width=32 below=big gap=1
+  }
+
+  check writing.by-eye look-for="Each letter starts at the dot near the top and curls round to the left first, is made in one movement without lifting the pencil, sits on the thick line, and the one written in the space looks like the ones traced."
+  hint "Start at the dot. The first move is round to the left, like c."
+  hint "Keep the pencil on the paper until the letter is finished."
+}

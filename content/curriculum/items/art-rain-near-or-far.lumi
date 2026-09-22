@@ -1,0 +1,26 @@
+# One print whose rain is drawn either near or far: near rain is drawn with wider lines set further
+# apart, far rain with thin ones close together. Which of the two the print shows. Half the versions
+# draw the far bank behind the arches too, which the child has to look past.
+item art.rain-near-or-far v=1 skills=[art.line, art.depth] {
+  title "Near rain or far rain?"
+  difficulty (if arches > 3 then 1 else 0)
+  let w=0..1 arches=3..4 fb=0..1
+  let which={pick(w, "near", "far")}
+  let ans={pick(w, "The rain close to us", "The rain far off")}
+  level easy {
+    let arches=3..3
+  }
+  level hard {
+    let arches=4..4
+  }
+
+  scene 19x23 {
+    bridge print arches=arches rain=1 weight=which far=fb at=canvas(1, 0)
+    text ask "A printer draws the rain close to us with wider lines, set further apart, and the rain far off with thin lines close together. Which is this?" narrate width=18 below=print gap=1
+    choice pick options=["The rain close to us", "The rain far off"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Look at how wide the rain lines are and how far apart they stand."
+  hint "Wide lines with space between them are the rain nearest to us."
+}

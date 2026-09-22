@@ -1,0 +1,17 @@
+# The audit's raise for the missing-word pick: the child writes the tricky word, with a bank of
+# four to copy from, so its spelling has to be got right letter by letter.
+item reading.sight-word-type v=1 skills=[reading.sight-words] {
+  title "Write the missing word"
+  let k=0..7
+
+  scene 30x15 {
+    wordcards bank words=["was", "said", "come", "have"] picked=-1 at=canvas(1, 1)
+    sentence strip before="{if k == 0 then \"The dog\" else if k == 1 then \"It\" else if k == 2 then \"Gran\" else if k == 3 then \"The hen\" else if k == 4 then \"Can you\" else if k == 5 then \"Will you\" else if k == 6 then \"I\" else \"We\"}" blank=4 after="{if k == 0 then \"in the pond.\" else if k == 1 then \"hot in the sun.\" else if k == 2 then \"hello to the fox.\" else if k == 3 then \"cluck.\" else if k == 4 then \"to my house?\" else if k == 5 then \"with me?\" else if k == 6 then \"a red hat.\" else \"two cats.\"}" below=bank gap=1
+    text ask "Write the missing word." narrate below=strip gap=1
+    word-input word options=["{if k <= 1 then \"was\" else if k <= 3 then \"said\" else if k <= 5 then \"come\" else \"have\"}"] letters=4 right-of=ask gap=1
+  }
+
+  answer word=(if k <= 1 then "was" else if k <= 3 then "said" else if k <= 5 then "come" else "have")
+  hint "Try each word in the box in the gap. Read the whole sentence."
+  hint "Which one makes the sentence sound right? Copy it letter by letter."
+}

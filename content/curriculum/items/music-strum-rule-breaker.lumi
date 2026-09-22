@@ -1,0 +1,30 @@
+# The rule every teacher gives: down on the numbers, up on the and. One bar keeps it and two break
+# it in different ways, and q asks for a different bar each time.
+item music.strum-rule-breaker v=1 stars=2 skills=[music.strumming, reasoning.find-the-error] {
+  title "Down on the numbers"
+  difficulty (if q == 2 then 1 else 0)
+  let q=0..2
+
+  scene 30x27 {
+    column bars at=canvas(1, 1) space=0 align=start {
+      row ra space=1 align=centre {
+        text la "A"
+        strumtrack a strums=D-D-DUDU counts=true chord=none ring=-1
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        strumtrack b strums=D-DUU-D- counts=true chord=none ring=-1
+      }
+      row rc space=1 align=centre {
+        text lc "C"
+        strumtrack c strums=D-DDD-D- counts=true chord=none ring=-1
+      }
+    }
+    text ask "The rule: down on a number, up on an and. {if q == 0 then \"Which bar has an up strum on a number?\" else if q == 1 then \"Which bar has a down strum on an and?\" else \"Which bar keeps the rule all the way?\"}" narrate width=28 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=column right-of=bars gap=2
+  }
+
+  answer pick=(if q == 0 then "B" else if q == 1 then "C" else "A")
+  hint "Look at the arrows under the numbers first. Do they all point down?"
+  hint "Now look under each and. Is any arrow there pointing down?"
+}

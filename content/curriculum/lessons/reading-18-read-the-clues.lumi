@@ -1,0 +1,57 @@
+lesson reading-read-the-clues v=1 format=teach grade=1 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "Read the clues"
+  goal "Read a clue to the end and use every part of it to find one house."
+
+  look {
+    scene 27x21 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row who space=1 align=centre {
+          face kid mood=happy hair=1
+          bubble says "My house has three windows at the top." width=16 from=kid
+        }
+        street st windows=[2, 1, 2, 3] doors=[0, 1, 1, 0] chimneys=[1, 0, 1, 1] cats=[0, 1, 0, 0] numbers=["1", "3", "5", "7"]
+      }
+    }
+    say """
+      Read the clue. Then look at each house. Count the windows at the top.
+
+      Cross out each house that does not fit. The one that is left is the answer.
+      """
+  }
+  do {
+    show reading.clue-house k=0 easy-k=1
+    level easy {
+      worked reading.clue-street l=0 q=0 level=medium
+    }
+    practice reading.clue-street count=3 seed=4
+    practice reading.clue-animal count=4 hard-count=3 seed=2
+    level hard {
+      practice reading.which-clue-helps count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.which-clue-helps k=0
+  }
+  try stars=3 {
+    show reading.clue-for-one-house n="5"
+  }
+  remember {
+    say "Read the whole clue. Check every house."
+  }
+
+  grown-ups """
+    The clues with two parts are the real lesson. A child who stops reading after the first part
+    picks a house that fits half of the clue, and the feedback names the part they missed. Every
+    clue is about something that can be counted or seen, never a colour, so the printed sheet works
+    in black and white. The street changes from question to question later on, so the child cannot
+    learn the answers by heart. In the two-star question the child picks the clue that would tell
+    two houses apart, which means checking each clue against both. The three-star question is
+    marked by you: read the child's clue together and check it against every house.
+    """
+  level easy {
+    grown-ups "At this level the first house is found from one clue, three windows at the top, a clue with no chimney in it is worked once in the teacher's pen before clues whose two parts both say what the house has, the animal riddles are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the first house is as written, every street clue has a no in it (no chimney), one animal riddle makes way for a second pair of houses to tell apart, and the two-star and three-star are as written."
+  }
+}

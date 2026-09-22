@@ -1,0 +1,22 @@
+# The feeling is never named in the passage. What the child did says it, and the faces carry it
+# in their brows and mouths, which print the same in black as in colour.
+item reading.feelings-face v=1 skills=[reading.characters, reading.inference] {
+  title "How do they feel?"
+  let k=0..3
+
+  scene 24x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"Sam's kite got stuck at the top of a tall tree. He pulled the string, but it would not come down.\" else if k == 1 then \"Kim opened the box. Inside was a tiny puppy! She jumped up and down and shouted.\" else if k == 2 then \"It was very late. Joe yawned, and his eyes kept closing.\" else \"A big dog ran at Ana and barked. She hid behind her dad.\"}" width=23 numbers=false
+      row faces space=1 align=end {
+        face a mood=(if k == 0 then "happy" else if k == 1 then "excited" else if k == 2 then "happy" else "cross") hair=k name="A"
+        face b mood=(if k == 0 then "sad" else if k == 1 then "tired" else if k == 2 then "scared" else "scared") hair=k name="B"
+        face c mood=(if k == 0 then "surprised" else if k == 1 then "cross" else if k == 2 then "tired" else "happy") hair=k name="C"
+      }
+      text ask "How does {if k == 0 then \"Sam\" else if k == 1 then \"Kim\" else if k == 2 then \"Joe\" else \"Ana\"} feel?"
+      choice pick options=["A", "B", "C"]
+    }
+  }
+
+  answer pick=(if k == 0 then "B" else if k == 1 then "A" else if k == 2 then "C" else "B")
+  hint "Read what happened, then what the person did. How would you feel?"
+}

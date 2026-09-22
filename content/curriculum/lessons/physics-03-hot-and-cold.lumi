@@ -1,0 +1,49 @@
+lesson physics-hot-and-cold v=1 format=teach grade=1 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Hot and cold"
+  goal "Read a temperature off a thermometer, say how much warmer one reading is than another, and say which wrap keeps a drink warm."
+
+  look {
+    scene 23x24 {
+      column all at=canvas(1, 1) space=2 align=start {
+        row tubes space=3 align=start {
+          thermometer hot from=0 to=40 step=10 value=32 unit="C"
+          thermometer cold from=-10 to=30 step=10 value=2 unit="C"
+        }
+        daysky sky clouds=3 stars=0
+      }
+    }
+    say """
+      A thermometer tells you how hot something is. The column climbs when it warms up and drops
+      when it cools down. The numbers are degrees. A hot drink cools down as its heat escapes, and
+      wrapping it up slows that down.
+      """
+  }
+  do {
+    practice physics.temp-read count=2 seed=6
+    practice physics.warmer-of-two count=2 seed=3
+    practice physics.temp-change count=2 seed=5
+    practice physics.cup-warmest count=2 seed=1
+  }
+  try stars=2 {
+    show physics.cup-predict x="none" y="wool" hard-x="bubble"
+  }
+  try stars=3 {
+    show physics.cup-lost x="paper" m=20 easy-x="none" easy-m=10 hard-x="bubble"
+  }
+  remember {
+    say "The taller the column, the warmer it is. A good wrap keeps the heat in."
+  }
+
+  grown-ups """
+    Read a real thermometer together, inside and then outside, and write both numbers down. If
+    you can, fill two mugs with warm water, wrap one in a scarf, and feel both after twenty minutes.
+    The prediction question asks which cup will stay warmer before the thermometers are shown; the
+    last one needs two readings and a subtraction, which is a lot to hold at six, so do it on paper.
+    """
+  level easy {
+    grown-ups "At this level the thermometers read on the numbered marks, the rooms differ by twenty degrees or more, and the cups compared are bare and wool."
+  }
+  level hard {
+    grown-ups "At this level the readings fall on the half marks, the rooms differ by ten degrees, and the cups compared are bubble wrap and wool, which are close."
+  }
+}

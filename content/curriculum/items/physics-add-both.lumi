@@ -1,0 +1,19 @@
+# Two changes at once: one makes the bulbs brighter and the other dimmer, and which wins depends on
+# the numbers. All three answers occur across the four variants.
+item physics.add-both v=1 skills=[physics.circuits] stars=3 {
+  title "One more of each"
+  difficulty (n + 2 * c)
+  let c=1..2 n=1..2
+
+  scene 37x22 {
+    row two at=canvas(0, 0) space=2 align=start {
+      series before cells=c bulbs=n
+      series after cells=(c + 1) bulbs=(n + 1) show=0
+    }
+    text ask "Asha adds one more cell and one more bulb. Are the bulbs now brighter, dimmer or the same?" width=24 below=two gap=1
+    choice pick options=["Brighter", "Dimmer", "The same"] below=ask gap=1
+  }
+
+  check physics.circuit of=before vs=after pick=change
+  hint "Before, how many cells does each bulb get? And after?"
+}

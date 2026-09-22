@@ -1,0 +1,28 @@
+# A contents page answers where-to-look questions. The third question gives a word the page does
+# not use, hoglets, so the child has to know what the chapter is about rather than match a word.
+item reading.contents-page v=1 skills=[reading.text-features] {
+  title "Using the contents page"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 30x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        contents page title=Contents book="All about hedgehogs" entries=["Where hedgehogs live", "What they eat", "The long winter sleep", "Baby hedgehogs"] pages=[2, 6, 10, 14] blank=-1
+        art pic asset="hedgehog"
+      }
+      row q space=2 align=centre {
+        text ask "{if k == 0 then \"You want to find out what hedgehogs eat. Which page do you turn to?\" else if k == 1 then \"Which page would tell you what hedgehogs do in the cold months?\" else if k == 2 then \"Baby hedgehogs are called hoglets. Which page tells you about hoglets?\" else \"What they eat starts on page 6, and the next chapter starts on page 10. How many pages long is it?\"}" width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer (if k == 0 then 6 else if k == 1 then 10 else if k == 2 then 14 else 4)
+  feedback {
+    when (answer == 10 and k == 3) point=page {
+      say "Page 10 is where the next chapter starts. Count the pages from 6 up to 10."
+    }
+  }
+  hint "Read each chapter title and ask which one the question is about."
+}

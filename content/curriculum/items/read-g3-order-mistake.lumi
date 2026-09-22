@@ -1,0 +1,24 @@
+# Sam's numbering has two sentences swapped. Each story runs on cause and effect, so the swap is
+# found by asking which sentence could not happen yet, not by remembering the story.
+item reading.order-mistake v=2 stars=2 skills=[reading.sequencing, reading.find-the-error] {
+  title "Sam swapped two"
+  difficulty (if s == 2 then 1 else 0)
+  let k=0..2 s=1..3
+
+  scene 37x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Sam put this story in order, but he swapped two sentences. Which two?" width=36
+      column story space=0 align=start {
+        text l1 "{if k == 0 then (if s == 1 then \"1. She put it in a box with a soft cloth.\" else if s == 2 then \"1. Ivy found a hurt bird in the garden.\" else \"1. Ivy found a hurt bird in the garden.\") else if k == 1 then (if s == 1 then \"1. Mr Ling rang the boatyard for help.\" else if s == 2 then \"1. The Lings' boat got stuck in the mud.\" else \"1. The Lings' boat got stuck in the mud.\") else (if s == 1 then \"1. He knocked on Mrs Adu's door to ask for it.\" else if s == 2 then \"1. Tom kicked his ball over the fence.\" else \"1. Tom kicked his ball over the fence.\")}" width=36
+        text l2 "{if k == 0 then (if s == 1 then \"2. Ivy found a hurt bird in the garden.\" else if s == 2 then \"2. The next day it could hop about.\" else \"2. She put it in a box with a soft cloth.\") else if k == 1 then (if s == 1 then \"2. The Lings' boat got stuck in the mud.\" else if s == 2 then \"2. A tug came and pulled them free.\" else \"2. Mr Ling rang the boatyard for help.\") else (if s == 1 then \"2. Tom kicked his ball over the fence.\" else if s == 2 then \"2. She went to look and found it under her roses.\" else \"2. He knocked on Mrs Adu's door to ask for it.\")}" width=36
+        text l3 "{if k == 0 then (if s == 1 then \"3. The next day it could hop about.\" else if s == 2 then \"3. She put it in a box with a soft cloth.\" else \"3. At the end of the week it flew away.\") else if k == 1 then (if s == 1 then \"3. A tug came and pulled them free.\" else if s == 2 then \"3. Mr Ling rang the boatyard for help.\" else \"3. They were home before dark.\") else (if s == 1 then \"3. She went to look and found it under her roses.\" else if s == 2 then \"3. He knocked on Mrs Adu's door to ask for it.\" else \"3. She gave it back to him with a smile.\")}" width=36
+        text l4 "{if k == 0 then (if s == 1 then \"4. At the end of the week it flew away.\" else if s == 2 then \"4. At the end of the week it flew away.\" else \"4. The next day it could hop about.\") else if k == 1 then (if s == 1 then \"4. They were home before dark.\" else if s == 2 then \"4. They were home before dark.\" else \"4. A tug came and pulled them free.\") else (if s == 1 then \"4. She gave it back to him with a smile.\" else if s == 2 then \"4. She gave it back to him with a smile.\" else \"4. She went to look and found it under her roses.\")}" width=36
+      }
+      choice pick options=["1 and 2", "2 and 3", "3 and 4"]
+    }
+  }
+
+  answer pick=(if s == 1 then "1 and 2" else if s == 2 then "2 and 3" else "3 and 4")
+  hint "Read the sentences in Sam's order. Where does the story stop making sense?"
+  hint "Which sentence talks about something that has not happened yet?"
+}

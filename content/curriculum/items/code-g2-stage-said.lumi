@@ -1,0 +1,26 @@
+# Each script says something different, so what is said shows which script ran. The words change
+# with k, so the child cannot remember that the flag always says the first word.
+item coding.stage-said v=1 skills=[coding.events] {
+  title "What does it say?"
+  difficulty e
+  let e=0..1 k=0..2
+  level easy {
+    let e={0}
+  }
+  level hard {
+    let e={1}
+  }
+
+  scene 33x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "say {if k == 0 then \"hello\" else if k == 1 then \"ready\" else \"look\"}", "when tapped", "say {if k == 0 then \"bye\" else if k == 1 then \"stop\" else \"wow\"}"]
+      stage s cols=6 col=2 who=rabbit code=["when the flag is tapped", "say {if k == 0 then \"hello\" else if k == 1 then \"ready\" else \"look\"}", "when tapped", "say {if k == 0 then \"bye\" else if k == 1 then \"stop\" else \"wow\"}"] event=(if e == 0 then "flag" else "tap") upto=0
+    }
+    text ask "{if e == 0 then \"The flag\" else \"The rabbit\"} is tapped. What does the rabbit say?" width=16 below=top gap=1
+    choice pick options=["{if k == 0 then \"hello\" else if k == 1 then \"ready\" else \"look\"}", "{if k == 0 then \"bye\" else if k == 1 then \"stop\" else \"wow\"}"] right-of=ask gap=1
+  }
+
+  check coding.runs of=s pick=said
+  hint "What was tapped? Find the when block that matches it."
+  hint "Read only the blocks under that when block."
+}

@@ -1,0 +1,27 @@
+# A list is for doing something, so what is missing can be worked out from what the job needs.
+# Nothing on the page names the missing thing.
+item writing.list-forgot v=1 stars=2 skills=[writing.lists, reasoning.inference] {
+  title "What did she forget?"
+  difficulty (if k == 1 or k == 3 then 1 else 0)
+  let k=0..3 q=0..2
+  let job={if k == 0 then "a jam sandwich" else if k == 1 then "painting a picture" else if k == 2 then "washing the dog" else "planting a seed"}
+  let i0={if k == 0 then "butter" else if k == 1 then "paper" else if k == 2 then "dog soap" else "a pot"}
+  let i1={if k == 0 then "jam" else if k == 1 then "paints" else if k == 2 then "a towel" else "a seed"}
+  let i2={if k == 0 then "a knife" else if k == 1 then "water" else if k == 2 then "the dog" else "water"}
+  let miss={if k == 0 then "bread" else if k == 1 then "a brush" else if k == 2 then "water" else "soil"}
+  let o0={if k == 0 and q == 0 then "bread" else if k == 0 and q == 1 then "a spade" else if k == 0 and q == 2 then "a sock" else if k == 1 and q == 0 then "a brush" else if k == 1 and q == 1 then "a pillow" else if k == 1 and q == 2 then "a ball" else if k == 2 and q == 0 then "water" else if k == 2 and q == 1 then "a book" else if k == 2 and q == 2 then "a cake" else if k == 3 and q == 0 then "soil" else if k == 3 and q == 1 then "a hat" else "a book"}
+  let o1={if k == 0 and q == 0 then "a spade" else if k == 0 and q == 1 then "a sock" else if k == 0 and q == 2 then "bread" else if k == 1 and q == 0 then "a pillow" else if k == 1 and q == 1 then "a ball" else if k == 1 and q == 2 then "a brush" else if k == 2 and q == 0 then "a book" else if k == 2 and q == 1 then "a cake" else if k == 2 and q == 2 then "water" else if k == 3 and q == 0 then "a hat" else if k == 3 and q == 1 then "a book" else "soil"}
+  let o2={if k == 0 and q == 0 then "a sock" else if k == 0 and q == 1 then "bread" else if k == 0 and q == 2 then "a spade" else if k == 1 and q == 0 then "a ball" else if k == 1 and q == 1 then "a brush" else if k == 1 and q == 2 then "a pillow" else if k == 2 and q == 0 then "a cake" else if k == 2 and q == 1 then "water" else if k == 2 and q == 2 then "a book" else if k == 3 and q == 0 then "a book" else if k == 3 and q == 1 then "soil" else "a hat"}
+
+  scene 32x17 {
+    listpad pad title="For {job}" items=["{i0}", "{i1}", "{i2}"] count=0 width=14 ticks=true at=canvas(1, 1)
+    column q right-of=pad gap=2 space=1 align=start {
+      text ask "Ada made this list for {job}. What did she forget?" narrate width=15
+      choice pick options=["{o0}", "{o1}", "{o2}"] stack=column
+    }
+  }
+
+  answer pick=miss
+  hint "Picture Ada doing it, one step at a time. What does she pick up first?"
+  hint "Which of the three would she really need, and is it on her list?"
+}

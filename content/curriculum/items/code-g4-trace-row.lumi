@@ -1,0 +1,31 @@
+# The first rows are filled in and the child carries on one row at a time; the repeat's own rows,
+# where n does not change, are the trap.
+item coding.trace-row v=1 skills=[coding.tracing, coding.variables] {
+  title "The next rows"
+  difficulty (r + b)
+  let a=1..5 b=2..4 r={3, 4, 5}
+  level easy {
+    let r={3}
+  }
+  level hard {
+    let r={5} b=3..4
+  }
+
+  scene 35x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["set n to {a}", "repeat 3", "  add {b} to n"]
+      tracetable tr code=["set n to {a}", "repeat 3", "  add {b} to n"] show=value name=n filled=2
+    }
+    text ask "What is n in step {r}?" width=14 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="after({r}).n"
+  feedback {
+    when (answer == a + (r - 1) * b) point=tr {
+      say "A step on the repeat line does not change n. Only the add line does."
+    }
+  }
+  hint "Which line runs at each step? Write the line numbers down the table first."
+  hint "Does the repeat line change n, or only the add line?"
+}

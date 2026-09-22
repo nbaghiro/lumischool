@@ -1,0 +1,28 @@
+# Three turns with moves between them, from a start that changes: the audit's raise for the
+# one-turn facing question, on the turtle rather than the maze.
+item coding.turtle-face v=1 skills=[coding.tracing] {
+  title "Which way does the turtle face?"
+  difficulty ((if f == 0 then 0 else if f == 2 then 2 else 1) + (if a == b and b == c then 2 else 0))
+  let f=0..3 a=0..1 b=0..1 c=0..1
+  level easy {
+    let f={0}
+    where (a != b or b != c)
+  }
+  level hard {
+    let f=1..3
+    where (a == b and b == c)
+  }
+
+  scene 35x18 {
+    text ask "Which way is the turtle facing at the end?" width=34 at=canvas(1, 0)
+    row top below=ask gap=1 space=1 align=start {
+      blocks bl code=["turn {if a == 0 then \"right\" else \"left\"}", "forward 1", "turn {if b == 0 then \"right\" else \"left\"}", "forward 1", "turn {if c == 0 then \"right\" else \"left\"}"]
+      turtle t cols=5 rows=5 col=3 row=3 face=(if f == 0 then "up" else if f == 1 then "right" else if f == 2 then "down" else "left") moves=["turn {if a == 0 then \"right\" else \"left\"}", "forward 1", "turn {if b == 0 then \"right\" else \"left\"}", "forward 1", "turn {if c == 0 then \"right\" else \"left\"}"] upto=0
+      choice pick options=["up", "right", "down", "left"] stack=column
+    }
+  }
+
+  check coding.runs of=t pick=face
+  hint "Stand up and face the way the turtle faces. Turn your body at every turn block."
+  hint "A right and then a left cancel out. What is left over?"
+}

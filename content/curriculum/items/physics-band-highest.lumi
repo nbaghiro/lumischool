@@ -1,0 +1,15 @@
+item physics.band-highest v=1 skills=[physics.sound] stars=2 {
+  title "The highest note"
+  let a={6, 9, 12} b={6, 9, 12} c={6, 9, 12}
+  where (a != b and b != c and a != c)
+
+  scene 21x18 {
+    bands b lengths=[a, b, c] at=canvas(1, 0)
+    text ask "The bands are all the same. Which one makes the highest note?" width=19 below=b gap=0
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check physics.sound of=b pick=highest
+  hint "Which band has the shortest part to shake?"
+  hint "Does a short band shake quickly or slowly?"
+}

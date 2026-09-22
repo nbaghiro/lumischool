@@ -1,0 +1,20 @@
+# The turns counted without the line drawn: every time round the wall test runs again, including a
+# turn on the spot at a dead end. The audit's raise for if-turns.
+item coding.turns-hidden v=1 skills=[coding.decisions, coding.repetition] {
+  title "Count the turns"
+  difficulty (if k == 0 then n - 6 else if k == 1 then n - 5 else 2)
+  let k=0..2 n=8..9
+
+  scene 32x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program b code=["repeat {n}", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"]
+      maze g map=["{if k == 0 then \"S . . . #\" else if k == 1 then \"S . . # .\" else \"S . . . .\"}", "{if k == 0 then \"# # # . #\" else if k == 1 then \"# # . . #\" else \"# # # # .\"}", "{if k == 0 then \"# # # . .\" else if k == 1 then \"# . . # #\" else \". . . . .\"}", "{if k == 0 then \"# # # . #\" else if k == 1 then \"# # # # #\" else \". # # # #\"}"] code=["repeat {n}", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"] upto=0 trail=none
+    }
+    text ask "How many times does the robot turn?" width=16 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=turns
+  hint "Walk it with your finger, one time round at a time: ask the question, then turn or step."
+  hint "Keep count of the times round as well as the turns, and stop at {n}."
+}

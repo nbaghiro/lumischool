@@ -1,0 +1,21 @@
+# Finding an opposite without a wheel: the primary a colour does not contain.
+item art.opposite-of-mix v=1 skills=[art.complementary, art.colour-mixing, reasoning.what-is-missing] {
+  title "An opposite without a wheel"
+  difficulty (if t == "purple" then 2 else if t == "green" then 1 else 0)
+  let t={"orange", "green", "purple"}
+  level easy {
+    let t={"orange", "green"}
+  }
+  level hard {
+    let t={"green", "purple"}
+  }
+
+  scene 24x13 {
+    text ask "There is no colour wheel. Which primary colour is opposite {t}? Think about which primary is not in {t}." width=16 at=canvas(1, 1)
+    choice pick options=["red", "yellow", "blue"] below=ask gap=1
+  }
+
+  answer pick=(if t == "orange" then "blue" else if t == "green" then "red" else "yellow")
+  hint "Which two primaries do you mix to make {t}?"
+  hint "There are three primaries. Which one did you not use?"
+}

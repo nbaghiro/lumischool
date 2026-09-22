@@ -1,0 +1,18 @@
+# Four slots are one too few for the if and otherwise the lesson showed, so the child has to find a
+# shorter shape: move first, then turn if a wall is ahead. The mazes bend right, and the builder
+# proves the four-line key reaches the flag in each.
+item coding.until-four v=1 stars=3 skills=[coding.decisions, coding.repetition, reasoning.fewest] {
+  title "Four slots only"
+  difficulty (if k == 1 then 4 else 3)
+  let k=0..2
+
+  scene 34x21 {
+    maze g map=["S . . . .", "# # # # .", "{if k == 0 then \"# F . # .\" else if k == 1 then \"# # . F .\" else \". . F # .\"}", "{if k == 0 then \"# . . . .\" else if k == 1 then \"# # . . .\" else \". # . . .\"}"] at=canvas(1, 0)
+    codepad answer tray=["repeat until at flag", "if wall ahead", "otherwise", "forward 1", "turn left", "turn right"] lines=4 key=["repeat until at flag", "  forward 1", "  if wall ahead", "    turn right"] right-of=g gap=1
+    text ask "Get the robot to the flag with only four blocks. You will not need them all." width=12 below=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Which way does the path bend at every corner, left or right?"
+  hint "Try moving first and then asking about the wall. Do you still need otherwise?"
+}

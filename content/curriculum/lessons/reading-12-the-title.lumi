@@ -1,0 +1,58 @@
+lesson reading-the-title v=1 format=teach grade=3 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "The title, and what it tells you"
+  goal "Pick the title that fits a whole passage rather than one part of it, and say what a passage is mostly about."
+
+  look {
+    scene 34x20 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          book b lines=4 left="A wet night" page="4"
+          pond field pads=3 fish=2 frog=true
+        }
+        passage p text="The rain fell all night. By morning the path was a stream and the field had turned into a shallow pond." width=30
+      }
+    }
+    say """
+      A title is the passage in two or three words. It has to fit all of it: a title that only fits
+      the first sentence is the wrong title, however good it sounds. Read to the end before you
+      choose.
+      """
+  }
+  do {
+    show reading.title-predict k=0 easy-k=1
+    show reading.title-choice k=1 easy-k=0
+    level easy {
+      worked reading.main-idea k=2 level=medium
+    }
+    practice reading.main-idea count=2 seed=2
+    show reading.title-predict k=3 hard-k=2
+    show reading.heading-match k=0 r=1
+    practice reading.odd-sentence count=2 hard-count=1 seed=5
+    level hard {
+      practice reading.title-why-not count=1 seed=7
+    }
+  }
+  try stars=2 {
+    show reading.title-why-not k=1 hard-k=3
+  }
+  try stars=3 {
+    show reading.write-a-title k=0
+  }
+  remember {
+    say "A title has to fit the whole passage, not just the start of it."
+  }
+
+  grown-ups """
+    Reading the title before the passage is a habit worth teaching, because it tells the reader
+    what to expect. Ask what the passage will be about before you read it, then check afterwards.
+    Every title on offer is about the passage, so the child has to test each one against every
+    sentence. In the two-star question the reason changes with the passage. In the three-star
+    question any short title that fits the whole passage is right.
+    """
+  level easy {
+    grown-ups "At this level the covers say what the book is about (Teddy Learns to Swim, Ten Things to Do on a Wet Day), the title to choose is the flood, the passage about the lock is worked once in the teacher's pen before the hedgehogs and the lighthouse, the headings and the odd sentence are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the covers only hint at the book (The Night the Lamp Went Out, The Secret of the Old Well), the title to choose is as written, the passages are the lighthouse and the lock, the headings are as written, one odd-sentence passage makes way for a second title to fault, the two-star's title gives the ending away, and the three-star is as written."
+  }
+}

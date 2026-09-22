@@ -1,0 +1,51 @@
+lesson g3-multiplying-by-ten v=1 format=teach grade=3 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Multiplying by ten and a hundred"
+  goal "Multiply and divide by ten and a hundred by moving the digits, not adding zeros."
+
+  look {
+    scene 36x16 {
+      pvchart chart value="3470" show=digits at=canvas(1, 1)
+      digitcards cards digits=[3, 4, 7] below=chart gap=2
+      note n "Every digit moves one place to the left." width=16 right-of=chart gap=2
+    }
+    say """
+      Multiplying by ten moves every digit one column to the left, and the empty ones column is why
+      a zero appears. The digits themselves do not change.
+      """
+  }
+  do {
+    practice place.digit-worth count=2 hard-count=1 seed=6
+    practice times.ten-result count=2 seed=3
+    level easy {
+      worked times.two-machines n=6
+    }
+    practice times.two-machines count=2 seed=8
+    practice divide.by-ten-boxes count=2 seed=5
+    level hard {
+      practice times.ten-balance count=1 seed=6
+    }
+  }
+  try stars=2 {
+    show times.ten-balance a=4 b=3 easy-a=2 easy-b=3 hard-a=7 hard-b=8
+  }
+  try stars=3 {
+    show place.ten-times-more n=7 easy-n=4 hard-n=25
+  }
+  remember {
+    say "Times ten moves the digits left one place. Divide by ten moves them back."
+  }
+
+  grown-ups """
+    "Add a zero" breaks the moment decimals arrive, so it is worth saying "move a place" from the
+    start even though it is slower. The machines are run backwards: what came out is known, and
+    each machine is undone in turn. In the two-star question, 4 × 30 and 40 × 3 are the same, and
+    seeing where the ten went is quicker than working both out. In the three-star question, trying
+    small numbers and looking at the gap is the way in.
+    """
+  level easy {
+    grown-ups "At this level the numbers multiplied by ten are under thirty, the machines are run backwards once in the teacher's pen before the two to undo and a one-digit number went in, the counters are in their hundreds, the balance is 2 × 30 against 20, and the machine gives 36 more."
+  }
+  level hard {
+    grown-ups "At this level numbers in the fifties and above are multiplied by a hundred, a number in the fifties or above went into the machines, the digit worth is asked once, the counters are in their thousands so the boxes have three digits, the balance is asked twice with sixes to nines, and the machine gives 225 more."
+  }
+}

@@ -1,0 +1,24 @@
+# Counting every number that fits a rule: the child has to organise the list by tens digit.
+item sub.no-exchange-count v=1 stars=3 skills=[subtraction.columns, reasoning.all-the-ways] {
+  title "No exchange needed"
+  difficulty (ta * (oa + 1))
+  let ta=3..6 oa=2..5
+
+  scene 26x10 {
+    baseten top thousands=0 hundreds=0 tens=ta ones=oa at=canvas(1, 1)
+    text ask "How many two-digit numbers can you take away from {10 * ta + oa} without exchanging a ten?" narrate width=16 right-of=top gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (ta * (oa + 1))
+  feedback {
+    when (answer == ta * oa) point=top {
+      say "Did you count the numbers that end in 0, such as 10 and 20?"
+    }
+    when (answer == (ta - 1) * (oa + 1)) point=top {
+      say "Numbers with {ta} tens count too, as long as their ones digit is small enough."
+    }
+  }
+  hint "A number works when its ones digit is {oa} or less. Start with the numbers in the tens: 10, 11, ..."
+  hint "How many work in each row of ten? How many rows of ten can you use?"
+}

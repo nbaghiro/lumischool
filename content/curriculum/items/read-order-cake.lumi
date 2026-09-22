@@ -1,0 +1,14 @@
+item reading.order-cake v=2 skills=[reading.sequencing] {
+  title "Put the instructions in order"
+
+  scene 33x16 {
+    text ask "Number the steps 1, 2, 3 and 4 to put them in order." width=30 at=canvas(1, 1)
+    row steps space=1 align=start below=ask gap=1 {
+      sequence s items=["Take the cake out to cool.", "Weigh the flour and the sugar.", "Put the tin in the oven.", "Stir in two eggs."] blanks=[one, two, three, four]
+      mixingbowl bowl fill=0.6 spoon=true
+    }
+  }
+
+  answer one=4 two=1 three=3 four=2
+  hint "You cannot put the tin in the oven before there is anything in it."
+}

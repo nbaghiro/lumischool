@@ -1,0 +1,17 @@
+# Non-routine: three clues at once, and each wrong thing fails a different one, so no single clue
+# finds it. The checker proves exactly one thing meets all three.
+item chem.meets-all v=1 stars=3 skills=[chemistry.materials, reasoning.constraints] {
+  title "It has to do all three"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 22x13 {
+    text ask "Find the one that {if k == 0 then \"keeps water out, you can see through it, and it bends\" else if k == 1 then \"keeps water out, you cannot see through it, and it bends\" else \"soaks up water, stretches, and is not made of paper\"}." width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"glass-jar\" else if k == 1 then \"glass-bottle\" else \"paper-bag\"}", "{if k == 0 then \"plastic-bottle\" else if k == 1 then \"towel\" else \"wool-sock\"}", "{if k == 0 then \"raincoat\" else if k == 1 then \"rubber-boot\" else \"rubber-band\"}", "{if k == 0 then \"paper-bag\" else if k == 1 then \"wooden-block\" else \"cardboard-box\"}"] below=ask gap=0
+    choice pick options=["A", "B", "C", "D"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="fits({if k == 0 then \"waterproof see-through bendy\" else if k == 1 then \"waterproof not-see-through bendy\" else \"absorbent stretchy not-made-paper\"})"
+  hint "Take the first clue. Which things does it leave?"
+  hint "Now try the second clue on those, then the third."
+}

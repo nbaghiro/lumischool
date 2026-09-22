@@ -1,0 +1,46 @@
+lesson physics-where-a-shadow-comes-from v=1 format=teach grade=2 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Where a shadow comes from"
+  goal "Say why a shadow is long or short, compare a shadow with the thing casting it, and use one shadow to work out another."
+
+  look {
+    scene 23x26 {
+      column two at=canvas(1, 1) space=1 align=start {
+        shadows high tall=4 shadow=4
+        shadows low tall=4 shadow=8
+      }
+    }
+    say """
+      Light travels in straight lines. The stick gets in the way, so the light cannot reach the
+      ground behind it, and that patch is the shadow. Follow the dashed line: it goes from the light,
+      past the top of the stick, to the far end of the shadow.
+      """
+  }
+  do {
+    practice physics.shadow-length count=2 seed=4 easy-seed=1 hard-seed=1
+    practice physics.shadow-times count=2 seed=8 hard-seed=1
+    practice physics.shadow-sun count=2 seed=1
+    practice physics.shadow-longer count=2 seed=2
+  }
+  try stars=2 {
+    show physics.shadow-lamp-move
+  }
+  try stars=3 {
+    show physics.shadow-stick k=2 h=4 easy-h=3 hard-k=3 hard-h=5
+  }
+  remember {
+    say "A low light makes a long shadow. A high light makes a short one."
+  }
+
+  grown-ups """
+    A torch and a pencil on a table show the whole lesson in a few seconds. Draw round the shadow at
+    two torch heights and compare the two outlines with the pencil itself. The tree question at the
+    end is a ratio in disguise: everything in the same sunlight has a shadow the same number of
+    times its height, so measuring a stick tells you a tree.
+    """
+  level easy {
+    grown-ups "At this level the shadows measured are two or three centimetres, the stick whose shadow is counted in sticks is the short one, and the tree is three metres tall with a shadow twice its height."
+  }
+  level hard {
+    grown-ups "At this level the shadows measured are four or six centimetres, the sticks whose shadows are counted in sticks are three to six tall with shadows of nine to twelve, and the tree is five metres tall with a shadow three times its height."
+  }
+}

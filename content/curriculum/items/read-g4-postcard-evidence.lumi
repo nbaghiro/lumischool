@@ -1,0 +1,28 @@
+# The audit's raise for reading.postcard-clue: the place is given and the child finds the one
+# sentence that rules out the beach. One sentence fits both places and one fits neither.
+item reading.postcard-evidence v=1 skills=[reading.inference, reading.evidence, reading.letters] {
+  title "Not on the beach"
+  difficulty (if k == 3 then 0 else if k == 2 then 1 else 2)
+  let k=0..3 place={if k == 0 then "on a ship at sea" else if k == 1 then "up a mountain" else if k == 2 then "at the lighthouse" else "in a hot forest"}
+  level easy {
+    let k={2, 3}  # the lamp in the second sentence, the monkeys in the first
+  }
+  level hard {
+    let k={0, 1}  # no land for two days, the sea looking tiny: the third sentence each time
+  }
+
+  scene 35x16 {
+    passage card text="{if k == 0 then \"The wind is strong and the air tastes of salt. I have read three books already. We have not seen land for two days.\" else if k == 1 then \"The wind made my ears ache. We ate soup at lunch. From the top, the sea looked tiny.\" else if k == 2 then \"I can hear the waves all night. Gran let me help polish the big lamp. We had fish for tea.\" else \"Monkeys shout in the trees above our tent. It is hot and sticky. I have lost my hat.\"}" width=34 numbers=false at=canvas(1, 1)
+    text ask "Nell is {place}, not on a beach. Which sentence of her message shows it? Count from the start." width=33 below=card gap=1
+    choice pick options=["the 1st", "the 2nd", "the 3rd"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 1 then "the 3rd" else if k == 2 then "the 2nd" else "the 1st")
+  feedback {
+    when (pick == "the 1st" and k <= 2) point=card {
+      say "That could be true at a beach too. Find the sentence that could not happen on a beach."
+    }
+  }
+  hint "For each sentence ask: could this happen on a beach?"
+  hint "One sentence fits a beach, one fits anywhere, and one fits only where Nell is."
+}

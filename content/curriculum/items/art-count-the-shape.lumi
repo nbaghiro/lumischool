@@ -1,0 +1,15 @@
+item art.count-the-shape v=1 skills=[art.shape, art.looking] {
+  title "Count the cut shapes"
+  difficulty (if s == "house" then 1 else 0)
+  let s={"boat", "fish", "house"} t={"triangle", "circle", "square"}
+  where (not (s == "fish" and t == "square"))
+
+  scene 30x12 {
+    collage pic scene=s at=canvas(1, 1)
+    text ask "This {s} is made of shapes cut from painted paper. How many are {t}s?" width=12 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check art.shapes of=pic answer="{t}"
+  hint "Touch each {t} as you count it."
+}

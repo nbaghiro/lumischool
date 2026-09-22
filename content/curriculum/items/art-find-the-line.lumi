@@ -1,0 +1,14 @@
+item art.find-the-line v=1 skills=[art.line] {
+  title "Find the line"
+  difficulty (if j == 3 then 1 else 0)
+  let k=0..3 j=0..3
+
+  scene 30x18 {
+    lines pic kinds=["{if k == 0 then \"wavy\" else if k == 1 then \"zigzag\" else if k == 2 then \"dotted\" else \"spiral\"}", "{if k == 0 then \"zigzag\" else if k == 1 then \"dotted\" else if k == 2 then \"spiral\" else \"wavy\"}", "{if k == 0 then \"dotted\" else if k == 1 then \"spiral\" else if k == 2 then \"wavy\" else \"zigzag\"}", "{if k == 0 then \"spiral\" else if k == 1 then \"wavy\" else if k == 2 then \"zigzag\" else \"dotted\"}"] colour=blue at=canvas(1, 1)
+    text ask "Which line is {if j == 0 then \"wavy\" else if j == 1 then \"zigzag\" else if j == 2 then \"dotted\" else \"a spiral\"}?" width=12 right-of=pic gap=2
+    choice pick options=["A", "B", "C", "D"] below=pic gap=1
+  }
+
+  answer pick=(if (j - k + 4) % 4 == 0 then "A" else if (j - k + 4) % 4 == 1 then "B" else if (j - k + 4) % 4 == 2 then "C" else "D")
+  hint "Run your finger along each line. Which one moves the way the word says?"
+}

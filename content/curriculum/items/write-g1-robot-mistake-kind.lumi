@@ -1,0 +1,18 @@
+# The robot's sentence has one thing wrong, and the child has to say which kind of thing: the
+# start, a name, or the end. Knowing the kind is what lets a child check their own work later.
+item writing.robot-mistake-kind v=1 stars=2 skills=[writing.capitals, writing.punctuation, reasoning.find-the-error] {
+  title "What did the robot get wrong?"
+  difficulty (if m == 2 then 1 else 0)
+  let s=0..1 m=0..2
+  let said={if s == 0 and m == 0 then "the fox hid in the box with Ali." else if s == 0 and m == 1 then "The fox hid in the box with ali." else if s == 0 then "The fox hid in the box with Ali" else if m == 0 then "on Sunday Nell fed the hens." else if m == 1 then "On Sunday nell fed the hens." else "On Sunday Nell fed the hens"}
+
+  scene 32x25 {
+    fixbot bot says="{said}" width=20 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "The robot's sentence has one thing wrong. What is it?" narrate width=30 below=bot gap=1
+    choice pick options=["The first word needs a capital.", "A name needs a capital.", "It needs a full stop at the end."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if m == 0 then "The first word needs a capital." else if m == 1 then "A name needs a capital." else "It needs a full stop at the end.")
+  hint "Look at the very first letter, then at every name, then at the very end."
+  hint "Which of the three checks does the robot's sentence fail?"
+}

@@ -1,0 +1,62 @@
+lesson physics-the-see-saw-rule v=1 format=teach grade=4 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "The see-saw rule"
+  goal "Decide whether a see-saw balances, using the weight and its distance from the pivot."
+
+  look {
+    scene 30x19 {
+      column all at=canvas(1, 1) space=1 align=start {
+        seesaw plank left=4 atleft=3 right=6 atright=2
+        note n "4 × 3 = 12 on the left, and 6 × 2 = 12 on the right, so it balances." width=28
+      }
+    }
+    say """
+      A see-saw does not care about weight alone. What matters is the weight multiplied by how far
+      it sits from the pivot, and the plank balances when the two sides give the same answer. That is
+      why a small child far out can hold up a large one sitting close in.
+      """
+  }
+  do {
+    level easy {
+      worked physics.seesaw-weight a=3 p=2 q=1
+    }
+    practice physics.seesaw-balanced count=2 seed=7
+    practice physics.seesaw-weight count=2 seed=3
+    practice physics.seesaw-step count=2 seed=1
+    practice physics.seesaw-tips count=2 seed=4
+  }
+  try stars=2 {
+    show physics.seesaw-move a=4 p=3 easy-a=2 easy-p=2 hard-a=6 hard-p=3
+    level easy {
+      show physics.seesaw-place a=2 b=6 x=2 y=1 p=2
+    }
+    level medium {
+      show physics.seesaw-place a=2 b=5 x=3 y=2 p=2
+    }
+    level hard {
+      show physics.seesaw-place a=4 b=6 x=3 y=2 p=3
+    }
+  }
+  try stars=3 {
+    show physics.seesaw-all-ways a=3 p=4 b=4 easy-a=2 easy-p=2 easy-b=3 hard-a=4 hard-b=3
+  }
+  remember {
+    say "Weight times distance from the pivot, on each side. Equal means balanced."
+  }
+
+  grown-ups """
+    A ruler over a pencil with coins on it is the whole apparatus. Stack two coins one side and one
+    coin the other, then slide the single coin out until it balances, and count the marks. Several
+    questions hold the plank level with props, so the tilt cannot give the answer; the child has to
+    work out what will happen when they are taken away.
+
+    In the question with two weights to place, both go on the plank before Check, and the plank
+    only leans once the props are away. A child who matches the kilograms on each side rather than
+    weight times step is told that the steps count too.
+    """
+  level easy {
+    grown-ups "At this level weight times step stays within twelve, and a worked example comes before the first question."
+  }
+  level hard {
+    grown-ups "At this level the steps go out to five, the tipping questions put the heavier weight nearer the pivot so neither weight nor distance decides alone, the load for the two weights sits three steps out, and in the last question no step works, which is the answer."
+  }
+}

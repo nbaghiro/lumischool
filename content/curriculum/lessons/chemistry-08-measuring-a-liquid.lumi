@@ -1,0 +1,58 @@
+lesson chemistry-measuring-a-liquid v=2 format=teach grade=3 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "Measuring a liquid"
+  goal "Read a beaker and a measuring cylinder, including the marks with no numbers, work out what is missing, and find the mistake in a reading."
+
+  look {
+    scene 24x17 {
+      row kit at=canvas(1, 0) space=2 align=end {
+        beaker glass max=400 step=100 level=250 unit=ml
+        cylinder tube max=100 step=10 minor=5 level=64 unit=ml
+      }
+    }
+    say """
+      A beaker is marked every 50 millilitres, so it gives a rough amount. A measuring cylinder is
+      tall and thin, so its marks are further apart and each small one can be worth 2 millilitres.
+      Water curves up where it touches the glass. Read the flat bottom of the curve, with your eye
+      level with it.
+      """
+  }
+  do {
+    practice chem.beaker-level count=1 seed=2
+    practice chem.beaker-between count=2 seed=6
+    level easy {
+      worked chem.cylinder-read k=0 v=46 level=medium
+    }
+    practice chem.cylinder-read count=2 seed=3 easy-seed=7
+    practice chem.two-beakers count=2 seed=1 easy-seed=2
+    practice chem.fill-to-the-top count=2 hard-count=1 seed=5
+    level hard {
+      practice chem.read-error count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show chem.read-error v=46 e=0 easy-e=2 hard-v=58
+  }
+  try stars=3 {
+    show chem.fill-count t=80 easy-t=70 hard-t=10
+  }
+  remember {
+    say "Work out what each small mark is worth, then read the bottom of the curve."
+  }
+
+  grown-ups """
+    The first question, a beaker with the water on a numbered mark, is the way in. The cylinder
+    questions are the core of the grade: the child has to work out that a small mark is worth 2 or
+    5 millilitres before counting, and the last core question asks what is missing rather than what
+    is there. The two-star question gives a wrong reading and asks which mistake made it, so the
+    child has to read the cylinder and then reason back from the difference. The three-star question
+    has no method on the page: pouring 50 and 20 millilitres in and out until the beaker holds an
+    amount, in the fewest pours; 80 is 50 and 50 in, then 20 out. A kitchen measuring jug and a
+    medicine cup make the same point at the sink. Crouch so the eye is level with the water.
+    """
+  level easy {
+    grown-ups "At this level the beakers are as written, the 100 ml cylinder with 2 ml marks is read once in the teacher's pen before two readings of the 50 ml cylinder, whose one small mark between numbers is worth 5 ml, the two beakers add to 200 ml or less, the cylinder to fill is at 76 or 82, Sam stopped at the numbered mark below, and the three-star's 70 ml is one pour in and one out."
+  }
+  level hard {
+    grown-ups "At this level the beakers are as written, the cylinders are the 100 ml one, whose 2 ml marks have to be counted, the two beakers add to 300 ml or more, the cylinder to fill is at 34 or 46, Sam's mistakes are counting each small mark as 1 ml and reading the top of the curve, the second of them asked as well, and the three-star's 10 ml takes a pour in and two out."
+  }
+}

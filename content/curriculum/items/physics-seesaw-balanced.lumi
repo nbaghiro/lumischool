@@ -1,0 +1,30 @@
+# Half the variants balance and half do not, which is why the right-hand weight is worked out from
+# the left and then nudged by one: a see-saw item where nothing ever balances teaches the wrong rule.
+# The plank is held level by props in every version, so the tilt cannot give the answer away.
+item physics.seesaw-balanced v=1 skills=[physics.moments] {
+  title "Is it balanced?"
+  difficulty (a * p)
+  let a={2, 3, 4, 6} p=1..5 q=1..5 m=0..1
+  where (a * p % q == 0 and a * p / q + (1 - m) <= 9)
+  level easy {
+    let a={2, 3, 4} p=1..3 q=1..3  # weight times step stays within twelve
+  }
+  level hard {
+    let a={3, 4, 6} p=2..5 q=2..5
+    where (p != q)  # on the same step the weights can be compared without multiplying
+  }
+
+  scene 28x19 {
+    seesaw plank left=a atleft=p right=(a * p / q + (1 - m)) atright=q held=1 at=canvas(1, 1)
+    text ask "When the props are taken away, will the plank stay level?" width=14 below=plank gap=1
+    choice pick options=["Yes", "No"] right-of=ask gap=2
+  }
+
+  answer pick=(if m == 1 then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and m == 0) point=plank {
+      say "Multiply each weight by its step. The two answers are not the same."
+    }
+  }
+  hint "What is weight times step on each side?"
+}

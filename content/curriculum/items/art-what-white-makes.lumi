@@ -1,0 +1,14 @@
+item art.what-white-makes v=1 skills=[art.tints, art.colour-mixing] {
+  title "Red and white"
+  let w=1..2
+
+  scene 35x12 {
+    paintpots pots pots=["red", "white {w}"] result="?" labels=true at=canvas(1, 1)
+    text ask "Mix red with white. What colour do you get?" width=16 right-of=pots gap=1
+    choice pick options=["pink", "orange", "purple"] below=pots gap=1
+  }
+
+  check paint.mixes of=pots pick=name
+  hint "Will the red get lighter or darker when white goes in?"
+  hint "What do we call a light red? Think of a rose or a pig."
+}

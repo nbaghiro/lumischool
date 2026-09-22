@@ -1,0 +1,17 @@
+item science.plant-parts v=1 skills=[science.plants] {
+  title "Parts of a plant"
+  let p={"flower", "leaf", "stem", "roots"}
+
+  scene 28x14 {
+    parts fig of=plant at=canvas(1, 2)
+    text ask "Which letter points at the {p}?" width=15 at=canvas(12, 3)
+    choice part options=["A", "B", "C", "D"] at=canvas(12, 8)
+  }
+
+  answer part=(if p == "flower" then "A" else if p == "leaf" then "B" else if p == "stem" then "C" else "D")
+  feedback {
+    when (part == "D" and p == "flower") point=fig.part(0) {
+      say "D is at the bottom, under the soil. The flower is at the top."
+    }
+  }
+}

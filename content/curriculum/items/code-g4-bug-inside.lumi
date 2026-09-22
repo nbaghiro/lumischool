@@ -1,0 +1,23 @@
+# The up move should be inside the repeat and is not, which no single change of a number or a
+# direction can mend: the child writes the program again with the line set in, and the builder
+# proves the fixed program in three slots draws the staircase.
+item coding.bug-inside v=1 stars=2 skills=[coding.debugging, coding.repetition] {
+  title "Inside or outside the repeat?"
+  difficulty (n + s)
+  let n=2..3 s=1..2
+
+  scene 35x25 {
+    text ask "Pia wanted the pale staircase, but her program goes {n * s} along and then 1 up. Write it again so it draws the staircase." width=33 at=canvas(1, 0)
+    row both below=ask gap=1 space=1 align=start {
+      column left space=1 align=start {
+        turtle t cols=(n * s + 1) rows=(n + 1) col=1 row=(n + 1) moves=[] target=["repeat {n}", "  right {s}", "  up 1"] mark=false
+        program p code=["repeat {n}", "  right {s}", "up 1"]
+      }
+      codepad answer tray=["repeat 2", "right 1", "up 1"] lines=3 style=lines key=["repeat {n}", "  right {s}", "  up 1"]
+    }
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which moves happen again on every step of the staircase?"
+  hint "A line set in under the repeat happens every time round. Which line should be set in?"
+}

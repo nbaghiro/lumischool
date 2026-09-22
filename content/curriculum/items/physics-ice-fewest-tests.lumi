@@ -1,0 +1,42 @@
+# Three stars: the fewest fair tests, two cups at a time, that find the wrap keeping ice longest
+# from n wraps (the winner of each test meets the next wrap, so n - 1 tests), and what every test
+# must keep the same.
+item physics.ice-fewest-tests v=1 stars=3 skills=[physics.method, reasoning.fewest, reasoning.planning] {
+  title "The fewest tests"
+  difficulty (n - 3)
+  let n=3..5
+  let list={pick(n - 3, "paper, foil and wool", "paper, foil, cloth and wool", "paper, foil, bubble wrap, cloth and wool")}
+  level easy {
+    let n=3..3
+  }
+  level hard {
+    let n=5..5
+  }
+
+  scene 35x28 {
+    row top space=2 align=start at=canvas(1, 0) {
+      wrapped cups wraps=["foil", "wool"] ice=1 minutes=20 show=0
+      column side space=1 align=start {
+        text ask "Mia has {n} wraps: {list}. In each test she wraps two cups of ice and sees which stays colder. What is the fewest tests that can find the wrap that keeps ice best?" narrate width=20
+        number-input tests
+      }
+    }
+    text same "What must be the same for both cups in every test?" narrate width=32 below=top gap=1
+    choice keep options=["The room and how long they wait", "The wraps", "Which cup stands on the left"] stack=column below=same gap=1
+  }
+
+  answer tests=(n - 1) keep="The room and how long they wait"
+  feedback {
+    when (tests == n * (n - 1) / 2 and n > 3) point=ask {
+      say "That tests every pair. The loser of a test can never be the best, so it need not be tested again."
+    }
+    when (tests == n) point=ask {
+      say "Each test puts one wrap out. How many have to go out to leave one?"
+    }
+    when (keep == "The wraps") point=same {
+      say "The wraps are what Mia is testing, so they are the one thing that changes."
+    }
+  }
+  hint "After a test, can the wrap that lost still be the best?"
+  hint "Keep the winner and test it against the next wrap. Every wrap but one has to lose once."
+}

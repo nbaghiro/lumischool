@@ -1,0 +1,29 @@
+item chem.crystal-more v=1 skills=[chemistry.crystals] {
+  title "How many more?"
+  difficulty (nb - na)
+  let a={1, 2} b={5, 7} na={1, 2, 3} nb=5..9
+  level easy {
+    where (nb - na <= 4)
+  }
+  level hard {
+    where (nb - na >= 6)
+  }
+
+  scene 36x14 {
+    row two at=canvas(1, 0) space=1 align=end {
+      crystalstring early days=a crystals=na kind=salt
+      crystalstring late days=b crystals=nb kind=salt
+    }
+    text ask "How many more crystals are on the string on day {b} than on day {a}?" width=11 right-of=two gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (nb - na)
+  feedback {
+    when (answer == nb + na) point=two {
+      say "The question asks how many more, so compare the two counts."
+    }
+  }
+  hint "How many crystals are on each string?"
+  hint "How many do you add to the smaller count to make the bigger one?"
+}

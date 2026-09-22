@@ -1,0 +1,18 @@
+# Four clues about a queue and no method on the page: try an order, check every clue, change it.
+# Each version was checked against all 24 orders; exactly one order fits its clues.
+item logic.line-up v=1 stars=3 skills=[logic.deduction, reasoning.guess-and-check] {
+  title "Who is where in the line?"
+  difficulty (if k == 3 then 2 else if k == 0 then 0 else 1)
+  let k=0..3
+  let q={if k == 0 then "Cal is last. Ann is not first. Ben stands just behind Ann. Where does Dan stand?" else if k == 1 then "Cal is first. Ann is somewhere in front of Ben. Dan stands just in front of Ann. Where does Ben stand?" else if k == 2 then "Dan is last. Ben stands just in front of Dan. Ann is somewhere behind Cal. Where does Ann stand?" else "Ann is not first and not last. Cal stands just behind Ann. Dan is somewhere in front of Ben. Ben does not stand next to Ann. Where does Cal stand?"}
+
+  scene 30x17 {
+    heads line count=4 mark=0 at=canvas(1, 1)
+    text ask "Ann, Ben, Cal and Dan stand in a line. Place 1 is at the front. {q} Write the place." width=28 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 1 else if k == 1 then 4 else if k == 2 then 2 else 3)
+  hint "Start with the clue that fixes one child's place for sure."
+  hint "Try an order for the others, check it against every clue, and change it if one fails."
+}

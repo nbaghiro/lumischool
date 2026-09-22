@@ -1,0 +1,41 @@
+# The way in: the same meadow drawn at two hours, one under the other, and which of them is dusk. The
+# sun's height and the shadow's direction are what say which is which, and dusk is the first picture
+# in half the versions. Noon against dusk is plainer than morning against dusk, where only the side
+# the sun is on tells them apart, and hard draws the two without the sun, so that the shadow alone
+# has to say it.
+item art.light-which-dusk v=1 skills=[art.light, art.looking] {
+  title "Which one is dusk?"
+  difficulty (if k > 1 then 1 else 0)
+  let k=0..3
+  let l1={pick(k, "noon", "dusk", "morning", "dusk")}
+  let l2={pick(k, "dusk", "noon", "dusk", "morning")}
+  let ans={pick(k, "The second", "The first", "The second", "The first")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+    scene 21x34 {
+      layers one labels=false ring=-1 sun=false light=l1 at=canvas(1, 0)
+      layers two labels=false ring=-1 sun=false light=l2 below=one gap=1
+      text ask "The same meadow is drawn twice, at two different hours, with the sun left out. Which of the two is dusk?" narrate width=20 below=two gap=1
+      choice pick options=["The first", "The second"] stack=row below=ask gap=1
+    }
+  }
+
+  scene 21x32 {
+    layers one labels=false ring=-1 sun=true light=l1 at=canvas(1, 0)
+    layers two labels=false ring=-1 sun=true light=l2 below=one gap=1
+    text ask "The same meadow is drawn twice, at two different hours. Which of the two is dusk?" narrate width=20 below=two gap=1
+    choice pick options=["The first", "The second"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=ask {
+      say "At dusk the sun is low on the right and the tree's shadow reaches away to the left. In the morning the sun is low on the left and the shadow reaches right."
+    }
+  }
+  hint "Look at the tree's shadow in each picture. Is there one, and which way does it reach?"
+  hint "At dusk the shadow is long and reaches away to the left."
+}

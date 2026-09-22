@@ -1,0 +1,30 @@
+# The same stuff in three states: the solid is the coldest and the gas the hottest, which the child
+# reasons out from the states rather than from a number.
+item chem.coldest-jar v=1 skills=[chemistry.states, chemistry.particles] {
+  title "The coldest jar"
+  difficulty v
+  let v=0..5
+
+  scene 33x21 {
+    text ask "All three jars hold the same stuff. Which jar is the {if v == 0 then \"coldest\" else if v == 1 then \"hottest\" else if v == 2 then \"coldest\" else if v == 3 then \"hottest\" else if v == 4 then \"coldest\" else \"hottest\"}?" width=32 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      column align=centre {
+        particles a spread=(if v == 0 then 0 else if v == 1 then 0 else if v == 2 then 2 else if v == 3 then 2 else if v == 4 then 1 else 1) count=12 name=0 moving=1
+        text la "A"
+      }
+      column align=centre {
+        particles b spread=(if v == 0 then 1 else if v == 1 then 1 else if v == 2 then 0 else if v == 3 then 0 else if v == 4 then 2 else 2) count=12 name=0 moving=1
+        text lb "B"
+      }
+      column align=centre {
+        particles c spread=(if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 1 else if v == 3 then 1 else if v == 4 then 0 else 0) count=12 name=0 moving=1
+        text lc "C"
+      }
+    }
+    choice pick options=["A", "B", "C"] below=kit gap=0
+  }
+
+  answer pick=(if v == 0 then "A" else if v == 1 then "C" else if v == 2 then "B" else if v == 3 then "A" else if v == 4 then "C" else "B")
+  hint "Which state is each jar in?"
+  hint "To turn a solid into a liquid, and a liquid into a gas, do you heat it or cool it?"
+}

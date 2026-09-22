@@ -1,0 +1,20 @@
+# A glossary is a text feature too: the answer is in the meaning column, found by the word.
+item reading.glossary v=1 skills=[reading.text-features] {
+  title "Use the glossary"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 37x14 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=start {
+        table g cols=2 head=["Word", "Meaning"] cells=["cap", "the top that turns", "loft", "a room for grain", "sweep", "an arm of the sails"]
+        text ask "{if k == 0 then \"Which part of a windmill moves round at the top?\" else if k == 1 then \"Where would the miller keep sacks of grain?\" else \"What is one long arm of the sails called?\"}" width=10
+      }
+      choice pick options=["cap", "loft", "sweep"]
+    }
+  }
+
+  answer pick=(if k == 0 then "cap" else if k == 1 then "loft" else "sweep")
+  hint "Read the meanings, not only the words."
+  hint "Which meaning talks about the thing the question asks for?"
+}

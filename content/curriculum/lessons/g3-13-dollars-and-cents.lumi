@@ -1,0 +1,54 @@
+lesson g3-dollars-and-cents v=1 format=teach grade=3 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Dollars and cents"
+  goal "Write money as dollars and cents, add prices, work out change and find a missing price."
+
+  look {
+    scene 28x29 {
+      receipt bill shop="Corner Shop" total=true at=canvas(1, 1)
+      pricetag tag now=450 was=600 right-of=bill gap=2
+      change line stops=["3.65", "4.00", "5.00"] total=true below=tag gap=2
+      till drawer counts=[1, 2, 0, 3] coins=[4, 3, 0, 6] below=bill gap=2
+    }
+    say """
+      A price has two parts: dollars before the point and cents after it. Two cent digits always,
+      so 4.5 is written 4.50.
+      """
+  }
+  do {
+    practice money.notes-coins count=1 seed=3
+    practice money.total count=1 seed=3
+    practice money.change count=1 seed=7
+    practice money.two-items-change count=2 hard-count=1 seed=5
+    level hard {
+      practice money.pack-or-single count=1 seed=2
+    }
+    level easy {
+      worked money.worn-receipt j=1.35 s=4.25
+    }
+    practice money.worn-receipt count=2 seed=4 easy-seed=3
+    practice money.pencils-left count=1 seed=6
+  }
+  try stars=2 {
+    show money.pack-or-single n=4 s=55 pk=2.40 easy-n=3 easy-s=75 easy-pk=1.80 hard-n=5 hard-pk=2.95
+  }
+  try stars=3 {
+    show money.coin-ways n=40 easy-n=30 hard-n=50
+  }
+  remember {
+    say "Cents always take two digits: four dollars fifty is 4.50."
+  }
+
+  grown-ups """
+    Receipts are free practice. Add two lines and check the total, and the decimal point stops
+    being decoration. The missing price questions give the total, so the answer comes from taking
+    away. In the two-star question the pack is sometimes dearer than buying single pens, so both
+    have to be worked out. In the three-star question, listing the ways with no quarter, then one,
+    then two, is the system to praise.
+    """
+  level easy {
+    grown-ups "At this level the money is a five or ten dollar note with a one or a five, two dimes and a nickel, the shelf prices have cents that never make a dollar, the change is from ten dollars for whole and half dollars, the two things cost under two dollars each with cents that stay under a dollar, a worn receipt is worked once in the teacher's pen before two whose sandwich comes off the total with no borrowing, one dollar buys the pencils, the pack of three pens is cheaper than three singles, and thirty cents is paid five ways."
+  }
+  level hard {
+    grown-ups "At this level the money is a twenty with a quarter and a penny among the coins, the shelf prices run to dollars with cents that carry, the change is from twenty or fifty dollars, the two things cost over three dollars each with cents that carry and are paid with a twenty, the sandwich comes off the total with a dollar borrowed, two or three dollars buy the pencils, five pens are asked twice with the pack sometimes dearer, and fifty cents is paid ten ways."
+  }
+}

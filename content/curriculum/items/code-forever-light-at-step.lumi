@@ -1,0 +1,34 @@
+# A program that repeats for ever, and the colour of a light far along: the three light lines come
+# round again and again, so light n is line ((n - 1) mod 3) + 1 of the repeat.
+item coding.forever-light-at-step v=1 skills=[coding.repetition, patterns.repeating] {
+  title "Light number n"
+  difficulty (if n <= 3 then 0 else if n <= 6 then 1 else 2)
+  let u=0..2 n=2..10
+  let c1={pick(u, "red", "red", "green")}
+  let c2={pick(u, "green", "red", "white")}
+  let c3={pick(u, "white", "green", "white")}
+  let right={pick((n - 1) % 3, c1, c2, c3)}
+  level easy {
+    let n=2..5
+  }
+  level hard {
+    let n=7..10
+  }
+
+  scene 30x19 {
+    program p code=["repeat for ever", "  light {c1}", "  light {c2}", "  light {c3}"] title="Pip's lamp" at=canvas(1, 1)
+    column side space=1 align=start right-of=p gap=2 {
+      text ask "Pip's lamp runs this program. What colour is light number {n}?" narrate width=11
+      choice pick options=["red", "green", "white"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "After the last light line the program goes back to the first. Count along the lines, round and round, up to {n}."
+    }
+  }
+  hint "Lights 1, 2 and 3 are the three lines. What is light 4?"
+  hint "Count in threes: lights 1, 4, 7 and 10 are all the first line."
+}

@@ -1,0 +1,32 @@
+# The way in: two balloons on two bottles, one flat and one full, and which one has air in it.
+# At hard both have some, and the question is which has more.
+item chem.which-has-air v=1 skills=[chemistry.states] {
+  title "Which balloon has air in it?"
+  difficulty (if b > 0 then 1 else 0)
+  let a={2, 3} b={0, 1} s=0..1
+  let asks={pick(b, "Which balloon has air in it?", "Which balloon has more air in it?")}
+  level easy {
+    let b={0}
+  }
+  level hard {
+    let b={1}
+  }
+
+  scene 30x24 {
+    row two at=canvas(1, 0) space=4 align=end {
+      flask x fill=0 balloon=(if s == 0 then a else b) tag="A"
+      flask y fill=0 balloon=(if s == 0 then b else a) tag="B"
+    }
+    text ask "Ben fitted a balloon over the neck of each empty bottle and squeezed the bottles. {asks}" narrate width=28 below=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "A" else "B")
+  feedback {
+    when (pick != (if s == 0 then "A" else "B")) point=two {
+      say "A balloon only stands up when something is inside it. The air from the bottle went up into this one."
+    }
+  }
+  hint "A flat balloon has nothing in it. What makes a balloon round?"
+  hint "The rounder balloon holds more air."
+}

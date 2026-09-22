@@ -1,0 +1,34 @@
+# Rounding read backwards: which numbers give this answer. The rule for 5 is stated, so the edges
+# are not a matter of taste.
+item place.round-range v=1 stars=2 skills=[place-value.rounding, reasoning.inverse] {
+  title "Which numbers round to it?"
+  difficulty (m // 100 + (if m % 100 == 0 then 5 else 0))
+  let m={140, 260, 370, 480, 530, 690, 720}
+  level easy {
+    let m={140, 260}
+  }
+  level hard {
+    let m={300, 500, 700}  # the numbers either side sit in different hundreds
+  }
+
+  scene 30x19 {
+    rounding line from=(m - 10) to=(m + 10) value=m show=false at=canvas(1, 1)
+    text ask "A whole number rounds to {m} to the nearest ten. A number ending in 5 rounds up. What is the smallest it could be, and the largest?" width=28 below=line gap=1
+    text sl "Smallest" below=ask gap=1
+    number-input small right-of=sl gap=1
+    text ll "Largest" right-of=small gap=2
+    number-input large right-of=ll gap=1
+  }
+
+  answer small=(m - 5) large=(m + 4)
+  feedback {
+    when (large == m + 5) point=line {
+      say "{m + 5} ends in 5, so it rounds up to {m + 10}."
+    }
+    when (small == m - 4) point=line {
+      say "{m - 5} ends in 5 and rounds up, so it rounds to {m} as well."
+    }
+  }
+  hint "Which numbers are nearer to {m} than to the tens either side?"
+  hint "Try the numbers ending in 5 on each side. Which way do they go?"
+}

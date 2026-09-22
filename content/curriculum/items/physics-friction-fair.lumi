@@ -1,0 +1,23 @@
+item physics.friction-fair v=1 skills=[physics.friction, physics.method] stars=2 {
+  title "Is it a fair test?"
+  difficulty (s + f)
+  let s=0..1 f=0..1
+
+  scene 33x10 {
+    table data cols=3 head=["Shoe", "Floor", "Newtons"] cells=["small", "ice", 1, "{if s == 0 then \"small\" else \"big\"}", "{if f == 0 then \"carpet\" else \"ice\"}", "{if f == 0 then (if s == 0 then 6 else 8) else (if s == 0 then 1 else 2)}"] at=canvas(1, 0)
+    text ask "Sam wants to know which floor grips a shoe more. Is this a fair test?" width=13 right-of=data gap=2
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 and f == 0 then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and s == 1) point=data {
+      say "The shoe changed as well as the floor, so we cannot tell which one made the difference."
+    }
+    when (pick == "Yes" and f == 1) point=data {
+      say "Both tests are on ice. The floor did not change, so the test says nothing about floors."
+    }
+  }
+  hint "What changed between the two rows?"
+  hint "A fair test of floors changes only the floor."
+}

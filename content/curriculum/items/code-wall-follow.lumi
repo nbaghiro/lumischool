@@ -1,0 +1,28 @@
+item coding.wall-follow v=1 skills=[coding.decisions, coding.repetition] {
+  title "A robot that feels for walls"
+  difficulty (n + (if k == 1 and n == 7 then 2 else 0))
+  let k=0..1 n=5..7
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}  # the corridor turns after two squares, and at seven the robot turns on the spot
+  }
+
+  scene 27x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["repeat {n}", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"]
+      maze g map=["{if k == 0 then \"S . . . #\" else \"S . . # .\"}", "{if k == 0 then \"# # # . #\" else \"# # . . #\"}", "{if k == 0 then \"# # # . .\" else \"# # . # #\"}", "{if k == 0 then \"# # # . #\" else \"# # . . .\"}"] code=["repeat {n}", "  if wall ahead", "    turn right", "  otherwise", "    forward 1"] upto=0 trail=none
+    }
+    text ask "Which square does the robot stop on?" width=18 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=g col=col row=row
+  hint "Each time round, ask the question first. A turn uses up a time round without moving."
+}

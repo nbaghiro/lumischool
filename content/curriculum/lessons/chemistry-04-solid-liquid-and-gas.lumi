@@ -1,0 +1,56 @@
+lesson chemistry-solid-liquid-and-gas v=2 format=teach grade=2 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Solid, liquid and gas"
+  goal "Tell a solid, a liquid and a gas apart by how their particles are arranged and how they move, and use that to say what each will do."
+
+  look {
+    scene 35x13 {
+      row three at=canvas(1, 1) space=2 align=start {
+        particles s spread=0 count=16 moving=1
+        particles l spread=1 count=16 moving=1
+        particles g spread=2 count=16 moving=1
+      }
+    }
+    say """
+      Everything is made of particles too small to see. In a solid they are held in rows and
+      jiggle on the spot. In a liquid they touch but slide past each other. In a gas they are far
+      apart and fly everywhere.
+      """
+  }
+  do {
+    level easy {
+      worked chem.which-state s=1 m=0 level=medium
+    }
+    practice chem.which-state count=3 hard-count=2 seed=5
+    level hard {
+      practice chem.state-why count=1 seed=7
+    }
+    practice chem.find-the-gas count=2 seed=2
+    practice chem.jar-like count=1 seed=5
+    practice chem.state-clue count=2 seed=2 hard-seed=7
+  }
+  try stars=2 {
+    show chem.state-why s=1 easy-s=0
+  }
+  try stars=3 {
+    show chem.still-there n=12 f=4 easy-f=3 hard-n=24
+  }
+  remember {
+    say "Held in rows is a solid, touching but sliding is a liquid, far apart is a gas."
+  }
+
+  grown-ups """
+    The first two questions read a state off one picture, which is the way in. The jars in a
+    different order and the question of what the stuff will do move the unknown from the state to the thing
+    and to its behaviour. The two-star question asks for the reason a state behaves as it does, in
+    terms of the particles. The three-star question never says how many particles there are: the
+    child counts them, has to know that heating makes no new particles and loses none, and then
+    works out a share. Children holding hands in a line, then shuffling, then running round the
+    garden is the demonstration; the jars are a record of it, not a replacement.
+    """
+  level easy {
+    grown-ups "At this level the jars show the moving marks, a liquid without them is named once in the teacher's pen, the two jars to choose between hold a solid and a gas, the things to place are a stone and the air in a balloon, the two-star asks why a solid keeps its shape, and the three-star jar has twelve particles with one in three getting out."
+  }
+  level hard {
+    grown-ups "At this level the jars show no moving marks, the two jars to choose between hold a liquid beside a solid or a gas and the liquid is asked for, the things to place are an ice cube and steam, the two-star asks why a liquid takes the shape of its cup and then why a gas fills the jar, and the three-star jar has twenty-four particles with one in four getting out."
+  }
+}

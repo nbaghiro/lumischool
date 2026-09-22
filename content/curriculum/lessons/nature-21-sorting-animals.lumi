@@ -1,0 +1,70 @@
+lesson nature-sorting-animals v=1 format=teach grade=4 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "Sorting animals"
+  goal "Sort animals into groups by what covers them and by how their young are born, not by what they do."
+
+  look {
+    scene 36x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          art h asset="hen"
+          seaturtle pt facing=1 plates=5
+          art c asset="cat"
+        }
+        row low space=1 align=end {
+          seal ps rock=1 facing=1
+          fishshoal pf rows=2 cols=3 facing=1
+          bats pb count=2 flying=1
+        }
+      }
+    }
+    say """
+      Ada draws every animal she has met this year and sorts them. Not by where they live or what
+      they do, because a seal swims like a fish and a bat flies like a bird. She sorts them by
+      what covers them, feathers, fur, scales or a shell, and by how their young start, from an
+      egg or born alive. The hen has feathers and lays eggs. The cat has fur and its kittens are
+      born alive. The fish has scales and the turtle a shell, and both lay eggs.
+      """
+  }
+  do {
+    level easy {
+      worked nature.has-covering k=0
+    }
+    practice nature.has-covering count=2 seed=2 easy-seed=7 easy-count=1 hard-seed=1
+    practice nature.wrong-group count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.lays-eggs count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.flies-not-bird count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.bat-or-bird k=2
+    }
+  }
+  story {
+    show nature.tally-groups b=5 f=3 s=2 w=0 easy-b=3 easy-f=2 easy-s=1 easy-w=0 hard-b=7 hard-f=5 hard-s=3 hard-w=1
+  }
+  try stars=2 {
+    show nature.bat-or-bird k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show nature.split-six k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Sort by the covering and how the young are born, not by what the animal does. A bat has fur, so it is not a bird."
+  }
+
+  grown-ups """
+    The lesson is about which questions sort well: what covers an animal and how its young start,
+    not where it lives or how it moves. The wrong idea to watch for is sorting by behaviour, so the
+    bat is a bird because it flies and the seal a fish because it swims; the two-star question is
+    built on exactly that and the reason should name fur and eggs. In the column question the
+    child reads each heading against each animal, and the bat and the seal are the ones to watch.
+    The story reads a tally table. The three-star question tries a yes-or-no question on six
+    animals and counts the yeses, and the way in is to do that for one question at a time. If
+    behaviour still decides the group after the core, stay here another day and sort the toys in
+    the house by two questions of the child's own, and see which questions split them evenly.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the hen's feathers) opens the core, the covering to find is the turtle's shell, the strays in the columns are a hen under fur and a fish under shell, the animals asked about are the hen and the cat, the flier that is not a bird is the bat, the tally adds feathers and fur, Ben calls the bat a bird, and the six animals are split by four legs."
+  }
+  level hard {
+    grown-ups "At this level the coverings to find are the seal's fur and the fish's scales, the strays are a bat under feathers and a seal under scales, the animals asked about are the sea turtle and the bat, the bird that hardly flies is the hen, a second reasoning question in the core has Ben calling the turtle a furry one, the tally takes scales from feathers, Ben says a penguin cannot be a bird, and the six animals are split by being born alive."
+  }
+}

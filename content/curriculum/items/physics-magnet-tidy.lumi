@@ -1,0 +1,35 @@
+# The story: Sam tidying the workshop floor on the windmill island with the magnet, and the count
+# of things it lifts among the things it leaves.
+item physics.magnet-tidy v=1 skills=[physics.magnets, addition.to-twenty] {
+  title "Tidying with the magnet"
+  difficulty (n + c + w)
+  let n=3..8 c=2..6 m=2..5 w=0..1
+  let asks={pick(w, "How many things does the magnet lift?", "How many things are left on the floor for Sam to pick up by hand?")}
+  level easy {
+    let n=3..4 c=2..3 m=2..2 w=0..0
+  }
+  level hard {
+    let n=6..8 c=4..6 m=3..5 w=1..1
+  }
+
+  scene 34x16 {
+    things t things=["nail", "clip", "coin", "marble"] at=canvas(1, 0)
+    text ask "Sam drops a tin on the workshop floor and {n} nails, {c} paper clips, {m} coins and 2 marbles roll out. He sweeps the magnet over the floor. {asks}" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then n + c else m + 2)
+  feedback {
+    when (w == 0 and answer == n + c + m) point=t {
+      say "The coins are metal, but the magnet does not pull them. Count the nails and the clips only."
+    }
+    when (w == 1 and answer == m) point=t {
+      say "The marbles stay on the floor too. Count everything the magnet leaves."
+    }
+    when (w == 0 and answer == n + c + m + 2) point=t {
+      say "Only iron and steel things lift. The coins and the marbles stay where they are."
+    }
+  }
+  hint "Which of the four kinds does a magnet pull? Only the iron and steel ones."
+  hint "Add up the kinds it lifts, or the kinds it leaves, as the question asks."
+}

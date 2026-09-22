@@ -1,0 +1,26 @@
+# How many digits it takes to number the pages: the one-digit pages and the two-digit pages are
+# counted separately, which is the whole puzzle. The key counts three-digit pages as well, so a wider
+# range stays right.
+item puzzle.page-digits v=1 stars=3 skills=[place-value.large-numbers, reasoning.systematic] {
+  title "Numbering the pages"
+  difficulty p
+  let p={24, 35, 48, 60, 72, 99}
+
+  scene 30x14 {
+    book open lines=5 left="" right="" page="{p}" at=canvas(1, 1)
+    text ask "A book has {p} pages, numbered from 1. How many digits are printed to number them all?" narrate width=10 right-of=open gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p + max(0, p - 9) + max(0, p - 99))
+  feedback {
+    when (answer == 2 * p) point=ask {
+      say "Pages 1 to 9 have only one digit each."
+    }
+    when (answer == p) point=ask {
+      say "That is the number of pages. Most of them need two digits."
+    }
+  }
+  hint "How many pages have one digit? How many digits is that?"
+  hint "How many pages have two digits, from 10 to {p}?"
+}

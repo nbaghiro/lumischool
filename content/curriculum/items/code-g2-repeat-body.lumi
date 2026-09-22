@@ -1,0 +1,34 @@
+# The number inside the repeat is the unknown this time: the total and the rounds are given.
+item coding.repeat-body v=1 skills=[coding.repetition] {
+  title "What goes inside?"
+  difficulty (n * s)
+  let n=2..4 s=1..3
+  where (1 + n * s <= 8 and n * s != n + s)
+  level easy {
+    let n=2..3 s=1..2
+  }
+  level hard {
+    let s=2..3
+  }
+
+  scene 31x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["repeat {n}", "  right ?"]
+      stage s cols=8 col=1 who=rabbit code=["repeat {n}", "  right {s}"] flag=false upto=0
+    }
+    text ask "The rabbit starts on square 1 and must stop on square {1 + n * s}. What number goes in the right block?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == 1 + n * s) point=bl {
+      say "That is the square it stops on. The block moves it part of the way, {n} times over."
+    }
+    when (answer == n * s) point=bl {
+      say "That is the whole way. The repeat runs the block {n} times."
+    }
+  }
+  hint "How many squares does the rabbit have to move altogether?"
+  hint "The block runs {n} times. What number, {n} times over, makes that?"
+}

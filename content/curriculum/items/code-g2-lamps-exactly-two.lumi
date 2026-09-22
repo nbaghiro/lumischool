@@ -1,0 +1,17 @@
+# Every number up to m that lights exactly two lamps: a search with a system, since there is no rule
+# on the page. The ones children miss are the ones with a gap, such as 9 and 10.
+item coding.lamps-exactly-two v=1 stars=3 skills=[coding.data, reasoning.all-the-ways] {
+  title "Exactly two lamps"
+  difficulty m
+  let m={6, 10, 12, 15}
+
+  scene 29x7 {
+    lamps l bits=4 n=0 at=canvas(1, 0)
+    text ask "How many numbers from 1 to {m} light exactly two lamps?" width=14 right-of=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if m >= 3 then 1 else 0) + (if m >= 5 then 1 else 0) + (if m >= 6 then 1 else 0) + (if m >= 9 then 1 else 0) + (if m >= 10 then 1 else 0) + (if m >= 12 then 1 else 0))
+  hint "Pick two lamps and add them. That is one of the numbers."
+  hint "Try every pair of lamps: 8 and 4, 8 and 2, and so on. Which pairs make {m} or less?"
+}

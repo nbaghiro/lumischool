@@ -1,0 +1,40 @@
+# In, on and beside: the pond seen from above, and which living thing is where. The fish are the
+# only things under the water, the frog sits on a pad, the pads float, and the reeds stand at the
+# edge. Plants are living things too, which lesson one settled.
+item nature.under-or-on v=1 skills=[nature.habitats] {
+  title "Where does it live?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let ask={pick(k, "Which creature lives under the water?", "Which creature sits on top of the water?", "Which plant floats on the water?", "Which plant grows at the edge of the pond?")}
+  let right={pick(k, "fish", "frog", "lily pad", "reeds")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x19 {
+    pond water pads=4 fish=3 frog=true at=canvas(1, 1)
+    text ask "{ask}" narrate width=31 below=water gap=1
+    choice pick options=["fish", "frog", "lily pad", "reeds"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "frog") point=water {
+      say "The frog is sitting on a lily pad, in the air. Look for the creature the pads lie over."
+    }
+    when (k == 1 and pick == "lily pad") point=water {
+      say "A lily pad is a plant, not a creature. Which creature is sitting on one?"
+    }
+    when (k == 2 and pick == "frog") point=water {
+      say "The frog is a creature. The question asks for a plant, the flat green one it sits on."
+    }
+    when (k == 3 and pick == "lily pad") point=water {
+      say "The pads float out on the water. Look at the tall thin plants standing around the pond."
+    }
+  }
+  hint "Creatures move about and eat. Plants stay where they grow. Which is the question about?"
+  hint "Under the water, on top of it, or at the edge: find that place in the picture first."
+}

@@ -1,0 +1,19 @@
+# The mark is wrong, and the child picks the right one with its reason, so knowing the rule is not
+# enough without reading what the sentence does.
+item reading.mark-and-why v=1 stars=2 skills=[reading.punctuation, reasoning.find-the-error] {
+  title "The wrong mark"
+  let k=0..3
+
+  scene 30x17 {
+    row who at=canvas(1, 1) space=1 align=centre {
+      face kid mood=happy hair=1 name="Ada"
+      sentence strip before="{if k == 0 then \"Where is my hat\" else if k == 1 then \"The cat is on the bed\" else if k == 2 then \"Can you come to tea\" else \"I have a red kite\"}" blank=0 after="{if k == 0 or k == 2 then \".\" else \"?\"}"
+    }
+    text ask "Ada used the wrong mark. Which mark should it be, and why?" narrate width=28 below=who gap=1
+    choice pick options=["? because it asks", ". because it tells"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 2 then "? because it asks" else ". because it tells")
+  hint "Read the sentence out loud. Does it ask you something?"
+  hint "A sentence that asks needs an answer. Does this one?"
+}

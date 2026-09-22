@@ -1,0 +1,28 @@
+# The ring is drawn by the pianist's count, which starts at the thumb, and the question asks for the
+# ukulele's, which starts at the pointer: the trap `hand` was drawn to show.
+item music.uke-finger-number v=1 skills=[music.chord-boxes, music.finger-numbers] {
+  title "Ukulele finger numbers"
+  difficulty k
+  let k=1..4
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={3, 4}  # counted from the pointer, two or three along
+  }
+
+  scene 26x13 {
+    hand fingers side=left numbers=none ring=(k + 1) colours=false at=canvas(1, 1)
+    text ask "On the ukulele your pointer finger is 1 and your thumb has no number. What number is the ringed finger?" width=15 right-of=fingers gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == k + 1) point=fingers {
+      say "That is how a piano counts, from the thumb. On the ukulele the pointer finger is 1."
+    }
+  }
+  hint "Find your pointer finger on the picture. That one is 1."
+  hint "Count along from the pointer finger to the ring."
+}

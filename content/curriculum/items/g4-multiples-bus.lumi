@@ -1,0 +1,32 @@
+item multiples.buses v=1 skills=[number.multiples] {
+  title "When do the buses meet again"
+  difficulty lcm(a, b)
+  let a=3..12 b=3..12
+  where (a < b)
+  where (lcm(a, b) != a * b)  # coprime pairs make the answer the product, which hides the idea
+  where (lcm(a, b) <= 60)
+  level easy {
+    where (lcm(a, b) <= 20)
+  }
+  level hard {
+    where (lcm(a, b) >= 30)
+  }
+
+  scene 30x17 {
+    text ask "Bus A leaves every {a} minutes and bus B every {b} minutes. Both leave at 9 o'clock." width=28 at=canvas(1, 0)
+    table times cols=2 head=["Bus", "Every"] cells=["A", a, "B", b] below=ask gap=1
+    text q "How many minutes later do they next leave together?" width=28 below=times gap=1
+    number-input answer below=q gap=0
+  }
+
+  answer lcm(a, b)
+  feedback {
+    when (answer == a * b) point=times.cell(1) {
+      say "{a} times {b} works, but they meet before that. Count on in {a}s and in {b}s."
+    }
+    when (answer == a + b) point=q {
+      say "Count on in {a}s and in {b}s, and look for the first number in both lists."
+    }
+  }
+  hint "Write out the multiples of {a} and the multiples of {b}, and find the first one in both."
+}

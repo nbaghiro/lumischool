@@ -1,0 +1,39 @@
+# The three-star: a cycle that goes round more than once. Every frog's spawn grows into new frogs
+# by the next spring, and the new frogs lay spawn too, so the pond's frogs multiply year by year.
+# The way in is a year at a time, drawn as a table on the back of the sheet; the mistake is adding
+# the same number each year, which forgets that the new frogs lay spawn as well.
+item nature.frogs-after-years v=1 stars=3 skills=[nature.life-cycles, reasoning.systematic] {
+  title "Round and round"
+  difficulty (y + k + n - 3)
+  let n=1..2 k=1..2 y=2..3
+  where (n * (k + 1) * (k + 1) * (if y == 3 then k + 1 else 1) <= 30)
+  let each={pick(k - 1, "one new frog", "two new frogs")}
+  let start={pick(n - 1, "one frog", "two frogs")}
+  level easy {
+    let n=1..1 k=1..1 y=2..2
+  }
+  level hard {
+    let n=1..1 k=2..2 y=2..3
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      pond pool pads=4 fish=0 frog=true
+      frogcycle life stage=4 ring=1 names=0
+    }
+    text ask "Ada's pond starts with {start}. Every year, each frog's spawn grows into {each} by the next spring, and the old frogs stay. The new frogs lay spawn too. How many frogs are there after {y} years?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * (k + 1) * (k + 1) * (if y == 3 then k + 1 else 1))
+  feedback {
+    when (answer == n + n * k * y) point=life {
+      say "That adds the same number every year. But the new frogs go round the ring as well, so in the second year there are more frogs laying spawn."
+    }
+    when (answer == n * (k + 1)) point=life {
+      say "That is after one year. Now every one of those frogs lays spawn, and round it goes again."
+    }
+  }
+  hint "Do one year at a time. After the first spring, how many frogs are there altogether?"
+  hint "Now every frog in the pond lays spawn, not just the first ones. Work out the second year from the new total."
+}

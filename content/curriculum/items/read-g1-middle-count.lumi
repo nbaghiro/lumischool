@@ -1,0 +1,17 @@
+# Every vowel is tried in the gap and each result is judged: is it a real word? The counts differ
+# from frame to frame, so the answer cannot be guessed from the last one.
+item reading.middle-count v=1 stars=3 skills=[reading.blending, reasoning.all-the-ways] {
+  title "How many words?"
+  difficulty (if k == 1 then 5 else if k == 0 then 4 else if k == 3 then 2 else 3)
+  let k=0..4
+
+  scene 33x10 {
+    lettercards frame letters=["{if k == 0 then \"h\" else if k == 1 then \"p\" else if k == 2 then \"c\" else if k == 3 then \"m\" else \"d\"}", "?", "{if k == 3 then \"p\" else if k == 4 then \"g\" else \"t\"}"] at=canvas(1, 1)
+    text ask "Put a, e, i, o or u where the ? is. How many real words can you make?" narrate width=16 right-of=frame gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else if k == 1 then 5 else if k == 2 then 3 else if k == 3 then 2 else 3)
+  hint "Try a first. Say the word. Is it a real word?"
+  hint "Now try e, then i, then o, then u. Keep count of the real ones."
+}

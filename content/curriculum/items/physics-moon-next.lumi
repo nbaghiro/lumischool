@@ -1,0 +1,13 @@
+item physics.moon-next v=1 skills=[physics.sky] {
+  title "What comes next?"
+  let s={3, 11}
+
+  scene 28x14 {
+    moonphases m from=s step=3 count=5 blank=4 at=canvas(1, 0)
+    text ask "What will the moon look like on day {s + 12}?" width=16 below=m gap=1
+    choice pick options=["crescent", "half moon", "full moon"] below=ask gap=1
+  }
+
+  check physics.sky of=m pick="phase(4)"
+  hint "Is the lit part getting bigger or smaller from box to box?"
+}

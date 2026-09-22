@@ -1,0 +1,16 @@
+# Two turns make no turn: a copy pressed off a wet print faces the way the block does.
+item art.print-of-a-print v=1 skills=[art.printing, reasoning.what-if] {
+  title "A print of a print"
+  difficulty (if m == "bird" then 1 else 0)
+  let m={"fish", "bird"}
+
+  scene 32x13 {
+    stamps pic motif=m show="block" colour=blue flip=false made="print" at=canvas(1, 1)
+    text ask "Ada prints this block. While the ink is wet she presses a clean sheet onto her print to take a copy. Which way does the {m} face on the copy?" width=20 right-of=pic gap=2
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=(if m == "fish" then "right" else "left")
+  hint "Which way does the {m} face in the first print?"
+  hint "The copy is the first print turned over onto a new sheet. What does turning it over do?"
+}

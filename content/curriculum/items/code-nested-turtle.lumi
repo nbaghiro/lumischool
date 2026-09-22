@@ -1,0 +1,30 @@
+item coding.nested-turtle v=2 skills=[coding.repetition] {
+  title "Where the nested repeat leaves it"
+  difficulty (2 * s + r)
+  let s=1..2 r=1..3
+
+  scene 23x32 {
+    column top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  repeat 2", "    right {s}", "  down 1"]
+      turtle t cols=9 rows=6 col=1 row=r moves=["repeat 2", "  repeat 2", "    right {s}", "  down 1"] show=false mark=false
+    }
+    text ask "Which square does the turtle finish on?" width=20 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=t col=col row=row
+  feedback {
+    when (col == 1 + 2 * s) point=p {
+      say "The inner repeat goes twice, and the outer repeat does the whole of it twice again."
+    }
+    when (row == r + 1) point=p {
+      say "The down line is inside the outer repeat, so it happens twice."
+    }
+  }
+  hint "Write the moves out in full first: right, right, down, right, right, down."
+}

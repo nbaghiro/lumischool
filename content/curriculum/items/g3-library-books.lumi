@@ -1,0 +1,31 @@
+# Two steps, one of each kind, on numbers that need the written method.
+item add.library-books v=1 skills=[addition.columns, subtraction.columns, problems.two-step] {
+  title "Books in the library"
+  difficulty (a + b + c)
+  let a=(236..587 by 7) b=(128..296 by 8) c=(64..189 by 5)
+  where (a + b < 1000)
+  level easy {
+    let a=(236..369 by 7) b=(128..200 by 8) c=(64..99 by 5)
+  }
+  level hard {
+    let a=(446..587 by 7) b=(200..296 by 8) c=(124..189 by 5)
+  }
+
+  scene 30x12 {
+    library lib columns=6 open=1 at=canvas(1, 1)
+    text ask "The library had {a} books. It bought {b} new books. Then {c} books were lent out. How many books are on the shelves now?" width=16 right-of=lib gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b - c)
+  feedback {
+    when (answer == a + b + c) point=ask {
+      say "Books that are lent out leave the shelves, so that step takes away."
+    }
+    when (answer == a + b) point=ask {
+      say "That is after the new books came. Now take away the ones lent out."
+    }
+  }
+  hint "What happened first, and does it make more books or fewer?"
+  hint "Work out the books after the new ones came, then take the lent books away."
+}

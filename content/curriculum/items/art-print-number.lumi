@@ -1,0 +1,22 @@
+# Predicting past the end of the strip: find the part that repeats, then count on in it.
+item art.print-number v=1 skills=[art.pattern, reasoning.generalise] {
+  title "Further along the strip"
+  difficulty n
+  let u=0..1 n=10..15
+  level easy {
+    let n=10..12
+  }
+  level hard {
+    let n=13..15
+  }
+
+  scene 34x10 {
+    printrow row unit=["leaf", "{if u == 0 then \"leaf\" else \"star\"}", "star"] colours=["green", "{if u == 0 then \"green\" else \"orange\"}", "orange"] count=6 missing=-1 at=canvas(1, 1)
+    text ask "The strip goes on the same way. Which print will be number {n}?" width=18 below=row gap=1
+    choice pick options=["leaf", "star"] right-of=ask gap=1
+  }
+
+  answer pick=(if (n - 1) % 3 == 0 then "leaf" else if (n - 1) % 3 == 2 then "star" else if u == 0 then "leaf" else "star")
+  hint "Which prints make the part that repeats? Say them out loud."
+  hint "The part that repeats is three prints long. Count along in threes: which numbers start a new part?"
+}

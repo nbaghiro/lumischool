@@ -1,0 +1,31 @@
+# Working backwards: the program and where it stopped are given, and the start is the unknown. Each
+# block has to be undone the other way round, last block first.
+item coding.hundred-start v=1 stars=2 skills=[coding.sequences, reasoning.work-backwards] {
+  title "Where did it start?"
+  difficulty (a + 10 * b)
+  let s={2, 3, 4, 5, 12, 13, 14} a=1..4 b=1..2
+  where (s % 10 + a <= 9)
+  where (s + 10 * b <= 30)
+  where (a != b)
+
+  scene 30x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}"] words=false
+      hundred h from=1 to=30 start=0 add=0 hide=[]
+    }
+    text ask "The robot did these blocks and stopped on {s + a + 10 * b}. Which number did it start on?" width=28 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer s
+  feedback {
+    when (answer == s + 2 * a + 20 * b) point=b {
+      say "That is going on again. To find the start, go back the other way."
+    }
+    when (answer == s + 10 * b) point=b {
+      say "You undid the right block. The down block has to be undone too."
+    }
+  }
+  hint "Put a finger on {s + a + 10 * b}. The last block took the robot down. Which way undoes it?"
+  hint "Undo the down block first, then the right block."
+}

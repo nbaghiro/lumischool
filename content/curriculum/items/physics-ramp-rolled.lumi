@@ -1,0 +1,25 @@
+item physics.ramp-rolled v=1 skills=[physics.motion] {
+  title "How far did it roll?"
+  difficulty r
+  let h=2..4 r={7, 8, 12, 13}
+  level easy {
+    let h=2..3 r={7, 8}
+  }
+  level hard {
+    let h=3..4 r={12, 13}
+  }
+
+  scene 28x18 {
+    ramp slope height=h ball=0 rolled=r at=canvas(1, 1)
+    text ask "How many centimetres did the ball roll along the floor?" width=26 below=slope gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  feedback {
+    when (answer == r - 5) point=slope {
+      say "Start at the foot of the slope, where the counting starts from zero."
+    }
+  }
+  hint "Which numbered mark is nearest to where the ball stopped?"
+}

@@ -1,0 +1,57 @@
+lesson writing-question-and-exclamation v=1 format=teach grade=2 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "The question mark and the exclamation mark"
+  goal "Choose the mark that matches what the sentence is doing, and turn a telling sentence into a question."
+
+  look {
+    scene 35x20 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic strip who=["boy", "girl", "gran"] says=["Is it going to rain?", "Look out, a big puddle!", "Here is your coat."] moods=["worried", "surprised", "happy"] with=["", "", "boy"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"]
+        row talk space=1 align=centre {
+          guide g pose=point
+          bubble b "Asking takes a question mark. Shouting takes the other one." width=24 from=g.hand
+        }
+      }
+    }
+    say """
+      A full stop is for telling, like Gran in picture 3. A question mark is for asking, and you
+      can hear your voice go up at the end. An exclamation mark is for a shout or a surprise, and
+      one is always enough.
+      """
+  }
+  do {
+    level easy {
+      worked writing.which-mark k=1 level=medium
+    }
+    practice writing.which-mark count=1 seed=3 easy-seed=5
+    practice writing.question-word count=2 seed=4 hard-seed=1
+    practice writing.three-marks count=1 seed=2
+    practice writing.fix-the-mark count=2 hard-count=1 seed=5
+    level hard {
+      practice writing.which-right count=1 seed=1
+    }
+    practice writing.into-question count=2 seed=3
+  }
+  try stars=2 {
+    show writing.which-right k=3 hard-k=1
+  }
+  try stars=3 {
+    show writing.tell-ask-shout k=2
+  }
+  remember {
+    say "Telling takes a full stop. Asking takes a question mark. Shouting takes an exclamation mark."
+  }
+
+  grown-ups """
+    Read the sentence aloud in the two ways and let the child pick which one sounds right. The mark
+    is a record of the voice, which is easier to hear than to reason about. Turning a telling
+    sentence into a question by moving one word to the front is the grade two way in to questions.
+    The two-star question asks why the mark is right, not only which one; the three-star question
+    is marked by you, and each sentence should do what its mark says.
+    """
+  level easy {
+    grown-ups "At this level a shout's mark is chosen once in the teacher's pen before the mark to choose, the question words are who and where, the three marks are as written, the robot's wrong marks are on a question and on tellings, the word to move is is, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the mark to choose is as written, the question words are when, what and why, the three marks are as written, the robot's wrong marks are on shouts and a question, one of them making way for a second pair to judge, the word to move is can, are or will, the two-star's sentence is a shout, and the three-star is as written."
+  }
+}

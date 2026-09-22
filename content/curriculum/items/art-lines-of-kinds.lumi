@@ -1,0 +1,10 @@
+item art.lines-of-kinds v=1 skills=[art.line, art.drawing] {
+  title "Five kinds of line"
+
+  scene 36x14 {
+    text ask "Draw five kinds of line across the sheet, one under another: straight, wavy, zigzag, dotted and a spiral." width=11 at=canvas(1, 1)
+    paintsheet sheet w=20 h=9 paper="squared" guide="none" outline="none" pots=["black", "blue", "red"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Five lines that can each be named at a glance (straight, wavy, zigzag, dotted and a spiral), each running most of the way across the sheet, one under another." notice=["Five kinds of line", "Each one easy to name", "Each runs across the sheet"] ask="Which line was hardest to draw, and why?"
+}

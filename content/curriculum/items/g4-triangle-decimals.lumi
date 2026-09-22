@@ -1,0 +1,20 @@
+# The sum triangle with decimals: the drawing works out the sides, so the key cannot disagree.
+item puzzle.triangle-decimals v=1 stars=1 skills=[decimals.add, reasoning.number-walls] {
+  title "A triangle of decimals"
+  let a={1.5, 2.25, 3.75, 4.5} b={0.75, 1.25, 2.5} c={0.5, 1.75, 3.25}
+
+  scene 30x13 {
+    sumtriangle tri a=a b=b c=c hide=ab letters=true at=canvas(1, 0)
+    text ask "Each box is the sum of the two circles it joins. What number goes in the empty box between A and B?" narrate width=13 right-of=tri gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a + b + c) point=tri {
+      say "A box joins only two circles. Which two does the empty box touch?"
+    }
+  }
+  hint "Which two circles does the empty box join?"
+  hint "Add them, lining up the points."
+}

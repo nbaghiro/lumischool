@@ -1,0 +1,24 @@
+item place.digit-worth v=1 skills=[place-value.multiply-by-ten] {
+  title "What the digit is worth"
+  difficulty b
+  let a=2..9 b=1..9 c=1..9
+  where (a != b)
+  where (b != c)
+
+  scene 30x14 {
+    pvchart card value="{a}{b}{c}0" show=digits at=canvas(1, 1)
+    text ask "In {a}{b}{c}0, what is the {b} worth?" narrate below=card gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * b)
+  feedback {
+    when (answer == b) point=card {
+      say "The {b} is in the hundreds column, so it is worth {b} hundreds."
+    }
+    when (answer == 10 * b) point=card {
+      say "Count the columns from the right: ones, tens, hundreds."
+    }
+  }
+  hint "Each column to the left is worth ten times the one before it."
+}

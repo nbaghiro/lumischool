@@ -1,0 +1,21 @@
+# A reason with the model: one kind of molecule made of one kind of atom is an element, of several
+# kinds a compound, and two kinds of molecule side by side a mixture, which is what air is.
+item chem.element-compound-mixture v=1 stars=2 skills=[chemistry.atoms, reasoning.classify] {
+  title "Element, compound or mixture?"
+  difficulty (if v == 0 then 0 else if v == 1 or v == 4 then 1 else 2)
+  let v=0..5
+
+  scene 29x16 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      atombox box a=(if v == 0 then "oxygen" else if v == 1 then "water" else if v == 2 then "nitrogen" else if v == 3 then "water" else if v == 4 then "methane" else "hydrogen") na=(if v == 0 then 4 else if v == 1 then 5 else if v == 2 then 4 else if v == 3 then 3 else if v == 4 then 3 else 3) b=(if v == 0 then "none" else if v == 1 then "none" else if v == 2 then "oxygen" else if v == 3 then "carbon-dioxide" else if v == 4 then "none" else "oxygen") nb=(if v == 0 then 0 else if v == 1 then 0 else if v == 2 then 2 else if v == 3 then 2 else if v == 4 then 0 else 3)
+      column side space=1 align=start {
+        text ask "Is what is in this box an element, a compound, or a mixture?" width=16
+        choice pick options=["an element", "a compound", "a mixture"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if v == 0 then "an element" else if v == 1 then "a compound" else if v == 2 then "a mixture" else if v == 3 then "a mixture" else if v == 4 then "a compound" else "a mixture")
+  hint "Is every group of joined atoms the same? If not, what does that make the box?"
+  hint "If they are all the same, how many kinds of atom does each group have?"
+}

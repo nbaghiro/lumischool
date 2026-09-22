@@ -1,0 +1,27 @@
+# The missing part past ten, 1.OA.D.8's 8 + ? = 11: fill the ten first, then count what is left.
+item add.missing-past-ten v=1 skills=[addition.bridge-ten, addition.change-unknown] {
+  title "How many more to make it"
+  difficulty c
+  let a=6..9 c=11..16
+  where (c - a >= 2 and c - a <= 9)
+  level hard {
+    let c=14..18  # the total is past fourteen, so the ten is not in sight
+  }
+
+  scene 28x7 {
+    tenframe frame count=a color=sky at=canvas(1, 1)
+    equation eq "{a} + {?more} = {c}" right-of=frame gap=2
+  }
+
+  answer more=(c - a)
+  feedback {
+    when (more == 10 - a) point=frame {
+      say "That makes 10. You need to get to {c}, which is more than 10."
+    }
+    when (more == c) point=eq {
+      say "{c} is the total. How many do you add to {a} to get there?"
+    }
+  }
+  hint "How many fill the frame up to 10?"
+  hint "Then how many more from 10 up to {c}?"
+}

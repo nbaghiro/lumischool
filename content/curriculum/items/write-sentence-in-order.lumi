@@ -1,0 +1,39 @@
+# A describing sentence about the harbour with its words muddled, numbered back into order. The
+# describing word sits just before its thing.
+item writing.sentence-in-order v=1 skills=[writing.sentences, writing.word-classes] {
+  title "Put the sentence in order"
+  difficulty (if p <= 1 then 0 else if p <= 3 then 1 else 2)
+  let k=0..1 p=0..5
+  let a={pick(p, 1, 0, 3, 2, 3, 2)}
+  let b={pick(p, 0, 2, 0, 3, 1, 0)}
+  let c={pick(p, 2, 1, 1, 0, 0, 3)}
+  let d={pick(p, 3, 3, 2, 1, 2, 1)}
+  let w0={pick(k, "The tall lighthouse", "A small boat")}
+  let w1={pick(k, "stands", "rocks")}
+  let w2={pick(k, "on the", "on the")}
+  let w3={pick(k, "grey rock.", "choppy sea.")}
+  let wa={pick(a, w0, w1, w2, w3)}
+  let wb={pick(b, w0, w1, w2, w3)}
+  let wc={pick(c, w0, w1, w2, w3)}
+  let wd={pick(d, w0, w1, w2, w3)}
+  level easy {
+    let k=0..0 p=0..1
+  }
+  level hard {
+    let k=1..1 p=4..5
+  }
+
+  scene 34x18 {
+    text ask "Tia's sentence about the harbour is muddled. Number the parts 1 to 4 so it reads in order, with the capital first and the full stop last." narrate width=32 at=canvas(1, 1)
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1)
+  feedback {
+    when ((if a == 0 then q else if b == 0 then r else if c == 0 then t else u) != 1) point=s {
+      say "The part with the capital letter is the start. Find it first."
+    }
+  }
+  hint "Find the capital letter: that part is first. Find the full stop: that part is last."
+  hint "Read the middle two parts both ways round. Which way makes sense?"
+}

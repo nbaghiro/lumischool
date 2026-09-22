@@ -1,0 +1,24 @@
+# The letters come off: the long bar is C, and the child counts along saying the musical alphabet,
+# which is what makes a note nameable without a label. Seven bars along is C again.
+item music.key-count-up v=1 skills=[music.keys] {
+  title "Count up from C"
+  difficulty k
+  let k=1..7
+  level easy {
+    let k=1..3
+  }
+  level hard {
+    let k=5..7  # past G, where A starts again
+  }
+  let w={if k == 1 then "bar" else "bars"}
+
+  scene 31x12 {
+    chimebars bars bars=8 letters=0 at=canvas(1, 1)
+    text ask "The longest bar is C. Each bar is the next letter up. Which letter is {k} {w} to the right of C?" width=14 right-of=bars gap=1
+    choice pick options=["C", "D", "E", "F", "G", "A", "B"] below=bars gap=1
+  }
+
+  answer pick=(if k == 1 then "D" else if k == 2 then "E" else if k == 3 then "F" else if k == 4 then "G" else if k == 5 then "A" else if k == 6 then "B" else "C")
+  hint "Put a finger on C. Say the next letter each time you move one bar to the right."
+  hint "After G the letters start again. What comes after G?"
+}

@@ -1,0 +1,46 @@
+lesson writing-finding-the-mistake v=1 format=worked grade=3 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Finding the mistake in a sentence"
+  goal "Read a sentence back and find the one word that is wrong."
+
+  example {
+    worked writing.find-the-mistake k=0
+    say """
+      Read the robot's sentence aloud exactly as it is written. Too means as well, or more than
+      enough, and neither of those fits going somewhere: the word wanted here is to. Reading aloud
+      is what catches it, because the ear notices what the eye slides over.
+      """
+  }
+  exercises {
+    practice writing.find-the-mistake count=1 seed=3
+    practice writing.fix-the-word count=3 seed=1
+    practice writing.how-many-mistakes count=2 seed=5 hard-seed=4
+    practice writing.tense-slip count=2 hard-count=1 seed=1
+    level hard {
+      practice writing.two-wrong-words count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show writing.two-wrong-words k=1 easy-k=0
+    say "Checking your own writing is the same job: read it back, and keep going after the first mistake."
+  }
+  try stars=3 {
+    show writing.sentence-with-both p=5
+  }
+
+  grown-ups """
+    Four kinds of mistake turn up here: the wrong one of two words that sound the same, a plural
+    that should be singular, a missing capital, and a contraction written without its apostrophe.
+    They are the four worth learning to spot. After the first question the child writes the right
+    word rather than pointing at the wrong one, and the counting questions do not say how many
+    mistakes there are, which is what makes a child check the whole sentence. One of them has no
+    mistake at all. The words in the wrong time all follow a time word such as yesterday, which is
+    the clue. The three-star sentence is yours to read: any sentence that uses both words with
+    their own meanings counts.
+    """
+  level easy {
+    grown-ups "At this level the worked mistake and the mistake to find are as written, the words to fix are too, cat, blue and see, the robots have one or two mistakes, the slip is the first doing word, the two-star's words are rode and sea, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the worked mistake and the mistake to find are as written, the words to fix are red for read, for, no for know and flu, the robots have three mistakes, none, or only a missing question mark, the slip is the second doing word after a right one, and one slip makes way for a second pair of wrong words, and the two-star and three-star are as written."
+  }
+}

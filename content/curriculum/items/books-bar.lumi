@@ -1,0 +1,24 @@
+# Whole tens added to a three-digit number, 2.NBT.8, with the unknown the part that was added.
+item barmodel.books v=2 skills=[subtraction.missing-part, place-value.add-tens] {
+  title "Library books"
+  difficulty k
+  let had=23..48 k=2..6
+
+  scene 32x11 {
+    text ask "A library had {10 * had} books. After buying more it has {10 * (had + k)}. How many did it buy?" width=30 at=canvas(1, 0)
+    barmodel bars whole=(10 * (had + k)) parts=[10 * had, ?] below=ask gap=1
+    number-input answer right-of=bars gap=2 width=5
+  }
+
+  answer (10 * k)
+  feedback {
+    when (answer == 20 * had + 10 * k) point=bars.whole {
+      say "The bar for {10 * (had + k)} is the whole. The part you want is shorter than it."
+    }
+    when (answer == k) point=bars {
+      say "The hundreds and tens changed by {k} tens. How many books is {k} tens?"
+    }
+  }
+  hint "Which digits are the same in the two numbers, and which one changed?"
+  hint "Count on in tens from {10 * had} to {10 * (had + k)}."
+}

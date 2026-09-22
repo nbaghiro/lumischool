@@ -1,0 +1,26 @@
+# The audit's raise for this puzzle: no line is drawn, so the children cannot be counted, and the
+# length of the line comes from two positions with the child in the hat counted once.
+item puzzle.row v=2 stars=2 skills=[reasoning.position] {
+  title "How long is the line"
+  difficulty (f + b)
+  let f=4..15 b=4..15
+  where (f != b)
+
+  scene 30x8 {
+    heads ana count=1 mark=1 at=canvas(1, 0)
+    text ask "Ana is in a line of children. She is number {f} counting from the front and number {b} counting from the back. How many children are in the line?" width=24 right-of=ana gap=2
+    number-input answer below=ask gap=0
+  }
+
+  answer (f + b - 1)
+  feedback {
+    when (answer == f + b) point=ask {
+      say "Ana has been counted twice, once from each end."
+    }
+    when (answer == f + b - 2) point=ask {
+      say "Ana is in the line too. Count her once."
+    }
+  }
+  hint "Draw Ana as a dot. How many children are in front of her?"
+  hint "How many are behind her? Add them, and do not count Ana twice."
+}

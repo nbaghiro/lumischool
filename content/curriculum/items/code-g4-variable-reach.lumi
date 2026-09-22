@@ -1,0 +1,19 @@
+# Six cards and one order that lands on the flag: from 1, three doubles and an add make 9, 10 or 12
+# depending only on where the add goes, so the order has to be found by working back or by trying.
+# The cards are used once each and their numbers cannot change, so setting n straight to the answer
+# is not possible, and the builder proves the key order reaches the flag in every version.
+item coding.variable-reach v=2 stars=3 skills=[coding.variables, reasoning.work-backwards] {
+  title "The order that lands on the flag"
+  difficulty (if t == 9 then 0 else if t == 10 then 1 else 2)
+  let t={9, 10, 12}
+
+  scene 31x34 {
+    maze m cols=(t + 1) rows=1 col=1 row=1 flag=[t + 1, 1] at=canvas(1, 0)
+    codepad answer tray=["double n", "right n", "add 1 to n", "double n", "set n to 1", "double n"] lines=6 once=true key=["set n to 1", "double n", "{if t == 12 then \"add 1 to n\" else \"double n\"}", "{if t == 10 then \"add 1 to n\" else \"double n\"}", "{if t == 9 then \"add 1 to n\" else \"double n\"}", "right n"] style=lines below=m gap=1
+    text ask "The flag is {t} squares away. Put the six cards in an order that stops the robot on the flag. Use every card once." width=13 right-of=answer gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "Work backwards from {t}. Was the number before it half of it, or one less?"
+  hint "The robot only moves once, at right n, so that card goes last."
+}

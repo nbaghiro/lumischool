@@ -1,0 +1,31 @@
+# Two answers from one division: the full boxes, and the apples that do not fill another.
+item division.apple-boxes v=1 skills=[division.short-with-remainder, division.remainders] {
+  title "Full boxes and what is left"
+  difficulty (n + 3 * p)
+  let p=4..9 n=22..60
+  where (n % p != 0 and n // p <= 12)
+  level easy {
+    let p=4..5 n=22..39
+  }
+  level hard {
+    let p=7..9 n=45..60
+  }
+
+  scene 34x11 {
+    boxes box boxes=1 per=p loose=0 item=apple at=canvas(1, 1)
+    text ask "Apples are packed in boxes of {p}, like this one. There are {n} apples." width=24 right-of=box gap=2
+    text q1 "Full boxes" below=ask gap=1
+    number-input full right-of=q1 gap=1
+    text q2 "Apples left over" below=q1 gap=1
+    number-input over right-of=q2 gap=1
+  }
+
+  answer full=(n // p) over=(n % p)
+  feedback {
+    when (full == n // p + 1) point=box {
+      say "The last box is not full, so it does not count as a full box."
+    }
+  }
+  hint "About how many boxes would {n} apples fill? Try a number and check it."
+  hint "The apples left over must be fewer than {p}."
+}

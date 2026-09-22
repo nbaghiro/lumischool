@@ -1,0 +1,13 @@
+item coding.build-for-someone v=1 skills=[coding.drawing] {
+  title "Draw the steps"
+  difficulty n
+  let n=2..3
+
+  scene 36x21 {
+    turtle t cols=7 rows=6 col=1 row=6 moves=[] target=["repeat {n}", "  up 1", "  right 2", "down {n}", "left {2 * n}"] at=canvas(1, 0)
+    codepad answer tray=["right 1", "up 1", "left 1", "down 1", "repeat 2"] lines=5 key=["repeat {n}", "  up 1", "  right 2", "down {n}", "left {2 * n}"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "The steps repeat. Draw them, then come straight down and back along the bottom."
+}

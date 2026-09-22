@@ -1,0 +1,19 @@
+# A reason about evidence: blue covers 7 and 8 on the chart, so it says "not an acid" and nothing
+# more, while red and purple say acid and green says alkali.
+item chem.colour-says v=1 stars=2 skills=[chemistry.acids, reasoning.evidence] {
+  title "What the colour can say"
+  difficulty (if v == 3 or v == 4 then 2 else if v == 5 then 1 else 0)
+  let v=0..5
+
+  scene 35x22 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cabbage c liquids=["{if v == 0 then \"lemon\" else if v == 1 then \"vinegar\" else if v == 2 then \"milk\" else if v == 3 then \"water\" else if v == 4 then \"bakingsoda\" else \"washingsoda\"}"] chart=1 show=1 names=0 letters=0
+      text ask "A liquid turned the juice this colour. Using only the chart, what can you say about it?" width=16
+    }
+    choice pick options=["It is an acid", "It is an alkali", "It is not an acid, and no more"] stack=column below=kit gap=0
+  }
+
+  answer pick=(if v == 0 then "It is an acid" else if v == 1 then "It is an acid" else if v == 2 then "It is an acid" else if v == 3 then "It is not an acid, and no more" else if v == 4 then "It is not an acid, and no more" else "It is an alkali")
+  hint "Find the colour on the chart. Which numbers does its band cover?"
+  hint "Is the whole band on one side of 7, or does it reach 7 itself?"
+}

@@ -1,0 +1,32 @@
+# Four things half way down, and which of them will be last to land. The four are drawn in an order
+# that is not their speed order, so the column a thing stands in says nothing.
+item physics.fall-slowest v=1 skills=[physics.forces, reasoning.compare] {
+  title "Which lands last?"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let t1={pick(v, "leaf", "flat", "parachute", "feather")}
+  let t2={pick(v, "stone", "crumpled", "crumpled", "stone")}
+  let t3={pick(v, "feather", "stone", "flat", "crumpled")}
+  let t4={pick(v, "parachute", "leaf", "leaf", "flat")}
+  let w1={pick(v, "Leaf", "Flat sheet", "Parachute", "Feather")}
+  let w2={pick(v, "Stone", "Paper ball", "Paper ball", "Stone")}
+  let w3={pick(v, "Feather", "Stone", "Flat sheet", "Paper ball")}
+  let w4={pick(v, "Parachute", "Leaf", "Leaf", "Flat sheet")}
+  let ans={pick(v, "Feather", "Flat sheet", "Parachute", "Feather")}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 23x38 {
+    falling four things=["{t1}", "{t2}", "{t3}", "{t4}"] time=1 show=1 names=1 at=canvas(1, 0)
+    text ask "All four were let go together. Which one will be the last to land?" narrate width=22 below=four gap=1
+    choice pick options=["{w1}", "{w2}", "{w3}", "{w4}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Look at which one has come down the least so far."
+  hint "The air pushes back hardest on the wide, light things, so they fall slowest."
+}

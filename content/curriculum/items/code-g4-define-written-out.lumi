@@ -1,0 +1,28 @@
+# The same dance with and without the new block: counting the lines it saves means expanding the
+# block each time it is used. The checker counts the moves the dance makes.
+item coding.define-written-out v=1 skills=[coding.procedures] {
+  title "Written out in full"
+  difficulty u
+  let u=2..4
+  level easy {
+    let u=2..3
+  }
+  level hard {
+    let u=3..4
+  }
+
+  scene 32x17 {
+    blocks b code=["define twirl", "  spin", "  clap 1", "  wave", "repeat {u}", "  twirl", "jump"] at=canvas(1, 0)
+    text ask "Dan wrote the same dance without the twirl block or the repeat, one move on each line. How many lines did he need?" width=18 right-of=b gap=2
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=b answer=steps
+  feedback {
+    when (answer == u + 1) point=b {
+      say "Without the new block, every twirl has to be written out in full, all three of its moves."
+    }
+  }
+  hint "How many moves are inside twirl? How many times is twirl used?"
+  hint "Add the moves from every twirl to the jump at the end."
+}

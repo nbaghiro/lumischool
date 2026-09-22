@@ -1,0 +1,33 @@
+# The crab walks left as well as right, so the square it ends on is a going back and a going on, in
+# the order the blocks under the flag say.
+item coding.stage-crab-left v=1 skills=[coding.events, coding.sequences] {
+  title "The crab walks both ways"
+  difficulty (a + b)
+  let s=5..7 a=2..4 b=1..3
+  where (s - a >= 1)
+  where (a != b)
+  level easy {
+    let a={2} b={1}
+  }
+  level hard {
+    let a={4} b=2..3
+  }
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "left {a}", "jump", "right {b}"]
+      stage st cols=7 col=s who=crab code=["when the flag is tapped", "left {a}", "jump", "right {b}"] upto=0
+    }
+    text ask "The flag is tapped. Which square does the crab end on?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=st answer=col
+  feedback {
+    when (answer == s + a - b) point=b {
+      say "The first block goes left, towards square 1."
+    }
+  }
+  hint "Start where the crab is. Which way does the first move go?"
+  hint "Do the blocks in order: left, then the jump, then right."
+}

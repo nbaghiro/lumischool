@@ -1,0 +1,31 @@
+# 4.NF.5: tenths written as hundredths so the two can be added.
+item decimal.tenths-and-hundredths v=2 skills=[decimals.hundredths, fractions.equivalent] {
+  title "Tenths and hundredths together"
+  difficulty (10 * a + b)
+  let a=1..8 b=1..9
+  level easy {
+    let a=1..3 b=1..4
+  }
+  level hard {
+    let a=6..8 b=6..9
+  }
+
+  scene 37x18 {
+    decimalsquare square hundredths=(10 * a + b) write=false at=canvas(1, 1)
+    text ask "The square shows {a}/10 and {b}/100 more. How many hundredths is that altogether?" narrate width=16 right-of=square gap=2
+    row eq below=square gap=1 space=1 align=centre {
+      equation sum "{a}/10 + {b}/100 ="
+      number-input h width=3
+      equation per "/100"
+    }
+  }
+
+  answer h=(10 * a + b)
+  feedback {
+    when (h == a + b) point=square {
+      say "A tenth is ten hundredths, so {a}/10 is {10 * a}/100."
+    }
+  }
+  hint "How many hundredths are in one column of the square?"
+  hint "How many hundredths are in {a} columns? Now add the {b} more."
+}

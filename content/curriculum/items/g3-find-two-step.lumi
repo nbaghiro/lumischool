@@ -1,0 +1,21 @@
+# The rule is hidden and has two steps: two pairs pin it down, and the third input tests it.
+item machine.find-two-step v=1 stars=3 skills=[algebra.function-machines, reasoning.patterns] {
+  title "Find the secret rule"
+  difficulty (a * z + b)
+  let a=2..4 b=1..5 x=1..3 y=4..6 z=7..10
+
+  scene 30x12 {
+    table pairs cols=2 head=["In", "Out"] cells=[x, a * x + b, y, a * y + b, z, "?"] at=canvas(1, 1)
+    text ask "A machine multiplies by a number and then adds a number. The table shows what it did to two numbers. What comes out when {z} goes in?" width=20 right-of=pairs gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (a * z + b)
+  feedback {
+    when (answer == z + (a * y + b - y)) point=pairs {
+      say "The machine does not just add. Check your rule on both rows of the table."
+    }
+  }
+  hint "When the number in goes up by {y - x}, how much does the number out go up by?"
+  hint "That tells you what it multiplies by. Now what does it add to make the first row work?"
+}

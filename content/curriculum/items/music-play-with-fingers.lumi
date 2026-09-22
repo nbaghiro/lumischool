@@ -1,0 +1,13 @@
+# A played answer: the finger numbers are over the keys, so the hand's position is on the page and
+# the question is whether the child can put it there and play from the thumb.
+item music.play-with-fingers v=1 skills=[music.fingers] {
+  title "C position, right hand"
+
+  scene 26x18 {
+    text ask "Right thumb on middle C. Play C, D and E with fingers 1, 2 and 3." width=24 at=canvas(1, 1)
+    piano keys from=C4 whites=8 wide=3 labels=letters fingers=[1, 2, 3, 4, 5] below=ask gap=1
+  }
+
+  check music.plays notes=[C4, D4, E4]
+  hint "Each finger sits over its own key, so the hand does not move."
+}

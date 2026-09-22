@@ -1,0 +1,36 @@
+# The hundred square as the robot's world: right is one more and down is ten more, so the square a
+# program stops on is a number the child can check twice, by walking and by adding.
+item coding.hundred-steps v=1 skills=[coding.sequences, place-value.add-tens] {
+  title "A robot on the hundred square"
+  difficulty (a + 10 * b)
+  let s={2, 3, 4, 5, 12, 13, 14, 15} a=1..4 b=1..2
+  where (s % 10 + a <= 9)
+  where (s + 10 * b <= 30)
+  level easy {
+    let a=1..2 b={1}
+  }
+  level hard {
+    let a=3..4 b={2}
+  }
+
+  scene 30x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}"] words=false
+      hundred h from=1 to=30 start=s add=0 hide=[]
+    }
+    text ask "The robot starts on the ringed number and does the blocks. Which number does it stop on?" width=28 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (s + a + 10 * b)
+  feedback {
+    when (answer == s + a + b) point=h {
+      say "A step down goes to the next row, and that is ten more."
+    }
+    when (answer == s + 10 * a + b and a != b) point=b {
+      say "Right goes along the row. Down goes to the row below. Which block goes which way?"
+    }
+  }
+  hint "Put a finger on the ringed number. Which way does the first block send it?"
+  hint "Along a row, each square is one more. Down a row, it is ten more."
+}

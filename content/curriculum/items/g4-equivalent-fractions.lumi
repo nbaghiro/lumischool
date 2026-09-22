@@ -1,0 +1,34 @@
+# The second bar is cut but not shaded, so the child has to shade it in their head to match the
+# first; when it was shaded the answer could be counted off it (the audit's finding).
+item fractions.equivalent v=2 skills=[fractions.equivalent] {
+  title "The same fraction, cut smaller"
+  difficulty (b * m + a * m)
+  let b={2, 3, 4, 5, 6} m=2..4 a=1..5
+  where (a < b)
+  where (b * m <= 12)  # more than twelve parts in a bar cannot be counted by eye
+  where (a * m < 10)  # a top of two digits would not fit the one-square blank
+  level easy {
+    let b={2, 3, 4} m={2}  # each part cut in two
+  }
+  level hard {
+    let b={3, 4} m=3..4  # nine or twelve parts, each part cut in three or four
+  }
+
+  scene 18x11 {
+    fraction one n=b k=a shape=bar at=canvas(1, 1)
+    fraction two n=(b * m) k=0 shape=bar below=one gap=1
+    equation eq "{a}/{b} = {?top}/{b * m}" below=two gap=1
+  }
+
+  answer top=(a * m)
+  feedback {
+    when (top == a) point=two {
+      say "Each part was cut into {m}, so the shaded parts were cut into {m} as well."
+    }
+    when (top == a + b * m - b) point=eq {
+      say "The bottom number was multiplied by {m}, not added to, so multiply the top one too."
+    }
+  }
+  hint "The bars are the same length. How many small parts fit in one part of the top bar?"
+  hint "Shade the second bar in your head to match the first. How many small parts is that?"
+}

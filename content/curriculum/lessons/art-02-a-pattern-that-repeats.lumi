@@ -1,0 +1,62 @@
+lesson art-a-pattern-that-repeats v=1 format=teach grade=1 unit=2 subject=art levels=[easy, medium, hard] {
+  title "A pattern that repeats"
+  goal "Find the part of a pattern that repeats, use it to say what comes next or much further along, and print a repeat of your own."
+
+  look {
+    scene 27x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        printrow row unit=["leaf", "star"] colours=["green", "orange"] count=8 missing=0
+        stamps block motif=leaf show="both" colour=green flip=false
+      }
+    }
+    say """
+      This border was printed with two stamps taking turns: leaf, star, leaf, star. The part that
+      repeats is leaf and star. Say it out loud and you can always tell what comes next.
+      """
+  }
+  do {
+    practice art.next-print count=2 seed=1
+    level easy {
+      worked art.next-print-three m=8 level=medium
+    }
+    practice art.next-print-three count=2 seed=3
+    practice art.pattern-unit count=2 seed=1
+    practice art.print-number count=3 hard-count=2 seed=2
+    level hard {
+      practice art.wrong-print count=1 seed=5
+    }
+  }
+  try stars=2 {
+    show art.wrong-print u=0 w=5 easy-w=4 hard-w=8
+  }
+  try stars=3 {
+    show art.print-a-border
+  }
+  remember {
+    say "Find the part that repeats. Then you can say what comes next, and what comes much later."
+  }
+
+  grown-ups """
+    The first questions ask for the print in a gap. The later ones ask for the part that repeats
+    and then for a print further along than the strip goes, which needs the child to use the
+    repeat rather than look at it. Counting along in threes with a finger is a good way in, and a
+    child who writes the numbers under the prints on scrap paper has found a strategy, not
+    cheated. The gap and strip questions are marked by the machine.
+
+    The two-star question hides one wrong print among nine, so the child has to hold the pattern
+    in mind and check each print against it. The border is the child's. Young children find it
+    hard to keep a repeat of three going all the way along a strip, and a border that loses the
+    pattern halfway is an ordinary first try; saying the pattern aloud while printing helps more
+    than correcting it afterwards. On paper, print with a cotton reel, a building brick or half a
+    potato dipped in paint.
+
+    Respond by describing the pattern back: "Leaf, leaf, star, leaf, leaf, star, and then two stars
+    here." Ask what comes next and let the child check their own row by saying it.
+    """
+  level easy {
+    grown-ups "At this level the gaps in the two-print strip are as written, a gap late in the three-print strip is filled once in the teacher's pen before gaps near its start, the part that repeats is as written, the prints to find are the tenth to twelfth, the two-star's wrong print is the fourth, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the gaps in the two-print strip are as written, the gaps in the three-print strip are late in it, the part that repeats is as written, the prints to find are the thirteenth to fifteenth and one of them makes way for a second strip with a wrong print, the two-star's wrong print is the eighth, and the three-star is as written."
+  }
+}

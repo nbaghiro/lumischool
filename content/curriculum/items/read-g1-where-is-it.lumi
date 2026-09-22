@@ -1,0 +1,25 @@
+# The picture first and the words after: the child reads three phrases that differ only in the
+# little word and picks the one the picture shows.
+item reading.where-is-it v=1 skills=[reading.sentence-meaning] {
+  title "Where is it?"
+  difficulty (if w == 2 or t == 1 and w == 0 then 1 else 0)
+  let a={"fox", "pig", "dog", "hen"} t=0..1 w=0..2
+  level easy {
+    where (w == 1 or t == 0 and w == 0)  # in and on
+  }
+  level hard {
+    where (w == 2 or t == 1 and w == 0)  # by and under
+  }
+
+  scene 26x15 {
+    picturecards card who=[a] where=["{if t == 0 then (if w == 0 then \"in\" else if w == 1 then \"on\" else \"by\") else (if w == 0 then \"under\" else if w == 1 then \"on\" else \"by\")}"] thing=["{if t == 0 then \"box\" else \"table\"}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "Where is the {a}?" narrate
+      choice pick options=["{if t == 0 then \"in the box\" else \"under the table\"}", "{if t == 0 then \"on the box\" else \"on the table\"}", "{if t == 0 then \"by the box\" else \"by the table\"}"] stack=column
+    }
+  }
+
+  answer pick=(if t == 0 then if w == 0 then "in the box" else if w == 1 then "on the box" else "by the box" else if w == 0 then "under the table" else if w == 1 then "on the table" else "by the table")
+  hint "Look at where the {a} is. Is it on top, inside, under or next to it?"
+  hint "Read all three. Only the little word is different."
+}

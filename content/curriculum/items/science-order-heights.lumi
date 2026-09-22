@@ -1,0 +1,18 @@
+# Ordering with a parameter behind it: the ranks are worked out from the three measurements, so
+# every one of the 210 variants has a provable answer.
+item science.order-heights v=1 skills=[science.measuring] {
+  title "Put the seedlings in order"
+  let a=4..9
+  let b=4..9
+  let c=4..9
+  where (a != b)
+  where (b != c)
+  where (a != c)
+
+  scene 28x13 {
+    text ask "Number the pots 1, 2 and 3, shortest first." width=26 at=canvas(1, 1)
+    sequence s items=["Pot 1: {a} cm", "Pot 2: {b} cm", "Pot 3: {c} cm"] blanks=[one, two, three] below=ask gap=1
+  }
+
+  answer one=(1 + (if b < a then 1 else 0) + (if c < a then 1 else 0)) two=(1 + (if a < b then 1 else 0) + (if c < b then 1 else 0)) three=(1 + (if a < c then 1 else 0) + (if b < c then 1 else 0))
+}

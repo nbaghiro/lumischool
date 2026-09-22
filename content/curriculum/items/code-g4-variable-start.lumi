@@ -1,0 +1,31 @@
+# The start is the unknown, and the program doubles, so the lines have to be undone in reverse:
+# halve first, then take away.
+item coding.variable-start v=1 skills=[coding.variables, coding.tracing] {
+  title "What did n start at?"
+  difficulty (s + b)
+  let s=2..9 b=2..5
+  level easy {
+    where (s + b <= 6)
+  }
+  level hard {
+    where (s + b >= 12)
+  }
+
+  scene 36x8 {
+    program p code=["set n to {s}", "add {b} to n", "double n"] blank=1 at=canvas(1, 0)
+    text ask "Line 1 sets n to a number. At the end n is {2 * (s + b)}. What number did line 1 set?" width=18 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == 2 * (s + b) - b) point=p {
+      say "Line 3 doubled n last, so undo that first: halve {2 * (s + b)}."
+    }
+    when (answer == s + b) point=p {
+      say "That is n after line 2. Line 2 had added {b} to it."
+    }
+  }
+  hint "Which line changed n last? What is the opposite of doubling?"
+  hint "Halve {2 * (s + b)}, then undo line 2."
+}

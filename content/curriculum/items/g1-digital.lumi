@@ -1,0 +1,19 @@
+# The same time on a digital clock, which a child meets on an oven before a wristwatch.
+item time.digital-reads v=1 skills=[time.reading-clocks] {
+  title "The clock on the oven"
+  let h=1..9 mm={"00", "30"}
+
+  scene 30x13 {
+    digital face time="{h}:{mm}" suffix="" at=canvas(1, 1)
+    text ask "How do you say this time?" narrate below=face gap=1
+    choice pick options=["o'clock", "half past"] below=ask gap=1
+  }
+
+  answer pick=(if mm == "00" then "o'clock" else "half past")
+  feedback {
+    when (mm == "00" and pick == "half past") point=face {
+      say "The minutes read 00, so nothing has passed the hour yet."
+    }
+  }
+  hint "The two numbers after the dots are the minutes."
+}

@@ -1,0 +1,27 @@
+item physics.two-bags v=1 skills=[physics.weight] {
+  title "Both on one hook"
+  difficulty (a + b)
+  let a={2, 4} b={2, 4, 6}
+  level easy {
+    let a={2} b={2, 4}
+  }
+  level hard {
+    let a={4} b={4, 6}
+  }
+
+  scene 32x14 {
+    springscale one max=10 step=2 value=a unit=N at=canvas(1, 0)
+    springscale two max=10 step=2 value=b unit=N right-of=one gap=2
+    text ask "Ben hangs both bags on one hook together. How many newtons will it read?" width=12 right-of=two gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a or answer == b) point=two {
+      say "Both bags pull down at once, so their pulls add together."
+    }
+  }
+  hint "What does each bag pull on its own?"
+  hint "Both pulls are on the hook at once. Put the two numbers together."
+}

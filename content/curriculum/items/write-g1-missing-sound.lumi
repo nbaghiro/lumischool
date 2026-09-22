@@ -1,0 +1,25 @@
+# One sound box is empty, and which one moves: the first, the middle or the last sound. Duck ends in
+# ck, which is one sound written with two letters.
+item writing.missing-sound v=1 skills=[writing.spelling, reading.phonics] {
+  title "The missing sound"
+  difficulty (if p == 1 then 2 else if a == 3 and p == 2 then 2 else if p == 2 then 1 else 0)
+  let a=0..4 p=0..2
+  let who={if a == 0 then "dog" else if a == 1 then "pig" else if a == 2 then "hen" else if a == 3 then "duck" else "fox"}
+  let s0={if a == 0 or a == 3 then "d" else if a == 1 then "p" else if a == 2 then "h" else "f"}
+  let s1={if a == 0 or a == 4 then "o" else if a == 1 then "i" else if a == 2 then "e" else "u"}
+  let s2={if a == 0 or a == 1 then "g" else if a == 2 then "n" else if a == 3 then "ck" else "x"}
+  let gone={if p == 0 then s0 else if p == 1 then s1 else s2}
+
+  scene 30x14 {
+    picturecards card who=["{who}"] where=["by"] thing=["log"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      soundboxes sb boxes=3 filled=[if p == 0 then "" else s0, if p == 1 then "" else s1, if p == 2 then "" else s2]
+      text ask "Say its name slowly. Write the missing sound." narrate width=18
+      word-input word options=["{gone}"] letters=2
+    }
+  }
+
+  answer word=gone
+  hint "Say the name slowly and touch a box for each sound."
+  hint "Which sound do you say when you get to the empty box?"
+}

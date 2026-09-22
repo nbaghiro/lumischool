@@ -1,0 +1,29 @@
+# The drawing shows where the turtle went and the number is gone from the program, so the nesting
+# has to be read backwards: the audit's raise for nested-turtle.
+item coding.nested-back v=1 skills=[coding.repetition, coding.tracing] {
+  title "What number drew this?"
+  difficulty (r * s)
+  let s=1..2 r=2..3
+  where (r * s <= 4)  # the grid is as wide as the walk, and a sheet holds nine columns beside the listing
+
+  scene 37x14 {
+    row top at=canvas(1, 0) space=0 align=start {
+      program p code=["repeat {r}", "  repeat 2", "    right {s}", "  down 1"] blank=3
+      turtle t cols=(2 * r * s + 1) rows=(r + 1) col=1 row=1 moves=["repeat {r}", "  repeat 2", "    right {s}", "  down 1"] mark=false
+    }
+    text ask "Line 3 says right and a number. What is the number?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == 2 * s) point=t {
+      say "Each flat part of the line is drawn by line 3 running twice."
+    }
+    when (answer == 2 * r * s) point=t {
+      say "That is how far right the turtle goes in all. Line 3 is only one small part of it."
+    }
+  }
+  hint "Look at one flat part of the line. How many times does line 3 run to draw it?"
+  hint "Count the squares in one flat part and share them between those runs."
+}

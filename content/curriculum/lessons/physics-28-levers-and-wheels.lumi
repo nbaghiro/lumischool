@@ -1,0 +1,50 @@
+lesson physics-levers-and-wheels v=1 format=teach grade=4 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "Levers and wheels"
+  goal "Work out whether a push lifts a load on a lever, what push holds it level, and why a big wheel on a small axle makes lifting easier."
+
+  look {
+    scene 33x27 {
+      column all at=canvas(1, 0) space=1 align=start {
+        lever bar fulcrum=2 load=80 push=20
+        row wheel space=2 align=start {
+          wheelaxle wa wheel=4 axle=1 load=40
+          note n "The stone is 2 steps from the pivot and the push is 8. So 20 newtons far out holds 80 newtons close in." width=16
+        }
+      }
+    }
+    say """
+      A lever turns about its pivot, and a force turns it more the further it is from the pivot.
+      That is the see-saw rule again: weight times steps on one side, push times steps on the
+      other. A wheel on an axle is a lever that goes all the way round, with the axle as the short
+      side and the wheel as the long one.
+      """
+  }
+  do {
+    practice physics.lever-lifts count=3 seed=4
+    practice physics.lever-balance count=2 seed=2
+    practice physics.wheel-pull count=2 seed=1
+    practice physics.wheel-easier count=1 seed=3
+  }
+  try stars=2 {
+    show physics.lever-pivot f=5 w=80
+  }
+  try stars=3 {
+    show physics.lever-heaviest f=2 p=20 easy-f=5 easy-p=10 hard-f=1 hard-p=30
+  }
+  remember {
+    say "A small force far from the pivot can hold a big one close to it."
+  }
+
+  grown-ups """
+    A door is the lever to feel: push it near the hinge and then at the handle. A screwdriver
+    lifting a paint lid, a bottle opener and a tap are all levers or wheels, and finding three of
+    them in the kitchen is a good end to the lesson. The price, which the pulley lesson makes
+    plain, is that the far end has to move further.
+    """
+  level easy {
+    grown-ups "At this level the push and the stone are far from balancing, the pivot sits two steps from the stone so the push is a quarter of its weight, and the wheels compared differ by three or more."
+  }
+  level hard {
+    grown-ups "At this level the push and the stone are within thirty of balancing, the pivot sits near the middle so the push is most of the stone's weight, and the heaviest stone comes to two hundred and seventy newtons."
+  }
+}

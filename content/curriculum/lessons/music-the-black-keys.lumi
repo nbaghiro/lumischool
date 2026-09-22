@@ -1,0 +1,61 @@
+# The black keys as the map of the keyboard: their twos and threes repeat, and every white key is
+# named by where it sits against them.
+lesson music-the-black-keys v=1 format=teach grade=3 unit=1 subject=music levels=[easy, medium, hard] {
+  title "The black keys"
+  goal "Find the groups of two and three black keys and use them to name any white key."
+
+  look {
+    scene 34x11 {
+      piano keys from=F3 whites=11 wide=3 labels=letters lit=[C4, F4] at=canvas(1, 1)
+    }
+    say """
+      The black keys come in a group of two, then a group of three, then two, then three, all
+      the way along. The white key just left of a two is always C, and the white key just left
+      of a three is always F. Once you can see the twos and threes, you can name any key on any
+      keyboard, however long it is.
+      """
+  }
+  do {
+    show music.press-the-two
+    level easy {
+      worked music.key-by-black k=0
+    }
+    practice music.key-by-black count=2 hard-count=3 seed=1 easy-seed=7 hard-seed=1
+    show music.play-left-of-two
+    practice music.two-or-three count=1 seed=6 easy-seed=1 hard-seed=1
+    show music.play-right-of-three
+    practice music.key-count-up count=1 seed=4 easy-seed=1 hard-seed=2
+  }
+  story {
+    show music.black-keys-story n=4 w=0 easy-n=2 hard-n=7 hard-w=1
+  }
+  try stars=2 {
+    show music.same-letter-apart k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show music.black-pattern
+  }
+  remember {
+    say "Two black keys, then three, all the way along. Left of the two is C; left of the three is F."
+  }
+
+  grown-ups """
+    The idea is that the black keys are the map: their twos and threes repeat, and a white key's
+    name is where it sits against them, so a child never counts from the end of the keyboard
+    again. The look rings C and F beside their groups. The way in and two core questions are
+    played (the machine hears the keys), and the printed sheet carries the same keyboard to point
+    at. The core names a white key from its place against a group, says which group the black
+    key beside a letter belongs to, and counts letters along from C. The wrong idea to watch for
+    is naming a key by counting from the left-hand end; ask which group is nearest instead. The
+    story counts the black keys of the bandstand keyboard by its groups, the two-star question
+    asks how far along the next key of the same name is and why, and the three-star question is
+    the five black keys of a two and a three played in order. Any keyboard in the house will do
+    for the playing.
+    """
+  level easy {
+    grown-ups "At this level the key left of the two is worked once in the teacher's pen before the plainest places, the keys left of the two and left of the three, the group is asked for C or F, the count along is one to three keys from C, the story has two of each group, and the two-star is C to the next C."
+  }
+  level hard {
+    grown-ups "At this level the places are between the black keys, the group is asked for D, G or A, three places are named, the count along runs past G where the letters start again, the story has seven of each group and asks for the white keys, and the two-star is G to the next G."
+  }
+}

@@ -1,0 +1,23 @@
+# Three things share a material and one does not. Two of the rows look alike on purpose (the plastic
+# bottle beside glass ones, the plastic spoon beside wooden ones), so the shape is no help.
+item chem.odd-material v=1 skills=[chemistry.materials] {
+  title "The odd one out"
+  difficulty (if k == 2 then 0 else if k == 1 or k == 3 then 1 else 2)
+  let k=0..4 o=0..3
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0, 4}
+  }
+
+  scene 22x13 {
+    text ask "Three of these are made of the same material. Which one is not?" width=21 at=canvas(1, 0)
+    materials row things=["{if o == 0 then (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"rubber-boot\" else \"plastic-bottle\") else if o == 1 then (if k == 0 then \"plastic-spoon\" else if k == 1 then \"wooden-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"wool-sock\" else \"glass-jar\") else if o == 2 then (if k == 0 then \"plastic-spoon\" else if k == 1 then \"wooden-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"wool-sock\" else \"glass-jar\") else (if k == 0 then \"plastic-spoon\" else if k == 1 then \"wooden-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"wool-sock\" else \"glass-jar\")}", "{if o == 0 then (if k == 0 then \"plastic-spoon\" else if k == 1 then \"wooden-spoon\" else if k == 2 then \"metal-spoon\" else if k == 3 then \"wool-sock\" else \"glass-jar\") else if o == 1 then (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"rubber-boot\" else \"plastic-bottle\") else if o == 2 then (if k == 0 then \"plastic-bottle\" else if k == 1 then \"wooden-block\" else if k == 2 then \"metal-key\" else if k == 3 then \"wool-hat\" else \"glass-bottle\") else (if k == 0 then \"plastic-bottle\" else if k == 1 then \"wooden-block\" else if k == 2 then \"metal-key\" else if k == 3 then \"wool-hat\" else \"glass-bottle\")}", "{if o == 0 then (if k == 0 then \"plastic-bottle\" else if k == 1 then \"wooden-block\" else if k == 2 then \"metal-key\" else if k == 3 then \"wool-hat\" else \"glass-bottle\") else if o == 1 then (if k == 0 then \"plastic-bottle\" else if k == 1 then \"wooden-block\" else if k == 2 then \"metal-key\" else if k == 3 then \"wool-hat\" else \"glass-bottle\") else if o == 2 then (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"rubber-boot\" else \"plastic-bottle\") else (if k == 0 then \"raincoat\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"metal-can\" else if k == 3 then \"towel\" else \"glass-jar\")}", "{if o == 0 then (if k == 0 then \"raincoat\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"metal-can\" else if k == 3 then \"towel\" else \"glass-jar\") else if o == 1 then (if k == 0 then \"raincoat\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"metal-can\" else if k == 3 then \"towel\" else \"glass-jar\") else if o == 2 then (if k == 0 then \"raincoat\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"metal-can\" else if k == 3 then \"towel\" else \"glass-jar\") else (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"rubber-boot\" else \"plastic-bottle\")}"] below=ask gap=0
+    choice pick options=["A", "B", "C", "D"] below=row gap=0
+  }
+
+  check chem.materials of=row pick=odd
+  hint "Say what each thing is made of, one at a time."
+  hint "Which material did you say three times?"
+}

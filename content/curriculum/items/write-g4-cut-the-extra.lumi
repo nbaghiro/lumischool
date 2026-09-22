@@ -1,0 +1,23 @@
+# Each draft has one phrase that repeats what another word already says; the other two choices
+# carry a fact, so length cannot decide. The right one moves through the three places.
+item writing.cut-the-extra v=1 skills=[writing.concision, writing.editing] {
+  title "Which words do no work?"
+  difficulty (if k == 0 or k == 4 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={1, 2, 3, 5}  # that lives, in colour, up, two
+  }
+  level hard {
+    let k={0, 1, 4}  # in order, that lives, at this moment in time
+  }
+
+  scene 37x11 {
+    caption draft text="{if k == 0 then \"We went to the shop in order to buy bread.\" else if k == 1 then \"The dog that lives next door barked all night.\" else if k == 2 then \"Our new kitten is grey in colour.\" else if k == 3 then \"He lifted the heavy box up off the floor.\" else if k == 4 then \"At this moment in time, the bus is late.\" else \"The two twins sat on the bench.\"}" width=30 at=canvas(1, 1)
+    text ask "Which words could come out without losing anything?" width=30 below=draft gap=1
+    choice pick options=["{if k == 0 then \"in order\" else if k == 1 then \"next door\" else if k == 2 then \"new\" else if k == 3 then \"up\" else if k == 4 then \"the bus\" else \"on the bench\"}", "{if k == 0 then \"to the shop\" else if k == 1 then \"that lives\" else if k == 2 then \"grey\" else if k == 3 then \"heavy\" else if k == 4 then \"in time\" else \"sat\"}", "{if k == 0 then \"bread\" else if k == 1 then \"all night\" else if k == 2 then \"in colour\" else if k == 3 then \"off the floor\" else if k == 4 then \"late\" else \"two\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "in order" else if k == 1 then "that lives" else if k == 2 then "in colour" else if k == 3 then "up" else if k == 4 then "in time" else "two")
+  hint "Read the sentence without each choice in turn. Which one leaves the meaning the same?"
+  hint "Look for words that say again what another word already told you."
+}

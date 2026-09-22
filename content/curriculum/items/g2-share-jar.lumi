@@ -1,0 +1,31 @@
+# The share is the unknown: the sweets are dealt out one at a time, or the table is used backwards.
+item division.share-jar v=1 skills=[division.sharing] {
+  title "How many each?"
+  difficulty (c * e)
+  let c=2..4 e=2..5
+  where (c != e)
+  level easy {
+    let c={2} e=3..5
+  }
+  level hard {
+    let c=3..4 e=4..5
+  }
+
+  scene 30x12 {
+    sweetjar jar count=(c * e) color=berry at=canvas(1, 1)
+    text ask "{c} children share the {c * e} sweets equally. How many does each child get?" narrate width=18 right-of=jar gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer e
+  feedback {
+    when (answer == c * e - c) point=jar {
+      say "Give the sweets out one at a time, one to each child, until the jar is empty."
+    }
+    when (answer == c) point=jar {
+      say "{c} is how many children there are. How many sweets does one child end up with?"
+    }
+  }
+  hint "Give one sweet to each child. How many have you given out?"
+  hint "Keep going round until all {c * e} are gone. How many does one child have?"
+}

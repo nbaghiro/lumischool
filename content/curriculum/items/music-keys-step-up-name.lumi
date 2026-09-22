@@ -1,0 +1,33 @@
+# The second note is not drawn, so it is named from the first by the alphabet: a step is the next
+# letter and a skip misses one out.
+item music.step-up-name v=1 skills=[music.intervals, music.staff] {
+  title "Name the next note"
+  difficulty ((if d < 0 then 1 else 0) + (if abs(d) == 2 then 1 else 0))
+  let i=2..8 d={-2, -1, 1, 2} q=0..2
+  where (i + d + (if d > 0 then 1 else -1) >= 0 and i + d + (if d > 0 then 1 else -1) <= 10)
+  level easy {
+    let d={1}
+  }
+  level hard {
+    let d={-2, -1}
+  }
+  let a={if i == 0 then "C4" else if i == 1 then "D4" else if i == 2 then "E4" else if i == 3 then "F4" else if i == 4 then "G4" else if i == 5 then "A4" else if i == 6 then "B4" else if i == 7 then "C5" else if i == 8 then "D5" else if i == 9 then "E5" else "F5"}
+  let x={if i == 0 then "C" else if i == 1 then "D" else if i == 2 then "E" else if i == 3 then "F" else if i == 4 then "G" else if i == 5 then "A" else if i == 6 then "B" else if i == 7 then "C" else if i == 8 then "D" else if i == 9 then "E" else "F"}
+  let y={if i + d == 0 then "C" else if i + d == 1 then "D" else if i + d == 2 then "E" else if i + d == 3 then "F" else if i + d == 4 then "G" else if i + d == 5 then "A" else if i + d == 6 then "B" else if i + d == 7 then "C" else if i + d == 8 then "D" else if i + d == 9 then "E" else "F"}
+  let move={if d == 2 then "a skip up" else if d == 1 then "a step up" else if d == -1 then "a step down" else "a skip down"}
+  let w1={if i - d == 0 then "C" else if i - d == 1 then "D" else if i - d == 2 then "E" else if i - d == 3 then "F" else if i - d == 4 then "G" else if i - d == 5 then "A" else if i - d == 6 then "B" else if i - d == 7 then "C" else if i - d == 8 then "D" else if i - d == 9 then "E" else "F"}
+  let w2={if i + d + (if d > 0 then 1 else -1) == 0 then "C" else if i + d + (if d > 0 then 1 else -1) == 1 then "D" else if i + d + (if d > 0 then 1 else -1) == 2 then "E" else if i + d + (if d > 0 then 1 else -1) == 3 then "F" else if i + d + (if d > 0 then 1 else -1) == 4 then "G" else if i + d + (if d > 0 then 1 else -1) == 5 then "A" else if i + d + (if d > 0 then 1 else -1) == 6 then "B" else if i + d + (if d > 0 then 1 else -1) == 7 then "C" else if i + d + (if d > 0 then 1 else -1) == 8 then "D" else if i + d + (if d > 0 then 1 else -1) == 9 then "E" else "F"}
+  let o1={if q == 0 then y else if q == 1 then w1 else w2}
+  let o2={if q == 0 then w1 else if q == 1 then w2 else y}
+  let o3={if q == 0 then w2 else if q == 1 then y else w1}
+
+  scene 26x17 {
+    grandstaff gs notes=["{a}"] letters=false lit=["{a}"] landmarks=false at=canvas(1, 1)
+    text ask "The ringed note is {x}. The next note is {move}. Which letter is it?" width=13 right-of=gs gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=ask gap=1
+  }
+
+  answer pick=y
+  hint "Say the letters from {x}, going the way the move goes."
+  hint "A step is the very next letter. A skip misses one letter out."
+}

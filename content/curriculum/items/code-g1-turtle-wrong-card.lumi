@@ -1,0 +1,27 @@
+# The turtle's pale shape is what the program should draw, and the pencil line is what it did draw,
+# so the side that does not match points at the card to change.
+item coding.turtle-wrong-card v=1 skills=[coding.debugging] {
+  title "The shape that went wrong"
+  difficulty l
+  let w=3..4 h=2..3 l=1..4 d={-1, 1}
+  where (not (l % 2 == 0 and h + d > 4))
+  level easy {
+    let l=1..2
+  }
+  level hard {
+    let l=3..4
+  }
+
+  scene 32x20 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {if l == 1 then w + d else w}", "up {if l == 2 then h + d else h}", "left {if l == 3 then w + d else w}", "down {if l == 4 then h + d else h}"] numbers=true words=false
+      turtle t cols=7 rows=5 col=2 row=5 face=right moves=["right {if l == 1 then w + d else w}", "up {if l == 2 then h + d else h}", "left {if l == 3 then w + d else w}", "down {if l == 4 then h + d else h}"] target=["right {w}", "up {h}", "left {w}", "down {h}"]
+    }
+    text ask "The turtle should draw the pale shape. Which card is wrong?" width=30 below=top gap=1
+    choice pick options=[1, 2, 3, 4] below=ask gap=1
+  }
+
+  check coding.runs of=t goal=target pick=wrong
+  hint "Put a finger on the pencil line and the pale line. Where do they stop being the same?"
+  hint "Which card drew that side?"
+}

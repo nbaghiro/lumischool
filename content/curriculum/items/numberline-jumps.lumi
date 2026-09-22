@@ -1,0 +1,27 @@
+item numberline.jumps v=1 skills=[addition.counting-on] {
+  title "Jump along"
+  difficulty (s + j)
+  let s=2..9 j=3..8
+  where (s + j <= 18)
+  level easy {
+    let s=2..4 j=3..4
+  }
+  level hard {
+    let s=7..9 j=6..8
+  }
+
+  scene 22x8 {
+    numberline line from=0 to=20 start=s jumps=[j] at=canvas(0, 0)
+    row eq below=line gap=1 space=1 align=centre {
+      equation sum "{s} + {j} ="
+      number-input land width=3
+    }
+  }
+
+  answer land=(s + j)
+  feedback {
+    when (land == s + j - 1) point=line {
+      say "Start counting from the next number, not from {s}."
+    }
+  }
+}

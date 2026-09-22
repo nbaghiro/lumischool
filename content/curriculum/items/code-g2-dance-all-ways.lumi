@@ -1,0 +1,22 @@
+# Every dance of one shape with a given number of claps: the factor pairs of T, found by trying each
+# repeat number in turn. The limit of six claps a block rules out the one-round answers.
+item coding.dance-all-ways v=1 stars=3 skills=[coding.repetition, reasoning.all-the-ways] {
+  title "All the dances with the same claps"
+  difficulty t
+  let t={6, 8, 12}
+
+  scene 32x11 {
+    blocks b code=["repeat ?", "  clap ?", "  jump"] at=canvas(1, 0)
+    text ask "The repeat number can be 2 to 6, and the clap number can be 1 to 6. How many different dances like this have exactly {t} claps?" width=20 right-of=b gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if t % 2 == 0 and t / 2 <= 6 then 1 else 0) + (if t % 3 == 0 and t / 3 <= 6 then 1 else 0) + (if t % 4 == 0 and t / 4 <= 6 then 1 else 0) + (if t % 5 == 0 and t / 5 <= 6 then 1 else 0) + (if t % 6 == 0 and t / 6 <= 6 then 1 else 0))
+  feedback {
+    when (answer == 1) point=b {
+      say "That is one dance. Try another repeat number: can the claps still come to {t}?"
+    }
+  }
+  hint "Try repeat 2. How many claps would each clap block need?"
+  hint "Now try repeat 3, 4, 5 and 6. Which of them work?"
+}

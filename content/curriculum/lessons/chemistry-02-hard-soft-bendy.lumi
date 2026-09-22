@@ -1,0 +1,49 @@
+lesson chemistry-hard-soft-bendy v=2 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Hard, soft, bendy, see-through"
+  goal "Describe a thing by what it is like, count the things that share a property, and find the rule behind a sort."
+
+  look {
+    scene 18x7 {
+      materials kit things=["glass-jar", "rubber-band", "brick", "towel"] names=1 at=canvas(1, 0)
+    }
+    say """
+      Every thing is like something. The jar is hard and you can see through it. The rubber band
+      is bendy and stretchy. The brick is hard. The towel is soft and soaks up water. The word for
+      what a thing is like is often the reason it was made of that material.
+      """
+  }
+  do {
+    practice chem.see-through count=2 seed=4
+    level easy {
+      worked chem.property-count k=1 level=medium
+    }
+    practice chem.property-count count=2 seed=4
+    practice chem.property-sort count=2 seed=1
+    practice chem.property-match count=1 seed=3
+    practice chem.not-waterproof count=1 seed=2 hard-seed=7
+  }
+  try stars=2 {
+    show chem.sort-rule k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show chem.property-pairs k=0 easy-k=2 hard-k=1
+  }
+  remember {
+    say "Hard or soft, bendy or stiff, see-through or not: each word says what a thing is like."
+  }
+
+  grown-ups """
+    Let the child hold each thing while they say the word. Bendy and soft get muddled until they have
+    felt the difference between a rubber band and a jumper. The first question is answered from the
+    picture; the counts and the sort need every thing checked one at a time. The two-star question
+    asks the child to work out someone else's rule, which means trying each rule on all four things.
+    The three-star question counts pairs: three bendy things make three pairs, and a child who finds
+    that by pointing at every pair has done the real work.
+    """
+  level easy {
+    grown-ups "At this level the thing to see through is glass, the bendy things are counted once in the teacher's pen before two rows of hard things to count, the columns and the opposites are as written, the thing that is not waterproof is a paper bag, Tom's rule is see-through or not, with a window and a jar in one group, and the three-star counts the pairs of hard things, three."
+  }
+  level hard {
+    grown-ups "At this level the things to see through are as written, the things to count are bendy or stretchy, the columns and the opposites are as written, the thing that is not waterproof is a towel or a wool hat, Tom's rule is waterproof or not, with a raincoat and a welly boot against a towel and a paper bag, all four of which bend, and the three-star counts the pairs of waterproof things, six."
+  }
+}

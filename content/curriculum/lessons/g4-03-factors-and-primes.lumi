@@ -1,0 +1,52 @@
+lesson g4-factors-and-primes v=1 format=teach grade=4 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Factors, multiples and primes"
+  goal "Find the factors of a number, sort multiples, and say whether a number is prime."
+
+  look {
+    scene 28x14 {
+      array dots rows=3 cols=4 color=sky at=canvas(1, 1)
+      venn rings labels=["Factors of 12", "Factors of 18"] left=["4", "12"] both=["1", "2", "3", "6"] right=["9", "18"] outside=["5"] right-of=dots gap=2
+    }
+    say """
+      A factor divides a number exactly, so twelve makes three rows of four. A prime has only two
+      factors, itself and one, so it makes no rectangle except a single line.
+      """
+  }
+  do {
+    practice factors.array-rows count=1 seed=2
+    practice number.is-prime count=2 hard-count=1 seed=6 easy-seed=5 hard-seed=10
+    level hard {
+      practice primes.counterexample count=1 seed=5
+    }
+    level easy {
+      worked factors.how-many n=20 level=medium
+    }
+    practice factors.how-many count=1 seed=4 hard-seed=5
+    practice factors.bags count=1 seed=3
+    practice multiples.venn-where count=2 seed=5
+    practice multiples.buses count=1 seed=1
+  }
+  try stars=2 {
+    show primes.counterexample w=21 p=2 easy-w=9 hard-w=33
+  }
+  try stars=3 {
+    show factors.smallest-with k=6 hard-k=8
+  }
+  remember {
+    say "A prime has exactly two factors. One is not prime, because it has only one. Factors come in pairs."
+  }
+
+  grown-ups """
+    Counters are the fastest way in: ask the child to make rectangles with twelve, then with
+    thirteen, and the difference explains itself. Numbers such as 51 and 91 look prime and are not,
+    which is why they are there. The two-star question needs one number that is odd and not prime;
+    ask the child to say why each of the others does not show that Ivy is wrong. In the three-star
+    question a list of how many factors 7, 8, 9 and so on have is the method.
+    """
+  level easy {
+    grown-ups "At this level the arrays hold twenty dots or fewer, the numbers tested for primes are 11 and 25, the factors of 20 are counted once in the teacher's pen before those of 12, 16 or 18, the counters to bag add to forty or fewer, the number to place in the rings is under thirty and belongs in one ring only, the buses next leave together within twenty minutes, the odd number that is not prime is 9, and the three-star is as written, the smallest number with six factors, since the item has nothing below six."
+  }
+  level hard {
+    grown-ups "At this level the arrays hold forty dots or more, the number tested for primes is 23, from a band that holds 51, 57 and 91, which look prime and are not, the factors of 30, 36 or 40 are counted, the counters to bag add to seventy-two or more, the number to place in the rings is thirty or more and belongs in both or in neither, the buses next leave together after thirty minutes or more, the odd number that is not prime is 33 and the question is asked again with 27 or 35, and the three-star asks for the smallest number with eight factors."
+  }
+}

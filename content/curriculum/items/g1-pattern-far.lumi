@@ -1,0 +1,17 @@
+# A place in the pattern that is not drawn: the repeat has to be found and used, not just continued.
+item pattern.far-along v=1 stars=3 skills=[patterns.repeating, reasoning.generalise] {
+  title "Far along the pattern"
+  difficulty p
+  let p=10..20
+  roles first=circle second=square third=triangle
+
+  scene 30x12 {
+    pattern strip unit=[first, second, third] count=6 at=canvas(1, 1)
+    text ask "The pattern keeps going. What shape is number {p}?" narrate below=strip gap=1
+    choice pick options=[first, second, third] below=ask gap=1
+  }
+
+  answer pick=(if p % 3 == 1 then "first" else if p % 3 == 2 then "second" else "third")
+  hint "The pattern repeats every three shapes. Which numbers are circles: 1, 4, 7...?"
+  hint "Keep counting on in threes from the last circle until you reach {p} or pass it."
+}

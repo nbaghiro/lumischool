@@ -1,0 +1,25 @@
+# A root word and an ending on bricks, pushed together and written.
+item reading.build-ending v=1 skills=[reading.morphology, reading.spelling] {
+  title "Root and ending"
+  difficulty (if k >= 4 then 1 else 0)
+  let k=0..5
+  let root={pick(k, "jump", "look", "play", "help", "walk", "rain")}
+  let end={pick(k, "ing", "ed", "ing", "ed", "ing", "ed")}
+  let word={pick(k, "jumping", "looked", "playing", "helped", "walking", "rained")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 34x12 {
+    wordbricks b bricks=["{root}", "{end}"] root=0 roots=1 blank=-1 word="" labels=true at=canvas(1, 1)
+    text ask "Push the two bricks together. Write the word they make." narrate width=32 below=b gap=1
+    word-input pick options=["{word}"] below=ask gap=1
+  }
+
+  answer pick=word
+  hint "Say the root word, then the ending, then both together without a gap."
+  hint "{root} and {end}: write the root, then the ending straight after it."
+}

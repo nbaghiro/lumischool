@@ -1,0 +1,19 @@
+# The way in to shapes: read the two forward lines and decide, before anything is drawn.
+item coding.which-shape v=2 skills=[coding.drawing] {
+  title "Square or rectangle?"
+  let w=2..4 d=0..2
+  where (d == 1 or w != 4)  # three squares and four rectangles, not three and six
+
+  scene 32x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  forward {w}", "  turn left", "  forward {w + d - 1}", "  turn left"]
+      turtle t cols=5 rows=6 col=1 row=6 face=right moves=["repeat 2", "  forward {w}", "  turn left", "  forward {w + d - 1}", "  turn left"] show=false
+    }
+    text ask "The turtle runs this program. What does it draw?" width=24 below=top gap=1
+    choice pick options=["a square", "a rectangle"] below=ask gap=1
+  }
+
+  check coding.runs of=t pick=shape
+  hint "Look at the two forward lines. Are their numbers the same?"
+  hint "A square has every side the same length."
+}

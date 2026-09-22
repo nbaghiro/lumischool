@@ -1,0 +1,17 @@
+item music.loudest v=1 skills=[music.dynamics] {
+  title "The loudest mark"
+
+  scene 26x12 {
+    dynamics marks marks=["mp", "ff", "mf"] words=false ring=-1 at=canvas(1, 1)
+    text ask "Which mark is the loudest?" width=24 below=marks gap=1
+    choice pick options=["mp", "ff", "mf"] below=ask gap=1
+  }
+
+  answer pick="ff"
+  feedback {
+    when (pick == "mf") point=marks {
+      say "mf means quite loud. Two f's together mean very loud."
+    }
+  }
+  hint "f means loud, and ff is more of it."
+}

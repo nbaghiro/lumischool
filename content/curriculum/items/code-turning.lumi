@@ -1,0 +1,30 @@
+# Forward and turn are the first moves that depend on which way the robot faces, so the question is
+# the heading itself. A turn happens on the spot: it changes the way the robot faces and not where.
+item coding.turning v=2 skills=[coding.tracing] {
+  title "Which way is it facing?"
+  difficulty k
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x20 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["forward 2", "{if k % 2 == 0 then \"turn right\" else \"turn left\"}", "forward 1"]
+      maze g cols=5 rows=5 col=(if k < 2 then 2 else 1) row=4 face=(if k < 2 then "up" else "right") code=["forward 2", "{if k % 2 == 0 then \"turn right\" else \"turn left\"}", "forward 1"] upto=0 trail=none
+    }
+    text ask "Which way is the robot facing at the end?" width=24 below=top gap=1
+    choice pick options=["up", "right", "down", "left"] below=ask gap=1
+  }
+
+  check coding.runs of=g pick=face
+  feedback {
+    when (pick == "up" and k < 2) point=b {
+      say "It started facing up, and the turn in the middle changed that."
+    }
+  }
+  hint "A turn changes the way the robot faces, not the square it is on. Turn your own body to check."
+}

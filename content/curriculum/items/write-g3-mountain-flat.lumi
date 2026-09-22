@@ -1,0 +1,19 @@
+# A plan with one fault, and the child says which: nothing goes wrong, the fix does not fix, or the
+# ending does not follow.
+item writing.mountain-flat v=1 stars=2 skills=[writing.planning, writing.story-structure, reasoning.find-the-error] {
+  title "Why the story falls flat"
+  difficulty (if f == 1 then 2 else if f == 2 then 1 else 0)
+  let s=0..1 f=0..2
+
+  scene 37x15 {
+    listpad plan title="{if s == 0 then \"A picnic\" else \"Mia's kite\"}" items=["{if f == 0 then (if s == 0 then \"Problem: Ben eats a bun\" else \"Problem: Mia waves at Gran\") else (if s == 0 then \"Problem: it starts to rain\" else \"Problem: it sticks in a tree\")}", "{if f == 1 then (if s == 0 then \"Fixing it: Ben finds the cups\" else \"Fixing it: Mia buys a drink\") else (if s == 0 then \"Fixing it: Dad opens an umbrella\" else \"Fixing it: Gran brings a ladder\")}", "{if f == 2 then (if s == 0 then \"Ending: Ben goes to bed\" else \"Ending: Mia reads a book\") else (if s == 0 then \"Ending: they eat, snug and dry\" else \"Ending: the kite flies again\")}"] count=0 width=18 ticks=false at=canvas(1, 1)
+    column right right-of=plan gap=1 space=1 align=start {
+      text ask "Why will this story fall flat?" width=17
+      choice pick options=["Nothing goes wrong.", "The fix does not fix it.", "The end does not follow."] stack=column
+    }
+  }
+
+  answer pick=(if f == 0 then "Nothing goes wrong." else if f == 1 then "The fix does not fix it." else "The end does not follow.")
+  hint "Check each card in turn. Is the problem a real problem?"
+  hint "Does the fixing card put that problem right? Does the ending follow on from it?"
+}

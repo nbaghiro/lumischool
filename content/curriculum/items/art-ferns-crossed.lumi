@@ -1,0 +1,15 @@
+item art.ferns-crossed v=1 stars=2 skills=[art.printing, reasoning.what-if] {
+  title "Where the ferns crossed"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+
+  scene 37x15 {
+    sunprint pic pairs=[5, 4] made=0 show="print" at=canvas(1, 1)
+    text ask "Anna laid two ferns so that they crossed over each other, and left them in the sun. What colour is the paper {if k == 0 then \"where the two ferns crossed\" else if k == 1 then \"where only one fern lay\" else \"where no fern lay\"}?" width=15 right-of=pic gap=1
+    choice pick options=["white", "blue", "a darker blue"] below=pic gap=1
+  }
+
+  answer pick=(if k == 2 then "blue" else "white")
+  hint "What turns the paper blue? Could it reach the paper under one fern?"
+  hint "Where two ferns lie on top of each other, is there any more sun or any less than under one?"
+}

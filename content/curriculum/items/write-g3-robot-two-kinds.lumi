@@ -1,0 +1,23 @@
+# Two mistakes of two different kinds in every sentence, so the check cannot stop at the first:
+# the audit's raise for naming one kind of mistake.
+item writing.robot-two-kinds v=1 skills=[writing.editing] {
+  title "Two things to fix"
+  difficulty (if k == 2 or k == 5 then 2 else if k == 1 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 4}  # a capital and the end mark
+  }
+  level hard {
+    let k={2, 5}  # a wrong word and a capital
+  }
+
+  scene 30x21 {
+    caption bot text="{if k == 0 then \"my robot is called zed\" else if k == 1 then \"The bulb is to bright\" else if k == 2 then \"ben fixed for lamps.\" else if k == 3 then \"Can you here the robot\" else if k == 4 then \"on monday we fixed the wire\" else \"zed red the plan.\"}" width=28 at=canvas(1, 1)
+    text ask "The robot wrote this. It needs to fix two kinds of mistake. Which two?" width=28 below=bot gap=1
+    choice pick options=["a capital and the end mark", "a capital and a wrong word", "a wrong word and the end mark"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 4 then "a capital and the end mark" else if k == 2 or k == 5 then "a capital and a wrong word" else "a wrong word and the end mark")
+  hint "Check the capitals, then the mark at the end, then every word. Which checks find something?"
+  hint "Is there a word that sounds right but means something else?"
+}

@@ -1,0 +1,64 @@
+lesson nature-living-or-not v=1 format=teach grade=1 unit=1 subject=nature levels=[easy, medium, hard] {
+  title "Living, or not?"
+  goal "Say whether a thing is living by asking whether it grows, eats and can have young, not whether it moves."
+
+  look {
+    scene 36x13 {
+      row grass at=canvas(1, 1) space=2 align=end {
+        art cat asset="cat"
+        toadstools caps count=1 spots=5
+        art kite asset="kite"
+        art cup asset="cup"
+      }
+    }
+    say """
+      Ada lies in the long grass and looks. The cat is living, and so are the toadstool: they grow,
+      they need food and water, and they can have young. The kite flies and the cup holds milk, but
+      neither of them grows, eats or has young. Moving is not the test. A cat moves and a toadstool
+      never does, and both are alive.
+      """
+  }
+  do {
+    level easy {
+      worked nature.is-it-living k=0
+    }
+    practice nature.living-count count=2 seed=5 easy-seed=1 hard-seed=1
+    practice nature.is-it-living count=2 seed=1 easy-seed=3 hard-seed=2
+    practice nature.moves-on-its-own count=2 seed=7 easy-seed=4 hard-seed=1
+    practice nature.odd-one-out count=1 seed=5 easy-seed=1 hard-seed=7
+    level hard {
+      show nature.shows-shes-wrong k=3
+    }
+  }
+  story {
+    show nature.grass-story a=4 easy-a=3 hard-a=6
+  }
+  try stars=2 {
+    show nature.shows-shes-wrong k=1 easy-k=0 hard-k=5
+  }
+  try stars=3 {
+    show nature.living-pairs m=3 b=2 easy-m=2 easy-b=2 hard-m=4 hard-b=3
+  }
+  remember {
+    say "A living thing grows, eats or drinks, and can have young. Moving is not the test."
+  }
+
+  grown-ups """
+    The wrong idea this lesson is about is "it moves, so it is alive", and its twin, "it stays still,
+    so it is not". Every question can be settled with three questions said aloud: does it grow, does
+    it eat or drink, can it have young. Watch whether the child asks them, or answers from whether the
+    thing moves; the kite, the boat and the rocket are there to catch the second habit, and the
+    toadstool the first. The story counts creatures and a pencil, and the pencil is the point. In the
+    two-star question one thing shows Ada's sentence is wrong, and the child should be able to say
+    why that one and not another. The three-star question is drawn on the sheet: a line from each
+    creature to each coin, and the count is the number of lines. If the child still sorts by moving
+    after the core, stay here another day and go outside: find three living things and three that
+    are not, and ask the three questions about each.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the cat) opens the core, the things asked about are a hen, a boat, a bicycle and a duck, the odd one out is a cup among animals, the kite is the thing that shows Ada is wrong, the story has three ants, and the pairs question has four lines."
+  }
+  level hard {
+    grown-ups "At this level the things asked about are the ones children call living because they move or shine (the kite, the rocket, the sun, the fish in a tank), a toadstool joins the counting and has to be counted as living, a second reasoning question sits in the core, the story has six ants, and the pairs question draws fifteen lines."
+  }
+}

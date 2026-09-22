@@ -1,0 +1,25 @@
+item physics.friction-read v=1 skills=[physics.friction, physics.forces] {
+  title "Read the force meter"
+  difficulty v
+  let k=0..3 v=1..9
+  level easy {
+    let v=1..3
+  }
+  level hard {
+    let v=7..9
+  }
+
+  scene 25x14 {
+    forcemeter m reading=v surface=k at=canvas(1, 0)
+    text ask "How many newtons does the meter show?" width=17 below=m gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v + 1 or answer == v - 1) point=m {
+      say "Count the small marks from the nearest number to the pointer."
+    }
+  }
+  hint "Find the number just before the pointer. How many small marks further is it?"
+}

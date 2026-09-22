@@ -1,0 +1,11 @@
+item matchsticks.fix v=1 skills=[reasoning.digits] {
+  title "One matchstick"
+
+  scene 20x8 {
+    matchsticks m eq="6+4=4" at=canvas(1, 1)
+    text ask "Move one matchstick to make it true." narrate below=m gap=0
+  }
+
+  check matchsticks.one-move from="6+4=4"
+  hint "Look at the 6. Which digits can one stick turn it into?"
+}

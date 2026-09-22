@@ -1,0 +1,18 @@
+# A picture made of two different repeated parts, a staircase up and a longer step down, which only
+# fits the six slots as two repeats: the audit's raise for build-for-someone. Written out one move
+# a line it takes eight or ten lines, so the slots force the child to split it.
+item coding.split-picture v=1 stars=3 skills=[coding.drawing, coding.repetition, coding.decomposition] {
+  title "Two parts, six slots"
+  difficulty a
+  let a=2..3
+
+  scene 37x20 {
+    turtle t cols=(a + 5) rows=(a + 1) col=1 row=(a + 1) moves=[] target=["repeat {a}", "  right 1", "  up 1", "repeat 2", "  right 2", "  down 1"] mark=false at=canvas(1, 0)
+    codepad answer tray=["repeat 2", "right 1", "up 1", "down 1"] lines=6 style=lines key=["repeat {a}", "  right 1", "  up 1", "repeat 2", "  right 2", "  down 1"] right-of=t gap=1
+    text ask "Write a program for the pale line in six lines or fewer. You can change the numbers." width=16 below=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "The line is made of two kinds of step. Where does one kind stop and the other begin?"
+  hint "Each kind of step can be one repeat. What goes inside it, and how many times?"
+}

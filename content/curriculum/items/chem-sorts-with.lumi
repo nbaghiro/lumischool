@@ -1,0 +1,16 @@
+# Non-routine: the rule is learned on four things and used on a new one the lesson never showed.
+item chem.sorts-with v=1 stars=3 skills=[chemistry.materials, reasoning.generalise] {
+  title "Which group?"
+  difficulty k
+  let k=0..1
+
+  scene 26x18 {
+    text ask "A sponge and a spring go back to their shape. Clay and foil stay squashed. Which of these new things belongs with {if k == 0 then \"the sponge and the spring\" else \"the clay and the foil\"}?" width=25 at=canvas(1, 0)
+    choice pick options=["{if k == 0 then \"a rubber ball\" else \"a lump of dough\"}", "{if k == 0 then \"a lump of dough\" else \"a rubber ball\"}", "{if k == 0 then \"a paper clip bent open\" else \"a hair band\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "a rubber ball" else "a lump of dough")
+  hint "Squash or stretch each new thing in your head, then let it go."
+  hint "Does it spring back, or does it stay the new shape?"
+  hint "More than one might seem right. Which one does the job the group does, every time?"
+}

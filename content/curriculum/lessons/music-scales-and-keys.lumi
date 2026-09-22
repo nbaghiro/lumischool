@@ -1,0 +1,64 @@
+# The first one-octave scale: C major with the thumb passing under, the pattern of tones and
+# semitones that makes it major, and the black keys the same pattern needs from another start.
+lesson music-scales-and-keys v=1 format=teach grade=4 unit=4 subject=music levels=[easy, medium, hard] {
+  title "Scales and keys"
+  goal "Play the C major scale with the thumb passing under, and find where its semitones fall."
+
+  look {
+    scene 36x25 {
+      notes scale clef=treble notes=[C4, D4, E4, F4, G4, A4, B4, C5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 at=canvas(1, 1)
+      row low space=1 align=start below=scale gap=1 {
+        piano keys from=C4 whites=8 wide=3 labels=letters fingers=[1, 2, 3, 1, 2, 3, 4, 5]
+        hand h side=right numbers=piano ring=1 colours=false
+      }
+    }
+    say """
+      Ana warms up at the bandstand piano with a scale: eight notes, one after another, from C up to
+      the next C. Most steps are tones, with a black key between the two white keys. Two are
+      semitones, with no key between: E to F and B to C. Her right hand plays C, D and E with
+      fingers 1, 2 and 3, then the thumb passes under to play F, and the hand goes on up.
+      """
+  }
+  do {
+    practice music.scale-play-semitone count=1 seed=1 hard-seed=2
+    practice music.scale-find-semitones count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.scale-which-finger k=3 level=medium
+    }
+    practice music.scale-which-finger count=2 seed=16 easy-seed=1 hard-seed=1
+    practice music.scale-play count=1 seed=1
+    practice music.scale-sharp-needed count=2 seed=1
+    level hard {
+      show music.scale-find-semitones m=1 w=1
+    }
+    practice music.bandstand-scale-warmup count=1 seed=1 hard-seed=7
+  }
+  try stars=2 {
+    show music.scale-runs-out m=0 r=0 easy-r=1 hard-m=2
+  }
+  try stars=3 {
+    show music.scale-count-black-keys n=1 easy-n=0 hard-n=2
+  }
+  remember {
+    say "A major scale goes tone, tone, semitone, tone, tone, tone, semitone."
+  }
+
+  grown-ups """
+    The idea is that a major scale is a pattern of steps, tone, tone, semitone, tone, tone, tone,
+    semitone, and that the thumb passing under is what lets one hand play all eight notes. The wrong
+    ideas to watch for are thinking every step between white keys is the same size, and counting
+    fingers straight on from C without the crossing. In the working, look for the child pointing at
+    the black key, or at the gap where there is none, before naming a step. The two-star question
+    shows what happens with no thumb under; the three-star question builds the scale from every
+    white key and counts the black keys each one needs. A child who is stuck can play the scale
+    slowly, saying the finger numbers aloud, and go back to the way in; stay on this lesson another
+    day if the crossing still stops the hand. Off the page, play the scale on any keyboard up and
+    down each day, three times without a stop.
+    """
+  level easy {
+    grown-ups "At this level the semitone to play is from E, the semitone to find is the first in C major, the finger for F is worked once in the teacher's pen before G and E, the scale to play is C major going up, the scales to check start on C and G, the warm-up goes up once and its beats are counted, the two-star is as written with its answers in another order, and the three-star asks for the scales with no black keys."
+  }
+  level hard {
+    grown-ups "At this level the semitone to play is from F, onto a black key, both semitones of G major are found, the second as an extra reasoning question, the fingers asked are for A and the top C, the scale to play is G major with its F sharp, the scales to check start on F and D, the warm-up goes up and down twice and its semitone steps are counted, the two-star is D major, and the three-star asks for the scales with two black keys or fewer."
+  }
+}

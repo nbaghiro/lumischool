@@ -1,0 +1,48 @@
+lesson physics-day-night-and-the-moon v=1 format=teach grade=4 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Day, night and the moon"
+  goal "Explain day and night by the Earth turning, say where a place will be in a few hours, follow the moon's shapes through a month, and name the planets in order."
+
+  look {
+    scene 21x21 {
+      column all at=canvas(0, 0) space=1 align=start {
+        globe earth hours=[12, 21, 3]
+        planets row count=8 names=1
+      }
+    }
+    say """
+      The Earth spins once a day. The half facing the sun has day and the other half has night, and
+      as a place turns into the sunlight its sun rises, and as it turns away its sun sets. The moon
+      goes round the Earth about once a month, and we see more or less of its sunlit half as it
+      goes. The Earth is the third of eight planets that go round the sun.
+      """
+  }
+  do {
+    practice physics.globe-day count=2 seed=1
+    practice physics.globe-later count=2 seed=3
+    practice physics.moon-grows count=2 seed=2
+    practice physics.planet-order count=2 seed=4 hard-seed=7
+    practice physics.planet-between count=1 seed=1 hard-seed=3
+  }
+  try stars=2 {
+    show physics.moon-days d=5
+  }
+  try stars=3 {
+    show physics.globe-when y=21 easy-y=6
+  }
+  remember {
+    say "The Earth turns once a day, so the sun seems to cross the sky. The moon's shapes come round once a month."
+  }
+
+  grown-ups """
+    A torch in a dark room is the sun and an orange is the Earth: turn the orange slowly and watch a
+    sticker on it go from light to dark. Many children think the sun goes round the Earth, and it is
+    worth asking why it looks that way. A ball on a stick held at arm's length, turning round in the
+    lamp light, shows the moon's shapes. Never look straight at the sun.
+    """
+  level easy {
+    grown-ups "At this level the planet to name by its place from the sun is one of the inner four, the two planets asked about have one or two between them, and child B is a quarter of a turn from noon, six hours."
+  }
+  level hard {
+    grown-ups "At this level the planet to name by its place from the sun is one of the outer four, the two planets asked about have two or three between them, and child B is as written, two and a half quarters of a turn from noon."
+  }
+}

@@ -1,0 +1,16 @@
+item coding.tune-which v=1 skills=[coding.tracing] {
+  title "Which note?"
+  difficulty k
+  let k=2..5
+
+  scene 27x23 {
+    blocks b code=["play G", "play E", "repeat 2", "  play C", "  play E"] at=canvas(1, 0)
+    text ask "Which note is note number {k}?" width=14 right-of=b gap=2
+    choice pick options=["C", "E", "G"] below=ask gap=1
+    tune t code=["play G", "play E", "repeat 2", "  play C", "  play E"] numbers=false below=b gap=1
+  }
+
+  check coding.runs of=t pick="note({k})"
+  hint "Write the notes out in full, in order, and count along."
+  hint "How many notes come before the repeat starts?"
+}

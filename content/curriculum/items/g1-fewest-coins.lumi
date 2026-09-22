@@ -1,0 +1,22 @@
+# The fewest coins: a strategy to choose (biggest coin first), with an answer the checker computes.
+item money.fewest-coins v=1 stars=2 skills=[money.count-coins, reasoning.strategy] {
+  title "The fewest coins"
+  difficulty (n // 25 + n % 25 // 10 + n % 25 % 10 // 5 + n % 5)
+  let n=6..49
+  where (n % 5 != 0)
+
+  scene 30x12 {
+    coins key quarters=1 dimes=1 nickels=1 pennies=1 at=canvas(1, 1)
+    text ask "You can use as many of each coin as you like. What is the fewest coins that make {n} cents?" narrate width=28 below=key gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n // 25 + n % 25 // 10 + n % 25 % 10 // 5 + n % 5)
+  feedback {
+    when (answer == n) point=key {
+      say "That is all pennies. Bigger coins mean fewer coins."
+    }
+  }
+  hint "Start with the biggest coin that is not more than {n} cents."
+  hint "See what is left, and do the same again with the next coin down."
+}

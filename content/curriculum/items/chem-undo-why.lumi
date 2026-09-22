@@ -1,0 +1,21 @@
+# A reason from one list of three for every change: a new state of the same stuff, a solid spread
+# through water, or a new material. The child has to know which kind of change it is.
+item chem.undo-why v=1 stars=2 skills=[chemistry.changes, reasoning.explain] {
+  title "Why can it, or can it not?"
+  difficulty (if c == "dissolve-sugar" then 2 else if c == "rise-dough" or c == "fizz" or c == "rust-nail" or c == "boil-water" then 1 else 0)
+  let c={"melt-ice", "freeze-water", "melt-chocolate", "boil-water", "dissolve-sugar", "toast-bread", "cook-egg", "bake-cake", "burn-candle", "rust-nail", "fizz", "rise-dough"}
+  level hard {
+    let c={"dissolve-sugar", "boil-water", "rise-dough", "fizz", "rust-nail"}
+  }
+
+  scene 29x21 {
+    text ask "Can this change be undone? Choose the reason." width=28 at=canvas(1, 0)
+    beforeafter ch change=c show=1 names=1 below=ask gap=0
+    choice pick options=["It is the same stuff in a new state", "The sugar is still there, spread out", "A new material was made"] stack=column below=ch gap=0
+  }
+
+  answer pick=(if c == "melt-ice" or c == "freeze-water" or c == "melt-chocolate" or c == "boil-water" then "It is the same stuff in a new state" else if c == "dissolve-sugar" then "The sugar is still there, spread out" else "A new material was made")
+  check chem.change of=ch
+  hint "Is the stuff at the end the same stuff as at the start?"
+  hint "If it is new stuff, can cooling or warming turn it back?"
+}

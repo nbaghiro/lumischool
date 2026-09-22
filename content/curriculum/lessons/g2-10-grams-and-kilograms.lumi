@@ -1,0 +1,51 @@
+lesson g2-grams-and-kilograms v=1 format=teach grade=2 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Grams and kilograms"
+  goal "Read weights on a dial and a spring, in grams and kilograms."
+
+  look {
+    scene 36x19 {
+      row scales at=canvas(1, 1) space=2 align=start {
+        dialscale dial max=1000 step=200 value=400 unit=g
+        springscale spring max=500 step=100 value=250 unit=g
+        column bits space=1 {
+          masses set masses=[500, 200, 100]
+          pile flour label="250 g" scoop=true
+        }
+      }
+    }
+    say """
+      The dial counts round in hundreds of grams. A thousand grams is a kilogram, the bag of flour.
+      """
+  }
+  do {
+    practice measure.spring count=1 seed=3
+    practice measure.dial count=1 seed=7
+    practice measure.dial-between count=2 seed=4
+    practice measure.spring-between count=2 seed=6
+    practice measure.kilo-more count=1 seed=5
+    practice measure.heavier-by count=1 seed=2
+  }
+  try stars=2 {
+    show measure.books-out w=100 v=900 easy-v=800 hard-w=200 hard-v=1000
+  }
+  try stars=3 {
+    show measure.mass-sums a=100 b=200 c=300 easy-b=300 easy-c=500
+  }
+  remember {
+    say "A thousand grams is one kilogram. Five hundred grams is half of it."
+  }
+
+  grown-ups """
+    Kitchen scales with a dial are worth borrowing for a week. Reading between the marks is the
+    skill, and a digital display hides it: halfway between 200 and 400 is 300. The two-star
+    question needs the difference between two readings first, then shared between three books.
+    In the three-star question, writing every weight down as it is found shows that 100 g and
+    200 g together make the same weight as the 300 g mass.
+    """
+  level easy {
+    grown-ups "At this level the scales to read show one to four hundred grams, the needle sits between low marks, the pan already holds seven or eight hundred so little is needed to make a kilogram, and the three masses make seven different weights."
+  }
+  level hard {
+    grown-ups "At this level the scales to read show three to nine hundred grams, the pan holds only two or three hundred so most of a kilogram is still needed, the flour is eight hundred grams against one or two hundred of rice, the books weigh two hundred each, and two of the masses together weigh the same as the third."
+  }
+}

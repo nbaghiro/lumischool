@@ -1,0 +1,30 @@
+# Centimetres on a tape written as a decimal of a metre: hundredths the child has seen all along.
+item decimal.tape-metres v=1 skills=[decimals.hundredths, measure.convert] {
+  title "Centimetres as metres"
+  difficulty ((if m < 10 then 3 else if m % 10 == 0 then 2 else 1) + m / 100)
+  let m={5, 8, 23, 35, 47, 60, 72, 85, 96}
+  level easy {
+    let m={23, 35, 47, 72}
+  }
+  level hard {
+    let m={5, 8, 60, 96}  # a zero in the tenths, or in the hundredths
+  }
+
+  scene 30x17 {
+    tape roll to=100 step=10 mark=m unit=cm at=canvas(1, 1)
+    text ask "A metre is 100 centimetres. How many metres is the mark, as a decimal?" narrate width=28 below=roll gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(m / 100, 2)
+  feedback {
+    when (answer == m / 10) point=roll {
+      say "That is {m} tenths of a metre. A centimetre is one hundredth of a metre."
+    }
+    when (answer == m) point=roll {
+      say "That is the number of centimetres. How much of a metre is it?"
+    }
+  }
+  hint "What fraction of a metre is one centimetre?"
+  hint "So {m} centimetres is {m} hundredths of a metre. How is that written as a decimal?"
+}

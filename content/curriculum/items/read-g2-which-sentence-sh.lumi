@@ -1,0 +1,15 @@
+# Evidence at its first step: the story is three sentences and the answer is one of them. The
+# question never repeats the words of the right sentence, and one wrong sentence shares a word with it.
+item reading.which-sentence-sh v=1 skills=[reading.comprehension, reading.evidence] {
+  title "Which sentence tells you?"
+  let k=0..5
+
+  scene 27x17 {
+    text ask "Read the story. Which sentence tells you {if k == 0 then \"where the boat goes\" else if k == 1 then \"what was in Seth's lunch\" else if k == 2 then \"that it was wet outside\" else if k == 3 then \"that an animal was hungry\" else if k == 4 then \"where Rosa keeps the shell\" else \"how Thea fixed the problem\"}?" narrate width=25 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "Kit has a toy ship." else if k == 1 then "Seth ate his lunch on a bench." else if k == 2 then "Jay and his mum got on a train." else if k == 3 then "A chick hid in the shed." else if k == 4 then "Rosa found a shell on the beach." else "Thea had a bath at night.", if k == 0 then "She sails it in the bath." else if k == 1 then "He had a peach and some chips." else if k == 2 then "It rained all day." else if k == 3 then "A sheep came in to eat hay." else if k == 4 then "It was pink inside." else "The water was too hot.", if k == 0 then "The ship has a red chain." else if k == 1 then "Then he went to play chase." else if k == 2 then "They sat by the window and sang." else if k == 3 then "The chick hopped onto its back." else if k == 4 then "She put it by her bed at home." else "She let some cold water in."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "She sails it in the bath." else if k == 1 then "He had a peach and some chips." else if k == 2 then "It rained all day." else if k == 3 then "A sheep came in to eat hay." else if k == 4 then "She put it by her bed at home." else "She let some cold water in.")
+  hint "Read all three sentences. Which one is about {if k == 0 then \"where the ship sails\" else if k == 1 then \"food\" else if k == 2 then \"the weather\" else if k == 3 then \"eating\" else if k == 4 then \"where the shell ends up\" else \"what Thea did\"}?"
+  hint "Put your finger on the sentence. Does it really answer the question, or does it only use the same word?"
+}

@@ -1,0 +1,72 @@
+lesson nature-by-the-sea v=1 format=teach grade=3 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "By the sea"
+  goal "Say how the reef's creatures are suited to where they live, from what each one's body has."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          coral reef fans=2 spawn=0
+          seal ps rock=1 facing=-1
+          gull pg flying=1
+        }
+        row low space=2 align=end {
+          crabs pc count=2
+          seaturtle pt facing=1 plates=5
+        }
+      }
+    }
+    say """
+      Ada and Ben sit on the rocks above the reef. A seal is hauled out on a rock, thick with fat
+      to keep out the cold of the sea, with flippers for swimming after fish. A gull hangs in the
+      air on its wings and lands on the water with webbed feet. In the rock pool a crab keeps
+      its soft body inside a hard shell and grips under a stone with its claws. Out past the
+      reef a sea turtle flies through the water on its long front flippers. Every creature here
+      has a body made for its place.
+      """
+  }
+  do {
+    level easy {
+      worked nature.lives-where k=0
+    }
+    practice nature.lives-where count=2 seed=3 easy-seed=7 easy-count=1 hard-seed=1
+    practice nature.part-for count=2 seed=3 easy-seed=1 hard-seed=1
+    practice nature.who-has count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.match-place count=1 seed=1 easy-seed=2 hard-seed=5
+    level hard {
+      show nature.wrong-place k=3
+    }
+  }
+  story {
+    show nature.shore-count n=3 w=1 easy-n=2 easy-w=0 hard-n=4 hard-w=2
+  }
+  try stars=2 {
+    show nature.wrong-place k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.two-features k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A creature's body fits its place: fat for the cold, flippers for the sea, wings for the air, a shell for safety."
+  }
+
+  grown-ups """
+    The idea is that a body part is an answer to a place, and the questions keep asking "what is
+    it for". The wrong idea to watch for is naming the part without its job, or giving a job the
+    part looks like it might do: flippers are for swimming, not walking, and the seal's fat is a
+    coat against cold water, not padding for the rocks. In the matching question, ask for the
+    reason with each line. The story counts wings, flippers or legs in equal groups. The two-star
+    question puts a creature somewhere wrong and asks what goes wrong for it, and the reason
+    should come back as the body part that no longer fits: the fat that overheats, the crab that
+    dries out. The three-star question builds a creature from two features for two needs, and the
+    way in is to take the needs one at a time and cross out any pair with a feature the creature
+    would never use. If parts are still named without their jobs after the core, stay here another
+    day and look at a pet or a bird outside: pick one part and say what it does.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the seal on its rock) opens the core, the creature to place is the gull in the air, the parts asked about are the gull's wings and the seal's flippers, the creatures to find from two features are the gull and the crab, the matching is as written, the story counts two gulls' wings, Ben's seal lies on a hot beach, and the creature to build dives after fish in the cold sea."
+  }
+  level hard {
+    grown-ups "At this level the creatures to place are the crab in the rock pool and the turtle out at sea, the parts asked about are the seal's fat and the crab's shell, the creatures to find from two features share one of them with another, a second reasoning question in the core has a gull that stays under the water, the story counts four crabs' legs in tens, Ben's turtle is put in a rock pool, and the creature to build lives in a rock pool where gulls hunt."
+  }
+}

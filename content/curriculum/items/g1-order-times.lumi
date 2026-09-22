@@ -1,0 +1,15 @@
+# Four times on one morning, written as words, put in order: o'clock and half past interleave.
+item time.order-times v=1 skills=[time.half-past, time.order] {
+  title "Earliest first"
+  let a=7..11 b=7..10 c=7..11 d=7..10
+  where (a != c and b != d)
+
+  scene 20x18 {
+    text ask "Put the times in order, earliest first. Write 1 to 4." narrate width=19 at=canvas(1, 1)
+    sequence s items=["{a} o'clock", "half past {b}", "{c} o'clock", "half past {d}"] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=(1 + (if 2 * b + 1 < 2 * a then 1 else 0) + (if c < a then 1 else 0) + (if 2 * d + 1 < 2 * a then 1 else 0)) p2=(1 + (if 2 * a < 2 * b + 1 then 1 else 0) + (if 2 * c < 2 * b + 1 then 1 else 0) + (if d < b then 1 else 0)) p3=(1 + (if a < c then 1 else 0) + (if 2 * b + 1 < 2 * c then 1 else 0) + (if 2 * d + 1 < 2 * c then 1 else 0)) p4=(1 + (if 2 * a < 2 * d + 1 then 1 else 0) + (if b < d then 1 else 0) + (if 2 * c < 2 * d + 1 then 1 else 0))
+  hint "Which hour comes first in the morning?"
+  hint "Half past 8 comes after 8 o'clock and before 9 o'clock."
+}

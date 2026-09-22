@@ -1,0 +1,43 @@
+lesson chemistry-rusting-a-fair-test v=1 format=worked grade=4 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "Rusting: a fair test"
+  goal "Read a rusting test, find which jars show what rust needs, and choose the fair comparison."
+
+  example {
+    worked chem.rust-most v=0
+    say """
+      Only the nails with water and air round them have rusted, and the one in salty water has
+      rusted most. The dry jar and the jar with oil on top show that water alone, or air alone, is
+      not enough.
+      """
+  }
+  exercises {
+    practice chem.rust-yes-no count=2 seed=1
+    practice chem.rust-most count=2 seed=6
+    practice chem.rust-count count=2 seed=2
+    practice chem.rust-needs count=2 seed=4
+  }
+  try stars=2 {
+    show chem.rust-evidence v=3
+  }
+  try stars=3 {
+    show chem.rust-oxygen n=3 m=10 easy-n=2 hard-n=5 hard-m=20
+  }
+
+  grown-ups """
+    This is the classic rusting test (the Royal Society of Chemistry's nail experiment): one nail in
+    water, one in dry air with a drying chemical, one in boiled water sealed under oil, one in salty
+    water and one painted. Only the nails with both water and air rust, and salt makes it faster. Rust
+    is a new material, iron oxide, and a change that makes a new material is not usually reversible.
+    The first questions are the way in: the rust is drawn. The two-star question asks for the fair
+    comparison, the pair that differs in one thing only. The three-star question is about weight:
+    rust is heavier than the iron it came from, because oxygen from the air has joined it. Plain
+    nails in jars on a windowsill for a week is a safe version at home; a grown-up handles the drying
+    chemical if one is used.
+    """
+  level easy {
+    grown-ups "At this level the worked nails, the nails that rust or not, the rustiest nail and the count of rusty nails are as written, the jar that rules out air alone is asked for, the two-star is as written, and the three-star rusts two nails of ten grams."
+  }
+  level hard {
+    grown-ups "At this level the worked nails, the nails that rust or not, the rustiest nail and the count of rusty nails are as written, the jar that rules out water alone is asked for, boiled water under oil, the two-star is as written, and the three-star rusts five nails of twenty grams."
+  }
+}

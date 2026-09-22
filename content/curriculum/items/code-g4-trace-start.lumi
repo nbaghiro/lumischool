@@ -1,0 +1,27 @@
+# The start is the unknown and the end is given, so the table is filled from the bottom up.
+item coding.trace-start v=1 skills=[coding.tracing, coding.variables] {
+  title "Back to the start"
+  difficulty (s + 3 * b)
+  let s=1..9 b=2..5
+  level easy {
+    let s=1..4 b=2..3
+  }
+  level hard {
+    let s=5..9 b=4..5
+  }
+
+  scene 36x8 {
+    program p code=["set n to {s}", "repeat 3", "  add {b} to n"] blank=1 at=canvas(1, 0)
+    text ask "Line 1 sets n to a number. At the end n is {s + 3 * b}. What number did line 1 set?" width=18 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == s + 2 * b) point=p {
+      say "The add line runs three times, so take {b} away three times."
+    }
+  }
+  hint "How many times does the add line run?"
+  hint "Start at {s + 3 * b} and take away {b} for each time round."
+}

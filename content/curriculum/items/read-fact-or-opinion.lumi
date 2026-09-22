@@ -1,0 +1,35 @@
+# The parrot says each sentence, because a parrot repeats whatever it hears and cannot tell the
+# difference itself. The child can. No opinion leans on best or better, and two facts use a word
+# like longest, so a signal word is no longer a shortcut: the test is whether it can be checked.
+item reading.fact-or-opinion v=3 skills=[reading.fact-opinion] {
+  title "Fact or opinion?"
+  difficulty (if k == 2 or k == 5 or k == 6 or k == 7 then 1 else 0)
+  let k=0..7
+  level easy {
+    let k={0, 1, 3, 4}  # eight legs, scary, boring, twelve months
+  }
+  level hard {
+    let k={2, 5, 6, 7}  # the Nile, swimming is easy, the giraffe, too many cars
+  }
+
+  scene 31x13 {
+    row who at=canvas(1, 1) space=1 align=centre {
+      parrot bird facing=1
+      bubble says "{if k == 0 then \"Spiders have eight legs\" else if k == 1 then \"Spiders are scary\" else if k == 2 then \"The Nile is the longest river in Africa\" else if k == 3 then \"Rainy days are boring\" else if k == 4 then \"A year has twelve months\" else if k == 5 then \"Swimming is easy\" else if k == 6 then \"The giraffe is the tallest animal\" else \"Our town has too many cars\"}." width=23 from=bird
+    }
+    text ask "Is this a fact or an opinion?" width=14 below=who gap=1
+    choice pick options=["Fact", "Opinion"] right-of=ask gap=1
+  }
+
+  answer pick=(if k % 2 == 0 then "Fact" else "Opinion")
+  feedback {
+    when (pick == "Opinion" and (k == 2 or k == 6)) point=says {
+      say "Longest and tallest can be measured. Could someone check this and find the same answer?"
+    }
+    when (pick == "Fact" and k % 2 == 1) point=says {
+      say "Someone else could disagree with this and not be wrong, so it is an opinion."
+    }
+  }
+  hint "Could you check it by counting, measuring or looking it up?"
+  hint "Would everyone who checked it get the same answer, or could people disagree?"
+}

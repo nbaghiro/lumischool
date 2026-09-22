@@ -1,0 +1,61 @@
+# Monet's light: the same place painted at different hours, where what changes is not the hills but
+# the light on them, and a painting can be read back to the hour it was made at.
+lesson art-monets-light v=1 format=teach grade=3 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Monet's light"
+  goal "Read the time of day out of a painting from its sun, its shadows and its colours, and paint one that says its own hour."
+
+  look {
+    scene 16x23 {
+      layers morning labels=false ring=-1 sun=true light="morning" at=canvas(1, 0)
+      layers noon labels=false ring=-1 sun=true light="noon" below=morning gap=1
+    }
+    say """
+      Claude Monet painted the same haystacks over and over, at different hours and in different
+      weather, because what he was painting was not really the haystacks. It was the light on them.
+      Here is one meadow twice. The hills have not moved and the tree has not grown. In the first the
+      sun is low on the left and the tree's shadow reaches away to the right. In the second the sun is
+      high and there is no shadow on the ground at all.
+      """
+  }
+  do {
+    practice art.light-which-dusk count=1 seed=1 easy-seed=1 hard-seed=7
+    level easy {
+      worked art.light-no-shadow k=0
+    }
+    practice art.light-no-shadow count=2 seed=8 easy-seed=4 hard-seed=7
+    practice art.light-order count=2 seed=1 easy-seed=10 hard-seed=1
+    practice art.light-warmer-mix count=2 seed=14 easy-seed=7 hard-seed=7
+    level hard {
+      show art.light-which-dusk k=2
+    }
+  }
+  story {
+    show art.hut-monet days=3 easy-days=2 hard-days=5
+  }
+  try stars=2 {
+    show art.light-same-time p=1 easy-p=0 hard-p=2
+  }
+  try stars=3 {
+    show art.light-paint when=0 easy-when=0 hard-when=1
+  }
+  remember {
+    say "The same place looks different at different hours, because what changes is the light on it."
+  }
+
+  grown-ups """
+    A child who has been taught that the sky is blue and grass is green will paint them that way at
+    every hour, and this lesson is the argument against it. The pictures are all the same meadow,
+    and everything that tells the hours apart is light: how high the sun is, which way the shadow
+    falls and how long it is, and whether the colours are warm or cool. Watch for a child who answers
+    from the colour alone; the shadow is the harder evidence and the surer one, and the two-star
+    question is built so that the shadow settles it. The three-star question asks for a painting whose
+    hour can be read by somebody else, which is the real test of the idea. Off the page, photograph the
+    same tree in the morning and again after tea, and put the two side by side.
+    """
+  level easy {
+    grown-ups "At this level dusk is picked out against noon, the picture with no shadow is found once in the teacher's pen, on the look's own pair, before two more, the pictures to order are one already in order and one with two swapped, the warm mix is red with yellow both times, the story is two days, the two-star pair is a morning against a dusk, and the painting may be a morning or a noon."
+  }
+  level hard {
+    grown-ups "At this level dusk is told from morning with the sun left out, so that only the shadow says which is which, and the core carries a second of those, the pictures to order include one with all three out of place, one warm mix is a pale one of red and white, the story is five days, the two-star pair is two mornings, which is a yes rather than a no, and the painting may be a dusk or a mid-morning."
+  }
+}

@@ -1,0 +1,21 @@
+# The chart is the evidence: a colour whose band is all below 7 says acid, and blue, which sits on 7
+# and 8, says only that it is not an acid. The checker reads the same chart.
+item chem.cabbage-acid v=1 skills=[chemistry.acids] {
+  title "Is it an acid?"
+  difficulty v
+  let v=0..11
+
+  scene 27x14 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cabbage c liquids=["{if v == 0 then \"lemon\" else if v == 1 then \"lemon\" else if v == 2 then \"lemon\" else if v == 3 then \"milk\" else if v == 4 then \"milk\" else if v == 5 then \"milk\" else if v == 6 then \"washingsoda\" else if v == 7 then \"washingsoda\" else if v == 8 then \"washingsoda\" else if v == 9 then \"bakingsoda\" else if v == 10 then \"bakingsoda\" else \"bakingsoda\"}", "{if v == 0 then \"water\" else if v == 1 then \"water\" else if v == 2 then \"water\" else if v == 3 then \"bakingsoda\" else if v == 4 then \"bakingsoda\" else if v == 5 then \"bakingsoda\" else if v == 6 then \"vinegar\" else if v == 7 then \"vinegar\" else if v == 8 then \"vinegar\" else if v == 9 then \"milk\" else if v == 10 then \"milk\" else \"milk\"}", "{if v == 0 then \"washingsoda\" else if v == 1 then \"washingsoda\" else if v == 2 then \"washingsoda\" else if v == 3 then \"vinegar\" else if v == 4 then \"vinegar\" else if v == 5 then \"vinegar\" else if v == 6 then \"water\" else if v == 7 then \"water\" else if v == 8 then \"water\" else if v == 9 then \"lemon\" else if v == 10 then \"lemon\" else \"lemon\"}"] chart=1 show=1 names=1 letters=1
+      column side space=1 align=start {
+        text ask "Use the chart. Is the liquid in cup {if v == 0 then \"A\" else if v == 1 then \"B\" else if v == 2 then \"C\" else if v == 3 then \"A\" else if v == 4 then \"B\" else if v == 5 then \"C\" else if v == 6 then \"A\" else if v == 7 then \"B\" else if v == 8 then \"C\" else if v == 9 then \"A\" else if v == 10 then \"B\" else \"C\"} an acid?" width=8
+        choice pick options=["yes", "no"] stack=column
+      }
+    }
+  }
+
+  check chem.indicator of=c pick="acid({if v == 0 then \"A\" else if v == 1 then \"B\" else if v == 2 then \"C\" else if v == 3 then \"A\" else if v == 4 then \"B\" else if v == 5 then \"C\" else if v == 6 then \"A\" else if v == 7 then \"B\" else if v == 8 then \"C\" else if v == 9 then \"A\" else if v == 10 then \"B\" else \"C\"})"
+  hint "What colour is cup {if v == 0 then \"A\" else if v == 1 then \"B\" else if v == 2 then \"C\" else if v == 3 then \"A\" else if v == 4 then \"B\" else if v == 5 then \"C\" else if v == 6 then \"A\" else if v == 7 then \"B\" else if v == 8 then \"C\" else if v == 9 then \"A\" else if v == 10 then \"B\" else \"C\"}? Find that colour on the chart."
+  hint "Is that colour's band on the acid side of the chart, below 7?"
+}

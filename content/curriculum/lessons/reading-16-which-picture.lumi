@@ -1,0 +1,58 @@
+lesson reading-which-picture v=1 format=teach grade=1 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "Which picture?"
+  goal "Read a short sentence and find the picture it tells you about."
+
+  look {
+    scene 28x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        sentence strip before="The cat is on the mat" blank=0 after="." size=24
+        picturecards cards who=["cat", "cat", "dog"] where=["by", "on", "on"] thing=["mat", "mat", "mat"] letters=true
+      }
+    }
+    say """
+      Read the sentence first. Then look at each picture. Only one shows the cat on the mat.
+
+      Little words like in, on and under tell you where things are.
+      """
+  }
+  do {
+    level easy {
+      worked reading.true-or-not a="cat" o="duck" b=1 level=medium
+    }
+    practice reading.true-or-not count=2 seed=5
+    show reading.which-picture k=1 s=0
+    practice reading.where-is-it count=2 seed=3
+    show reading.which-picture k=2 s=1
+    practice reading.four-pictures count=1 hard-count=0 seed=4
+    level hard {
+      practice reading.one-word-wrong count=1 seed=1
+    }
+    practice reading.match-the-picture count=1 seed=1
+  }
+  try stars=2 {
+    show reading.one-word-wrong i=0 m=1 easy-m=0
+  }
+  try stars=3 {
+    show reading.fits-b-not-a k=0
+  }
+  remember {
+    say "Read every word. The little words tell you where."
+  }
+
+  grown-ups """
+    The words are all ones a child can sound out, and the picture comes after the reading, never
+    instead of it. Each wrong card shows the same animal or the same place as the sentence, so a
+    child who guesses from one word gets it wrong, and the feedback names the word they skipped.
+    If they pick by the animal alone, cover the pictures, read the sentence together, then uncover
+    them. The four-picture question is the step up: each card is wrong in one way, so every word
+    of the sentence rules one out. In the two-star question the child checks the sentence against
+    the picture part by part. The three-star question is marked by you: any sentence that is true of
+    picture B and false of picture A is right.
+    """
+  level easy {
+    grown-ups "At this level a sentence with the wrong little word is judged once in the teacher's pen before sentences that are true as they stand or name the wrong animal, the pictures are as written, the animal is in or on the box or the table, the four pictures and the sentence to match are as written, the two-star's wrong word is the animal, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the sentences to judge have the wrong little word or say a true thing in other words, the pictures are as written, the animal is by or under the box or the table, the four pictures make way for a second sentence with one wrong word, the sentence to match is as written, and the two-star and three-star are as written."
+  }
+}

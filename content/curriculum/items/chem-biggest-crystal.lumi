@@ -1,0 +1,37 @@
+# The three-star: the start that grows the biggest crystal on a string. The crystal is the salt
+# that comes back out as the water cools, so it wants hot water with as much salt as the hot water
+# will hold; salt the water never dissolved just sits on the floor, and a cool start has little
+# to give up.
+item chem.biggest-crystal v=1 stars=3 skills=[chemistry.crystals, chemistry.dissolving, reasoning.constraints] {
+  title "The biggest crystal"
+  difficulty k
+  let k=0..1 r=0..3
+  let right={pick(k, "60 °C water, 8 spoons", "60 °C water, 8 spoons")}
+  let o1={pick(k, "60 °C water, 3 spoons", "40 °C water, 6 spoons")}
+  let o2={pick(k, "10 °C water, 3 spoons", "60 °C water, 6 spoons")}
+  let o3={pick(k, "10 °C water, 8 spoons", "20 °C water, 8 spoons")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x32 {
+    table data cols=2 head=["Water °C", "Spoons it holds"] cells=["10", "3", "20", "4", "40", "6", "60", "8"] at=canvas(1, 0)
+    text ask "Ana wants the biggest crystal she can grow on a string as a cup of salty water cools to 10 °C. Which cup should she start with?" narrate width=32 below=data gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else if r == 2 then o2 else o3, if r == 0 then o1 else if r == 1 then right else if r == 2 then o3 else o2, if r == 0 then o2 else if r == 1 then o3 else if r == 2 then right else o1, if r == 0 then o3 else if r == 1 then o2 else if r == 2 then o1 else right] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o3) point=data {
+      say "{if k == 0 then \"Water at 10 °C holds 3 spoons, so 5 of those 8 never dissolve. They sit on the floor, and nothing comes out onto the string as it cools.\" else \"Water at 20 °C holds 4 spoons, so 4 of those 8 never dissolve. Only what dissolved can come out onto the string.\"}"
+    }
+    when (pick != right and pick != o3) point=data {
+      say "The crystal is made of the salt the water gives up as it cools to 10 °C, where it holds 3 spoons. Start with the most salt the water can hold dissolved."
+    }
+  }
+  hint "The crystal is the salt that comes out as the water cools. At 10 °C the water keeps 3 spoons."
+  hint "Salt the water never dissolved does not count. Which cup has the most salt dissolved to start with?"
+}

@@ -1,0 +1,22 @@
+# A rectangle has two lengths anyway, so the wrong number does not stand out as the odd one: the
+# child has to compare each side with the side opposite it, the audit's raise for find-the-bug. The
+# checker proves the bug is on one line and no other.
+item coding.opposite-sides-bug v=1 stars=2 skills=[coding.debugging, reasoning.find-the-error] {
+  title "The rectangle that will not close"
+  difficulty (2 * k + w + h + (if d < 0 then 3 else 0))
+  let w=3..4 h=1..2 k=1..4 d={-1, 1}
+  where (k % 2 == 1 or h + d >= 1)  # up 0 is not a block to read
+
+  scene 29x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["right {if k == 1 then w + d else w}", "up {if k == 2 then h + d else h}", "left {if k == 3 then w + d else w}", "down {if k == 4 then h + d else h}"] numbers=true
+      turtle t cols=6 rows=5 col=1 row=5 moves=["right {if k == 1 then w + d else w}", "up {if k == 2 then h + d else h}", "left {if k == 3 then w + d else w}", "down {if k == 4 then h + d else h}"] target=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+    }
+    text ask "Which block is wrong?" width=10 below=top gap=1
+    choice pick options=[1, 2, 3, 4] right-of=ask gap=1
+  }
+
+  check coding.runs of=t goal=target pick=wrong
+  hint "Where does the drawing first leave the pale rectangle?"
+  hint "Each side has to be as long as the side opposite it. Which pair does not match the pale shape?"
+}

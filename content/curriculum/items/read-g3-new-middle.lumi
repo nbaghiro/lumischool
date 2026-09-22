@@ -1,0 +1,18 @@
+# The start and the end stay; the child writes a new problem and the fix for it. Many answers are
+# right if the fix solves exactly that problem. A grown-up marks it.
+item reading.new-middle v=1 stars=3 skills=[reading.story-structure, writing.composing] {
+  title "A new problem, a new fix"
+  let k=0..2
+
+  scene 35x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=[if k == 0 then "Nell sets off to see Gran." else if k == 1 then "Ada plants a row of beans." else "The ferry leaves the harbour.", "", "", if k == 0 then "Tea at Gran's house." else if k == 1 then "Ada picks a bowl of beans." else "Everyone gets home safely."] icons=[if k == 0 then "girl" else if k == 1 then "girl" else "boat", "", "", if k == 0 then "cake" else if k == 1 then "apple" else "cottage"] heads=[] blank=1
+      text ask "Write a new problem for stop 2 and its fix for stop 3." width=34
+      writinglines w lines=2 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A problem at stop 2 that could stop the story reaching its ending, and a fix at stop 3 that solves that same problem, so the first and last stops still fit. For Nell, a flooded path and a lift in a neighbour's cart; for the beans, a dry summer and a watering can every evening; for the ferry, a broken engine and a tow from a fishing boat. Any pair that joins up is right."
+  hint "What could go wrong between the first stop and the last?"
+  hint "Now make the fix solve exactly that problem, so the ending still happens."
+}

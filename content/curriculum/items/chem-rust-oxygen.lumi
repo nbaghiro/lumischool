@@ -1,0 +1,29 @@
+# Non-routine: rust weighs more than the iron it came from, because oxygen from the air joins it, so
+# the answer grows rather than shrinks, and the rule is given so it can be worked out.
+item chem.rust-oxygen v=1 stars=3 skills=[chemistry.rusting, chemistry.conservation] {
+  title "Heavier after rusting"
+  difficulty (n * m)
+  let n=2..5 m={10, 20}
+
+  scene 29x11 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      nails j jars=["water"] days=14 letters=0 names=0
+      column side space=1 align=start {
+        text ask "When iron rusts, every 10 grams of iron takes in about 4 grams of oxygen from the air. {n} nails of {m} grams each rust all the way through. What does the rust weigh?" width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer (n * m + n * m * 4 / 10)
+  feedback {
+    when (answer == n * m) point=j {
+      say "That is what the iron weighed. What joined it from the air?"
+    }
+    when (answer < n * m) point=j {
+      say "Does anything leave the nails when they rust, or does something join them?"
+    }
+  }
+  hint "How much does all the iron weigh before it rusts?"
+  hint "How many lots of 10 grams is that? How much oxygen joins each lot?"
+}

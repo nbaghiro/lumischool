@@ -1,0 +1,47 @@
+# The three-star plan: a start chord and three more to play once each, in the order that lifts the
+# fewest fingers in all. Each version has one best order and the next best is at least one lift more
+# (catalog-balance work/batch25/orders.ts searched every start and set). The slides in v=3 and v=4
+# are what makes them harder.
+item music.guitar-fewest-lifts v=1 stars=3 skills=[music.chord-changes, reasoning.planning] {
+  title "The quickest order"
+  difficulty (if v >= 3 then 1 else 0)
+  let v=0..4
+  let st={pick(v, "C", "C", "C", "Em", "D")}
+  let x={pick(v, "Am", "G", "D", "D", "C")}
+  let y={pick(v, "Em", "Am", "Am", "E", "Em")}
+  let z={pick(v, "E", "Em", "Em", "A", "E")}
+  let right={pick(v, "Am, Em, E", "Am, Em, G", "Am, Em, D", "E, D, A", "E, Em, C")}
+  let near={pick(v, "Am, E, Em", "Am, G, Em", "Am, D, Em", "E, A, D", "C, Em, E")}
+  let o1={pick(v, "Em, E, Am", "G, Em, Am", "D, Em, Am", "A, D, E", "Em, E, C")}
+  level easy {
+    let v=0..2
+  }
+  level hard {
+    let v=3..4
+  }
+
+  scene 36x37 {
+    row one space=1 align=start at=canvas(1, 1) {
+      chordbox s tuning=guitar chord=pick(v, "C", "C", "C", "Em", "D") frets=3 show=fingers name=true letters=false lit=[]
+      chordbox bx tuning=guitar chord=pick(v, "Am", "G", "D", "D", "C") frets=3 show=fingers name=true letters=false lit=[]
+    }
+    row two space=1 align=start below=one gap=1 {
+      chordbox by tuning=guitar chord=pick(v, "Em", "Am", "Am", "E", "Em") frets=3 show=fingers name=true letters=false lit=[]
+      chordbox bz tuning=guitar chord=pick(v, "E", "Em", "Em", "A", "E") frets=3 show=fingers name=true letters=false lit=[]
+    }
+    text ask "Ben starts on {st}. Then he must play {x}, {y} and {z}, once each, in any order. Which order lifts the fewest fingers in all?" narrate width=34 below=two gap=1
+    choice pick options=[pick(v, near, right, o1, near, right), pick(v, right, o1, right, o1, near), pick(v, o1, near, near, right, o1)] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == near) point=ask {
+      say "That order is close. Add up the lifts again, change by change, and look for a change where two fingers stay down."
+    }
+    when (pick == o1) point=ask {
+      say "Count the lifts for each change in that order and add them. A change where fingers stay costs less."
+    }
+  }
+  hint "Which change lets fingers stay down, or slide along a string? Try to use it."
+  hint "For each order, count the lifts change by change, starting from {st}, and add them."
+}

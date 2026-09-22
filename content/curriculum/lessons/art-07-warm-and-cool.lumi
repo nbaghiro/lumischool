@@ -1,0 +1,59 @@
+lesson art-warm-and-cool v=1 format=teach grade=3 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Warm and cool"
+  goal "Sort colours and mixes into warm and cool, work out which paint turns a mix cool, and use both in one painting."
+
+  look {
+    scene 16x15 {
+      colourwheel wheel segments=12 blank=[] ring=-1 labels=true split="warm" at=canvas(1, 1)
+    }
+    say """
+      Reds, oranges and yellows are warm colours, the colours of fire and the sun. Greens, blues and
+      purples are cool, the colours of water and shade. Warm colours do not make a picture hot; they
+      make it feel warm.
+      """
+  }
+  do {
+    practice art.warm-or-cool count=1 seed=1
+    practice art.which-is-warm count=2 seed=2
+    level easy {
+      worked art.cool-with t="red" p=0 level=medium
+    }
+    practice art.cool-with count=3 seed=3
+    practice art.paint-for-weather count=2 hard-count=1 seed=1
+    level hard {
+      practice art.warm-purple count=1 seed=1
+    }
+    show art.purple-depends
+  }
+  try stars=2 {
+    show art.warm-purple p=1
+  }
+  try stars=3 {
+    show art.warm-sun-cool-sea
+  }
+  remember {
+    say "Warm colours are the colours of fire and the sun, cool ones the colours of water and shade. A mix leans towards whichever paint there is more of."
+  }
+
+  grown-ups """
+    The questions are marked by the machine, which judges each mix by where it sits on the colour
+    wheel and refuses a colour too near the line between warm and cool to be fair. The first ones
+    name a pot's colour as warm or cool. The later ones ask about mixes the child has to make in
+    their head first, and one turns the question round: which paint, added to yellow, makes a cool
+    colour. A common mix-up is thinking warm colours change the temperature; it is worth saying
+    plainly that they change how a picture feels.
+
+    The two-star question shows that the same two paints can make a warm or a cool colour: a
+    purple with much more red in it leans warm. The painting is the three-star question, because
+    the child has to place a warm thing in the cool sea and a cool thing in the warm sky.
+
+    Respond by talking about feeling: "The sea is all blues and greens, and it makes the sun look
+    even warmer." Ask where the warm and the cool meet, and what happens there.
+    """
+  level easy {
+    grown-ups "At this level the mix to call warm or cool comes from warm-looking pots, the warm mixes are as written, a cool colour from red is mixed once in the teacher's pen before cool colours from white, the sky paint is for a snowy morning, purple is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the mix to call warm or cool is cool from a warm-looking pot, the warm mixes are as written, the cool colours are mixed from red, the sky paint is for a hot desert and the second one makes way for a second warm purple to find, purple is as written, and the two-star and three-star are as written."
+  }
+}

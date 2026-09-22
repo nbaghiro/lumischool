@@ -1,0 +1,40 @@
+# Reading the path on the treasure map: at a landmark the path bends, and the bend is a left or a
+# right for someone walking along it. The first landmark is plain; further along, the walker is
+# facing a new way, which is where left and right get harder.
+item nature.turn-at v=1 skills=[nature.maps, geometry.turns] {
+  title "Which way at the rock?"
+  difficulty k
+  let k=0..2 p=0..3
+  let s1={pick(p, "tree", "rock", "hut", "cave")}
+  let s2={pick(p, "rock", "bridge", "tree", "rock")}
+  let s3={pick(p, "bridge", "tree", "pond", "tent")}
+  let t1={pick(p, "left", "right", "left", "right")}
+  let t2={pick(p, "right", "left", "right", "right")}
+  let t3={pick(p, "left", "right", "right", "left")}
+  let stop={pick(k, s1, s2, s3)}
+  let turn={pick(k, t1, t2, t3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x16 {
+    treasuremap map stops=[s1, s2, s3] turns=[t1, t2, t3] heading="right" step=4 names=true at=canvas(1, 1)
+    text ask "Ada walks the path from the boat, past each landmark, to the X. When she reaches the {stop}, which way does she turn?" narrate width=16 right-of=map gap=2
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=turn
+  feedback {
+    when (pick != turn and k == 0) point=map {
+      say "Face the way the path goes at the start, then look which side the path bends to at the first landmark."
+    }
+    when (pick != turn and k > 0) point=map {
+      say "By the {stop}, Ada is not facing the same way as at the start. Turn the page so you face the way she walks, then look which side the path bends."
+    }
+  }
+  hint "Put your finger on the boat and walk it along the path. Face the way it goes."
+  hint "At the {stop}, does the path bend to your left hand or your right hand?"
+}

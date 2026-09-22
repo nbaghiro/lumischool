@@ -1,0 +1,45 @@
+lesson chemistry-year-review-1 v=1 format=review grade=1 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry review: the first year"
+  goal "Look back over the year: what things are made of, what they are like, water and ice, looking closely, and where water goes."
+
+  warm-up {
+    practice chem.what-made count=1 seed=2 easy-seed=1 hard-seed=3
+    practice chem.see-through count=1 seed=3 easy-seed=1 hard-seed=2
+    practice chem.ice-melted count=1 seed=1 easy-seed=1 hard-seed=1
+  }
+  exercises {
+    practice chem.odd-material count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.property-count count=1 seed=3 easy-seed=1 hard-seed=2
+    practice chem.job-material count=1 seed=4 easy-seed=1 hard-seed=1
+    practice chem.predict-back count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.water-state count=1 seed=3 easy-seed=1 hard-seed=1
+    practice chem.lens-shape count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.wet-through count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.days-to-dry count=1 seed=1 easy-seed=1 hard-seed=1
+  }
+  puzzle stars=2 {
+    show chem.tell-apart k=1 r=0 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show chem.dry-seat k=1 p=2 easy-k=0 easy-p=0 hard-k=2 hard-p=1
+  }
+
+  grown-ups """
+    This is a check, not a test, to do in the yard of the printing works before the next year's
+    melting and mixing begin. The warm-up is the first question of three lessons: a thing to name
+    the material of, a thing to see through or not, an ice cube that has melted. The exercises
+    take one question each from the year: the odd material out, how many things are hard, the
+    material for a job, whether a shape springs back, water as ice, water or steam from a
+    thermometer, a grain seen under the lens, which thing is wet through, and how many days a
+    dish takes to dry. Anything that needs the way in again is worth another week with that
+    lesson, and everything else can move on. The two puzzles are there to be enjoyed: the two
+    look-alikes ask for the one test that tells them apart, and the dry seat wants two layers,
+    one to keep the wet out and one to sit on, so ask for the reason as well as the letters.
+    """
+  level easy {
+    grown-ups "At this level the materials to name are the plainest (a wooden spoon, a glass jar), the see-through thing is the glass jar or the plastic bottle, the ice cube sits on the table, the odd material stands out, the things to count are the hard ones, the job is the window, the towel or the wall, the shape is the sponge or the clay, the thermometer reads near twenty, the grain is sand or rice, the wet thing is the towel or the paper bag, the dish stands in the shade, the look-alikes are a glass and a plastic bottle, and the seat's things are the raincoat and the towel."
+  }
+  level hard {
+    grown-ups "At this level the materials to name include the plastic bottle, the see-through thing is judged among things that are not, the ice cube is looked at every five minutes, the odd material hides among near ones, the things to count are the bendy ones, the job is the boot or the bag, the shape is the pipe cleaner or the foil, the thermometer reads below zero or near boiling, the grain is salt or sugar, the wet thing sits among soft things that keep water out, the dish stands in the sun with three quarters, the look-alikes are painted the same, and the seat's things include a bottle that will not lie flat."
+  }
+}

@@ -1,0 +1,20 @@
+# Three chords to put in an order where a finger stays down at every change. In each set only one
+# chord shares a finger with both others, so the middle is forced; p shuffles the cards.
+item music.change-middle v=1 stars=3 skills=[music.chord-changes, reasoning.constraints] {
+  title "The chord in the middle"
+  let t=0..1 p=0..2
+
+  scene 36x20 {
+    text ask "A finger must stay down at each change. Which chord goes in the middle?" narrate width=35 at=canvas(1, 0)
+    row cards below=ask gap=1 space=2 align=start {
+      chordbox a tuning=uke chord=(if p == 0 then if t == 0 then "F" else "Dm" else "Am") frets=3 show=fingers name=true letters=false lit=[]
+      chordbox b tuning=uke chord=(if p == 1 then if t == 0 then "F" else "Dm" else if p == 0 then "Am" else "G7") frets=3 show=fingers name=true letters=false lit=[]
+      chordbox c tuning=uke chord=(if p == 2 then if t == 0 then "F" else "Dm" else "G7") frets=3 show=fingers name=true letters=false lit=[]
+    }
+    choice pick options=["Am", "F", "Dm", "G7"] below=cards gap=1
+  }
+
+  answer pick=(if t == 0 then "F" else "Dm")
+  hint "Take two cards at a time. Do they share a finger in the same place?"
+  hint "Which chord shares a finger with both of the others?"
+}

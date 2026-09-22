@@ -1,0 +1,16 @@
+# Rhyme is heard, not seen: the words are written so the child reads them, and the picture beside
+# each set is the word that does not rhyme, so saying it is enough to check.
+item reading.rhyme-odd v=1 skills=[reading.rhyme] {
+  title "The odd one out"
+  let k=0..2
+
+  scene 21x7 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Which word does not rhyme?"
+      choice pick options=[if k == 0 then "cat" else if k == 1 then "hen" else "fog", if k == 0 then "hat" else if k == 1 then "ten" else "log", if k == 0 then "sun" else if k == 1 then "pen" else "pig", if k == 0 then "mat" else if k == 1 then "cup" else "dog"]
+    }
+  }
+
+  answer pick=(if k == 0 then "sun" else if k == 1 then "cup" else "pig")
+  hint "Say each word out loud. Listen to how it ends."
+}

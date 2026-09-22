@@ -1,0 +1,25 @@
+# A knock at one end and an ear at the other, with air, a wooden table or a tank of water between
+# them, and which of the three the sound is crossing. Air is the everyday one and the hardest to see,
+# since there is nothing drawn between the fist and the ear.
+item physics.sound-through-what v=1 skills=[physics.sound, physics.materials] {
+  title "What is it going through?"
+  difficulty (2 - t)
+  let t=0..2 r=0..1
+  let ans={pick(t, "The air", "The wooden table", "The water")}
+  level easy {
+    let t=1..2
+  }
+  level hard {
+    let t=0..1
+  }
+
+  scene 23x27 {
+    stringphone through mode=through through=t rings=r at=canvas(1, 0)
+    text ask "A fist knocks at one end and an ear listens at the other. What is the sound crossing to reach the ear?" narrate width=22 below=through gap=1
+    choice pick options=["The air", "The wooden table", "The water"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Look at what is drawn between the fist and the ear."
+  hint "If nothing is drawn between them, the sound has only the air to cross."
+}

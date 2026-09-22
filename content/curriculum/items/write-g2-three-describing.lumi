@@ -1,0 +1,17 @@
+# Describing words to a constraint: none may be a colour, which rules out the first words most
+# children reach for.
+item writing.three-describing v=1 stars=3 skills=[writing.word-classes, writing.describing, writing.composing] {
+  title "Three words, and not a colour"
+  let k=0..3
+  let pic={if k == 0 then "hedgehog" else if k == 1 then "owl" else if k == 2 then "sandcastle" else "treehouse"}
+
+  scene 36x24 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    text ask "Write three describing words for the picture. None of them can be a colour. Then use one of them in a sentence." width=20 right-of=pic gap=1
+    writinglines lines lines=3 width=34 prompt="" below=pic gap=1
+  }
+
+  check writing.by-eye look-for="Three describing words that are true of the picture and are not colours (prickly, round, tall, sandy), and one sentence with a capital and a full stop that uses one of them next to the thing it describes."
+  hint "Is it big or small? How would it feel if you touched it?"
+  hint "Now put one of your words in front of the thing: The prickly hedgehog."
+}

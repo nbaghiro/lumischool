@@ -1,0 +1,20 @@
+# A caption of the child's own: one true, useful fact the picture cannot show. Many are right; a
+# grown-up marks it.
+item reading.write-caption v=1 stars=3 skills=[reading.text-features, writing.composing] {
+  title "Write the caption"
+  let k=0..2
+
+  scene 37x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        windmill mill sails=4 turn=0
+        text ask "{if k == 0 then \"Write a caption for this picture of a windmill.\" else if k == 1 then \"Write a caption that says what this windmill is for.\" else \"Write a caption about how this windmill works.\"} Tell the reader one thing the picture cannot show." width=26
+      }
+      writinglines w lines=1 width=36 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="One sentence that adds a fact or a reason the picture cannot show, such as what the windmill is for, how the wind turns the sails, how old it is or what is kept inside, depending on what the question asks. It is short, like a caption in an information book, and it does not simply name what can be seen."
+  hint "The picture shows what the windmill looks like. What else might a reader want to know?"
+  hint "Keep it to one sentence, the way a caption in a book is."
+}

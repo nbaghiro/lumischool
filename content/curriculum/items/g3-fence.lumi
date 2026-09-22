@@ -1,0 +1,31 @@
+# Perimeter in a story with a gap in it: the whole way round, then the gate taken off.
+item area.fence v=1 skills=[perimeter.count-edges, problems.two-step] {
+  title "A fence with a gate"
+  difficulty (a + b)
+  let a=6..15 b=4..9 g={1, 2}
+  where (a != b)
+  level easy {
+    let a=6..9 b=4..6
+  }
+  level hard {
+    let a=12..15 b=7..9
+  }
+
+  scene 32x12 {
+    gardengate gate bars=5 open=1 at=canvas(1, 1)
+    text ask "A garden is a rectangle {a} m long and {b} m wide. A fence goes all the way round, except for a gate {g} m wide. How long is the fence?" width=19 right-of=gate gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * (a + b) - g)
+  feedback {
+    when (answer == 2 * (a + b)) point=ask {
+      say "That is all the way round. The gate is not fence, so take it off."
+    }
+    when (answer == a + b - g) point=ask {
+      say "A rectangle has two long sides and two short ones."
+    }
+  }
+  hint "How far is it all the way round the garden?"
+  hint "Then take away the part where the gate goes."
+}

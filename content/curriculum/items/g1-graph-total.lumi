@@ -1,0 +1,28 @@
+# Every row of the picture graph is a child who was asked, so the total adds three rows.
+item data.graph-total v=1 skills=[data.picture-graph, addition.three-numbers] {
+  title "How many were asked"
+  difficulty (a + b + c)
+  let a=2..6 b=2..6 c=2..6
+  where (a + b + c <= 18)
+  level easy {
+    let a=2..3 b=2..3 c=2..3
+  }
+  level hard {
+    let a=5..6 b=5..6 c=5..6
+  }
+
+  scene 34x9 {
+    picgraph chart labels=["Apples", "Pears", "Plums"] counts=[a, b, c] prop=apple at=canvas(1, 1)
+    text ask "Each child chose one fruit. How many children were asked?" narrate width=14 right-of=chart gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b + c)
+  feedback {
+    when (answer == a + b or answer == b + c or answer == a + c) point=chart {
+      say "Add all three rows. Every child on the graph was asked."
+    }
+  }
+  hint "How many are in each row?"
+  hint "Add the three rows. Can you make a ten first?"
+}

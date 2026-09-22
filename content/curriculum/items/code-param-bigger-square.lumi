@@ -1,0 +1,35 @@
+# Two blocks that use their number in different ways, and which call draws the bigger square: frame
+# makes each side two sizes long, tile makes it one more than its size. At v=2 and 5 the call with
+# the smaller number draws the bigger square.
+item coding.param-bigger-square v=1 skills=[coding.procedures, coding.drawing, reasoning.compare] {
+  title "Which square is bigger?"
+  difficulty (if v < 2 then 0 else if v < 4 then 1 else 2)
+  let v=0..5
+  let a={pick(v, 2, 2, 3, 2, 4, 4)}
+  let b={pick(v, 2, 4, 4, 3, 7, 6)}
+  let ans={pick(v, "Frame's square", "Tile's square", "Frame's square", "They are the same size", "They are the same size", "Frame's square")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=4..5
+  }
+
+  scene 36x27 {
+    row cards space=1 align=start at=canvas(1, 1) {
+      program pf code=["define frame size", "  repeat 4", "    forward size", "    forward size", "    turn right"] title="Frame"
+      program pt code=["define tile size", "  repeat 4", "    forward size", "    forward 1", "    turn right"] title="Tile"
+    }
+    text ask "Sam's turtle draws frame {a}, then tile {b}. Which square is bigger?" narrate width=17 below=cards gap=1
+    choice pick options=["Frame's square", "Tile's square", "They are the same size"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=cards {
+      say "Work out one side of each: frame {a} goes forward {a} twice, and tile {b} goes forward {b} and then 1."
+    }
+  }
+  hint "How long is one side of frame {a}? Add up its two forward lines."
+  hint "How long is one side of tile {b}?"
+}

@@ -1,0 +1,21 @@
+# The wrong number hides among the right ones: the dashed target shows what was wanted, and the
+# checker proves one line alone mends it.
+item coding.rectangle-bug v=1 stars=2 skills=[coding.debugging, coding.drawing] {
+  title "Which line is wrong?"
+  difficulty ((if k == 2 then 0 else 1) + (if w - h == 1 then 1 else 0))
+  let w=3..5 h=2..3 k=0..2
+  where (w != h)
+
+  scene 36x20 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat {if k == 2 then 1 else 2}", "  forward {if k == 0 then h else w}", "  turn left", "  forward {if k == 1 then w else h}", "  turn left"]
+      turtle t cols=7 rows=6 col=1 row=6 face=right moves=["repeat {if k == 2 then 1 else 2}", "  forward {if k == 0 then h else w}", "  turn left", "  forward {if k == 1 then w else h}", "  turn left"] target=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"]
+    }
+    text ask "Mo wanted the dashed rectangle. One line has a wrong number. Which line?" width=34 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check coding.runs of=t goal=target answer=wrong
+  hint "Put your finger on the dashed rectangle. How long is its bottom side, and how tall?"
+  hint "Now check each number in the program against those two lengths."
+}

@@ -1,0 +1,61 @@
+lesson writing-a-sentence-about-a-picture v=1 format=teach grade=1 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Writing a sentence about a picture"
+  goal "Write one whole sentence about something you can see."
+
+  look {
+    scene 30x20 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row things space=2 align=end {
+          basket b item=apple count=5 label="five apples"
+          tree t fruit=6 fallen=2 item=apple
+        }
+        writinglines ruled lines=1 width=28 prompt="The basket has five apples in it."
+      }
+    }
+    say """
+      A sentence says one whole thing. It is not a list: "apples, basket, tree" is three words, not
+      a sentence. Say your sentence out loud before you write it, and if it sounds finished when you
+      stop, it is a sentence.
+      """
+  }
+  do {
+    level easy {
+      worked writing.finish-the-sentence a=0 p=1 level=medium
+    }
+    show writing.is-it-a-sentence a=0 q=2
+    show writing.is-it-a-sentence a=2 q=1
+    show writing.finish-the-sentence a=2 p=2 easy-p=0 hard-p=1
+    show writing.finish-the-sentence a=3 p=1 easy-p=0
+    show writing.finish-the-sentence a=1 p=0
+    practice writing.left-out-word count=2 hard-count=1 seed=3
+    level hard {
+      practice writing.helps-find count=1 seed=1
+    }
+    show writing.sentence-about-a-picture w="garden"
+  }
+  try stars=2 {
+    show writing.helps-find a=1 t=0 f=0 q=1 hard-f=1
+  }
+  try stars=3 {
+    show writing.fits-one-card a=0 f=1
+  }
+  remember {
+    say "Say it out loud first. If it sounds finished, it is a sentence."
+  }
+
+  grown-ups """
+    This page collects the child's own writing, so the grown-up is the marker and the answer sheet
+    says what to look for. Take the sentence they say out loud, even if the written one is shorter:
+    the saying is the part this lesson is teaching. The first questions are marked by the machine:
+    all three choices in the first one start with a capital and end with a full stop, so only
+    whether it says one whole thing decides. The two-star question asks which sentence would let a
+    friend find one card; "It is under the bed" fits two cards because it does not say who. In the
+    three-star question the child writes a sentence that fits card B and not card A.
+    """
+  level easy {
+    grown-ups "At this level the whole sentences are as written, the fox's in is filled once in the teacher's pen before the animals' names, the missing words are is and the, the sentence to write is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the whole sentences are as written, the words to fill are the place words (on and by), the missing words are the and the place word, one of them making way for a second card to tell a friend, the sentence to write is as written, the two-star's cards differ by under, and the three-star is as written."
+  }
+}

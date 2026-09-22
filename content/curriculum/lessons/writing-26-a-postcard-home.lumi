@@ -1,0 +1,58 @@
+lesson writing-a-postcard-home v=1 format=teach grade=3 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A postcard home"
+  goal "Write about something that happened, in the order it happened, to someone who was not there."
+
+  look {
+    scene 36x24 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row sky space=2 align=end {
+          telescope scope tilt=35
+          moon m phase=0.5
+        }
+        postcard card greeting="Dear Gran," text="First we climbed the hill. Then we set up the telescope. At last the moon came up over the trees!" closing="Love from" from="Mo" to=["Gran", "2 Mill Lane", "Bray"] stamp="none" date="" lines=4
+      }
+    }
+    say """
+      A postcard tells someone at home what happened. It says things in the order they happened,
+      and words like first, then and at last keep the order clear. It starts with who it is to and
+      ends with who it is from.
+      """
+  }
+  do {
+    level easy {
+      worked writing.recount-tense t=2 p=0 level=medium
+    }
+    show writing.recount-tense t=1 p=1 hard-t=2
+    show writing.recount-order
+    show writing.time-word t=2 q=0
+    show writing.recount-tense t=3 p=0 easy-t=0
+    show writing.time-word t=1 q=1
+    practice writing.recount-cause count=2 seed=1
+    practice writing.recount-missing count=1 seed=2 hard-seed=3
+  }
+  try stars=2 {
+    show writing.recount-reader t=1 p=2 easy-t=0
+  }
+  try stars=3 {
+    show writing.write-a-postcard t="the night the rocket went up"
+  }
+  remember {
+    say "First, then, at last: say it in the order it happened."
+  }
+
+  grown-ups """
+    The order questions are marked by the machine; the postcard is the child's. If you can, post
+    it, or hand it to the person it is for. Writing that reaches a real reader is the reason to
+    get the order and the greeting right, and children feel the difference. After the second
+    question the time words are taken away, so the order has to come from the events themselves:
+    the telescope has to be set up before the moon is seen through it. The two-star question asks
+    which sentence would help someone who was not there, and the postcard's checklist (five
+    sentences, a new time word, one thing someone said, one feeling) is what to read it against.
+    """
+  level easy {
+    grown-ups "At this level went is chosen once in the teacher's pen before lit and climbed, the order and the time words are as written, the sentences to order are the seeds, planted in the order of planting, the gap is as written, the two-star's sentence for Gran is the orange moon, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the gaps want went and saw, the order and the time words are as written, both sets of sentences to order are the kite's, worked out from what caused what, the gap is the steep path, and the two-star and three-star are as written."
+  }
+}

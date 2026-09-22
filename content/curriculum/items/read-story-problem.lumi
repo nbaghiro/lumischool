@@ -1,0 +1,26 @@
+# Most stories have a problem that the rest of the story solves. The map has no headings here, so
+# the child finds the stop where things go wrong from what the stops say.
+item reading.story-problem v=1 skills=[reading.story-structure] {
+  title "Where is the problem?"
+  difficulty (if k == 1 then 2 else if k == 2 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k={0, 2}  # the hole in the first stop, the bridge in the second
+  }
+  level hard {
+    let k={0, 1}  # the rain in the third stop
+  }
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=[if k == 0 then "Nell wants to see Gran." else if k == 1 then "We pack a picnic." else "Ivy's boat has a hole.", if k == 0 then "The bridge has fallen down." else if k == 1 then "We walk up the hill." else "She finds some tape.", if k == 0 then "She borrows a boat." else if k == 1 then "It pours with rain." else "She fixes the hole.", if k == 0 then "Tea at Gran's house." else if k == 1 then "We eat in the tent." else "The boat floats again."] icons=[if k == 0 then "girl" else if k == 1 then "apple" else "boat", if k == 0 then "bridge" else if k == 1 then "hill" else "girl", if k == 0 then "boat" else if k == 1 then "cloud" else "key", if k == 0 then "cake" else if k == 1 then "tent" else "boat"] heads=[] blank=-1
+      row q space=2 align=centre {
+        text ask "Which stop is the problem in the story?"
+        number-input answer
+      }
+    }
+  }
+
+  answer (if k == 0 then 2 else if k == 1 then 3 else 1)
+  hint "The problem is the thing that goes wrong. What do the people in the story have to fix?"
+}

@@ -1,0 +1,25 @@
+# The most one value can be when the mean is fixed and the values must differ: make the others as
+# small as they can be.
+item data.mean-extreme v=2 stars=3 skills=[data.mean, reasoning.extremes] {
+  title "The biggest it can be"
+  difficulty m
+  let m=3..8
+
+  scene 35x16 {
+    towers t heights=[m, m, m, m, m] labels=false level=m at=canvas(1, 1)
+    text ask "Five towers have a mean height of {m} cubes. Every tower is a different height, and each has at least one cube. What is the tallest the tallest tower can be?" narrate width=14 right-of=t gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (5 * m - 10)
+  feedback {
+    when (answer == 5 * m - 4) point=t {
+      say "That makes the other four towers all 1 cube. They have to be different heights."
+    }
+    when (answer == 5 * m) point=t {
+      say "The other four towers need at least one cube each, and all different."
+    }
+  }
+  hint "How many cubes are in all five towers together?"
+  hint "To make one tower tall, make the other four as short as they can be, all different."
+}

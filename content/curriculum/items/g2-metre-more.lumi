@@ -1,0 +1,30 @@
+# The missing part of a metre: the tape's reading is known and the rest has to be worked out.
+item measure.metre-more v=1 skills=[length.metres, addition.missing-part] {
+  title "The rest of a metre"
+  difficulty (100 - m)
+  let m={15, 25, 35, 45, 55, 65, 75, 85}
+  level easy {
+    let m={65, 75, 85}
+  }
+  level hard {
+    let m={15, 25, 35}
+  }
+
+  scene 30x16 {
+    tape roll to=100 step=10 mark=m unit=cm at=canvas(1, 1)
+    text ask "A shelf is as long as the arrow shows. How many more centimetres would make it one metre long?" width=28 below=roll gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (100 - m)
+  feedback {
+    when (answer == m) point=roll {
+      say "That is how long the shelf is. The question is how much more makes 100 centimetres."
+    }
+    when (answer == 110 - m) point=roll {
+      say "Count on from {m} to the next ten first, then on in tens to 100."
+    }
+  }
+  hint "How many centimetres make one metre?"
+  hint "Count on from {m} to the next ten, then in tens to 100."
+}

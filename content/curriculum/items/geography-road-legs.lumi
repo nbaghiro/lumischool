@@ -1,0 +1,25 @@
+# The legs are drawn the same length whatever they are worth, so the distance has to be added.
+item geography.road-legs v=1 skills=[geography.routes, addition.to-hundred] {
+  title "Along the road"
+  let a={4, 6, 9, 12} b={5, 7, 8, 11} c={3, 6, 10, 13} q=0..2
+  let from={if q == 0 then "Ash" else if q == 1 then "Bray" else "Ash"}
+  let to={if q == 0 then "Cole" else if q == 1 then "Dunn" else "Dunn"}
+
+  scene 34x17 {
+    roaddistances road stops=["Ash", "Bray", "Cole", "Dunn"] legs=[a, b, c] unit=km at=canvas(1, 1)
+    text ask "How far is it along the road from {from} to {to}?" width=32 below=road gap=1
+    row w below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km"
+    }
+  }
+
+  answer (if q == 0 then a + b else if q == 1 then b + c else a + b + c)
+  feedback {
+    when (answer == (if q == 1 then c else b)) point=road {
+      say "That is only the last part. Add every part between {from} and {to}."
+    }
+  }
+  hint "Put your finger on {from} and move along the road to {to}. Which parts do you pass?"
+  hint "Add the numbers on those parts."
+}

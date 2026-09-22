@@ -1,0 +1,15 @@
+item writing.which-word-fits v=1 skills=[writing.sentences] {
+  title "The word that makes it true"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+
+  scene 32x15 {
+    picturecards card who=["{if k == 0 then \"dog\" else if k == 1 then \"cat\" else \"hen\"}"] where=["{if k == 0 then \"under\" else if k == 1 then \"in\" else \"on\"}"] thing=["{if k == 0 then \"bed\" else if k == 1 then \"box\" else \"mat\"}"] letters=false at=canvas(1, 1)
+    sentence strip before="{if k == 0 then \"The dog is\" else if k == 1 then \"The cat is\" else \"The hen is\"}" blank=4 after="{if k == 0 then \"the bed.\" else if k == 1 then \"the box.\" else \"the mat.\"}" right-of=card gap=1
+    text ask "Which word makes the sentence say what the card shows?" width=20 below=strip gap=1
+    choice pick options=["in", "on", "under"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "under" else if k == 1 then "in" else "on")
+  hint "Look at the card first. Where is the animal?"
+}

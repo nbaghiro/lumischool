@@ -1,0 +1,22 @@
+# A number that shares two ways with none left: the child searches the multiples of both.
+item division.shares-two-ways v=2 stars=3 skills=[division.sharing, reasoning.systematic] {
+  title "Shared two ways"
+  difficulty m
+  let a={2, 3} b={4, 5} m={20, 25, 30, 35}
+  where (lcm(a, b) < m)
+
+  scene 36x18 {
+    children kids count=b holding="" each=0 at=canvas(1, 1)
+    text ask "The sweets in a jar can be shared equally between {a} children, or between these {b} children, with none left over. There are fewer than {m}. What is the most there can be?" width=13 right-of=kids gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (floor((m - 1) / lcm(a, b)) * lcm(a, b))
+  feedback {
+    when (answer == a * b and a * b != floor((m - 1) / lcm(a, b)) * lcm(a, b)) point=kids {
+      say "{a * b} works, but is there a bigger number under {m} that also works?"
+    }
+  }
+  hint "Which numbers under {m} share equally between {b}? Make a list."
+  hint "Which numbers on your list also share equally between {a}? Pick the biggest."
+}

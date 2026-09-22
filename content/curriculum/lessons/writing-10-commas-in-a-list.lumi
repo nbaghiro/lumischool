@@ -1,0 +1,62 @@
+lesson writing-commas-in-a-list v=1 format=teach grade=3 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Commas in a list"
+  goal "Put commas between the things in a list, and none before the word and."
+
+  look {
+    scene 28x28 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          listpad pad title="To pack" items=["hats", "maps", "pens"] count=0 width=10 ticks=true
+          suitcases bags
+        }
+        sentence plain before="I packed hats maps and pens" blank=0 after="."
+        sentence done before="I packed hats, maps and pens" blank=0 after="."
+        row talk space=1 align=centre {
+          guide g pose=point
+          bubble b "The word and does the job of the last comma." width=22 from=g.hand
+        }
+      }
+    }
+    say """
+      A list on a notepad has one thing to a line. When the list goes into a sentence, something
+      has to sit between the things or the reader runs them together. A comma does that job, and
+      the word and does it for the last pair, which is why there is no comma just before the and.
+      """
+  }
+  do {
+    level easy {
+      worked writing.commas-in-a-list n=5 level=medium
+    }
+    practice writing.commas-in-a-list count=1 seed=1
+    practice writing.comma-after count=3 seed=1
+    practice writing.commas-right count=2 seed=1
+    practice writing.which-needs-commas count=2 hard-count=1 seed=1
+    level hard {
+      practice writing.comma-mistake count=1 seed=3
+    }
+  }
+  try stars=2 {
+    show writing.comma-mistake s=1 m=1 easy-m=0
+  }
+  try stars=3 {
+    show writing.list-rule t="a night in a tent"
+  }
+  remember {
+    say "A comma between the things in a list, and none before the word and."
+  }
+
+  grown-ups """
+    Counting the gaps is more reliable than remembering a rule: the number of commas is always one
+    fewer than the number of gaps, because the last gap is filled by and. When a thing in the list
+    is more than one word, such as a warm hat, the comma goes after the whole thing, never inside
+    it; most of these questions turn on that. The two-star question asks what kind of mistake the
+    robot made, not only where. Some style guides allow a comma before the last and; these
+    questions never mark that comma wrong, so a child who has met it elsewhere is not caught out.
+    """
+  level easy {
+    grown-ups "At this level a list of five is worked once in the teacher's pen before a list of three, the commas to place are the first ones, the right commas are as written, the sentence that needs commas lists one-word things, the two-star's mistake is a missing comma, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the list has five things, the commas to place are the second ones, the right commas are as written, the sentence that needs commas hides its list among places or has a three-word thing, and the second one makes way for a second list mistake, a comma after and, the two-star's comma splits one thing in two, and the three-star is as written."
+  }
+}

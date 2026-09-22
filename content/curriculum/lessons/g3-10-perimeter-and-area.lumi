@@ -1,0 +1,52 @@
+lesson g3-perimeter-and-area v=1 format=teach grade=3 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Perimeter and area"
+  goal "Measure the distance round a shape and the squares inside it, keep them apart, and work either one backwards."
+
+  look {
+    scene 31x22 {
+      grid squares rows=3 cols=5 shade=15 color=mint cell=2 at=canvas(1, 1)
+      lshape corner w=6 h=4 cut=2 deep=2 corner=top-right cell=2 right-of=squares gap=2
+      geoboard pegs n=5 count=false below=squares gap=1
+    }
+    say """
+      Area is how many squares fit inside. Perimeter is how far it is round the edge. A shape can
+      lose squares from a corner and still have the same distance round it.
+      """
+  }
+  do {
+    practice area.rectangle count=1 seed=3
+    practice area.perimeter-grid count=2 seed=5
+    level easy {
+      worked area.rug-rows c=4 r=3
+    }
+    practice area.rug-rows count=2 seed=4 easy-seed=14
+    practice area.fence count=2 hard-count=1 seed=6 easy-seed=4
+    level hard {
+      practice area.same-perimeter count=1 seed=5
+    }
+    practice area.compound count=1 seed=2
+  }
+  try stars=2 {
+    show area.same-perimeter a=7 b=2 c=4 easy-a=5 easy-c=3 hard-a=8 hard-b=6 hard-c=9
+  }
+  try stars=3 {
+    show area.biggest-area p=18 easy-p=12 hard-p=26
+  }
+  remember {
+    say "Area is counted in squares. Perimeter is counted in centimetres round the edge."
+  }
+
+  grown-ups """
+    Walk round a rug counting steps, then count the tiles it covers. Two different questions about
+    the same rug is the whole idea. The rug questions give the area and one side and ask for the
+    other, which is the area rule used backwards. In the two-star question the two rectangles have
+    the same perimeter but not the same area, which surprises most children. In the three-star
+    question, a list of lengths and widths that add to half the perimeter is the way to be sure.
+    """
+  level easy {
+    grown-ups "At this level the rectangles have two or three rows of three or four squares, the grids to walk round are two or three rows of three to five, a rug of three rows is worked once in the teacher's pen before two rugs of three to five rows, the gardens are six to nine metres by four to six, the L shape is small, the two rectangles with the same perimeter are 5 by 2 and 3 cm long, with the second plainly bigger, and the perimeter of 12 cm gives three pairs to try."
+  }
+  level hard {
+    grown-ups "At this level the rectangles have four rows of five to seven squares, the grids to walk round are four or five rows of six to eight, the rugs have six to eight rows of six to nine, the garden is twelve to fifteen metres by seven to nine, the L shape is large, the same-perimeter question is asked twice with sides of four to nine, once with the second rectangle longer than the first and yet holding less, and the perimeter of 26 cm gives six pairs to try."
+  }
+}

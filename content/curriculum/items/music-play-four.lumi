@@ -1,0 +1,15 @@
+# The three-star, played: a four-note tune read from the treble staff and played, proved by the
+# pitches. Every note is on a line, so it is read from the landmarks rather than by counting up.
+item music.play-four v=1 stars=3 skills=[music.staff, music.keys, reasoning.planning] {
+  title "A tune from the staff"
+
+  scene 34x28 {
+    grandstaff gs notes=["E4", "G4", "B4", "D5"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "Name the four notes from the staff, then play them on the keyboard in order." width=12 right-of=gs gap=1
+    piano keys from=C4 whites=8 wide=3 labels=none below=gs gap=1
+  }
+
+  check music.plays notes=[E4, G4, B4, D5]
+  hint "Every note is on a line. The lines from the bottom are E, G, B, D, F."
+  hint "Find each letter on the keys from the group of two (C D E) and the group of three (F G A B)."
+}

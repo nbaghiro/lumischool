@@ -1,0 +1,19 @@
+# The other way round from reading a face: the face is drawn and the child reads the four words
+# for the one that says it.
+item reading.feeling-word v=1 skills=[reading.vocabulary] {
+  title "The word for the face"
+  let m={"happy", "sad", "cross", "tired"}
+
+  scene 21x21 {
+    row all at=canvas(1, 1) space=1 align=start {
+      face f mood=m hair=1
+      column q space=1 align=start {
+        text ask "Which word tells how she feels?" width=12
+        choice pick options=["happy", "sad", "cross", "tired"] stack=column
+      }
+    }
+  }
+
+  answer pick=m
+  hint "Look at her eyebrows and her mouth."
+}

@@ -1,0 +1,30 @@
+# The end of the story is shown and the start is the unknown, so the fall is undone by rising.
+item number.before-the-fall v=1 skills=[number.negatives, subtraction.start-unknown] negatives {
+  title "What was it before"
+  difficulty ((if e + f > 0 then 3 else 0) + f)
+  let e={-9, -7, -5, -4, -2} f={3, 6, 8, 11, 12}
+  level easy {
+    where (e + f < 0)  # it was below zero before it fell too
+  }
+  level hard {
+    where (e + f > 0 and f >= 8)  # it was above zero before the fall
+  }
+
+  scene 32x15 {
+    thermometer tube from=-10 to=10 step=2 value=e unit="C" at=canvas(1, 1)
+    text ask "In the evening the temperature fell by {f} degrees. Now it is {e} degrees. What was it before it fell?" width=20 right-of=tube gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (e + f)
+  feedback {
+    when (answer == e - f) point=tube {
+      say "It fell to get here, so before it fell it was warmer. Count up the scale."
+    }
+    when (answer == f - e and e + f != f - e) point=tube {
+      say "Start at {e} and count up {f}. Where do you land?"
+    }
+  }
+  hint "Was it warmer or colder before it fell?"
+  hint "Start at {e} and count up {f} degrees."
+}

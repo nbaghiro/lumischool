@@ -1,0 +1,60 @@
+lesson chemistry-same-shape-different-material v=1 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Same shape, different material"
+  goal "Say what changes when a spoon is wood, metal or plastic, and what stays the same."
+
+  look {
+    scene 20x7 {
+      materials row things=["wooden-spoon", "metal-spoon", "plastic-spoon"] names=1 at=canvas(1, 0)
+    }
+    say """
+      Three spoons from the drawer at the printing works, all the same shape and size. One is
+      wood, with a grain of lines in it, and it floats. One is metal: it shines, and it feels cold.
+      One is plastic, and it bends when you press it. The shape stays the same. What the spoon
+      can do comes from what it is made of.
+      """
+  }
+  do {
+    level easy {
+      worked chem.which-spoon m="metal" p=0
+    }
+    practice chem.which-spoon count=2 seed=3 easy-seed=4 hard-seed=1
+    practice chem.spoon-made-of count=2 seed=5 easy-seed=1 hard-seed=2
+    practice chem.which-bends count=2 seed=1 easy-seed=3 hard-seed=3
+    practice chem.match-material count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.tell-apart k=1 r=1 level=medium
+    }
+  }
+  story {
+    show chem.spoon-story a=3 b=4 c=2 w=0 easy-a=2 easy-b=3 easy-c=1 hard-a=5 hard-b=4 hard-c=3 hard-w=1
+  }
+  try stars=2 {
+    show chem.tell-apart k=1 r=2 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show chem.soup-spoon k=1 r=2 easy-k=0 easy-r=1 hard-k=2 hard-r=3
+  }
+  remember {
+    say "The shape stays the same. What a thing can do comes from what it is made of."
+  }
+
+  grown-ups """
+    The idea is to separate a thing's shape from its material: three spoons of one shape, and
+    everything that differs between them (the grain, the shine, the bend, the cold, the float)
+    comes from the material. The wrong idea to watch for is naming the thing when asked for the
+    material ("it is made of spoon") and, later, going by colour when a paint hides the material.
+    Ask "what would it do if you pressed it, dropped it in water, held it?" The story counts
+    the drawer by material and then asks which would bend. The two-star question gives two things
+    that look alike and asks which test tells their materials apart: the test both would pass
+    tells nothing. The three-star question chooses a material for a hot soup spoon against two
+    rules, crossing out what breaks each. If the material and the thing are still one word after
+    the core, stay here another day with a real drawer: three spoons, three cups, and a finger
+    test for each.
+    """
+  level easy {
+    grown-ups "At this level the metal spoon is found once in the teacher's pen before spoons of metal and wood, the things to name are spoons, the property that differs is bending or seeing through, the materials to match are wood, metal and plastic by their plainest words, the drawer holds seven or fewer spoons to add, the two things that look alike are a glass and a plastic bottle, and the soup spoon's rules are no soaking and no bending."
+  }
+  level hard {
+    grown-ups "At this level the spoon to find is wood or plastic, the things to name are bottles, jars and cans, the property that differs is seeing through or floating, the descriptions to match include the one that floats, a second pair of look-alikes is told apart in the core, the drawer asks how many spoons would bend, the two things that look alike are a painted block and spoon, and the soup spoon's rules leave plastic out because it goes soft in the heat."
+  }
+}

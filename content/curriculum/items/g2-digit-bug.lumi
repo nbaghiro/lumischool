@@ -1,0 +1,24 @@
+# The commonest subtraction bug, named: take the smaller digit from the bigger in each column.
+item sub.smaller-from-bigger v=1 stars=2 skills=[subtraction.columns, reasoning.find-the-error] {
+  title "Mo's mistake"
+  difficulty (10 * ta + oa)
+  let ta=5..9 oa=1..5 tb=2..4 ob=6..9
+  where (ta > tb + 1)
+
+  scene 28x9 {
+    columns right a=(10 * ta + oa) b=(10 * tb + ob) op=sub at=canvas(1, 1)
+    text ask "Mo took the smaller digit from the bigger one in each column and got {10 * (ta - tb) + ob - oa}. Write the right answer in the columns." width=16 right-of=right gap=2
+  }
+
+  answer right=(10 * (ta - tb) - ob + oa)
+  feedback {
+    when (right == 10 * (ta - tb) + ob - oa) point=right {
+      say "That is Mo's answer. In the ones there are {oa} on top, and you cannot take {ob} from {oa}."
+    }
+    when (right == 10 * (ta - tb) - ob + oa + 10) point=right {
+      say "The ten that moved into the ones has to come off the tens as well."
+    }
+  }
+  hint "Which digit is on top in the ones column? Can you take the bottom one from it?"
+  hint "Exchange a ten first, then take away in each column."
+}

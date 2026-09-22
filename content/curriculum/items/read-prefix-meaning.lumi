@@ -1,0 +1,24 @@
+# A prefix changes what the root word means in one of a few ways: not, again, before, wrongly. The
+# wrong choices are the other ways, so the child has to know what this prefix does.
+item reading.prefix-meaning v=1 skills=[reading.morphology] {
+  title "What the prefix does"
+  difficulty (if k == 4 then 2 else if k == 2 or k == 3 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 1, 2}  # unhappy, refill, preheat
+  }
+  level hard {
+    let k={2, 3, 4}  # preheat, disagree, misread
+  }
+
+  scene 21x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      wordbricks b bricks=[if k == 0 then "un" else if k == 1 then "re" else if k == 2 then "pre" else if k == 3 then "dis" else "mis", if k == 0 then "happy" else if k == 1 then "fill" else if k == 2 then "heat" else if k == 3 then "agree" else "read"] root=1 roots=1 blank=-1 word="{if k == 0 then \"unhappy\" else if k == 1 then \"refill\" else if k == 2 then \"preheat\" else if k == 3 then \"disagree\" else \"misread\"}" labels=true
+      text ask "What does {if k == 0 then \"unhappy\" else if k == 1 then \"refill\" else if k == 2 then \"preheat\" else if k == 3 then \"disagree\" else \"misread\"} mean?" width=20
+      choice pick options=[if k == 0 then "not happy" else if k == 1 then "fill before" else if k == 2 then "heat again" else if k == 3 then "not agree" else "read before", if k == 0 then "happy again" else if k == 1 then "fill again" else if k == 2 then "not heat" else if k == 3 then "agree again" else "read wrongly", if k == 0 then "very happy" else if k == 1 then "not fill" else if k == 2 then "heat before" else if k == 3 then "agree before" else "not read"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "not happy" else if k == 1 then "fill again" else if k == 2 then "heat before" else if k == 3 then "not agree" else "read wrongly")
+  hint "Cover the prefix and read the root word. Then ask what the prefix does to it."
+}

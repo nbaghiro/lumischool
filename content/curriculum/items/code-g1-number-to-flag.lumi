@@ -1,0 +1,32 @@
+# The unknown moved into the program: the flag is where it should end, and the child finds the number
+# that gets it there. The checker tries every single change and proves only this number works.
+item coding.number-to-flag v=1 skills=[coding.sequences, coding.debugging] {
+  title "What number gets there?"
+  difficulty (a + b)
+  let a=2..4 b=1..2 w=1..4
+  where (w != a)
+  level easy {
+    let a=2..3 b={1}
+  }
+  level hard {
+    let a=3..4 b={2} w=1..3
+  }
+
+  scene 25x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {w}", "down {b}"] words=false numbers=true
+      maze g cols=6 rows=4 flag=[1 + a, 1 + b] code=["right {w}", "down {b}"] upto=0 trail=none
+    }
+    text ask "Block 1 has the wrong number. What number would take the robot to the flag?" width=24 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check coding.runs of=g goal=flag answer=fix
+  feedback {
+    when (answer == a + 1) point=g {
+      say "The robot starts on column 1, so count the steps from there, not the column number."
+    }
+  }
+  hint "How many squares is the flag to the right of the robot?"
+  hint "Count the steps along the top row, one square at a time."
+}

@@ -1,0 +1,33 @@
+# Reading the pattern on past the table: the table holds the first four heights and the question asks
+# for a height below it, one or two rows further on at easier and three or four at harder. Two squares
+# of push for every square of height.
+item physics.track-next-row v=1 skills=[physics.forces, patterns.number] {
+  title "Past the last row"
+  difficulty h
+  let h=5..8
+  level easy {
+    let h=5..6
+  }
+  level hard {
+    let h=7..8
+  }
+
+  scene 26x31 {
+    ramp track height=4 cup=1 pushed=8 at=canvas(1, 0)
+    table t cols=2 head=["Height", "Cup pushed"] cells=["1", "2", "2", "4", "3", "6", "4", "8"] below=track gap=1
+    text ask "The table stops at a height of four squares. How far would the cup be pushed from a height of {h} squares?" narrate width=24 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=(h * 2)
+  feedback {
+    when (answer == 8) point=t {
+      say "That is the last row that is written. The table goes on in the same steps past it."
+    }
+    when (answer == h) point=t {
+      say "That is the height rather than the push. Read the second column against it."
+    }
+  }
+  hint "Look down the second column. How much is added each time the height goes up by one?"
+  hint "Go on adding that step until you reach the height the question asks for."
+}

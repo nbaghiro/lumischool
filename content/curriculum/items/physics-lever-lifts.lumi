@@ -1,0 +1,29 @@
+item physics.lever-lifts v=1 skills=[physics.machines] {
+  title "Will it lift?"
+  difficulty (400 - abs(w * f - p * (10 - f)))
+  let f=2..5 w={30, 40, 60, 80} p={10, 20, 30, 40}
+  where (w * f != p * (10 - f))
+  level easy {
+    where (abs(w * f - p * (10 - f)) >= 100)
+  }
+  level hard {
+    where (abs(w * f - p * (10 - f)) <= 30)
+  }
+
+  scene 26x16 {
+    lever bar fulcrum=f load=w push=p at=canvas(1, 0)
+    text ask "Will this push lift the stone?" width=14 below=bar gap=1
+    choice pick options=["Yes", "No"] right-of=ask gap=2
+  }
+
+  check physics.machine of=bar pick=lifts
+  feedback {
+    when (pick == "No" and w * f < p * (10 - f)) point=bar {
+      say "The push is far from the pivot, so it turns more than its size suggests."
+    }
+    when (pick == "Yes" and w * f > p * (10 - f)) point=bar {
+      say "Weight times steps on the stone's side is bigger than push times steps on yours."
+    }
+  }
+  hint "What is each force times its steps from the pivot?"
+}

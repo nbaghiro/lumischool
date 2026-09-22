@@ -1,0 +1,53 @@
+lesson chemistry-soil-and-fossils v=1 format=teach grade=2 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Soil, and how a fossil forms"
+  goal "Read the layers of soil settled in a jar and say why they settle in that order, and put the steps of a fossil forming in order."
+
+  look {
+    scene 28x7 {
+      fossilsteps f order=[1, 2, 3, 4] blank=-1 letters=0 at=canvas(1, 0)
+    }
+    say """
+      Soil is rock broken into tiny bits, mixed with rotted plants. Shaken in a jar of water, the
+      biggest bits sink first and the finest last, so it settles in layers. Rock forms in layers
+      too: a sea creature sinks into mud, more layers pile on, and over millions of years the shell
+      turns to rock, until the rock wears away and the fossil is found.
+      """
+  }
+  do {
+    practice chem.soil-layer count=2 seed=2 easy-seed=5 hard-seed=4
+    practice chem.soil-thickest count=2 seed=5 easy-seed=11
+    practice chem.soil-bottom count=1 seed=1
+    level easy {
+      worked chem.fossil-first k=1 n=2 level=medium
+    }
+    practice chem.fossil-first count=2 seed=3 hard-seed=2
+    practice chem.fossil-missing count=1 seed=4
+  }
+  try stars=2 {
+    show chem.soil-why q=1 easy-q=0
+  }
+  try stars=3 {
+    show chem.soil-time q=1 easy-q=3
+  }
+  remember {
+    say "The biggest bits settle first. The oldest layer of rock is at the bottom."
+  }
+
+  grown-ups """
+    Counting how many squares thick a layer is, is the way in. The core asks which layer is
+    thickest, which part reached the bottom first, and the order of the fossil pictures in two ways:
+    which picture is in a given place, and what the missing one shows. The pictures in the look
+    section are in order, and the questions muddle them. The two-star question asks
+    why each part of the soil ends up where it does. The three-star question gives three settling
+    times and asks what a jar shows after a time that falls between two of them. To try the jar,
+    fill a clear jar a third with garden soil, top it up with water, screw the lid on and shake it;
+    the sand settles within a minute, the silt in a couple of hours, and the clay can take a day or
+    more. Wash hands after handling soil.
+    """
+  level easy {
+    grown-ups "At this level the layer to measure is the sand, the thickest layer is the sand or the clay, there are stones in the jar, the second picture of a fossil forming is found once in the teacher's pen before the first and the last, the missing picture is as written, the two-star asks why the stones are at the bottom, and the three-star's jar was left a whole day."
+  }
+  level hard {
+    grown-ups "At this level the layer to measure is the silt, between the sand and the clay, the thickest layer is the silt or the stones, there are no stones under the sand, so the sand reached the bottom first, the pictures to find are the middle two, the missing picture is as written, and the two-star and three-star are as written, the clay above the silt and the jar looked at at noon."
+  }
+}

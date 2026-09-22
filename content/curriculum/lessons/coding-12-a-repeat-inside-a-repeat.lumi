@@ -1,0 +1,50 @@
+lesson coding-a-repeat-inside-a-repeat v=2 format=teach grade=4 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "A repeat inside a repeat"
+  goal "Work out how many times a line runs when a repeat sits inside another repeat, and choose the counts."
+
+  look {
+    scene 24x15 {
+      row both at=canvas(1, 0) space=2 align=start {
+        program p code=["repeat 3", "  repeat 2", "    right 1", "  down 1"]
+        grid a rows=3 cols=2 shade=6 color=sky cell=2
+      }
+      note n "Line 3 runs twice, three times over: six in all." width=22 below=both gap=1
+    }
+    say """
+      How far a line is set in shows what is inside what. Line 3 is inside both repeats, so it runs
+      two times for every one of the three times round the outer repeat, which is six. The squares
+      are the same six, drawn as three rows of two.
+      """
+  }
+  do {
+    practice coding.nested-repeat count=1 seed=2
+    practice coding.nested-dance count=2 seed=3 easy-seed=1
+    practice coding.nested-choose count=2 seed=5 hard-seed=1
+    practice coding.nested-back count=2 seed=1
+    show coding.nested-turtle s=2 r=2 easy-s=1 easy-r=1 hard-r=3
+  }
+  try stars=2 {
+    show coding.nested-compare a=3 b=2 c=3 d=3 easy-a=2 hard-a=4 hard-b=3 hard-c=4 hard-d=4
+  }
+  try stars=3 {
+    show coding.nested-ways n=12 hard-n=36
+  }
+  remember {
+    say "Multiply the counts: a line inside both runs the outer count times the inner count."
+  }
+
+  grown-ups """
+    This is the first lesson where the answer cannot be got by counting on fingers, and multiplying
+    the two counts is the whole method. The line between the two repeats in the jumps and claps
+    question runs only the outer count, which is the mistake worth catching. In the two-star
+    question the two programs clap the same number of times; ask for both totals before a choice.
+    In the three-star question a list of pairs that multiply to twelve is the way in, and each pair
+    counts twice unless its numbers are the same.
+    """
+  level easy {
+    grown-ups "At this level the inner line runs six times, in two rows of three or three of two, the dance jumps eight times with two or four claps, the missing count makes eight squares or fewer, the zigzag drawn is as written, the turtle steps one square at a time from the top row, the two programs clap six and nine times, and the three-star is as written, twelve jumps."
+  }
+  level hard {
+    grown-ups "At this level the inner line runs nine or twelve times, in three or four rows of three, the dance jumps twelve times, the missing count makes twelve squares or more, the zigzag drawn is as written, the turtle steps two squares at a time from the third row, the two programs both clap sixteen times, and the three-star asks for thirty-six jumps, where two of the pairs use a number above nine and do not count."
+  }
+}

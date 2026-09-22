@@ -1,0 +1,42 @@
+# Two stars: one test of two magnets where the paper clips were not the same, so the reading that
+# looks like the stronger magnet may be the bigger clip instead. At u=0 and u=1 the two readings are
+# four apart, at u=2 and u=3 they are one apart and the big clip belongs to the magnet that reads
+# lower, so the test is wrong in both directions at once.
+item physics.magnet-unfair-test v=1 stars=2 skills=[physics.magnets, physics.method, reasoning.evidence] {
+  title "What is wrong with this test?"
+  difficulty (if u < 2 then 0 else 1)
+  let u=0..3
+  let ca={pick(u, 1, 2, 2, 1)}
+  let cb={pick(u, 2, 1, 1, 2)}
+  let ra={pick(u, 3, 8, 6, 5)}
+  let rb={pick(u, 7, 4, 5, 6)}
+  let said={pick(u, "B", "A", "A", "B")}
+  let ans={pick(u, "Magnet B was given the bigger clip", "Magnet A was given the bigger clip", "Magnet A was given the bigger clip", "Magnet B was given the bigger clip")}
+  level easy {
+    let u={0, 1}
+  }
+  level hard {
+    let u={2, 3}
+  }
+
+  scene 30x32 {
+    column both space=1 align=start at=canvas(1, 0) {
+      magnet one mode=reach reach=ra clip=ca tag="A"
+      magnet two mode=reach reach=rb clip=cb tag="B"
+    }
+    text ask "Sam slid a paper clip towards each magnet until it jumped, and says magnet {said} is the stronger one. What is wrong with this test?" narrate width=28 below=both gap=1
+    choice pick options=["Magnet A was given the bigger clip", "Magnet B was given the bigger clip", "Nothing is wrong, the test is fair"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Nothing is wrong, the test is fair") point=both {
+      say "Look at the two paper clips. One of them is bigger, and a bigger clip is harder to pull."
+    }
+    when (pick != ans and pick != "Nothing is wrong, the test is fair") point=both {
+      say "Look again at which magnet has the bigger clip hanging by it."
+    }
+  }
+  hint "A fair test changes one thing only, and here that thing should be the magnet."
+  hint "Compare the two paper clips. Which magnet was given the bigger one to pull?"
+}

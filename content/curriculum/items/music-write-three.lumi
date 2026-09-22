@@ -1,0 +1,14 @@
+# The three-star: a bar of three of the child's own with exactly one rest, written on the staff
+# and marked by a grown-up against its count.
+item music.write-three v=1 stars=3 skills=[music.rhythm, music.rests, music.composing] {
+  title "A bar of your own"
+
+  scene 34x19 {
+    notes bar clef=treble notes=[G4, rest, G4] values=[1, 1, 1] meter=3 at=canvas(1, 1)
+    text ask "Write a bar of three-time of your own on paper: any notes you like and exactly one rest, adding up to three beats. Use a rest that is not this bar's. Count it to a grown-up and clap it." narrate width=32 below=bar gap=1
+  }
+
+  check writing.by-eye look-for="A bar with the 3 at the start whose notes and one rest add up to exactly three beats, the rest drawn as the right sign for its length (the zigzag for one beat, the block on the middle line for two, or a quaver rest for a half), different from a crotchet rest between two crotchets, counted aloud correctly and clapped with a silence where the rest is."
+  hint "Choose the rest first: one beat or two. Then fill the other beats with notes."
+  hint "Add it up before you write it out: notes and rest together make three."
+}

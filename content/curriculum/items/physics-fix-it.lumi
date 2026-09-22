@@ -1,0 +1,15 @@
+item physics.fix-it v=1 skills=[physics.circuits] stars=2 {
+  title "Make it light"
+  difficulty f
+  let f=1..2 c=1..2 n=1..2
+
+  scene 36x16 {
+    series ring cells=c bulbs=n closed=(if f == 1 then 0 else 1) loose=(if f == 2 then 1 else 0) show=0 at=canvas(1, 0)
+    text ask "Which one change will make the bulbs light?" width=17 right-of=ring gap=1
+    choice pick options=["Close the switch", "Add a cell", "Clip the wire back on"] stack=column below=ask gap=1
+  }
+
+  check physics.circuit of=ring pick=mends
+  hint "What is stopping the electricity getting round?"
+  hint "Adding a cell gives a bigger push, but can a push get through a gap?"
+}

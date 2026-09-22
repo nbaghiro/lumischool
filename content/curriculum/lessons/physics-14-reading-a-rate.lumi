@@ -1,0 +1,49 @@
+lesson physics-reading-a-rate v=1 format=teach grade=4 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Reading a rate"
+  goal "Read a value off a gauge, and use a steady rate to work forwards or backwards in time."
+
+  look {
+    scene 26x26 {
+      column all at=canvas(1, 1) space=2 align=start {
+        row dials space=2 align=start {
+          fuelgauge gauge level=0.625
+          thermometer tube from=0 to=40 step=10 value=24 unit="C"
+        }
+        doubleline pace steps=4 topTo=200 bottomTo=4 topUnit="km" bottomUnit=hours mark=2
+      }
+    }
+    say """
+      A rate says how much of one thing goes with one of another: litres a hundred kilometres,
+      degrees an hour, kilometres an hour. A gauge shows where you are now; the rate is what lets
+      you say where you were, or where you will be.
+      """
+  }
+  do {
+    practice physics.fuel-left count=2 seed=5
+    practice physics.fuel-used count=2 seed=2
+    practice physics.temp-rate count=2 seed=1
+    practice physics.rate-when count=2 seed=3
+  }
+  try stars=2 {
+    show physics.fuel-enough k=3 d=200 easy-k=6 easy-d=150
+  }
+  try stars=3 {
+    show physics.rate-two a=5 s=1 h=3 easy-h=2 hard-a=10 hard-s=3 hard-h=4
+  }
+  remember {
+    say "A rate is an amount for each one of something. Multiply to go forward, divide to come back."
+  }
+
+  grown-ups """
+    The fuel gauge in the car is the best example there is, because the child can watch it fall over
+    a journey whose length they know. Petrol is dollars and cents, so a litre price turns the same
+    reading into money. The last question has two things changing at different rates; drawing the
+    readings hour by hour in a table is a good way in, and it is how the answer can be checked.
+    """
+  level easy {
+    grown-ups "At this level the gauge sits at a quarter or three quarters, the thermometer reads on the numbered marks, and the two thermometers meet after two hours."
+  }
+  level hard {
+    grown-ups "At this level the gauge sits at an odd eighth, the readings sit on the half marks, and the two thermometers meet after four hours."
+  }
+}

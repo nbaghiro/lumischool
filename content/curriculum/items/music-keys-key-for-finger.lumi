@@ -1,0 +1,16 @@
+# The same position read the other way, from the finger to the key it rests on.
+item music.key-for-finger v=1 skills=[music.fingers, music.keys] {
+  title "Which key is under the finger?"
+  difficulty f
+  let f=2..5
+
+  scene 24x17 {
+    hand pic side=right numbers=piano ring=f colours=false at=canvas(1, 1)
+    text ask "Right thumb on middle C, in C position. Which key is the ringed finger on?" width=13 right-of=pic gap=1
+    choice pick options=["C", "D", "E", "F", "G"] below=pic gap=1
+  }
+
+  answer pick=(if f == 2 then "D" else if f == 3 then "E" else if f == 4 then "F" else "G")
+  hint "Which number is the ringed finger?"
+  hint "Finger 1 is on C. Count up the letters to the ringed finger."
+}

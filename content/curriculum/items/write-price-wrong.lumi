@@ -1,0 +1,33 @@
+# A price on the menu written wrongly, and the way a real menu writes it: the dollar sign first,
+# then the dollars, a point, and two figures for the cents.
+item writing.price-wrong v=1 skills=[writing.layout, money.dollars-and-cents] {
+  title "Fix the price"
+  difficulty k
+  let k=0..2 r=0..2
+  let dish={pick(k, "Soup", "Cake", "Tea")}
+  let said={pick(k, "three dollars fifty", "two dollars and five cents", "one dollar eighty")}
+  let right={pick(k, "$3.50", "$2.05", "$1.80")}
+  let w1={pick(k, "$3.5", "$2.5", "$1.8")}
+  let w2={pick(k, "3.50$", "$2.50", "$18.0")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x17 {
+    sign board lines=["{dish}", "{if r == 0 then w1 else if r == 1 then w2 else w1}"] kind=board color=mint at=canvas(1, 1)
+    text ask "The {dish} costs {said}. The price on the board is written wrongly. Which way is right?" narrate width=32 below=board gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=board {
+      say "A price is the dollar sign, then the dollars, a point, and two figures for the cents, even when the cents are zero or under ten."
+    }
+  }
+  hint "Dollars before the point, cents after it, and always two figures for the cents."
+  hint "{if k == 0 then \"Fifty cents is 50, so the price ends in .50.\" else if k == 1 then \"Five cents is 05, not 5 or 50.\" else \"Eighty cents is 80: one dollar and eighty is $1.80.\"}"
+}

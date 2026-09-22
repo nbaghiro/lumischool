@@ -1,0 +1,20 @@
+item coding.lamps-biggest v=1 skills=[coding.data] {
+  title "The biggest lamp"
+  difficulty (8 - abs(n - 8))
+  let n={5, 6, 9, 11, 12, 14}
+  level easy {
+    let n={5, 12, 14}
+  }
+  level hard {
+    let n={6, 9, 11}
+  }
+
+  scene 21x16 {
+    lamps l bits=4 n=0 at=canvas(1, 0)
+    text ask "To show {n}, which is the biggest lamp that has to be lit?" width=20 below=l gap=1
+    choice pick options=[8, 4, 2, 1] below=ask gap=1
+  }
+
+  answer pick=(if n >= 8 then 8 else if n >= 4 then 4 else if n >= 2 then 2 else 1)
+  hint "Start with the biggest lamp. Is {n} as big as it?"
+}

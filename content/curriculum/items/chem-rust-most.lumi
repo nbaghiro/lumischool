@@ -1,0 +1,21 @@
+# The rustiest nail: salty water rusts a nail fastest, then plain water, and nothing happens without
+# both water and air. The days are kept short, so salt and water never catch up with each other.
+item chem.rust-most v=1 skills=[chemistry.changes, chemistry.rusting] {
+  title "The rustiest nail"
+  difficulty v
+  let v=0..7
+
+  scene 30x10 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      nails n jars=["{if v == 0 then \"water\" else if v == 1 then \"water\" else if v == 2 then \"oil\" else if v == 3 then \"oil\" else if v == 4 then \"salt\" else if v == 5 then \"salt\" else if v == 6 then \"dry\" else \"dry\"}", "{if v == 0 then \"salt\" else if v == 1 then \"salt\" else if v == 2 then \"water\" else if v == 3 then \"water\" else if v == 4 then \"oil\" else if v == 5 then \"oil\" else if v == 6 then \"painted\" else \"painted\"}", "{if v == 0 then \"dry\" else if v == 1 then \"dry\" else if v == 2 then \"painted\" else if v == 3 then \"painted\" else if v == 4 then \"water\" else if v == 5 then \"water\" else if v == 6 then \"salt\" else \"salt\"}"] days=(if v == 0 then 3 else if v == 1 then 5 else if v == 2 then 3 else if v == 3 then 5 else if v == 4 then 3 else if v == 5 then 5 else if v == 6 then 3 else 5) letters=1 names=1
+      column side space=1 align=start {
+        text ask "These nails were left for {if v == 0 then \"3\" else if v == 1 then \"5\" else if v == 2 then \"3\" else if v == 3 then \"5\" else if v == 4 then \"3\" else if v == 5 then \"5\" else if v == 6 then \"3\" else \"5\"} days. Which nail is the rustiest?" width=15
+        choice pick options=["A", "B", "C"]
+      }
+    }
+  }
+
+  check chem.change of=n pick=most
+  hint "Which nails have any rust on them at all?"
+  hint "Of those, which has the most orange on it? What was in its jar?"
+}

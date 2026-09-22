@@ -1,0 +1,42 @@
+# The way in: four creatures, two of the desert and two of the cold sea, and the one that lives in
+# a named place. The camel and the seal are known; the fennec fox and the gull take a look at the
+# body: big ears for the heat, webbed feet for the water.
+item nature.desert-creature v=1 skills=[nature.habitats] {
+  title "Which one lives there?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let place={pick(k, "in the hot desert, walking on sand", "in the cold sea, swimming after fish", "in the desert, hunting at night with big ears", "over the cold sea, landing on the water")}
+  let right={pick(k, "camel", "seal", "fennec", "gull")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x18 {
+    row four at=canvas(1, 1) space=1 align=end {
+      camel pc count=1 resting=0 facing=1
+      fennec pf facing=1
+      seal ps rock=1 facing=1
+      gull pg flying=1
+    }
+    text ask "Ada has been to the oasis and to the reef. Which of these four lives {place}?" narrate width=34 below=four gap=1
+    choice pick options=["camel", "fennec", "seal", "gull"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "camel") point=pc {
+      say "The camel lives in the desert too, but it walks in the day and its ears are small. Look for the one whose ears are nearly as big as its body."
+    }
+    when (k == 3 and pick == "seal") point=ps {
+      say "The seal swims under the water. The one that flies over it and lands on top has wings and webbed feet."
+    }
+    when (k <= 1 and pick != right) point=four {
+      say "Look at the drawing. Sand and wide feet mean the desert; a rock in the water and flippers mean the sea."
+    }
+  }
+  hint "Two of the four live in the hot sand, and two by the cold sea. Which two are which?"
+  hint "Now read the place again: walking, swimming, hunting at night, or flying?"
+}

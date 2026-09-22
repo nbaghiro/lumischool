@@ -1,0 +1,26 @@
+item physics.ramp-rough v=1 skills=[physics.method] stars=1 {
+  title "Which floor slows it down?"
+  difficulty d
+  let r=10..14 d=3..6
+  level easy {
+    let d=3..4
+  }
+  level hard {
+    let d=5..6
+  }
+
+  scene 28x30 {
+    ramp smooth height=3 ball=0 rolled=r at=canvas(1, 1)
+    ramp carpet height=3 ball=0 rolled=(r - d) rough=1 below=smooth gap=1
+    text ask "Both slopes are 3 cm high. How many centimetres shorter was the roll on the carpet?" width=26 below=carpet gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == r) point=carpet {
+      say "The question asks for the difference, not for how far it went."
+    }
+  }
+  hint "How far did each ball roll?"
+}

@@ -1,0 +1,58 @@
+lesson writing-joining-letters v=1 format=teach grade=2 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "Joining letters"
+  goal "Join two letters with one stroke, and know which joins go up from the line and which go along the top."
+
+  look {
+    scene 30x15 {
+      row all at=canvas(1, 1) space=2 align=centre {
+        art pic asset="sun"
+        column pairs space=1 align=start {
+          handwriting a show="un" rows=1 trace=3 width=20
+          handwriting b show="sun" rows=1 trace=2 width=20
+          handwriting c show="on" rows=1 trace=3 width=20
+        }
+      }
+    }
+    say """
+      Joining is faster than printing, because the pencil stays down. Most joins leave the bottom of
+      one letter and go up to the next, like u to n. The letters o, r, v and w finish at the top, so
+      a join from them runs along the top, like o to n.
+      """
+  }
+  do {
+    practice writing.joining-letters count=2 seed=2
+    level easy {
+      worked writing.count-joins k=4 level=medium
+    }
+    practice writing.count-joins count=2 seed=3
+    practice writing.top-join count=2 seed=4
+    practice writing.join-sort count=1 hard-count=0 seed=2
+    level hard {
+      practice writing.most-top-joins count=1 seed=1
+    }
+    practice writing.joined-sentence count=1 seed=1
+  }
+  try stars=2 {
+    show writing.most-top-joins k=1 r=2 hard-k=3
+  }
+  try stars=3 {
+    show writing.top-join-words k=2
+  }
+  remember {
+    say "Most joins go up from the bottom of a letter. After o, r, v and w the join goes along the top."
+  }
+
+  grown-ups """
+    The tracing, the sentence and the three-star words are marked by eye; the rest are marked by the
+    machine. Joining is worth starting only once single letters are reliable; if the letters are
+    still wobbly, go back to the grade one lessons for another week. For the two-star question, ask
+    the child to find the letters that finish at the top in each word before choosing. In the
+    three-star question, any real word counts if the join from o, r, v or w runs along the top.
+    """
+  level easy {
+    grown-ups "At this level the pairs to join are as written, window's five joins are counted once in the teacher's pen before sun, rain and tent, the joins along the top and the pair in the wrong column are as written, the sentence to write is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the pairs to join are as written, the joins to count are in house, window and clock, the joins along the top are as written, the wrong column makes way for a second word with the most top joins, the sentence to write is as written, the two-star's word is crow, with two top joins, and the three-star is as written."
+  }
+}

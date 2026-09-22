@@ -1,0 +1,19 @@
+# Halving is the idea: one lift in the middle rules out half the cups, because the numbers are in
+# order. The answer is which half goes, and the cups printed crossed out are the answer key's.
+item coding.cups-half v=1 skills=[coding.algorithms] {
+  title "Which half goes?"
+  difficulty (10 - abs(t - 11))
+  let t={2, 5, 8, 14, 17, 20}
+  level easy {
+    let t={2, 5, 17, 20}
+  }
+
+  scene 24x17 {
+    cups c cards=[2, 5, 8, 11, 14, 17, 20] open=[4] target=t crossed=false at=canvas(1, 0)
+    text ask "The middle cup hides 11. You want {t}. Which cups can you cross out?" width=20 below=c gap=1
+    choice pick options=["the left ones", "the right ones"] below=ask gap=1
+  }
+
+  answer pick=(if t > 11 then "the left ones" else "the right ones")
+  hint "The numbers get bigger to the right. Is {t} bigger or smaller than 11?"
+}

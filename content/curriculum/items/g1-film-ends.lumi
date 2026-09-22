@@ -1,0 +1,27 @@
+item time.film-ends v=1 stars=2 skills=[time.half-hours] {
+  title "When the film ends"
+  difficulty h
+  let h=1..10
+
+  scene 30x16 {
+    clocktower tower hour=h minute=0 at=canvas(1, 0)
+    text ask "A film starts at the time on the clock. It lasts one hour and a half. When does it end?" narrate width=16 right-of=tower gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input hr width=3
+      text colon ":"
+      number-input mn width=3
+    }
+  }
+
+  answer hr=(h + 1) mn=30
+  feedback {
+    when (hr == h + 1 and mn == 0) point=tower {
+      say "One hour gets you to {h + 1} o'clock. Then there is half an hour more."
+    }
+    when (hr == h and mn == 30) point=tower {
+      say "Half past {h} is only half an hour. The film is longer than that."
+    }
+  }
+  hint "What time is it one hour after {h} o'clock?"
+  hint "Now add half an hour more."
+}

@@ -1,0 +1,44 @@
+lesson g3-dividing-with-a-remainder v=1 format=worked grade=3 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Dividing with a remainder"
+  goal "Divide with a remainder, and say what the remainder means in the question."
+
+  example {
+    worked division.remainder-small d=7 q=13 r=3 easy-level=medium
+    say """
+      Ninety-four shared between seven is thirteen each with three left over. What to do with those
+      three depends on what the question is about.
+      """
+  }
+  exercises {
+    practice division.remainder-small count=2 hard-count=1 seed=3
+    practice division.remainder count=1 seed=6
+    practice division.apple-boxes count=2 seed=4 easy-seed=8 hard-seed=1
+    practice division.unknown-dividend count=1 seed=9
+    practice division.minibuses count=1 seed=5
+    practice division.interpret count=1 seed=6
+    level hard {
+      practice division.wrong-remainder count=1 seed=6
+    }
+  }
+  try stars=2 {
+    show division.wrong-remainder d=6 q=8 r=2 easy-d=4 easy-q=5 easy-r=3 hard-d=8 hard-q=11 hard-r=1
+  }
+  try stars=3 {
+    show division.two-rows p=0 r=1 lo=30 easy-lo=20 hard-p=1 hard-r=2 hard-lo=50
+  }
+
+  grown-ups """
+    Ask the child to say the remainder as a sentence: three biscuits left on the plate. The number
+    on its own is the bit that gets lost. The minibus question rounds up because the people left
+    over still need a seat; the apple boxes ask for the full boxes, so they round down. In the
+    two-star question the remainder is bigger than the number being divided by, which is the
+    reason Sam is wrong. In the three-star question, listing the numbers that fit the first clue
+    and checking each against the second is the method.
+    """
+  level easy {
+    grown-ups "At this level the divisions to do are by three, four or five, the larger one with an answer under thirty-one, the boxes hold four or five apples, the minibus trip has under thirty children, the eggs are under sixty in boxes of three to five, Sam's remainder is well over the number he divided by, and the mice are between twenty and thirty-one."
+  }
+  level hard {
+    grown-ups "At this level the divisions are by six to nine with answers up to thirteen or in the hundreds, the boxes hold seven to nine apples, the minibus trip has over forty children, the eggs are in their hundreds in boxes of six to nine, Sam's remainder is only just over the number he divided by and his mistake is asked twice, and the mice are between fifty and sixty-nine with rows of four and five to check."
+  }
+}

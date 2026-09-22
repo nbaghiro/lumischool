@@ -1,0 +1,17 @@
+# Four pairs sorted by where their join starts, one in the wrong column. v2: the word boxes accept
+# only this version's pair.
+item writing.join-sort v=2 skills=[writing.joining] {
+  title "One pair in the wrong column"
+  let w=0..3
+  let key={if w == 0 then "an" else if w == 1 then "on" else if w == 2 then "de" else "wi"}
+
+  scene 32x17 {
+    text ask "One pair is in the wrong column. Write it." narrate width=24 at=canvas(1, 1)
+    word-input pick options=["{key}"] letters=2 right-of=ask gap=1
+    wordsort sort heads=["From the bottom", "Along the top"] words=["an", "on", "de", "wi"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Write the first letter of each pair. Does it finish at the bottom or at the top?"
+  hint "Which pairs start with o, r, v or w?"
+}

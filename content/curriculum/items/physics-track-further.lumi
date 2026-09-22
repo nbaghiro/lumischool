@@ -1,0 +1,32 @@
+# The way in: the same marble let go from two heights on two tracks, and which push sent the cup
+# further. The marble pushes the cup two squares for every square of height, so the higher start
+# always wins; at k=0 to 2 the two heights are three or four apart, at k=3 to 5 one or two.
+item physics.track-further v=1 skills=[physics.forces, reasoning.compare] {
+  title "Which cup went further?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let ha={pick(k, 5, 2, 1, 3, 6, 2)}
+  let hb={pick(k, 1, 6, 4, 4, 5, 3)}
+  let pa={pick(k, 10, 4, 2, 6, 12, 4)}
+  let pb={pick(k, 2, 12, 8, 8, 10, 6)}
+  let ans={pick(k, "A", "B", "B", "B", "A", "B")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x41 {
+    text la "Track A" at=canvas(1, 0)
+    ramp one height=ha cup=1 pushed=pa below=la gap=0
+    text lb "Track B" below=one gap=1
+    ramp two height=hb cup=1 pushed=pb below=lb gap=0
+    text ask "The same marble was let go from the top of each track. Which track pushed its cup further along the floor?" narrate width=24 below=two gap=1
+    choice pick options=["A", "B"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Count the squares between each cup and the dashed outline where it started."
+  hint "A marble let go from higher up is going faster when it reaches the floor."
+}

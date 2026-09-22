@@ -1,0 +1,20 @@
+item physics.shadow-on-wall v=1 skills=[physics.light] {
+  title "What reaches the wall?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 19x24 {
+    beam b sheet=k at=canvas(1, 0)
+    text ask "What is on the wall behind the sheet?" width=18 below=b gap=1
+    choice pick options=["Bright light", "A pale shadow", "A dark shadow"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Bright light" else if k == 1 then "A pale shadow" else "A dark shadow")
+  hint "How much light gets through this sheet?"
+}

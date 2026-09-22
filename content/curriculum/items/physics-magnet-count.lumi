@@ -1,0 +1,26 @@
+item physics.magnet-count v=1 skills=[physics.magnets] {
+  title "What does the magnet pull?"
+  difficulty (n + k)
+  let n=3..6 k=1..4
+  where (k < n)
+  level easy {
+    let n=3..4 k=1..2
+  }
+  level hard {
+    let n=5..6 k=3..4
+  }
+
+  scene 28x16 {
+    magnet bar mode=things count=n sticks=k at=canvas(1, 1)
+    text ask "How many of the things does the magnet pull?" width=20 below=bar gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer k
+  feedback {
+    when (answer == n) point=bar {
+      say "Count only the ones with an arrow. The wooden pegs stay where they are."
+    }
+  }
+  hint "Which things have an arrow showing the magnet pulling them?"
+}

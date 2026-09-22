@@ -1,0 +1,32 @@
+# The two-star reason: the same note in two places, B as string 3 at fret 4 and string 2 open, or E as
+# string 2 at fret 5 and string 1 open. Ana claims a different string must be a different note.
+item music.tab-same-note-two-ways v=1 stars=2 skills=[music.tab, music.pitch, reasoning.claims] {
+  title "Two places, one note"
+  let v=0..1 r=0..1
+  let a={pick(v, "s3f4", "s2f5")}
+  let b={pick(v, "s2f0", "s1f0")}
+  let note={pick(v, "B", "E")}
+  let right={pick(v, "No: both are B, in two places", "No: both are E, in two places")}
+  let w1={"Yes: a new string is a new note"}
+  let w2={pick(v, "Yes: fret 4 is the bigger number", "Yes: fret 5 is the bigger number")}
+
+  scene 34x23 {
+    row top space=2 align=start at=canvas(1, 1) {
+      tab pair tuning=guitar notes=["{a}", "{b}"] values=[] even=true letters=true ring=-1
+      text ask "Ana plays the first note and Mo the second. Ana says they are different notes, because they are on different strings. Is she right?" narrate width=20
+    }
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=pair {
+      say "Name both notes. Going up a string's frets reaches the note the next string plays open."
+    }
+    when (pick == w2) point=pair {
+      say "A bigger fret number is higher only on the same string. Name both notes before you compare them."
+    }
+  }
+  hint "What does the second note's string play open?"
+  hint "Count up the first note's string, fret by fret, from its open note. Where do you land?"
+}

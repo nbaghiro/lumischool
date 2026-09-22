@@ -1,0 +1,34 @@
+# The two-star reason: two sentences about the same picture, and the one that tells the reader
+# more, because its describing words say what things are like. The wrong reasons prefer the
+# shorter one or call them the same.
+item writing.tells-more v=1 stars=2 skills=[writing.sentences, reasoning.explain] {
+  title "Which tells more?"
+  difficulty k
+  let k=0..1 r=0..2
+  let sa={pick(k, "The boat is on the sea.", "A tall lighthouse stands on a grey rock.")}
+  let sb={pick(k, "A small red boat rocks on the choppy sea.", "The lighthouse is on the rock.")}
+  let right={pick(k, "B: it says what the boat and sea are like", "A: it says what the rock and light are like")}
+  let w1={pick(k, "A: shorter, so clearer", "B: shorter, so clearer")}
+  let w2={pick(k, "Both: they say the same", "Both: they say the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x26 {
+    art pic asset="boat" at=canvas(1, 1)
+    text ask "Two sentences about the harbour. A: {sa} B: {sb} Which one tells the reader more, and why?" narrate width=32 below=pic gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Cover the picture and read each sentence. Which one lets you see the boat and the sea in your head: their size, colour and how the water moves? The describing words do that."
+    }
+  }
+  hint "Which sentence has describing words in it? What do they tell you?"
+  hint "A sentence with no describing words only names things. Describing words let the reader see them."
+}

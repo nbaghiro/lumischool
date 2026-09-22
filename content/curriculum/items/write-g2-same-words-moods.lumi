@@ -1,0 +1,22 @@
+# The audit's raise for bubble-mark: the same words said two ways, so the face decides the mark and
+# the words cannot.
+item writing.same-words-moods v=2 skills=[writing.punctuation, writing.speech] {
+  title "Same words, different voice"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3 q=0..1
+  let w={if k == 0 then "The dog is here" else if k == 1 then "It is raining" else if k == 2 then "There is a spider" else "Gran is at the door"}
+  let calm={if k == 0 then "tired" else if k == 1 then "tired" else if k == 2 then "happy" else "tired"}
+  let loud={if k == 0 then "excited" else if k == 1 then "surprised" else if k == 2 then "scared" else "excited"}
+
+  scene 36x13 {
+    comic strip who=["girl", "boy"] says=["{w}", "{w}"] moods=["{if q == 0 then loud else calm}", "{if q == 0 then calm else loud}"] with=["", ""] thinks=[0, 0] holds=["", ""] labels=["1", "2"] at=canvas(1, 1)
+    column c right-of=strip gap=1 space=1 align=start {
+      text ask "Both bubbles say the same words. Which one should end with an exclamation mark?" narrate width=12
+      choice pick options=["1", "2"]
+    }
+  }
+
+  answer pick=(if q == 0 then "1" else "2")
+  hint "The words are the same. What else is different about the two pictures?"
+  hint "Look at the faces. Who is shouting or surprised?"
+}

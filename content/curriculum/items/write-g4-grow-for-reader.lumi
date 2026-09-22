@@ -1,0 +1,18 @@
+# Growing a sentence for a reason: the reader needs one of when, where or why, and the child picks
+# the added words that give it.
+item writing.grow-for-reader v=1 stars=2 skills=[writing.sentences, writing.audience] {
+  title "Grow it for the reader"
+  difficulty (if k == 2 or k == 4 then 1 else 0)
+  let k=0..4
+
+  scene 34x22 {
+    text who "{if k == 0 then \"A friend has to find the lost dog.\" else if k == 1 then \"Dad needs to know when to come for you.\" else if k == 2 then \"Gran wants to know why the cake is flat.\" else if k == 3 then \"The bus driver needs to know where to stop.\" else \"Your teacher asks why you were late.\"}" width=33 at=canvas(1, 1)
+    caption short text="{if k == 0 then \"The dog ran off.\" else if k == 1 then \"The show ends.\" else if k == 2 then \"The cake sank.\" else if k == 3 then \"We will be waiting.\" else \"I missed the bus.\"}" width=20 below=who gap=1
+    text ask "Which words should grow the sentence for this reader?" width=33 below=short gap=1
+    choice pick options=["{if k == 0 then \"at three o'clock\" else if k == 1 then \"in the big hall\" else if k == 2 then \"in the oven\" else if k == 3 then \"at ten o'clock\" else \"this morning\"}", "{if k == 0 then \"near the red gate\" else if k == 1 then \"at half past four\" else if k == 2 then \"on Tuesday\" else if k == 3 then \"by the post office\" else \"at the corner\"}", "{if k == 0 then \"because it was bored\" else if k == 1 then \"because it is short\" else if k == 2 then \"because we opened the oven too soon\" else if k == 3 then \"because it is our trip\" else \"because my bike had a flat tyre\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "near the red gate" else if k == 1 then "at half past four" else if k == 2 then "because we opened the oven too soon" else if k == 3 then "by the post office" else "because my bike had a flat tyre")
+  hint "What does this reader want to know: when, where, or why?"
+  hint "Which choice answers that question, and not another one?"
+}

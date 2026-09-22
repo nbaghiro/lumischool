@@ -1,0 +1,33 @@
+# Counting in tens and then on in fives: the step changes part way along the row.
+item count.dimes-nickels v=1 skills=[counting.in-steps, money.count-coins] {
+  title "Tens, then fives"
+  difficulty (10 * d + 5 * n)
+  let d=1..4 n=1..4
+  level easy {
+    let d=1..2 n=1..2
+  }
+  level hard {
+    let d=3..4 n=3..4
+  }
+
+  scene 27x12 {
+    coins purse quarters=0 dimes=d nickels=n pennies=0 at=canvas(1, 1)
+    text ask "How many cents? Count the dimes in tens, then count on in fives." narrate width=25 below=purse gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * d + 5 * n)
+  feedback {
+    when (answer == 5 * d + 5 * n) point=purse {
+      say "A dime is 10 cents, not 5. Count the dimes in tens."
+    }
+    when (answer == 10 * d + 10 * n) point=purse {
+      say "A nickel is 5 cents. Count on in fives after the dimes."
+    }
+    when (answer == d + n) point=purse {
+      say "Count what the coins are worth, not how many coins there are."
+    }
+  }
+  hint "How much are the dimes worth together?"
+  hint "Now count on in fives, once for each nickel."
+}

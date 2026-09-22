@@ -1,0 +1,22 @@
+# Long words that are not two words: sister and garden look like compounds by length. Car and rot
+# are both words, but carrot does not mean a car that rots, so meaning decides, not spelling.
+item reading.not-two-words v=2 skills=[reading.compound-words] {
+  title "Which is not two words?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1, 3}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 27x9 {
+    text ask "Two of these words are made of two short words. Which one is not?" narrate width=25 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "sunset" else if k == 1 then "pancake" else if k == 2 then "window" else "farmyard", if k == 0 then "sister" else if k == 1 then "garden" else if k == 2 then "starfish" else "handbag", if k == 0 then "doorbell" else if k == 1 then "raincoat" else if k == 2 then "bedtime" else "rabbit"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "sister" else if k == 1 then "garden" else if k == 2 then "window" else "rabbit")
+  hint "Split each word into two parts. Are both parts real words?"
+  hint "Does the long word mean the two short words together? A sunset is when the sun sets."
+}

@@ -1,0 +1,18 @@
+item physics.see-in-dark v=1 skills=[physics.light] {
+  title "Can she see it?"
+  let k=0..1
+
+  scene 18x16 {
+    seeing room lamp=k arrows=1 at=canvas(1, 0)
+    text ask "Can the girl see the ball?" width=14 below=room gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  check physics.light of=room pick=sees
+  feedback {
+    when (pick == "Yes" and k == 0) point=room {
+      say "The lamp is off. With no light to bounce off the ball, there is nothing for her eyes to see."
+    }
+  }
+  hint "Is there any light in the room?"
+}

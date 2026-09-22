@@ -1,0 +1,30 @@
+# Two readings and a difference: how much heavier, read off two dials.
+item measure.heavier-by v=1 skills=[mass.grams, subtraction.difference] {
+  title "How much heavier?"
+  difficulty (a - b)
+  let a={500, 600, 700, 800, 900} b={100, 200, 300, 400}
+  level easy {
+    let a={500, 600} b={300, 400}
+  }
+  level hard {
+    let a={800, 900} b={100, 200}
+  }
+
+  scene 30x22 {
+    row scales at=canvas(1, 1) space=3 align=start {
+      dialscale flour max=1000 step=200 value=a unit=g
+      dialscale rice max=1000 step=200 value=b unit=g
+    }
+    text ask "Flour is on the left dial and rice on the right. How many grams heavier is the flour?" narrate width=28 below=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=scales {
+      say "How much heavier is the difference between the two, so take one away from the other."
+    }
+  }
+  hint "Read each dial. What does the flour weigh, and what does the rice weigh?"
+  hint "Take the lighter one away from the heavier one."
+}

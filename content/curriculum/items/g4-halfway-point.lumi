@@ -1,0 +1,29 @@
+# Halfway along a line on the grid: half the gap is added to the start, and one number stays.
+item coords.halfway-point v=1 skills=[position.coordinates] {
+  title "Halfway along"
+  difficulty (k + a)
+  let a=0..2 b=1..5 k=1..2
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let a=1..2 k={2}
+  }
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=a py=b mark="S" at=canvas(1, 0)
+    column q right-of=grid gap=2 space=1 align=start {
+      text ask "A straight line goes from S ({a}, {b}) to ({a + 2 * k}, {b}). Where is the point halfway along it?" width=15
+      equation eq "( {?px} , {?py} )"
+    }
+  }
+
+  answer px=(a + k) py=b
+  feedback {
+    when (px == 2 * k and py == b and a != k) point=grid {
+      say "That is how long the line is. Halfway is half of that, counted from S."
+    }
+  }
+  hint "How long is the line? Which number changes along it?"
+  hint "Go half of that distance along from S. The up number stays the same."
+}

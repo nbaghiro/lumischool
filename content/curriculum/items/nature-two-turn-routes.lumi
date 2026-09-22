@@ -1,0 +1,37 @@
+# The three-star: all the routes from the hut to the boat, only east and south, with exactly two
+# turns. A two-turn route is east, south, east or south, east, south, and the way in is to draw
+# them: where the first turn comes decides the route, so the count is the east steps less one plus
+# the south steps less one. Counting one-turn routes as well is the mistake to catch.
+item nature.two-turn-routes v=1 stars=3 skills=[nature.maps, reasoning.all-ways] {
+  title "Exactly two turns"
+  difficulty (a + b - 4)
+  let a=2..4 b=2..3
+  let letter={pick(a, "A", "B", "C", "D", "E", "F")}
+  level easy {
+    let a=2..2 b=2..2
+  }
+  level hard {
+    let a=4..4 b=3..3
+  }
+
+  scene 36x14 {
+    gridmap map cols=6 rows=5 col=1 row=1 thing=hut at=canvas(1, 1)
+    text ask "The hut is in A1 and the boat is in {letter}{b + 1}. Ada walks from the hut to the boat, one square at a time, only east or south, and turns exactly twice. How many different routes can she take?" narrate width=18 right-of=map gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b - 2)
+  feedback {
+    when (answer == a + b) point=map {
+      say "That counts the two routes with only one turn as well: all the east then all the south, or the other way round. Ada turns exactly twice."
+    }
+    when (answer == 2 and a + b - 2 != 2) point=map {
+      say "East, south, east is one shape and south, east, south is the other, but each shape can turn in more than one place. Draw where the first turn could come."
+    }
+    when (answer == 1) point=map {
+      say "There is more than one. Try east first, then south, then east again, and then try south first."
+    }
+  }
+  hint "A route with two turns goes east, south, east, or south, east, south. Draw one of each on the map."
+  hint "For east, south, east: the first east can be 1 square, or 2, or more. Each choice is a different route. Count them, then do the same for south, east, south."
+}

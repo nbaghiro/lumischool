@@ -1,0 +1,26 @@
+item physics.gear-turns v=1 skills=[physics.machines] {
+  title "How many turns?"
+  difficulty (a / b)
+  let a={12, 16, 24} b={6, 8, 12}
+  where (a % b == 0 and a > b)
+  level easy {
+    where (b >= 8)  # B is not much smaller than A, so it turns two or three times
+  }
+  level hard {
+    where (a / b >= 3)
+  }
+
+  scene 28x13 {
+    gears g a=a b=b at=canvas(1, 0)
+    text ask "When A turns once, how many times does B turn?" width=12 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.machine of=g answer=turns(b)
+  feedback {
+    when (answer == 1) point=g {
+      say "Every tooth of A pushes one tooth of B along, and B has fewer teeth to go round."
+    }
+  }
+  hint "A pushes {a} teeth past. How many times round is that for a gear with {b}?"
+}

@@ -1,0 +1,16 @@
+# Words the child finds for themselves that meet the rule, written joined.
+item writing.top-join-words v=1 stars=3 skills=[writing.joining, writing.spelling] {
+  title "Words with a top join"
+  let k=0..2
+  let n={if k == 0 then "three" else if k == 1 then "four" else "three"}
+  let with={if k == 2 then " One of them must have two top joins." else ""}
+
+  scene 34x13 {
+    text ask "Write {n} words that each have a join along the top. Write them joined up.{with}" narrate width=32 at=canvas(1, 1)
+    writinglines lines lines=2 width=32 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Real words that each have o, r, v or w with a letter after it, such as on, row or were; that join runs along the top rather than dipping to the line; the other joins go up from the bottom; letters stay the same size. When two top joins are asked for, one word has two, such as over or town."
+  hint "Think of words with o in the middle, like dog or hot. What comes after the o?"
+  hint "Words with ow, or, ov or wa in them have a join along the top."
+}

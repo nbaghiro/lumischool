@@ -1,0 +1,34 @@
+# v2, the audit's raise: every clue is true of the ringed creature, but only one is true of no
+# other, so each clue has to be checked against all four rather than against the ringed one.
+item writing.best-clue v=2 skills=[writing.describing] {
+  title "The clue that finds it"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3}
+  }
+  let right={if k == 0 then "one eye" else if k == 1 then "two horns" else if k == 2 then "one horn" else "six legs"}
+  let w1={if k == 0 then "two legs" else if k == 1 then "two eyes" else if k == 2 then "two legs" else "spots"}
+  let w2={if k == 0 then "no horns" else if k == 1 then "spots" else if k == 2 then "eyes" else "two eyes"}
+  let o1={if r == 0 then right else w1}
+  let o2={if r == 1 then right else if r == 0 then w1 else w2}
+  let o3={if r == 2 then right else w2}
+
+  scene 37x22 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=k at=canvas(1, 1)
+    text ask "The ringed creature has all three. Which would help a friend find it? It has ..." narrate width=35 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=line {
+      say "That clue is true of the ringed one, but is it true of another creature too?"
+    }
+  }
+  hint "Try each clue on all four creatures."
+  hint "A good clue fits the ringed creature and no other one."
+}

@@ -1,0 +1,30 @@
+# The prediction comes before the picture shows it: the bulb waits under a question mark, and the
+# checker lights it (or not) from the same table the tester is drawn from.
+item physics.conductor-lights v=1 skills=[physics.circuits, physics.materials] {
+  title "Will it light?"
+  difficulty (if k == "foil" or k == "coin" or k == "marble" then 2 else if k == "ruler" then 1 else 0)
+  let k={"nail", "clip", "foil", "coin", "ruler", "eraser", "stick", "marble"}
+  level easy {
+    let k={"nail", "clip", "eraser", "stick"}
+  }
+  level hard {
+    let k={"foil", "coin", "ruler", "marble"}
+  }
+
+  scene 17x21 {
+    tester t thing=k show=0 at=canvas(1, 0)
+    text ask "Will the bulb light with this across the gap?" width=15 below=t gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  check physics.circuit of=t pick=lights
+  feedback {
+    when (pick == "No" and (k == "coin" or k == "foil")) point=t {
+      say "It is metal, and metal lets electricity through, even when a magnet leaves it alone."
+    }
+    when (pick == "Yes" and (k == "ruler" or k == "eraser" or k == "stick" or k == "marble")) point=t {
+      say "Plastic, rubber, wood and glass do not let electricity through, so the loop is still broken."
+    }
+  }
+  hint "Is it made of metal?"
+}

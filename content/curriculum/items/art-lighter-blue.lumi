@@ -1,0 +1,24 @@
+# Two mixes of blue and white, and the lighter one, judged by how much white each has for its
+# blue.
+item art.lighter-blue v=1 skills=[art.tints, reasoning.compare] {
+  title "The lighter blue"
+  difficulty k
+  let k=0..2 p=0..1
+  let a={pick(k, "1 blue and 3 white", "1 blue and 2 white", "1 blue and 4 white")}
+  let b={pick(k, "3 blue and 1 white", "2 blue and 1 white", "2 blue and 3 white")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x7 {
+    text ask "Two mixes for the sky behind the wave. Which one is the lighter blue?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then a else b}", "{if p == 0 then b else a}"] below=ask gap=1
+  }
+
+  check paint.mixes pick=lighter
+  hint "Think of each mix as parts. Which one has more white for each part of blue?"
+  hint "Two blue and three white is more than half white; one blue and one white is exactly half."
+}

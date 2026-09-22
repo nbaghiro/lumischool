@@ -1,0 +1,37 @@
+# Three stars: planning the fewest fair tests that put n magnets in order with one ruler. A ruler
+# gives each magnet a reading of its own, so n tests are needed and not n - 1: nothing is learnt by
+# comparing two magnets without measuring both.
+item physics.magnet-fair-plan v=1 stars=3 skills=[physics.method, reasoning.fewest, reasoning.planning] {
+  title "The fewest tests"
+  difficulty (n - 3)
+  let n=3..5
+  let list={pick(n - 3, "three magnets", "four magnets", "five magnets")}
+  level easy {
+    let n=3..3
+  }
+  level hard {
+    let n=5..5
+  }
+
+  scene 31x33 {
+    magnet one mode=reach reach=5 clip=1 tag="" at=canvas(1, 0)
+    column side space=1 align=start below=one gap=1 {
+      text ask "Sam has {list} and one ruler. In each test he lays a magnet at the zero of the ruler and slides one paper clip towards it until it jumps. What is the fewest tests that put all the magnets in order from strongest to weakest?" narrate width=28
+      number-input tests
+    }
+    text same "What must be the same in every test?" narrate width=30 below=side gap=1
+    choice keep options=["The same paper clip, slid the same way", "The same magnet", "The same person holding the ruler"] stack=column below=same gap=1
+  }
+
+  answer tests=n keep="The same paper clip, slid the same way"
+  feedback {
+    when (tests == n - 1) point=ask {
+      say "Each test measures one magnet, so every magnet needs a test of its own. Nothing is learnt about a magnet that is never measured."
+    }
+    when (keep == "The same magnet") point=same {
+      say "The magnet is the thing being tested, so it is the one thing that changes."
+    }
+  }
+  hint "What does one test tell Sam? It gives one magnet a reading."
+  hint "How many readings does he need before he can put them all in order?"
+}

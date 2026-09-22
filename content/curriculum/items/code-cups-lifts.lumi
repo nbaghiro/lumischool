@@ -1,0 +1,14 @@
+item coding.cups-lifts v=1 skills=[coding.algorithms] {
+  title "How many lifts?"
+  difficulty (if t == 5 or t == 17 then 2 else 3)
+  let t={2, 5, 8, 14, 17, 20}
+
+  scene 23x15 {
+    cups c cards=[2, 5, 8, 11, 14, 17, 20] open=[] target=t at=canvas(1, 0)
+    text ask "Lift the middle cup of what is left each time. How many lifts find {t}?" width=16 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=c answer=lifts
+  hint "The first lift is the middle cup. Then halve the side {t} must be on, and lift its middle."
+}

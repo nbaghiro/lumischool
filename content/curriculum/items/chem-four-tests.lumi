@@ -1,0 +1,37 @@
+# Reading the table of four tests: six materials, each yes or no for hard, see-through, conducts
+# electricity and magnetic. One material by two tests, a count of one column, or the metal that
+# fails the magnet.
+item chem.four-tests v=1 skills=[chemistry.materials, data.tables] {
+  title "Read the four tests"
+  difficulty (if w == 0 then 0 else if w == 1 then 1 else 2)
+  let w=0..2 q=0..1
+  let right={pick(w, pick(q, "glass", "steel"), pick(q, "copper", "wood"), pick(q, "copper", "rubber"))}
+  let asks={pick(w, pick(q, "Which material is hard and see-through?", "Which material conducts electricity and is magnetic?"), pick(q, "Which material conducts electricity but is not magnetic?", "Which material is hard but does not conduct electricity and is not see-through?"), pick(q, "Two materials conduct but only one is magnetic. Which conducts and is not pulled by the magnet?", "Which material fails every test?"))}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 36x26 {
+    table data cols=5 head=["Material", "Hard", "Clear", "Conducts", "Magnet"] cells=["wood", "yes", "no", "no", "no", "glass", "yes", "yes", "no", "no", "steel", "yes", "no", "yes", "yes", "copper", "yes", "no", "yes", "no", "rubber", "no", "no", "no", "no"] at=canvas(1, 0)
+    text ask "Sam tested five materials four ways: a scratch with a nail for hard, a look through for clear, a bulb in a circuit for conducts, and a magnet. {asks}" narrate width=34 below=data gap=1
+    choice pick options=["wood", "glass", "steel", "copper", "rubber"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (w == 1 and q == 0 and pick == "steel") point=data {
+      say "Steel conducts, but the magnet column says yes for it. Read across the copper row."
+    }
+    when (w == 2 and q == 0 and pick == "steel") point=data {
+      say "Steel is the one the magnet pulls. The other conductor is the one the question wants."
+    }
+    when (pick != right) point=data {
+      say "Read down each column the question names and find the row that says yes, or no, in every one of them."
+    }
+  }
+  hint "Find the columns the question names. A material passes when its row says yes in each of them."
+  hint "Check the rows one at a time; the right one fits every part of the question."
+}

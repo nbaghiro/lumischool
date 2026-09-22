@@ -1,0 +1,21 @@
+item art.half-turn v=1 skills=[art.pattern, reasoning.fractions] {
+  title "Half a turn"
+  difficulty n
+  let n={4, 6, 8, 10, 12}
+  level easy {
+    let n={4, 6}
+  }
+  level hard {
+    let n={10, 12}
+  }
+
+  scene 32x14 {
+    radial pic repeats=n motif="leaf" missing=-1 colour=green at=canvas(1, 1)
+    text ask "Ada turns the plate half way round, so the leaf at the top ends up at the bottom. How many places round the pattern has that leaf moved?" width=16 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n / 2)
+  hint "Count the leaves from the top one to the bottom one, going one way round."
+  hint "Half a turn is half of all the leaves. How many leaves are there?"
+}

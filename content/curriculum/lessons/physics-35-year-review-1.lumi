@@ -1,0 +1,42 @@
+lesson physics-year-review-1 v=1 format=review grade=1 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics review: the first year"
+  goal "Look back over the year: pushes and pulls, heavy and light, hot and cold, sounds near and far, and light to see by."
+
+  warm-up {
+    practice physics.push-or-pull count=1 seed=3
+    practice physics.temp-read count=1 seed=2
+    practice physics.drum-still count=1 seed=1
+  }
+  exercises {
+    practice physics.what-moves-it count=1 seed=2 easy-seed=1 hard-seed=1
+    practice physics.spring-newtons count=1 seed=4
+    practice physics.temp-change count=1 seed=3 easy-seed=5 hard-seed=1
+    practice physics.hears-loudest count=1 seed=6 easy-seed=1 hard-seed=3
+    practice physics.count-sources count=1 seed=3 easy-seed=1 hard-seed=7
+    practice physics.faster-runner count=1 seed=5 easy-seed=2 hard-seed=6
+  }
+  puzzle stars=2 {
+    show physics.cup-predict x="paper" y="wool" easy-x="none" hard-x="bubble"
+  }
+  puzzle stars=3 {
+    show physics.pushes-in-order p=3 easy-p=1 hard-p=4
+  }
+
+  grown-ups """
+    This is a check, not a test, to do up in the treetops before the next year's forces begin. The
+    warm-up is the first question of three lessons: an arrow to read, a thermometer to read, a drum
+    that is or is not making a sound. The exercises take one question each from the year: what
+    moves a thing at home, a bag on the spring balance, how much warmer the afternoon was, who hears
+    the drum loudest, how many things give out their own light, and who ran faster. Anything that
+    needs the way in again is worth another week with that lesson, and everything else can move on.
+    The two puzzles are there to be enjoyed: the cups ask for a prediction before the thermometers
+    are drawn, and the baskets have no push drawn, so ask for the reason (the fuller basket is
+    heavier) as well as the order.
+    """
+  level easy {
+    grown-ups "At this level the thermometer reads on a numbered mark, the thing that moves is the falling apple, the bag pulls two or four newtons, the two readings sit on the tens, the three listeners stand in a line with clear gaps, the tray holds a candle and the sun, the runners' times are twenty seconds apart or more, the cups compared are bare and wool, and the baskets to order hold three, eight, one and five apples."
+  }
+  level hard {
+    grown-ups "At this level the thermometer reads on a half mark, the thing that moves is the swing that comes down on its own, the bag pulls six or eight newtons, the readings sit on the fives, the drum stands between the three listeners, the tray holds the moon and foil, the runners' times are ten seconds apart, the cups compared are bubble wrap and wool, and the baskets hold six, three, five and four apples, numbered from the biggest push."
+  }
+}

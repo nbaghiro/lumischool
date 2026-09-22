@@ -1,0 +1,30 @@
+# Start unknown with an exchange: the picture shows the end of the story, so the child adds back.
+item sub.pool-at-first v=1 skills=[subtraction.start-unknown, addition.within-hundred] {
+  title "How many were in the pool?"
+  difficulty (left + out)
+  let left=24..58 out=17..36
+  where (left % 10 + out % 10 >= 10 and left + out < 100)
+  level easy {
+    let left=24..39 out=17..24
+  }
+  level hard {
+    let left=42..58 out=27..36
+  }
+
+  scene 28x10 {
+    text ask "Some children were in the pool. {out} got out for lunch and {left} are still swimming. How many were in the pool at first?" width=26 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (left + out)
+  feedback {
+    when (answer == left - out) point=ask {
+      say "Children got out, so there were more at the start. Put the {out} back in."
+    }
+    when (answer == left + out - 10) point=ask {
+      say "The ones make more than ten. Did you carry the ten?"
+    }
+  }
+  hint "Were there more children at first, or fewer?"
+  hint "The children still swimming and the ones who got out were all in at the start."
+}

@@ -1,0 +1,35 @@
+# The story: the printing works kitchen, where the spoons in the drawer are counted by material.
+item chem.spoon-story v=1 stars=1 skills=[chemistry.materials, addition.to-twenty] {
+  title "The spoons in the drawer"
+  difficulty (a + b + c)
+  let a=2..6 b=2..6 c=1..5 w=0..1
+  where (a + b + c <= 16)
+  let asks={pick(w, "How many spoons are in the drawer altogether?", "How many of the spoons would bend if you pressed hard on them?")}
+  level easy {
+    let a=2..3 b=2..3 c=1..2 w=0..0
+  }
+  level hard {
+    let a=4..6 b=4..6 c=3..5 w=1..1
+  }
+
+  scene 32x17 {
+    materials row things=["wooden-spoon", "metal-spoon", "plastic-spoon"] names=1 at=canvas(1, 0)
+    text ask "In the kitchen at the printing works the drawer holds {a} wooden spoons, {b} metal spoons and {c} plastic {if c == 1 then \"spoon\" else \"spoons\"}, all the same shape. {asks}" narrate width=30 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a + b + c else c)
+  feedback {
+    when (w == 1 and answer == a + b + c) point=row {
+      say "Only the plastic ones bend. Wood and metal spoons of this shape do not."
+    }
+    when (w == 1 and answer == a + c) point=row {
+      say "A wooden spoon does not bend, it snaps. Only the plastic ones bend."
+    }
+    when (w == 0 and answer == a + b) point=row {
+      say "The plastic spoons are spoons too. Add all three kinds."
+    }
+  }
+  hint "{if w == 0 then \"Add the three kinds of spoon.\" else \"Which material bends: wood, metal or plastic?\"}"
+  hint "{if w == 0 then \"Count {a}, then {b} more, then {c} more.\" else \"Only the plastic spoons bend, so count those alone.\"}"
+}

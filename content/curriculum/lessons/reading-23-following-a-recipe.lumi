@@ -1,0 +1,60 @@
+lesson reading-following-a-recipe v=1 format=teach grade=2 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Following a recipe"
+  goal "Read a set of instructions in order, and spot the step that is missing."
+
+  look {
+    scene 32x16 {
+      row all at=canvas(1, 1) space=1 align=end {
+        howto card title="Hot chocolate" need=["a mug", "milk", "chocolate"] steps=["Warm the milk.", "Stir in the chocolate.", "Pour it into a mug.", "Blow on it before you drink."] blank=-1 width=24
+        art mug asset="cup"
+      }
+    }
+    say """
+      Instructions tell you how to make something. First they say what you need. Then the steps
+      are numbered, and you do them in that order. Read each step before you do it.
+      """
+  }
+  do {
+    show reading.recipe-need k=0 p=1
+    show reading.recipe-order k=0 q=1
+    show reading.recipe-order k=2 q=2
+    show reading.recipe-need k=2 p=2 easy-k=1
+    show reading.recipe-step k=1
+    level easy {
+      worked reading.doing-word k=2 level=medium
+    }
+    show reading.doing-word k=0 hard-k=2
+    show reading.read-and-check k=2 easy-k=0 hard-k=3
+  }
+  story {
+    show reading.which-step k=2 w=1 easy-w=0
+    level hard {
+      practice reading.recipe-what-if count=1 seed=10
+    }
+  }
+  try stars=2 {
+    show reading.recipe-what-if k=1 hard-k=3
+  }
+  try stars=3 {
+    show reading.write-steps k=0
+  }
+  remember {
+    say "Read what you need, then do the steps in order."
+  }
+
+  grown-ups """
+    Make one of these together in the kitchen and let the child read each step aloud before it is
+    done. The drawing question is reading and checking: Sam followed the card and missed a step,
+    and the child finds it by looking for each step in his picture.
+
+    The ordering questions work because each step needs the one before it; ask "could you do this
+    step yet?" The two-star question asks what goes wrong when two steps are swapped. The three-star
+    question is marked by you: follow the child's four steps word for word and see if they work.
+    """
+  level easy {
+    grown-ups "At this level the things not on the list are jam and a pear, the steps to order are as written, the empty line is as written, the doing word put is found once in the teacher's pen before crack, the step Sam missed is the second, the step to find is what a step is about, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the things not on the list are as written, the steps to order are as written, the empty line is as written, the doing word is put among other small words, the step Sam missed is the fifth, a second thing that went wrong, the water in the empty pot, is reasoned out in the core, the two-star's mistake is the soapy hands, and the three-star is as written."
+  }
+}

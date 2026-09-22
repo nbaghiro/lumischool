@@ -1,0 +1,64 @@
+# Weather measured: three instruments read off the page, a week's chart built from them, and two
+# questions about what a reading can and cannot say.
+lesson nature-weather-measured v=1 format=teach grade=3 unit=8 subject=nature levels=[easy, medium, hard] {
+  title "Weather measured"
+  goal "Read a thermometer, a rain gauge and a windsock, and use a week of readings to answer a question about the weather."
+
+  look {
+    scene 27x14 {
+      row kit space=2 align=start at=canvas(1, 0) {
+        thermometer glass from=-20 to=40 step=10 value=15 unit="°C"
+        raingauge gauge max=50 step=10 level=25 unit=mm show=1
+        windsock sock wind=1 stripes=5
+      }
+    }
+    say """
+      Saying the weather was nice is not measuring it. Three instruments do the measuring for you: a
+      thermometer in the shade for how warm it is, a rain gauge in the open for how much rain fell,
+      and a windsock for how hard the wind blows. Read all three at the same time each day, write them
+      in a chart, and by the end of the week the chart can answer questions the sky cannot.
+      """
+  }
+  do {
+    practice nature.weather-warmest count=1 seed=2 easy-seed=3 hard-seed=1
+    level easy {
+      worked nature.weather-read-rain n=4 level=medium
+    }
+    practice nature.weather-read-rain count=2 seed=5 easy-seed=2 hard-seed=3
+    practice nature.weather-read-temp count=2 seed=1 easy-seed=4 hard-seed=2
+    practice nature.weather-wet-and-windy count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.weather-read-temp n=4
+    }
+  }
+  story {
+    show nature.clouds-week v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show nature.weather-overflowed n=1 easy-n=0 hard-n=3
+  }
+  try stars=3 {
+    show nature.weather-kite-day v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Measure the weather, do not guess it: degrees on the thermometer, millimetres in the gauge, and the windsock's droop or streaming."
+  }
+
+  grown-ups """
+    The idea worth holding on to here is that a measurement says something a word like nice or windy
+    does not, and that an instrument has limits a child can reason about. The two-star question is the
+    second half of that: a gauge that has filled to its brim cannot say how much more fell, so the
+    honest chart entry is at least that much. Watch for a child who writes the brim number as though it
+    were the day's rain, and ask them what the gauge would have shown if twice as much had fallen.
+    Below zero on the thermometer is the other place to watch: the numbers count the other way and the
+    column is shorter, not longer. The three-star question needs two rules held at once, windy and
+    dry, and a child who checks only one will pick a day that fails the other. Off the page, stand a
+    straight-sided jar in the open away from the house and read it each morning with a ruler.
+    """
+  level easy {
+    grown-ups "At this level the warmest day stands six degrees above the rest, a reading on a half mark is worked once in the teacher's pen before two readings on the numbered marks, the thermometer readings are on the numbered marks, only one of the two days is wet at all, the week's rain adds to fifteen millimetres, the overflowing gauge is the fifty millimetre one, and the kite day is the only windy one."
+  }
+  level hard {
+    grown-ups "At this level two days are one degree apart at the top of the chart, the rain readings are all on half marks, the thermometer readings are on half marks, both days are wet so the windsock is what tells them apart, the core carries a third thermometer, at five degrees on a half mark, the week's rain adds to seventy five millimetres, the overflowing gauge is the thirty millimetre one, and the kite day is decided by a reading of exactly ten millimetres."
+  }
+}

@@ -1,0 +1,27 @@
+# Below zero is the first place a negative number is a fact rather than a rule.
+item number.negative-temp v=1 skills=[number.negatives] negatives {
+  title "How far below zero"
+  difficulty ((if v + r > 0 then 3 else 0) + r)
+  let v={-2, -4, -6, -8, -10} r=2..7
+  level easy {
+    where (v + r < 0)  # stays below zero
+  }
+  level hard {
+    where (v + r > 0)  # passes through zero
+  }
+
+  scene 34x15 {
+    thermometer tube from=-20 to=40 step=10 value=v unit="C" at=canvas(1, 1)
+    text ask "The thermometer reads {v} degrees. It rises by {r}. What does it read now?" width=22 right-of=tube gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (v + r)
+  feedback {
+    when (answer == v - r) point=tube {
+      say "Rising moves up the scale, towards zero and past it."
+    }
+  }
+  hint "Does rising go up the scale or down it?"
+  hint "Count up the scale {r} degrees from {v}. Did you pass zero?"
+}

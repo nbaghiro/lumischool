@@ -1,0 +1,35 @@
+# The C major fingering, right hand going up: 1 2 3 on C D E, the thumb passes under to F, then 1 2 3 4 5
+# on F G A B C. The card shows the first three only, so later notes are worked out from the crossing.
+item music.scale-which-finger v=1 skills=[music.fingers, music.keys] {
+  title "Which finger?"
+  difficulty (if k <= 2 then 0 else if k <= 4 then 1 else 2)
+  let k=1..7
+  let x={pick(k, "C", "D", "E", "F", "G", "A", "B", "C")}
+  let ans={pick(k, 1, 2, 3, 1, 2, 3, 4, 5)}
+  level easy {
+    let k=1..4
+  }
+  level hard {
+    let k=5..7
+  }
+
+  scene 34x25 {
+    notes scale clef=treble notes=[C4, D4, E4, F4, G4, A4, B4, C5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 at=canvas(1, 1)
+    row low space=2 align=start below=scale gap=1 {
+      hand h side=right numbers=piano ring=1 colours=false
+      column side space=1 align=start {
+        text ask "Ana plays C major up with her right hand: C, D and E with fingers 1, 2 and 3, then her thumb passes under. Which finger plays {if k == 7 then \"the top C\" else x}?" narrate width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer ans
+  feedback {
+    when (answer == k + 1 and answer != ans) point=scale {
+      say "That counts on from C with no crossing. The thumb passes under after E, so F starts again with finger 1."
+    }
+  }
+  hint "Which finger plays F, once the thumb has passed under?"
+  hint "From F count up the fingers again, one to each white key."
+}

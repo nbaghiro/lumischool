@@ -1,0 +1,23 @@
+# The three-star: the child's own notice on the frame, a bold line, the ask with its reason, the
+# when and where, and a picture, marked by a grown-up.
+item writing.own-notice v=1 stars=3 skills=[writing.persuasion, writing.composing] {
+  title "Your notice"
+  difficulty k
+  let k=0..1
+  let task={pick(k, "Write a notice asking people to do one thing at home or at school.", "Write a notice asking people to do one thing, with a reason that says what it protects or gains, not just that it is nice.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x19 {
+    text ask "{task} Put a short bold line at the top, the ask and its reason under it, when and where at the bottom, and draw a picture of the thing." narrate width=32 at=canvas(1, 1)
+    writingframe frame prompts=["Bold line", "The ask and its reason", "When and where"] lines=2 width=32 note="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A short bold first line that says what the notice is about, an ask that starts with a doing word and says exactly what to do, a reason that says why it matters to the reader (at the harder level what it protects or gains), a time or a place, and a picture of the thing asked about."
+  hint "Say the ask in one short sentence first: please do this. Then ask yourself why, and write that."
+  hint "The bold line is not the ask; it is the name of the thing, in three or four words."
+}

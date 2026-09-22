@@ -1,0 +1,27 @@
+# Evidence, not a fact to recall: the oil jar is the one with water and no air, the dry jar the one
+# with air and no water, and each shows that one of them alone is not enough.
+item chem.rust-needs v=1 skills=[chemistry.rusting, reasoning.evidence] {
+  title "What does rust need?"
+  difficulty (if v <= 2 then 1 else 0)
+  let v=0..5
+  level easy {
+    let v=3..5  # air but no water
+  }
+  level hard {
+    let v=0..2  # water but no air
+  }
+
+  scene 31x9 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      nails n jars=["{if v == 0 then \"water\" else if v == 1 then \"oil\" else if v == 2 then \"dry\" else if v == 3 then \"water\" else if v == 4 then \"oil\" else \"dry\"}", "{if v == 0 then \"dry\" else if v == 1 then \"water\" else if v == 2 then \"oil\" else if v == 3 then \"dry\" else if v == 4 then \"water\" else \"oil\"}", "{if v == 0 then \"oil\" else if v == 1 then \"dry\" else if v == 2 then \"water\" else if v == 3 then \"oil\" else if v == 4 then \"dry\" else \"water\"}"] days=10 letters=1 names=1
+      column side space=1 align=start {
+        text ask "Which jar shows that {if v == 0 then \"water but no air\" else if v == 1 then \"water but no air\" else if v == 2 then \"water but no air\" else if v == 3 then \"air but no water\" else if v == 4 then \"air but no water\" else \"air but no water\"} does not make a nail rust?" width=16
+        choice pick options=["A", "B", "C"]
+      }
+    }
+  }
+
+  answer pick=(if v == 0 then "C" else if v == 1 then "A" else if v == 2 then "B" else if v == 3 then "B" else if v == 4 then "C" else "A")
+  hint "For each jar, does the nail have water round it? Can air get to it?"
+  hint "Which jar has the one without the other, and a nail that stayed shiny?"
+}

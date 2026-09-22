@@ -1,0 +1,16 @@
+# Days a week apart from day 1 or day 4 land near the middle of each shape, so no box asks about
+# a moon halfway between two. Days 11 and 18 are gibbous, a word grade one has not met, so they are left out.
+item physics.moon-name v=1 skills=[physics.sky] {
+  title "Name the moon"
+  let s={1, 4} k=0..3
+  where (not (s == 4 and (k == 1 or k == 2)))
+
+  scene 25x21 {
+    moonphases m from=s step=7 count=4 at=canvas(1, 0)
+    text ask "What shape is the moon on day {s + 7 * k}?" width=14 below=m gap=1
+    choice pick options=["new moon", "crescent", "half moon", "full moon"] stack=column right-of=ask gap=1
+  }
+
+  check physics.sky of=m pick="phase({k})"
+  hint "Find the box for day {s + 7 * k}. How much of the moon is lit?"
+}

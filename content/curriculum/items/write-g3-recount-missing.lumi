@@ -1,0 +1,16 @@
+# The middle of a recount is missing; the sentence that fits has to come between the two that are there.
+item writing.recount-missing v=1 skills=[writing.recounts] {
+  title "The missing middle"
+  difficulty (if t == 0 then 1 else 0)
+  let t=0..2 p=0..2 ok={if t == 0 then "Then we climbed the steep path." else if t == 1 then "Then we found long sticks." else "Then we walked to the lake."} x1={if t == 0 then "Then we walked back down." else if t == 1 then "Then we put the fire out." else "Then we washed the plates."} x2={if t == 0 then "Then we bought a new hat." else if t == 1 then "Then the bus was late." else "Then we went home to bed."}
+
+  scene 34x24 {
+    passage card title="Dear Gran," text="{if t == 0 then \"First we put on our boots. ... At last we got to the top and saw the sea.\" else if t == 1 then \"First Dad lit the fire. ... At last we toasted our marshmallows.\" else \"First we packed a picnic. ... At last we ate it by the lake.\"}" width=32 numbers=false at=canvas(1, 1)
+    text ask "Which sentence goes in the gap?" width=32 below=card gap=1
+    choice pick options=["{if p == 0 then ok else if p == 1 then x1 else x2}", "{if p == 0 then x1 else if p == 1 then x2 else ok}", "{if p == 0 then x2 else if p == 1 then ok else x1}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ok
+  hint "What had to happen between the first sentence and the last?"
+  hint "Which sentence could only come after the last one, and which is about something else?"
+}

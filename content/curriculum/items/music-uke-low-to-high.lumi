@@ -1,0 +1,14 @@
+# A ukulele's G string is tuned high, so G, C, E, A across the neck is not low to high: C is the
+# lowest sound. No method on the page finds it; the child plays and listens. Proved by music.plays.
+item music.uke-low-to-high v=1 stars=3 skills=[music.uke-strings, music.pitch, reasoning.explore] {
+  title "From the lowest sound"
+
+  scene 28x22 {
+    fretboard neck tuning=uke frets=3 view=chart labels=letters strum=false at=canvas(1, 1)
+    text ask "Play each open string and listen. Then play all four in order from the lowest sound to the highest." width=15 right-of=neck gap=1
+  }
+
+  check music.plays notes=[C4, E4, G4, A4]
+  hint "Play G, then C. Which one sounds lower?"
+  hint "Is the order across the neck the same as the order of the sounds?"
+}

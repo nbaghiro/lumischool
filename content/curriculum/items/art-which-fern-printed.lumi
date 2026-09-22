@@ -1,0 +1,22 @@
+item art.which-fern-printed v=1 skills=[art.printing, art.looking] {
+  title "Which fern made the print?"
+  difficulty (a + b + c)
+  let a=3..6 b=3..6 c=3..6 m=0..2
+  where (a != b and b != c and a != c)
+  level easy {
+    where (a + b + c <= 12)
+  }
+  level hard {
+    where (a + b + c >= 14)
+  }
+
+  scene 36x13 {
+    sunprint pic pairs=[a, b, c] made=m show="match" at=canvas(1, 1)
+    text ask "Anna laid one of these ferns on the paper. Which one made the print?" width=11 right-of=pic gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if m == 0 then "A" else if m == 1 then "B" else "C")
+  hint "Count the leaflets on one side of the white fern in the print."
+  hint "Now count one side of each green fern. Which one has the same number?"
+}

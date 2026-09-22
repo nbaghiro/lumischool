@@ -1,0 +1,72 @@
+lesson physics-what-moves-at-home v=1 format=teach grade=1 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "What makes it move at home"
+  goal "Say what pushes or pulls each thing that moves at home: a hand, the wind, a spring or a fall."
+
+  look {
+    scene 32x24 {
+      column home at=canvas(0, 0) space=1 align=start {
+        row top space=2 align=end {
+          children kids count=2 names=["Sam", "Pip"]
+          windsock sock wind=1
+          swing seat seats=1
+        }
+        row bottom space=2 align=end {
+          squash spring thing=spring action=squash after=1
+          tree apple fruit=5 fallen=2
+        }
+      }
+    }
+    say """
+      Sam and Pip live in the cottage on the windy windmill island. Everything that moves has
+      something pushing or pulling it. Sam's hand pushes the swing. The wind pushes the windsock out
+      straight. A squashed spring pushes itself back up when you let go. And when an apple comes off
+      the tree, nothing holds it up, so it falls: the Earth pulls it down. A hand, the wind, a spring
+      or a fall: every moving thing has one of them.
+      """
+  }
+  do {
+    practice physics.being-pushed count=1 seed=3 easy-seed=1 hard-seed=1
+    level easy {
+      worked physics.what-moves-it k=0
+    }
+    practice physics.what-moves-it count=2 seed=14 easy-seed=7 hard-seed=7
+    practice physics.bigger-push-needed count=2 seed=2 easy-seed=1 hard-seed=3
+    practice physics.moved-by count=2 seed=4 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.two-ways k=2
+    }
+  }
+  story {
+    show physics.washing-story k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show physics.two-ways k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show physics.pushes-in-order p=2 easy-p=1 hard-p=5
+  }
+  remember {
+    say "Something moves everything that moves: a hand, the wind, a spring, or a fall."
+  }
+
+  grown-ups """
+    The wrong idea this lesson is about is that a thing can move with nothing moving it: the apple
+    "just falls", the swing "just comes back". Its twin is the hand that goes on pushing after it
+    has let go, so a thrown ball is moved by a hand all the way up and down. Every question can be
+    settled by asking what is touching the thing at that moment: a hand, the moving air, a squashed
+    spring, or nothing at all, in which case it falls. Watch whether the child asks that, or names
+    whoever was near it last. In the two-star question the two ways need two different answers, and
+    the child should be able to say why the hand cannot be the second one. The three-star question
+    has no push drawn: the child has to say that the fuller basket is heavier and that heavier
+    needs the bigger push, so ask for that sentence. If the movers are still being guessed after the
+    core, stay here another day and go back to the way in, finding the arrow. Off the page, walk
+    round the house together and find one thing each that a hand, the wind, a spring and a fall
+    move: a door, a curtain, a pop-up toy, a dropped sock.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the windsock) opens the core, the push arrows are long, the things asked about are the swing Sam pushes and the falling apple, the things to find are the ones the wind and a hand move, the baskets differ by four apples or more, the story asks about the wind on the shirts, the two-star question is a ball thrown up, and the baskets to order hold three, eight, one and five apples, numbered from the smallest push."
+  }
+  level hard {
+    grown-ups "At this level the other thing in the way in has a pull on it, the things asked about are the two traps (the swing that sways with nobody near it, and the swing that comes down on its own), the things to find are the one a fall moved and the one a spring moved, the baskets differ by two apples, a second two-way question (Sam's hat) sits in the core, the story asks about the sock, the two-star question is the swing that comes back by itself, and the baskets to order hold five, seven, four and six apples, numbered from the biggest push."
+  }
+}

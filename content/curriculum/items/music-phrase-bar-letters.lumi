@@ -1,0 +1,33 @@
+# A bar of the phrase read as letters. Bar 3 starts on middle C, on its own short line below the staff,
+# which is the hardest note in the phrase to read; bar 4 is three notes whose letters read as easily
+# as bars 1 and 2.
+item music.phrase-bar-letters v=1 skills=[music.staff, music.note-names] {
+  title "Name the notes"
+  difficulty (if b == 3 then 1 else 0)
+  let b=1..4 r=0..1
+  let right={pick(b - 1, "E E F G", "G F E D", "C C D E", "E D D")}
+  level easy {
+    let b={1, 2, 4}
+  }
+  level hard {
+    let b=3..4
+  }
+
+  scene 36x33 {
+    column lines space=1 align=start at=canvas(1, 1) {
+      notes l1 clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4
+      notes l2 clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4
+    }
+    text ask "The top line is bars 1 and 2, the bottom line bars 3 and 4. Which letters does bar {b} play?" narrate width=34 below=lines gap=1
+    choice pick options=[pick(r, "G F E D", "C C D E"), pick(r, "E D D", "E E F G"), pick(r, "C C D E", "G F E D"), pick(r, "E E F G", "E D D")] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lines {
+      say "Find bar {b} first, then name its notes from left to right. The bottom line of the staff is E."
+    }
+  }
+  hint "Which line is bar {b} on, and is it the first or the second bar there?"
+  hint "The bottom line of the staff is E, the space above it F, the next line G. Middle C has a short line of its own."
+}

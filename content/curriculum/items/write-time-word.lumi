@@ -1,0 +1,22 @@
+# v2, the audit's raise: the question used to say whether the event came first, in the middle or at
+# the end, so the word was read off the question. Now every time word is missing, the sentences are
+# mixed up, and a bank of four holds one word too many, so the order has to come from the events.
+item writing.time-word v=2 skills=[writing.recounts, writing.joining-sentences] {
+  title "Words that say when"
+  difficulty q
+  let t=0..2 q=0..1 e1={if t == 0 then "___ we climbed the hill." else if t == 1 then "___ we mixed the flour and eggs." else "___ we untied the boat."} e2={if t == 0 then "___ we set up the telescope." else if t == 1 then "___ we baked the cake." else "___ we rowed across the lake."} e3={if t == 0 then "___ we saw the moon through it." else if t == 1 then "___ we ate a slice each." else "___ we tied it up on the far side."}
+
+  scene 32x18 {
+    text ask "The sentences are mixed up. Write the number of the time word that starts each one. One word is not needed." width=30 at=canvas(1, 1)
+    match m left=["{if q == 0 then e2 else e3}", "{if q == 0 then e3 else e1}", "{if q == 0 then e1 else e2}"] right=["First", "After that", "At last", "Before"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=(if q == 0 then 2 else 3) b=(if q == 0 then 3 else 1) c=(if q == 0 then 1 else 2)
+  feedback {
+    when (a == 4 or b == 4 or c == 4) point=m {
+      say "Read the sentence with Before at the start. Does it make a whole sentence?"
+    }
+  }
+  hint "Which of the three things had to happen before the others could?"
+  hint "Now give First to that one. Which word says the last thing that happened?"
+}

@@ -1,0 +1,15 @@
+# Using opposites on purpose: a dull brown with no brown in the box.
+item art.which-pair-brown v=1 stars=2 skills=[art.complementary, art.colour-mixing, reasoning.strategy] {
+  title "A brown without brown"
+  difficulty p
+  let p=0..2
+
+  scene 32x12 {
+    text ask "Ada wants a dull brown for a tree trunk, and there is no brown in the box. Which two paints should she mix?" width=13 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then \"red and green\" else \"red and yellow\"}", "{if p == 1 then \"red and green\" else if p == 0 then \"red and yellow\" else \"yellow and blue\"}", "{if p == 2 then \"red and green\" else \"yellow and blue\"}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=makes target=brown
+  hint "What happens when two opposite colours are mixed?"
+  hint "Which of these pairs are opposites on the wheel?"
+}

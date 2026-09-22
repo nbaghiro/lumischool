@@ -1,0 +1,20 @@
+# In a long word made of two, the second word says what the thing is: a goldfish is a fish, a
+# fishbowl is a bowl. Both choices contain the word asked about, so the order has to be reasoned.
+item reading.kind-of v=2 stars=2 skills=[reading.compound-words, reasoning.structure] {
+  title "A kind of what?"
+  let k=0..3 p=0..1
+
+  scene 28x9 {
+    text ask "A goldfish is a kind of fish, but a fishbowl is a kind of bowl. Which of these is a kind of {if k == 0 then \"boat\" else if k == 1 then \"house\" else if k == 2 then \"bird\" else \"fish\"}?" narrate width=26 at=canvas(1, 1)
+    choice pick options=[if p == 0 then if k == 0 then "sailboat" else if k == 1 then "doghouse" else if k == 2 then "blackbird" else "catfish" else if k == 0 then "boathouse" else if k == 1 then "houseboat" else if k == 2 then "birdcage" else "fishhook", if p == 0 then if k == 0 then "boathouse" else if k == 1 then "houseboat" else if k == 2 then "birdcage" else "fishhook" else if k == 0 then "sailboat" else if k == 1 then "doghouse" else if k == 2 then "blackbird" else "catfish"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "sailboat" else if k == 1 then "doghouse" else if k == 2 then "blackbird" else "catfish")
+  feedback {
+    when (pick == (if k == 0 then "boathouse" else if k == 1 then "houseboat" else if k == 2 then "birdcage" else "fishhook")) point=ask {
+      say "That word starts with {if k == 0 then \"boat\" else if k == 1 then \"house\" else if k == 2 then \"bird\" else \"fish\"}, but what is the thing itself? Look at the second word."
+    }
+  }
+  hint "Both words have {if k == 0 then \"boat\" else if k == 1 then \"house\" else if k == 2 then \"bird\" else \"fish\"} in them. Where is it in each one?"
+  hint "Say each word in its two parts. Which part tells you what the thing really is, the first part or the second?"
+}

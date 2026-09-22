@@ -1,0 +1,31 @@
+# Three numbers to add, 1.OA.A.2, with two of them making ten, so the order is the child's choice.
+item add.three-plates v=1 skills=[addition.three-numbers, addition.make-ten] {
+  title "Three plates"
+  difficulty (b + (if p == 1 then 1 else 0))
+  let a={2, 3, 4, 6, 7, 8} b=2..7 p=0..2
+  level easy {
+    let b=2..3 p={0}
+  }
+  level hard {
+    let b=6..7 p={1}
+  }
+
+  scene 33x16 {
+    row plates at=canvas(1, 1) space=2 {
+      plate p1 item=circle count=(if p == 0 then a else if p == 1 then b else 10 - a)
+      plate p2 item=circle count=(if p == 0 then b else if p == 1 then 10 - a else a)
+      plate p3 item=circle count=(if p == 0 then 10 - a else if p == 1 then a else b)
+    }
+    text ask "How many biscuits are on the three plates?" narrate width=29 below=plates gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 + b)
+  feedback {
+    when (answer == 10) point=plates {
+      say "Two plates make 10. Add the third plate on too."
+    }
+  }
+  hint "Can you find two plates that make 10 together?"
+  hint "Now add the third plate on to 10."
+}

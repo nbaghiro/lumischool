@@ -1,0 +1,33 @@
+# A note a step or a skip from one of the landmarks, named without letters by finding the nearest
+# landmark first, which is how the landmark method reads. The wrong choices are the letters either
+# side, which is where a miscount lands.
+item music.name-near-landmark v=1 skills=[music.grand-staff, music.intervals] {
+  title "Name it from a landmark"
+  difficulty ((if i == 0 or i == 3 or i == 6 or i == 9 then 1 else 0) + (if i <= 4 then 1 else 0))
+  let i=0..9 q=0..3
+  level easy {
+    where (i >= 5)  # round middle C and treble G
+  }
+  level hard {
+    where (i <= 3 or i == 6 or i == 9)  # round bass F, or a skip from treble G
+  }
+  let n={if i == 0 then "D3" else if i == 1 then "E3" else if i == 2 then "G3" else if i == 3 then "A3" else if i == 4 then "B3" else if i == 5 then "D4" else if i == 6 then "E4" else if i == 7 then "F4" else if i == 8 then "A4" else "B4"}
+  let r={if i == 0 then "D" else if i == 1 then "E" else if i == 2 then "G" else if i == 3 then "A" else if i == 4 then "B" else if i == 5 then "D" else if i == 6 then "E" else if i == 7 then "F" else if i == 8 then "A" else "B"}
+  let up={if i == 0 then "E" else if i == 1 then "F" else if i == 2 then "A" else if i == 3 then "B" else if i == 4 then "C" else if i == 5 then "E" else if i == 6 then "F" else if i == 7 then "G" else if i == 8 then "B" else "C"}
+  let dn={if i == 0 then "C" else if i == 1 then "D" else if i == 2 then "F" else if i == 3 then "G" else if i == 4 then "A" else if i == 5 then "C" else if i == 6 then "D" else if i == 7 then "E" else if i == 8 then "G" else "A"}
+  let up2={if i == 0 then "F" else if i == 1 then "G" else if i == 2 then "B" else if i == 3 then "C" else if i == 4 then "D" else if i == 5 then "F" else if i == 6 then "G" else if i == 7 then "A" else if i == 8 then "C" else "D"}
+  let o1={if q == 0 then r else if q == 1 then up else if q == 2 then dn else up2}
+  let o2={if q == 0 then up else if q == 1 then dn else if q == 2 then up2 else r}
+  let o3={if q == 0 then dn else if q == 1 then up2 else if q == 2 then r else up}
+  let o4={if q == 0 then up2 else if q == 1 then r else if q == 2 then up else dn}
+
+  scene 28x16 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=true at=canvas(1, 0)
+    text ask "The marked lines are bass F, middle C and treble G. Which letter is the ringed note?" width=17 right-of=gs gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}", "{o4}"] below=ask gap=1
+  }
+
+  answer pick=r
+  hint "Which landmark is nearest to the ringed note?"
+  hint "Count up or down from that landmark in steps, saying the letters."
+}

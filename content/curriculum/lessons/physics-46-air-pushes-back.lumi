@@ -1,0 +1,65 @@
+# Air pushes back: everything is pulled down the same, but the air has to be pushed out of the way,
+# and a wide light thing has more of it to push, so it comes down slowly. The order from fastest to
+# slowest is the stone, the paper ball, the leaf, the flat sheet, the parachute and the feather.
+lesson physics-air-pushes-back v=1 format=teach grade=2 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "Air pushes back"
+  goal "Say why a leaf, a parachute and a feather come down slowly, and work out which of two things lands first."
+
+  look {
+    scene 35x17 {
+      row top space=2 align=start at=canvas(1, 0) {
+        falling four things=["stone", "leaf", "parachute", "feather"] time=1 show=1 names=1
+        tree oak
+      }
+    }
+    say """
+      Let go of anything and it falls. On the way down it has to push the air out of the way, and the
+      air pushes back. A stone is small and heavy, so the air hardly slows it at all. A leaf, a
+      parachute and a feather are wide and light, so there is a lot of air to push and it holds them
+      up. Watch them from the branch: they all start together, and they do not arrive together.
+      """
+  }
+  do {
+    practice physics.fall-first count=1 seed=4 easy-seed=2 hard-seed=5
+    level easy {
+      worked physics.fall-slowest v=2 level=medium
+    }
+    practice physics.fall-slowest count=2 seed=1 easy-seed=1 hard-seed=1
+    practice physics.fall-air-push count=2 seed=3 easy-seed=1 hard-seed=6
+    practice physics.fall-order count=2 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.fall-air-push d=2
+    }
+  }
+  story {
+    show physics.treetops-leaf-drop v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show physics.fall-paper-two-ways t=1 o=0 easy-t=2 hard-t=1
+  }
+  try stars=3 {
+    show physics.fall-longest-wait v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Everything is pulled down the same. The wide light things have more air to push, so they come down slowly."
+  }
+
+  grown-ups """
+    The wrong idea this lesson meets is that heavy things fall faster because they are heavy. The
+    two-star question is built to break it: one sheet of paper in two shapes, weighing exactly the
+    same, that do not come down together, so the weight cannot be the reason. What changes is how
+    much air the shape has to push out of the way. Watch for a child who reads the picture as a race
+    between big and small rather than between wide and narrow; the parachute is the test, since it is
+    large and still slow. The three-star question asks for the pair with the longest wait between
+    them, which needs the fastest and the slowest of the four rather than any two that look
+    different. If the order is still guesswork after the core, stay here another day and drop things
+    in pairs. Off the page, drop a sheet of paper and the same sheet crumpled, then a book and a sheet
+    of paper laid flat on top of the book, which comes down with it.
+    """
+  level easy {
+    grown-ups "At this level the two things to compare are two or more places apart in the order, the slowest of four is worked once in the teacher's pen before two more, the pairs the air holds up differ by four places, the four to number include the stone and the feather, the story times are two and six seconds, the two-star picture is caught at the later moment, with the ball well below the sheet, and the three-star's four include the stone and the feather."
+  }
+  level hard {
+    grown-ups "At this level the two things to compare are next to each other in the order, the pairs the air holds up differ by one place, the four to number leave out one end of the order or the other, the core carries a third question about which the air is holding up, the story times are two and fourteen seconds, the two-star picture is caught while both are still falling, and the three-star's four leave out the stone."
+  }
+}

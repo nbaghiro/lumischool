@@ -1,0 +1,25 @@
+item add.tens-and-ones v=1 skills=[place-value.add-tens] {
+  title "Ten more"
+  difficulty (10 * t + o)
+  let t=2..7 o=1..9
+  level easy {
+    let t=2..3
+  }
+  level hard {
+    let t=6..7 o=6..9
+  }
+
+  scene 28x13 {
+    baseten blocks thousands=0 hundreds=0 tens=t ones=o at=canvas(1, 1)
+    text ask "Add one more ten. What is the number now?" width=26 below=blocks gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * t + o + 10)
+  feedback {
+    when (answer == 10 * t + o + 1) point=blocks {
+      say "One more ten is a whole rod, not a single cube."
+    }
+  }
+  hint "The ones do not change. Only the tens digit goes up by one."
+}

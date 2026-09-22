@@ -1,0 +1,36 @@
+# Choosing from the table by the job: a window, the inside of a wire, the plate a fridge magnet
+# holds to, the case round a plug's flex, which has to bend. Each job names one or two tests.
+item chem.material-for-job v=1 skills=[chemistry.materials, reasoning.constraints] {
+  title "Which material for the job?"
+  difficulty (if j == 0 then 0 else if j == 3 then 2 else 1)
+  let j=0..3
+  let job={pick(j, "a window that must be hard and let the light through", "the wire inside a lamp's flex, which must carry the electricity and must not be pulled by magnets", "a plate on a door that a fridge magnet will hold a note to", "the case round a plug's flex, which must not conduct electricity and must bend rather than crack when it is knocked")}
+  let right={pick(j, "glass", "copper", "steel", "rubber")}
+  level easy {
+    let j=0..1
+  }
+  level hard {
+    let j=2..3
+  }
+
+  scene 36x24 {
+    table data cols=5 head=["Material", "Hard", "Clear", "Conducts", "Magnet"] cells=["wood", "yes", "no", "no", "no", "glass", "yes", "yes", "no", "no", "steel", "yes", "no", "yes", "yes", "copper", "yes", "no", "yes", "no", "rubber", "no", "no", "no", "no"] at=canvas(1, 0)
+    text ask "Mia needs a material for {job}. Which one from the table does the job?" narrate width=34 below=data gap=1
+    choice pick options=["wood", "glass", "steel", "copper", "rubber"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (j == 1 and pick == "steel") point=data {
+      say "Steel conducts, but the magnet column says yes: a magnet would pull it. The job wants a conductor the magnet leaves alone."
+    }
+    when (j == 3 and (pick == "glass" or pick == "wood")) point=data {
+      say "That one does not conduct, but it is hard, and a hard case cracks instead of bending. The job wants the one that says no to hard."
+    }
+    when (pick != right) point=data {
+      say "Turn the job into tests: which columns must say yes, and which must say no? Then find the row."
+    }
+  }
+  hint "Which of the four tests does the job care about? Read those columns only."
+  hint "{if j == 0 then \"Hard yes and clear yes.\" else if j == 1 then \"Conducts yes and magnet no.\" else if j == 2 then \"Magnet yes.\" else \"Conducts no and hard no.\"}"
+}

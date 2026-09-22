@@ -1,0 +1,14 @@
+item physics.lever-pivot v=1 skills=[physics.machines] stars=2 {
+  title "Where should the pivot go?"
+  let f=4..6 w={60, 80}
+
+  scene 25x28 {
+    lever bar fulcrum=f load=w push=10 at=canvas(1, 0)
+    text ask "This push cannot lift the stone. Which change would let the same push lift it?" width=23 below=bar gap=0
+    choice pick options=["Move the pivot nearer the stone", "Move the pivot nearer the push", "Leave the pivot where it is"] stack=column below=ask gap=1
+  }
+
+  answer pick="Move the pivot nearer the stone"
+  hint "Which side of the pivot does the push want to be longer?"
+  hint "What happens to the push's steps if the pivot moves towards the stone?"
+}

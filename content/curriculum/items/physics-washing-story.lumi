@@ -1,0 +1,41 @@
+# The story block: Sam and Pip peg the washing out by the cottage, and three things move it in
+# turn. The sock is the point: the wind shook it loose, but once it was off the line nothing held
+# it up, and what took it to the grass was a fall.
+item physics.washing-story v=1 skills=[physics.forces] {
+  title "The washing on the line"
+  difficulty k
+  let k=0..2
+  let what={pick(k, "the shirts while they dried", "the dry washing into the cottage", "the sock down onto the grass")}
+  let right={pick(k, "the wind", "a hand", "a fall")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x24 {
+    row line at=canvas(0, 0) space=2 align=end {
+      children kids count=2 names=["Sam", "Pip"]
+      clothesline washing count=5 pattern=2
+      cottage home windows=2 lit=1
+    }
+    text ask "Sam and Pip peg the washing on the line by the cottage. The wind lifts the shirts and dries them. One sock slips off the line and lands on the grass. Later, Sam carries the dry washing in. What moved {what}?" narrate width=33 below=line gap=1
+    choice pick options=["a hand", "the wind", "a fall"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "the wind") point=washing {
+      say "The wind shook the sock loose, but once it was off the line nothing held it up. Down it went, and that is a fall."
+    }
+    when (k == 0 and pick == "a hand") point=kids {
+      say "Sam's hands pegged the shirts up and left them. All afternoon something else was moving them."
+    }
+    when (k == 1 and pick != "a hand") point=kids {
+      say "Sam carried the washing in. His hands moved it."
+    }
+  }
+  hint "Say what happened to the washing, one thing at a time."
+  hint "What was touching it just then: a hand, the moving air, or nothing at all?"
+}

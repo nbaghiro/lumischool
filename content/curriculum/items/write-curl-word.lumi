@@ -1,0 +1,23 @@
+# The three-star: a word made only of the family's letters, written with every letter started
+# at its curl, marked by a grown-up who watches the starts.
+item writing.curl-word v=1 stars=3 skills=[writing.letter-formation, writing.spelling] {
+  title "A word from the family"
+  difficulty k
+  let k=0..2
+  let task={pick(k, "Write the word dog on the line", "Write the word good on the line", "Think of a word made only of the letters c, o, a, d and g, and write it on the line")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x12 {
+    text ask "{task}. Start every letter with c's curl and make each letter in one movement." narrate width=32 at=canvas(1, 1)
+    handwriting rules show="" rows=1 trace=0 width=30 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A word made only of c, o, a, d and g (dog, good, cod, dad, add, cad or the child's own), readable, with every letter started near the top by the curl to the left and made in one movement, the letters sitting on the thick line, d's tall stroke to the top line and g's tail below it."
+  hint "Say the word slowly and write one letter at a time, starting each at its curl."
+  hint "{if k == 2 then \"Try dog, good, cod or dad. Check each letter is in the family before you write it.\" else \"Every letter in the word is a curly letter.\"}"
+}

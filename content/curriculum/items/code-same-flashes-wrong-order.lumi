@@ -1,0 +1,40 @@
+# The two-star reason: two lamps flashed the same flashes, and only the one in the key's order
+# says the message, since a pattern is its order; at hard the wrong lamp's long is in the middle.
+item coding.same-flashes-wrong-order v=1 stars=2 skills=[coding.sequences, reasoning.evidence] {
+  title "The same flashes, a different order"
+  difficulty k
+  let k=0..1 r=0..1
+  let a1={pick(k, "flash short", "flash long")}
+  let a2={pick(k, "flash short", "flash short")}
+  let a3={pick(k, "flash long", "flash short")}
+  let b1={pick(k, "flash long", "flash short")}
+  let b2={pick(k, "flash short", "flash long")}
+  let b3={pick(k, "flash short", "flash short")}
+  let right={pick(k, "Lamp 2: the long comes first, as the key says", "Lamp 1: the long comes first, as the key says")}
+  let w1={pick(k, "Lamp 1: it has the same flashes", "Lamp 2: it has the same flashes")}
+  let w2={pick(0, "Both: the same three flashes")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x28 {
+    text ask "The key says come in is long short short. Both lamps flashed one long and two shorts. Which lamp said come in, and why?" narrate width=34 at=canvas(1, 1)
+    row lamps space=2 align=start below=ask gap=1 {
+      program pa code=["{a1}", "{a2}", "{a3}"] title="Lamp 1"
+      program pb code=["{b1}", "{b2}", "{b3}"] title="Lamp 2"
+    }
+    choice pick options=[if r == 0 then right else w1, if r == 0 then w1 else w2, if r == 0 then w2 else right] stack=column below=lamps gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lamps {
+      say "A message is its flashes in order. The same flashes in another order say something else, or nothing."
+    }
+  }
+  hint "Read each lamp from the top and write its flashes down: first, second, third."
+  hint "Which lamp's flashes come in the same order as the key's row?"
+}

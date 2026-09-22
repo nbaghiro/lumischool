@@ -1,0 +1,59 @@
+# The core's other shape: four of Sam's things in a row with letters, and the mover named. The wind
+# and the hand are read from what the thing is; the fall needs the apples on the grass to be seen
+# as fallen, and the spring needs the third picture to be read as a push.
+item physics.moved-by v=1 skills=[physics.forces] {
+  title "Find the one it moves"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  let mover={pick(k, "the wind", "a hand", "a fall", "a spring")}
+  let right={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 31x32 {
+    column all at=canvas(0, 0) space=1 align=start {
+      row top space=2 align=end {
+        column ca space=0 align=centre {
+          windsock sock wind=1
+          text la "A"
+        }
+        column cb space=0 align=centre {
+          art barrow asset="wheelbarrow"
+          text lb "B"
+        }
+        column cc space=0 align=centre {
+          tree apple fruit=4 fallen=3
+          text lc "C"
+        }
+      }
+      column cd space=0 align=centre {
+        squash spring thing=spring action=squash after=1
+        text ld "D"
+      }
+    }
+    text ask "Which of these is moved by {mover}?" narrate width=30 below=all gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "A") point=sock {
+      say "The windsock is held up by its pole and pushed by the wind. Look for something that has come down on its own."
+    }
+    when (k == 3 and pick == "B") point=barrow {
+      say "A hand pushes the barrow. Look for the thing that pushes itself back after it is squashed."
+    }
+    when (k == 1 and pick == "A") point=sock {
+      say "Nobody holds the windsock. Which of these needs a person to move it?"
+    }
+    when (k == 0 and pick == "B") point=barrow {
+      say "The barrow only moves when someone pushes it. Which of these is pushed by moving air?"
+    }
+  }
+  hint "Say for each one: what is touching it, or what is blowing on it?"
+  hint "A fall moves a thing down with nothing holding it. A spring pushes back after it is squashed."
+}

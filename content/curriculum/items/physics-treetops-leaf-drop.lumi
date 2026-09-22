@@ -1,0 +1,32 @@
+# The story: Sam on the treetop walkway timing two things dropped together, and how many seconds
+# longer the slower one takes. The stopwatch shows the slower one's time.
+item physics.treetops-leaf-drop v=1 skills=[physics.forces, subtraction.to-twenty] {
+  title "Timing the drop"
+  difficulty (slow - fast)
+  let v=0..3
+  let a={pick(v, "stone", "crumpled", "leaf", "stone")}
+  let b={pick(v, "leaf", "flat", "parachute", "feather")}
+  let wa={pick(v, "the stone", "the paper ball", "the leaf", "the stone")}
+  let wb={pick(v, "the leaf", "the flat sheet", "the parachute", "the feather")}
+  let fast={pick(v, 2, 3, 6, 2)}
+  let slow={pick(v, 6, 8, 11, 14)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 29x29 {
+    row top space=2 align=start at=canvas(1, 0) {
+      falling pair things=["{a}", "{b}"] time=2 show=1 names=1
+      stopwatch watch seconds=slow sweep=true
+    }
+    text ask "Sam drops {wa} and {wb} together from the treetop walkway. {wa} lands after {fast} seconds and {wb} after {slow}. How many seconds longer does {wb} take?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=(slow - fast)
+  hint "Find both times in the question first."
+  hint "Take the shorter time away from the longer one."
+}

@@ -1,0 +1,31 @@
+# The same two things drawn twice, with the weights the other way round in the second drawing, and
+# which of the two puts a named thing nearer. The named thing changes, so the answer moves between the
+# drawings.
+item art.line-which-drawing v=1 skills=[art.line, art.looking] {
+  title "Which drawing puts it nearer?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let a={pick(k, "jug", "apple", "cup", "pear", "ball", "cup")}
+  let b={pick(k, "cup", "ball", "pear", "jug", "apple", "jug")}
+  let asked={pick(k, "the jug", "the ball", "the pear", "the pear", "the apple", "the cup")}
+  let ans={pick(k, "The first one", "The second one", "The second one", "The first one", "The second one", "The first one")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 24x30 {
+    text l1 "The first drawing" at=canvas(1, 0)
+    stilllife one light="left" things=["{a}", "{b}"] lamp=false weights=["thick", "thin"] below=l1 gap=0
+    text l2 "The second drawing" below=one gap=1
+    stilllife two light="left" things=["{a}", "{b}"] lamp=false weights=["thin", "thick"] below=l2 gap=0
+    text ask "The same two things are drawn twice. In which drawing does {asked} look nearer?" narrate width=20 below=two gap=1
+    choice pick options=["The first one", "The second one"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Find the thing the question names in both drawings."
+  hint "The drawing that gives it the thicker line is the one that puts it nearer."
+}

@@ -1,0 +1,15 @@
+# Two turns at once: the letters swap order and each letter turns over, so only some words survive.
+item art.word-prints v=1 stars=3 skills=[art.printing, art.symmetry, reasoning.what-if] {
+  title "A word that prints true"
+  difficulty k
+  let k=0..3
+
+  scene 20x13 {
+    text ask "Ada carves a word on a block the ordinary way round, as she would write it. Which word will still print so it reads the right way?" width=16 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"TOM\" else if k == 1 then \"WOW\" else if k == 2 then \"DID\" else \"MAT\"}", "{if k == 0 then \"MUM\" else if k == 1 then \"POP\" else if k == 2 then \"OAT\" else \"BOB\"}", "{if k == 0 then \"DAD\" else if k == 1 then \"MAT\" else if k == 2 then \"TOT\" else \"AHA\"}"] below=ask gap=1
+  }
+
+  check art.print pick=true
+  hint "A print turns the whole block over. What happens to the order of the letters?"
+  hint "And what happens to each letter? The word has to survive both."
+}

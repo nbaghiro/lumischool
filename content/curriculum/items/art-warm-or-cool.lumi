@@ -1,0 +1,21 @@
+item art.warm-or-cool v=1 skills=[art.warm-cool, art.colour-mixing] {
+  title "Warm or cool?"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x9 {
+    paintpots pots pots=["{if k < 2 then \"yellow\" else \"blue\"}", "{if k == 0 then \"red\" else if k == 1 then \"blue\" else if k == 2 then \"white\" else \"green\"}"] result="mix" labels=true at=canvas(1, 1)
+    text ask "Is the colour they make warm or cool?" width=15 right-of=pots gap=1
+    choice pick options=["warm", "cool"] below=ask gap=1
+  }
+
+  check paint.mixes of=pots pick=warmth
+  hint "Look at the pot at the end. What colour did the two pots make?"
+  hint "Is that colour more like fire and the sun, or more like water and ice?"
+}

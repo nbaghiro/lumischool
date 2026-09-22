@@ -1,0 +1,35 @@
+# The story: Ada and Ben on the reef counting a chain: each gull eats some crabs a day, and the
+# crabs eat snails, so the counts multiply along the chain.
+item nature.reef-count v=1 skills=[nature.food-chains, multiplication.tables] {
+  title "Ada counts the chain"
+  difficulty (g + k + 2 * w)
+  let g=2..5 k=2..4 w=0..1
+  let asks={pick(w, "How many crabs do the gulls eat in a day?", "Each crab eats 2 sea snails a day. How many sea snails does that chain eat in a day?")}
+  level easy {
+    let g=2..3 k=2..3 w=0..0
+  }
+  level hard {
+    let g=4..5 k=3..4 w=1..1
+  }
+
+  scene 34x16 {
+    row who at=canvas(1, 1) space=2 align=end {
+      gull pg flying=0
+      crabs pc count=k
+    }
+    text ask "Ada and Ben watch the reef from the rocks. Each gull eats {k} crabs a day, and they count {g} gulls. {asks}" narrate width=32 below=who gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then g * k else g * k * 2)
+  feedback {
+    when (answer == g + k and g + k != g * k * (if w == 0 then 1 else 2)) point=who {
+      say "Each gull eats {k} crabs, and there are {g} gulls. That is {k} added {g} times, not {g} added to {k}."
+    }
+    when (w == 1 and answer == g * k) point=who {
+      say "That is the crabs. Every one of those crabs eats 2 snails, so double it."
+    }
+  }
+  hint "{g} gulls, {k} crabs each. Count in {k}s, {g} times."
+  hint "For the snails: each crab eats 2, so take the number of crabs twice."
+}

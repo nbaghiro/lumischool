@@ -1,0 +1,54 @@
+lesson g1-counting-to-twenty v=1 format=teach grade=1 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Counting to twenty"
+  goal "Count to twenty in fives and ones without counting one at a time, and compare two amounts."
+
+  look {
+    scene 26x22 {
+      column stack at=canvas(1, 0) space=1 {
+        rekenrek frame top=7 bottom=3
+        beadstring line beads=20 mark=10
+      }
+      row talk below=stack gap=1 space=1 align=centre {
+        guide g pose=point
+        bubble b "Five is a handful. Count the fives first, then the ones left over." width=16 from=g.hand
+      }
+    }
+    say """
+      The beads sit in fives, so you can see five without counting it. Seven is five and two more,
+      and ten is two handfuls. Beads pushed across sit together at the left of the wire, and the
+      rest wait at the right.
+      """
+  }
+  do {
+    practice count.beadstring count=1 seed=5
+    practice count.rekenrek count=1 seed=3
+    practice count.rekenrek-more count=2 seed=4
+    practice count.beadstring-after count=1 seed=5
+    practice count.compare-teens count=1 seed=6
+    practice count.sticker-charts count=1 seed=3
+    practice count.order-to-twenty count=1 seed=8
+  }
+  try stars=2 {
+    show count.rekenrek-to-make t=8 k=6 easy-t=5 easy-k=3 hard-t=9 hard-k=8
+  }
+  try stars=3 {
+    show count.rekenrek-ways n=6 easy-n=4 hard-n=9
+  }
+  remember {
+    say "Five and five make ten. Ten and ten make twenty. Read the fives, then the ones."
+  }
+
+  grown-ups """
+    The first two questions are the way in and every child should manage them. The next six compare,
+    count back, count on from ten and put numbers in order, which is the grade's real work. The two
+    Try this sections are the stretch: the two-star one needs a missing part, and the three-star one
+    has no method to follow, so let the child list the ways in any order and notice the pattern. If
+    the child counts every bead, slide five across in one push and ask how many without counting.
+    """
+  level easy {
+    grown-ups "At this level the first arrow sits under ten and the second near the end of the string, the numbers to compare are two apart, and the numbers to order include 1 and 20 rather than the teens."
+  }
+  level hard {
+    grown-ups "At this level the arrow sits in the teens, the numbers to compare are one apart or the same, and the numbers to order include 12 and 17, which look like the teens around them."
+  }
+}

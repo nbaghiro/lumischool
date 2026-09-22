@@ -1,0 +1,31 @@
+# Ten more is one more bead on the tens spike, 1.NBT.C.5, and the ones spike does not change.
+item place.abacus-more v=1 skills=[place-value.add-tens] {
+  title "Beads on the tens spike"
+  difficulty (10 * t + o + 10 * k)
+  let t=1..6 o=0..9 k=2..3
+  where (t + k <= 9)
+  level easy {
+    let t=1..3 o=0..4 k={2}
+  }
+  level hard {
+    let t=4..6 o=5..9 k={3}
+  }
+
+  scene 28x12 {
+    abacus ab value="{t}{o}" at=canvas(1, 1)
+    text ask "Put {k} more beads on the tens spike. What number will the abacus show?" narrate width=18 right-of=ab gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * (t + k) + o)
+  feedback {
+    when (answer == 10 * t + o + k) point=ab {
+      say "A bead on the tens spike is worth ten, not one."
+    }
+    when (answer == 10 * t + o) point=ab {
+      say "That is the number now. Put the {k} new beads on first."
+    }
+  }
+  hint "What number does the abacus show now?"
+  hint "Each bead on the tens spike is worth ten. Count on in tens."
+}

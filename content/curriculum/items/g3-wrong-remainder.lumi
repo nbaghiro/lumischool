@@ -1,0 +1,34 @@
+# A remainder as big as the divisor means another group was missed: spotting that is the reason.
+item division.wrong-remainder v=1 stars=2 skills=[division.short-with-remainder, reasoning.find-the-error] {
+  title "Too much left over"
+  difficulty (d - r + q)
+  let d=3..8 q=5..11 r=0..6
+  where (r < d and r + d > d)
+  level easy {
+    let q=5..7
+    where (d - r <= 2)  # Sam's remainder is well over the number divided by
+  }
+  level hard {
+    let q=9..11
+    where (d - r >= 5)  # Sam's remainder is only just over it
+  }
+
+  scene 32x18 {
+    children kid count=1 holding="" names=["Sam"] at=canvas(1, 1)
+    bubble said "{d * q + r} ÷ {d} is {q - 1} remainder {r + d}." width=16 from=kid right-of=kid gap=1
+    text ask "Sam's answer cannot be right. What is the right answer?" width=28 below=kid gap=1
+    text ql "Answer" below=ask gap=1
+    number-input quotient right-of=ql gap=1
+    text rl "Remainder" right-of=quotient gap=2
+    number-input rest right-of=rl gap=1
+  }
+
+  answer quotient=q rest=r
+  feedback {
+    when (quotient == q - 1) point=said {
+      say "Sam has {r + d} left over, and that is enough for another group of {d}."
+    }
+  }
+  hint "Look at Sam's remainder. Is it smaller than {d}?"
+  hint "If {d} or more are left over, one more group can be made."
+}

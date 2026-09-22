@@ -1,0 +1,16 @@
+# Non-routine: the answer is found by crossing things out, and no picture of it is given, so the
+# child has to hold each kind of grain in mind.
+item chem.lens-guess v=1 stars=3 skills=[chemistry.materials, reasoning.elimination] {
+  title "What is the white powder?"
+  difficulty k
+  let k=0..2
+
+  scene 28x10 {
+    text ask "Mia looks at a white powder through a lens. {if k == 0 then \"The grains are not cubes. They are not long, and they are not fine dust.\" else if k == 1 then \"The grains are not slanted blocks. They are not long, and they are not fine dust.\" else \"The grains are not cubes. They are not slanted blocks, and they are not fine dust.\"} What is it?" width=25 at=canvas(1, 0)
+    choice pick options=["salt", "sugar", "rice", "flour"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "sugar" else if k == 1 then "salt" else "rice")
+  hint "Write the four powders down. What does each look like close up?"
+  hint "Cross out every one the clues say it is not."
+}

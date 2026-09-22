@@ -1,0 +1,31 @@
+# How far apart two notes are, counted in steps on the staff: counting the notes instead of the
+# moves between them is the mistake.
+item music.step-count-read v=1 skills=[music.intervals] {
+  title "How many steps apart?"
+  difficulty (abs(d) + (if d < 0 then 1 else 0))
+  let i=2..8 d={-4, -3, -2, 2, 3, 4}
+  where (i + d >= 0 and i + d <= 10)
+  level easy {
+    let d={2, 3}
+  }
+  level hard {
+    let d={-4, -3, 4}
+  }
+  let a={if i == 0 then "C4" else if i == 1 then "D4" else if i == 2 then "E4" else if i == 3 then "F4" else if i == 4 then "G4" else if i == 5 then "A4" else if i == 6 then "B4" else if i == 7 then "C5" else if i == 8 then "D5" else if i == 9 then "E5" else "F5"}
+  let b={if i + d == 0 then "C4" else if i + d == 1 then "D4" else if i + d == 2 then "E4" else if i + d == 3 then "F4" else if i + d == 4 then "G4" else if i + d == 5 then "A4" else if i + d == 6 then "B4" else if i + d == 7 then "C5" else if i + d == 8 then "D5" else if i + d == 9 then "E5" else "F5"}
+
+  scene 27x17 {
+    grandstaff gs notes=["{a}", "{b}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "How many steps is it from the first note to the second?" width=12 right-of=gs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer abs(d)
+  feedback {
+    when (answer == abs(d) + 1) point=gs {
+      say "Count the moves, not the notes. The first note is where you start, so it is not a move."
+    }
+  }
+  hint "Put a finger on the first note. Move one line or space at a time towards the second."
+  hint "Count each move as one step."
+}

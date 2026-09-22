@@ -1,0 +1,24 @@
+# A reason, not a total: a new value above the mean pulls it up, below pulls it down, and equal
+# leaves it alone.
+item data.mean-change v=1 stars=2 skills=[data.mean, reasoning.predict] {
+  title "Up, down or the same"
+  difficulty ((if x == m then 3 else 0) + 6 - abs(x - m))
+  let n={3, 4, 5} m={5, 6, 8} x={3, 5, 6, 8, 10}
+  level hard {
+    where (abs(x - m) <= 2)
+  }
+
+  scene 30x17 {
+    text ask "{n} children have a mean of {m} stickers each. One more child joins with {x} stickers. What happens to the mean?" narrate width=29 at=canvas(1, 1)
+    choice pick options=["it goes up", "it goes down", "it stays the same"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if x > m then "it goes up" else if x < m then "it goes down" else "it stays the same")
+  feedback {
+    when (pick == "it goes up" and x < m) point=ask {
+      say "Adding a child makes the total bigger, but the new child has fewer than the mean. Share the total again."
+    }
+  }
+  hint "Is {x} more than the mean, less, or the same?"
+  hint "If the new child gave away or took stickers to be level with the others, would the others go up or down?"
+}

@@ -1,0 +1,14 @@
+# The prediction that paint gets wrong: blue and yellow dots mix in the eye to grey, not green.
+item art.dots-vs-paint v=1 stars=2 skills=[art.artists, art.colour-mixing, reasoning.predict] {
+  title "Dots are not paint"
+
+  scene 37x15 {
+    dots pic scene="tree" colours=["blue", "yellow"] magnify=true at=canvas(1, 1)
+    text ask "Blue and yellow paint stirred together make green. This tree is painted in blue and yellow dots side by side. What colour does it look from across the room?" width=15 right-of=pic gap=1
+    choice pick options=["green", "grey", "purple"] below=pic gap=1
+  }
+
+  check paint.mixes of=pic pick=name
+  hint "When paint is stirred, each paint takes away some of the light. What happens when dots sit side by side instead?"
+  hint "Your eye adds the light from the two dots together. Is that the same as stirring them?"
+}

@@ -1,0 +1,23 @@
+# The turn is given and the place is missing: the unknown moves from which way to where.
+item writing.missing-place v=1 skills=[writing.directions] {
+  title "Where does that turn happen?"
+  difficulty (q - 1)
+  let a={"left", "right"} b={"left", "right"} q=1..2
+  where (a != b)  # the two turns differ, so the turn names one place
+  level easy {
+    let q={1}
+  }
+  level hard {
+    let q={2}
+  }
+
+  scene 36x16 {
+    treasuremap map stops=["palm", "bridge", "cave"] turns=[a, b, "on"] heading="right" step=4 names=true at=canvas(1, 1)
+    text ask "One direction lost its place: Turn {if q == 1 then a else b} at the ... Which place is it?" width=15 right-of=map gap=1
+    choice pick options=["palm", "bridge", "cave"] below=map gap=1
+  }
+
+  answer pick=(if q == 1 then "palm" else "bridge")
+  hint "Walk the path and say which way you turn at each place."
+  hint "At which place do you turn {if q == 1 then a else b}? One place has no turn at all."
+}

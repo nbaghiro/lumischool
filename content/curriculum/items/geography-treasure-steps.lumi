@@ -1,0 +1,30 @@
+# Directions on a grid: the thing is found, then the steps are taken from it, so the square is
+# worked out rather than read off.
+item geography.treasure-steps v=1 skills=[geography.grid-references, geography.directions] {
+  title "Steps from the hut"
+  let c=1..5 r=1..4 dx=1..3 dy=1..2 ew=0..1 ns=0..1
+  where (if ew == 0 then c + dx <= 6 else c - dx >= 1)
+  where (if ns == 0 then r + dy <= 5 else r - dy >= 1)
+  let tc={if ew == 0 then c + dx else c - dx}
+  let tr={if ns == 0 then r + dy else r - dy}
+  let across={if ew == 0 then "east" else "west"}
+  let updown={if ns == 0 then "south" else "north"}
+  let sx={if dx == 1 then "square" else "squares"}
+  let sy={if dy == 1 then "square" else "squares"}
+
+  scene 35x18 {
+    gridmap map cols=6 rows=5 col=c row=r thing=hut at=canvas(1, 1)
+    text ask "North is at the top. The treasure is {dx} {sx} {across} and {dy} {sy} {updown} of the hut. Which square is it in?" width=17 right-of=map gap=2
+    choice column options=["A", "B", "C", "D", "E", "F"] below=map gap=1
+    number-input row right-of=column gap=2
+  }
+
+  answer column=(if tc == 1 then "A" else if tc == 2 then "B" else if tc == 3 then "C" else if tc == 4 then "D" else if tc == 5 then "E" else "F") row=tr
+  feedback {
+    when (row == (if ns == 0 then r - dy else r + dy)) point=map {
+      say "South is down the map and north is up."
+    }
+  }
+  hint "Find the hut first. Which way on the map is {across}?"
+  hint "Count the squares one at a time from the hut, across first and then up or down."
+}

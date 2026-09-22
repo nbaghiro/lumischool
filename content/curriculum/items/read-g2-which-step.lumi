@@ -1,0 +1,17 @@
+# Evidence in instructions: the question says what it wants in other words (how long to wait),
+# and the child answers with the number of the step that tells you.
+item reading.which-step v=1 skills=[reading.instructions, reading.evidence] {
+  title "Which step tells you?"
+  difficulty w
+  let k=0..2 w=0..1
+
+  scene 36x21 {
+    howto card title="{if k == 0 then \"Pancakes\" else if k == 1 then \"Paper boat\" else \"Bird cake\"}" need=[if k == 0 then "a bowl" else if k == 1 then "paper" else "seeds", if k == 0 then "eggs" else if k == 1 then "a pen" else "fat", if k == 0 then "flour" else if k == 1 then "" else "a cup", if k == 0 then "milk" else if k == 1 then "" else "string"] steps=[if k == 0 then "Crack two eggs into a bowl." else if k == 1 then "Fold the paper in half." else "Mix the seeds with soft fat.", if k == 0 then "Add the flour and the milk." else if k == 1 then "Fold the top corners down." else "Press it into a cup.", if k == 0 then "Leave it to stand for ten minutes." else if k == 1 then "Fold the bottom edges up." else "Put it in the fridge overnight.", if k == 0 then "Cook each pancake until it is gold." else if k == 1 then "Open it out and push it flat." else "Hang it in a tree with string."] blank=-1 width=34 at=canvas(1, 1)
+    text ask "Which step tells you {if w == 0 then (if k == 0 then \"how long to wait\" else if k == 1 then \"where the corners go\" else \"when it will be ready\") else (if k == 0 then \"what goes in with the eggs\" else if k == 1 then \"what to do at the end\" else \"where it goes when it is done\")}?" narrate width=19 below=card gap=1
+    choice pick options=["1", "2", "3", "4"] right-of=ask gap=1
+  }
+
+  answer pick=(if w == 0 then if k == 0 then "3" else if k == 1 then "2" else "3" else if k == 0 then "2" else if k == 1 then "4" else "4")
+  hint "Read every step, not just the first one."
+  hint "Which step would you point at if someone asked you this?"
+}

@@ -1,0 +1,35 @@
+# Two part-eaten pizzas, and the eaten parts are more than one whole pizza together.
+item fraction.pizzas-eaten v=1 skills=[fractions.add-like, fractions.mixed-numbers] {
+  title "How much pizza was eaten"
+  difficulty (k + a + c)
+  let k={6, 8} a=3..7 c=3..7
+  where (a < k and c < k and a + c > k and a != c)
+  level easy {
+    let k={6}
+  }
+  level hard {
+    let k={8}
+    where (a + c >= 12)
+  }
+
+  scene 30x22 {
+    row both at=canvas(1, 1) space=2 align=end {
+      pizza one slices=k taken=a toppings=true
+      pizza two slices=k taken=c toppings=true
+    }
+    text ask "The gaps show what was eaten. How many pizzas were eaten altogether? Write whole ones and a fraction." narrate width=28 below=both gap=1
+    equation eq "{?whole}  {?top}/{k}" below=ask gap=1
+  }
+
+  answer whole=1 top=(a + c - k)
+  feedback {
+    when (whole == 0 and top == a + c) point=both {
+      say "{a + c}/{k} is more than one whole pizza. Take {k}/{k} out as one whole."
+    }
+    when (top == 2 * k - a - c and 2 * (a + c) != 3 * k) point=both {
+      say "That is what is left. The question asks what was eaten."
+    }
+  }
+  hint "How many slices are gone from each pizza?"
+  hint "How many slices is that altogether? Is it more than one whole pizza?"
+}

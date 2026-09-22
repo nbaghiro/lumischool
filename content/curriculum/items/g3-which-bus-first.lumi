@@ -1,0 +1,33 @@
+# The bus that leaves first is slower, so the arrival times have to be found and compared.
+item time.which-bus-first v=2 stars=2 skills=[time.elapsed, reasoning.compare] {
+  title "Which bus gets there first?"
+  difficulty (r + rt + b + bt)
+  let r={5, 10, 15} b={20, 25, 30} rt=(35..60 by 5) bt=(15..40 by 5)
+  where (rt > bt and r + rt != b + bt)
+  where (rt - bt <= 25)  # otherwise Bus 8 wins in three versions out of four
+  level easy {
+    where (r + rt < 60 and b + bt < 60)  # both arrive before ten
+  }
+  level hard {
+    where (r + rt >= 60 and b + bt >= 60)  # both arrive after ten
+  }
+
+  scene 34x20 {
+    row buses at=canvas(1, 1) space=2 align=end {
+      bus red windows=4 on=0 sign="5"
+      bus blue windows=4 on=0 sign="8"
+    }
+    text ask "Bus 5 leaves at 9:{if r == 5 then \"05\" else r} and takes {rt} minutes. Bus 8 leaves at 9:{b} and takes {bt} minutes. Which bus gets there first, and by how many minutes?" width=28 below=buses gap=1
+    choice pick options=["Bus 5", "Bus 8"] below=ask gap=1
+    number-input answer right-of=pick gap=2
+  }
+
+  answer pick=(if r + rt < b + bt then "Bus 5" else "Bus 8") answer=abs(r + rt - b - bt)
+  feedback {
+    when (pick == "Bus 5" and r + rt > b + bt) point=ask {
+      say "Bus 5 leaves first, but it takes longer. Work out when each one arrives."
+    }
+  }
+  hint "What time does each bus arrive?"
+  hint "Now compare the two arrival times. How far apart are they?"
+}

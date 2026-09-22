@@ -1,0 +1,47 @@
+lesson chemistry-squash-bend-twist-stretch v=1 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Squash, bend, twist and stretch"
+  goal "Say what was done to a thing and whether it goes back to its shape, and predict it for a new thing."
+
+  look {
+    scene 21x8 {
+      squash s thing="sponge" action="squash" after=1 at=canvas(1, 0)
+    }
+    say """
+      Some things go back to their shape when you let go: a sponge, a rubber band, a spring and a
+      bouncy ball. Some things stay the new shape: modelling clay, foil and a bent pipe cleaner. That
+      is why a ball is made of rubber and a model is made of clay.
+      """
+  }
+  do {
+    level easy {
+      worked chem.springs-back k=5 level=medium
+    }
+    practice chem.springs-back count=2 seed=2 hard-seed=6
+    practice chem.predict-back count=2 seed=5 hard-seed=4
+    practice chem.which-action count=2 seed=3 hard-seed=1
+    practice chem.shape-sort count=2 seed=1
+  }
+  try stars=2 {
+    show chem.shape-why k=1
+  }
+  try stars=3 {
+    show chem.sorts-with k=0
+  }
+  remember {
+    say "Squash it, bend it, twist it or stretch it, then let go: does it go back, or does it stay?"
+  }
+
+  grown-ups """
+    A sponge, a lump of play dough, a rubber band and a strip of foil are all this lesson needs. Let
+    the child do each one before answering. The first question reads the last picture; the second asks
+    for a prediction before the picture is drawn. The two-star question asks why a material was chosen,
+    and the answer depends on whether the job needs the shape to come back or to stay. The three-star
+    question uses the rule on things the lesson did not show.
+    """
+  level easy {
+    grown-ups "At this level a bent pipe cleaner is judged once in the teacher's pen before the sponge, the clay, the rubber band and the ball, which plainly spring back or stay, the actions to name are squashes and a stretch, the columns are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the things to judge are the spring, the pipe cleaner and the foil, the actions to name are a stretch, a bend and a twist, the columns are as written, and the two-star and three-star are as written."
+  }
+}

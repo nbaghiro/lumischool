@@ -1,0 +1,27 @@
+item chem.two-beakers v=2 skills=[chemistry.volume] {
+  title "Poured together"
+  difficulty (a + b)
+  let a={50, 100, 150, 200} b={50, 100, 150}
+  level easy {
+    where (a + b <= 200)
+  }
+  level hard {
+    where (a + b >= 300)
+  }
+
+  scene 33x16 {
+    text ask "Both beakers are poured into a jug. How many millilitres is that?" width=32 at=canvas(1, 0)
+    beaker one max=400 step=100 level=a unit=ml below=ask gap=1
+    beaker two max=400 step=100 level=b unit=ml right-of=one gap=2
+    number-input answer right-of=two gap=2
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a or answer == b) point=one {
+      say "Both beakers go in, so the two amounts add together."
+    }
+  }
+  hint "What does the first beaker read? What does the second one read?"
+  hint "Pouring both into one jug puts the two amounts together. What do you do with them?"
+}

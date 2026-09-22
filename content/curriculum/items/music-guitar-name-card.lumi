@@ -1,0 +1,37 @@
+# A card with its name hidden, read by its crosses and dots. G and D look like nothing else; C and
+# A minor differ by one finger on string 5, which is the pair hard asks.
+item music.guitar-name-card v=1 skills=[music.chord-boxes] {
+  title "Whose card is it?"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3
+  let right={pick(k, "C", "G", "D", "Am")}
+  level easy {
+    let k=1..2
+  }
+  level hard {
+    let k={0, 3}
+  }
+
+  scene 36x17 {
+    chordbox box tuning=guitar chord=pick(k, "C", "G", "D", "Am") frets=4 show=fingers name=false letters=true lit=[] at=canvas(1, 1)
+    column side space=1 align=start right-of=box gap=2 {
+      text ask "Ben's card has lost its name. Which chord is it?" narrate width=16
+      choice pick options=["C", "G", "D", "Am"] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Am" and right == "C") point=box {
+      say "Look at string 5, the second from the left. In A minor it is played open, and here a finger presses it."
+    }
+    when (pick == "C" and right == "Am") point=box {
+      say "Look at string 5, the second from the left. In C finger 3 presses it, and here it has a ring."
+    }
+    when ((pick == "G" or pick == "D") and pick != right) point=box {
+      say "Count the crosses above the top line. G leaves out no string and D leaves out two."
+    }
+  }
+  hint "Look above the thick line first. How many strings have a cross?"
+  hint "C leaves out one string and D leaves out two. Then check where finger 3 goes."
+}

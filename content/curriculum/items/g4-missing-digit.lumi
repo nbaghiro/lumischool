@@ -1,0 +1,31 @@
+# The audit's raise for multiply.short: the product is given and one digit of the number is hidden,
+# so the multiplication has to be run backwards or tried digit by digit.
+item multiply.missing-digit v=1 skills=[multiplication.short, reasoning.working-backwards] {
+  title "The hidden digit"
+  difficulty (m + (if o * m >= 10 then 2 else 0) + (if d * m >= 10 then 2 else 0))
+  let h=2..7 d=0..9 o=1..9 m=3..8
+  where (d != o and d != h)
+  where ((100 * h + 10 * d + o) * m < 10000)
+  level easy {
+    let m=3..4
+    where (o * m < 10 and d * m < 10)  # nothing carries
+  }
+  level hard {
+    let m=6..8
+    where (o * m >= 10 and d * m >= 10)  # the ones and the tens both carry
+  }
+
+  scene 24x6 {
+    equation eq "{h}{?digit}{o} × {m} = {(100 * h + 10 * d + o) * m}" at=canvas(1, 1)
+    text ask "Which digit is hidden?" narrate below=eq gap=1
+  }
+
+  answer digit=d
+  feedback {
+    when (digit == (d + 1) % 10 or digit == (d + 9) % 10) point=eq {
+      say "Try your digit: work out the whole multiplication and compare it with {(100 * h + 10 * d + o) * m}."
+    }
+  }
+  hint "Work out {h}00 × {m} and {o} × {m}. How much is left for the middle digit?"
+  hint "What is left has to be the middle digit's tens times {m}."
+}

@@ -1,0 +1,31 @@
+# The story: Ada looks at her tree, and the question is what it will look like some seasons on. One
+# season on is a step; two or three seasons on from autumn or winter goes round the end of the year.
+item nature.season-story v=1 skills=[nature.seasons, reasoning.order] {
+  title "Ada's tree, later"
+  difficulty (n - 1 + (if s + n >= 4 then 1 else 0))
+  let s=0..3 n=1..3
+  let now={if s == 0 then "spring" else if s == 1 then "summer" else if s == 2 then "autumn" else "winter"}
+  let later={if n == 1 then "one season" else if n == 2 then "two seasons" else "three seasons"}
+  let soon={if (s + n) % 4 == 0 then "spring" else if (s + n) % 4 == 1 then "summer" else if (s + n) % 4 == 2 then "autumn" else "winter"}
+  level easy {
+    let s=0..2 n=1..1
+  }
+  level hard {
+    let s=2..3 n=2..3
+  }
+
+  scene 36x23 {
+    seasontrees tree seasons=["{now}"] names=0 at=canvas(1, 1)
+    text ask "Ada looks out at her tree. It is {now}. She will look again {later} from now. What will the tree look like then?" narrate width=22 right-of=tree gap=2
+    choice pick options=["blossom", "full of leaves", "leaves falling", "bare"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if soon == "spring" then "blossom" else if soon == "summer" then "full of leaves" else if soon == "autumn" then "leaves falling" else "bare")
+  feedback {
+    when (n >= 2 and pick == (if (s + 1) % 4 == 0 then "blossom" else if (s + 1) % 4 == 1 then "full of leaves" else if (s + 1) % 4 == 2 then "leaves falling" else "bare")) point=tree {
+      say "That is the tree one season on. Ada waits {later}. Keep going round the year."
+    }
+  }
+  hint "Say the seasons from {now}: what comes next, and next after that?"
+  hint "When you get to winter, the next season is spring again."
+}

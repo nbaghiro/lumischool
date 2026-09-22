@@ -1,0 +1,32 @@
+# The table says how many spoons went in and how many stayed as grains; the child takes one from
+# the other. The words never put a number before "grains", so none of them reads "1 grains".
+item chem.dissolve-table v=2 skills=[chemistry.dissolving] {
+  title "How many spoons dissolved?"
+  difficulty (n + k)
+  let n=4..7 k=1..3
+  where (k < n)
+  level easy {
+    let n=4..5 k={1}
+  }
+  level hard {
+    let n=6..7 k=2..3
+  }
+
+  scene 27x9 {
+    text ask "Salt was stirred in one spoon at a time. How many spoons dissolved?" width=24 at=canvas(1, 0)
+    table data cols=2 head=["Spoons in", "Did not dissolve"] cells=[n, k] below=ask gap=0
+    number-input answer right-of=data gap=1
+  }
+
+  answer (n - k)
+  feedback {
+    when (answer == n + k) point=data {
+      say "The spoons that did not dissolve are still sitting there, so take them away."
+    }
+    when (answer == n) point=data {
+      say "Not every spoon dissolved. Look at the second column."
+    }
+  }
+  hint "How many spoons went in altogether?"
+  hint "How many of those did not dissolve? Take them away."
+}

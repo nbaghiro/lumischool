@@ -1,0 +1,28 @@
+# A deadline read against a timetable: the last train that still gets there in time, which
+# means reading down to the right station and comparing every column with the deadline.
+item reading.train-table v=1 skills=[reading.text-features, maths.time-intervals] {
+  title "The last train that gets there in time"
+  difficulty (if k == 0 then 1 else 0)
+  let s={0, 10} b1={15, 20} b2={20, 25, 35} k=0..1
+  where (s + b1 + b2 != 50 and s + b1 != 20)
+  level easy {
+    let k={1}  # Bray, one leg down
+  }
+  level hard {
+    let k={0}  # Cole, two legs down
+  }
+
+  scene 37x14 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=start {
+        table t cols=4 head=["Station", "Train 1", "Train 2", "Train 3"] cells=["Ash", "{(550 + s + 0) // 60}:{if (550 + s + 0) % 60 < 10 then \"0\" else \"\"}{(550 + s + 0) % 60}", "{(580 + s + 0) // 60}:{if (580 + s + 0) % 60 < 10 then \"0\" else \"\"}{(580 + s + 0) % 60}", "{(610 + s + 0) // 60}:{if (610 + s + 0) % 60 < 10 then \"0\" else \"\"}{(610 + s + 0) % 60}", "Bray", "{(550 + s + b1) // 60}:{if (550 + s + b1) % 60 < 10 then \"0\" else \"\"}{(550 + s + b1) % 60}", "{(580 + s + b1) // 60}:{if (580 + s + b1) % 60 < 10 then \"0\" else \"\"}{(580 + s + b1) % 60}", "{(610 + s + b1) // 60}:{if (610 + s + b1) % 60 < 10 then \"0\" else \"\"}{(610 + s + b1) % 60}", "Cole", "{(550 + s + b1 + b2) // 60}:{if (550 + s + b1 + b2) % 60 < 10 then \"0\" else \"\"}{(550 + s + b1 + b2) % 60}", "{(580 + s + b1 + b2) // 60}:{if (580 + s + b1 + b2) % 60 < 10 then \"0\" else \"\"}{(580 + s + b1 + b2) % 60}", "{(610 + s + b1 + b2) // 60}:{if (610 + s + b1 + b2) % 60 < 10 then \"0\" else \"\"}{(610 + s + b1 + b2) % 60}"]
+        text ask "{if k == 0 then \"Ivy must be at Cole before 11:00. Which is the last train she can catch from Ash?\" else \"Tom must be at Bray before 10:00. Which is the last train he can catch from Ash?\"}" width=14
+      }
+      choice pick options=["Train 1", "Train 2", "Train 3"]
+    }
+  }
+
+  answer pick=(if k == 0 then if s + b1 + b2 < 50 then "Train 3" else "Train 2" else if s + b1 < 20 then "Train 2" else "Train 1")
+  hint "Find the row for the station {if k == 0 then \"Ivy\" else \"Tom\"} is going to."
+  hint "Read along that row. Which trains get there in time? The last of those is the answer."
+}

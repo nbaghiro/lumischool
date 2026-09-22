@@ -1,0 +1,40 @@
+# Two stars: two blocks that look alike, and which one draws a bigger square for a bigger number.
+# One never uses its number; at r=2 and 3 it does use it, but as the repeat's count, so a bigger
+# number draws more sides, not longer ones.
+item coding.param-which-uses v=1 stars=2 skills=[coding.procedures, coding.debugging, reasoning.claims] {
+  title "Which block uses its number?"
+  difficulty (if r >= 2 then 1 else 0)
+  let r=0..3
+  let a1={pick(r, "  repeat 4", "  repeat 4", "  repeat size", "  repeat 4")}
+  let a2={pick(r, "    forward 3", "    forward size", "    forward 3", "    forward size")}
+  let b1={pick(r, "  repeat 4", "  repeat 4", "  repeat 4", "  repeat size")}
+  let b2={pick(r, "    forward size", "    forward 2", "    forward size", "    forward 2")}
+  let ans={pick(r, "B", "A", "B", "A")}
+  level easy {
+    let r=0..1
+  }
+  level hard {
+    let r=2..3
+  }
+
+  scene 36x22 {
+    row cards space=2 align=start at=canvas(1, 1) {
+      program pa code=["define box size", "{a1}", "{a2}", "    turn right"] title="A"
+      program pb code=["define box size", "{b1}", "{b2}", "    turn right"] title="B"
+    }
+    text ask "Sam wants box 2 to draw a small square and box 6 a big one. Mo says both blocks do that, because both say size. Which block really does it?" narrate width=34 below=cards gap=1
+    choice pick options=["A", "B", "Both of them"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Both of them") point=cards {
+      say "Try each block with 2 and with 6. Does the square get bigger, or does something else change?"
+    }
+    when (pick != ans) point=cards {
+      say "Read that block with 6 in place of size. How long is each side?"
+    }
+  }
+  hint "Look for the line that makes each side. Does it say size?"
+  hint "{if r >= 2 then \"A block can say size and still draw the same sides: what does repeat size change?\" else \"One block draws the same square whatever its number.\"}"
+}

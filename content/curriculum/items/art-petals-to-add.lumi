@@ -1,0 +1,27 @@
+item art.petals-to-add v=1 skills=[art.looking, reasoning.compare] {
+  title "Finish the flower"
+  difficulty (p + d)
+  let p=5..8 d=1..3
+  level easy {
+    let d={1, 2}
+  }
+  level hard {
+    let d={2, 3}
+  }
+
+  scene 30x11 {
+    flowers real count=1 petals=p at=canvas(1, 1)
+    flowers drawn count=1 petals=(p - d) right-of=real gap=4
+    text ask "Ada is drawing the flower on the left. How many more petals must she draw?" width=13 right-of=drawn gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == p) point=real {
+      say "The flower has {p} petals. Some are drawn already. How many are still to draw?"
+    }
+  }
+  hint "Count the petals on the flower on the left. Start at the top and go round."
+  hint "Now count Ada's petals. How many more does she need to reach {p}?"
+}

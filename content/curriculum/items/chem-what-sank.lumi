@@ -1,0 +1,23 @@
+# Only one of the two sinks: the other floats or dissolves, so the child reads the bottom of the
+# glass and names what is there.
+item chem.what-sank v=1 skills=[chemistry.mixtures] {
+  title "What sank?"
+  difficulty (if k == 0 or k == 3 then 0 else 1)
+  let k=0..5
+  level easy {
+    let k={0, 3}  # the other thing floats
+  }
+  level hard {
+    let k={1, 2, 4, 5}  # the other thing dissolved
+  }
+
+  scene 32x12 {
+    mixture mix things=["{if k == 0 then \"pebbles\" else if k == 1 then \"sand\" else if k == 2 then \"iron\" else if k == 3 then \"cork\" else if k == 4 then \"salt\" else \"sugar\"}", "{if k == 0 then \"cork\" else if k == 1 then \"salt\" else if k == 2 then \"sugar\" else if k == 3 then \"sand\" else if k == 4 then \"pebbles\" else \"iron\"}"] water=1 names=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Pebbles\" else if k == 1 then \"Sand\" else if k == 2 then \"Iron filings\" else if k == 3 then \"Cork\" else if k == 4 then \"Salt\" else \"Sugar\"} and {if k == 0 then \"cork\" else if k == 1 then \"salt\" else if k == 2 then \"sugar\" else if k == 3 then \"sand\" else if k == 4 then \"pebbles\" else \"iron filings\"} were stirred into the water. Which one sank to the bottom?" width=12 right-of=mix gap=1
+    choice pick options=["{if k == 0 then \"pebbles\" else if k == 1 then \"sand\" else if k == 2 then \"iron filings\" else if k == 3 then \"cork\" else if k == 4 then \"salt\" else \"sugar\"}", "{if k == 0 then \"cork\" else if k == 1 then \"salt\" else if k == 2 then \"sugar\" else if k == 3 then \"sand\" else if k == 4 then \"pebbles\" else \"iron filings\"}"] below=ask gap=1
+  }
+
+  check chem.separate of=mix pick=residue
+  hint "Look at the bottom of the glass. What is lying there?"
+  hint "Where did the other one go: to the top, or into the water where you cannot see it?"
+}

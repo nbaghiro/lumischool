@@ -1,0 +1,20 @@
+# Metres and centimetres against centimetres: 1 m 5 cm is 105 cm, not 150 cm.
+item measure.compare-mixed v=1 stars=2 skills=[length.metres, reasoning.compare-units] {
+  title "Which is longer?"
+  difficulty ((if t == 0 then 0 else 1) + (if c < 10 then 2 else 0) + m)
+  let m=1..2 c={5, 8, 20, 45} t=0..2
+
+  scene 30x9 {
+    text ask "Rope A is {m} m {c} cm long. Rope B is {if t == 0 then 100 * m + c else if t == 1 then (if c < 10 then 10 * (10 * m + c) else 100 * m + c + 5) else 100 * m + c - 5} cm long. Which rope is longer?" width=28 at=canvas(1, 1)
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if t == 0 then "the same" else if t == 1 then if 10 * c > c then "B" else "A" else "A")
+  feedback {
+    when (pick == "B" and t == 2) point=ask {
+      say "{m} m {c} cm is {100 * m + c} cm. Is that more or less than rope B?"
+    }
+  }
+  hint "How many centimetres are in {m} m?"
+  hint "Write rope A in centimetres only, then compare the two numbers."
+}

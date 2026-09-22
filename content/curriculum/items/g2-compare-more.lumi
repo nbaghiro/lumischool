@@ -1,0 +1,29 @@
+item compare.how-many-more v=1 skills=[subtraction.difference] {
+  title "How many more"
+  difficulty (a + b)
+  let a=5..12 b=2..9
+  where (a > b + 1)
+  level easy {
+    let a=5..8 b=2..4
+  }
+  level hard {
+    let a=10..12 b=5..9
+  }
+
+  scene 28x17 {
+    comparebars bars values=[a, b] labels=["Ann", "Ben"] difference=true at=canvas(1, 1)
+    text ask "How many more does Ann have than Ben?" width=26 below=bars gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=bars {
+      say "How many more is the gap between the bars, so this is a subtraction."
+    }
+    when (answer == a) point=bars {
+      say "That is how many Ann has. The question asks how many more than Ben."
+    }
+  }
+  hint "Look at the piece of Ann's bar that sticks out past Ben's."
+}

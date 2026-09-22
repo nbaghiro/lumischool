@@ -1,0 +1,37 @@
+# The three-star: a job with three wants, no material meeting all three, and the one to choose:
+# the material that fails only the want the job can work around. Which want that is comes from
+# the story, and changes between versions.
+item chem.best-trade v=1 stars=3 skills=[chemistry.materials, reasoning.constraints] {
+  title "The best trade"
+  difficulty k
+  let k=0..1 r=0..3
+  let around={pick(k, "If it is not see-through, a window can be cut in it to watch through.", "If it is not hard, it can be held stiff in a frame.")}
+  let right={pick(k, "wood", "clear plastic")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x36 {
+    table data cols=4 head=["Material", "Hard", "Clear", "Conducts"] cells=["steel", "yes", "no", "yes", "plastic", "no", "yes", "no", "wood", "yes", "no", "no", "rubber", "no", "no", "no"] at=canvas(1, 0)
+    text ask "The guard over the press's rollers should be hard, should be see-through so the rollers can be watched, and must not conduct electricity. None has all three. {around} Which is best?" narrate width=32 below=data gap=1
+    choice pick options=[if r == 0 then "steel" else if r == 1 then "clear plastic" else if r == 2 then "wood" else "rubber", if r == 0 then "clear plastic" else if r == 1 then "wood" else if r == 2 then "rubber" else "steel", if r == 0 then "wood" else if r == 1 then "rubber" else if r == 2 then "steel" else "clear plastic", if r == 0 then "rubber" else if r == 1 then "steel" else if r == 2 then "clear plastic" else "wood"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "steel") point=data {
+      say "Steel conducts, and that is the one want the job says must be met. It is out whatever else it passes."
+    }
+    when (pick == "rubber") point=data {
+      say "Rubber fails two of the three wants. A material that fails only one, and the one the job can work around, is better."
+    }
+    when (pick != right) point=data {
+      say "Each of the others fails one want. The story says which want can be worked around; choose the material that fails only that one."
+    }
+  }
+  hint "Cross out any material that conducts: that want is a must. Then count what each of the rest fails."
+  hint "The story says one want has a way round it. The best choice fails only that want."
+}

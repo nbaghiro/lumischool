@@ -1,0 +1,20 @@
+item art.tiles-in-rows v=1 skills=[art.pattern, reasoning.division] {
+  title "Rows of tiles"
+  difficulty (c * r)
+  let c={3, 4, 5} r={4, 6}
+  level easy {
+    let c={3, 4} r={4}
+  }
+  level hard {
+    let c={4, 5} r={6}
+  }
+
+  scene 34x12 {
+    tilerepeat wall drop=0 cols=c rows=2 missing=-1 ring=-1 colour=green at=canvas(1, 1)
+    text ask "Ada's roll of paper is {c} tiles wide. She prints {c * r} tiles in rows across it. How many rows does she print?" width=14 right-of=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  hint "Each row has {c} tiles. How many rows of {c} make {c * r}?"
+}

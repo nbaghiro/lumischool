@@ -1,0 +1,24 @@
+# The same root takes different suffixes, hopeful and hopeless, so the meaning has to decide which
+# brick goes on the end.
+item reading.suffix-build v=1 skills=[reading.morphology] {
+  title "Which suffix?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 24x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      wordbricks b bricks=[if k == 0 then "hope" else if k == 1 then "hope" else if k == 2 then "dark" else "paint", if k == 0 then "ful" else if k == 1 then "less" else if k == 2 then "ness" else "er"] root=0 roots=1 blank=1 word="" labels=true
+      text ask "Which suffix makes a word that means {if k == 0 then \"full of hope\" else if k == 1 then \"without hope\" else if k == 2 then \"being dark\" else \"a person who paints\"}?" width=22
+      choice pick options=["ful", "less", "ness", "er"]
+    }
+  }
+
+  answer pick=(if k == 0 then "ful" else if k == 1 then "less" else if k == 2 then "ness" else "er")
+  feedback {
+    when (pick == "ful" and k == 1) point=b {
+      say "Hopeful means full of hope. This word means the opposite."
+    }
+  }
+  hint "Put each brick on the end of the word and say the new word. Which one sounds like the meaning in the question?"
+  hint "Think of another word with that ending, such as careful, careless, kindness or teacher. What does the ending do in it?"
+}

@@ -1,0 +1,12 @@
+item writing.sentence-about-a-picture v=1 skills=[writing.composing] {
+  title "A sentence about the picture"
+  let w={"garden", "treehouse", "market-stall"}
+
+  scene 34x26 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Write one sentence about the picture. Start with a capital and end with a full stop." width=32 below=pic gap=1
+    writinglines rules lines=2 width=32 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One whole sentence, starting with a capital letter and ending with a full stop, saying something that is actually in the picture rather than a list of the things in it."
+}

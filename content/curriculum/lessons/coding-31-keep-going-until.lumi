@@ -1,0 +1,50 @@
+lesson coding-keep-going-until v=2 format=teach grade=4 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "Keep going until"
+  goal "Read and write a program that repeats until something is true, deciding at every square, and predict where it works and where it does not."
+
+  look {
+    scene 27x13 {
+      row both at=canvas(1, 0) space=1 align=start {
+        blocks b code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"]
+        maze m map=[". . . F", ". # # .", "S . . ."] code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"]
+      }
+    }
+    say """
+      A repeat with a number goes round that many times. Repeat until goes round as many times as
+      it takes, and stops when the question on it comes true. Put an if inside it and the robot can
+      find its way along a path it has never seen.
+      """
+  }
+  do {
+    practice coding.until-moves count=2 seed=3
+    practice coding.until-wall count=1 seed=2
+    practice coding.until-number count=1 seed=3
+    practice coding.until-wall count=1 seed=5
+    practice coding.until-number count=1 seed=8
+    practice coding.until-turns count=1 seed=4
+    show coding.build-until k=1 easy-k=0
+  }
+  try stars=2 {
+    show coding.until-which-maze k=1
+  }
+  try stars=3 {
+    show coding.until-four k=2 hard-k=1
+  }
+  remember {
+    say "Repeat until stops when its question is true. It does not know how many times, and if the question never comes true it never stops."
+  }
+
+  grown-ups """
+    A repeat until that never comes true goes on for ever, and on the screen the runner stops it
+    after a while and says so. That is a real bug with a real name, and it is worth letting the child
+    make one on purpose to see it. In the two-star question the program only turns left, so it goes
+    round in circles in the maze that bends right. The three-star question has four slots, one too
+    few for the if and otherwise: moving first and then turning when a wall is ahead does the job.
+    """
+  level easy {
+    grown-ups "At this level the robot moves five or six squares before it reaches the flag, the walls it stops at are as written, the doubling stops past ten or twenty, the robot turns once before the flag, the program to build turns once on its way to the flag, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the robot moves six or eight squares before it reaches the flag, the walls it stops at are as written, the doubling stops past thirty or fifty, the robot turns three times before the flag, the program to build is as written, the two-star is as written, since its three versions only move the trap between the mazes, and the three-star maze bends four times."
+  }
+}

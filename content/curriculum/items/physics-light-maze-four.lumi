@@ -1,0 +1,14 @@
+item physics.light-maze-four v=1 skills=[physics.light] stars=3 {
+  title "Round the box"
+  let k=0..1
+
+  scene 18x22 {
+    mirrors box cols=6 rows=5 torch=2 rise=["E5", "{if k == 0 then \"B1\" else \"Z9\"}"] fall=["E2", "B5", "{if k == 1 then \"B1\" else \"Z9\"}"] goals=["R1", "L1", "T2", "B5"] show=0 at=canvas(1, 0)
+    text ask "Follow the light all the way round. Which letter does it reach?" width=17 below=box gap=0
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.light of=box pick=reaches
+  hint "Put a finger on the torch and move it square by square. Where is the first mirror?"
+  hint "At every mirror the light turns a corner. Keep going until it leaves the box."
+}

@@ -1,0 +1,42 @@
+# The two-star reason: a claim a child often makes, and four things, one of which shows the claim is
+# wrong. The toadstool is always drawn, so a child has to decide whether it is the counterexample
+# (a living thing that never moves about) or a bystander (it does not move, so it says nothing
+# about "everything that moves is living"). The sun is the hardest: it crosses the sky every day.
+item nature.shows-shes-wrong v=1 stars=2 skills=[nature.living, reasoning.counterexample] {
+  title "Which one shows she is wrong?"
+  difficulty (if k <= 2 then 0 else if k <= 4 then 1 else 2)
+  let k=0..5
+  let claim={if k <= 2 or k == 5 then "Everything that moves is living." else if k == 4 then "Anything that stays still is not living." else "A living thing always moves about."}
+  let a={if k == 0 then "cat" else if k == 1 then "boat" else if k == 2 then "hen" else if k == 3 then "duck" else if k == 4 then "cup" else "cat"}
+  let b={if k == 0 then "kite" else if k == 1 then "hedgehog" else if k == 2 then "cat" else if k == 3 then "rocket" else if k == 4 then "hen" else "sun"}
+  let c={if k == 0 then "hen" else if k == 1 then "duck" else if k == 2 then "rocket" else if k == 3 then "cat" else if k == 4 then "kite" else "hedgehog"}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x22 {
+    row four at=canvas(1, 1) space=1 align=end {
+      art pa asset="{a}"
+      art pb asset="{b}"
+      art pc asset="{c}"
+      toadstools pd count=1 spots=5
+    }
+    text ask "Ada says: {claim} Which one of these shows that Ada is wrong?" narrate width=34 below=four gap=1
+    choice pick options=[a, b, c, "toadstool"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "kite" else if k == 1 then "boat" else if k == 2 then "rocket" else if k == 5 then "sun" else "toadstool")
+  feedback {
+    when ((k <= 2 or k == 5) and pick == "toadstool") point=pd {
+      say "The toadstool does not move, so it cannot show anything about things that move. Look for a thing that moves and is not living."
+    }
+    when ((k == 3 or k == 4) and pick != "toadstool") point=pd {
+      say "That one fits what Ada said. Look for a living thing that stays where it is."
+    }
+  }
+  hint "Say Ada's sentence about each thing in turn. Does it fit?"
+  hint "You want the one thing that does what Ada says cannot happen."
+}

@@ -1,0 +1,22 @@
+# The unknown moved to one of the pots: which paint turns a mix cool.
+item art.cool-with v=1 skills=[art.warm-cool, art.colour-mixing] {
+  title "Make it cool"
+  difficulty (if t == "red" then 2 else if t == "yellow" then 1 else 0)
+  let t={"yellow", "white", "red"} p=0..2
+  level easy {
+    let t={"white"}
+  }
+  level hard {
+    let t={"red"}
+  }
+
+  scene 32x12 {
+    paintpots pots pots=["{t}", "?"] result="?" labels=true at=canvas(1, 1)
+    text ask "Which paint, mixed with the {t}, makes a cool colour?" width=14 right-of=pots gap=1
+    choice pick options=["{if p == 0 then \"blue\" else (if t == \"red\" then \"yellow\" else \"red\")}", "{if p == 1 then \"blue\" else if p == 0 then (if t == \"red\" then \"yellow\" else \"red\") else (if t == \"yellow\" then \"orange\" else if t == \"white\" then \"yellow\" else \"white\")}", "{if p == 2 then \"blue\" else (if t == \"yellow\" then \"orange\" else if t == \"white\" then \"yellow\" else \"white\")}"] below=pots gap=1
+  }
+
+  check paint.mixes pick=cool with="{t}"
+  hint "Mix each paint with the {t} in your head. What colour do you get?"
+  hint "Which of those colours belongs with water, ice and shadows?"
+}

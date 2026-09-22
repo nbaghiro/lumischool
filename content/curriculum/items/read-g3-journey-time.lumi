@@ -1,0 +1,25 @@
+# How long a journey takes: two cells of the same column and the minutes between them, across
+# the hour where it falls that way (the audit's raise for timetable). The times are built from s
+# and the three legs, so every version is a different timetable.
+item reading.journey-time v=1 skills=[reading.text-features, maths.time-intervals] {
+  title "How long does it take?"
+  difficulty (if k == 0 then 2 else if k == 2 then 1 else 0)
+  let s={0, 5, 10} l1={10, 15} l2={12, 15, 20} l3={10, 15} k=0..2
+
+  scene 36x12 {
+    row all at=canvas(1, 1) space=1 align=start {
+      table t cols=3 head=["Stop", "Bus 1", "Bus 2"] cells=["Market", "{(480 + s + 0) // 60}:{if (480 + s + 0) % 60 < 10 then \"0\" else \"\"}{(480 + s + 0) % 60}", "{(570 + s + 0) // 60}:{if (570 + s + 0) % 60 < 10 then \"0\" else \"\"}{(570 + s + 0) % 60}", "Park", "{(480 + s + l1) // 60}:{if (480 + s + l1) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1) % 60}", "{(570 + s + l1) // 60}:{if (570 + s + l1) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1) % 60}", "Library", "{(480 + s + l1 + l2) // 60}:{if (480 + s + l1 + l2) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1 + l2) % 60}", "{(570 + s + l1 + l2) // 60}:{if (570 + s + l1 + l2) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1 + l2) % 60}", "School", "{(480 + s + l1 + l2 + l3) // 60}:{if (480 + s + l1 + l2 + l3) % 60 < 10 then \"0\" else \"\"}{(480 + s + l1 + l2 + l3) % 60}", "{(570 + s + l1 + l2 + l3) // 60}:{if (570 + s + l1 + l2 + l3) % 60 < 10 then \"0\" else \"\"}{(570 + s + l1 + l2 + l3) % 60}"]
+      column q space=1 align=start {
+        text ask "{if k == 0 then \"How many minutes does Bus 2 take from the Market to the School?\" else if k == 1 then \"How many minutes does Bus 1 take from the Park to the Library?\" else \"How many minutes does Bus 2 take from the Park to the School?\"}" width=17
+        row a space=1 align=centre {
+          number-input answer
+          text unit "minutes"
+        }
+      }
+    }
+  }
+
+  answer (if k == 0 then l1 + l2 + l3 else if k == 1 then l2 else l2 + l3)
+  hint "Find the two times in the right column: when the bus is at the first stop, and when it is at the second."
+  hint "Count on from the first time to the second. If it goes past the hour, count to the hour first."
+}

@@ -1,0 +1,12 @@
+item coding.build-rectangle v=1 skills=[coding.drawing, coding.repetition] {
+  title "A rectangle in five blocks"
+  let w=4..5 h=2..3
+
+  scene 36x18 {
+    turtle t cols=7 rows=6 col=2 row=5 face=right moves=[] target=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] at=canvas(1, 0)
+    codepad answer tray=["forward 1", "turn left", "repeat 2"] lines=5 key=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "A long side, a turn, a short side, a turn. Then the same again."
+}

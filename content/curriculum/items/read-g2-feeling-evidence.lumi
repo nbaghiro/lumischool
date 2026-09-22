@@ -1,0 +1,17 @@
+# Which sentence shows the feeling, where another sentence gives its cause: Nico's friend moving
+# away is why he is sad, but sitting alone is what shows it.
+item reading.feeling-evidence v=1 skills=[reading.inference, reading.evidence] {
+  title "Show me where"
+  difficulty (if k == 1 or k == 3 or k == 4 then 1 else 0)
+  let k=0..4
+
+  scene 36x13 {
+    passage p text="{if k == 0 then \"(A) Mia stood at the side of the stage. (B) Her hands were shaking. (C) The music began. (D) Her teacher waved from the front row.\" else if k == 1 then \"(A) It was the night before Tom's birthday. (B) His dog was asleep on the rug. (C) Tom could not keep still in bed. (D) His window was open a little.\" else if k == 2 then \"(A) Ella built a tower of blocks. (B) Her brother knocked it down. (C) Ella threw the last block across the room. (D) Then she went into the garden.\" else if k == 3 then \"(A) Nico's best friend moved away. (B) The weather was warm. (C) At lunch Nico sat on his own and did not eat. (D) The bell rang for class.\" else \"(A) Dad and Zoe baked bread. (B) Zoe shaped the loaf by herself. (C) It tasted good. (D) She showed it to everyone next door.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "{if k == 0 then \"Mia is nervous. Which sentence shows it?\" else if k == 1 then \"Tom is excited. Which sentence shows it?\" else if k == 2 then \"Ella is cross. Which sentence shows it?\" else if k == 3 then \"Nico is sad. Which sentence shows it?\" else \"Zoe is proud. Which sentence shows it?\"}" narrate width=19 below=p gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "B" else if k == 1 then "C" else if k == 2 then "C" else if k == 3 then "C" else "D")
+  hint "What does someone who is {if k == 0 then \"nervous\" else if k == 1 then \"excited\" else if k == 2 then \"cross\" else if k == 3 then \"sad\" else \"proud\"} do, or look like?"
+  hint "One sentence may say why. Which one shows it?"
+}

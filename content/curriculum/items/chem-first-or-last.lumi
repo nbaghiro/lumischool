@@ -1,0 +1,36 @@
+# Three pictures of one dish, muddled, and which was drawn first or last. First is the fullest,
+# last the emptiest; asked for last, with the crust showing, is the harder read.
+item chem.first-or-last v=1 skills=[chemistry.states, reasoning.order] {
+  title "First or last?"
+  difficulty (w + (if p >= 2 then 1 else 0))
+  let w=0..1 p=0..5
+  let la={pick(p, 4, 4, 2, 2, 1, 1)}
+  let lb={pick(p, 2, 1, 4, 1, 4, 2)}
+  let lc={pick(p, 1, 2, 1, 4, 2, 4)}
+  let asks={pick(w, "Which picture was drawn first?", "Which picture was drawn last?")}
+  level easy {
+    let w=0..0 p={0, 2}
+  }
+  level hard {
+    let w=1..1 p=2..5
+  }
+
+  scene 34x17 {
+    row three at=canvas(0, 0) space=0 align=end {
+      dish a left=la day=1 sun=1
+      dish b left=lb day=1 sun=1
+      dish c left=lc day=1 sun=1
+    }
+    text ask "Nour drew the same dish of water three times over a week. The pictures are muddled. {asks}" narrate width=32 below=three gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then if la == 4 then "A" else if lb == 4 then "B" else "C" else if la == 1 then "A" else if lb == 1 then "B" else "C")
+  feedback {
+    when (pick == (if w == 0 then if la == 1 then "A" else if lb == 1 then "B" else "C" else if la == 4 then "A" else if lb == 4 then "B" else "C")) point=three {
+      say "That is the other end of the week. The water leaves the dish a little each day, so the fullest is first and the emptiest is last."
+    }
+  }
+  hint "Each day some water goes into the air. Which dish has the most water? That is the first day."
+  hint "The dish with the least water, and the most crust, is the last day."
+}

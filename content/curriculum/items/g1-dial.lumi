@@ -1,0 +1,26 @@
+item measure.dial v=1 skills=[mass.grams] {
+  title "How heavy"
+  difficulty (v / 200 + (if v % 200 == 0 then 0 else 2))
+  let v={200, 400, 600, 800}
+  level easy {
+    let v={200, 400, 600}
+  }
+  level hard {
+    let v={300, 500, 700, 900}  # halfway between two marks
+    hint "The needle is halfway between two numbers. What is halfway between them?"
+  }
+
+  scene 26x17 {
+    dialscale scale max=1000 step=200 value=v unit=g at=canvas(1, 1)
+    text ask "How heavy is it, in grams?" narrate below=scale gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v / 100) point=scale {
+      say "The numbers round the dial are hundreds of grams, so read the number the needle points at."
+    }
+  }
+  hint "The dial counts up in two hundreds all the way round to a thousand."
+}

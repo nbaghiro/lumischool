@@ -1,0 +1,14 @@
+item physics.maze-bounces v=1 skills=[physics.light] {
+  title "How many bounces?"
+  difficulty (if m == "B1" and k == "B3" or m == "C1" and k == "C3" then 3 else 1)
+  let m={"B1", "C1"} k={"B3", "C3"} r={"E3", "F3"}
+
+  scene 18x19 {
+    mirrors box cols=6 rows=4 torch=1 fall=["{m}", "{k}"] rise=["{r}"] goals=["B2", "B3", "T5", "T6"] at=canvas(1, 0)
+    text ask "How many mirrors does the light bounce off?" width=17 below=box gap=0
+    number-input answer below=ask gap=1
+  }
+
+  check physics.light of=box answer=bounces
+  hint "Which mirrors does the light actually reach?"
+}

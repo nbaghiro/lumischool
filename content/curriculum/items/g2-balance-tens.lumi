@@ -1,0 +1,26 @@
+# The equals sign as a balance with tens: the left starts higher, so the right has to add more.
+# Working out both sides is allowed, but comparing the starts is quicker.
+item add.balance-tens v=1 stars=2 skills=[place-value.add-tens, reasoning.equivalence] {
+  title "Both sides the same"
+  difficulty (p + d)
+  let a=34..69 p=1..3 d=1..2
+  where (a % 10 != 0)
+
+  scene 30x17 {
+    balanceeq eq left="{a} + {10 * p}" right="{a - 10 * d} + ?" at=canvas(1, 1)
+    text ask "Both sides are worth the same. What number goes in the box?" narrate width=28 below=eq gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * (p + d))
+  feedback {
+    when (answer == 10 * p) point=eq {
+      say "The right side starts {10 * d} lower, so it needs more than {10 * p} to catch up."
+    }
+    when (answer == a + 10 * p) point=eq {
+      say "That is what the left side is worth. The box is only the part added on the right."
+    }
+  }
+  hint "Which side starts with the bigger number, and by how much?"
+  hint "The right side has to make up that gap and still add {10 * p}."
+}

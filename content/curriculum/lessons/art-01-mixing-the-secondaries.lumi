@@ -1,0 +1,64 @@
+lesson art-mixing-the-secondaries v=1 format=teach grade=1 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Mixing new colours"
+  goal "Mix red, yellow and blue in pairs to make orange, green and purple, and work out which paint a mix needs."
+
+  look {
+    scene 31x8 {
+      row all at=canvas(1, 1) space=2 align=end {
+        paintbox box pans=["red", "yellow", "blue"] per=3 ring=-1 labels=true
+        paintpots pots pots=["blue", "yellow"] result="mix" labels=true
+      }
+    }
+    say """
+      Red, yellow and blue are the primary colours. You cannot make them by mixing other
+      paints. Mix two of them and you get a new colour: blue and yellow make green.
+      """
+  }
+  do {
+    level easy {
+      worked art.what-two-make k=1 level=medium
+    }
+    practice art.what-two-make count=2 seed=1
+    practice art.which-two-make count=2 seed=2
+    practice art.missing-pot count=3 hard-count=2 seed=4
+    level hard {
+      practice art.cannot-make count=1 seed=1
+    }
+    show art.three-stripes
+  }
+  try stars=2 {
+    show art.cannot-make k=1 hard-k=2
+  }
+  try stars=3 {
+    show art.paint-with-three
+  }
+  remember {
+    say "Red and yellow make orange. Yellow and blue make green. Red and blue make purple."
+  }
+
+  grown-ups """
+    The lesson starts where every child can: naming what two pots make. Then the question turns
+    round, so the child has to work backwards from a colour to the paint that made it, which is
+    the harder direction. The mixing questions are marked by the machine, which works out each mix
+    with the same paint the child's brush uses, so the colour on the answer sheet is the colour the
+    tray really makes. If you have real paints, mix the three pairs on a plate first. Red and blue
+    make a darker, duller purple than most children expect, and that surprise is worth talking
+    about.
+
+    The two-star question asks the child to think through every mix a box can make, and the
+    three-star painting asks them to plan which colours to mix before they paint. A child who gets
+    stuck on either has not failed the lesson; they are there for the child who finds the rest easy.
+
+    The stripes and the painting are the child's, and they are responded to rather than marked. Let
+    the child tell you about them first. Then say what you see, in the words of colour: "You mixed a
+    green here, and you kept the blue on its own over there." Try not to ask "what is it?", since a
+    picture does not have to be of anything, and try not to stop at "lovely", which tells the child
+    nothing.
+    """
+  level easy {
+    grown-ups "At this level red and blue are mixed once in the teacher's pen before the two mixes to name, the pairs to find make green and orange, the missing pots come from green and orange mixes, the stripes are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the mixes to name are as written, the pairs to find make orange and purple, the missing pots come from orange and purple mixes and one of them makes way for a second box to reason over, the stripes are as written, the two-star's box has white in place of blue, and the three-star is as written."
+  }
+}

@@ -1,0 +1,22 @@
+# Halving a second time: after the middle of eleven, five cups are left, and their middle is the
+# next lift. Five is odd, so the middle is one cup.
+item coding.cups-next v=1 skills=[coding.algorithms] {
+  title "Which cup next?"
+  difficulty (17 - abs(t - 17))
+  let t={2, 5, 8, 11, 14, 20, 23, 26, 29, 32}
+
+  scene 36x15 {
+    cups c cards=[2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32] open=[6] target=t crossed=false at=canvas(1, 0)
+    text ask "You lift the middle cup, cup 6, and see 17. You want {t}. Halve what is left: which cup do you lift next?" width=34 below=c gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if t < 17 then 3 else 9)
+  feedback {
+    when (answer == (if t < 17 then 9 else 3)) point=c {
+      say "{t} is {if t < 17 then \"smaller\" else \"bigger\"} than 17, so it is on the other side of cup 6."
+    }
+  }
+  hint "Which side of cup 6 must {t} be on?"
+  hint "Five cups are left on that side. Which one is in their middle?"
+}

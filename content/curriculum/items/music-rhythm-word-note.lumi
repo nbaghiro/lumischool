@@ -1,0 +1,43 @@
+# The way in: a word's sound matched to its note. One sound in a beat is a crotchet (pear, plum), two
+# quick sounds in a beat are two quavers (ap-ple, cher-ry), and a sound held for two beats is a minim.
+item music.rhythm-word-note v=1 skills=[music.note-values, music.rhythm] {
+  title "Which note is the word?"
+  difficulty (if w == 0 or w == 4 then 0 else 1)
+  let w=0..4
+  let word={pick(w, "pear", "ap-ple", "boom, held for two beats", "cher-ry", "plum")}
+  let right={pick(w, "A", "B", "C", "B", "A")}
+  level easy {
+    let w={0, 1, 4}
+  }
+  level hard {
+    let w=1..3
+  }
+
+  scene 30x25 {
+    column cards space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "A"
+        staff a notes=[1]
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        staff b notes=[0.5, 0.5]
+      }
+      row rc space=1 align=centre {
+        text lc "C"
+        staff c notes=[2]
+      }
+    }
+    text ask "Which card is the word {word}?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=cards {
+      say "Say the word and clap its sounds. One clap in a beat is a crotchet, two quick claps are two quavers."
+    }
+  }
+  hint "Say the word slowly. How many sounds does it have?"
+  hint "Two quick sounds share one beat, like the two joined notes."
+}

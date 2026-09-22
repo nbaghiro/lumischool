@@ -1,0 +1,27 @@
+# Two sentences run together with one full stop at the very end. The child finds where the first
+# one stops, which is what a full stop is for.
+item writing.where-it-ends v=1 skills=[writing.punctuation, writing.sentences] {
+  title "Where does the first sentence end?"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={1, 3}  # the kite's two short sentences, where the stop comes after red
+  }
+  let line={if k == 0 then "The sun came out we went to the beach." else if k == 1 then "Sam lost his hat he looked under the bed." else if k == 2 then "The bus was late we had to wait." else "My kite is red it has a long tail."}
+  let o0={if k == 0 then "sun" else if k == 1 then "hat" else if k == 2 then "bus" else "kite"}
+  let o1={if k == 0 then "out" else if k == 1 then "lost" else if k == 2 then "had" else "red"}
+  let o2={if k == 0 then "went" else if k == 1 then "looked" else if k == 2 then "late" else "has"}
+
+  scene 32x13 {
+    caption strip text="{line}" width=30 at=canvas(1, 1)
+    text ask "This is two sentences with the first full stop missing. After which word should it go?" narrate width=30 below=strip gap=1
+    choice pick options=["{o0}", "{o1}", "{o2}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then o1 else if k == 1 then o0 else if k == 2 then o2 else o1)
+  hint "Read it out loud. Where do you stop and take a breath?"
+  hint "The first sentence says one whole thing. Where has it finished?"
+}

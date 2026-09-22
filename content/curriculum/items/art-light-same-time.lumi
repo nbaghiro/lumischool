@@ -1,0 +1,32 @@
+# Two stars: two pictures of the same meadow, and whether they were painted at the same time of day.
+# The shape of the land is the same in both, so only the sun and the shadow can answer it.
+item art.light-same-time v=1 stars=2 skills=[art.light, reasoning.evidence] {
+  title "The same time of day?"
+  difficulty (if p < 2 then 0 else 1)
+  let p=0..3
+  let l1={pick(p, "morning", "noon", "morning", "dusk")}
+  let l2={pick(p, "dusk", "noon", "morning", "morning")}
+  let ans={pick(p, "No, the sun is on the other side", "Yes, both at noon", "Yes, both in the morning", "No, the sun is on the other side")}
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3}
+  }
+
+  scene 23x40 {
+    layers one labels=false ring=-1 sun=true light=l1 at=canvas(1, 0)
+    layers two labels=false ring=-1 sun=true light=l2 below=one gap=1
+    text ask "Two paintings of the same meadow. Were they painted at the same time of day?" narrate width=22 below=two gap=1
+    choice pick options=["Yes, both at noon", "Yes, both in the morning", "No, the sun is on the other side"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=two {
+      say "The hills are the same in both, so look at the sun and at which way the tree's shadow falls."
+    }
+  }
+  hint "The land is the same in both. What is not?"
+  hint "A shadow that reaches right and one that reaches left cannot be the same hour."
+}

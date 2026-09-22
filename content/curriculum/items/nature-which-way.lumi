@@ -1,0 +1,38 @@
+# Which way to walk between two squares, read off the grid with north at the top: the same column
+# is north or south, the same row east or west. At hard the two squares differ in both, and the
+# route is named as two directions.
+item nature.which-way v=1 skills=[nature.maps, geography.directions] {
+  title "Which way?"
+  difficulty (if k <= 3 then 0 else 1)
+  let k=0..5
+  let a={pick(k, "B2", "D1", "C4", "E3", "B1", "D4")}
+  let b={pick(k, "B4", "D4", "A4", "B3", "D3", "B2")}
+  let right={pick(k, "south", "south", "west", "west", "south then east", "north then west")}
+  let o1={pick(k, "north", "north", "east", "east", "north then east", "south then west")}
+  let o2={pick(k, "east", "west", "south", "north", "east then north", "north then east")}
+  let o3={pick(k, "west", "east", "north", "south", "south then west", "west then south")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x23 {
+    gridmap map cols=5 rows=4 col=2 row=2 thing=hut at=canvas(1, 1)
+    text ask "North is at the top of the map. Ben is in {a} and wants to reach {b}. Which way does he walk?" narrate width=20 right-of=map gap=2
+    choice pick options=[o1, right, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1) point=map {
+      say "That is the opposite way. Find both squares first, then see which way the second one lies from the first."
+    }
+    when (pick == o2 or pick == o3) point=map {
+      say "North is up the map, south is down, east is to the right and west is to the left. Find both squares and look which way one lies from the other."
+    }
+  }
+  hint "Find {a} and put a finger on it. Now find {b}. Is it above, below, left or right of your finger?"
+  hint "Up is north, down is south, right is east, left is west."
+}

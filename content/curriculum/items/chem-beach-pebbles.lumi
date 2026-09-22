@@ -1,0 +1,36 @@
+# The two-star reason: why the pebbles on the beach are round when the stones on the hill are
+# sharp, and why the river mouth has sand where the spring has stones. The wrong reasons sound
+# like reasons: the sea dissolves them round, the round ones rolled down on their own.
+item chem.beach-pebbles v=1 stars=2 skills=[chemistry.weathering, reasoning.explain] {
+  title "Why are they round?"
+  difficulty k
+  let k=0..1 r=0..2
+  let ask2={pick(k, "The stones on the hill have sharp edges, but the pebbles on the beach below are smooth and round. Why?", "At the spring the river bed is stones, but at the river's mouth it is sand. Why?")}
+  let right={pick(k, "The waves roll and chip them", "The river grinds them as it goes")}
+  let w1={pick(k, "The sea dissolves them round", "The sea washes sand up the river")}
+  let w2={pick(k, "Only round ones could roll down", "Sand is a different rock")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x24 {
+    rocks r rocks=["sandstone", "granite", "slate"] test=0 letters=0 at=canvas(1, 0)
+    text ask "{ask2}" narrate width=32 below=r gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=r {
+      say "{if k == 0 then \"Sea water dissolves salt, not rock. Think about what the waves do to a pebble a thousand times a day.\" else \"The sea does not run uphill. Think about what happens to a stone carried along a river bed for miles.\"}"
+    }
+    when (pick == w2) point=r {
+      say "{if k == 0 then \"The stones start sharp on the hill; nothing chooses the round ones. Something on the beach makes them round.\" else \"Sand is the same rock, ground small. Something along the way grinds it.\"}"
+    }
+  }
+  hint "{if k == 0 then \"What happens to a pebble on a beach every time a wave comes in and goes out?\" else \"What happens to a stone that the river carries and bumps along the bottom for miles?\"}"
+  hint "Knocking and rolling wear the corners off, and wear a stone smaller and smaller."
+}

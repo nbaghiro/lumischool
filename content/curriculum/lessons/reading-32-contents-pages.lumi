@@ -1,0 +1,55 @@
+lesson reading-contents-pages v=1 format=teach grade=4 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Contents pages"
+  goal "Use a contents page and an index to find where to read, and how long a chapter is."
+
+  look {
+    scene 30x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        contents page title=Contents book="All about boats" entries=["The first boats", "Sails and wind", "Lighthouses", "Ships today"] pages=[3, 9, 15, 21] blank=-1
+        art boat asset="boat"
+      }
+    }
+    say """
+      An information book is not read from start to finish like a story: you look for the part you
+      need. The contents page lists each chapter with the page it starts on, so choose the title
+      your question is about and turn to its page.
+      """
+  }
+  do {
+    show reading.contents-page k=0
+    show reading.contents-page k=2 easy-k=1
+    level easy {
+      worked reading.which-chapter k=0 c=4 o=3 level=medium
+    }
+    practice reading.which-chapter count=2 seed=3
+    practice reading.chapter-pages count=2 seed=4 hard-seed=8
+    practice reading.index-then-contents count=2 hard-count=1 seed=5
+    level hard {
+      practice reading.missing-title count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.missing-title k=1 easy-k=0
+  }
+  try stars=3 {
+    show reading.plan-a-contents k=0
+  }
+  remember {
+    say "Choose the chapter your question is about, then turn to its page."
+  }
+
+  grown-ups """
+    Take an information book off the shelf and ask a question it answers; let the child find the
+    page from the contents rather than by flicking through. The hoglets question uses a word the
+    contents page does not, so the child has to know what each chapter is about. A chapter runs
+    from its start page to the page before the next chapter starts, which is what the page count
+    questions rest on. The index questions use both features: the index gives the page, and the
+    contents page says which chapter that page is in.
+    """
+  level easy {
+    grown-ups "At this level the pages to find are named in the chapter titles, a page deep in the last chapter is traced once in the teacher's pen before pages one after a chapter's start, the chapter lengths are the first two chapters, the index pages are one past the chapter's start, the two-star's page is about the eruption, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the pages to find are as written, the hoglets among them, the chapters are traced from pages three in, the chapter lengths are the middle two chapters, the index pages are two past the chapter's start and one index question makes way for a second missing title, and the two-star and three-star are as written."
+  }
+}

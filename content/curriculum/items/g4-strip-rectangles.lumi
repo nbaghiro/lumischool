@@ -1,0 +1,25 @@
+# Counting every rectangle in a strip: by length, one-square ones, then two-square ones, and so on,
+# which is a system the child has to invent.
+item puzzle.strip-rectangles v=1 stars=3 skills=[reasoning.all-the-ways, reasoning.systematic] {
+  title "Rectangles in a strip"
+  difficulty n
+  let n=3..6
+
+  scene 30x15 {
+    grid strip rows=1 cols=n shade=0 color=sky cell=2 at=canvas(1, 1)
+    text ask "This strip is made of {n} squares. Count every rectangle you can see in it, of any length. A single square counts, and so does the whole strip. How many are there?" narrate width=29 below=strip gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * (n + 1) / 2)
+  feedback {
+    when (answer == n) point=strip {
+      say "Those are the single squares. Two squares side by side make a rectangle too."
+    }
+    when (answer == n * (n + 1) / 2 - 1) point=strip {
+      say "Did you count the whole strip as one rectangle?"
+    }
+  }
+  hint "How many rectangles are one square long? How many are two squares long?"
+  hint "Keep going up to the whole strip, and add them all."
+}

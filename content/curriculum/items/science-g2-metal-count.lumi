@@ -1,0 +1,20 @@
+# What a thing is made of, counted over four things: two pairs are metal against something that
+# looks as hard or as shiny, a marble or an eraser.
+item science.metal-count v=1 skills=[science.materials] {
+  title "How many are metal?"
+  let a={"nail", "clip"} b={"coin", "marble"} c={"foil", "eraser"} d={"ruler", "stick"}
+  let an={if a == "nail" then "a nail" else "a paper clip"}
+  let bn={if b == "coin" then "a coin" else "a glass marble"}
+  let cn={if c == "foil" then "some foil" else "an eraser"}
+  let dn={if d == "ruler" then "a plastic ruler" else "a lolly stick"}
+
+  scene 30x15 {
+    things row things=[a, b, c, d] letters=1 at=canvas(1, 1)
+    text ask "These are {an}, {bn}, {cn} and {dn}. How many of them are made of metal?" width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (1 + (if b == "coin" then 1 else 0) + (if c == "foil" then 1 else 0))
+  hint "Go along the row. Is each one made of metal, or of something else?"
+  hint "For each one, think of it at home. Would it be shiny and hard like a spoon, or made of something else?"
+}

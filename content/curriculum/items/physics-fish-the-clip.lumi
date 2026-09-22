@@ -1,0 +1,44 @@
+# The three-star: a paper clip at the bottom of a jug of water, and the steps that get it out
+# without a wet hand, put in order. The pull works through the glass and the water, so the magnet
+# slides the clip up the outside of the jug; the trap is putting the magnet in the water, or
+# lifting the magnet away before the clip is at the top.
+item physics.fish-the-clip v=1 stars=3 skills=[physics.magnets, reasoning.planning] {
+  title "Fish out the clip"
+  difficulty (if p <= 1 then 0 else if p <= 3 then 1 else 2)
+  let p=0..5
+  let a={pick(p, 1, 0, 3, 2, 3, 2)}
+  let b={pick(p, 0, 2, 0, 3, 1, 0)}
+  let c={pick(p, 2, 1, 1, 0, 0, 3)}
+  let d={pick(p, 3, 3, 2, 1, 2, 1)}
+  let wa={pick(a, "Hold the magnet on the outside, by the clip", "Slide the magnet slowly up the outside", "Keep it on the glass till the clip is out", "Tip the clip off the rim into your hand")}
+  let wb={pick(b, "Hold the magnet on the outside, by the clip", "Slide the magnet slowly up the outside", "Keep it on the glass till the clip is out", "Tip the clip off the rim into your hand")}
+  let wc={pick(c, "Hold the magnet on the outside, by the clip", "Slide the magnet slowly up the outside", "Keep it on the glass till the clip is out", "Tip the clip off the rim into your hand")}
+  let wd={pick(d, "Hold the magnet on the outside, by the clip", "Slide the magnet slowly up the outside", "Keep it on the glass till the clip is out", "Tip the clip off the rim into your hand")}
+  level easy {
+    let p=0..1
+  }
+  level hard {
+    let p=4..5
+  }
+
+  scene 34x34 {
+    row all at=canvas(1, 1) space=2 align=end {
+      beaker jug max=400 step=100 level=300 unit=ml solid=1 rod=false
+      magnet bar mode=things count=0 sticks=0 show=0
+    }
+    text ask "A paper clip has sunk to the bottom of the jug. Sam wants it out without getting his hands wet, using only the magnet. The steps are muddled. Number them 1 to 4." narrate width=32 below=all gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1)
+  feedback {
+    when (q == 1 and r == 2 and t == 3 and u == 4) point=s {
+      say "The steps are muddled, so they are not in order as they stand. Which step has to come first, before the clip can move at all?"
+    }
+    when ((if a == 3 then q else if b == 3 then r else if c == 3 then t else u) != 4) point=s {
+      say "The clip can only be tipped into a hand once it is out of the water. That step comes last."
+    }
+  }
+  hint "The pull works through glass and water, so the magnet never has to go in. Where does it go first?"
+  hint "First find the clip through the glass, then slide, then keep hold until the clip is out, then tip."
+}

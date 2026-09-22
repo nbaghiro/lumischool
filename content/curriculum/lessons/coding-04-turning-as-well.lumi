@@ -1,0 +1,50 @@
+lesson coding-turning-as-well v=3 format=teach grade=2 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Turning as well as moving"
+  goal "Run a program of forward and turn blocks, and say which way the robot faces and where it stops."
+
+  look {
+    scene 27x11 {
+      row both at=canvas(1, 0) space=1 align=start {
+        blocks b code=["forward 2", "turn right", "forward 3"] numbers=true
+        maze m cols=5 rows=4 col=1 row=4 face=up flag=[4, 2] code=["forward 2", "turn right", "forward 3"] trail=steps
+      }
+    }
+    say """
+      Forward means the way the robot's eyes are looking, which is not always right. A turn happens
+      on the spot: the robot stays on its square and faces a new way. Stand up and be the robot:
+      face the way it faces, then do each block.
+      """
+  }
+  do {
+    practice coding.turn-gap count=1 seed=2
+    practice coding.turn-where count=3 seed=5
+    practice coding.turning count=1 seed=4
+    practice coding.turn-gap count=1 seed=7 easy-seed=3 hard-seed=3
+    practice coding.turtle-face count=1 seed=3
+    show coding.build-turns k=0 easy-k=1
+  }
+  try stars=2 {
+    show coding.turn-start-face f=1 a=0 b=0 easy-f=0 easy-b=1 hard-f=2 hard-a=1 hard-b=1
+  }
+  try stars=3 {
+    show coding.build-face-away k=1 hard-k=0
+  }
+  remember {
+    say "A turn changes the way the robot faces. Forward goes the way it faces."
+  }
+
+  grown-ups """
+    Left and right from the robot's point of view is hard at this age: children use left and right
+    on their own bodies from about seven and on someone facing them later still. Let the child turn
+    their body with the robot, and do not mix arrow blocks and turn blocks in one program yet. The
+    two-star question runs the program backwards: undo the last turn first, and a turn right is
+    undone by a turn left. In the three-star build the robot starts facing away from the path, so
+    the first block has to be a turn, and six slots leave no room for moving one square at a time.
+    """
+  level easy {
+    grown-ups "At this level the robot's way to the turn and on to the flag is three squares or fewer, the programs to follow move four squares or fewer, the robot and the turtle start facing up, the turtle's turns cancel so one is left over, the path to build has one turn, the two turns to undo cancel each other, and the last build is as written."
+  }
+  level hard {
+    grown-ups "At this level the robot's way to the turn and on to the flag is four or five squares, the programs to follow move seven or eight squares, the robot starts facing right, the turtle turns the same way three times, the two turns to undo both go left from a robot that started facing down, and the robot to build for starts facing down, so its first turn is a left."
+  }
+}

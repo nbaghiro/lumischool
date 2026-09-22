@@ -1,0 +1,30 @@
+# Multiplying by ten moves every digit one place to the left, so the answer is a whole number
+# of metres here and plain() shows it without the places the length was written with.
+item decimal.times-ten v=2 skills=[decimals.by-ten] {
+  title "Ten times as much"
+  difficulty ((if many == 100 then 2 else 0) + p)
+  let p={0.4, 0.7, 1.2, 2.5, 3.6} many={10, 100}
+  level easy {
+    let many={10}
+  }
+  level hard {
+    let p={1.2, 2.5, 3.6} many={100}
+  }
+
+  scene 28x7 {
+    text ask "One ribbon is {p} metres long. How many metres long are {many} ribbons laid end to end?" width=26 at=canvas(1, 0)
+    row eq below=ask gap=1 space=1 align=centre {
+      equation sum "{p} × {many} ="
+      number-input total width=4
+    }
+  }
+
+  answer total=plain(p * many)
+  feedback {
+    when (total == p) point=eq {
+      say "Multiplying by {many} makes it bigger, so the digits move to the left."
+    }
+  }
+  hint "Will {many} ribbons be longer or shorter than one ribbon?"
+  hint "Ten times moves every digit one place left, and a hundred times moves it two."
+}

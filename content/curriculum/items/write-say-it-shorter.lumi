@@ -1,0 +1,17 @@
+# Two of the options are shorter and lose part of the meaning; one keeps all of it. Before this the
+# three options were the short versions of three different sentences, so matching the topic was
+# enough to answer.
+item writing.say-it-shorter v=1 skills=[writing.concision] {
+  title "Saying it shorter"
+  let k=0..2
+
+  scene 35x26 {
+    art pic asset="{if k == 0 then \"cat\" else if k == 1 then \"shop-front\" else \"bedroom-shelf\"}" at=canvas(1, 1)
+    passage p text="{if k == 0 then \"The cat that lives next door sat on our wall for the whole morning.\" else if k == 1 then \"We went to the shop in order to buy some bread for our tea.\" else \"She was not able to find the book that she had been reading.\"}" width=18 numbers=false right-of=pic gap=1
+    text ask "Which sentence says all of it in fewer words?" width=24 below=pic gap=1
+    choice pick options=[if k == 0 then "The cat sat on a wall." else if k == 1 then "We went to the shop for bread for tea." else "She could not find a book.", if k == 0 then "The cat next door sat on our wall all morning." else if k == 1 then "We went to the shop." else "She was reading a book.", if k == 0 then "The cat that lives next door sat on our wall." else if k == 1 then "We bought some bread." else "She could not find the book she was reading."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The cat next door sat on our wall all morning." else if k == 1 then "We went to the shop for bread for tea." else "She could not find the book she was reading.")
+  hint "Cut the words that do no work. Check that nothing the long sentence said has gone missing."
+}

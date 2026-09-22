@@ -1,0 +1,28 @@
+# The start of the story is the unknown, so a taking-away story is solved by adding.
+item sub.fair-at-first v=1 skills=[subtraction.columns, addition.start-unknown] {
+  title "How many at first"
+  difficulty ((if g % 10 + s % 10 >= 10 then 1 else 0) + (if g % 100 + s % 100 >= 100 then 1 else 0))
+  let g=(147..389 by 6) s=(126..478 by 8)
+  where (g + s < 1000 and g != s)
+  level easy {
+    where (g % 10 + s % 10 < 10 and g % 100 + s % 100 < 100)
+  }
+  level hard {
+    where (g % 10 + s % 10 >= 10 and g % 100 + s % 100 >= 100)
+  }
+
+  scene 30x12 {
+    carousel ride horses=4 lit=1 at=canvas(1, 1)
+    text ask "Some people were at the fair. Then {g} people went home and {s} people stayed. How many were at the fair at first?" width=16 right-of=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (g + s)
+  feedback {
+    when (answer == abs(s - g)) point=ask {
+      say "Everyone was there at first, the people who went home and the people who stayed."
+    }
+  }
+  hint "Were there more people at the start of the story, or fewer?"
+  hint "Put the two groups back together."
+}

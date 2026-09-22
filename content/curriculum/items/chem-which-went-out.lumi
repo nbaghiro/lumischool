@@ -1,0 +1,33 @@
+# The way in: two candles lit together, one under a jar. The one under the jar has gone out,
+# with a curl of smoke, since its air is used up; the open one burns on.
+item chem.which-went-out v=1 skills=[chemistry.burning] {
+  title "Which candle has gone out?"
+  difficulty w
+  let w=0..1 s=0..1
+  let asks={pick(w, "Which candle has gone out?", "Which candle still has fresh air reaching its flame?")}
+  let right={pick(w, pick(s, "A", "B"), pick(s, "B", "A"))}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x24 {
+    row two at=canvas(1, 0) space=4 align=end {
+      candle a start=8 burnt=3 lit=(if s == 0 then 0 else 1) jar=(if s == 0 then 1 else 0)
+      candle b start=8 burnt=3 lit=(if s == 0 then 1 else 0) jar=(if s == 0 then 0 else 1)
+    }
+    text ask "Leo's grown-up lit two candles together at the hut in geyser valley and put a jar over one of them. This is a minute later. {asks}" narrate width=32 below=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Look for the flame and the curl of smoke. A flame needs fresh air, and the jar keeps the fresh air out."
+    }
+  }
+  hint "One candle has a flame and one has a curl of smoke where the flame was."
+  hint "{if w == 0 then \"The smoke is where a flame has just gone out.\" else \"The jar shuts its candle off from the room's air; the other candle is open to it.\"}"
+}

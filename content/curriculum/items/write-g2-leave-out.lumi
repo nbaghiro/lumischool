@@ -1,0 +1,20 @@
+# The audit's raise for which-creature: which half of a description does no work, because the
+# other half already picks out one creature.
+item writing.leave-out v=1 stars=2 skills=[writing.describing, reasoning.explain] {
+  title "The part that does no work"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=0..3 p=0..1
+  let says={if k == 0 then "Mine is spotty and has two horns." else if k == 1 then "Mine is spotty and has six legs." else if k == 2 then "Mine is stripy and has two legs." else "Mine has one eye and two legs."}
+  let spare={if k <= 1 then "spotty" else "two legs"}
+  let keep={if k == 0 then "two horns" else if k == 1 then "six legs" else if k == 2 then "stripy" else "one eye"}
+
+  scene 37x20 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=-1 at=canvas(1, 1)
+    text ask "Zoe: '{says}' Which part could she leave out, and you could still find it?" narrate width=18 below=line gap=1
+    choice pick options=["{if p == 0 then spare else keep}", "{if p == 0 then keep else spare}"] right-of=ask gap=1
+  }
+
+  answer pick=spare
+  hint "Find Zoe's creature first."
+  hint "Try each part on its own. Which part fits only her creature?"
+}

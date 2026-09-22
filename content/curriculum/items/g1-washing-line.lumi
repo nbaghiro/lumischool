@@ -1,0 +1,19 @@
+# A number line as a washing line, with one peg missing.
+item count.washing-line v=1 skills=[counting.in-steps] {
+  title "The missing peg"
+  let t={2, 5, 10}
+
+  scene 26x15 {
+    washingline line values=["0", "{t}", "", "{3 * t}", "{4 * t}"] pegs=true at=canvas(1, 1)
+    text ask "The numbers go up in {t}s. Which peg is missing?" width=24 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * t)
+  feedback {
+    when (answer == t) point=line {
+      say "That peg is already there. The missing one comes after it."
+    }
+  }
+  hint "Say the numbers along the line out loud and listen for the gap."
+}

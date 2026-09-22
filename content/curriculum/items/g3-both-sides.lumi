@@ -1,0 +1,22 @@
+# A sum on each side of the balance, so comparing the numbers is quicker than adding them up.
+item algebra.both-sides v=1 stars=2 skills=[algebra.unknowns, reasoning.equivalence] {
+  title "A sum on both sides"
+  difficulty (b + c)
+  let a=11..19 b=6..14 c=12..19
+  where (b + c > a and a != b and a != c)
+
+  scene 22x17 {
+    balanceeq scales left="{a} + ?" right="{b} + {c}" at=canvas(1, 1)
+    text ask "Both sides are equal. What is hidden?" narrate below=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b + c - a)
+  feedback {
+    when (answer == b + c) point=scales {
+      say "That is the whole right side. The left side already has {a} in it."
+    }
+  }
+  hint "Is {a} more or less than {b}? By how much?"
+  hint "The hidden number has to make up the difference so both sides match."
+}

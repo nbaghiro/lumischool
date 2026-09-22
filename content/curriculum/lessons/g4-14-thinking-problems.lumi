@@ -1,0 +1,49 @@
+lesson g4-thinking-problems v=1 format=puzzles grade=4 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Thinking problems"
+  goal "Problems with no method to follow, where a picture or a list keeps track of the thinking."
+
+  puzzle stars=1 {
+    show puzzle.pyramid
+  }
+  puzzle stars=1 {
+    show puzzle.triangle-decimals a=2.25 b=1.25 c=0.5 easy-a=1.5 easy-b=0.75 hard-a=3.75 hard-b=2.5 hard-c=3.25
+  }
+  puzzle stars=2 {
+    show puzzle.legs easy-hens=2 easy-rabbits=3 hard-hens=5 hard-rabbits=6
+  }
+  puzzle stars=2 {
+    show puzzle.row f=5 b=8 easy-f=4 easy-b=6 hard-f=12 hard-b=15
+  }
+  puzzle stars=2 {
+    show puzzle.two-ages a=9 d=4 easy-a=6 easy-d=2 hard-a=14 hard-d=7
+  }
+  puzzle stars=3 {
+    show puzzle.matchsticks
+  }
+  puzzle stars=3 {
+    show puzzle.pyramid-back easy-a=2 easy-b=3 easy-c=4 hard-a=7 hard-b=9 hard-c=8
+  }
+  puzzle stars=3 {
+    show puzzle.triangle-sums x=21 y=16 z=25 easy-x=12 easy-y=16 easy-z=15 hard-x=30 hard-y=28 hard-z=25
+  }
+  puzzle stars=3 {
+    show puzzle.handshakes n=6 easy-n=4 hard-n=8
+  }
+  puzzle stars=3 {
+    show puzzle.page-digits p=48 easy-p=24 hard-p=99
+  }
+
+  grown-ups """
+    These are meant to take time. The answers are here, but a puzzle put down on Tuesday and solved
+    on Saturday has taught more than one solved by being told. Every one can be started by trying
+    something: a number for a corner, a drawing of the line of children, a list of who shakes hands
+    with whom. In the line puzzle the child in the hat is counted from both ends, so she is counted
+    twice unless the child takes one away.
+    """
+  level easy {
+    grown-ups "At this level the pyramid's bricks are under 7, the decimals are halves and quarters that add without a carry, the field has five heads, Ana is fourth from the front and sixth from the back, Ben is two years older and the ages add to 14, the matchsticks are as written, the wall's top is 12, the circles add to 43, four friends shake hands, and the book has 24 pages."
+  }
+  level hard {
+    grown-ups "At this level the pyramid's bricks are 10 to 20, the decimals carry, the field has eleven heads, Ana is twelfth from the front and fifteenth from the back, Ben is seven years older and the ages add to 35, the matchsticks are as written, the wall's top is 33, the circles add to 83, eight friends shake hands, and the book has 99 pages."
+  }
+}

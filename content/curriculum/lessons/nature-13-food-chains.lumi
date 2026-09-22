@@ -1,0 +1,70 @@
+lesson nature-food-chains v=1 format=teach grade=3 unit=6 subject=nature levels=[easy, medium, hard] {
+  title "Food chains"
+  goal "Read a food chain's arrows the right way, and say what happens to the chain when one link goes."
+
+  look {
+    scene 34x12 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row who space=2 align=end {
+          coral reef fans=2 spawn=0
+          crabs crab count=1
+          gull bird flying=0
+        }
+        text chain "seaweed  →  crab  →  gull"
+      }
+    }
+    say """
+      On the reef Ada and Ben watch a crab picking at the seaweed, and a gull watching the crab.
+      That is a food chain: the seaweed is eaten by the crab, and the crab is eaten by the gull.
+      We write it with arrows, and every arrow points from the one that is eaten to the one that
+      eats it. A chain starts with a plant, because a plant makes its own food from the light, and
+      every creature after it is eating what came before.
+      """
+  }
+  do {
+    level easy {
+      worked nature.who-eats c=0 dir=0
+    }
+    practice nature.who-eats count=2 seed=5 easy-seed=2 easy-count=1 hard-seed=1
+    practice nature.chain-order count=2 seed=7 easy-seed=1 hard-seed=1
+    practice nature.missing-link count=1 seed=2 easy-seed=1 hard-seed=1
+    practice nature.link-goes count=2 seed=5 easy-seed=5 hard-seed=7
+    level hard {
+      show nature.arrow-backwards k=3
+    }
+  }
+  story {
+    show nature.reef-count g=3 k=3 w=0 easy-g=2 easy-k=2 easy-w=0 hard-g=4 hard-k=4 hard-w=1
+  }
+  try stars=2 {
+    show nature.arrow-backwards k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.chains-of-four k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A food chain starts with a plant. The arrow points from the one that is eaten to the one that eats it."
+  }
+
+  grown-ups """
+    The arrow is the whole lesson: it means "is eaten by" and points at the eater, and the wrong
+    idea to watch for is reading it as "eats", which turns every chain round. Have the child say
+    each arrow aloud as "is eaten by" and the muddles show at once. The numbering question puts the
+    plant first, and a child who starts with the biggest creature has the arrow backwards in their
+    head. The missing link has two jobs, eating what comes before and being eaten by what comes
+    after, and the child should check both. When a link goes, the eater above it loses its food
+    and the thing below it grows, and the second half is the one to watch, since children expect
+    everything to get worse. The story multiplies along the chain. The two-star question has Ben
+    writing a chain that is sometimes right, so the child cannot just say no. The three-star
+    question builds every chain of four from the facts on the page; the way in is to start each
+    chain at the seaweed and follow the facts, then cross out the ones that stop at three or run
+    to five. If the arrows are still read backwards after the core, stay here another day and
+    draw a chain from the garden: leaf, caterpillar, bird.
+    """
+  level easy {
+    grown-ups "At this level a worked example (what the crab eats) opens the core, the question reads forwards along an arrow, the chains to number are seaweed, crab and gull twice over, the missing link is the crab between seaweed and gull, the vanished creatures are the crabs or the gulls and the question is about the link next to them, the story counts two gulls eating two crabs each, Ben's chain runs backwards from the gull, and the facts give one chain of four."
+  }
+  level hard {
+    grown-ups "At this level the questions read back along an arrow to what eats a creature, the chains to number are tiny plants, small fish and dolphin twice over, the missing link is the crab between seaweed and octopus, the questions are what happens to the seaweed when the crabs go and to the gulls when the seaweed goes, a second reasoning question in the core is a chain of Ben's that is right, the story counts four gulls eating four crabs each and doubles for the snails, Ben's second chain puts the crab before the seaweed, and the facts give three chains of four with a chain of five to leave out."
+  }
+}

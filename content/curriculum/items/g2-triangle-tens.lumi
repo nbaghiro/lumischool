@@ -1,0 +1,22 @@
+# The pilot's sum triangle with two-digit sums: no method is given, so guess, check the third box, adjust.
+item add.triangle-tens v=1 stars=3 skills=[addition.within-hundred, reasoning.guess-and-check] {
+  title "Only the sums, in tens and fives"
+  difficulty (x + y + z)
+  let x={10, 15, 20, 25, 30, 35} y={10, 15, 20, 25, 30, 35} z={10, 15, 20, 25, 30, 35}
+  where (x != y and y != z and x != z)
+
+  scene 30x13 {
+    sumtriangle tri a=x b=y c=z hide=corners letters=true at=canvas(1, 0)
+    text ask "Each box is the sum of the two circles it joins. What number goes in circle A?" narrate width=12 right-of=tri gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == x + y or answer == x + z) point=tri {
+      say "That is a box. A circle is smaller than each box it touches."
+    }
+  }
+  hint "Guess a number for A. The box on its left then tells you B, and the box on its right tells you C."
+  hint "Now check the bottom box. If B and C do not make it, change your guess for A by five and try again."
+}

@@ -1,0 +1,52 @@
+lesson g4-compound-shapes v=1 format=teach grade=4 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Area and perimeter of compound shapes"
+  goal "Find the area and the perimeter of a shape made of rectangles, and a missing side from an area or a perimeter."
+
+  look {
+    scene 37x17 {
+      lshape corner w=9 h=6 cut=3 deep=2 corner=top-right cell=2 at=canvas(1, 1)
+      grid squares rows=3 cols=5 shade=15 color=mint cell=2 right-of=corner gap=2
+    }
+    say """
+      Split the shape into rectangles, find each area and add them. The perimeter is the whole way
+      round, and a cut into a corner takes two sides away and puts two back, so it does not change.
+      """
+  }
+  do {
+    practice area.rectangle count=1 seed=4 easy-seed=7
+    practice area.compound count=2 seed=5 easy-seed=1
+    level easy {
+      worked area.split-it w=9 h=7 cut=4 deep=3 level=medium
+    }
+    practice area.split-it count=1 seed=3
+    practice area.missing-side count=1 seed=6
+    practice area.side-from-perimeter count=1 seed=2
+    practice area.two-fields count=2 hard-count=1 seed=7
+    level hard {
+      practice area.which-perimeter count=1 seed=3
+    }
+  }
+  try stars=2 {
+    show area.which-perimeter n=24 a=4 c=3 easy-a=2 easy-c=6 hard-n=48 hard-c=6
+  }
+  try stars=3 {
+    show area.smallest-perimeter n=24 easy-n=12 hard-n=36
+  }
+  remember {
+    say "Area splits into rectangles. Perimeter is the whole way round the outside. The rectangle nearest to a square has the shortest way round."
+  }
+
+  grown-ups """
+    Drawing the splitting line on the page is the method. If the child adds the two areas and gets
+    more than the whole, the line was drawn through the cut. A missing side is the multiplication
+    or the perimeter run backwards, and saying which one out loud helps. In the two-star question
+    the longer, thinner rectangle goes further round; working both out is the check. In the
+    three-star question a list of every rectangle with that area is the method.
+    """
+  level easy {
+    grown-ups "At this level the rectangles have two or three rows of three or four, the L shapes are small with small corners cut, a 9 by 7 shape with a corner cut is split once in the teacher's pen before one of seven or eight by five or six, the missing side comes from an area of thirty or less, the perimeter is twenty-four or less, the two fields are four or five metres wide, the two rectangles of 24 are 2 and 6 wide, far apart, and the three-star lists the rectangles of area 12."
+  }
+  level hard {
+    grown-ups "At this level the rectangles have four rows of five to seven, the L shapes are nine to twelve wide with corners of three to five cut, the missing side comes from an area of forty-eight or more, the perimeter is thirty or more, the two fields are seven to nine metres wide and nine to twelve long, the two rectangles of 48 are 4 and 6 wide, within four centimetres of each other round, and the question is asked again, and the three-star lists the five rectangles of area 36."
+  }
+}

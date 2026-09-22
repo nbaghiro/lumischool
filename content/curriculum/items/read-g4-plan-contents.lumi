@@ -1,0 +1,15 @@
+# Making a contents page to constraints: chapters in a sensible order, page numbers that go up and
+# leave room for each chapter. Many answers are right, so a grown-up marks it.
+item reading.plan-a-contents v=1 stars=3 skills=[reading.text-features, writing.planning] {
+  title "Plan a contents page"
+  let k=0..3 topic={if k == 0 then "our street" else if k == 1 then "the seaside" else if k == 2 then "dogs" else "the weather"}
+
+  scene 34x21 {
+    text ask "Plan the contents page for a book called All about {topic}. It has 24 pages. Write four chapter titles in a sensible order, and the page each one starts on." width=33 at=canvas(1, 1)
+    writinglines lines lines=4 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Four short chapter titles about the topic in an order that makes sense (for example starting with what it is and ending with something new or surprising), with start pages that go up, stay within 24 pages and leave each chapter at least two pages."
+  hint "What would a reader want to know first? What could come last?"
+  hint "Check your page numbers go up, and that no chapter starts on the page after the one before."
+}

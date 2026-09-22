@@ -1,0 +1,16 @@
+# The speaker's name comes after the words they say, so the child has to read to the end of the
+# sentence. Which child says which thing, and which thing is asked about, both change.
+item reading.who-said-it v=1 skills=[reading.characters, reading.comprehension] {
+  title "Who said it?"
+  let a={"Ben", "Ola", "Kit"} b={"Nia", "Raj", "Tom"} s=0..1
+
+  scene 36x11 {
+    passage p text="\"I will bring the ball,\" said {a}. \"I will bring the lunch,\" said {b}. \"Then we can have a picnic,\" said {a}." width=35 numbers=false at=canvas(1, 1)
+    text ask "Who said they would bring the {if s == 0 then \"lunch\" else \"ball\"}?" narrate width=22 below=p gap=1
+    choice pick options=["{a}", "{b}"] right-of=ask gap=1
+  }
+
+  answer pick=(if s == 0 then b else a)
+  hint "Find the words about the {if s == 0 then \"lunch\" else \"ball\"}."
+  hint "Read on past the speech marks. Whose name comes after the words?"
+}

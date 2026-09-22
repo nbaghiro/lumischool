@@ -1,0 +1,59 @@
+# Thick and thin lines: the width of a line is one of the things a drawing says with, and what it says
+# is how near and how heavy a thing is.
+lesson art-thick-and-thin-lines v=1 format=teach grade=1 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Thick and thin lines"
+  goal "Use a thick line for what is near and heavy and a thin line for what is far and light, and read a drawing that does."
+
+  look {
+    scene 17x8 {
+      stilllife pic light="left" things=["jug", "cup", "apple"] lamp=true weights=["thick", "thick", "thin"] at=canvas(1, 0)
+    }
+    say """
+      A pen can say more than the shape of a thing. Press hard and the line comes out thick, and a
+      thick line looks near and heavy. Move the pen lightly and the line is thin, and a thin line
+      falls back and looks far away. Look at the jug and the cup at the front here, and then at the
+      apple behind them. Nothing has moved. Only the lines are different.
+      """
+  }
+  do {
+    practice art.line-which-thicker count=1 seed=2 easy-seed=1 hard-seed=3
+    level easy {
+      worked art.line-for-near k=2 level=medium
+    }
+    practice art.line-for-near count=2 seed=3 easy-seed=7 hard-seed=1
+    practice art.line-furthest count=2 seed=15 easy-seed=7 hard-seed=1
+    practice art.line-which-drawing count=2 seed=6 easy-seed=1 hard-seed=2
+    level hard {
+      show art.line-furthest k=4
+    }
+  }
+  story {
+    show art.hut-lines v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show art.line-why-nearer p=1 easy-p=0 hard-p=2
+  }
+  try stars=3 {
+    show art.line-make pair=1 easy-pair=0 hard-pair=2
+  }
+  remember {
+    say "A thick line comes towards you and a thin line falls back."
+  }
+
+  grown-ups """
+    A child of six will happily draw everything with the same line, so the point of this lesson is that
+    the pen itself is a choice. Watch for one who reads the pictures as being about size rather than
+    line, since the things here are drawn the same size on purpose; the two drawings of the same pair are
+    the place to settle it, because nothing moves between them but the width of the lines. The
+    three-star question asks for a drawing of their own, and the thing to look for is whether the two
+    lines are different enough to see across the room: a small difference the child can point out but
+    nobody else can see has not done the job. Off the page, a felt pen and a sharp pencil on the same
+    sheet, drawing the same mug twice, and ask which one looks nearer.
+    """
+  level easy {
+    grown-ups "At this level the pair to compare is one of the first three, a thick line is chosen for the heavy jug in the teacher's pen before the string behind and the leg at the front, the furthest things to find are the pear and the ball, the two drawings to choose between ask about the pear and then the jug, the story is the first set, the two-star names a thing drawn thick in the first drawing, and the three-star is a mug and a spoon."
+  }
+  level hard {
+    grown-ups "At this level the pair to compare is one of the later three, the things to choose a line for are the cup at the front and a thread behind, the furthest things to find come from the later sets and the core carries a third of them, the two drawings to choose between ask about the apple and then the pear, the story is the last set, the two-star names a thing drawn thick in the first drawing again, and the three-star is a bowl and a feather."
+  }
+}

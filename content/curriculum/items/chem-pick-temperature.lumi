@@ -1,0 +1,30 @@
+# Non-routine: two things at once and two temperatures to try, and in one set neither works, because
+# ethanol boils before water does. The child has to test each thermometer against both rows.
+item chem.pick-temperature v=1 stars=3 skills=[chemistry.states, reasoning.constraints] {
+  title "One temperature for both"
+  difficulty (if v == 6 or v == 7 then 2 else 1)
+  let v=0..9
+
+  scene 37x24 {
+    text ask "At which temperature is the {if v == 0 then \"water\" else if v == 1 then \"water\" else if v == 2 then \"mercury\" else if v == 3 then \"mercury\" else if v == 4 then \"oxygen\" else if v == 5 then \"oxygen\" else if v == 6 then \"water\" else if v == 7 then \"water\" else if v == 8 then \"mercury\" else \"mercury\"} a {if v == 0 then \"liquid\" else if v == 1 then \"liquid\" else if v == 2 then \"liquid\" else if v == 3 then \"liquid\" else if v == 4 then \"gas\" else if v == 5 then \"gas\" else if v == 6 then \"gas\" else if v == 7 then \"gas\" else if v == 8 then \"solid\" else \"solid\"} and the {if v == 0 then \"ethanol\" else if v == 1 then \"ethanol\" else if v == 2 then \"water\" else if v == 3 then \"water\" else if v == 4 then \"ethanol\" else if v == 5 then \"ethanol\" else if v == 6 then \"ethanol\" else if v == 7 then \"ethanol\" else if v == 8 then \"oxygen\" else \"oxygen\"} a {if v == 0 then \"gas\" else if v == 1 then \"gas\" else if v == 2 then \"solid\" else if v == 3 then \"solid\" else if v == 4 then \"solid\" else if v == 5 then \"solid\" else if v == 6 then \"liquid\" else if v == 7 then \"liquid\" else if v == 8 then \"liquid\" else \"liquid\"}?" width=29 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      column {
+        thermometer a from=(if v == 0 then -20 else if v == 1 then -20 else if v == 2 then -80 else if v == 3 then -80 else if v == 4 then -160 else if v == 5 then -160 else if v == 6 then -20 else if v == 7 then -20 else if v == 8 then -220 else -220) to=(if v == 0 then 120 else if v == 1 then 120 else if v == 2 then 120 else if v == 3 then 120 else if v == 4 then 40 else if v == 5 then 40 else if v == 6 then 120 else if v == 7 then 120 else if v == 8 then 20 else 20) step=(if v == 0 then 20 else if v == 1 then 20 else if v == 2 then 20 else if v == 3 then 20 else if v == 4 then 20 else if v == 5 then 20 else if v == 6 then 20 else if v == 7 then 20 else if v == 8 then 40 else 40) value=(if v == 0 then 50 else if v == 1 then 90 else if v == 2 then -60 else if v == 3 then -20 else if v == 4 then -150 else if v == 5 then -100 else if v == 6 then 50 else if v == 7 then 110 else if v == 8 then -200 else -60) unit="°C"
+        text la "A"
+      }
+      column {
+        thermometer b from=(if v == 0 then -20 else if v == 1 then -20 else if v == 2 then -80 else if v == 3 then -80 else if v == 4 then -160 else if v == 5 then -160 else if v == 6 then -20 else if v == 7 then -20 else if v == 8 then -220 else -220) to=(if v == 0 then 120 else if v == 1 then 120 else if v == 2 then 120 else if v == 3 then 120 else if v == 4 then 40 else if v == 5 then 40 else if v == 6 then 120 else if v == 7 then 120 else if v == 8 then 20 else 20) step=(if v == 0 then 20 else if v == 1 then 20 else if v == 2 then 20 else if v == 3 then 20 else if v == 4 then 20 else if v == 5 then 20 else if v == 6 then 20 else if v == 7 then 20 else if v == 8 then 40 else 40) value=(if v == 0 then 90 else if v == 1 then 50 else if v == 2 then -20 else if v == 3 then -60 else if v == 4 then -100 else if v == 5 then -150 else if v == 6 then 110 else if v == 7 then 50 else if v == 8 then -60 else -200) unit="°C"
+        text lb "B"
+      }
+      column side space=1 align=start {
+        table data cols=3 head=["Stuff", "Melts", "Boils"] cells=["{if v == 0 then \"Water\" else if v == 1 then \"Water\" else if v == 2 then \"Mercury\" else if v == 3 then \"Mercury\" else if v == 4 then \"Oxygen\" else if v == 5 then \"Oxygen\" else if v == 6 then \"Water\" else if v == 7 then \"Water\" else if v == 8 then \"Mercury\" else \"Mercury\"}", if v == 0 then 0 else if v == 1 then 0 else if v == 2 then -39 else if v == 3 then -39 else if v == 4 then -219 else if v == 5 then -219 else if v == 6 then 0 else if v == 7 then 0 else if v == 8 then -39 else -39, if v == 0 then 100 else if v == 1 then 100 else if v == 2 then 357 else if v == 3 then 357 else if v == 4 then -183 else if v == 5 then -183 else if v == 6 then 100 else if v == 7 then 100 else if v == 8 then 357 else 357, "{if v == 0 then \"Ethanol\" else if v == 1 then \"Ethanol\" else if v == 2 then \"Water\" else if v == 3 then \"Water\" else if v == 4 then \"Ethanol\" else if v == 5 then \"Ethanol\" else if v == 6 then \"Ethanol\" else if v == 7 then \"Ethanol\" else if v == 8 then \"Oxygen\" else \"Oxygen\"}", if v == 0 then -114 else if v == 1 then -114 else if v == 2 then 0 else if v == 3 then 0 else if v == 4 then -114 else if v == 5 then -114 else if v == 6 then -114 else if v == 7 then -114 else if v == 8 then -219 else -219, if v == 0 then 78 else if v == 1 then 78 else if v == 2 then 100 else if v == 3 then 100 else if v == 4 then 78 else if v == 5 then 78 else if v == 6 then 78 else if v == 7 then 78 else if v == 8 then -183 else -183]
+        choice pick options=["A", "B", "Neither"] stack=column
+      }
+    }
+  }
+
+  check chem.state of=a table=data
+  answer pick=(if v == 0 then "B" else if v == 1 then "A" else if v == 2 then "B" else if v == 3 then "A" else if v == 4 then "A" else if v == 5 then "B" else if v == 6 then "Neither" else if v == 7 then "Neither" else if v == 8 then "A" else "B")
+  hint "Take thermometer A. What state is each of the two things in at that temperature?"
+  hint "Now try B the same way. Does either of them give both states at once?"
+}

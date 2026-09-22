@@ -1,0 +1,15 @@
+item art.straight-or-half-drop v=1 skills=[art.pattern] {
+  title "Straight or half-drop?"
+  difficulty d
+  let d=0..1 c=3..4
+
+  scene 34x10 {
+    tilerepeat wall drop=d cols=c rows=2 missing=-1 ring=-1 colour=green at=canvas(1, 1)
+    text ask "Is this a straight repeat, or a half-drop?" width=14 right-of=wall gap=1
+    choice pick options=["straight", "half-drop"] below=ask gap=1
+  }
+
+  answer pick=(if d == 0 then "straight" else "half-drop")
+  hint "Look along the top row. Do the tiles all start at the same height?"
+  hint "In a half-drop, every other column starts half a tile lower."
+}

@@ -1,0 +1,17 @@
+item music.uke-string-letter v=1 skills=[music.uke-strings] {
+  title "Name the ringed string"
+
+  scene 28x14 {
+    chordbox box tuning=uke chord=none places=[] frets=3 show=dots name=false letters=false lit=["s4f0"] at=canvas(1, 1)
+    text ask "The strings go G, C, E, A. Which one is ringed?" width=12 right-of=box gap=1
+    choice pick options=["G", "C", "E", "A"] below=ask gap=1
+  }
+
+  answer pick="G"
+  feedback {
+    when (pick == "A") point=box {
+      say "A is the string on the right. The ringed one is on the left, so it is the first of G, C, E, A."
+    }
+  }
+  hint "Read the strings from the left: G, C, E, A."
+}

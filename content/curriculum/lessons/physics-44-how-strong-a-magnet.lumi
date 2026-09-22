@@ -1,0 +1,68 @@
+# How strong a magnet is, measured two ways: the chain of clips it holds, and how far away it pulls
+# one clip from. Both are readings a child takes off the page, and the fair test is the idea that
+# only the magnet may change between them.
+lesson physics-how-strong-a-magnet v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "How strong is the magnet?"
+  goal "Compare two magnets by the clips they hold and the distance they pull from, and say which test is fair."
+
+  look {
+    scene 28x26 {
+      column all space=1 align=start at=canvas(1, 0) {
+        row top space=3 align=start {
+          magnet chain mode=chain clips=6 clip=1 tag="A"
+          windmill mill sails=4
+        }
+        magnet far mode=reach reach=5 clip=1 tag="B"
+      }
+    }
+    say """
+      A stronger magnet holds more, and it pulls from further away. Hang paper clips from a magnet
+      and each one holds the next, so the chain is as long as the magnet is strong. Lay the magnet at
+      the zero of a ruler and slide a clip towards it, and the mark where the clip jumps says the
+      same thing another way. A test is only fair if the magnet is the one thing that changes.
+      """
+  }
+  do {
+    practice physics.magnet-longer-chain count=1 seed=2 easy-seed=10 hard-seed=2
+    level easy {
+      worked physics.magnet-chain-count c=6 g=0 level=medium
+    }
+    practice physics.magnet-chain-count count=2 seed=5 easy-seed=11 hard-seed=4
+    practice physics.magnet-reach-read count=2 seed=8 easy-seed=2 hard-seed=13
+    practice physics.magnet-reach-difference count=2 seed=1 easy-seed=1 hard-seed=7
+    level hard {
+      show physics.magnet-unfair-test u=2
+    }
+  }
+  story {
+    show physics.windmill-magnet-store v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show physics.magnet-unfair-test u=1 easy-u=0 hard-u=3
+  }
+  try stars=3 {
+    show physics.magnet-fair-plan n=4 easy-n=3 hard-n=5
+  }
+  remember {
+    say "A stronger magnet holds a longer chain and pulls from further away."
+  }
+
+  grown-ups """
+    The wrong idea here is that a magnet either works or does not, so that one magnet cannot be
+    stronger than another. Both readings in this lesson answer that: a chain of clips and a distance
+    on a ruler are two ways of saying how strong, and they agree when the test is fair. The other
+    thing to watch is the fair test itself. A child who says the second test was unfair because the
+    magnet was different has the idea the wrong way round: the magnet is what is being tested, and
+    everything else, the clip and the way it is slid, must stay the same. The three-star question
+    needs the step that one test gives one magnet a reading, so three magnets need three tests, and
+    a child who answers two has counted comparisons rather than measurements; ask which magnet was
+    never measured. Off the page, hang a chain of clips from a fridge magnet and from a stronger one,
+    then slide a clip along a ruler towards each.
+    """
+  level easy {
+    grown-ups "At this level the two chains to compare are four apart, a chain of six is counted once in the teacher's pen before two chains of three to five, the ruler readings are two and three, the two magnets' readings are four and five apart, the story is the smallest pair, and the unfair test has its two readings four apart."
+  }
+  level hard {
+    grown-ups "At this level the two chains to compare differ by one or are equal, the chains to count are eight to ten, the ruler readings are seven to ten and the two magnets' readings two or three apart, the story is the largest pair, the core carries a second fair-test question whose readings are one apart, and the three-star plans for five magnets."
+  }
+}

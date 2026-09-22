@@ -1,0 +1,21 @@
+item art.which-two-make v=1 skills=[art.colour-mixing] {
+  title "Which two make it?"
+  difficulty (if t == "purple" then 2 else if t == "orange" then 1 else 0)
+  let t={"green", "orange", "purple"}
+  level easy {
+    let t={"green", "orange"}
+  }
+  level hard {
+    let t={"orange", "purple"}
+  }
+
+  scene 30x15 {
+    text ask "Which two paints make {t}?" width=28 at=canvas(1, 1)
+    paintbox box pans=["red", "yellow", "blue"] per=3 ring=-1 labels=true below=ask gap=1
+    choice pick options=["red and yellow", "yellow and blue", "red and blue"] stack=column right-of=box gap=3
+  }
+
+  check paint.mixes pick=makes target="{t}"
+  hint "Is {t} a colour you can buy in a pan, or one you have to mix?"
+  hint "Try each pair in your head. Which pair would you stir together to get {t}?"
+}

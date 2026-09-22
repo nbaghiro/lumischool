@@ -1,0 +1,16 @@
+# v2 takes the audit's raise: the letter has to persuade, with two reasons that matter to the
+# reader and an answer to one worry the reader might have, marked against that list.
+item writing.write-to-a-character v=2 stars=3 skills=[writing.letters, writing.composing, writing.audience] {
+  title "A letter to a character"
+  let k=0..1
+
+  scene 36x23 {
+    letterpage page greeting="Dear" body="" lines=5 closing="From" width=22 at=canvas(1, 1)
+    art pic asset="{if k == 0 then \"owl\" else \"hedgehog\"}" right-of=page gap=1
+    text ask "{if k == 0 then \"Persuade the owl to come to the island.\" else \"Persuade the hedgehog to come to tea.\"} Give two reasons it would like, and answer one worry it might have." width=12 below=pic gap=1
+  }
+
+  check writing.by-eye look-for="A greeting with the name and a comma and a sign-off with the child's name; two reasons with because or so that would matter to this reader (not to the writer); one sentence that answers a worry the reader might have (It is not far, it is just over the bay); and a please or a question that asks it to come."
+  hint "What does this character like? What might make it say no?"
+  hint "Write one reason, then a second, then answer the worry before you sign off."
+}

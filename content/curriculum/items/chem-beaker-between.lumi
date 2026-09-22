@@ -1,0 +1,20 @@
+item chem.beaker-between v=2 skills=[chemistry.volume] {
+  title "Between two marks"
+  difficulty v
+  let v={50, 150, 250, 350}
+
+  scene 25x17 {
+    text ask "The water is between two marks. How many millilitres?" width=24 at=canvas(1, 0)
+    beaker glass max=400 step=100 level=v unit=ml below=ask gap=0
+    number-input answer right-of=glass gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v + 50 or answer == v - 50) point=glass {
+      say "The water is halfway between two marks, so the answer is halfway between their numbers."
+    }
+  }
+  hint "Which numbered mark is just below the water, and which is just above it?"
+  hint "What number is halfway between those two?"
+}

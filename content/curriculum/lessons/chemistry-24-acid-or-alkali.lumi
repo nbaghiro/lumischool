@@ -1,0 +1,58 @@
+lesson chemistry-acid-or-alkali v=1 format=teach grade=4 unit=7 subject=chemistry levels=[easy, medium, hard] {
+  title "Acid or alkali: the red cabbage test"
+  goal "Read what red cabbage juice shows about a kitchen liquid, and say what a colour can and cannot tell you."
+
+  look {
+    scene 25x20 {
+      row kit at=canvas(1, 0) space=1 align=start {
+        cabbage c liquids=["lemon", "water", "washingsoda"] chart=1 show=1 names=1 colours=1 letters=1
+        dropper d drops=3 paint="pink+sky"
+      }
+      safety s kit=["goggles", "apron", "tray"] letters=0 names=1 below=kit gap=1
+    }
+    say """
+      Red cabbage juice changes colour in acids and alkalis. Lemon juice and vinegar are acids and
+      turn it red. Washing soda is an alkali and turns it green. The chart goes from 1, a strong
+      acid, through 7 in the middle, to 14, a strong alkali, and each colour covers part of it.
+      A grown-up adds the juice a few drops at a time with a dropper, and everyone wears goggles
+      and an apron, with the cups on a tray.
+      """
+  }
+  do {
+    practice chem.cabbage-colour count=2 seed=1
+    practice chem.cabbage-acid count=2 seed=5
+    level easy {
+      worked chem.cabbage-which v=1 level=medium
+    }
+    practice chem.cabbage-which count=2 seed=2 hard-seed=2
+    practice chem.cabbage-count count=2 seed=4
+  }
+  try stars=2 {
+    show chem.colour-says v=3 easy-v=0 hard-v=4
+  }
+  try stars=3 {
+    show chem.colour-order v=1
+  }
+  remember {
+    say "Red and purple say acid, green says alkali, and blue says only that it is not an acid."
+  }
+
+  grown-ups """
+    The colours follow the Royal Society of Chemistry's red cabbage chart: red from pH 1 to 3, purple
+    from 4 to 6, blue at 7 and 8, green from 9 to 11 and yellow above; the liquids' pH values are
+    typical ones from the US Geological Survey and PubChem (lemon juice and vinegar about 2, milk
+    about 6.5, water 7, baking soda about 8, washing soda about 11). The first questions are the way
+    in: read the colour. The two-star question is about what evidence can show: blue covers 7 and 8,
+    so water and baking soda look the same and the colour says only "not an acid". The three-star
+    question walks the colour along the chart as an alkali is added to an acid, or the other way.
+    At home, chop red cabbage, a grown-up pours hot water over it, and the cooled purple juice is
+    the indicator. Wear goggles, keep it on a tray, never drink the juice or any of the liquids, and
+    let a grown-up handle the washing soda, which can hurt skin and eyes.
+    """
+  level easy {
+    grown-ups "At this level the colours and the acid cups are read off the chart as written, an alkali cup is found once in the teacher's pen before two acid cups to find, one or two cups show an acid, the two-star's liquid turned the juice red, an acid, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the colours and the acid cups are read off the chart as written, the cups to find hold an alkali, two or three cups show an acid, the two-star's liquid turned the juice purple, which says only that it is not an acid, and the three-star is as written."
+  }
+}

@@ -1,0 +1,20 @@
+# Comparing two melting points without being told which is lower: the table is checked against
+# the sources, and chocolate and butter are never compared, since their ranges overlap.
+item chem.melt-first v=1 skills=[chemistry.states] {
+  title "Which melts first?"
+  difficulty v
+  let a={"chocolate", "butter", "wax"} b={"chocolate", "butter", "wax"} v={10, 20}
+  where (a != b and not (a != "wax" and b != "wax"))
+
+  scene 30x20 {
+    table data cols=2 head=["Melts at about", "Degrees"] cells=["chocolate", 34, "candle wax", 60, "butter", 37] at=canvas(1, 0)
+    text ask "A water bath starts at {v} degrees and is warmed slowly. Which melts first, the {if a == \"wax\" then \"candle wax\" else a} or the {if b == \"wax\" then \"candle wax\" else b}?" width=19 below=data gap=1
+    choice pick options=["{if a == \"wax\" then \"candle wax\" else a}", "{if b == \"wax\" then \"candle wax\" else b}"] below=ask gap=1
+    thermometer tube from=0 to=100 step=20 value=v unit="C" right-of=data gap=1
+  }
+
+  answer pick=(if a == "wax" then b else a)
+  check chem.state of=tube table=data
+  hint "Find both in the table. Which one has the lower number?"
+  hint "As the water warms up, which of the two numbers does it reach first?"
+}

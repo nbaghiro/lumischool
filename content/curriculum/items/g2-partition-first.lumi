@@ -1,0 +1,34 @@
+# The same splits with the unknown first, so the child cannot just copy the tens digit.
+item place.partition-first v=1 skills=[place-value.tens-ones, place-value.regroup] {
+  title "The missing part comes first"
+  difficulty (10 * d + o)
+  let t=3..9 o=0..9 d=0..2
+  where (d > 0 or o > 0)
+  level easy {
+    let d=0..1
+  }
+  level hard {
+    let d={2}
+  }
+
+  scene 30x7 {
+    baseten blocks thousands=0 hundreds=0 tens=t ones=o at=canvas(1, 1)
+    row eq right-of=blocks gap=2 space=1 align=centre {
+      equation e1 "{10 * t + o} ="
+      number-input first width=3
+      equation e2 "+ {o + 10 * d}"
+    }
+  }
+
+  answer first=(10 * (t - d))
+  feedback {
+    when (first == 10 * t and d > 0) point=eq {
+      say "The second part already has {d} of the tens in it."
+    }
+    when (first == t - d) point=eq {
+      say "This part is tens. Write how much they are worth."
+    }
+  }
+  hint "What do you add to {o + 10 * d} to make {10 * t + o}?"
+  hint "Take {o + 10 * d} away from {10 * t + o}."
+}

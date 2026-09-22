@@ -1,0 +1,17 @@
+# The audit's raise for letter-reason: every choice asks politely and gives a reason with because,
+# and the child picks the reason that would matter to this reader.
+item writing.letter-best-reason v=1 stars=2 skills=[writing.letters, writing.audience] {
+  title "A reason the reader will like"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 37x18 {
+    text about "{if k == 0 then \"The owl only comes out at night, and loves to see lights.\" else if k == 1 then \"The hedgehog is shy and does not like loud noises.\" else \"The gull is always hungry.\"}" width=35 at=canvas(1, 1)
+    text ask "Which reason would make {if k == 0 then \"the owl\" else if k == 1 then \"the hedgehog\" else \"the gull\"} most want to come?" width=35 below=about gap=1
+    choice pick options=["{if k == 0 then \"Please come, because we have lunch at twelve.\" else if k == 1 then \"Please come, because it will be a quiet tea with Gran.\" else \"Please come, because the view is lovely.\"}", "{if k == 0 then \"Please come, because the island is sunny today.\" else if k == 1 then \"Please come, because the band is playing.\" else \"Please come, because we have fish left over.\"}", "{if k == 0 then \"Please come, because the lanterns are lit tonight.\" else if k == 1 then \"Please come, because all our friends will be there.\" else \"Please come, because we painted the boat.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Please come, because the lanterns are lit tonight." else if k == 1 then "Please come, because it will be a quiet tea with Gran." else "Please come, because we have fish left over.")
+  hint "Every choice gives a reason. What do you know about this reader?"
+  hint "Which reason fits what the reader likes, or what the reader does not like?"
+}

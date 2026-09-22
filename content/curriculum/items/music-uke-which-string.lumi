@@ -1,0 +1,23 @@
+# The ringed string moves, so the letter has to be read across the card rather than remembered.
+# G is left out because music.uke-string-letter, the way in before it, already rings G.
+item music.uke-which-string v=1 skills=[music.uke-strings] {
+  title "Name the string"
+  difficulty (if s == 1 then 0 else 1)
+  let s=1..3
+  level easy {
+    let s={1, 2}  # the A string at the edge, or the E beside it
+  }
+  level hard {
+    let s={2, 3}  # the two middle strings have to be counted
+  }
+
+  scene 28x14 {
+    chordbox box tuning=uke chord=none places=[] frets=3 show=dots name=false letters=false lit=["s{s}f0"] at=canvas(1, 1)
+    text ask "The strings go G, C, E, A from the left. Which one is ringed?" width=13 right-of=box gap=1
+    choice pick options=["G", "C", "E", "A"] below=ask gap=1
+  }
+
+  answer pick=(if s == 1 then "A" else if s == 2 then "E" else if s == 3 then "C" else "G")
+  hint "Put your finger on the ring. How many strings are to its left?"
+  hint "Say the letters from the left, one for each string, until you reach the ring."
+}

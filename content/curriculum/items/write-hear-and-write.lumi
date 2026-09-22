@@ -1,0 +1,18 @@
+item writing.hear-and-write v=1 skills=[writing.spelling] {
+  title "Writing a word you can hear"
+  difficulty (if w == "duck" then 1 else 0)
+  let w={"boat", "duck", "kite"}
+
+  scene 31x13 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      art pic asset="{w}"
+      column q space=1 align=start {
+        text ask "Say the word slowly, then write it, one letter in each box." width=18
+        word-input word options=["{w}"] letters=4
+      }
+    }
+  }
+
+  answer word=w
+  hint "Say the word slowly and write down the sounds in the order you hear them."
+}

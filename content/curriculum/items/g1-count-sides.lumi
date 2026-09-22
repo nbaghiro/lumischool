@@ -1,0 +1,24 @@
+# Sides counted in threes and fours: the shapes are the groups.
+item shape.count-sides v=1 stars=1 skills=[shapes.sides, counting.in-steps] {
+  title "All the sides"
+  difficulty (a + b)
+  let a=1..3 b=1..3
+
+  scene 30x10 {
+    row shapes at=canvas(1, 1) space=2 align=centre {
+      props tri count=a prop=triangle
+      props sq count=b prop=square
+    }
+    text ask "How many sides do all these shapes have together?" narrate width=28 below=shapes gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (3 * a + 4 * b)
+  feedback {
+    when (answer == a + b) point=shapes {
+      say "That is how many shapes. Count the straight sides of each one."
+    }
+  }
+  hint "How many sides does a triangle have? And a square?"
+  hint "Count in threes for the triangles, then count on in fours for the squares."
+}

@@ -1,0 +1,35 @@
+# The flag and then a tap: the second script starts where the first one left the character, which is
+# the audit's raise for the two-script question.
+item coding.stage-chain v=1 skills=[coding.events] {
+  title "The flag, then a tap"
+  difficulty (a + b + (if d == 0 then 2 else 0))
+  let a=2..3 b=1..3 c=1..3 d=0..1
+  where (c + a + b <= 8 and c + a - b >= 1)
+  level easy {
+    let b=1..2 d={1}
+  }
+  level hard {
+    let b=2..3 d={0}
+  }
+
+  scene 36x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["when the flag is tapped", "right {a}", "when tapped", "{if d == 0 then \"left\" else \"right\"} {b}"]
+      stage s cols=8 col=c who=bot code=["when the flag is tapped", "right {a}", "when tapped", "{if d == 0 then \"left\" else \"right\"} {b}"] upto=0
+    }
+    text ask "The flag is tapped, then the robot. Which square does it end on?" width=26 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if d == 0 then c + a - b else c + a + b)
+  feedback {
+    when (answer == c + a) point=bl {
+      say "The robot was tapped as well, so the second script runs after the first."
+    }
+    when (answer == (if d == 0 then c - b else c + b)) point=bl {
+      say "The tap script starts where the flag script left the robot, not where it began."
+    }
+  }
+  hint "Where is the robot after the flag script?"
+  hint "Start the tap script from there."
+}

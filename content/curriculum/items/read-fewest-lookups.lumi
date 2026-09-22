@@ -1,0 +1,35 @@
+# The three-star plan: three questions, and the fewest lists to open, since two questions the
+# same list answers are one look-up.
+item reading.fewest-lookups v=1 stars=3 skills=[reading.text-features, reasoning.plan] {
+  title "The fewest look-ups"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+  let q1={pick(k, "How many chapters are there?", "Which pages mention gulls?", "What is a blowhole?", "Which pages mention crabs?")}
+  let q2={pick(k, "What does pod mean?", "What does krill mean?", "Which page starts the chapter about the ice?", "What does tide mean?")}
+  let q3={pick(k, "Which page does the last chapter start on?", "Which pages mention seals?", "What is a calf?", "How many chapters are there?")}
+  let n={pick(k, 2, 2, 2, 3)}
+  let twice={pick(k, "the contents page", "the index", "the glossary", "none, one list each")}
+
+  scene 36x28 {
+    text ask "Sam has three questions about the book: {q1} {q2} {q3} Each list is opened once at most. How many of the three lists must he open, and which list answers two of his questions?" narrate width=34 at=canvas(1, 1)
+    row low space=1 align=start below=ask gap=1 {
+      book b lines=4 left="All about" right="the sea" page="1"
+      column in space=1 align=start {
+        number-input answer
+        choice pick options=["the contents page", "the index", "the glossary", "none, one list each"] stack=column
+      }
+    }
+  }
+
+  answer answer=n pick=twice
+  feedback {
+    when (answer == 3 and n == 2) point=b {
+      say "Two of the questions are answered by the same list, and one look-up in it finds both."
+    }
+    when (answer < n) point=b {
+      say "Each question needs its own kind of list: chapters from the contents page, pages from the index, meanings from the glossary. Count the kinds."
+    }
+  }
+  hint "Sort the questions first: a chapter question, a page question or a meaning question."
+  hint "{if k == 3 then \"The three questions are of three kinds, so every list is opened.\" else \"Two questions are of the same kind. That list is opened once for both.\"}"
+}

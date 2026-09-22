@@ -1,0 +1,45 @@
+# The way in: three leaves in a row, unnamed, and one kind to find. The holly's prickles give it
+# away; the maple's points and the oak's wavy edge take a closer look; the ash, plain and pointed,
+# is the one found by what it has not got.
+item nature.which-leaf v=1 skills=[nature.leaves] {
+  title "Which leaf?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3 p=0..2
+  let kind={pick(k, "holly", "maple", "oak", "ash")}
+  let o1={pick(k, "oak", "ash", "ash", "holly")}
+  let o2={pick(k, "maple", "holly", "holly", "oak")}
+  let l1={pick(p, kind, o1, o1)}
+  let l2={pick(p, o1, kind, o2)}
+  let l3={pick(p, o2, o2, kind)}
+  let where={pick(p, "first", "second", "third")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x13 {
+    leafrow leaves kinds=[l1, l2, l3] labels=false at=canvas(1, 1)
+    text ask "Ada picks up three leaves in the long grass. Which one is the {kind} leaf?" narrate width=18 right-of=leaves gap=2
+    choice pick options=["first", "second", "third"] below=leaves gap=1
+  }
+
+  answer pick=where
+  feedback {
+    when (k == 0 and pick != where) point=leaves {
+      say "A holly leaf has sharp prickles all round its edge. Find the prickly one."
+    }
+    when (k == 1 and pick != where) point=leaves {
+      say "A maple leaf has points sticking out like the fingers of a hand."
+    }
+    when (k == 2 and pick != where) point=leaves {
+      say "An oak leaf has a wavy edge, with round bumps all the way along."
+    }
+    when (k == 3 and pick != where) point=leaves {
+      say "An ash leaf is plain: a smooth edge and a pointed tip, with no prickles, points or bumps."
+    }
+  }
+  hint "Look at the edge of each leaf. Is it prickly, pointed, wavy or smooth?"
+  hint "Holly is prickly, maple has points like a hand, oak has a wavy edge, and ash is smooth."
+}

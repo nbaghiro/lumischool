@@ -1,0 +1,31 @@
+# A four-note line across strings 1 to 3 read from tab and played: up the scale, down across a string,
+# or a skip from string to string. music.plays proves every version from its notes.
+item music.tab-play-line v=1 skills=[music.tab] {
+  title "Play Mo's line"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let p1={pick(k, "s3f0", "s1f0", "s3f0")}
+  let p2={pick(k, "s3f2", "s2f3", "s2f0")}
+  let p3={pick(k, "s2f0", "s2f1", "s2f3")}
+  let p4={pick(k, "s2f1", "s2f0", "s1f3")}
+  let n1={pick(k, "G3", "E4", "G3")}
+  let n2={pick(k, "A3", "D4", "B3")}
+  let n3={pick(k, "B3", "C4", "D4")}
+  let n4={pick(k, "C4", "B3", "G4")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x27 {
+    tab line tuning=guitar notes=["{p1}", "{p2}", "{p3}", "{p4}"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    text ask "Play Mo's four notes in order." width=10 right-of=line gap=1
+    fretboard neck tuning=guitar frets=4 view=tab labels=numbers strum=false below=line gap=1
+  }
+
+  check music.plays notes=[{n1}, {n2}, {n3}, {n4}]
+  hint "Read the line each number is on first: the top line is string 1."
+  hint "0 is the string played open. Finger 1 on fret 1, finger 2 on fret 2, finger 3 on fret 3."
+}

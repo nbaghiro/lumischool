@@ -1,0 +1,15 @@
+# The same five blocks solve every one of these mazes, which is the point of a repeat until with an
+# if in it: the program does not know the maze, it feels its way.
+item coding.build-until v=1 skills=[coding.decisions, coding.repetition] {
+  title "One program for every maze"
+  difficulty k
+  let k=0..1
+
+  scene 36x21 {
+    maze g map=["{if k == 0 then \". . . F\" else \"F . . .\"}", "{if k == 0 then \". # # .\" else \"# # # .\"}", "S . . ."] at=canvas(1, 0)
+    codepad answer tray=["repeat until at flag", "if wall ahead", "otherwise", "forward 1", "turn left"] lines=5 key=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"] right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Say what the robot should do at every square: if there is a wall, turn; if not, go on."
+}

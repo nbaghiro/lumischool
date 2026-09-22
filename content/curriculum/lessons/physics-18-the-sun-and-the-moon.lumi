@@ -1,0 +1,49 @@
+lesson physics-the-sun-and-the-moon v=1 format=teach grade=1 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "The sun and the moon"
+  goal "Work out how long the sun is up from when it rises and sets, name the moon's shapes, and say what shape comes next."
+
+  look {
+    scene 23x17 {
+      column all at=canvas(1, 0) space=1 align=start {
+        sunpath sky rise=5 set=20
+        moonphases m from=1 step=7 count=5
+      }
+    }
+    say """
+      The sun rises on one side of the sky and sets on the other. In summer it climbs high and is
+      up for a long time; in winter it stays low and the day is short. The moon changes shape night
+      by night, growing from a thin crescent to a full moon and shrinking back, and the pattern
+      starts again about every four weeks.
+      """
+  }
+  do {
+    practice physics.day-length count=2 seed=2
+    practice physics.moon-name count=2 seed=1
+    practice physics.moon-grows count=2 seed=3
+    practice physics.moon-next count=2 seed=1
+  }
+  try stars=2 {
+    show physics.longer-day w=1
+  }
+  try stars=3 {
+    show physics.day-hours-more a=5 b=20 c=8 d=16 easy-c=9 easy-d=15 hard-a=4
+  }
+  remember {
+    say "Long days in summer, short days in winter. The moon's shape comes round again every month."
+  }
+
+  grown-ups """
+    Note the time of sunset once a week for a month; the change is big enough to see by the end of
+    it. Look at the moon on three clear evenings a few days apart and draw it each time. Never look
+    straight at the sun, even with sunglasses. The last question subtracts two lengths of day,
+    which is several steps for a six-year-old; a paper strip marked in hours makes it concrete.
+    The questions name the moon's shapes new moon, crescent, half moon, gibbous and full moon; a
+    calendar calls the two half moons the first and last quarter.
+    """
+  level easy {
+    grown-ups "At this level the sun is up for eight or nine hours, and the summer and winter days compared are far apart."
+  }
+  level hard {
+    grown-ups "At this level the sun is up for fourteen or fifteen hours, and the summer day compared rises at four and sets at eight, sixteen hours against the winter day's eight."
+  }
+}

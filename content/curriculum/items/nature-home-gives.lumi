@@ -1,0 +1,42 @@
+# What a home gives the creature that lives in it: the pond gives the fish water to breathe, the
+# frog water for its spawn, the heron fish to eat; the web gives the spider its dinner. The fish and
+# the spider are the plain two; the frog and the heron need the pond thought of as more than water.
+item nature.home-gives v=1 skills=[nature.habitats] {
+  title "What does the home give it?"
+  difficulty (if k == 0 or k == 3 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "the fish", "the frog", "the heron", "the spider")}
+  let home={pick(k, "the pond", "the pond", "the pond", "its web")}
+  let right={pick(k, "water to breathe", "water for its eggs", "fish to eat", "flies to eat")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x24 {
+    pond pool pads=3 fish=2 frog=true at=canvas(1, 1)
+    cobweb web spokes=8 spider=1 below=pool gap=1
+    text ask "A home gives a creature what it needs. What does {home} give {who}?" narrate width=16 right-of=pool gap=2
+    choice pick options=["water to breathe", "water for its eggs", "fish to eat", "flies to eat"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "fish to eat") point=pool {
+      say "A fish does not eat fish here. Think about what a fish does with water all day long."
+    }
+    when (k == 1 and pick == "water to breathe") point=pool {
+      say "A frog breathes air, up on its lily pad. It goes into the water for something else: where does it lay its spawn?"
+    }
+    when (k == 2 and pick != "fish to eat") point=pool {
+      say "The heron does not swim or breathe water. It stands in the shallows and waits. What is it waiting for?"
+    }
+    when (k == 3 and pick != "flies to eat") point=web {
+      say "The web is sticky. Look at what gets caught in it."
+    }
+  }
+  hint "Find {who} in the picture. What is it doing there?"
+  hint "Does it breathe the water, lay its eggs in it, or catch its food there?"
+}

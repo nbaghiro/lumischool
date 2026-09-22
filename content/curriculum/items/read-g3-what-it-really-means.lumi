@@ -1,0 +1,19 @@
+# A saying does not mean what its words say. The wrong choices are what the words would mean if
+# they were meant exactly, so the child has to see the sentence is not literal.
+item reading.really-means v=1 skills=[reading.vocabulary, reading.figurative] {
+  title "What it really means"
+  difficulty (if k == 3 then 2 else if k == 1 or k == 4 then 0 else 1)
+  let k=0..4
+
+  scene 37x10 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text sent "{if k == 0 then \"Kit was over the moon when she saw her new bike.\" else if k == 1 then \"It is raining cats and dogs, so take a coat.\" else if k == 2 then \"Joss had butterflies in his tummy before the race.\" else if k == 3 then \"Grandad said the spelling test would be a piece of cake.\" else \"Orla was so hungry she could eat a horse.\"}" width=36
+      text ask "What does the sentence really mean?"
+      choice pick options=[if k == 0 then "up in space" else if k == 1 then "very hard rain" else if k == 2 then "felt sleepy" else if k == 3 then "a real cake" else "likes horses", if k == 0 then "very happy" else if k == 1 then "animals fell" else if k == 2 then "ate insects" else if k == 3 then "very long" else "very hungry", if k == 0 then "a little sad" else if k == 1 then "a little rain" else if k == 2 then "felt nervous" else if k == 3 then "very easy" else "not hungry"]
+    }
+  }
+
+  answer pick=(if k == 0 then "very happy" else if k == 1 then "very hard rain" else if k == 2 then "felt nervous" else if k == 3 then "very easy" else "very hungry")
+  hint "Could this really happen, word for word?"
+  hint "People say this to show a feeling or how much of something there is. Which choice fits that?"
+}

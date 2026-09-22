@@ -1,0 +1,28 @@
+# Squares of every size in a grid: the small ones are easy, the bigger ones need a system.
+item shapes.count-squares v=1 stars=3 skills=[shapes.squares, reasoning.systematic] {
+  title "Squares of every size"
+  difficulty (r * c)
+  let r=2..3 c=2..4
+  where (r <= c)
+  level easy {
+    let r={2}
+  }
+  level hard {
+    let r={3}
+  }
+
+  scene 30x10 {
+    grid g rows=r cols=c shade=0 color=sky cell=2 at=canvas(1, 1)
+    text ask "How many squares of any size can you find in this grid? Count the big ones too." width=16 right-of=g gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (r * c + (r - 1) * (c - 1) + (if r >= 3 then (r - 2) * (c - 2) else 0))
+  feedback {
+    when (answer == r * c) point=g {
+      say "Those are the small squares. Squares of two by two are hiding in there too."
+    }
+  }
+  hint "Count the small squares first. Then look for squares two squares wide."
+  hint "Is there a square three squares wide? Add up every size."
+}

@@ -1,0 +1,29 @@
+# The moon at one of its eight places, and the shape a child on the Earth sees. The half of the moon
+# facing the sunlight is lit, and how much of that lit half we can see depends on where it stands.
+item physics.orbit-which-phase v=1 skills=[physics.sky, reasoning.evidence] {
+  title "Which shape tonight?"
+  difficulty (if k == 0 or k == 4 then 0 else 1)
+  let k=0..7
+  let ans={pick(k, "New moon", "Crescent", "Half moon", "Gibbous", "Full moon", "Gibbous", "Half moon", "Crescent")}
+  level easy {
+    let k={0, 4}
+  }
+  level hard {
+    let k={1, 3, 5, 7}
+  }
+
+  scene 23x43 {
+    orbit sky moon=k places=0 arrow=1 person=0 at=canvas(1, 0)
+    text ask "The sunlight comes from the left, so the left half of the moon is lit. What shape does a child on the Earth see tonight?" narrate width=22 below=sky gap=1
+    choice pick options=["New moon", "Crescent", "Half moon", "Gibbous", "Full moon"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans and k == 0) point=sky {
+      say "The moon is between the Earth and the sun, so its lit half faces away from us and we see none of it."
+    }
+  }
+  hint "Which half of the moon is lit, and how much of that half can the Earth see from where it is?"
+  hint "Between the Earth and the sun is a new moon, and on the far side is a full one."
+}

@@ -1,0 +1,26 @@
+# The same shoe on two floors: the reading is the grip. Readings follow the floors from smooth to
+# rough, ice 1, wood 3, carpet 6 and sandpaper 9, in every item that uses the force meter.
+item physics.friction-order v=1 skills=[physics.friction] {
+  title "Which floor grips more?"
+  difficulty (4 - abs(a - b))
+  let a=0..3 b=0..3
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 2)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+
+  scene 33x25 {
+    column two at=canvas(1, 0) space=1 align=start {
+      forcemeter top reading=(if a == 0 then 1 else if a == 1 then 3 else if a == 2 then 6 else 9) surface=a
+      forcemeter bottom reading=(if b == 0 then 1 else if b == 1 then 3 else if b == 2 then 6 else 9) surface=b
+    }
+    text ask "The same shoe is pulled across two floors. Which floor grips the shoe more?" width=17 below=two gap=0
+    choice pick options=["Top", "Bottom"] right-of=ask gap=1
+  }
+
+  answer pick=(if a > b then "Top" else "Bottom")
+  hint "Which meter needs the bigger pull to move the shoe?"
+}

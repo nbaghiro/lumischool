@@ -1,0 +1,10 @@
+item art.three-stripes v=1 skills=[art.colour-mixing, art.painting] {
+  title "Three stripes you mixed"
+
+  scene 36x13 {
+    text ask "Mix orange, green and purple in the tray. Paint one stripe of each, and write under it which two paints you used." width=12 at=canvas(1, 1)
+    paintsheet sheet w=20 h=8 paper="squared" guide="none" outline="none" pots=["red", "yellow", "blue"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Three stripes, one orange, one green and one purple, each mixed from two primaries in the tray rather than taken from a pan, with the pair named for each." notice=["An orange, a green and a purple", "Each one mixed in the tray", "The two paints named for each stripe"] ask="Which stripe was hardest to mix, and what did you change to get it right?"
+}

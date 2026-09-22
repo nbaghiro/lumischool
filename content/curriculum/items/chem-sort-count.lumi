@@ -1,0 +1,24 @@
+# How many things in a row are made of one material. It used to count cards where they sat in a
+# sorting chart, some of them in the wrong column; now every thing is drawn in its material and the
+# count comes from what it is made of.
+item chem.sort-count v=1 skills=[chemistry.materials] {
+  title "How many are made of it?"
+  difficulty (if k == 2 then 3 else if k == 1 or k == 4 then 2 else 1)
+  let k=0..4
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={2, 4}  # the raincoat counts as plastic; a rubber band and a wooden ruler sit among the metal
+  }
+
+  scene 22x10 {
+    text ask "How many of these things are made of {if k == 0 then \"metal\" else if k == 1 then \"wood\" else if k == 2 then \"plastic\" else if k == 3 then \"glass\" else \"metal\"}?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"metal-key\" else if k == 1 then \"wooden-spoon\" else if k == 2 then \"plastic-bottle\" else if k == 3 then \"glass-jar\" else \"metal-can\"}", "{if k == 0 then \"wooden-block\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"glass-bottle\" else if k == 3 then \"metal-can\" else \"metal-key\"}", "{if k == 0 then \"metal-spoon\" else if k == 1 then \"metal-can\" else if k == 2 then \"raincoat\" else if k == 3 then \"glass-bottle\" else \"metal-spoon\"}", "{if k == 0 then \"glass-jar\" else if k == 1 then \"wooden-block\" else if k == 2 then \"plastic-spoon\" else if k == 3 then \"wool-hat\" else \"rubber-band\"}", "{if k == 0 then \"towel\" else if k == 1 then \"paper-bag\" else if k == 2 then \"metal-key\" else if k == 3 then \"pebble\" else \"wooden-ruler\"}"] below=ask gap=0
+    number-input answer below=row gap=0
+  }
+
+  check chem.materials of=row answer="made-count({if k == 0 then \"metal\" else if k == 1 then \"wood\" else if k == 2 then \"plastic\" else if k == 3 then \"glass\" else \"metal\"})"
+  hint "Point to each thing in turn and say what it is made of."
+  hint "Keep a count on your fingers of the ones made of {if k == 0 then \"metal\" else if k == 1 then \"wood\" else if k == 2 then \"plastic\" else if k == 3 then \"glass\" else \"metal\"}."
+}

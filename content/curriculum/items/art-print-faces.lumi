@@ -1,0 +1,14 @@
+item art.print-faces v=1 skills=[art.printing] {
+  title "Which way will it face?"
+  let m={"fish", "bird"}
+
+  scene 34x11 {
+    stamps block motif=m show="block" colour=blue flip=false at=canvas(1, 1)
+    text ask "This block is cut with a {m}. Which way will the {m} face in the print?" width=16 right-of=block gap=2
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=(if m == "fish" then "left" else "right")
+  hint "Which way does the {m} face on the block?"
+  hint "The block is turned over and pressed face down on the paper. What does turning it over do?"
+}

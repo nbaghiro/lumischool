@@ -1,0 +1,64 @@
+# The guitar from grade three, and tab with it: the chord card turned a quarter turn, so string 1 is
+# on top. The neck in the question is laid down the same way as the tab above it.
+lesson music-guitar-tab v=1 format=teach grade=3 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Six strings and tab"
+  goal "Read tab on six lines for its string and fret, play a line of it, and read a guitar chord card."
+
+  look {
+    scene 36x16 {
+      tab lines tuning=guitar notes=["s2f1", "s2f3", "s1f0", "s1f1", "s1f3"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+      chordbox em tuning=guitar chord=Em frets=4 show=fingers name=true letters=false lit=[] right-of=lines gap=1
+    }
+    say """
+      Tab has a line for each string, with string 1, the thinnest, on top. The number on a line is
+      the fret to press, and 0 means play the string open. It is a chord card lying on its side.
+
+      On string 1, open is E, fret 1 is F and fret 3 is G. On string 2, open is B, fret 1 is C and
+      fret 3 is D.
+      """
+  }
+  do {
+    show music.tab-string
+    show music.tab-fret
+    level easy {
+      worked music.tab-ringed-place s=3 f=0 level=medium
+    }
+    practice music.tab-ringed-place count=1 seed=6 hard-seed=7
+    practice music.tab-find-note count=1 seed=4
+    practice music.tab-note-name count=1 seed=3
+    show music.guitar-em-fingers
+    practice music.guitar-chord-open count=1 seed=5 hard-seed=2
+    practice music.lane-beats count=1 hard-count=0 seed=2
+    level hard {
+      practice music.tab-mistake count=1 seed=2
+    }
+    show music.tab-play
+  }
+  try stars=2 {
+    show music.tab-mistake t=1 w=2 e=2 easy-t=0 easy-w=1 hard-t=3 hard-w=3
+  }
+  try stars=3 {
+    show music.tab-down-tunes st="F" n=3 easy-st="E" hard-st="G" hard-n=5
+  }
+  remember {
+    say "The top line is string 1. The number is the fret, and 0 is open."
+  }
+
+  grown-ups """
+    Tab does not show how long a note lasts, so play the line to the child first and let them copy
+    it. Hold the guitar and look down at it: the thinnest string is nearest the floor, and on the page
+    it is the top line, which is the one thing about tab worth saying twice.
+
+    The note lane is tab spaced by time, a beat between each pair of ruled lines, which is the step
+    from reading where a note is to reading when it comes. In the two-star question every number in
+    Mo's tab is one the tune uses somewhere, so each has to be read as a note. The three-star question
+    turns on string 2 at fret 3 (D) being lower than string 1 played open (E); writing the six notes
+    from highest to lowest first makes the counting safe.
+    """
+  level easy {
+    grown-ups "At this level the string, the fret and E minor are as written, an open string 3 is read once in the teacher's pen before places on strings 1 and 2 at frets 1 to 3, the note to find and the note to name are on string 1, the chord cards play every string, the lane lasts three or four beats, the tab to play is as written, Mo's tune is E, F, G, F with the second note wrong, and the three-star starts on E."
+  }
+  level hard {
+    grown-ups "At this level the string, the fret and E minor are as written, the places are on strings 3 and 4 or at the open fret, the note to find is on string 2 or 3, the note to name is on string 2, the chord cards mark strings not to play, the lane makes way for a second tab of Mo's, the tab to play is as written, Mo's tune is D, C, B, C with the last note wrong, and the three-star starts on G with five notes."
+  }
+}

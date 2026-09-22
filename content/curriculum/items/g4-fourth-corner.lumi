@@ -1,0 +1,29 @@
+# The audit's raise for reading a point: three corners of a rectangle, and the fourth from them.
+item coords.fourth-corner v=1 skills=[position.coordinates, shapes.rectangles] {
+  title "The fourth corner"
+  difficulty (c - a + d - b)
+  let a=1..3 b=1..3 c=4..6 d=4..6
+  level easy {
+    where (c - a + d - b <= 3)
+  }
+  level hard {
+    where (c - a + d - b >= 8)
+  }
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=a py=b mark="A" at=canvas(1, 0)
+    column q right-of=grid gap=2 space=1 align=start {
+      text ask "A rectangle has corners at A ({a}, {b}), ({c}, {b}) and ({a}, {d}). Where is the fourth corner?" width=15
+      equation eq "( {?px} , {?py} )"
+    }
+  }
+
+  answer px=c py=d
+  feedback {
+    when (px == d and py == c and c != d) point=grid {
+      say "Along first, then up. The across number is written first."
+    }
+  }
+  hint "Mark the three corners on the grid."
+  hint "The fourth corner is across from one corner and up from another. Which numbers does it share with them?"
+}

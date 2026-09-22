@@ -1,0 +1,31 @@
+# The percent bar writes its own percentage under the mark, so a bar of ten plain squares carries
+# the question instead: each square is ten percent, and nothing on the page says so.
+item percent.of-a-bar v=2 skills=[percentages.of-a-bar] {
+  title "What percent is shaded"
+  difficulty p
+  let p={10, 20, 30, 40, 60, 70, 80, 90}  # fifty is left out: half shaded cannot tell the mistake apart
+  level easy {
+    let p={10, 20, 30}
+  }
+  level hard {
+    let p={70, 80, 90}
+  }
+
+  scene 24x13 {
+    grid bar rows=1 cols=10 shade=(p / 10) color=mint cell=2 at=canvas(1, 1)
+    text ask "The whole bar is 100%. What percent of it is shaded?" narrate width=22 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer p
+  feedback {
+    when (answer == 100 - p) point=bar {
+      say "Read the shaded part, not the part left over."
+    }
+    when (answer == p / 10) point=bar {
+      say "That is how many squares are shaded. Each square is a tenth of the bar, which is 10%."
+    }
+  }
+  hint "The bar has ten equal squares. What percent is one square?"
+  hint "Count the shaded squares in tens."
+}

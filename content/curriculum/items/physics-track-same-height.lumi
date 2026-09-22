@@ -1,0 +1,41 @@
+# Two stars: two tracks read against each other, where at s=0 and s=2 only the steepness differs and
+# the cups are pushed the same, so the height is what decides the push, and at s=1 and s=3 the height
+# and the steepness both differ, so the two tracks together prove nothing. At s=2 and s=3 the runs and
+# the pushes differ by little, which is the harder read.
+item physics.track-same-height v=1 stars=2 skills=[physics.forces, physics.method, reasoning.evidence] {
+  title "What does this show?"
+  difficulty (if s < 2 then 0 else 1)
+  let s=0..3
+  let ha={pick(s, 3, 2, 2, 3)}
+  let hb={pick(s, 3, 5, 2, 4)}
+  let la={pick(s, 4, 3, 3, 5)}
+  let lb={pick(s, 10, 12, 6, 9)}
+  let pa={pick(s, 6, 4, 4, 6)}
+  let pb={pick(s, 6, 10, 4, 8)}
+  let ans={pick(s, "The height it starts at", "These two tracks cannot tell us", "The height it starts at", "These two tracks cannot tell us")}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 31x39 {
+    ramp first height=ha length=la cup=1 pushed=pa at=canvas(1, 0)
+    ramp second height=hb length=lb cup=1 pushed=pb below=first gap=1
+    text ask "The same marble was let go down both tracks. What do these two tracks show about how far the cup is pushed?" narrate width=30 below=second gap=1
+    choice pick options=["The height it starts at", "How steep the track is", "These two tracks cannot tell us"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "How steep the track is" and ha == hb) point=second {
+      say "Both tracks start at the same height and both cups went the same distance, so the steepness cannot be what decides it."
+    }
+    when (pick != ans and ha != hb) point=second {
+      say "Two things are different here, the height and the steepness, so this pair cannot say which of them did it."
+    }
+  }
+  hint "What is the same about the two tracks, and what is different?"
+  hint "A pair of tracks tells you something only when one thing is different between them."
+}

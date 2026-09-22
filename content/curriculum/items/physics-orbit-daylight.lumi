@@ -1,0 +1,25 @@
+# The way in: the Earth seen from above the pole with sunlight coming from the left, a child standing
+# on it, and whether that child is in daylight or in the dark. Noon and midnight are plain; dusk and
+# dawn stand on the line between.
+item physics.orbit-daylight v=1 skills=[physics.sky, reasoning.evidence] {
+  title "Light or dark?"
+  difficulty (if t == 0 or t == 2 then 0 else 1)
+  let t=0..3
+  let ans={pick(t, "Full daylight", "The sun is setting", "The middle of the night", "The sun is rising")}
+  level easy {
+    let t={0, 2}
+  }
+  level hard {
+    let t={1, 3}
+  }
+
+  scene 23x39 {
+    orbit sky moon=-1 places=0 arrow=0 person=1 time=t at=canvas(1, 0)
+    text ask "This is the Earth from high above the pole, with the sunlight coming from the left. What is it like where the child is standing?" narrate width=22 below=sky gap=1
+    choice pick options=["Full daylight", "The sun is setting", "The middle of the night", "The sun is rising"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "The half of the Earth that faces the sunlight is the half in daylight."
+  hint "Find the child, and see whether they are in the lit half, the dark half, or on the line between."
+}

@@ -1,0 +1,33 @@
+item coding.after-line-two v=2 skills=[coding.tracing] {
+  title "Stop after block 2"
+  difficulty (a + b + c)
+  let a=1..3 b=1..2 c=1..2
+  level easy {
+    let a=1..3 b={1} c={1}
+  }
+  level hard {
+    let a=2..3 b={2} c=1..2
+  }
+
+  scene 30x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}", "right {c}"] numbers=true run=2
+      maze g cols=7 rows=4 code=["right {a}", "down {b}", "right {c}"] upto=0 trail=none
+    }
+    text ask "Where is the robot when block 2 has just run?" width=24 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=g col="after(2).col" row="after(2).row"
+  feedback {
+    when (col == 1 + a + c) point=b {
+      say "Block 3 has not run yet. Stop when the ringed block is done."
+    }
+  }
+  hint "Run block 1, then block 2, then stop."
+}

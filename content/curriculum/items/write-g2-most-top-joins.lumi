@@ -1,0 +1,27 @@
+# Applying the top-join rule across whole words: count the letters o, r, v and w that have a letter
+# after them, and compare three words.
+item writing.most-top-joins v=1 stars=2 skills=[writing.joining, reasoning.compare] {
+  title "The most joins along the top"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  let best={if k == 0 then "worm" else if k == 1 then "town" else if k == 2 then "over" else "crow"}
+  let one={if k == 0 then "rain" else if k == 1 then "rule" else if k == 2 then "wet" else "wind"}
+  let none={if k == 0 then "sun" else if k == 1 then "hand" else if k == 2 then "ant" else "milk"}
+  let o1={if r == 0 then best else one}
+  let o2={if r == 1 then best else if r == 0 then one else none}
+  let o3={if r == 2 then best else none}
+
+  scene 28x9 {
+    text ask "Written joined up, which word has the most joins along the top?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=ask gap=1
+  }
+
+  answer pick=best
+  feedback {
+    when (pick == one) point=ask {
+      say "That word has one join along the top. Look for a word with more."
+    }
+  }
+  hint "Which letters finish at the top? Find them in each word."
+  hint "A letter at the end of a word has nothing to join to. Count only the ones with a letter after them."
+}

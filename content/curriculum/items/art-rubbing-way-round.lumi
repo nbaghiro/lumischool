@@ -1,0 +1,14 @@
+item art.rubbing-way-round v=1 skills=[art.texture, art.printing] {
+  title "Which way does a rubbing face?"
+  let m={"fish", "bird"}
+
+  scene 30x11 {
+    stamps block motif=m show="block" colour=blue flip=false made="print" at=canvas(1, 1)
+    text ask "Ada lays paper on top of this block and rubs over it with a crayon. Which way does the {m} face in her rubbing?" width=20 right-of=block gap=2
+    choice pick options=["left", "right"] below=ask gap=1
+  }
+
+  answer pick=(if m == "fish" then "right" else "left")
+  hint "Which way does the {m} face on the block?"
+  hint "The paper lies on top of the block and is never turned over. Does anything swap round?"
+}

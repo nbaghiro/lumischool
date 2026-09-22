@@ -1,0 +1,28 @@
+# The line a letter sits on, counted from the bottom of the treble staff: E G B D F.
+item music.which-line v=1 skills=[music.staff] {
+  title "Which line?"
+  difficulty (if k == 0 or k == 1 then 0 else if k == 4 then 1 else 2)
+  let k=0..4
+  let x={pick(k, "E", "G", "B", "D", "F")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 32x17 {
+    grandstaff gs notes=["G4"] letters=false lit=[] landmarks=true at=canvas(1, 1)
+    text ask "Treble G is on line 2, counting the lines from the bottom as 1 to 5. Which line does {x} sit on?" width=14 right-of=gs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (k + 1)
+  feedback {
+    when (answer != k + 1) point=gs {
+      say "From G on the second line, each line up skips a space: G, then B on the middle line, D on the fourth, F on the top. Below G is E on the bottom line."
+    }
+  }
+  hint "Start at G on the second line. Each next line up is two letters on: B, D, F."
+  hint "The lines from the bottom are E, G, B, D, F."
+}

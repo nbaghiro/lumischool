@@ -1,0 +1,20 @@
+# The end is shown and the start is asked for: the turns have to be undone backwards, the last one
+# first, which is reasoning rather than following.
+item coding.turn-start-face v=1 stars=2 skills=[coding.tracing, reasoning.inverse] {
+  title "Which way did it start?"
+  difficulty ((if a == b then 2 else 0) + (if f >= 2 then 1 else 0))
+  let f=0..3 a=0..1 b=0..1
+
+  scene 35x18 {
+    text ask "The program has ended here. Which way was the robot facing at the start?" width=34 at=canvas(1, 0)
+    row top below=ask gap=1 space=1 align=start {
+      blocks bl code=["forward 1", "turn {if a == 0 then \"right\" else \"left\"}", "forward 1", "turn {if b == 0 then \"right\" else \"left\"}"]
+      maze g cols=5 rows=5 col=3 row=3 face=(if f == 0 then "up" else if f == 1 then "right" else if f == 2 then "down" else "left") code=["forward 1", "turn {if a == 0 then \"right\" else \"left\"}", "forward 1", "turn {if b == 0 then \"right\" else \"left\"}"] trail=none
+      choice pick options=["up", "right", "down", "left"] stack=column
+    }
+  }
+
+  answer pick=(if f == 0 then "up" else if f == 1 then "right" else if f == 2 then "down" else "left")
+  hint "Which way is the robot facing now? Undo the last turn first."
+  hint "To undo a turn right, turn left. Then undo the turn before it."
+}

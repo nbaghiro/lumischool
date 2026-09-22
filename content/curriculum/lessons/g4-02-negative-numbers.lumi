@@ -1,0 +1,54 @@
+lesson g4-negative-numbers v=1 format=teach grade=4 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Negative numbers"
+  goal "Read numbers below zero, count up and down through zero, and find the difference across it."
+
+  look {
+    scene 26x15 {
+      thermometer tube from=-20 to=40 step=10 value=-5 unit="C" at=canvas(1, 1)
+      numberline line from=-5 to=5 step=1 jumps=[] right-of=tube gap=2
+      inequality bar from=-5 to=5 value=-2 dir=">" closed=true below=line gap=2
+    }
+    say """
+      Below zero the numbers carry a minus sign and count the other way: minus two is warmer than
+      minus six, because it is nearer zero. From minus six up to four is six steps to zero and four
+      more, which is ten.
+      """
+  }
+  do {
+    practice number.read-cold count=1 seed=2
+    practice number.negative-temp count=2 hard-count=1 seed=5
+    level hard {
+      practice number.halfway-across count=1 seed=3
+    }
+    level easy {
+      worked number.temp-difference lo=-6 hi=2
+    }
+    practice number.temp-difference count=2 seed=4
+    practice number.before-the-fall count=1 seed=7 hard-seed=4
+    practice number.through-zero count=1 seed=3 easy-seed=5
+    practice number.order-cold count=1 seed=9
+  }
+  try stars=2 {
+    show number.halfway-across a=-6 b=4 easy-a=-4 easy-b=2 hard-a=-8
+  }
+  try stars=3 {
+    show number.pairs-apart d=7 easy-d=5 hard-d=9
+  }
+  remember {
+    say "Minus six is colder than minus two. To find a difference across zero, count to zero and then on."
+  }
+
+  grown-ups """
+    A freezer thermometer makes this real. Counting up from minus six to two is the same counting
+    the child already does, passing through zero on the way. The commonest slip is to take the
+    digits away (six and two make four) instead of counting through zero. In the two-star question,
+    ask how far apart the two numbers are before asking where halfway is. In the three-star
+    question a list that starts at minus one keeps track of the pairs.
+    """
+  level easy {
+    grown-ups "At this level the thermometer reads 5 or 15 above zero, the temperature rises but stays below zero, the difference between night and noon is eight degrees or fewer and is worked once in the teacher's pen before two to find, the temperature before the fall was below zero too, the count down passes a little way below zero, two towns are below zero, halfway is asked between minus four and two, and the three-star counts the pairs five degrees apart."
+  }
+  level hard {
+    grown-ups "At this level the thermometer reads 10 or 15 below zero, the temperature rises through zero, the differences between night and noon are thirteen degrees or more, the temperature fell from above zero by eight or more, the count down passes well below zero, three towns are below zero, halfway is asked twice between numbers twelve or fourteen apart, and the three-star counts the pairs nine degrees apart."
+  }
+}

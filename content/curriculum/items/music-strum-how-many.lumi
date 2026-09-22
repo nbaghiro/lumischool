@@ -1,0 +1,46 @@
+# The way in: two bars of strumming, one in three and one in four, counted for their beats, their
+# strums or their up strums. A beat is a number over the bar; a strum is an arrow, not a dot.
+item music.strum-how-many v=1 skills=[music.strumming, music.time-signatures] {
+  title "Count the bar"
+  difficulty (if q <= 1 then 0 else 1)
+  let q=0..3
+  let right={pick(q, 3, 4, 6, 3)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x16 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "A"
+        strumtrack a strums=D-D-D- counts=true chord=none ring=-1
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        strumtrack b strums=D-DU-UDU counts=true chord=none ring=-1
+      }
+    }
+    column side space=1 align=start right-of=bars gap=2 {
+      text ask "{pick(q, \"How many beats does bar A count?\", \"How many beats does bar B count?\", \"How many strums are in bar B?\", \"How many up strums are in bar B?\")}" narrate width=11
+      number-input answer
+    }
+  }
+
+  answer right
+  feedback {
+    when (q <= 1 and answer == 2 * right) point=bars {
+      say "That counts the ands as well. A beat is a number written over the bar."
+    }
+    when (q == 2 and answer == 8) point=b {
+      say "A dot is the hand moving past without touching. Count only the arrows."
+    }
+    when (q == 3 and answer == 6) point=b {
+      say "That is every arrow. An up strum is a short arrow pointing up."
+    }
+  }
+  hint "{pick(q, \"Read the numbers over bar A.\", \"Read the numbers over bar B.\", \"Count the arrows in bar B, and leave out the dots.\", \"Up strums are the short arrows, over the ands.\")}"
+  hint "{if q <= 1 then \"The ands come between the numbers. They are half beats, not beats.\" else \"Point at each one as you count it.\"}"
+}

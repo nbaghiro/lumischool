@@ -1,0 +1,23 @@
+# The way in: the drawing shows the material (a grain, a shine, see-through glass), so the child
+# names what they can see. Four of the materials England's Year 1 names.
+item chem.what-made v=1 skills=[chemistry.materials] {
+  title "What is it made of?"
+  difficulty ((if l == "A" and x == "glass-jar" then 1 else 0) + (if l == "B" and y == "plastic-bottle" then 2 else 0) + (if l == "C" and z == "plastic-spoon" then 2 else 0))
+  let x={"wooden-spoon", "glass-jar"} y={"metal-spoon", "plastic-bottle"} z={"plastic-spoon", "metal-key", "wooden-block"} l={"A", "B", "C"}
+  level easy {
+    where (l == "A" and x == "wooden-spoon" or l == "B" and y == "metal-spoon" or l == "C" and (z == "metal-key" or z == "wooden-block"))
+  }
+  level hard {
+    where (l == "A" and x == "glass-jar" or l == "B" and y == "plastic-bottle" or l == "C" and z == "plastic-spoon")
+  }
+
+  scene 32x11 {
+    text ask "What is thing {l} made of?" width=21 at=canvas(1, 0)
+    materials row things=["{x}", "{y}", "{z}"] below=ask gap=0
+    choice pick options=["wood", "metal", "glass", "plastic"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="made({l})"
+  hint "Look closely at thing {l}. Can you see a grain, a shine, or can you see through it?"
+  hint "How would it feel if you touched it: warm and grainy, cold and shiny, or smooth?"
+}

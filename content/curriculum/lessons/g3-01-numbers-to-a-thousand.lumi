@@ -1,0 +1,52 @@
+lesson g3-numbers-to-a-thousand v=1 format=teach grade=3 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Numbers to a thousand, and rounding them"
+  goal "Read, build and split three-digit numbers, and round them to the nearest ten and hundred."
+
+  look {
+    scene 29x18 {
+      baseten blocks thousands=0 hundreds=2 tens=4 ones=3 at=canvas(1, 1)
+      rounding line from=240 to=250 value=243 show=true right-of=blocks gap=2
+      nearest pick from=200 to=300 value=243 options=[200, 250, 300] below=blocks gap=2
+    }
+    say """
+      Two hundreds, four tens and three ones is 243. To round it, find where it sits between the
+      tens either side and see which one it is nearer.
+      """
+  }
+  do {
+    practice place.round-ten count=1 seed=5 hard-seed=3
+    practice place.abacus-change count=2 seed=3
+    practice place.three-digit-split count=2 seed=8 hard-seed=12
+    level easy {
+      worked place.round-both h=2 t=6 o=3
+    }
+    practice place.round-both count=3 hard-count=2 seed=6 hard-seed=11
+    level hard {
+      practice place.round-range count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show place.round-range m=370 easy-m=140 hard-m=500
+  }
+  try stars=3 {
+    show place.round-cards a=4 b=5 c=8 t=5 easy-a=2 easy-b=3 easy-c=6 easy-t=3 hard-a=5 hard-b=8 hard-c=9 hard-t=9
+  }
+  remember {
+    say "Past the middle rounds up, before the middle rounds down. A number ending in 5 rounds up."
+  }
+
+  grown-ups """
+    The line matters more than the rule. A child who draws the two tens either side will not need
+    to remember which way five goes. The rounding questions after the first one have no line, so
+    ask the child to say the two tens or hundreds either side before answering. In the two-star
+    question the edges are the point: 365 rounds up to 370, and so does 374, but 375 does not. In
+    the three-star question, writing all six numbers in a list before checking any of them is the
+    method worth praising.
+    """
+  level easy {
+    grown-ups "At this level the numbers on the line sit near an end, one bead goes on and one comes off, one hundred goes with the tens and ones, a rounding with no line is worked once in the teacher's pen before the three to do, and those three stay clear of the middle in both the ones and the tens, the number that rounds to 140 is asked, and the cards 2, 3 and 6 make two numbers that round to 300."
+  }
+  level hard {
+    grown-ups "At this level the number on the line is 96, two beads go on and two come off, two or three hundreds go with the tens and ones, the tens digit of the numbers to round is a four or a nine, so the ten rounded first lands on a fifty or in the next hundred, the numbers that round to 700 and to 500 are asked for, so the two ends sit in different hundreds, and the cards 5, 8 and 9 make two numbers that round to 900 and two that round to a thousand."
+  }
+}

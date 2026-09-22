@@ -1,0 +1,28 @@
+# The ten can sit on either factor: 4 × 30 = 40 × 3. Seen as a balance, not worked out twice.
+item times.ten-balance v=1 stars=2 skills=[place-value.multiply-by-ten, reasoning.equivalence] {
+  title "Move the ten"
+  difficulty (a * b)
+  let a=2..9 b=2..9
+  where (a != b)
+  level easy {
+    let a=2..3 b=2..4
+  }
+  level hard {
+    let a=6..9 b=6..9
+  }
+
+  scene 22x17 {
+    balanceeq scales left="{a} × {10 * b}" right="{10 * a} × ?" at=canvas(1, 1)
+    text ask "Both sides are equal. What is hidden?" narrate below=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == 10 * b) point=scales {
+      say "The ten has moved to the {a}. Does the other number still need it?"
+    }
+  }
+  hint "What is {a} × {10 * b}? Is there a quicker way than working it out?"
+  hint "On the left the ten is with one number. On the right, which number has it?"
+}

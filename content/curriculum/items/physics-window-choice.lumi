@@ -1,0 +1,12 @@
+item physics.window-choice v=1 skills=[physics.light] {
+  title "A window to see through"
+
+  scene 19x26 {
+    beam b sheet=2 at=canvas(1, 0)
+    text ask "Which would you make a window from, to see out of?" width=18 below=b gap=1
+    choice pick options=["Clear glass", "Tracing paper", "Card"] stack=column below=ask gap=1
+  }
+
+  answer pick="Clear glass"
+  hint "Which one lets all the light through?"
+}

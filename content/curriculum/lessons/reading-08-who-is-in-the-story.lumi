@@ -1,0 +1,56 @@
+lesson reading-who-is-in-the-story v=1 format=teach grade=2 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Who is in the story"
+  goal "Keep track of who is who in a passage, and match each person to what they did."
+
+  look {
+    scene 30x21 {
+      column all at=canvas(1, 1) space=1 align=start {
+        passage p title="Walking to school" text="Sam and Kim walk to school together. Sam carries the lunch bag and Kim carries the ball." width=28
+        row who space=2 align=end {
+          children kids count=2 names=["Sam", "Kim"] holding="" each=0
+          bus b windows=5 on=3 sign="12"
+        }
+      }
+    }
+    say """
+      When a passage has two or three people in it, the hard part is keeping them apart. Read to the
+      end of the sentence before you decide who did something, because the name often comes first
+      and the doing comes after.
+      """
+  }
+  do {
+    show reading.passage-who a="Joe" b="Kim"
+    show reading.who-said-it a="Kit" b="Nia" s=0
+    show reading.who-said-it a="Ben" b="Raj" s=1
+    show reading.who-stirred g="Lola" y="Omar" q=1 easy-q=0
+    show reading.who-stirred g="Priya" y="Finn" q=0 hard-q=2
+    practice reading.who-has-it count=2 seed=5
+    show reading.who-does-what
+  }
+  try stars=2 {
+    show reading.character-evidence k=1
+  }
+  try stars=3 {
+    show reading.cast-count k=1 hard-k=2
+  }
+  remember {
+    say "Read to the end of the sentence before you decide who did it."
+  }
+
+  grown-ups """
+    Ask the child to say each name out loud as they read it. Names are the thing a child skims
+    past, and saying them slows the reading down to where the meaning is. The pictures name the
+    children but never show who did what, so the passage still has to be read.
+
+    In the speech questions the name comes after the words, and in the she and he questions the
+    child has to put the names back in. The two-star question asks which sentence shows what a
+    person is like, which is never said outright. The three-star question counts every person once:
+    the driver who is also Mrs Cole is one person, and a dog is not a person.
+    """
+  level easy {
+    grown-ups "At this level who carries the ball and who said it are as written, both bowl questions ask who stirred, which the story says outright, the thing passed along ends with the last child named, who did what is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level who carries the ball and who said it are as written, one bowl question asks who had the bowl at the end, which needs the whole story followed, the ball comes back to Mia and the torch is refused to Mo, so the last name is not the holder, who did what is as written, the two-star is as written, and the three-star's story has five people."
+  }
+}

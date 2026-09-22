@@ -1,0 +1,37 @@
+# The two-star reason: two beakers given the same salt and the same stirring, but one has grains
+# left. When the water was the same amount, the difference is its temperature; when the
+# temperature was the same, the difference is how much water there was.
+item chem.grains-left v=1 stars=2 skills=[chemistry.dissolving, reasoning.evidence] {
+  title "What was different?"
+  difficulty k
+  let k=0..2 r=0..2
+  let same={pick(k, "the same amount of water", "the same amount of water", "water at the same temperature")}
+  let which={pick(k, "B", "A", "B")}
+  let right={pick(k, "The water in B was colder", "The water in A was colder", "There was less water in B")}
+  let w1={pick(k, "The water in B was hotter", "The water in A was hotter", "The water in B was hotter")}
+  let w2={pick(k, "There was more salt in A", "There was more salt in B", "There was more water in B")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x32 {
+    row two at=canvas(1, 0) space=3 align=end {
+      beaker a max=200 step=50 level=(if k == 2 then 150 else 150) unit=ml solid=(if k == 1 then 12 else 0) rod=false label="A"
+      beaker b max=200 step=50 level=(if k == 2 then 100 else 150) unit=ml solid=(if k == 1 then 0 else 12) rod=false label="B"
+    }
+    text ask "Ben stirred 5 spoons of salt into A and 5 into B, {same} in each, stirring both the same. All of it dissolved in {if k == 1 then \"B\" else \"A\"}, but {which} has grains left. What was different?" narrate width=32 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "{if k == 2 then \"The temperature was the same, so look at the beakers' levels: less water holds less salt.\" else \"The same salt and the same water, so the difference is the temperature. Colder water holds less salt, and the grains are in the beaker that could not take all five.\"}"
+    }
+  }
+  hint "{if k == 2 then \"The salt and the temperature were the same. What else could differ? Look at the levels.\" else \"The salt, the water and the stirring were the same. What is left to be different?\"}"
+  hint "Grains left means that beaker held less salt. What makes water hold less?"
+}

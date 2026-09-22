@@ -1,0 +1,38 @@
+# The way in: one creature on the line, and its legs to count. The ant and the ladybird are the
+# easy two; the spider has eight, the bee's wings get in the way, and the snail has none at all,
+# which is the fact the two-star question turns on. The butterfly is left out, because the drawing
+# shows its wings and not its legs.
+item nature.count-legs v=1 skills=[nature.minibeasts] {
+  title "How many legs?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..4
+  let kind={pick(k, "ant", "ladybird", "spider", "bee", "snail")}
+  let legs={pick(k, 6, 6, 8, 6, 0)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 28x8 {
+    minibeasts one kinds=[kind] legs=false at=canvas(1, 1)
+    text ask "How many legs does the {kind} have?" narrate width=18 right-of=one gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer legs
+  feedback {
+    when (k == 2 and answer == 6) point=one {
+      say "Count again, one leg at a time. A spider has more legs than an insect."
+    }
+    when (k == 4 and answer > 0) point=one {
+      say "Look under the snail. It slides along on its soft body and has no legs at all."
+    }
+    when (k != 2 and k != 4 and answer == 4) point=one {
+      say "There are two more legs near the head. Count all of them, on both sides."
+    }
+  }
+  hint "Touch each leg as you count it."
+  hint "Count the legs on one side, then the other side."
+}

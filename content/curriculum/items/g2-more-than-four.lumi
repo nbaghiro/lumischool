@@ -1,0 +1,32 @@
+# Sorting by a property: the child has to count sides on every shape, not name one.
+item shapes.more-than-four v=1 skills=[shapes.name-and-sides, sorting.one-rule] {
+  title "More than four sides"
+  difficulty (a + b + c + d)
+  let a=1..3 b=1..3 c=1..3 d=0..2
+  level easy {
+    let a=1..2 b=1..2 c={1} d={0}
+  }
+  level hard {
+    let a=2..3 b=2..3 c=2..3 d=1..2
+  }
+
+  scene 36x10 {
+    row tray at=canvas(1, 1) space=2 align=centre {
+      props tri count=a prop=triangle
+      props five count=c prop=pentagon
+      props squ count=b prop=square
+      props six count=(d + 1) prop=hexagon
+    }
+    text ask "How many of these shapes have more than four sides?" narrate width=28 below=tray gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (c + d + 1)
+  feedback {
+    when (answer == c + d + 1 + b) point=squ {
+      say "A square has exactly four sides, which is not more than four."
+    }
+  }
+  hint "Count the sides of one of each kind of shape."
+  hint "Which kinds have 5 or 6 sides? How many of those are there?"
+}

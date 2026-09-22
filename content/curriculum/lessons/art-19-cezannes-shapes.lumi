@@ -1,0 +1,66 @@
+# Cezanne's way of looking: the circle, the box and the tube inside the things on a table, and a
+# still life built from those shapes.
+lesson art-cezannes-shapes v=1 format=teach grade=2 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Cezanne's shapes"
+  goal "See the circles, boxes and tubes inside a still life and build one from them."
+
+  look {
+    scene 30x9 {
+      row all at=canvas(1, 1) space=2 align=end {
+        stilllife pic light="left" things=["apple", "cup", "box"] lamp=false
+        stencil c shape="circle" show="one" colour=red
+      }
+    }
+    say """
+      At the painter's hut Ada sets an apple, a cup and a box on the table. The painter Cezanne
+      said that everything in nature is built from a few plain shapes. Squint at the apple and
+      it is a circle. The box is a box. The cup is a tube, round but straight up and down. See
+      the shapes first, and the drawing comes after.
+      """
+  }
+  do {
+    level easy {
+      worked art.shape-inside t="apple"
+    }
+    practice art.shape-inside count=2 seed=2 easy-seed=7 hard-seed=1
+    practice art.count-circles count=1 seed=1 easy-seed=1 hard-seed=1
+    practice art.order-by-size count=1 seed=1 easy-seed=1 hard-seed=1
+    practice art.geometric-or-organic count=2 seed=3 easy-seed=1 hard-seed=1
+    practice art.count-the-shape count=1 seed=2 easy-seed=1 hard-seed=3
+    level hard {
+      show art.count-circles k=1 level=medium
+    }
+  }
+  story {
+    show art.shapes-story a=3 b=1 c=2 w=0 easy-a=2 hard-a=4 hard-b=2 hard-c=3 hard-w=1
+  }
+  try stars=2 {
+    show art.cone-claim k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show art.four-shape-still-life k=0 hard-k=1
+  }
+  remember {
+    say "Squint, and every thing is a circle, a box or a tube. See the shape first."
+  }
+
+  grown-ups """
+    The idea is Cezanne's: a still life is built from a few plain shapes, and seeing the shape
+    inside a thing is the first step of drawing it. The look is the apple, the cup and the box
+    beside a cut circle. The way in names the shape inside one thing, and the core
+    counts the circles on a table, orders cut shapes by size for the back and the front, tells
+    geometric shapes from organic ones, and counts the shapes in a paper picture. The wrong idea
+    to watch for is picking the shape from a detail, the stalk or the handle, rather than the
+    outline; ask the child to squint. The story counts the shapes Ada cuts, the two-star
+    question judges Ben's claim that the apple is a cone, and the three-star question is a
+    still life from four stencilled shapes on the sheet, which you look at with the child: a
+    box for the table at the back, round shapes for the fruit in front. Real fruit on the real
+    table, squinted at, is the best way in.
+    """
+  level easy {
+    grown-ups "At this level the apple's circle is worked once in the teacher's pen before the ball and the box, the circles are counted among plain things, the shapes to order are nearly in order, the shapes to sort are the plain geometric ones, the paper picture is the boat, the story adds three kinds, the claim is the apple as a cone, and the still life needs no overlap."
+  }
+  level hard {
+    grown-ups "At this level the shape inside is the cup's tube, the circles are counted among a cup and a box, with two apples and a box as a second count in the core, the shapes to order are muddled, the shapes to sort are the organic ones, the paper picture is the house, the story adds a circle for every tube, the claim is the cup as a box, and the still life needs one shape in front of another."
+  }
+}

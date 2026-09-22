@@ -1,0 +1,23 @@
+# The other way round from naming a state: the picture is given and the child says what the stuff
+# will do, which is how the particle picture explains a state.
+item chem.state-clue v=1 skills=[chemistry.states] {
+  title "What will it do?"
+  difficulty ((if s == 1 then 1 else 0) + (if m == 0 then 1 else 0))
+  let s=0..2 m=0..1
+  level easy {
+    let m={1}
+  }
+  level hard {
+    let m={0}
+  }
+
+  scene 29x16 {
+    text ask "The jar shows how the particles in something are arranged. What does it do?" width=24 at=canvas(1, 0)
+    particles jar spread=s count=16 name=0 moving=m below=ask gap=0
+    choice pick options=["It keeps its shape", "It pours into any shape", "It fills the whole room"] stack=column right-of=jar gap=1
+  }
+
+  answer pick=(if s == 0 then "It keeps its shape" else if s == 1 then "It pours into any shape" else "It fills the whole room")
+  hint "Do the particles touch? Are they in rows?"
+  hint "If the particles are held in rows, can they slide past each other? If they are far apart, where can they go?"
+}

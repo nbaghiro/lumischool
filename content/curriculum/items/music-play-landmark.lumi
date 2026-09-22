@@ -1,0 +1,15 @@
+# The keys carry no letters, so the F is found the way a pianist finds it, by the group of three
+# black keys; the grand staff says which F, and these eight keys from C hold only that one.
+item music.play-landmark v=2 skills=[music.grand-staff] {
+  title "Play bass F"
+
+  scene 26x27 {
+    grandstaff gs notes=["F3"] letters=false lit=["F3"] landmarks=true at=canvas(1, 0)
+    text ask "The ringed note is bass F. Find it on the keyboard and play it." width=14 right-of=gs gap=1
+    piano keys from=C3 whites=8 wide=3 labels=none below=gs gap=1
+  }
+
+  check music.plays notes=[F3]
+  hint "Look at the black keys. Can you find a group of three?"
+  hint "F is the white key just to the left of a group of three black keys."
+}

@@ -1,0 +1,24 @@
+# Making blue more likely: equal is not enough, it has to be one more than orange.
+item chance.tub-add v=1 stars=3 skills=[chance.likelihood, reasoning.fewest] {
+  title "Make blue more likely"
+  difficulty (a - b)
+  let a=4..8 b=1..3
+
+  scene 37x13 {
+    tub pot first=a second=b colors=["tang", "sky"] at=canvas(1, 1)
+    text ask "What is the fewest blue counters you can add to the tub so that picking blue is more likely than picking orange?" narrate width=20 right-of=pot gap=2
+    number-input answer below=pot gap=1
+  }
+
+  answer (a - b + 1)
+  feedback {
+    when (answer == a - b) point=pot {
+      say "Then there would be the same number of each, which is just as likely, not more likely."
+    }
+    when (answer == a + 1) point=pot {
+      say "There are already {b} blue counters in the tub. They count too."
+    }
+  }
+  hint "How many more blue counters would make the two colours equal?"
+  hint "Equal is just as likely. How many more makes blue win?"
+}

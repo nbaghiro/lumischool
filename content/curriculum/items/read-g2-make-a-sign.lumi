@@ -1,0 +1,15 @@
+# The child writes a sign of their own to a limit of five words: short writing that has to be
+# clear. Many are right, so a grown-up marks it.
+item reading.make-a-sign v=1 stars=3 skills=[reading.signs, writing.composing] {
+  title "Make a sign"
+  let k=0..3
+
+  scene 36x10 {
+    text ask "Make a sign for {if k == 0 then \"the classroom door\" else if k == 1 then \"the bathroom\" else if k == 2 then \"the garden gate\" else \"your bedroom door\"}. It must tell people one thing to do, in five words or fewer." narrate width=34 at=canvas(1, 1)
+    writinglines lines lines=1 width=24 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A sign of five words or fewer that tells a reader one thing to do, starting with a doing word or a word like please or no, that makes sense for that place. Count the words together."
+  hint "Who will read your sign? What do you want them to do?"
+  hint "Now cut it down. Which words can go and it still makes sense?"
+}

@@ -1,0 +1,32 @@
+# The two-star reason: two programs with the same light lines, one repeated a number of times and
+# one for ever. Only the one with no count keeps the lighthouse lit all night.
+item coding.forever-all-night v=1 stars=2 skills=[coding.repetition, reasoning.explain] {
+  title "All night long"
+  let s=0..1 r=0..1 c=0..1
+  let la={pick(s * 2 + c, "repeat 20", "repeat 50", "repeat for ever", "repeat for ever")}
+  let lb={pick(s * 2 + c, "repeat for ever", "repeat for ever", "repeat 20", "repeat 50")}
+  let right={pick(s, "B: repeat for ever never stops", "A: repeat for ever never stops")}
+  let w1={pick(s * 2 + c, "A: 20 times is a lot of lights", "A: 50 times is a lot of lights", "B: 20 times is a lot of lights", "B: 50 times is a lot of lights")}
+  let w2={"Both: the colours are the same"}
+
+  scene 34x28 {
+    row progs space=2 align=start at=canvas(1, 1) {
+      program a code=["{la}", "  light red", "  light green"] title="A"
+      program b code=["{lb}", "  light red", "  light green"] title="B"
+    }
+    text ask "Pip needs the lighthouse lit all night long. Which program does that, and why?" narrate width=32 below=progs gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=progs {
+      say "A repeat with a number stops when it has gone round that many times, however big the number is."
+    }
+    when (pick == w2) point=progs {
+      say "The colours are the same, but one program stops. Look at the first line of each."
+    }
+  }
+  hint "Read the first line of each program. Which one has a number?"
+  hint "What happens when a repeat with a number has gone round that many times?"
+}

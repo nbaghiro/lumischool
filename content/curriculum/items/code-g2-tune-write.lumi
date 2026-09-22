@@ -1,0 +1,16 @@
+# A tune to write to two rules, with many right answers, so a grown-up marks it against the rules.
+item coding.tune-write v=1 stars=3 skills=[coding.repetition, coding.sequences] {
+  title "A tune of your own"
+  difficulty (if t == 7 then 0 else if t == 9 then 1 else 2)
+  let t={7, 8, 9} x={"C", "G"}
+
+  scene 34x15 {
+    chimebars bars bars=8 letters=1 at=canvas(1, 0)
+    text ask "Write a tune with one repeat in it. It starts with play {x} and plays exactly {t} notes in all." width=18 right-of=bars gap=1
+    writinglines w lines=2 width=32 below=bars gap=1
+  }
+
+  check writing.by-eye look-for="A program of play blocks with exactly one repeat that starts with play {x}, whose notes come to {t} when the repeat is played out in full; the child can count them to check. Many tunes are right: play {x} and then a repeat of two notes and one more note is one kind."
+  hint "Start with play {x}. How many notes are left to play?"
+  hint "If one time round your repeat plays 2 notes, how many times round do you need? Is anything left over?"
+}

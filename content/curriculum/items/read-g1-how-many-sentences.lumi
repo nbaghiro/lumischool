@@ -1,0 +1,28 @@
+# Counting sentences is reading the marks: a sentence can run onto the next line, and a question
+# mark ends one just as a full stop does.
+item reading.how-many-sentences v=1 skills=[reading.punctuation] {
+  title "How many sentences?"
+  difficulty (if k == 2 then 4 else if k == 1 then 2 else 3)
+  let k=0..3
+  level easy {
+    let k={0, 1}  # two or three sentences
+  }
+  level hard {
+    let k={2, 3}  # three or four
+  }
+
+  scene 32x10 {
+    passage p title="" text="{if k == 0 then \"The sun is hot. Pip has a hat. She puts it on.\" else if k == 1 then \"Where is the dog? It is in the shed.\" else if k == 2 then \"Look at the fox. It has a red tail. It sits on a log. Then it runs off.\" else \"The hen is in the pen. Can you see it? It has six chicks.\"}" width=30 numbers=false at=canvas(1, 1)
+    text ask "How many sentences are there?" narrate below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 or k == 3 then 3 else if k == 1 then 2 else 4)
+  feedback {
+    when (answer == 1) point=p {
+      say "Each mark at the end of a sentence starts a new one after it. Count the marks."
+    }
+  }
+  hint "Look for the marks that end a sentence."
+  hint "Is there a question mark as well as full stops?"
+}

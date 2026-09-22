@@ -1,0 +1,27 @@
+# Percent off, then taken away: two steps, and the second is the one that gets forgotten.
+item percent.sale-price v=1 skills=[percentages.of-amount, money.decimals] {
+  title "In the sale"
+  difficulty ((if d == 50 then 0 else if d == 10 then 1 else if d == 25 then 2 else 3) + c / 40)
+  let d={10, 20, 25, 50} c={20, 40, 60, 80, 120}
+  level easy {
+    let d={10, 50}
+  }
+  level hard {
+    let d={20, 25} c={60, 80, 120}
+  }
+
+  scene 34x10 {
+    pricetag tag now=(100 * c) was=0 at=canvas(1, 1)
+    text ask "A coat costs {c} dollars. In the sale it is {d}% off. How many dollars is it in the sale?" narrate width=19 right-of=tag gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (c - c * d / 100)
+  feedback {
+    when (d != 50 and answer == c * d / 100) point=ask {
+      say "That is how much comes off. Take it away from {c} dollars."
+    }
+  }
+  hint "How many dollars is {d}% of {c} dollars?"
+  hint "Now take that away from the price."
+}

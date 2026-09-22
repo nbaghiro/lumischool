@@ -1,0 +1,20 @@
+# A chord change is only as hard as the fingers that move. From A minor to F, finger 2 stays put
+# and finger 1 is added, which is why the pair is taught together.
+item music.uke-finger-stays v=1 skills=[music.chord-changes] {
+  title "The finger that stays"
+
+  scene 26x15 {
+    chordchange change tuning=uke from=Am to=F frets=3 at=canvas(1, 1)
+    text ask "The heavy ring is a finger that stays down. Which finger is it?" width=12 right-of=change gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 2
+  feedback {
+    when (answer == 1) point=change {
+      say "Finger 1 is new for F, it goes down. The one with the heavy ring was already there for A minor."
+    }
+  }
+  hint "Look for the dot with a thick ring round it."
+  hint "Which finger was already down for A minor?"
+}

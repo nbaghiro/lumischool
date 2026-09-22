@@ -1,0 +1,27 @@
+# Yes or no, and the picture does part of the work: a dissolved solid cannot be seen at all.
+item chem.filter-or-not v=1 skills=[chemistry.separating, chemistry.dissolving] {
+  title "Can the paper catch it?"
+  difficulty (if t == "flour" then 2 else if t == "salt" or t == "sugar" then 1 else 0)
+  let t={"sand", "salt", "sugar", "iron", "pebbles", "flour"}
+  level easy {
+    let t={"sand", "pebbles", "salt"}
+  }
+  level hard {
+    let t={"flour", "sugar", "iron"}
+  }
+
+  scene 23x14 {
+    text ask "Can filter paper get the {if t == \"iron\" then \"iron filings\" else t} back out of this water?" width=22 at=canvas(1, 0)
+    mixture mix things=["{t}"] water=1 names=1 below=ask gap=0
+    choice pick options=["Yes", "No"] stack=column right-of=mix gap=1
+  }
+
+  answer pick=(if t in {"salt", "sugar"} then "No" else "Yes")
+  feedback {
+    when (pick == "Yes" and t in {"salt", "sugar"}) point=mix {
+      say "It has dissolved, so it goes through the paper with the water."
+    }
+  }
+  hint "Can you see it in the water, or has it dissolved?"
+  hint "What happens to something dissolved when the water runs through the paper?"
+}

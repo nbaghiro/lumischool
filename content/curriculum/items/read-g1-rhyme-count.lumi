@@ -1,0 +1,23 @@
+# Five cards, and the ones that rhyme are two, three or four of them, so the child checks every
+# card; one card in each set shares the start of the word instead of its end.
+item reading.rhyme-count v=1 skills=[reading.rhyme] {
+  title "How many rhyme?"
+  difficulty (if k == 2 then 2 else if k == 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={0, 1}  # three and two rhyme
+  }
+  level hard {
+    let k={2, 3}  # four and three
+  }
+
+  scene 34x9 {
+    wordcards cards words=["{if k == 0 then \"cat\" else if k == 1 then \"ten\" else if k == 2 then \"rug\" else \"log\"}", "{if k == 0 then \"mat\" else if k == 1 then \"pin\" else if k == 2 then \"mug\" else \"dig\"}", "{if k == 0 then \"cap\" else if k == 1 then \"hen\" else if k == 2 then \"bag\" else \"fog\"}", "{if k == 0 then \"sat\" else if k == 1 then \"pan\" else if k == 2 then \"hug\" else \"dot\"}", "{if k == 0 then \"hot\" else if k == 1 then \"pet\" else if k == 2 then \"jug\" else \"hog\"}"] picked=-1 at=canvas(1, 1)
+    text ask "How many of these words rhyme with {if k == 0 then \"hat\" else if k == 1 then \"pen\" else if k == 2 then \"bug\" else \"dog\"}?" narrate below=cards gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 1 then 2 else if k == 2 then 4 else 3)
+  hint "Say {if k == 0 then \"hat\" else if k == 1 then \"pen\" else if k == 2 then \"bug\" else \"dog\"}, then say each card after it."
+  hint "Count only the cards that sound the same at the end."
+}

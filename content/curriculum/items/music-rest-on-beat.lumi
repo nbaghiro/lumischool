@@ -1,0 +1,28 @@
+# On which beat of the bar the rest begins: the beats of the notes before it, plus one.
+item music.rest-on-beat v=1 skills=[music.rhythm, music.rests] {
+  title "Which beat is silent?"
+  difficulty (if a == 0.5 then 1 else 0)
+  let a={0.5, 1} b={0.5, 1}
+  where (a == b)
+  level easy {
+    let a={1} b={1}
+  }
+  level hard {
+    let a={0.5} b={0.5}
+  }
+
+  scene 34x18 {
+    notes bar clef=treble notes=[G4, A4, rest] values=[a, b, 3 - a - b] meter=3 at=canvas(1, 1)
+    text ask "Count the bar one, two, three. On which count does the rest begin?" narrate width=32 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer plain(a + b + 1)
+  feedback {
+    when (answer == plain(a + b)) point=bar {
+      say "That is where the second note ends. The rest begins on the count after it."
+    }
+  }
+  hint "Add up the beats of the two notes before the rest. The rest starts on the next count."
+  hint "{if a == 1 then \"Two crotchets fill counts one and two.\" else \"Two quavers fill count one together.\"}"
+}

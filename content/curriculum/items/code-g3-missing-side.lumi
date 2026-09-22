@@ -1,0 +1,32 @@
+# The distance round is given and a side is missing, so the perimeter is worked backwards.
+item coding.missing-side v=1 skills=[coding.drawing, coding.repetition] {
+  title "The missing side"
+  difficulty (w + h)
+  let w=3..6 h=1..4
+  where (w != h)
+  level hard {
+    let w=5..9 h=3..7
+  }
+
+  scene 34x12 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] blank=4
+      column q space=1 align=start {
+        text ask "The turtle travels {2 * (w + h)} squares all the way round. Line 4 says forward and a number. What number?" width=17
+        number-input answer
+      }
+    }
+  }
+
+  answer h
+  feedback {
+    when (answer == 2 * (w + h) - w) point=p {
+      say "The repeat goes round twice, so line 2 and line 4 both happen two times."
+    }
+    when (answer == w + 2 * h - w) point=p {
+      say "Try your number: two of {w} and two of it should make {2 * (w + h)}."
+    }
+  }
+  hint "Line 2 happens twice. How far is that?"
+  hint "Take that away from {2 * (w + h)}. The rest is line 4, twice."
+}

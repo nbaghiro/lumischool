@@ -1,0 +1,20 @@
+item physics.boat-predict v=1 skills=[physics.floating] stars=2 {
+  title "Will it still float?"
+  difficulty (10 - abs(s - 1 - k))
+  let s=4..6 k=2..5
+
+  scene 19x26 {
+    boat b cargo=0 side=s sits=1 at=canvas(1, 0)
+    text ask "The empty boat sits 1 square deep. Each block makes it 1 square deeper. Will it still float with {k} blocks in?" narrate width=15 below=b gap=0
+    choice pick options=["It floats", "It sinks"] below=ask gap=1
+  }
+
+  answer pick=(if 1 + k < s then "It floats" else "It sinks")
+  feedback {
+    when (pick == "It floats" and 1 + k >= s) point=b {
+      say "With {k} blocks it sits {1 + k} squares deep, and its side is only {s} squares high."
+    }
+  }
+  hint "How deep will it sit with {k} blocks?"
+  hint "Is that less than the height of its side?"
+}

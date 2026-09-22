@@ -1,0 +1,20 @@
+# Two words that begin with the same letter need not begin with the same sound: s and sh are
+# different sounds, and so are c and ch. The child judges a claim rather than naming a sound.
+item reading.same-letter-not-sound v=1 stars=2 skills=[reading.phonics, reasoning.find-the-error] {
+  title "Same letter, same sound?"
+  difficulty (if k <= 1 then 1 else 0)
+  let k=0..3
+
+  scene 30x14 {
+    row who at=canvas(1, 1) space=1 align=centre {
+      face kid mood=happy hair=2 name="Ren"
+      bubble says "{if k == 0 then \"Sun and ship start with the same sound.\" else if k == 1 then \"Cat and chin start with the same sound.\" else if k == 2 then \"Sock and sat start with the same sound.\" else \"Cup and cot start with the same sound.\"}" width=18 from=kid
+    }
+    text ask "Is Ren right?" narrate below=who gap=1
+    choice pick options=["yes", "no"] right-of=ask gap=2
+  }
+
+  answer pick=(if k <= 1 then "no" else "yes")
+  hint "Say the two words slowly. Stop after the first sound of each."
+  hint "Do the two first sounds feel the same in your mouth, or only look the same?"
+}

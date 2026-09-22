@@ -1,0 +1,30 @@
+# The grid read backwards, the audit's raise for multiply.grid: two parts and a factor are given,
+# and the missing ones digit has to come from a division inside the grid.
+item multiply.grid-back v=2 skills=[multiplication.long, division.inverse] {
+  title "The grid, backwards"
+  difficulty (o * v)
+  let t=2..4 o=3..8 u=2..3 v=2..7
+  where (o != v)
+  level easy {
+    where (o * v <= 12)
+  }
+  level hard {
+    where (o * v >= 30)
+  }
+
+  scene 33x10 {
+    table grid cols=3 head=["×", "{10 * t}", "?"] cells=["{10 * u}", "{100 * t * u}", "{10 * u * o}", "{v}", "{10 * t * v}", "{o * v}"] at=canvas(1, 1)
+    text ask "One number at the top of this multiplication grid is hidden. What is it?" narrate width=16 right-of=grid gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer o
+  feedback {
+    when (answer == 10 * u * o) point=grid {
+      say "That is a part of the answer. The hidden number is what {10 * u} was multiplied by."
+    }
+  }
+  hint "The hidden number is at the top of a column. Which two boxes are under it?"
+  hint "What was multiplied by {v} to make {o * v}?"
+  hint "Check your number with the other box in that column."
+}

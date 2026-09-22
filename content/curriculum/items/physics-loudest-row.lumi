@@ -1,0 +1,39 @@
+# The way in: three listeners, their distances from the drum and what the meter read beside each,
+# in a table. The nearest hears it loudest. With the rows in distance order the answer is the top
+# row; muddled, the distances have to be compared.
+item physics.loudest-row v=1 skills=[physics.sound] {
+  title "Which row is loudest?"
+  difficulty (m + (if k >= 2 then 1 else 0))
+  let k=0..3 m=0..1
+  let na={pick(k, "Mia", "Leo", "Ben", "Mia")}
+  let nb={pick(k, "Leo", "Ben", "Mia", "Ben")}
+  let nc={pick(k, "Ben", "Mia", "Leo", "Leo")}
+  let da={pick(m, 1, 4)}
+  let db={pick(m, 2, 1)}
+  let dc={pick(m, 4, 2)}
+  let base={pick(k, 8, 16, 24, 16)}
+  level easy {
+    let m=0..0
+  }
+  level hard {
+    let m=1..1 k=2..3
+  }
+
+  scene 34x23 {
+    row all at=canvas(1, 0) space=2 align=start {
+      ricedrum drum hit=2
+      table t cols=3 head=["Who", "Metres", "Reads"] cells=["{na}", "{da}", "{base / da}", "{nb}", "{db}", "{base / db}", "{nc}", "{dc}", "{base / dc}"]
+    }
+    text ask "Three children stand in the cave passage while the drum is hit once. The table says how far each one is and what the sound meter read there. Who hears it loudest?" narrate width=32 below=all gap=1
+    choice pick options=["Mia", "Leo", "Ben"] below=ask gap=1
+  }
+
+  answer pick=(if m == 0 then na else nb)
+  feedback {
+    when (pick == (if m == 0 then nc else na)) point=t {
+      say "That is the furthest of the three. The sound has spread out most by the time it gets there, so the meter reads least."
+    }
+  }
+  hint "Find the biggest number in the meter column. Whose row is it in?"
+  hint "The loudest place is the nearest one. Check that the biggest reading sits with the fewest metres."
+}

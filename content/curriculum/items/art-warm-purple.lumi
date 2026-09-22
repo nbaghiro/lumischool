@@ -1,0 +1,15 @@
+# The parts decide: the same two paints make a warm or a cool colour depending on which there is more of.
+item art.warm-purple v=1 stars=2 skills=[art.warm-cool, art.proportion, reasoning.compare] {
+  title "A warm mix of red and blue"
+  difficulty p
+  let p=0..2
+
+  scene 32x12 {
+    text ask "Red is a warm colour and blue is a cool one. Which of these mixes of the two is warm?" width=13 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then \"4 red and 1 blue\" else \"1 red and 2 blue\"}", "{if p == 1 then \"4 red and 1 blue\" else if p == 0 then \"1 red and 2 blue\" else \"red and blue\"}", "{if p == 2 then \"4 red and 1 blue\" else \"red and blue\"}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=warm
+  hint "Which of the two paints is warm?"
+  hint "In which mix is there much more of that paint than of the other?"
+}

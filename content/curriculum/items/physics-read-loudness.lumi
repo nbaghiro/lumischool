@@ -1,0 +1,34 @@
+# Reading one value off the table of distance against loudness. Easy asks about the near rows,
+# where the numbers are big and first; hard the far rows, where the reading is small and last.
+item physics.read-loudness v=1 skills=[physics.sound, data.tables] {
+  title "What does the meter read?"
+  difficulty (r + (if base == 24 then 1 else 0))
+  let base={8, 16, 24} r=0..3
+  let d={pick(r, 1, 2, 4, 8)}
+  level easy {
+    let base={8, 16} r=0..1
+  }
+  level hard {
+    let base={16, 24} r=2..3
+  }
+
+  scene 34x20 {
+    row all at=canvas(1, 0) space=2 align=start {
+      ricedrum drum hit=2
+      table t cols=2 head=["Metres away", "Meter reads"] cells=["1", "{base}", "2", "{base / 2}", "4", "{base / 4}", "8", "{base / 8}"]
+    }
+    text ask "Leo hits the drum once and Mia writes down what the sound meter reads at each lamp along the passage. What does it read {d} {if d == 1 then \"metre\" else \"metres\"} away?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (base / d)
+  feedback {
+    when (answer == d and d != base / d) point=t {
+      say "That is the distance, in the first column. The meter's reading is in the second column of the same row."
+    }
+    when (answer == base and d != 1) point=t {
+      say "That is the reading right beside the drum, at 1 metre. Find the row for {d} metres."
+    }
+  }
+  hint "Find {d} in the metres column. Read across that row."
+}

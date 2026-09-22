@@ -1,0 +1,15 @@
+# Comparing shares, not amounts: the mix with more yellow in it is not always the yellower one.
+item art.more-yellow v=1 stars=2 skills=[art.proportion, art.colour-mixing, reasoning.compare] {
+  title "Which green is yellower?"
+  difficulty k
+  let k=0..2 p=0..1
+
+  scene 32x9 {
+    text ask "Which of these two greens is yellower? Look at how much yellow there is for each part of blue." width=13 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then (if k == 0 then \"2 yellow and 1 blue\" else if k == 1 then \"3 yellow and 1 blue\" else \"1 yellow and 1 blue\") else (if k == 0 then \"3 yellow and 2 blue\" else if k == 1 then \"5 yellow and 2 blue\" else \"2 yellow and 3 blue\")}", "{if p == 0 then (if k == 0 then \"3 yellow and 2 blue\" else if k == 1 then \"5 yellow and 2 blue\" else \"2 yellow and 3 blue\") else (if k == 0 then \"2 yellow and 1 blue\" else if k == 1 then \"3 yellow and 1 blue\" else \"1 yellow and 1 blue\")}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=most paint=yellow
+  hint "Which mix has more yellow altogether? Is that the same as being yellower?"
+  hint "Share each mix out so there is one part of blue. How much yellow goes with each part of blue?"
+}

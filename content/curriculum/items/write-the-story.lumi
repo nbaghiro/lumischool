@@ -1,0 +1,27 @@
+# The three-star: the story written from a filled plan over two sittings, one paragraph a card,
+# marked by a grown-up against the plan.
+item writing.write-the-story v=1 stars=3 skills=[writing.composing, writing.story-structure] {
+  title "Write the story"
+  difficulty k
+  let k=0..1
+  let n1={pick(k, "Leo and Gran, the cliffs", "Ada, an old door, the pond")}
+  let n2={pick(k, "the path to the top", "a raft, pushed out")}
+  let n3={pick(k, "the hat blows off", "one end sinks")}
+  let n4={pick(k, "found in the gorse", "paddles to the bank")}
+  let n5={pick(k, "home, hat on tight", "dry by the fire")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x27 {
+    storymountain hill stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["{n1}", "{n2}", "{n3}", "{n4}", "{n5}"] ring=-1 at=canvas(0, 0)
+    text ask "Write this story from the plan, one paragraph for each card, over two sittings: the first three cards today, the last two next time. Read what you wrote before you go on." narrate width=32 below=hill gap=1
+  }
+
+  check writing.by-eye look-for="Five paragraphs in the plan's order, each doing its card's job: the opening says who and where, the build-up what they set out to do, the problem what goes wrong, the fixing how it is put right, the ending how things are; the second sitting carries straight on from the first; capitals, full stops and at least one describing word in each paragraph."
+  hint "Say each card's note as a sentence out loud before you write it, then add what a reader would want to know."
+  hint "In the second sitting, read the first three paragraphs first, so the fixing follows the problem you wrote."
+}

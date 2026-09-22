@@ -1,0 +1,25 @@
+# The place is given and the note has to be found in the tab, among a note on the same string at
+# another fret, one at the same fret on the next string, and one that is neither. p moves the
+# answer along the line.
+item music.tab-find-note v=1 skills=[music.tab] {
+  title "Find it in the tab"
+  difficulty (s - 1)
+  let s=1..3 f={0, 1, 3} g={0, 1, 2, 3} p=0..3
+  where (g != f)
+  level easy {
+    let s={1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 32x11 {
+    tab lines tuning=guitar notes=["s{if (0 - p + 4) % 4 < 2 then s else s + 1}f{if (0 - p + 4) % 4 % 2 == 0 then f else g}", "s{if (1 - p + 4) % 4 < 2 then s else s + 1}f{if (1 - p + 4) % 4 % 2 == 0 then f else g}", "s{if (2 - p + 4) % 4 < 2 then s else s + 1}f{if (2 - p + 4) % 4 % 2 == 0 then f else g}", "s{if (3 - p + 4) % 4 < 2 then s else s + 1}f{if (3 - p + 4) % 4 % 2 == 0 then f else g}"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    text ask "Which note, 1, 2, 3 or 4, is string {s} at fret {f}?" width=14 right-of=lines gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p + 1)
+  hint "Which line is string {s}? Look only at the numbers on that line."
+  hint "Of those, which one says {f}?"
+}

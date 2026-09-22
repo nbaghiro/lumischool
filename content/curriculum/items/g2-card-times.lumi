@@ -1,0 +1,22 @@
+# Every real time three cards can make on a digital clock: the minutes cannot start with 6 or more.
+item time.card-times v=1 stars=3 skills=[time.digital, reasoning.all-the-ways] {
+  title "Times from three cards"
+  difficulty (a + b + c)
+  let a=1..9 b=1..9 c=1..9
+  where (a < b and b < c and a <= 5 and c > 5)
+
+  scene 30x15 {
+    digitcards cards digits=[a, b, c] at=canvas(1, 1)
+    text ask "Use all three cards to make a time on a digital clock, like 4:26. How many different real times can you make?" narrate width=28 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * ((if a <= 5 then 1 else 0) + (if b <= 5 then 1 else 0) + (if c <= 5 then 1 else 0)))
+  feedback {
+    when (answer == 6) point=cards {
+      say "A digital clock never shows more than 59 minutes. Can the minutes start with {c}?"
+    }
+  }
+  hint "The first card is the hour and the other two are the minutes. How many ways can you order three cards?"
+  hint "Cross out any where the minutes are 60 or more."
+}

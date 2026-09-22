@@ -1,0 +1,26 @@
+item count.rabbit-ears v=1 skills=[counting.in-twos] {
+  title "Ears in twos"
+  difficulty n
+  let n=3..8
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=7..8
+  }
+
+  scene 33x10 {
+    rabbits row count=n facing=1 at=canvas(1, 1)
+    text ask "How many ears are there? Count in twos." narrate below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (2 * n)
+  feedback {
+    when (answer == n) point=row {
+      say "That is how many rabbits. Each one has two ears."
+    }
+  }
+  hint "How many ears does one rabbit have?"
+  hint "Say two for the first rabbit, then keep adding two."
+}

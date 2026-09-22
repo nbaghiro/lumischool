@@ -1,0 +1,18 @@
+# One carriage for each sound, and the picture says the word without writing it. The middle sound
+# is the one a child most often leaves out when they spell a short word.
+item reading.sound-train v=1 skills=[reading.phonics] {
+  title "The missing sound"
+  let w={"cat", "hen", "sun", "cup", "duck"}
+
+  scene 20x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{w}"
+      wordtrain train parts=[if w == "hen" then "h" else if w == "sun" then "s" else if w == "duck" then "d" else "c", if w == "cat" then "a" else if w == "hen" then "e" else "u", if w == "cat" then "t" else if w == "cup" then "p" else if w == "duck" then "ck" else "n"] blank=1
+      text ask "Say the word. Which sound is missing?" width=18
+      word-input sound options=["{if w == \"cat\" then \"a\" else if w == \"hen\" then \"e\" else \"u\"}"] letters=1
+    }
+  }
+
+  answer sound=(if w == "cat" then "a" else if w == "hen" then "e" else "u")
+  hint "Say the word slowly, one sound at a time. Listen for the sound in the middle."
+}

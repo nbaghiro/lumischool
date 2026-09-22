@@ -1,0 +1,64 @@
+lesson chemistry-materials-tested-four-ways v=1 format=teach grade=4 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Materials tested four ways"
+  goal "Read one table of four tests, hard, see-through, conducts and magnetic, and choose the material for a job from it."
+
+  look {
+    scene 34x7 {
+      materials tray things=["glass-jar", "metal-key", "wooden-ruler", "rubber-band"] letters=1 names=1 at=canvas(1, 0)
+    }
+    say """
+      At the printing works Sam and Mia test what things are made of, four ways. A scratch with a
+      nail: hard or not. A look through it at the window: see-through or not. A gap in a circuit
+      with a bulb: does it conduct electricity. A magnet held close: is it pulled. Each thing
+      gets a row of four yeses and noes, and from one table they can choose a material for any
+      job, or tell two look-alikes apart.
+      """
+  }
+  do {
+    level easy {
+      worked chem.which-clear k=0 p=0
+    }
+    practice chem.which-clear count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.four-tests count=2 seed=1 easy-seed=1 hard-seed=1
+    practice physics.count-conductors count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.material-for-job count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chem.pass-both count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.metal-not-magnetic x="clip" y="foil" z="stick" w="marble" f=1 level=medium
+    }
+  }
+  story {
+    show chem.tested-things n=18 c=6 m=2 w=0 easy-n=12 easy-c=4 hard-n=24 hard-c=8 hard-m=3 hard-w=1
+  }
+  try stars=2 {
+    show chem.deciding-test k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show chem.best-trade k=0 r=2 hard-k=1 hard-r=3
+  }
+  remember {
+    say "Four tests, one table: read the columns the job needs, and find the row that says yes to them all."
+  }
+
+  grown-ups """
+    The idea is that one table can hold four tests at once, and that a job is a question to the
+    table: which columns must say yes, which must say no. The look is the tray of things in their
+    materials; the way in asks only the see-through test with the things drawn. The core reads the
+    table for one material by two tests, a count of materials that pass two tests, a material for
+    a job, and the conductors on a drawn tray, with the magnet test coming in through the
+    materials that conduct but are not pulled. The wrong idea to watch for is stopping at the
+    first column that fits; ask the child to say which columns the question named before reading.
+    The story counts the tray by tests that overlap, so the magnetic things are inside the
+    conductors. The two-star question gives two materials alike in three tests and asks for the
+    one test that parts them, and the three-star question asks for the best material when none
+    passes all three wants, which is the one that fails only the want the job can work around. If
+    the child picks by one column, stay here another day with four real things and the four
+    tests, and let the child fill a row of the table by hand.
+    """
+  level easy {
+    grown-ups "At this level the see-through thing is worked once in the teacher's pen before a row of three, the table is read for one material by two tests, the conductors on the tray are plain, the jobs are the window and the wire, the count is hard and conducts, the story has twelve things with the conductors alone asked, the two look-alikes are steel and copper, parted by the magnet, and the best trade works around see-through."
+  }
+  level hard {
+    grown-ups "At this level the see-through thing is a glass bottle beside a metal can and a wooden ruler, or a glass jar beside a rubber boot and a brick, the table is read for the metal the magnet leaves alone and the material that fails every test, the tray has foil and a coin, the jobs are the fridge door and the plug, the count is conducts but not magnetic or neither see-through nor conducting, a drawn tray asks for the conductor the magnet leaves alone, the story has twenty-four things and asks what neither conducted nor was pulled, the look-alikes are wood and rubber, and the best trade works around hard."
+  }
+}

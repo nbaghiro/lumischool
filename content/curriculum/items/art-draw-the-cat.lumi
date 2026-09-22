@@ -1,0 +1,11 @@
+item art.draw-the-cat v=1 stars=3 skills=[art.looking, art.drawing, reasoning.plan] {
+  title "Draw from looking"
+
+  scene 32x20 {
+    art pic asset="cat" at=canvas(1, 1)
+    text ask "Draw the cat big. Put in three things you only see by looking closely." width=9 below=pic gap=1
+    paintsheet sheet w=18 h=12 paper="plain" guide="none" outline="none" pots=["black", "orange"] right-of=pic gap=2
+  }
+
+  check art.by-eye look-for="Shapes that came from looking rather than from memory: the head, ears, body and tail in about the places the picture has them, big enough to fill most of the sheet, and at least three details the child found by looking closely (whiskers, the stripes, the way the tail curls, the shape of an eye)." notice=["Head, ears, body and tail where the picture has them", "Three details found by looking closely", "Drawn big enough to fill the sheet"] ask="What shape is the cat's head, and where did you put its ears?"
+}

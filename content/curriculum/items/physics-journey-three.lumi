@@ -1,0 +1,20 @@
+item physics.journey-three v=1 skills=[physics.motion, reasoning.backwards] stars=3 {
+  title "The middle leg"
+  difficulty (a + b + c)
+  let a=5..9 b=6..12 c=4..8
+
+  scene 30x9 {
+    table data cols=3 head=["From", "To", "Km"] cells=["Ash", "Bray", a, "Cole", "Dene", c, "Ash", "Dene", a + b + c] at=canvas(1, 0)
+    text ask "The road goes Ash, Bray, Cole, Dene. How far is it from Bray to Cole?" narrate width=13 right-of=data gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == a + b + c - a or answer == a + b + c - c) point=data {
+      say "You have taken off one of the outside legs. Take off the other one too."
+    }
+  }
+  hint "The whole road is three legs. Which two do you know?"
+  hint "Take both of them away from the whole road."
+}

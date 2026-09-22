@@ -1,0 +1,54 @@
+lesson chemistry-sieve-filter-or-magnet v=1 format=teach grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Sieve, filter or magnet"
+  goal "Choose a sieve, filter paper, a magnet or evaporating to get one part of a mixture out, by the difference between the parts, and say why it works."
+
+  look {
+    scene 25x12 {
+      row kit at=canvas(1, 0) space=2 align=end {
+        sieve s mixture=["pebbles", "sand"] holes=2 shaken=1 names=1
+        mixture m things=["iron", "sand"] water=0 names=1
+      }
+    }
+    say """
+      Every way of separating uses one difference between the parts. A sieve uses size: what is
+      smaller than the holes falls through. A magnet uses iron: it pulls iron and leaves the rest.
+      Filter paper uses dissolving: it holds back what has not dissolved. Leaving the water to
+      evaporate gets back what has dissolved. First find the difference, then choose the way.
+      """
+  }
+  do {
+    practice chem.sieve-stays count=2 seed=4
+    practice chem.sieve-predict count=2 seed=2
+    level easy {
+      worked chem.get-it-out k=3 level=medium
+    }
+    practice chem.get-it-out count=2 seed=6 easy-seed=4
+    practice chem.sieve-works count=2 seed=3 hard-seed=1
+  }
+  try stars=2 {
+    show chem.why-magnet q=2 easy-q=1
+  }
+  try stars=3 {
+    show chem.which-cannot k=2
+  }
+  remember {
+    say "Find how the parts are different, then choose the way that uses that difference."
+  }
+
+  grown-ups """
+    A kitchen sieve, a coffee filter and a fridge magnet in a freezer bag are enough; keep iron
+    filings in a sealed bag, because they are hard to get out of a magnet. The first questions, what
+    stayed in a sieve that has already been shaken, are the way in. The core predicts what will fall
+    through holes described against sand, rice and a pea, asks whether a sieve will separate two
+    things at all (sometimes it will not), and chooses the one way that gets a part out on its own.
+    The two-star question asks why a way works, and each way has its own reason. The three-star
+    question checks three mixtures against three tools; the one that cannot be done has something
+    dissolved in it, which only evaporating gets back.
+    """
+  level easy {
+    grown-ups "At this level what stays in the sieve and what goes through are as written, the sieves to judge are plainly right or plainly too small for both things, getting salt out is worked once in the teacher's pen before iron filings, pebbles, paper clips and peas, the two-star asks why a sieve gets the pebbles out, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level what stays in the sieve and what goes through are as written, the sieves to judge let both things through or keep both, or set flour against rice, the things to get out are sand, salt and sugar, and the two-star and three-star are as written, why filter paper holds back the sand and which mixture cannot be taken apart."
+  }
+}

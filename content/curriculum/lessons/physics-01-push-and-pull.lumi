@@ -1,0 +1,50 @@
+lesson physics-push-and-pull v=1 format=teach grade=1 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "Push and pull"
+  goal "Tell a push from a pull by where the arrow starts, say which push is bigger, and predict which way a thing will move."
+
+  look {
+    scene 28x16 {
+      row both at=canvas(1, 0) space=2 align=start {
+        forces one thing=box push=4 labels=false
+        forces two thing=trolley pull=4 labels=false
+      }
+      row talk below=both gap=1 space=1 align=centre {
+        guide g pose=point
+        bubble b "A push starts behind. A pull starts in front." width=20 from=g.hand
+      }
+    }
+    say """
+      A force is a push or a pull. You cannot see a force, so we draw it as an arrow. The arrow
+      starts where your hands are, and a longer arrow is a bigger push.
+      """
+  }
+  do {
+    practice physics.push-or-pull count=2 seed=1
+    practice physics.bigger-push count=2 seed=3
+    practice physics.which-way count=2 seed=2
+    practice physics.slow-it-down count=2 seed=1
+  }
+  try stars=2 {
+    show physics.balanced-push a=4 b=4 easy-a=2 easy-b=6
+  }
+  try stars=3 {
+    show physics.tug-teams a=4 b=2 easy-a=3 hard-a=2 hard-b=4
+  }
+  remember {
+    say "A push starts behind the thing and a pull starts in front. The bigger force wins."
+  }
+
+  grown-ups """
+    Do this one with real objects first. A drawer is a pull to open and a push to shut, and a door
+    is both depending on which side you stand. The first questions only ask where the arrow
+    starts; the ones after ask which arrow wins. The tug of war at the end has no picture of the
+    answer: the child has to see that equal teams go nowhere and work out how many to add. Getting
+    stuck there is fine, and acting it out with a skipping rope usually unsticks it.
+    """
+  level easy {
+    grown-ups "At this level the two arrows differ plainly, the box in the two-star question is pushed harder from one side, and the teams are one child apart."
+  }
+  level hard {
+    grown-ups "At this level the arrows are close in length, the box is pushed equally from both sides, and the bigger team is the one on the right."
+  }
+}

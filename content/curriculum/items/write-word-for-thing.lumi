@@ -1,0 +1,40 @@
+# The way in: a thing from the harbour and four words, one of which describes it. The others are
+# its name, something it does, and another thing.
+item writing.word-for-thing v=1 skills=[writing.word-classes, writing.vocabulary] {
+  title "Which word describes it?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2 p=0..3
+  let thing={pick(k, "the sea", "the lighthouse", "the boat")}
+  let d={pick(k, "sparkling", "tall", "small")}
+  let n={pick(k, "sea", "lighthouse", "boat")}
+  let v={pick(k, "splash", "shine", "sail")}
+  let o={pick(k, "sand", "rock", "rope")}
+  let o1={pick(p, d, n, v, o)}
+  let o2={pick(p, n, v, o, d)}
+  let o3={pick(p, v, o, d, n)}
+  let o4={pick(p, o, d, n, v)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x23 {
+    art pic asset="boat" at=canvas(1, 1)
+    text ask "Tia is writing about {thing} at the harbour. Which of these words describes it, saying what it is like?" narrate width=18 right-of=pic gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}", "{o4}"] stack=column below=pic gap=1
+  }
+
+  answer pick=d
+  feedback {
+    when (pick == n) point=ask {
+      say "That is the name of the thing, a naming word. A describing word says what it is like."
+    }
+    when (pick == v) point=ask {
+      say "That is something it does, a doing word. A describing word says what it is like."
+    }
+  }
+  hint "A describing word answers: what is it like? Tall, small, sparkling."
+  hint "Try each word before the name: a sparkling sea, a splash sea. Which one fits?"
+}

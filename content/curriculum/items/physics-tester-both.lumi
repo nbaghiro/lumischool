@@ -1,0 +1,18 @@
+item physics.tester-both v=1 skills=[physics.circuits, physics.materials] stars=3 {
+  title "Which bulbs light?"
+  difficulty ((if x == "foil" or x == "marble" then 1 else 0) + (if y == "coin" then 1 else 0))
+  let x={"nail", "foil", "ruler", "marble"} y={"coin", "clip", "eraser", "stick"}
+
+  scene 35x27 {
+    row two at=canvas(1, 0) space=2 align=start {
+      tester a thing=x show=0 tag="A"
+      tester b thing=y show=0 tag="B"
+    }
+    text ask "Which bulbs will light?" width=14 below=two gap=0
+    choice pick options=["A only", "B only", "Both", "Neither"] stack=column right-of=ask gap=2
+  }
+
+  check physics.circuit of=a vs=b pick=which
+  hint "Would A light on its own? Would B?"
+  hint "Is each thing metal, or not?"
+}

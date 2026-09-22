@@ -1,0 +1,55 @@
+lesson writing-naming-doing-describing v=1 format=teach grade=3 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Naming words, doing words, describing words"
+  goal "Sort words into naming, doing and describing, and say why each one belongs there."
+
+  look {
+    scene 33x27 {
+      column all at=canvas(1, 1) space=1 align=start {
+        art pic asset="garden"
+        sentence strip before="Bright flowers grew by the old fence" blank=0 after="."
+        wordsort sort heads=["Naming", "Doing", "Describing"] words=["flowers", "grew", "bright", "fence", "old"] into=[0, 1, 2, 0, 2]
+      }
+    }
+    say """
+      Three jobs, and every word in a sentence is doing one of them. A naming word is a thing. A
+      doing word is something that happens. A describing word tells you what a thing is like. The
+      same word can sometimes change jobs, which is why the sentence matters more than the word.
+      """
+  }
+  do {
+    practice writing.word-class-column count=1 seed=4
+    level easy {
+      worked writing.class-in-sentence k=1 level=medium
+    }
+    practice writing.class-in-sentence count=3 seed=10 easy-seed=4
+    practice writing.gap-needs-class count=2 seed=2
+    practice writing.count-naming count=2 hard-count=1 seed=3 easy-seed=1
+    level hard {
+      practice writing.two-jobs count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show writing.two-jobs k=2 hard-k=5
+  }
+  try stars=3 {
+    show writing.one-word-two-jobs w="brush"
+  }
+  remember {
+    say "Naming: a thing. Doing: it happens. Describing: what the thing is like."
+  }
+
+  grown-ups """
+    Two tests that work: "the ___" catches naming words, and "I can ___" catches doing words. A
+    word that fails both is usually a describing word. The tests only work inside the sentence:
+    fish is a naming word in "a fish swam" and a doing word in "we fish from the jetty", which is
+    what most of these questions turn on. The two-star question asks for one sentence that proves
+    a claim wrong. The three-star sentence is yours to read; any sentence that uses the word both
+    ways counts, however short.
+    """
+  level easy {
+    grown-ups "At this level the wrong column is as written, we fish is worked once in the teacher's pen before words doing the job their look suggests, the gaps want naming and describing words, one or two naming words are counted, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the wrong column is as written, the words do the job their look hides (we fish, a light bag, warm your hands, it may snow), the gaps want the doing word, three naming words are counted and the second count makes way for a second word with two jobs, the two-star's word is dry, and the three-star is as written."
+  }
+}

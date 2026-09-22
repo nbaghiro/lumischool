@@ -1,0 +1,35 @@
+# The repeat is drawn twice over: as blocks, and as rows of shaded squares, so that "three lots of
+# two" is the same picture in coding as it is in the multiplication lessons.
+item coding.repeat-total v=2 skills=[coding.repetition] {
+  title "The same block, again and again"
+  difficulty (n * s)
+  let n=2..4 s=2..3
+  # 2 twos is also 2 plus 2, and that variant could not tell the adding mistake apart
+  where (n * s != n + s)
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=3..4 s={3}
+  }
+
+  scene 24x15 {
+    row top at=canvas(1, 0) space=2 align=start {
+      blocks b code=["repeat {n}", "  right {s}"]
+      grid a rows=n cols=s shade=(n * s) color=sky cell=2
+    }
+    text ask "How many squares does the robot move in all?" width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=b answer=moves
+  feedback {
+    when (answer == n + s) point=b {
+      say "The block runs {n} times and moves {s} squares each time, so the two numbers multiply."
+    }
+    when (answer == s) point=b {
+      say "That is one time round the repeat. It goes round {n} times."
+    }
+  }
+  hint "Count the squares in the picture: {n} rows of {s}."
+}

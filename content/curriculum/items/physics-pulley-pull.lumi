@@ -1,0 +1,25 @@
+item physics.pulley-pull v=1 skills=[physics.machines] {
+  title "How hard to pull?"
+  difficulty w
+  let n=1..4 w={12, 24, 36, 48, 60}
+  level easy {
+    let n=1..2 w={12, 24}
+  }
+  level hard {
+    let n=3..4 w={36, 48, 60}
+  }
+
+  scene 30x15 {
+    pulley p ropes=n load=w show=0 at=canvas(1, 0)
+    text ask "How many newtons must the hand pull with to hold the crate?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.machine of=p answer=pull
+  feedback {
+    when (answer == w and n > 1) point=p {
+      say "Count the ropes holding the crate up. They share its weight."
+    }
+  }
+  hint "How many ropes hold the crate up?"
+}

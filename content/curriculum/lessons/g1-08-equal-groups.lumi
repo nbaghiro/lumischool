@@ -1,0 +1,49 @@
+lesson g1-equal-groups v=1 format=teach grade=1 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Equal groups"
+  goal "Make and count equal groups, read a row-and-column picture two ways, and share cubes fairly."
+
+  look {
+    scene 30x21 {
+      train engine carriages=3 windows=4 on=0 at=canvas(0, 1)
+      array dots rows=3 cols=4 color=mint below=engine gap=2
+      equation eq "3 × 4 = 12" right-of=dots gap=3
+      note n "Three carriages, four seats in each." width=14 below=dots gap=1
+    }
+    say """
+      Three carriages with four seats in each is the same as three rows of four. Count one group,
+      then count that many for every group.
+      """
+  }
+  do {
+    practice groups.train-seats count=1 seed=3
+    practice groups.array count=1 seed=12
+    practice groups.dice-total count=1 seed=2
+    practice groups.street-windows count=2 seed=4
+    practice data.minibeast-spots count=1 seed=4
+    practice groups.boxes-equal count=1 seed=3
+    practice groups.share-children count=1 seed=5
+  }
+  try stars=2 {
+    show groups.how-many-towers k=3 n=4 easy-k=2 easy-n=3 hard-k=4 hard-n=5
+  }
+  try stars=3 {
+    show groups.level-towers x=2 y=7 z=3 easy-x=1 easy-y=4 easy-z=1 hard-x=3 hard-y=8 hard-z=7
+  }
+  remember {
+    say "Equal groups are all the same size, so you can count the groups instead of the things."
+  }
+
+  grown-ups """
+    Egg boxes, muffin trays and seats on a bus are all equal groups. Point them out for a week and
+    the idea arrives on its own. Sharing the stickers is the same picture read backwards: the answer
+    is how many in one group. The two-star question turns equal groups round: from the cubes to the
+    towers. Making towers level is sharing fairly; real building blocks make the three-star question
+    easy to try and easy to check.
+    """
+  level easy {
+    grown-ups "At this level the groups are two or three, the train has two or three carriages of three seats, and the towers to level hold six cubes between them."
+  }
+  level hard {
+    grown-ups "At this level the groups reach five, the street has four or five houses of three or four windows, and the towers to level hold eighteen cubes between them."
+  }
+}

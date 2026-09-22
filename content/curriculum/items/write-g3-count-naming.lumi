@@ -1,0 +1,27 @@
+# Counting every naming word means checking every word, not stopping at the first one found.
+item writing.count-naming v=1 skills=[writing.word-classes] {
+  title "How many naming words?"
+  difficulty (if k == 1 or k == 4 then 2 else if k == 7 then 1 else 3)
+  let k=0..7
+  level easy {
+    let k={1, 4, 7}  # one or two naming words
+  }
+  level hard {
+    let k={0, 2, 3, 5, 6}  # three
+  }
+
+  scene 30x7 {
+    caption line text="{if k == 0 then \"The heron caught a fish in the canal.\" else if k == 1 then \"The ducks swam under the bridge.\" else if k == 2 then \"My dog found a stick and a ball.\" else if k == 3 then \"Snow covered the roof and the garden.\" else if k == 4 then \"The old lighthouse has a bright lamp.\" else if k == 5 then \"A frog sat on a log by the pond.\" else if k == 6 then \"The wind blew the kite over the trees.\" else \"The cold rain fell.\"}" width=28 at=canvas(1, 1)
+    text ask "How many naming words are in this sentence?" width=20 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 1 or k == 4 then 2 else if k == 7 then 1 else 3)
+  feedback {
+    when (answer == 1 and k != 7) point=line {
+      say "There is more than one. Check every word, right to the full stop."
+    }
+  }
+  hint "Point at each word in turn. Is it a thing you could see or touch?"
+  hint "Words like the, a and my come before naming words. What comes after each one?"
+}

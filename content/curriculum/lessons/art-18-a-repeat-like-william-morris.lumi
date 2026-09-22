@@ -1,0 +1,65 @@
+lesson art-a-repeat-like-william-morris v=1 format=teach grade=4 unit=4 subject=art levels=[easy, medium, hard] {
+  title "A repeat like William Morris"
+  goal "Tell a straight repeat from a half-drop, work out how many tiles a repeat needs, and design a tile whose edges are hidden."
+
+  look {
+    scene 30x11 {
+      row all at=canvas(1, 1) space=2 align=start {
+        tilerepeat straight drop=0 cols=4 rows=3 missing=-1 ring=-1 colour=green
+        tilerepeat dropped drop=1 cols=4 rows=2 missing=-1 ring=-1 colour=green
+      }
+    }
+    say """
+      William Morris designed wallpapers from 1862. Each was printed from wooden blocks, one repeat
+      after another down the paper. In a straight repeat every row lines up. In a half-drop, every
+      other column starts half a tile lower, which hides the grid, so the eye follows the flowers
+      instead of the edges.
+      """
+  }
+  do {
+    practice art.tile-count count=1 seed=1
+    practice art.straight-or-half-drop count=2 seed=2
+    level easy {
+      worked art.tiles-to-cover w=12 h=12 level=medium
+    }
+    practice art.tiles-to-cover count=2 seed=1
+    practice art.half-drop-count count=2 seed=3
+    practice art.tiles-in-rows count=2 hard-count=1 seed=4
+    level hard {
+      practice art.half-drop-whole count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show art.half-drop-whole r=4 easy-r=3 hard-r=5
+  }
+  try stars=3 {
+    show art.design-a-tile
+  }
+  remember {
+    say "One tile, repeated. A half-drop hides the grid, and a shape that crosses the edge hides the join."
+  }
+
+  grown-ups """
+    William Morris lived from 1834 to 1896 and his designs are long out of copyright, though the
+    lesson uses a tile of our own. His papers were printed from hand-cut woodblocks, a block for
+    each colour, with the pattern repeated down and across the roll, and wallpaper and fabric are
+    still made from one repeat printed again and again. The questions are marked by the machine. The tile
+    counts are multiplication and division met on a wall, and covering the wall takes two steps:
+    how many tiles fit along, and how many rows fit up.
+
+    The two-star question is about what a half-drop does at the edges of a sheet: the dropped
+    columns have half a tile hanging over at the top and at the bottom, so one whole tile's worth
+    is cut away. The design is the three-star question and is responded to rather than marked.
+    In Morris's papers the stems and leaves run on across the joins of the repeat, and the child's
+    tile is a success when a stranger cannot easily find where one tile ends.
+
+    Respond by trying to find the edges together: "I can see where this tile ends, but here the leaf
+    carries on into the next one." Ask what they would change to hide the last edge.
+    """
+  level easy {
+    grown-ups "At this level the wall has six tiles, straight or half-drop is as written, a wall of twelve by twelve is covered once in the teacher's pen before walls nine tall, the half-drop starts from three rows, the roll prints four rows, the two-star's sheet is three tiles tall, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the wall has twelve tiles, straight or half-drop is as written, the walls to cover are fifteen or eighteen by twelve, the half-drop starts from five or six by four, the roll is four or five tiles wide and the second roll makes way for a second half-drop sheet, the two-star's sheet is five tiles tall, and the three-star is as written."
+  }
+}

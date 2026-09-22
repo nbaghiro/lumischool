@@ -1,0 +1,63 @@
+lesson reading-two-letters-one-sound v=1 format=teach grade=2 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "Two letters, one sound"
+  goal "Spot letters that make one sound together, and choose between two spellings of the same sound."
+
+  look {
+    scene 35x26 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=1 align=end {
+          ship boat sails=3 portholes=5
+          column word space=1 align=start {
+            soundbuttons sb graphemes=["sh", "i", "p"]
+            wordtrain train parts=["sh", "i", "p"] word="ship"
+          }
+        }
+        wordsort sort heads=["ai", "ay"] words=["rain", "day", "tail", "play"] into=[0, 1, 0, 1]
+      }
+    }
+    say """
+      Ship has four letters but only three sounds. The s and the h join up and make one sound
+      between them, so they ride in one carriage, and the bar under them shows the same thing.
+
+      The same sound can be spelled more than one way. Sorting words into columns is how you learn
+      which spelling goes where.
+      """
+  }
+  do {
+    practice reading.letters-not-sounds count=1 seed=2
+    level easy {
+      worked reading.team-sounds w="train" level=medium
+    }
+    practice reading.team-sounds count=2 seed=7 easy-seed=6 hard-seed=5
+    practice reading.ai-or-ay count=2 seed=5
+    show reading.wrong-column-ay w=1
+  }
+  story {
+    practice reading.which-sentence-sh count=2 seed=4
+  }
+  try stars=2 {
+    show reading.odd-sound-out k=0 p=2 easy-k=2 hard-k=3
+  }
+  try stars=3 {
+    show reading.two-letters-count k=0
+  }
+  remember {
+    say "A bar under two letters means they make one sound together."
+  }
+
+  grown-ups """
+    The pairs worth knowing first are sh, ch, th, ck and ng. Say shop and top one after the other
+    and ask how many sounds are in each; the answer is three both times, which is the point.
+
+    The story questions ask which sentence tells you something, and the right sentence never uses
+    the question's own words. Ask the child to point at it before choosing. In the two-star question
+    the odd word looks right (said has ai in it) and sounds wrong, so it has to be said aloud. In the
+    three-star question st, lk and mp are traps: two letters, but two sounds.
+    """
+  level easy {
+    grown-ups "At this level the letters to count are in t and c words, train's four sounds are counted once in the teacher's pen before words with one pair of letters, brush among them, ai or ay, the column and the story are as written, the odd one out is cow among the oa words, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the letters to count are in sh and ch words, the sounds to count are in night, coach, train, spray and brush, ai or ay, the column and the story are as written, the odd one out is weigh among the igh words, and the three-star is as written."
+  }
+}

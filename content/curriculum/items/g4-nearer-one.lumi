@@ -1,0 +1,24 @@
+# Compare by the gap to one, not by working out both: a reason, and a second path by the wall.
+item fraction.nearer-one v=2 stars=2 skills=[fractions.compare, reasoning.compare-without-totalling] {
+  title "Which is nearer to one"
+  difficulty (b + (if abs(2 * x - y) == 1 then 2 else 0))
+  let b={3, 4, 5, 6} x=1..2 y=1..3 p=0..1
+  where (x < b and 2 * x != y)
+  level hard {
+    where (abs(2 * x - y) == 1 and b >= 5)  # the gaps to a whole are one piece apart
+  }
+
+  scene 34x15 {
+    fractionwall wall rows=[1, b, 2 * b] shade=[0, 0] at=canvas(1, 1)
+    column q right-of=wall gap=2 space=1 align=start {
+      text ask "Which is nearer to one whole?" width=13
+      text pa "A:   {if p == 0 then b - x else 2 * b - y}/{if p == 0 then b else 2 * b}"
+      text pb "B:   {if p == 0 then 2 * b - y else b - x}/{if p == 0 then 2 * b else b}"
+      choice pick options=["A", "B"]
+    }
+  }
+
+  answer pick=(if (2 * x < y) == (p == 0) then "A" else "B")
+  hint "How much more does each one need to make a whole?"
+  hint "Which is smaller: {x}/{b} or {y}/{2 * b}? The wall can show you."
+}

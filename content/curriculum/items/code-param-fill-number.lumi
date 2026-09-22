@@ -1,0 +1,34 @@
+# The number that makes a block draw the pale square: the side itself for square, half of it for
+# frame and one less for tile.
+item coding.param-fill-number v=1 skills=[coding.procedures, coding.drawing, reasoning.work-backwards] {
+  title "Fill in the number"
+  difficulty ((if f == 0 then 0 else 1) + (n - 2) * 0.5)
+  let f=0..2 n=2..3
+  let name={pick(f, "square", "frame", "tile")}
+  let side={pick(f, n, 2 * n, n + 1)}
+  let l2={pick(f, "  pen down", "  repeat 4", "  repeat 4")}
+  let l3={pick(f, "  repeat 4", "    forward size", "    forward size")}
+  let l4={pick(f, "    forward size", "    forward size", "    forward 1")}
+  level easy {
+    let f=0..0
+  }
+  level hard {
+    let f=1..2
+  }
+
+  scene 36x24 {
+    program prog code=["define {name} size", "{l2}", "{l3}", "{l4}", "    turn right", "{name} ?"] title="Sam's block" at=canvas(1, 1)
+    turtle t cols=(side + 1) rows=(side + 1) col=1 row=1 face=right moves=[] target=["repeat 4", "  forward {side}", "  turn right"] right-of=prog gap=1
+    text ask "The turtle should draw the pale square. What number goes in place of the question mark?" narrate width=18 below=prog gap=1
+    number-input size right-of=ask gap=1
+  }
+
+  answer size=n
+  feedback {
+    when (size == side and f != 0) point=prog {
+      say "The square's side is {side}, but {name} does not go forward size just once. What size makes a side of {side}?"
+    }
+  }
+  hint "Count one side of the pale square."
+  hint "{if f == 0 then \"Square goes forward size once on each side.\" else if f == 1 then \"Frame goes forward size twice on each side, so size is half the side.\" else \"Tile goes forward size and then 1 more on each side.\"}"
+}

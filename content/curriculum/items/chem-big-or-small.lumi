@@ -1,0 +1,39 @@
+# The two-star reason: a big cube and a small cube in the same place, and which is gone first.
+# The small one goes first because there is less of it to melt in the same warmth; the wrong
+# reasons say the big one melts faster, or that they go together because the place is the same.
+item chem.big-or-small v=1 stars=2 skills=[chemistry.states, reasoning.explain] {
+  title "Big cube, small cube"
+  difficulty k
+  let k=0..1 r=0..2
+  let story={pick(k, "Ada puts a big ice cube and a small one side by side on the table.", "Ada puts a big ice cube on the table and a small one in the fridge.")}
+  let right={pick(k, "The small one: less ice to melt", "The big one: the fridge keeps the small one")}
+  let w1={pick(k, "The big one: big things melt faster", "The small one: small things go first")}
+  let w2={pick(k, "Both at once: the same place", "Both at once: the sizes even out")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x26 {
+    icemelt ice every=10 count=2 place=1 at=canvas(1, 0)
+    text ask "{story} Which cube is gone first, and why?" narrate width=32 below=ice gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == w2) point=ice {
+      say "The same warmth melts each cube at the same speed, but the small one has less to lose, so it is gone sooner."
+    }
+    when (k == 0 and pick == w1) point=ice {
+      say "The big cube takes longer: there is more of it to melt. Think of a snowman against a snowball on the same lawn."
+    }
+    when (k == 1 and pick != right) point=ice {
+      say "The place matters more than the size here. The fridge keeps the small cube cold, while the table melts the big one."
+    }
+  }
+  hint "Two things decide it: how warm the place is, and how much ice there is."
+  hint "{if k == 0 then \"The place is the same for both, so only the amount of ice differs.\" else \"The places differ. Which cube is being warmed at all?\"}"
+}

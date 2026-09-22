@@ -1,0 +1,22 @@
+# The ladder's other side: two rungs with nothing lit, and the child says which sound changed.
+item reading.which-sound-changed v=1 skills=[reading.phonics] {
+  title "Which sound changed?"
+  difficulty (if k == 0 or k == 4 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={1, 2, 3, 5}  # the first or the last sound
+  }
+  level hard {
+    let k={0, 4}  # the middle sound; hard asks one, so that middle is not the answer twice
+  }
+
+  scene 26x13 {
+    wordladder lad words=["{if k == 0 then \"cat\" else if k == 1 then \"hen\" else if k == 2 then \"bus\" else if k == 3 then \"pig\" else if k == 4 then \"mop\" else \"sun\"}", "{if k == 0 then \"cot\" else if k == 1 then \"ten\" else if k == 2 then \"bud\" else if k == 3 then \"wig\" else if k == 4 then \"map\" else \"sum\"}"] blank=-1 changes=0 at=canvas(1, 1)
+    text ask "Read up the ladder. Which sound changed?" narrate width=14 right-of=lad gap=2
+    choice pick options=["first", "middle", "last"] below=lad gap=1
+  }
+
+  answer pick=(if k == 1 or k == 3 then "first" else if k == 0 or k == 4 then "middle" else "last")
+  hint "Say the bottom word, then the top word."
+  hint "Look at the letters one at a time. Which one is different?"
+}

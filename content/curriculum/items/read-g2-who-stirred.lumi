@@ -1,0 +1,17 @@
+# She and he stand for the names, so one question needs the pronoun tracked back to its person.
+# "Her brother" says who is who without leaning on the names themselves.
+item reading.who-stirred v=1 skills=[reading.characters, reading.pronouns] {
+  title "She and he"
+  difficulty (if q == 2 then 2 else if q == 1 then 1 else 0)
+  let g={"Ava", "Lola", "Priya"} y={"Sam", "Omar", "Finn"} q=0..2
+
+  scene 36x13 {
+    passage p text="{g} and her brother {y} made a cake. {g} broke the eggs into a bowl. Then she gave the bowl to {y}, and he stirred it until it was smooth." width=35 numbers=false at=canvas(1, 1)
+    text ask "{if q == 0 then \"Who stirred the mixture?\" else if q == 1 then \"Who gave the bowl away?\" else \"Who had the bowl at the end?\"}" narrate width=21 below=p gap=1
+    choice pick options=["{g}", "{y}"] right-of=ask gap=1
+  }
+
+  answer pick=(if q == 1 then g else y)
+  hint "Who is she in the last sentence? Who is he?"
+  hint "Put the names in place of she and he, then read the sentence again."
+}

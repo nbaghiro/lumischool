@@ -1,0 +1,37 @@
+# The bigger creatures of the marsh and the village, and their homes: the duck on the pond and
+# the cat in a house are the plain two; the owl's hole in a tree and the hedgehog's place under
+# the hedge take a moment longer.
+item nature.big-home v=1 skills=[nature.habitats] {
+  title "And where does this one live?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "duck", "cat", "owl", "hedgehog")}
+  let home={pick(k, "the pond", "a house", "a hole in a tree", "under the hedge")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x19 {
+    art pic asset="{who}" at=canvas(1, 1)
+    text ask "Where does the {who} make its home?" narrate width=18 right-of=pic gap=2
+    choice pick options=["the pond", "a house", "a hole in a tree", "under the hedge"] stack=column below=ask gap=1
+  }
+
+  answer pick=home
+  feedback {
+    when (k == 2 and pick == "under the hedge") point=pic {
+      say "The owl flies and sleeps in the day, so it wants somewhere high and hidden."
+    }
+    when (k == 3 and pick == "a hole in a tree") point=pic {
+      say "A hedgehog cannot climb. It curls up somewhere low, dry and hidden."
+    }
+    when (k == 0 and pick != "the pond") point=pic {
+      say "Look at its feet. Webbed feet are for paddling."
+    }
+  }
+  hint "Look at how it is drawn. Does it fly, swim, climb, or walk?"
+  hint "A home is somewhere safe to sleep, near food. Where is that for this one?"
+}

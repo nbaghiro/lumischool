@@ -1,0 +1,23 @@
+# The three-star: a wave in two blues and white on the sheet, a dark blue for the deep water, a
+# tint for the near water, white hooks for the foam, responded to by a grown-up.
+item art.paint-a-wave v=1 stars=3 skills=[art.painting, art.tints, art.line] {
+  title "A wave in two blues"
+  difficulty k
+  let k=0..1
+  let task={pick(k, "Paint a wave like Hokusai's: deep blue for the water at the bottom, a paler blue mixed with white above it, and white hooks curling over the top for the foam.", "Paint a wave like Hokusai's in two blues and white, with the foam's hooks all curling the same way, the way the wind is blowing.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x17 {
+    text ask "{task}" narrate width=12 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["blue", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A wave in two blues and white: a dark blue for the deep water, a paler blue mixed from blue and white above it, and white hooks curling over the crest for the foam, the same hook repeated along the top; at the harder level every hook curling the same way." notice=["Two blues, one mixed with white", "Hooks of foam repeated along the crest", "The dark blue under, the pale blue above"] ask="Which way is your wave falling, and how can I tell?"
+  hint "Mix the pale blue first: blue with white. Paint the deep water plain blue at the bottom."
+  hint "The foam is one hook painted again and again along the top, all curling the same way."
+}

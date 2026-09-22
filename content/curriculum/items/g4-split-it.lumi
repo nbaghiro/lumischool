@@ -1,0 +1,32 @@
+# The audit's raise for area.compound, as far as the drawing allows: no squares to count, so the
+# shape has to be split into two rectangles by its labelled sides.
+item area.split-it v=1 skills=[area.composite] {
+  title "Split it into rectangles"
+  difficulty (w * h)
+  let w=7..12 h=5..9 cut=2..5 deep=2..4
+  where (cut < w - 1 and deep < h - 1)
+  level easy {
+    let w=7..8 h=5..6 cut=2..3 deep=2..3
+  }
+  level hard {
+    let w=10..12 h=8..9 cut=4..5 deep=3..4
+  }
+
+  scene 34x13 {
+    lshape shape w=w h=h cut=cut deep=deep corner=bottom-left cell=1 at=canvas(0, 0)
+    text ask "The sides are in centimetres. What is the area of the shape, in square centimetres?" narrate width=14 right-of=shape gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (w * h - cut * deep)
+  feedback {
+    when (answer == w * h) point=shape.centre {
+      say "That is the whole rectangle. A corner has been cut away."
+    }
+    when (answer == 2 * (w + h) and w * h - cut * deep != 2 * (w + h)) point=shape.centre {
+      say "That is the way round the edge. The area is the space inside."
+    }
+  }
+  hint "Draw a line to split the shape into two rectangles. How long is each side of them?"
+  hint "Find the area of each rectangle, then add them. Or find the big rectangle and take the corner away."
+}

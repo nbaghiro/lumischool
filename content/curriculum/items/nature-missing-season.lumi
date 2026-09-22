@@ -1,0 +1,37 @@
+# A seasons puzzle for the sheet: three trees in the order the year goes, with one season left
+# out, and the captions turned off so the trees have to be read. At easy the row starts in spring;
+# at hard it starts elsewhere in the year, so the gap can fall across the end of it.
+item nature.missing-season v=1 stars=2 skills=[nature.seasons, reasoning.order] {
+  title "The missing season"
+  difficulty (if k <= 2 then 0 else if k == 3 then 1 else 2)
+  let k=0..7
+  let a={pick(k, "spring", "spring", "spring", "summer", "autumn", "winter", "summer", "autumn")}
+  let b={pick(k, "autumn", "summer", "summer", "autumn", "spring", "spring", "autumn", "winter")}
+  let c={pick(k, "winter", "winter", "autumn", "winter", "summer", "autumn", "spring", "summer")}
+  let gone={pick(k, "summer", "autumn", "winter", "spring", "winter", "summer", "winter", "spring")}
+  let after={pick(k, "spring", "spring", "winter", "spring", "autumn", "winter", "summer", "autumn")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 32x22 {
+    seasontrees year seasons=[a, b, c] names=0 at=canvas(1, 1)
+    text ask "Ada painted her tree in three seasons, in the order they come. One season is missing. Which one?" narrate width=30 below=year gap=1
+    choice pick options=["spring", "summer", "autumn", "winter"] below=ask gap=1
+  }
+
+  answer pick=gone
+  feedback {
+    when (k >= 4 and pick == after) point=year {
+      say "That season would come after the last tree. The missing one is a gap inside the row: which two trees are not neighbours in the year?"
+    }
+    when (k <= 2 and pick == "spring") point=year {
+      say "Spring is there: the first tree, with blossom. Say the seasons along the row and find the jump."
+    }
+  }
+  hint "Say what each tree shows: blossom, full leaf, falling leaves, or bare."
+  hint "Say the year along the row. Where does it jump over a season?"
+}

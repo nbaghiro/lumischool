@@ -1,0 +1,23 @@
+# The misconception at this age: a heavier bob swings faster. The two pendulums differ only in
+# weight, so the answer is the same every time.
+item physics.pendulum-weight v=1 skills=[physics.motion] {
+  title "Heavy and light bobs"
+  let l=3..7 m={50, 100} n={200, 400}
+
+  scene 26x23 {
+    row two at=canvas(1, 0) space=1 align=start {
+      pendulum a length=l mass=m tag="A"
+      pendulum b length=l mass=n tag="B"
+    }
+    text ask "Which one swings to and fro more times in ten seconds?" width=16 below=two gap=0
+    choice pick options=["A", "B", "The same"] stack=column right-of=ask gap=1
+  }
+
+  check physics.forces of=a vs=b pick=faster
+  feedback {
+    when (pick == "B") point=b {
+      say "The heavier bob does not swing any faster. Only the string's length changes the swing."
+    }
+  }
+  hint "What is different about the two, and what is the same?"
+}

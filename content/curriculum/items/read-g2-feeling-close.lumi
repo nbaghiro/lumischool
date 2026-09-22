@@ -1,0 +1,17 @@
+# The feeling from what someone does, with no face to read it from and close words to choose
+# between: the audit's raise for feeling-word. The choices move, so the answer is not always first.
+item reading.feeling-close v=1 skills=[reading.inference, reading.vocabulary] {
+  title "Which word fits?"
+  difficulty (if k == 2 then 2 else if k == 1 or k == 3 then 1 else 0)
+  let k=0..4 p=0..2
+
+  scene 36x14 {
+    passage story text="{if k == 0 then \"Leo waited for the bus for an hour. He kicked a stone and stamped his foot.\" else if k == 1 then \"Ana had nothing to do all afternoon. She sighed and stared out of the window at the rain.\" else if k == 2 then \"Tomorrow is Kim's first day at a new school. She cannot eat her tea, and she keeps biting her nails.\" else if k == 3 then \"Raj finished the big puzzle all by himself. He showed it to everyone who came into the room.\" else \"Mo heard a creak on the stairs in the dark. He pulled the blanket up over his head.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Which word tells how {if k == 0 then \"Leo\" else if k == 1 then \"Ana\" else if k == 2 then \"Kim\" else if k == 3 then \"Raj\" else \"Mo\"} feels?" narrate width=34 below=story gap=1
+    choice pick options=[if k == 0 then if p == 0 then "cross" else if p == 1 then "sleepy" else "scared" else if k == 1 then if p == 0 then "bored" else if p == 1 then "cross" else "excited" else if k == 2 then if p == 0 then "worried" else if p == 1 then "tired" else "proud" else if k == 3 then if p == 0 then "proud" else if p == 1 then "scared" else "bored" else if p == 0 then "scared" else if p == 1 then "bored" else "proud", if k == 0 then if p == 0 then "sleepy" else if p == 1 then "scared" else "cross" else if k == 1 then if p == 0 then "cross" else if p == 1 then "excited" else "bored" else if k == 2 then if p == 0 then "tired" else if p == 1 then "proud" else "worried" else if k == 3 then if p == 0 then "scared" else if p == 1 then "bored" else "proud" else if p == 0 then "bored" else if p == 1 then "proud" else "scared", if k == 0 then if p == 0 then "scared" else if p == 1 then "cross" else "sleepy" else if k == 1 then if p == 0 then "excited" else if p == 1 then "bored" else "cross" else if k == 2 then if p == 0 then "proud" else if p == 1 then "worried" else "tired" else if k == 3 then if p == 0 then "bored" else if p == 1 then "proud" else "scared" else if p == 0 then "proud" else if p == 1 then "scared" else "bored"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "cross" else if k == 1 then "bored" else if k == 2 then "worried" else if k == 3 then "proud" else "scared")
+  hint "What does {if k == 0 then \"Leo\" else if k == 1 then \"Ana\" else if k == 2 then \"Kim\" else if k == 3 then \"Raj\" else \"Mo\"} do? Would you do that if you felt happy?"
+  hint "Try each word in the sentence: {if k == 0 then \"Leo\" else if k == 1 then \"Ana\" else if k == 2 then \"Kim\" else if k == 3 then \"Raj\" else \"Mo\"} feels ... Which one matches what happened?"
+}

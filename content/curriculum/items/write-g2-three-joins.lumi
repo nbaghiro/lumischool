@@ -1,0 +1,17 @@
+# Three sentences about one picture, each with a given joining word: the constraint is the meaning
+# each word carries, which only a grown-up reading them can check.
+item writing.three-joins v=1 stars=3 skills=[writing.joining-sentences, writing.composing] {
+  title "And, but and because"
+  let k=0..3
+  let pic={if k == 0 then "birthday-table" else if k == 1 then "market-stall" else if k == 2 then "bedroom-shelf" else "kitchen-counter"}
+
+  scene 36x22 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    text ask "Write three sentences about the picture. Join the first with and, the second with but, and the third with because." width=20 right-of=pic gap=1
+    writinglines lines lines=3 width=34 prompt="" below=pic gap=1
+  }
+
+  check writing.by-eye look-for="Three sentences about the picture, each with a capital and a full stop. The and sentence adds a second thing, the but sentence turns against its first half (it was ready but it would not start), and the because sentence gives a real reason for its first half."
+  hint "Look at the picture. What two things can you see? Join them with and."
+  hint "What goes wrong, or what is a surprise? That is the but sentence."
+}

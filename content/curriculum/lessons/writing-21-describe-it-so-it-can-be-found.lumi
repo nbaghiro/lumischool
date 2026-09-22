@@ -1,0 +1,55 @@
+lesson writing-describe-it-so-it-can-be-found v=1 format=teach grade=2 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Describe it so it can be found"
+  goal "Describe one thing so well that someone else could pick it out from the rest."
+
+  look {
+    scene 31x13 {
+      creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=2 at=canvas(1, 1)
+    }
+    say """
+      "Mine has eyes" fits all four creatures. "Mine is stripy and has three eyes" fits only C. A
+      good description says what is different about the one you mean.
+      """
+  }
+  do {
+    level easy {
+      worked writing.clue-count a=2 b=1 c=2 d=3 w=2 level=medium
+    }
+    practice writing.clue-count count=1 seed=4
+    practice writing.which-creature count=1 seed=1
+    practice writing.best-clue count=1 seed=2
+    practice writing.clue-count count=1 seed=9 hard-seed=5
+    practice writing.two-clues count=1 seed=3
+    practice writing.tool-clue count=1 seed=2
+    practice writing.two-clues count=1 hard-count=0 seed=8
+    level hard {
+      practice writing.leave-out count=1 seed=1
+    }
+    practice writing.add-a-clue count=1 seed=5
+  }
+  try stars=2 {
+    show writing.leave-out k=2 p=1 easy-k=0
+  }
+  try stars=3 {
+    show writing.describe-for-a-friend k=1
+  }
+  remember {
+    say "Say what is different about it, so only one can fit."
+  }
+
+  grown-ups """
+    Everything up to the three-star question is marked by the machine. Counting how many houses a
+    clue fits, and choosing the clue that leaves only one boat, are the checks a child has to learn
+    to make on their own writing. In the two-star question, one half of Zoe's description does all
+    the work; ask the child to try each half on its own. For the last one, test the child's
+    description the way it is meant to be used: cover the ring, read their sentences, and see
+    whether you land on the right creature. If you do not, the sentence to add is the one that
+    rules out the creature you picked by mistake.
+    """
+  level easy {
+    grown-ups "At this level a clue that fits two houses is counted once in the teacher's pen before clues that fit one house, the creature and the two clues are as written, the best clue is seen at a glance, the tool is as written, the clue to add says what the boat has, the two-star's spare part is spotty, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the clues fit two or three houses, the creature and the two clues are as written, the best clue is six legs, which have to be counted, the tool is as written, the clue to add says what the boat lacks, the second pair of clues makes way for a second part to leave out, the two-star is as written, and the three-star is as written."
+  }
+}

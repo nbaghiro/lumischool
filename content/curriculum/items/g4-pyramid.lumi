@@ -1,0 +1,25 @@
+# Each brick is the sum of the two under it. Three blanks, and the node names one answer per blank.
+item puzzle.pyramid v=1 stars=1 skills=[reasoning.number-walls] {
+  title "Number wall"
+  difficulty (a + 2 * b + c)
+  let a=3..19 b=3..19 c=3..19
+  where (a != b and b != c and a != c)
+  level easy {
+    let a=1..6 b=1..6 c=1..6
+  }
+  level hard {
+    let a=10..20 b=10..20 c=10..20
+  }
+
+  scene 22x13 {
+    pyramid wall cells=[a, b, c, ?, ?, ?] blanks=[left, right, top] at=canvas(1, 1)
+    text ask "Every brick is the sum of the two under it. Fill in the empty bricks." narrate width=20 below=wall gap=1
+  }
+
+  answer left=(a + b) right=(b + c) top=(a + 2 * b + c)
+  feedback {
+    when (top == a + b + c) point=wall.brick(5) {
+      say "The middle brick is used twice, once on the left and once on the right."
+    }
+  }
+}

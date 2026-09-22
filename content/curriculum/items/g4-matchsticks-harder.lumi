@@ -1,0 +1,13 @@
+# Checked by code: the checker moves one stick every way it can and keeps the true equations, so
+# the verifier proves the puzzle is solvable and the answer sheet lists every solution.
+item puzzle.matchsticks v=1 stars=3 skills=[reasoning.digits] {
+  title "Move one matchstick"
+
+  scene 26x9 {
+    matchsticks eq eq="5+7=2" at=canvas(1, 1)
+    text ask "Move exactly one matchstick so the sum is true." narrate width=24 below=eq gap=1
+  }
+
+  check matchsticks.one-move from="5+7=2"
+  hint "Look at what one stick would turn each digit into, and at the plus sign."
+}

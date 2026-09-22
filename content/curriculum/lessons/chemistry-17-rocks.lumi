@@ -1,0 +1,47 @@
+lesson chemistry-rocks v=1 format=teach grade=2 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Rocks and what they are like"
+  goal "Test rocks with a drop of water and a drop of vinegar, group them by what the tests show, and choose a rock for a job with a reason."
+
+  look {
+    scene 18x16 {
+      rocks a rocks=["granite", "chalk", "sandstone", "slate"] test=1 letters=0 names=1 at=canvas(1, 0)
+      rocks b rocks=["marble", "basalt", "limestone", "pumice"] test=2 letters=0 names=1 below=a gap=0
+    }
+    say """
+      Rocks are not all alike, and two drops tell a lot. A drop of water soaks into sandstone and
+      chalk, which are made of grains with gaps between them, and sits on granite and slate. A drop
+      of vinegar fizzes on chalk, limestone and marble, which are all made of the same stuff.
+      """
+  }
+  do {
+    practice chem.rock-soaks count=2 seed=1
+    practice chem.rock-fizz count=2 seed=4
+    practice chem.rock-predict count=2 seed=2
+    practice chem.rock-sort count=2 seed=4
+  }
+  try stars=2 {
+    show chem.rock-best q=1 easy-q=0 hard-q=2
+  }
+  try stars=3 {
+    show chem.rock-clues k=1 easy-k=2 hard-k=3
+  }
+  remember {
+    say "Water soaks into rocks made of grains. Vinegar fizzes on chalk, limestone and marble."
+  }
+
+  grown-ups """
+    Reading which rock soaked up the drop is the way in: the picture shows the result. Counting
+    the rocks that fizzed, predicting which will fizz from its name, and finding the rock in the
+    wrong column ask the same tests from three directions. The two-star question asks why a rock
+    suits a job, or does not. The three-star question gives two clues that each fit two rocks, so
+    only putting them together finds the one. To try it, put a few drops of vinegar on pebbles from
+    the garden with a dropper, wearing goggles; chalk from a cliff or a beach fizzes, but blackboard
+    chalk is often made of something else and may not. Nobody tastes the vinegar.
+    """
+  level easy {
+    grown-ups "At this level the water drops are read off the picture as written, one or two rocks fizz, the rock that is the same stuff as chalk is limestone, the columns are as written, the two-star asks why slate makes a roof, and the three-star has one clue that says what the rock does not do."
+  }
+  level hard {
+    grown-ups "At this level the water drops are read off the picture as written, two or three rocks fizz, the rock that is the same stuff as chalk is marble, the columns are as written, the two-star asks why pumice could make a raft, and the three-star has two clues that say what the rock does not do."
+  }
+}

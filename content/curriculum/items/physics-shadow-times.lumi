@@ -1,0 +1,31 @@
+item physics.shadow-times v=1 skills=[physics.light] {
+  title "How many times longer?"
+  difficulty (t * k)
+  let t={2, 3, 4} k=2..3
+  level easy {
+    let t={2}
+  }
+  level hard {
+    let t={3, 4, 6}
+    where (t * k >= 9 and t * k <= 12)
+    scene 32x19 {
+      shadows sun tall=t shadow=(t * k) at=canvas(1, 1)
+      text ask "How many times longer than the stick is the shadow?" width=24 below=sun gap=1
+      number-input answer right-of=ask gap=2
+    }
+  }
+
+  scene 32x17 {
+    shadows sun tall=t shadow=(t * k) at=canvas(1, 1)
+    text ask "How many times longer than the stick is the shadow?" width=24 below=sun gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer k
+  feedback {
+    when (answer == t * k) point=sun {
+      say "The question is how many sticks fit along the shadow, not how long the shadow is."
+    }
+  }
+  hint "How many sticks would fit end to end along the shadow?"
+}

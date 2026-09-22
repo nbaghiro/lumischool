@@ -1,0 +1,44 @@
+# Pip's program with one step left out, and the step it needs. At m=1 the first step is missing and
+# the wrong choices belong to other snacks; at m=2 a middle step is missing and one wrong choice is
+# a step the program already has.
+item coding.snack-missing v=1 skills=[coding.sequences, coding.debugging] {
+  title "A missing step"
+  difficulty (m - 1)
+  let s=0..3 m=1..2
+  let snack={pick(s, "a jam sandwich", "toast", "hot cocoa", "a fruit bowl")}
+  let v={s * 2 + m - 1}
+  let l1={pick(v, "Spread jam on one slice", "Take two slices of bread", "Push the lever down", "Put the bread in the toaster", "Warm the milk for one minute", "Pour milk into a mug", "Cut the apple into pieces", "Wash the apple")}
+  let l2={pick(s, "Put the other slice on top", "Take the toast out", "Stir cocoa into the hot milk", "Put the pieces in a bowl")}
+  let l3={pick(s, "Cut the sandwich in half", "Spread butter on the toast", "Let the cocoa cool a little", "Pour yoghurt over the fruit")}
+  let ans={pick(v, "Take two slices of bread", "Spread jam on one slice", "Put the bread in the toaster", "Push the lever down", "Pour milk into a mug", "Warm the milk for one minute", "Wash the apple", "Cut the apple into pieces")}
+  let w1={pick(s, "Pour milk into a mug", "Wash the apple", "Spread jam on one slice", "Push the lever down")}
+  let w2={if m == 1 then pick(s, "Take the toast out", "Stir cocoa into the hot milk", "Put the pieces in a bowl", "Put the other slice on top") else l1}
+  let p={(s + m) % 3}
+  let o1={pick(p, ans, w1, w2)}
+  let o2={pick(p, w1, w2, ans)}
+  let o3={pick(p, w2, ans, w1)}
+  level easy {
+    let m=1..1
+  }
+  level hard {
+    let m=2..2
+  }
+
+  scene 32x26 {
+    text ask "Pip's program for {snack} has a step missing. Which one?" narrate width=30 at=canvas(1, 1)
+    program prog code=["{l1}", "{l2}", "{l3}"] title="Pip's steps" below=ask gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=prog gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == l1) point=prog {
+      say "Pip's program already has that step. Which step has nothing ready for it?"
+    }
+    when (pick != ans) point=prog {
+      say "That step belongs to a different snack. Read Pip's steps in order: where does the robot get stuck?"
+    }
+  }
+  hint "Do each step in your head, in order. Is anything not ready when a step needs it?"
+  hint "{if m == 1 then \"Look at the very first step. What must come before it?\" else \"Look between the first and second steps.\"}"
+}

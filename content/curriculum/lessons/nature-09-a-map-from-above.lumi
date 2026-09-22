@@ -1,0 +1,70 @@
+lesson nature-a-map-from-above v=1 format=teach grade=2 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "A map from above"
+  goal "Read a picture of a place drawn from above, and find things on it as a map."
+
+  look {
+    scene 30x21 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row two space=2 align=end {
+          parts side of=island
+          gridmap above cols=5 rows=4 col=4 row=2 thing=hut
+        }
+        compass rose needle=0
+      }
+    }
+    say """
+      From the boat, Ada sees the island in the marsh the way it looks: a mountain, a river,
+      three trees and a beach. Then she climbs the tower and looks straight down. From up there
+      the island is flat, like a drawing on a table. The mountain is just a shape, the hut is a
+      small square, and Ada can see where everything is. A picture drawn from above is a map,
+      and the letters and numbers round its edge say which square a thing is in.
+      """
+  }
+  do {
+    level easy {
+      worked nature.map-square x=2 y=1
+    }
+    practice nature.map-square count=2 seed=2 easy-seed=4 hard-seed=1
+    practice nature.squares-to count=1 seed=2 easy-seed=1 hard-seed=1
+    practice nature.follow-steps count=2 seed=2 easy-seed=1 hard-seed=1
+    practice nature.turn-at count=1 seed=3 easy-seed=1 hard-seed=1
+    practice nature.nearer-on-map count=1 seed=5 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.which-is-the-map k=3
+    }
+  }
+  story {
+    show nature.walk-the-map s=3 p=0 easy-s=2 hard-s=5 hard-p=1
+  }
+  try stars=2 {
+    show nature.which-is-the-map k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.ways-to-tree a=2 b=1 easy-a=1 easy-b=1 hard-a=2 hard-b=2
+  }
+  remember {
+    say "A map is a picture drawn from straight above. The letters and numbers round the edge say where things are."
+  }
+
+  grown-ups """
+    The idea is that a map is a view from above, and everything else in the lesson is reading one:
+    a square by its letter and number, a walk along and down, a path with its turns. The wrong idea
+    to watch for is reading the grid the wrong way round, a number from the top and a letter from
+    the side; the way in is to slide a finger from the thing straight up to the top edge, then
+    straight out to the left. In the turning questions the child has to face the way the path
+    goes, and past the first landmark that means turning the page, which is worth doing with a
+    real sheet. In the nearer question the path is what counts, not the straight line across the
+    paper. The story counts four equal parts of the path. The two-star question is a claim about
+    which drawing is the map, and the reason should come back as "from above". The three-star
+    question asks for all the shortest ways to the tree; the way in is to draw one, then draw
+    another that starts the other way, then keep going until every mix of rights and downs is
+    down. If squares are still read the wrong way round after the core, stay here another day and
+    lay a real grid of string over a tray of toys, then play find-the-square.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the tree in B1) opens the core, the map has four columns and three rows, the walks to the tree are short and the boat moves one or two squares right and one down, the turn asked about is the first landmark's, the nearer question is about the first and the last landmark, the path's parts are two squares long, the claim is Ben's that the side drawing is the map, and the tree is one square right and one down, so there are two ways."
+  }
+  level hard {
+    grown-ups "At this level the map has six columns and five rows with the tree well in from the edges, the walks are long and the boat moves three or four squares right and two or three down, the turn asked about is the third landmark's, when Ada faces a new way, the nearer question is about the two landmarks furthest along, a second reasoning question sits in the core (which reason makes the drawing a map), the path's parts are five squares long, the claim is that the map must be wrong because the mountain is not on it, and the tree is two squares right and two down, so there are six ways."
+  }
+}

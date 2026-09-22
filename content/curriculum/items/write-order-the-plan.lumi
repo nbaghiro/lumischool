@@ -1,0 +1,12 @@
+item writing.order-the-plan v=1 skills=[writing.planning] {
+  title "Put the plan in order"
+
+  scene 36x21 {
+    daysky sky night=false phase=0.5 clouds=4 stars=0 at=canvas(1, 1)
+    text ask "Number the notes 1, 2, 3 and 4 to put the plan in order." width=15 right-of=sky gap=1
+    sequence s items=["We dried off by the fire.", "The sky went dark at lunchtime.", "Rain came down all afternoon.", "We ran home without coats."] blanks=[one, two, three, four] below=sky gap=1
+  }
+
+  answer one=4 two=1 three=2 four=3
+  hint "The plan has to start with the thing that happened first."
+}

@@ -1,0 +1,62 @@
+lesson g1-making-ten v=1 format=teach grade=1 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Making ten"
+  goal "Find the number that makes ten with any number from one to nine, and use it to add past ten."
+
+  look {
+    scene 34x20 {
+      tenframe frame count=7 color=berry at=canvas(1, 1)
+      equation eq "7 + {?more} = 10" right-of=frame gap=1
+      row both below=frame gap=1 space=2 align=end {
+        undercup cup shown=7 cups=1 hidden=3 lifted=true total=10
+        tree t fruit=7 fallen=3 item=apple
+      }
+    }
+    say """
+      Count the counters, then count the empty squares. Together they make ten. Lift the cup and
+      the three are there. Seven apples on the tree and three on the ground is ten apples too.
+      """
+  }
+  do {
+    practice bonds.make-ten count=1 hard-count=0 seed=3
+    practice bonds.under-the-cup count=2 seed=4
+    level easy {
+      worked add.bridge-ten a=8 b=5
+    }
+    practice add.bridge-ten count=2 seed=3
+    practice add.two-frames count=1 easy-count=2 seed=4
+    practice add.missing-past-ten count=1 easy-count=0 hard-count=2 seed=9
+  }
+  story {
+    show story.apples-to-ten n=6
+  }
+  try stars=2 {
+    show add.balance-sides a=7 b=5 c=8 easy-a=6 easy-b=4 easy-c=7 hard-a=9 hard-b=7 hard-c=8
+  }
+  try stars=3 {
+    level easy medium {
+      show bonds.three-cups t=10 easy-t=9
+    }
+    level hard {
+      show bonds.two-cups-all-ways t=13
+    }
+  }
+  remember {
+    say "Ten is a friendly number. To add past it, fill the ten first: 8 + 5 is 10 and 3."
+  }
+
+  grown-ups """
+    The first question can be answered by counting empty squares, and that is fine as a way in. The
+    cups take the squares away, so the pair has to be known. Filling the first frame is the strategy
+    the grade is aiming at: eight and five becomes ten and three. The two frames show the same move
+    with counters, and the missing part asks for it the other way round: 8 + ? = 13. The level scale
+    can be done by working out both sides, but ask whether there is a quicker way (eight is one more
+    than seven, so its partner is one less than five). If every question still needs counting from
+    one, stay here another day.
+    """
+  level easy {
+    grown-ups "At this level the first number is eight or nine, so one or two counters move across, a worked example comes before the adding, and the missing-part question is left for another day."
+  }
+  level hard {
+    grown-ups "At this level three or four counters move across, the totals reach eighteen, and the last question asks for every pair that makes a total. A child who starts at nine and works down will not miss one."
+  }
+}

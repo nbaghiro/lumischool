@@ -1,0 +1,52 @@
+lesson coding-reading-someone-elses v=3 format=teach grade=3 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Reading a program someone else wrote"
+  goal "Work out what an unfamiliar program does by tracing it line by line, and work it backwards to where it began."
+
+  look {
+    scene 34x12 {
+      row both at=canvas(1, 0) space=1 align=start {
+        program p code=["right 3", "down 2", "right 1", "down 1"] title="mine"
+        tracetable tr code=["right 3", "down 2", "right 1", "down 1"] filled=2
+      }
+    }
+    say """
+      Somebody else's program does not come with an explanation. The way to know what it does is
+      to trace it: write where the robot is after every line, one row of the table each. Guess
+      first, then trace, then run it on the screen to check.
+      """
+  }
+  do {
+    practice coding.trace-first-step count=1 seed=5 hard-seed=1
+    practice coding.read-someone-else count=2 seed=5 easy-seed=8
+    practice coding.trace-fill count=1 seed=2
+    practice coding.where-did-it-start count=1 seed=3 hard-seed=7
+    show coding.table-rows n=2 m=3 easy-m=2 hard-n=3
+    show coding.table-rows n=3 m=2 easy-n=4 hard-n=4 hard-m=3
+    practice coding.trace-repeat count=1 seed=4
+  }
+  try stars=2 {
+    show coding.wrong-line-corridor k=2 e=-1 easy-k=1 easy-e=1
+  }
+  try stars=3 {
+    show coding.three-line-route k=0 hard-k=1
+  }
+  remember {
+    say "To know what a program does, trace it. Do not guess it from the first line."
+  }
+
+  grown-ups """
+    Swapping programs is the best version of this: the child writes one, you run it exactly as
+    written, and they watch you do the wrong thing where the program says the wrong thing. Guess,
+    run, then look at where the guess went wrong: that is the order worth keeping. Working out
+    where a robot started means reading the program from the bottom up with every move turned
+    round. In the two-star question the robot bumps on line 3, but line 3 is not the one that is
+    wrong: a short step on line 2 left it in the wrong row. In the three-star question the rocks
+    decide where the robot has to turn.
+    """
+  level easy {
+    grown-ups "At this level the first step goes right one square, the programs to trace move four squares or fewer, the robot in the table goes right two, the start to work back to is two right, one up and one left from the flag, the trace tables have their left outside the repeat, the step asked about is the third, the wrong line is line 1, where the robot bumps at once, and the route to build is as written."
+  }
+  level hard {
+    grown-ups "At this level the first step goes left two squares, the programs to trace move six or seven squares, the robot in the table goes right three, the start to work back to is three right and then two up, two left or both from the flag, the trace tables have their left inside a repeat of three or four, the step asked about is the fifth or sixth, in the second time round, the wrong line is as written, and the route to build turns after three squares, with the rocks closer in."
+  }
+}

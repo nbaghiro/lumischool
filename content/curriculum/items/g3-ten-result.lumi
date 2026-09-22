@@ -1,0 +1,30 @@
+# Times ten or a hundred, with the chart beside it so the digits can be seen to move.
+item times.ten-result v=1 skills=[place-value.multiply-by-ten] {
+  title "Times ten, times a hundred"
+  difficulty (m + n)
+  let n=(3..95 by 4) m={10, 100}
+  level easy {
+    let n=(3..27 by 4) m={10}
+  }
+  level hard {
+    let n=(51..95 by 4) m={100}
+  }
+
+  scene 32x8 {
+    pvchart card value="{n}" show=digits at=canvas(1, 1)
+    equation eq "{n} × {m} =" right-of=card gap=2
+    number-input r right-of=eq gap=1
+  }
+
+  answer r=(n * m)
+  feedback {
+    when (r == n + m) point=eq {
+      say "This is times, not add. Every digit moves {if m == 10 then \"one place\" else \"two places\"} to the left."
+    }
+    when (r == n * 10 and m == 100) point=eq {
+      say "Times a hundred is times ten and then times ten again."
+    }
+  }
+  hint "Which column is each digit in now? Where does it go when you times by {m}?"
+  hint "Move every digit {if m == 10 then \"one place\" else \"two places\"} to the left and fill the empty columns with zeros."
+}

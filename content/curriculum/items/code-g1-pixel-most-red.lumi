@@ -1,0 +1,17 @@
+# Reading four lines and comparing them, with the picture hidden: the row with the most red is the
+# line with the biggest red number, whatever the white around it.
+item coding.pixel-most-red v=1 skills=[coding.data] {
+  title "Which row has the most red?"
+  let r1=1..5 r2=1..5 r3=1..5 r4=1..5
+  where (r1 != r2 and r1 != r3 and r1 != r4 and r2 != r3 and r2 != r4 and r3 != r4)
+
+  scene 30x17 {
+    pixels p cols=6 rows=4 code=["{6 - r1} white {r1} red", "{r2} red {6 - r2} white", "{6 - r3} white {r3} red", "{r4} red {6 - r4} white"] show=false at=canvas(1, 0)
+    text ask "Which row of the picture will have the most red squares?" width=28 below=p gap=1
+    choice pick options=[1, 2, 3, 4] below=ask gap=1
+  }
+
+  answer pick=(if r1 > r2 and r1 > r3 and r1 > r4 then 1 else if r2 > r3 and r2 > r4 then 2 else if r3 > r4 then 3 else 4)
+  hint "Each line is one row. Find the red number in each line."
+  hint "Which red number is the biggest? Its line is the row."
+}

@@ -1,0 +1,16 @@
+# Evidence for a claim: each wrong idea is answered by a different thing a child can see or weigh.
+item chem.salt-evidence v=1 stars=2 skills=[chemistry.evaporating, chemistry.mass, reasoning.evidence] {
+  title "Show them they are wrong"
+  difficulty q
+  let q=0..1 day={4, 6}
+
+  scene 32x17 {
+    text ask "{if q == 0 then \"Ana says the salt was used up when the water went.\" else \"Tom says the salt vanished when it dissolved, so salty water weighs the same as the water on its own.\"} Which of these shows {if q == 0 then \"she\" else \"he\"} is wrong?" width=24 at=canvas(1, 0)
+    dish d left=(if q == 0 then 0 else 4) day=(if q == 0 then day else day - 3) below=ask gap=0
+    choice pick options=["The crust left in the dish", "The salty water weighs more", "The dish is dry"] stack=column right-of=d gap=1
+  }
+
+  answer pick=(if q == 0 then "The crust left in the dish" else "The salty water weighs more")
+  hint "What would you see, or weigh, if the salt were still there?"
+  hint "Which of the three could only be true if the salt had not gone anywhere?"
+}

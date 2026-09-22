@@ -1,0 +1,27 @@
+# Signs mix facts and selling words. Three lines could be checked and one cannot; the name at the
+# top is left out of the choices.
+item reading.sign-opinion v=1 skills=[reading.fact-opinion] {
+  title "The line on the sign"
+  difficulty (if k == 1 then 0 else if k == 3 then 1 else 2)
+  let k=0..3
+  level easy {
+    let k={1, 3}  # lovely views, cakes too good to share
+  }
+  level hard {
+    let k={0, 2}  # creamiest in the county, the most fun on wheels
+  }
+
+  scene 36x12 {
+    row all at=canvas(1, 1) space=2 align=start {
+      sign board lines=[if k == 0 then "HILLTOP FARM" else if k == 1 then "RIVER CAFE" else if k == 2 then "SEAVIEW BIKES" else "PIP'S BAKERY", if k == 0 then "Milk from our own cows" else if k == 1 then "Lovely river views" else if k == 2 then "Bikes by the hour" else "Bread baked at 6 a.m.", if k == 0 then "Creamiest in the county" else if k == 1 then "Hot soup every day" else if k == 2 then "Helmets for every rider" else "Cakes too good to share", if k == 0 then "Open 9 till 5" else if k == 1 then "Seats for forty" else if k == 2 then "The most fun on wheels" else "Closed on Sundays"] kind=board color=(if k == 0 then "mint" else if k == 1 then "sky" else if k == 2 then "tang" else "berry")
+      column q space=1 align=start {
+        text ask "Count down from the top. Which line is an opinion?" width=14
+        choice pick options=["2nd", "3rd", "4th"]
+      }
+    }
+  }
+
+  answer pick=(if k == 0 or k == 3 then "3rd" else if k == 1 then "2nd" else "4th")
+  hint "For each line, ask: could I check it by looking, counting or asking?"
+  hint "Which line is somebody's view that another person could disagree with?"
+}

@@ -1,0 +1,29 @@
+# Matching each material to the thing it is like: three materials on the left, three descriptions
+# on the right. At hard the descriptions are the ones that need a second thought (the one that
+# floats, the one that shows through).
+item chem.match-material v=1 skills=[chemistry.materials] {
+  title "Match the material"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2 r=0..2
+  let m1={pick(k, "wood", "metal", "glass")}
+  let m2={pick(k, "metal", "plastic", "wood")}
+  let m3={pick(k, "plastic", "glass", "plastic")}
+  let d1={pick(k, "has a grain and floats", "shines and feels cold", "shows through and does not bend")}
+  let d2={pick(k, "shines and feels cold", "bends and is light", "has a grain and floats")}
+  let d3={pick(k, "bends and is light", "shows through and does not bend", "bends and is light")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 30x12 {
+    text ask "Write the number of the words that fit each material." narrate width=28 at=canvas(1, 0)
+    match m left=["{m1}", "{m2}", "{m3}"] right=["{if r == 0 then d2 else if r == 1 then d3 else d1}", "{if r == 0 then d3 else if r == 1 then d1 else d2}", "{if r == 0 then d1 else if r == 1 then d2 else d3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else if r == 1 then 2 else 1) y=(if r == 0 then 1 else if r == 1 then 3 else 2) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Think of a spoon or a bottle in each material. Which one shines? Which one bends?"
+  hint "Wood has a grain and floats. Metal shines and feels cold. Glass shows through. Plastic bends."
+}

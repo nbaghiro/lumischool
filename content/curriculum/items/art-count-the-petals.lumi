@@ -1,0 +1,21 @@
+item art.count-the-petals v=1 skills=[art.looking] {
+  title "Count the petals"
+  difficulty p
+  let p=4..8
+  level easy {
+    let p=4..6
+  }
+  level hard {
+    let p=7..8
+  }
+
+  scene 24x11 {
+    flowers bloom count=1 petals=p at=canvas(1, 1)
+    text ask "Look closely. How many petals does the flower have?" width=14 right-of=bloom gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer p
+  hint "Which petal will you start at? Put your finger on it."
+  hint "Go round the flower one petal at a time, and stop when you are back at the first."
+}

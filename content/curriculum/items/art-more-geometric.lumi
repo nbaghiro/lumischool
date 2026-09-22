@@ -1,0 +1,16 @@
+# Sorting into two groups and comparing them, without a count of either being asked for.
+item art.more-geometric v=1 stars=2 skills=[art.shape, reasoning.compare] {
+  title "More of one kind"
+  difficulty (if s == "house" then 1 else 0)
+  let s={"boat", "fish", "house"}
+
+  scene 30x12 {
+    collage pic scene=s at=canvas(1, 1)
+    text ask "Sort the pieces of the {s} into geometric and organic. How many more are geometric?" width=12 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check art.shapes of=pic answer=geometric-organic
+  hint "Which pieces are organic? There are not many."
+  hint "Make two groups with your fingers, geometric and organic. How many more are in the bigger group?"
+}

@@ -1,0 +1,27 @@
+# The missing part of a kilogram: the reading is known and the rest has to be added to reach 1000 g.
+item measure.kilo-more v=1 skills=[mass.kilograms, addition.missing-part] {
+  title "Up to a kilogram"
+  difficulty (1000 - v)
+  let v={200, 300, 400, 600, 700, 800}
+  level easy {
+    let v={700, 800}
+  }
+  level hard {
+    let v={200, 300}
+  }
+
+  scene 30x14 {
+    dialscale scale max=1000 step=200 value=v unit=g at=canvas(1, 1)
+    text ask "How many more grams of apples would make one kilogram?" narrate width=14 right-of=scale gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (1000 - v)
+  feedback {
+    when (answer == v) point=scale {
+      say "That is what is on the scale now. How much more makes 1000 grams?"
+    }
+  }
+  hint "How many grams make one kilogram?"
+  hint "Count on in hundreds from where the needle is to 1000."
+}

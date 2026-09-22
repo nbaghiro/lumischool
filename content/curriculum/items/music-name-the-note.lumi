@@ -1,0 +1,20 @@
+# Three notes a beginner reads first, and the letters are hidden here because naming them is the
+# question. The staff is drawn at one square to the space, so the lines are lines on the paper.
+item music.name-the-note v=1 skills=[music.staff] {
+  title "Which note is ringed?"
+
+  scene 30x12 {
+    notes tune clef=treble notes=[C4, E4, G4] letters=false lit=[E4] at=canvas(1, 1)
+    text ask "The ringed note sits on the bottom line of the staff. Which letter is it?" width=14 right-of=tune gap=1
+    choice pick options=["C", "E", "G"] below=ask gap=1
+  }
+
+  answer pick="E"
+  feedback {
+    when (pick == "C") point=tune.note(1) {
+      say "C is the note that hangs below the staff on its own short line. The ringed one sits on the bottom line."
+    }
+  }
+  hint "Start at middle C, on its own short line below the staff, and count up."
+  hint "Middle C, then D just under the staff, then the bottom line. Which letter is that?"
+}

@@ -1,0 +1,19 @@
+# The way in: the before and after pictures show the change, and the child names it.
+item chem.melt-or-freeze v=1 skills=[chemistry.states] {
+  title "Melting or freezing?"
+  difficulty (if c == "melt-chocolate" then 1 else 0)
+  let c={"melt-ice", "freeze-water", "melt-chocolate"}
+  level hard {
+    let c={"freeze-water", "melt-chocolate"}
+  }
+
+  scene 16x13 {
+    text ask "Is this melting or freezing?" width=15 at=canvas(1, 0)
+    beforeafter ch change=c show=1 names=1 below=ask gap=0
+    choice pick options=["melting", "freezing"] below=ch gap=0
+  }
+
+  answer pick=(if c == "freeze-water" then "freezing" else "melting")
+  hint "Look at the first picture, then the second. Did it go from solid to liquid, or liquid to solid?"
+  hint "Which picture shows the solid? Does the change start with the solid, or end with it?"
+}

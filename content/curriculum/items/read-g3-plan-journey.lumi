@@ -1,0 +1,25 @@
+# A journey planned to two constraints on a timetable: the first bus after Nia reaches the stop,
+# then the latest bus from the Library that still gets her to school in time. Both are proved.
+item reading.plan-journey v=1 stars=3 skills=[reading.text-features, reasoning.constraints] {
+  title "Plan Nia's journey"
+  let s={0, 5} t=0..1 d=0..1
+
+  scene 37x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      table tt cols=5 head=["Stop", "Bus 1", "Bus 2", "Bus 3", "Bus 4"] cells=["Market", "{(480 + s + 0) // 60}:{if (480 + s + 0) % 60 < 10 then \"0\" else \"\"}{(480 + s + 0) % 60}", "{(510 + s + 0) // 60}:{if (510 + s + 0) % 60 < 10 then \"0\" else \"\"}{(510 + s + 0) % 60}", "{(540 + s + 0) // 60}:{if (540 + s + 0) % 60 < 10 then \"0\" else \"\"}{(540 + s + 0) % 60}", "{(570 + s + 0) // 60}:{if (570 + s + 0) % 60 < 10 then \"0\" else \"\"}{(570 + s + 0) % 60}", "Park", "{(480 + s + 10) // 60}:{if (480 + s + 10) % 60 < 10 then \"0\" else \"\"}{(480 + s + 10) % 60}", "{(510 + s + 10) // 60}:{if (510 + s + 10) % 60 < 10 then \"0\" else \"\"}{(510 + s + 10) % 60}", "{(540 + s + 10) // 60}:{if (540 + s + 10) % 60 < 10 then \"0\" else \"\"}{(540 + s + 10) % 60}", "{(570 + s + 10) // 60}:{if (570 + s + 10) % 60 < 10 then \"0\" else \"\"}{(570 + s + 10) % 60}", "Library", "{(480 + s + 25) // 60}:{if (480 + s + 25) % 60 < 10 then \"0\" else \"\"}{(480 + s + 25) % 60}", "{(510 + s + 25) // 60}:{if (510 + s + 25) % 60 < 10 then \"0\" else \"\"}{(510 + s + 25) % 60}", "{(540 + s + 25) // 60}:{if (540 + s + 25) % 60 < 10 then \"0\" else \"\"}{(540 + s + 25) % 60}", "{(570 + s + 25) // 60}:{if (570 + s + 25) % 60 < 10 then \"0\" else \"\"}{(570 + s + 25) % 60}", "School", "{(480 + s + 40) // 60}:{if (480 + s + 40) % 60 < 10 then \"0\" else \"\"}{(480 + s + 40) % 60}", "{(510 + s + 40) // 60}:{if (510 + s + 40) % 60 < 10 then \"0\" else \"\"}{(510 + s + 40) % 60}", "{(540 + s + 40) // 60}:{if (540 + s + 40) % 60 < 10 then \"0\" else \"\"}{(540 + s + 40) % 60}", "{(570 + s + 40) // 60}:{if (570 + s + 40) % 60 < 10 then \"0\" else \"\"}{(570 + s + 40) % 60}"]
+      text ask "Nia gets to the Market stop at {(475 + s + 30 * t) // 60}:{if (475 + s + 30 * t) % 60 < 10 then \"0\" else \"\"}{(475 + s + 30 * t) % 60}. She stays at the Library as long as she can, then goes on to School. She must be there by {(585 + s + 30 * d) // 60}:{if (585 + s + 30 * d) % 60 < 10 then \"0\" else \"\"}{(585 + s + 30 * d) % 60}." width=36
+      row q1 space=2 align=centre {
+        text a1 "At the Market she gets on" width=12
+        choice market options=["Bus 1", "Bus 2", "Bus 3"]
+      }
+      row q2 space=2 align=centre {
+        text a2 "At the Library she gets on" width=12
+        choice library options=["Bus 2", "Bus 3", "Bus 4"]
+      }
+    }
+  }
+
+  answer market=(if t == 0 then "Bus 1" else "Bus 2") library=(if d == 0 then "Bus 3" else "Bus 4")
+  hint "Which is the first bus to leave the Market after Nia gets there?"
+  hint "Now read the School row. Which buses get there in time? Take the last one, and check it leaves the Library after she arrives."
+}

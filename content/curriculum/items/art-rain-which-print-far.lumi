@@ -1,0 +1,37 @@
+# Two prints of the bridge, one of them with a bank drawn behind the arches as well as one in front,
+# and which of the two shows the far bank. The far bank is hatched more openly than the near one, so
+# it reads as further without any colour.
+item art.rain-which-print-far v=1 skills=[art.looking, art.depth] {
+  title "Which print has the far bank?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let f1={pick(k, 1, 0, 1, 0, 1, 0)}
+  let f2={pick(k, 0, 1, 0, 1, 0, 1)}
+  let r1={pick(k, 0, 0, 1, 1, 1, 2)}
+  let r2={pick(k, 0, 0, 1, 1, 2, 1)}
+  let ans={pick(k, "The first", "The second", "The first", "The second", "The first", "The second")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 21x27 {
+    text l1 "The first print" at=canvas(1, 0)
+    bridge one arches=3 rain=r1 weight="both" far=f1 below=l1 gap=0
+    text l2 "The second print" below=one gap=1
+    bridge two arches=3 rain=r2 weight="both" far=f2 below=l2 gap=0
+    text ask "One of these prints draws the far bank behind the arches as well as the near one in front. Which print is it?" narrate width=20 below=two gap=1
+    choice pick options=["The first", "The second"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=two {
+      say "Look through the arches. In one print there is a bank behind them, hatched more openly than the bank at the front."
+    }
+  }
+  hint "Look at what you can see through the arches of each bridge."
+  hint "The bank that is further away is drawn with its lines further apart."
+}

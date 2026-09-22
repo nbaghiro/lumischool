@@ -1,0 +1,17 @@
+# A picture that should match on both sides: one line of code is wrong, and the painted picture shows
+# which row is lopsided, so the child reads the rows against the rule of symmetry.
+item coding.pixel-spoilt-row v=1 stars=2 skills=[coding.debugging, coding.data] {
+  title "The row that spoils it"
+  difficulty r
+  let r=1..4 k=0..1
+
+  scene 32x19 {
+    pixels p cols=7 rows=4 code=["{if r == 1 then \"1 white 3 red 3 white\" else if k == 0 then \"2 white 3 red 2 white\" else \"3 white 1 red 3 white\"}", "{if r == 2 then \"2 white 5 red\" else if k == 0 then \"1 white 5 red 1 white\" else \"2 white 3 red 2 white\"}", "{if r == 3 then \"1 white 6 red\" else \"7 red\"}", "{if r == 4 then \"1 white 1 red 5 white\" else if k == 0 then \"3 white 1 red 3 white\" else \"1 white 5 red 1 white\"}"] at=canvas(1, 0)
+    text ask "The picture should look the same on both sides, like a mirror. Which line of code is wrong?" width=30 below=p gap=1
+    choice pick options=[1, 2, 3, 4] below=ask gap=1
+  }
+
+  answer pick=r
+  hint "Look at each row of the picture. Is the left side the same as the right side?"
+  hint "In a row that matches, the white number at the start is the same as the white number at the end."
+}

@@ -1,0 +1,38 @@
+# The way in: the frog's life drawn so far, the rest waiting as dashed circles, and the next stage
+# to name. After the frogspawn is the plain one; after the froglet the child has to see that the
+# back legs have come and the tail is going.
+item nature.frog-next v=1 skills=[nature.life-cycles] {
+  title "What comes next?"
+  difficulty (s - 1)
+  let s=1..3
+  let next={pick(s - 1, "tadpole", "froglet", "frog")}
+  let o1={pick(s - 1, "frogspawn", "tadpole", "froglet")}
+  let o3={pick(s - 1, "frog", "frog", "frogspawn")}
+  level easy {
+    let s=1..2
+  }
+  level hard {
+    let s=2..3
+  }
+
+  scene 34x14 {
+    frogcycle life stage=s ring=1 names=0 at=canvas(1, 1)
+    text ask "Ada watches the marsh pond through the spring. This is how far the frogspawn has got. What comes next?" narrate width=20 right-of=life gap=2
+    choice pick options=[o1, next, o3] below=life gap=1
+  }
+
+  answer pick=next
+  feedback {
+    when (pick == "frogspawn") point=life {
+      say "Frogspawn is where it all starts, at the top of the ring. Look at the last one that is drawn, and say what it turns into."
+    }
+    when (s == 2 and pick == "frog") point=life {
+      say "Not yet. First the tadpole grows back legs while it still has its tail. That is a froglet."
+    }
+    when (s == 3 and pick == "tadpole") point=life {
+      say "The tadpole came before. This one has legs already. Once its tail has gone, it is a frog."
+    }
+  }
+  hint "Find the last picture that is drawn, before the first dashed circle."
+  hint "What does that one turn into as it grows? Legs come before the tail goes."
+}

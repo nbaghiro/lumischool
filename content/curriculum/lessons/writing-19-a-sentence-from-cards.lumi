@@ -1,0 +1,62 @@
+lesson writing-a-sentence-from-cards v=1 format=teach grade=1 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "A sentence from picture cards"
+  goal "Build a sentence that says what a picture shows, and write it."
+
+  look {
+    scene 34x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=centre {
+          picturecards card who=["fox"] where=["in"] thing=["box"] letters=false
+          sentence strip before="The fox is in the box" blank=0 after="."
+        }
+        wordcards cards words=["The fox", "is", "in the box."] picked=-1
+      }
+    }
+    say """
+      Look at the card. Who is it? The fox. Where is it? In the box. Put the words in order and you
+      have a sentence: The fox is in the box. It starts with a capital letter and ends with a full
+      stop.
+      """
+  }
+  do {
+    level easy {
+      worked writing.which-word-fits k=0 level=medium
+    }
+    practice writing.which-word-fits count=1 seed=1
+    show writing.where-word k=0 easy-k=3
+    show writing.where-word k=1 hard-k=2
+    show writing.words-in-order
+    show writing.cards-in-order k=2 q=1 easy-k=0
+    show writing.finish-the-sentence a=0 p=2 hard-p=1
+    level hard {
+      practice writing.card-sentence-wrong count=1 seed=5
+    }
+    show writing.cards-in-order k=3 q=2
+    show writing.write-the-card k=0
+  }
+  try stars=2 {
+    show writing.card-sentence-wrong k=1 m=1 easy-m=0
+  }
+  try stars=3 {
+    show writing.two-cards-one-sentence k=0
+  }
+  remember {
+    say "Who is it, and where is it? Say it, then write it."
+  }
+
+  grown-ups """
+    The sentence the child writes about the card is theirs: ask them to say it out loud first, then
+    write it. A child who can say "The duck is on the rug" and
+    writes "duck on rug" has the idea and needs help with the small words, not with the sentence.
+    The six-card questions show no capital and no full stop, so the picture and the order of the
+    words are all the child has to go on. In the two-star question one word in Pip's sentence does
+    not match the card; in the three-star one, both cards go into one sentence joined with and, so
+    there is one full stop, not two.
+    """
+  level easy {
+    grown-ups "At this level under is chosen once in the teacher's pen before the word that fits, the gaps want in and on, the cards to order say on the mat, the missing word and the card to write are as written, the two-star's wrong word is the animal, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the word that fits is as written, the gaps want by and under, the cards to order say under the table, the missing word is the place word and a second card sentence is checked in the core, the card to write is as written, and the two-star and three-star are as written."
+  }
+}

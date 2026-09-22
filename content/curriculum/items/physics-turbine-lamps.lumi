@@ -1,0 +1,21 @@
+item physics.turbine-lamps v=1 skills=[physics.energy] {
+  title "Wind to light"
+  difficulty w
+  let w=0..3 n=3..4
+  where (w != n)
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=2..3
+  }
+
+  scene 23x20 {
+    turbine t wind=w lamps=n at=canvas(1, 0)
+    text ask "Each step up in the wind lights one more lamp. How many lamps are lit?" width=21 below=t gap=0
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=t answer=lit
+  hint "How many wind arrows are there?"
+}

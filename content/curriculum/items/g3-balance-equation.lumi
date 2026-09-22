@@ -1,0 +1,20 @@
+item algebra.balance-equation v=1 skills=[algebra.unknowns] {
+  title "Both sides the same"
+  difficulty (a + b)
+  let a=4..19 b=3..15
+  where (a != b)
+
+  scene 30x17 {
+    balanceeq scales left="{a} + ?" right="{a + b}" at=canvas(1, 1)
+    text ask "Both sides are equal. What is hidden?" narrate below=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == a + b) point=scales {
+      say "That is the whole of the other side. Take the {a} away from it first."
+    }
+  }
+  hint "Take {a} away from {a + b}."
+}

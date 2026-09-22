@@ -1,0 +1,25 @@
+item money.count-coins v=1 skills=[money.coins] {
+  title "How many cents"
+  difficulty (10 * d + 5 * n + p)
+  let d=1..3 n=0..2 p=1..4
+  level easy {
+    let d=1..2 n={0} p=1..4  # dimes and pennies only
+  }
+  level hard {
+    let d=2..3 n=1..2 p=2..4
+  }
+
+  scene 22x7 {
+    coins purse dimes=d nickels=n pennies=p at=canvas(1, 1)
+    text ask "How many cents is this?" narrate below=purse gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (10 * d + 5 * n + p)
+  feedback {
+    when (answer == d + n + p) point=purse {
+      say "That is how many coins. A dime is ten cents and a nickel is five."
+    }
+  }
+  hint "Start with the dimes: ten, twenty, thirty."
+}

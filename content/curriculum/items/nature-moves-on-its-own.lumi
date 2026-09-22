@@ -1,0 +1,34 @@
+# The wrong idea this lesson is about: "it moves, so it is alive". Everything here moves; the
+# question is who moves it. The rocket and the kite are the hard ones because nothing seems to push them.
+item nature.moves-on-its-own v=1 skills=[nature.living] {
+  title "Who moves it?"
+  difficulty (if k <= 3 then 0 else if k <= 5 then 1 else 2)
+  let k=0..7
+  let thing={if k == 0 then "cat" else if k == 1 then "bicycle" else if k == 2 then "duck" else if k == 3 then "boat" else if k == 4 then "hedgehog" else if k == 5 then "hen" else if k == 6 then "kite" else "rocket"}
+  let self={if k == 0 or k == 2 or k == 4 or k == 5 then 1 else 0}
+  let mover={if k == 1 then "a person pedals it" else if k == 3 then "the wind or a person rows it" else if k == 6 then "the wind pulls it up" else if k == 7 then "a fire pushes it up" else "it moves itself"}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 32x15 {
+    art pic asset="{thing}" at=canvas(1, 1)
+    text ask "The {thing} moves. Does it move by itself, or does something move it?" narrate width=16 right-of=pic gap=2
+    choice pick options=["By itself", "Something moves it"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if self == 1 then "By itself" else "Something moves it")
+  feedback {
+    when (self == 0 and pick == "By itself") point=pic {
+      say "Left alone it stays still. It moves because {mover}. Living things move themselves."
+    }
+    when (self == 1 and pick == "Something moves it") point=pic {
+      say "Nobody has to push it. It decides to move, because it is living."
+    }
+  }
+  hint "If nobody touches it and there is no wind, does it still move?"
+  hint "Living things move themselves. Made things need a push, a pull or a wind."
+}

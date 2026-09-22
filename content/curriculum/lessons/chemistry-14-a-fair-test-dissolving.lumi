@@ -1,0 +1,43 @@
+lesson chemistry-a-fair-test-dissolving v=2 format=worked grade=4 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "A fair test: how fast it dissolves"
+  goal "Say which one thing a test changes, tell a fair test from an unfair one, and read and predict from results."
+
+  example {
+    worked chem.dissolve-fair-test v=1 easy-level=medium
+    say """
+      Only the water's temperature changed from row to row, so any change in the time came from
+      the temperature. To find how much sooner, take the time at 40 degrees from the time at 10.
+      """
+  }
+  exercises {
+    practice chem.fair-changed count=2 seed=1
+    practice chem.fair-which count=2 seed=4
+    practice chem.dissolve-fair-test count=2 seed=5 hard-seed=7
+    practice chem.fair-predict count=2 seed=4
+  }
+  try stars=2 {
+    show chem.fair-mistake v=2 easy-v=3 hard-v=0
+  }
+  try stars=3 {
+    show chem.fair-between v=5 easy-v=4
+  }
+
+  grown-ups """
+    A fair test changes one thing and keeps everything else the same, so any difference in the
+    results can only have come from that one thing. The first questions are the way in: find the one
+    column of the table that changes. Choosing the fair test of two is the core of the lesson, which
+    the audit found missing: a test that also changes the amount of sugar cannot show that hot water
+    is faster. The results tables are made up but shaped like real ones: the times fall by less each
+    time, so nothing here asks the child to continue a pattern. The two-star question asks whether
+    Sam's test can show what he says, and in some versions it can. The three-star question asks about
+    a temperature nobody tried, and the honest answer is a range. At home, three glasses of water at
+    different temperatures, the same spoon of sugar and the same number of stirs is the whole
+    experiment; a grown-up pours the hot water.
+    """
+  level easy {
+    grown-ups "At this level the worked test, what changed and which test is fair are as written, the times differ by thirty or forty seconds, the predictions are as written, Sam's test changed two things, and the three-star's answer is more than seventy seconds, past the end of the table."
+  }
+  level hard {
+    grown-ups "At this level the worked test, what changed and which test is fair are as written, the times differ by sixty seconds or more, the predictions are as written, Sam's test changed only the water, so it can show what he says, and the three-star is as written, a range between two rows."
+  }
+}

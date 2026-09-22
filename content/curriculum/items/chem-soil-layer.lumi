@@ -1,0 +1,23 @@
+# The way in: every layer is a whole number of squares thick, so it is counted against the paper.
+item chem.soil-layer v=1 skills=[chemistry.rocks] {
+  title "How thick is the layer?"
+  difficulty q
+  let st=0..1 sa=2..4 si=1..3 cl=1..2 q=0..1
+  where (st + sa + si + cl <= 8)
+  level easy {
+    let q={0}  # the sand, at the bottom of the jar
+  }
+  level hard {
+    let q={1}  # the silt, between the sand and the clay
+  }
+
+  scene 26x14 {
+    soiljar j stones=st sand=sa silt=si clay=cl bits=4 names=1 at=canvas(1, 0)
+    text ask "How many squares thick is the {if q == 0 then \"sand\" else \"silt\"}?" width=9 right-of=j gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then sa else si)
+  hint "Find the {if q == 0 then \"sand\" else \"silt\"} from its label. Where does it start and stop?"
+  hint "Count the squares of the paper from its bottom edge to its top edge."
+}

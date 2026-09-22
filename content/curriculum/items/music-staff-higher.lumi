@@ -1,0 +1,31 @@
+# Two notes on the staff, and the higher one sits higher on the lines: to the right on the
+# keyboard is up on the page. At hard the two are a step apart.
+item music.staff-higher v=1 skills=[music.pitch, music.staff] {
+  title "Which note is higher?"
+  difficulty (5 - abs(a - b))
+  let a=1..6 b=1..6
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 3)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+  let p={if a == 1 then "C4" else if a == 2 then "D4" else if a == 3 then "E4" else if a == 4 then "F4" else if a == 5 then "G4" else "A4"}
+  let q={if b == 1 then "C4" else if b == 2 then "D4" else if b == 3 then "E4" else if b == 4 then "F4" else if b == 5 then "G4" else "A4"}
+
+  scene 32x17 {
+    grandstaff tune notes=["{p}", "{q}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "Two notes on the top staff. Which one sounds higher?" narrate width=14 right-of=tune gap=1
+    choice pick options=["the first", "the second"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if a > b then "the first" else "the second")
+  feedback {
+    when (pick != (if a > b then "the first" else "the second")) point=tune {
+      say "A note that sits higher up the staff sounds higher. Which of the two is higher up the page?"
+    }
+  }
+  hint "Look at where each note sits on the lines. Which one is higher up the page?"
+  hint "Higher on the staff is higher to hear, the way further right is higher on the keys."
+}

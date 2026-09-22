@@ -1,0 +1,24 @@
+# Predict the hidden saucer. The ice melts the same amount every ten minutes, a quarter on the
+# table and half in the sun, so the child continues a pattern they can see.
+item chem.ice-next v=1 skills=[chemistry.states, fractions.quarters] {
+  title "What comes next?"
+  difficulty (b + p)
+  let p=1..2 b=1..3
+  where (p == 1 or b <= 2)
+  level easy {
+    let p={1} b=1..2
+  }
+  level hard {
+    where (b + p >= 4)
+  }
+
+  scene 22x17 {
+    text ask "The ice melts the same amount every 10 minutes. How many quarters of the cube are in the hidden saucer?" width=21 at=canvas(1, 0)
+    icemelt ice every=10 count=(b + 1) place=p blank=b below=ask gap=0
+    number-input answer below=ice gap=0
+  }
+
+  check chem.change of=ice answer=next
+  hint "How much smaller does the cube get from one saucer to the next?"
+  hint "A whole cube is 4 quarters. How many quarters go each time?"
+}

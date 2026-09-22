@@ -1,0 +1,29 @@
+# A join is between two letters, so a word written joined has one join fewer than it has letters.
+# The words use no letter that some schemes leave unjoined (b, f, g, j, p, q, x, y, z).
+item writing.count-joins v=1 skills=[writing.joining] {
+  title "How many joins?"
+  difficulty (if k == 0 then 2 else if k == 1 or k == 2 then 3 else if k == 3 or k == 5 then 4 else 5)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}  # sun, rain, tent
+  }
+  level hard {
+    let k={3, 4, 5}  # house, window, clock
+  }
+  let w={if k == 0 then "sun" else if k == 1 then "rain" else if k == 2 then "tent" else if k == 3 then "house" else if k == 4 then "window" else "clock"}
+
+  scene 30x8 {
+    handwriting word show="{w}" rows=1 trace=1 width=16 at=canvas(1, 1)
+    text ask "Write {w} joined up. How many joins will it have?" narrate width=12 right-of=word gap=1
+    number-input answer below=word gap=1
+  }
+
+  answer (if k == 0 then 2 else if k == 1 or k == 2 then 3 else if k == 3 or k == 5 then 4 else 5)
+  feedback {
+    when (answer == (if k == 0 then 3 else if k == 1 or k == 2 then 4 else if k == 3 or k == 5 then 5 else 6)) point=word {
+      say "That is how many letters there are. A join goes between two letters."
+    }
+  }
+  hint "Where does the pencil go from one letter to the next?"
+  hint "Count the gaps between the letters, not the letters."
+}

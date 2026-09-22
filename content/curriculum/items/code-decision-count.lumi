@@ -1,0 +1,23 @@
+item coding.decision-count v=2 skills=[coding.decisions] {
+  title "How many shout?"
+  difficulty m
+  let m=8..10
+
+  scene 26x25 {
+    program p code=["if the number is more than 6", "  say shout", "otherwise", "  say whisper"] title="what to do" at=canvas(1, 0)
+    inequality line from=0 to=10 dir=">" closed=false below=p gap=1
+    text ask "For how many of the numbers 1 to {m} does it shout?" width=20 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (m - 6)
+  feedback {
+    when (answer == m - 6 + 1) point=line {
+      say "6 itself is not more than 6, so 6 whispers."
+    }
+    when (answer == 6) point=line {
+      say "That is where the line is marked, not how many numbers are past it."
+    }
+  }
+  hint "Count along the line from 7 up to {m}."
+}

@@ -1,0 +1,31 @@
+# A sequence counting down in equal steps through zero: the missing terms are negative.
+item number.through-zero v=1 skills=[number.negatives, number.sequences] negatives {
+  title "Counting down through zero"
+  difficulty (5 * d - a)
+  let a=5..12 d=3..5
+  where (a - 3 * d < 0 and a - 2 * d > 0)
+  level easy {
+    where (5 * d - a <= 9)
+  }
+  level hard {
+    where (5 * d - a >= 11)
+  }
+
+  scene 32x8 {
+    text ask "The numbers go down by the same step each time. Fill in the next two." narrate width=30 at=canvas(1, 1)
+    row seq below=ask gap=1 space=1 align=centre {
+      equation eq "{a},  {a - d},  {a - 2 * d},"
+      number-input x
+      number-input y
+    }
+  }
+
+  answer x=(a - 3 * d) y=(a - 4 * d)
+  feedback {
+    when (x == 3 * d - a) point=eq {
+      say "The numbers keep going down past zero, so they have a minus sign."
+    }
+  }
+  hint "How much smaller is each number than the one before?"
+  hint "Take the step away from {a - 2 * d}. You pass zero on the way."
+}

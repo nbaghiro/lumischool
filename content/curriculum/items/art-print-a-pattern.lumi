@@ -1,0 +1,10 @@
+item art.print-a-pattern v=1 skills=[art.printing, art.pattern] {
+  title "A print that turns over"
+
+  scene 36x17 {
+    text ask "Print a row with one stamp. Turn it over every other time: tap the stamp again to turn it." width=30 at=canvas(1, 1)
+    paintsheet sheet w=26 h=7 paper="squared" guide="row" outline="none" pots=["blue", "orange", "green"] stamps=["fish", "bird", "leaf"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="One stamp printed along the row, facing one way and then the other each time, so the row reads as pairs that face each other." notice=["One stamp used along the row", "Turned over every other time", "Pairs that face each other"] ask="Why does a print face the other way from the stamp that made it?"
+}

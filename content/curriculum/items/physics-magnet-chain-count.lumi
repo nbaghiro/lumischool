@@ -1,0 +1,26 @@
+# Reading one chain: how many clips the magnet holds. The clips are small or big, which changes what
+# a chain looks like but not how it is counted, and a longer chain is the harder read.
+item physics.magnet-chain-count v=1 skills=[physics.magnets, physics.measuring] {
+  title "How many clips?"
+  difficulty c
+  let c=3..10 g=0..1
+  let size={pick(g, 1, 2)}
+  level easy {
+    let c=3..5
+  }
+  level hard {
+    let c=8..10
+  }
+
+  scene 24x19 {
+    magnet one mode=chain clips=c clip=size tag="A" at=canvas(1, 0)
+    column side space=1 align=start right-of=one gap=2 {
+      text ask "How many paper clips is this magnet holding?" narrate width=13
+      number-input answer
+    }
+  }
+
+  answer answer=c
+  hint "Start at the magnet and count down the chain."
+  hint "Each clip hooks on the one above it, so count the hooks."
+}

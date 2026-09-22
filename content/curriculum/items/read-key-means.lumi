@@ -1,0 +1,35 @@
+# The way in: a mark on the map read off the key, by finding its row.
+item reading.key-means v=1 skills=[reading.text-features, geography.maps] {
+  title "What does the mark mean?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let m1={pick(k, "path", "river", "woods", "rails")}
+  let m2={pick(k, "river", "road", "hills", "bridge")}
+  let m3={pick(k, "woods", "path", "peaks", "town")}
+  let l1={pick(k, "Footpath", "River", "Woods", "Railway")}
+  let l2={pick(k, "River", "Road", "Hills", "Bridge")}
+  let l3={pick(k, "Woods", "Footpath", "Mountains", "Town")}
+  let row={pick(k, 2, 3, 1, 2)}
+  let right={pick(k, "River", "Footpath", "Woods", "Bridge")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x21 {
+    mapkey key title=Key marks=["{m1}", "{m2}", "{m3}"] labels=["{l1}", "{l2}", "{l3}"] at=canvas(1, 1)
+    text ask "Pip's map has a mark on it like the one in row {row} of the key, counting from the top. What does that mark mean?" narrate width=16 right-of=key gap=1
+    choice pick options=["{l1}", "{l2}", "{l3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=key {
+      say "Count the rows of the key from the top and read the words beside the mark in row {row}. The key decides what a mark means."
+    }
+  }
+  hint "Find row {row} of the key. The words beside the mark say what it means."
+  hint "A map's key is a list: the mark on the left, its meaning on the right."
+}

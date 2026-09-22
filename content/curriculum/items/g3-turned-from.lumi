@@ -1,0 +1,27 @@
+# Right angles as turns, run backwards: the end is known and the start is asked.
+item angles.turned-from v=1 stars=2 skills=[shapes.turns, reasoning.inverse] {
+  title "Which way was she facing?"
+  difficulty k
+  let e=0..3 k=1..3
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={3}
+  }
+
+  scene 30x14 {
+    compass rose needle=(90 * e) at=canvas(1, 1)
+    text ask "Kim turned clockwise through {k} right {if k == 1 then \"angle\" else \"angles\"}. Now she faces the way the needle points. Which way was she facing before she turned?" width=18 right-of=rose gap=2
+    choice pick options=["north", "east", "south", "west"] below=rose gap=2
+  }
+
+  answer pick=(if (e - k + 4) % 4 == 0 then "north" else if (e - k + 4) % 4 == 1 then "east" else if (e - k + 4) % 4 == 2 then "south" else "west")
+  feedback {
+    when (pick == (if (e + k) % 4 == 0 then "north" else if (e + k) % 4 == 1 then "east" else if (e + k) % 4 == 2 then "south" else "west") and k != 2) point=rose {
+      say "That is where she would face if she kept turning. Turn back the other way."
+    }
+  }
+  hint "To go back to the start, which way does Kim have to turn?"
+  hint "Turn anticlockwise from the needle, one right angle at a time."
+}

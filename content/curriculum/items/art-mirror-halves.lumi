@@ -1,0 +1,20 @@
+# The mirror doubles every square, so the child works back from the whole to the half they paint.
+item art.mirror-halves v=1 stars=2 skills=[art.symmetry, reasoning.work-backwards] {
+  title "Half the work"
+  difficulty n
+  let n={6, 8, 10, 12, 14, 16}
+
+  scene 30x12 {
+    text ask "With the mirror on, every square Ada paints appears on the other side of the line too. She wants {n} painted squares in all, and none of them touch the line. How many does she paint herself?" width=28 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (n / 2)
+  feedback {
+    when (answer == n * 2) point=ask {
+      say "{n} is how many Ada wants in all, counting the copies. She paints some and the mirror paints the rest."
+    }
+  }
+  hint "If Ada paints one square, how many squares are there after the mirror copies it?"
+  hint "What number, doubled, makes {n}?"
+}

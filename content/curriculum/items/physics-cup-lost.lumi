@@ -1,0 +1,15 @@
+item physics.cup-lost v=1 skills=[physics.heat] stars=3 {
+  title "How much did it cool?"
+  difficulty (m / 10 + (if x == "bubble" then 2 else if x == "paper" then 1 else 0))
+  let x={"none", "paper", "bubble"} m={10, 20}
+
+  scene 18x22 {
+    wrapped cups wraps=["{x}", "wool"] minutes=m at=canvas(1, 0)
+    text ask "Both cups started at 80 degrees. How many degrees more did cup A cool than cup B?" narrate width=16 below=cups gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=cups answer=cooled-more
+  hint "How many degrees did each cup lose from 80?"
+  hint "Now take the smaller loss from the bigger one."
+}

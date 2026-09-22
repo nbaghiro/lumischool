@@ -1,0 +1,28 @@
+# Minutes past the hour to the nearest minute, counted in fives and then ones: the way in.
+item time.minutes-past v=1 skills=[time.minutes] {
+  title "Minutes past the hour"
+  difficulty m
+  let h=1..11 m=(3..57 by 2)
+  where (m % 5 != 0)
+  level easy {
+    let m=(3..17 by 2)
+  }
+  level hard {
+    let m=(41..57 by 2)
+  }
+
+  scene 28x8 {
+    clock face h=h m=m at=canvas(1, 1)
+    text ask "How many minutes past {h} o'clock is it?" width=18 right-of=face gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer == m // 5) point=face {
+      say "Each number on the clock is five minutes for the long hand. Count in fives, then the little marks."
+    }
+  }
+  hint "Count in fives round from 12 to the last number the long hand has passed."
+  hint "Then count on the small marks one at a time."
+}

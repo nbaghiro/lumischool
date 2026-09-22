@@ -1,0 +1,16 @@
+# Four numbers written four ways, one with more than nine ones, so each has to be read as a number
+# before it can be put in order. The plain number and the tens move, so the order changes.
+item order.four-ways v=1 skills=[place-value.compare, place-value.regroup] {
+  title "Four ways of writing a number"
+  let a=2..3 b=5..8 c={19, 28, 37, 46, 55, 64, 73, 82, 91} d=2..9
+  where (c != 10 * b + a and c != 10 * a + b + 10 and 10 * d != 10 * a + b + 10)
+
+  scene 21x18 {
+    text ask "Put them in order, smallest first. Write 1 to 4 in the boxes." narrate width=20 at=canvas(1, 1)
+    sequence s items=["{b} tens and {a} ones", "{c}", "{a} tens and {b + 10} ones", "{d} tens"] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=(1 + (if c < 10 * b + a then 1 else 0) + (if 10 * a + b + 10 < 10 * b + a then 1 else 0) + (if 10 * d < 10 * b + a then 1 else 0)) p2=(1 + (if 10 * b + a < c then 1 else 0) + (if 10 * a + b + 10 < c then 1 else 0) + (if 10 * d < c then 1 else 0)) p3=(1 + (if 10 * b + a < 10 * a + b + 10 then 1 else 0) + (if c < 10 * a + b + 10 then 1 else 0) + (if 10 * d < 10 * a + b + 10 then 1 else 0)) p4=(1 + (if 10 * b + a < 10 * d then 1 else 0) + (if c < 10 * d then 1 else 0) + (if 10 * a + b + 10 < 10 * d then 1 else 0))
+  hint "Write each one as an ordinary number first."
+  hint "Ten ones make a ten. How many tens and ones is {a} tens and {b + 10} ones?"
+}

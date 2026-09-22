@@ -1,0 +1,65 @@
+# The story mountain written up: five paragraphs in the plan's order, over two sittings.
+lesson writing-a-story-from-the-mountain v=1 format=teach grade=4 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "A story from the mountain"
+  goal "Write a five-part story from a story mountain plan over two sittings, with a problem and a fix."
+
+  look {
+    scene 34x20 {
+      storymountain hill stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["Leo and Gran, the cliffs", "the path to the top", "the hat blows off", "found in the gorse", "home, hat on tight"] ring=-1 at=canvas(0, 0)
+    }
+    say """
+      Leo's plan is on the mountain: five cards, a note on each. Now he writes the story, one
+      paragraph a card, in the order of the climb. The opening says who and where, the build-up
+      what they set out to do, the problem is the moment it goes wrong, the fixing puts it
+      right, and the ending says how things are. Nothing is fixed before it goes wrong. A story
+      this long takes two sittings, and the second begins by reading the first.
+      """
+  }
+  do {
+    level easy {
+      worked writing.stage-job k=2 r=0
+    }
+    practice writing.which-is-problem count=1 seed=2 easy-seed=1 hard-seed=1
+    practice writing.match-to-mountain count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.five-in-order count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.stage-job count=2 seed=4 easy-seed=2 hard-seed=1
+    practice writing.mountain-problem count=1 seed=2 easy-seed=1 hard-seed=1
+    practice writing.mountain-fix count=1 seed=1 easy-seed=1 hard-seed=2
+    level hard {
+      show writing.match-to-mountain k=0 r=1 level=medium
+    }
+  }
+  story {
+    show writing.story-sittings n=2 w=1 easy-w=0 hard-n=3
+  }
+  try stars=2 {
+    show writing.fix-before-problem k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show writing.write-the-story k=0 hard-k=1
+  }
+  remember {
+    say "One paragraph a card, in the order of the climb: nothing is fixed before it goes wrong."
+  }
+
+  grown-ups """
+    The idea is that a story written from a plan keeps the plan's order and gives each card
+    its job, so the problem is at the top and the fixing follows it. The look is Leo's filled
+    mountain. The way in picks the problem sentence from three, and the core matches sentences
+    to cards, puts five parts back in order, says what each card is for, and picks the note
+    that belongs at the top and the one that fixes it. The wrong idea to watch for is a story
+    that solves its problem in the same breath, or one whose ending arrives before the fix;
+    ask which card each sentence sits on. The story counts a two-sitting draft's sentences,
+    the two-star question finds what has gone wrong in a story whose fix comes early, and the
+    three-star question is the child's story from the plan over two sittings, which you mark
+    against the cards: five paragraphs, each doing its job, the second sitting carrying on
+    from the first. Two sittings are the point: a long piece is planned, written, read and
+    finished, not rushed.
+    """
+  level easy {
+    grown-ups "At this level the problem card's job is worked once in the teacher's pen, the problem to pick is the puppy's, the cards to match are the picnic's opening, problem and fix, the five parts are nearly in order, the cards asked about are the opening and the problem, the note at the top and the fix are the plainer ones, the story counts one sitting, the two-star's fix comes before its problem, and the story to write is Leo and Gran's."
+  }
+  level hard {
+    grown-ups "At this level the problem to pick is the kite's, the cards to match are the gull's problem, fix and opening with a second match in the core, the five parts are well muddled, the cards asked about are the build-up, the fixing and the ending, the note at the top and the fix need a second reading, the story counts both sittings, the two-star's ending comes before its fix, and the story to write is Ada's raft."
+  }
+}

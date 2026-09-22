@@ -1,0 +1,63 @@
+# A block of one's own that takes a number: the name after define says where the number goes, and
+# one block draws squares of any size.
+lesson coding-a-block-with-a-number v=1 format=teach grade=4 unit=9 subject=coding levels=[easy, medium, hard] {
+  title "A block with a number"
+  goal "Define a block that takes a number, and use it to draw squares of different sizes."
+
+  look {
+    scene 34x17 {
+      row all space=2 align=start at=canvas(1, 1) {
+        program prog code=["define square size", "  repeat 4", "    forward size", "    turn right", "square 2", "square 4"] title="Sam's block"
+        turtle t cols=5 rows=5 col=1 row=1 face=right moves=["repeat 4", "  forward 2", "  turn right", "repeat 4", "  forward 4", "  turn right"]
+      }
+    }
+    say """
+      On the clockwork island Sam gives the turtle a block of its own that takes a number. The word
+      after the block's name, size, stands for whatever number comes after square when the block is
+      used. So square 2 draws a small square and square 4 a bigger one, and both come from the same
+      four lines.
+      """
+  }
+  do {
+    practice coding.param-hop-does count=1 seed=2 easy-seed=10 hard-seed=1
+    level easy {
+      worked coding.param-fill-number f=0 n=2 level=medium
+    }
+    practice coding.param-bigger-square count=2 seed=3 easy-seed=1 hard-seed=1
+    practice coding.param-fill-number count=1 seed=3 easy-seed=7 hard-seed=1
+    practice coding.param-trace-two count=1 seed=2 easy-seed=6 hard-seed=3
+    practice coding.param-perimeter count=2 seed=6 easy-seed=10 hard-seed=4
+    level hard {
+      show coding.param-which-uses r=2
+    }
+    practice coding.clockwork-towers count=1 seed=2 easy-seed=1 hard-seed=7
+  }
+  try stars=2 {
+    show coding.param-which-uses r=0 easy-r=1 hard-r=3
+  }
+  try stars=3 {
+    show coding.param-fewest-stairs k=3 easy-k=0 hard-k=4
+  }
+  remember {
+    say "The name after define stands for the number the block is used with, wherever the block says it."
+  }
+
+  grown-ups """
+    The idea is that a block can take a number, and that the name in its define line stands for that
+    number everywhere the block uses it. The wrong ideas to watch for are reading the name as a
+    fixed size, and thinking the number is always the length of a side when the block may use it
+    twice, add to it or repeat by it. In the working, look for the child writing the block out again
+    with the number in place of the name. The two-star question compares two blocks that both
+    mention the name; the three-star question tries the biggest stairs first and shows no fewer will
+    do. A child who is stuck can draw the block with two different numbers on squared paper and
+    compare, and go back to the way in; stay on this lesson another day if the name is still read as
+    a number. Off the page, give the child a recipe for one person and ask them to write it for any
+    number of people.
+    """
+  level easy {
+    grown-ups "At this level hop moves 2, the squares to compare are frame 2 against tile 2 and frame 2 against tile 4, where the bigger number or the same number decides, a number for square is worked in the teacher's pen before another is found, the two calls climb up by size, the lines to measure are square's, the crane builds towers of 2, 3 and 1, the block that ignores its number in the two-star is B, and the stairs climb 5 with none bigger than 3."
+  }
+  level hard {
+    grown-ups "At this level hop moves 5, the squares to compare are frame 4 against tile 7, which are the same size, and frame 4 against tile 6, where the smaller number draws the bigger square, the number to find is for tile, one less than the side, the two calls use size twice and move back down, the lines to measure are tile's and frame's, a pair of blocks where one uses its number as the repeat's count is judged before the two-star's, the crane builds towers of 6, 5 and 4, and the stairs climb 10 with none bigger than 4, which needs every size."
+  }
+}

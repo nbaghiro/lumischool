@@ -1,0 +1,14 @@
+item art.dots-from-far v=1 skills=[art.artists, art.colour-mixing] {
+  title "From across the room"
+  let k=0..2
+
+  scene 36x16 {
+    dots pic scene="sun" colours=["red", "{if k == 0 then \"yellow\" else if k == 1 then \"white\" else \"blue\"}"] magnify=true at=canvas(1, 1)
+    text ask "From across the room, what colour does the sun look?" width=14 below=pic gap=1
+    choice pick options=["orange", "purple", "pink"] right-of=ask gap=1
+  }
+
+  check paint.mixes of=pic pick=name
+  hint "What colours are the dots in the magnifying glass?"
+  hint "From far away the dots are too small to see apart. What would those two colours make together?"
+}

@@ -1,0 +1,40 @@
+# The three-star: where to stand so the drum is only just heard. The meter has to read at least
+# the stream's noise for the drum to be heard over it, and the doubling chain from the reading at
+# 1 metre gives the furthest distance that still does. There is no row to read the answer from,
+# and the last step of the chain has to be judged against the threshold.
+item physics.just-heard v=1 stars=3 skills=[physics.sound, reasoning.extremes] {
+  title "Where is it just heard?"
+  difficulty (if base / need == 4 then 0 else if base / need == 8 then 1 else 2)
+  let base={8, 16, 24} need={1, 2, 3, 4}
+  where (base / need >= 4 and base / need <= 16 and base % need == 0)
+  level easy {
+    where (base / need == 4)
+  }
+  level hard {
+    where (base / need == 16)
+  }
+
+  scene 34x26 {
+    row all at=canvas(1, 0) space=2 align=end {
+      ricedrum drum hit=2
+      children kids count=1 names=["Leo"]
+    }
+    text ask "A stream runs through the cave, and its noise makes the meter read {need} on its own. Leo can only hear the drum where the drum's reading is {need} or more. Right beside the drum, at 1 metre, the drum reads {base}. Each time the distance doubles, the reading halves. How far can Leo walk down the passage and still hear the drum?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (base / need)
+  feedback {
+    when (answer == base / need * 2) point=kids {
+      say "At {base / need * 2} metres the drum would read {need / 2}, which is less than the stream's {need}. One step back."
+    }
+    when (answer == base / need / 2) point=kids {
+      say "At {base / need / 2} metres the drum still reads {need * 2}, more than the stream. Leo can go further."
+    }
+    when (answer == base - need) point=kids {
+      say "The readings do not go down by the same amount each metre. Make the chain: {base} at 1 metre, then half at 2, half again at 4, and so on."
+    }
+  }
+  hint "Make the chain of readings: {base} at 1 metre, then at 2, at 4, at 8. Where does it reach {need}?"
+  hint "Leo can still hear it while the drum's reading is {need} or more. The furthest such place is the answer."
+}

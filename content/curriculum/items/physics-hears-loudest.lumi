@@ -1,0 +1,41 @@
+# The way in: one drum, three children at three distances, and the one who hears it loudest is the
+# one standing closest. The names move round, so the answer is read from the picture and not
+# remembered. At hard the drum stands between the children, so the nearest one has to be judged
+# on both sides of it.
+item physics.hears-loudest v=1 skills=[physics.sound] {
+  title "Who hears it loudest?"
+  difficulty (s + 2 * side)
+  set side=0
+  let k=0..5 s=0..1
+  let na={pick(k, "Mia", "Mia", "Leo", "Leo", "Ben", "Ben")}
+  let nb={pick(k, "Leo", "Ben", "Mia", "Ben", "Mia", "Leo")}
+  let nc={pick(k, "Ben", "Leo", "Ben", "Mia", "Leo", "Mia")}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    set side=1
+    let s={1}
+  }
+
+  scene 36x20 {
+    ricedrum drum hit=2 at=canvas(if side == 0 then 1 else 9, 1)
+    children a count=1 names=["{na}"] at=canvas(if side == 0 then 15 else 23, 2)
+    children b count=1 names=["{nb}"] at=canvas(if side == 0 then if s == 0 then 25 else 21 else 1, 2)
+    children c count=1 names=["{nc}"] at=canvas(31, 2)
+    text ask "The drum is hit once. Who hears it loudest?" narrate width=30 at=canvas(1, 14)
+    choice pick options=["Mia", "Leo", "Ben"] below=ask gap=1
+  }
+
+  answer pick=na
+  feedback {
+    when (pick == nb) point=b {
+      say "{nb} is further from the drum than {na}. A sound is loudest right beside what makes it, and fades as it spreads out."
+    }
+    when (pick == nc) point=c {
+      say "{nc} is the furthest away of the three, so the drum is quietest for {nc}."
+    }
+  }
+  hint "Who is standing closest to the drum?"
+  hint "The sound spreads out from the drum and fades as it goes. Who gets it before it has faded?"
+}

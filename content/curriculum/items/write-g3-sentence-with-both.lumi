@@ -1,0 +1,14 @@
+# Using a pair of words that sound the same, each with its own meaning, in one sentence.
+item writing.sentence-with-both v=1 stars=3 skills=[writing.spelling, writing.composing] {
+  title "Both words, both right"
+  let p=0..5 a={if p == 0 then "there" else if p == 1 then "to" else if p == 2 then "see" else if p == 3 then "new" else if p == 4 then "one" else "here"} b={if p == 0 then "their" else if p == 1 then "two" else if p == 2 then "sea" else if p == 3 then "knew" else if p == 4 then "won" else "hear"}
+
+  scene 32x13 {
+    text ask "The words {a} and {b} sound the same. Write one sentence that uses both, each the right way." width=30 at=canvas(1, 1)
+    writinglines lines lines=2 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence that uses both words of the pair, each with its own meaning (We can see the sea, I knew the bike was new), with a capital at the start and a full stop at the end."
+  hint "What does each word mean? Say a short sentence for each one first."
+  hint "Now join the two ideas into one sentence."
+}

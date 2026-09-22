@@ -1,0 +1,40 @@
+# The way in: one small creature, drawn, and its home. The spider's web and the bee's flower are
+# the plain two; the ant's nest under the ground and the snail's damp leaves need the child to
+# think about where the creature is when it is not out and about.
+item nature.creature-home v=1 skills=[nature.habitats] {
+  title "Where does it live?"
+  difficulty (if k <= 1 then 0 else if k == 4 then 1 else 2)
+  let k=0..4
+  let who={pick(k, "spider", "bee", "ant", "snail", "butterfly")}
+  let home={pick(k, "a web", "a flower", "a nest under the ground", "under damp leaves", "a flower")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x21 {
+    minibeasts beast kinds=[who] legs=false at=canvas(1, 1)
+    text ask "Ada finds a {who} in the marsh. Where is its home?" narrate width=20 right-of=beast gap=2
+    choice pick options=["a web", "a flower", "a nest under the ground", "under damp leaves"] stack=column below=ask gap=1
+  }
+
+  answer pick=home
+  feedback {
+    when (k == 0 and pick != "a web") point=beast {
+      say "The spider spins its own home out of silk and waits in the middle of it."
+    }
+    when (k == 2 and pick == "under damp leaves") point=beast {
+      say "Ants dig. Watch a line of ants and see where it goes: down a hole into the ground."
+    }
+    when (k == 3 and pick == "a nest under the ground") point=beast {
+      say "A snail does not dig. It dries out in the sun, so it hides where it is damp and shady."
+    }
+    when ((k == 1 or k == 4) and pick != "a flower") point=beast {
+      say "This one has wings and drinks from flowers. Its home is where its food is."
+    }
+  }
+  hint "Where would you go to find a {who}? Think of the last time you saw one."
+  hint "A web is spun, a nest is dug, a flower is food, and damp leaves keep a soft body from drying out."
+}

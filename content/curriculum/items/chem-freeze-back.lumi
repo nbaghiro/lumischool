@@ -1,0 +1,17 @@
+# Melting and freezing undo each other. The picture shows which way the change went, and the child
+# chooses the way back.
+item chem.freeze-back v=1 skills=[chemistry.states, chemistry.changes] {
+  title "Change it back"
+  difficulty (if c == "melt-ice" then 0 else 1)
+  let c={"melt-ice", "freeze-water"}
+
+  scene 16x13 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "How could you change it back?" width=15 below=ch gap=0
+    choice pick options=["cool it", "warm it"] below=ask gap=0
+  }
+
+  answer pick=(if c == "melt-ice" then "cool it" else "warm it")
+  hint "What made this change happen? Look at the arrow."
+  hint "To go back, do you need to do the same thing, or the opposite?"
+}

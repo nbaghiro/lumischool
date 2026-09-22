@@ -1,0 +1,23 @@
+# The left hand in C position runs the other way: little finger on C, thumb on G. The right hand's
+# number is the mistake, and seeing why is the reasoning.
+item music.left-hand-finger v=1 stars=2 skills=[music.fingers, reasoning.inverse] {
+  title "The left hand the other way round"
+  difficulty (if i == 1 then 2 else if i == 2 then 1 else 0)
+  let i=0..2
+  let x={if i == 0 then "C" else if i == 1 then "D" else "F"}
+
+  scene 24x13 {
+    hand pic side=left numbers=none ring=0 colours=false at=canvas(1, 1)
+    text ask "Left hand in C position: little finger on C, thumb on G. Which finger plays {x}?" width=13 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if i == 0 then 5 else if i == 1 then 4 else 2)
+  feedback {
+    when (answer == (if i == 0 then 1 else if i == 1 then 2 else 4)) point=pic {
+      say "That is the right hand's finger. On the left hand the numbers run the other way."
+    }
+  }
+  hint "On the left hand, is the thumb at the C end or the G end?"
+  hint "Put the thumb on G and count down the keys to {x}, one finger for each key."
+}

@@ -1,0 +1,31 @@
+# The spike abacus: a bead on the hundreds spike is worth a hundred, one on the tens spike ten.
+item place.abacus-change v=1 skills=[place-value.hundreds, place-value.add-tens] {
+  title "Beads on and beads off"
+  difficulty (dh + dt)
+  let h=1..7 t=2..9 o=0..9 dh=1..2 dt=1..2
+  where (h + dh <= 9)
+  level easy {
+    let t=3..9 dh={1} dt={1}
+  }
+  level hard {
+    let dh={2} dt={2}
+  }
+
+  scene 30x12 {
+    abacus spikes value="{h}{t}{o}" at=canvas(1, 1)
+    text ask "Put {if dh == 1 then \"one more bead\" else \"two more beads\"} on the hundreds spike and take {if dt == 1 then \"one bead\" else \"two beads\"} off the tens spike. What number does the abacus show now?" width=18 right-of=spikes gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * (h + dh) + 10 * (t - dt) + o)
+  feedback {
+    when (answer == 100 * h + 10 * t + o + 10 * dh - 100 * dt) point=spikes {
+      say "The hundreds spike is the one on the left. Beads go on there and come off the middle spike."
+    }
+    when (answer == 100 * h + 10 * t + o + dh - dt) point=spikes {
+      say "A bead on the hundreds spike is worth a hundred, not one."
+    }
+  }
+  hint "What number does the abacus show before you change it?"
+  hint "Each bead on the hundreds spike is worth 100. Each bead on the tens spike is worth 10."
+}

@@ -1,0 +1,27 @@
+# Sharing a total price between equal things: dividing money, dollars first and then cents.
+item money.unit-price v=1 skills=[money.decimals, division.inverse] {
+  title "The price of one"
+  difficulty (n * each)
+  let n={3, 4, 5} each={1.15, 1.25, 1.40, 2.05, 2.50, 3.20}
+  level easy {
+    let n={3} each={1.15, 1.25, 1.40}
+  }
+  level hard {
+    let n={4, 5} each={2.05, 2.50, 3.20}
+  }
+
+  scene 30x10 {
+    pricetag tag now=(100 * n * each) was=0 at=canvas(1, 1)
+    text ask "{n} notebooks cost this much together. How much does one cost, in dollars?" narrate width=16 right-of=tag gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(each, 2)
+  feedback {
+    when (answer == n * each - n and n * each - n != each) point=ask {
+      say "Share the whole price between {n}, the dollars and the cents."
+    }
+  }
+  hint "How many whole dollars does each notebook get if you share them out?"
+  hint "Change what is left into cents and share those too."
+}

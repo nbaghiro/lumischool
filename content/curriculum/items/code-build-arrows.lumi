@@ -1,0 +1,14 @@
+# A build task: the tray has the four arrows, any count, and the pad has room for a few more blocks
+# than the shortest program needs, so a child can take the long way round and still get there.
+item coding.build-arrows v=1 skills=[coding.sequences] {
+  title "Get to the flag"
+  let k=0..3
+
+  scene 33x20 {
+    maze g map=["{if k == 0 then \"S . . # . .\" else if k == 1 then \"S . # . . .\" else if k == 2 then \". . . # . F\" else \"S # . . . .\"}", "{if k == 0 then \". # . # * .\" else if k == 1 then \". . # . # .\" else if k == 2 then \". # . # . .\" else \". # . # . .\"}", "{if k == 0 then \". # . . . .\" else if k == 1 then \"# . . * # .\" else if k == 2 then \"S # . * . .\" else \". . * # . .\"}", "{if k == 0 then \". . . # . F\" else if k == 1 then \". . # . . F\" else if k == 2 then \". . . . # .\" else \"# . . . . F\"}"] at=canvas(1, 0)
+    codepad answer tray=["right 1", "down 1", "left 1", "up 1"] lines=6 right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=both
+  hint "Get the gem on the way. Write one block for each straight part of the path."
+}

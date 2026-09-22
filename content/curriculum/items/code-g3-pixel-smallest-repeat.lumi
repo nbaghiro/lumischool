@@ -1,0 +1,34 @@
+# Finding the part that comes round again, from the picture alone: the smallest repeating unit is
+# the fewest lines inside one repeat, and the number of times it comes round is the count.
+item coding.pixel-smallest-repeat v=1 stars=2 skills=[coding.repetition, coding.data, reasoning.patterns] {
+  title "The part that comes round again"
+  difficulty (2 * p + r)
+  let p=2..3 r=2..3
+  where (p * r <= 8)
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=2 align=start {
+      pixels g cols=6 rows=(p * r) code=["repeat {r}", "  2 red 2 white 2 red", "  1 white 4 red 1 white", "{if p == 3 then \"  6 white\" else \"\"}"] beside=false
+      column q space=1 align=start {
+        text ask "Write a program for this picture with one repeat and as few lines inside it as you can. How many lines go inside the repeat, and what number does the repeat need?" width=16
+        row ra space=1 align=centre {
+          text la "lines inside"
+          number-input inside width=3
+        }
+        row rb space=1 align=centre {
+          text lb "repeat"
+          number-input count width=3
+        }
+      }
+    }
+  }
+
+  answer inside=p count=r
+  feedback {
+    when (inside == p * r) point=g {
+      say "That is every row. Which rows are the same as rows further down?"
+    }
+  }
+  hint "Find the first row that looks the same as row 1."
+  hint "The rows above it are what the repeat holds. How many times do they come round?"
+}

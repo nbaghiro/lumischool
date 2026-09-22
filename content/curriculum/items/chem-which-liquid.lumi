@@ -1,0 +1,26 @@
+# One of four things is in the state asked for at the thermometer's temperature, and the checker
+# works out which from the table, so every version has exactly one right answer.
+item chem.which-liquid v=1 skills=[chemistry.states, number.negatives] {
+  title "Which one is a liquid?"
+  difficulty (if k == 7 or k == 12 then 2 else if k == 1 or k == 3 or k == 5 then 1 else 0)
+  let k=0..12
+  level easy {
+    let k={0, 1, 2, 4}  # oxygen as the gas, and ethanol as the liquid
+  }
+  level hard {
+    let k={5, 7, 12}  # ethanol still liquid, water frozen, mercury liquid below zero
+  }
+
+  scene 35x20 {
+    text ask "At the temperature on the thermometer, which of these is a {if k == 0 then \"gas\" else if k == 1 then \"liquid\" else if k == 2 then \"gas\" else if k == 3 then \"liquid\" else if k == 4 then \"gas\" else if k == 5 then \"liquid\" else if k == 6 then \"gas\" else if k == 7 then \"solid\" else if k == 8 then \"gas\" else if k == 9 then \"gas\" else if k == 10 then \"gas\" else if k == 11 then \"gas\" else \"liquid\"}?" width=28 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=3 head=["Stuff", "Melts", "Boils"] cells=["Water", 0, 100, "Ethanol", -114, 78, "Mercury", -39, 357, "Oxygen", -219, -183]
+      thermometer tube from=-120 to=120 step=40 value=(if k == 0 then -120 else if k == 1 then -100 else if k == 2 then -100 else if k == 3 then -80 else if k == 4 then -80 else if k == 5 then -60 else if k == 6 then -60 else if k == 7 then -20 else if k == 8 then -20 else if k == 9 then 20 else if k == 10 then 40 else if k == 11 then 60 else 120) unit="°C"
+      choice pick options=["water", "ethanol", "mercury", "oxygen"] stack=column
+    }
+  }
+
+  check chem.state of=tube table=data pick="which({if k == 0 then \"gas\" else if k == 1 then \"liquid\" else if k == 2 then \"gas\" else if k == 3 then \"liquid\" else if k == 4 then \"gas\" else if k == 5 then \"liquid\" else if k == 6 then \"gas\" else if k == 7 then \"solid\" else if k == 8 then \"gas\" else if k == 9 then \"gas\" else if k == 10 then \"gas\" else if k == 11 then \"gas\" else \"liquid\"})"
+  hint "Read the thermometer. Then go down the table one row at a time."
+  hint "For each one, is the temperature below where it melts, between its two points, or above where it boils?"
+}

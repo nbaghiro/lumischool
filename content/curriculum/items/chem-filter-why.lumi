@@ -1,0 +1,19 @@
+# A reason, not a name: the two questions have different answers from the same three reasons.
+item chem.filter-why v=1 stars=2 skills=[chemistry.separating, reasoning.explain] {
+  title "Why through, and why not?"
+  difficulty ((if q == 0 then 1 else 0) + (if u == "flour" then 2 else 0))
+  let q=0..1 u={"sand", "flour"} d={"salt", "sugar"}
+  level hard {
+    let q={1} u={"flour"}  # why the flour stays, when it looks as if it dissolved
+  }
+
+  scene 36x13 {
+    text ask "Why does the {if q == 0 then d else u} {if q == 0 then \"go through the filter paper\" else \"stay on the filter paper\"}?" width=32 at=canvas(1, 0)
+    mixture mix things=["{u}", "{d}"] water=1 names=1 below=ask gap=0
+    choice pick options=["It has dissolved in the water", "Its grains are too big for the holes", "It is heavier than water"] stack=column right-of=mix gap=1
+  }
+
+  answer pick=(if q == 0 then "It has dissolved in the water" else "Its grains are too big for the holes")
+  hint "Look at the picture. Which of the two can you still see?"
+  hint "The holes in filter paper are too small to see. What could get through holes that small?"
+}

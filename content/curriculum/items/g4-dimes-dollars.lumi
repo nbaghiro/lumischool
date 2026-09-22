@@ -1,0 +1,30 @@
+# A dime is a tenth of a dollar, which is the decimal a child already carries.
+item decimal.dimes-dollars v=1 skills=[decimals.tenths, money.decimals] {
+  title "Dimes as dollars"
+  difficulty (d + (if p == 0 then 2 else p))
+  let d=2..9 p=0..4
+  level easy {
+    let d=2..5 p=1..4
+  }
+  level hard {
+    let d=6..9 p={0}  # no pennies, so the decimal ends in a zero
+  }
+
+  scene 34x10 {
+    coins purse quarters=0 dimes=d nickels=0 pennies=p at=canvas(1, 1)
+    text ask "How many dollars is this, written as a decimal?" narrate width=32 below=purse gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(d / 10 + p / 100, 2)
+  feedback {
+    when (answer == 10 * d + p) point=purse {
+      say "That is the number of cents. There are 100 cents in a dollar."
+    }
+    when (answer == d + p / 100) point=purse {
+      say "A dime is one tenth of a dollar, not a whole dollar."
+    }
+  }
+  hint "How many cents is this altogether?"
+  hint "100 cents is one dollar. What is that many cents as a decimal of a dollar?"
+}

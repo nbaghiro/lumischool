@@ -1,0 +1,11 @@
+item coding.order-morning v=1 skills=[coding.sequences] {
+  title "Put the program in order"
+
+  scene 28x13 {
+    text ask "Number the steps in the order they have to happen." width=26 at=canvas(1, 1)
+    sequence s items=["Put your shoes on", "Put your socks on", "Tie the laces"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=2 b=1 c=3
+  hint "Say the steps out loud in the order you really do them."
+}

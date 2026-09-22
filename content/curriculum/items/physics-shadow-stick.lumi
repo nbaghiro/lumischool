@@ -1,0 +1,22 @@
+# The stick and the tree stand in the same sunlight, so the shadow is the same number of times its
+# thing's height for both. That is a ratio, found without being named.
+item physics.shadow-stick v=1 skills=[physics.light, reasoning.proportion] stars=3 {
+  title "How tall is the tree?"
+  difficulty (k * h)
+  let k={2, 3} h={3, 4, 5}
+
+  scene 24x20 {
+    shadows sun tall=2 shadow=(2 * k) unit=m at=canvas(1, 0)
+    text ask "At the same time of day, a tree nearby has a shadow {k * h} metres long. How tall is the tree?" narrate width=20 below=sun gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (answer == k * h - 2 * k + 2) point=sun {
+      say "Adding the same to both does not work here. How many times the stick is its shadow?"
+    }
+  }
+  hint "How many times longer than the stick is the stick's shadow?"
+  hint "The tree's shadow is that many times the tree too. So share it out."
+}

@@ -1,0 +1,28 @@
+# The needle between the numbered marks: the child works out what each small mark is worth, the
+# audit's raise for measure.dial.
+item measure.dial-between v=1 skills=[mass.grams, measure.scales] {
+  title "Between the numbers"
+  difficulty v
+  let v={100, 300, 500, 700, 900}
+  level easy {
+    let v={100, 300}
+  }
+  level hard {
+    let v={700, 900}
+  }
+
+  scene 30x14 {
+    dialscale scale max=1000 step=200 value=v unit=g at=canvas(1, 1)
+    text ask "The needle is between two numbers. How heavy is the bag, in grams?" narrate width=14 right-of=scale gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v - 100 or answer == v + 100) point=scale {
+      say "The needle is not on a number. It is halfway between two of them."
+    }
+  }
+  hint "The numbers go up in 200s. What is halfway between two of them?"
+  hint "Find the number just before the needle, then add half of 200."
+}

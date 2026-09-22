@@ -1,0 +1,22 @@
+# Every start and repeat count that land on the same end: a search over pairs with two limits,
+# which a table of the five repeat counts organises. The count is worked out term by term.
+item coding.trace-pairs v=1 stars=3 skills=[coding.tracing, reasoning.all-the-ways] {
+  title "Every way to get there"
+  difficulty (t / c)
+  let c=2..3 t=10..14
+
+  scene 36x13 {
+    program p code=["set n to ?", "repeat ?", "  add {c} to n"] at=canvas(1, 0)
+    text ask "Line 1 sets n to a number from 1 to 9, and line 2 repeats from 1 to 5 times. At the end n is {t}. How many different pairs of numbers could lines 1 and 2 have?" width=18 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if t - c >= 1 and t - c <= 9 then 1 else 0) + (if t - 2 * c >= 1 and t - 2 * c <= 9 then 1 else 0) + (if t - 3 * c >= 1 and t - 3 * c <= 9 then 1 else 0) + (if t - 4 * c >= 1 and t - 4 * c <= 9 then 1 else 0) + (if t - 5 * c >= 1 and t - 5 * c <= 9 then 1 else 0))
+  feedback {
+    when (answer == 1) point=p {
+      say "Try a different number of repeats. Does a start from 1 to 9 still work?"
+    }
+  }
+  hint "Try repeat 1 first. What would line 1 need to be? Is that from 1 to 9?"
+  hint "Now try repeat 2, 3, 4 and 5 in a table, and count the ones that work."
+}

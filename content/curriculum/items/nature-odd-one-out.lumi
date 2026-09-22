@@ -1,0 +1,45 @@
+# Four things in a square, one of a different kind. At easy the odd one is a cup among animals; at
+# hard the three that are not living all move or shine, and the living one is the plain hen.
+item nature.odd-one-out v=1 skills=[nature.living] {
+  title "The odd one out"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={if k == 0 then "cat" else if k == 1 then "hedgehog" else if k == 2 then "hen" else if k == 3 then "rocket" else if k == 4 then "sun" else "pencil"}
+  let b={if k == 0 then "hen" else if k == 1 then "cat" else if k == 2 then "boat" else if k == 3 then "kite" else if k == 4 then "rocket" else "cat"}
+  let c={if k == 0 then "duck" else if k == 1 then "kite" else if k == 2 then "cat" else if k == 3 then "hedgehog" else if k == 4 then "kite" else "hen"}
+  let d={if k == 0 then "cup" else if k == 1 then "hen" else if k == 2 then "hedgehog" else if k == 3 then "cup" else if k == 4 then "hen" else "hedgehog"}
+  let asks={if k == 3 or k == 4 then "living" else "not living"}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 34x29 {
+    column four at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        art pa asset="{a}"
+        art pb asset="{b}"
+      }
+      row bottom space=2 align=end {
+        art pc asset="{c}"
+        art pd asset="{d}"
+      }
+    }
+    choice pick options=[a, b, c, d] stack=column right-of=four gap=2
+    text ask "Three of these are one kind of thing. Which one is {asks}?" narrate width=32 below=four gap=1
+  }
+
+  answer pick=(if k == 0 then "cup" else if k == 1 then "kite" else if k == 2 then "boat" else if k == 3 then "hedgehog" else if k == 4 then "hen" else "pencil")
+  feedback {
+    when (k == 4 and pick == "sun") point=pa {
+      say "The sun shines and it moves across the sky, but it does not eat, grow or have young."
+    }
+    when (k == 5 and pick == "cat") point=pb {
+      say "The cat is living. Look for the thing that was made, not born."
+    }
+  }
+  hint "Say for each one: does it grow, does it eat, can it have young?"
+  hint "Three of them give the same answers. The odd one gives different answers."
+}

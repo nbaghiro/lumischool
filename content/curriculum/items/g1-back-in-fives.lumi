@@ -1,0 +1,33 @@
+# Counting back in fives, where the last digits go 5, 0, 5, 0.
+item count.back-in-fives v=1 skills=[counting.in-steps] {
+  title "Back in fives"
+  difficulty s
+  let s={30, 35, 40, 45, 50}
+  level easy {
+    let s={30, 35}
+  }
+  level hard {
+    let s={45, 50}
+  }
+
+  scene 33x6 {
+    text ask "Count back in fives. Fill in the gaps." narrate width=27 at=canvas(1, 1)
+    row eq below=ask gap=1 space=1 align=centre {
+      equation n1 "{s},"
+      equation n2 "{s - 5},"
+      number-input a width=3
+      equation n3 ","
+      equation n4 "{s - 15},"
+      number-input b width=3
+    }
+  }
+
+  answer a=(s - 10) b=(s - 20)
+  feedback {
+    when (a == s - 9 or a == s - 11 or a == s - 6) point=eq {
+      say "Every step is five. The numbers end in 5 and 0 in turn."
+    }
+  }
+  hint "How much smaller is each number than the one before it?"
+  hint "What do the numbers end in, one after another?"
+}

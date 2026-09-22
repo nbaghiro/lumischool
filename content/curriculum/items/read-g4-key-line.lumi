@@ -1,0 +1,28 @@
+# One sentence to a line, so a line number is the evidence. The names all have three letters, so
+# every version wraps the same way and the line numbers hold for all of them.
+item reading.which-line-shows v=2 skills=[reading.inference, reading.evidence] {
+  title "Which line shows it?"
+  difficulty (if q == 1 then 2 else if q == 2 then 1 else 0)
+  let n={"Ada", "Kit", "Lev", "Ama"} q=0..3
+  level easy {
+    let q={0, 3}
+  }
+  level hard {
+    let q={1, 2}
+  }
+
+  scene 26x22 {
+    passage p title="The lost key" text="{n} hunted all over the house for the key. It was not on its usual hook by the door. {n} checked the pocket of every coat twice. Then {n} remembered the rabbits' breakfast. Out at the hutch, the key lay in the straw." width=24 at=canvas(1, 1)
+    text ask "Which line {if q == 0 then \"tells you where the key is kept\" else if q == 1 then \"helps you work out why the key was at the hutch\" else if q == 2 then \"tells you where the key was in the end\" else \"tells you about the coats\"}?" width=24 below=p gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if q == 0 then 2 else if q == 1 then 4 else if q == 2 then 5 else 3)
+  feedback {
+    when (answer == 5 and q == 1) point=p {
+      say "That line says where the key was. Which line helps you work out why it was there?"
+    }
+  }
+  hint "The numbers down the side count the lines. Read one line at a time."
+  hint "Which line holds the words that answer the question?"
+}

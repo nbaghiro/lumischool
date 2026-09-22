@@ -1,0 +1,35 @@
+# A distance on the map measured in parts of the scale bar, turned into kilometres on the ground:
+# parts times what a part is worth.
+item nature.parts-to-km v=1 skills=[nature.maps, measure.scale, multiplication.tables] {
+  title "How far on the ground?"
+  difficulty (n * st / 4)
+  let st={2, 5, 10} n=2..6
+  let to={pick(n - 2, "the bird hide", "the old mill", "the tower", "the bridge", "the far bank")}
+  level easy {
+    let st={2} n=2..3
+  }
+  level hard {
+    let st={5, 10} n=5..6
+  }
+
+  scene 34x14 {
+    mapscale map km=(4 * st) step=st at=canvas(1, 1)
+    text ask "Each part of the scale bar stands for {st} km. On the map, the walk from the hut to {to} is {n} parts of the bar long. How far is that on the ground?" narrate width=17 right-of=map gap=2
+    row a below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km"
+    }
+  }
+
+  answer (n * st)
+  feedback {
+    when (answer == n and n != n * st) point=map {
+      say "That is how many parts. Each part stands for {st} km."
+    }
+    when (answer == n + st and n + st != n * st) point=map {
+      say "{n} parts of {st} km each is {st} counted {n} times, not added once."
+    }
+  }
+  hint "One part is {st} km. How far are {n} parts?"
+  hint "Count in {st}s, {n} times."
+}

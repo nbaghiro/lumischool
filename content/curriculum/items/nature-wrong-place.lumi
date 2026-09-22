@@ -1,0 +1,52 @@
+# The two-star reason: a creature in the wrong place, and what goes wrong for it there. The seal
+# on a hot beach is the plain case, since its fat keeps heat in; the crab on dry rock in the sun
+# and the gull under the water need the child to think about what the creature's body is for.
+item nature.wrong-place v=1 stars=2 skills=[nature.habitats, reasoning.explain] {
+  title "What is the problem?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let who={pick(k, "a seal", "a crab", "a sea turtle", "a gull")}
+  let where={pick(k, "lies on a hot sandy beach all afternoon", "is left on a dry rock in the sun when the tide goes out", "is put in a rock pool", "dives and stays under the water for a long time")}
+  let right={pick(k, "Its thick fat keeps heat in, so it gets far too hot", "Its body dries out, so it hides under the weed", "It is far too big and needs the open sea to swim in", "It breathes air, so it has to come up")}
+  let o1={pick(k, "Its flippers cannot walk on sand", "It cannot see without water", "The pool water is too cold for it", "Its wings cannot fly when wet")}
+  let o2={pick(k, "It has no food on the beach", "Crabs cannot go in the sun at all", "The crabs in the pool would eat it", "Fish would eat it")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x25 {
+    column four at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        seal ps rock=1 facing=1
+        gull pg flying=0
+      }
+      row low space=1 align=end {
+        crabs pc count=1
+        seaturtle pt facing=1 plates=5
+      }
+    }
+    text ask "Ben imagines {who} that {where}. Ada says it would be in trouble. What is the problem?" narrate width=15 right-of=four gap=2
+    choice pick options=[o1, right, o2] stack=column below=four gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=ps {
+      say "The seal's fat is for the cold sea. On a hot beach that same fat holds the heat in, like a winter coat in summer."
+    }
+    when (k == 1 and pick != right) point=pc {
+      say "A crab's body needs to stay damp. In the sun on a dry rock it dries out, which is why crabs hide under the weed and stones."
+    }
+    when (k == 2 and pick != right) point=pt {
+      say "A rock pool is a puddle to a sea turtle. It is built for the open sea."
+    }
+    when (k == 3 and pick != right) point=pg {
+      say "A gull has no gills. It breathes air, so it can only dip under for a moment."
+    }
+  }
+  hint "Think about what {who} is built for: cold or warm, wet or dry, big water or small."
+  hint "What does its body do well in its own place? In this place, that same thing is the problem."
+}

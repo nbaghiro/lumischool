@@ -1,0 +1,16 @@
+# The way in: the picture shows where each stage happens, and the child finds the one described.
+item chem.cycle-number v=1 skills=[chemistry.water-cycle] {
+  title "Where does it happen?"
+  difficulty i
+  let i=0..3
+
+  scene 37x12 {
+    watercycle cycle blank=-1 key=0 plain=0 at=canvas(1, 0)
+    text ask "Which number shows {if i == 0 then \"water rising from the sea as vapour\" else if i == 1 then \"vapour cooling into a cloud\" else if i == 2 then \"rain falling\" else \"water running back to the sea\"}?" width=12 right-of=cycle gap=1
+    choice pick options=[1, 2, 3, 4] below=ask gap=1
+  }
+
+  answer pick=(i + 1)
+  hint "Find the sea, the clouds, the rain and the river in the picture first."
+  hint "Does that happen over the sea, up in the sky, or on the land?"
+}

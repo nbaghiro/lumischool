@@ -1,0 +1,56 @@
+lesson chemistry-atoms-and-molecules v=1 format=teach grade=4 unit=10 subject=chemistry levels=[easy, medium, hard] {
+  title "Atoms and molecules"
+  goal "Count the atoms in a model of a molecule, tell an element from a compound and a pure substance from a mixture, and use a molecule's recipe."
+
+  look {
+    scene 25x10 {
+      row kit at=canvas(1, 0) space=1 align=start {
+        molecule m kind="water" count=1 key=1 letters=1
+        atombox air a="nitrogen" na=4 b="oxygen" nb=2
+      }
+    }
+    say """
+      The particles in everything are made of atoms, far too small to see. Scientists draw them as
+      balls, one colour for each kind, but real atoms have no colour; the key only tells them apart.
+      Atoms join into molecules. Water is one oxygen joined to two hydrogens. Air is mostly nitrogen
+      molecules and oxygen molecules, mixed.
+      """
+  }
+  do {
+    level easy {
+      worked chem.atom-count k="methane" level=medium
+    }
+    practice chem.atom-count count=2 seed=1 easy-seed=5
+    practice chem.atoms-of count=2 seed=5 hard-seed=4
+    practice chem.element-or-compound count=2 seed=2
+    practice chem.pure-or-mixture count=2 seed=4
+    practice chem.box-atoms count=1 seed=1
+  }
+  try stars=2 {
+    show chem.element-compound-mixture v=2 easy-v=0 hard-v=5
+  }
+  try stars=3 {
+    show chem.build-water h=7 o=4 easy-h=4 easy-o=3 hard-h=9 hard-o=5
+  }
+  remember {
+    say "Atoms join into molecules. One kind of atom is an element; kinds joined are a compound; two substances together are a mixture."
+  }
+
+  grown-ups """
+    This lesson is a stretch: atoms first appear in England's key stage 3 and in the US at middle
+    school (NGSS MS-PS1-1), so a child who finds it hard is where the curriculum expects. The models
+    are honest in the ways that matter: atoms are drawn as balls with letters, water is bent, and the
+    key says the colours are only there to tell the kinds apart. The first questions are the way in:
+    count the balls. The two-star question sorts a box into element, compound or mixture, and the
+    air box is the surprise, a mixture of two elements. The three-star question uses water's recipe
+    of two hydrogens and one oxygen, and whichever runs out first decides how many can be built.
+    Building molecules from sweets or modelling clay and sticks is the kitchen version; if sweets are
+    used, they are eaten only after the lesson, not during it.
+    """
+  level easy {
+    grown-ups "At this level methane's five atoms are counted once in the teacher's pen before molecules of two or three atoms, two or three atoms of one kind are counted, elements and compounds and pure or mixed are as written, the box holds eight or twelve atoms, the two-star box holds an element, and the three-star builds water from four hydrogens and three oxygens."
+  }
+  level hard {
+    grown-ups "At this level the molecules to count are water, carbon dioxide and methane, six to twelve atoms of one kind are counted, elements and compounds and pure or mixed are as written, the box holds twelve or fifteen atoms, the two-star box holds a mixture, and the three-star builds water from nine hydrogens and five oxygens."
+  }
+}

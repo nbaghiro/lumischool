@@ -1,0 +1,63 @@
+# A repeat with no count goes on for ever: the lamp's lights come round in the same order, so any
+# light far along can be worked out from the part that repeats.
+lesson coding-a-pattern-that-never-ends v=1 format=teach grade=1 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "A pattern that never ends"
+  goal "Say what a lamp that repeats for ever shows at any step, from the part of its program that repeats."
+
+  look {
+    scene 28x17 {
+      row all space=2 align=start at=canvas(1, 1) {
+        lighthouse tower stripes=3 beam=1
+        column side space=1 align=start {
+          program p code=["repeat for ever", "  light red", "  light green"] title="Pip's lamp"
+          pixels lights cols=6 rows=1 code=["repeat for ever", "  light red", "  light green"] show=true beside=false
+        }
+      }
+    }
+    say """
+      At the lamp rocks Pip's lamp shows red, then green, then red, then green, all night long. Its
+      program says repeat for ever: after the last line it goes back to the top, again and again,
+      and never stops. A repeat with a number, like repeat 3, stops after going round three times.
+      """
+  }
+  do {
+    practice coding.forever-next-light count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked coding.forever-light-at-step u=0 n=4 level=medium
+    }
+    practice coding.forever-light-at-step count=2 seed=10 easy-seed=8 hard-seed=1
+    practice coding.forever-how-many count=2 seed=1 easy-seed=1 hard-seed=1
+    practice coding.forever-which-program count=2 seed=1 easy-seed=7 hard-seed=5
+    level hard {
+      show coding.forever-all-night s=0 r=1 c=1
+    }
+    practice coding.forever-lamp-night count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show coding.forever-all-night s=0 r=0 c=0 easy-r=1 hard-s=1 hard-c=0
+  }
+  try stars=3 {
+    show coding.forever-fewest-lines k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "Repeat for ever goes back to the top every time and never stops."
+  }
+
+  grown-ups """
+    The idea is that a repeat with no number never stops, and that a pattern made by one can be
+    worked out far ahead from the part that repeats. The wrong ideas to watch for are thinking a big
+    number is the same as for ever, and counting along the lights one by one without using the
+    repeat. In the working, look for the child marking where the pattern starts again. The two-star
+    question compares a repeat with a number and a repeat for ever; the three-star question finds
+    the shortest part that repeats, which is the fewest lines the program needs. A child who is
+    stuck can say the colours aloud with a finger on each light, and go back to the way in; stay on
+    this lesson another day if far lights are still counted one by one. Off the page, flash a torch
+    in a pattern and let the child say what the tenth flash will be.
+    """
+  level easy {
+    grown-ups "At this level the next light follows a pattern of two colours, light 4 is worked once in the teacher's pen before lights 2 and 3 of other patterns, the programs to count repeat twice or for ever, the red lights are counted over 4 minutes, the two-star is as written with its answers in another order, and the three-star's lights repeat every two."
+  }
+  level hard {
+    grown-ups "At this level the next light follows a pattern with a colour twice in the part that repeats, the lights asked are numbers 7 and 9, the programs to count repeat three and four times, a second pair of programs is judged before the two-star, the red lights are counted over 7 minutes, where the odd minute adds one, and the three-star's lights repeat every four."
+  }
+}

@@ -1,0 +1,24 @@
+# Reading and building, made into a question with one answer: Sam followed the card and missed one
+# step, and the drawing shows which. Every step but the first can be the one he missed.
+item reading.read-and-check v=1 skills=[reading.instructions] {
+  title "Which step was missed?"
+  difficulty k
+  let k=0..3
+
+  scene 33x23 {
+    row top at=canvas(1, 1) space=1 align=start {
+      howto card title="Draw a house" need=["a pencil", "crayons"] steps=["Draw a house with a pointed roof.", "Give it two windows at the top.", "Put a chimney on the roof.", "Draw a round door.", "Sit a cat by the door."] blank=-1 width=24
+      street pic windows=[if k == 0 then 1 else 2] doors=[if k == 2 then 0 else 1] chimneys=[if k == 1 then 0 else 1] cats=[if k == 3 then 0 else 1] numbers=[""]
+    }
+    text ask "Sam followed the card but missed one step. Which step did he miss?" width=22 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else if k == 1 then 3 else if k == 2 then 4 else 5)
+  feedback {
+    when (answer == 1) point=pic {
+      say "He did draw a house with a pointed roof. Check the other steps one by one."
+    }
+  }
+  hint "Read each step and look for it in Sam's drawing. Tick each one you can see."
+}

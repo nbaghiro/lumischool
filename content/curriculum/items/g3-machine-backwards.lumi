@@ -1,0 +1,25 @@
+# What came out is shown and what went in is asked: the machine run the other way.
+item machine.backwards v=1 stars=1 skills=[algebra.function-machines, division.inverse] {
+  title "What went in?"
+  difficulty (r * n)
+  let r={3, 4, 6, 7, 8} n=3..12
+  where (n != r)
+
+  scene 26x12 {
+    machine box rule="× {r}" input="?" output="{r * n}" at=canvas(1, 1)
+    text ask "{r * n} came out. What number went in?" narrate below=box gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == r * n * r) point=box {
+      say "Going back undoes the machine. Times goes back as divide."
+    }
+    when (answer == r * n - r) point=box {
+      say "The machine multiplies, so going back divides rather than takes away."
+    }
+  }
+  hint "What number times {r} makes {r * n}?"
+  hint "Count in {r}s until you reach {r * n}. How many steps?"
+}

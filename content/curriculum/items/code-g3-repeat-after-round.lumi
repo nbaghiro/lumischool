@@ -1,0 +1,41 @@
+# The middle of a run is the unknown: where the robot is after two times round, not at the end,
+# so the repeat has to be unrolled rather than multiplied out.
+item coding.repeat-after-round v=1 skills=[coding.repetition, coding.tracing] {
+  title "After two times round"
+  difficulty (a + b)
+  let n=3..4 a=1..2 b=1..2
+  where (1 + n * a <= 8 and 1 + n * b <= 7)
+  level easy {
+    let a={1}
+  }
+  level hard {
+    where (a + b >= 3)
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      column left space=1 align=start {
+        program p code=["repeat {n}", "  right {a}", "  down {b}"]
+        text ask "Where is the robot after it has gone round the repeat twice?" width=15
+        row ans space=1 align=centre {
+          text lc "column"
+          number-input col width=3
+        }
+        row ans2 space=1 align=centre {
+          text lr "row"
+          number-input row width=3
+        }
+      }
+      maze g cols=8 rows=7 col=1 row=1 code=["repeat {n}", "  right {a}", "  down {b}"] upto=0 trail=none
+    }
+  }
+
+  check coding.runs of=g col="after(6).col" row="after(6).row"
+  feedback {
+    when (col == 1 + n * a) point=p {
+      say "That is where it stops at the end. The question asks about twice round."
+    }
+  }
+  hint "What does one time round do to the robot?"
+  hint "Do that twice, starting from column 1, row 1."
+}

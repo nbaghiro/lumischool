@@ -1,0 +1,20 @@
+item music.uke-one-finger-string v=1 skills=[music.chord-boxes] {
+  title "Which string?"
+  difficulty (if k == 1 then 0 else 1)
+  let k=0..2
+
+  scene 30x15 {
+    chordbox box tuning=uke chord=(if k == 0 then "Am" else if k == 1 then "C7" else "A7") frets=3 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Which string does the finger press for {if k == 0 then \"Am\" else if k == 1 then \"C7\" else \"A7\"}?" width=16 right-of=box gap=1
+    choice pick options=["G", "C", "E", "A"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "G" else if k == 2 then "C" else "A")
+  feedback {
+    when (pick == (if k == 0 then "A" else if k == 2 then "A" else "C")) point=box {
+      say "The chord's name is not the string's name. Look straight down from the dot."
+    }
+  }
+  hint "Put your finger on the dot. Which line is it on?"
+  hint "Follow that line down to the letter under the card."
+}

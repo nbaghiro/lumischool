@@ -1,0 +1,23 @@
+# The scale is complete this time and the gap is in a sentence. The sentence says how strong the
+# word has to be, so the child reads to the end before choosing.
+item reading.best-word v=1 skills=[reading.vocabulary] {
+  title "The best word"
+  let k=0..2
+
+  scene 35x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      wordscale scale words=["cool", "warm", "hot", "boiling"] blank=-1 low="a little" high="a lot" color=tang
+      sentence strip before="{if k == 0 then \"The bath was\" else if k == 1 then \"The water was so hot it was\" else \"It was a\"}" blank=6 after="{if k == 0 then \", not too hot or too cold.\" else if k == 1 then \".\" else \"day, so I took a jumper.\"}"
+      text ask "Which word fits best?"
+      choice pick options=["cool", "warm", "hot", "boiling"]
+    }
+  }
+
+  answer pick=(if k == 0 then "warm" else if k == 1 then "boiling" else "cool")
+  feedback {
+    when (pick == "hot" and k == 0) point=strip {
+      say "Read to the end of the sentence. It says the bath was not too hot."
+    }
+  }
+  hint "Read the whole sentence first. What does the part after the gap tell you?"
+}

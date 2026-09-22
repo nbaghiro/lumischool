@@ -1,0 +1,54 @@
+lesson g1-how-long-how-heavy v=1 format=teach grade=1 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "How long, how heavy"
+  goal "Measure a length in centimetres, read a weight off a dial, and order lengths from clues."
+
+  look {
+    scene 30x30 {
+      column both at=canvas(1, 0) space=1 align=start {
+        ruler r cm=10 length=6 start=0 thing=pencil
+        tape roll to=100 step=10 mark=65 unit=cm showReading=false
+        row wt space=2 align=end {
+          dialscale scale max=1000 step=200 value=400 unit=g
+          masses set masses=[500, 200, 100]
+        }
+      }
+    }
+    say """
+      A ruler starts at zero, not at its edge. A tape measure counts in tens, and the dial on the
+      scales counts in hundreds of grams.
+      """
+  }
+  do {
+    practice measure.ruler count=1 seed=9
+    practice measure.tape count=1 seed=6
+    practice measure.ruler-start count=2 seed=5 hard-seed=4
+    practice measure.longer-by count=1 seed=4
+    practice measure.flour-weights count=1 seed=6
+    practice measure.heaviest-of-three count=1 seed=2
+  }
+  try stars=2 {
+    show measure.which-longest x="stick" y="ribbon" z="pencil" q="shortest" easy-q="longest"
+    show measure.dial v=600 easy-v=400 hard-v=700
+  }
+  try stars=3 {
+    show measure.ribbon-cut len=10 d=4 easy-len=8 easy-d=4 hard-len=12 hard-d=6
+  }
+  remember {
+    say "Start at zero and count the spaces, not the marks."
+  }
+
+  grown-ups """
+    Printed at A4 the ruler is life size, so a real pencil can be laid on the page and checked. How
+    much longer is a difference, not a total. The two balances need both pictures at once: the ball
+    is on both, so compare it with each of the others. The clues question has no picture on purpose:
+    drawing three lines on scrap paper is the way to solve it. In the three-star question a strip of
+    paper cut and folded shows why the two pieces are the halves of what is left once the difference
+    is taken off.
+    """
+  level easy {
+    grown-ups "At this level the ribbon starts at one, the weights are hundreds and two hundreds, the dial reads on a mark, and the ribbon of eight is cut into pieces four apart."
+  }
+  level hard {
+    grown-ups "At this level the ribbon starts at two or three, the weights include the five hundred, the dial reads between two marks, and the ribbon of twelve is cut into pieces six apart."
+  }
+}

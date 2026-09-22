@@ -1,0 +1,31 @@
+# What each card of the mountain is for, so a story from a plan puts the right thing in each part.
+item writing.stage-job v=1 skills=[writing.planning, writing.story-structure] {
+  title "What is the card for?"
+  difficulty (if k == 0 or k == 2 then 0 else if k == 4 then 1 else 2)
+  let k=0..4 r=0..2
+  let stage={pick(k, "Opening", "Build-up", "Problem", "Fixing it", "Ending")}
+  let right={pick(k, "Who is in it and where they are", "What they set out to do", "What goes wrong", "How it is put right", "How things are at the end")}
+  let w1={pick(k, "What goes wrong", "How things are at the end", "Who is in it and where they are", "What goes wrong", "What they set out to do")}
+  let w2={pick(k, "How it is put right", "Who is in it and where they are", "How it is put right", "What they set out to do", "How it is put right")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3, 4}
+  }
+
+  scene 34x37 {
+    storymountain hill stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["", "", "", "", ""] ring=k at=canvas(0, 0)
+    text ask "The ringed card is {stage}. What does that part of the story tell the reader?" narrate width=32 below=hill gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=hill {
+      say "Follow the climb: the foot is who and where, the way up is what they set out to do, the top is what goes wrong, the way down is putting it right, and the far foot is how it ends."
+    }
+  }
+  hint "Where on the mountain is the ringed card: the foot, the climb, the top, the way down, or the end?"
+  hint "Up the hill the story builds; at the top it goes wrong; down the hill it is mended."
+}

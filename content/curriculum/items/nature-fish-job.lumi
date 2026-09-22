@@ -1,0 +1,39 @@
+# What each part of the fish is for, read off the lettered drawing. The tail and the mouth are the
+# easy two; the fin and the body take a closer look at the fish.
+item nature.fish-job v=1 skills=[nature.animals] {
+  title "Which part does that?"
+  difficulty (if k == 1 or k == 3 then 0 else 1)
+  let k=0..3
+  let job={pick(k, "keeps it steady and helps it steer", "pushes it through the water", "is covered in scales and holds everything inside", "opens to eat and to take in water")}
+  let letter={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k={1, 3}
+  }
+  level hard {
+    let k={0, 2}
+  }
+
+  scene 32x11 {
+    parts fig of=fish at=canvas(1, 1)
+    text ask "Which part of the fish {job}?" narrate width=16 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 1 and pick == "A") point=fig {
+      say "The fin on top keeps the fish steady. The push comes from the big flap at the back, which waves from side to side."
+    }
+    when (k == 3 and pick == "C") point=fig {
+      say "The body holds the fish's insides. Eating and taking in water happen at the front, at the opening under the eye."
+    }
+    when (k == 0 and pick == "B") point=fig {
+      say "The tail pushes. The small flap on the back keeps the fish the right way up and helps it turn."
+    }
+    when (k == 2 and pick == "A") point=fig {
+      say "A fin is a thin flap. The scales cover the big middle part."
+    }
+  }
+  hint "Watch a fish swim in your head. Which part waves from side to side? Which part opens and shuts?"
+  hint "The tail pushes, the fins steer, the mouth eats, and the scaly body holds everything inside."
+}

@@ -1,0 +1,23 @@
+# Something passes from hand to hand, and the question is about the end. The last name in the
+# passage is not always the answer: in one version the thing comes back, in another it is refused.
+item reading.who-has-it v=1 skills=[reading.characters, reading.sequencing] {
+  title "Who has it now?"
+  difficulty (if k == 3 then 2 else if k == 0 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0, 3}
+  }
+
+  scene 36x11 {
+    passage p text="{if k == 0 then \"Mia had the ball. She threw it to Leo. Leo kicked it to Zak, and Zak rolled it back to Mia.\" else if k == 1 then \"Ella had the kite. She gave it to Dan to hold. When the wind dropped, Dan passed it to Ruby.\" else if k == 2 then \"Joe found a shell and showed it to Amir. Amir gave it to Tia. Tia said it was the best one and kept it.\" else \"Hana had the torch. Luca asked for it, so she gave it to him. Then Mo needed it, but Luca said no.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Who has it now?" narrate below=p gap=1
+    choice pick options=[if k == 0 then "Mia" else if k == 1 then "Ella" else if k == 2 then "Joe" else "Hana", if k == 0 then "Leo" else if k == 1 then "Dan" else if k == 2 then "Amir" else "Luca", if k == 0 then "Zak" else if k == 1 then "Ruby" else if k == 2 then "Tia" else "Mo"] right-of=ask gap=2
+  }
+
+  answer pick=(if k == 0 then "Mia" else if k == 1 then "Ruby" else if k == 2 then "Tia" else "Luca")
+  hint "Follow it with your finger: who has it after each sentence?"
+  hint "Read the last sentence carefully. Did it change hands, or not?"
+}

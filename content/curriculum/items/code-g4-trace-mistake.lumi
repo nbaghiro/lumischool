@@ -1,0 +1,24 @@
+# Leo's table goes wrong at one step and then carries on correctly from his wrong number, the way a
+# real mistake spreads, so the question is where he first went wrong. The table is written out from
+# the parameters, and the step he got wrong is either an add row or a repeat row where n should not
+# change.
+item coding.trace-mistake v=1 stars=2 skills=[coding.tracing, coding.debugging] {
+  title "Where did Leo go wrong?"
+  difficulty w
+  let a=1..4 b=2..4 w=3..7
+
+  scene 33x18 {
+    row top at=canvas(1, 0) space=2 align=start {
+      column left space=1 align=start {
+        program p code=["set n to {a}", "repeat 3", "  add {b} to n"]
+        text ask "Leo traced the program in this table. At which step did he first go wrong?" width=13
+        number-input answer
+      }
+      table leo cols=3 head=["step", "line", "n"] cells=["1", "1", "{a}", "2", "2", "{a}", "3", "3", "{a + b + (if w == 3 then 1 else 0)}", "4", "2", "{a + b + (if w == 3 then 1 else if w == 4 then b else 0)}", "5", "3", "{a + 2 * b + (if w == 3 then 1 else if w == 4 then b else if w == 5 then 1 else 0)}", "6", "2", "{a + 2 * b + (if w == 3 then 1 else if w == 4 then b else if w == 5 then 1 else if w == 6 then b else 0)}", "7", "3", "{a + 3 * b + (if w == 3 then 1 else if w == 4 then b else if w == 5 then 1 else if w == 6 then b else 1)}"]
+    }
+  }
+
+  answer w
+  hint "Trace the program yourself, one step at a time, and check each row of Leo's table."
+  hint "On a step where line 2 runs, should n change?"
+}

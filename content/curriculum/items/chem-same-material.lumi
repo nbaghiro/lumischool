@@ -1,0 +1,23 @@
+# One other thing in the row shares thing A's material, and it is never the same kind of thing, so
+# the child has to look past what it is to what it is made of.
+item chem.same-material v=1 skills=[chemistry.materials] {
+  title "The same material"
+  difficulty (if k == 4 then 2 else if k == 2 or k == 3 then 1 else 0)
+  let k=0..5 p=1..3
+  level easy {
+    let k={0, 1, 5}
+  }
+  level hard {
+    let k={2, 3, 4}
+  }
+
+  scene 22x14 {
+    materials row things=["{if p == 1 then (if k == 0 then \"wooden-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"rubber-boot\" else if k == 3 then \"wool-sock\" else if k == 4 then \"plastic-spoon\" else \"glass-bottle\") else if p == 2 then (if k == 0 then \"wooden-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"rubber-boot\" else if k == 3 then \"wool-sock\" else if k == 4 then \"plastic-spoon\" else \"glass-bottle\") else (if k == 0 then \"wooden-spoon\" else if k == 1 then \"metal-spoon\" else if k == 2 then \"rubber-boot\" else if k == 3 then \"wool-sock\" else if k == 4 then \"plastic-spoon\" else \"glass-bottle\")}", "{if p == 1 then (if k == 0 then \"wooden-block\" else if k == 1 then \"metal-can\" else if k == 2 then \"rubber-band\" else if k == 3 then \"wool-hat\" else if k == 4 then \"raincoat\" else \"glass-jar\") else if p == 2 then (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-bottle\" else if k == 2 then \"towel\" else if k == 3 then \"paper-bag\" else if k == 4 then \"metal-spoon\" else \"wooden-block\") else (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-bottle\" else if k == 2 then \"towel\" else if k == 3 then \"paper-bag\" else if k == 4 then \"metal-spoon\" else \"wooden-block\")}", "{if p == 1 then (if k == 0 then \"metal-key\" else if k == 1 then \"plastic-bottle\" else if k == 2 then \"towel\" else if k == 3 then \"paper-bag\" else if k == 4 then \"metal-spoon\" else \"wooden-block\") else if p == 2 then (if k == 0 then \"wooden-block\" else if k == 1 then \"metal-can\" else if k == 2 then \"rubber-band\" else if k == 3 then \"wool-hat\" else if k == 4 then \"raincoat\" else \"glass-jar\") else (if k == 0 then \"glass-jar\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"brick\" else if k == 3 then \"pebble\" else if k == 4 then \"cardboard-box\" else \"metal-can\")}", "{if p == 1 then (if k == 0 then \"glass-jar\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"brick\" else if k == 3 then \"pebble\" else if k == 4 then \"cardboard-box\" else \"metal-can\") else if p == 2 then (if k == 0 then \"glass-jar\" else if k == 1 then \"wooden-ruler\" else if k == 2 then \"brick\" else if k == 3 then \"pebble\" else if k == 4 then \"cardboard-box\" else \"metal-can\") else (if k == 0 then \"wooden-block\" else if k == 1 then \"metal-can\" else if k == 2 then \"rubber-band\" else if k == 3 then \"wool-hat\" else if k == 4 then \"raincoat\" else \"glass-jar\")}"] at=canvas(1, 0)
+    text ask "Which other thing is made of the same material as thing A?" width=21 below=row gap=0
+    choice pick options=["B", "C", "D"] below=ask gap=1
+  }
+
+  check chem.materials of=row pick="same(A)"
+  hint "First say what thing A is made of."
+  hint "Now look along the row for another thing made of that. It does not have to be the same kind of thing."
+}

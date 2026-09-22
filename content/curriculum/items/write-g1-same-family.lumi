@@ -1,0 +1,24 @@
+# A letter that starts the same way as the one shown, from three that each belong to a different
+# family, so the choice has to come from how the letters are written.
+item writing.same-family v=1 skills=[writing.letter-formation] {
+  title "Starts the same way"
+  difficulty (if k == 4 or k == 5 then 1 else 0)
+  let k=0..5 q=0..2
+  let ch={if k == 0 then "h" else if k == 1 then "c" else if k == 2 then "l" else if k == 3 then "v" else if k == 4 then "b" else "g"}
+  let same={if k == 0 then "n" else if k == 1 then "a" else if k == 2 then "t" else if k == 3 then "x" else if k == 4 then "p" else "s"}
+  let o0={if k == 0 and q == 0 then "n" else if k == 0 and q == 1 then "o" else if k == 0 and q == 2 then "l" else if k == 1 and q == 0 then "a" else if k == 1 and q == 1 then "k" else if k == 1 and q == 2 then "t" else if k == 2 and q == 0 then "t" else if k == 2 and q == 1 then "w" else if k == 2 and q == 2 then "o" else if k == 3 and q == 0 then "x" else if k == 3 and q == 1 then "d" else if k == 3 and q == 2 then "m" else if k == 4 and q == 0 then "p" else if k == 4 and q == 1 then "e" else if k == 4 and q == 2 then "i" else if k == 5 and q == 0 then "s" else if k == 5 and q == 1 then "r" else "y"}
+  let o1={if k == 0 and q == 0 then "o" else if k == 0 and q == 1 then "l" else if k == 0 and q == 2 then "n" else if k == 1 and q == 0 then "k" else if k == 1 and q == 1 then "t" else if k == 1 and q == 2 then "a" else if k == 2 and q == 0 then "w" else if k == 2 and q == 1 then "o" else if k == 2 and q == 2 then "t" else if k == 3 and q == 0 then "d" else if k == 3 and q == 1 then "m" else if k == 3 and q == 2 then "x" else if k == 4 and q == 0 then "e" else if k == 4 and q == 1 then "i" else if k == 4 and q == 2 then "p" else if k == 5 and q == 0 then "r" else if k == 5 and q == 1 then "y" else "s"}
+  let o2={if k == 0 and q == 0 then "l" else if k == 0 and q == 1 then "n" else if k == 0 and q == 2 then "o" else if k == 1 and q == 0 then "t" else if k == 1 and q == 1 then "a" else if k == 1 and q == 2 then "k" else if k == 2 and q == 0 then "o" else if k == 2 and q == 1 then "t" else if k == 2 and q == 2 then "w" else if k == 3 and q == 0 then "m" else if k == 3 and q == 1 then "x" else if k == 3 and q == 2 then "d" else if k == 4 and q == 0 then "i" else if k == 4 and q == 1 then "p" else if k == 4 and q == 2 then "e" else if k == 5 and q == 0 then "y" else if k == 5 and q == 1 then "s" else "r"}
+
+  scene 26x12 {
+    formletter big letter=ch copies=0 write=0 label=false at=canvas(1, 1)
+    column q right-of=big gap=2 space=1 align=start {
+      text ask "Which letter starts the same way as this one?" narrate width=16
+      choice pick options=["{o0}", "{o1}", "{o2}"]
+    }
+  }
+
+  answer pick=same
+  hint "Follow the arrows on the big letter. Which way does the pencil go first?"
+  hint "Write each of the three letters in the air. Which one moves the same way?"
+}

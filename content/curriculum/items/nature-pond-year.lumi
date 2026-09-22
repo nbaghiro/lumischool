@@ -1,0 +1,36 @@
+# The story: Ada counting tadpoles in May and again in July, when some have grown their back legs.
+# The ones still without legs are the ones left, which is a take-away with the life cycle telling
+# the child which way round the numbers go.
+item nature.pond-year v=1 skills=[nature.life-cycles, subtraction.to-twenty] {
+  title "Ada's tadpoles"
+  difficulty n
+  let n=4..15 m=1..9
+  where (m < n)
+  level easy {
+    let n=4..7 m=1..4
+  }
+  level hard {
+    let n=12..15 m=5..9
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      pond pool pads=3 fish=0 frog=true
+      frogcycle life stage=4 ring=1 names=0
+    }
+    text ask "In May Ada counts {n} tadpoles in the marsh pond, all with tails and no legs. In July she looks again: {m} of them have grown their back legs. How many are still tadpoles with no legs?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - m)
+  feedback {
+    when (answer == n + m) point=life {
+      say "No new tadpoles came. The {m} with legs are some of the {n} she counted in May, further round the ring."
+    }
+    when (answer == m and m != n - m) point=life {
+      say "Those {m} are the froglets now. The question asks how many have not changed yet."
+    }
+  }
+  hint "The {m} with back legs were tadpoles in May. Are they part of the {n}, or extra?"
+  hint "Start with {n} and take away the ones that have moved on to the next stage."
+}

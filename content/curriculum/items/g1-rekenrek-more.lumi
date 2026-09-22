@@ -1,0 +1,37 @@
+# Comparing the two wires: the difference, read in fives, rather than a count of everything.
+item count.rekenrek-more v=1 skills=[counting.to-twenty, subtraction.compare] {
+  title "More on the top wire"
+  difficulty (t - b)
+  # As written this is the first unit of grade 1, so the difference stays inside a handful and both
+  # wires keep beads waiting at the right, which is what says the others were pushed across.
+  let t=5..9 b=3..7
+  where (t > b)
+  level easy {
+    let t=5..7 b=3..6
+  }
+  level hard {
+    let t=8..10 b=1..4
+  }
+
+  scene 26x17 {
+    rekenrek frame top=t bottom=b at=canvas(1, 1)
+    text ask "How many more beads are pushed across on the top wire than on the bottom wire?" narrate width=24 below=frame gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (t - b)
+  feedback {
+    when (answer == t + b) point=frame {
+      say "That is both wires together. How many more is the difference between them."
+    }
+    when (answer == t) point=frame {
+      say "That is the top wire on its own. Take away the beads on the bottom wire."
+    }
+    when (b != t - b and answer == b) point=frame {
+      say "That is the bottom wire on its own. How many more has the top wire."
+    }
+  }
+  hint "The beads pushed across sit together at the left of each wire."
+  hint "Read each wire in fives: five and some more."
+  hint "Start at the bottom wire's number and count on to the top wire's number."
+}

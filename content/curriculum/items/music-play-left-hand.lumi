@@ -1,0 +1,13 @@
+# The left hand in C position runs the other way: little finger on C, thumb on G. Played from the
+# thumb down, which is the direction the numbers count.
+item music.play-left-hand v=1 skills=[music.fingers] {
+  title "C position, left hand"
+
+  scene 26x18 {
+    text ask "Left hand, little finger on C. Play G, F, E, D, C, from your thumb to your little finger." width=24 at=canvas(1, 1)
+    piano keys from=C3 whites=8 wide=3 labels=letters fingers=[5, 4, 3, 2, 1] below=ask gap=1
+  }
+
+  check music.plays notes=[G3, F3, E3, D3, C3]
+  hint "On the left hand the thumb is on the right, so finger 1 plays the highest note."
+}

@@ -1,0 +1,11 @@
+item writing.robot-rewrite v=1 skills=[writing.editing, writing.composing] {
+  title "Write it properly"
+  let k=0..1
+
+  scene 32x17 {
+    fixbot bot says="{if k == 0 then \"can you pass me the magnet\" else \"ben and i fixed to lamps\"}" width=18 fixed=0 ring=-1 at=canvas(1, 1)
+    writinglines lines lines=1 width=30 prompt="Write the robot's sentence properly." below=bot gap=1
+  }
+
+  check writing.by-eye look-for="The sentence copied with every mistake mended: a capital at the start and for any name or I, the right word where two sound the same (two, not to), and the right mark at the end."
+}

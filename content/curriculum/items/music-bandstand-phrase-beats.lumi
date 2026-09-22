@@ -1,0 +1,36 @@
+# The story: the band at the bandstand plays the four-bar phrase several times after a few bars of
+# silence, and the beats are counted: four beats a bar.
+item music.bandstand-phrase-beats v=1 skills=[music.counting-beats, multiplication.groups] {
+  title "The band plays it through"
+  difficulty (n + r - 3)
+  let n=2..4 r=1..2
+  let wait={pick(r - 1, "one bar", "two bars")}
+  level easy {
+    let n=2..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 36x12 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      column side space=1 align=start {
+        text ask "At the bandstand the band waits {wait} in silence, then plays Ana's four-bar phrase {n} times. Every bar has 4 beats. How many beats is that from the start?" narrate width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer (4 * (4 * n + r))
+  feedback {
+    when (answer == 16 * n) point=ask {
+      say "The silent bars count too. Each one lasts 4 beats."
+    }
+    when (answer == 4 * n + r) point=ask {
+      say "That counts the bars. Each bar lasts 4 beats."
+    }
+  }
+  hint "How many bars is the phrase played {n} times? Then add the silent bars."
+  hint "Every bar is 4 beats, so multiply the bars by 4."
+}

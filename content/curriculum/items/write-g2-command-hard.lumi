@@ -1,0 +1,31 @@
+# The audit's raise for which-is-a-command: all three choices are commands, so the child has to
+# choose the one that tells people what this place needs.
+item writing.command-hard v=1 skills=[writing.sentences, writing.signs] {
+  title "The command this place needs"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0, 3}
+  }
+  let need={if k == 0 then "The pond wants people to stop feeding the ducks." else if k == 1 then "The library wants people to be quiet." else if k == 2 then "The farm wants people to shut the gate." else "The cafe floor has just been washed."}
+  let right={if k == 0 then "Please do not feed the ducks." else if k == 1 then "Please be quiet." else if k == 2 then "Shut the gate." else "Mind the wet floor."}
+  let w1={if k == 0 then "Please feed the ducks." else if k == 1 then "Please sing here." else if k == 2 then "Open the gate." else "Sit on the floor."}
+  let w2={if k == 0 then "Look at the ducks." else if k == 1 then "Read a book." else if k == 2 then "Paint the gate." else "Drop your crumbs."}
+  let o1={if r == 0 then right else w1}
+  let o2={if r == 1 then right else if r == 0 then w1 else w2}
+  let o3={if r == 2 then right else w2}
+  let kind={if k == 0 then "post" else if k == 1 then "door" else if k == 2 then "post" else "hanging"}
+
+  scene 31x19 {
+    sign board lines=[""] kind=kind color="tang" at=canvas(1, 1)
+    text ask "{need} All three are commands. Which one should go on its sign?" narrate width=20 right-of=board gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "All three tell you to do something. Which one does the place want?"
+  hint "Read each command. Would it help the pond, the library, the farm or the cafe?"
+}

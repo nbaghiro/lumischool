@@ -1,0 +1,18 @@
+# Salt is tiny cubes, which the look section shows; here the child finds the cubes among another
+# kind of grain, in either lens.
+item chem.lens-which v=1 skills=[chemistry.materials] {
+  title "Which one is salt?"
+  difficulty k
+  let k=0..5
+
+  scene 28x15 {
+    text ask "Salt grains are tiny cubes. Which lens shows salt?" width=27 at=canvas(1, 0)
+    magnifier a kind=(if k == 0 then "salt" else if k == 1 then "sugar" else if k == 2 then "salt" else if k == 3 then "sand" else if k == 4 then "salt" else "rice") count=4 below=ask gap=0
+    magnifier b kind=(if k == 0 then "sugar" else if k == 1 then "salt" else if k == 2 then "sand" else if k == 3 then "salt" else if k == 4 then "rice" else "salt") count=4 right-of=a gap=1
+    choice pick options=["A", "B"] below=a gap=0
+  }
+
+  answer pick=(if k % 2 == 0 then "A" else "B")
+  hint "Look at the shape of each grain. Which lens shows little boxes with square sides?"
+  hint "The first lens is A and the second is B."
+}

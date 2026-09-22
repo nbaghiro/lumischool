@@ -1,0 +1,22 @@
+# A pattern in the parts: each step of the ladder adds twice as much white as the one before.
+item art.tint-steps v=1 skills=[art.tints, reasoning.pattern] {
+  title "The next step of the ladder"
+  difficulty b
+  let c={"red", "blue"} b=2..4
+  level easy {
+    let b={2}  # two parts of white
+  }
+  level hard {
+    let b={3, 4}  # four and eight
+  }
+
+  scene 34x12 {
+    tintladder ladder colour=c toward="white" steps=5 blank=b ring=-1 labels=true at=canvas(1, 1)
+    text ask "Each square has more white than the one before. How many parts of white go in the square with the question mark?" width=15 right-of=ladder gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if b == 2 then 2 else if b == 3 then 4 else 8)
+  hint "Read the labels under the squares from the left. How many parts of white does each one add?"
+  hint "How does each number get from one square to the next? Do the same again."
+}

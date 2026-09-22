@@ -1,0 +1,16 @@
+# Reasoning over every mix a box can make: the one colour that needs a paint the box does not have.
+item art.cannot-make v=1 stars=2 skills=[art.colour-mixing, reasoning.what-if] {
+  title "What can you not make?"
+  difficulty (if k == 2 then 2 else if k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 34x11 {
+    paintbox box pans=["{if k == 1 then \"yellow\" else \"red\"}", "{if k < 2 then \"blue\" else \"yellow\"}", "{if k == 3 then \"blue\" else \"white\"}"] per=3 ring=-1 labels=true at=canvas(1, 1)
+    text ask "Sam has only these three paints. Which colour can he not make, however he mixes them?" width=18 right-of=box gap=2
+    choice pick options=["{if k == 1 then \"green\" else if k == 3 then \"pink\" else \"orange\"}", "{if k == 1 then \"orange\" else if k == 3 then \"green\" else \"pink\"}", "{if k == 1 then \"blue\" else if k == 2 then \"green\" else \"purple\"}"] below=ask gap=1
+  }
+
+  check paint.mixes of=box pick=cannot
+  hint "Take each colour in turn. Which two paints would you mix to make it?"
+  hint "Are both of those paints in Sam's box? If one is missing, can he mix it from the others?"
+}

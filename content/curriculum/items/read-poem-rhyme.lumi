@@ -1,0 +1,27 @@
+# The audit's raise, one of the ten items most in need of it: the old question picked a rhyme that
+# shared its spelling with the word. Now the child hears every line end and names the whole
+# pattern, and two of the poems rhyme words spelled differently (new and blue, behind and find).
+# The poems were written for this lesson.
+item reading.poem-rhyme v=2 skills=[reading.poetry, reading.rhyme] {
+  title "The rhyme pattern"
+  difficulty (if k == 0 then 0 else if k == 2 then 2 else 1)
+  let k=0..3
+
+  scene 30x20 {
+    poem p title="{if k == 0 then \"The fox\" else if k == 1 then \"Snow\" else if k == 2 then \"The tide\" else \"My kite\"}" lines=[if k == 0 then "The fox comes out when stars are bright," else if k == 1 then "The snow came down without a sound," else if k == 2 then "The tide goes out across the sand," else "My kite is red, my kite is new,", if k == 0 then "he trots across the field at night." else if k == 1 then "it filled the lane and hid the gate." else if k == 2 then "it leaves a pool behind," else "it tugs the string inside my hand.", if k == 0 then "He sniffs the bins behind the shop," else if k == 1 then "It spread a blanket on the ground," else if k == 2 then "a crab is hiding by a rock," else "It climbs until it meets the blue,", if k == 0 then "and at the gate he has to stop." else if k == 1 then "and all the buses came in late." else if k == 2 then "as quiet as you'll find." else "then dives and bumps onto the land."] rhymes=[-1, -1, -1, -1] blank=-1 beats=[] width=29 at=canvas(1, 1)
+    text ask "Which pattern do the rhymes make?" below=p gap=1
+    choice pick options=["AABB", "ABAB", "ABCB"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "AABB" else if k == 2 then "ABCB" else "ABAB")
+  feedback {
+    when (pick == "AABB" and k != 0) point=p {
+      say "Do lines 1 and 2 really end with the same sound? Say them aloud."
+    }
+    when (pick == "ABAB" and k == 2) point=p {
+      say "Say the ends of lines 1 and 3 aloud. Do sand and rock rhyme?"
+    }
+  }
+  hint "Say the last word of each line aloud. Give the first one the letter A."
+  hint "A line that rhymes with an earlier one gets its letter. A new sound gets the next letter."
+}

@@ -1,0 +1,39 @@
+# The story: two pots at the cliffs, the same water poured through each, and how much more one
+# soil held than the other.
+item chem.two-pots v=1 stars=1 skills=[chemistry.rocks, subtraction.to-hundred] {
+  title "Two pots on the cliff path"
+  difficulty (poured / 10 + (if w == 1 then 3 else 0))
+  let poured={50, 60, 100} a={35, 40, 45} b={10, 15, 20} w=0..1
+  where (a < poured)
+  let asks={pick(w, "How much more water did the garden soil hold than the sand?", "How much water did the two pots hold between them?")}
+  level easy {
+    let poured={50} w=0..0
+  }
+  level hard {
+    let poured={60, 100} w=1..1
+  }
+
+  scene 34x25 {
+    row two at=canvas(1, 0) space=3 align=end {
+      beaker sand max=100 step=20 level=a unit=ml solid=0 rod=false label="sand"
+      beaker loam max=100 step=20 level=b unit=ml solid=0 rod=false label="garden"
+    }
+    text ask "Leo pours {poured} millilitres through a pot of sand and {poured} through a pot of garden soil. After a minute {a} millilitres have come through the sand and {b} through the garden soil. {asks}" narrate width=32 below=two gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a - b else 2 * poured - a - b)
+  feedback {
+    when (w == 0 and answer == poured - b + (poured - a)) point=two {
+      say "That is what both held together. The question wants the difference: the garden soil held {poured - b}, the sand held {poured - a}."
+    }
+    when (w == 1 and answer == a + b and a + b != 2 * poured - a - b) point=two {
+      say "That is what came through. Each pot held the rest of its {poured}."
+    }
+    when (w == 0 and answer == poured - b and poured != a) point=loam {
+      say "That is what the garden soil held. The sand held {poured - a}. How much more is the first?"
+    }
+  }
+  hint "{if w == 0 then \"Less came through the garden soil, so it held more. The extra it held is the gap between the two beakers.\" else \"Each pot held its {poured} less what came through. Work out each, then add.\"}"
+  hint "{if w == 0 then \"{a} take away {b}.\" else \"{poured} take away {a}, {poured} take away {b}, then add the two.\"}"
+}

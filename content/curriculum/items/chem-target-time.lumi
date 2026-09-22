@@ -1,0 +1,33 @@
+# The three-star: the jar and the candle that burn for a target number of seconds, from two
+# rates and four jars. A thick candle uses air faster, so it burns fewer seconds per jar.
+item chem.target-time v=1 stars=3 skills=[chemistry.burning, reasoning.constraints] {
+  title "Exactly so many seconds"
+  difficulty (if k == 0 or k == 2 then 0 else 1)
+  let k=0..3 r=0..3
+  let target={pick(k, 20, 16, 40, 32)}
+  let right={pick(k, "thin candle, 1000 ml jar", "thick candle, 1000 ml jar", "thin candle, 2000 ml jar", "thick candle, 2000 ml jar")}
+  let o1={pick(k, "thick candle, 1000 ml jar", "thin candle, 1000 ml jar", "thick candle, 2000 ml jar", "thin candle, 2000 ml jar")}
+  let o2={pick(k, "thin candle, 2000 ml jar", "thick candle, 2000 ml jar", "thin candle, 1000 ml jar", "thick candle, 1000 ml jar")}
+  let o3={pick(k, "thick candle, 2000 ml jar", "thin candle, 2000 ml jar", "thick candle, 1000 ml jar", "thin candle, 1000 ml jar")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=3..3
+  }
+
+  scene 34x31 {
+    candle c start=10 burnt=2 lit=1 jar=1 at=canvas(0, 0)
+    text ask "A thin candle uses 250 ml of air every 5 seconds. A thick one, with a bigger flame, uses 250 ml every 4 seconds. Leo wants a candle that goes out after exactly {target} seconds under its jar. Which should he use?" narrate width=20 right-of=c gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o3 else if r == 2 then o2 else o1, if r == 0 then o1 else if r == 1 then right else if r == 2 then o3 else o2, if r == 0 then o2 else if r == 1 then o1 else if r == 2 then right else o3, if r == 0 then o3 else if r == 1 then o2 else if r == 2 then o1 else right] stack=column below=c gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "Work each pair out: the jar's air in lots of 250 ml, times the candle's seconds per lot. The thin candle gets 5 seconds a lot, the thick one 4."
+    }
+  }
+  hint "A 1000 ml jar is 4 lots of 250 ml; a 2000 ml jar is 8 lots. Multiply the lots by the candle's seconds."
+  hint "Multiply the lots by 5 for the thin candle and by 4 for the thick one, and look for {target}."
+}

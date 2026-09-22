@@ -1,0 +1,38 @@
+# Which flies but is not a bird, and which is a bird but does not fly: two sorts that do not line
+# up. The bat is the first, the hen the second.
+item nature.flies-not-bird v=1 skills=[nature.sorting, reasoning.two-conditions] {
+  title "It flies, but"
+  difficulty w
+  let w=0..1
+  let asks={pick(w, "Which of these flies but is not a bird?", "Which of these is a bird but hardly flies at all?")}
+  let right={pick(w, "bat", "hen")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x15 {
+    row four at=canvas(1, 1) space=1 align=end {
+      gull pg flying=1
+      bats pb count=2 flying=1
+      art h asset="hen"
+      art d asset="duck"
+    }
+    text ask "{asks}" narrate width=32 below=four gap=1
+    choice pick options=["gull", "bat", "hen", "duck"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (w == 0 and pick != "bat") point=pb {
+      say "Every bird has feathers. Look for the flier whose wings are skin and whose body is fur."
+    }
+    when (w == 1 and pick != "hen") point=four {
+      say "The gull and the duck fly well. The bird with the small round wings flaps up to a perch and no further."
+    }
+  }
+  hint "A bird is an animal with feathers. Which of the four has none?"
+  hint "Flying and being a bird are two different things. One of these has each without the other."
+}

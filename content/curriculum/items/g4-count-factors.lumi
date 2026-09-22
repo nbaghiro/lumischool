@@ -1,0 +1,27 @@
+# All the factors of a number, found in pairs; a square number has one pair that is the same twice.
+item factors.how-many v=1 skills=[number.factors] {
+  title "How many factors"
+  difficulty ((if n == 16 then 5 else if n == 36 then 9 else if n == 24 or n == 30 or n == 40 then 8 else 6) + n / 10)
+  let n={12, 16, 18, 20, 24, 30, 36, 40}
+  level easy {
+    let n={12, 16, 18}
+  }
+  level hard {
+    let n={30, 36, 40}
+  }
+
+  scene 32x10 {
+    array dots rows=(if n == 30 or n == 40 then 5 else if n == 12 or n == 18 then 3 else 4) cols=(n / (if n == 30 or n == 40 then 5 else if n == 12 or n == 18 then 3 else 4)) color=sky at=canvas(1, 1)
+    text ask "This array shows one way to make {n}. How many factors does {n} have?" narrate width=14 right-of=dots gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if n == 16 then 5 else if n == 36 then 9 else if n == 24 or n == 30 or n == 40 then 8 else 6)
+  feedback {
+    when (answer == (if n == 16 then 5 else if n == 36 then 9 else if n == 24 or n == 30 or n == 40 then 8 else 6) - 2) point=ask {
+      say "1 and {n} are factors of {n} too."
+    }
+  }
+  hint "Factors come in pairs that multiply to {n}. Start with 1 and {n}."
+  hint "Try 2, then 3, then 4. Stop when the pairs start to repeat."
+}

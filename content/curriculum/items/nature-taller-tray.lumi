@@ -1,0 +1,40 @@
+# The way in: two trays of cress from the same packet, drawn at the stage each has reached, and
+# the one that grew more. A big gap between the trays is seen at once; one stage apart takes a
+# closer look at the plants.
+item nature.taller-tray v=1 skills=[nature.plants] {
+  title "Which tray grew more?"
+  difficulty (3 - abs(a - b))
+  let a=1..4 b=1..4
+  where (a != b)
+  let right={if a > b then "A" else "B"}
+  level easy {
+    where (abs(a - b) >= 2)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+
+  scene 30x13 {
+    row two at=canvas(1, 1) space=2 align=end {
+      column left space=0 align=start {
+        text la "A"
+        crops ta stage=a rows=2 plants=4
+      }
+      column right space=0 align=start {
+        text lb "B"
+        crops tb stage=b rows=2 plants=4
+      }
+    }
+    text ask "Ada sowed two trays of cress on the same day. Which tray has grown more?" narrate width=10 right-of=two gap=2
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Look at the plants, not the tray. Which has taller stems and more leaves?"
+    }
+  }
+  hint "Compare one plant from each tray. Which is taller? Which has more leaves?"
+  hint "The tray that has grown more looks further along: taller, leafier, or in flower."
+}

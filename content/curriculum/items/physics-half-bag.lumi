@@ -1,0 +1,20 @@
+item physics.half-bag v=1 skills=[physics.weight] stars=2 {
+  title "Half the apples"
+  difficulty v
+  let v={4, 6, 8, 10}
+
+  scene 22x14 {
+    springscale s max=10 step=2 value=v unit=N at=canvas(1, 0)
+    text ask "Ben's bag of apples pulls {v} newtons. He takes half the apples out. What will it read now?" width=13 right-of=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (v / 2)
+  feedback {
+    when (answer == v - 2 and v > 4) point=s {
+      say "Half of the apples is not two apples. What is half of {v}?"
+    }
+  }
+  hint "If half the apples go, what happens to the pull?"
+  hint "What number is half of {v}?"
+}

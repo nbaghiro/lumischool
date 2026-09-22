@@ -1,0 +1,18 @@
+# Build a program that feels its way: which way to turn and how many times round are both the
+# child's to choose, and the key program is proved to reach the flag. The robot starts facing a wall,
+# so a program of straight moves needs six blocks and only one that feels for walls fits in five.
+item coding.build-wall-follower v=2 stars=3 skills=[coding.decisions, coding.repetition, reasoning.constraints] {
+  title "Feel your way to the flag"
+  difficulty k
+  let k=0..1
+
+  scene 36x26 {
+    maze g map=["{if k == 0 then \"S . . . .\" else \". . . . S\"}", "{if k == 0 then \"# # # # .\" else \". # # # #\"}", "{if k == 0 then \"F . . . .\" else \". . . . F\"}", "{if k == 0 then \". # # # #\" else \"# # # # .\"}"] face=(if k == 0 then "up" else "right") at=canvas(1, 0)
+    codepad answer tray=["repeat 2", "if wall ahead", "turn left", "turn right", "otherwise", "forward 1"] lines=5 key=["repeat {if k == 0 then 13 else 14}", "  if wall ahead", "    turn {if k == 0 then \"right\" else \"left\"}", "  otherwise", "    forward 1"] right-of=g gap=1
+    text ask "Get the robot to the flag in 5 blocks. It has to feel for the walls as it goes." width=14 below=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "At every wall the robot has to choose a turn. Which turn keeps it going towards the flag?"
+  hint "Count the times round it needs, including the turns, and set the repeat to that."
+}

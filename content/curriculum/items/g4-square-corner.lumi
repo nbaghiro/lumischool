@@ -1,0 +1,28 @@
+# A square from its bottom side: the side length is the gap between the across numbers, and the
+# same length goes up, which is the reason to give.
+item coords.square-corner v=1 stars=2 skills=[position.coordinates, reasoning.properties] {
+  title "The top of the square"
+  difficulty (s + a + b)
+  let a=0..2 b=0..2 s=2..4
+  where (a + s <= 6 and b + s <= 6)
+  level hard {
+    where (s >= 3 and a + b >= 2)
+  }
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=a py=b mark="P" at=canvas(1, 0)
+    column q right-of=grid gap=2 space=1 align=start {
+      text ask "The bottom side of a square joins P ({a}, {b}) to ({a + s}, {b}). The square is above that side. Where is its top right corner?" width=15
+      equation eq "( {?px} , {?py} )"
+    }
+  }
+
+  answer px=(a + s) py=(b + s)
+  feedback {
+    when (px == a + s and py == b + 1) point=grid {
+      say "All four sides of a square are the same length. How long is the bottom side?"
+    }
+  }
+  hint "How long is the bottom side of the square?"
+  hint "Every side of a square is that long. How far up is the top?"
+}

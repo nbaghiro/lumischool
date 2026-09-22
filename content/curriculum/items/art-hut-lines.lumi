@@ -1,0 +1,28 @@
+# The story: the painter's hut, where Mia keeps one thick pen and one thin one, and which of the three
+# things on her table the thin pen drew. The thin line is the last of the three, so the answer moves
+# with the order.
+item art.hut-lines v=1 skills=[art.line, counting.to-ten] {
+  title "The pens at the hut"
+  difficulty v
+  let v=0..3
+  let a={pick(v, "apple", "cup", "apple", "pear")}
+  let b={pick(v, "pear", "apple", "pear", "ball")}
+  let c={pick(v, "jug", "pear", "ball", "cup")}
+  let ans={pick(v, "The jug", "The pear", "The ball", "The cup")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 21x39 {
+    stilllife table light="left" things=["{a}", "{b}", "{c}"] lamp=true weights=["thick", "thick", "thin"] at=canvas(1, 0)
+    text ask "At the painter's hut Mia keeps a thick pen and a thin one. She drew this with both, using the thin one for whatever stands furthest back. Which thing did she draw with the thin pen?" narrate width=20 below=table gap=1
+    choice pick options=["The apple", "The ball", "The cup", "The jug", "The pear"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Look along the edges of all three things."
+  hint "One line is narrower than the other two, and that is the thin pen's."
+}

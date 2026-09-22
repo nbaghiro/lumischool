@@ -1,0 +1,21 @@
+# Same area, different perimeters: the longer and thinner a rectangle, the further round it is.
+item area.which-perimeter v=1 stars=2 skills=[area.perimeter, reasoning.compare-without-totalling] {
+  title "Same area, which perimeter"
+  difficulty (6 - abs(a + n / a - c - n / c) + n / 12)
+  let n={24, 36, 48} a={2, 3, 4, 6} c={2, 3, 4, 6, 8, 12}
+  where (n % a == 0 and n % c == 0 and a != c and a * a != n and c * c != n and a * c != n)
+  level hard {
+    where (n >= 36 and abs(a + n / a - c - n / c) <= 2)  # the two perimeters are within four
+  }
+
+  scene 30x14 {
+    text ask "Two rectangles both have an area of {n} square cm. Which has the longer perimeter?" narrate width=29 at=canvas(1, 1)
+    text pa "A is {a} cm wide." below=ask gap=1
+    text pb "B is {c} cm wide." below=pa gap=0
+    choice pick options=["A", "B", "the same"] below=pb gap=1
+  }
+
+  answer pick=(if a + n / a > c + n / c then "A" else "B")
+  hint "How long is each rectangle? What times its width makes {n}?"
+  hint "Which rectangle is longer and thinner? Work out both perimeters to check."
+}

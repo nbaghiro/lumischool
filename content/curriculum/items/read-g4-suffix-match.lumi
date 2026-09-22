@@ -1,0 +1,15 @@
+# One root, three suffixes, three meanings: the child pairs each word with its meaning. The
+# meanings are listed in a different order for each root.
+item reading.suffix-match v=1 skills=[reading.morphology] {
+  title "Match the word to its meaning"
+  let k=0..2 r={if k == 0 then "care" else if k == 1 then "help" else "use"}
+
+  scene 32x13 {
+    text ask "Write the number of its meaning next to each word." width=30 at=canvas(1, 1)
+    match m left=["{r}ful", "{r}less", "{if k == 0 then \"carer\" else if k == 1 then \"helper\" else \"user\"}"] right=["{if k == 0 then \"without care\" else if k == 1 then \"a person who helps\" else \"full of use\"}", "{if k == 0 then \"full of care\" else if k == 1 then \"full of help\" else \"a person who uses it\"}", "{if k == 0 then \"a person who cares\" else if k == 1 then \"without help\" else \"without use\"}"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=(if k == 0 then 2 else if k == 1 then 2 else 1) b=(if k == 0 then 1 else if k == 1 then 3 else 3) c=(if k == 0 then 3 else if k == 1 then 1 else 2)
+  hint "Start with the word you are surest of. What does ful mean?"
+  hint "Less means without. Er can mean a person who."
+}

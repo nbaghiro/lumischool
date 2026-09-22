@@ -1,0 +1,26 @@
+# Every weight a small set of masses can make: when two of them add to the third, one weight is
+# made twice, and that is the catch.
+item measure.mass-sums v=1 stars=3 skills=[mass.grams, reasoning.all-the-ways] {
+  title "How many weights?"
+  difficulty (if a + b == c then 1 else 0)
+  let a={100, 200} b={200, 300} c={300, 400, 500}
+  where (a < b and b < c)
+
+  scene 31x12 {
+    masses set masses=[c, b, a] at=canvas(1, 1)
+    text ask "You can put one, two or all three of these masses on a scale. How many different weights can you make?" narrate width=16 right-of=set gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if a + b == c then 6 else 7)
+  feedback {
+    when (answer == 3) point=set {
+      say "You can put two or three masses on at once, as well as one."
+    }
+    when (answer == 7 and a + b == c) point=set {
+      say "Look at {a} g and {b} g together. Is that a new weight?"
+    }
+  }
+  hint "Start with one mass at a time. Then try every pair, then all three."
+  hint "Write each weight down. Did any weight come up twice?"
+}

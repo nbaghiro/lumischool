@@ -1,0 +1,15 @@
+# The same word does two jobs; only the sentence says which. Two sentences use it one way and one
+# uses it the other, and the question asks for the odd one, so the -ed ending cannot decide.
+item writing.same-word-two-jobs v=1 skills=[writing.word-classes] {
+  title "The same word, a different job"
+  let k=0..5
+
+  scene 30x15 {
+    text ask "In which sentence is {if k == 0 then \"paint\" else if k == 1 then \"rain\" else if k == 2 then \"plant\" else if k == 3 then \"dance\" else if k == 4 then \"brush\" else \"fly\"} a {if k % 2 == 0 then \"doing\" else \"naming\"} word?" width=29 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"The paint is wet.\" else if k == 1 then \"It may rain today.\" else if k == 2 then \"We plant beans in May.\" else if k == 3 then \"We dance in the hall.\" else if k == 4 then \"I lost my brush.\" else \"Birds fly south.\"}", "{if k == 0 then \"We paint the gate.\" else if k == 1 then \"The rain was cold.\" else if k == 2 then \"The plant needs water.\" else if k == 3 then \"They dance on Fridays.\" else if k == 4 then \"The brush is wet.\" else \"A fly sat on the jam.\"}", "{if k == 0 then \"Paint is on my shoe.\" else if k == 1 then \"It will rain soon.\" else if k == 2 then \"This plant has red leaves.\" else if k == 3 then \"The dance was fun.\" else if k == 4 then \"I brush my hair.\" else \"Ducks fly home.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "We paint the gate." else if k == 1 then "The rain was cold." else if k == 2 then "We plant beans in May." else if k == 3 then "The dance was fun." else if k == 4 then "I brush my hair." else "A fly sat on the jam.")
+  hint "In each sentence, is the word a thing, or something someone does?"
+  hint "Try putting the before it. A naming word can take the; a doing word usually cannot."
+}

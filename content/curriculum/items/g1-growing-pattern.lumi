@@ -1,0 +1,24 @@
+# A growing pattern carried on past what is drawn: the rule is seen, then used twice more.
+item pattern.growing v=1 stars=2 skills=[patterns.growing, reasoning.generalise] {
+  title "The pattern grows"
+  difficulty (s + t)
+  let s=1..3 t=2..3
+
+  scene 32x12 {
+    terms row terms=3 start=s step=t shape=ell at=canvas(1, 1)
+    text ask "Each term has {t} more squares than the one before. How many squares will term 5 have?" narrate width=13 right-of=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (s + 4 * t)
+  feedback {
+    when (answer == s + 3 * t) point=row {
+      say "That is term 4. Carry on to term 5."
+    }
+    when (answer == s + 5 * t) point=row {
+      say "That is one term too far. Term 1 is the first one drawn."
+    }
+  }
+  hint "How many squares does term 3 have?"
+  hint "Draw term 4 on scrap paper, then term 5."
+}

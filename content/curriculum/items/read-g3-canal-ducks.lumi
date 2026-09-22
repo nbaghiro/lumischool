@@ -1,0 +1,39 @@
+# The audit's raise for reading for a number: the answer is never written in the passage, so the
+# child reads two events and works it out, and the heron is a bird too.
+item reading.canal-ducks v=1 skills=[reading.comprehension, reading.inference] {
+  title "Ducks at the lock"
+  difficulty k
+  let n=6..9 m=2..4 r=1..2 k=0..2
+  where (r < m)
+  level easy {
+    let k=0..1  # the heron is not in these questions
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p text="There were {n} ducks on the canal by the lock. When the gates opened, {m} of them flew off to the field. Later {r} of those came back, and a heron landed on the bank to fish." width=26
+        heron bird facing=-1 reeds=3
+      }
+      row q space=2 align=centre {
+        text ask "{if k == 0 then \"How many ducks were left on the canal when the gates opened?\" else if k == 1 then \"How many ducks were on the canal at the end?\" else \"How many birds were by the lock at the end?\"}" width=26
+        number-input answer
+      }
+    }
+  }
+
+  answer (if k == 0 then n - m else if k == 1 then n - m + r else n - m + r + 1)
+  feedback {
+    when (answer == n - m + r and k == 2) point=p {
+      say "A heron is a bird as well. Read the last sentence again."
+    }
+    when (answer == n + r and k == 1) point=p {
+      say "Some ducks flew off before the others came back."
+    }
+  }
+  hint "How many ducks were there at the start?"
+  hint "Read each sentence in turn. Does it add birds or take them away?"
+}

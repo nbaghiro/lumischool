@@ -1,0 +1,47 @@
+lesson physics-see-through-or-not v=1 format=teach grade=2 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "See-through or not"
+  goal "Say whether a sheet lets all, some or none of the light through, and what that makes on the wall behind it."
+
+  look {
+    scene 19x19 {
+      column all at=canvas(1, 0) space=1 align=start {
+        beam clear sheet=0
+        beam card sheet=2
+      }
+    }
+    say """
+      Clear glass lets all the light through, so the wall behind it is bright. Card lets none of
+      it through, so there is a dark patch on the wall where the light cannot reach. That dark
+      patch is a shadow. Tracing paper is in between: some light gets through, so its shadow is pale.
+      """
+  }
+  do {
+    practice physics.light-through count=2 seed=2
+    practice physics.shadow-sheet count=2 seed=2 easy-seed=7 hard-seed=7
+    practice physics.shadow-on-wall count=2 seed=1
+    practice physics.window-choice count=1 seed=1
+    practice physics.sheet-order count=1 seed=1
+  }
+  try stars=2 {
+    show physics.torch-closer
+  }
+  try stars=3 {
+    show physics.which-sheet k=1 easy-k=0
+  }
+  remember {
+    say "A shadow is where light cannot get through."
+  }
+
+  grown-ups """
+    A torch, a wall and three things from the house do the whole lesson: a glass, a sheet of
+    baking paper and a book. Ask for a guess before each one goes in front of the torch, and look
+    at the edge of each shadow together. Then move the book towards the torch and watch its shadow
+    grow, which is the stretch question.
+    """
+  level easy {
+    grown-ups "At this level the sheets held in the beam are clear glass and card, which let all or none of the light through, and the sheet to name from what reached the wall is the glass, which lit the wall all over."
+  }
+  level hard {
+    grown-ups "At this level the sheets are tracing paper and card, so the child tells a pale shadow from a dark one, and the sheet to name from its shadow is the tracing paper."
+  }
+}

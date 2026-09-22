@@ -1,0 +1,16 @@
+# A recount tells what already happened, so the word it needs is the one in the past.
+item writing.recount-tense v=2 skills=[writing.recounts, writing.tense] {
+  title "A word for the postcard"
+  difficulty (if t == 2 or t == 3 then 1 else 0)
+  let t=0..3 p=0..2 was={if t == 0 then "climbed" else if t == 1 then "lit" else if t == 2 then "went" else "saw"} now={if t == 0 then "climb" else if t == 1 then "light" else if t == 2 then "go" else "see"} will={if t == 0 then "will climb" else if t == 1 then "will light" else if t == 2 then "will go" else "will see"}
+
+  scene 32x11 {
+    caption line text="{if t == 0 then \"Yesterday we ___ the big hill.\" else if t == 1 then \"Last night Dad ___ a small fire.\" else if t == 2 then \"Last Sunday the boat ___ into the lock.\" else \"Yesterday we ___ a heron by the canal.\"}" width=30 at=canvas(1, 1)
+    text ask "Which word goes in the gap?" below=line gap=1
+    choice pick options=["{if p == 0 then was else if p == 1 then now else will}", "{if p == 0 then now else if p == 1 then will else was}", "{if p == 0 then will else if p == 1 then was else now}"] below=ask gap=1
+  }
+
+  answer pick=was
+  hint "When did it happen: before now, now, or later?"
+  hint "Say the sentence with each word. Which one sounds like it is already over?"
+}

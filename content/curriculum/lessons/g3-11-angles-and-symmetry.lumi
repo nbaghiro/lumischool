@@ -1,0 +1,58 @@
+lesson g3-angles-and-symmetry v=1 format=teach grade=3 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Right angles, lines and symmetry"
+  goal "Spot a right angle, compare angles to it, and find every line of symmetry."
+
+  look {
+    scene 35x29 {
+      row tools at=canvas(1, 1) space=2 align=start {
+        angle corner deg=90 arm=5 label="" mark=square
+        setsquare tool kind="45" labels=true
+        mirror half shape=rectangle line=vertical size=6
+      }
+      row more below=tools gap=2 space=2 align=start {
+        reflect grid cols=6 rows=6 line=vertical show=true
+        tessellation tiles tile=hexagon cols=3 rows=3
+      }
+    }
+    say """
+      A right angle is the corner of a square, and every other angle is either smaller or bigger
+      than it. A line of symmetry is a fold where both halves match.
+      """
+  }
+  do {
+    practice angles.clock-right count=1 seed=4
+    practice angles.name count=2 hard-count=1 seed=3
+    level easy {
+      worked angles.count-right s="rectangle"
+    }
+    practice angles.count-right count=2 seed=5 easy-seed=1
+    level hard {
+      practice angles.turned-from count=1 seed=7
+    }
+    practice shapes.symmetry count=1 seed=5 easy-seed=9
+    practice shapes.lines-of-symmetry count=2 seed=7
+  }
+  try stars=2 {
+    show angles.turned-from e=1 k=3 easy-e=2 easy-k=1 hard-e=3
+  }
+  try stars=3 {
+    show shapes.count-squares r=3 c=3 easy-r=2 hard-c=4
+  }
+  remember {
+    say "A right angle is a square corner. Smaller is acute, bigger is obtuse."
+  }
+
+  grown-ups """
+    The corner of a book is a right angle tester. Hold it against the angles in the room and sort
+    them into three piles. The L shape has one corner that points inwards, which is bigger than a
+    right angle; it is the one most children count by mistake. In the two-star question the turn
+    has to be undone, so the child turns the other way. In the three-star question the answer is
+    more than nine, because the bigger squares overlap the small ones.
+    """
+  level easy {
+    grown-ups "At this level the clocks that are not right angles show one, five, seven or eleven o'clock, the angles to name are far from a right angle and from a straight line, the rectangle's corners are counted once in the teacher's pen before the square and the triangle, the fold lines run down or across the middle, the mirror lines to count are the triangle's one and the square's four, Kim turned through one right angle, and the grid of two by three holds eight squares."
+  }
+  level hard {
+    grown-ups "At this level the clocks that are not right angles show two, four, eight or ten o'clock, the angle to name is nearer a right angle or a straight line than at the other levels, the shapes to count corners in are the L and the hexagon, the fold lines are the diagonals and the hexagon's, the mirror lines to count are the rectangle's two and the hexagon's six, Kim turned through three right angles and is asked twice, and the grid of three by four holds twenty squares."
+  }
+}

@@ -1,0 +1,34 @@
+# The two-star reason: two materials that pass the same three tests, and the one test that tells
+# them apart. Steel and copper part at the magnet; glass and clear plastic at hard; wood and
+# rubber at hard too, from the other side.
+item chem.deciding-test v=1 stars=2 skills=[chemistry.materials, reasoning.evidence] {
+  title "Which test tells them apart?"
+  difficulty k
+  let k=0..2
+  let pair={pick(k, "one of steel and one of copper", "one of glass and one of clear plastic", "one of wood and one of rubber")}
+  let same={pick(k, "both hard, both not see-through, both conduct", "both see-through, both do not conduct, both not magnetic", "both not see-through, both do not conduct, both not magnetic")}
+  let right={pick(k, "the magnet", "the scratch for hard", "the scratch for hard")}
+  let c1={pick(k, "yes", "yes", "yes")}
+  let c2={pick(k, "yes", "no", "no")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    table data cols=5 head=["Material", "Hard", "Clear", "Conducts", "Magnet"] cells=["{if k == 0 then \"steel\" else if k == 1 then \"glass\" else \"wood\"}", "{c1}", "{if k == 1 then \"yes\" else \"no\"}", "{if k == 0 then \"yes\" else \"no\"}", "{if k == 0 then \"yes\" else \"no\"}", "{if k == 0 then \"copper\" else if k == 1 then \"plastic\" else \"rubber\"}", "{c2}", "{if k == 1 then \"yes\" else \"no\"}", "{if k == 0 then \"yes\" else \"no\"}", "no"] at=canvas(1, 0)
+    text ask "Mia has two unlabelled pieces, {pair}. They are {same}. Which one test on its own tells her which piece is which?" narrate width=32 below=data gap=1
+    choice pick options=["the scratch for hard", "the look through", "the bulb in a circuit", "the magnet"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "A test can only tell two things apart if it gives a different answer for each. Look for the column where one row says yes and the other says no."
+    }
+  }
+  hint "Read the two rows side by side. Three columns match. Which column does not?"
+  hint "The test to use is the one whose column says yes for one and no for the other."
+}

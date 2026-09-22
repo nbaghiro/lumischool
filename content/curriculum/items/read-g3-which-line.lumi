@@ -1,0 +1,24 @@
+# The question does not repeat the passage's words, so the line can only be found by reading for
+# the meaning. The passage is fixed, which keeps its line breaks, and passageLines proves each key.
+item reading.which-line v=1 skills=[reading.comprehension, reading.evidence] {
+  title "Which line tells you?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+
+  scene 32x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="Gull Rock" text="Old Jem keeps the lighthouse on Gull Rock. Every evening at dusk he climbs the ninety steps to the lamp room and lights the lamp. One stormy night the lamp went out, and a fishing boat was coming in. Jem lit a lantern and swung it from the gallery until the boat was safe in the harbour. In the morning the fishermen left a basket of fish at his door." width=30
+      text ask "{if k == 0 then \"On which line does it say where the lighthouse stands?\" else if k == 1 then \"On which line does it say what the weather was like when the lamp went out?\" else if k == 2 then \"On which line does it say what was out at sea that night?\" else \"On which line does it say where Jem stood with the lantern?\"}" width=22
+      number-input answer
+    }
+  }
+
+  answer (if k == 0 then 1 else if k == 1 then 3 else if k == 2 then 4 else 5)
+  feedback {
+    when (answer == 2 and k == 3) point=p {
+      say "Line 2 is about the lamp room. Read on to where Jem has the lantern in his hand."
+    }
+  }
+  hint "What is the question about? Say it in your own words first."
+  hint "Read the passage one line at a time. Stop at the line that answers the question."
+}

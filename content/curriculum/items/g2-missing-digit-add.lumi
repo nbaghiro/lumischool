@@ -1,0 +1,22 @@
+# The unknown is a digit in an addend: the ones column has to be worked backwards through the carry.
+item columns.missing-digit v=1 skills=[addition.columns, reasoning.missing-number] {
+  title "The missing digit"
+  difficulty (10 * t + d + b)
+  let t=2..5 d=3..9 b=25..48
+  where (d + b % 10 >= 10 and 10 * t + d + b < 100)
+  level easy {
+    let t=2..3 b=25..34
+  }
+  level hard {
+    let t=4..6 b=35..48
+  }
+
+  scene 22x6 {
+    equation sum "{t}{?digit} + {b} = {10 * t + d + b}" at=canvas(1, 1)
+    text ask "The box holds one digit." narrate below=sum gap=1
+  }
+
+  answer digit=d
+  hint "Look at the ones column first. What adds to {b % 10} to end in {(10 * t + d + b) % 10}?"
+  hint "Check the tens column too: did a ten get carried?"
+}

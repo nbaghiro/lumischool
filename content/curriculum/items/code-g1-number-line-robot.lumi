@@ -1,0 +1,37 @@
+# The number line as a world one square deep: right is on and left is back, so a two-block program
+# is an adding and a taking away in the order the blocks say.
+item coding.number-line-robot v=1 skills=[coding.sequences] {
+  title "A robot on the number line"
+  difficulty (a + b)
+  let s=1..6 a=3..6 b=1..4
+  where (a != b)
+  where (s + a <= 12)
+  level easy {
+    let a=3..4 b=1..2
+  }
+  level hard {
+    let a=5..6 b=3..4
+  }
+
+  scene 27x12 {
+    row top at=canvas(1, 0) space=1 align=end {
+      blocks b code=["right {a}", "left {b}"] words=false
+      numberline line from=0 to=12
+    }
+    loop line.tick(s)
+    text ask "The robot starts on the ringed number. Where does it stop?" width=24 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (s + a - b)
+  feedback {
+    when (answer == s + a + b) point=b {
+      say "The second block points left. Left goes back towards 0."
+    }
+    when (answer == s + a) point=b {
+      say "That is where it is after block 1. There is one more block to do."
+    }
+  }
+  hint "Start on {s}. Which way does block 1 go, and how far?"
+  hint "Now do block 2 from where block 1 stopped."
+}

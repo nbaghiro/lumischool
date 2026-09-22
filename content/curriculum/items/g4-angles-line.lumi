@@ -1,0 +1,28 @@
+item angles.line v=1 skills=[shapes.angles] {
+  title "Angles on a straight line"
+  difficulty ((if d % 10 != 0 then 2 else 0) + d / 100)
+  let d=(20..160 by 5)
+  where (d != 90)
+  level easy {
+    let d=(20..60 by 10)
+  }
+  level hard {
+    let d=(65..155 by 10)  # ends in a five
+  }
+
+  scene 26x19 {
+    angle a line deg=d arm=5 label="{d}" mark=arc at=canvas(0, 0)
+    text ask "The two angles sit on a straight line. How many degrees is the other one?" width=24 below=a gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (180 - d)
+  feedback {
+    when (answer == 360 - d) point=a.vertex {
+      say "A straight line is half a turn, which is 180 degrees, not a whole turn."
+    }
+    when (answer == 90 - d) point=a.vertex {
+      say "Half a turn is 180 degrees. A quarter turn would be 90."
+    }
+  }
+}

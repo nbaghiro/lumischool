@@ -1,0 +1,27 @@
+item measure.convert v=1 skills=[measure.metric] {
+  title "Centimetres into millimetres"
+  difficulty (cm + mm)
+  let cm=12..95 mm=1..9
+  level easy {
+    let cm=12..30 mm=1..4
+  }
+  level hard {
+    let cm=70..95 mm=6..9
+  }
+
+  scene 26x6 {
+    row eq at=canvas(1, 1) space=1 align=centre {
+      equation given "{cm} cm {mm} mm ="
+      number-input total width=5
+      text unit "mm"
+    }
+    text ask "One centimetre is ten millimetres." narrate below=eq gap=1
+  }
+
+  answer total=(cm * 10 + mm)
+  feedback {
+    when (total == cm + mm) point=eq {
+      say "Every centimetre is worth ten, so {cm} cm is {cm * 10} mm on its own."
+    }
+  }
+}

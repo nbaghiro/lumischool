@@ -1,0 +1,58 @@
+lesson reading-what-it-does-not-say v=1 format=teach grade=4 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "What the passage does not say outright"
+  goal "Work out something the passage does not state, and point to the words that show it."
+
+  look {
+    scene 33x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        passage p title="To the lake" text="Ravi left home at 6 o'clock and walked for two hours to the lake. He stayed there for one hour, then walked straight home the same way." width=24
+        clock c h=6 m=0
+      }
+    }
+    say """
+      A passage does not say everything. It gives you the pieces, and some answers have to be put
+      together from them. Nothing in this passage says what time Ravi got home, but the hours
+      walking and the hour at the lake are all there, and the clock shows when he set off.
+
+      A feeling works the same way. A writer seldom says "she was scared". They show what she did,
+      and you work out why.
+      """
+  }
+  do {
+    show reading.detail-in-passage n=9 e=4 k=2 easy-k=0
+    show reading.not-said h=5 hard-h=7
+    practice reading.where-had-they-been count=2 seed=3
+    level easy {
+      worked reading.how-they-feel k=0 level=medium
+    }
+    practice reading.how-they-feel count=2 hard-count=1 seed=4
+    level hard {
+      practice reading.which-words-show count=1 seed=2
+    }
+    show reading.left-at-what-time g=7 w=2 s=1 easy-g=6 easy-w=1 easy-s=1 hard-g=8 hard-w=2 hard-s=3
+    practice reading.which-line-shows count=1 seed=5
+  }
+  try stars=2 {
+    show reading.which-words-show k=0 easy-k=3
+  }
+  try stars=3 {
+    show reading.why-do-you-think k=0
+  }
+  remember {
+    say "If the answer is not written down, look for the pieces that make it, and be ready to point to them."
+  }
+
+  grown-ups """
+    Ask "how do you know?" after every answer, including the right ones. An inference the child can
+    explain is one they made rather than guessed. In the place questions each clue on its own fits
+    two places, so a child who stops at the first clue picks the wrong one. The three-star question
+    has more than one good answer: accept any reason the passage supports, and ask for the words
+    that support it.
+    """
+  level easy {
+    grown-ups "At this level the hens are counted as the passage says, Ravi's time is as written, the clues are sand and salt and eggs and straw, Jin's nerves are worked once in the teacher's pen before a hug, a yawn and a slammed door, Kofi set off three hours before, the line to find is stated outright, the two-star's feeling is boredom shown by a stare at the clock, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the hens on Tuesday are one fewer than the passage says, Ravi got home at twelve, the clues are boots caked in white and a blink at the daylight, one feeling makes way for a second set of words to find, the feeling is shown by a kicked kerb, Kofi set off seven hours before, the line to find is the one that helps you work it out, and the two-star and three-star are as written."
+  }
+}

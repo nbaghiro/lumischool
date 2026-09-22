@@ -1,0 +1,27 @@
+# Non-routine: every dark particle added makes the whole jar bigger too, so half of the old total is
+# the wrong target. Guessing and checking one at a time gets there.
+item chem.half-dark v=1 stars=3 skills=[chemistry.mixtures, reasoning.guess-and-check] {
+  title "Half of them dark"
+  difficulty (v // 4)
+  let v=0..19
+
+  scene 25x12 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      particles jar spread=1 count=(if v == 0 then 12 else if v == 1 then 12 else if v == 2 then 12 else if v == 3 then 12 else if v == 4 then 14 else if v == 5 then 14 else if v == 6 then 14 else if v == 7 then 14 else if v == 8 then 16 else if v == 9 then 16 else if v == 10 then 16 else if v == 11 then 16 else if v == 12 then 18 else if v == 13 then 18 else if v == 14 then 18 else if v == 15 then 18 else if v == 16 then 20 else if v == 17 then 20 else if v == 18 then 20 else 20) second=(if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 4 else if v == 3 then 5 else if v == 4 then 2 else if v == 5 then 3 else if v == 6 then 4 else if v == 7 then 5 else if v == 8 then 2 else if v == 9 then 3 else if v == 10 then 4 else if v == 11 then 5 else if v == 12 then 2 else if v == 13 then 3 else if v == 14 then 4 else if v == 15 then 5 else if v == 16 then 2 else if v == 17 then 3 else if v == 18 then 4 else 5) name=0
+      column side space=1 align=start {
+        text ask "How many more dark particles would have to go in so that exactly half of all the particles are dark?" width=13
+        number-input answer
+      }
+    }
+  }
+
+  answer ((if v == 0 then 12 else if v == 1 then 12 else if v == 2 then 12 else if v == 3 then 12 else if v == 4 then 14 else if v == 5 then 14 else if v == 6 then 14 else if v == 7 then 14 else if v == 8 then 16 else if v == 9 then 16 else if v == 10 then 16 else if v == 11 then 16 else if v == 12 then 18 else if v == 13 then 18 else if v == 14 then 18 else if v == 15 then 18 else if v == 16 then 20 else if v == 17 then 20 else if v == 18 then 20 else 20) - 2 * (if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 4 else if v == 3 then 5 else if v == 4 then 2 else if v == 5 then 3 else if v == 6 then 4 else if v == 7 then 5 else if v == 8 then 2 else if v == 9 then 3 else if v == 10 then 4 else if v == 11 then 5 else if v == 12 then 2 else if v == 13 then 3 else if v == 14 then 4 else if v == 15 then 5 else if v == 16 then 2 else if v == 17 then 3 else if v == 18 then 4 else 5))
+  feedback {
+    when (answer == (if v == 0 then 12 else if v == 1 then 12 else if v == 2 then 12 else if v == 3 then 12 else if v == 4 then 14 else if v == 5 then 14 else if v == 6 then 14 else if v == 7 then 14 else if v == 8 then 16 else if v == 9 then 16 else if v == 10 then 16 else if v == 11 then 16 else if v == 12 then 18 else if v == 13 then 18 else if v == 14 then 18 else if v == 15 then 18 else if v == 16 then 20 else if v == 17 then 20 else if v == 18 then 20 else 20) // 2 - (if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 4 else if v == 3 then 5 else if v == 4 then 2 else if v == 5 then 3 else if v == 6 then 4 else if v == 7 then 5 else if v == 8 then 2 else if v == 9 then 3 else if v == 10 then 4 else if v == 11 then 5 else if v == 12 then 2 else if v == 13 then 3 else if v == 14 then 4 else if v == 15 then 5 else if v == 16 then 2 else if v == 17 then 3 else if v == 18 then 4 else 5)) point=jar {
+      say "Each dark particle you add is added to the whole jar as well. Count the jar again with them in."
+    }
+  }
+  hint "Count the dark ones and all of them. Now imagine adding one dark particle. What are the two counts?"
+  hint "Keep adding one at a time. When is the dark count exactly half the total?"
+  hint "Is there a quicker way? Compare the light ones with the dark ones."
+}

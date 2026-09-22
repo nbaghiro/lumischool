@@ -1,0 +1,26 @@
+# A tug of war with every child pulling the same: the rope moves to the bigger team, and making it
+# stay still means making the teams equal. The child works out the difference, which no drawing shows.
+item physics.tug-teams v=1 skills=[physics.forces, reasoning.balance] stars=3 {
+  title "Tug of war"
+  difficulty (abs(a - b) + (if b > a then 1 else 0))
+  let a=2..4 b=2..4
+  where (a != b)
+
+  scene 34x21 {
+    row teams at=canvas(1, 0) space=2 align=end {
+      children left count=a
+      children right count=b
+    }
+    text ask "Every child pulls the rope just as hard, the left team one way and the right team the other. How many more children must join the smaller team so the rope stays still?" narrate width=28 below=teams gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if a > b then a - b else b - a)
+  feedback {
+    when ((answer == a or answer == b) and answer != (if a > b then a - b else b - a)) point=teams {
+      say "That is how many are in one team. How many more does the smaller team need to match the bigger one?"
+    }
+  }
+  hint "Which team would win now?"
+  hint "How many children does the other team need to have just as many?"
+}

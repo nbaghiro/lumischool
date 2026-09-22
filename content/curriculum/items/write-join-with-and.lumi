@@ -1,0 +1,36 @@
+# v2. "And" joins almost any two halves without breaking the grammar, so it cannot be the wrong
+# answer beside "but". Every version now offers the word that fits the meaning and one that makes
+# nonsense of it: a false reason (because) or a turn where nothing turns (but).
+item writing.join-with-and v=2 skills=[writing.joining-sentences] {
+  title "The word that makes sense"
+  difficulty (if k == 4 or k == 5 then 2 else if k == 1 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 2}  # and, and
+  }
+  level hard {
+    let k={3, 4, 5}  # but, because, because
+  }
+  let first={if k == 0 then "The owl can see at night" else if k == 1 then "Hedgehogs like worms" else if k == 2 then "We made a sandcastle" else if k == 3 then "Leo wanted to ride" else if k == 4 then "The ice cream melted" else "Ada put on boots"}
+  let second={if k == 0 then "it can fly." else if k == 1 then "they hate rain." else if k == 2 then "we had a picnic." else if k == 3 then "his tyre was flat." else if k == 4 then "the sun was hot." else "the path was muddy."}
+  let key={if k == 0 or k == 2 then "and" else if k == 1 or k == 3 then "but" else "because"}
+  let other={if k <= 3 then "because" else "but"}
+
+  scene 34x13 {
+    sentence strip before="{first}" blank=5 after="{second}" at=canvas(1, 1)
+    text ask "Which word makes sense in the gap?" narrate below=strip gap=1
+    choice pick options=["{if k % 2 == 0 then key else other}", "{if k % 2 == 0 then other else key}"] below=ask gap=1
+  }
+
+  answer pick=key
+  feedback {
+    when (pick == "because" and key != "because") point=strip {
+      say "Because gives a reason. Is the second half the reason for the first?"
+    }
+    when (pick == "but" and key == "and") point=strip {
+      say "But turns things round. Does the second half go against the first?"
+    }
+  }
+  hint "Read the sentence twice, once with each word. Which one sounds like it means something?"
+  hint "Does the second half add something, go against the first half, or say why?"
+}

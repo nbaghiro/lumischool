@@ -1,0 +1,31 @@
+# Two strips side by side, and whether one pen drew them both. Two pens that share a colour are the
+# harder pair, since the strips agree low down and part higher up.
+item chemistry.ink-same-pen v=1 skills=[chemistry.separating, reasoning.compare] {
+  title "One pen or two?"
+  difficulty (if j < 2 then 0 else 1)
+  let j=0..3
+  let i1={pick(j, "brown", "black1", "black1", "green")}
+  let i2={pick(j, "green", "black1", "black3", "green")}
+  let ans={pick(j, "Two different pens", "One pen drew both", "Two different pens", "One pen drew both")}
+  level easy {
+    let j={0, 1}
+  }
+  level hard {
+    let j={2, 3}
+  }
+
+  scene 36x16 {
+    chromatography pair inks=["{i1}", "{i2}"] labels=["A", "B"] run=1 beaker=1 ruler=1 at=canvas(1, 0)
+    text ask "Two dots were drawn on two strips and dipped together. Was it one pen or two?" narrate width=22 right-of=pair gap=2
+    choice pick options=["One pen drew both", "Two different pens"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=pair {
+      say "Two strips come from one pen only when every band matches, both its colour and how far up it is."
+    }
+  }
+  hint "Compare the strips band by band, from the pencil line up."
+  hint "One band that is on one strip and not the other is enough to say they are different pens."
+}

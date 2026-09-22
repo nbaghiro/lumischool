@@ -1,0 +1,50 @@
+lesson g4-percentages v=1 format=teach grade=4 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Percentages"
+  goal "Read a percentage off a bar, link it to a fraction, and find a percentage of an amount."
+
+  look {
+    scene 35x20 {
+      percentbar bar percent=25 show=true whole=100 at=canvas(1, 1)
+      pie chart show="percent" right-of=bar gap=2
+      ratio bars parts=[3, 1] labels=["Juice", "Water"] unit=4 total=true below=bar gap=2
+    }
+    say """
+      Percent means out of a hundred, so a quarter of the bar is twenty-five percent. The pie says
+      the same thing in a circle, and the ratio bars split a whole into named parts.
+      """
+  }
+  do {
+    practice percent.of-a-bar count=1 seed=6 hard-seed=5
+    level easy {
+      worked percent.bar-parts k=20 j=5 level=medium
+    }
+    practice percent.bar-parts count=2 seed=4
+    practice percent.of-a-mix count=1 seed=3
+    practice percent.of-amount count=2 seed=5
+    practice percent.fuel-litres count=1 seed=2 easy-seed=7
+    practice percent.sale-price count=1 seed=7
+  }
+  try stars=2 {
+    show percent.which-more p=25 n=40 q=0 easy-q=2 hard-p=50 hard-n=80
+  }
+  try stars=3 {
+    show percent.class-vote r=20 b=40 n=60 easy-b=30 easy-n=20 hard-r=25 hard-b=50 hard-n=80
+  }
+  remember {
+    say "Half is fifty percent, a quarter is twenty-five, a tenth is ten, a fifth is twenty. To find a percent of an amount, find that fraction of it."
+  }
+
+  grown-ups """
+    Sale signs are the everyday version. Twenty-five percent off is a quarter off, and doing it
+    both ways is the check. When a bar is cut into five or twenty parts, ask what one part is worth
+    before anything else. In the two-star question 25% of 40 and 40% of 25 are both ten, and the
+    reason is that both are 25 times 40 divided by a hundred. The three-star question is solved by
+    working back: the green share is what is left, and ten percent of the class is the step to find.
+    """
+  level easy {
+    grown-ups "At this level the shaded bar shows one to three tenths, a bar of twenty parts is worked once in the teacher's pen before bars in quarters and fifths, the drink has four or five blocks, the sweets are ten or fifty percent of the jar, the tank is half full, the sale is ten or fifty percent off, the two-star compares 25% of 40 with 25% of 30, and the three-star has half the class choosing green, ten children."
+  }
+  level hard {
+    grown-ups "At this level the shaded bar shows seven to nine tenths, the bars are in twentieths and twenty-fifths, the drink has ten blocks, the sweets are twenty or seventy-five percent of sixty or eighty, the tank is three quarters full, the sale is twenty or twenty-five percent off sixty dollars or more, the two-star compares 50% of 80 with 80% of 50, which come out the same, and the three-star has a quarter of the class choosing green, twenty children of eighty."
+  }
+}

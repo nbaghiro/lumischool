@@ -1,0 +1,28 @@
+# One lit lamp is switched off, so the child reads the number and takes that lamp's worth away.
+item coding.lamps-switch-off v=1 skills=[coding.data] {
+  title "One lamp goes out"
+  difficulty (n + (if k == 0 then 8 else if k == 1 then 4 else if k == 2 then 2 else 1))
+  let n={7, 11, 13, 14, 15} k=0..3
+  where (n // (if k == 0 then 8 else if k == 1 then 4 else if k == 2 then 2 else 1) % 2 == 1)
+  level easy {
+    let n={7, 11} k=2..3
+  }
+  level hard {
+    let n={14, 15} k=0..1
+  }
+
+  scene 31x7 {
+    lamps l bits=4 n=n at=canvas(1, 0)
+    text ask "The {if k == 0 then 8 else if k == 1 then 4 else if k == 2 then 2 else 1} lamp is switched off. What number do the lamps show now?" width=16 right-of=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - (if k == 0 then 8 else if k == 1 then 4 else if k == 2 then 2 else 1))
+  feedback {
+    when (answer == n - 1 and k != 3) point=l {
+      say "A lamp is worth the number over it, not 1."
+    }
+  }
+  hint "What number do the lamps show now, before it goes out?"
+  hint "How much was that lamp worth?"
+}

@@ -1,0 +1,32 @@
+# Turn measured in degrees. The minute hand moves 6 degrees a minute, which is the fact the child
+# is really being asked for.
+item angles.turn v=1 skills=[shapes.turns] {
+  title "How far has the hand turned"
+  difficulty mins
+  let from=(0..55 by 5) mins=(5..40 by 5)
+  where (from + mins <= 55)
+  where (mins != 30)  # half a turn is 180 degrees, which is also 30 x 6, so the mistake would not show
+  level easy {
+    let mins=(5..15 by 5)
+  }
+  level hard {
+    let mins=(25..40 by 5)
+  }
+
+  scene 26x14 {
+    clock face h=3 m=from at=canvas(1, 0)
+    text ask "The minute hand moves on {mins} minutes. How many degrees does it turn through?" width=24 below=face gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (mins * 6)
+  feedback {
+    when (answer == mins) point=face.centre {
+      say "A whole turn is 360 degrees and takes 60 minutes, so one minute is 6 degrees."
+    }
+    when (answer == 360 - mins * 6) point=face.centre {
+      say "That is the rest of the turn. The hand only went forward {mins} minutes."
+    }
+  }
+  hint "A whole turn is 360 degrees and takes an hour."
+}

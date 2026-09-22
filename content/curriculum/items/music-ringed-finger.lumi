@@ -1,0 +1,28 @@
+# The thumb is 1 on both hands at the piano, so the number of a finger is counted from the thumb.
+# Counting from the little finger is the mistake, and 3 is left out because it is the same both ways.
+item music.ringed-finger v=1 skills=[music.fingers] {
+  title "Which finger is ringed?"
+  difficulty k
+  let k=1..5
+  where (k != 3)
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={4, 5}
+  }
+
+  scene 22x13 {
+    hand pic side=right numbers=none ring=k colours=false at=canvas(1, 1)
+    text ask "Your thumb is finger 1. Which finger is ringed?" width=11 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == 6 - k) point=pic {
+      say "That is counting from the little finger. Start at the thumb, which is 1."
+    }
+  }
+  hint "Put your thumb on the table and count along to the ringed finger."
+}

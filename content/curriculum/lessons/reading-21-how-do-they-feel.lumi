@@ -1,0 +1,65 @@
+lesson reading-how-do-they-feel v=1 format=teach grade=2 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "How do they feel?"
+  goal "Work out how someone in a story feels from what happens and what they do."
+
+  look {
+    scene 32x10 {
+      row faces at=canvas(1, 1) space=1 align=end {
+        face a mood=happy hair=0 name="happy"
+        face b mood=sad hair=1 name="sad"
+        face c mood=scared hair=2 name="scared"
+        face d mood=cross hair=3 name="cross"
+      }
+    }
+    say """
+      A story does not always tell you how someone feels. It tells you what happened and what they
+      did, and you work out the feeling.
+
+      A face shows it too. Look at the eyebrows and the mouth.
+      """
+  }
+  do {
+    practice reading.feeling-word count=1 hard-count=0 seed=2
+    level hard {
+      practice reading.why-feel count=1 seed=1
+    }
+    show reading.feelings-face k=0
+    level easy {
+      worked reading.feeling-close k=2 p=0 level=medium
+    }
+    show reading.feeling-close k=1 p=2 easy-k=0 hard-k=2
+    show reading.feeling-close k=3 p=1 easy-k=4
+    show reading.feeling-change k=0 p=1 hard-k=3
+    show reading.feeling-change k=2 p=2 easy-k=1
+  }
+  story {
+    show reading.feeling-evidence k=3 easy-k=2
+    show reading.feeling-evidence k=0 hard-k=4
+  }
+  try stars=2 {
+    show reading.why-feel k=1 easy-k=0
+  }
+  try stars=3 {
+    show reading.show-not-tell k=1
+  }
+  remember {
+    say "What someone does tells you how they feel."
+  }
+
+  grown-ups """
+    None of the passages names the feeling. Ask "what makes you think so?" and let the child point
+    to the words: the kite would not come down, she jumped up and down. Naming the feeling from
+    what a character does is the first step of the inference the later grades ask for.
+
+    The story questions ask which sentence shows the feeling, and one sentence usually gives the
+    reason instead: Nico's friend moving away is why he is sad, while sitting alone is what shows
+    it. The two-star question asks why, when the passage gives the pieces and not the reason. The
+    three-star question turns it round: the child shows a feeling in a sentence without naming it.
+    """
+  level easy {
+    grown-ups "At this level the face and the word are as written, Kim's nerves are read once in the teacher's pen before Leo's stamped foot and Mo's blanket, both stories end with something found, the sentences that show the feeling are Ella's thrown block and Mia's shaking hands, the two-star asks why Joe is scared in the dark, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the face is as written and the word makes way for a second question about why, the feelings to name are Kim's worry and Raj's pride, Tess's dog turns friendly and Omar's trip is put off, the sentences that show the feeling sit beside a cause (Nico's friend, Zoe's loaf), and the two-star and three-star are as written."
+  }
+}

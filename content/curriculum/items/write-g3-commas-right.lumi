@@ -1,0 +1,23 @@
+# Three versions of one sentence: one right, one missing a comma, one with a comma that splits a
+# thing in two. None of the wrong ones turns on the comma before and, which style guides disagree on.
+item writing.commas-right v=1 skills=[writing.punctuation] {
+  title "Which has the commas right?"
+  let s=0..2 p=0..2 a={if s == 0 then "We need brown eggs, white flour and milk." else if s == 1 then "The boat had a red flag, two oars and a bell." else "Bo saw three bats, an owl and the moon."} b={if s == 0 then "We need brown eggs white flour and milk." else if s == 1 then "The boat had a red flag two oars and a bell." else "Bo saw three bats an owl and the moon."} c={if s == 0 then "We need brown, eggs, white flour and milk." else if s == 1 then "The boat had a red, flag, two oars and a bell." else "Bo saw three, bats, an owl and the moon."}
+
+  scene 33x15 {
+    text ask "Which sentence has its commas in the right places?" width=28 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then a else if p == 1 then b else c}", "{if p == 0 then b else if p == 1 then c else a}", "{if p == 0 then c else if p == 1 then a else b}"] stack=column below=ask gap=1
+  }
+
+  answer pick=a
+  feedback {
+    when (pick == c) point=pick {
+      say "A comma there splits one thing in two. Where does each thing end?"
+    }
+    when (pick == b) point=pick {
+      say "Two of the things run together. Something has to sit between them."
+    }
+  }
+  hint "Say the list of things out loud. Where does each thing end?"
+  hint "Is there something between every pair of things: a comma, or the word and?"
+}

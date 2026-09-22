@@ -1,0 +1,52 @@
+# The three-star non-routine question: a creature that is not drawn, named from three clues about
+# its legs, its wings and what it does. Every clue rules out one of the four choices, so the way in
+# is to cross off. The long grass is drawn, without the creature.
+item nature.name-from-clues v=1 stars=3 skills=[nature.minibeasts, reasoning.deduction] {
+  title "Who is it?"
+  difficulty pick(k, 0, 1, 2, 0, 2, 1)
+  let k=0..5
+  let clue={pick(k, "It has six legs and no wings. It walks in a line with the others, carrying crumbs home.", "It has eight legs and no wings. It waits in the middle of a web.", "It has six legs and four wings. It is round and furry, with yellow and black bands.", "It has no legs and no wings. It carries its shell on its back.", "It has six legs and four big wings. Once it was a caterpillar.", "It has six legs and a round red back with black spots. Its wings are folded under the red.")}
+  let o1={pick(k, "ant", "spider", "bee", "snail", "butterfly", "ladybird")}
+  let o2={pick(k, "bee", "ant", "butterfly", "spider", "bee", "butterfly")}
+  let o3={pick(k, "spider", "bee", "ant", "ant", "ant", "ant")}
+  let o4={pick(k, "snail", "snail", "spider", "ladybird", "snail", "spider")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={2, 4}
+  }
+
+  scene 36x23 {
+    row grass at=canvas(1, 1) space=2 align=end {
+      cobweb web spokes=8 spider=0
+      toadstools caps count=2 spots=5
+    }
+    text ask "Ada sees a creature in the long grass, but it hides before she can draw it. {clue} Which creature is it?" narrate width=34 below=grass gap=1
+    choice pick options=[o1, o2, o3, o4] below=ask gap=1
+  }
+
+  answer pick=o1
+  feedback {
+    when (k == 0 and pick == "bee") point=web {
+      say "A bee has wings. The clue says no wings."
+    }
+    when (k == 1 and pick == "ant") point=web {
+      say "An ant has six legs. The clue says eight."
+    }
+    when (k == 2 and pick == "butterfly") point=web {
+      say "A butterfly is not furry and has no bands. Which one is round and furry?"
+    }
+    when (k == 3 and pick != "snail") point=web {
+      say "That one has legs. The clue says no legs at all."
+    }
+    when (k == 4 and pick == "bee") point=web {
+      say "A bee was never a caterpillar. Which creature was?"
+    }
+    when (k == 5 and pick == "butterfly") point=web {
+      say "A butterfly holds its wings out wide. The clue says the wings are folded away under a red back."
+    }
+  }
+  hint "Take one clue at a time. Which creatures can it not be? Cross those off."
+  hint "Legs first, then wings, then what it does. Only one creature fits all three."
+}

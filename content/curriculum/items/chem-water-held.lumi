@@ -1,0 +1,35 @@
+# How much water the soil held: what went in, less what came through. At hard the amount poured
+# is not 100.
+item chem.water-held v=1 skills=[chemistry.rocks, subtraction.to-hundred] {
+  title "How much did the soil hold?"
+  difficulty ((if poured == 100 then 0 else 2) + (if through % 10 == 0 then 0 else 1))
+  let poured={100, 80, 60} through={10, 15, 30, 40, 45, 55}
+  where (through < poured)
+  level easy {
+    let poured={100} through={10, 30, 40}
+  }
+  level hard {
+    let poured={80, 60} through={15, 45, 55}
+  }
+
+  scene 34x26 {
+    row scene1 at=canvas(1, 0) space=3 align=end {
+      funnel f residue=6 level=1 unit=ml drops=3 label=""
+      beaker b max=100 step=20 level=through unit=ml solid=0 rod=false
+    }
+    text ask "Ben pours {poured} millilitres of water into a pot of soil. After a minute, {through} millilitres have run through into the beaker. How many millilitres is the soil still holding?" narrate width=32 below=scene1 gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (poured - through)
+  feedback {
+    when (answer == through and through != poured - through) point=b {
+      say "That is what came through. The soil holds the rest of the {poured}."
+    }
+    when (answer == poured + through) point=b {
+      say "Water only went in once, {poured} millilitres. Some came out and the soil kept the rest."
+    }
+  }
+  hint "Everything that did not come through is still in the soil."
+  hint "{poured} take away {through}."
+}

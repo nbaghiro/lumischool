@@ -1,0 +1,29 @@
+item coding.variable-trace v=2 skills=[coding.variables] {
+  title "Stop at line 2"
+  difficulty (a + b)
+  let a=2..5 b=2..4
+  level easy {
+    let b={2}
+  }
+  level hard {
+    let a=4..5 b={4}
+  }
+
+  scene 26x19 {
+    program p code=["set n to {a}", "add {b} to n", "add {b} to n"] mark=2 title="n changes" at=canvas(1, 0)
+    variable v name=n code=["set n to {a}", "add {b} to n", "add {b} to n"] upto=2 blank=true below=p gap=1
+    text ask "What is n when line 2 has just run?" width=12 right-of=v gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=v answer="after(2).n"
+  feedback {
+    when (answer == a + 2 * b) point=p {
+      say "Line 3 has not run yet. Stop at the looped line."
+    }
+    when (answer == a) point=p {
+      say "Line 2 has run, so the {b} has already gone in."
+    }
+  }
+  hint "Only lines 1 and 2 have happened."
+}

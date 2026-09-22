@@ -1,0 +1,48 @@
+lesson physics-how-far-how-long v=1 format=teach grade=2 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "How far, how long"
+  goal "Add the legs of a journey, work out a missing leg, and compare two ways of getting somewhere."
+
+  look {
+    scene 33x22 {
+      column all at=canvas(1, 1) space=2 align=start {
+        row top space=2 align=start {
+          roaddistances road stops=["Ash", "Bray", "Cole"] legs=[12, 18] unit=km
+          stopwatch watch seconds=25
+        }
+        doubleline pace steps=5 topTo=50 bottomTo=5 topUnit="km" bottomUnit=hours mark=3
+      }
+    }
+    say """
+      A journey is made of legs, and the legs add up. If you know the whole journey and one leg,
+      the other leg is what is left. The bottom line on the last picture counts hours and the top
+      line counts kilometres, so the two lines together say how far you get in a given time.
+      """
+  }
+  do {
+    practice physics.journey-total count=2 seed=2
+    practice physics.journey-back count=2 seed=3
+    practice physics.journey-leg count=2 seed=1
+    practice physics.journey-compare count=2 seed=4
+  }
+  try stars=2 {
+    show physics.journey-shorter a=8 b=9 c=11 easy-a=6 easy-b=6 easy-c=8 hard-a=10 hard-b=10 hard-c=12
+  }
+  try stars=3 {
+    show physics.journey-three a=7 b=10 c=6 easy-a=5 easy-b=6 easy-c=4 hard-a=9 hard-b=12 hard-c=8
+  }
+  remember {
+    say "The legs of a journey add up. Take the legs you know from the whole to find the one you do not."
+  }
+
+  grown-ups """
+    Use a real trip the family makes. Read the distances off a map or a signpost, add them, then
+    ask about the trip home, which is the part children forget to double. The missing leg questions
+    run the same addition backwards, which is harder than it looks at seven.
+    """
+  level easy {
+    grown-ups "At this level the legs are six to eight kilometres and the two ways to Cole differ by four kilometres or more."
+  }
+  level hard {
+    grown-ups "At this level the legs are twelve to fourteen kilometres, the two ways to Cole differ by one kilometre, and the three-leg road is nearly thirty kilometres long."
+  }
+}

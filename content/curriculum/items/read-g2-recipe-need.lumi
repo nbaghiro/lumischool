@@ -1,0 +1,16 @@
+# Reading the list of what is needed, against one thing that would be sensible but is not on it.
+item reading.recipe-need v=1 skills=[reading.instructions, reading.find-a-detail] {
+  title "What do you need?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3 p=0..2
+
+  scene 36x15 {
+    listpad list title="You need" items=[if k == 0 then "bread" else if k == 1 then "a bowl" else if k == 2 then "a pot" else "a mug", if k == 0 then "butter" else if k == 1 then "a banana" else if k == 2 then "soil" else "milk", if k == 0 then "honey" else if k == 1 then "grapes" else if k == 2 then "a bean" else "chocolate"] count=0 width=12 ticks=false at=canvas(1, 1)
+    text ask "{if k == 0 then \"You are making toast with honey.\" else if k == 1 then \"You are making fruit salad.\" else if k == 2 then \"You are planting a bean.\" else \"You are making hot chocolate.\"} Which of these is not on the list?" narrate width=21 right-of=list gap=2
+    choice pick options=[if k == 0 then if p == 0 then "bread" else if p == 1 then "honey" else "jam" else if k == 1 then if p == 0 then "a bowl" else if p == 1 then "grapes" else "a pear" else if k == 2 then if p == 0 then "a pot" else if p == 1 then "a bean" else "a spade" else if p == 0 then "a mug" else if p == 1 then "chocolate" else "sugar", if k == 0 then if p == 0 then "honey" else if p == 1 then "jam" else "bread" else if k == 1 then if p == 0 then "grapes" else if p == 1 then "a pear" else "a bowl" else if k == 2 then if p == 0 then "a bean" else if p == 1 then "a spade" else "a pot" else if p == 0 then "chocolate" else if p == 1 then "sugar" else "a mug", if k == 0 then if p == 0 then "jam" else if p == 1 then "bread" else "honey" else if k == 1 then if p == 0 then "a pear" else if p == 1 then "a bowl" else "grapes" else if k == 2 then if p == 0 then "a spade" else if p == 1 then "a pot" else "a bean" else if p == 0 then "sugar" else if p == 1 then "a mug" else "chocolate"] below=list gap=1
+  }
+
+  answer pick=(if k == 0 then "jam" else if k == 1 then "a pear" else if k == 2 then "a spade" else "sugar")
+  hint "Read the list one line at a time."
+  hint "Check each choice against the list. Which one can you not find?"
+}

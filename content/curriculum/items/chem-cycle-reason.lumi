@@ -1,0 +1,20 @@
+# Three questions with three different reasons, each one a piece of the water cycle used to explain
+# something a child has seen.
+item chem.cycle-reason v=1 stars=2 skills=[chemistry.water-cycle, reasoning.explain] {
+  title "Why is it so?"
+  difficulty (if q == 1 then 2 else if q == 2 then 1 else 0)
+  let q=0..2
+  level hard {
+    let q={1, 2}
+  }
+
+  scene 28x25 {
+    text ask "{if q == 0 then \"Why does the rain not run out, when it rains so often?\" else if q == 1 then \"Why is rain not salty, when the sea is?\" else \"Why do drops form on a cold window on a winter morning?\"}" width=26 at=canvas(1, 0)
+    watercycle cycle blank=-1 key=0 plain=0 below=ask gap=0
+    choice pick options=["The same water goes round and round", "Only the water evaporates, not the salt", "Vapour in the air cools into water"] stack=column below=cycle gap=0
+  }
+
+  answer pick=(if q == 0 then "The same water goes round and round" else if q == 1 then "Only the water evaporates, not the salt" else "Vapour in the air cools into water")
+  hint "Which part of the water cycle is this question about?"
+  hint "Follow the water in the picture. Where does it come from, and where does it go next?"
+}

@@ -1,0 +1,30 @@
+# Using the fern's own symmetry to count: one side, doubled, and the leaflet at the top.
+item art.leaflets-both-sides v=1 skills=[art.printing, art.symmetry, reasoning.two-steps] {
+  title "Leaflets on both sides"
+  difficulty n
+  let n=3..7
+  level easy {
+    let n=3..4
+  }
+  level hard {
+    let n=6..7
+  }
+
+  scene 32x14 {
+    sunprint pic pairs=[n] made=0 show="print" at=canvas(1, 1)
+    text ask "The white fern has the same number of leaflets on each side of its stem, and one more at the very top. How many leaflets does it have in all?" width=14 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * n + 1)
+  feedback {
+    when (answer == 2 * n) point=pic {
+      say "That is both sides. Is there a leaflet left at the top?"
+    }
+    when (answer == n) point=pic {
+      say "That is one side. The other side has just as many."
+    }
+  }
+  hint "Count the leaflets on one side of the stem."
+  hint "The other side has the same number. Add the two sides, then the one at the top."
+}

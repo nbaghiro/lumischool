@@ -1,0 +1,21 @@
+# Finding the mistake in someone else's sort: every letter has to be checked, and t and i are the
+# traps (t is shorter than the other tall letters, and i has a dot but is a small letter).
+item writing.wrong-height-column v=1 stars=2 skills=[writing.letter-formation, reasoning.find-the-error] {
+  title "The letter in the wrong column"
+  difficulty (if m == 2 then 1 else 0)
+  let s=0..2 m=0..3
+  let l0={if s == 0 then "b" else if s == 1 then "d" else "l"}
+  let l1={if s == 0 then "o" else if s == 1 then "a" else "c"}
+  let l2={if s == 0 then "t" else if s == 1 then "k" else "f"}
+  let l3={if s == 0 then "n" else if s == 1 then "e" else "i"}
+
+  scene 24x23 {
+    wordsort sort heads=["tall", "small"] words=["{l0}", "{l1}", "{l2}", "{l3}"] into=[if m == 0 then 1 else 0, if m == 1 then 0 else 1, if m == 2 then 1 else 0, if m == 3 then 0 else 1] ring=-1 at=canvas(1, 1)
+    text ask "Leo sorted these letters. One is in the wrong column. Which one?" width=22 below=sort gap=1
+    choice pick options=["{l0}", "{l1}", "{l2}", "{l3}"] below=ask gap=1
+  }
+
+  answer pick=(if m == 0 then l0 else if m == 1 then l1 else if m == 2 then l2 else l3)
+  hint "Check each letter in the tall column. Does it really reach the top line?"
+  hint "Now check the small column. Does any of those letters have a stick that goes up?"
+}

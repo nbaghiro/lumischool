@@ -1,0 +1,54 @@
+lesson thinking-in-words v=1 format=teach grade=3 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Always, sometimes, never"
+  goal "Say whether a statement is always true, sometimes true or never true, find the case that breaks it, and work out an answer from clues."
+
+  look {
+    scene 30x10 {
+      text claim "A dog has four legs." at=canvas(1, 1)
+      highlight claim color=glow
+      row talk below=claim gap=1 space=1 align=centre {
+        guide g pose=idle
+        bubble b "Can you think of one dog it would not be true for?" width=17 from=g.hand
+      }
+    }
+    say """
+      To show that something is only sometimes true, you need one case where it is false. One
+      case is enough. Clues work the same way: each one rules something out, until only one
+      answer is left.
+      """
+  }
+  do {
+    level easy {
+      worked logic.always-sometimes s="Half of an even number is even." level=medium
+    }
+    practice logic.always-sometimes count=3 seed=10 easy-seed=4 hard-seed=4
+    practice logic.counterexample count=2 seed=3
+    practice logic.venn-where count=2 seed=6 hard-seed=2
+    practice logic.grid-forced count=1 hard-count=0 seed=2
+    level hard {
+      practice logic.line-up count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show logic.grid-clues m=0 x=1 y=2 d=0 e=2
+  }
+  try stars=3 {
+    show logic.line-up k=3 easy-k=0
+  }
+  remember {
+    say "One counter-example turns always into sometimes. A cross rules one thing out, and when only one box is left in a row, that is the answer."
+  }
+
+  grown-ups """
+    The reason matters more than the answer here. Ask for the case they thought of, even when
+    the answer they circled is right. In the grid questions a cross means no, and each child
+    has a different thing, so a tick in a column rules out the rest of that column too. The
+    line puzzle has no method to follow: let the child try an order and check it clue by clue.
+    """
+  level easy {
+    grown-ups "At this level half of an even number is tested once in the teacher's pen before claims that a few examples settle (a number ending in 0, two odd numbers, four sides, adding 10), Kai's wrong numbers are read off the claims, the numbers go in one ring only, the grid and the two-star are as written, and the three-star's line-up has Cal last and Ben just behind Ann."
+  }
+  level hard {
+    grown-ups "At this level the claims are the ones that only 6 or 10 break, or that three odd numbers test, Kai's claims need the doubles worked out and the 4 and 8 times tables known, the numbers go in the middle or outside both rings, the grid practice makes way for a second line-up, and the two-star and three-star are as written."
+  }
+}

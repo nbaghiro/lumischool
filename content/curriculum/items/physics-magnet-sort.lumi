@@ -1,0 +1,32 @@
+# Eight things sorted under pulled and not pulled, with one in the wrong column. A ruler under
+# pulled is seen at once; a coin under pulled, or a nail under not pulled, needs the iron rule.
+item physics.magnet-sort v=1 skills=[physics.magnets] {
+  title "One is in the wrong column"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let stray={pick(k, "ruler", "nail", "marble", "clip", "coin", "foil")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 30x35 {
+    text ask "Sam sorted eight things by whether the magnet pulls them. One is in the wrong column. Which?" narrate width=28 at=canvas(1, 1)
+    wordsort s heads=["pulled", "not pulled"] words=["nail", "ruler", "clip", "coin", "marble", "foil", "stick", "eraser"] into=[if k == 1 then 1 else 0, if k == 0 then 0 else 1, if k == 3 then 1 else 0, if k == 4 then 0 else 1, if k == 2 then 0 else 1, if k == 5 then 0 else 1, 1, 1] below=ask gap=1
+    choice pick options=[if k <= 1 then "nail" else "clip", if k <= 1 then "ruler" else "coin", if k <= 3 then "marble" else "foil", "stick"] below=s gap=1
+  }
+
+  answer pick=stray
+  feedback {
+    when (k >= 4 and pick != stray) point=s {
+      say "The coin and the foil are metal, but not iron or steel, so the magnet leaves them alone. Look for a metal thing under pulled that is not iron."
+    }
+    when (k <= 3 and pick != stray) point=s {
+      say "Read each column's heading, then each thing under it. Only iron and steel things belong under pulled."
+    }
+  }
+  hint "Say each heading, then each thing under it. Would the magnet really pull that?"
+  hint "Pulled means iron or steel: the nail and the paper clip. Everything else stays put, even metal that is not iron."
+}

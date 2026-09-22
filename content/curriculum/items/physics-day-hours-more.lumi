@@ -1,0 +1,23 @@
+item physics.day-hours-more v=1 skills=[physics.sky, reasoning.compare] stars=3 {
+  title "How much longer?"
+  difficulty (b - a + (d - c))
+  let a={4, 5} b={20} c={8, 9} d={15, 16}
+
+  scene 23x32 {
+    column two at=canvas(1, 0) space=1 align=start {
+      sunpath summer rise=a set=b
+      sunpath winter rise=c set=d
+    }
+    text ask "The top day is in summer and the bottom one in winter. How many more hours of daylight has the summer day?" narrate width=20 below=two gap=0
+    number-input answer below=ask gap=1
+  }
+
+  answer (b - a - (d - c))
+  feedback {
+    when (answer == b - d or answer == c - a) point=two {
+      say "That compares only one end of the day. Work out each day's hours first."
+    }
+  }
+  hint "How many hours is the sun up on each day?"
+  hint "Now how many more is one than the other?"
+}

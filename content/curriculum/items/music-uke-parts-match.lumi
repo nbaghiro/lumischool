@@ -1,0 +1,15 @@
+# What each part is for, not only its name: the four parts a child touches or looks at first.
+# q shuffles the right-hand column, so the boxes are not the same four numbers every time.
+item music.uke-parts-match v=1 skills=[music.uke-strings, music.instrument-parts] {
+  title "What each part does"
+  let q=0..2
+
+  scene 32x16 {
+    text ask "Write the number of what each part does in its box." narrate width=30 at=canvas(1, 1)
+    match m left=["tuning pegs", "frets", "sound hole", "nut"] right=["{if q == 0 then \"turn to tune a string\" else if q == 1 then \"where the sound comes out\" else \"where the strings leave the head\"}", "{if q == 0 then \"press behind to change the note\" else if q == 1 then \"turn to tune a string\" else \"where the sound comes out\"}", "{if q == 0 then \"where the sound comes out\" else if q == 1 then \"where the strings leave the head\" else \"press behind to change the note\"}", "{if q == 0 then \"where the strings leave the head\" else if q == 1 then \"press behind to change the note\" else \"turn to tune a string\"}"] blanks=[pegs, frets, hole, nut] below=ask gap=1
+  }
+
+  answer pegs=(if q == 0 then 1 else if q == 1 then 2 else 4) frets=(if q == 0 then 2 else if q == 1 then 4 else 3) hole=(if q == 0 then 3 else if q == 1 then 1 else 2) nut=(if q == 0 then 4 else if q == 1 then 3 else 1)
+  hint "Find each part on the ukulele at the start of the lesson. What does your hand do there?"
+  hint "Which part do you turn? Which part do your fingers press behind?"
+}

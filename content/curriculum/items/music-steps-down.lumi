@@ -1,0 +1,30 @@
+# How many steps down from middle C a bass note is: one to B, two to A, on to seven for the C
+# below.
+item music.steps-down v=1 skills=[music.staff, subtraction.to-twenty] {
+  title "Steps down from middle C"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..6
+  let x={pick(k, "B", "A", "G", "F", "E", "D", "C")}
+  let n={pick(k, "B3", "A3", "G3", "F3", "E3", "D3", "C3")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..6
+  }
+
+  scene 32x17 {
+    grandstaff gs notes=["C4", "{n}"] letters=false lit=["{n}"] landmarks=false at=canvas(1, 1)
+    text ask "The first note is middle C and the ringed note is {x}. How many steps down from middle C is it?" width=14 right-of=gs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (k + 1)
+  feedback {
+    when (answer == k) point=gs {
+      say "Count the steps, not the letters between: from C to B is already one step."
+    }
+  }
+  hint "Say the letters backwards from C: B, A, G, F, E, D, C. Each one is a step."
+  hint "Count one for B, two for A, and on until you reach {x}."
+}

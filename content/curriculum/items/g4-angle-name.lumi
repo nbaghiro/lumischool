@@ -1,0 +1,30 @@
+# No 89 degree version: it could not be told from a right angle by eye (the audit's finding).
+item angles.name v=2 skills=[shapes.angles] {
+  title "Name the angle"
+  difficulty (if d == 35 or d == 260 then 0 else if d == 62 or d == 90 or d == 145 then 1 else 2)
+  let d={35, 62, 75, 90, 118, 145, 160, 205, 260}
+  level easy {
+    let d={35, 62, 145, 260}
+  }
+  level hard {
+    let d={75, 118, 160, 205}  # near a right angle or a straight line
+  }
+
+  scene 30x16 {
+    angle a deg=d arm=5 mark=arc at=canvas(0, 0)
+    text ask "Is this angle acute, right, obtuse or reflex?" width=12 right-of=a gap=1
+    choice pick options=["acute", "right", "obtuse", "reflex"] below=a gap=1
+  }
+
+  answer pick=(if d < 90 then "acute" else if d == 90 then "right" else if d < 180 then "obtuse" else "reflex")
+  feedback {
+    when (pick == "acute" and d > 90) point=a.vertex {
+      say "An acute angle is smaller than a quarter turn. This one is wider than that."
+    }
+    when (pick == "right" and d != 90) point=a.vertex {
+      say "A right angle is exactly a quarter turn, and the corner of a page fits it."
+    }
+  }
+  hint "Compare the turn with the corner of this page, which is a right angle."
+  hint "Is it smaller than the corner, the same, or bigger? Is it more than a straight line?"
+}

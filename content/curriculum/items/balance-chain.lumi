@@ -1,0 +1,25 @@
+# A cube weighs a balls and a ball weighs b stars, so a cube weighs a × b stars.
+item balance.chain v=1 skills=[multiplication.scaling] {
+  title "Balance chain"
+  difficulty (a * b)
+  let a=2..3 b=2..4
+  where (a * b != a + b)  # 2 and 2 would hide the adding mistake
+  roles heavy=cube mid=ball light=star
+
+  scene 32x15 {
+    use chain-scene heavy=heavy mid=mid light=light a=a b=b
+    text ask "How many {light.many} balance 1 {heavy}?" narrate below=s1 gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a * b)
+  feedback {
+    when (answer == a + b) point=s2.right-pan {
+      say "Swap each {mid} for its {light.many}, one {mid} at a time."
+    }
+    when (answer == b) point=s1 {
+      say "That is one {mid}. The {heavy} weighs {a} of them."
+    }
+  }
+  hint "How many {light.many} is one {mid}?"
+}

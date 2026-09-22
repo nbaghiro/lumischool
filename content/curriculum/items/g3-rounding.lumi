@@ -1,0 +1,27 @@
+# The number line does the arguing: a value past the middle is nearer the top ten.
+item place.round-ten v=1 skills=[place-value.rounding] {
+  title "To the nearest ten"
+  difficulty (5 - abs(o - 5) + (if t == 9 then 2 else 0))
+  let t=2..8 o=1..9
+  where (o != 5)
+  level easy {
+    let o={1, 2, 8, 9}
+  }
+  level hard {
+    let t=5..9 o={4, 6}
+  }
+
+  scene 28x15 {
+    rounding line from=(10 * t) to=(10 * t + 10) value=(10 * t + o) show=true at=canvas(1, 1)
+    text ask "Round {10 * t + o} to the nearest ten." narrate below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * round((10 * t + o) / 10))
+  feedback {
+    when (o > 5 and answer == 10 * t) point=line {
+      say "{10 * t + o} is past the middle, so it is nearer {10 * t + 10}."
+    }
+  }
+  hint "Find the middle of the line. Past the middle goes up, before it goes down."
+}

@@ -1,0 +1,20 @@
+# The way in: the note on the bottom line of the treble staff, which is E, one line below the
+# landmark G's line.
+item music.bottom-line v=1 skills=[music.staff] {
+  title "The bottom line"
+
+  scene 32x17 {
+    grandstaff gs notes=["E4"] letters=false lit=["E4"] landmarks=true at=canvas(1, 1)
+    text ask "The ringed note sits on the bottom line of the treble staff. Which letter is it?" width=14 right-of=gs gap=1
+    choice pick options=["D", "E", "F", "G"] below=ask gap=1
+  }
+
+  answer pick="E"
+  feedback {
+    when (pick == "G") point=gs {
+      say "Treble G is on the second line, the one the clef curls round. The bottom line is one line lower, which is two steps down."
+    }
+  }
+  hint "Treble G sits on the second line. The bottom line is two steps below it."
+  hint "Two steps down from G: F is the space, and then the bottom line."
+}

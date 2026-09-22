@@ -1,0 +1,31 @@
+# Whether a treble note sits on a line or in a space: E G B D F on the lines, F A C E in the
+# spaces, with middle C on its own short line below.
+item music.line-or-space v=1 skills=[music.staff] {
+  title "Line or space?"
+  difficulty (if k <= 1 then 0 else if k <= 4 then 1 else 2)
+  let k=0..7
+  let n={pick(k, "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5")}
+  let x={pick(k, "E", "F", "G", "A", "B", "C", "D", "E")}
+  let right={pick(k, "on a line", "in a space", "on a line", "in a space", "on a line", "in a space", "on a line", "in a space")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 32x17 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=false at=canvas(1, 1)
+    text ask "The ringed note is {x}. Does it sit on a line or in a space?" width=14 right-of=gs gap=1
+    choice pick options=["on a line", "in a space"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=gs {
+      say "Look at the note head: a line runs through it, or it sits between two lines. Lines and spaces take turns going up."
+    }
+  }
+  hint "Does a staff line run through the middle of the note head?"
+  hint "E, G, B, D and F are the line notes; F, A, C and E are the space notes."
+}

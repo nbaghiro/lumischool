@@ -1,0 +1,18 @@
+item physics.torch-closer v=1 skills=[physics.light] stars=2 {
+  title "Closer to the torch"
+
+  scene 19x28 {
+    beam b sheet=2 at=canvas(1, 0)
+    text ask "The card is moved closer to the torch. What happens to its shadow on the wall?" width=18 below=b gap=1
+    choice pick options=["It gets bigger", "It gets smaller", "It stays the same"] stack=column below=ask gap=1
+  }
+
+  answer pick="It gets bigger"
+  feedback {
+    when (pick == "It gets smaller") point=b {
+      say "Follow the dashed lines from the torch past the card's edges. Near the torch they are close together, so where do they reach the wall?"
+    }
+  }
+  hint "Hold your hand near a torch, then far from it. When is the shadow bigger?"
+  hint "Near the torch, is the beam narrow or wide?"
+}

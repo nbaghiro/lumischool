@@ -1,0 +1,16 @@
+# Three attempts at mending one sentence; only one mends everything without adding a new mistake.
+item writing.robot-best-fix v=1 stars=2 skills=[writing.editing, reasoning.compare] {
+  title "Which fix is right?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..3 p=0..2 ok={if k == 0 then "Ben and I fixed two lamps." else if k == 1 then "Can you pass me the magnet?" else if k == 2 then "My sister has four robots." else "We went to the lab on Monday."} m1={if k == 0 then "Ben and i fixed two lamps." else if k == 1 then "Can you pass me the magnet." else if k == 2 then "My sister has for robots." else "We went to the lab on monday."} m2={if k == 0 then "Ben and I fixed to lamps." else if k == 1 then "can you pass me the magnet?" else if k == 2 then "My Sister has four robots." else "We went too the lab on Monday."}
+
+  scene 30x21 {
+    caption bot text="{if k == 0 then \"ben and i fixed to lamps\" else if k == 1 then \"can you pass me the magnet\" else if k == 2 then \"my sister has for robots\" else \"we went too the lab on monday\"}" width=28 at=canvas(1, 1)
+    text ask "The robot wrote this. Three children mended it. Who got every mistake, and made no new one?" width=28 below=bot gap=1
+    choice pick options=["{if p == 0 then ok else if p == 1 then m1 else m2}", "{if p == 0 then m1 else if p == 1 then m2 else ok}", "{if p == 0 then m2 else if p == 1 then ok else m1}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ok
+  hint "Check each one for all three things: capitals, the mark at the end, and every word."
+  hint "Did any of them put in a capital where none is needed?"
+}

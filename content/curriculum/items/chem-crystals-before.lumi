@@ -1,0 +1,27 @@
+# The start is the unknown: the picture shows the later day and the question works back.
+item chem.crystals-before v=1 skills=[chemistry.crystals] {
+  title "How many before?"
+  difficulty (nb + x)
+  let b={6, 8} nb=6..9 x=2..4
+  level easy {
+    let nb=6..7 x={2}
+  }
+  level hard {
+    let nb=8..9 x={4}
+  }
+
+  scene 29x14 {
+    crystalstring jar days=b crystals=nb kind=salt at=canvas(1, 0)
+    text ask "This is day {b}. There are {x} more crystals on the string than on day {b - 3}. How many were there on day {b - 3}?" width=16 right-of=jar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (nb - x)
+  feedback {
+    when (answer == nb + x) point=jar {
+      say "Day {b - 3} came before day {b}, so there were fewer crystals then."
+    }
+  }
+  hint "How many crystals are on the string now?"
+  hint "There were fewer before. How many fewer?"
+}

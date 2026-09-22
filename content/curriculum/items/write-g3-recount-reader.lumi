@@ -1,0 +1,15 @@
+# Gran was not there: the sentence that helps her is the one with something she could picture.
+item writing.recount-reader v=1 stars=2 skills=[writing.recounts, writing.audience] {
+  title "A sentence Gran can picture"
+  difficulty (if t == 1 then 1 else 0)
+  let t=0..2 p=0..2 ok={if t == 0 then "The moon came up orange over the trees." else if t == 1 then "A heron stood on one leg by the lock gate." else "Our snowman had a carrot nose and Dad's hat."} v1={if t == 0 then "It was really good." else if t == 1 then "We saw a bird." else "We made a snowman."} v2={if t == 0 then "We did lots of things." else if t == 1 then "It was a nice day out." else "It was fun in the snow."}
+
+  scene 32x15 {
+    text ask "Gran was not there. Which sentence will help her picture it best?" width=30 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then ok else if p == 1 then v1 else v2}", "{if p == 0 then v1 else if p == 1 then v2 else ok}", "{if p == 0 then v2 else if p == 1 then ok else v1}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ok
+  hint "Close your eyes after each sentence. Which one puts a picture in your head?"
+  hint "Which sentence has details: a colour, a shape, a place?"
+}

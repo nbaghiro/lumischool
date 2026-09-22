@@ -1,0 +1,26 @@
+# The eight places lettered, and which of them the moon stands at for a named shape. The crescent, the
+# half moon and the gibbous each happen twice round the ring, so the question says whether the moon is
+# growing or shrinking, which the arrow's direction settles.
+item physics.orbit-place-for-phase v=1 skills=[physics.sky, reasoning.work-backwards] {
+  title "Where is the moon?"
+  difficulty (if p == 0 or p == 4 then 0 else 1)
+  let p=0..7
+  let named={pick(p, "a new moon", "a growing crescent", "a growing half moon", "a growing gibbous", "a full moon", "a shrinking gibbous", "a shrinking half moon", "a shrinking crescent")}
+  let ans={pick(p, "A", "B", "C", "D", "E", "F", "G", "H")}
+  level easy {
+    let p={0, 4}
+  }
+  level hard {
+    let p={3, 5}
+  }
+
+  scene 32x27 {
+    orbit sky moon=-1 places=1 arrow=1 person=0 at=canvas(1, 0)
+    text ask "The eight places are lettered, and the moon goes round the way the arrow points. At which place does a child on the Earth see {named}?" narrate width=24 below=sky gap=1
+    choice pick options=["A", "B", "C", "D", "E", "F", "G", "H"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Start at A, which is between the Earth and the sun, and follow the arrow round."
+  hint "Growing means on the way from the new moon to the full one, and shrinking means on the way back."
+}

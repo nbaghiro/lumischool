@@ -1,0 +1,28 @@
+# The way in: four things on the tray and the one the magnet pulls, which is the iron or steel one.
+# A nail among plastic, rubber and wood is seen at once; the paper clip among a coin and foil,
+# which are metal and yet stay put, is the harder look.
+item physics.jumps-to-magnet v=1 skills=[physics.magnets] {
+  title "Which one jumps to the magnet?"
+  difficulty ((if p == "clip" then 1 else 0) + (if q == "coin" or q == "foil" then 1 else 0))
+  let p={"nail", "clip"} q={"ruler", "eraser", "coin", "foil"} r={"stick", "marble"} f=0..3
+  let u={if r == "stick" then "marble" else "stick"}
+  level easy {
+    let q={"ruler", "eraser"}
+  }
+  level hard {
+    let p={"clip"} q={"coin", "foil"}
+  }
+
+  scene 34x19 {
+    row all at=canvas(1, 0) space=1 align=end {
+      things t things=["{if f == 0 then p else q}", "{if f == 1 then p else if f == 0 then q else r}", "{if f == 2 then p else if f == 3 then u else r}", "{if f == 3 then p else u}"]
+      magnet bar mode=things count=0 sticks=0 show=0
+    }
+    text ask "Sam holds the magnet over each thing on the tray in turn. Which one jumps up to it?" narrate width=32 below=all gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.things of=t pick="only(magnetic)"
+  hint "A magnet pulls iron and steel. Which of these is made of that?"
+  hint "Not every metal thing is pulled. A coin and a sheet of foil are metal and stay where they are."
+}

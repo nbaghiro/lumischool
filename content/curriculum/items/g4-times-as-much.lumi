@@ -1,0 +1,34 @@
+# 4.NBT.1: a digit is worth ten times as much as the same digit one place to its right.
+item place.times-as-much v=1 skills=[place-value.large-numbers] {
+  title "How many times as much"
+  difficulty s
+  let d=2..9 e={1, 3, 5, 7} s=1..3
+  where (e != d)
+  level easy {
+    let s={1}
+  }
+  level hard {
+    let s={3}
+  }
+
+  scene 27x24 {
+    column both at=canvas(1, 1) space=1 align=start {
+      pvchart one value="{d * 100000 + e * 1000}" show=digits
+      pvchart two value="{d * 10 ^ (5 - s) + e * 10}" show=digits
+    }
+    text ask "The {d} in the top number is worth how many times as much as the {d} in the bottom number?" narrate width=25 below=both gap=1
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer (10 ^ s)
+  feedback {
+    when (answer == s) point=one {
+      say "The {d} is {s} places further left. Each place to the left is worth ten times as much."
+    }
+    when (s > 1 and answer == 10 * s) point=one {
+      say "Two places left is ten times ten, which is a hundred times as much."
+    }
+  }
+  hint "Read the name of the column each {d} is in."
+  hint "How many places apart are they? Each place is ten times as much."
+}

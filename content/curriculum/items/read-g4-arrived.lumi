@@ -1,0 +1,31 @@
+# The date the card was written is in the corner, and the message says how long ago they
+# arrived: two pieces of the card put together.
+item reading.arrived-when v=1 skills=[reading.inference, reading.letters] {
+  title "When did they arrive?"
+  difficulty (n + (if d - n <= 3 then 1 else 0))
+  let d=4..9 n=1..3
+  level easy {
+    let n={1, 2}
+  }
+  level hard {
+    let n={3}
+  }
+
+  scene 35x17 {
+    postcard card greeting="Dear Gran," text="We got here {if n == 1 then \"yesterday\" else if n == 2 then \"two days ago\" else \"three days ago\"}. The cottage is by a stream, and there are ducks on it every morning." closing="Love from" from="Kit" to=["Mrs Bell", "7 Pond Street", "Hale"] stamp=none date="{d} May" lines=3 at=canvas(1, 1)
+    text ask "On what date in May did Kit arrive?" width=20 below=card gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (d - n)
+  feedback {
+    when (answer == d) point=card {
+      say "That is the day Kit wrote the card. The message says when they got there."
+    }
+    when (answer == d + n) point=card {
+      say "They arrived before Kit wrote the card, not after."
+    }
+  }
+  hint "Where on the card is the date it was written?"
+  hint "The message says how long ago they arrived. Count back from that date."
+}

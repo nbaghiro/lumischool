@@ -1,0 +1,16 @@
+# The meaning of the suffix decides which sentence makes sense. Two sentences use the word as if
+# it meant the opposite.
+item reading.suffix-used-right v=1 stars=2 skills=[reading.morphology, reasoning.find-the-error] {
+  title "Which sentence is right?"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 34x15 {
+    text ask "Only one sentence uses {if k == 0 then \"careless\" else if k == 1 then \"fearless\" else if k == 2 then \"helpful\" else \"hopeless\"} the right way. Which one?" width=33 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "The careless boy never spilled a drop." else if k == 1 then "The fearless cat hid under the bed." else if k == 2 then "The helpful girl carried the heavy bag." else "We felt hopeless when we won the cup.", if k == 0 then "The careless boy dropped all the eggs." else if k == 1 then "The fearless cat ran from the mouse." else if k == 2 then "The helpful girl ate everyone's lunch." else "We felt hopeless when the bus left us.", if k == 0 then "The careless boy checked his work twice." else if k == 1 then "The fearless cat walked up to the dog." else if k == 2 then "The helpful girl hid all the keys." else "We felt hopeless on our birthday."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The careless boy dropped all the eggs." else if k == 1 then "The fearless cat walked up to the dog." else if k == 2 then "The helpful girl carried the heavy bag." else "We felt hopeless when the bus left us.")
+  hint "What does the suffix mean: full of, or without?"
+  hint "Read each sentence with that meaning in place of the word. Which one still makes sense?"
+}

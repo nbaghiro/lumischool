@@ -1,0 +1,32 @@
+# A bar begun and the card that makes it four beats: two beats left takes a minim, one beat left a
+# crotchet. Three quavers are a beat and a half, which never fits.
+item music.rhythm-finish-bar v=1 skills=[music.note-values, music.counting-beats] {
+  title "Finish the bar"
+  difficulty (if k == 1 then 0 else 1)
+  let k=0..3
+  let right={pick(k, "a minim", "a crotchet", "a minim", "a crotchet")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x13 {
+    staff bar notes=[pick(k, 1, 1, 0.5, 2), pick(k, 0.5, 1, 0.5, 0.5), pick(k, 0.5, 1, 1, 0.5)] at=canvas(1, 1)
+    text ask "Ben has started a bar of four beats. Which note finishes it?" narrate width=28 below=bar gap=1
+    choice pick options=["a minim", "a crotchet", "three quavers"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "three quavers") point=bar {
+      say "Two quavers make one beat, so three make a beat and a half. That never finishes a bar of whole beats."
+    }
+    when (pick != right and pick != "three quavers") point=bar {
+      say "Count the beats Ben has written first. How many are still missing?"
+    }
+  }
+  hint "Count the beats already in the bar. Two joined quavers count as one beat."
+  hint "How many beats are left? A crotchet is one, a minim is two."
+}

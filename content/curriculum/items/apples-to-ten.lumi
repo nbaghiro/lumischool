@@ -1,0 +1,18 @@
+item story.apples-to-ten v=1 skills=[bonds-to-10] {
+  title "Apples"
+  let n=3..8
+  roles fruit=apple
+
+  scene 24x9 {
+    text ask "Mia has {n} {fruit.many}. How many more does she need to have 10?" narrate width=22 at=canvas(1, 1)
+    props row count=n prop=apple below=ask gap=1
+    number-input answer right-of=row gap=1
+  }
+
+  answer (10 - n)
+  feedback {
+    when (answer == n) point=row {
+      say "That is how many she has now. Count on from {n} to 10."
+    }
+  }
+}

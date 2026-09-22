@@ -1,0 +1,25 @@
+item writing.bubble-mark v=1 skills=[writing.punctuation, writing.speech] {
+  title "The mark at the end of a bubble"
+  difficulty (if k == 1 then 2 else if k == 0 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}  # a question and a telling
+  }
+  level hard {
+    let k={0, 1}  # a question and a shout
+  }
+
+  scene 36x13 {
+    comic strip who=["{if k == 0 then \"boy\" else if k == 1 then \"girl\" else \"boy\"}", "{if k == 0 then \"girl\" else if k == 1 then \"boy\" else \"gran\"}"] says=["{if k == 0 then \"Look, a fox!\" else if k == 1 then \"It is very windy.\" else \"What is in the box?\"}", "{if k == 0 then \"Is it asleep\" else if k == 1 then \"Help, my hat is blowing away\" else \"It is a little rabbit\"}"] moods=["{if k == 0 then \"excited\" else if k == 1 then \"worried\" else \"surprised\"}", "{if k == 0 then \"surprised\" else if k == 1 then \"scared\" else \"happy\"}"] with=["", ""] thinks=[0, 0] holds=["", ""] labels=["1", "2"] at=canvas(1, 1)
+    text ask "Which mark goes at the end of bubble 2?" width=11 right-of=strip gap=1
+    choice pick options=[".", "?", "!"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "?" else if k == 1 then "!" else ".")
+  feedback {
+    when (pick == "." and k == 0) point=strip {
+      say "The girl is asking something, so her bubble ends with a question mark."
+    }
+  }
+  hint "Read the bubble in the voice they would use. Asking takes ?, a shout takes !, and telling takes a full stop."
+}

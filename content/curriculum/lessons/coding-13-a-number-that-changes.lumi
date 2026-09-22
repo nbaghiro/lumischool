@@ -1,0 +1,48 @@
+lesson coding-a-number-that-changes v=3 format=teach grade=4 unit=7 subject=coding levels=[easy, medium, hard] {
+  title "A number that changes"
+  goal "Follow a program that keeps numbers under names and changes them, and work out a missing line or start."
+
+  look {
+    scene 31x10 {
+      row all at=canvas(1, 0) space=1 align=start {
+        program p code=["set n to 4", "add 3 to n", "add 3 to n"] title="n changes"
+        variable v name=n code=["set n to 4", "add 3 to n", "add 3 to n"]
+      }
+    }
+    say """
+      A program can keep a number in a box and give the box a name. Here the name is n. Every line
+      that changes n puts a new number in the box, and the old one is gone: after line 2 there is
+      no 4 left in the box, only 7.
+      """
+  }
+  do {
+    practice coding.variable count=1 seed=4
+    practice coding.variable-trace count=1 seed=2
+    practice coding.variable-missing count=2 seed=7
+    practice coding.variable-start count=2 seed=3 hard-seed=1
+    practice coding.two-names count=2 seed=5
+  }
+  try stars=2 {
+    show coding.variable-order a=3 b=4 k=1 easy-a=2 easy-b=5 easy-k=0 hard-a=5 hard-b=6 hard-k=2
+  }
+  try stars=3 {
+    show coding.variable-reach t=10 easy-t=9 hard-t=12
+  }
+  remember {
+    say "A name holds one number at a time. Each line that changes it puts a new one in, and a copy does not follow the name it came from."
+  }
+
+  grown-ups """
+    A cup with counters in it is the physical version: the cup is n, and add 3 to n is three more
+    counters into the same cup. What matters is that the cup does not become a second cup. When the
+    start or a line is missing, undo the lines from the bottom up: a double is undone by halving.
+    In the two-name question, b gets a copy of a, so changing a afterwards leaves b alone. The
+    three-star question can be solved by working back from the flag: half, or one less.
+    """
+  level easy {
+    grown-ups "At this level n starts at two to five and adds two twice, the missing line and the missing start are found from totals of ten or less and twelve or less, the two names hold numbers that add to eight or less, Ivy wants fourteen, which the first program makes, and the flag nine squares away is reached by three doubles and one more."
+  }
+  level hard {
+    grown-ups "At this level n starts at four or five and adds four twice, the missing line and the missing start are found from totals of eighteen or more and twenty-four or more, the two names hold numbers that add to fourteen or more, Ivy wants seventeen from five and six, which the third program makes, and the flag twelve squares away needs the one more before two of the doubles."
+  }
+}

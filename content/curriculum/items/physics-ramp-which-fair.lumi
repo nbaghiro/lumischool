@@ -1,0 +1,14 @@
+item physics.ramp-which-fair v=1 skills=[physics.method] stars=3 {
+  title "Which two are fair?"
+  let f=0..2
+
+  scene 27x18 {
+    table data cols=4 head=["Test", "Height", "Floor", "Ball"] cells=[1, "2 cm", "{if f == 2 then \"wood\" else \"carpet\"}", "marble", 2, "{if f == 0 then \"4 cm\" else \"2 cm\"}", "carpet", "{if f == 1 then \"golf ball\" else \"marble\"}", 3, "4 cm", "{if f == 0 then \"wood\" else \"carpet\"}", "marble"] at=canvas(1, 0)
+    text ask "Which two tests show whether the height of the slope matters?" width=26 below=data gap=1
+    choice pick options=["1 and 2", "1 and 3", "2 and 3"] below=ask gap=1
+  }
+
+  answer pick=(if f == 0 then "1 and 2" else if f == 1 then "1 and 3" else "2 and 3")
+  hint "In a fair test of height, what is the only thing that changes?"
+  hint "Look for two rows that differ in height and in nothing else."
+}

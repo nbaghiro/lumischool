@@ -1,0 +1,24 @@
+# Counting on along the week, and across its end, from the day in the loop.
+item time.days-after v=1 skills=[time.days-of-week, counting.on] {
+  title "In a few days"
+  difficulty (k + (if m + k >= 7 then 2 else 0))
+  let m=0..6 k=2..6
+  level easy {
+    let k=2..3
+    where (m + k < 7)
+  }
+  level hard {
+    let k=4..6
+    where (m + k >= 7)
+  }
+
+  scene 36x12 {
+    days week mark=m start=0 at=canvas(1, 1)
+    text ask "Today is the day in the loop. What day will it be in {k} days?" narrate width=30 below=week gap=1
+    choice pick options=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] below=ask gap=1
+  }
+
+  answer pick=(if (m + k) % 7 == 0 then "Mon" else if (m + k) % 7 == 1 then "Tue" else if (m + k) % 7 == 2 then "Wed" else if (m + k) % 7 == 3 then "Thu" else if (m + k) % 7 == 4 then "Fri" else if (m + k) % 7 == 5 then "Sat" else "Sun")
+  hint "Put your finger on today. Tomorrow is one day."
+  hint "Count on {k} days. After Sunday the week starts again at Monday."
+}

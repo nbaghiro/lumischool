@@ -1,0 +1,14 @@
+# The bar is clapped, not counted: the checker fits the child's tempo and judges each clap against
+# where the written notes fall. The rhythm checker takes one bar, so this item has one version.
+item music.clap-bar v=1 skills=[music.rhythm] {
+  title "Clap the bar"
+
+  scene 24x11 {
+    staff bar notes=[1, 0.5, 0.5, 2] at=canvas(1, 1)
+    text ask "Clap this bar. Count one, two, three, four in your head as you clap." width=22 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2] grade=2
+  hint "How many beats is each note: the filled one, the two with flags, and the open one?"
+  hint "Say it as you clap: ta, ti-ti, ta-a."
+}

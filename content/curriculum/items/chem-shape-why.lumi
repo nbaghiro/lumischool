@@ -1,0 +1,16 @@
+# A reason: which way the material behaves is the reason for choosing it, and the versions need
+# both kinds of answer.
+item chem.shape-why v=1 stars=2 skills=[chemistry.materials, reasoning.explain] {
+  title "Why that material?"
+  difficulty k
+  let k=0..3
+
+  scene 28x16 {
+    text ask "{if k == 0 then \"Why do we make a bouncy ball out of rubber, not clay?\" else if k == 1 then \"Why do we make models out of clay, not rubber?\" else if k == 2 then \"Why is a hair band made of rubber, not foil?\" else \"Why do we wrap a sandwich in foil, not a rubber sheet?\"}" width=23 at=canvas(1, 0)
+    choice pick options=["Rubber springs back after it is squashed", "Clay stays the shape you make it", "Foil stays the shape you make it"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Rubber springs back after it is squashed" else if k == 1 then "Clay stays the shape you make it" else if k == 2 then "Rubber springs back after it is squashed" else "Foil stays the shape you make it")
+  hint "What does the thing have to do when it is used?"
+  hint "Does it need to go back to its shape, or to stay the way you made it?"
+}

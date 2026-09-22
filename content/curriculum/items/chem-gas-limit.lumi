@@ -1,0 +1,26 @@
+# Non-routine: the fizz stops when the vinegar runs out, however much more baking soda goes in, so
+# the answer is the smaller of two numbers, and a child has to see why.
+item chem.gas-limit v=1 stars=3 skills=[chemistry.changes, reasoning.limits] {
+  title "When the fizz stops"
+  difficulty ((if s > v then 2 else 0) + s - v)
+  let v={2, 3, 4} s={3, 4, 5, 6}
+
+  scene 30x15 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      flask f shape="conical" fill=0.35 bubbles=3 balloon=1
+      column side space=1 align=start {
+        text ask "The vinegar in this flask is enough to fizz with {v} spoons of baking soda. Tom adds {s} spoons, one at a time. How many of the spoons fizz?" width=19
+        number-input answer
+      }
+    }
+  }
+
+  answer min(v, s)
+  feedback {
+    when (answer == s and s > v) point=f {
+      say "What does each spoon need to fizz with? Is there any left after {v} spoons?"
+    }
+  }
+  hint "What does each spoon of baking soda need, to fizz?"
+  hint "What happens to a spoon of baking soda added after the vinegar is used up?"
+}

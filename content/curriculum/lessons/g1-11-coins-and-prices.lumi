@@ -1,0 +1,50 @@
+lesson g1-coins-and-prices v=1 format=teach grade=1 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Coins and prices"
+  goal "Count a handful of coins in cents, give change from fifty cents, and pay with the fewest coins."
+
+  look {
+    scene 34x19 {
+      purse bag coins=["quarter", "dime", "dime", "penny"] at=canvas(1, 1)
+      pricetag tag now=45 was=0 right-of=bag gap=2
+      shop shelf below=bag gap=1
+      text sum "25, 35, 45, 46 cents" right-of=shelf gap=1
+      tick sum
+    }
+    say """
+      Coins are not worth what they look like. A dime is small but it is worth ten cents. Start
+      with the biggest coin and count on.
+      """
+  }
+  do {
+    practice money.count-coins count=2 seed=5
+    practice money.enough count=2 seed=2
+    practice money.change-from-quarters count=1 seed=3
+    practice money.more-needed count=1 seed=5
+    practice money.who-has-more count=1 seed=4
+    practice money.swap-nickels count=1 seed=3
+  }
+  try stars=2 {
+    show money.fewest-coins n=37 easy-n=16 hard-n=44
+  }
+  try stars=3 {
+    show money.ways-to-pay n=30 easy-n=15 hard-n=40
+  }
+  remember {
+    say "A quarter is 25 cents, a dime is 10, a nickel is 5, a penny is 1."
+  }
+
+  grown-ups """
+    Real coins beat pictures here. Let the child sort them into piles before counting, and say the
+    running total out loud. Ben always has more coins than Ann, and only sometimes more money, which
+    is the point of the question. Swapping for nickels keeps the money the same. For the fewest
+    coins, the rule a child usually finds is to take the biggest coin that fits and repeat. For the
+    three-star question, a list that starts with no dimes and adds one dime at a time is the way to
+    be sure none are missed.
+    """
+  level easy {
+    grown-ups "At this level the purse holds dimes and pennies only, the price is well above or well below the money, the change from two quarters is five or ten cents, and 16 cents takes three coins."
+  }
+  level hard {
+    grown-ups "At this level the purse mixes all three coins, the price is within two cents of the money, Ann and Ben are within five cents of each other, and 44 cents takes seven coins of all four kinds."
+  }
+}

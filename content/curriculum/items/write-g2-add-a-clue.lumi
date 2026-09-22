@@ -1,0 +1,31 @@
+# The first clue fits two boats; the child chooses the clue that leaves only one, which is how a
+# description is made good.
+item writing.add-a-clue v=1 skills=[writing.describing] {
+  title "The clue to add"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0, 3}
+  }
+  let name={if k == 0 then "Nell" else if k == 1 then "Bo" else if k == 2 then "Ivy" else "Kit"}
+  let first={if k <= 1 then "It has two sails." else "It has one sail."}
+  let right={if k == 0 then "It has no flag." else if k == 1 then "It has a flag." else if k == 2 then "It has a flag." else "It has no portholes."}
+  let w1={if k == 0 then "It has sails." else if k == 1 then "It floats." else if k == 2 then "It has one sail." else "It has a flag."}
+  let w2={if k == 0 then "It has a flag." else if k == 1 then "It has no flag." else if k == 2 then "It has no portholes." else "It is a boat."}
+  let o1={if r == 0 then right else w1}
+  let o2={if r == 1 then right else if r == 0 then w1 else w2}
+  let o3={if r == 2 then right else w2}
+
+  scene 33x24 {
+    moorings quay sails=[1, 2, 1, 2] flags=[1, 0, 0, 1] portholes=[2, 3, 0, 2] names=["Ivy", "Nell", "Kit", "Bo"] at=canvas(1, 1)
+    text ask "Tom's boat is {name}. He wrote: {first} That fits two boats. Which clue should he add so only {name} fits?" narrate width=15 below=quay gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=right
+  hint "Which two boats fit Tom's first clue?"
+  hint "What does {name} have that the other one does not?"
+}

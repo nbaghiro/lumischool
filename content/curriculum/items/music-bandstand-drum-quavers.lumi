@@ -1,0 +1,39 @@
+# The story: Ben plays Ana's bar on the bandstand drum again and again, and the quavers or the beats
+# are counted over the whole tune.
+item music.bandstand-drum-quavers v=1 skills=[music.rhythm, multiplication.groups] {
+  title "Ben's drum"
+  difficulty (n / 2 + q)
+  let n={2, 3, 4} q=0..1
+  let asked={pick(q, "beats", "quavers")}
+  let right={if q == 0 then 4 * n else 2 * n}
+  level easy {
+    let n={2, 3} q=0..0
+  }
+  level hard {
+    let n={3, 4} q=1..1
+  }
+
+  scene 30x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      column side space=1 align=start {
+        drum d lugs=5
+        staff bar notes=[1, 0.5, 0.5, 2]
+      }
+    }
+    text ask "Ben plays this bar {n} times on the bandstand drum. How many {asked} is that?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 1 and answer == 4 * n) point=bar {
+      say "That counts the beats. Count the quavers in one bar: the two joined notes."
+    }
+    when (q == 0 and answer == 4 * n - n) point=bar {
+      say "The minim lasts two beats. Count each note's beats in one bar again."
+    }
+  }
+  hint "How many {asked} are in one bar?"
+  hint "Every time is the same bar, so it is that many, {n} times."
+}

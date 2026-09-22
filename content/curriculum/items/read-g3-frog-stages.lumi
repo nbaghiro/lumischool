@@ -1,0 +1,20 @@
+# An information passage and a diagram read together: the diagram stops early, and the passage
+# says what comes next.
+item reading.frog-stages v=1 skills=[reading.text-features, reading.comprehension] {
+  title "What comes next in the life cycle?"
+  difficulty s
+  let s=1..3
+
+  scene 37x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="Frogspawn hatches into tadpoles. A tadpole grows legs and becomes a froglet. A froglet loses its tail and becomes a frog." width=36
+      frogcycle cycle stage=s ring=0 names=1
+      text ask "The drawing stops after {s} {if s == 1 then \"stage\" else \"stages\"}. Use the passage. What comes next?"
+      choice pick options=["frogspawn", "tadpole", "froglet", "frog"]
+    }
+  }
+
+  answer pick=(if s == 1 then "tadpole" else if s == 2 then "froglet" else "frog")
+  hint "Find the last stage the drawing shows. Where is it in the passage?"
+  hint "Read the sentence just after it. What does it become?"
+}

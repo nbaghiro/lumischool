@@ -1,0 +1,34 @@
+# The word that starts a question, chosen from three where only one makes sense: each set leaves
+# out any question word that would also make a real question (Where does the bus come?).
+item writing.question-word v=1 skills=[writing.punctuation, writing.questions] {
+  title "The word that starts the question"
+  difficulty (if k == 4 then 2 else if k == 1 or k == 3 then 1 else 0)
+  let k=0..4 r=0..2
+  level easy {
+    let k={0, 2}  # who and where
+  }
+  level hard {
+    let k={1, 3, 4}  # when, what and why
+  }
+  let rest={if k == 0 then "is at the door?" else if k == 1 then "does the bus come?" else if k == 2 then "is my red hat?" else if k == 3 then "colour is your coat?" else "are you sad?"}
+  let key={if k == 0 then "Who" else if k == 1 then "When" else if k == 2 then "Where" else if k == 3 then "What" else "Why"}
+  let d1={if k == 0 then "When" else if k == 1 then "Who" else if k == 2 then "Who" else if k == 3 then "Where" else "Who"}
+  let d2={if k == 0 then "Where" else if k == 1 then "What" else if k == 2 then "When" else if k == 3 then "Who" else "What"}
+  let mood={if k == 0 then "surprised" else if k == 1 then "tired" else if k == 2 then "worried" else if k == 3 then "happy" else "sad"}
+  let o1={if r == 0 then key else d1}
+  let o2={if r == 1 then key else if r == 0 then d1 else d2}
+  let o3={if r == 2 then key else d2}
+
+  scene 31x13 {
+    face f mood=mood hair=1 at=canvas(1, 1)
+    column q right-of=f gap=2 space=1 align=start {
+      sentence strip before="" blank=5 after="{rest}"
+      text ask "Which word starts the question?" narrate
+      choice pick options=["{o1}", "{o2}", "{o3}"]
+    }
+  }
+
+  answer pick=key
+  hint "Read the question with each word at the start. Which one makes sense?"
+  hint "Is it asking about a person, a time, a place, a thing or a reason?"
+}

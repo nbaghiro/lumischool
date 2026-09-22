@@ -1,0 +1,26 @@
+item coding.trace-value v=1 skills=[coding.variables, coding.tracing] {
+  title "Finish the table"
+  difficulty (a + 3 * b)
+  let a=1..4 b=2..3
+  level easy {
+    let b={2}
+  }
+  level hard {
+    let a=3..4 b={3}
+  }
+
+  scene 34x17 {
+    program p code=["set n to {a}", "repeat 3", "  add {b} to n"] at=canvas(1, 0)
+    tracetable tr code=["set n to {a}", "repeat 3", "  add {b} to n"] show=value name=n filled=3 right-of=p gap=1
+    text ask "What is n in the last row?" width=12 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="value(n)"
+  feedback {
+    when (answer == a + b) point=tr {
+      say "The add line runs three times, so {b} goes in three times."
+    }
+  }
+  hint "A repeat line takes a row each time round, and n does not change on it."
+}

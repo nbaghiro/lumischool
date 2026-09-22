@@ -1,0 +1,26 @@
+item physics.seesaw-weight v=1 skills=[physics.moments] {
+  title "What weight balances it?"
+  difficulty (a * p)
+  let a={2, 3, 4, 6} p=1..5 q=1..5
+  where (a * p % q == 0 and a * p / q <= 9 and p != q)
+  level easy {
+    let a={2, 3, 4} p=1..3 q=1..3
+  }
+  level hard {
+    let a={3, 4, 6} p=2..5 q=2..5
+  }
+
+  scene 28x17 {
+    seesaw plank left=a atleft=p right=0 atright=q at=canvas(1, 1)
+    text ask "What weight at step {q} balances the plank?" width=20 below=plank gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (a * p / q)
+  feedback {
+    when (answer == a) point=plank {
+      say "The step counts as much as the weight: {a} times {p} has to match your weight times {q}."
+    }
+  }
+  hint "What is weight times step on the left?"
+}

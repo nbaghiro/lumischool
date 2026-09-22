@@ -1,0 +1,29 @@
+# Finding the mistake in someone's model: the number of particles must stay the same, and hotter
+# means faster. One version is drawn right, so "nothing is wrong" has to be earned too.
+item chem.jar-mistake v=1 stars=2 skills=[chemistry.particles, reasoning.find-the-mistake] {
+  title "Jo's drawing"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x20 {
+    text ask "Jo drew a jar of gas with the lid on (A), then the same jar after heating it (B). What did Jo get wrong?" width=33 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      column align=centre {
+        particles a spread=2 count=12 name=0 moving=1
+        text la "A"
+      }
+      column align=centre {
+        particles b spread=2 count=(if k == 0 then 16 else if k == 1 then 8 else if k == 2 then 12 else 12) name=0 moving=(if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 1 else 2)
+        text lb "B"
+      }
+      choice pick options=["More particles", "Fewer particles", "Not moving faster", "Nothing is wrong"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "More particles" else if k == 1 then "Fewer particles" else if k == 2 then "Not moving faster" else "Nothing is wrong")
+  hint "Count the particles in A and in B. Should heating change the number?"
+  hint "Now look at the marks. What should heating do to how fast they move?"
+}

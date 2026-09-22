@@ -1,0 +1,45 @@
+lesson physics-force-in-newtons v=1 format=teach grade=3 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "Force in newtons"
+  goal "Read a force in newtons, add forces that act the same way, and work out what is left when forces act against each other."
+
+  look {
+    scene 29x15 {
+      row kit at=canvas(1, 1) space=2 align=start {
+        forces f thing=box push=8 oppose=3
+        springscale s max=10 step=2 value=7 unit=N
+      }
+    }
+    say """
+      A force is measured in newtons. When two forces pull the same way they add up; when they pull
+      against each other, only the difference is left over, and the thing moves the way the bigger
+      one is pointing.
+      """
+  }
+  do {
+    practice physics.net-force count=2 seed=4
+    practice physics.forces-add count=2 seed=1
+    practice physics.which-way-n count=2 seed=3
+    practice physics.spring-between count=2 seed=5
+  }
+  try stars=2 {
+    show physics.balance-needed a=4 d=2 easy-a=2 easy-d=1 hard-a=6 hard-d=4
+  }
+  try stars=3 {
+    show physics.three-forces a=5 c=3 b=6 easy-a=2 easy-c=2 easy-b=3 hard-a=6 hard-c=5 hard-b=9
+  }
+  remember {
+    say "Forces the same way add up. Forces against each other leave the difference."
+  }
+
+  grown-ups """
+    Tug of war is the whole idea. Two even teams go nowhere, and the rope only moves when one side
+    pulls harder, by exactly as much as the difference. The last question has three forces, two one
+    way and one the other; the child has to decide which to add before taking anything away.
+    """
+  level easy {
+    grown-ups "At this level the two pushes on a box differ plainly, the sums stay under seven, and the three forces are small."
+  }
+  level hard {
+    grown-ups "At this level the forces reach nine newtons, the box's two pushes are equal or one apart, and the three forces together pass ten."
+  }
+}

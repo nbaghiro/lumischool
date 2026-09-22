@@ -1,0 +1,57 @@
+lesson g3-minutes-and-timetables v=1 format=teach grade=3 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Minutes, intervals and timetables"
+  goal "Read minutes off a clock, work out how long something lasts, when it started or ended, and use a timetable."
+
+  look {
+    scene 35x24 {
+      row top at=canvas(1, 1) space=2 align=centre {
+        clock face h=10 m=25
+        elapsed run stops=["9:40", "10:00", "11:00", "11:15"] total=true
+      }
+      row bottom below=top gap=2 space=2 align=start {
+        departureboard board mark=1
+        stopwatch watch seconds=45 sweep=true
+      }
+    }
+    say """
+      Counting on to the next hour and then on again is easier than subtracting times. A timetable
+      is the same counting on, written in a column.
+      """
+  }
+  do {
+    practice time.minutes-past count=1 seed=4
+    practice time.interval count=2 seed=4
+    level easy {
+      worked time.start-unknown h=4 m=30 len=25
+    }
+    practice time.start-unknown count=2 hard-count=1 seed=6
+    level hard {
+      practice time.which-bus-first count=1 seed=3
+    }
+    practice time.bus-wait count=2 seed=3 easy-seed=2
+    practice time.journey-legs count=1 seed=8
+  }
+  try stars=2 {
+    show time.which-bus-first r=5 b=20 rt=50 bt=30 easy-r=10 easy-b=25 easy-rt=40 easy-bt=15 hard-r=15 hard-b=30 hard-bt=40
+  }
+  try stars=3 {
+    show time.digit-sums hh=2 s=14 easy-hh=3 easy-s=6 hard-hh=1 hard-s=13
+  }
+  remember {
+    say "Count on to the next o'clock first, then count the rest. To find a start, count back."
+  }
+
+  grown-ups """
+    Use a real timetable, a bus or a train. Working out the wait at the station is the question
+    this lesson exists for. The film questions give the end and the length, so the child counts
+    back rather than on. In the two-star question the bus that leaves first is slower, so both
+    arrival times have to be worked out. In the three-star question the minutes never go past 59,
+    which is the catch.
+    """
+  level easy {
+    grown-ups "At this level the long hand is in the first quarter of the hour, the films last under an hour, counting back is worked once in the teacher's pen and the two films to count back for start in the hour they end, the bus comes within seven minutes, the journey is under an hour from an o'clock or ten past, both buses arrive before ten with the later one first by ten minutes, and the clock digits between 3:00 and 3:59 add to six."
+  }
+  level hard {
+    grown-ups "At this level the long hand is past forty minutes, the films last an hour and a half or more, the film to count back for started two hours before, the bus is ten to thirteen minutes away, the journey is over an hour from half past or twenty to, both buses arrive after ten and the bus race is asked twice, and the clock digits between 1:00 and 1:59 add to thirteen, medium's own catch with another hour."
+  }
+}

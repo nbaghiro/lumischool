@@ -1,0 +1,42 @@
+# The three-star non-routine question: the bean's growth as a circle. The flower makes seeds and a
+# seed starts it again, so the cards can be numbered from any stage, and the seed then comes after
+# the flower. Starting from the shoot is the way in; starting from the flower puts the seed second.
+item nature.round-again v=1 stars=3 skills=[nature.growing, reasoning.order] {
+  title "Round again"
+  difficulty (k + m)
+  let k=0..2 m=0..1
+  let start={pick(k, "the shoot", "the leaves", "the flower")}
+  let off={k + 1}
+  let a={pick(m, 2, 3)}
+  let b={pick(m, 0, 1)}
+  let c={pick(m, 3, 0)}
+  let d={pick(m, 1, 2)}
+  let wa={pick(a, "a seed in the soil", "a shoot with two small leaves", "a taller stem with more leaves", "a flower on top")}
+  let wb={pick(b, "a seed in the soil", "a shoot with two small leaves", "a taller stem with more leaves", "a flower on top")}
+  let wc={pick(c, "a seed in the soil", "a shoot with two small leaves", "a taller stem with more leaves", "a flower on top")}
+  let wd={pick(d, "a seed in the soil", "a shoot with two small leaves", "a taller stem with more leaves", "a flower on top")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 32x32 {
+    growstages grow stages=4 numbers=false names=0 at=canvas(1, 1)
+    text ask "The flower makes new seeds, and a seed starts it all again. Number the cards 1 to 4 in the order the bean grows, but this time start from {start}." narrate width=30 below=grow gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=((a - off + 4) % 4 + 1) r=((b - off + 4) % 4 + 1) t=((c - off + 4) % 4 + 1) u=((d - off + 4) % 4 + 1)
+  feedback {
+    when (q == a + 1 and r == b + 1 and t == c + 1 and u == d + 1) point=s {
+      say "That is the order from the seed. This time {start} gets number 1, and the seed comes round after the flower."
+    }
+    when ((if a == 0 then q else if b == 0 then r else if c == 0 then t else u) == 1) point=grow {
+      say "The seed is not first this time. Find the card that shows {start} and give it number 1."
+    }
+  }
+  hint "Find the card that shows {start}. That one gets number 1."
+  hint "Keep going: after the flower come new seeds, so the seed card is not the end."
+}

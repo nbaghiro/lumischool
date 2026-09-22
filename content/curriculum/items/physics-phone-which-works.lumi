@@ -1,0 +1,41 @@
+# The way in: three string telephones, one pulled tight and clear, one slack and one pinched halfway,
+# and which of them carries the voice. With `rings` at 1 the arcs along the string show the answer; at
+# 0 the child has to read the string itself, which is the harder version.
+item physics.phone-which-works v=1 skills=[physics.sound, reasoning.evidence] {
+  title "Which telephone works?"
+  difficulty (1 - r)
+  let v=0..3 r=0..1
+  let ta={pick(v, 1, 0, 1, 0)}
+  let pa={pick(v, 0, 0, 1, 0)}
+  let tb={pick(v, 0, 1, 0, 1)}
+  let pb={pick(v, 0, 0, 0, 1)}
+  let tc={pick(v, 1, 1, 1, 1)}
+  let pc={pick(v, 1, 1, 0, 0)}
+  let ans={pick(v, "A", "B", "C", "C")}
+  level easy {
+    let r=1..1
+  }
+  level hard {
+    let r=0..0
+  }
+
+  scene 26x39 {
+    text la "A" at=canvas(1, 0)
+    stringphone one mode=phone taut=ta pinch=pa rings=r right-of=la gap=1
+    text lb "B" below=la gap=8
+    stringphone two mode=phone taut=tb pinch=pb rings=r right-of=lb gap=1
+    text lc "C" below=lb gap=8
+    stringphone three mode=phone taut=tc pinch=pc rings=r right-of=lc gap=1
+    text ask "One child speaks into a cup and the other listens. In which of these can the listener hear the voice?" narrate width=22 below=three gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=ask {
+      say "A voice travels along a string only when the string is pulled tight and nothing is holding it still."
+    }
+  }
+  hint "Look at each string. Is it pulled tight, or hanging loose?"
+  hint "A hand pinching the string holds it still, and a string that cannot shake carries nothing."
+}

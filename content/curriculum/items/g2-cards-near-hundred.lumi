@@ -1,0 +1,23 @@
+# Six ways to split four cards into two tens digits and two ones digits; the limit rules out the
+# biggest, so the child has to search rather than follow a rule.
+item add.cards-near-hundred v=1 stars=3 skills=[addition.within-hundred, reasoning.systematic] {
+  title "As close to 100 as you can"
+  let p=1..3 q=2..5 r=4..7 s=5..9
+  where (p < q and q < r and r < s)
+  where (10 * (p + q) + r + s <= 100 and 10 * (r + s) + p + q > 100)
+
+  scene 26x17 {
+    digitcards cards digits=[p, q, r, s] at=canvas(1, 1)
+    text ask "Use all four cards to make two two-digit numbers. Add them. What is the biggest total you can make that is not more than 100?" narrate width=24 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer max(if 10 * (p + q) + r + s <= 100 then 10 * (p + q) + r + s else 0, if 10 * (p + r) + q + s <= 100 then 10 * (p + r) + q + s else 0, if 10 * (p + s) + q + r <= 100 then 10 * (p + s) + q + r else 0, if 10 * (q + r) + p + s <= 100 then 10 * (q + r) + p + s else 0, if 10 * (q + s) + p + r <= 100 then 10 * (q + s) + p + r else 0)
+  feedback {
+    when (answer > 100) point=cards {
+      say "That total is more than 100. Try other cards in the tens places."
+    }
+  }
+  hint "The two cards in the tens places matter most. Which pairs could go there?"
+  hint "Try each pair of tens cards, add, and keep the best total that is 100 or less."
+}

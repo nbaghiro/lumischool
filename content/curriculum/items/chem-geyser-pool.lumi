@@ -1,0 +1,38 @@
+# The story: hot pool water carried home in cups, and the salt that crystallises out of each cup
+# as it cools, or the salt that stays dissolved.
+item chem.geyser-pool v=1 stars=1 skills=[chemistry.crystals, multiplication.groups] {
+  title "Water from the hot pool"
+  difficulty (c + (if w == 1 then 1 else 0))
+  let c=1..3 w=0..1
+  let asks={pick(w, "How many spoons of salt grow as crystals in her cups?", "How many spoons of salt are still dissolved in her cups?")}
+  level easy {
+    let c=1..1 w=0..0
+  }
+  level hard {
+    let c=3..3
+  }
+
+  scene 34x17 {
+    crystalstring jar days=5 crystals=6 kind=salt at=canvas(0, 0)
+    text ask "The pool in geyser valley is at 60 °C, and every cup of its water holds 8 spoons of salt. Ana carries {c} {if c == 1 then \"cup\" else \"cups\"} of it home, where it cools to 10 °C. At 10 °C a cup holds only 3 spoons. {asks}" narrate width=20 right-of=jar gap=1
+    number-input answer below=jar gap=1
+  }
+
+  answer (if w == 0 then 5 * c else 3 * c)
+  feedback {
+    when (answer == 8 * c) point=jar {
+      say "That is all the salt in the {if c == 1 then \"cup\" else \"cups\"}. Each cup keeps 3 spoons dissolved and lets 5 go."
+    }
+    when (w == 0 and answer == 3 * c) point=jar {
+      say "That is the salt that stays dissolved. The crystals are the rest: 8 take away 3 for each cup."
+    }
+    when (w == 1 and answer == 5 * c) point=jar {
+      say "That is the salt that came out as crystals. The question asks what is still dissolved: 3 for each cup."
+    }
+    when (c > 1 and (answer == 5 or answer == 3)) point=jar {
+      say "That is one cup. Ana has {c} of them."
+    }
+  }
+  hint "Each cup lets go of 8 take away 3 spoons as it cools, and keeps the other 3."
+  hint "Work out one cup, then multiply by the {c} cups."
+}

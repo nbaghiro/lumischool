@@ -1,0 +1,10 @@
+item art.paint-a-butterfly v=1 stars=3 skills=[art.symmetry, art.painting, reasoning.plan] {
+  title "A butterfly in a mirror"
+
+  scene 36x17 {
+    text ask "Paint one side of the butterfly with the mirror on. Give each wing at least three shapes, and use a colour you mixed." width=12 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="squared" guide="mirror" outline="butterfly" pots=["red", "yellow", "blue", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Both wings match across the line, the same colours in the same places turned the other way, with at least three shapes on each wing and one colour the child mixed, planned so that shapes near the body meet it on both sides." notice=["Three or more shapes on each wing", "A colour the child mixed", "Shapes mirrored across the line"] ask="What did the mirror do to the spot you painted near the top?"
+}

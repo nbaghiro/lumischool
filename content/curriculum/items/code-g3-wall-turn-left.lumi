@@ -1,0 +1,25 @@
+# The same feeling program with turn left: the robot takes a different way through, and the
+# count decides where it is when the repeat runs out.
+item coding.wall-turn-left v=1 skills=[coding.decisions, coding.repetition] {
+  title "Turning left instead"
+  difficulty (n + 3 * k)
+  let k=0..1 n=7..9
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program b code=["repeat {n + 2 * k}", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"]
+      maze g map=["{if k == 0 then \"S . . . .\" else \". . . . S\"}", "{if k == 0 then \"# # # # .\" else \". # # # #\"}", "{if k == 0 then \". . . . .\" else \". . . . .\"}", "{if k == 0 then \". # # # #\" else \"# # # # .\"}"] code=["repeat {n + 2 * k}", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"] upto=0 trail=none
+    }
+    row ans below=top gap=1 space=1 align=centre {
+      text ask "Which square does it stop on?"
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=g col=col row=row
+  hint "Each time round, ask the question first. A turn uses up a time round without moving."
+  hint "Turning left from facing right means facing up. Which way does it face after each turn?"
+}

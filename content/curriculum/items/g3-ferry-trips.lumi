@@ -1,0 +1,31 @@
+# Full trips are a multiplication; the last, part-full trip is added on.
+item multiply.ferry-trips v=1 skills=[multiplication.short, problems.two-step] {
+  title "Cars on the ferry"
+  difficulty (c * n + k)
+  let c=(14..29 by 3) n=3..6 k=3..11
+  where (k < c)
+  level easy {
+    let c={14, 17} n=3..4 k=3..6
+  }
+  level hard {
+    let c={26, 29} n=5..6 k=7..11
+  }
+
+  scene 34x12 {
+    ferry boat cars=3 windows=5 at=canvas(1, 1)
+    text ask "The ferry takes {c} cars on each trip. It makes {n} full trips, then one last trip with {k} cars. How many cars crossed?" width=17 right-of=boat gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * n + k)
+  feedback {
+    when (answer == c * (n + 1)) point=ask {
+      say "The last trip was not full. It only had {k} cars."
+    }
+    when (answer == c * n) point=ask {
+      say "That is the full trips. Add the cars on the last trip."
+    }
+  }
+  hint "How many cars went on the full trips?"
+  hint "Then add the cars on the last trip."
+}

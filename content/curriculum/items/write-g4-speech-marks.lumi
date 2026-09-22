@@ -1,0 +1,15 @@
+# Speech punctuation, grade 4: the words spoken go inside the marks with their own full stop,
+# question mark or comma; the right sentence moves between the three places.
+item writing.speech-marks v=1 skills=[writing.speech-punctuation] {
+  title "Where do the speech marks go?"
+  let k=0..3
+
+  scene 30x15 {
+    text ask "Which sentence has its speech marks in the right places?" width=29 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"“Can I come too?” asked Leo.\" else if k == 1 then \"Mia said, The bus is “here.”\" else if k == 2 then \"Wait for me, “called Sam.”\" else \"Gran “whispered, the baby is asleep.”\"}", "{if k == 0 then \"“Can I come too? asked Leo.”\" else if k == 1 then \"Mia said, “The bus is here.”\" else if k == 2 then \"“Wait for me, called Sam.”\" else \"“Gran whispered,” the baby is asleep.\"}", "{if k == 0 then \"Can I come “too?” asked Leo.\" else if k == 1 then \"“Mia said, the bus is here.”\" else if k == 2 then \"“Wait for me,” called Sam.\" else \"Gran whispered, “The baby is asleep.”\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "“Can I come too?” asked Leo." else if k == 1 then "Mia said, “The bus is here.”" else if k == 2 then "“Wait for me,” called Sam." else "Gran whispered, “The baby is asleep.”")
+  hint "Which words did the person say out loud? Only those go inside the marks."
+  hint "The spoken words keep their own comma, question mark or full stop inside the closing mark."
+}

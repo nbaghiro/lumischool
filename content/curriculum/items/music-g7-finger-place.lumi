@@ -1,0 +1,28 @@
+# Reading G7's card for one finger: which string and which fret.
+item music.g7-finger-place v=1 skills=[music.chord-boxes] {
+  title "Where does the finger go?"
+  difficulty (if f == 1 then 0 else 1)
+  let f=1..3
+  let right={pick(f - 1, "the E string at fret 1", "the C string at fret 2", "the A string at fret 2")}
+  level easy {
+    let f=1..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 30x17 {
+    chordbox card tuning=uke chord=G7 frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Read the G7 card. Where does finger {f} go?" width=15 right-of=card gap=1
+    choice pick options=["the E string at fret 1", "the C string at fret 2", "the A string at fret 2"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=card {
+      say "Find the dot with {f} in it. The line it sits on is its string, and the letters say which; count the frets down from the top."
+    }
+  }
+  hint "Find the dot with the number {f}. Which string's line runs through it?"
+  hint "The letters under the card name the strings. The frets count down from the top."
+}

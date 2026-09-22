@@ -1,0 +1,16 @@
+item physics.cup-predict v=1 skills=[physics.heat] stars=2 {
+  title "Which will stay warmer?"
+  difficulty (3 - abs((if x == "none" then 0 else if x == "paper" then 1 else if x == "bubble" then 2 else 3) - (if y == "none" then 0 else if y == "paper" then 1 else if y == "bubble" then 2 else 3)))
+  let x={"none", "paper", "bubble", "wool"} y={"none", "paper", "bubble", "wool"}
+  where (x != y)
+
+  scene 13x23 {
+    wrapped cups wraps=["{x}", "{y}"] show=0 at=canvas(1, 0)
+    text ask "Both cups start just as hot. Which will be warmer after 20 minutes?" width=12 below=cups gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  check physics.forces of=cups pick=warmest
+  hint "Which wrap is more like a warm coat?"
+  hint "Wool and bubble wrap trap air. Which cup has more of that round it?"
+}

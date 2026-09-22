@@ -1,0 +1,31 @@
+# The bottom number is the unknown, and some versions go past anything the wall can show.
+item fractions.missing-bottom v=1 skills=[fractions.equivalent] {
+  title "The missing bottom number"
+  difficulty (b * m)
+  let b={2, 3, 4, 5} a=1..4 m=2..5
+  where (a < b)
+  level easy {
+    let b={2, 3, 4} m=2..3
+  }
+  level hard {
+    let b={3, 4, 5} m=4..5
+  }
+
+  scene 22x9 {
+    unknown eq terms=["{a}/{b}", "=", "{a * m}/?"] at=canvas(1, 1)
+    text ask "What number goes in the box?" narrate below=eq gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (b * m)
+  feedback {
+    when (answer == b + a * m - a) point=eq {
+      say "The top went from {a} to {a * m}, which is times {m}, not add. Do the same to the bottom."
+    }
+    when (answer == a * m) point=eq {
+      say "That is the top number. The bottom number says how many parts the whole is cut into."
+    }
+  }
+  hint "What was the top number multiplied by?"
+  hint "Multiply the bottom number by the same, so the fraction stays the same size."
+}

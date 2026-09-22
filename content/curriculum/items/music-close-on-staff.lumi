@@ -1,0 +1,37 @@
+# The two-star reason: two notes a step apart on the staff, one on a line and one in the space
+# beside it, and which is higher with the reason. The wrong reasons are rules that sound like
+# rules: a line beats a space, or they are the same height.
+item music.close-on-staff v=1 stars=2 skills=[music.pitch, music.staff, reasoning.explain] {
+  title "Close on the staff"
+  difficulty k
+  let k=0..2 r=0..2
+  let p={pick(k, "E4", "F4", "D4")}
+  let q={pick(k, "F4", "G4", "E4")}
+  let right={pick(k, "The second: the space is just above the line", "The second: the line is just above the space", "The second: the first sits below the bottom line")}
+  let w1={pick(k, "The first: a note on a line is higher", "The first: a note in a space is higher", "The first: it is further to the left")}
+  let w2={pick(k, "Neither: they are the same height", "Neither: they touch the same line", "Neither: both sit low on the staff")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x29 {
+    grandstaff tune notes=["{p}", "{q}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "These two notes on the top staff look close. Which one sounds higher, and how can you tell?" narrate width=14 right-of=tune gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=tune gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=tune {
+      say "Lines and spaces take turns, and each one up is the next note up. Being on a line, or being first, does not make a note higher: only sitting higher does."
+    }
+    when (pick == w2) point=tune {
+      say "Look again: one note is a little higher on the page than the other. Even a step is a different note."
+    }
+  }
+  hint "Cover the notes with a finger and slide it down the staff. Which note does the finger reach first?"
+  hint "A line, then the space above it, then the next line: each is one step higher than the last."
+}

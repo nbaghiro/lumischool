@@ -1,0 +1,32 @@
+# The chord for a bar of the song read from the chart and played on the guitar.
+item music.song-play-bar-chord v=1 skills=[music.chord-boxes, music.chord-changes] {
+  title "Play the bar's chord"
+  let s=0..1 b=3..5
+  let song={pick(s, "London Bridge", "Skip to My Lou")}
+  let w1={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w2={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w3={pick(s, "fall-ing down,", "Lou, lou,")}
+  let w4={pick(s, "fall-ing down.", "skip to my lou,")}
+  let w5={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w6={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w7={pick(s, "my fair", "skip to my lou, my")}
+  let w8={pick(s, "la-dy.", "dar-ling.")}
+  let c4={pick(s, "C", "G")}
+  let chord={pick(s * 3 + b - 3, "G", "C", "C", "G", "G", "C")}
+  let sung={pick(b - 3, w3, w4, w5)}
+
+  scene 34x41 {
+    row chart space=2 align=start at=canvas(1, 1) {
+      table bars cols=2 head=["Bar", "Chord"] cells=["1", "C", "2", "C", "3", "G", "4", c4, "5", "C", "6", "C", "7", "G", "8", "C"]
+      table words cols=1 head=["{song}"] cells=[w1, w2, w3, w4, w5, w6, w7, w8]
+    }
+    row low space=2 align=start below=chart gap=1 {
+      fretboard neck tuning=guitar frets=3 view=chart labels=numbers strum=true
+      text ask "Ana is about to sing '{sung}' in bar {b}. Hold that bar's chord and strum it." narrate width=16
+    }
+  }
+
+  check music.chord chord={chord} tuning=guitar
+  hint "Find bar {b} in the chart. Which chord is beside it?"
+  hint "C leaves out string 6, and G plays all six strings."
+}

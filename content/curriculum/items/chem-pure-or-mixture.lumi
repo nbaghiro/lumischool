@@ -1,0 +1,21 @@
+# One kind of molecule throughout is a pure substance; two kinds in the box is a mixture, even when
+# each kind is an element on its own, as in air.
+item chem.pure-or-mixture v=1 skills=[chemistry.atoms, chemistry.mixtures] {
+  title "Pure or mixed?"
+  difficulty v
+  let v=0..5
+
+  scene 28x10 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      atombox box a=(if v == 0 then "oxygen" else if v == 1 then "water" else if v == 2 then "nitrogen" else if v == 3 then "water" else if v == 4 then "methane" else "hydrogen") na=(if v == 0 then 4 else if v == 1 then 5 else if v == 2 then 4 else if v == 3 then 3 else if v == 4 then 3 else 3) b=(if v == 0 then "none" else if v == 1 then "none" else if v == 2 then "oxygen" else if v == 3 then "carbon-dioxide" else if v == 4 then "none" else "oxygen") nb=(if v == 0 then 0 else if v == 1 then 0 else if v == 2 then 2 else if v == 3 then 2 else if v == 4 then 0 else 3)
+      column side space=1 align=start {
+        text ask "Is what is in this box one pure substance, or a mixture of two?" width=14
+        choice pick options=["pure", "mixture"]
+      }
+    }
+  }
+
+  check chem.atoms of=box pick=pure
+  hint "Look at each group of joined atoms. Is every group the same?"
+  hint "If there are two different kinds of group, is it one substance or two?"
+}

@@ -1,0 +1,22 @@
+# Every pair of different notes the hand can play going up, counted once each: listing them in order
+# is the method, and counting both orders is the trap.
+item music.two-note-pairs v=1 stars=3 skills=[music.fingers, reasoning.all-the-ways] {
+  title "Two notes going up"
+  difficulty n
+  let n=3..5
+
+  scene 26x13 {
+    hand pic side=right numbers=piano ring=0 colours=false at=canvas(1, 1)
+    text ask "Right hand in C position. Play two different notes, and the second one must be higher. How many different pairs can you play with fingers 1 to {n} only?" width=15 right-of=pic gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (n * (n - 1) / 2)
+  feedback {
+    when (answer == n * (n - 1)) point=pic {
+      say "The second note has to be higher, so 1 then 3 counts but 3 then 1 does not."
+    }
+  }
+  hint "Start with finger 1. Which fingers can play the second note?"
+  hint "Now start with finger 2. Keep going until no finger is left above."
+}

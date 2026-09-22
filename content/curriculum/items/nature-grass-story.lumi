@@ -1,0 +1,34 @@
+# The story block: Ada in the long grass, counting what she finds. The pencil is hers.
+item nature.grass-story v=1 skills=[nature.living, counting.to-twenty] {
+  title "What Ada found"
+  difficulty a
+  let a=2..6
+  level easy {
+    let a=2..3
+  }
+  level hard {
+    let a=5..6
+  }
+
+  scene 36x18 {
+    row found at=canvas(1, 1) space=1 align=end {
+      ants line count=a carry=1
+      minibeasts one kinds=["ladybird"] legs=false
+      art pen asset="pencil"
+    }
+    text ask "Ada lies down in the long grass. She finds a line of ants carrying crumbs, a ladybird on a leaf, and the pencil she dropped yesterday. How many living things did Ada find?" narrate width=34 below=found gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + 1)
+  feedback {
+    when (answer == a + 2) point=pen {
+      say "The pencil is Ada's. It was made, and it does not grow or eat."
+    }
+    when (answer == a) point=one {
+      say "The ladybird is living too. Count every creature, however small."
+    }
+  }
+  hint "Count the ants first. Then look for anything else that is living."
+  hint "Is a pencil living? Does it grow, eat or have young?"
+}

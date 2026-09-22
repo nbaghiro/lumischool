@@ -1,0 +1,36 @@
+# Two tab notes, and the higher one: on one string the higher fret is higher, but across strings a
+# high fret on string 2 is still below string 1 played open, which is the trap hard sets.
+item music.tab-higher-note v=1 skills=[music.tab, music.pitch] {
+  title "Which is higher?"
+  difficulty (if k <= 1 or k >= 6 then 0 else 1)
+  let k=0..7
+  let first={pick(k, "s1f1", "s2f3", "s2f3", "s1f0", "s3f2", "s2f0", "s3f0", "s1f3")}
+  let second={pick(k, "s1f3", "s2f0", "s1f0", "s2f1", "s2f0", "s3f2", "s3f2", "s1f0")}
+  let right={pick(k, "the second", "the first", "the second", "the first", "the second", "the first", "the second", "the first")}
+  level easy {
+    let k={0, 1, 6, 7}
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 34x11 {
+    tab pair tuning=guitar notes=["{first}", "{second}"] values=[] even=true letters=true ring=-1 at=canvas(1, 1)
+    column side space=1 align=start right-of=pair gap=2 {
+      text ask "Mo plays these two notes in order. Which one is higher?" narrate width=18
+      choice pick options=["the first", "the second"] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and k >= 2 and k <= 5) point=pair {
+      say "The notes are on different strings, so the bigger number is not always higher. Name both notes first."
+    }
+    when (pick != right and (k < 2 or k > 5)) point=pair {
+      say "On one string a higher fret number is a higher note."
+    }
+  }
+  hint "Are the two numbers on the same line?"
+  hint "Name each note from its string and fret, then think which comes later going up."
+}

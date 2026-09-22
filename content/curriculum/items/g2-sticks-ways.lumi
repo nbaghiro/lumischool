@@ -1,0 +1,21 @@
+# Every way to make a length from two sizes of stick: a list by the number of long sticks.
+item measure.sticks-ways v=2 stars=3 skills=[length.centimetres, reasoning.all-the-ways] {
+  title "Sticks end to end"
+  difficulty L
+  let L={60, 80, 90, 100, 110, 120, 140, 150}
+
+  scene 33x14 {
+    comparebars sticks values=[2, 3] labels=["20 cm", "30 cm"] difference=false at=canvas(1, 1)
+    text ask "You have lots of 20 cm and 30 cm sticks. How many different ways can you lay them end to end to make exactly {L} cm? The order you lay them in does not matter." width=16 right-of=sticks gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if L % 20 == 0 then 1 else 0) + (if L >= 30 and (L - 30) % 20 == 0 then 1 else 0) + (if L >= 60 and (L - 60) % 20 == 0 then 1 else 0) + (if L >= 90 and (L - 90) % 20 == 0 then 1 else 0) + (if L >= 120 and (L - 120) % 20 == 0 then 1 else 0) + (if L >= 150 and (L - 150) % 20 == 0 then 1 else 0))
+  feedback {
+    when (answer == 1) point=sticks {
+      say "There is more than one way. Try using some 30 cm sticks as well."
+    }
+  }
+  hint "Try with no 30 cm sticks. Can 20 cm sticks alone make {L} cm?"
+  hint "Now try one 30 cm stick, then two, then three. What is left for the 20 cm sticks?"
+}

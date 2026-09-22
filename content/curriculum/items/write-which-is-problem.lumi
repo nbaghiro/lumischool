@@ -1,0 +1,36 @@
+# The way in: three sentences from one story, and the one that is the problem, what goes wrong.
+item writing.which-is-problem v=1 skills=[writing.planning, writing.story-structure] {
+  title "Which one is the problem?"
+  difficulty k
+  let k=0..2 p=0..2
+  let o={pick(k, "Zoe found a puppy in the park.", "The class planted beans in pots.", "Ben took his kite up the hill.")}
+  let pr={pick(k, "The puppy would not eat anything.", "The shoots drooped in the heat.", "The kite stuck in a tall tree.")}
+  let e={pick(k, "Zoe kept the puppy and called it Bun.", "The beans grew tall again.", "Ben flew the kite till tea.")}
+  let o1={pick(p, o, pr, e)}
+  let o2={pick(p, pr, e, o)}
+  let o3={pick(p, e, o, pr)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x37 {
+    storymountain hill stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["", "", "", "", ""] ring=2 at=canvas(0, 0)
+    text ask "Three sentences from one story. Which one is the problem, the card at the top of the mountain?" narrate width=32 below=hill gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=pr
+  feedback {
+    when (pick == o) point=hill {
+      say "That sentence starts the story: who and where. The problem is what goes wrong after that."
+    }
+    when (pick == e) point=hill {
+      say "That sentence ends the story, after the problem is fixed. The problem comes before it, at the top."
+    }
+  }
+  hint "The problem is the moment something goes wrong. Which sentence has something going wrong?"
+  hint "The opening tells you who and where; the ending tells you how things are at the end."
+}

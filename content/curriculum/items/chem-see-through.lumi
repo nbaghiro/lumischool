@@ -1,0 +1,19 @@
+# The way in for materials' properties: one thing in the row is clear, and the drawing shows it.
+item chem.see-through v=1 skills=[chemistry.materials] {
+  title "Which can you see through?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}
+  }
+
+  scene 22x11 {
+    text ask "Which one can you see through?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"glass-jar\" else if k == 1 then \"brick\" else if k == 2 then \"wool-hat\" else \"paper-bag\"}", "{if k == 0 then \"metal-can\" else if k == 1 then \"plastic-bottle\" else if k == 2 then \"metal-key\" else \"glass-jar\"}", "{if k == 0 then \"wooden-block\" else if k == 1 then \"towel\" else if k == 2 then \"glass-bottle\" else \"rubber-boot\"}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="only(see-through)"
+  hint "Which one would let you see what is inside it, or behind it?"
+  hint "Which one is made of a material you can see through, like a window?"
+}

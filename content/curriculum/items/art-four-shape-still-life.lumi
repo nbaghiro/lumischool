@@ -1,0 +1,23 @@
+# The three-star: a still life built from four stencilled shapes, the biggest at the back, marked
+# by a grown-up.
+item art.four-shape-still-life v=1 stars=3 skills=[art.shape, art.painting, reasoning.plan] {
+  title "A still life from four shapes"
+  difficulty k
+  let k=0..1
+  let task={pick(k, "Build a still life from four stencilled shapes: a box for the table, and circles and tubes for the fruit and a cup.", "Build a still life from four stencilled shapes, a box for the table and three others, with one shape overlapping another so it stands in front.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x17 {
+    text ask "{task} Biggest at the back, smallest at the front." narrate width=12 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["red", "yellow", "green", "brown", "blue"] stencils=["circle", "square", "triangle"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A still life made only of stencilled shapes: a square or box for the table at the back, at least two round shapes for fruit, the bigger shapes behind the smaller, the shapes touching or overlapping so the things stand on the table; at the harder level one shape plainly in front of another." notice=["A box for the table at the back", "Round shapes for the fruit", "Bigger behind, smaller in front"] ask="Which shape did you put down first, and why?"
+  hint "Start with the table: the box goes down first, at the back."
+  hint "Then the fruit in front of it, the biggest circle first."
+}

@@ -1,0 +1,21 @@
+# Times ten makes a number grow by nine times itself: found by trying numbers, or by seeing why.
+item place.ten-times-more v=1 stars=3 skills=[place-value.multiply-by-ten, reasoning.guess-and-check] {
+  title "Nine lots more"
+  difficulty n
+  let n={4, 5, 6, 7, 8, 9, 11, 12, 15, 20, 25}
+
+  scene 30x17 {
+    machine box rule="× 10" input="?" output="" at=canvas(1, 1)
+    text ask "A number goes into the machine. What comes out is {9 * n} more than what went in. What number went in?" width=28 below=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 9 * n) point=box {
+      say "Try it: {9 * n} times ten is {90 * n}, which is much more than {9 * n} bigger."
+    }
+  }
+  hint "Try a number, such as 3. What comes out, and how much bigger is it?"
+  hint "How many lots of the number do you gain when it is multiplied by ten?"
+}

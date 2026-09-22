@@ -1,0 +1,47 @@
+# The two-star reason: two drums, each with a meter reading at some distance, and which drum is
+# the louder one. Read at the same distance the bigger number wins; read at different distances
+# the readings have to be brought to the same distance by the halving rule first, and one pair
+# comes out the same drum.
+item physics.bigger-drum v=1 stars=2 skills=[physics.sound, reasoning.compare] {
+  title "Which drum is louder?"
+  difficulty (if k == 0 then 0 else if k == 3 then 3 else if k == 1 then 1 else 2)
+  let k=0..3
+  let da={pick(k, 2, 1, 2, 4)}
+  let ra={pick(k, 8, 8, 8, 2)}
+  let db={pick(k, 2, 4, 4, 1)}
+  let rb={pick(k, 12, 6, 8, 8)}
+  let right={pick(k, "Drum B", "Drum B", "Drum B", "They are the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x31 {
+    row drums at=canvas(1, 0) space=3 align=end {
+      ricedrum a hit=2 tag="A"
+      ricedrum b hit=2 tag="B"
+    }
+    text ask "Two drums are hit the same way, one at a time. Beside drum A the meter reads {ra} at {da} {if da == 1 then \"metre\" else \"metres\"}. Beside drum B it reads {rb} at {db} {if db == 1 then \"metre\" else \"metres\"}. Each time the distance doubles, the reading halves. Which drum is louder?" narrate width=32 below=drums gap=1
+    choice pick options=["Drum A", "Drum B", "They are the same"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "Drum A") point=b {
+      say "Drum B was measured four times as far away, so its 6 has already halved twice. Back at 1 metre it would read 24."
+    }
+    when (k == 2 and pick == "They are the same") point=b {
+      say "The readings match, but B's was taken twice as far away. At 2 metres drum B would read 16."
+    }
+    when (k == 3 and pick != right) point=a {
+      say "Bring both to 1 metre. Drum A reads 2 at 4 metres, so 4 at 2 metres and 8 at 1 metre, the same as drum B."
+    }
+    when (k == 0 and pick != right) point=b {
+      say "Both were measured at 2 metres, so the numbers can be compared as they are."
+    }
+  }
+  hint "Were the two readings taken at the same distance? If not, they cannot be compared yet."
+  hint "Bring each reading to 1 metre: every halving of the distance doubles it. Then compare."
+}

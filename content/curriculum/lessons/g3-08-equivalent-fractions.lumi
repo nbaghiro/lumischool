@@ -1,0 +1,52 @@
+lesson g3-equivalent-fractions v=1 format=teach grade=3 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Equivalent fractions"
+  goal "See that two fractions can be the same amount written two ways, and find the missing number in a pair."
+
+  look {
+    scene 34x21 {
+      fractionwall wall rows=[1, 2, 4, 8] shade=[0, 0] at=canvas(1, 1)
+      pizza pie slices=4 taken=2 toppings=true right-of=wall gap=2
+      equivalent pair a=[1, 2] b=[2, 4] show=true below=wall gap=1
+    }
+    say """
+      One half and two quarters line up on the wall, so they are the same amount. Cutting each
+      piece in two doubles both numbers and changes nothing.
+      """
+  }
+  do {
+    practice fraction.match count=1 seed=4 hard-seed=1
+    practice fractions.equivalent count=2 seed=4 easy-seed=6
+    level easy {
+      worked fractions.missing-bottom b=2 a=1 m=3
+    }
+    practice fractions.missing-bottom count=3 hard-count=2 seed=6 easy-seed=2
+    level hard {
+      practice fractions.who-ate-more count=1 seed=2
+    }
+    practice fractions.chocolate-same count=2 seed=3
+  }
+  try stars=2 {
+    show fractions.who-ate-more b=3 a=1 m=2 e=0 easy-b=2 hard-b=4 hard-a=3 hard-m=3 hard-e=-1
+  }
+  try stars=3 {
+    show fractions.between-count p=1 d=12 easy-p=0 hard-p=2 hard-d=24
+  }
+  remember {
+    say "Multiply the top and the bottom by the same number and the fraction stays the same."
+  }
+
+  grown-ups """
+    The wall answers this better than any rule. Fold a strip of paper in half, then in half again,
+    and the equivalence is in the child's hands. The second bar in the early questions is cut but
+    not shaded, so it has to be shaded in the head. The missing bottom numbers go past anything the
+    wall shows, which is where the rule earns its place. In the two-star question the cakes are the
+    same size, so the fractions can be compared once they have the same bottom number. In the
+    three-star question, renaming both ends with the given bottom number first is the way in.
+    """
+  level easy {
+    grown-ups "At this level the matching pictures show one part shaded, the second bar has each part cut in two, a missing bottom number is worked once in the teacher's pen before the three to find, which double or treble, the chocolate bar has eight pieces eaten in halves or quarters, the cakes are a half against two quarters, and the three-star asks for the fractions between a third and a half in twelfths, which the wall shows."
+  }
+  level hard {
+    grown-ups "At this level the matching pictures show two or three parts shaded, the second bar has nine or twelve parts with each part cut in three or four, the missing bottom numbers multiply by four or five, the chocolate bar has twelve or eighteen pieces eaten in thirds or quarters, the cakes are compared twice in ninths or twelfths against thirds or quarters, and the three-star asks for the fractions between a half and three quarters in twenty-fourths, past anything the wall shows."
+  }
+}

@@ -1,0 +1,14 @@
+item art.opposites-mixed v=1 skills=[art.complementary, art.colour-mixing] {
+  title "Opposites mixed together"
+  let k=0..2
+
+  scene 34x12 {
+    paintpots pots pots=["{if k == 0 then \"red\" else if k == 1 then \"orange\" else \"yellow\"}", "{if k == 0 then \"green\" else if k == 1 then \"blue\" else \"red+blue\"}"] result="?" labels=true at=canvas(1, 1)
+    text ask "These two are opposite on the wheel. What do they make together?" width=16 right-of=pots gap=1
+    choice pick options=["brown", "grey", "pink"] below=pots gap=1
+  }
+
+  check paint.mixes of=pots pick=name
+  hint "Where are these two on the colour wheel?"
+  hint "When opposites are mixed, does the colour get brighter or duller?"
+}

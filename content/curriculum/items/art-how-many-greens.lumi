@@ -1,0 +1,21 @@
+# Every way at once: list all the mixes and notice that a mix made bigger is the same green.
+item art.how-many-greens v=1 stars=3 skills=[art.proportion, reasoning.all-the-ways] {
+  title "How many greens?"
+  difficulty n
+  let n=2..4
+
+  scene 32x16 {
+    mixingtray tray wells=["yellow+blue", "yellow 2+blue 2", "yellow 2+blue"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Ada mixes greens from 1 to {n} parts of yellow and 1 to {n} parts of blue. How many different greens can she make? A mix made bigger, like 2 and 2 for 1 and 1, is the same green." width=16 right-of=tray gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check paint.mixes answer=kinds from="yellow blue" upto="{n}"
+  feedback {
+    when (answer == n * n) point=tray {
+      say "That counts every pair. Some of them are the same green made bigger. Which ones?"
+    }
+  }
+  hint "Write every pair down: 1 and 1, 1 and 2, and so on. How many pairs are there?"
+  hint "Now cross out any pair that is another pair made bigger, like 2 and 2. How many are left?"
+}

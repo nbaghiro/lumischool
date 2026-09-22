@@ -1,0 +1,32 @@
+# Both drawings carry something the question needs: the spoon says how much a spoon is, the beaker
+# says what is in there already. Neither is decoration.
+item chem.spoon-total v=2 skills=[chemistry.volume] {
+  title "Spoons into the beaker"
+  difficulty (v + 5 * s)
+  let v={100, 150, 200} s=2..5
+  level easy {
+    let v={100} s=2..3
+  }
+  level hard {
+    let v={150, 200} s=4..5
+  }
+
+  scene 32x19 {
+    text ask "{s} of the small spoons are poured in. What will the beaker read then?" width=24 at=canvas(1, 1)
+    spoons set sizes=["5 ml", "10 ml", "15 ml"] below=ask gap=1
+    beaker glass max=400 step=100 level=v unit=ml right-of=set gap=2
+    number-input answer right-of=glass gap=2
+  }
+
+  answer (v + 5 * s)
+  feedback {
+    when (answer == 5 * s) point=glass {
+      say "There is already water in the beaker, so start from what it reads now."
+    }
+    when (answer == v + s) point=set {
+      say "Each spoon is 5 millilitres, so {s} spoons is {s} fives."
+    }
+  }
+  hint "What does the beaker read now? How much does one small spoon hold?"
+  hint "How much do {s} of those spoons hold altogether?"
+}

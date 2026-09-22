@@ -1,0 +1,31 @@
+# Sides counted in threes, fours and sixes rather than one at a time.
+item shapes.sides-total v=1 skills=[shapes.name-and-sides, multiplication.equal-groups] {
+  title "All the sides"
+  difficulty (3 * a + 4 * b + 6 * c)
+  let a=1..3 b=1..3 c=1..2
+  level easy {
+    let a=1..2 b={1} c={1}
+  }
+  level hard {
+    let a=2..3 b=2..3 c={2}
+  }
+
+  scene 30x10 {
+    row tray at=canvas(1, 1) space=2 align=centre {
+      props threes count=a prop=triangle
+      props fours count=b prop=square
+      props sixes count=c prop=hexagon
+    }
+    text ask "How many sides are there on all the shapes together?" narrate width=28 below=tray gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (3 * a + 4 * b + 6 * c)
+  feedback {
+    when (answer == a + b + c) point=tray {
+      say "That is how many shapes. Count the sides of each shape."
+    }
+  }
+  hint "How many sides does one triangle have? One square? One hexagon?"
+  hint "Count the triangles' sides in threes, the squares' in fours, then add the hexagons."
+}

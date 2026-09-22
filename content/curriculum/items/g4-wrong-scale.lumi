@@ -1,0 +1,24 @@
+# Finding the mistake: the other scale gives 180 minus the angle, and an estimate catches it.
+item angles.wrong-scale v=1 stars=2 skills=[angles.measuring, reasoning.find-the-mistake] {
+  title "Which scale did he read"
+  difficulty (9 - abs(d - 90) / 10)
+  let d={30, 40, 50, 60, 120, 130, 140, 150}
+  level hard {
+    let d={50, 60, 120, 130}
+  }
+
+  scene 34x12 {
+    protractor tool deg=d arms=true at=canvas(1, 1)
+    text ask "Omar says this angle is {180 - d} degrees. He read the wrong scale. What is the angle really?" narrate width=14 right-of=tool gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == 180 - d) point=tool {
+      say "That is Omar's answer. Is the angle smaller than a right angle or bigger?"
+    }
+  }
+  hint "Is the angle bigger or smaller than a right angle? Is {180 - d}?"
+  hint "Find the scale that starts at 0 on the arm lying along the line."
+}

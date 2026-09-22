@@ -1,0 +1,43 @@
+# The story: Ada in the long grass, and two creatures that walk over her hand one after the other.
+# The legs are added, which stays within twenty. At easy one of the two is the snail, which adds
+# nothing, and that is the point; at hard the spider's eight is added to an insect's six.
+item nature.legs-story v=1 skills=[nature.minibeasts, addition.to-twenty] {
+  title "Over Ada's hand"
+  difficulty ((lx + ly) / 2)
+  let x=0..3 y=1..4
+  where (x < y)
+  let kx={pick(x, "ant", "ladybird", "bee", "spider")}
+  let ky={pick(y, "ant", "ladybird", "bee", "spider", "snail")}
+  let lx={pick(x, 6, 6, 6, 8)}
+  let ly={pick(y, 6, 6, 6, 8, 0)}
+  level easy {
+    let y=4..4
+  }
+  level hard {
+    let y=1..3
+  }
+
+  scene 34x18 {
+    row hand at=canvas(1, 1) space=2 align=end {
+      minibeasts two kinds=[kx, ky] legs=false
+      toadstools cap count=1 spots=5
+    }
+    text ask "Ada lies still in the long grass. The {kx} walks over her hand, and then the {ky} comes the same way. How many legs walked over her hand?" narrate width=32 below=hand gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (lx + ly)
+  feedback {
+    when (y == 4 and answer == lx + 6) point=two {
+      say "The snail has no legs to walk with. It slides. Only the {kx} added any legs."
+    }
+    when (answer == 2) point=two {
+      say "That is how many creatures there were. Count the legs on each one and add them."
+    }
+    when (answer == lx + ly - 2 and y != 4) point=two {
+      say "One of them has more legs than you counted. Count the legs on the {ky} again."
+    }
+  }
+  hint "How many legs does the {kx} have? Write that down first."
+  hint "Now count the legs on the {ky} and add them on."
+}

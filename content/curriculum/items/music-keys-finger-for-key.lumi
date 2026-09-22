@@ -1,0 +1,28 @@
+# C position read from the key to the finger: the thumb on C, so each letter up is the next finger.
+item music.finger-for-key v=1 skills=[music.fingers] {
+  title "Which finger plays it?"
+  difficulty i
+  let i=1..4
+  level easy {
+    let i={1, 2}
+  }
+  level hard {
+    let i={3, 4}
+  }
+  let x={if i == 1 then "D" else if i == 2 then "E" else if i == 3 then "F" else "G"}
+
+  scene 24x13 {
+    hand pic side=right numbers=piano ring=0 colours=false at=canvas(1, 1)
+    text ask "Right hand in C position: thumb on C, one finger on each white key up to G. Which finger plays {x}?" width=13 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (i + 1)
+  feedback {
+    when (answer == i) point=pic {
+      say "The thumb is 1 and it plays C. D is the next key, so it gets the next finger."
+    }
+  }
+  hint "The thumb is 1 and it plays C. Which finger plays the next white key up?"
+  hint "How many keys up from C is {x}? Add that to the thumb's 1."
+}

@@ -1,0 +1,28 @@
+# Two fractions of the same cake, often equal in disguise: comparing by equivalence, not by eye.
+item fractions.who-ate-more v=1 stars=2 skills=[fractions.equivalent, fractions.compare] {
+  title "Who ate more cake?"
+  difficulty (b * m + abs(e))
+  let b={2, 3, 4} a=1..3 m=2..3 e={-1, 0, 1}
+  where (a < b and a * m + e > 0 and a * m + e < b * m)
+  level easy {
+    let b={2, 3} m={2}
+  }
+  level hard {
+    let b={3, 4} m={3}
+  }
+
+  scene 30x19 {
+    cake whole candles=0 slices=0 at=canvas(1, 1)
+    text ask "Two cakes are the same size. Ann eats {a}/{b} of one cake. Ben eats {a * m + e}/{b * m} of the other. Who eats more?" width=18 right-of=whole gap=2
+    choice pick options=["Ann", "Ben", "They eat the same"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if e == 0 then "They eat the same" else if e > 0 then "Ben" else "Ann")
+  feedback {
+    when (pick == "Ben" and e <= 0) point=ask {
+      say "Ben's pieces are smaller, because his cake is cut into more of them."
+    }
+  }
+  hint "Can you write Ann's fraction with {b * m} as the bottom number?"
+  hint "Now both fractions count the same size of piece. Compare the top numbers."
+}

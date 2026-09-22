@@ -1,0 +1,26 @@
+# A missing part read in fives: what goes on the bottom wire to make the total asked for.
+item count.rekenrek-to-make v=1 stars=2 skills=[counting.to-twenty, addition.change-unknown] {
+  title "Make it up to the number"
+  difficulty (t + k)
+  let t=5..10 k=2..8
+  where (t + k <= 20)
+  where (k != t)
+
+  scene 26x17 {
+    rekenrek frame top=t bottom=0 at=canvas(1, 1)
+    text ask "How many beads must go across on the bottom wire so that {t + k} are across in all?" narrate width=24 below=frame gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == t + k) point=frame {
+      say "That is how many there should be in all. Some are already across on the top wire."
+    }
+    when (answer == t) point=frame {
+      say "That is the top wire. How many more does it need to reach {t + k}?"
+    }
+  }
+  hint "How many are across on the top wire? Read it in fives."
+  hint "Count on from there to {t + k}."
+}

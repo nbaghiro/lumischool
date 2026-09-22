@@ -1,0 +1,29 @@
+# The way in: the picture shows the boxes and the ones left out, so the division can be read off it
+# and written down; the written form is the new part.
+item division.boxes-read v=1 skills=[division.short-with-remainder] {
+  title "Boxes and what is left"
+  difficulty (b * p + l)
+  let b=3..4 p=3..6 l=1..4
+  where (l < p)
+  level easy {
+    let p=3..4
+  }
+  level hard {
+    let b={4} p=5..6
+  }
+
+  scene 34x16 {
+    boxes packed boxes=b per=p loose=l item=cube at=canvas(1, 1)
+    text ask "The cubes are packed {p} to a box. Write the division." narrate width=30 below=packed gap=1
+    equation eq "{b * p + l} ÷ {p} = {?q} r {?r}" below=ask gap=1
+  }
+
+  answer q=b r=l
+  feedback {
+    when (q == b * p) point=packed {
+      say "That is how many cubes are in the boxes. The answer is how many boxes."
+    }
+  }
+  hint "How many full boxes are there?"
+  hint "How many cubes did not fit in a box?"
+}

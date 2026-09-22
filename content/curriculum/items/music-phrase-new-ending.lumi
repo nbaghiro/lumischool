@@ -1,0 +1,32 @@
+# The three-star count: every new bar 4 that lasts four beats, ends on C or E, and moves only by steps
+# on C to G, starting a step from bar 3's last note, E. Counted by brute force: to C with crotchets 3
+# (DCDC, DEDC, FEDC), with minims as well 4 (and DC); to E with crotchets 6, with minims as well 8.
+item music.phrase-new-ending v=1 stars=3 skills=[music.composing, reasoning.all-the-ways] {
+  title "A new last bar"
+  difficulty v
+  let v=0..3
+  let notes={pick(v, "crotchets only", "crotchets, minims or both", "crotchets only", "crotchets, minims or both")}
+  let end={pick(v, "C", "C", "E", "E")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x27 {
+    notes bar3 clef=treble notes=[C4, C4, D4, E4] values=[1, 1, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "This is bar 3. Ana writes a new bar 4 of four beats with {notes}, using only C, D, E, F and G." narrate width=34 below=bar3 gap=1
+    text rules "Every note is one step up or down from the note before it, starting from bar 3's last E, and the bar ends on {end}. How many different bars can she write?" narrate width=34 below=ask gap=1
+    number-input answer below=rules gap=1
+  }
+
+  answer pick(v, 3, 4, 6, 8)
+  feedback {
+    when (answer == pick(v, 3, 4, 6, 8) - pick(v, 1, 1, 2, 2) and v != 0 and v != 2) point=rules {
+      say "A bar of two minims counts as well: two notes, a step apart, ending on {end}."
+    }
+  }
+  hint "Work backwards from the last note, {end}. Which notes are one step from it?"
+  hint "A bar of four crotchets has four notes; a bar with minims has fewer. Can a bar of three notes end on {end}?"
+}

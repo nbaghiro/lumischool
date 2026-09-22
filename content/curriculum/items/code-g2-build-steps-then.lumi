@@ -1,0 +1,17 @@
+# A staircase with a stretch before or after it: what goes inside the repeat and what goes outside
+# has to be decided, the audit's raise for the three-block climb. The key proves each map fits.
+item coding.build-steps-then v=1 stars=3 skills=[coding.repetition, reasoning.planning] {
+  title "Up the steps and along"
+  difficulty k
+  let k=0..1
+
+  scene 33x19 {
+    text ask "Get the robot to the flag in 4 blocks or fewer." width=30 at=canvas(1, 0)
+    maze g map=["{if k == 0 then \"# # # . . F\" else \"# # # # . F\"}", "{if k == 0 then \"# # . . # #\" else \"# # # . . #\"}", "{if k == 0 then \"# . . # # #\" else \"# # . . # #\"}", "{if k == 0 then \"S . # # # #\" else \"S . . # # #\"}"] below=ask gap=1
+    codepad answer tray=["repeat 2", "right 1", "up 1", "right 2"] lines=4 key=["{if k == 0 then \"repeat 3\" else \"right 2\"}", "{if k == 0 then \"  right 1\" else \"repeat 3\"}", "  up 1", "{if k == 0 then \"right 2\" else \"  right 1\"}"] right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Which part of the path is the same two moves again and again?"
+  hint "Put those two moves inside the repeat. What is left to do before or after it?"
+}

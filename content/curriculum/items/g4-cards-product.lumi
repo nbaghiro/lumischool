@@ -1,0 +1,25 @@
+# Several arrangements to try and a reason to prefer one: the biggest digits go in the tens, and
+# the biggest tens digit takes the smaller ones digit.
+item multiply.cards-biggest v=1 stars=3 skills=[multiplication.long, reasoning.extremes] {
+  title "The biggest product"
+  difficulty (w + x + y + z)
+  let w={1, 2} x={3, 4} y={5, 6} z={7, 8, 9}
+
+  scene 26x17 {
+    digitcards cards digits=[x, z, w, y] at=canvas(1, 1)
+    text ask "Make two two-digit numbers with these four cards and multiply them. What is the biggest answer you can make?" narrate width=25 below=cards gap=1
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer max((10 * z + w) * (10 * y + x), (10 * z + x) * (10 * y + w))
+  feedback {
+    when (answer == (10 * z + x) * (10 * y + w)) point=cards {
+      say "Very close. Try swapping the two ones digits and compare."
+    }
+    when (answer == (10 * z + y) * (10 * x + w)) point=cards {
+      say "Put the two biggest digits in the tens places, one in each number."
+    }
+  }
+  hint "Which two cards should go in the tens places?"
+  hint "Try both ways of placing the other two cards, and compare the answers."
+}

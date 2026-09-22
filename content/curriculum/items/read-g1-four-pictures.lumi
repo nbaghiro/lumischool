@@ -1,0 +1,17 @@
+# Four cards: one right, one with the wrong animal, one with the wrong place, one wrong in both,
+# so every word of the sentence rules one card out. The audit's raise for which-picture.
+item reading.four-pictures v=1 skills=[reading.sentence-meaning] {
+  title "Four pictures, one sentence"
+  let s=0..2 c=0..3
+
+  scene 37x18 {
+    sentence strip before="{if s == 0 then \"The pig is under the table\" else if s == 1 then \"The fox is in the tub\" else \"The hen is on the bed\"}" blank=0 after="." size=24 at=canvas(1, 1)
+    picturecards cards who=["{if c == 0 then (if s == 0 then \"pig\" else if s == 1 then \"fox\" else \"hen\") else (if s == 0 then \"dog\" else if s == 1 then \"cat\" else \"duck\")}", "{if c == 1 then (if s == 0 then \"pig\" else if s == 1 then \"fox\" else \"hen\") else if c == 0 then (if s == 0 then \"dog\" else if s == 1 then \"cat\" else \"duck\") else (if s == 0 then \"pig\" else if s == 1 then \"fox\" else \"hen\")}", "{if c == 3 then (if s == 0 then \"dog\" else if s == 1 then \"cat\" else \"duck\") else (if s == 0 then \"pig\" else if s == 1 then \"fox\" else \"hen\")}", "{if c == 3 then (if s == 0 then \"pig\" else if s == 1 then \"fox\" else \"hen\") else (if s == 0 then \"dog\" else if s == 1 then \"cat\" else \"duck\")}"] where=["{if c == 0 then (if s == 0 then \"under\" else if s == 1 then \"in\" else \"on\") else (if s == 0 then \"under\" else if s == 1 then \"in\" else \"on\")}", "{if c == 1 then (if s == 0 then \"under\" else if s == 1 then \"in\" else \"on\") else if c == 0 then (if s == 0 then \"under\" else if s == 1 then \"in\" else \"on\") else (if s == 0 then \"on\" else if s == 1 then \"by\" else \"under\")}", "{if c == 2 then (if s == 0 then \"under\" else if s == 1 then \"in\" else \"on\") else (if s == 0 then \"on\" else if s == 1 then \"by\" else \"under\")}", "{if c == 3 then (if s == 0 then \"under\" else if s == 1 then \"in\" else \"on\") else (if s == 0 then \"on\" else if s == 1 then \"by\" else \"under\")}"] thing=["{if s == 0 then \"table\" else if s == 1 then \"tub\" else \"bed\"}", "{if s == 0 then \"table\" else if s == 1 then \"tub\" else \"bed\"}", "{if s == 0 then \"table\" else if s == 1 then \"tub\" else \"bed\"}", "{if s == 0 then \"table\" else if s == 1 then \"tub\" else \"bed\"}"] letters=true below=strip gap=1
+    text ask "Which picture shows it?" narrate below=cards gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=2
+  }
+
+  answer pick=(if c == 0 then "A" else if c == 1 then "B" else if c == 2 then "C" else "D")
+  hint "Who is it? Cross out the cards with the wrong animal."
+  hint "Where is it? Cross out the card with the wrong little word."
+}

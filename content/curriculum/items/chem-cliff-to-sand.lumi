@@ -1,0 +1,38 @@
+# The steps from a crack in the cliff to sand on the beach, muddled: rain fills the crack, frost
+# widens it, a lump falls, the waves roll it small.
+item chem.cliff-to-sand v=1 skills=[chemistry.weathering, reasoning.order] {
+  title "From cliff to sand"
+  difficulty (if p <= 1 then 0 else if p <= 3 then 1 else 2)
+  let p=0..5
+  let a={pick(p, 1, 0, 3, 2, 3, 2)}
+  let b={pick(p, 0, 2, 0, 3, 1, 0)}
+  let c={pick(p, 2, 1, 1, 0, 0, 3)}
+  let d={pick(p, 3, 3, 2, 1, 2, 1)}
+  let wa={pick(a, "Rain fills a crack in the cliff", "The water freezes and widens the crack", "A lump breaks off and falls to the beach", "The waves roll the lump smaller and rounder")}
+  let wb={pick(b, "Rain fills a crack in the cliff", "The water freezes and widens the crack", "A lump breaks off and falls to the beach", "The waves roll the lump smaller and rounder")}
+  let wc={pick(c, "Rain fills a crack in the cliff", "The water freezes and widens the crack", "A lump breaks off and falls to the beach", "The waves roll the lump smaller and rounder")}
+  let wd={pick(d, "Rain fills a crack in the cliff", "The water freezes and widens the crack", "A lump breaks off and falls to the beach", "The waves roll the lump smaller and rounder")}
+  level easy {
+    let p=0..1
+  }
+  level hard {
+    let p=4..5
+  }
+
+  scene 34x17 {
+    text ask "A piece of the fossil cliff ends up as sand on the beach. The steps are muddled. Number them 1 to 4." narrate width=32 at=canvas(1, 0)
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1)
+  feedback {
+    when (q == 1 and r == 2 and t == 3 and u == 4) point=s {
+      say "The steps are muddled, so they are not in order as they stand. What has to happen before anything can freeze in the crack?"
+    }
+    when ((if a == 0 then q else if b == 0 then r else if c == 0 then t else u) != 1) point=s {
+      say "Nothing can freeze in the crack until there is water in it. The rain comes first."
+    }
+  }
+  hint "Start at the top of the cliff: what gets into the crack first, and what does the winter do to it?"
+  hint "Rain, then frost, then the fall, then the waves. Each one needs the one before."
+}

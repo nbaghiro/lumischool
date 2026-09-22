@@ -1,0 +1,37 @@
+# The story: two bowls of water for the goats, one in the sun and one in the shade, and the
+# difference between them after some days.
+item chem.two-bowls v=1 stars=1 skills=[chemistry.states, subtraction.to-twenty] {
+  title "The goats' water"
+  difficulty (n + (if w == 1 then 3 else 0))
+  let n=1..2 w=0..1
+  let sunLeft={pick(n - 1, 2, 0)}
+  let shadeLeft={pick(n - 1, 3, 2)}
+  let asks={pick(w, "How many quarters more are in the shade bowl than the sun bowl?", "How many quarters of water have gone into the air from the two bowls together?")}
+  level easy {
+    let n=1..1 w=0..0
+  }
+  level hard {
+    let n=2..2 w=1..1
+  }
+
+  scene 34x20 {
+    row bowls at=canvas(1, 0) space=3 align=end {
+      dish sunBowl left=sunLeft day=n sun=1
+      dish shadeBowl left=shadeLeft day=n sun=0
+    }
+    text ask "Nour fills two bowls to the top for the goats, 4 quarters each. She stands one in the sun and one in the shade of the palms. After {if n == 1 then \"a day\" else \"two days\"} the sun bowl has {sunLeft} quarters left and the shade bowl {shadeLeft}. {asks}" narrate width=32 below=bowls gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then shadeLeft - sunLeft else 8 - sunLeft - shadeLeft)
+  feedback {
+    when (w == 1 and answer == 4 - sunLeft) point=sunBowl {
+      say "That is what the sun bowl lost. The shade bowl lost some too. Add both."
+    }
+    when (w == 1 and answer == sunLeft + shadeLeft) point=bowls {
+      say "That is what is left. The question asks what has gone: each bowl started with 4."
+    }
+  }
+  hint "{if w == 0 then \"Take the sun bowl's quarters from the shade bowl's.\" else \"Each bowl began with 4 quarters. How many has each lost?\"}"
+  hint "{if w == 0 then \"The shade bowl has {shadeLeft} and the sun bowl {sunLeft}. Count up from the smaller.\" else \"Add the two bowls' losses together.\"}"
+}

@@ -1,0 +1,23 @@
+# The mark read as words: the m in front means quite, which is the part children drop.
+item music.what-mark-means v=1 skills=[music.dynamics] {
+  title "What the mark says"
+  difficulty (if i == 1 or i == 2 then 1 else 0)
+  let i=0..3
+  level easy {
+    let i={0, 3}  # p and f
+  }
+  level hard {
+    let i={1, 2}  # mp and mf
+  }
+  let m={if i == 0 then "p" else if i == 1 then "mp" else if i == 2 then "mf" else "f"}
+
+  scene 26x19 {
+    dynamics mark marks=["{m}"] words=false ring=-1 at=canvas(1, 1)
+    text ask "What does this mark tell you to do?" width=17 right-of=mark gap=1
+    choice pick options=["play softly", "play quite softly", "play quite loudly", "play loudly"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if i == 0 then "play softly" else if i == 1 then "play quite softly" else if i == 2 then "play quite loudly" else "play loudly")
+  hint "Look at the last letter first: p or f?"
+  hint "Is there an m in front? That means quite."
+}

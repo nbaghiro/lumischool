@@ -1,0 +1,30 @@
+# Which hand plays a ringed note: the bass staff is the left hand's, the treble the right's, and
+# middle C is where they meet.
+item music.hand-for-note v=1 skills=[music.staff, music.keys] {
+  title "Which hand?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let n={pick(k, "C3", "G4", "A3", "E4")}
+  let right={pick(k, "the left hand", "the right hand", "the left hand", "the right hand")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 32x17 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=false at=canvas(1, 1)
+    text ask "Which hand plays the ringed note?" width=14 right-of=gs gap=1
+    choice pick options=["the left hand", "the right hand"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=gs {
+      say "Notes on the bottom staff are the left hand's; notes on the top staff are the right hand's. Which staff is the ring on?"
+    }
+  }
+  hint "Is the ringed note on the top staff or the bottom one?"
+  hint "Bottom staff, left hand. Top staff, right hand."
+}

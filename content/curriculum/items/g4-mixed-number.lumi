@@ -1,0 +1,26 @@
+item fraction.mixed-number v=1 skills=[fractions.mixed-numbers] {
+  title "Whole ones and a bit"
+  difficulty (w * n + k)
+  let w=1..3 n={3, 4, 5} k=1..4
+  where (k < n)
+  level easy {
+    let w=1..2 n={3, 4}
+  }
+  level hard {
+    let w={3} n={4, 5}
+  }
+
+  scene 32x15 {
+    mixed number whole=w n=n k=k write=true at=canvas(1, 1)
+    text ask "How many {pick(n - 3, \"thirds\", \"quarters\", \"fifths\")} altogether?" narrate below=number gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (w * n + k)
+  feedback {
+    when (answer == w + k) point=number {
+      say "Each whole one is {n} of them, so {w} wholes are {w * n} before the {k} is added."
+    }
+  }
+  hint "Count how many pieces in the whole ones, then add the extra pieces."
+}

@@ -1,0 +1,25 @@
+item physics.time-from-speed v=1 skills=[physics.speed] {
+  title "How long will it take?"
+  difficulty (s * t)
+  let s={2, 3, 4, 5} t={4, 5, 6, 8}
+  level easy {
+    let s={2, 3} t={4, 5}
+  }
+  level hard {
+    let s={4, 5} t={6, 8}
+  }
+
+  scene 28x11 {
+    roaddistances road stops=["Start", "Finish"] legs=[s * t] unit=m at=canvas(1, 0)
+    text ask "A cyclist goes {s} metres every second. How many seconds to reach the finish?" width=12 right-of=road gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer t
+  feedback {
+    when (answer == s * t * s) point=road {
+      say "The distance is shared out, {s} metres to a second, so divide rather than multiply."
+    }
+  }
+  hint "How many lots of {s} metres make {s * t} metres?"
+}

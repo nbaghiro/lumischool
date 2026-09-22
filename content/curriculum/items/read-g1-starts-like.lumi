@@ -1,0 +1,25 @@
+# The child reads three words and picks the one whose first letter makes the picture's first
+# sound, so the letter has to be read, not only heard.
+item reading.starts-like v=1 skills=[reading.phonics] {
+  title "Starts like the picture"
+  difficulty (if w == "rocket" or w == "pencil" then 1 else 0)
+  let w={"cup", "sun", "rocket", "pencil"} p=0..2
+  level easy {
+    let w={"cup", "sun"}
+  }
+  level hard {
+    let w={"rocket", "pencil"}
+  }
+
+  scene 28x13 {
+    art pic asset="{w}" at=canvas(1, 1)
+    column q right-of=pic gap=2 space=1 align=start {
+      text ask "Which word starts with the same sound?" width=14
+      choice pick options=["{if p == 0 then (if w == \"cup\" then \"cot\" else if w == \"sun\" then \"sat\" else if w == \"rocket\" then \"rug\" else if w == \"pencil\" then \"pig\" else \"rug\") else (if w == \"cup\" then \"mop\" else \"cap\")}", "{if p == 1 then (if w == \"cup\" then \"cot\" else if w == \"sun\" then \"sat\" else if w == \"rocket\" then \"rug\" else if w == \"pencil\" then \"pig\" else \"rug\") else (if w == \"sun\" then \"fin\" else \"tin\")}", "{if p == 2 then (if w == \"cup\" then \"cot\" else if w == \"sun\" then \"sat\" else if w == \"rocket\" then \"rug\" else if w == \"pencil\" then \"pig\" else \"rug\") else \"jog\"}"]
+    }
+  }
+
+  answer pick=(if w == "cup" then "cot" else if w == "sun" then "sat" else if w == "rocket" then "rug" else if w == "pencil" then "pig" else "rug")
+  hint "Say the picture's name. What is its first sound?"
+  hint "Now look at the first letter of each word."
+}

@@ -1,0 +1,33 @@
+# One time round draws one step, two lines and two turns, so the repeat number is the number of
+# steps in the pale drawing, not the number of lines. The checker proves only it mends the program.
+item coding.steps-repeat v=1 skills=[coding.debugging, coding.repetition] {
+  title "How many steps?"
+  difficulty (s + m)
+  let s=2..4 m=1..3
+  # too few rounds, so the part still to draw shows pale beyond the line; too many would cover it
+  where (m < s)
+  level easy {
+    let s=2..3
+  }
+  level hard {
+    let s=3..4 m=2..3
+  }
+
+  scene 30x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["repeat {m}", "  forward 1", "  turn left", "  forward 1", "  turn right"] numbers=true
+      turtle t cols=6 rows=5 col=1 row=5 face=right moves=["repeat {m}", "  forward 1", "  turn left", "  forward 1", "  turn right"] target=["repeat {s}", "  forward 1", "  turn left", "  forward 1", "  turn right"]
+    }
+    text ask "What repeat number draws the pale steps?" width=19 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=t goal=target answer=fix
+  feedback {
+    when (answer == 2 * s) point=bl {
+      say "That is how many lines the steps have. Each time round draws two of them."
+    }
+  }
+  hint "What does one time round the repeat draw?"
+  hint "Count the steps in the pale drawing."
+}

@@ -1,0 +1,53 @@
+lesson chemistry-water-ice-and-steam v=2 format=teach grade=1 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Water, ice and steam"
+  goal "Say whether water is ice, water or steam at a temperature, read how fast ice melts, and say how to change it back."
+
+  look {
+    scene 27x9 {
+      icemelt ice every=10 count=5 place=1 at=canvas(1, 0)
+    }
+    say """
+      Water is the same stuff as ice and steam; only what it is like changes. Below 0 degrees it is
+      ice and keeps its shape. On the table the ice warms up and melts into water, a little more
+      every ten minutes. Put the water in the freezer and it turns back into ice. A kettle heats water
+      to 100 degrees and it boils into steam.
+      """
+  }
+  do {
+    practice chem.ice-melted count=1 seed=1
+    practice chem.freeze-back count=1 seed=1
+    practice chem.water-state count=2 seed=3 easy-seed=1 hard-seed=7
+    practice chem.ice-faster count=2 seed=2 easy-seed=8 hard-seed=1
+    level easy {
+      worked chem.ice-next p=2 b=1 level=medium
+    }
+    practice chem.ice-next count=2 seed=4
+  }
+  try stars=2 {
+    show chem.ice-reason p=0 hard-p=2
+  }
+  try stars=3 {
+    show chem.ice-both k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "Water freezes into ice at 0 degrees and boils into steam at 100, and ice melts faster where it is warmer."
+  }
+
+  grown-ups """
+    Ice in a glass and a kettle make both ends of this in one morning; a grown-up handles the kettle.
+    Zero and one hundred are worth learning by heart now. The first question is read off the row of
+    saucers and the thermometer questions off the column; the other ice questions ask the child to
+    compare two rows or carry a pattern on. The two-star question asks why, and the reason changes
+    with where the ice was. The three-star question has two ice cubes melting at different speeds,
+    and the child has to carry both on to the same moment. A puddle dries up without ever boiling,
+    which is worth pointing out on a sunny day: water turns into vapour at any temperature, and
+    boiling is only the fast way. The white cloud over a kettle is tiny drops of water that have
+    already cooled; the steam itself, just at the spout, cannot be seen.
+    """
+  level easy {
+    grown-ups "At this level the saucers are ten minutes apart, the change to undo is as written, the thermometer reads well away from 0 and 100, the two ice cubes are in the freezer against anywhere warmer, the pattern of quarters is carried on once in the teacher's pen before two rows on the table with the first or second saucer hidden, the ice that did not melt is as written, and the three-star pairs the sun with the freezer, where nothing melts."
+  }
+  level hard {
+    grown-ups "At this level the saucers are five minutes apart, the change to undo is as written, the thermometer reads just below zero, just above it or just past a hundred, the two ice cubes are never the freezer against the sun, so the saucers have to be compared, the hidden saucer is the third on the table or the second in the sun, the ice that melted fast is asked about, and the three-star pairs the table with the sun and asks about the sun's cube when the table's is half gone."
+  }
+}

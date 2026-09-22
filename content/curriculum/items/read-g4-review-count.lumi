@@ -1,0 +1,28 @@
+# A short review mixes what the film is with what the writer thought of it. The count changes from
+# version to version, so it cannot be guessed.
+item reading.review-opinions v=1 skills=[reading.fact-opinion] {
+  title "How many opinions?"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1, 2}  # two opinions each, and the fox with three
+  }
+  level hard {
+    let k={2, 3}  # three, and none at all
+  }
+
+  scene 33x14 {
+    passage p title="{if k == 0 then \"Ana on The Lamp Keeper\" else if k == 1 then \"Ben on Deep Blue\" else if k == 2 then \"Cy on The Snow Fox\" else \"Dot on Robot Summer\"}" text="{if k == 0 then \"The film lasts ninety minutes. The songs are wonderful. It is set in a lighthouse. The ending is far too sad.\" else if k == 1 then \"The film is about a whale. It was made in Iceland. The best part is the storm. It is too long for small children.\" else if k == 2 then \"The fox is the funniest character. The snow looks real. The film has no talking at all. It is a lovely film for a cold day.\" else \"The robot is called Tik. The film lasts an hour. It is shown at 4 o'clock. Tik has three friends.\"}" width=32 numbers=false at=canvas(1, 1)
+    text ask "How many of the four sentences are opinions?" width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 or k == 1 then 2 else if k == 2 then 3 else 0)
+  feedback {
+    when (answer == 4) point=p {
+      say "Some sentences can be checked, such as how long the film lasts."
+    }
+  }
+  hint "Go through the sentences one at a time. Could you check it by watching the film?"
+  hint "Count only the sentences that another viewer could disagree with."
+}

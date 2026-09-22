@@ -1,0 +1,58 @@
+lesson physics-brighter-and-dimmer v=1 format=teach grade=4 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "Brighter and dimmer"
+  goal "Predict how bright the bulbs in a circuit will be from the number of cells and bulbs, and choose the change that makes them brighter."
+
+  look {
+    scene 35x27 {
+      column all at=canvas(1, 0) space=1 align=start {
+        row top space=2 align=start {
+          series one cells=1
+          series more cells=2
+        }
+        row bottom space=2 align=start {
+          series two cells=1 bulbs=2
+          note n "Two cells push harder, so the bulb is brighter. Two bulbs share one cell, so each is dimmer." width=16
+        }
+      }
+    }
+    say """
+      The cells push the electricity round, and the bulbs share that push. Add a cell and each bulb
+      gets more, so it is brighter. Add a bulb and each one gets less, so they are all dimmer. Two
+      cells with two bulbs gives each bulb the same as one cell with one bulb.
+      """
+  }
+  do {
+    practice physics.brighter-of-two count=3 seed=6
+    practice physics.brighter-change count=2 seed=4
+    practice physics.dimmer-change count=2 seed=5
+  }
+  story {
+    say "The cells are not the only way to push electricity round. A wind turbine turns the push of moving air into electricity, and a cable carries it to the lamps."
+    practice physics.turbine-lamps count=2 seed=1
+    show physics.energy-chain
+  }
+  try stars=2 {
+    show physics.add-both c=1 n=2 easy-n=1 hard-c=2 hard-n=1
+  }
+  try stars=3 {
+    show physics.series-count n=3 easy-n=2
+  }
+  remember {
+    say "More cells, brighter bulbs. More bulbs, dimmer bulbs."
+  }
+
+  grown-ups """
+    Children often expect the first bulb in a line to be brighter than the second, as though the
+    electricity were used up on the way round. It is not: in one loop, identical bulbs are equally
+    bright, which is worth building with two bulbs and seeing. If a bulb is rated for one or two
+    cells, do not add a fourth, or it will blow. The turbine questions follow the energy from the
+    wind to the lamp; a toy windmill and a torch make the same point, that energy is passed along
+    and not made from nothing.
+    """
+  level easy {
+    grown-ups "At this level the two circuits differ plainly in cells for each bulb, the wind is light, and the added cell and bulb leave the bulbs the same."
+  }
+  level hard {
+    grown-ups "At this level the two circuits are close or equal in cells for each bulb, the wind is strong, and the added cell and bulb make the bulbs dimmer."
+  }
+}

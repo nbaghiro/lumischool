@@ -1,0 +1,28 @@
+# Area and one side known, the other side found: the area of a rectangle used backwards.
+item area.rug-rows v=1 skills=[area.count-squares, division.inverse] {
+  title "How many rows?"
+  difficulty (r * c)
+  let c=3..9 r=3..8
+  where (r != c)
+  level easy {
+    let c=3..5 r=3..5
+  }
+  level hard {
+    let c=6..9 r=6..8
+  }
+
+  scene 30x13 {
+    grid row rows=1 cols=c shade=c color=tang cell=2 at=canvas(1, 1)
+    text ask "This is the first row of a rug made of squares. The whole rug is a rectangle of {r * c} squares. How many rows does it have?" width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  feedback {
+    when (answer == r * c - c) point=row {
+      say "The rows are all the same, {c} squares each. How many lots of {c} make {r * c}?"
+    }
+  }
+  hint "How many squares are in one row?"
+  hint "How many rows of {c} make {r * c}?"
+}

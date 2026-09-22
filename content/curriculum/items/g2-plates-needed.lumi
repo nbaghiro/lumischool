@@ -1,0 +1,30 @@
+# The number of groups is the unknown: 3 × ? = 18 in a story, with one group drawn and not all.
+item groups.plates-needed v=1 skills=[multiplication.threes, division.grouping] {
+  title "How many plates?"
+  difficulty (f * n)
+  let f={3, 4} n=3..8
+  level easy {
+    let f={3} n=3..5
+  }
+  level hard {
+    let f={4} n=6..8
+  }
+
+  scene 30x10 {
+    plate one item=circle count=f label="" at=canvas(1, 1)
+    text ask "Each plate holds {f} cakes. How many plates do you need for {f * n} cakes?" narrate width=18 right-of=one gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == f * n - f) point=one {
+      say "That many cakes are left after one plate. How many plates hold all {f * n}?"
+    }
+    when (answer == f * n + f) point=one {
+      say "Each plate holds {f}, so you need fewer plates than cakes."
+    }
+  }
+  hint "Count in {f}s: one plate is {f}, two plates are {2 * f}."
+  hint "Keep counting in {f}s until you reach {f * n}. How many counts did you make?"
+}

@@ -1,0 +1,39 @@
+# The story: Ada sitting still by the pond in the marsh, counting what she sees. The heron is the
+# point: it is a creature and it is a bird, and the fish are creatures but not birds.
+item nature.pond-story v=1 skills=[nature.habitats, counting.to-twenty] {
+  title "What Ada saw"
+  difficulty (f + d + 2 * w)
+  let f=1..4 d=1..4 w=0..1
+  let asks={pick(w, "How many creatures does Ada see?", "How many of them are birds?")}
+  level easy {
+    let f=1..2 d=1..2 w=0..0
+  }
+  level hard {
+    let f=3..4 d=3..4 w=1..1
+  }
+
+  scene 34x28 {
+    row water at=canvas(1, 1) space=2 align=end {
+      pond pool pads=2 fish=f frog=false
+      heron tall facing=-1 reeds=2
+    }
+    birdrow small count=d wire=false below=water gap=1
+    text ask "Ada sits very still by the pond in the marsh. She sees {f} fish under the water, {d} small birds at the edge, and the heron. {asks}" narrate width=32 below=small gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then f + d + 1 else d + 1)
+  feedback {
+    when (w == 0 and answer == f + d) point=tall {
+      say "The heron is a creature too. Count it."
+    }
+    when (w == 1 and answer == d) point=tall {
+      say "The heron is a bird as well, a tall grey one. Count it with the small birds."
+    }
+    when (w == 1 and answer == f + d + 1) point=pool {
+      say "Fish are creatures, but they are not birds. Count only the birds."
+    }
+  }
+  hint "Count the fish, then the small birds. Then decide about the heron."
+  hint "A bird has feathers, wings and a beak. Which of the creatures are birds?"
+}

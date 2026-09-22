@@ -1,0 +1,17 @@
+# v2: two sentences and three questions, so the right words move and the question changes; the
+# picture went to the lesson's look scene, which leaves the question compact.
+item writing.which-words-tell v=2 skills=[writing.sentences] {
+  title "Which words tell you where?"
+  difficulty (if q == 1 then 1 else 0)
+  let s=0..1 q=0..2
+
+  scene 37x11 {
+    caption line text="{if s == 0 then \"At dawn, the whale sang under the ship.\" else \"After school, Ben read in the garden.\"}" width=30 at=canvas(1, 1)
+    text ask "Which words tell you {if q == 0 then \"where\" else if q == 1 then \"when\" else \"who\"}?" width=30 below=line gap=1
+    choice pick options=["{if s == 0 then \"At dawn\" else \"After school\"}", "{if s == 0 then \"the whale\" else \"Ben\"}", "{if s == 0 then \"under the ship\" else \"in the garden\"}"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then if s == 0 then "under the ship" else "in the garden" else if q == 1 then if s == 0 then "At dawn" else "After school" else if s == 0 then "the whale" else "Ben")
+  hint "Ask the question and read the sentence for the words that answer it."
+  hint "Where is a place, when is a time, and who is a person or an animal."
+}

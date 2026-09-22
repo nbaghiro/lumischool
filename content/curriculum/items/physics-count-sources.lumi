@@ -1,0 +1,20 @@
+item physics.count-sources v=1 skills=[physics.light] {
+  title "How many make light?"
+  difficulty ((if p == "moon" then 1 else 0) + (if s == "foil" then 1 else 0))
+  let p={"candle", "moon"} q={"mirror", "torch"} r={"lamp", "marble"} s={"sun", "foil"}
+  level easy {
+    let p={"candle"} s={"sun"}
+  }
+  level hard {
+    let p={"moon"} s={"foil"}
+  }
+
+  scene 33x6 {
+    things t things=["{p}", "{q}", "{r}", "{s}"] at=canvas(1, 0)
+    text ask "How many of these give out their own light?" width=14 right-of=t gap=1
+    number-input answer below=ask gap=0
+  }
+
+  check physics.things of=t answer=count(source)
+  hint "Which of them would still shine in a dark room with nothing else lit?"
+}

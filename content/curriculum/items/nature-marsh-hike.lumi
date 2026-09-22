@@ -1,0 +1,35 @@
+# The story: Ada and Ben's hike round the marsh road with the legs written on it, out to the tower
+# and back, at Ada's pace, so the distance is added and doubled and then turned into time.
+item nature.marsh-hike v=1 skills=[nature.maps, time.elapsed, addition.to-hundred] {
+  title "The hike"
+  difficulty (a + b + 2 * w)
+  let a=2..6 b=2..6 w=0..1
+  let asks={pick(w, "How many kilometres is that altogether?", "Walking a kilometre every 15 minutes, how many minutes does it take?")}
+  level easy {
+    let a=2..3 b=2..3 w=0..0
+  }
+  level hard {
+    let a=4..6 b=4..6 w=1..1
+  }
+
+  scene 34x21 {
+    roaddistances road stops=["hide", "mill", "tower"] legs=[a, b] unit=km at=canvas(1, 1)
+    text ask "Ada and Ben hike from the hide past the mill to the tower and back the same way. {asks}" narrate width=32 below=road gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 2 * (a + b) else 30 * (a + b))
+  feedback {
+    when (answer == a + b) point=road {
+      say "That is the way there. They walk back as well."
+    }
+    when (w == 1 and answer == 2 * (a + b)) point=road {
+      say "That is the kilometres. Each one takes 15 minutes."
+    }
+    when (w == 1 and answer == 15 * (a + b)) point=road {
+      say "That is the time for the way there. They come back too."
+    }
+  }
+  hint "Add the legs for the way there. Double it for there and back."
+  hint "Then, if the question asks for minutes, count 15 for every kilometre."
+}

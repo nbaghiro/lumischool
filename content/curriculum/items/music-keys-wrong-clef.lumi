@@ -1,0 +1,29 @@
+# The same place on the two staves is a different note, because the clefs are different: a note on
+# the bass staff read as if it were treble comes out two letters too low.
+item music.wrong-clef-name v=1 stars=2 skills=[music.grand-staff, reasoning.find-the-error] {
+  title "The wrong staff"
+  difficulty (if i <= 2 then 2 else if i <= 4 then 1 else 0)
+  let i=0..8 q=0..2
+  let n={if i == 0 then "G2" else if i == 1 then "A2" else if i == 2 then "B2" else if i == 3 then "C3" else if i == 4 then "D3" else if i == 5 then "E3" else if i == 6 then "F3" else if i == 7 then "G3" else "A3"}
+  let r={if i == 0 then "G" else if i == 1 then "A" else if i == 2 then "B" else if i == 3 then "C" else if i == 4 then "D" else if i == 5 then "E" else if i == 6 then "F" else if i == 7 then "G" else "A"}
+  let w={if i == 0 then "E" else if i == 1 then "F" else if i == 2 then "G" else if i == 3 then "A" else if i == 4 then "B" else if i == 5 then "C" else if i == 6 then "D" else if i == 7 then "E" else "F"}
+  let t={if i == 0 then "A" else if i == 1 then "B" else if i == 2 then "C" else if i == 3 then "D" else if i == 4 then "E" else if i == 5 then "F" else if i == 6 then "G" else if i == 7 then "A" else "B"}
+  let o1={if q == 0 then r else if q == 1 then w else t}
+  let o2={if q == 0 then w else if q == 1 then t else r}
+  let o3={if q == 0 then t else if q == 1 then r else w}
+
+  scene 30x16 {
+    grandstaff gs notes=["{n}"] letters=false lit=["{n}"] landmarks=true at=canvas(1, 0)
+    text ask "Ana read the ringed note as if it were on the top staff, and called it {w}. It is on the bottom staff. What is it really?" width=18 right-of=gs gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=ask gap=1
+  }
+
+  answer pick=r
+  feedback {
+    when (pick == w) point=gs {
+      say "That is the name it would have on the top staff. The bottom staff has a different clef."
+    }
+  }
+  hint "Which staff is the note on? Which landmark is on that staff?"
+  hint "Count from bass F in steps to the ringed note."
+}

@@ -1,0 +1,50 @@
+lesson g2-adding-tens-and-ones v=1 format=teach grade=2 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Adding tens and ones"
+  goal "Add and take away whole tens in your head, and find the difference between two numbers."
+
+  look {
+    scene 34x19 {
+      baseten blocks thousands=0 hundreds=0 tens=4 ones=3 at=canvas(1, 1)
+      comparebars bars values=[8, 5] labels=["Ann", "Ben"] difference=true below=blocks gap=2
+      note n "One more ten is one more rod." width=13 right-of=blocks gap=2
+    }
+    say """
+      Adding ten adds a whole rod and leaves the ones alone. Comparing two numbers is the gap
+      between the bars, which is a subtraction.
+      """
+  }
+  do {
+    practice add.tens-and-ones count=1 seed=5
+    practice add.missing-tens count=2 seed=3
+    practice sub.tens-before count=1 seed=6
+    practice compare.how-many-more count=1 seed=4
+    practice compare.fewer-than count=2 seed=8
+  }
+  story {
+    show barmodel.books had=34 k=5 easy-k=2 hard-k=6
+  }
+  try stars=2 {
+    show add.balance-tens a=57 p=2 d=1 easy-a=41 easy-p=1 hard-a=69 hard-p=3 hard-d=2
+  }
+  try stars=3 {
+    show add.triangle-tens x=15 y=25 z=10 easy-x=10 easy-y=20 easy-z=30 hard-x=35 hard-y=15 hard-z=25
+  }
+  remember {
+    say "Add or take whole tens: the ones stay the same and only the tens change."
+  }
+
+  grown-ups """
+    Base ten blocks are worth having in the house. Swapping ten ones for a rod is the exchange the
+    written method rests on. In the questions about Mira and Ben, the word "more" is there but the
+    answer is the smaller number; ask who has more before any sum is done. The two-star question
+    can be done by working out both sides, but ask whether comparing the first numbers is quicker.
+    The three-star question has no method to follow: a guess for A that is checked against the
+    third box and changed by five is exactly the right way in.
+    """
+  level easy {
+    grown-ups "At this level two or three tens are added or put back, the differences stay small, and the level scale moves one ten each side."
+  }
+  level hard {
+    grown-ups "At this level four tens are added, the numbers reach the nineties, the level scale moves three tens against two, and the sum triangle's circles reach thirty-five."
+  }
+}

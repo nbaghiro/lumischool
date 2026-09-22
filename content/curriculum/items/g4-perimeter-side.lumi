@@ -1,0 +1,31 @@
+# Perimeter given, one side unknown: half the perimeter is one of each side.
+item area.side-from-perimeter v=1 skills=[area.perimeter] {
+  title "The other side"
+  difficulty (a + b)
+  let a=3..9 b=4..14
+  where (a != b)
+  level easy {
+    let a=3..5 b=4..7
+  }
+  level hard {
+    let a=6..9 b=9..14
+  }
+
+  scene 30x10 {
+    mirror patch shape=rectangle line=none size=6 at=canvas(1, 1)
+    text ask "A rectangle has a perimeter of {2 * (a + b)} cm. One side is {a} cm. How long is the side next to it?" narrate width=19 right-of=patch gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == 2 * (a + b) - a) point=ask {
+      say "The perimeter goes all the way round: two sides of {a} and two of the other."
+    }
+    when (answer == 2 * (a + b) - 2 * a) point=ask {
+      say "That is both of the other sides together. How long is one of them?"
+    }
+  }
+  hint "How many sides of {a} cm are there on the way round?"
+  hint "Take them away from {2 * (a + b)}. The rest is two equal sides."
+}

@@ -1,0 +1,17 @@
+# The face and the words together say how someone feels in each panel, and the child finds the
+# panel for one feeling: the evidence question for a comic.
+item reading.comic-mood v=1 skills=[reading.comics, reading.evidence, reading.inference] {
+  title "Find the feeling"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 36x16 {
+    comic strip who=[if k == 0 then "gran" else if k == 1 then "boy" else "girl", if k == 0 then "gran" else if k == 1 then "boy" else "girl", if k == 0 then "gran" else if k == 1 then "boy" else "girl"] says=[if k == 0 then "The bus is late again." else if k == 1 then "I lost my first tooth." else "It is snowing.", if k == 0 then "Here it comes at last." else if k == 1 then "Where did it go?" else "Can I go out and play?", if k == 0 then "Hello, driver." else if k == 1 then "It is under my pillow for the tooth fairy." else "Brr, my toes are cold."] moods=[if k == 0 then "cross" else if k == 1 then "excited" else "excited", if k == 0 then "happy" else if k == 1 then "worried" else "happy", if k == 0 then "happy" else if k == 1 then "happy" else "sad"] with=[if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else ""] thinks=[if k == 0 then 0 else if k == 1 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else 0] holds=[if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else ""] labels=["1", "2", "3"] at=canvas(1, 0)
+    text ask "In which picture is {if k == 0 then \"Gran\" else if k == 1 then \"the boy\" else \"the girl\"} {if k == 0 then \"cross\" else if k == 1 then \"worried\" else \"sad\"}?" narrate width=20 below=strip gap=1
+    choice pick options=["1", "2", "3"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "1" else if k == 1 then "2" else "3")
+  hint "Read the words in each bubble. Which ones sound {if k == 0 then \"cross\" else if k == 1 then \"worried\" else \"sad\"}?"
+  hint "Now check the face in that picture. Does it agree with the words?"
+}

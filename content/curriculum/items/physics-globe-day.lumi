@@ -1,0 +1,13 @@
+item physics.globe-day v=1 skills=[physics.sky] {
+  title "Day or night?"
+  let x={9, 12, 15} y={21, 0, 3} z={8, 14, 20}
+
+  scene 30x17 {
+    globe earth hours=[x, y, z] at=canvas(0, 0)
+    text ask "Is it day or night for child {if x == 12 then \"C\" else \"B\"}?" width=15 below=earth gap=0
+    choice pick options=["day", "night"] right-of=ask gap=1
+  }
+
+  check physics.sky of=earth pick="time({if x == 12 then \"c\" else \"b\"})"
+  hint "Is that child on the side facing the sun?"
+}

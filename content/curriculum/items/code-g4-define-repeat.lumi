@@ -1,0 +1,36 @@
+# The block is used inside a repeat and once more after it, and no strip is drawn, so the child has
+# to expand the block and multiply: the audit's raise for define-count.
+item coding.define-repeat v=1 skills=[coding.procedures, coding.repetition] {
+  title "A block inside a repeat"
+  difficulty (n * (r + 1))
+  let n=2..3 r=2..4
+  level easy {
+    where (n * (r + 1) <= 9)
+  }
+  level hard {
+    where (n * (r + 1) >= 10)
+  }
+
+  scene 33x15 {
+    blocks b code=["define hooray", "  jump", "  clap {n}", "repeat {r}", "  hooray", "hooray"] at=canvas(1, 0)
+    text ask "How many jumps and how many claps are in the whole dance?" width=18 right-of=b gap=2
+    row ans below=ask gap=1 space=1 align=centre {
+      text lj "jumps"
+      number-input jumps width=3
+      text lc "claps"
+      number-input claps width=3
+    }
+  }
+
+  check coding.runs of=b jumps="count(jump)" claps=claps
+  feedback {
+    when (jumps == r) point=b {
+      say "The hooray after the repeat is used too."
+    }
+    when (claps == r + 1) point=b {
+      say "Every hooray claps {n} times, not once."
+    }
+  }
+  hint "How many times is hooray used, counting the repeat and the last line?"
+  hint "Each hooray is one jump and {n} claps."
+}

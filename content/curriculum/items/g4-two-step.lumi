@@ -1,0 +1,32 @@
+# Two steps, and the page asks for both of them, so a child who multiplies and then forgets to
+# subtract is caught by the first box rather than by the last.
+item word.two-step v=1 skills=[word-problems.two-step] {
+  title "Two steps"
+  difficulty (boxes * each)
+  let boxes=12..24 each={10, 12, 15, 20} broken=3..9
+  level easy {
+    let each={10, 12}
+  }
+  level hard {
+    let each={15, 20}
+  }
+
+  scene 30x10 {
+    text ask "A shop has {boxes} boxes of pens with {each} pens in a box. {broken} of the pens are broken. How many pens are not broken?" width=28 at=canvas(1, 0)
+    text s1 "Pens altogether" below=ask gap=1
+    number-input made right-of=s1 gap=1
+    text s2 "Pens that work" below=s1 gap=1
+    number-input answer right-of=s2 gap=1
+  }
+
+  answer (boxes * each - broken) made=(boxes * each)
+  feedback {
+    when (answer == boxes * each) point=s2 {
+      say "That is every pen. Take away the {broken} broken ones."
+    }
+    when (made == boxes + each) point=s1 {
+      say "{boxes} boxes of {each} is {boxes} lots of {each}, so multiply."
+    }
+  }
+  hint "Find how many pens there are first, then take the broken ones away."
+}

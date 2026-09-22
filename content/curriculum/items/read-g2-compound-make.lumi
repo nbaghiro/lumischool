@@ -1,0 +1,17 @@
+# As many long words as the child can make from eight short ones. There are six or more right
+# answers in every set, so a grown-up marks it against the list.
+item reading.compound-make v=1 stars=3 skills=[reading.compound-words, reading.vocabulary] {
+  title "Make as many as you can"
+  let k=0..2
+
+  scene 36x25 {
+    text ask "Join two of these words to make a long word. How many real words can you make? Write them all." narrate width=34 at=canvas(1, 1)
+    wordcards top words=[if k == 0 then "sun" else if k == 1 then "foot" else "tooth", if k == 0 then "rain" else if k == 1 then "bed" else "hair", if k == 0 then "snow" else if k == 1 then "hand" else "star", if k == 0 then "flower" else if k == 1 then "ball" else "fish"] picked=-1 below=ask gap=1
+    wordcards bottom words=[if k == 0 then "bow" else if k == 1 then "room" else "brush", if k == 0 then "man" else if k == 1 then "bag" else "light", if k == 0 then "fall" else if k == 1 then "print" else "paste", if k == 0 then "ball" else if k == 1 then "time" else "cut"] picked=-1 below=top gap=1
+    writinglines lines lines=2 width=34 prompt="" below=bottom gap=1
+  }
+
+  check writing.by-eye look-for="{if k == 0 then \"At least four real words, each made of two of the cards with no space, such as sunflower, rainbow, snowman, snowball, rainfall, snowfall. A word that is not real is worth saying aloud together.\" else if k == 1 then \"At least four real words, each made of two of the cards with no space, such as football, bedroom, handbag, footprint, bedtime, handprint. A word that is not real is worth saying aloud together.\" else \"At least four real words, each made of two of the cards with no space, such as toothbrush, hairbrush, starfish, starlight, toothpaste, haircut. A word that is not real is worth saying aloud together.\"}"
+  hint "Take one card and try it in front of every other card."
+  hint "Now try it after every other card. Some words work both ways round."
+}

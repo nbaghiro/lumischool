@@ -1,0 +1,30 @@
+# The story: a warm day by the marsh (a room at 25 degrees), Mia's and Pip's iced drinks after
+# twenty minutes, and how much colder one is. The readings at 25 degrees are no wrap 25, paper 20,
+# foil 15, cloth 10 and wool 0.
+item physics.marsh-ice-picnic v=1 skills=[physics.heat, physics.measuring] {
+  title "A picnic by the marsh"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  let wa={pick(v, "none", "wool", "foil", "none")}
+  let wb={pick(v, "foil", "paper", "cloth", "cloth")}
+  let diff={pick(v, 10, 20, 5, 15)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 30x23 {
+    row top space=2 align=start at=canvas(1, 0) {
+      wrapped cups wraps=["{wa}", "{wb}"] ice=1 room=25 minutes=20
+      pond marsh pads=3 fish=2
+    }
+    text ask "It is a warm day by the marsh. Mia's drink is cup A and Pip's is cup B. After twenty minutes, how many degrees colder is the colder drink?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=diff
+  hint "Read both thermometers first."
+  hint "Take the smaller number away from the bigger one."
+}

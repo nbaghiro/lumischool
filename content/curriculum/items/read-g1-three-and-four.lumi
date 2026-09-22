@@ -1,0 +1,15 @@
+# Open: any word with a two-letter sound in it will do, so the child searches their own words. A
+# grown-up checks, because the machine cannot know every word a child might find.
+item reading.three-sounds-four-letters v=1 stars=3 skills=[reading.digraphs, reading.segmenting] {
+  title "Three sounds, four letters"
+  let w={"ship", "chop", "moth"}
+
+  scene 32x13 {
+    text ask "{w} has three sounds but four letters. Write two more words like that." narrate width=30 at=canvas(1, 1)
+    writinglines lines lines=2 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two real words, each with three sounds and four letters because two of the letters make one sound together, such as shop, chin, fish, duck, then or boat. Say each word with the child and count the sounds on your fingers."
+  hint "Think of words that start with sh, ch or th."
+  hint "Say your word and count the sounds on your fingers. Now count its letters."
+}

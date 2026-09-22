@@ -1,0 +1,65 @@
+# Reading a map by its key: the key decides what a mark means, the grid says where a thing is,
+# and directions are followed square by square.
+lesson reading-a-map-with-a-key v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "A map with a key"
+  goal "Read a map's key to find what a mark means, and follow written directions to a place."
+
+  look {
+    scene 34x12 {
+      row all at=canvas(1, 1) space=2 align=start {
+        gridmap map cols=5 rows=4 col=2 row=2 thing=hut
+        mapkey key title=Key marks=["path", "river", "bridge"] labels=["Footpath", "River", "Bridge"]
+      }
+    }
+    say """
+      Pip has a map of Book Island. The marks on it are a kind of writing, and the key is where
+      they are read: a dashed line is the footpath, a blue one the river, and the small arch
+      is the bridge. The grid's letters and numbers say where a thing is, so a friend can be
+      told: the hut is in B2. Directions are read the same way, one square at a time.
+      """
+  }
+  do {
+    level easy {
+      worked reading.key-means k=1
+    }
+    practice reading.key-means count=1 seed=7 easy-seed=1 hard-seed=1
+    practice reading.key-row count=2 seed=1 easy-seed=1 hard-seed=1
+    practice geography.map-square count=1 seed=3 easy-seed=1 hard-seed=1
+    practice geography.treasure-steps count=2 seed=2 easy-seed=1 hard-seed=4
+    show reading.signpost-way w=0 hard-w=1
+    level hard {
+      show reading.key-means k=3 level=medium
+    }
+  }
+  story {
+    show reading.map-story a=3 b=4 w=0 easy-a=2 easy-b=3 hard-a=4 hard-b=5 hard-w=1
+  }
+  try stars=2 {
+    show reading.whose-key k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show reading.fewest-turns c=2 r=1 tc=4 tr=3 easy-c=1 easy-r=1 easy-tc=3 easy-tr=1 hard-c=1 hard-r=1 hard-tc=5 hard-tr=4
+  }
+  remember {
+    say "The key says what a mark means. The grid says where a thing is. Follow directions a square at a time."
+  }
+
+  grown-ups """
+    The idea is that a map is read by its key and its grid: a mark means what the key says it
+    means, not what it looks like, and a square is named by its letter and number. The look is
+    the island map beside its key. The way in reads a mark off the key, and the core finds the
+    row of the key for a named thing, names a thing's square, follows directions across the
+    grid, and reads a signpost for the nearer town and the difference in distance. The wrong
+    idea to watch for is guessing a mark from its look (a dashed line must be a railway); send
+    the child back to the key every time. The story adds Pip's walk by the key's ways, the
+    two-star question settles two readings of one mark by the key, and the three-star question
+    asks for the fewest turns between two squares and the route written as directions. A real
+    map with a key, a local one, is the best follow-up: find three marks and read them off.
+    """
+  level easy {
+    grown-ups "At this level the footpath's row is read once in the teacher's pen before the river's, the rows to find are the footpath and the town, the square to name and the steps to follow are the plainer ones, the signpost is read for the nearer town, the story adds two and three or four, the two-star is the dashed footpath, and the three-star's two squares share a row, so no turn."
+  }
+  level hard {
+    grown-ups "At this level the keys have hills, mountains and the sea, with a second key read in the core, the rows to find are the bridge and the mountains, the square and the steps are the further ones, the signpost is read for the difference in distance, the story doubles for the way back, the two-star is the blue river, and the three-star crosses the map corner to corner, one turn."
+  }
+}

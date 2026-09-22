@@ -1,0 +1,19 @@
+# A reason, not a name: the child has to pick the particle picture that explains what a state does.
+item chem.state-why v=1 stars=2 skills=[chemistry.states, reasoning.explain] {
+  title "Why does it do that?"
+  difficulty (if s == 1 then 2 else if s == 2 then 1 else 0)
+  let s=0..2
+  level hard {
+    let s={1, 2}
+  }
+
+  scene 37x14 {
+    text ask "Why does a {if s == 0 then \"solid keep its own shape\" else if s == 1 then \"liquid take the shape of its cup\" else \"gas fill the whole jar\"}?" width=24 at=canvas(1, 0)
+    particles jar spread=s count=16 name=1 moving=1 below=ask gap=0
+    choice pick options=["Held in rows, they cannot move past", "They touch but slide past each other", "Far apart, they fly everywhere"] stack=column right-of=jar gap=1
+  }
+
+  answer pick=(if s == 0 then "Held in rows, they cannot move past" else if s == 1 then "They touch but slide past each other" else "Far apart, they fly everywhere")
+  hint "Look at the marks by the particles. How are they moving?"
+  hint "Which kind of moving would let the stuff change its shape, and which would not?"
+}

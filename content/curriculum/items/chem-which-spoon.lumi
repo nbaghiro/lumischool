@@ -1,0 +1,24 @@
+# The way in: three spoons of the same shape, one of wood with a grain, one of metal with a shine
+# and one of plastic, and the one made of a named material. Metal's shine is seen first; wood's
+# grain next; plastic is the one with neither.
+item chem.which-spoon v=1 skills=[chemistry.materials] {
+  title "Which spoon is metal?"
+  difficulty (if m == "plastic" then 2 else if m == "wood" then 1 else 0)
+  let m={"metal", "wood", "plastic"} p=0..2
+  level easy {
+    let m={"metal", "wood"}
+  }
+  level hard {
+    let m={"wood", "plastic"}
+  }
+
+  scene 24x13 {
+    text ask "Three spoons, the same shape. Which one is made of {m}?" width=23 at=canvas(1, 0)
+    materials row things=["{if p == 0 then \"wooden-spoon\" else if p == 1 then \"metal-spoon\" else \"plastic-spoon\"}", "{if p == 0 then \"metal-spoon\" else if p == 1 then \"plastic-spoon\" else \"wooden-spoon\"}", "{if p == 0 then \"plastic-spoon\" else if p == 1 then \"wooden-spoon\" else \"metal-spoon\"}"] below=ask gap=0
+    choice pick options=["A", "B", "C"] below=row gap=0
+  }
+
+  check chem.materials of=row pick="fits(made-{m})"
+  hint "Look at how each spoon is drawn. Wood has a grain of lines, metal has a shine."
+  hint "Plastic has neither the grain nor the shine. It is the plain one."
+}

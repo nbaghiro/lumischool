@@ -1,0 +1,22 @@
+# The sum triangle with two-digit corners and only its sides shown: guess, check and adjust.
+item puzzle.triangle-big v=1 stars=3 skills=[addition.columns, reasoning.guess-and-check] {
+  title "Only the sums, bigger"
+  difficulty (x + y + z)
+  let x=11..29 y=11..29 z=11..29
+  where (x != y and y != z and x != z and x % 5 != 0 and y % 5 != 0)
+
+  scene 32x13 {
+    sumtriangle tri a=x b=y c=z hide=corners letters=true at=canvas(1, 0)
+    text ask "Each box is the sum of the two circles it joins. What number goes in circle A?" narrate width=14 right-of=tri gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == x + y or answer == x + z) point=tri {
+      say "That is a box. A circle is smaller than each box it touches."
+    }
+  }
+  hint "Add all three boxes. Every circle has been counted twice."
+  hint "Half of that total is the three circles. Take away the box that does not touch A."
+}

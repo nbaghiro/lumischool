@@ -1,0 +1,29 @@
+item count.crab-limbs v=1 skills=[counting.in-tens] {
+  title "Legs and claws in tens"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 30x13 {
+    crabs row count=n at=canvas(1, 1)
+    text ask "Each crab has 8 legs and 2 claws. How many legs and claws are there on all the crabs?" narrate width=26 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * n)
+  feedback {
+    when (answer == 8 * n) point=row {
+      say "The claws count too. Eight legs and two claws make ten on each crab."
+    }
+    when (answer == n) point=row {
+      say "That is how many crabs. Each crab has ten legs and claws."
+    }
+  }
+  hint "How many legs and claws does one crab have altogether?"
+  hint "Now count in tens, one ten for each crab."
+}

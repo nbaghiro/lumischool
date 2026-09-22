@@ -1,0 +1,13 @@
+# A played answer: of two ringed keys, the higher one, which is the one to the right.
+item music.play-higher-key v=1 skills=[music.pitch, music.keys] {
+  title "Play the higher key"
+
+  scene 30x14 {
+    piano keys from=C4 whites=8 wide=3 labels=none lit=[D4, A4] at=canvas(1, 1)
+    text ask "Two keys are ringed. Press the one that sounds higher." narrate width=28 below=keys gap=1
+  }
+
+  check music.plays notes=[A4]
+  hint "Press both and listen first."
+  hint "The higher key is the one further to the right."
+}

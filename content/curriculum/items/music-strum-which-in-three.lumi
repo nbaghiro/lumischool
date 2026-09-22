@@ -1,0 +1,50 @@
+# Three bars, two in three and one in four, told apart by the numbers over them and by what their
+# arrows do. q asks for a different bar each time.
+item music.strum-which-in-three v=1 skills=[music.strumming, music.time-signatures] {
+  title "Three or four"
+  difficulty (if q == 0 or q == 2 then 0 else 1)
+  let q=0..3
+  let right={pick(q, "A", "B", "C", "A")}
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q={1, 3}
+  }
+
+  scene 36x24 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "A"
+        strumtrack a strums=D-DU-UDU counts=true chord=none ring=-1
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        strumtrack b strums=D-DUDU counts=true chord=none ring=-1
+      }
+      row rc space=1 align=centre {
+        text lc "C"
+        strumtrack c strums=D-D-D- counts=true chord=none ring=-1
+      }
+    }
+    column side space=1 align=start right-of=bars gap=2 {
+      text ask "{pick(q, \"Which bar is in four-time?\", \"Which bar in three-time has up strums?\", \"Which bar has only down strums?\", \"Which bar has exactly 6 strums?\")}" narrate width=11
+      choice pick options=["A", "B", "C"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (q == 0 and pick != "A") point=bars {
+      say "Read the numbers over each bar. A bar in four-time counts up to 4."
+    }
+    when (q == 1 and pick == "A") point=bars {
+      say "Bar A has up strums, but it counts to 4. Find the bar that counts to 3 and has short arrows."
+    }
+    when (q != 0 and q != 1 and pick != right) point=bars {
+      say "Look at the arrows in each bar, and leave out the dots."
+    }
+  }
+  hint "Read the numbers over each bar first: how far does each one count?"
+  hint "{if q == 0 or q == 1 then \"A bar in three counts 1 and 2 and 3 and.\" else \"Count the arrows in each bar, and look at which way they point.\"}"
+}

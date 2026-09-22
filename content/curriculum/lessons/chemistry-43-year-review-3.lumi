@@ -1,0 +1,47 @@
+lesson chemistry-year-review-3 v=1 format=review grade=3 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry review: the third year"
+  goal "Look back over the year: measuring, filtering, heating, evaporating, dissolving, crystals and the water cycle."
+
+  warm-up {
+    practice chem.beaker-level count=1 seed=7 easy-seed=2 hard-seed=1
+    practice chem.filter-what-stays count=1 seed=1 easy-seed=1 hard-seed=1
+    practice chem.flame-read count=1 seed=7 easy-seed=2 hard-seed=1
+  }
+  exercises {
+    practice chem.cylinder-read count=1 seed=2 easy-seed=1 hard-seed=2
+    practice chem.separate-how count=1 seed=4 easy-seed=1 hard-seed=1
+    practice chem.stops-at-100 count=1 seed=7 easy-seed=1 hard-seed=7
+    practice chem.where-water-go count=1 seed=1 easy-seed=1 hard-seed=1
+    practice chem.sieve-works count=1 seed=5 easy-seed=1 hard-seed=3
+    practice chem.stir-time count=1 seed=1 easy-seed=1 hard-seed=3
+    practice chem.spoons-table count=1 seed=1 easy-seed=1 hard-seed=3
+    practice chem.crystal-more count=1 seed=4 easy-seed=1 hard-seed=4
+    practice chem.cycle-next count=1 seed=8 easy-seed=1 hard-seed=7
+  }
+  puzzle stars=2 {
+    show chem.read-error v=58 e=1 easy-e=2 hard-e=0
+  }
+  puzzle stars=3 {
+    show chem.cycle-journey s=1 easy-s=0 hard-s=3
+  }
+
+  grown-ups """
+    This is a check, not a test, to do in geyser valley before the next year's fair tests begin.
+    The warm-up is the first question of three lessons: a beaker to read, what stays on the
+    filter paper, and a thermometer beside the flame. The exercises take one question each from
+    the year: a cylinder read between the marks, how to get sand or salt back, what the
+    thermometer reads after some minutes on the flame, where the water goes from a drying dish,
+    whether a sieve's holes will do, a time from the table of stirred and warm cups, the spoons a
+    temperature dissolved, how many more crystals on the later day, and the next stage of the
+    cycle. Anything that needs the way in again is worth another week with that lesson, and
+    everything else can move on. The two puzzles are there to be enjoyed: the mistake Sam made
+    reading the cylinder, and the four stages of a drop's journey in order, so ask for the reason
+    as well as the answer.
+    """
+  level easy {
+    grown-ups "At this level the beaker reads a whole hundred, the thing on the paper is sand or iron, the flame's thermometer is low, the cylinder's small marks are worth five, the thermometer stays under a hundred, the sieve's holes are the plain cases, the cup's time is read straight off, the spoons are read for one row, the crystals are a few more, the next stage is not the last, Sam's mistake is stopping at the mark below, and the drop starts in the sea."
+  }
+  level hard {
+    grown-ups "At this level the thing on the paper is flour that looks dissolved, the cylinder's small marks are worth two, the thermometer would pass a hundred and stops there, the sieve's holes let both through or keep both, the cup's time is the gap between two, the spoons are the gap between the hottest and coldest rows, the crystals are many more, the next stage after collection is back at the start, Sam counted each small mark as one, and the drop starts as rain."
+  }
+}

@@ -1,0 +1,26 @@
+# A notice mixes rules and news: the child counts the lines that tell people what to do.
+item writing.count-commands v=1 skills=[writing.sentences, writing.signs] {
+  title "How many lines are commands?"
+  difficulty (if k == 2 then 2 else if k == 3 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={3}  # one command
+  }
+  level hard {
+    let k={1, 2}  # two, or three
+  }
+  let l0={if k == 0 then "The pool opens at nine." else if k == 1 then "The shop is open." else if k == 2 then "Keep off the grass." else "The cafe is upstairs."}
+  let l1={if k == 0 then "Please shower first." else if k == 1 then "Please close the door." else if k == 2 then "The park shuts at six." else "Hot drinks are here."}
+  let l2={if k == 0 then "Walk, do not run." else if k == 1 then "We sell fresh bread." else if k == 2 then "Put rubbish in the bin." else "Please wait by the door."}
+  let l3={if k == 0 then "A lifeguard is here." else if k == 1 then "Pay at the till." else if k == 2 then "Please shut the gate." else "Cakes are made today."}
+
+  scene 32x12 {
+    sign notice lines=["{l0}", "{l1}", "{l2}", "{l3}"] kind=board color="mint" at=canvas(1, 1)
+    text ask "How many lines on the notice tell people what to do?" narrate width=14 right-of=notice gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 2 then 3 else if k == 3 then 1 else 2)
+  hint "Read each line. Does it start with a doing word or with please?"
+  hint "Count only the lines that tell you to do something."
+}

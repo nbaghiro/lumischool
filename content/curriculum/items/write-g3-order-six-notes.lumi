@@ -1,0 +1,16 @@
+# Six notes, two of which do not belong in the plan: order the four that do and leave the others
+# out, the audit's raise for putting a plan in order.
+item writing.order-six-notes v=1 skills=[writing.planning] {
+  title "Four notes belong"
+  difficulty t
+  let t=0..1 q=0..1 top={if t == 0 then "building a snowman" else "a boat going up a lock"} b1={if t == 0 then "Snow falls in the night" else "We steer into the lock"} b2={if t == 0 then "Roll a big ball" else "The gates shut behind us"} b3={if t == 0 then "Add a head and a hat" else "The water lifts the boat"} b4={if t == 0 then "The sun melts it" else "We sail out of the top gate"} x1={if t == 0 then "The cat eats its tea" else "The shop sells bread"} x2={if t == 0 then "A bus goes past" else "A fox sleeps in the hay"}
+
+  scene 26x26 {
+    text ask "A plan for a story about {top}. Number the four notes that belong 1 to 4. Write 0 by the two that do not." width=25 at=canvas(1, 1)
+    sequence s items=["{if q == 0 then b3 else x2}", "{if q == 0 then x1 else b2}", "{if q == 0 then b1 else b4}", "{if q == 0 then b4 else x1}", "{if q == 0 then x2 else b1}", "{if q == 0 then b2 else b3}"] blanks=[r1, r2, r3, r4, r5, r6] below=ask gap=1
+  }
+
+  answer r1=(if q == 0 then 3 else 0) r2=(if q == 0 then 0 else 2) r3=(if q == 0 then 1 else 4) r4=(if q == 0 then 4 else 0) r5=(if q == 0 then 0 else 1) r6=(if q == 0 then 2 else 3)
+  hint "Which two notes are not about {top}? Mark them 0 first."
+  hint "Of the four left, which has to happen before any of the others?"
+}

@@ -1,0 +1,51 @@
+lesson chemistry-looking-closely v=1 format=teach grade=1 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Looking closely"
+  goal "Use a magnifying glass to tell salt, sugar, sand, flour and rice apart, and say why a powder is a solid."
+
+  look {
+    scene 28x10 {
+      row both at=canvas(1, 0) space=1 align=start {
+        magnifier salt kind=salt count=5
+        magnifier sand kind=sand count=6
+      }
+    }
+    say """
+      Salt pours out of its pot like water, but look closely: every grain is a tiny cube with flat
+      sides. Sand is little rounded bits of rock. Each grain keeps its own shape, so salt and sand are
+      solids, even though a heap of them can be poured.
+      """
+  }
+  do {
+    practice chem.lens-count count=2 seed=5 easy-seed=2 hard-seed=2
+    practice chem.lens-which count=2 seed=1
+    level easy {
+      worked chem.lens-shape g="sugar" level=medium
+    }
+    practice chem.lens-shape count=2 seed=4
+    practice chem.solid-sort count=2 seed=2
+  }
+  try stars=2 {
+    show chem.pours-reason k=0 easy-k=1 hard-k=3
+  }
+  try stars=3 {
+    show chem.lens-guess k=0
+  }
+  remember {
+    say "A powder pours, but every grain is a solid that keeps its shape."
+  }
+
+  grown-ups """
+    A cheap magnifying glass and a pinch each of salt, sugar, sand and rice on black paper make this
+    lesson real. Nothing is tasted, even the ones from the kitchen. The first question is a count in
+    the lens. The core asks the child to tell grains apart by their shape and to sort solids from
+    liquids, where the powders are the trap. The two-star question asks whether pouring makes a thing
+    a liquid, and the answer changes with what the person claims. The three-star question is found by
+    crossing out, with no picture of the answer.
+    """
+  level easy {
+    grown-ups "At this level three to five grains are counted, the lens with salt is as written, sugar's slanted blocks are named once in the teacher's pen before sand, flour and rice, the columns are as written, the two-star agrees that sugar is a solid, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level six to eight grains are counted, the lens with salt is as written, the grains to name are salt and sugar, cubes against slanted blocks, the columns are as written, the two-star agrees that flour, which pours like water, is a solid because every grain keeps its shape, and the three-star is as written."
+  }
+}

@@ -1,0 +1,37 @@
+# The two-star reason: a thing used for a job its material cannot do, and what goes wrong. The
+# paper hat goes soggy because paper soaks water up; the plastic bag cannot dry hands because it
+# keeps water out. Each version has the right reason among two that sound like reasons.
+item chem.paper-hat v=1 stars=2 skills=[chemistry.materials, reasoning.explain] {
+  title "What goes wrong?"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3 r=0..2
+  let thing={pick(k, "paper-bag", "wool-sock", "plastic-bottle", "raincoat")}
+  let story={pick(k, "Ben makes a hat out of a paper bag and wears it in the rain.", "Mia puts a wool sock on her hand as a glove and goes out in the rain.", "Leo cuts up a plastic bottle to make a cloth for drying the cups.", "Ada uses her raincoat as a towel after swimming.")}
+  let right={pick(k, "The paper soaks up the rain and goes soggy.", "The wool soaks up the rain and her hand gets wet.", "The plastic keeps water out, so it dries nothing.", "The raincoat keeps water out, so she stays wet.")}
+  let w1={pick(k, "The paper is too thin to keep the sun off.", "The sock is too small for her hand.", "The plastic is too hard to fold.", "The raincoat is too big to carry.")}
+  let w2={pick(k, "The rain bounces off the paper and hits Ben.", "The wool keeps the rain out and her hand gets hot.", "The plastic soaks up all the water at once.", "The raincoat soaks up the water and goes heavy.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x24 {
+    materials row things=["{thing}"] letters=0 names=1 at=canvas(1, 0)
+    text ask "{story} What goes wrong, and why?" narrate width=28 below=row gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=row {
+      say "That is the other way round. Think about what this material does with water: does it soak it up, or keep it out?"
+    }
+    when (pick == w1) point=row {
+      say "That might be true, but it is not what water does to it. The question is about the material and the water."
+    }
+  }
+  hint "What does this material do when water touches it: soak it up, or keep it out?"
+  hint "Now think what the job needs. A hat needs to keep water out; a towel needs to soak it up."
+}

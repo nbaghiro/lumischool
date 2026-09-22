@@ -1,0 +1,13 @@
+item physics.cup-warmest v=1 skills=[physics.heat] {
+  title "Which cup is warmest?"
+  let f=0..2
+
+  scene 17x21 {
+    wrapped cups wraps=["{if f == 0 then \"wool\" else \"none\"}", "{if f == 1 then \"wool\" else \"paper\"}", "{if f == 2 then \"wool\" else if f == 0 then \"none\" else \"paper\"}"] at=canvas(0, 0)
+    text ask "All three started just as hot. Which cup is warmest now?" width=16 below=cups gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check physics.forces of=cups pick=warmest
+  hint "Which thermometer has the tallest red line?"
+}

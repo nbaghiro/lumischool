@@ -1,0 +1,38 @@
+# The two-star reason: the index gives two pages, and the contents page says which chapter each
+# is in, so the page to try first is the one in the chapter about the thing wanted.
+item reading.two-pages-which v=1 stars=2 skills=[reading.text-features, reasoning.evidence] {
+  title "Which of the two pages?"
+  difficulty k
+  let k=0..1 r=0..1
+  let w={pick(k, "dolphins", "krill")}
+  let p1={pick(k, 6, 13)}
+  let p2={pick(k, 15, 18)}
+  let want={pick(k, "how dolphins swim with whales", "how krill live under the ice")}
+  let right={pick(k, "15, whales chapter", "18, ice chapter")}
+  let w1={pick(k, "6, smaller number", "13, smaller number")}
+  let w2={pick(k, "6, first in index", "13, first in index")}
+  let w3={pick(k, "15, bigger number", "18, bigger number")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    text ask "The index says {w} are on pages {p1} and {p2}. Ada wants to read {want}. Which page should she try first, and how does she know?" narrate width=34 at=canvas(1, 1)
+    row low space=1 align=start below=ask gap=1 {
+      contents page title=Contents book="All about the sea" entries=["Tides and waves", "Fish of the shore", "Whales and dolphins", "Under the ice"] pages=[2, 6, 11, 17] blank=-1
+      choice pick options=[if r == 0 then right else w1, if r == 0 then w1 else w2, if r == 0 then w2 else right, w3] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=page {
+      say "The number's size says nothing about what is on the page. Find which chapter each page falls in on the contents page, and pick the chapter about the thing Ada wants."
+    }
+  }
+  hint "Each page is inside one chapter. Which chapter is page {p1} in, and which is page {p2} in?"
+  hint "A chapter runs from its first page to the page before the next chapter starts. Page {p2} is in the chapter about the thing Ada wants."
+}

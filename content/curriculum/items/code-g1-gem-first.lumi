@@ -1,0 +1,20 @@
+# Two gems, one flag: going to the gem nearer the start first always walks fewer squares on an open
+# grid, which is the rule a child can find by counting both ways once.
+item coding.gem-first v=1 stars=2 skills=[coding.sequences, reasoning.compare] {
+  title "Which gem first?"
+  difficulty (10 - abs(xa + ya - xb - yb))
+  let xa=2..5 ya=1..4 xb=2..5 yb=1..4
+  where (ya != yb)
+  where (xa + ya != xb + yb)
+  where (not (xa == 6 and ya == 4) and not (xb == 6 and yb == 4))
+
+  scene 33x14 {
+    maze g cols=6 rows=4 flag=[6, 4] gems=[xa, ya, xb, yb] at=canvas(1, 0)
+    text ask "The robot must pick up both gems, then end on the flag. It should walk the fewest squares. Which gem should it get first? Pick the gem's row." width=16 right-of=g gap=1
+    choice pick options=[ya, yb] below=ask gap=1
+  }
+
+  answer pick=(if xa + ya < xb + yb then ya else yb)
+  hint "Count the squares one way: the start, one gem, the other gem, the flag. Then the other way."
+  hint "Which way was shorter? Look at which gem is nearer the start."
+}

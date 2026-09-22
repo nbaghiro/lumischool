@@ -1,0 +1,51 @@
+lesson coding-debugging-puzzles v=3 format=puzzles grade=4 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "Debugging puzzles"
+  goal "Find the wrong number, the wrong count, the wrong turn and the wrong line by comparing what a program does with what it should do, and mend it."
+
+  puzzle stars=1 {
+    show coding.bug-repeat s=3 g=5 e=2 easy-s=2 easy-g=3 hard-g=6
+    say "The block itself is right. Only the number of times round is wrong."
+  }
+  puzzle stars=1 {
+    show coding.bug-bump-line k=2
+  }
+  puzzle stars=1 {
+    show coding.bug-dance-missing x="wave" y="stamp"
+  }
+  puzzle stars=2 {
+    show coding.bug-nested-square s=4 k=1
+  }
+  puzzle stars=2 {
+    show coding.bug-count-fix m=3 e=-1 easy-m=2 easy-e=1
+  }
+  puzzle stars=2 {
+    show coding.bug-wrong-turn k=2 easy-k=1 hard-k=3
+  }
+  puzzle stars=2 {
+    show coding.bug-which-input m=8 d=-2 easy-d=-1 hard-d=-3
+  }
+  puzzle stars=2 {
+    show coding.bug-inside n=3 s=1 easy-n=2 hard-s=2
+  }
+  puzzle stars=3 {
+    show coding.bug-direction w=3 h=2 k=4 easy-h=1 easy-k=2
+  }
+  puzzle stars=3 {
+    show coding.refactor-fewest n=4 s=1 t=2 easy-n=3 easy-t=1
+  }
+
+  grown-ups """
+    A bug is found by comparing two things: what the program says and what it should have done.
+    Neither is guesswork, and the child should be able to point at the line before changing it. The
+    puzzles get harder in a particular way: at first the wrong part stands out, and by the end every
+    number looks right and only the drawing shows the mistake. In the sign puzzle, check the numbers
+    at each end one by one. The last puzzle is not a bug at all: the program works, and the task is
+    to find the repeat hidden in it.
+    """
+  level easy {
+    grown-ups "At this level the robot's distance is 6 squares in twos, the bump and the dance are as written, the square's wrong line is as written, the path is two up, the wrong turn is on the first line, the sign is wrong for one number, the staircase program goes 2 along, the rectangle's wrong line is the second, and Fin's line has seven lines to fold into four."
+  }
+  level hard {
+    grown-ups "At this level the robot's distance is 18 squares in threes, the bump, the dance and the square are as written, the path is as written, the wrong turn is on the third line, the sign is wrong for three numbers, the staircase program goes 6 along in twos, and the rectangle and Fin's line are as written, since the sheet already pins their hardest versions."
+  }
+}

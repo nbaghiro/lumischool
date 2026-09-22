@@ -1,0 +1,25 @@
+item measure.ribbon-cut v=1 stars=3 skills=[measure.length-cm, reasoning.guess-and-check] {
+  title "Cut into two"
+  difficulty (len + d)
+  let len={8, 10, 12} d={2, 4, 6}
+  where (d < len)
+  where (len != 3 * d)  # then the difference and the short piece are the same number
+
+  scene 30x15 {
+    ruler r cm=len length=len start=0 thing=ribbon at=canvas(1, 0)
+    text ask "This ribbon is cut into two pieces. One piece is {d} cm longer than the other. How long is the shorter piece?" narrate width=28 below=r gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((len - d) / 2)
+  feedback {
+    when (answer == d) point=r {
+      say "{d} cm is how much longer. Find two lengths that make {len} cm and are {d} cm apart."
+    }
+    when (answer == (len + d) / 2) point=r {
+      say "That is the longer piece."
+    }
+  }
+  hint "How long is the whole ribbon?"
+  hint "Try two lengths that make it, and move them one centimetre at a time until they are {d} cm apart."
+}

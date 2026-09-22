@@ -1,0 +1,20 @@
+item physics.boat-depth v=1 skills=[physics.floating] {
+  title "How deep does it sit?"
+  difficulty k
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 17x21 {
+    boat b cargo=k side=5 sits=1 at=canvas(1, 0)
+    text ask "How many squares deep is the boat in the water?" width=15 below=b gap=0
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=b answer=depth
+  hint "Find where the water meets the boat's side. Which mark is it at?"
+}

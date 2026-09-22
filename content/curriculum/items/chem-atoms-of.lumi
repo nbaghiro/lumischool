@@ -1,0 +1,25 @@
+# Atoms of one element across several molecules: count in one molecule, then take that many for each,
+# which is multiplication in a new place.
+item chem.atoms-of v=1 skills=[chemistry.atoms, multiplication.groups] {
+  title "Atoms of one kind"
+  difficulty (if v == 2 or v == 8 then 2 else if v == 3 or v == 9 then 3 else if v == 0 or v == 6 or v == 10 then 4 else if v == 4 then 8 else if v == 5 then 12 else 6)
+  let v=0..11
+  level easy {
+    let v={2, 3, 8, 9}  # two or three of a kind
+  }
+  level hard {
+    let v={1, 4, 5, 7}  # six, eight or twelve of a kind
+  }
+
+  scene 29x12 {
+    text ask "How many {if v == 0 then \"hydrogen\" else if v == 1 then \"hydrogen\" else if v == 2 then \"oxygen\" else if v == 3 then \"oxygen\" else if v == 4 then \"hydrogen\" else if v == 5 then \"hydrogen\" else if v == 6 then \"oxygen\" else if v == 7 then \"oxygen\" else if v == 8 then \"carbon\" else if v == 9 then \"carbon\" else if v == 10 then \"oxygen\" else \"oxygen\"} atoms are there in these molecules altogether?" width=28 at=canvas(1, 0)
+    row kit below=ask gap=0 space=1 align=start {
+      molecule m kind=(if v == 0 then "water" else if v == 1 then "water" else if v == 2 then "water" else if v == 3 then "water" else if v == 4 then "methane" else if v == 5 then "methane" else if v == 6 then "carbon-dioxide" else if v == 7 then "carbon-dioxide" else if v == 8 then "carbon-dioxide" else if v == 9 then "carbon-dioxide" else if v == 10 then "oxygen" else "oxygen") count=(if v == 0 then 2 else if v == 1 then 3 else if v == 2 then 2 else if v == 3 then 3 else if v == 4 then 2 else if v == 5 then 3 else if v == 6 then 2 else if v == 7 then 3 else if v == 8 then 2 else if v == 9 then 3 else if v == 10 then 2 else 3) key=1 letters=1
+      number-input answer
+    }
+  }
+
+  check chem.atoms of=m answer="atoms({if v == 0 then \"H\" else if v == 1 then \"H\" else if v == 2 then \"O\" else if v == 3 then \"O\" else if v == 4 then \"H\" else if v == 5 then \"H\" else if v == 6 then \"O\" else if v == 7 then \"O\" else if v == 8 then \"C\" else if v == 9 then \"C\" else if v == 10 then \"O\" else \"O\"})"
+  hint "How many {if v == 0 then \"hydrogen\" else if v == 1 then \"hydrogen\" else if v == 2 then \"oxygen\" else if v == 3 then \"oxygen\" else if v == 4 then \"hydrogen\" else if v == 5 then \"hydrogen\" else if v == 6 then \"oxygen\" else if v == 7 then \"oxygen\" else if v == 8 then \"carbon\" else if v == 9 then \"carbon\" else if v == 10 then \"oxygen\" else \"oxygen\"} atoms are in one molecule? The key says which balls they are."
+  hint "How many molecules are there? How many is that for all of them?"
+}

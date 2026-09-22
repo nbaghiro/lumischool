@@ -1,0 +1,63 @@
+lesson physics-magnets-first-look v=1 format=teach grade=2 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "A magnet's pull"
+  goal "Say which things a magnet picks up, and show that its pull goes through paper and water."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        magnet bar mode=things count=4 sticks=2 show=1
+        beaker jug max=400 step=100 level=300 unit=ml solid=1 rod=false
+      }
+    }
+    say """
+      In the workshop on the windmill island Sam finds a magnet. He holds it over a tray of odds
+      and ends, and two things jump up to it: the nail and the paper clip. The plastic ruler and
+      the lolly stick stay where they are, and so does the copper coin, though it is metal. A
+      magnet pulls iron and steel, and nothing else. Sam tries it through a sheet of paper, and
+      then against the glass of a jug of water, and the clip follows it both times.
+      """
+  }
+  do {
+    level easy {
+      worked physics.jumps-to-magnet p="nail" q="ruler" r="stick" f=0
+    }
+    practice physics.jumps-to-magnet count=2 seed=3 easy-seed=2 hard-seed=1
+    practice physics.pulled-count count=2 seed=2 easy-seed=2 hard-seed=2
+    practice physics.through-paper count=2 seed=1 easy-seed=1 hard-seed=2
+    practice physics.magnet-sort count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show physics.metal-not-pulled k=2
+    }
+  }
+  story {
+    show physics.magnet-tidy n=5 c=3 m=2 w=0 easy-n=3 easy-c=2 easy-m=2 easy-w=0 hard-n=7 hard-c=5 hard-m=4 hard-w=1
+  }
+  try stars=2 {
+    show physics.metal-not-pulled k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show physics.fish-the-clip p=2 easy-p=0 hard-p=5
+  }
+  remember {
+    say "A magnet pulls iron and steel, not every metal, and its pull goes through paper, glass and water."
+  }
+
+  grown-ups """
+    Two ideas: a magnet pulls iron and steel and not metal in general, and the pull goes through
+    things. The wrong idea to watch for is "metal, so the magnet pulls it", which the coin and the
+    foil are there to catch; ask what the coin is made of, and let the child try a real coin. The
+    through-paper questions turn on distance: thin things keep the clip close and the pull holds,
+    a thick board puts it too far away. The story counts what the magnet lifts against what it
+    leaves. The two-star question is Ben's claim about metal, and in one version the tray cannot
+    settle it, which is the harder answer. The three-star question is a plan: the magnet on the
+    outside of the jug, slid up slowly and kept against the glass until the clip is clear of the
+    water. If metal and magnetic are still the same word after the core, stay here another day
+    with a real magnet and the kitchen drawer, sorting cutlery, coins, keys and clips.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the nail among a ruler and a stick) opens the core, the things that jump are a nail or a clip among plastic, rubber and wood, the counts have no coin or foil in the tray, the pull is tried through paper and a thin lid, which both let it through, the stray in the columns is a ruler or a nail, the story has three or four nails and two or three clips, Ben is shown wrong by the coin, and the fishing steps have one neighbouring pair swapped."
+  }
+  level hard {
+    grown-ups "At this level the thing that jumps is the clip beside a coin or foil, the trays to count hold a coin and foil that are metal and not pulled, the pull is tried through water, a thick board and a card, the stray in the columns is a coin or foil under pulled, a second reasoning question in the core has Ben shown wrong by the foil, the story asks what is left on the floor, Ben's tray has no metal thing that is not pulled and the child has to say so, and the fishing steps are all four muddled."
+  }
+}

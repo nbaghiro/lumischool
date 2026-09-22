@@ -1,0 +1,44 @@
+# Numbering the frog's life: the cards describe the drawings rather than name them, and they are
+# muddled. The ring above shows fewer stages as the level rises: all four at easy, so the cards
+# are matched to it; three at medium; two at hard, so two cards have to be placed from knowing
+# the order.
+item nature.frog-in-order v=1 skills=[nature.life-cycles, reasoning.order] {
+  title "Number the frog's year"
+  difficulty ((if p <= 1 then 0 else if p <= 3 then 1 else 2) + 4 - shown)
+  set shown=3
+  let p=0..5
+  let a={pick(p, 1, 0, 3, 2, 3, 2)}
+  let b={pick(p, 0, 2, 0, 3, 1, 0)}
+  let c={pick(p, 2, 1, 1, 0, 0, 3)}
+  let d={pick(p, 3, 3, 2, 1, 2, 1)}
+  let wa={pick(a, "a clump of jelly with black dots in it", "a swimmer with a tail and no legs", "back legs, and still a short tail", "four legs and no tail at all")}
+  let wb={pick(b, "a clump of jelly with black dots in it", "a swimmer with a tail and no legs", "back legs, and still a short tail", "four legs and no tail at all")}
+  let wc={pick(c, "a clump of jelly with black dots in it", "a swimmer with a tail and no legs", "back legs, and still a short tail", "four legs and no tail at all")}
+  let wd={pick(d, "a clump of jelly with black dots in it", "a swimmer with a tail and no legs", "back legs, and still a short tail", "four legs and no tail at all")}
+  level easy {
+    set shown=4
+    let p=0..1
+  }
+  level hard {
+    set shown=2
+    let p=4..5
+  }
+
+  scene 34x23 {
+    frogcycle life stage=shown ring=1 names=0 at=canvas(1, 1)
+    text ask "Ada drew what she saw in the pond each week, and wrote a card for each drawing. The cards are muddled. Number them 1 to 4 in the order the frog grows, starting with the frogspawn." narrate width=20 right-of=life gap=2
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=life gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1)
+  feedback {
+    when (q == 1 and r == 2 and t == 3 and u == 4) point=s {
+      say "The cards are muddled, so they are not in order as they stand. Find the jelly with the black dots first: that is number 1."
+    }
+    when ((if a == 3 then q else if b == 3 then r else if c == 3 then t else u) == 3 and (if a == 2 then q else if b == 2 then r else if c == 2 then t else u) == 4) point=life {
+      say "The legs come while the tail is still there. The tail goes last, so four legs and no tail is the frog, number 4."
+    }
+  }
+  hint "Which card is the frogspawn? That is number 1. Which card is the grown frog? That is number 4."
+  hint "The tadpole has a tail and no legs. Then the back legs come while it still has a short tail."
+}

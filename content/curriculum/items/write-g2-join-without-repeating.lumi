@@ -1,0 +1,21 @@
+# Joining two sentences about the same animal drops the second "The fox": the child writes only
+# what is left, which is the part the join keeps.
+item writing.join-without-repeating v=1 skills=[writing.joining-sentences] {
+  title "Say it once"
+  let k=0..4
+  let a={if k == 0 then "ran" else if k == 1 then "sniffed" else if k == 2 then "stopped" else if k == 3 then "yawned" else "jumped"}
+  let b={if k == 0 then "hid" else if k == 1 then "dug" else if k == 2 then "looked" else if k == 3 then "slept" else "landed"}
+
+  scene 37x13 {
+    fox f facing=1 at=canvas(1, 1)
+    text two "The fox {a}. The fox {b}. Join them into one sentence. Write the missing word." narrate width=22 right-of=f gap=2
+    row w below=f gap=1 space=1 align=centre {
+      sentence strip before="The fox {a} and" blank=5 after="."
+      word-input word options=["{b}"] letters=7
+    }
+  }
+
+  answer word=b
+  hint "Both sentences start with The fox. Do you need to say it twice?"
+  hint "What else did the fox do?"
+}

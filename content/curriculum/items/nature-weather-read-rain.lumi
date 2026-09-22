@@ -1,0 +1,25 @@
+# Reading the rain gauge: the tube is numbered every `step` with a half mark between, so a level on a
+# half mark is the harder read.
+item nature.weather-read-rain v=1 skills=[nature.weather, measuring.scales] {
+  title "How much rain?"
+  difficulty (if half == 1 then 1 else 0)
+  let n=0..7
+  let lvl={pick(n, 20, 30, 10, 40, 25, 15, 35, 45)}
+  let half={pick(n, 0, 0, 0, 0, 1, 1, 1, 1)}
+  level easy {
+    let n=0..3
+  }
+  level hard {
+    let n=4..7
+  }
+
+  scene 31x14 {
+    raingauge gauge max=50 step=10 level=lvl unit=mm show=1 at=canvas(1, 0)
+    text ask "How many millimetres of rain did the gauge catch?" narrate width=20 right-of=gauge gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=lvl
+  hint "Find the top of the water in the tube."
+  hint "The numbers go up in tens, and the short mark between two of them is five more."
+}

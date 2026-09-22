@@ -1,0 +1,27 @@
+# A fuel gauge read as a fraction of a full tank, then as litres: the gauge from the physics shelf.
+item percent.fuel-litres v=1 skills=[fractions.of-amount, percentages.of-amount] {
+  title "How much is in the tank"
+  difficulty ((if f == 0.5 then 0 else if f == 0.25 then 1 else 2) + c / 40)
+  let f={0.25, 0.5, 0.75} c={40, 48, 60, 80}
+  level easy {
+    let f={0.5}
+  }
+  level hard {
+    let f={0.75} c={48, 80}
+  }
+
+  scene 32x11 {
+    fuelgauge gauge level=f at=canvas(1, 1)
+    text ask "A full tank holds {c} litres. How many litres are in the tank now?" narrate width=15 right-of=gauge gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer plain(c * f)
+  feedback {
+    when (f != 0.5 and answer == c - c * f) point=gauge {
+      say "That is how much more would fill it. The needle shows how much is in it."
+    }
+  }
+  hint "What fraction of the tank is full: a quarter, a half or three quarters?"
+  hint "Find that fraction of {c}."
+}

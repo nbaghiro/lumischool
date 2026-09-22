@@ -1,0 +1,18 @@
+item physics.shadow-sun v=1 skills=[physics.light] {
+  title "High sun or low sun?"
+  let t={2, 4} m=0..1
+
+  scene 23x20 {
+    shadows sun tall=t shadow=(if m == 1 then t * 2 else t / 2) at=canvas(1, 1)
+    text ask "Is the sun high in the sky or low?" width=16 below=sun gap=1
+    choice pick options=["High", "Low"] below=ask gap=1
+  }
+
+  answer pick=(if m == 1 then "Low" else "High")
+  feedback {
+    when (pick == "High" and m == 1) point=sun {
+      say "The shadow is longer than the stick, so the light is coming from low down."
+    }
+  }
+  hint "Is the shadow longer or shorter than the stick?"
+}

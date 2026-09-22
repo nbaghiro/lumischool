@@ -1,0 +1,12 @@
+item writing.write-a-caption v=1 skills=[writing.captions, writing.composing] {
+  title "Write a caption"
+  let w={"fish-tank", "bicycle", "rocket", "wheelbarrow"}
+
+  scene 29x17 {
+    art pic asset="{w}" at=canvas(1, 1)
+    caption strip text="" width=16 below=pic gap=1
+    text ask "Write a caption for the picture on the strip." width=14 right-of=pic gap=1
+  }
+
+  check writing.by-eye look-for="A few words that say what the picture shows, with a capital letter at the start; a caption need not be a whole sentence, but it has to be about this picture."
+}

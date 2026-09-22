@@ -1,0 +1,22 @@
+# A picture graph where one picture stands for two: read the row, then double it.
+item graph.picture-key v=1 skills=[data.picture-graphs, multiplication.twos] {
+  title "One star for two children"
+  difficulty (2 * (if d == "Monday" then a else if d == "Tuesday" then b else c))
+  let a=2..6 b=2..6 c=2..6 d={"Monday", "Tuesday", "Wednesday"}
+  where (a != b and b != c and a != c)
+
+  scene 30x17 {
+    picgraph club labels=["Monday", "Tuesday", "Wednesday"] counts=[a, b, c] prop=star at=canvas(1, 1)
+    text ask "Each star stands for 2 children. How many children came to the club on {d}?" narrate width=28 below=club gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * (if d == "Monday" then a else if d == "Tuesday" then b else c))
+  feedback {
+    when (answer == (if d == "Monday" then a else if d == "Tuesday" then b else c)) point=club {
+      say "That is how many stars. Each star is 2 children."
+    }
+  }
+  hint "How many stars are in the row for {d}?"
+  hint "Count in twos, one two for every star."
+}

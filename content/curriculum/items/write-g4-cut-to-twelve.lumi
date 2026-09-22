@@ -1,0 +1,15 @@
+# Cutting to a word limit while keeping four facts: many right answers, so a grown-up marks it.
+item writing.cut-to-twelve v=2 stars=3 skills=[writing.concision, writing.editing] {
+  title "Twelve words or fewer"
+  let k=0..3
+
+  scene 36x18 {
+    passage draft text="{if k == 0 then \"On Tuesday morning, a boy who was called Sam went to the big market in the town in order to buy some fresh fish.\" else if k == 1 then \"Late in the evening, the old grey cat that lives at our house climbed right up to the very top of the tall tree.\" else if k == 2 then \"At the end of the day, my big sister and I walked all the way down the long hill to the river to see the ducks.\" else \"Early on Sunday, the man who drives the bus parked it outside the school gates because of the fact that it was snowing.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Write it again in twelve words or fewer. Keep who, what, where and when." width=35 below=draft gap=1
+    writinglines lines lines=2 width=35 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence of twelve words or fewer, with a capital and a full stop, that still says who did what, where and when; the words that did no work (who was called, in order to, all the way, the fact that) are gone, not a fact."
+  hint "Which words tell you who, what, where and when? Keep those."
+  hint "Now cross out the words that only pad or repeat. How many are left?"
+}

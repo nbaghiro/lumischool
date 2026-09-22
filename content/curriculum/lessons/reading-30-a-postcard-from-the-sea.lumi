@@ -1,0 +1,53 @@
+lesson reading-a-postcard-from-the-sea v=1 format=teach grade=4 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "A postcard from the sea"
+  goal "Read a postcard for its parts, and for clues about where and when it was written."
+
+  look {
+    scene 35x14 {
+      postcard card greeting="Dear Gran," text="We sailed out of the harbour this morning. The lighthouse got smaller and smaller until it was a dot." closing="Love from" from="Ravi" to=["Mrs Shah", "4 Hill Road", "Bray"] stamp=ship date="3 May" lines=4 at=canvas(1, 1)
+    }
+    say """
+      A postcard has parts, and each part has a job. The greeting says who it is for. The message
+      says what happened. The sign-off says who wrote it, and the address on the right says where it
+      is going.
+
+      A good message is full of clues about where the writer is, even when it does not say.
+      """
+  }
+  do {
+    show reading.letter-parts k=0
+    practice reading.postcard-parts count=1 seed=2
+    practice reading.postcard-clue count=1 seed=3
+    level easy {
+      worked reading.arrived-when d=6 n=3 level=medium
+    }
+    practice reading.arrived-when count=2 seed=4
+    practice reading.postcard-evidence count=3 easy-count=2 hard-count=2 seed=5
+    level hard {
+      practice reading.two-views count=1 seed=5
+    }
+  }
+  try stars=2 {
+    show reading.two-views k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.write-place-clues k=0
+  }
+  remember {
+    say "Find the clues the writer leaves, then ask where those things happen."
+  }
+
+  grown-ups """
+    The three postcards come from the three worlds of the fourth year: the open sea, the mountains
+    and the island. None of them names the place. Ask which words gave it away, and whether any of
+    the clues could fit somewhere else. The beach questions ask for the one sentence that could not
+    happen on a beach, which is the evidence habit this grade is building. In the three-star
+    question, read the child's sentences back and ask whether they could be about anywhere else.
+    """
+  level easy {
+    grown-ups "At this level the parts of the postcard and the clue to the place are as written, three days ago is worked once in the teacher's pen before yesterday and two days ago, the sentences that give the place away are the lamp and the monkeys, near the start of the message, the two-star's storm is the snow, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the parts of the postcard and the clue to the place are as written, the dates are counted back three days, the sentences that give the place away are the third each time (no land for two days, the sea looking tiny), one of them making way for a second pair of views, the storm, the two-star's storm is the heat, and the three-star is as written."
+  }
+}

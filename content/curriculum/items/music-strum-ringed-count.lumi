@@ -1,0 +1,28 @@
+# The count is not printed, so the child counts along the bar, 1 and 2 and, to reach the ring. The
+# bar has strums on four numbers and two ands, so both answers come up.
+item music.strum-ringed-count v=1 skills=[music.strumming, music.counting-beats] {
+  title "What do you say?"
+  difficulty ((if r == 1 or r == 5 then 1 else 0) + (if r >= 4 then 1 else 0))
+  let r={0, 1, 2, 4, 5, 6}
+  level easy {
+    let r={0, 2, 4}  # on a number
+  }
+  level hard {
+    let r={1, 5, 6}  # on an and, or late in the bar
+  }
+
+  scene 30x17 {
+    strumtrack bar strums=DUD-DUD- counts=false chord=none ring=r at=canvas(1, 1)
+    text ask "Count 1 and 2 and 3 and 4 and along the bar. What do you say at the ringed strum?" narrate width=28 below=bar gap=1
+    choice pick options=["1", "2", "3", "4", "and"] below=ask gap=1
+  }
+
+  answer pick=(if r == 0 then "1" else if r == 2 then "2" else if r == 4 then "3" else if r == 6 then "4" else "and")
+  feedback {
+    when (pick == "and" and r % 2 == 0) point=bar {
+      say "A long arrow down comes on a number, not on an and."
+    }
+  }
+  hint "Point at each mark in turn and say the count as you go."
+  hint "Is the ringed strum a long arrow or a short one?"
+}

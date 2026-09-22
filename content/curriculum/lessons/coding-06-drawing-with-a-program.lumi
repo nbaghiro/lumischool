@@ -1,0 +1,49 @@
+lesson coding-drawing-with-a-program v=3 format=teach grade=2 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "Drawing with a program"
+  goal "Read a program that draws a shape, say how long its line is and where it ends, read a program from a drawing, and write one that draws a square."
+
+  look {
+    scene 28x15 {
+      row both at=canvas(1, 0) space=1 align=start {
+        blocks b code=["repeat 4", "  forward 3", "  turn left"]
+        turtle t cols=6 rows=6 col=1 row=6 face=right moves=["repeat 4", "  forward 3", "  turn left"]
+      }
+    }
+    say """
+      Give the turtle a pen and a program becomes a drawing. Forward 3, then turn, four times over,
+      and the turtle comes back to where it started: that is a square. Change one number and it is
+      a bigger square.
+      """
+  }
+  do {
+    practice coding.draws-what count=1 seed=5 easy-seed=4 hard-seed=10
+    practice coding.turtle-length count=2 seed=6
+    practice coding.side-from-drawing count=2 seed=4 easy-seed=2 hard-seed=2
+    practice coding.turtle-ends count=2 seed=4 hard-seed=13
+    show coding.build-square n=3 easy-n=2 hard-n=4
+  }
+  try stars=2 {
+    show coding.which-closes w=4 h=2 p=2 easy-w=3 easy-p=0 hard-h=3 hard-p=1
+  }
+  try stars=3 {
+    show coding.rectangle-in-five w=4 h=2 easy-w=3 easy-h=1 hard-h=3
+  }
+  remember {
+    say "Four equal sides that come back to the start make a square."
+  }
+
+  grown-ups """
+    Squared paper and a pencil is the same activity without a screen. Read a program out one block
+    at a time while the child draws it, and do not tell them what the shape is going to be. In the
+    two-star question the pale shape is there to trace each program on with a finger; the one that
+    comes back has its way left equal to its way right and its way down equal to its way up. In the
+    three-star build, a rectangle is a long side and a short side done twice, which is what makes it
+    fit in five blocks.
+    """
+  level easy {
+    grown-ups "At this level the shapes to name are squares or rectangles at least two squares longer than they are high, the lines measured are six or eight squares, the empty block is one of the first two, the turtle draws two sides and stops, the square to build has sides of two, the program that closes is A, and the rectangle to build is three by one."
+  }
+  level hard {
+    grown-ups "At this level the shapes to name are squares or rectangles one square off square, the lines measured are twelve or fourteen squares, the empty block is the third or fourth, the turtle draws three sides, the square to build has sides of four, the program that closes is C with a side of three to check, and the rectangle to build is four by three."
+  }
+}

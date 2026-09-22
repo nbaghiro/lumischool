@@ -1,0 +1,21 @@
+# Every array a number makes: the child lists rows and columns and counts them.
+item groups.ways-to-arrange v=2 stars=3 skills=[multiplication.arrays, reasoning.all-the-ways] {
+  title "Every way to fill the tray"
+  difficulty n
+  let n={12, 16, 18, 20, 24}
+
+  scene 20x18 {
+    array dots rows=2 cols=(n / 2) color=tang at=canvas(1, 1)
+    text ask "{n} buns go on a tray in equal rows. There is more than one row and more than one bun in a row. How many different ways are there? 2 rows of {n / 2} and {n / 2} rows of 2 are different." width=18 below=dots gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if n % 2 == 0 then 1 else 0) + (if n % 3 == 0 then 1 else 0) + (if n % 4 == 0 then 1 else 0) + (if n % 5 == 0 then 1 else 0) + (if n % 6 == 0 then 1 else 0) + (if n % 8 == 0 and n > 8 then 1 else 0) + (if n % 9 == 0 and n > 9 then 1 else 0) + (if n % 10 == 0 and n > 10 then 1 else 0) + (if n % 12 == 0 and n > 12 then 1 else 0))
+  feedback {
+    when (answer == 2) point=dots {
+      say "Try 2 rows first, then 3 rows, then 4, and keep going."
+    }
+  }
+  hint "Try 2 rows. Does {n} share equally into 2 rows? Then try 3 rows."
+  hint "Each time it works, you have found a way. Keep going until a row would have only 1 bun."
+}

@@ -1,0 +1,43 @@
+# The three-star: the two things that get washing dry fastest, chosen from four pairs. Sun, wind
+# and spreading out all help, because they warm the water, move the air and give the air more of
+# the cloth to take water from; shade, folding and a bag do the opposite. No method is on the
+# page: each pair has to be judged by what both of its halves do.
+item chem.dry-the-washing v=1 stars=3 skills=[chemistry.states, reasoning.constraints] {
+  title "Dry the washing fastest"
+  difficulty k
+  let k=0..2 r=0..3
+  let right={pick(k, "sun and wind", "sun and spread out", "wind and spread out")}
+  let o1={pick(k, "shade and folded up", "shade and spread out", "shade and folded up")}
+  let o2={pick(k, "sun and folded up", "sun and folded up", "wind and folded up")}
+  let o3={pick(k, "wind and in a bag", "wind and in a bag", "shade and spread out")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x31 {
+    row signs at=canvas(1, 0) space=3 align=end {
+      windsock w wind=1
+      dish d left=1 day=1 sun=1
+    }
+    text ask "Nour has washed the goats' blankets and wants them dry by tonight. Which two things will get the water out of them fastest: hung where, and how?" narrate width=32 below=signs gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else if r == 2 then o2 else o3, if r == 0 then o1 else if r == 1 then right else if r == 2 then o3 else o2, if r == 0 then o2 else if r == 1 then o3 else if r == 2 then right else o1, if r == 0 then o3 else if r == 1 then o2 else if r == 2 then o1 else right] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o2) point=signs {
+      say "One half of that helps, but folding hides most of the wet cloth from the air. Both halves have to help."
+    }
+    when (pick == o3) point=signs {
+      say "{if k == 2 then \"Spreading out helps, but the shade is cool. Both halves have to help.\" else \"The wind helps, but a bag keeps the air off the cloth. Both halves have to help.\"}"
+    }
+    when (pick == o1) point=signs {
+      say "{if k == 1 then \"Spreading out helps, but the shade is cool.\" else \"Neither half helps: shade is cool, and folded cloth keeps the air out.\"}"
+    }
+  }
+  hint "Water leaves cloth into the air. Which things make the air warmer, keep it moving, or give it more cloth to reach?"
+  hint "Test each half of each pair. Shade, folding and a bag all slow the drying down."
+}

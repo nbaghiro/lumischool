@@ -1,0 +1,54 @@
+lesson g4-adding-fractions v=1 format=teach grade=4 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Adding fractions and mixed numbers"
+  goal "Add fractions with related denominators, add mixed numbers, and change between mixed numbers and pieces."
+
+  look {
+    scene 37x22 {
+      fractionwall wall rows=[1, 2, 4, 8] shade=[0, 0] at=canvas(1, 1)
+      mixed number whole=2 n=4 k=3 write=true right-of=wall gap=2
+      equivalent pair a=[1, 2] b=[2, 4] show=true below=wall gap=2
+      chocolate bar rows=2 cols=4 eaten=3 right-of=pair gap=2
+    }
+    say """
+      Fractions add when the pieces are the same size, so change one of them first. Two and three
+      quarters is eleven quarters, because each whole one is four of them.
+      """
+  }
+  do {
+    practice fraction.mixed-number count=1 seed=7
+    level easy {
+      worked fractions.add-related b=4 m=2 a=1 c=1 level=medium
+    }
+    practice fractions.add-related count=2 seed=3 hard-seed=6
+    practice fractions.missing-part count=2 hard-count=1 seed=5
+    level hard {
+      practice fraction.nearer-one count=1 seed=2
+    }
+    practice fraction.to-mixed count=1 seed=4
+    practice fraction.add-mixed count=1 seed=2
+    practice fraction.pizzas-eaten count=1 seed=6
+  }
+  try stars=2 {
+    show fraction.nearer-one b=4 x=1 y=3 easy-b=3 easy-x=2 easy-y=1 hard-b=6 hard-x=2
+  }
+  try stars=3 {
+    show fraction.whole-ways s="halves, quarters and eighths" easy-s="halves, thirds and sixths"
+  }
+  remember {
+    say "Same-sized pieces add. Different sizes have to be changed first. A fraction bigger than one whole is some whole ones and a part."
+  }
+
+  grown-ups """
+    The wall settles most arguments here. If the child adds the bottom numbers, put two quarters
+    against one half on the wall and ask which is bigger. When a sum passes one whole, say it out
+    loud: five quarters is one whole and one quarter. In the two-star question, how much each
+    fraction needs to make a whole is the reason; working both out is a second way. In the
+    three-star question start with the ways that use two halves, then one, then none.
+    """
+  level easy {
+    grown-ups "At this level the mixed numbers have one or two wholes in thirds or quarters, a quarter and an eighth are added once in the teacher's pen before two sums in quarters or sixths, the missing part is in quarters or sixths, the fractions to write as wholes are thirds or quarters with one or two wholes, the mixed numbers added are in quarters or fifths with one whole in the second, the pizzas are cut in six, the pieces nearer a whole are a third against five sixths, which the wall shows, and the three-star counts the seven ways in halves, thirds and sixths."
+  }
+  level hard {
+    grown-ups "At this level the mixed numbers have three wholes in quarters or fifths, the sums are in twelfths and fifteenths, the missing part is in ninths, twelfths or sixteenths, the fractions to write as wholes are sixths or eighths with three wholes, the mixed numbers added have two and three wholes in sixths or eighths, the pizzas are cut in eight with twelve or more slices gone, the pieces nearer a whole are four sixths against nine twelfths, one twelfth apart, and the question is asked again in fifths or sixths, and the three-star is as written."
+  }
+}

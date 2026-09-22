@@ -1,0 +1,52 @@
+lesson writing-the-recipe-the-kitchen-is-cooking v=1 format=teach grade=2 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "The recipe the kitchen is cooking"
+  goal "Write instructions in order, each one starting with a doing word."
+
+  look {
+    scene 28x16 {
+      howto card title="A cake for the kitchen" need=["flour", "sugar", "two eggs"] steps=["Crack the eggs into the bowl.", "Stir in the flour and sugar.", "Pour it into the tin.", "Bake it for half an hour."] blank=-1 width=26 at=canvas(1, 1)
+    }
+    say """
+      The kitchen is baking a cake. A recipe says what you need, then what to do, in order. Each
+      step starts with a doing word: crack, stir, pour, bake. The numbers keep the steps in order,
+      so nobody bakes the tin before the eggs are in.
+      """
+  }
+  do {
+    level easy {
+      worked writing.bossy-hard k=3 r=0 level=medium
+    }
+    practice writing.bossy-hard count=1 seed=3
+    show writing.recipe-order
+    practice writing.bossy-word count=1 seed=1
+    practice writing.bossy-hard count=1 seed=8 hard-seed=1
+    practice writing.steps-no-numbers count=1 seed=2
+    practice writing.missing-step count=1 seed=5
+    practice writing.what-you-need count=1 seed=4
+    practice writing.order-word count=1 seed=3
+  }
+  try stars=2 {
+    show writing.vague-step k=1 r=2 easy-k=3
+  }
+  try stars=3 {
+    show writing.write-the-steps k=0
+  }
+  remember {
+    say "Steps go in order, and each starts with a doing word."
+  }
+
+  grown-ups """
+    The order, the doing words, the missing step and the missing thing are marked by the machine;
+    the steps at the end are the child's. When every choice is a doing word, the picture and the
+    rest of the sentence have to decide, so read the instruction aloud with each one. The two-star
+    question asks why a step could not be followed. The best test of instructions is to follow
+    them exactly as written, so try the child's planting steps with a real pot and seed if you
+    have them, and let the child find the step they left out.
+    """
+  level easy {
+    grown-ups "At this level bake is chosen once in the teacher's pen before crack, stir, pour and plant, the steps to order are as written, the missing step is the first or the last, what you need is as written, the order word is first or last, the two-star's step that cannot be followed is get the thing, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the doing words are bake and water, which the pictures only hint at, the steps to order are as written, the missing step is in the middle, what you need is as written, the order word is next, between first and last, and the two-star and three-star are as written."
+  }
+}

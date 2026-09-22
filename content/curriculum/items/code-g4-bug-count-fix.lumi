@@ -1,0 +1,26 @@
+# The inner count of a nested repeat is wrong, and the drawing has to be read to say what it should
+# be. The checker tries every number on every line and proves only this one mends it.
+item coding.bug-count-fix v=1 skills=[coding.debugging, coding.repetition] {
+  title "Mend the inner count"
+  difficulty m
+  let m=2..3 e={-1, 1}
+  where (m + e >= 2)  # with a repeat of 1, making line 3 go up 2 would mend it too
+
+  scene 33x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  repeat {m + e}", "    up 1", "  right 2"]
+      turtle t cols=5 rows=(2 * m + 1) col=1 row=(2 * m + 1) moves=["repeat 2", "  repeat {m + e}", "    up 1", "  right 2"] target=["repeat 2", "  repeat {m}", "    up 1", "  right 2"] mark=false
+    }
+    text ask "The turtle should follow the pale path. What number should line 2 have?" width=26 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=t goal=target answer=fix
+  feedback {
+    when (answer == m + e) point=p {
+      say "That is the number line 2 has now, and the drawing does not match."
+    }
+  }
+  hint "How tall is one step of the pale path?"
+  hint "Each time round the outer repeat, line 2's repeat draws the tall side of one step."
+}

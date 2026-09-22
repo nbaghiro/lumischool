@@ -1,0 +1,22 @@
+# Every lit lamp moves one place left, so every part is worth double: the child who sees that the
+# number doubles does not need to add at all. The number stays below 8 so it still fits.
+item coding.lamps-shift v=1 stars=2 skills=[coding.data, reasoning.structure] {
+  title "Move every lamp left"
+  difficulty n
+  let n={3, 5, 6, 7}
+
+  scene 32x9 {
+    lamps l bits=4 n=n at=canvas(1, 0)
+    text ask "Every lit lamp moves one place to the left. What number do the lamps show now?" width=17 right-of=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * n)
+  feedback {
+    when (answer == n + 1) point=l {
+      say "Moving left does not add one. What is each lamp worth after it moves?"
+    }
+  }
+  hint "Which lamps will be lit after the move? Add them up."
+  hint "Each lamp is worth double the one on its right. What happens to each part of the number?"
+}

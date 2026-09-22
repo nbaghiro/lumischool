@@ -1,0 +1,17 @@
+# A riddle in two parts, one of them a "not" or a fact to work out (two legs), so a child who
+# stops after the first part picks a card that fits only half of it.
+item reading.clue-animal v=1 skills=[reading.find-a-detail, reading.sentence-meaning] {
+  title "Who am I?"
+  let k=0..3
+
+  scene 37x12 {
+    text says "{if k == 0 then \"I am on the bed. I am not a cat.\" else if k == 1 then \"I am a fox. I am not in the box.\" else if k == 2 then \"I am a pig. I am not on the rug.\" else \"I am under the table. I have two legs.\"}" narrate width=8 right-of=cards gap=1
+    picturecards cards who=["{if k == 0 then \"dog\" else if k == 1 then \"fox\" else if k == 2 then \"pig\" else \"hen\"}", "{if k == 0 then \"cat\" else if k == 1 then \"fox\" else if k == 2 then \"duck\" else \"hen\"}", "{if k == 0 then \"dog\" else if k == 1 then \"hen\" else if k == 2 then \"pig\" else \"cat\"}"] where=["{if k == 0 then \"on\" else if k == 1 then \"in\" else if k == 2 then \"on\" else \"under\"}", "{if k == 0 then \"on\" else if k == 1 then \"by\" else if k == 2 then \"on\" else \"on\"}", "{if k == 0 then \"under\" else if k == 1 then \"in\" else if k == 2 then \"by\" else \"under\"}"] thing=["{if k == 0 then \"bed\" else if k == 1 then \"box\" else if k == 2 then \"rug\" else \"table\"}", "{if k == 0 then \"bed\" else if k == 1 then \"box\" else if k == 2 then \"rug\" else \"table\"}", "{if k == 0 then \"bed\" else if k == 1 then \"box\" else if k == 2 then \"rug\" else \"table\"}"] letters=true at=canvas(1, 1)
+    text ask "Which card is it?" narrate below=cards gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=2
+  }
+
+  answer pick=(if k == 0 or k == 3 then "A" else if k == 1 then "B" else "C")
+  hint "Read the first part. Which cards fit it?"
+  hint "Now read the second part. Which of those cards is left?"
+}

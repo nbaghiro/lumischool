@@ -1,0 +1,28 @@
+# Five letters every time and three or four sounds, so counting letters never gives the answer.
+# The pairs are the ones grade 2 reads: ee, ai, oa, igh and ay, beside sh, ch, th, ck, ll and ng.
+item reading.team-sounds v=1 skills=[reading.digraphs, reading.vowel-teams] {
+  title "How many sounds?"
+  difficulty (if w in {"train", "spray", "brush"} then 2 else if w == "night" or w == "coach" then 1 else 0)
+  let w={"night", "sheep", "train", "coach", "teeth", "spray", "chick", "shell", "thing", "brush"}
+  level easy {
+    let w={"sheep", "teeth", "chick", "shell", "thing", "brush"}  # one pair of letters, and brush so that not every answer is three
+  }
+  level hard {
+    let w={"night", "coach", "train", "spray", "brush"}  # a cluster as well, or three letters to a sound
+  }
+
+  scene 29x7 {
+    wordcards card words=[w] picked=-1 at=canvas(1, 1)
+    text ask "Say the word slowly. How many sounds does it have?" narrate width=16 right-of=card gap=2
+    number-input answer below=ask gap=0
+  }
+
+  answer (if w in {"train", "spray", "brush"} then 4 else 3)
+  feedback {
+    when (answer == 5) point=card {
+      say "That is how many letters there are. Some letters join up to make one sound."
+    }
+  }
+  hint "Which two or three letters make one sound together?"
+  hint "Say the word and touch a finger for each sound you hear."
+}

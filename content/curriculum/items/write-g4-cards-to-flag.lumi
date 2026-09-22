@@ -1,0 +1,18 @@
+# Directions a walker could follow, checked by running them: the cards turn from the robot's own
+# side, and in one version it starts facing down the page, so a left turn heads to the page's right.
+# coding.builds proves the four cards can reach the flag in every version.
+item writing.cards-to-flag v=1 skills=[writing.directions, writing.instructions] {
+  title "Direction cards for the robot"
+  difficulty k
+  let k=0..1
+
+  scene 32x21 {
+    maze g map=["{if k == 0 then \"S . . . #\" else \"# # # F #\"}", "# # # . #", "{if k == 0 then \"# # # F #\" else \"S . . . #\"}"] face=(if k == 0 then "up" else "down") at=canvas(1, 0)
+    text ask "Put the four cards in order so the robot reaches the flag." width=13 below=g gap=1
+    codepad answer tray=["forward 2", "{if k == 0 then \"turn right\" else \"turn left\"}", "forward 3", "{if k == 0 then \"turn right\" else \"turn left\"}"] lines=4 once=true right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Which way is the robot facing at the start? Can it go forward straight away?"
+  hint "At each corner, stand the way the robot is facing. Is the turn to your left or your right?"
+}

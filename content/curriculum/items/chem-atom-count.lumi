@@ -1,0 +1,26 @@
+# The way in: each atom is drawn as a ball with its letter, so counting the balls is the answer.
+item chem.atom-count v=1 skills=[chemistry.atoms] {
+  title "How many atoms?"
+  difficulty (if k == "methane" then 5 else if k == "water" or k == "carbon-dioxide" then 3 else 2)
+  let k={"water", "oxygen", "hydrogen", "nitrogen", "carbon-dioxide", "methane"}
+  level easy {
+    let k={"water", "oxygen", "hydrogen", "nitrogen"}
+  }
+  level hard {
+    let k={"water", "carbon-dioxide", "methane"}
+  }
+
+  scene 26x8 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      molecule m kind=k count=1 key=1 letters=1
+      column side space=1 align=start {
+        text ask "How many atoms are in this molecule?" width=12
+        number-input answer
+      }
+    }
+  }
+
+  check chem.atoms of=m answer=atoms
+  hint "Which parts are the atoms: the balls or the sticks?"
+  hint "Touch each ball once as you count. How many did you touch?"
+}

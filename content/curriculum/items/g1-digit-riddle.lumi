@@ -1,0 +1,23 @@
+item place.digit-riddle v=1 stars=2 skills=[place-value.tens-ones, reasoning.clues] {
+  title "Which number am I"
+  difficulty (t + u)
+  let t=1..8 u=1..9
+
+  scene 30x10 {
+    guide g pose=point at=canvas(1, 1)
+    bubble ask "I am between {10 * t} and {10 * t + 10}. My two digits add up to {t + u}. Which number am I?" width=22 from=g.hand right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * t + u)
+  feedback {
+    when (answer == 11 * t + u) point=ask {
+      say "The two digits together make {t + u}. The first digit is {t}, so what is the second?"
+    }
+    when (answer == t + u) point=ask {
+      say "{t + u} is what the digits add up to. The number itself is between {10 * t} and {10 * t + 10}."
+    }
+  }
+  hint "Between {10 * t} and {10 * t + 10}: what is the first digit?"
+  hint "The first digit and the second digit make {t + u}. What goes with the first to make it?"
+}

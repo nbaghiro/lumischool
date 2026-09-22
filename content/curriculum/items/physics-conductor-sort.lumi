@@ -1,0 +1,20 @@
+item physics.conductor-sort v=1 skills=[physics.materials] {
+  title "The odd one out"
+  difficulty (if r == "marble" then 2 else if r == "ruler" then 1 else 0)
+  let p={"nail", "clip"} q={"foil", "coin"} r={"ruler", "eraser", "stick", "marble"} f=0..3
+  level easy {
+    let r={"eraser", "stick"}
+  }
+  level hard {
+    let r={"ruler", "marble"}
+  }
+
+  scene 18x15 {
+    things t things=["{if f == 0 then r else p}", "{if f == 1 then r else q}", "{if f == 2 then r else if q == \"coin\" then \"foil\" else \"coin\"}", "{if f == 3 then r else if p == \"nail\" then \"clip\" else \"nail\"}"] at=canvas(1, 0)
+    text ask "Which one would not make the bulb light?" width=16 below=t gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.things of=t pick="only(insulates)"
+  hint "Which one is not made of metal?"
+}

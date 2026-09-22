@@ -1,0 +1,30 @@
+# The start is unknown: the child has to add the tens back rather than take them away again.
+item sub.tens-before v=1 skills=[place-value.add-tens, subtraction.start-unknown] {
+  title "What was there before?"
+  difficulty (r + 10 * k)
+  let r=12..59 k=2..4
+  where (r % 10 != 0)
+  level easy {
+    let r=12..29 k={2}
+  }
+  level hard {
+    let r=40..59 k=3..4
+  }
+
+  scene 26x8 {
+    text ask "Jess had some stickers. She gave away {10 * k}, and now she has {r}. How many did she have at first?" width=24 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (r + 10 * k)
+  feedback {
+    when (answer == r - 10 * k) point=ask {
+      say "She gave some away, so she had more before. Add the {10 * k} back on."
+    }
+    when (answer == r + k) point=ask {
+      say "She gave away {10 * k}, which is {k} tens, not {k} ones."
+    }
+  }
+  hint "Did Jess have more at first, or fewer?"
+  hint "Put back the {10 * k} she gave away. How many tens is that?"
+}

@@ -1,0 +1,11 @@
+item physics.sheet-order v=1 skills=[physics.light] {
+  title "Most light to least"
+
+  scene 22x16 {
+    text ask "Number these from the one that lets most light through, 1, to the one that lets least through, 3." width=20 at=canvas(1, 0)
+    sequence order items=["tracing paper", "clear glass", "card"] blanks=[t, g, c] below=ask gap=1
+  }
+
+  answer t=2 g=1 c=3
+  hint "Which one can you see through clearly? Which one can you not see through at all?"
+}

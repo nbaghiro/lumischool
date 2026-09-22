@@ -1,0 +1,18 @@
+# The word is not printed, so it has to be read down the first letters.
+item writing.acrostic-word v=1 skills=[writing.poems] {
+  title "The word down the side"
+  difficulty (if s == 1 then 1 else 0)
+  let s=0..2 w={if s == 0 then "heron" else if s == 1 then "canal" else "frost"}
+
+  scene 30x15 {
+    listpad poem title="A poem" items=["{if s == 0 then \"Hiding in the reeds\" else if s == 1 then \"Calm brown water\" else \"Frozen grass\"}", "{if s == 0 then \"Every fish is fast\" else if s == 1 then \"A boat goes by\" else \"Roofs gone white\"}", "{if s == 0 then \"Right in it goes\" else if s == 1 then \"Nine ducks follow\" else \"Only the robin sings\"}", "{if s == 0 then \"Out comes a fish\" else if s == 1 then \"A lock gate opens\" else \"Silver leaves\"}", "{if s == 0 then \"Now it flies away\" else if s == 1 then \"Long boats wait\" else \"Tiny footprints\"}"] count=0 width=17 ticks=false at=canvas(1, 1)
+    column right right-of=poem gap=1 space=1 align=start {
+      text ask "Read the first letters going down. What word do they spell?" width=11
+      word-input word options=["{w}"] letters=5
+    }
+  }
+
+  answer word=w
+  hint "Put your finger on the first letter of each line."
+  hint "Say the letters in order from the top. What word is it?"
+}

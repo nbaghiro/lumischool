@@ -1,0 +1,25 @@
+item physics.boat-weight v=1 skills=[physics.floating, physics.forces] {
+  title "How much more push?"
+  difficulty (b * k)
+  let k=1..3 b={5, 10}
+  level easy {
+    let k=1..3 b={5}
+  }
+  level hard {
+    let k=2..3 b={10}
+  }
+
+  scene 32x14 {
+    boat bt cargo=k side=6 sits=1 arrows=1 at=canvas(1, 0)
+    text ask "Each block weighs {b} newtons. How many newtons more does the water push up on the boat now than when it was empty?" narrate width=13 right-of=bt gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b * k)
+  feedback {
+    when (answer == k) point=bt {
+      say "That is how many blocks there are. Each one adds {b} newtons of weight."
+    }
+  }
+  hint "While the boat floats, how does the water's push compare with the weight it holds?"
+}

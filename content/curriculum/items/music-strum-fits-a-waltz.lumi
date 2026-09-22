@@ -1,0 +1,40 @@
+# The two-star reason: two patterns that sound alike for their first three beats, one in three and one
+# in four, and which fits a waltz or a march. The count over the bar decides it, not the strums.
+item music.strum-fits-a-waltz v=1 stars=2 skills=[music.strumming, music.time-signatures, reasoning.explain] {
+  title "Which one fits?"
+  let q=0..1 r=0..1
+  let dance={pick(q, "waltz, three beats to a bar", "march, four beats to a bar")}
+  let right={pick(q, "A: its bar counts to 3, as a waltz does", "B: its bar counts to 4, as a march does")}
+  let w1={pick(q, "B: it has more up strums, so it swings more", "A: it has fewer strums, so it is easier to march to")}
+  let w2={"Both: they start the same way"}
+
+  scene 36x33 {
+    row top space=2 align=start at=canvas(1, 1) {
+      column bars space=1 align=start {
+        row ra space=1 align=centre {
+          text la "A"
+          strumtrack a strums=D-DUDU counts=true chord=none ring=-1
+        }
+        row rb space=1 align=centre {
+          text lb "B"
+          strumtrack b strums=D-DUDU-U counts=true chord=none ring=-1
+        }
+      }
+      bandstand stand posts=5 notes=3
+    }
+    text ask "The band is playing a {dance}. Ana has two patterns that start the same way. Which one fits, and why?" narrate width=34 below=top gap=1
+    choice pick options=[pick(r, right, w2), pick(r, w1, right), pick(r, w2, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=bars {
+      say "They start the same, but one bar counts further than the other. Read the numbers over each."
+    }
+    when (pick == w1) point=bars {
+      say "A waltz has three beats to a bar and a march has four. The number of strums does not decide it."
+    }
+  }
+  hint "Read the numbers over bar A, and then over bar B."
+  hint "How many beats does the {pick(q, \"waltz\", \"march\")} need in each bar?"
+}

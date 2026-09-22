@@ -1,0 +1,22 @@
+# Working backwards from a reading: take off the bag's own pull, then share what is left by the pull
+# of one apple. No drawing on the page does either step.
+item physics.apples-in-bag v=1 skills=[physics.weight, reasoning.backwards] stars=3 {
+  title "How many apples?"
+  difficulty v
+  let v={4, 6, 8, 10}
+
+  scene 22x14 {
+    springscale s max=10 step=2 value=v unit=N at=canvas(1, 0)
+    text ask "The empty bag pulls 2 newtons. Each apple pulls 2 newtons more. How many apples are in the bag?" narrate width=13 right-of=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((v - 2) / 2)
+  feedback {
+    when (answer == v / 2) point=s {
+      say "Some of the pull is the bag itself. Take that off first."
+    }
+  }
+  hint "How much of the pull is the empty bag?"
+  hint "What is left for the apples, and how many twos is that?"
+}

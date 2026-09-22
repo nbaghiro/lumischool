@@ -1,0 +1,63 @@
+lesson art-light-and-shadow v=1 format=teach grade=4 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Light and shadow"
+  goal "Read where the light comes from, shade a round thing in tones from light to dark, and predict its shadow."
+
+  look {
+    scene 18x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        stilllife pic light="left" things=["apple", "cup", "ball"] lamp=true
+        tonescale scale steps=5 blank=-1 ring=-1
+      }
+    }
+    say """
+      Light comes from one side. The side of a thing facing the light is palest, the side away from
+      it is darkest, and its shadow falls on the table away from the light. Artists call how light or
+      dark something is its tone, and a round thing needs every tone from white to dark.
+      """
+  }
+  do {
+    practice art.tone-light-or-dark count=1 seed=1
+    level easy {
+      worked art.tone-for-side s="away from the lamp" p=0 level=medium
+    }
+    practice art.where-light count=3 seed=2
+    practice art.tone-for-side count=2 seed=1
+    practice art.more-tones count=2 hard-count=1 seed=3
+    level hard {
+      practice art.shadow-after-move count=1 seed=7
+    }
+  }
+  try stars=2 {
+    show art.shadow-after-move l="right" hard-l="left"
+  }
+  try stars=3 {
+    show art.shade-a-ball
+  }
+  remember {
+    say "Palest facing the light, darkest facing away, and the shadow falls away from the light."
+  }
+
+  grown-ups """
+    Drawing light and shade is how a flat drawing starts to look solid, and grade four is when many
+    children begin to want their drawings to look real. The questions are marked by the machine. The
+    first reads tones off a scale. The next ones reason from evidence: with the lamp left out of the
+    picture, the shadows and the dark sides say where the light is. The paint question uses white for
+    the lit side and black for the shaded side, and the tones question is about the steps between
+    tones, where the usual slip is to count the squares instead of the gaps.
+
+    The two-star question predicts what moving the lamp does to a shadow. The drawing is the
+    three-star question: a ball in four or more tones with a spot of white paper left where the
+    light hits and a shadow on the table. A torch and an orange on the kitchen table in a dark room
+    show all of it better than any picture.
+
+    Respond by asking the child to point to where the lamp is, and then following the tones from
+    there: "It is palest here, facing the lamp, and darkest round the back." Ask which tone was
+    hardest to make.
+    """
+  level easy {
+    grown-ups "At this level the ringed square is at the end of the scale, where the light comes from is as written, the paint for the side away from the lamp is chosen once in the teacher's pen before the side facing it, the scale has three or four squares, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the ringed square sits next to the middle one, where the light comes from is as written, the paints are for the side away from the lamp, the scale has five or six squares and the second scale makes way for a second lamp to move, the two-star's lamp moves to the left, and the three-star is as written."
+  }
+}

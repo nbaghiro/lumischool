@@ -1,0 +1,22 @@
+# The audit's raise for map-order: one written direction turns the wrong way for this map. The map
+# is drawn from a, b and c, and the steps are written from the same settings with one turn flipped,
+# so the key and the picture cannot disagree.
+item writing.wrong-direction v=1 stars=2 skills=[writing.directions, reasoning.find-the-error] {
+  title "The direction that sends you wrong"
+  difficulty (w - 2)
+  let a={"left", "right"} b={"left", "right"} c={"left", "right"} w=2..4
+  where (not (a == b and b == c))  # three turns the same way would bring the path back to the boat
+
+  scene 37x23 {
+    row both at=canvas(1, 1) space=1 align=start {
+      treasuremap map stops=["tree", "rock", "bridge"] turns=[a, b, c] heading="right" step=4 names=true
+      howto steps title="To the X" need=[] steps=["Walk to the tree.", "Turn {if w == 2 then (if a == \"left\" then \"right\" else \"left\") else a} at the tree.", "Turn {if w == 3 then (if b == \"left\" then \"right\" else \"left\") else b} at the rock.", "Turn {if w == 4 then (if c == \"left\" then \"right\" else \"left\") else c} at the bridge.", "Dig at the X."] width=20
+    }
+    text ask "One step would send the walker the wrong way. Which one?" width=35 below=both gap=1
+    choice pick options=["step 2", "step 3", "step 4"] below=ask gap=1
+  }
+
+  answer pick=(if w == 2 then "step 2" else if w == 3 then "step 3" else "step 4")
+  hint "Follow the steps on the map with your finger, one at a time."
+  hint "At each place, which way does the path really bend for the walker?"
+}

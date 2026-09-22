@@ -1,0 +1,48 @@
+# The three-star: three cycles with the days of each stage (the changing stage is the tadpole's
+# legs coming, the chrysalis, the fly's pupa), and the shortest from egg to grown,
+# which is the smallest total, not the smallest single stage. Each version puts the shortest
+# single stage in a cycle that is not the shortest overall.
+item nature.shortest-cycle v=1 stars=3 skills=[nature.life-cycles, reasoning.extremes, addition.to-hundred] {
+  title "The shortest cycle"
+  difficulty k
+  let k=0..2
+  let a1={pick(k, 1, 2, 3)}
+  let a2={pick(k, 5, 16, 12)}
+  let a3={pick(k, 4, 15, 9)}
+  let b1={pick(k, 10, 8, 4)}
+  let b2={pick(k, 60, 30, 10)}
+  let b3={pick(k, 20, 14, 8)}
+  let c1={pick(k, 5, 1, 1)}
+  let c2={pick(k, 14, 14, 20)}
+  let c3={pick(k, 10, 12, 8)}
+  let right={pick(k, "the fly", "the butterfly", "the frog")}
+  let best={pick(k, a1 + a2 + a3, c1 + c2 + c3, b1 + b2 + b3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x22 {
+    table t cols=4 head=["Cycle", "Egg", "Young", "Changing"] cells=["fly", "{a1}", "{a2}", "{a3}", "frog", "{b1}", "{b2}", "{b3}", "butterfly", "{c1}", "{c2}", "{c3}"] at=canvas(1, 1)
+    text ask "The table gives the days each stage takes, from the egg to the grown creature. Which cycle is the shortest, and how many days does it take?" narrate width=32 below=t gap=1
+    choice pick options=["the fly", "the frog", "the butterfly"] below=ask gap=1
+    row r below=pick gap=1 space=1 align=centre {
+      number-input total width=4
+      text unit "days"
+    }
+  }
+
+  answer pick=right total=best
+  feedback {
+    when (pick != right) point=t {
+      say "A quick egg does not make a quick cycle. The whole cycle is every stage added, so add each row before you compare."
+    }
+    when (pick == right and total != best) point=t {
+      say "The cycle takes all three stages added together."
+    }
+  }
+  hint "Add the three numbers in each row. That is how long each cycle takes."
+  hint "Now compare the three totals. The smallest one is the shortest cycle."
+}

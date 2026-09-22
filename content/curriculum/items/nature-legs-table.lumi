@@ -1,0 +1,46 @@
+# Sorting six by legs: a number under each creature turns the row into a table. Every version has
+# the same six creatures, so what changes is where the spider and the snail stand: at the ends
+# at easy, side by side in the middle at hard, where the two odd ones are easiest to mix up.
+item nature.legs-table v=1 skills=[nature.minibeasts] {
+  title "Legs under each one"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let s0={pick(k, "ladybird", "spider", "ant", "snail", "bee", "ladybird")}
+  let s1={pick(k, "ant", "snail", "spider", "bee", "snail", "spider")}
+  let s2={pick(k, "bee", "ladybird", "bee", "ant", "spider", "snail")}
+  let s3={pick(k, "spider", "ant", "snail", "spider", "ant", "bee")}
+  let s4={pick(k, "snail", "bee", "ladybird", "ladybird", "ladybird", "ant")}
+  let l0={if s0 == "spider" then 8 else if s0 == "snail" then 0 else 6}
+  let l1={if s1 == "spider" then 8 else if s1 == "snail" then 0 else 6}
+  let l2={if s2 == "spider" then 8 else if s2 == "snail" then 0 else 6}
+  let l3={if s3 == "spider" then 8 else if s3 == "snail" then 0 else 6}
+  let l4={if s4 == "spider" then 8 else if s4 == "snail" then 0 else 6}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 28x15 {
+    text ask "Write how many legs each one has in the box under it." narrate width=26 at=canvas(1, 1)
+    minibeasts five kinds=[s0, s1, s2, s3, s4] legs=false at=canvas(1, 5)
+    number-input a width=3 at=canvas(2, 13)
+    number-input b width=3 at=canvas(7, 13)
+    number-input c width=3 at=canvas(12, 13)
+    number-input d width=3 at=canvas(17, 13)
+    number-input e width=3 at=canvas(22, 13)
+  }
+
+  answer a=l0 b=l1 c=l2 d=l3 e=l4
+  feedback {
+    when (a + b + c + d + e == 30) point=five {
+      say "Not every creature has six. Find the spider and the snail and count their legs again."
+    }
+    when (a + b + c + d + e == 32) point=five {
+      say "One of them has no legs at all. Which one slides along on its body?"
+    }
+  }
+  hint "Start at the left. Count that creature's legs and write the number, then move to the next one."
+  hint "Two of them are not insects. One has more than six and one has none."
+}

@@ -1,0 +1,17 @@
+# Steps done in the wrong order, and the child reasons out what goes wrong: why the order in a set
+# of instructions matters. The wrong choices could happen, but not because of the mistake.
+item reading.recipe-what-if v=1 stars=2 skills=[reading.instructions, reasoning.cause-and-effect] {
+  title "What went wrong?"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 30x20 {
+    text story "{if k == 0 then \"Kai planted a bean. He poured in the water before he put in any soil.\" else if k == 1 then \"Kai made toast. He put the honey on the bread before he put it in the toaster.\" else if k == 2 then \"Kai made a fruit salad. He cut up the banana before he peeled it.\" else \"Kai washed his hands. He dried them before he rinsed off the soap.\"}" narrate width=28 at=canvas(1, 1)
+    text ask "What went wrong?" narrate below=story gap=1
+    choice pick options=[if k == 0 then "The water ran out of the empty pot." else if k == 1 then "The toast was too cold." else if k == 2 then "The salad had no apple in it." else "His hands were still soapy.", if k == 0 then "The bean grew too fast." else if k == 1 then "The honey dripped into the toaster." else if k == 2 then "The bowl was too small." else "The tap was cold.", if k == 0 then "The pot got too hot." else if k == 1 then "He had no butter." else if k == 2 then "There were bits of peel in the salad." else "He used too much water."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The water ran out of the empty pot." else if k == 1 then "The honey dripped into the toaster." else if k == 2 then "There were bits of peel in the salad." else "His hands were still soapy.")
+  hint "Which two steps did Kai swap?"
+  hint "Picture doing it his way. What would happen straight away?"
+}

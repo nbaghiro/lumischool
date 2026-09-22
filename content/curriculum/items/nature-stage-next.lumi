@@ -1,0 +1,36 @@
+# The core: what comes next. Ada's drawings stop, and the child says what the bean does next. After
+# the seed comes the shoot, after the shoot come leaves, and after the flower come new seeds, which
+# is the step that makes the cycle a cycle.
+item nature.stage-next v=1 skills=[nature.growing] {
+  title "What comes next?"
+  difficulty (if n == 1 then 0 else if n == 2 then 1 else 2)
+  let n={1, 2, 4}
+  let next={if n == 1 then "a shoot" else if n == 2 then "leaves" else "new seeds"}
+  level easy {
+    let n={1, 2}
+  }
+  level hard {
+    let n={2, 4}
+  }
+
+  scene 36x21 {
+    growstages grow stages=n numbers=false names=0 at=canvas(1, 1)
+    text ask "Ada drew her bean each week. These are her drawings so far. What will she draw next?" narrate width=34 below=grow gap=1
+    choice pick options=["a shoot", "leaves", "a flower", "new seeds"] below=ask gap=1
+  }
+
+  answer pick=next
+  feedback {
+    when (n == 1 and pick == "a flower") point=grow {
+      say "The flower comes at the end. First a shoot has to push up out of the soil."
+    }
+    when (n == 2 and pick == "a flower") point=grow {
+      say "Not yet. The shoot grows taller and opens more leaves before a flower comes."
+    }
+    when (n == 4 and pick != "new seeds") point=grow {
+      say "The bean has its flower already. The flower makes seeds, and a seed starts it all again."
+    }
+  }
+  hint "Look at the last drawing. What has the bean got now?"
+  hint "Seed, shoot, leaves, flower, and then the flower makes seeds."
+}

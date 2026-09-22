@@ -1,0 +1,26 @@
+# Arrow cards pull apart into tens and ones, so the number is built rather than read.
+item place.arrow-cards v=1 skills=[place-value.tens-and-ones] {
+  title "What the cards make"
+  difficulty (10 * t + o)
+  let t=2..9 o=1..9
+  level easy {
+    let t=2..4 o=1..4
+  }
+  level hard {
+    let t=7..9 o=6..9
+  }
+
+  scene 26x13 {
+    arrowcards cards value=(10 * t + o) apart=true at=canvas(1, 1)
+    text ask "The cards are pulled apart. What number do they make?" width=24 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 * t + o)
+  feedback {
+    when (answer == t + o) point=cards {
+      say "The first card is {10 * t}, not {t}. Push the cards together and read them."
+    }
+  }
+  hint "Slide the cards on top of each other and read the number they make."
+}

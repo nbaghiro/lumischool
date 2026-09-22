@@ -1,0 +1,17 @@
+# Every line of the riddle fits more than one answer; together they fit one. The riddles were
+# written for this lesson.
+item reading.riddle v=1 skills=[reading.inference] {
+  title "What am I?"
+  difficulty (if k == 0 then 2 else if k == 1 then 1 else 0)
+  let k=0..3
+
+  scene 33x16 {
+    passage p text="{if k == 0 then \"I am tall and I stand by the sea on my own. I sleep all day. At night I turn my one bright eye, and ships keep away from the rocks.\" else if k == 1 then \"I stand on a hill with my arms out wide. When the wind blows I turn and turn, and I help to make flour for bread.\" else if k == 2 then \"I carry people over the water. I have tall sails and a row of round windows, and I rock when the waves are big.\" else \"I have a chimney and a door. Smoke rises from me in winter. People sleep inside me, and I never move.\"}" width=32 numbers=false at=canvas(1, 1)
+    text ask "What am I?" below=p gap=1
+    choice pick options=[if k == 0 then "a windmill" else if k == 1 then "a tree" else if k == 2 then "a ship" else "a tent", if k == 0 then "a lighthouse" else if k == 1 then "a windmill" else if k == 2 then "a bridge" else "a train", if k == 0 then "a tower" else if k == 1 then "a kite" else if k == 2 then "a fish" else "a cottage"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "a lighthouse" else if k == 1 then "a windmill" else if k == 2 then "a ship" else "a cottage")
+  hint "Take one clue at a time. Which answers does it fit?"
+  hint "Cross out any answer that fails a clue. What is left?"
+}

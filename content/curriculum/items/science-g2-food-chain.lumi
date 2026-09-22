@@ -1,0 +1,26 @@
+# A food chain read both ways: what a creature eats, and what eats it. The arrows go from what is
+# eaten to what eats it, which is the direction children most often turn round.
+item science.food-chain v=1 skills=[science.animals, science.food-chains] {
+  title "Who eats what?"
+  let c=0..2 dir=0..1
+  let a={if c == 0 then "pond weed" else if c == 1 then "grass" else "leaf"}
+  let b={if c == 0 then "snail" else if c == 1 then "rabbit" else "caterpillar"}
+  let d={if c == 0 then "fish" else if c == 1 then "fox" else "bird"}
+  let qn={if dir == 0 then "What does the" else "What eats the"}
+  let qe={if dir == 0 then "eat" else ""}
+
+  scene 32x12 {
+    text chain "{a}  →  {b}  →  {d}" narrate at=canvas(1, 1)
+    text ask "Each arrow points to the one that eats it. {qn} {b} {qe}?" width=30 below=chain gap=1
+    choice pick options=[a, b, d] below=ask gap=1
+  }
+
+  answer pick=(if dir == 0 then a else d)
+  feedback {
+    when (pick == (if dir == 0 then d else a)) point=chain {
+      say "The arrow goes from the one that is eaten to the one that eats it. Follow it the other way."
+    }
+  }
+  hint "Put your finger on the {b}. Which way does the arrow into it come from?"
+  hint "The one before the arrow is eaten. The one after the arrow does the eating."
+}

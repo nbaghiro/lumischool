@@ -1,0 +1,32 @@
+# The room's temperature is on the thermometer and the two points are in the table, so the unknown is
+# a difference the child works out, in either direction. It used to give sugar a melting point.
+item chem.point-gap v=1 skills=[chemistry.states, number.negatives] {
+  title "How far to boiling, or to freezing?"
+  difficulty ((if d == 1 and thing != "water" then 2 else 0) + (if thing == "mercury" and d == 0 then 2 else 0) + (if thing == "ethanol" and d == 0 then 1 else 0))
+  let thing={"water", "ethanol", "mercury"} t={10, 20, 30} d=0..1
+  level easy {
+    let thing={"water"}
+  }
+  level hard {
+    where (thing != "water" and (d == 1 or thing == "mercury"))  # a freezing point below zero, or mercury's boil at 357
+  }
+
+  scene 31x19 {
+    text ask "The thermometer shows the room. How many degrees {if d == 0 then \"hotter\" else \"colder\"} must it get before the {thing} {if d == 0 then \"boils\" else \"freezes\"}?" width=28 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=3 head=["Stuff", "Melts", "Boils"] cells=["Water", 0, 100, "Ethanol", -114, 78, "Mercury", -39, 357]
+      thermometer tube from=-20 to=120 step=20 value=t unit="°C"
+    }
+    number-input answer right-of=kit gap=0
+  }
+
+  check chem.state of=tube table=data
+  answer (if d == 0 then (if thing == "water" then 100 else if thing == "ethanol" then 78 else 357) - t else t - (if thing == "water" then 0 else if thing == "ethanol" then -114 else -39))
+  feedback {
+    when (d == 0 and answer == (if thing == "water" then 100 else if thing == "ethanol" then 78 else 357)) point=data {
+      say "That is where it boils. The room is already at {t} degrees, so it only has to warm up from there."
+    }
+  }
+  hint "Read the room's temperature first. Which number in the table do you need?"
+  hint "Count from the room's temperature to that number. Does the count go past zero?"
+}

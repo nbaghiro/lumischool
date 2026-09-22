@@ -1,0 +1,17 @@
+# Naming the kind of mistake, not only finding it: a missing comma, a comma inside one thing, or a
+# comma after and.
+item writing.comma-mistake v=1 stars=2 skills=[writing.punctuation, reasoning.find-the-error] {
+  title "What did Tom do wrong?"
+  difficulty (if m == 1 then 2 else if m == 2 then 1 else 0)
+  let s=0..1 m=0..2
+
+  scene 32x20 {
+    passage bot text="{if s == 0 and m == 0 then \"I packed a map a torch and a rope.\" else if s == 0 and m == 1 then \"I packed a map, a new, torch and a rope.\" else if s == 0 then \"I packed a map, a torch and, a rope.\" else if m == 0 then \"We fed the ducks the geese and a swan.\" else if m == 1 then \"We fed the ducks, the white, geese and a swan.\" else \"We fed the ducks, the geese and, a swan.\"}" width=30 numbers=false at=canvas(1, 1)
+    text ask "Tom wrote a list with one mistake. What is wrong?" width=30 below=bot gap=1
+    choice pick options=["A comma is missing.", "A comma splits one thing in two.", "A comma comes after and."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if m == 0 then "A comma is missing." else if m == 1 then "A comma splits one thing in two." else "A comma comes after and.")
+  hint "Say the list of things aloud. Where does each thing end?"
+  hint "Now look at each comma. Is it at the end of a thing? And is every thing kept apart?"
+}

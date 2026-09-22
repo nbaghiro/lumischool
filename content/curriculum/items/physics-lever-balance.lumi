@@ -1,0 +1,26 @@
+item physics.lever-balance v=1 skills=[physics.machines] {
+  title "What push holds it?"
+  difficulty (w * f / (10 - f))
+  let f=1..5 w={20, 30, 40, 60, 80}
+  where (w * f % (10 - f) == 0)
+  level easy {
+    let f={2} w={20, 40, 60, 80}
+  }
+  level hard {
+    let f=4..5 w={60, 80}
+  }
+
+  scene 25x17 {
+    lever bar fulcrum=f load=w push=0 at=canvas(1, 0)
+    text ask "What push, in newtons, holds the stone level?" width=18 below=bar gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check physics.machine of=bar answer=balance
+  feedback {
+    when (answer == w and f != 5) point=bar {
+      say "That is the stone's own weight. The push is further from the pivot, so it needs less."
+    }
+  }
+  hint "What is the stone's weight times its steps from the pivot?"
+}

@@ -1,0 +1,29 @@
+# A block of your own is a name for a few blocks, used more than once. The dance strip used to be
+# drawn under the program, which showed every clap to count; now the block has to be expanded in the
+# head, and the checker counts the claps by running the program.
+item coding.define-count v=2 skills=[coding.procedures] {
+  title "A block of your own"
+  difficulty n
+  let n=1..3
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=2..3
+  }
+
+  scene 32x14 {
+    blocks b code=["define hooray", "  jump", "  clap {n}", "hooray", "spin", "hooray"] at=canvas(1, 0)
+    text ask "How many claps are in the whole dance?" width=14 right-of=b gap=2
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=b answer=claps
+  feedback {
+    when (answer == n) point=b {
+      say "The hooray block is used twice, and each time it claps {n}."
+    }
+  }
+  hint "Every hooray means: jump, then clap {n}."
+  hint "How many times is hooray used after the define?"
+}

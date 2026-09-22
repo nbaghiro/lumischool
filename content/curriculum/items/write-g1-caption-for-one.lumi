@@ -1,0 +1,18 @@
+# The audit's raise for write-a-caption: a caption written so it would pick out one card of three,
+# which means finding what only that card has.
+item writing.caption-for-one v=1 stars=3 skills=[writing.captions, writing.composing] {
+  title "A caption for card C"
+  let a=0..2
+  let who={if a == 0 then "cat" else if a == 1 then "pig" else "hen"}
+  let other={if a == 0 then "dog" else if a == 1 then "fox" else "duck"}
+
+  scene 32x15 {
+    picturecards cards who=["{other}", "{who}", "{who}"] where=["under", "on", "under"] thing=["table", "table", "table"] letters=true at=canvas(1, 1)
+    text ask "Write a caption that fits card C and no other card." width=30 below=cards gap=1
+    caption strip text="" width=24 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A few words or one sentence that name both the animal on card C and where it is (under the table), since the animal alone also fits card B and the place alone also fits card A, with a capital letter at the start."
+  hint "What does card C have that card A does not? What does it have that card B does not?"
+  hint "Put both of those things into your caption."
+}

@@ -1,0 +1,16 @@
+# The audit's raise for joining-letters: a sentence written joined with no model to trace, marked
+# by a grown-up for the joins and the size of the letters.
+item writing.joined-sentence v=1 skills=[writing.joining, writing.sentences] {
+  title "A sentence written joined"
+  let k=0..3
+  let s={if k == 0 then "The fox ran into the wood." else if k == 1 then "We sat on the wall in the sun." else if k == 2 then "Nan cut the cake in half." else "The owl sat on a tall tree."}
+
+  scene 34x13 {
+    text ask "Write this sentence joined up, without tracing: {s}" narrate width=32 at=canvas(1, 1)
+    writinglines lines lines=2 width=32 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Each word written in one go with its letters joined, a space between words, the capital at the start not joined to the next letter, tall letters reaching the top line and small letters the same size as each other."
+  hint "Say the sentence to yourself one word at a time before you write it."
+  hint "Keep your pencil down until the end of each word. Lift it for the space."
+}

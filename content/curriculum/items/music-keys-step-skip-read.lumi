@@ -1,0 +1,25 @@
+# Two notes on the staff with no letters, a step or a skip apart, up or down: the distance is read
+# from line and space, which is what makes a new piece readable.
+item music.step-skip-read v=1 skills=[music.intervals] {
+  title "Read the move"
+  difficulty (if d < 0 then 1 else 0)
+  let i=2..8 d={-2, -1, 1, 2}
+  level easy {
+    let d={1, 2}
+  }
+  level hard {
+    let d={-2, -1}
+  }
+  let a={if i == 0 then "C4" else if i == 1 then "D4" else if i == 2 then "E4" else if i == 3 then "F4" else if i == 4 then "G4" else if i == 5 then "A4" else if i == 6 then "B4" else if i == 7 then "C5" else if i == 8 then "D5" else if i == 9 then "E5" else "F5"}
+  let b={if i + d == 0 then "C4" else if i + d == 1 then "D4" else if i + d == 2 then "E4" else if i + d == 3 then "F4" else if i + d == 4 then "G4" else if i + d == 5 then "A4" else if i + d == 6 then "B4" else if i + d == 7 then "C5" else if i + d == 8 then "D5" else if i + d == 9 then "E5" else "F5"}
+
+  scene 27x17 {
+    grandstaff gs notes=["{a}", "{b}"] letters=false lit=[] landmarks=false at=canvas(1, 1)
+    text ask "From the first note to the second: is it a step or a skip?" width=12 right-of=gs gap=1
+    choice pick options=["a step", "a skip"] below=ask gap=1
+  }
+
+  answer pick=(if abs(d) == 1 then "a step" else "a skip")
+  hint "Is the first note on a line or in a space? And the second?"
+  hint "Line to the next space is a step. Line to line, or space to space, is a skip."
+}

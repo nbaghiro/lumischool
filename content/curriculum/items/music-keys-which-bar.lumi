@@ -1,0 +1,29 @@
+# Three bars with a 4 over them and only one of them adds up to four beats: every bar is counted,
+# and the wrong ones are a beat short or a beat over.
+item music.which-bar-four v=1 skills=[music.rhythm] {
+  title "The bar that fits"
+  let c=0..2 p=0..2 w=0..1
+
+  scene 26x25 {
+    column bars at=canvas(1, 1) space=1 align=start {
+      row rA space=1 align=centre {
+        text lA "A"
+        staff sA notes=[if c == 0 then if p == 0 then 1 else if p == 1 then 1 else 2 else if c == 1 then if w == 0 then 1 else 2 else if w == 0 then 1 else 2, if c == 0 then if p == 0 then 1 else if p == 1 then 2 else 1 else if c == 1 then if w == 0 then 1 else 1 else if w == 0 then 1 else 1, if c == 0 then if p == 0 then 2 else if p == 1 then 1 else 1 else if c == 1 then if w == 0 then 1 else 2 else if w == 0 then 1 else 2]
+      }
+      row rB space=1 align=centre {
+        text lB "B"
+        staff sB notes=[if c == 0 then if w == 0 then 1 else 2 else if c == 1 then if p == 0 then 1 else if p == 1 then 1 else 2 else if w == 1 then 1 else 2, if c == 0 then if w == 0 then 1 else 1 else if c == 1 then if p == 0 then 1 else if p == 1 then 2 else 1 else if w == 1 then 1 else 1, if c == 0 then if w == 0 then 1 else 2 else if c == 1 then if p == 0 then 2 else if p == 1 then 1 else 1 else if w == 1 then 1 else 2]
+      }
+      row rC space=1 align=centre {
+        text lC "C"
+        staff sC notes=[if c == 0 then if w == 1 then 1 else 2 else if c == 1 then if w == 1 then 1 else 2 else if p == 0 then 1 else if p == 1 then 1 else 2, if c == 0 then if w == 1 then 1 else 1 else if c == 1 then if w == 1 then 1 else 1 else if p == 0 then 1 else if p == 1 then 2 else 1, if c == 0 then if w == 1 then 1 else 2 else if c == 1 then if w == 1 then 1 else 2 else if p == 0 then 2 else if p == 1 then 1 else 1]
+      }
+    }
+    text ask "Each bar should have 4 beats. Which bar is right?" width=24 below=bars gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if c == 0 then "A" else if c == 1 then "B" else "C")
+  hint "Count the beats in bar A: a filled note is one beat and an open note is two."
+  hint "Now count B and C the same way. Which one comes to exactly 4?"
+}

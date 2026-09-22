@@ -1,0 +1,15 @@
+# A title, a label and a caption look different on the page and do different jobs: a few words
+# for the whole, one word for a part, a sentence that adds a fact. r shuffles the right column.
+item reading.feature-match v=1 skills=[reading.text-features] {
+  title "Title, label or caption?"
+  let k=0..2 r=0..2
+
+  scene 32x15 {
+    text ask "Each of these comes from an information page. Write the number of what it is." width=29 at=canvas(1, 1)
+    match m left=[if k == 0 then "The Mill on the Hill" else if k == 1 then "A Sailing Ship" else "How a Frog Grows", if k == 0 then "sweep" else if k == 1 then "porthole" else "tadpole", if k == 0 then "Built in 1820 of red brick." else if k == 1 then "Most of the hull is under the water." else "A tadpole can live only in water."] right=[if r == 0 then "label" else if r == 1 then "caption" else "title", if r == 0 then "caption" else if r == 1 then "title" else "caption", if r == 0 then "title" else if r == 1 then "label" else "label"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=(if r == 0 then 3 else if r == 1 then 2 else 1) b=(if r == 0 then 1 else if r == 1 then 3 else 3) c=(if r == 0 then 2 else if r == 1 then 1 else 2)
+  hint "Which one names a single part? Which one is a whole sentence?"
+  hint "A title is short and names the whole thing the page is about."
+}

@@ -1,0 +1,17 @@
+# The way in: the drop of water is drawn either soaked in or sitting on top, so the child reads the
+# test's result off the picture.
+item chem.rock-soaks v=1 skills=[chemistry.rocks] {
+  title "Which rock soaked it up?"
+  difficulty k
+  let k=0..3
+
+  scene 18x14 {
+    text ask "A drop of water was put on each rock. Which rock soaked it up?" width=17 at=canvas(1, 0)
+    rocks r rocks=["{if k == 0 then \"granite\" else if k == 1 then \"chalk\" else if k == 2 then \"basalt\" else \"marble\"}", "{if k == 0 then \"sandstone\" else if k == 1 then \"marble\" else if k == 2 then \"slate\" else \"granite\"}", "{if k == 0 then \"slate\" else if k == 1 then \"basalt\" else if k == 2 then \"granite\" else \"sandstone\"}", "{if k == 0 then \"marble\" else if k == 1 then \"granite\" else if k == 2 then \"chalk\" else \"basalt\"}"] test=1 letters=1 names=0 below=ask gap=0
+    choice pick options=["A", "B", "C", "D"] below=r gap=0
+  }
+
+  check chem.rocks of=r pick="only(soaks)"
+  hint "Look at the top of each rock. Where is the drop still sitting as a bead?"
+  hint "Which rock has a dark wet patch instead of a drop?"
+}

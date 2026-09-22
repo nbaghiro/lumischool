@@ -1,0 +1,21 @@
+# Burning needs the air: under a jar the flame goes out with wax still left, which answers the idea
+# that a candle burns on its own. A grown-up does this; the picture is for watching.
+item chem.candle-jar v=1 skills=[chemistry.changes] {
+  title "Why did it go out?"
+  difficulty s
+  let s={8, 10, 12} b=2..4
+
+  scene 33x18 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      candle c start=s burnt=b lit=1 jar=1
+      column side space=1 align=start {
+        text ask "A grown-up put a glass jar over the lit candle. Soon the flame went out. Why?" width=18
+        choice pick options=["The wax ran out", "It used up the oxygen in the jar", "The glass was too cold"] stack=column
+      }
+    }
+  }
+
+  answer pick="It used up the oxygen in the jar"
+  hint "Look at the candle under the jar. Is there still wax on it?"
+  hint "What does a flame need from the air around it to keep burning?"
+}

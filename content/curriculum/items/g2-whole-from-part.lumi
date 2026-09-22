@@ -1,0 +1,28 @@
+# The whole is unknown: a part is shown and named, so the child builds the whole back up.
+item fraction.whole-from-part v=1 skills=[fractions.of-a-set, reasoning.inverse] {
+  title "The whole tray"
+  difficulty (d * p)
+  let d={2, 3, 4} p=2..5 w={"half", "third", "quarter"}
+  where ((d == 2) == (w == "half") and (d == 3) == (w == "third") and d * p != p + d)
+  level easy {
+    let d={2} p=3..5
+  }
+  level hard {
+    let d={4} p=3..5
+  }
+
+  scene 33x10 {
+    bakingtray row rows=1 cols=p iced=0 at=canvas(1, 1)
+    text ask "These {p} buns are one {w} of all the buns. How many buns are there in all?" narrate width=14 right-of=row gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (d * p)
+  feedback {
+    when (answer == p + d) point=row {
+      say "One {w} is {p} buns. The whole is {d} parts like this, each of {p}."
+    }
+  }
+  hint "How many equal parts make the whole when each part is a {w}?"
+  hint "Each part has {p} buns. Count {p} for every part."
+}

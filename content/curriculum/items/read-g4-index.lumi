@@ -1,0 +1,31 @@
+# Two text features used together: the index gives a page for a word no chapter title uses, and
+# the contents page says which chapter that page belongs to.
+item reading.index-then-contents v=1 skills=[reading.text-features] {
+  title "From the index to the chapter"
+  difficulty (pw - (if pw >= s4 then s4 else if pw >= s3 then s3 else if pw >= s2 then s2 else s1))
+  let k=0..3 i=0..3 s1={if k == 0 then 3 else if k == 1 then 2 else if k == 2 then 4 else 3} s2={if k == 0 then 8 else if k == 1 then 7 else if k == 2 then 9 else 9} s3={if k == 0 then 14 else if k == 1 then 12 else if k == 2 then 15 else 13} s4={if k == 0 then 19 else if k == 1 then 18 else if k == 2 then 20 else 18} w={if k == 0 and i == 0 then "ash" else if k == 0 and i == 1 then "crater" else if k == 0 and i == 2 then "lava" else if k == 0 and i == 3 then "Pompeii" else if k == 1 and i == 0 then "blue" else if k == 1 and i == 1 then "calves" else if k == 1 and i == 2 then "clicks" else if k == 1 and i == 3 then "krill" else if k == 2 and i == 0 then "candles" else if k == 2 and i == 1 then "lamp" else if k == 2 and i == 2 then "rescue" else if k == 2 and i == 3 then "solar" else if k == 3 and i == 0 then "crescent" else if k == 3 and i == 1 then "dust" else if k == 3 and i == 2 then "hare" else "Tycho"} pw={if k == 0 and i == 0 then 10 else if k == 0 and i == 1 then 4 else if k == 0 and i == 2 then 16 else if k == 0 and i == 3 then 20 else if k == 1 and i == 0 then 3 else if k == 1 and i == 1 then 19 else if k == 1 and i == 2 then 13 else if k == 1 and i == 3 then 8 else if k == 2 and i == 0 then 5 else if k == 2 and i == 1 then 11 else if k == 2 and i == 2 then 17 else if k == 2 and i == 3 then 21 else if k == 3 and i == 0 then 4 else if k == 3 and i == 1 then 14 else if k == 3 and i == 2 then 19 else 10}
+  level easy {
+    where (pw - (if pw >= s4 then s4 else if pw >= s3 then s3 else if pw >= s2 then s2 else s1) == 1)
+  }
+  level hard {
+    where (pw - (if pw >= s4 then s4 else if pw >= s3 then s3 else if pw >= s2 then s2 else s1) >= 2)
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 1) space=2 align=start {
+      contents page title=Contents book="{if k == 0 then \"All about volcanoes\" else if k == 1 then \"All about whales\" else if k == 2 then \"All about lighthouses\" else \"All about the moon\"}" entries=[if k == 0 then "How a volcano forms" else if k == 1 then "Kinds of whale" else if k == 2 then "The first lights" else "Moon phases", if k == 0 then "When it erupts" else if k == 1 then "What whales eat" else if k == 2 then "Life of a keeper" else "Craters and seas", if k == 0 then "Famous volcanoes" else if k == 1 then "Whale songs" else if k == 2 then "Storms and wrecks" else "Walking on the moon", if k == 0 then "Living nearby" else if k == 1 then "Baby whales" else if k == 2 then "Lighthouses today" else "Moon myths"] pages=[if k == 0 then 3 else if k == 1 then 2 else if k == 2 then 4 else 3, if k == 0 then 8 else if k == 1 then 7 else if k == 2 then 9 else 9, if k == 0 then 14 else if k == 1 then 12 else if k == 2 then 15 else 13, if k == 0 then 19 else if k == 1 then 18 else if k == 2 then 20 else 18] blank=-1
+      table index cols=2 head=["Index", "Page"] cells=[if k == 0 then "ash" else if k == 1 then "blue" else if k == 2 then "candles" else "crescent", "{if k == 0 then \"10\" else if k == 1 then \"3\" else if k == 2 then \"5\" else \"4\"}", if k == 0 then "crater" else if k == 1 then "calves" else if k == 2 then "lamp" else "dust", "{if k == 0 then \"4\" else if k == 1 then \"19\" else if k == 2 then \"11\" else \"14\"}", if k == 0 then "lava" else if k == 1 then "clicks" else if k == 2 then "rescue" else "hare", "{if k == 0 then \"16\" else if k == 1 then \"13\" else if k == 2 then \"17\" else \"19\"}", if k == 0 then "Pompeii" else if k == 1 then "krill" else if k == 2 then "solar" else "Tycho", "{if k == 0 then \"20\" else if k == 1 then \"8\" else if k == 2 then \"21\" else \"10\"}"]
+    }
+    text ask "The index says {w} is on page {pw}. On which page does the chapter with {w} in it start?" width=34 below=top gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if pw >= s4 then s4 else if pw >= s3 then s3 else if pw >= s2 then s2 else s1)
+  feedback {
+    when (answer == pw) point=index {
+      say "That is the page about {w}. Which chapter is that page inside?"
+    }
+  }
+  hint "Find page {pw} between two of the start pages on the contents page."
+  hint "The chapter that has started by page {pw}, and not yet ended, is the one."
+}

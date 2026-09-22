@@ -1,0 +1,22 @@
+# Three parts to a whole, with the unknown in the middle: 1.OA.A.2 and 1.OA.D.8 in one line.
+item bonds.three-parts v=1 stars=2 skills=[bonds-to-10, addition.three-numbers] {
+  title "Three parts of ten"
+  difficulty (10 - p - q)
+  let p=1..5 q=1..5
+  where (p + q <= 8)
+  where (p != q)
+
+  scene 20x11 {
+    rods stair rods=[10, p, q] mode=stair numbers=true at=canvas(1, 1)
+    equation eq "{p} + {?r} + {q} = 10" below=stair gap=1
+  }
+
+  answer r=(10 - p - q)
+  feedback {
+    when (r == 10 - p or r == 10 - q) point=stair {
+      say "All three parts have to make 10 together, so the gap is smaller than that."
+    }
+  }
+  hint "Put the {p} rod and the {q} rod end to end against the ten rod."
+  hint "What length fills the gap that is left?"
+}

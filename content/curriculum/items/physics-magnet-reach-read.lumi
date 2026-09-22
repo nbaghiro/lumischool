@@ -1,0 +1,24 @@
+# Reading the ruler: the magnet lies at zero and the clip lay this many centimetres away when it
+# jumped, with the arrow showing where it came from. A reading further along the ruler is the harder
+# one.
+item physics.magnet-reach-read v=1 skills=[physics.magnets, physics.measuring] {
+  title "How far did it jump from?"
+  difficulty r
+  let r=1..10
+  level easy {
+    let r=2..4
+  }
+  level hard {
+    let r=7..10
+  }
+
+  scene 28x14 {
+    magnet one mode=reach reach=r clip=1 tag="A" at=canvas(1, 0)
+    text ask "The paper clip jumped to the magnet from where the arrow starts. How many centimetres away was it?" narrate width=24 below=one gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=r
+  hint "Find the mark on the ruler where the arrow starts."
+  hint "Read the number at that mark. That is how far the magnet pulled from."
+}

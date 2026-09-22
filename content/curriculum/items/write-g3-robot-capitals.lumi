@@ -1,0 +1,27 @@
+# Counting every missing capital: the start, names of people, places and days, and I.
+item writing.robot-capitals v=1 skills=[writing.editing, writing.capitals] {
+  title "How many capitals are missing?"
+  difficulty (if k == 0 then 4 else if k == 1 or k == 4 then 2 else if k == 5 then 5 else 3)
+  let k=0..5
+  level easy {
+    let k={1, 4}  # two capitals
+  }
+  level hard {
+    let k={0, 3, 5}  # four, three with a day, five with a month and a city
+  }
+
+  scene 30x9 {
+    caption bot text="{if k == 0 then \"on friday ben and i saw the lighthouse.\" else if k == 1 then \"my dog rex likes the park.\" else if k == 2 then \"mia and i live in york.\" else if k == 3 then \"we met zara at the station on sunday.\" else if k == 4 then \"the robot is called zed.\" else \"in march tom and i went to paris.\"}" width=28 at=canvas(1, 1)
+    text ask "The robot wrote this. How many capital letters are missing?" width=22 below=bot gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else if k == 1 or k == 4 then 2 else if k == 5 then 5 else 3)
+  feedback {
+    when (answer == 1) point=bot {
+      say "The first word needs one, but look again: are there any names, days or places, or the word I?"
+    }
+  }
+  hint "Start with the first word. Then look for names of people, places, days and months."
+  hint "Did you check the word I?"
+}

@@ -1,0 +1,28 @@
+# The way in: how many beats the rest in a bar of three lasts, read from its sign. A crotchet
+# rest is one beat, a minim rest two.
+item music.rest-beats v=1 skills=[music.rhythm, music.rests] {
+  title "How long is the rest?"
+  difficulty (if r == 2 then 1 else 0)
+  let r=1..2
+  level easy {
+    let r=1..1
+  }
+  level hard {
+    let r=2..2
+  }
+
+  scene 34x20 {
+    notes bar clef=treble notes=[G4, rest, G4] values=[if r == 1 then 1 else 0.5, r, if r == 1 then 1 else 0.5] meter=3 at=canvas(1, 1)
+    text ask "This bar has three beats. The middle of it is a rest, a silence. How many beats does the rest last?" narrate width=32 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  feedback {
+    when (answer == 3) point=bar {
+      say "The whole bar is three beats, but the notes on either side take some of them. The rest is only the middle part."
+    }
+  }
+  hint "A crotchet rest is the zigzag, one beat. A minim rest sits on the middle line, two beats."
+  hint "Add the notes either side: the rest is what is left of the three."
+}

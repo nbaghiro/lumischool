@@ -1,0 +1,30 @@
+# Start unknown: the chart shows the end of the story, and ten is the whole.
+item bonds.sticker-start v=1 skills=[bonds-to-10, addition.start-unknown] {
+  title "Before today"
+  difficulty (10 - m)
+  let m={2, 3, 4, 6, 7, 8}
+  level easy {
+    let m={6, 7, 8}
+  }
+  level hard {
+    let m={2, 3}
+  }
+
+  scene 24x14 {
+    starrow row slots=10 filled=10 at=canvas(1, 1)
+    text ask "Omar got {m} stickers today. Now his chart of 10 is full. How many did he have before today?" narrate width=22 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 - m)
+  feedback {
+    when (answer == m) point=row {
+      say "{m} is how many he got today. How many were on the chart before those?"
+    }
+    when (answer == 10 + m) point=row {
+      say "The chart only holds 10, so he had fewer than 10 before."
+    }
+  }
+  hint "The chart is full now. How many stickers is that?"
+  hint "Some of them came today. Take those away."
+}

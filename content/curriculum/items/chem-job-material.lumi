@@ -1,0 +1,22 @@
+# The core of choosing: the job names the property, and the child picks the material that has it.
+# Each version has one material that fits and two that plainly do not.
+item chem.job-material v=1 skills=[chemistry.materials] {
+  title "The right material"
+  difficulty (if k == 3 then 2 else if k == 4 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k=0..2  # the window, the towel and the wall
+  }
+  level hard {
+    let k=3..4  # the welly boot, which needs two properties, and the float
+  }
+
+  scene 24x8 {
+    text ask "{if k == 0 then \"A window has to be see-through.\" else if k == 1 then \"A towel has to soak up water.\" else if k == 2 then \"A wall has to be hard and strong.\" else if k == 3 then \"A welly boot has to keep water out and bend when you walk.\" else \"A float for the bath has to float.\"} Which material would you choose?" width=23 at=canvas(1, 0)
+    choice pick options=["{if k == 0 then \"glass\" else if k == 1 then \"plastic\" else if k == 2 then \"paper\" else if k == 3 then \"rubber\" else \"metal\"}", "{if k == 0 then \"wood\" else if k == 1 then \"fabric\" else if k == 2 then \"fabric\" else if k == 3 then \"paper\" else \"wood\"}", "{if k == 0 then \"brick\" else if k == 1 then \"glass\" else if k == 2 then \"brick\" else if k == 3 then \"glass\" else \"glass\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "glass" else if k == 1 then "fabric" else if k == 2 then "brick" else if k == 3 then "rubber" else "wood")
+  hint "What does the job need the material to do?"
+  hint "Which of the three can do that?"
+}

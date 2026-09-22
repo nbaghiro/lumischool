@@ -1,0 +1,28 @@
+# Matching three things that break rock or move it to what each one does: ice, roots and rain
+# weather the cliff; the river, the waves and the wind carry and wear the pieces.
+item chem.match-cause v=1 skills=[chemistry.weathering, reasoning.cause-and-effect] {
+  title "What does each one do?"
+  difficulty k
+  let k=0..1 r=0..2
+  let m1={pick(k, "ice in a crack", "the river")}
+  let m2={pick(k, "a tree root", "the waves")}
+  let m3={pick(k, "rain on chalk", "sandy wind")}
+  let d1={pick(k, "freezes, swells and splits it", "carries pieces and rounds them")}
+  let d2={pick(k, "grows and pushes the crack open", "knocks lumps off the cliff foot")}
+  let d3={pick(k, "slowly dissolves it away", "scours the rock face smooth")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x12 {
+    text ask "Write the number of what each one does to the rock." narrate width=32 at=canvas(1, 0)
+    match m left=["{m1}", "{m2}", "{m3}"] right=["{if r == 0 then d2 else if r == 1 then d3 else d1}", "{if r == 0 then d3 else if r == 1 then d1 else d2}", "{if r == 0 then d1 else if r == 1 then d2 else d3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else if r == 1 then 2 else 1) y=(if r == 0 then 1 else if r == 1 then 3 else 2) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "{if k == 0 then \"Water swells when it freezes. A root grows thicker every year. Rain is a very weak acid.\" else \"A river carries. Waves hit. Wind throws sand.\"}"
+  hint "Take each cause in turn and ask what it can do to a rock: split it, push it, dissolve it, carry it, knock it, scour it."
+}

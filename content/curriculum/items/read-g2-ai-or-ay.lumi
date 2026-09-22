@@ -1,0 +1,21 @@
+# The two spellings of one sound. Only the place of the gap in the word says which: ai in the middle,
+# ay at the end. The clue says the word, so the child hears it without seeing it spelled.
+item reading.ai-or-ay v=1 skills=[reading.spelling-patterns, reading.vowel-teams] {
+  title "ai or ay?"
+  let i=0..9
+
+  scene 30x12 {
+    text clue "{if i == 0 then \"It falls from the clouds.\" else if i == 1 then \"A dog wags it.\" else if i == 2 then \"You do this at a bus stop.\" else if i == 3 then \"You hit it with a hammer.\" else if i == 4 then \"A boat can have one.\" else if i == 5 then \"You do this with a friend in the park.\" else if i == 6 then \"You carry cups on it.\" else if i == 7 then \"You can make a pot out of it.\" else if i == 8 then \"Do not go. Please do this.\" else \"Some people do this before bed.\"}" narrate width=28 at=canvas(1, 1)
+    row both below=clue gap=1 space=2 align=end {
+      wordtrain train parts=[if i == 0 then "r" else if i == 1 then "t" else if i == 2 then "w" else if i == 3 then "n" else if i == 4 then "s" else if i == 5 then "p" else if i == 6 then "t" else if i == 7 then "c" else if i == 8 then "s" else "p", if i == 0 then "" else if i == 1 then "" else if i == 2 then "" else if i == 3 then "" else if i == 4 then "" else if i == 5 then "l" else if i == 6 then "r" else if i == 7 then "l" else if i == 8 then "t" else "r", if i == 0 then "n" else if i == 1 then "l" else if i == 2 then "t" else if i == 3 then "l" else if i == 4 then "l" else if i == 5 then "" else if i == 6 then "" else if i == 7 then "" else if i == 8 then "" else ""] blank=(if i < 5 then 1 else 2) word=""
+      column q space=1 align=start {
+        text ask "Which letters go in the empty carriage?" narrate width=12
+        choice pick options=["ai", "ay"]
+      }
+    }
+  }
+
+  answer pick=(if i < 5 then "ai" else "ay")
+  hint "Say the word the clue is about. Where do you hear the ay sound?"
+  hint "Is the empty carriage in the middle of the word or at the end?"
+}

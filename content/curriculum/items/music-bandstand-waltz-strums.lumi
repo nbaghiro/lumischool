@@ -1,0 +1,40 @@
+# The story: Ana strums the waltz pattern at the bandstand for every bar of the band's tune, and the
+# strums or the up strums are counted over the whole tune.
+item music.bandstand-waltz-strums v=1 skills=[music.strumming, multiplication.groups] {
+  title "Strums in the waltz"
+  difficulty (n / 4 + u)
+  let n={4, 6, 8} u=0..1
+  let right={if u == 0 then 5 * n else 2 * n}
+  level easy {
+    let n={4, 6} u=0..0
+  }
+  level hard {
+    let n={6, 8} u=1..1
+  }
+
+  scene 36x20 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      column side space=1 align=start {
+        strumtrack bar strums=D-DUDU counts=true chord=G ring=-1
+        text ask "The band plays a waltz {n} bars long, and Ana strums this pattern in every bar. How many {if u == 0 then \"strums\" else \"up strums\"} does she play?" narrate width=22
+      }
+    }
+    number-input answer below=top gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 3 * n) point=bar {
+      say "That counts the beats. Count the arrows in one bar, then for every bar."
+    }
+    when (u == 1 and answer == 5 * n) point=bar {
+      say "That is every strum. Only the short arrows pointing up are up strums."
+    }
+    when (answer == 6 * n) point=bar {
+      say "That counts the dot as well. The hand misses the strings there."
+    }
+  }
+  hint "How many {if u == 0 then \"arrows\" else \"short up arrows\"} are in one bar?"
+  hint "Every bar has the same pattern, so it is that many, {n} times."
+}

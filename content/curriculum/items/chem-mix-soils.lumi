@@ -1,0 +1,33 @@
+# The three-star: mixing two soils half and half to hit a target, from the table. A mix drains
+# between its two parts, so the pair that brackets the target is the one; no rule on the page
+# says so, and the target that only one pair can reach has to be found by trying.
+item chem.mix-soils v=1 stars=3 skills=[chemistry.rocks, reasoning.constraints] {
+  title "Mix two soils"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..2 r=0..2
+  let target={pick(k, 25, 60, 45)}
+  let right={pick(k, "garden soil and clay", "sand and garden soil", "sand and clay")}
+  let w1={pick(k, "sand and clay", "garden soil and clay", "sand and garden soil")}
+  let w2={pick(k, "sand and garden soil", "sand and clay", "garden soil and clay")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    table t cols=2 head=["Soil", "Through in a minute (ml)"] cells=["sand", "80", "garden soil", "40", "clay", "10"] at=canvas(1, 0)
+    text ask "Nour wants a soil that lets about {target} millilitres through in a minute, for her seed tray. She can mix two of these soils half and half, and a half-and-half mix drains halfway between its two soils. Which two should she mix?" narrate width=32 below=t gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=t {
+      say "Halfway between the two soils' numbers: sand and garden soil give 60, garden soil and clay give 25, sand and clay give 45. Which is {target}?"
+    }
+  }
+  hint "For each pair, find the number halfway between its two soils."
+  hint "The pair whose halfway number is {target} is the one to mix."
+}

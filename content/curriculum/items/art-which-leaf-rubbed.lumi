@@ -1,0 +1,22 @@
+item art.which-leaf-rubbed v=1 skills=[art.texture, art.looking] {
+  title "Which leaf made the rubbing?"
+  difficulty (a + b + c)
+  let a=2..5 b=2..5 c=2..5 m=0..2
+  where (a != b and b != c and a != c)
+  level easy {
+    where (a + b + c <= 9)
+  }
+  level hard {
+    where (a + b + c >= 12)
+  }
+
+  scene 34x15 {
+    rubbing r veins=[a, b, c] made=m colour="green" at=canvas(1, 1)
+    text ask "A crayon was rubbed over paper on top of one leaf. Which leaf was it?" width=20 below=r gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=1
+  }
+
+  answer pick=(if m == 0 then "A" else if m == 1 then "B" else "C")
+  hint "Count the veins on one side of the rubbing."
+  hint "Now count one side of each leaf. Which leaf has the same number?"
+}

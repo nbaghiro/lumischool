@@ -1,0 +1,26 @@
+# Non-routine: the off-by-one step. The glass can take so many spoons; the child has to see that
+# the first spoon to stay is the one after the last that dissolves.
+item chem.first-grains v=1 stars=3 skills=[chemistry.dissolving, reasoning.counting-on] {
+  title "The first spoon that stays"
+  difficulty (m + a)
+  let m=4..8 a=1..3
+  where (a < m)
+
+  scene 26x17 {
+    beaker glass max=400 step=100 level=200 solid=0 rod=true unit=ml at=canvas(1, 0)
+    text ask "This water can dissolve {m} spoons of sugar and no more. {a} {if a == 1 then \"spoon is\" else \"spoons are\"} in already. You add spoons one at a time. Which spoon that you add is the first to stay as grains?" narrate width=13 right-of=glass gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m - a + 1)
+  feedback {
+    when (answer == m - a) point=glass {
+      say "That many will all dissolve. The first to stay is the one after them."
+    }
+    when (answer == m + 1) point=glass {
+      say "Some spoons are in already. Count only the ones you add."
+    }
+  }
+  hint "How many more spoons can still dissolve?"
+  hint "Once those have gone in, what happens to the very next spoon?"
+}

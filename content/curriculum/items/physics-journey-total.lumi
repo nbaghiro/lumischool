@@ -1,0 +1,25 @@
+item physics.journey-total v=1 skills=[physics.motion] {
+  title "How far altogether?"
+  difficulty (a + b)
+  let a=6..14 b=6..14
+  level easy {
+    let a=6..8 b=6..8
+  }
+  level hard {
+    let a=12..14 b=12..14
+  }
+
+  scene 22x16 {
+    roaddistances road stops=["Ash", "Bray", "Cole"] legs=[a, b] unit=km at=canvas(1, 1)
+    text ask "How far is it from Ash to Cole?" width=14 below=road gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a or answer == b) point=road {
+      say "That is one leg of the road. The journey is both of them."
+    }
+  }
+  hint "What are the two distances written on the road?"
+}

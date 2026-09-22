@@ -1,0 +1,10 @@
+item science.life-cycle v=1 skills=[science.life-cycles] {
+  title "The life cycle of a butterfly"
+
+  scene 30x16 {
+    text ask "Number these 1 to 4, starting with the egg." width=28 at=canvas(1, 1)
+    sequence s items=["The caterpillar eats and grows.", "A butterfly comes out.", "The egg sits on a leaf.", "It makes a chrysalis."] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=2 b=4 c=1 d=3
+}

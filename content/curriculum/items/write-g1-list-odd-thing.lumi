@@ -1,0 +1,25 @@
+# A list is for something, so the thing that does not fit the title is the one to cross off. Where
+# the odd thing sits moves with q, and the lines are numbered so the answer is a number.
+item writing.list-odd-thing v=1 skills=[writing.lists] {
+  title "The thing that does not belong"
+  difficulty (if k == 3 then 2 else if k == 1 then 1 else 0)
+  let k=0..3 q=0..3
+  let title={if k == 0 then "For the beach" else if k == 1 then "For school" else if k == 2 then "For bed" else "For a picnic"}
+  let odd={if k == 0 then "a scarf" else if k == 1 then "a spade" else if k == 2 then "wellies" else "a toothbrush"}
+  let i0={if k == 0 and q == 0 then "a scarf" else if k == 0 and q == 1 then "a spade" else if k == 0 and q == 2 then "a spade" else if k == 0 and q == 3 then "a spade" else if k == 1 and q == 0 then "a spade" else if k == 1 and q == 1 then "a pencil" else if k == 1 and q == 2 then "a pencil" else if k == 1 and q == 3 then "a pencil" else if k == 2 and q == 0 then "wellies" else if k == 2 and q == 1 then "pyjamas" else if k == 2 and q == 2 then "pyjamas" else if k == 2 and q == 3 then "pyjamas" else if k == 3 and q == 0 then "a toothbrush" else if k == 3 and q == 1 then "a rug" else if k == 3 and q == 2 then "a rug" else "a rug"}
+  let i1={if k == 0 and q == 0 then "a spade" else if k == 0 and q == 1 then "a scarf" else if k == 0 and q == 2 then "a towel" else if k == 0 and q == 3 then "a towel" else if k == 1 and q == 0 then "a pencil" else if k == 1 and q == 1 then "a spade" else if k == 1 and q == 2 then "a lunch box" else if k == 1 and q == 3 then "a lunch box" else if k == 2 and q == 0 then "pyjamas" else if k == 2 and q == 1 then "wellies" else if k == 2 and q == 2 then "a story book" else if k == 2 and q == 3 then "a story book" else if k == 3 and q == 0 then "a rug" else if k == 3 and q == 1 then "a toothbrush" else if k == 3 and q == 2 then "sandwiches" else "sandwiches"}
+  let i2={if k == 0 and q == 0 then "a towel" else if k == 0 and q == 1 then "a towel" else if k == 0 and q == 2 then "a scarf" else if k == 0 and q == 3 then "a sun hat" else if k == 1 and q == 0 then "a lunch box" else if k == 1 and q == 1 then "a lunch box" else if k == 1 and q == 2 then "a spade" else if k == 1 and q == 3 then "a book" else if k == 2 and q == 0 then "a story book" else if k == 2 and q == 1 then "a story book" else if k == 2 and q == 2 then "wellies" else if k == 2 and q == 3 then "a teddy" else if k == 3 and q == 0 then "sandwiches" else if k == 3 and q == 1 then "sandwiches" else if k == 3 and q == 2 then "a toothbrush" else "apples"}
+  let i3={if k == 0 and q == 0 then "a sun hat" else if k == 0 and q == 1 then "a sun hat" else if k == 0 and q == 2 then "a sun hat" else if k == 0 and q == 3 then "a scarf" else if k == 1 and q == 0 then "a book" else if k == 1 and q == 1 then "a book" else if k == 1 and q == 2 then "a book" else if k == 1 and q == 3 then "a spade" else if k == 2 and q == 0 then "a teddy" else if k == 2 and q == 1 then "a teddy" else if k == 2 and q == 2 then "a teddy" else if k == 2 and q == 3 then "wellies" else if k == 3 and q == 0 then "apples" else if k == 3 and q == 1 then "apples" else if k == 3 and q == 2 then "apples" else "a toothbrush"}
+
+  scene 32x13 {
+    listpad pad title="{title}" items=["1 {i0}", "2 {i1}", "3 {i2}", "4 {i3}"] count=0 width=15 ticks=true at=canvas(1, 1)
+    column q right-of=pad gap=2 space=1 align=start {
+      text ask "One thing does not belong on this list. Write its number." narrate width=14
+      number-input answer
+    }
+  }
+
+  answer (q + 1)
+  hint "Read the title. What is the list for?"
+  hint "Which thing would you not need for that?"
+}

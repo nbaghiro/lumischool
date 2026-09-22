@@ -1,0 +1,38 @@
+lesson g4-year-review v=1 format=review grade=4 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Year review"
+  goal "Look back over the year: place value, written methods, fractions, decimals, negative numbers and data."
+
+  warm-up {
+    practice place.round-hundred count=1 seed=7
+    practice percent.of-a-bar count=1 seed=4 hard-seed=1
+    practice graph.difference count=1 seed=5
+  }
+  exercises {
+    practice multiply.short count=1 seed=6
+    practice division.buses-needed count=1 seed=4
+    practice money.change count=1 seed=8
+    practice word.two-step count=1 seed=2
+    practice fraction.add-mixed count=1 seed=3
+    practice number.temp-difference count=1 seed=7
+  }
+  puzzle stars=2 {
+    show puzzle.balance-three hard-n=3 hard-a=4 hard-b=3
+  }
+  puzzle stars=3 {
+    show puzzle.strip-rectangles n=5 easy-n=3 hard-n=6
+  }
+
+  grown-ups """
+    Long multiplication and division are the two to check. Everything else in the year is revisited
+    inside them, so if those are sound the year is sound. The minibus question is a division whose
+    remainder means one more bus. In the three-star puzzle, counting the rectangles by length (all
+    the one-square ones, then the two-square ones) is the system; a child who invents it has done
+    the real work.
+    """
+  level easy {
+    grown-ups "At this level each question comes from the easy band of its lesson (the rounding, the percent, the bars three or fewer apart, the boxes of ten or twelve pens, the buses, the change, the mixed fractions and the temperatures at their smallest), the balance is as written, since it already draws its smallest chain (two cubes, twelve stars), and the strip has three squares."
+  }
+  level hard {
+    grown-ups "At this level each question comes from the hard band of its lesson (the bars four or more apart, the boxes of fifteen or twenty pens, and the rest at their largest), three cubes balance thirty-six stars, and the strip has six squares."
+  }
+}

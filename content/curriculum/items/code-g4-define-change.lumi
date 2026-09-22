@@ -1,0 +1,23 @@
+# The number is inside the block's definition, and the block is used in a repeat, so one change
+# counts several times over: the point of naming a block.
+item coding.define-change v=1 stars=2 skills=[coding.procedures, reasoning.structure] {
+  title "Change it once"
+  difficulty (m * u)
+  let m=2..4 u=2..4
+  where (m != u)  # otherwise the number and the count read the same
+
+  scene 34x14 {
+    program p code=["define cheer", "  clap {m}", "  spin", "repeat {u}", "  cheer", "jump"] blank=2 at=canvas(1, 0)
+    text ask "Line 2 is a clap with its number missing. The whole dance has {m * u} claps. What number is on line 2?" width=17 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer == m * u) point=p {
+      say "Line 2 is inside cheer, and cheer is used {u} times. Each use claps the same number."
+    }
+  }
+  hint "How many times does the program use cheer?"
+  hint "Every cheer claps the number on line 2. What number, used {u} times, makes {m * u}?"
+}

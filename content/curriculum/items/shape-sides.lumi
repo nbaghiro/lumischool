@@ -1,0 +1,23 @@
+item shapes.sides v=1 skills=[shapes.name-and-sides] {
+  title "How many sides"
+  let n={3, 5, 6}
+  roles a=triangle b=pentagon c=hexagon
+
+  scene 24x11 {
+    row tray at=canvas(1, 1) space=2 align=centre {
+      props threes count=3 prop=triangle
+      props fives count=2 prop=pentagon
+      props sixes count=2 prop=hexagon
+    }
+    text ask "Which shape has {n} sides?" narrate below=tray gap=1
+    choice pick options=[a, b, c] below=ask gap=1
+  }
+
+  answer pick=(if n == 3 then "a" else if n == 5 then "b" else "c")
+  feedback {
+    when (n == 5 and pick == "c") point=pick.option(2) {
+      say "A {c} has six sides. Touch each side as you count it."
+    }
+  }
+  hint "Count the sides one at a time, and say the number out loud."
+}

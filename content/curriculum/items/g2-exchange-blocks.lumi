@@ -1,0 +1,31 @@
+# Two piles put together make more than nine ones, so a rod is made before the number is read.
+item add.exchange-blocks v=1 skills=[addition.columns, place-value.regroup] {
+  title "Swap ten ones for a rod"
+  difficulty (a + b)
+  let a=13..48 b=14..39
+  where (a % 10 + b % 10 >= 11 and a + b < 100)
+  level easy {
+    let a=13..29 b=14..19
+  }
+
+  scene 30x13 {
+    row piles at=canvas(1, 1) space=3 align=end {
+      baseten one thousands=0 hundreds=0 tens=(a // 10) ones=(a % 10)
+      baseten two thousands=0 hundreds=0 tens=(b // 10) ones=(b % 10)
+    }
+    text ask "Put the two piles together and swap ten ones for a rod." narrate width=28 below=piles gap=1
+    equation eq "{?tens} tens and {?ones} ones" below=ask gap=1
+  }
+
+  answer tens=((a + b) // 10) ones=((a + b) % 10)
+  feedback {
+    when (ones == a % 10 + b % 10) point=eq {
+      say "There are more than nine ones. Ten of them make another rod."
+    }
+    when (tens == a // 10 + b // 10) point=eq {
+      say "The ten ones you swapped make one more rod, so there is one more ten."
+    }
+  }
+  hint "How many single cubes are there in both piles together?"
+  hint "Take ten of them away and put a rod in their place. What is left over?"
+}

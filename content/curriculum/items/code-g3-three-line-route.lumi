@@ -1,0 +1,16 @@
+# A route to a limit: three blocks, rocks in the way, and the numbers are the child's to set.
+item coding.three-line-route v=2 stars=3 skills=[coding.sequence, reasoning.constraints] {
+  title "Three blocks to the flag"
+  difficulty k
+  let k=0..1
+
+  scene 36x18 {
+    maze g map=["{if k == 0 then \"S . . # . .\" else \"S . . . # .\"}", "{if k == 0 then \"# # . # . .\" else \"# # # . # .\"}", "{if k == 0 then \". # . . . F\" else \". . # . . .\"}", "{if k == 0 then \". . . # . .\" else \". . # . . F\"}"] at=canvas(1, 0)
+    codepad answer tray=["right 1", "down 1", "left 1", "up 1"] lines=3 right-of=g gap=1
+    text ask "Take the robot to the flag in 3 blocks. A block can move more than one square." width=16 below=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Which way can the robot go at all from the start?"
+  hint "Each block can move several squares. Where does the robot have to turn?"
+}

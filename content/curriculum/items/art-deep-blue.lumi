@@ -1,0 +1,32 @@
+# The ladder of blue and white: the deep water is the pure blue at one end, the foam's shadow a
+# tint far along it.
+item art.deep-blue v=1 skills=[art.tints, art.looking] {
+  title "Which blue for the deep water?"
+  difficulty w
+  let w=0..1
+  let asks={pick(w, "Which square is the deep water under the wave?", "Which square is the palest blue, for the light on the foam's shadow?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x17 {
+    tintladder ladder colour="blue" toward="white" steps=5 blank=-1 ring=-1 labels=true at=canvas(1, 1)
+    text ask "Hokusai's wave is two blues and white. {asks} Count the squares from the left." narrate width=32 below=ladder gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 1 else 5)
+  feedback {
+    when (w == 0 and answer == 5) point=ladder {
+      say "That square has the most white in it. Deep water has no white: it is the pure blue at the start of the ladder."
+    }
+    when (w == 1 and answer == 1) point=ladder {
+      say "That is the pure blue. The palest blue is the one with the most white, at the far end."
+    }
+  }
+  hint "Each square adds more white. Which end has no white, and which has the most?"
+  hint "{if w == 0 then \"Deep water is the darkest blue.\" else \"The palest tint is the one with the most white.\"}"
+}

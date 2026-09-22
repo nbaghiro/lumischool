@@ -1,0 +1,21 @@
+# Ordering three things from two clues, with no picture to measure: 1.MD.A.1 by reasoning alone.
+item measure.which-longest v=1 stars=2 skills=[measure.compare-lengths, reasoning.order] {
+  title "Longest from the clues"
+  difficulty (if q == "shortest" then 1 else 0)
+  let x={"ribbon", "pencil", "stick"} y={"ribbon", "pencil", "stick"} z={"ribbon", "pencil", "stick"} q={"longest", "shortest"}
+  where (x != y and y != z and x != z)
+
+  scene 30x9 {
+    text ask "The {x} is longer than the {y}. The {y} is longer than the {z}. Which is the {q}?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["ribbon", "pencil", "stick"] below=ask gap=1
+  }
+
+  answer pick=(if q == "longest" then x else z)
+  feedback {
+    when (pick == y) point=ask {
+      say "The {y} is in the middle: one thing is longer than it and one is shorter."
+    }
+  }
+  hint "Draw the three as lines, one under another, using the clues."
+  hint "Put the one that is longer than both of the others at the top."
+}

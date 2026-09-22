@@ -1,0 +1,21 @@
+# How many numbers fit both rules, rather than where one number goes: the child has to list them.
+item sort.venn-middle-count v=1 skills=[sorting.two-rules, reasoning.systematic] {
+  title "How many in the middle?"
+  difficulty ((20 - m) / 2)
+  let m={8, 10, 12, 14}
+
+  scene 32x21 {
+    venn rings labels=["Even", "More than {m}"] left=["2", "4"] both=["{m + 2}"] right=["{m + 1}"] outside=["1"] at=canvas(1, 0)
+    text ask "Think of every number from 1 to 20. How many of them belong in the middle?" narrate width=28 below=rings gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((20 - m) / 2)
+  feedback {
+    when (answer == 1) point=rings {
+      say "{m + 2} is one of them. Are there more even numbers bigger than {m}?"
+    }
+  }
+  hint "The middle is for numbers that are even and more than {m}."
+  hint "Count on in twos from {m + 2} to 20."
+}

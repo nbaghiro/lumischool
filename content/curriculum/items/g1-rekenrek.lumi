@@ -1,0 +1,29 @@
+# The rekenrek is read in fives: a child sees four and one rather than counting five beads.
+item count.rekenrek v=1 skills=[counting.to-twenty] {
+  title "Beads pushed across"
+  difficulty (t + b)
+  let t=3..9 b=1..8
+  where (t + b <= 20)
+  where (t != b)
+  level easy {
+    let t=3..5 b=1..4
+  }
+  level hard {
+    let t=7..9 b=6..8
+  }
+
+  scene 26x12 {
+    rekenrek frame top=t bottom=b at=canvas(1, 1)
+    text ask "How many beads are pushed across?" narrate below=frame gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (t + b)
+  feedback {
+    when (answer == t) point=frame {
+      say "The bottom wire counts too. Count the top wire, then count on."
+    }
+  }
+  hint "The beads pushed across sit together at the left of each wire."
+  hint "The beads sit in fives, so you can see five without counting it."
+}

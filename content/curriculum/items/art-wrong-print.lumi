@@ -1,0 +1,16 @@
+# Finding the mistake: every print but one follows the part that repeats.
+item art.wrong-print v=1 stars=2 skills=[art.pattern, reasoning.find-the-mistake] {
+  title "One print is wrong"
+  difficulty w
+  let u=0..1 w=4..9
+
+  scene 34x12 {
+    printrow row unit=["leaf", "{if u == 0 then \"leaf\" else \"star\"}", "star"] colours=["green", "{if u == 0 then \"green\" else \"orange\"}", "orange"] count=9 missing=-1 wrong=w at=canvas(1, 1)
+    text ask "Ada printed this strip, and one print is wrong. Which number is it, counting from the left?" width=20 below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer w
+  hint "Say the prints out loud from the start. Where does it stop sounding right?"
+  hint "The first three prints are right. Check each print after them against those three."
+}

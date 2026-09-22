@@ -1,0 +1,66 @@
+lesson nature-leaves-and-seeds v=1 format=teach grade=2 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "Leaves and seeds"
+  goal "Sort leaves by their shape and their edge, and say how a dandelion's seeds travel."
+
+  look {
+    scene 31x17 {
+      row all at=canvas(1, 1) space=2 align=end {
+        dandelion clock seeds=16 blown=4 flower=0
+        leafrow kinds kinds=["oak", "maple", "holly", "ash"] labels=true
+      }
+    }
+    say """
+      In the long grass Ada finds a dandelion clock, a round ball of seeds. Each seed hangs from
+      its own little parachute, and when Ada puffs, the wind takes them away to land somewhere
+      new. Under the trees at the edge she picks up leaves. They are all green, so she sorts them
+      by their edges: the oak's wavy bumps, the maple's points, the holly's prickles, and the
+      ash, smooth and plain.
+      """
+  }
+  do {
+    level easy {
+      worked nature.which-leaf k=0 p=1
+    }
+    practice nature.which-leaf count=2 seed=4 easy-seed=1 easy-count=1 hard-seed=4
+    practice nature.count-kind count=2 seed=7 easy-seed=1 hard-seed=5
+    practice nature.leaf-by-edge count=1 seed=6 easy-seed=1 hard-seed=1
+    practice nature.seeds-left count=2 seed=5 easy-seed=1 hard-seed=1
+    practice nature.seed-travels count=1 seed=2 easy-seed=1 hard-seed=7
+    level hard {
+      show nature.same-shape k=3
+    }
+  }
+  story {
+    show nature.leaf-pile a=2 b=3 c=2 w=1 easy-a=2 easy-b=2 easy-c=1 easy-w=0 hard-a=3 hard-b=2 hard-c=3 hard-w=2
+  }
+  try stars=2 {
+    show nature.same-shape k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.puffs-until-bare s=11 b=4 easy-s=9 easy-b=3 hard-s=14 hard-b=4
+  }
+  remember {
+    say "Sort a leaf by its edge: wavy, pointed, prickly or smooth. A dandelion seed flies on the wind."
+  }
+
+  grown-ups """
+    Two things are being learned: that leaves are sorted by their edges when their colour and size
+    say nothing, and that a seed has a way of travelling. The wrong idea to watch for in the
+    sorting is going by size or by how the leaf is drawn on the page rather than by its edge; ask
+    the child to run a finger round the edge and say what it does. The counting questions on the
+    clock go both ways, seeds left and seeds gone, so watch which number the child starts from.
+    The story counts the prickly leaves, the ones that are not, or all of them, and the holly is
+    the only prickly kind. The two-star question is Ben's claim that two leaves of the same size
+    and shape come from the same tree, and the answer should come back as the edge. The
+    three-star question counts puffs, and when the seeds do not come out exactly, the last few
+    still need a puff; the way in is to take the seeds away a puff at a time and count the puffs.
+    If the edges are still guessed after the core, stay here another day and collect five real
+    leaves, then sort them by edge alone on the table.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the holly, found by its prickles) opens the core, the leaf to find is the maple, the leaves counted are holly in rows of two kinds, the leaf described is the holly or the maple, the clock loses two to four seeds and the question is how many are left, the seed question is how the seeds travel, the story counts two holly leaves among five, the two leaves are an oak and an ash, and the clock of nine seeds is bare in three puffs of three."
+  }
+  level hard {
+    grown-ups "At this level the leaves to find are the oak and the ash, the leaves counted are oak, maple or ash in rows of three kinds, the leaf described is the oak or the ash, the clock has fourteen to sixteen seeds and the question is how many blew away, the seed question is where a seed can grow, a second reasoning question sits in the core (a holly and an oak), the story counts all eight leaves, the two leaves are an oak and a holly, and the clock of fourteen seeds needs four puffs of four, the last one for two seeds."
+  }
+}

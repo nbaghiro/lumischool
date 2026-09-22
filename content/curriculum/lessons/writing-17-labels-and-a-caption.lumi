@@ -1,0 +1,59 @@
+lesson writing-labels-and-a-caption v=1 format=teach grade=1 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "Labels and a caption"
+  goal "Write the name of a part on a label, and a few words under a picture to say what it shows."
+
+  look {
+    scene 32x19 {
+      column all at=canvas(1, 1) space=1 align=start {
+        labelled ship of="ship" labels=["flag", "sail", "porthole", "hull", "waves"] blank=-1 title="" caption=""
+        caption strip text="The ship is in the harbour." width=20
+      }
+    }
+    say """
+      A label is the name of one part. A line goes from the label to the part it names. A caption
+      goes under the whole picture and says what it shows. It can be a few words or one sentence.
+      """
+  }
+  do {
+    practice writing.label-the-lighthouse count=1 seed=1
+    show writing.label-from-a-bank d=0 k=3
+    level easy {
+      worked writing.label-spelling k=4 level=medium
+    }
+    show writing.label-spelling k=0 hard-k=5
+    show writing.label-or-caption k=3 easy-k=1
+    practice writing.which-caption count=1 seed=3
+    show writing.caption-details a=1 f=1 q=2 easy-f=0
+    show writing.caption-details a=3 f=2 q=1 hard-f=1
+    level hard {
+      practice writing.best-caption count=1 seed=1
+    }
+    show writing.write-a-caption w="rocket"
+  }
+  try stars=2 {
+    show writing.best-caption a=2 s=0 q=1 hard-s=2
+  }
+  try stars=3 {
+    show writing.caption-for-one a=0
+  }
+  remember {
+    say "A label names a part. A caption says what the picture shows."
+  }
+
+  grown-ups """
+    The labels are spelled from a word bank and marked by the machine; the caption at the end is
+    the child's own and is yours to read. Accept a caption that is a few words rather than a
+    sentence, as long as it is about the picture. Labels are also how the harbour's lighthouse is
+    drawn in the reading track, so a child who has read one has seen what a label is for. The word
+    bank has two words that are not on the picture, so the line from the empty box has to be
+    followed. In the two-star question two captions are true, and the better one says where the
+    animal is as well as what it is. In the three-star question the caption has to name both the
+    animal and the place, because each on its own also fits another card.
+    """
+  level easy {
+    grown-ups "At this level the lighthouse and the bank are as written, flagg is put right once in the teacher's pen before windo, the caption to tell from a label is a whole sentence, the captions to fit say on and in, the caption to write is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the lighthouse and the bank are as written, the label to put right is wavs, the caption to tell from a label is as written, the captions to fit say under, a second pair of true captions is compared in the core, the two-star's fullest caption says under, and the three-star is as written."
+  }
+}

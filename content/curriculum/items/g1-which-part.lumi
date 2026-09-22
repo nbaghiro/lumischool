@@ -1,0 +1,23 @@
+# Two quarters shaded is one half: the name of the part, not only a count of pieces.
+item fraction.which-part v=1 skills=[fractions.halves-quarters] {
+  title "Name the part"
+  difficulty (if n == 2 then 0 else if k == 2 then 3 else if k == 3 then 2 else 1)
+  let n={2, 4} k=1..3
+  where (k < n)
+  level easy {
+    where (n == 2 or k == 1)
+  }
+  level hard {
+    where (n == 4 and k >= 2)
+  }
+
+  scene 36x10 {
+    fraction round n=n k=k shape=circle at=canvas(1, 1)
+    text ask "How much of the circle is shaded?" narrate width=22 right-of=round gap=2
+    choice pick options=["one quarter", "one half", "three quarters"] below=round gap=1
+  }
+
+  answer pick=(if k * 2 == n then "one half" else if k == 1 then "one quarter" else "three quarters")
+  hint "How many equal pieces is the circle cut into?"
+  hint "How many are shaded? What do two quarters make?"
+}

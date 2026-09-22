@@ -1,0 +1,16 @@
+# One word in the wrong column: a sponge and a rubber band go back, clay and foil stay.
+item chem.shape-sort v=1 skills=[chemistry.materials] {
+  title "Goes back or stays?"
+  difficulty w
+  let w=0..3
+
+  scene 32x19 {
+    text ask "One thing is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort s heads=["goes back", "stays"] words=["sponge", "clay", "rubber band", "foil"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["sponge", "clay", "rubber band", "foil"] stack=column right-of=s gap=1
+  }
+
+  answer pick=(if w == 0 then "sponge" else if w == 1 then "clay" else if w == 2 then "rubber band" else "foil")
+  hint "Squash or stretch each one in your head, then let go. What happens?"
+  hint "Now check each word against the heading above it."
+}

@@ -1,0 +1,20 @@
+# A claim to judge about two words with different numbers of letters: the sounds match only when
+# two letters make one sound, so the child has to say the words rather than count their letters.
+item reading.sounds-or-letters v=2 stars=2 skills=[reading.segmenting, reasoning.judge-a-claim] {
+  title "Pip counts the sounds"
+  difficulty (if k == 3 then 0 else 1)
+  let k=0..4
+
+  scene 30x14 {
+    row who at=canvas(1, 1) space=1 align=centre {
+      face kid mood=happy hair=1 name="Pip"
+      bubble says "{if k == 0 then \"Ship and sip have the same number of sounds.\" else if k == 1 then \"Chin and chest have the same number of sounds.\" else if k == 2 then \"Duck and dig have the same number of sounds.\" else if k == 3 then \"Tent and ten have the same number of sounds.\" else \"Moth and mop have the same number of sounds.\"}" width=18 from=kid
+    }
+    text ask "Is Pip right?" narrate below=who gap=1
+    choice pick options=["yes", "no"] right-of=ask gap=2
+  }
+
+  answer pick=(if k == 0 or k == 2 or k == 4 then "yes" else "no")
+  hint "Say each word slowly and count its sounds on your fingers."
+  hint "Do any two letters make just one sound?"
+}

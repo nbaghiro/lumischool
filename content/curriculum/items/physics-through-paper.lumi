@@ -1,0 +1,37 @@
+# Does the pull go through a sheet? Paper, card, a thin plastic lid and water do not stop it; a
+# thick wooden board weakens it until it fails. Yes is the plain half; the board, and the clip too
+# far off, are the versions that need the idea of the pull growing weaker with distance.
+item physics.through-paper v=1 skills=[physics.magnets] {
+  title "Through the paper?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let between={pick(k, "A sheet of paper is in between.", "A thin plastic lid is in between.", "The clip is inside a glass of water, and the magnet is held against the outside of the glass.", "A thick wooden board is in between.", "A thin card is in between, and the clip sits still on it to start with.")}
+  let right={pick(k, "yes", "yes", "yes", "no", "yes")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 34x22 {
+    magnet bar mode=things count=1 sticks=1 show=0 at=canvas(1, 1)
+    text ask "Sam puts a paper clip on the table and holds the magnet just above it. {between} Does the clip move?" narrate width=32 below=bar gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k <= 2 and pick == "no") point=bar {
+      say "The pull goes through thin things and through water. Only a thick gap weakens it enough to lose the clip."
+    }
+    when (k == 3 and pick == "yes") point=bar {
+      say "A thick board puts the clip far from the magnet, and the pull gets weaker the further away it is."
+    }
+    when (k == 4 and pick == "no") point=bar {
+      say "The card is thin, so the clip is close to the magnet. Sitting still does not stop the pull: the clip jumps."
+    }
+  }
+  hint "The pull goes through things, but it gets weaker the further the clip is from the magnet."
+  hint "Is the thing in between thin, so the clip stays close, or thick, so the clip is far away?"
+}

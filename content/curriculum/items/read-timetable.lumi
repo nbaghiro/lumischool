@@ -1,0 +1,25 @@
+# A timetable is read across and down: a row for each stop, a column for each bus. Each question
+# needs the child to hold one of them and run along the other.
+item reading.timetable v=1 skills=[reading.text-features] {
+  title "Read the timetable"
+  let k=0..2
+
+  scene 30x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        sign stop lines=["BUS STOP", "Market"] kind=post color=sky
+        table t cols=3 head=["Stop", "Bus 1", "Bus 2"] cells=["Market", "8:00", "9:30", "Park", "8:10", "9:40", "Library", "8:25", "9:55", "School", "8:40", "10:10"]
+      }
+      text ask "{if k == 0 then \"Kim gets on Bus 2 at the market. What time does she get to the library?\" else if k == 1 then \"Tom must be at school before 9 o'clock. Which bus does he need?\" else \"Ali wants to be at the park at 9:40. When must he get on at the market?\"}" width=28
+      choice pick options=[if k == 0 then "9:40" else if k == 1 then "Bus 1" else "8:00", if k == 0 then "9:55" else if k == 1 then "Bus 2" else "9:30", if k == 0 then "8:25" else if k == 1 then "Either bus" else "9:40"]
+    }
+  }
+
+  answer pick=(if k == 0 then "9:55" else if k == 1 then "Bus 1" else "9:30")
+  feedback {
+    when (pick == "8:25" and k == 0) point=t {
+      say "That is Bus 1. Kim is on Bus 2, so read down the Bus 2 column."
+    }
+  }
+  hint "Find the row for the stop and the column for the bus. The answer is where they meet."
+}

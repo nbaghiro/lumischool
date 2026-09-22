@@ -1,0 +1,29 @@
+# A telling sentence becomes a question when one of its words moves to the front. Asking for the
+# word that moves makes the answer one word the sentence already has.
+item writing.into-question v=2 skills=[writing.questions, writing.sentences] {
+  title "Make it a question"
+  difficulty (if k == 3 then 2 else if k == 1 or k == 2 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 4}  # is
+  }
+  level hard {
+    let k={1, 2, 3}  # can, are, will
+  }
+  let tell={if k == 0 then "The dog is asleep." else if k == 1 then "Sam can swim." else if k == 2 then "The cats are hungry." else if k == 3 then "Mia will come." else "The shop is open."}
+  let word={if k == 0 or k == 4 then "is" else if k == 1 then "can" else if k == 2 then "are" else "will"}
+  let cap={if k == 0 or k == 4 then "Is" else if k == 1 then "Can" else if k == 2 then "Are" else "Will"}
+  let after={if k == 0 then "the dog asleep?" else if k == 1 then "Sam swim?" else if k == 2 then "the cats hungry?" else if k == 3 then "Mia come?" else "the shop open?"}
+
+  scene 30x11 {
+    text ask "{tell} Move one word to the front to make it a question. Which word moves?" narrate width=28 at=canvas(1, 1)
+    row q below=ask gap=1 space=1 align=centre {
+      word-input w options=["{cap}", "{word}"] letters=4
+      sentence strip before="" blank=0 after="{after}"
+    }
+  }
+
+  answer w=cap
+  hint "Which word in the sentence could start a question?"
+  hint "Try each word at the front. Which one makes a question that asks the same thing?"
+}

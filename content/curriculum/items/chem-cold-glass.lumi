@@ -1,0 +1,17 @@
+# Children often think the drops on a cold glass leaked through it (Science Learning Hub). The two
+# pictures have different answers: the air for the cold glass, the steam for the lid.
+item chem.cold-glass v=1 skills=[chemistry.water-cycle, chemistry.evaporating] {
+  title "Where did the drops come from?"
+  difficulty (1 - k)
+  let k=0..1 n={5, 7, 9}
+
+  scene 34x15 {
+    text ask "Where did the drops on {if k == 0 then \"the outside of the cold glass\" else \"the underside of the lid\"} come from?" width=24 at=canvas(1, 0)
+    condense c kind=(if k == 0 then "cold-glass" else "hot-lid") drops=n below=ask gap=0
+    choice pick options=["water vapour in the air", "steam rising from the hot water", "water leaking through the glass"] stack=column right-of=c gap=1
+  }
+
+  answer pick=(if k == 0 then "water vapour in the air" else "steam rising from the hot water")
+  hint "Could water get through glass? What is touching the outside of the glass, or the lid?"
+  hint "What happens to water vapour when it touches something cold?"
+}

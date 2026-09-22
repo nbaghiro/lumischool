@@ -1,0 +1,59 @@
+lesson art-a-print-comes-out-the-other-way v=1 format=teach grade=4 unit=2 subject=art levels=[easy, medium, hard] {
+  title "A print is the other way round"
+  goal "Predict a print from its block and a block from its print, and work out which letters and words survive being turned over."
+
+  look {
+    scene 19x9 {
+      stamps block motif=fish show="both" colour=blue flip=false at=canvas(1, 1)
+    }
+    say """
+      A print is made by pressing a block onto paper. The paper lies face to face with the block, so
+      everything comes out the other way round: a fish that swims right on the block swims left on
+      the paper. Printers cut their blocks backwards so the print comes out the right way.
+      """
+  }
+  do {
+    practice art.print-faces count=1 seed=1
+    level easy {
+      worked art.which-print s=6 k=0 level=medium
+    }
+    practice art.which-print count=3 seed=3
+    practice art.letter-prints count=2 seed=1
+    practice art.print-of-a-print count=2 hard-count=1 seed=1 hard-seed=7
+    level hard {
+      practice art.carve-backwards count=1 seed=7
+    }
+    show art.print-a-pattern
+  }
+  try stars=2 {
+    show art.carve-backwards m="bird" d="left" easy-d="right" hard-m="fish"
+  }
+  try stars=3 {
+    show art.word-prints k=2
+  }
+  remember {
+    say "A print is the block turned over. Carve it backwards to print it the right way round."
+  }
+
+  grown-ups """
+    The questions are marked by the machine, which works out each print from the block itself. The
+    first ones ask which way a shape faces and which grid of squares a block prints. The letter
+    questions bring in symmetry: a capital letter prints the right way round only if a mirror down
+    its middle leaves it the same, as with A, H, M, O, T, U, V, W, X and Y.
+
+    The two-star question runs the print backwards, from the print Ada wants to the block she has
+    to carve. The three-star question puts two turns together: turning a block over reverses the
+    order of the letters and turns each letter over, so a word prints true only if it reads the same
+    backwards and every letter is symmetric. TOM fails and TOT survives, and finding out why is the
+    point. The printing row is the child's and is responded to rather than marked.
+
+    Respond to the row by reading it with the child: "Face right, face left, face right." Ask what
+    the stamp itself looked like before it was pressed.
+    """
+  level easy {
+    grown-ups "At this level the way a print faces is as written, a block with six shapes is matched to its print once in the teacher's pen before blocks with one to three, the letters that print true are as written, the print of a print is as written, the pattern is as written, the two-star's bird is to face right, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the way a print faces is as written, the blocks to match have four to six shapes, the letters that print true are as written, one print of a print makes way for a second block to carve backwards, the pattern is as written, and the two-star and three-star are as written."
+  }
+}

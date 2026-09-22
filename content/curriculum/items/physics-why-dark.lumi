@@ -1,0 +1,20 @@
+item physics.why-dark v=1 skills=[physics.circuits] {
+  title "Why is it dark?"
+  difficulty (if f == 2 then 4 else if f == 3 then 2 else if f == 1 then 1 else 0)
+  let f=1..3 c=1..2 n=1..2
+  level easy {
+    let f={1, 3}
+  }
+  level hard {
+    let f={2, 3}
+  }
+
+  scene 32x15 {
+    text ask "The bulb does not light. Why not?" width=30 at=canvas(1, 0)
+    series ring cells=(if f == 3 then 0 else c) bulbs=n closed=(if f == 1 then 0 else 1) loose=(if f == 2 then 1 else 0) below=ask gap=0
+    choice pick options=["The switch is open", "A wire is loose", "There is no cell"] stack=column right-of=ring gap=1
+  }
+
+  check physics.circuit of=ring pick=fault
+  hint "Is the switch closed, are the clips on, and is there a cell?"
+}

@@ -1,0 +1,29 @@
+# The story: a first draft cut and joined, counted in words.
+item writing.draft-count v=1 stars=1 skills=[writing.revising, subtraction.to-hundred] {
+  title "Counting the second draft"
+  difficulty (if w == 0 then 0 else 1)
+  let n={40, 60, 80} c={8, 12, 15} j=2..3 w=0..1
+  level easy {
+    let n={40} c={8} w=0..0
+  }
+  level hard {
+    let n={60, 80} c={12, 15} j=3..3 w=1..1
+  }
+
+  scene 34x10 {
+    text ask "Ada's first draft is {n} words. She cuts {c} words that said things twice{if w == 0 then \".\" else \", and joins \"}{if w == 0 then \"\" else j}{if w == 0 then \"\" else \" pairs of short sentences with one joining word each.\"} How many words is the second draft?" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then n - c else n - c + j)
+  feedback {
+    when (w == 1 and answer == n - c) point=ask {
+      say "Each joining word is a word added: {j} pairs joined is {j} words more."
+    }
+    when (w == 1 and answer == n - c - j) point=ask {
+      say "Joining two sentences adds a word, so and but; it does not take one away."
+    }
+  }
+  hint "{if w == 0 then \"Take the cut words from the draft's count.\" else \"Take the cut words away, then add one word for each join.\"}"
+  hint "{if w == 0 then \"{n} take away {c}.\" else \"{n} take away {c}, then add {j}.\"}"
+}

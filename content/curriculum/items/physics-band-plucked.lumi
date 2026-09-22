@@ -1,0 +1,13 @@
+item physics.band-plucked v=1 skills=[physics.sound] {
+  title "Which one is shaking?"
+  let k=0..2
+
+  scene 21x18 {
+    bands b pluck=k at=canvas(1, 0)
+    text ask "Which band has just been plucked?" width=15 below=b gap=0
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else "C")
+  hint "Which band looks blurred, and has rings coming off it?"
+}

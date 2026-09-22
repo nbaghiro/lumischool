@@ -1,0 +1,22 @@
+# The strings are read G, C, E, A across the card but numbered from the thinnest, on the right.
+# Numbering from the left is the mistake worth naming, and in every version it gives a wrong letter.
+item music.uke-string-claim v=1 stars=2 skills=[music.uke-strings, reasoning.find-the-error] {
+  title "Is Nia right?"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=1..4
+
+  scene 28x15 {
+    chordbox box tuning=uke chord=none places=[] frets=3 show=dots name=false letters=true lit=[] at=canvas(1, 1)
+    text ask "Nia says string {k} is {if k == 1 then \"G\" else if k == 2 then \"C\" else if k == 3 then \"E\" else \"A\"}, because she counted from the left. Which string is string {k} really?" width=14 right-of=box gap=1
+    choice pick options=["G", "C", "E", "A"] below=ask gap=1
+  }
+
+  answer pick=(if k == 1 then "A" else if k == 2 then "E" else if k == 3 then "C" else "G")
+  feedback {
+    when (pick == (if k == 1 then "G" else if k == 2 then "C" else if k == 3 then "E" else "A")) point=box {
+      say "That is what Nia said. Strings are counted from the thinnest one."
+    }
+  }
+  hint "Which string is string 1? Is it on the left or the right?"
+  hint "Count from that side, 1, 2, 3, until you reach {k}."
+}

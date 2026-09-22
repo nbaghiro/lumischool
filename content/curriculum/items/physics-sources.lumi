@@ -1,0 +1,22 @@
+# The moon looks bright, and a mirror can dazzle, so both are the wrong answer a child reaches for
+# first: neither gives out light of its own.
+item physics.sources v=1 skills=[physics.light] {
+  title "Its own light?"
+  difficulty (if x == "moon" then 1 else 0)
+  let x={"moon", "mirror"} f=0..2
+  level easy {
+    let x={"mirror"}
+  }
+  level hard {
+    let x={"moon"}
+  }
+
+  scene 18x15 {
+    things t things=["{if f == 0 then x else \"candle\"}", "{if f == 1 then x else \"torch\"}", "{if f == 2 then x else \"lamp\"}", "sun"] at=canvas(1, 0)
+    text ask "Which one does not give out its own light?" width=16 below=t gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check physics.things of=t pick="only(not-source)"
+  hint "Which of them would be dark in a dark room?"
+}

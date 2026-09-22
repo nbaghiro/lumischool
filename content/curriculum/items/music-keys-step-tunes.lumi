@@ -1,0 +1,23 @@
+# Every tune of three notes that moves by next-door keys, listed: the ends of C to G have fewer,
+# because a tune starting on C cannot step down.
+item music.tunes-by-steps v=1 stars=3 skills=[music.keys, reasoning.all-the-ways] {
+  title "Tunes that step"
+  difficulty (if i == 2 then 2 else if i == 1 or i == 3 then 1 else 0)
+  let i=0..4
+  let x={if i == 0 then "C" else if i == 1 then "D" else if i == 2 then "E" else if i == 3 then "F" else "G"}
+
+  scene 30x13 {
+    chimebars bars bars=5 letters=1 at=canvas(1, 1)
+    text ask "Start on {x}. Play two more notes. Each one is the bar next door to the note before, up or down, and you stay on these five bars. How many different tunes can you make?" width=18 right-of=bars gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if i == 0 or i == 4 then 2 else if i == 2 then 4 else 3)
+  feedback {
+    when (answer == 4 and (i == 0 or i == 4)) point=bars {
+      say "From {x} there is only one bar next door on these five bars."
+    }
+  }
+  hint "What are the two notes you could play after {x}? Write each one down."
+  hint "Now, from each of those, where can the third note go?"
+}

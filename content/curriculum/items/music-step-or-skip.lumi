@@ -1,0 +1,18 @@
+# Line to space is a step, line to line is a skip: the fact the whole of interval reading grows from.
+item music.step-or-skip v=1 skills=[music.intervals] {
+  title "A step or a skip?"
+
+  scene 26x12 {
+    notes pair clef=treble notes=[E4, G4] letters=false at=canvas(1, 1)
+    text ask "From the first note to the second: is it a step or a skip?" width=13 right-of=pair gap=1
+    choice pick options=["a step", "a skip"] below=ask gap=1
+  }
+
+  answer pick="a skip"
+  feedback {
+    when (pick == "a step") point=pair {
+      say "A step goes from a line to the space next to it. These two are both on lines, so one note is missed out."
+    }
+  }
+  hint "Look at where each note sits: on a line, or in a space."
+}

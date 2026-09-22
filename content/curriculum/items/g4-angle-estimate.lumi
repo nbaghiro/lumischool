@@ -1,0 +1,27 @@
+# Estimate before measuring: acute or obtuse settles which of the readings it can be.
+item angles.estimate v=1 skills=[angles.measuring] {
+  title "Which could it be"
+  difficulty (9 - abs(d - 90) / 10)
+  let d={25, 35, 55, 65, 115, 125, 145, 155} p=0..2
+  level easy {
+    let d={25, 35, 145, 155}
+  }
+  level hard {
+    let d={55, 65, 115, 125}  # near a right angle
+  }
+
+  scene 32x17 {
+    angle a deg=d arm=5 label="" mark=arc at=canvas(1, 1)
+    text ask "Without measuring, which of these could the angle be?" narrate width=16 right-of=a gap=2
+    choice pick options=[if p == 0 then d else 180 - d, if p == 1 then d else 90, if p == 2 then d else 360 - d] stack=column below=ask gap=1
+  }
+
+  answer pick=d
+  feedback {
+    when (pick == 180 - d) point=a {
+      say "Is the angle smaller than a right angle or bigger? That decides which it can be."
+    }
+  }
+  hint "Is the angle smaller than the corner of a page, or bigger?"
+  hint "A right angle is 90 degrees. Which of the numbers is on the right side of 90?"
+}

@@ -1,0 +1,15 @@
+item art.two-to-one v=1 skills=[art.proportion, art.colour-mixing] {
+  title "Two parts to one"
+  difficulty k
+  let k=0..2
+
+  scene 36x12 {
+    paintpots pots pots=["{if k < 2 then \"yellow\" else \"blue\"}", "{if k < 2 then \"yellow\" else \"blue\"}", "{if k == 0 or k == 3 then \"red\" else if k == 1 then \"blue\" else \"red\"}"] result="?" labels=true at=canvas(1, 1)
+    text ask "What do these pots make?" width=12 right-of=pots gap=1
+    choice pick options=["green", "orange", "purple"] below=pots gap=1
+  }
+
+  check paint.mixes of=pots pick=name
+  hint "Which two different paints are in the pots?"
+  hint "What do those two make together? Two pots of one of them only pulls the mix towards it."
+}

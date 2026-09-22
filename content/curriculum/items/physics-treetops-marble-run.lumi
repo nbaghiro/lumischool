@@ -1,0 +1,31 @@
+# The story: the marble run built in the treetops, where the walkway is the floor and the cup is a
+# basket, and how much further the higher start pushes it.
+item physics.treetops-marble-run v=1 skills=[physics.forces, subtraction.to-twenty] {
+  title "The marble run in the trees"
+  difficulty (hb - ha)
+  let v=0..3
+  let ha={pick(v, 2, 1, 2, 1)}
+  let hb={pick(v, 3, 3, 5, 6)}
+  let pa={pick(v, 4, 2, 4, 2)}
+  let pb={pick(v, 6, 6, 10, 12)}
+  let diff={pick(v, 2, 4, 6, 10)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 30x38 {
+    text la "Sam's first go" at=canvas(1, 0)
+    ramp one height=ha cup=1 pushed=pa below=la gap=0
+    text lb "Sam's second go" below=one gap=1
+    ramp two height=hb cup=1 pushed=pb below=lb gap=0
+    text ask "Sam builds a marble run along the treetop walkway and lets the same marble go twice, the second time from higher up. How many squares further did the basket go the second time?" narrate width=26 below=two gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=diff
+  hint "Count the squares each basket was pushed."
+  hint "Take the smaller push away from the bigger one."
+}

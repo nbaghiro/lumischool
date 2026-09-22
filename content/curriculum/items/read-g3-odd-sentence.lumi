@@ -1,0 +1,24 @@
+# A title names what every sentence is about, so the sentence that does not belong under it is
+# the one about something else. p moves the odd one, so the answer is not always the same box.
+item reading.odd-sentence v=1 skills=[reading.gist, reading.text-features] {
+  title "One does not belong"
+  let k=0..2 p=1..4
+
+  scene 37x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text head "{if k == 0 then \"Looking after a puppy\" else if k == 1 then \"Our day at the beach\" else \"How to make a paper boat\"}"
+      column body space=0 align=start {
+        text l1 "{if k == 0 then (if p == 1 then \"1. Cats can see well in the dark.\" else if p == 2 then \"1. A puppy needs fresh water every day.\" else if p == 3 then \"1. A puppy needs fresh water every day.\" else \"1. A puppy needs fresh water every day.\") else if k == 1 then (if p == 1 then \"1. My school has a new library.\" else if p == 2 then \"1. We built a big sandcastle.\" else if p == 3 then \"1. We built a big sandcastle.\" else \"1. We built a big sandcastle.\") else (if p == 1 then \"1. Real boats are made of wood or steel.\" else if p == 2 then \"1. Fold the paper in half.\" else if p == 3 then \"1. Fold the paper in half.\" else \"1. Fold the paper in half.\")}" width=36
+        text l2 "{if k == 0 then (if p == 1 then \"2. A puppy needs fresh water every day.\" else if p == 2 then \"2. Cats can see well in the dark.\" else if p == 3 then \"2. Take it for short walks at first.\" else \"2. Take it for short walks at first.\") else if k == 1 then (if p == 1 then \"2. We built a big sandcastle.\" else if p == 2 then \"2. My school has a new library.\" else if p == 3 then \"2. Dad found a crab in a rock pool.\" else \"2. Dad found a crab in a rock pool.\") else (if p == 1 then \"2. Fold the paper in half.\" else if p == 2 then \"2. Real boats are made of wood or steel.\" else if p == 3 then \"2. Fold the corners down to the middle.\" else \"2. Fold the corners down to the middle.\")}" width=36
+        text l3 "{if k == 0 then (if p == 1 then \"3. Take it for short walks at first.\" else if p == 2 then \"3. Take it for short walks at first.\" else if p == 3 then \"3. Cats can see well in the dark.\" else \"3. Give it a soft bed to sleep in.\") else if k == 1 then (if p == 1 then \"3. Dad found a crab in a rock pool.\" else if p == 2 then \"3. Dad found a crab in a rock pool.\" else if p == 3 then \"3. My school has a new library.\" else \"3. We ate our lunch on the rocks.\") else (if p == 1 then \"3. Fold the corners down to the middle.\" else if p == 2 then \"3. Fold the corners down to the middle.\" else if p == 3 then \"3. Real boats are made of wood or steel.\" else \"3. Open it out into a boat shape.\")}" width=36
+        text l4 "{if k == 0 then (if p == 1 then \"4. Give it a soft bed to sleep in.\" else if p == 2 then \"4. Give it a soft bed to sleep in.\" else if p == 3 then \"4. Give it a soft bed to sleep in.\" else \"4. Cats can see well in the dark.\") else if k == 1 then (if p == 1 then \"4. We ate our lunch on the rocks.\" else if p == 2 then \"4. We ate our lunch on the rocks.\" else if p == 3 then \"4. We ate our lunch on the rocks.\" else \"4. My school has a new library.\") else (if p == 1 then \"4. Open it out into a boat shape.\" else if p == 2 then \"4. Open it out into a boat shape.\" else if p == 3 then \"4. Open it out into a boat shape.\" else \"4. Real boats are made of wood or steel.\")}" width=36
+      }
+      text ask "One sentence does not belong under this title. Which one?" width=36
+      choice pick options=["1", "2", "3", "4"]
+    }
+  }
+
+  answer pick=(if p == 1 then "1" else if p == 2 then "2" else if p == 3 then "3" else "4")
+  hint "What is the title about? Say it in your own words."
+  hint "Read each sentence and ask: is this about the title, or about something else?"
+}

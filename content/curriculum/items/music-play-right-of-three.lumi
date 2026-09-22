@@ -1,0 +1,13 @@
+# Played: the white key just right of a group of three, which is B.
+item music.play-right-of-three v=1 skills=[music.keys] {
+  title "Right of the three"
+
+  scene 34x16 {
+    piano keys from=F3 whites=11 wide=3 labels=none at=canvas(1, 1)
+    text ask "Find a group of three black keys. Press the white key just to the right of it." narrate width=32 below=keys gap=1
+  }
+
+  check music.plays notes=[B4]
+  hint "Count the black keys in each group. Find a group of three."
+  hint "The white key touching the right-hand end of the three is B."
+}

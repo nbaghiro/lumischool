@@ -1,0 +1,27 @@
+# Sharing is between people, so the people are on the page: "between four" is not an abstraction.
+item division.share-plates v=1 skills=[division.sharing] {
+  title "Sharing between children"
+  difficulty (c * each)
+  let c=2..4 each=2..6
+  where (c * each != c + each)  # two and two cannot tell the mistake apart
+  level easy {
+    let c=2..3 each=2..3
+  }
+  level hard {
+    let c=3..4 each=5..6
+  }
+
+  scene 30x20 {
+    children row count=c holding="" each=each at=canvas(1, 1)
+    text ask "{c} children share the biscuits and get {each} each. How many were there?" width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * each)
+  feedback {
+    when (answer == c + each) point=row {
+      say "Each child has {each}, so count {each} once for every child."
+    }
+  }
+  hint "Count {each} for the first child, then {each} more for the next."
+}

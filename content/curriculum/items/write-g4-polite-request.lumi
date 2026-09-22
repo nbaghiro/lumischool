@@ -1,0 +1,16 @@
+# The same request written three ways for a reader you do not know well: one is polite and gives a
+# reason, one is rude, one is too chatty for this reader. The right one moves.
+item writing.polite-request v=1 skills=[writing.letters, writing.audience] {
+  title "The right way to ask"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 36x15 {
+    text ask "You are writing to {if k == 0 then \"the head teacher\" else if k == 1 then \"the town mayor\" else \"the library\"}. Which sentence asks in the best way?" width=35 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"Hiya, can we get a pond or what?\" else if k == 1 then \"Please could the park have a new swing? Ours broke.\" else \"Give us more books about space.\"}", "{if k == 0 then \"Please could our class have a pond to study frogs?\" else if k == 1 then \"Hi Mayor, the swing is rubbish, lol.\" else \"Hey, got any space books? Ta.\"}", "{if k == 0 then \"We want a pond. Get one.\" else if k == 1 then \"Fix the swing now.\" else \"Please could you buy more space books? We love them.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Please could our class have a pond to study frogs?" else if k == 1 then "Please could the park have a new swing? Ours broke." else "Please could you buy more space books? We love them.")
+  hint "Which sentence would you be happy for this reader to read out loud?"
+  hint "Look for please, and for a reason that would help the reader say yes."
+}

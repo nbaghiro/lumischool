@@ -1,0 +1,42 @@
+# A chain with its middle link missing, and four creatures to fill it from. The right one is
+# eaten by the top and eats the bottom; the wrong ones fail one or the other.
+item nature.missing-link v=1 skills=[nature.food-chains, reasoning.two-conditions] {
+  title "The missing link"
+  difficulty (if c == 0 then 0 else if c == 1 then 1 else 2)
+  let c=0..2
+  let x={pick(c, "seaweed", "tiny plants", "seaweed")}
+  let z={pick(c, "gull", "seal", "octopus")}
+  let right={pick(c, "crab", "small fish", "crab")}
+  let o1={pick(c, "seal", "gull", "sea turtle")}
+  let o2={pick(c, "whale", "sea turtle", "shark")}
+  let o3={pick(c, "sea turtle", "crab", "dolphin")}
+  level easy {
+    let c=0..0
+  }
+  level hard {
+    let c=2..2
+  }
+
+  scene 36x26 {
+    text chain "{x}  →  ?  →  {z}" narrate at=canvas(1, 1)
+    column who below=chain gap=1 space=1 align=start {
+      crabs pc count=1
+      seaturtle pt facing=1 plates=5
+      octopus po spots=4
+    }
+    text ask "One link of this reef chain is missing. It eats the {x}, and the {z} eats it. Which creature is it?" narrate width=22 right-of=who gap=2
+    choice pick options=[o1, right, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o3 and c != 1) point=chain {
+      say "The sea turtle eats sea grass and seaweed, but nothing on this reef eats a grown turtle. Both arrows have to be true."
+    }
+    when (pick == o1 or pick == o2) point=chain {
+      say "That one does not eat {x}. The missing link has to eat what comes before it and be eaten by what comes after."
+    }
+  }
+  hint "The missing creature has two jobs: it eats the {x}, and it is eaten by the {z}."
+  hint "Try each creature in the gap and say both arrows aloud. Only one makes both true."
+}

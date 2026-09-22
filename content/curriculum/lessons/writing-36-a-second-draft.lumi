@@ -1,0 +1,64 @@
+# Revising: a first draft read for what says itself twice, for short sentences that belong
+# together, and for lost capitals, then written again shorter and clearer.
+lesson writing-a-second-draft v=1 format=teach grade=4 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "A second draft"
+  goal "Read a first draft, find what to cut, join and fix, and write it again shorter and clearer."
+
+  look {
+    scene 34x9 {
+      passage draft title="Ada's first draft" text="on saturday we went to the harbour. We saw the boats. The boats were big and tall. They were not small." width=32 numbers=true at=canvas(1, 1)
+    }
+    say """
+      Ada's first draft is on the desk at the post office, and she reads it as a reader would.
+      Two words have lost their capitals. One sentence says the boats were not small, which the
+      reader already knows. Two short sentences in a row could be one. A second draft is the
+      same piece with those things done: shorter, clearer, and still saying everything the
+      reader needs, when, where and what happened.
+      """
+  }
+  do {
+    level easy {
+      worked writing.cut-the-extra k=5 level=medium
+    }
+    practice writing.says-twice count=1 seed=2 easy-seed=1 hard-seed=1
+    practice writing.cut-the-extra count=2 seed=1 easy-seed=4 hard-seed=2
+    practice writing.join-two count=2 seed=1 easy-seed=1 hard-seed=1
+    practice writing.fix-the-capital count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.say-it-shorter count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show writing.join-two k=0 level=medium
+    }
+  }
+  story {
+    show writing.draft-count n=60 c=12 j=2 w=1 easy-n=40 easy-c=8 easy-w=0 hard-n=80 hard-c=15 hard-j=3
+  }
+  try stars=2 {
+    show writing.kept-the-meaning k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show writing.own-second-draft k=0 hard-k=1
+  }
+  remember {
+    say "A second draft cuts what is said twice, joins what belongs together, and keeps what the reader needs."
+  }
+
+  grown-ups """
+    The idea is that a draft is read again as a reader, and three things are done to it: what
+    says itself twice is cut, short sentences that belong together are joined with the word
+    that says how, and lost capitals go back, without losing the when, the where and the what.
+    The look is Ada's draft with its faults. The way in finds the sentence that says a thing
+    twice, and the core cuts extra words, joins two sentences with so, but or because, finds
+    the word that lost its capital, and says the same in fewer words. The wrong idea to watch
+    for is that shorter is always better; a draft that cut the where or the when has lost its
+    meaning, and the two-star question is about that. The story counts a draft's words after
+    cutting and joining, and the three-star question is a given first draft rewritten, which
+    you mark: no repeats, two sentences joined truly, the capitals back, the meaning kept.
+    Reading the first and second drafts aloud one after the other is the best check there is.
+    """
+  level easy {
+    grown-ups "At this level the extra words on the bench are worked once in the teacher's pen, the repeat is the wet dog's, the extra words are the plainer ones, the joins are so and but, the lost capital is a name or the start of a sentence, the shorter sentence is the plainer pair, the story cuts eight words from forty, the two-star keeps Saturday at the harbour, and the draft to rewrite is the beach."
+  }
+  level hard {
+    grown-ups "At this level the repeat hides in a long sentence about Gran's clock, the extra words are the subtler ones, the joins need because and a three-part sentence, with the plain so join once more in the core, the lost capital is a day or a place, the shorter sentence is the subtler pair, the story cuts and joins, the two-star keeps the clock's fifty years, and the draft to rewrite is the kite, with two repeats and two capitals."
+  }
+}

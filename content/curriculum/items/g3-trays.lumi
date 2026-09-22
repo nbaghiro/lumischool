@@ -1,0 +1,28 @@
+# One tray is an array; many trays is a two-digit number times a one-digit number.
+item multiply.trays v=1 skills=[multiplication.short] {
+  title "Trays of buns"
+  difficulty (r * c * n)
+  let r=2..4 c=4..6 n=3..9
+  where (r * c >= 12)
+  level easy {
+    let r=2..3 n=3..4
+  }
+  level hard {
+    let r=3..4 c=5..6 n=7..9
+  }
+
+  scene 36x14 {
+    bakingtray tray rows=r cols=c iced=0 at=canvas(1, 1)
+    text ask "A baker fills {n} trays like this one. How many buns is that?" width=14 right-of=tray gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (r * c * n)
+  feedback {
+    when (answer == r * c + n) point=tray {
+      say "There are {n} trays of {r * c}, so it is {n} lots of {r * c}."
+    }
+  }
+  hint "How many buns are on one tray?"
+  hint "Multiply the tens and the ones of that number by {n}, then add."
+}

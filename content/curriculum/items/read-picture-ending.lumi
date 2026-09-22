@@ -1,0 +1,31 @@
+# The two-star reason: two sentences that differ only in their ending, and the one the picture
+# shows, because ing is happening now and ed is over.
+item reading.picture-ending v=1 stars=2 skills=[reading.morphology, reading.evidence] {
+  title "Which one does the picture show?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "The dog is playing: it is happening now", "The duck is swimming: it is happening now")}
+  let w1={pick(k, "The dog played: it is over", "The duck swam: it is over")}
+  let w2={pick(k, "Both: the words mean the same", "Both: the words mean the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x19 {
+    dog d facing=1 ball=1 at=canvas(1, 1)
+    text ask "{if k == 0 then \"The dog has the ball right now. Which sentence goes with the picture, and why?\" else \"A duck is in the pond right now, mid-swim. Which sentence goes with it, and why?\"}" narrate width=18 right-of=d gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=d gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=d {
+      say "The ending changes when it happens. Ing is going on as we look; ed says it already happened and stopped. Which is the picture?"
+    }
+  }
+  hint "Is the thing in the picture happening now, or finished?"
+  hint "Ing for now, ed for over. The two sentences do not mean the same."
+}

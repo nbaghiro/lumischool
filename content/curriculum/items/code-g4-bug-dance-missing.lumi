@@ -1,0 +1,21 @@
+# A block missing from inside a repeat: the strip shows the dance the program should make, and the
+# program is short by one move each time round.
+item coding.bug-dance-missing v=1 skills=[coding.debugging] {
+  title "The missing move"
+  let x={"spin", "wave", "hop", "bow"} y={"jump", "stamp"}
+
+  scene 36x18 {
+    dance d code=["repeat 2", "  {y}", "  clap 1", "  {x}"] at=canvas(1, 0)
+    row bottom below=d gap=1 space=2 align=start {
+      blocks b code=["repeat 2", "  {y}", "  clap 1"]
+      column q space=1 align=start {
+        text ask "This program should make the dance above, but a block is missing inside the repeat. Which move is it?" width=20
+        choice pick options=["spin", "wave", "hop", "bow"]
+      }
+    }
+  }
+
+  answer pick=x
+  hint "The program says {y}, then clap. What does the dance do after each clap?"
+  hint "Look at the third picture in the strip."
+}

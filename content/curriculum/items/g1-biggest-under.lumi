@@ -1,0 +1,22 @@
+# Systematic search over six numbers, with a limit that rules out the obvious biggest.
+item place.biggest-under v=1 stars=3 skills=[place-value.compare, reasoning.systematic] {
+  title "The biggest you can make"
+  difficulty ((if 10 * q + r >= lim then 1 else 0) + (if 10 * q + p >= lim then 1 else 0) + lim / 100)
+  let p={1, 2, 3} q={4, 5, 6} r={7, 8, 9} lim={50, 60, 70, 80}
+  where (10 * r + q >= lim)  # otherwise the biggest number of all is the answer and the limit does nothing
+
+  scene 26x17 {
+    digitcards cards digits=[p, q, r] at=canvas(1, 1)
+    text ask "Make a two-digit number with two of the cards. What is the biggest number you can make that is less than {lim}?" narrate width=24 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer max(if 10 * r + p < lim then 10 * r + p else 0, if 10 * q + r < lim then 10 * q + r else 0, if 10 * q + p < lim then 10 * q + p else 0, 10 * p + r, 10 * p + q)
+  feedback {
+    when (answer == 10 * r + q) point=cards {
+      say "That is the biggest number the cards make, but it is not less than {lim}."
+    }
+  }
+  hint "Write down every number two of the cards can make. There are six."
+  hint "Cross out the ones that are {lim} or more. Which is biggest of what is left?"
+}

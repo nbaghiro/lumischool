@@ -1,0 +1,32 @@
+# The start is hidden and the end is shown, so the jumps have to be undone: the audit's raise for
+# hundred.hops, whose hidden landing square could be read off its neighbours.
+item hundred.hops-back v=1 skills=[place-value.add-tens, addition.start-unknown] {
+  title "Where did the jumps start?"
+  difficulty (10 * t + o)
+  let s=12..38 t=1..2 o=1..3
+  where (s % 10 + o <= 9)
+  level easy {
+    let t={1} o=1..2
+  }
+  level hard {
+    let t={2} o=2..3
+  }
+
+  scene 24x22 {
+    hundred h from=1 to=60 start=s add=(10 * t + o) hide=[s] at=canvas(1, 1)
+    text ask "The jumps finish on {s + 10 * t + o}. Which number did they start on?" width=22 below=h gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer s
+  feedback {
+    when (answer == s + 20 * t + 2 * o) point=h {
+      say "That is where you would land going on again. Go back the other way, up and to the left."
+    }
+    when (answer == s + 10 * t + o - t - o) point=h {
+      say "A jump up the square is ten, not one."
+    }
+  }
+  hint "Put your finger on {s + 10 * t + o}. Which way do the jumps go back?"
+  hint "Going up a row takes ten away. Going left takes one away."
+}

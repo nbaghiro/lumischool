@@ -1,0 +1,22 @@
+# Working backwards from a brightness: each bulb gets the cells shared among the bulbs, so matching
+# one cell and one bulb needs as many cells as bulbs.
+item physics.series-count v=1 skills=[physics.circuits, reasoning.backwards] stars=3 {
+  title "Just as bright"
+  difficulty n
+  let n=2..3
+
+  scene 36x13 {
+    series one cells=1 bulbs=1 at=canvas(1, 0)
+    text ask "Here is one cell with one bulb. How many cells would make {n} bulbs in one loop each just as bright as this?" narrate width=17 right-of=one gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 1) point=one {
+      say "With one cell, {n} bulbs share its push, so each gets less and they are dimmer."
+    }
+  }
+  hint "What happens to each bulb when another bulb shares the same cells?"
+  hint "How many cells does each bulb need to get as much as this one?"
+}

@@ -1,0 +1,24 @@
+# A label someone else wrote, spelled wrong: the child finds it and writes it the right way. Some
+# slips leave out a letter, and sale for sail is a real word spelled for the wrong meaning.
+item writing.label-spelling v=1 skills=[writing.labels, writing.spelling] {
+  title "The label spelled wrong"
+  difficulty (if k == 4 or k == 5 then 2 else if k == 2 then 1 else 0)
+  let k=0..5
+  let which={if k == 0 then "windmill" else if k == 1 then "windmill" else if k == 2 then "windmill" else if k == 3 then "ship" else if k == 4 then "ship" else "ship"}
+  let l0={if k == 0 then "sail" else if k == 1 then "sail" else if k == 2 then "sale" else if k == 3 then "flag" else if k == 4 then "flagg" else "flag"}
+  let l1={if k == 0 then "cap" else if k == 1 then "cap" else if k == 2 then "cap" else if k == 3 then "sail" else if k == 4 then "sail" else "sail"}
+  let l2={if k == 0 then "windo" else if k == 1 then "window" else if k == 2 then "window" else if k == 3 then "porthole" else if k == 4 then "porthole" else "porthole"}
+  let l3={if k == 0 then "door" else if k == 1 then "dor" else if k == 2 then "door" else if k == 3 then "hul" else if k == 4 then "hull" else "hull"}
+  let l4={if k == 0 then "tower" else if k == 1 then "tower" else if k == 2 then "tower" else if k == 3 then "waves" else if k == 4 then "waves" else "wavs"}
+  let fix={if k == 0 then "window" else if k == 1 then "door" else if k == 2 then "sail" else if k == 3 then "hull" else if k == 4 then "flag" else "waves"}
+
+  scene 34x19 {
+    labelled pic of=which labels=["{l0}", "{l1}", "{l2}", "{l3}", "{l4}"] blank=-1 title="" caption="" at=canvas(1, 0)
+    text ask "One label is spelled wrong. Write it the right way." narrate width=16 below=pic gap=1
+    word-input word options=["{fix}"] letters=6 right-of=ask gap=1
+  }
+
+  answer word=fix
+  hint "Read every label slowly. Does each one look right?"
+  hint "Say the word for that part. Which letters does it need?"
+}

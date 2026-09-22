@@ -1,0 +1,20 @@
+item physics.which-way-n v=1 skills=[physics.forces] {
+  title "Which way does it go?"
+  difficulty (8 - abs(a - b))
+  let a=3..8 b=3..8
+  level easy {
+    where (abs(a - b) >= 3)
+  }
+  level hard {
+    where (abs(a - b) <= 1)
+  }
+
+  scene 20x24 {
+    forces f thing=box push=a oppose=b at=canvas(1, 0)
+    text ask "What happens to the box?" width=18 below=f gap=1
+    choice pick options=["It moves left", "It moves right", "It stays still"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if a > b then "It moves right" else if a < b then "It moves left" else "It stays still")
+  hint "Which force is bigger, the one pushing right or the one pushing back?"
+}

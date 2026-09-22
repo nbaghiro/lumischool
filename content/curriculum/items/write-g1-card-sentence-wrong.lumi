@@ -1,0 +1,26 @@
+# Pip's sentence has one wrong word, and which one moves: who, where or what. Every other word is
+# right, so each has to be checked against the card.
+item writing.card-sentence-wrong v=1 stars=2 skills=[writing.sentences, reasoning.find-the-error] {
+  title "Pip's wrong word"
+  difficulty (if m == 1 then 2 else if m == 2 then 1 else 0)
+  let k=0..3 m=0..2
+  let who={if k == 0 then "cat" else if k == 1 then "dog" else if k == 2 then "fox" else "pig"}
+  let where={if k == 0 then "in" else if k == 1 then "on" else if k == 2 then "under" else "by"}
+  let thing={if k == 0 then "box" else if k == 1 then "bed" else if k == 2 then "table" else "log"}
+  let said={if k == 0 and m == 0 then "The dog is in the box." else if k == 0 and m == 1 then "The cat is on the box." else if k == 0 and m == 2 then "The cat is in the tub." else if k == 1 and m == 0 then "The pig is on the bed." else if k == 1 and m == 1 then "The dog is under the bed." else if k == 1 and m == 2 then "The dog is on the mat." else if k == 2 and m == 0 then "The cat is under the table." else if k == 2 and m == 1 then "The fox is on the table." else if k == 2 and m == 2 then "The fox is under the bed." else if k == 3 and m == 0 then "The hen is by the log." else if k == 3 and m == 1 then "The pig is in the log." else "The pig is by the box."}
+  let w0={if k == 0 and m == 0 then "dog" else if k == 0 and m == 1 then "cat" else if k == 0 and m == 2 then "cat" else if k == 1 and m == 0 then "pig" else if k == 1 and m == 1 then "dog" else if k == 1 and m == 2 then "dog" else if k == 2 and m == 0 then "cat" else if k == 2 and m == 1 then "fox" else if k == 2 and m == 2 then "fox" else if k == 3 and m == 0 then "hen" else if k == 3 and m == 1 then "pig" else "pig"}
+  let w1={if k == 0 and m == 0 then "in" else if k == 0 and m == 1 then "on" else if k == 0 and m == 2 then "in" else if k == 1 and m == 0 then "on" else if k == 1 and m == 1 then "under" else if k == 1 and m == 2 then "on" else if k == 2 and m == 0 then "under" else if k == 2 and m == 1 then "on" else if k == 2 and m == 2 then "under" else if k == 3 and m == 0 then "by" else if k == 3 and m == 1 then "in" else "by"}
+  let w2={if k == 0 and m == 0 then "box" else if k == 0 and m == 1 then "box" else if k == 0 and m == 2 then "tub" else if k == 1 and m == 0 then "bed" else if k == 1 and m == 1 then "bed" else if k == 1 and m == 2 then "mat" else if k == 2 and m == 0 then "table" else if k == 2 and m == 1 then "table" else if k == 2 and m == 2 then "bed" else if k == 3 and m == 0 then "log" else if k == 3 and m == 1 then "log" else "box"}
+
+  scene 32x11 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "Pip wrote: {said} One word does not match the card. Which one?" narrate width=18
+      choice pick options=["{w0}", "{w1}", "{w2}"]
+    }
+  }
+
+  answer pick=(if m == 0 then w0 else if m == 1 then w1 else w2)
+  hint "Check the animal first. Is it the one on the card?"
+  hint "Then check where it is, and what it is with."
+}

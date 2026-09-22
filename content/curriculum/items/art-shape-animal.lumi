@@ -1,0 +1,10 @@
+item art.shape-animal v=1 stars=3 skills=[art.shape, art.painting, reasoning.plan] {
+  title "An animal made of shapes"
+
+  scene 36x17 {
+    text ask "Make an animal only from stencil shapes. Use at least one geometric shape and one organic shape, and let some of them overlap." width=11 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["red", "yellow", "blue", "white"] stencils=["circle", "triangle", "square", "leaf", "cloud", "fish"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="An animal (or a creature the child invents) built only from separate stencilled shapes, with at least one geometric and one organic shape, some of them overlapping or touching on purpose to make a body, a head, legs or a tail." notice=["Built only from separate shapes", "Geometric and organic shapes both used", "Shapes overlap on purpose"] ask="Which shape did you use for the body, and why that one?"
+}

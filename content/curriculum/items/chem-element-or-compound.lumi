@@ -1,0 +1,21 @@
+# An element is made of one kind of atom and a compound of two or more kinds joined, which the child
+# reads from the colours of the balls and the key.
+item chem.element-or-compound v=1 skills=[chemistry.atoms] {
+  title "Element or compound?"
+  difficulty (if k == "water" or k == "carbon-dioxide" or k == "methane" then 1 else 0)
+  let k={"water", "oxygen", "hydrogen", "nitrogen", "carbon-dioxide", "methane"}
+
+  scene 30x10 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      molecule m kind=k count=2 key=1 letters=1
+      column side space=1 align=start {
+        text ask "An element has one kind of atom. A compound has more than one kind joined. Which is this?" width=15
+        choice pick options=["element", "compound"]
+      }
+    }
+  }
+
+  check chem.atoms of=m pick=element
+  hint "Look at the key. How many kinds of atom are there?"
+  hint "The question says what makes an element and what makes a compound. Which one does the key match?"
+}

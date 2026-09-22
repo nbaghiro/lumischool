@@ -1,0 +1,14 @@
+item physics.gear-third v=1 skills=[physics.machines] stars=2 {
+  title "Three gears"
+  let a={12, 16} b={8, 12, 16} c={8, 12} t={-1, 1}
+
+  scene 29x10 {
+    gears g a=a b=b c=c turn=t show=0 at=canvas(1, 0)
+    text ask "Which way does C turn?" width=11 right-of=g gap=1
+    choice pick options=["Clockwise", "Anticlockwise"] stack=column below=ask gap=1
+  }
+
+  check physics.machine of=g pick=way(c)
+  hint "Which way does B turn?"
+  hint "C touches B. Does it turn the same way as B, or the other way?"
+}

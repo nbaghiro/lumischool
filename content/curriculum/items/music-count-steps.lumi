@@ -1,0 +1,18 @@
+# Counting the steps between two notes, with the letters written, is the arithmetic an interval is.
+item music.count-steps v=1 skills=[music.intervals] {
+  title "How many steps?"
+
+  scene 26x12 {
+    notes pair clef=treble notes=[C4, F4] letters=true at=canvas(1, 1)
+    text ask "How many steps up is it from C to F?" width=13 right-of=pair gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 4) point=pair {
+      say "Count the moves, not the notes: C to D, D to E, E to F."
+    }
+  }
+  hint "Say the letters: C, D, E, F. Each move to the next letter is one step."
+}

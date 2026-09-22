@@ -1,0 +1,35 @@
+# The story: Ada's bean in the long grass, drawn every Sunday, and the question is what she will
+# draw some Sundays from now. Her drawings so far are the picture; what comes after them has to be
+# known. Three Sundays on from the shoot goes past the flower to new seeds.
+item nature.bean-later v=1 skills=[nature.growing] {
+  title "Ada's bean, later"
+  difficulty (n + s)
+  let s=0..1 n=1..3
+  let later={pick(n, "none", "one Sunday", "two Sundays", "three Sundays")}
+  let soon={pick(s + n, "a seed", "a shoot", "leaves", "a flower", "new seeds")}
+  let next={pick(s + 1, "a seed", "a shoot", "leaves", "a flower", "new seeds")}
+  level easy {
+    let n=1..1
+  }
+  level hard {
+    let n=3..3
+  }
+
+  scene 36x23 {
+    growstages grow stages=(s + 1) numbers=false at=canvas(1, 1)
+    text ask "Ada planted a bean in the long grass and draws it every Sunday. Every Sunday it has grown to the next stage. These are her drawings so far. What will she draw {later} from now?" narrate width=34 below=grow gap=1
+    choice pick options=["a shoot", "leaves", "a flower", "new seeds"] below=ask gap=1
+  }
+
+  answer pick=soon
+  feedback {
+    when (n >= 2 and pick == next) point=grow {
+      say "That is next Sunday's drawing. Ada waits {later}. Keep going, one stage for each Sunday."
+    }
+    when (s + n == 4 and pick == "a flower") point=grow {
+      say "The flower came the Sunday before. After the flower, the bean makes new seeds."
+    }
+  }
+  hint "Say the stages from the last drawing: what comes next Sunday, and the Sunday after?"
+  hint "Seed, shoot, leaves, flower, and then new seeds. Count on one stage for each Sunday."
+}

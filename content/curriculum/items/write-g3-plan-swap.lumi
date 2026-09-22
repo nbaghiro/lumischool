@@ -1,0 +1,18 @@
+# Two notes are the wrong way round; the child decides which pair from what has to come first.
+item writing.plan-swap v=2 stars=2 skills=[writing.planning, reasoning.find-the-error] {
+  title "Two notes the wrong way round"
+  difficulty (if w == 1 then 1 else 0)
+  let s=0..2 w=0..2 n1={if s == 0 then "Plant the seed" else if s == 1 then "Pack a bag" else "Find a lost puppy"} n2={if s == 0 then "Cover it with soil" else if s == 1 then "Walk to the station" else "Read its name tag"} n3={if s == 0 then "A shoot comes up" else if s == 1 then "Get on the train" else "Ring the number"} n4={if s == 0 then "A flower opens" else if s == 1 then "Hug Gran at the other end" else "The owner comes"}
+
+  scene 36x17 {
+    listpad plan title="Plan" items=["1. {if w == 0 then n2 else n1}", "2. {if w == 0 then n1 else if w == 1 then n3 else n2}", "3. {if w == 1 then n2 else if w == 2 then n4 else n3}", "4. {if w == 2 then n3 else n4}"] count=0 width=20 ticks=false at=canvas(1, 1)
+    column right right-of=plan gap=1 space=1 align=start {
+      text ask "Two notes are the wrong way round. Which two should swap?" width=14
+      choice pick options=["1 and 2", "2 and 3", "3 and 4"] stack=column
+    }
+  }
+
+  answer pick=(if w == 0 then "1 and 2" else if w == 1 then "2 and 3" else "3 and 4")
+  hint "Read the notes as a story. Where does it stop making sense?"
+  hint "Which note needs another one to have happened first?"
+}

@@ -1,0 +1,19 @@
+item fraction.pizza-quarters v=1 skills=[fractions.halves-and-quarters] {
+  title "Quarters of a pizza"
+  let k=1..3
+  where (k != 2)  # two left and two gone cannot tell the mistake apart
+
+  scene 26x22 {
+    pizza pie slices=4 taken=k toppings=true at=canvas(1, 1)
+    text ask "The pizza was cut into quarters. How many quarters are left?" width=24 below=pie gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (4 - k)
+  feedback {
+    when (answer == k) point=pie {
+      say "That is how many have gone. The question asks how many are still there."
+    }
+  }
+  hint "Count the slices still on the plate."
+}

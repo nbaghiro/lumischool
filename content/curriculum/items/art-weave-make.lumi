@@ -1,0 +1,21 @@
+# Three stars: the child weaves a pattern of their own in two colours and says what rule it follows.
+# Marked by eye against a look-for.
+item art.weave-make v=1 stars=3 skills=[art.pattern, art.making] {
+  title "Weave one of your own"
+  difficulty over
+  let over=1..2
+  let how={pick(over - 1, "over one and under one all the way", "over two and under two all the way")}
+  level easy {
+    let over=1..1
+  }
+  level hard {
+    let over=2..2
+  }
+
+  scene 21x27 {
+    text ask "Colour a weave of your own on the squares, using two colours, so that every row goes {how} and each row starts one step along from the row above it." narrate width=20 at=canvas(1, 0)
+    paintsheet sheet w=16 h=12 paper="squared" guide="row" outline="none" pots=["orange", "blue"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A woven pattern on the squares in two colours where the rule holds all the way: every row goes over and under by the same count, each row starts one step along from the one above it so the pattern runs diagonally, no row lies over everything, and the two colours are used for the strips going down and the ones going across rather than scattered." notice=["The same over and under count in every row", "Each row shifted one step from the row above", "Two colours, one for each direction"] ask="Where does your pattern start again, and how do you know a row is woven in?"
+}

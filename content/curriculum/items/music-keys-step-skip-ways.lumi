@@ -1,0 +1,18 @@
+# Every tune that climbs from C to a higher note by steps and skips: the counts grow 2, 3, 5, 8,
+# each the sum of the two before, which a child can find by listing and then notice.
+item music.step-skip-ways v=1 stars=3 skills=[music.intervals, reasoning.all-the-ways] {
+  title "Steps and skips to the top"
+  difficulty k
+  let k=2..5
+  let x={if k == 2 then "E" else if k == 3 then "F" else if k == 4 then "G" else "A"}
+
+  scene 32x11 {
+    chimebars bars bars=8 letters=1 at=canvas(1, 1)
+    text ask "A tune starts on C and ends on {x}. Every move goes up a step or up a skip. How many different tunes are there?" width=16 right-of=bars gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (if k == 2 then 2 else if k == 3 then 3 else if k == 4 then 5 else 8)
+  hint "Try the tune that uses only steps. Then change one pair of steps into a skip."
+  hint "Write each tune as its letters, such as C D F, so you can see which ones you have."
+}

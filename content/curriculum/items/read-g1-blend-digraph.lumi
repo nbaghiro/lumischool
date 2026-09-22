@@ -1,0 +1,36 @@
+# A word with two letters that make one sound, read and matched to its picture: ch in chest, wh in
+# whale, sh in fish. The pictures carry no labels, so the word has to be read.
+item reading.blend-digraph v=1 skills=[reading.blending, reading.digraphs] {
+  title "Two letters, one sound"
+  difficulty (if k == 0 then 2 else if k == 1 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={2}  # fish
+  }
+  level hard {
+    let k={0, 1}  # chest and whale
+  }
+
+  scene 34x16 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      column ca space=0 align=centre {
+        whale w spout=0 facing=1
+        text la "A"
+      }
+      column cb space=0 align=centre {
+        fishshoal f rows=1 cols=1 facing=1
+        text lb "B"
+      }
+      column cc space=0 align=centre {
+        chest c open=0 coins=0
+        text lc "C"
+      }
+    }
+    text ask "Read the word {if k == 0 then \"chest\" else if k == 1 then \"whale\" else \"fish\"}. Which picture is it?" narrate width=30 below=pics gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "C" else if k == 1 then "A" else "B")
+  hint "Find the two letters that make one sound. Say that sound."
+  hint "Now read the whole word, sound by sound."
+}

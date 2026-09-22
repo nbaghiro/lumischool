@@ -1,0 +1,18 @@
+# Where a sign belongs, from what it says: the place is never named on the sign.
+item reading.sign-where v=1 skills=[reading.signs, reading.inference] {
+  title "Where is this sign?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..3
+
+  scene 36x15 {
+    sign s lines=[if k == 0 then "KEEP OFF THE GRASS" else if k == 1 then "QUIET PLEASE" else if k == 2 then "PLATFORM 2" else "NO RUNNING", if k == 0 then "" else if k == 1 then "PEOPLE ARE READING" else if k == 2 then "TRAINS TO THE SEA" else "DEEP WATER"] kind=(if k == 0 then "post" else if k == 2 then "hanging" else "board") color=(if k == 0 then "mint" else if k == 1 then "sky" else if k == 2 then "tang" else "berry") at=canvas(1, 1)
+    column q right-of=s gap=2 space=1 align=start {
+      text ask "Where would you see this sign?" narrate width=16
+      choice pick options=[if k == 0 then "in a park" else if k == 1 then "at a fair" else if k == 2 then "at a station" else "in a bedroom", if k == 0 then "in a kitchen" else if k == 1 then "in a library" else if k == 2 then "in a shop" else "at a pool", if k == 0 then "on a bus" else if k == 1 then "at a pool" else if k == 2 then "at school" else "on a farm"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "in a park" else if k == 1 then "in a library" else if k == 2 then "at a station" else "at a pool")
+  hint "Who is the sign talking to? What are they doing?"
+  hint "Picture each place. Where would people need to be told this?"
+}

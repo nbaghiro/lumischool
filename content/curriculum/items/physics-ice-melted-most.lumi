@@ -1,0 +1,31 @@
+# The way in: three iced cups after five minutes, when every thermometer still reads 0, so the cube
+# that has shrunk most is the one to find. At f=3 to 5 there is no bare cup and paper melts most.
+item physics.ice-melted-most v=1 skills=[physics.heat] {
+  title "Which ice melted most?"
+  difficulty (if f < 3 then 0 else 1)
+  let f=0..5
+  let w1={pick(f, "none", "foil", "wool", "paper", "cloth", "wool")}
+  let w2={pick(f, "foil", "none", "foil", "wool", "paper", "cloth")}
+  let w3={pick(f, "wool", "wool", "none", "cloth", "wool", "paper")}
+  level easy {
+    let f=0..2
+  }
+  level hard {
+    let f=3..5
+  }
+
+  scene 20x22 {
+    wrapped cups wraps=["{w1}", "{w2}", "{w3}"] ice=1 minutes=5 at=canvas(1, 0)
+    text ask "Mia put an ice cube in each cup. In which cup has the ice melted most?" narrate width=18 below=cups gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  check physics.forces of=cups pick=melted
+  feedback {
+    when (pick != "A" and w1 == "none" or pick != "B" and w2 == "none" or pick != "C" and w3 == "none") point=cups {
+      say "Every thermometer still reads 0. Look at the cubes instead: which one is smallest?"
+    }
+  }
+  hint "Look at the ice in each cup. Which cube is smallest now?"
+  hint "The cup with the thinnest wrap lets the most warmth in."
+}

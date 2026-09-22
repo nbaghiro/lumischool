@@ -1,0 +1,53 @@
+lesson g1-oclock-and-half-past v=1 format=teach grade=1 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "O'clock and half past"
+  goal "Read a clock on the hour and at half past, and count on in half hours."
+
+  look {
+    scene 34x19 {
+      row faces at=canvas(1, 1) space=2 align=centre {
+        clock one h=3 m=0
+        clock two h=3 m=30
+        digital screen time="3:30" suffix=""
+      }
+      days strip mark=2 start=0 below=faces gap=2
+      note n "Long hand up is o'clock. Long hand down is half past." width=18 below=strip gap=1
+    }
+    say """
+      The long hand says how far through the hour we are: straight up is o'clock, straight down is
+      half past. The short hand says which hour it is.
+      """
+  }
+  do {
+    practice clock.half-past count=2 seed=7
+    practice time.o-clock-or-half count=1 seed=5
+    practice time.digital-reads count=1 seed=3
+    practice time.which-clock count=1 seed=5
+    practice time.order-times count=1 seed=4
+    practice time.hours-between count=1 seed=6
+    practice time.days-after count=1 seed=9
+  }
+  try stars=2 {
+    show time.film-ends h=4 easy-h=2 hard-h=9
+  }
+  try stars=3 {
+    show time.station-wait h=3 k=2 easy-k=1
+  }
+  remember {
+    say "Half past means the long hand points down. Two half hours make an hour."
+  }
+
+  grown-ups """
+    A real clock with hands beats a picture. Let the child move the hands to the times in the
+    questions before answering on paper. In the clocks question one wrong clock has the short hand
+    past the next number, which is the mistake most children make at half past. The days of the week
+    loop round, so counting on past Sunday starts again at Monday. The two Try this questions count
+    on in half hours, which is the step before minutes; moving the long hand round in half turns is
+    the way in.
+    """
+  level easy {
+    grown-ups "At this level the half-past clocks show the first six hours, the picnic lasts two whole hours, the days counted on stay inside the week, and the train leaves after three half hours."
+  }
+  level hard {
+    grown-ups "At this level the half-past clocks show seven to twelve, the picnic starts and ends at half past, the days counted on pass Sunday into the next week, and the film ends at half past ten."
+  }
+}

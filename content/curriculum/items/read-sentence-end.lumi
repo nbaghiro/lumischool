@@ -1,0 +1,33 @@
+# A full stop, a question mark and an exclamation mark are three different jobs, and which one the
+# sentence needs is decided by the sentence rather than by a rule to remember.
+item reading.sentence-end v=2 skills=[reading.punctuation] {
+  title "How does it end?"
+  difficulty (if k == 1 then 2 else if k == 0 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}  # a question and a telling
+  }
+  level hard {
+    let k={0, 1}  # a question and a shout
+  }
+
+  scene 16x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{if k == 0 then \"cat\" else if k == 1 then \"bicycle\" else \"sun\"}"
+      sentence strip before="{if k == 0 then \"Where is the cat\" else if k == 1 then \"Look out\" else \"The sun is hot\"}" blank=2 after=""
+      text ask "Which mark goes at the end?" width=15
+      choice pick options=[".", "?", "!"]
+    }
+  }
+
+  answer pick=(if k == 0 then "?" else if k == 1 then "!" else ".")
+  feedback {
+    when (pick == "." and k == 0) point=strip {
+      say "The sentence is asking something, so it needs a question mark."
+    }
+    when (pick == "." and k == 1) point=strip {
+      say "Look out is a shout, to warn someone. A shout takes an exclamation mark."
+    }
+  }
+  hint "Is it telling you, asking you, or shouting at you?"
+}

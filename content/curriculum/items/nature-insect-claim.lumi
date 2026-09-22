@@ -1,0 +1,49 @@
+# The two-star reason: something Ada says about the creatures in the long grass, and four things,
+# one of which shows she is wrong. The fourth thing is never a minibeast: at easy and medium it is
+# something made, which says nothing about creatures, and at hard it is a bird, which has wings and
+# legs and is not an insect. The wrong idea is "it lives in the grass and it has legs, so it is an
+# insect", and the fact that settles every version is six legs.
+item nature.insect-claim v=1 stars=2 skills=[nature.minibeasts, reasoning.counterexample] {
+  title "Which one shows she is wrong?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let claim={pick(k, "Every creature in the long grass is an insect.", "Every creature in the long grass is an insect.", "Every insect has wings.", "Every creature with legs is an insect.", "Every creature with wings is an insect.", "Every creature that flies has six legs.")}
+  let a={pick(k, "ladybird", "spider", "bee", "spider", "bee", "bee")}
+  let b={pick(k, "snail", "bee", "ant", "ant", "butterfly", "butterfly")}
+  let c={pick(k, "ant", "butterfly", "butterfly", "ladybird", "ladybird", "ant")}
+  let d={pick(k, "cup", "pencil", "cup", "boat", "duck", "owl")}
+  let right={pick(k, "snail", "spider", "ant", "spider", "duck", "owl")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x21 {
+    row four at=canvas(1, 1) space=2 align=end {
+      minibeasts three kinds=[a, b, c] legs=false
+      art pd asset="{d}"
+    }
+    text ask "Ada says: {claim} Which one of these shows that Ada is wrong?" narrate width=34 below=four gap=1
+    choice pick options=[a, b, c, d] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k <= 3 and pick == d) point=pd {
+      say "The {d} was made by people. It is not a creature at all, so it says nothing about creatures. Look at the three on the line."
+    }
+    when (k >= 4 and pick != right) point=three {
+      say "Count its legs: six. It is an insect, so it fits what Ada said. Which creature has wings and only two legs?"
+    }
+    when (k == 2 and pick != right) point=three {
+      say "That one has wings, so it fits what Ada said. Look for an insect with no wings at all."
+    }
+    when ((k == 0 or k == 1 or k == 3) and pick != right) point=three {
+      say "That one has six legs, so it is an insect and Ada's sentence fits it. Look for a creature without six legs."
+    }
+  }
+  hint "Say Ada's sentence about each creature in turn. Does it fit?"
+  hint "You want the one creature that does what Ada says cannot happen. Count legs and look for wings."
+}

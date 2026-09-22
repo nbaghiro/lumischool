@@ -1,0 +1,31 @@
+# The steps use something the list forgot: the child checks every step against the list of what
+# you need, which is how a recipe is checked before anyone starts.
+item writing.what-you-need v=1 skills=[writing.instructions] {
+  title "Something missing from the list"
+  difficulty (if m == 1 then 1 else 0)
+  let c=0..1 m=0..2 r=0..2
+  let title={if c == 0 then "A jam sandwich" else "Fruit salad"}
+  let i0={if c == 0 then "bread" else "a banana"}
+  let i1={if c == 0 then "butter" else "an apple"}
+  let i2={if c == 0 then "jam" else "grapes"}
+  let n0={if m == 0 then i1 else i0}
+  let n1={if m == 2 then i1 else i2}
+  let gone={if m == 0 then i0 else if m == 1 then i1 else i2}
+  let s0={if c == 0 then "Get two slices of bread." else "Cut up the banana."}
+  let s1={if c == 0 then "Spread on the butter." else "Chop the apple."}
+  let s2={if c == 0 then "Add the jam." else "Add the grapes."}
+  let stray={if c == 0 then "milk" else "a carrot"}
+  let o1={if r == 0 then gone else n0}
+  let o2={if r == 1 then gone else if r == 0 then n0 else stray}
+  let o3={if r == 2 then gone else stray}
+
+  scene 37x18 {
+    howto card title="{title}" need=["{n0}", "{n1}"] steps=["{s0}", "{s1}", "{s2}"] blank=-1 width=22 at=canvas(1, 1)
+    text ask "The list of what you need has left one thing out. Which one?" narrate width=13 right-of=card gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=card gap=1
+  }
+
+  answer pick=gone
+  hint "Read each step. What does it use?"
+  hint "Is that thing on the list of what you need?"
+}

@@ -1,0 +1,24 @@
+# Two numbers from their sum and their difference: take the difference away and share what is left.
+item puzzle.two-ages v=1 stars=2 skills=[reasoning.two-unknowns] {
+  title "Two ages"
+  difficulty (a + d)
+  let a=6..14 d=2..7
+
+  scene 30x12 {
+    children pair count=2 holding="" names=["Ana", "Ben"] at=canvas(1, 1)
+    text ask "Ben is {d} years older than Ana. Their ages add up to {2 * a + d}. How old is Ana?" narrate width=18 right-of=pair gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer a
+  feedback {
+    when (answer == (2 * a + d) / 2 and d % 2 == 0) point=ask {
+      say "That would make them the same age. Ben is {d} years older."
+    }
+    when (answer == a + d) point=ask {
+      say "That is Ben's age. The question asks about Ana."
+    }
+  }
+  hint "If Ben were as young as Ana, what would their ages add up to?"
+  hint "Take the {d} years away from {2 * a + d}, then share what is left between two."
+}

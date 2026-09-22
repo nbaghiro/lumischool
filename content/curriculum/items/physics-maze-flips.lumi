@@ -1,0 +1,16 @@
+# All the ways: turning each mirror round in turn and following the beam each time. The checker does
+# exactly that, so the count is proved, and a child who is systematic gets it.
+item physics.maze-flips v=1 skills=[physics.light, reasoning.systematic] stars=3 {
+  title "Turn one mirror"
+  let m={"B1", "C1"} r={"E3", "F3"}
+
+  scene 18x21 {
+    mirrors box cols=6 rows=4 torch=1 fall=["{m}", "B3"] rise=["{r}"] goals=["B2", "T2", "T5", "T6", "L3", "R3"] show=0 at=canvas(1, 0)
+    text ask "You may turn just one mirror round. How many different letters could the light reach?" width=17 below=box gap=0
+    number-input answer below=ask gap=1
+  }
+
+  check physics.light of=box answer=flips
+  hint "Pick one mirror, turn it round in your head, and follow the light. Where does it end?"
+  hint "Now do the same for each of the other mirrors, one at a time, and count the different letters."
+}

@@ -1,0 +1,28 @@
+# The way in to long multiplication: a two-digit number times a whole number of tens, which is
+# one of the four parts of every grid.
+item multiply.times-tens v=1 skills=[multiplication.long, place-value.times-ten] {
+  title "Times a number of tens"
+  difficulty (a * b)
+  let a=12..48 b=2..6
+  where (a % 10 != 0)
+  level easy {
+    let a=12..24 b=2..3
+  }
+  level hard {
+    let a=25..48 b=4..6
+  }
+
+  scene 20x3 {
+    equation eq "{a} × {10 * b} =" at=canvas(1, 1)
+    number-input p right-of=eq gap=1
+  }
+
+  answer p=(a * 10 * b)
+  feedback {
+    when (p == a * b) point=eq {
+      say "That is {a} × {b}. Times {10 * b} is ten times as much."
+    }
+  }
+  hint "What is {a} × {b}?"
+  hint "{10 * b} is ten times {b}, so the answer is ten times as big."
+}

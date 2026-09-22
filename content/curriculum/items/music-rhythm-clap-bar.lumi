@@ -1,0 +1,14 @@
+# Ana's bar clapped: a minim, two quavers and a crotchet. music.rhythm judges where each clap lands, in
+# beats from the start of the bar, at the grade two window.
+item music.rhythm-clap-bar v=1 skills=[music.rhythm, music.note-values] {
+  title "Clap Ana's bar"
+
+  scene 30x9 {
+    staff bar notes=[2, 0.5, 0.5, 1] at=canvas(1, 1)
+    text ask "Count 1, 2, 3, 4. Clap once for each note, just as it starts." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 2, 2.5, 3] grade=2
+  hint "The minim starts on 1 and lasts through 2. Hold still on 2."
+  hint "The two quavers are two quick claps on 3, and the crotchet is one clap on 4."
+}

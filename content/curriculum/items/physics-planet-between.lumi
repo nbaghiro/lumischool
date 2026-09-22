@@ -1,0 +1,25 @@
+item physics.planet-between v=1 skills=[physics.sky] {
+  title "Planets in between"
+  difficulty d
+  let a=1..4 d=2..4
+  level easy {
+    let d={2, 3}
+  }
+  level hard {
+    let d={3, 4}
+  }
+
+  scene 25x11 {
+    planets row count=8 names=1 at=canvas(0, 0)
+    text ask "How many planets are between {if a == 1 then \"Mercury\" else if a == 2 then \"Venus\" else if a == 3 then \"Earth\" else \"Mars\"} and {if a + d == 3 then \"Earth\" else if a + d == 4 then \"Mars\" else if a + d == 5 then \"Jupiter\" else if a + d == 6 then \"Saturn\" else if a + d == 7 then \"Uranus\" else \"Neptune\"}?" width=19 below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (d - 1)
+  feedback {
+    when (answer == d) point=row {
+      say "Count only the ones in between, not the planet you end on."
+    }
+  }
+  hint "Put a finger on the first planet and move out. Which ones do you pass?"
+}

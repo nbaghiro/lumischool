@@ -1,0 +1,33 @@
+# The audit's raise for the mean: the mean is given and one value is missing, so the total is
+# worked out first and the known towers taken away.
+item data.mean-missing v=1 skills=[data.mean] {
+  title "The hidden tower"
+  difficulty (m + 4 * m - a - b - c)
+  let a=2..7 b=2..7 c=2..7 m=4..6
+  where (4 * m - a - b - c >= 1 and 4 * m - a - b - c <= 9)
+  where (a != b and b != c and a != c)
+  level easy {
+    let m={4}
+  }
+  level hard {
+    let m={6}
+  }
+
+  scene 30x15 {
+    towers t heights=[a, b, c] labels=true level=0 at=canvas(1, 1)
+    text ask "There are four towers, but the fourth is hidden. The mean height of all four is {m} cubes. How tall is the hidden tower?" narrate width=14 right-of=t gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (4 * m - a - b - c)
+  feedback {
+    when (answer == m and 4 * m - a - b - c != m) point=t {
+      say "The mean is {m}, but the towers are not all {m}. Four towers of mean {m} have {4 * m} cubes in all."
+    }
+    when (answer == 3 * m - a - b - c) point=t {
+      say "There are four towers, so the total is 4 times {m}."
+    }
+  }
+  hint "If all four towers were {m} cubes tall, how many cubes would there be?"
+  hint "How many cubes are in the three towers you can see? The rest are in the hidden one."
+}

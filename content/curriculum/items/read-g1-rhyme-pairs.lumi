@@ -1,0 +1,15 @@
+# Three pairs to match, and in one set the rhymes are spelled differently (bee and sea), so the
+# pairs are found by ear. The right-hand list turns round with k.
+item reading.rhyme-pairs v=1 skills=[reading.rhyme] {
+  title "Rhyming pairs"
+  let s=0..2 k=0..2
+
+  scene 22x13 {
+    text ask "Write the number of the word that rhymes." narrate width=20 at=canvas(1, 1)
+    match m left=["{if s == 0 then \"cat\" else if s == 1 then \"bee\" else \"sun\"}", "{if s == 0 then \"hen\" else if s == 1 then \"pie\" else \"dog\"}", "{if s == 0 then \"pig\" else if s == 1 then \"go\" else \"bed\"}"] right=["{if (0 + k) % 3 == 0 then (if s == 0 then \"hat\" else if s == 1 then \"sea\" else \"bun\") else if (0 + k) % 3 == 1 then (if s == 0 then \"ten\" else if s == 1 then \"fly\" else \"log\") else (if s == 0 then \"wig\" else if s == 1 then \"toe\" else \"red\")}", "{if (1 + k) % 3 == 0 then (if s == 0 then \"hat\" else if s == 1 then \"sea\" else \"bun\") else if (1 + k) % 3 == 1 then (if s == 0 then \"ten\" else if s == 1 then \"fly\" else \"log\") else (if s == 0 then \"wig\" else if s == 1 then \"toe\" else \"red\")}", "{if (2 + k) % 3 == 0 then (if s == 0 then \"hat\" else if s == 1 then \"sea\" else \"bun\") else if (2 + k) % 3 == 1 then (if s == 0 then \"ten\" else if s == 1 then \"fly\" else \"log\") else (if s == 0 then \"wig\" else if s == 1 then \"toe\" else \"red\")}"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=((3 - k) % 3 + 1) b=((4 - k) % 3 + 1) c=((5 - k) % 3 + 1)
+  hint "Say the first word on the left. Then say each word on the right."
+  hint "Which one sounds the same at the end? Write its number."
+}

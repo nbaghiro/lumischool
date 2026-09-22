@@ -1,0 +1,50 @@
+lesson g2-quarter-past-and-to v=1 format=teach grade=2 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Quarter past and quarter to"
+  goal "Read the time to five minutes, and work out when something ends and how long it lasts."
+
+  look {
+    scene 36x23 {
+      row faces at=canvas(1, 1) space=2 align=centre {
+        clock past h=2 m=15
+        clock to h=2 m=45
+        digital screen time="2:45" suffix=""
+      }
+      schedule day start="9:00" hours=4 below=faces gap=1
+      elapsed line stops=["9:40", "10:00", "11:00", "11:15"] total=true right-of=day gap=2
+    }
+    say """
+      A quarter of the clock is fifteen minutes. Past means the long hand is on the right, to means
+      it has gone round to the left and the hour is coming.
+      """
+  }
+  do {
+    practice time.quarter-past count=1 seed=4
+    practice time.write-quarter count=2 seed=6
+    practice time.five-minutes count=2 seed=3 easy-seed=1 hard-seed=1
+    practice time.ends-at count=2 seed=5
+    practice time.how-long count=1 seed=7
+  }
+  try stars=2 {
+    show time.quarter-to-clock h=6 q=1 easy-h=3 easy-q=0 hard-h=9 hard-q=2
+  }
+  try stars=3 {
+    show time.card-times a=2 b=4 c=7 easy-a=1 easy-b=2 easy-c=6 hard-a=4 hard-b=7 hard-c=9
+  }
+  remember {
+    say "Quarter past is fifteen minutes after. Quarter to is fifteen minutes before. Each number on the clock is five minutes."
+  }
+
+  grown-ups """
+    Say times the long way round for a while: a quarter past three is also three fifteen, and both
+    have to be recognised. At a quarter to, the short hand is nearly at the next number, which is
+    why children write the wrong hour; the two-star question is built around exactly that. When
+    swimming ends after the hour, the hour goes up by one. In the three-star question, write out
+    all six orders of the cards and cross out the ones with 60 or more minutes.
+    """
+  level easy {
+    grown-ups "At this level the clocks show quarter past and half past, the long hand sits on the first few numbers, the swimming never crosses the hour, and the bread bakes under an hour."
+  }
+  level hard {
+    grown-ups "At this level the clocks show quarter to, the long hand sits on or past the eight, the swimming crosses the hour, and the bread bakes for more than an hour."
+  }
+}

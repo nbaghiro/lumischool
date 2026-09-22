@@ -1,0 +1,38 @@
+# Reading the table of times: four cups, cold or warm, stirred or still, and how long each took
+# to dissolve a spoon of sugar. One version asks a cup's time, another the fastest cup, another
+# how much sooner one cup was than another.
+item chem.stir-time v=1 skills=[chemistry.dissolving, data.tables] {
+  title "Read the times"
+  difficulty (if w == 2 then 2 else w)
+  let w=0..2 c=0..3 t=0..1
+  let cs={pick(t, 120, 100)}
+  let ct={pick(t, 60, 50)}
+  let ws={pick(t, 60, 50)}
+  let wt={pick(t, 30, 25)}
+  let cup={pick(c, "cold and still", "cold and stirred", "warm and still", "warm and stirred")}
+  let secs={pick(c, cs, ct, ws, wt)}
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 34x21 {
+    table data cols=3 head=["Water", "Stirred?", "Seconds"] cells=["cold", "no", "{cs}", "cold", "yes", "{ct}", "warm", "no", "{ws}", "warm", "yes", "{wt}"] at=canvas(1, 0)
+    text ask "One spoon of sugar in each of four cups, and the seconds until it had all dissolved. {if w == 0 then \"How many seconds did the \" else if w == 1 then \"How many seconds did the fastest cup take?\" else \"How many seconds sooner did the warm stirred cup finish than the cold still cup?\"}{if w == 0 then cup else \"\"}{if w == 0 then \" cup take?\" else \"\"}" narrate width=32 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then secs else if w == 1 then wt else cs - wt)
+  feedback {
+    when (w == 1 and answer == cs) point=data {
+      say "That is the slowest cup. The fastest has the fewest seconds."
+    }
+    when (w == 2 and answer == cs) point=data {
+      say "That is the cold still cup's whole time. Take the warm stirred cup's time away from it."
+    }
+  }
+  hint "{if w == 0 then \"Find the row with that water and that stirring. Read its seconds.\" else if w == 1 then \"Fewer seconds means faster. Find the smallest number.\" else \"Find both rows, then take the smaller time from the bigger.\"}"
+  hint "Warm and stirred is the fastest; cold and still is the slowest."
+}

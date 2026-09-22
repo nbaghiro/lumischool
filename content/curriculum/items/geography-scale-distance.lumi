@@ -1,0 +1,23 @@
+# A scale bar turns a length on the paper into a distance on the ground: parts times what a part is.
+item geography.scale-distance v=1 skills=[geography.scale, measure.scale] {
+  title "How far on the ground?"
+  let st={2, 5, 10} n=2..5
+
+  scene 34x14 {
+    mapscale map km=(4 * st) step=st at=canvas(1, 1)
+    text ask "Each part of the scale bar stands for {st} km. A walk from A to the lake is {n} parts of the bar long. How far is that on the ground?" width=17 right-of=map gap=2
+    row a below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km"
+    }
+  }
+
+  answer (n * st)
+  feedback {
+    when (answer == n) point=map {
+      say "That is how many parts. Each part stands for {st} km."
+    }
+  }
+  hint "Read the numbers under the scale bar. How far is one part?"
+  hint "How far are {n} parts if one part is {st} km?"
+}

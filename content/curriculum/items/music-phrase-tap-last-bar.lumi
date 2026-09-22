@@ -1,0 +1,14 @@
+# The last bar's rhythm tapped: the dotted note lasts one and a half beats, the quaver half a beat and
+# the minim two. music.rhythm judges the taps at the grade four window.
+item music.phrase-tap-last-bar v=1 skills=[music.note-values, music.rhythm] {
+  title "Tap the last bar"
+
+  scene 34x12 {
+    notes l2 clef=treble notes=[E4, D4, D4] values=[1.5, 0.5, 2] meter=4 at=canvas(1, 1)
+    text ask "Count 1 and 2 and 3 and 4 and. Tap once for each note of bar 4, where it starts." narrate width=14 right-of=l2 gap=2
+  }
+
+  check music.rhythm beats=[0, 1.5, 2] grade=4
+  hint "The dotted note starts on 1 and lasts to the and after 2."
+  hint "So the quaver comes on that and, and the minim on 3."
+}

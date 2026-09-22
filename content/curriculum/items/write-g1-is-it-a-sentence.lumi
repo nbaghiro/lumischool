@@ -1,0 +1,24 @@
+# All three start with a capital and end with a full stop, so only whether it says one whole thing
+# can decide: a list of things and a string with no doing word are not sentences.
+item writing.is-it-a-sentence v=1 skills=[writing.sentences] {
+  title "Which one is a sentence?"
+  difficulty q
+  let a=0..2 q=0..2
+  let who={if a == 0 then "dog" else if a == 1 then "hen" else "pig"}
+  let thing={if a == 0 then "rug" else if a == 1 then "log" else "mat"}
+  let whole={if a == 0 then "The dog is on the rug." else if a == 1 then "The hen is on the log." else "The pig is on the mat."}
+  let bits={if a == 0 then "The dog on the rug." else if a == 1 then "The hen on the log." else "The pig on the mat."}
+  let list={if a == 0 then "A dog and a rug." else if a == 1 then "A hen and a log." else "A pig and a mat."}
+
+  scene 32x17 {
+    picturecards card who=["{who}"] where=["on"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "Which one is a whole sentence about the picture?" narrate width=20
+      choice pick options=["{if q == 0 then whole else if q == 1 then bits else list}", "{if q == 0 then bits else if q == 1 then list else whole}", "{if q == 0 then list else if q == 1 then whole else bits}"] stack=column
+    }
+  }
+
+  answer pick=whole
+  hint "Read each one out loud. Which one sounds finished?"
+  hint "A sentence says where the {who} is. Which one has the word is in it?"
+}

@@ -1,0 +1,70 @@
+lesson chemistry-puzzles-2 v=1 format=puzzles grade=2 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry puzzles: states, mixing and rocks"
+  goal "Work out what state a thing is in, what dissolves, which change can be undone, and what a rock or a soil does with water."
+
+  puzzle stars=1 {
+    show chem.melt-or-freeze c="freeze-water" easy-c="melt-ice" hard-c="melt-chocolate"
+  }
+  puzzle stars=1 {
+    show chem.rock-soaks k=2 easy-k=0 hard-k=3
+  }
+  level easy medium {
+    puzzle stars=1 {
+      show chem.smaller-cube k=2 s=1 easy-k=0
+    }
+  }
+  level easy {
+    puzzle stars=1 {
+      show chem.after-picture c="cook-egg" r=1
+    }
+  }
+  puzzle stars=2 {
+    show chem.state-why s=2 easy-s=0 hard-s=1
+  }
+  puzzle stars=2 {
+    show chem.show-still-there t="sugar" easy-t="sand" hard-t="salt"
+  }
+  puzzle stars=2 {
+    show chem.unfair-drain k=1 r=0 easy-k=0 easy-r=2 hard-k=2 hard-r=1
+  }
+  puzzle stars=2 {
+    show chem.big-or-small k=0 r=0 hard-k=1 hard-r=1
+  }
+  puzzle stars=3 {
+    show chem.still-weighs g=30 w=100 easy-g=20 hard-g=50 hard-w=250
+  }
+  puzzle stars=3 {
+    show chem.rock-clues k=0 easy-k=2 hard-k=3
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show chem.recipe-step k=0 hard-k=1
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show chem.mix-soils k=2 r=1
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, out on the salt flats or at the table; the hints and
+    answers are on this sheet, not on theirs. Every puzzle can be started by looking closely: what
+    the arrow on the change says, which rock has the drop sitting on it, which cube has shrunk
+    more. The changes come from melting and freezing and from baking, the rocks from rocks and
+    what they are like, the soils from soil and what drains, the cubes from which melts first,
+    and the states and the dissolving from the second year's first lessons. The two-star puzzles
+    each need a reason: why a state behaves as it does, how you know the sugar is still there,
+    what was not kept the same, and why the small cube goes first. The three-star puzzles are the
+    ones to leave for a quiet moment: what the sweet water weighs, the rock that fits every clue,
+    the recipe's step that cannot be undone, and the two soils to mix for a target. Ask for the
+    reason as well as the answer on each of them. A puzzle left unsolved today is often solved on
+    Saturday.
+    """
+  level easy {
+    grown-ups "At this level a fourth one-star puzzle asks what the fried egg comes out as and the recipe is left for another day; the change is ice melting, the rock that soaks up water is plain, the cubes are the freezer against the sun, the state to explain is a solid, the thing still there is the sand you can see, the unfair test poured different amounts, the sweet water is twenty grams of sugar in a hundred of water, and the rock's clues are the plainer pair."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and a fourth three-star puzzle, two soils to mix for a target; the change is chocolate melting, the rock to find soaks up water among ones that do not, the state to explain is a liquid, the thing still there is the salt you cannot see, the unfair test waited longer, the small cube is in the fridge, the sweet water is fifty grams in two hundred and fifty, the rock's clues need both tests, and the recipe has no step that cannot be undone."
+  }
+}

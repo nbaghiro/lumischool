@@ -1,0 +1,34 @@
+# Tapped twice, the tap script runs twice: the child has to see that a script can start again.
+item coding.stage-tap-twice v=1 skills=[coding.events] {
+  title "Tapped two times"
+  difficulty (3 * d + c)
+  let a=1..3 b=1..2 c=2..4 d=0..1
+  where (c + 2 * b <= 8 and c - 2 * b >= 1)
+  level easy {
+    let d={0}
+  }
+  level hard {
+    let d={1}
+  }
+
+  scene 36x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["when the flag is tapped", "right {a}", "when tapped", "{if d == 0 then \"right\" else \"left\"} {b}"]
+      stage s cols=8 col=c who=crab code=["when the flag is tapped", "right {a}", "when tapped", "{if d == 0 then \"right\" else \"left\"} {b}"] upto=0
+    }
+    text ask "Only the crab is tapped, two times. Which square does it end on?" width=26 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if d == 0 then c + 2 * b else c - 2 * b)
+  feedback {
+    when (answer == (if d == 0 then c + b else c - b)) point=bl {
+      say "That is one tap. Each tap runs the script under when tapped again."
+    }
+    when (answer == (if d == 0 then c + 2 * b else c - 2 * b) + a) point=bl {
+      say "The flag was not tapped, so the script under the flag does not run."
+    }
+  }
+  hint "Which script runs each time the crab is tapped?"
+  hint "Move the crab for the first tap, then again for the second."
+}

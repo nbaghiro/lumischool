@@ -1,0 +1,28 @@
+# Rounding run backwards to its edge: the halfway number itself rounds up, so it is not the answer.
+item place.largest-rounds-to v=1 stars=2 skills=[place-value.rounding, reasoning.extremes] {
+  title "The biggest that rounds to it"
+  difficulty ((if u == "hundred" then 0 else 2) + (if r >= 7000 then 1 else 0))
+  let r={600, 2400, 7000, 15000, 30000} u={"hundred", "thousand"}
+  where (u == "hundred" or r % 1000 == 0)
+  level hard {
+    let r={7000, 15000, 30000} u={"thousand"}
+  }
+
+  scene 32x10 {
+    rounding line from=(r - (if u == "hundred" then 100 else 1000)) to=r value=(r - (if u == "hundred" then 30 else 300)) show=false at=canvas(1, 1)
+    text ask "What is the biggest whole number that rounds to {r} when you round to the nearest {u}?" narrate width=15 right-of=line gap=1
+    number-input answer width=7 below=ask gap=1
+  }
+
+  answer (r + (if u == "hundred" then 49 else 499))
+  feedback {
+    when (answer == r + (if u == "hundred" then 50 else 500)) point=ask {
+      say "That number is exactly halfway to the next {u}, and halfway rounds up."
+    }
+    when (answer == r + (if u == "hundred" then 99 else 999)) point=ask {
+      say "That is nearer to the next {u} than to {r}."
+    }
+  }
+  hint "Which numbers above {r} still round down to it?"
+  hint "Where is halfway to the next {u}? Does the halfway number itself round up or down?"
+}

@@ -1,0 +1,32 @@
+# The three ways the knock can reach the ear, numbered from the one that carries it best: the wooden
+# table, then the water, then the air. The three are drawn in a different order each time, so the
+# column a thing stands in says nothing.
+item physics.sound-order v=1 skills=[physics.sound, reasoning.order] {
+  title "Best to worst"
+  difficulty (if v == 1 or v == 3 then 0 else 1)
+  let v=0..5
+  let ta={pick(v, 0, 1, 2, 0, 1, 2)}
+  let tb={pick(v, 1, 2, 0, 2, 0, 1)}
+  let tc={pick(v, 2, 0, 1, 1, 2, 0)}
+  let na={pick(v, "the air", "the table", "the water", "the air", "the table", "the water")}
+  let nb={pick(v, "the table", "the water", "the air", "the water", "the air", "the table")}
+  let nc={pick(v, "the water", "the air", "the table", "the table", "the water", "the air")}
+  level easy {
+    let v={1, 3}
+  }
+  level hard {
+    let v={0, 2}
+  }
+
+  scene 21x41 {
+    stringphone one mode=through through=ta rings=1 at=canvas(1, 0)
+    stringphone two mode=through through=tb rings=1 below=one gap=1
+    stringphone three mode=through through=tc rings=1 below=two gap=1
+    text ask "Number these from 1, the one that carries the knock best, to 3." narrate width=18 below=three gap=1
+    sequence s items=["{na}", "{nb}", "{nc}"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=pick(v, 3, 1, 2, 3, 1, 2) b=pick(v, 1, 2, 3, 2, 3, 1) c=pick(v, 2, 3, 1, 1, 2, 3)
+  hint "Which of the three is solid all the way through?"
+  hint "Air is the one with the most space in it, so it passes the knock on worst."
+}

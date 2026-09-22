@@ -1,0 +1,15 @@
+# Something to make that meets a rule, which only a grown-up can hear: the audit's non-routine band.
+item music.uke-make-a-song v=1 stars=3 skills=[music.strumming, music.composing] {
+  title "A song with C"
+  difficulty n
+  let n=2..4
+
+  scene 32x15 {
+    chordbox card tuning=uke chord=C frets=3 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Make up a song. Strum C {n} times, then the open strings {n} times, then C {n} times again. Give your song a name and play it to a grown-up." width=19 right-of=card gap=1
+  }
+
+  check writing.by-eye look-for="Finger 3 held on the A string at fret 3 for each C, lifted for the open strings and put back for the last C, the same number of strums in each part at a steady speed, and a name for the song."
+  hint "Count your strums out loud as you play."
+  hint "What does finger 3 do when you play the open strings?"
+}

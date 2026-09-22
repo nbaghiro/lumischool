@@ -1,0 +1,28 @@
+# How many small amounts make a litre or two: grouping in hundreds.
+item measure.glasses v=1 skills=[capacity.litres, division.grouping] {
+  title "Glasses from a bottle"
+  difficulty (1000 * L / g)
+  let g={100, 200, 250, 500} L={1, 2} u={"litre", "litres"}
+  where ((L == 1) == (u == "litre"))
+  level easy {
+    let g={200, 250, 500} L={1}
+  }
+  level hard {
+    let g={100, 200, 250} L={2}
+  }
+
+  scene 34x13 {
+    jug pot max=1000 step=200 level=1000 unit=ml at=canvas(1, 1)
+    text ask "A glass holds {g} ml. How many glasses can you fill from {L} {u} of juice?" width=20 right-of=pot gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (1000 * L / g)
+  feedback {
+    when (answer == 1000 / g and L == 2) point=pot {
+      say "That fills glasses from one litre. There are two litres."
+    }
+  }
+  hint "How many millilitres are in {L} {u}?"
+  hint "Count in {g}s up to that amount. How many counts?"
+}

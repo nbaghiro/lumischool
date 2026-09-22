@@ -1,0 +1,21 @@
+# No method is on the page: the child tries the bricks in different orders and checks each word
+# is real. Less is one letter longer than ful, which is why the longest word always uses it.
+item reading.longest-word v=2 stars=3 skills=[reading.morphology, reasoning.search] {
+  title "The longest word"
+  let k=0..4
+
+  scene 32x14 {
+    wordbricks b bricks=[if k == 0 then "help" else if k == 1 then "care" else if k == 2 then "thought" else if k == 3 then "use" else "fear", "ful", "less", "ness"] root=0 roots=1 blank=-1 word="" labels=true at=canvas(1, 1)
+    text ask "Use the first brick and some of the others, each once at most. What is the longest real word you can make?" width=31 below=b gap=1
+    word-input pick options=["{if k == 0 then \"helplessness\" else if k == 1 then \"carelessness\" else if k == 2 then \"thoughtlessness\" else if k == 3 then \"uselessness\" else \"fearlessness\"}"] letters=15 below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "helplessness" else if k == 1 then "carelessness" else if k == 2 then "thoughtlessness" else if k == 3 then "uselessness" else "fearlessness")
+  feedback {
+    when (pick == "helpfulness" or pick == "carefulness" or pick == "thoughtfulness" or pick == "usefulness" or pick == "fearfulness") point=b {
+      say "That is a real word. Is there a brick that would make it one letter longer?"
+    }
+  }
+  hint "Can a word have two suffixes, one after the other? Try the root with two bricks."
+  hint "Which order of bricks makes a real word? Count the letters in each one you find."
+}

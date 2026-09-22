@@ -1,0 +1,26 @@
+# Non-routine: nothing is said about how many particles there are, so the child counts, remembers
+# that a change of state keeps every particle, and then takes a share away.
+item chem.still-there v=1 stars=3 skills=[chemistry.states, reasoning.conservation] {
+  title "How many are left?"
+  difficulty (n + f)
+  let n={12, 24} f={3, 4}
+
+  scene 26x13 {
+    particles jar spread=1 count=n name=0 at=canvas(1, 0)
+    text ask "This liquid is heated with the lid on until it is all gas. Then the lid is lifted and 1 in every {f} particles gets out. How many are still in the jar?" narrate width=14 right-of=jar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - n / f)
+  feedback {
+    when (answer == n / f) point=jar {
+      say "That is how many got out. The question asks how many are still in the jar."
+    }
+    when (answer == n) point=jar {
+      say "Heating kept every particle, but some got out when the lid was lifted."
+    }
+  }
+  hint "How many particles are in the jar now? Does heating make more, or fewer?"
+  hint "If 1 in every {f} gets out, how many groups of {f} are there?"
+  hint "Take the ones that got out away from all of them."
+}

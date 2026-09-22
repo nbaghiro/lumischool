@@ -1,0 +1,52 @@
+lesson g1-counting-in-steps v=1 format=teach grade=1 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Counting in twos, fives and tens"
+  goal "Count in twos, fives and tens, and count back from a total to how many groups made it."
+
+  look {
+    scene 30x22 {
+      bakingtray tray rows=2 cols=6 iced=0 at=canvas(1, 1)
+      washingline line values=["0", "5", "10", "15", "20"] pegs=true below=tray gap=1
+      coins purse quarters=0 dimes=4 nickels=0 pennies=0 below=line gap=1
+      text sum "10, 20, 30, 40 cents" right-of=purse gap=1
+    }
+    say """
+      Counting in twos, fives and tens is faster than counting in ones, and the numbers you say
+      make a pattern you can hear.
+      """
+  }
+  do {
+    practice count.tray-twos count=1 seed=5
+    practice count.rabbit-ears count=1 seed=2
+    practice count.flower-petals count=1 seed=3
+    practice count.crab-limbs count=1 seed=4
+    practice count.washing-line count=1 seed=9
+    practice count.dimes-nickels count=1 seed=5
+    practice count.back-in-fives count=1 seed=2
+    practice count.which-said count=1 seed=7
+  }
+  try stars=2 {
+    show count.ears-back n=7 easy-n=4 hard-n=9
+  }
+  try stars=3 {
+    show count.legs-and-animals h=4 s=1 easy-h=3 hard-h=5 hard-s=3
+  }
+  remember {
+    say "Twos: 2, 4, 6, 8. Fives: 5, 10, 15, 20. Tens: 10, 20, 30, 40."
+  }
+
+  grown-ups """
+    Ears come in twos, petals in fives, and a crab's eight legs and two claws make ten, so the
+    counting is the same act each time with a different step. The dimes and nickels change step part
+    way along, and counting back in fives listens for the 5, 0, 5, 0 at the end of each number.
+    Which number Kim will say can be answered from that pattern without counting at all. The
+    two-star question runs the count backwards, from the ears to the rabbits. In the three-star
+    question most children guess and adjust; drawing four circles and giving each two or four legs
+    is a good way to check.
+    """
+  level easy {
+    grown-ups "At this level the rows are three to five long, the coins are one or two of each, and the field has three animals."
+  }
+  level hard {
+    grown-ups "At this level the rows are seven or eight long, the counting back starts at forty-five or fifty, and the field has five animals, three of them sheep."
+  }
+}

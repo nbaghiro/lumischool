@@ -1,0 +1,68 @@
+# A four-bar phrase read from the staff for pitch and time together: the opening of the Ode to Joy
+# (Beethoven, 1824, public domain) in C position, with a dotted crotchet in its last bar.
+lesson music-playing-a-short-phrase v=1 format=teach grade=4 unit=5 subject=music levels=[easy, medium, hard] {
+  title "Playing a short phrase"
+  goal "Read a four-bar phrase from the staff and play it with the right notes in the right time."
+
+  look {
+    scene 33x37 {
+      column lines space=1 align=start at=canvas(1, 1) {
+        notes l1 clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4
+        notes l2 clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4
+      }
+      row low space=2 align=start below=lines gap=1 {
+        piano keys from=C4 whites=5 wide=3 labels=letters fingers=[1, 2, 3, 4, 5]
+        bandstand stand posts=5 notes=3
+      }
+    }
+    say """
+      Ana is learning a tune to play with the band: the Ode to Joy, by Beethoven. It is four bars
+      long, two on each line, with four beats in every bar. Her right hand sits in C position, thumb
+      on middle C. Most notes last one beat. Bar 4 has a dotted note that lasts one and a half
+      beats, a quaver of half a beat, and a minim of two.
+      """
+  }
+  do {
+    practice music.phrase-which-bar count=1 seed=1 hard-seed=2
+    level easy {
+      worked music.phrase-bar-letters b=1 r=0 level=medium
+    }
+    practice music.phrase-bar-letters count=2 seed=1 easy-seed=9 hard-seed=4
+    practice music.phrase-finger count=1 seed=1
+    practice music.phrase-play-bar count=1 seed=1 hard-seed=7
+    show music.phrase-tap-last-bar
+    practice music.phrase-wrong-bar count=1 seed=1 easy-seed=10 hard-seed=7
+    level hard {
+      show music.phrase-dot-claim q=1 r=0
+    }
+    practice music.bandstand-phrase-beats count=1 seed=3 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.phrase-dot-claim q=0 r=0 easy-r=1 hard-r=1
+  }
+  try stars=3 {
+    show music.phrase-new-ending v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Read each note twice: its letter from the staff, and its length from its shape."
+  }
+
+  grown-ups """
+    The idea is that a phrase is read note by note for two things at once, which key and how long,
+    and that the bar lines keep the count honest. The wrong ideas to watch for are treating every
+    note as one beat, and reading the dot as a whole extra beat rather than half the note again. In
+    the working, look for the child counting aloud through a bar before playing it. The two-star
+    question adds up bar 4; the three-star question writes a new last bar by steps and counts every
+    way to do it, which is easiest working backwards from the last note. A child who is stuck can
+    clap a bar's rhythm first, then name its notes, then play it, one bar at a time, and go back to
+    the way in; stay on this lesson another day if the bars still run together. The whole phrase in
+    time is judged on the music page; on paper, and on a real piano, you are the judge. Off the
+    page, play the phrase for someone while they sing it, and keep going if a note goes wrong.
+    """
+  level easy {
+    grown-ups "At this level the bar to find has the longest note, bar 1's letters are read once in the teacher's pen before bars 2 and 4, the finger asked starts bar 1, the run to play is bar 2, Ben's wrong note is in bar 1, the band plays the phrase twice after one silent bar, the two-star is as written with its answers in another order, and the three-star's new bar uses crotchets only and ends on C."
+  }
+  level hard {
+    grown-ups "At this level the bar to find has the dotted note, the letters are read in bars 3 and 4, where middle C sits on its own short line, the finger asked starts bar 2, the run to play crosses the line from bar 2 into bar 3, Ben's wrong note is in bar 3, a second claim about bar 4 is judged before the two-star, the band plays the phrase four times after two silent bars, and the three-star's new bar may use minims and ends on E."
+  }
+}

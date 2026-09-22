@@ -1,0 +1,52 @@
+lesson reading-puzzles v=1 format=puzzles grade=4 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "Reading puzzles"
+  goal "Use every part of a clue, and work out a missing word from the rest of the sentence."
+
+  puzzle stars=1 {
+    show reading.odd-word-out k=0 hard-k=3
+  }
+  puzzle stars=1 {
+    show reading.riddle k=0 easy-k=3
+  }
+  puzzle stars=2 {
+    show reading.clue-boat k=0 easy-k=1 hard-k=3
+    say "One part of the clue says what the boat does not have."
+  }
+  puzzle stars=2 {
+    show reading.missing-word k=0
+    say "The words after the gap tell you what the gap has to be."
+  }
+  puzzle stars=2 {
+    show reading.both-sentences k=0 hard-k=3
+  }
+  puzzle stars=2 {
+    show reading.which-creature k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show reading.what-came-first k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=2 {
+    show reading.missing-word k=2 easy-k=1
+    say "Nothing before the gap tells you the answer. The part after it does."
+  }
+  puzzle stars=3 {
+    show reading.whose-pet p=3 q=0 hard-p=5 hard-q=1
+  }
+  puzzle stars=3 {
+    show reading.write-a-clue k=2 easy-k=0 hard-k=3
+  }
+
+  grown-ups """
+    The trick with a missing word is to read past the gap first. Children stop at the gap and guess
+    from what came before it, and the answer is nearly always after. The boat and creature clues are
+    the same habit: a child who stops after the first part of a clue picks one that fits half of
+    it. In the pet puzzle, the first clue places one pet and the second clue only works after that.
+    The last puzzle turns the creature clues round: check the child's clue against every picture.
+    """
+  level easy {
+    grown-ups "At this level the odd word is shout, the riddle is the cottage, the boat has one sail and a flag, the frozen pond and the heavy box are as written, the creature is spotty with no horns, the story has one pair of sentences swapped, the second gap is the empty jug, the pets are as written, and the clue to write is for creature A."
+  }
+  level hard {
+    grown-ups "At this level the odd word is parched, the riddle is the lighthouse, the boat has one sail and no round windows, the path is icy, the creature has as many legs as A but more eyes, the story has every sentence out of place, the gaps are as written, the question is who has the cat, and the clue to write is for creature D."
+  }
+}

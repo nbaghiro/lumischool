@@ -1,0 +1,36 @@
+# b is given a copy of a's number, and a changes afterwards: the copy does not follow it. The
+# audit's raise for coding.variable, two names where one line copies the other.
+item coding.two-names v=1 skills=[coding.variables] {
+  title "Two names"
+  difficulty (x + y + d)
+  let x=3..9 y=2..6 d=1..2
+  level easy {
+    where (x + y + d <= 8)
+  }
+  level hard {
+    where (x + y + d >= 14)
+  }
+
+  scene 34x10 {
+    program p code=["set a to {x}", "set b to a", "add {y} to b", "take {d} from a"] at=canvas(1, 0)
+    text ask "What do a and b hold at the end?" width=16 right-of=p gap=2
+    row ans below=ask gap=1 space=1 align=centre {
+      text la "a"
+      number-input a width=3
+      text lb "b"
+      number-input b width=3
+    }
+  }
+
+  check coding.runs of=p a="value(a)" b="value(b)"
+  feedback {
+    when (b == x + y - d) point=p {
+      say "b was given a's number at line 2. Taking {d} from a later does not change b."
+    }
+    when (a == x + y) point=p {
+      say "Line 3 changes b, not a."
+    }
+  }
+  hint "Go line by line. After line 2, what is in a and what is in b?"
+  hint "A line only changes the name it says."
+}

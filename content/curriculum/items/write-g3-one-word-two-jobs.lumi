@@ -1,0 +1,14 @@
+# Making a sentence to a rule is the non-routine end of word classes; a grown-up reads it.
+item writing.one-word-two-jobs v=1 stars=3 skills=[writing.word-classes, writing.composing] {
+  title "One word, two jobs"
+  let w={"fish", "paint", "brush", "water", "light"}
+
+  scene 32x13 {
+    text ask "Write one sentence that uses the word {w} twice: once as a naming word and once as a doing word." width=30 at=canvas(1, 1)
+    writinglines lines lines=2 width=30 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence in which the same word names a thing once and is something that happens once (We fish for fish, Light the light by the door), with a capital at the start and a full stop at the end."
+  hint "The word {w} can name a thing. What can you do with it? Say what you do."
+  hint "Try a sentence that starts with I, then the doing word."
+}

@@ -1,0 +1,33 @@
+# The way in: a finger's number read in a chord box, and the fret it presses counted from the nut.
+# In C each finger presses the fret of its own number, which is why easy keeps to C.
+item music.guitar-finger-fret v=1 skills=[music.chord-boxes] {
+  title "Which fret?"
+  difficulty (if c == 0 then 0 else 1)
+  let c=0..2 f=1..3
+  let chord={pick(c, "C", "G", "D")}
+  let right={pick(c * 3 + f - 1, 1, 2, 3, 2, 3, 3, 2, 2, 3)}
+  level easy {
+    let c=0..0
+  }
+  level hard {
+    let c=1..2
+  }
+
+  scene 31x17 {
+    chordbox box tuning=guitar chord=pick(c, "C", "G", "D") frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Ben holds {chord}. Which fret does finger {f} press?" narrate width=14 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == f and answer != right) point=box {
+      say "That is the finger's number. Count the spaces down from the thick line to the dot with {f} in it."
+    }
+    when (answer == 5 - right and answer != right) point=box {
+      say "Count from the thick line at the top. That is the nut, and the first space under it is fret 1."
+    }
+  }
+  hint "Find the dot with {f} in it."
+  hint "Start at the thick line at the top. The first space under it is fret 1."
+}

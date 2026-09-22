@@ -1,0 +1,23 @@
+# The change from C to G7: finger 3 is on the A string for both, but it moves back one fret, and
+# two fingers join it. The change card shows only what moves.
+item music.c-to-g7 v=1 skills=[music.chord-changes] {
+  title "From C to G7"
+  difficulty w
+  let w=0..1
+  let right={pick(w, "It moves back a fret, from 3 to 2", "Two fingers, 1 and 2")}
+
+  scene 34x27 {
+    chordchange change tuning=uke from=C to=G7 frets=3 at=canvas(1, 1)
+    text ask "{if w == 0 then \"Finger 3 plays the A string in C and in G7. What does it do at the change?\" else \"Which fingers come down for G7 that C did not use?\"}" width=14 right-of=change gap=1
+    choice pick options=[if w == 0 then "It moves back a fret, from 3 to 2" else "Two fingers, 1 and 2", if w == 0 then "It stays at fret 3" else "One finger, 2", if w == 0 then "It lifts off" else "Three new fingers"] stack=column below=change gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=change {
+      say "{if w == 0 then \"C has finger 3 at fret 3 on the A string, and G7 wants it at fret 2 on the same string: one fret back towards the head, which is up towards the thick line on the card.\" else \"C uses one finger. G7 uses three, so two more come down: 1 on the E string and 2 on the C string.\"}"
+    }
+  }
+  hint "{if w == 0 then \"Look at the A string. Where is the dot for C, and where is it for G7?\" else \"Count G7's dots and take away the one C already had.\"}"
+  hint "{if w == 0 then \"Fret 3 to fret 2 is one fret back towards the head.\" else \"Finger 1 on the E string, finger 2 on the C string.\"}"
+}

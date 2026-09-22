@@ -1,0 +1,19 @@
+# Two writers, one event, two feelings: the reason is in where each of them was. Point of view,
+# which the grade 4 benchmark asks children to compare.
+item reading.two-views v=2 stars=2 skills=[reading.inference, reading.point-of-view] {
+  title "Same storm, different feelings"
+  let k=0..2
+
+  scene 36x24 {
+    row both at=canvas(1, 1) space=1 align=start {
+      passage a text="{if k == 0 then \"Nell: The storm was the best part. Spray came right over the deck.\" else if k == 1 then \"Nell: The snow was perfect. We built a snow cave.\" else \"Nell: The heat was wonderful. I swam in the sea three times.\"}" width=17 numbers=false
+      passage b text="{if k == 0 then \"Sam: The storm kept me awake. Rain dripped into a bucket.\" else if k == 1 then \"Sam: The snow stopped the trains, so Dad could not get home.\" else \"Sam: The heat was awful. Our flat was too hot to sleep in.\"}" width=17 numbers=false
+    }
+    text ask "Why do Nell and Sam feel so differently about the same {if k == 0 then \"storm\" else if k == 1 then \"snow\" else \"heat\"}?" width=34 below=both gap=1
+    choice pick options=[if k == 0 then "It did different things to each of them." else if k == 1 then "Sam does not like snow." else "Nell did not really notice it.", if k == 0 then "Sam does not like storms." else if k == 1 then "It did different things to each of them." else "Sam does not like the sun.", if k == 0 then "Nell did not really notice it." else if k == 1 then "Nell did not really notice it." else "It did different things to each of them."] stack=column below=ask gap=1
+  }
+
+  answer pick="It did different things to each of them."
+  hint "What did the {if k == 0 then \"storm\" else if k == 1 then \"snow\" else \"heat\"} do to Nell? What did it do to Sam?"
+  hint "Would Sam feel the same if he had been where Nell was?"
+}

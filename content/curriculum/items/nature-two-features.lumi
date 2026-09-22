@@ -1,0 +1,52 @@
+# The three-star: a creature that has to live in a named place, and the pair of features it
+# needs from the six on the page. Each wrong pair fits one need and not the other, so both have
+# to be checked.
+item nature.two-features v=1 stars=3 skills=[nature.habitats, reasoning.constraints] {
+  title "Two features"
+  difficulty k
+  let k=0..2
+  let needs={pick(k, "dives after fish in the cold sea", "flies over the sea and lands on the water to rest", "lives in a rock pool where gulls hunt")}
+  let right={pick(k, "flippers and a thick layer of fat", "wings and webbed feet", "a hard shell and claws to grip under a stone")}
+  let o1={pick(k, "flippers and wings", "wings and flippers", "a hard shell and wings")}
+  let o2={pick(k, "a thick layer of fat and webbed feet", "webbed feet and a thick layer of fat", "claws and a thick layer of fat")}
+  let o3={pick(k, "wings and a hard shell", "a hard shell and claws", "flippers and claws")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x36 {
+    column four at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        seal ps rock=1 facing=1
+        gull pg flying=1
+      }
+      row low space=1 align=end {
+        crabs pc count=1
+        seaturtle pt facing=1 plates=5
+      }
+    }
+    text ask "Ada makes up a creature that {needs}. Its features come from these: flippers, wings, webbed feet, a thick layer of fat, a hard shell, claws. Which two does it need?" narrate width=34 below=four gap=1
+    choice pick options=[o1, right, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and (pick == o1 or pick == o3)) point=ps {
+      say "Wings are for the air. The creature dives, so it needs something for swimming and something for the cold."
+    }
+    when (k == 0 and pick == o2) point=ps {
+      say "Fat keeps it warm, but webbed feet only paddle on top. To dive after fish it needs flippers."
+    }
+    when (k == 1 and pick != right) point=pg {
+      say "Two needs: flying, and resting on the water. One feature for each."
+    }
+    when (k == 2 and pick != right) point=pc {
+      say "Two needs: keeping a beak out, and staying put under a stone when the gull comes. One feature for each."
+    }
+  }
+  hint "The creature has two needs. Say them one at a time and pick a feature for each."
+  hint "Cross out any pair that has a feature for something the creature never does."
+}

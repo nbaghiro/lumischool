@@ -1,0 +1,28 @@
+# Sharing into equal groups: the answer is how many in one group, not how many groups.
+item groups.share-children v=1 skills=[division.sharing] {
+  title "A fair share"
+  difficulty (c * e)
+  let c=2..3 e=2..5
+  where (e != c)
+  level easy {
+    let c={2} e=3..4
+  }
+  level hard {
+    let c={3} e=4..5
+  }
+
+  scene 34x12 {
+    children kids count=c holding="" each=0 at=canvas(1, 1)
+    text ask "{c * e} stickers are shared fairly between these children. How many does each child get?" narrate width=19 right-of=kids gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer e
+  feedback {
+    when (answer == c) point=kids {
+      say "{c} is how many children there are. How many stickers does one child get?"
+    }
+  }
+  hint "Give each child one sticker. How many have you given out?"
+  hint "Keep going round until the stickers are all gone."
+}

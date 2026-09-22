@@ -1,0 +1,28 @@
+# The product first and the unknown last: 24 = 6 × ?, so the table has to be used backwards.
+item times.missing-factor v=1 skills=[multiplication.tables, division.inverse] {
+  title "The missing factor"
+  difficulty (a * b)
+  let a=3..12 b=2..12
+  where (a != b)
+  level easy {
+    let a=2..5 b=2..6
+  }
+  level hard {
+    let a={6, 7, 8, 9, 12} b=7..12
+  }
+
+  scene 20x9 {
+    unknown eq terms=["{a * b}", "=", "{a}", "×", "?"] at=canvas(1, 1)
+    text ask "What number goes in the box?" narrate below=eq gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == a * b - a) point=eq {
+      say "The sign is times, so ask how many lots of {a} make {a * b}."
+    }
+  }
+  hint "Count in {a}s. How many steps until you reach {a * b}?"
+  hint "Which fact in the {a} times table ends in {a * b}?"
+}

@@ -1,0 +1,55 @@
+lesson writing-directions-on-a-treasure-map v=1 format=teach grade=4 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "Directions on a treasure map"
+  goal "Write directions someone else could follow, with a turn at each place."
+
+  look {
+    scene 35x18 {
+      row all at=canvas(1, 1) space=1 align=start {
+        treasuremap map stops=["tree", "rock", "bridge"] turns=["left", "right", "left"] heading="right" step=5 names=true
+        passage way text="Walk from the boat to the tree. Turn left and go to the rock. Turn right and cross the bridge. Turn left and dig at the X." width=15 numbers=true
+      }
+    }
+    say """
+      Directions are instructions for a journey. Each step starts with a doing word: walk, turn,
+      cross, dig. Say which way to turn at each place. Left and right are from the walker's side,
+      so face the way you are going before you decide.
+      """
+  }
+  do {
+    practice writing.map-turn count=2 seed=7
+    level easy {
+      worked writing.map-turn-heading h="down" a="left" x="gate" level=medium
+    }
+    practice writing.map-turn-heading count=2 seed=1
+    practice writing.missing-place count=2 hard-count=1 seed=7
+    level hard {
+      practice writing.wrong-direction count=1 seed=1
+    }
+    show writing.map-order
+    practice writing.cards-to-flag count=1 seed=1
+  }
+  try stars=2 {
+    show writing.wrong-direction a="left" b="right" c="right" w=3 easy-w=2 hard-w=4
+  }
+  try stars=3 {
+    show writing.write-the-directions t="right"
+  }
+  remember {
+    say "One step at a time. Name the place, then say which way to turn."
+  }
+
+  grown-ups """
+    The turns and the order are marked by the machine, because the map is drawn from the same turns
+    the answer reads. When the path heads down or to the left, a turn to the walker's left is not a
+    turn to the left of the page; standing up and facing the way the path goes settles it. The robot
+    cards are checked by running them, and more than one order can work. Check the child's own
+    directions by following them on the map with a finger, reading exactly what they wrote, and stop
+    where the directions stop making sense.
+    """
+  level easy {
+    grown-ups "At this level the turn at the rock is as written, a turn taken walking down the map is worked once in the teacher's pen before turns taken walking up it, the lost places, the order and the cards are as written, the two-star's wrong step is the second, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the turn at the rock is as written, the turns are taken walking down or across the map, so left and right are the walker's and not the reader's, one lost place makes way for a second set of directions with a wrong step, the order and the cards are as written, the two-star's wrong step is the fourth, and the three-star is as written."
+  }
+}

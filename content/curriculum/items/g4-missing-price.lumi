@@ -1,0 +1,27 @@
+# One price on the receipt is missing and the total is given, so it is a missing part.
+item money.missing-price v=1 skills=[money.decimals, subtraction.missing-part] {
+  title "The price that rubbed off"
+  difficulty ((if 100 * x % 100 + 100 * z % 100 >= 100 then 2 else 0) + x + y + z)
+  let x={1.20, 1.85, 2.40} y={0.95, 1.35, 3.10} z={2.25, 2.60, 4.15}
+  level easy {
+    where (100 * x % 100 + 100 * z % 100 < 100)  # the bread and the eggs add without a carry
+  }
+  level hard {
+    where (100 * x % 100 + 100 * z % 100 >= 100)
+  }
+
+  scene 30x12 {
+    table bill cols=2 head=["Item", "Price"] cells=["Bread", x, "Milk", "?", "Eggs", z, "Total", decimals(x + y + z, 2)] at=canvas(1, 1)
+    text ask "The price of the milk has rubbed off the receipt. How much was the milk, in dollars?" narrate width=18 right-of=bill gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer y
+  feedback {
+    when (answer == x + y + z - x or answer == x + y + z - z) point=bill {
+      say "Take both of the other prices away from the total."
+    }
+  }
+  hint "What do the bread and the eggs cost together?"
+  hint "The milk is the rest of the total."
+}

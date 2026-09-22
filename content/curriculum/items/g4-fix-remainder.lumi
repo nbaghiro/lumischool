@@ -1,0 +1,32 @@
+# Finding and correcting a mistake: a remainder as big as the divisor means one more group fits.
+item division.fix-the-remainder v=1 stars=2 skills=[division.short-with-remainder, reasoning.find-the-mistake] {
+  title "The remainder is too big"
+  difficulty (d * q + r)
+  let d=4..9 q=15..60 r=1..3
+  where (r < d)
+  level hard {
+    let d=7..9 q=40..60 r=2..3
+  }
+
+  scene 30x8 {
+    text ask "Rafi worked out {d * q + r} ÷ {d} and wrote {q - 1} remainder {r + d}. His remainder is too big. What should the answer be?" narrate width=29 at=canvas(1, 1)
+    row sum below=ask gap=1 space=1 align=centre {
+      equation eq "{d * q + r} ÷ {d} ="
+      number-input quot
+      equation rr "r"
+      number-input rest
+    }
+  }
+
+  answer quot=q rest=r
+  feedback {
+    when (quot == q - 1) point=eq {
+      say "A remainder of {r + d} holds another whole {d}, so there is one more group."
+    }
+    when (rest == r + d) point=eq {
+      say "The remainder has to be smaller than {d}."
+    }
+  }
+  hint "How many {d}s are there in {r + d}?"
+  hint "Take one more {d} out of the remainder and add one to the answer."
+}

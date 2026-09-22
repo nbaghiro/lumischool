@@ -1,0 +1,27 @@
+# The audit's raise for letter-on-the-line: a whole word with tall, small and tail letters in it,
+# so the height has to be kept right across the word, not for one letter drawn many times.
+item writing.name-on-the-lines v=2 skills=[writing.letter-formation, writing.spelling] {
+  title "The animal's name on the lines"
+  difficulty (if k == 3 then 2 else if k == 0 or k == 4 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={1, 2}  # pig and fox
+  }
+  level hard {
+    let k={0, 3, 4}  # dog, rabbit, duck
+  }
+  let w={if k == 0 then "dog" else if k == 1 then "pig" else if k == 2 then "fox" else if k == 3 then "rabbit" else "duck"}
+  let t={if k == 0 then "log" else if k == 1 then "mat" else if k == 2 then "box" else if k == 3 then "rug" else "tub"}
+
+  scene 34x8 {
+    picturecards card who=["{w}"] where=["on"] thing=["{t}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=1 space=1 align=start {
+      text ask "Write the animal's name on the line, two times." width=22
+      handwriting rules show="" rows=1 trace=0 width=22
+    }
+  }
+
+  check writing.by-eye look-for="The name spelled so it can be read, written twice, with every tall letter (b, d, f, h, k, l) reaching the top line, t reaching a little above the dotted line, every tail (g, p, y) going below the line and the small letters stopping at the dotted line."
+  hint "Say the name slowly. Which letters do you need?"
+  hint "Which of those letters go up to the top line, and which hang below it?"
+}

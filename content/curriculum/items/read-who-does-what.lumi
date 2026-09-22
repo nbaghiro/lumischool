@@ -1,0 +1,20 @@
+# Three named children and the ducks on the pond: the picture sets the scene, and only the passage
+# says which child did which thing.
+item reading.who-does-what v=2 skills=[reading.comprehension] {
+  title "Who does what?"
+
+  scene 30x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="At the park" text="Sam brought the ball. Kim brought the picnic. Joe counted the ducks on the pond." width=28
+      row pics space=1 align=end {
+        children kids count=3 names=["Sam", "Kim", "Joe"] holding="" each=0
+        animals ducks kind=duck count=3 label="on the pond"
+      }
+      text ask "Write the number of the thing each child did." width=26
+      match m left=["Sam", "Kim", "Joe"] right=["counted the ducks", "brought the ball", "brought the picnic"] blanks=[a, b, c]
+    }
+  }
+
+  answer a=2 b=3 c=1
+  hint "Find each name in the passage and read what comes after it."
+}

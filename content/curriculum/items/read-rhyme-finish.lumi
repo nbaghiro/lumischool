@@ -1,0 +1,22 @@
+# The missing word has to rhyme and has to make sense. Two of the choices do one and not the other,
+# so the child has to hear the rhyme and read the line.
+item reading.rhyme-finish v=1 skills=[reading.rhyme] {
+  title "Finish the rhyme"
+  let k=0..2
+
+  scene 23x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      poem rhyme title="{if k == 0 then \"The bug\" else if k == 1 then \"The sun\" else \"The frog\"}" lines=[if k == 0 then "A bug on a rug" else if k == 1 then "The sun is up," else "A frog on a log", if k == 0 then "sat down with a mug." else if k == 1 then "I drink from my cup." else "looked out at the fog.", if k == 0 then "It was warm and snug," else if k == 1 then "The dog wakes up," else "Then up came a dog,", if k == 0 then "so it slept on the rug." else if k == 1 then "and so does the pup." else "so he hopped off the log."] rhymes=[0, 0, 0, 0] blank=3 width=21
+      text ask "Which word finishes the rhyme?" width=20
+      choice pick options=[if k == 0 then "bed" else if k == 1 then "pup" else "hill", if k == 0 then "rug" else if k == 1 then "cat" else "box", if k == 0 then "hug" else if k == 1 then "hen" else "log"]
+    }
+  }
+
+  answer pick=(if k == 0 then "rug" else if k == 1 then "pup" else "log")
+  feedback {
+    when (pick == "hug" and k == 0) point=rhyme {
+      say "Hug rhymes, but can a bug sleep on a hug? Read the line again."
+    }
+  }
+  hint "Say the last word of each line. The missing word sounds the same at the end."
+}

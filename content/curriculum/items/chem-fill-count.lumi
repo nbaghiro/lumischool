@@ -1,0 +1,22 @@
+# No method on the page: pouring in and taking out with two full cylinders. Several ways reach each
+# amount, and the question asks for the fewest pours.
+item chem.fill-count v=1 stars=3 skills=[chemistry.volume, reasoning.fewest] {
+  title "The fewest pours"
+  difficulty ((if t == 30 or t == 40 or t == 70 then 2 else 3) + (if t == 10 then 1 else 0))
+  let t={10, 30, 40, 60, 70, 80, 90}
+
+  scene 37x23 {
+    text ask "Pour a full cylinder into the beaker, or fill a cylinder from the beaker to take water out. What is the fewest pours that leaves exactly {t} ml in the empty beaker?" width=30 at=canvas(1, 0)
+    row kit below=ask gap=0 space=2 align=end {
+      cylinder big max=50 step=10 minor=5 level=50 unit=ml
+      cylinder small max=20 step=10 minor=5 level=20 unit=ml
+      beaker glass max=100 step=20 level=0 unit=ml
+    }
+    number-input answer right-of=kit gap=1
+  }
+
+  answer (if t == 10 then 3 else if t == 30 then 2 else if t == 40 then 2 else if t == 60 then 3 else if t == 70 then 2 else 3)
+  hint "Which amounts can you make with just one pour?"
+  hint "Can you get there by pouring in and then taking some out?"
+  hint "Try more than one way and count the pours. Which way uses the fewest?"
+}

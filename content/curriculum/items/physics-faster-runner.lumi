@@ -1,0 +1,29 @@
+item physics.faster-runner v=1 skills=[physics.motion] {
+  title "Who was faster?"
+  difficulty (4 - abs(a - b) / 10)
+  let a={10, 20, 30, 40} b={10, 20, 30, 40}
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 20)
+  }
+  level hard {
+    where (abs(a - b) == 10)
+  }
+
+  scene 32x17 {
+    text ask "Who ran faster?" width=12 at=canvas(1, 1)
+    stopwatch one seconds=a below=ask gap=1
+    text la "A" below=one gap=1
+    stopwatch two seconds=b right-of=one gap=3
+    text lb "B" below=two gap=1
+    choice pick options=["A", "B"] right-of=two gap=2
+  }
+
+  answer pick=(if a < b then "A" else "B")
+  feedback {
+    when (pick == "B" and a < b) point=one {
+      say "The faster runner took fewer seconds, so the smaller time wins."
+    }
+  }
+  hint "Who took fewer seconds?"
+}

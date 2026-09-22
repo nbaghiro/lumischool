@@ -1,0 +1,25 @@
+# Two things decide the missing word: it has to rhyme, and it has to make sense. One choice only
+# rhymes, one only makes sense, and one does both.
+item reading.poem-gap v=1 skills=[reading.poetry, reading.rhyme, reading.vocabulary] {
+  title "The missing rhyme"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+
+  scene 30x20 {
+    poem p title="{if k == 0 then \"The baker\" else if k == 1 then \"The owl\" else \"Wash day\"}" lines=[if k == 0 then "The baker wakes before the sun," else if k == 1 then "The owl sits high up in the oak," else "The shirts are pegged along the line,", if k == 0 then "she kneads and shapes the dough for buns." else if k == 1 then "his feathers soft as falling snow." else "they flap and dance and blow.", if k == 0 then "The ovens roar, the loaves turn brown," else if k == 1 then "He turns his head and blinks one eye," else "The sun comes out, the day is fine,", if k == 0 then "and soon the smell drifts through the town." else if k == 1 then "then glides off to the fields below." else "the sheets flap high, the socks hang low."] rhymes=[-1, -1, -1, -1] blank=3 beats=[] width=29 at=canvas(1, 1)
+    text ask "Which word fits the gap and keeps the rhyme?" below=p gap=1
+    choice pick options=[if k == 0 then "street" else if k == 1 then "below" else "down", if k == 0 then "town" else if k == 1 then "ground" else "slow", if k == 0 then "crown" else if k == 1 then "toe" else "low"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "town" else if k == 1 then "below" else "low")
+  feedback {
+    when (pick == "street" or pick == "ground" or pick == "down") point=p {
+      say "That makes sense, but does it rhyme with the line it should?"
+    }
+    when (pick == "crown" or pick == "toe" or pick == "slow") point=p {
+      say "That rhymes, but read the whole line with it. Does it make sense?"
+    }
+  }
+  hint "Which line does the last line rhyme with? Say its last word."
+  hint "Try each word in the gap and read the line aloud. Does it rhyme and make sense?"
+}

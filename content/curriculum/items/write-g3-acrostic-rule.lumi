@@ -1,0 +1,23 @@
+# A poem breaks one rule; the third option is not a rule at all, which is the trap.
+item writing.acrostic-rule v=1 stars=2 skills=[writing.poems, reasoning.find-the-error] {
+  title "Which rule is broken?"
+  difficulty f
+  let s=0..1 f=0..1
+
+  scene 36x15 {
+    listpad poem title="{if s == 0 then \"MOON\" else \"SNOW\"}" items=["{if s == 0 then \"Mice look up\" else \"Soft and white\"}", "{if s == 0 then \"Over the hill\" else \"Nothing moves\"}", "{if f == 0 then (if s == 0 then \"Birds call out\" else \"All is still\") else (if s == 0 then \"Oranges in a bowl\" else \"Oven chips for tea\")}", "{if s == 0 then \"Night is here\" else \"White roofs everywhere\"}"] count=0 width=17 ticks=false at=canvas(1, 1)
+    column right right-of=poem gap=1 space=1 align=start {
+      text ask "Ali's poem breaks one rule. Which?" width=17
+      choice pick options=["A line starts wrong.", "A line is off the topic.", "It does not rhyme."] stack=column
+    }
+  }
+
+  answer pick=(if f == 0 then "A line starts wrong." else "A line is off the topic.")
+  feedback {
+    when (pick == "It does not rhyme.") point=poem {
+      say "A poem down the page does not have to rhyme. Check the first letters, then what each line is about."
+    }
+  }
+  hint "Read the first letters going down. Do they spell the word?"
+  hint "Now read each line. Is every one about the word?"
+}

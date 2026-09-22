@@ -1,0 +1,22 @@
+# Two machines run backwards: undo the last one first. The order is the reasoning.
+item machine.two-step-back v=1 stars=2 skills=[algebra.function-machines, reasoning.inverse] {
+  title "Back through two machines"
+  difficulty (a * n)
+  let a=2..5 b=1..9 n=3..9
+  where (a * n > b)
+
+  scene 32x12 {
+    machinechain chain rules=["× {a}", "− {b}"] input="?" middle="" output="{a * n - b}" at=canvas(1, 1)
+    text ask "{a * n - b} came out. What number went in?" narrate below=chain gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == a * n) point=chain {
+      say "That is what went into the second machine. Now undo the first machine too."
+    }
+  }
+  hint "Start at the end. What went into the second machine?"
+  hint "Now undo the first machine. What times {a} gives that number?"
+}

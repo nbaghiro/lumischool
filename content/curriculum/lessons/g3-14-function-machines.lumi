@@ -1,0 +1,62 @@
+lesson g3-function-machines v=1 format=puzzles grade=3 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Function machine puzzles"
+  goal "Work out what comes out, what went in, and what the machine does."
+
+  puzzle stars=1 {
+    show machine.one-step r=4 n=7 easy-r=3 easy-n=3 hard-r=8 hard-n=9
+  }
+  puzzle stars=1 {
+    show machine.backwards r=6 n=8 easy-r=3 easy-n=4 hard-r=7 hard-n=12
+  }
+  puzzle stars=1 {
+    show algebra.balance-equation a=12 b=9 easy-a=6 easy-b=4 hard-a=19 hard-b=15
+  }
+  puzzle stars=1 {
+    show puzzle.pyramid
+  }
+  puzzle stars=2 {
+    show machine.find-the-rule r=6 n=4 easy-r=3 easy-n=2 hard-n=8
+  }
+  puzzle stars=2 {
+    show machine.two-step a=3 b=4 n=6 easy-a=2 easy-b=1 easy-n=3 hard-a=6 hard-b=9 hard-n=9
+  }
+  puzzle stars=2 {
+    show machine.two-step-back a=4 b=5 n=7 easy-a=2 easy-b=1 easy-n=3 hard-a=5 hard-b=9 hard-n=9
+  }
+  puzzle stars=2 {
+    show algebra.both-sides a=14 b=9 c=17 easy-a=11 easy-b=6 easy-c=12 hard-a=19 hard-b=14 hard-c=18
+  }
+  puzzle stars=2 {
+    practice logic.always-sometimes count=1 seed=5
+  }
+  puzzle stars=2 {
+    practice logic.counterexample count=1 seed=2
+  }
+  puzzle stars=3 {
+    show algebra.two-same n=9 c=7 easy-n=4 easy-c=3 hard-n=15 hard-c=12
+  }
+  puzzle stars=3 {
+    show machine.find-two-step a=3 b=2 x=2 y=5 z=9 easy-a=2 easy-b=1 easy-z=7 hard-a=4 hard-b=5 hard-z=10
+  }
+  puzzle stars=3 {
+    show puzzle.triangle-big x=13 y=24 z=18 easy-x=11 easy-y=12 easy-z=14 hard-x=27 hard-y=28 hard-z=29
+  }
+
+  grown-ups """
+    Running the machine backwards is the hard one, and it is the one that turns into algebra. If
+    the child is stuck, ask what undoes multiplying. With two machines the last one is undone
+    first, like taking off shoes before socks. The balance puzzles can be done by adding up both
+    sides, but ask whether there is a quicker way. In the secret rule puzzle, look at how much the
+    number out grows when the number in grows by one. In the bigger sum triangle, trying a number
+    for A and checking it against all three boxes is exactly the right method. Two puzzles ask
+    whether a claim about numbers is always, sometimes or never true, and which number shows a
+    claim is wrong: the example the child found matters more than the word they circled, so ask
+    for it.
+    """
+  level easy {
+    grown-ups "At this level the machines multiply small numbers (3 times 3, 12 back to 4, 3 times 2), the scales hide 4 and then 7, the pyramid's bricks are under 7, the two-step machines take 3 in, the claim and Kai's number come from the plainer ones, the two boxes hide 4, the table's machine doubles and adds 1, and the circles add to 37."
+  }
+  level hard {
+    grown-ups "At this level the machines multiply large numbers (8 times 9, 84 back to 12, 6 times 8), the scales hide 15 and then 13, the pyramid's bricks are 10 to 20, the two-step machines take 9 in with the largest rules, the claim and Kai's number are the ones that take working out, the two boxes hide 15, the table's machine multiplies by 4 and adds 5, and the circles add to 84."
+  }
+}

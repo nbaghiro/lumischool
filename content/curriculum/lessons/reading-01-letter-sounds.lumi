@@ -1,0 +1,59 @@
+lesson reading-letter-sounds v=1 format=teach grade=1 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "Letter sounds"
+  goal "Say the first sound in a word and write the letter that makes it."
+
+  look {
+    scene 24x21 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          art cat asset="cat"
+          column word space=1 align=start {
+            lettercards cards letters=["c", "a", "t"] picked=[0]
+            soundbuttons sb graphemes=["c", "a", "t"]
+          }
+        }
+        alphabet line from=0 to=12 mark=c
+      }
+    }
+    say """
+      Every letter has a sound. Say cat slowly and you can hear its sounds one after another: c, a,
+      t. The first sound is c, so cat starts with the letter c.
+
+      The dot under a letter means that letter makes one sound of its own.
+      """
+  }
+  do {
+    practice reading.first-sound count=1 seed=2 easy-seed=5
+    level easy {
+      worked reading.last-sound w="rocket" level=medium
+    }
+    practice reading.last-sound count=2 seed=3 hard-seed=2
+    practice reading.letter-to-picture count=2 seed=5
+    practice reading.starts-like count=2 seed=4
+    show reading.spell-the-word w="cup" easy-w="cat" hard-w="owl"
+  }
+  try stars=2 {
+    show reading.same-letter-not-sound k=0 easy-k=2
+  }
+  try stars=3 {
+    show reading.card-word k=0
+  }
+  remember {
+    say "Say the word slowly. The first sound tells you the first letter."
+  }
+
+  grown-ups """
+    The page can show the letters but it cannot make the sound, so the saying has to come from you.
+    Say each word aloud together before the child writes anything. The last-sound questions are the
+    first ones where the child has to hold the whole word in their head, so let them say it more
+    than once. In the two-star question the point is that one letter can start two different
+    sounds: ask the child to say sun and ship slowly and feel the difference. The three-star
+    question has three right answers; any one of them is right, and finding all three is a bonus.
+    """
+  level easy {
+    grown-ups "At this level the first sounds are those of cat, hen and sun, the last sound of rocket is found once in the teacher's pen before cup, sun and owl, the pictures are as written, the words that start alike are short, the word to spell is cat, Ren's claim is about sock and sat, where the letter and the sound agree, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the first sounds are those of duck and kite, which starts with a k, the last sounds are at the end of rocket, pencil and owl, the pictures are as written, the words that start alike are rocket and pencil, the word to spell is owl, and the two-star and three-star are as written."
+  }
+}

@@ -1,0 +1,32 @@
+# How many days from one place on the ring to another, when the moon takes twenty eight days to go all
+# the way round and the eight places are three and a half days apart, so the questions step by two.
+item physics.orbit-days-between v=1 skills=[physics.sky, physics.measuring] {
+  title "How many days?"
+  difficulty steps
+  let n=0..3
+  let steps={pick(n, 2, 4, 6, 6)}
+  let fl={pick(n, "A", "C", "A", "B")}
+  let tl={pick(n, "C", "G", "G", "H")}
+  let days={pick(n, 7, 14, 21, 21)}
+  level easy {
+    let n=0..1
+  }
+  level hard {
+    let n=2..3
+  }
+
+  scene 25x28 {
+    orbit sky moon=-1 places=1 arrow=1 person=0 at=canvas(1, 0)
+    text ask "The moon takes twenty eight days to go all the way round, and the eight places are the same distance apart. How many days does it take to go from place {fl} to place {tl} the way the arrow points?" narrate width=24 below=sky gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=days
+  feedback {
+    when (answer == steps) point=sky {
+      say "That is the number of places, not the days. Each step is three and a half days."
+    }
+  }
+  hint "How many places does the moon pass through on the way?"
+  hint "Twenty eight days over eight places is three and a half days for each one."
+}

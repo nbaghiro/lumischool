@@ -1,0 +1,27 @@
+# Two steps with a trap: a half-drop on the same sheet cuts a tile's worth from every dropped column.
+item art.half-drop-count v=1 skills=[art.pattern, reasoning.two-steps] {
+  title "How many whole tiles now?"
+  difficulty (c * r)
+  let c=4..6 r=3..4
+  level easy {
+    let c={4, 5} r={3}
+  }
+  level hard {
+    let c={5, 6} r={4}
+  }
+
+  scene 34x16 {
+    tilerepeat wall drop=1 cols=4 rows=3 missing=-1 ring=-1 colour=green at=canvas(1, 1)
+    text ask "A straight repeat {c} tiles across and {r} tiles tall fills Ada's sheet. She changes it to a half-drop on the same sheet, cutting off what hangs over. How many whole tiles are there now?" width=17 right-of=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (c * r - c / 2 + c % 2 / 2)
+  feedback {
+    when (answer == c * r) point=wall {
+      say "That is the straight repeat. What happens at the top and bottom of each dropped column?"
+    }
+  }
+  hint "How many tiles did the straight repeat have? How many of its columns are dropped?"
+  hint "Each dropped column loses half a tile at the top and half at the bottom. How many whole tiles is that?"
+}

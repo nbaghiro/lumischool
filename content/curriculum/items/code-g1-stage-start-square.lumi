@@ -1,0 +1,32 @@
+# Start unknown on the stage: the end square is given and the rabbit is not drawn, so the child undoes
+# the move to find where it began.
+item coding.stage-start-square v=1 skills=[coding.events, reasoning.work-backwards] {
+  title "Where did it start?"
+  difficulty (s + a)
+  let s=1..4 a=2..4
+  where (s + a <= 7)
+  level easy {
+    let s=1..3 a={2}
+  }
+  level hard {
+    let s=3..4 a=3..4
+  }
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "right {a}", "say hello"]
+      stage st cols=7 col=s code=["when the flag is tapped", "right {a}", "say hello"] upto=0 actor=false
+    }
+    text ask "The flag was tapped. The rabbit said hello on square {s + a}. Which square did it start on?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == s + 2 * a) point=b {
+      say "That is going on again. Go back the way the rabbit came."
+    }
+  }
+  hint "Put a finger on square {s + a}. Which way did the rabbit move to get there?"
+  hint "Go back {a} squares the other way."
+}

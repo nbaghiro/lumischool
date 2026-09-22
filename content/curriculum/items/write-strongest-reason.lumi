@@ -1,0 +1,30 @@
+# The reason that makes the ask worth doing, against reasons that are true and beside the point.
+item writing.strongest-reason v=1 skills=[writing.persuasion, reasoning.explain] {
+  title "The strongest reason"
+  difficulty k
+  let k=0..2 r=0..2
+  let ask2={pick(k, "Please keep your dog on a lead by the pond.", "Please bring a cake to the sale on Saturday.", "Please turn the classroom lights off at home time.")}
+  let right={pick(k, "Ducks are nesting in the reeds this month", "Every cake sold buys a book for the library", "A light left on all night wastes power we pay for")}
+  let w1={pick(k, "Dogs enjoy a walk by the water", "Cakes are nice to eat", "The switch is by the door")}
+  let w2={pick(k, "The pond is quite big", "Saturday is a day off school", "The lights are bright")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x17 {
+    text ask "The notice says: {ask2} Which reason would make a reader most likely to do it?" narrate width=32 at=canvas(1, 1)
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "A reason persuades when it says what the ask protects or gains. A fact that is true but changes nothing does not."
+    }
+  }
+  hint "Ask of each reason: if that is so, why should I do what the notice says?"
+  hint "The strongest reason names something that matters to the reader: the ducks, the books, the bill."
+}

@@ -1,0 +1,23 @@
+# The fewest presses to land on a square: flags go a long way right and taps come back one, so the
+# child tries, overshoots and comes back. The robot never leaves the stage: flags come first, and
+# the furthest it reaches is 1 + a times the flags, which the where line keeps on the eight squares.
+item coding.stage-fewest-presses v=1 stars=3 skills=[coding.events, reasoning.search] {
+  title "The fewest taps"
+  difficulty ((t + a - 2) // a + t)
+  let a=2..3 t=4..7
+  where ((t - 1) % a != 0)
+  where (1 + a * ((t - 1 + a - 1) // a) <= 8)
+
+  scene 36x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["when the flag is tapped", "right {a}", "when tapped", "left 1"]
+      stage s cols=8 col=1 who=crab code=["when the flag is tapped", "right {a}", "when tapped", "left 1"] upto=0
+    }
+    text ask "Tap the flag or the crab as often as you like. What is the fewest taps in all to land the crab on square {t}?" width=28 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer ((a + 1) * ((t - 1 + a - 1) // a) + 1 - t)
+  hint "Try tapping the flag until the crab is on or past square {t}. Then how many crab taps?"
+  hint "Could fewer flag taps and more crab taps be quicker? Count both ways."
+}

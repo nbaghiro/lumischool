@@ -1,0 +1,25 @@
+# The way in: a word looked up in the index and its page read off, the word as the index writes
+# it or as the question says it (crabs for crab).
+item reading.index-page v=1 skills=[reading.text-features] {
+  title "Which page?"
+  difficulty p
+  let k=0..2 p=0..1
+  let w={pick(k, "crab", "gull", "seal")}
+  let said={pick(k, "crabs", "gulls", "seals")}
+  level easy {
+    let p=0..0
+  }
+  level hard {
+    let p=1..1
+  }
+
+  scene 30x18 {
+    table index cols=2 head=["Index", "Page"] cells=["crab", "7", "dolphin", "6, 15", "gull", "9", "krill", "13, 18", "seal", "19", "tide", "2", "whale", "11, 14"] at=canvas(1, 1)
+    text ask "{if p == 0 then \"The index is at the back of the book. Which page has the word \" else \"Ada wants to read about \"}{if p == 0 then w else said}{if p == 0 then \" on it?\" else \". Which page does the index send her to?\"}" width=16 right-of=index gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 7, 9, 19)
+  hint "Run down the index to the word. Its page is beside it."
+  hint "{if p == 0 then \"The words are in alphabetical order, so the word is where its first letter comes.\" else \"The index writes the word on its own: look for \"}{if p == 0 then \"\" else w}{if p == 0 then \"\" else \".\"}"
+}

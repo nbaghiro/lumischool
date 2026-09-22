@@ -1,0 +1,34 @@
+# Predict first: both circuits are drawn with their bulbs waiting, and the checker works out which
+# is brighter from the cells shared among the bulbs, the rule the drawing lights them by.
+item physics.brighter-of-two v=1 skills=[physics.circuits] {
+  title "Which is brighter?"
+  difficulty (4 - 2 * abs(ca / na - cb / nb))
+  let ca=1..3 na=1..2 cb=1..3 nb=1..2
+  where (ca != cb or na != nb)
+  level easy {
+    where (abs(ca / na - cb / nb) >= 1)
+  }
+  level hard {
+    where (abs(ca / na - cb / nb) <= 1 / 2)
+  }
+
+  scene 35x20 {
+    row two at=canvas(1, 0) space=2 align=start {
+      series a cells=ca bulbs=na show=0 tag="A"
+      series b cells=cb bulbs=nb show=0 tag="B"
+    }
+    text ask "Which circuit has the brighter bulbs?" width=30 below=two gap=1
+    choice pick options=["A", "B", "The same"] below=ask gap=1
+  }
+
+  check physics.circuit of=a vs=b pick=brighter
+  feedback {
+    when (pick == "A" and na > nb and ca == cb) point=a {
+      say "A has more bulbs sharing the same cells, so each of its bulbs gets less."
+    }
+    when (pick == "B" and nb > na and ca == cb) point=b {
+      say "B has more bulbs sharing the same cells, so each of its bulbs gets less."
+    }
+  }
+  hint "How many cells does each bulb get in A, and in B?"
+}

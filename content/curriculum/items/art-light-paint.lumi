@@ -1,0 +1,21 @@
+# Three stars: the child paints the meadow at a time of day of their own choosing, and the painting has
+# to say which time without being told. Marked by eye against a look-for.
+item art.light-paint v=1 stars=3 skills=[art.light, art.making] {
+  title "Paint the hour"
+  difficulty when
+  let when=0..1
+  let named={pick(when, "either the morning or noon", "either dusk or the middle of the morning")}
+  level easy {
+    let when=0..0
+  }
+  level hard {
+    let when=1..1
+  }
+
+  scene 21x25 {
+    text ask "Paint the meadow at a time of day of your own, {named}, and make the painting say which one it is without writing it down." narrate width=20 at=canvas(1, 0)
+    paintsheet sheet w=16 h=12 paper="plain" guide="layers" outline="none" pots=["blue", "yellow", "red", "white"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A meadow whose hour can be read off it: the sun placed where that hour puts it, high for noon and low to one side for morning or dusk, a shadow from the tree that falls away from the sun and is long when the sun is low and short or absent when it is high, and colours that agree with the hour rather than fight it, warmer at dusk and paler at noon." notice=["The sun where the hour puts it", "A shadow falling away from the sun", "Colours that suit the hour"] ask="What time of day is your painting, and what in it tells me so?"
+}

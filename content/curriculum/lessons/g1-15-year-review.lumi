@@ -1,0 +1,35 @@
+lesson g1-year-review v=1 format=review grade=1 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Year review"
+  goal "Look back over the year: bonds, tens and ones, adding stories, coins and two puzzles."
+
+  warm-up {
+    practice bonds.make-ten count=1 seed=3 hard-seed=13
+    practice bonds.under-the-cup count=1 seed=5
+    practice count.tray-twos count=1 seed=11
+  }
+  exercises {
+    practice place-value.tens-ones count=1 seed=15
+    practice place.too-many-ones count=1 seed=6 hard-seed=9
+    practice money.count-coins count=1 seed=4 hard-seed=5
+    practice add.bus-how-many-on count=1 seed=9
+    practice place.compare-two-digit count=1 seed=6
+  }
+  puzzle stars=2 {
+    show add.triangle-corner x=5 y=8 z=3 easy-x=2 easy-y=4 easy-z=3 hard-x=9 hard-y=8 hard-z=7
+  }
+  puzzle stars=3 {
+    show balance.chain a=3 b=2 hard-b=4
+  }
+
+  grown-ups """
+    This is a check, not a test. Anything that needs counting from one is worth another week, and
+    everything else can move on. The two puzzles are there to be enjoyed; a child who solves one of
+    them by trying numbers has done exactly what they were asked.
+    """
+  level easy {
+    grown-ups "At this level each question comes from the easy band of its lesson (the bonds, the tens and ones, the coins, the bus and the comparisons at their smallest), the circles add to 9, and the chain is as written, since a cube of three balls at two stars each is its smallest."
+  }
+  level hard {
+    grown-ups "At this level each question comes from the hard band of its lesson, the circles add to 24, and the chain has a ball worth four stars, so a cube is twelve."
+  }
+}

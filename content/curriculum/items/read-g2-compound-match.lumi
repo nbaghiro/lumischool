@@ -1,0 +1,15 @@
+# Two lists of short words to join into long ones. Every word on the right could follow some word
+# on the left, so each pair has to be said and heard.
+item reading.compound-match v=2 skills=[reading.compound-words] {
+  title "Join them up"
+  let k=0..3
+
+  scene 23x15 {
+    text ask "Join each word to one on the right to make a long word. Write its number." narrate width=22 at=canvas(1, 1)
+    match m left=[if k == 0 then "rain" else if k == 1 then "cup" else if k == 2 then "sun" else "hand", if k == 0 then "pan" else if k == 1 then "tooth" else if k == 2 then "gold" else "farm", if k == 0 then "foot" else if k == 1 then "bed" else if k == 2 then "tea" else "star"] right=[if k == 0 then "ball" else if k == 1 then "cake" else if k == 2 then "fish" else "bag", if k == 0 then "bow" else if k == 1 then "room" else if k == 2 then "pot" else "fish", if k == 0 then "cake" else if k == 1 then "brush" else if k == 2 then "flower" else "yard"] blanks=[a, b, c] below=ask gap=1
+  }
+
+  answer a=(if k == 0 then 2 else if k == 1 then 1 else if k == 2 then 3 else 1) b=(if k == 0 then 3 else if k == 1 then 3 else if k == 2 then 1 else 3) c=(if k == 0 then 1 else if k == 1 then 2 else if k == 2 then 2 else 2)
+  hint "Say the first word on the left with each word on the right. Which one makes a real word?"
+  hint "Do the easiest one first. Then only two are left to try."
+}

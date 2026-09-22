@@ -1,0 +1,21 @@
+# The classic slip in change from a dollar: taking each digit from ten gives an answer ten too big.
+item money.wrong-change v=1 stars=2 skills=[money.change, reasoning.find-the-error] {
+  title "Is the change right?"
+  difficulty (100 - c)
+  let c={34, 46, 52, 63, 67, 78, 83, 86}
+
+  scene 30x10 {
+    pricetag tag now=c was=0 at=canvas(1, 1)
+    text ask "Lou pays for an apple with a dollar and is given {10 * (10 - c // 10) + (10 - c % 10)} cents change. That is wrong. How much change should Lou get?" narrate width=18 right-of=tag gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 - c)
+  feedback {
+    when (answer == 10 * (10 - c // 10) + (10 - c % 10)) point=tag {
+      say "That is the change Lou was given. Add it to the price: does it make exactly 100 cents?"
+    }
+  }
+  hint "Add the price and the change Lou was given. Is it 100 cents?"
+  hint "Count up from {c} to 100 to find the right change."
+}

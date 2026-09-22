@@ -1,0 +1,27 @@
+# From memory, with no arrows to read: which way the pencil goes first. Ladder and bridge letters
+# start straight down, curly letters start round to the left, zigzag letters start on a slant.
+item writing.first-stroke v=1 skills=[writing.letter-formation] {
+  title "Which way first?"
+  difficulty (if k == 8 or k == 9 or k >= 11 then 1 else 0)
+  let k=0..13
+  level easy {
+    let k={0, 1, 2, 3, 4, 5, 6, 7}  # straight down, and c and a
+  }
+  level hard {
+    let k={8, 9, 10, 11, 12, 13}  # d, g, the round ones and the zigzags
+  }
+  let ch={if k == 0 then "l" else if k == 1 then "t" else if k == 2 then "h" else if k == 3 then "n" else if k == 4 then "r" else if k == 5 then "p" else if k == 6 then "c" else if k == 7 then "a" else if k == 8 then "d" else if k == 9 then "o" else if k == 10 then "g" else if k == 11 then "v" else if k == 12 then "w" else "x"}
+  let way={if k == 0 then "straight down" else if k == 1 then "straight down" else if k == 2 then "straight down" else if k == 3 then "straight down" else if k == 4 then "straight down" else if k == 5 then "straight down" else if k == 6 then "round to the left" else if k == 7 then "round to the left" else if k == 8 then "round to the left" else if k == 9 then "round to the left" else if k == 10 then "round to the left" else if k == 11 then "down on a slant" else if k == 12 then "down on a slant" else "down on a slant"}
+
+  scene 26x17 {
+    lettercards card letters=["{ch}"] at=canvas(1, 1)
+    column q right-of=card gap=2 space=1 align=start {
+      text ask "When you write {ch}, which way does your pencil go first?" narrate width=18
+      choice pick options=["straight down", "round to the left", "down on a slant"] stack=column
+    }
+  }
+
+  answer pick=way
+  hint "Start at the top and write the letter slowly in the air."
+  hint "What did your pencil do in the very first move?"
+}

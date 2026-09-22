@@ -1,0 +1,38 @@
+# Time from distance at a walking pace: a kilometre every fifteen minutes, so a distance in
+# kilometres is a count of quarter hours. Whole hours are the plain half; half and three quarters
+# take a step.
+item nature.walk-minutes v=1 skills=[nature.maps, time.elapsed, multiplication.tables] {
+  title "How long is the walk?"
+  difficulty (d + (if d % 4 == 0 then 0 else 2))
+  let d=2..12
+  level easy {
+    let d={4, 8}
+  }
+  level hard {
+    let d={7, 9, 10, 11}
+  }
+
+  scene 34x19 {
+    roaddistances road stops=["hide", "tower"] legs=[d] unit=km at=canvas(1, 1)
+    text ask "Ada walks one kilometre every 15 minutes. The road from the hide to the tower is {d} km. How many minutes does the walk take?" narrate width=32 below=road gap=1
+    row a below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "minutes"
+    }
+  }
+
+  answer (15 * d)
+  feedback {
+    when (answer == d) point=road {
+      say "That is the kilometres. Each one takes 15 minutes."
+    }
+    when (answer == d + 15) point=road {
+      say "15 minutes for each kilometre: count in 15s, {d} times."
+    }
+    when (answer == 60 * d) point=road {
+      say "A kilometre takes a quarter of an hour, not an hour. Four kilometres is one hour."
+    }
+  }
+  hint "One kilometre is 15 minutes. Two kilometres is 30. Keep counting in 15s."
+  hint "Four kilometres make an hour. How many hours and how many quarters is {d} km?"
+}

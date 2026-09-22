@@ -1,0 +1,24 @@
+# The story: the painter's hut, where a block is cut once and printed again and again, and how many
+# arches are printed altogether.
+item art.hut-rain v=1 skills=[art.printing, multiplication.groups] {
+  title "Printing the bridge"
+  difficulty prints
+  let prints=3..6 arches=3..4
+  let total={pick((prints - 3) * 2 + (arches - 3), 9, 12, 12, 16, 15, 20, 18, 24)}
+  level easy {
+    let prints=3..3
+  }
+  level hard {
+    let prints=6..6
+  }
+
+  scene 21x16 {
+    bridge print arches=arches rain=1 weight="both" far=1 at=canvas(1, 0)
+    text ask "Mia cuts one block at the painter's hut and prints it {prints} times. How many arches has she printed altogether?" narrate width=20 below=print gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=total
+  hint "Count the arches in one print first."
+  hint "Then count that many for each print she made."
+}

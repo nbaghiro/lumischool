@@ -1,0 +1,34 @@
+# One sentence of each kind with its end mark missing, in an order that changes: the audit's raise
+# for which-mark, so three marks have to be chosen and no mark can be guessed by elimination alone.
+item writing.three-marks v=1 skills=[writing.punctuation] {
+  title "A mark for each sentence"
+  let t=0..2 q=0..2
+  let tell={if t == 0 then "The owl is on a branch" else if t == 1 then "Our bus is red" else "Gran likes tea"}
+  let ask={if t == 0 then "Is the owl awake" else if t == 1 then "Where is the bus stop" else "Can I have a cup too"}
+  let shout={if t == 0 then "Look out, it can see you" else if t == 1 then "Run, the bus is here" else "Help, it is too hot"}
+  let s1={if q == 0 then tell else if q == 1 then ask else shout}
+  let s2={if q == 0 then ask else if q == 1 then shout else tell}
+  let s3={if q == 0 then shout else if q == 1 then tell else ask}
+
+  scene 32x15 {
+    text ask0 "Choose the mark for the end of each sentence." narrate width=30 at=canvas(1, 1)
+    column rows below=ask0 gap=1 space=1 align=start {
+      row r1 space=1 align=centre {
+        text t1 "{s1}" width=18
+        choice m1 options=[".", "?", "!"]
+      }
+      row r2 space=1 align=centre {
+        text t2 "{s2}" width=18
+        choice m2 options=[".", "?", "!"]
+      }
+      row r3 space=1 align=centre {
+        text t3 "{s3}" width=18
+        choice m3 options=[".", "?", "!"]
+      }
+    }
+  }
+
+  answer m1=(if q == 0 then "." else if q == 1 then "?" else "!") m2=(if q == 0 then "?" else if q == 1 then "!" else ".") m3=(if q == 0 then "!" else if q == 1 then "." else "?")
+  hint "Read each sentence aloud. Does it tell, ask, or shout?"
+  hint "A sentence that asks often starts with a word like is, can or where."
+}

@@ -1,0 +1,26 @@
+# The story: the salt flats, where the water dries and leaves what was in it behind, and how many
+# colours in all came out of two pens tested together.
+item chemistry.saltflats-ink v=1 skills=[chemistry.separating, addition.to-twenty] {
+  title "Two pens at the salt flats"
+  difficulty total
+  let v=0..3
+  let i1={pick(v, "brown", "green", "black1", "black3")}
+  let i2={pick(v, "green", "black2", "black2", "black1")}
+  let total={pick(v, 4, 4, 5, 6)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 35x16 {
+    chromatography pair inks=["{i1}", "{i2}"] labels=["A", "B"] run=1 beaker=1 ruler=0 at=canvas(1, 0)
+    text ask "Sam tests two of the pens from the hut at the salt flats. Counting both strips, how many bands of colour came out altogether?" narrate width=24 right-of=pair gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=total
+  hint "Count the bands on one strip, then on the other."
+  hint "Add the two counts together."
+}

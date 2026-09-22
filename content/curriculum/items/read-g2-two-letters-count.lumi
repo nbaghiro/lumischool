@@ -1,0 +1,17 @@
+# Every word that fits, with traps: st, lk, mp and nd are two letters that keep two sounds, so
+# only the pairs that make one sound count.
+item reading.two-letters-count v=1 stars=3 skills=[reading.digraphs, reasoning.all-the-ways] {
+  title "Two letters, one sound"
+  let k=0..3
+
+  scene 32x15 {
+    text ask "How many of these words have two letters that make one sound?" narrate width=30 at=canvas(1, 1)
+    wordcards top words=[if k == 0 then "chat" else if k == 1 then "shop" else if k == 2 then "thin" else "best", if k == 0 then "milk" else if k == 1 then "last" else if k == 2 then "sang" else "chin", if k == 0 then "fish" else if k == 1 then "much" else if k == 2 then "bent" else "hand"] picked=-1 below=ask gap=1
+    wordcards bottom words=[if k == 0 then "stop" else if k == 1 then "jump" else if k == 2 then "rock" else "duck", if k == 0 then "moth" else if k == 1 then "neck" else if k == 2 then "wish" else "belt", if k == 0 then "ring" else if k == 1 then "desk" else if k == 2 then "soft" else "path"] picked=-1 below=top gap=1
+    number-input answer right-of=bottom gap=2
+  }
+
+  answer (if k == 0 then 4 else if k == 1 then 3 else if k == 2 then 4 else 3)
+  hint "Say each word slowly. Where do two letters join into one sound?"
+  hint "Is st one sound or two? Say stop and listen to the start."
+}

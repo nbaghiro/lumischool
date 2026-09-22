@@ -1,0 +1,39 @@
+# The story: Ben's song at the bandstand as a chord chart of two lines, and the changes counted. A
+# change is a bar whose chord differs from the bar before, including the first bar of line 2.
+item music.bandstand-chord-changes v=1 skills=[music.chord-changes] {
+  title "Changes in Ben's song"
+  difficulty (if right >= 5 then 1 else 0)
+  let v=0..5
+  let right={pick(v, 3, 5, 2, 2, 5, 6)}
+  let across={pick(v, 1, 1, 0, 1, 1, 1)}
+  level easy {
+    let v={0, 2, 3}
+  }
+  level hard {
+    let v={1, 4, 5}
+  }
+
+  scene 36x19 {
+    row top space=2 align=start at=canvas(1, 1) {
+      bandstand stand posts=5 notes=3
+      text ask "Ben plays this song at the bandstand, one chord to a bar, line 1 and then line 2. How many times does he change chord?" narrate width=22
+    }
+    table chart cols=5 head=["", "Bar 1", "Bar 2", "Bar 3", "Bar 4"] cells=["Line 1", pick(v, "C", "C", "G", "C", "G", "C"), pick(v, "C", "G", "G", "C", "D", "G"), pick(v, "G", "C", "G", "C", "G", "D"), pick(v, "G", "G", "D", "C", "D", "C"), "Line 2", pick(v, "D", "D", "D", "G", "C", "G"), pick(v, "D", "D", "D", "G", "C", "D"), pick(v, "C", "G", "G", "C", "G", "C"), pick(v, "C", "G", "G", "C", "G", "C")] below=top gap=1
+    number-input answer right-of=chart gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1 and across == 1) point=chart {
+      say "The last bar of line 1 and the first bar of line 2 come one after the other. Is that a change too?"
+    }
+    when (answer == 8) point=chart {
+      say "That counts the bars. A change is only where the chord is different from the bar before."
+    }
+    when (answer == 7 and right != 7) point=chart {
+      say "A bar with the same chord as the bar before is not a change. Count only where it is different."
+    }
+  }
+  hint "Read the bars in order, all the way through both lines. Put a mark where the chord is different from the bar before."
+  hint "Remember the step from bar 4 of line 1 to bar 1 of line 2."
+}

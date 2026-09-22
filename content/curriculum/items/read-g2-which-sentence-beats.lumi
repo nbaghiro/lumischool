@@ -1,0 +1,16 @@
+# The long words of the lesson in a three-sentence story, and a question that asks for the
+# sentence rather than the word. Two versions need a small inference: why the dog hid, how the
+# elephant keeps cool.
+item reading.which-sentence-beats v=2 skills=[reading.comprehension, reading.evidence] {
+  title "Which sentence tells you?"
+  let k=0..5
+
+  scene 28x17 {
+    text ask "Read the story. Which sentence tells you {if k == 0 then \"that the caterpillar was hungry\" else if k == 1 then \"that rain might be coming\" else if k == 2 then \"that Leo shared his food\" else if k == 3 then \"why the dog hid\" else if k == 4 then \"that the plant grew big\" else \"how the elephant keeps cool\"}?" narrate width=26 at=canvas(1, 1)
+    choice pick options=[if k == 0 then "Mo saw a caterpillar on a leaf." else if k == 1 then "Nadia has a yellow umbrella." else if k == 2 then "Leo made a sandwich with tomato." else if k == 3 then "A helicopter flew over the park." else if k == 4 then "Gran planted a sunflower seed." else "The elephant at the zoo is old.", if k == 0 then "It ate and ate for a week." else if k == 1 then "Today the sky was dark and grey." else if k == 2 then "He cut it into four triangles." else if k == 3 then "It was very loud." else if k == 4 then "She watered it every morning." else "She likes to spray water on her back.", if k == 0 then "Then it made a hard case and slept." else if k == 1 then "She walked to school with her friend." else if k == 2 then "Then he gave one to his sister." else if k == 3 then "Our dog hid under the bench." else if k == 4 then "By August it was taller than the gate." else "Children clap when she does it."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It ate and ate for a week." else if k == 1 then "Today the sky was dark and grey." else if k == 2 then "Then he gave one to his sister." else if k == 3 then "It was very loud." else if k == 4 then "By August it was taller than the gate." else "She likes to spray water on her back.")
+  hint "Read all three sentences before you choose."
+  hint "Which sentence would you point at if someone said: show me where it says so?"
+}

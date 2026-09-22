@@ -1,0 +1,17 @@
+# A new floor placed between two known ones in roughness: the answer has to be bigger than one
+# reading and smaller than the other, and only one option is.
+item physics.friction-predict v=1 skills=[physics.friction, reasoning.constraint] stars=3 {
+  title "A new floor"
+  difficulty f
+  let f=0..1
+
+  scene 32x12 {
+    table data cols=2 head=["Floor", "Newtons"] cells=["ice", 1, "wood", 3, "sandpaper", 9] at=canvas(1, 0)
+    text ask "{if f == 0 then \"Lino is rougher than ice but smoother than wood.\" else \"A doormat is rougher than wood but smoother than sandpaper.\"} Which could the meter read on it?" narrate width=15 right-of=data gap=2
+    choice pick options=["{if f == 0 then 1 else 2}", "{if f == 0 then 2 else 5}", "{if f == 0 then 4 else 10}"] below=ask gap=1
+  }
+
+  answer pick=(if f == 0 then 2 else 5)
+  hint "Which two floors is it between?"
+  hint "So its reading must be more than one of them and less than the other."
+}

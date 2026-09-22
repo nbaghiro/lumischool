@@ -1,0 +1,26 @@
+# Reading the thermometer outside: on a numbered mark at the easier versions and on a half mark at
+# the harder ones. The scale runs from twenty below, so the child counts up from a line that is not the
+# bottom of the tube.
+item nature.weather-read-temp v=1 skills=[nature.weather, measuring.scales] {
+  title "How warm is it?"
+  difficulty half
+  let n=0..7
+  let v={pick(n, 20, 10, 30, 40, 5, 15, 25, 35)}
+  let half={pick(n, 0, 0, 0, 0, 1, 1, 1, 1)}
+  level easy {
+    let n=0..3
+  }
+  level hard {
+    let n=4..7
+  }
+
+  scene 32x14 {
+    thermometer glass from=-20 to=40 step=10 value=v unit="°C" at=canvas(1, 0)
+    text ask "The thermometer hangs outside in the shade. What does it read?" narrate width=20 right-of=glass gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=v
+  hint "Find the top of the red line."
+  hint "The numbers go up in tens, and the short mark between two of them is five more."
+}

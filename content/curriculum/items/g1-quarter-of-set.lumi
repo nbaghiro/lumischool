@@ -1,0 +1,30 @@
+# A quarter of a set: four equal groups, and the answer is one of them.
+item fraction.quarter-of-set v=1 skills=[fractions.quarter-of-number] {
+  title "A quarter each"
+  difficulty n
+  let n={4, 8, 12}
+  level easy {
+    let n={4, 8}
+  }
+  level hard {
+    let n={8, 12}
+  }
+
+  scene 30x12 {
+    props row count=n prop=apple at=canvas(1, 1)
+    text ask "Four children share these apples equally. Each gets a quarter. How many is a quarter?" narrate width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n / 4)
+  feedback {
+    when (answer == n / 2) point=row {
+      say "That is half of them. A quarter is one of four equal groups."
+    }
+    when (answer == 4) point=row {
+      say "4 is how many children there are. How many apples does one child get?"
+    }
+  }
+  hint "Can you put the apples into four equal groups?"
+  hint "How many apples are in one group?"
+}

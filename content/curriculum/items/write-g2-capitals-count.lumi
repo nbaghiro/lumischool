@@ -1,0 +1,30 @@
+# Capitals in a bubble: the first word, every name, and the word I, which children most often
+# leave small.
+item writing.capitals-count v=2 skills=[writing.capitals, writing.speech] {
+  title "Capitals in the bubble"
+  difficulty (if k == 1 then 2 else if k == 3 or k == 4 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 2}  # the first word and one name, or the first word alone
+  }
+  level hard {
+    let k={1, 3, 4}  # two names, I, a name in the middle
+  }
+  let says={if k == 0 then "can ben come too" else if k == 1 then "look, it is ben and sam" else if k == 2 then "is it time for tea" else if k == 3 then "mia and i went to the park" else "we saw ava at the shop"}
+  let who={if k == 0 then "girl" else if k == 1 then "boy" else if k == 2 then "gran" else if k == 3 then "kid" else "girl"}
+
+  scene 30x13 {
+    comic strip who=["{who}"] says=["{says}"] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""] at=canvas(1, 1)
+    text ask "The words in the bubble were written with no capitals. How many words need a capital letter?" narrate width=17 right-of=strip gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 2 then 1 else if k == 1 then 3 else 2)
+  feedback {
+    when (answer == 1 and k != 2) point=strip {
+      say "The first word needs one. Does any other word? Look for names, and for the word I."
+    }
+  }
+  hint "Which word comes first?"
+  hint "Are there any names? Is the word I in the bubble?"
+}

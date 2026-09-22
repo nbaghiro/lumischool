@@ -1,0 +1,29 @@
+item coding.find-the-bug v=2 skills=[coding.debugging] {
+  title "Why will it not close?"
+  difficulty (w + 2 - b)
+  let w=3..5 b=1..2
+  level easy {
+    let w=3..4 b={2}
+  }
+  level hard {
+    let b={1}
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {w}", "up {w}", "left {w - b}", "down {w}"] numbers=true
+      turtle t cols=6 rows=6 col=1 row=6 moves=["right {w}", "up {w}", "left {w - b}", "down {w}"] target=["right {w}", "up {w}", "left {w}", "down {w}"] mark=false
+    }
+    text ask "The square does not close. What number should block 3 have?" width=30 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=t goal=target answer=fix
+  feedback {
+    when (answer == w - b) point=b {
+      say "That is the number the block has now, and it leaves the gap."
+    }
+  }
+  hint "The way back has to be as long as the way out."
+  hint "Which block goes the opposite way to block 1?"
+}

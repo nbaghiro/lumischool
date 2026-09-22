@@ -1,0 +1,20 @@
+# One way gets the named part out on its own and the others do not, which the checker works out from
+# what each part does: magnetic, dissolved, too big for the holes, or sitting in the water.
+item chem.sep-get v=1 skills=[chemistry.separating] {
+  title "Get it out on its own"
+  let v=0..6
+
+  scene 27x20 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      mixture m things=["{if v == 0 then \"iron\" else if v == 1 then \"sand\" else if v == 2 then \"pebbles\" else if v == 3 then \"pebbles\" else if v == 4 then \"clips\" else if v == 5 then \"sand\" else \"iron\"}", "{if v == 0 then \"sand\" else if v == 1 then \"salt\" else if v == 2 then \"flour\" else if v == 3 then \"sand\" else if v == 4 then \"rice\" else if v == 5 then \"sugar\" else \"sand\"}"] water=(if v == 0 then 0 else if v == 1 then 1 else if v == 2 then 0 else if v == 3 then 0 else if v == 4 then 0 else if v == 5 then 1 else 1) names=1
+      column side space=1 align=start {
+        text ask "How would you get the {if v == 0 then \"iron filings\" else if v == 1 then \"sand\" else if v == 2 then \"pebbles\" else if v == 3 then \"pebbles\" else if v == 4 then \"paper clips\" else if v == 5 then \"sand\" else \"iron filings\"} out on its own?" width=16
+        choice pick options=["use a magnet", "filter it", "evaporate the water", "sieve it"] stack=column
+      }
+    }
+  }
+
+  check chem.separate of=m pick="get({if v == 0 then \"iron\" else if v == 1 then \"sand\" else if v == 2 then \"pebbles\" else if v == 3 then \"pebbles\" else if v == 4 then \"clips\" else if v == 5 then \"sand\" else \"iron\"})"
+  hint "What is the {if v == 0 then \"iron filings\" else if v == 1 then \"sand\" else if v == 2 then \"pebbles\" else if v == 3 then \"pebbles\" else if v == 4 then \"paper clips\" else if v == 5 then \"sand\" else \"iron filings\"} like? Is it magnetic, does it dissolve, is it big?"
+  hint "Which way would take out the {if v == 0 then \"iron filings\" else if v == 1 then \"sand\" else if v == 2 then \"pebbles\" else if v == 3 then \"pebbles\" else if v == 4 then \"paper clips\" else if v == 5 then \"sand\" else \"iron filings\"} and leave everything else behind?"
+}

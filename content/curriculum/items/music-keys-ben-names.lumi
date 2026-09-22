@@ -1,0 +1,25 @@
+# The letters stop at G and start again at A. A child who carries on the alphabet past G has the
+# habit this corrects, and has to say what the key really is.
+item music.ben-names-keys v=1 stars=2 skills=[music.keys, reasoning.find-the-error] {
+  title "Ben's key names"
+  difficulty i
+  let i=0..2
+  let x={if i == 0 then "D" else if i == 1 then "E" else "F"}
+  let said={if i == 0 then "D, E, F, G, H" else if i == 1 then "E, F, G, H, I" else "F, G, H, I, J"}
+
+  scene 30x16 {
+    face ben mood=happy hair=0 name="Ben" at=canvas(1, 1)
+    bubble b "{said}" width=11 from=ben right-of=ben gap=1
+    text ask "Ben starts on {x} and names five white keys going up. What should the last key really be called?" width=19 below=b gap=1
+    choice pick options=["A", "B", "C", "H"] below=ask gap=1
+  }
+
+  answer pick=(if i == 0 then "A" else if i == 1 then "B" else "C")
+  feedback {
+    when (pick == "H") point=b {
+      say "There is no H on a keyboard. After G the letters start again."
+    }
+  }
+  hint "Which of Ben's letters are not music letters at all?"
+  hint "After G the letters start again from the beginning. Say the five keys from {x} yourself."
+}

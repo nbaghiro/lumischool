@@ -1,0 +1,31 @@
+# Rate of evaporation and temperature, as numbers: the puddle in the sun loses more each hour, and
+# the question is the difference in how long each takes.
+item chem.puddle-hours v=1 skills=[chemistry.evaporating, chemistry.data] {
+  title "How much longer in the shade?"
+  difficulty (w / 10 - w / a)
+  let a={20, 25, 50} w={100, 200}
+  level easy {
+    let w={100}
+  }
+  level hard {
+    let w={200}
+  }
+
+  scene 26x17 {
+    text ask "Two glasses each held {w} ml of water. The one in the sun lost {a} ml an hour and the one in the shade lost 10 ml an hour. How many hours longer did the one in the shade take to dry?" width=24 at=canvas(1, 0)
+    row two below=ask gap=0 space=2 align=end {
+      mixture sunny things=["", ""] water=1 names=0
+      mixture shady things=["", ""] water=1 names=0
+    }
+    number-input answer right-of=two gap=1
+  }
+
+  answer (w / 10 - w / a)
+  feedback {
+    when (answer == w / 10) point=two {
+      say "That is how long the one in the shade took. How long did the sunny one take?"
+    }
+  }
+  hint "How many hours did the glass in the sun take to lose all {w} ml?"
+  hint "How many hours did the one in the shade take? How many more is that?"
+}

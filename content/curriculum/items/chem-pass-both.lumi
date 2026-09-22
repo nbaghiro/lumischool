@@ -1,0 +1,34 @@
+# Counting the materials that pass two tests at once, from the same table.
+item chem.pass-both v=1 skills=[chemistry.materials, data.tables] {
+  title "How many pass both?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let tests={pick(k, "hard and conducts electricity", "hard and does not conduct electricity", "conducts electricity and is not magnetic", "is not see-through and does not conduct electricity")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x21 {
+    table data cols=5 head=["Material", "Hard", "Clear", "Conducts", "Magnet"] cells=["wood", "yes", "no", "no", "no", "glass", "yes", "yes", "no", "no", "steel", "yes", "no", "yes", "yes", "copper", "yes", "no", "yes", "no", "rubber", "no", "no", "no", "no"] at=canvas(1, 0)
+    text ask "How many of the five materials pass both parts: {tests}?" narrate width=32 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 1 else 2)
+  feedback {
+    when (k == 0 and answer == 4) point=data {
+      say "Four are hard, but only the ones that also conduct count. Check the conducts column for each hard one."
+    }
+    when (k == 2 and answer == 2) point=data {
+      say "Two conduct, but one of them is magnetic. Only the other passes both parts."
+    }
+    when (k == 3 and answer == 4) point=data {
+      say "Four are not see-through, but two of those conduct. Count only the ones that say no in both columns."
+    }
+  }
+  hint "Go down the rows. Tick a material only when it fits the first part and the second part."
+  hint "{if k == 0 then \"Hard yes and conducts yes.\" else if k == 1 then \"Hard yes and conducts no.\" else if k == 2 then \"Conducts yes and magnet no.\" else \"Clear no and conducts no.\"}"
+}

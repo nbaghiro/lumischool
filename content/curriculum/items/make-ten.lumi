@@ -1,0 +1,20 @@
+item bonds.make-ten v=1 skills=[bonds-to-10] {
+  title "Make ten"
+  difficulty (10 - n)
+  let n=1..9
+  level easy {
+    let n=6..9  # one to four empty squares, and never n = 5, where counting the counters is also right
+  }
+
+  scene 26x7 {
+    tenframe frame count=n color=berry at=canvas(1, 1)
+    equation eq "{n} + {?more} = 10" right-of=frame gap=1
+  }
+
+  answer more=(10 - n)
+  feedback {
+    when (more == n) point=frame {
+      say "That is how many are in the frame. Count the empty squares."
+    }
+  }
+}

@@ -1,0 +1,24 @@
+item physics.parachute-slower v=1 skills=[physics.forces] {
+  title "Which falls more slowly?"
+  difficulty (7 - abs(x - y))
+  let x=2..7 y=2..7 w={4, 6}
+  where (x != y)
+  level easy {
+    where (abs(x - y) >= 3)
+  }
+  level hard {
+    where (abs(x - y) == 1)
+  }
+
+  scene 26x19 {
+    row two at=canvas(1, 0) space=1 align=start {
+      parachute a canopy=x weight=w drag=w labels=0 show=0 tag="A"
+      parachute b canopy=y weight=w drag=w labels=0 show=0 tag="B"
+    }
+    text ask "The toys weigh the same. Which one falls more slowly?" width=16 below=two gap=0
+    choice pick options=["A", "B"] right-of=ask gap=1
+  }
+
+  check physics.forces of=a vs=b pick=slower
+  hint "Which canopy catches more air?"
+}

@@ -1,0 +1,33 @@
+# Compare with the bigger amount unknown, one of the wordings 1.OA.A.1 counts as harder: "more
+# than" has to be read as adding, though nothing is added to anyone.
+item add.more-than v=1 skills=[addition.compare] {
+  title "More than Ben"
+  difficulty (a + b)
+  let a=5..12 b=2..7
+  where (a + b <= 20)
+  where (a != b)
+  level easy {
+    let a=5..7 b=2..3
+  }
+  level hard {
+    let a=9..12 b=5..7
+  }
+
+  scene 30x12 {
+    children kids count=2 names=["Ben", "Ada"] holding="" each=0 at=canvas(1, 1)
+    text ask "Ben has {a} shells. Ada has {b} more shells than Ben. How many shells does Ada have?" narrate width=19 right-of=kids gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a - b) point=kids {
+      say "Ada has more than Ben, so her number is bigger than {a}."
+    }
+    when (answer == b) point=kids {
+      say "{b} is how many more she has. Start from Ben's {a}."
+    }
+  }
+  hint "Who has more shells, Ben or Ada?"
+  hint "Start at Ben's number. Which way do you count?"
+}

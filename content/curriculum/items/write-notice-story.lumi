@@ -1,0 +1,29 @@
+# The story: the notice's lines measured, the bold one three times the height of the rest.
+item writing.notice-story v=1 stars=1 skills=[writing.layout, multiplication.groups] {
+  title "How tall is the notice?"
+  difficulty (n + w)
+  let n=3..5 h={2, 3} w=0..1
+  level easy {
+    let n=3..3 h={2} w=0..0
+  }
+  level hard {
+    let n=5..5 h={3} w=1..1
+  }
+
+  scene 34x10 {
+    text ask "Ada's notice has a bold first line and {n} lines under it. Each small line is {h} centimetres tall and the bold line is three times as tall. {if w == 0 then \"How tall is the bold line?\" else \"How tall is the whole notice, all its lines together?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 3 * h else 3 * h + n * h)
+  feedback {
+    when (w == 0 and answer == h + 3) point=ask {
+      say "Three times as tall means {h} three times over, not {h} and three more."
+    }
+    when (w == 1 and answer == 3 * h + h) point=ask {
+      say "There are {n} small lines, not one. Add all of them to the bold line."
+    }
+  }
+  hint "{if w == 0 then \"Three lots of \" else \"The bold line first, three lots of \"}{h}{if w == 0 then \".\" else \". Then the small lines, each \"}{if w == 0 then \"\" else h}{if w == 0 then \"\" else \".\"}"
+  hint "{if w == 0 then \"Three times {h}.\" else \"Three times {h}, plus {n} times {h}.\"}"
+}

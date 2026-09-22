@@ -1,0 +1,22 @@
+# Reading the evidence: which way the shape faces tells how the paper met the block.
+item art.rubbed-or-printed v=1 skills=[art.texture, art.printing, reasoning.evidence] {
+  title "Rubbed or printed?"
+  difficulty (if h == "print" then 1 else 0)
+  let m={"fish", "bird", "shell"} h={"print", "rubbing"}
+  level easy {
+    let h={"rubbing"}
+  }
+  level hard {
+    let h={"print"}
+  }
+
+  scene 34x13 {
+    stamps pic motif=m show="which" colour=blue flip=false made=h at=canvas(1, 1)
+    text ask "Ada made the picture on the right from the block on the left. Did she rub it or print it?" width=15 right-of=pic gap=1
+    choice pick options=["rubbed it", "printed it"] below=pic gap=1
+  }
+
+  answer pick=(if h == "rubbing" then "rubbed it" else "printed it")
+  hint "Which way does the {m} face on the block, and which way in the picture?"
+  hint "A print is the block turned over onto the paper. What does turning over do to the way a shape faces?"
+}

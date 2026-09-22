@@ -1,0 +1,37 @@
+# A line between the two repeats runs only the outer count, so multiplying everything is the
+# mistake this catches: the audit's raise for nested-repeat, with no grid to count off.
+item coding.nested-dance v=1 skills=[coding.repetition] {
+  title "Jumps and claps"
+  difficulty (o * i + o)
+  let o=2..4 i=2..4
+  where (o != i)
+  level easy {
+    where (o * i <= 8)
+  }
+  level hard {
+    where (o * i >= 12)
+  }
+
+  scene 34x11 {
+    blocks b code=["repeat {o}", "  clap 1", "  repeat {i}", "    jump"] at=canvas(1, 0)
+    text ask "How many times does the robot jump, and how many times does it clap?" width=20 right-of=b gap=2
+    row ans below=ask gap=1 space=1 align=centre {
+      text lj "jumps"
+      number-input jumps width=3
+      text lc "claps"
+      number-input claps width=3
+    }
+  }
+
+  check coding.runs of=b jumps="count(jump)" claps=claps
+  feedback {
+    when (jumps == i) point=b {
+      say "That is one time round the outer repeat. The whole of it happens {o} times."
+    }
+    when (claps == o * i) point=b {
+      say "The clap is inside the outer repeat only, not the inner one."
+    }
+  }
+  hint "Which blocks are inside both repeats, and which only inside the first one?"
+  hint "Each time round the outer repeat, how many jumps happen?"
+}

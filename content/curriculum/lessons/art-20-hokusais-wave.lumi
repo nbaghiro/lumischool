@@ -1,0 +1,68 @@
+# Hokusai's wave: one curl printed again and again for the foam, and the water in two blues.
+lesson art-hokusais-wave v=1 format=teach grade=3 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Hokusai's wave"
+  goal "See how a print repeats one line to make foam and water, and make a wave in two blues."
+
+  look {
+    scene 36x5 {
+      row all at=canvas(1, 1) space=2 align=end {
+        printrow crest unit=["shell"] colours=["blue"] count=5 missing=0 wrong=0
+        tintladder ladder colour="blue" toward="white" steps=4 blank=-1 ring=-1 labels=false
+      }
+    }
+    say """
+      Two hundred years ago in Japan, Hokusai cut a great wave into wooden blocks and printed
+      it. The foam at the top is one curl, cut once and printed again and again, so the crest
+      is a row of hooks reaching over. The water is two blues: a deep blue underneath, and a
+      paler blue mixed with white above it. At the painter's hut Ada looks at the print and then
+      makes her own wave with one block and two blues.
+      """
+  }
+  do {
+    level easy {
+      worked art.tint-or-shade c="red" t="white" level=medium
+    }
+    practice art.foam-line count=1 seed=1 easy-seed=1 hard-seed=1
+    practice art.count-curls count=1 seed=1 easy-seed=1 hard-seed=1
+    practice art.deep-blue count=1 seed=1 easy-seed=1 hard-seed=1
+    practice art.lighter-blue count=2 seed=1 easy-seed=1 hard-seed=1
+    practice art.tint-or-shade count=1 seed=2 easy-seed=1 hard-seed=9
+    practice art.next-print count=1 seed=3 easy-seed=1 hard-seed=2
+    level hard {
+      show art.deep-blue w=0 level=medium
+    }
+  }
+  story {
+    show art.block-story c=5 r=3 w=0 easy-c=4 easy-r=2 hard-c=6 hard-w=1
+  }
+  try stars=2 {
+    show art.about-to-break k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show art.paint-a-wave k=0 hard-k=1
+  }
+  remember {
+    say "One curl printed again and again is the foam. Two blues, one mixed with white, are the water."
+  }
+
+  grown-ups """
+    The idea is that a print is made of repeats: Hokusai's foam is one curl cut once and printed
+    along the crest, and his water is two blues, the deep one plain and the pale one a tint.
+    The look is the printed row of curls beside the ladder of blue and white. The way in finds
+    the line that makes the foam among four kinds, and the core counts the printed curls, reads
+    the ladder for the deep blue and the palest tint, chooses the lighter of two mixes, tells a
+    tint from a shade, and names the next print in a row. The wrong idea to watch for is that
+    the pale water is a different paint rather than the same blue with white; mix it together.
+    The story counts the curls Ada prints, the two-star question asks which of two wave lines is
+    about to break and why (the one whose top curls over), and the three-star question is a wave
+    in two blues and white on the sheet, which you respond to: the dark blue under, the pale
+    blue above, the hooks repeated along the top. A potato print of one hook, dipped and printed
+    six times, makes the idea real.
+    """
+  level easy {
+    grown-ups "At this level a pink tint is named once in the teacher's pen, the foam's loopy line comes first in its row, the curls to count are five or six, the ladder is read for the deep blue, the lighter mix is plainly whiter, the pot to name is a tint of green, the next print is in a row of two, the story is four curls on two crests, the breaking wave is the first line, and the wave to paint needs its hooks any way."
+  }
+  level hard {
+    grown-ups "At this level the loopy line hides second or third in the row, the curls to count are eight or nine, the ladder is read for the palest tint with the deep blue asked again in the core, the lighter mix needs the parts compared, the pot to name is a shade of blue, mixed with black, the next print is in a row of three, the story is six curls on three crests printed twice, the breaking wave is the second line, and the wave's hooks must all curl the same way."
+  }
+}

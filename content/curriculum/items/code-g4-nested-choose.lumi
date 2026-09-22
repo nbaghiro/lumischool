@@ -1,0 +1,31 @@
+# The unknown moves from the answer to the program: the child chooses the inner count.
+item coding.nested-choose v=1 skills=[coding.repetition] {
+  title "Choose the inner number"
+  difficulty (o * i)
+  let o=2..4 i=2..5
+  where (o * i - o != i)  # 2 and 2 would hide the adding mistake
+  level easy {
+    where (o * i <= 8)
+  }
+  level hard {
+    where (o * i >= 12)
+  }
+
+  scene 35x11 {
+    program p code=["repeat {o}", "  repeat {i}", "    forward 1"] blank=2 at=canvas(1, 0)
+    text ask "Line 2 is a repeat with its number missing. The robot must move {o * i} squares in all. What number goes in line 2?" width=16 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer i
+  feedback {
+    when (answer == o * i - o) point=p {
+      say "The inner repeat is inside the outer one, so its number is used {o} times, not added once."
+    }
+    when (answer == o * i) point=p {
+      say "That is the whole distance. The outer repeat does the inner one {o} times."
+    }
+  }
+  hint "How many times does the outer repeat go round?"
+  hint "{o} times some number makes {o * i}. What is the number?"
+}

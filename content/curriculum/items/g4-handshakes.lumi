@@ -1,0 +1,24 @@
+# A count with no method on the page: each new child shakes one hand fewer than the one before.
+item puzzle.handshakes v=1 stars=3 skills=[reasoning.all-the-ways, reasoning.systematic] {
+  title "Everybody shakes hands"
+  difficulty n
+  let n=4..8
+
+  scene 30x12 {
+    heads group count=n mark=0 at=canvas(1, 0)
+    text ask "{n} friends meet. Each of them shakes hands once with every other friend. How many handshakes are there?" narrate width=29 below=group gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * (n - 1) / 2)
+  feedback {
+    when (answer == n * (n - 1)) point=group {
+      say "When Ana shakes Ben's hand, Ben shakes Ana's too. That is one handshake, not two."
+    }
+    when (answer == n * n) point=group {
+      say "Nobody shakes their own hand."
+    }
+  }
+  hint "How many hands does the first friend shake?"
+  hint "The next friend has already shaken hands with the first. How many new handshakes does he make?"
+}

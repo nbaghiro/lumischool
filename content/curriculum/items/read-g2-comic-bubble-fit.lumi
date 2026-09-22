@@ -1,0 +1,17 @@
+# All three lines are about the same thing, so only the story so far and the face in the last
+# panel decide which one belongs there: the audit's raise for comic-bubble.
+item reading.comic-bubble-fit v=1 stars=2 skills=[reading.comics, reading.inference] {
+  title "Which words fit?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+
+  scene 36x19 {
+    comic strip who=[if k == 0 then "girl" else if k == 1 then "boy" else "kid", if k == 0 then "girl" else if k == 1 then "boy" else "gran", if k == 0 then "girl" else if k == 1 then "boy" else "kid"] says=[if k == 0 then "My kite is up." else if k == 1 then "I made a sandcastle." else "Can we have a puppy?", if k == 0 then "The wind is too strong." else if k == 1 then "Here comes a big wave." else "We will see.", if k == 0 then "" else if k == 1 then "" else ""] moods=[if k == 0 then "happy" else if k == 1 then "happy" else "happy", if k == 0 then "worried" else if k == 1 then "worried" else "worried", if k == 0 then "sad" else if k == 1 then "sad" else "excited"] with=[if k == 0 then "" else if k == 1 then "" else "gran", if k == 0 then "" else if k == 1 then "" else "kid", if k == 0 then "" else if k == 1 then "" else "dog"] thinks=[if k == 0 then 0 else if k == 1 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else 0] holds=[if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else "", if k == 0 then "" else if k == 1 then "" else ""] labels=["1", "2", "3"] at=canvas(1, 0)
+    text ask "What goes in the empty bubble?" narrate below=strip gap=1
+    choice pick options=[if k == 0 then "Up it goes." else if k == 1 then "It is so tall." else "Thank you.", if k == 0 then "It is stuck." else if k == 1 then "Look at it." else "Can we?", if k == 0 then "It is so high." else if k == 1 then "It is gone." else "No puppy."] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It is stuck." else if k == 1 then "It is gone." else "Thank you.")
+  hint "What happened in picture 2? What might happen next?"
+  hint "Look at the face in picture 3. Which words would someone with that face say?"
+}

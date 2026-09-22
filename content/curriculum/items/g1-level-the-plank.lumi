@@ -1,0 +1,27 @@
+# Bonds on a see-saw, answered by standing weights on the plank. The load and the one step a weight
+# may stand on are the same distance from the pivot, so the plank balances when the weights on the
+# right come to the load. Props hold it level until Check, so the tilt cannot answer it.
+item bonds.level-the-plank v=1 skills=[bonds-to-10] {
+  title "Make the plank balance"
+  difficulty (n + a)
+  let n=7..10 a=2..4
+  where (n - a != 5)  # a 5 kilogram weight would then make a second pair, and luck a surer answer
+
+  scene 28x31 {
+    text ask "The weight on the left is {n} kilograms. Stand weights on step 3 on the right so the plank balances." narrate width=26 at=canvas(1, 0)
+    balance-plank plank steps=3 load=n load-at=-3 bags=[a, 1, n - a, 5] open=[3] most=2 below=ask gap=1
+  }
+
+  answer plank=(turning == 0) {
+    say "Weights that come to {n} kilograms, standing on step 3 on the right."
+  }
+  feedback {
+    when (rightkg > n) point=plank.right {
+      say "The right side is heavier now. Take a weight off, or swap it for a lighter one."
+    }
+    when (rightkg < n) point=plank.left {
+      say "The weight on the left is still heavier. The weights on the right need to come to {n} kilograms."
+    }
+  }
+  hint "Which two weights make {n}?"
+}

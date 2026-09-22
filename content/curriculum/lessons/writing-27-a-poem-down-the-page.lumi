@@ -1,0 +1,59 @@
+lesson writing-a-poem-down-the-page v=1 format=teach grade=3 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A poem down the page"
+  goal "Write a poem whose lines start with the letters of a word."
+
+  look {
+    scene 33x14 {
+      row all at=canvas(1, 1) space=2 align=centre {
+        acrostic poem word="MOON" written=["Mice look up", "Over the hill", "Owls call out", "Night is here"] width=24
+        moon m phase=1
+      }
+    }
+    say """
+      This poem is written down the page. Read the first letters going down and they spell MOON.
+      Each line starts with the next letter, and each line is about the moon or the night. The
+      lines do not have to rhyme.
+      """
+  }
+  do {
+    level easy {
+      worked writing.acrostic-word s=1 level=medium
+    }
+    practice writing.acrostic-word count=1 seed=1
+    show writing.acrostic-line k=1
+    show writing.acrostic-follows s=2 g=0 p=2 hard-g=1
+    show writing.acrostic-follows s=3 g=1 p=0 easy-g=0
+    show writing.acrostic-off-topic s=1 o=2 easy-o=0
+    show writing.acrostic-off-topic s=0 o=1 easy-o=3
+    practice writing.acrostic-sentence-end count=1 seed=2 hard-seed=4
+    level hard {
+      practice writing.acrostic-rule count=1 seed=7
+    }
+    show writing.write-an-acrostic k=1
+  }
+  try stars=2 {
+    show writing.acrostic-rule s=1 f=0 hard-f=1
+  }
+  try stars=3 {
+    show writing.acrostic-sentences w="LIGHT"
+  }
+  remember {
+    say "Each line starts with the next letter of the word."
+  }
+
+  grown-ups """
+    The questions are marked by the machine; the two poems are the child's. The letters make a
+    poem possible before a child knows much about poems, which is the point. Read it aloud once
+    it is done, slowly, one line at a time. From the third question on, every choice starts with
+    the right letter, so the letter no longer gives the answer: the line has to be about the word.
+    In the two-star question the third choice, that the poem does not rhyme, is not a rule at all.
+    The three-star poem is harder than it looks: the sentences carry on across the lines, so the
+    full stops go where a sentence ends, not at the end of every line.
+    """
+  level easy {
+    grown-ups "At this level canal is read down once in the teacher's pen before the word to read, the lines to fill are told apart by their first letter, the lines off the topic are the first or the last, the sentence end and the poem to write are as written, the two-star's broken rule is a line starting wrong, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the word to read is as written, the lines to fill both start with the right letter, so the topic decides, the lines off the topic are as written, the sentence end is after line 2, a second broken rule is found in the core, the two-star's broken rule is a line off the topic, and the three-star is as written."
+  }
+}

@@ -1,0 +1,50 @@
+lesson coding-one-step-at-a-time v=2 format=teach grade=1 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "One step at a time"
+  goal "Stop partway through a program and say where the robot has got to."
+
+  look {
+    scene 29x12 {
+      row all at=canvas(1, 0) space=1 align=start {
+        blocks b code=["right 2", "right 3"] numbers=true run=1 words=false
+        maze m cols=8 rows=2 row=2 code=["right 2", "right 3"] upto=1
+      }
+      note n "After block 1 the robot has gone 2 squares, not 5." width=22 below=all gap=1
+    }
+    say """
+      Each block moves the robot a little further. If you stop after the first block, only the
+      first block has happened. The ringed block is the one that has just run. On the screen, press
+      Step to run one block at a time.
+      """
+  }
+  do {
+    practice coding.line-total count=1 seed=3
+    practice coding.after-line-two count=2 seed=5
+    practice coding.which-block-ran count=2 seed=4
+    show coding.stage-after s=1 a=2 b=2 f=2 easy-a=1 easy-b=1 hard-s=2 hard-a=3 hard-b=3 hard-f=4
+    show coding.stage-after s=2 a=1 b=3 f=4 easy-s=1 easy-a=2 easy-b=1 easy-f=2 hard-a=3 hard-b=2
+    practice coding.one-gem-most count=1 seed=2
+  }
+  try stars=2 {
+    show coding.furthest-right a=3 b=2 c=3 d=2 easy-a=2 easy-b=1 easy-c=2 easy-d=1 hard-a=5 hard-b=4 hard-c=3 hard-d=3
+  }
+  try stars=3 {
+    show coding.staircase-far n=9 easy-n=7 hard-n=12
+  }
+  remember {
+    say "After block 1, only block 1 has happened."
+  }
+
+  grown-ups """
+    Ask the child to put a finger on the block they are doing and move it down as they go. Losing
+    track of which block they are on is the commonest mistake here, and a finger fixes it. In the
+    two-star question, writing the square down after every block is the whole method. In the
+    three-star question the turtle goes further than the grid, so the answer has to come from the
+    pattern: every second block goes right.
+    """
+  level easy {
+    grown-ups "At this level the programs are short and the rabbit is asked about at its jump, so a finger moving down the blocks is enough."
+  }
+  level hard {
+    grown-ups "At this level the rabbit goes back and forth four times before the question, and the staircase runs to twelve blocks, so writing down where it is after each block is the method."
+  }
+}

@@ -1,0 +1,26 @@
+# A hidden tens digit with the product given: reasoned from the size of the answer, or by trying.
+item multiply.hidden-tens v=1 stars=2 skills=[multiplication.short, reasoning.missing-digits] {
+  title "The hidden digit"
+  difficulty ((10 * x + o) * b)
+  let x=1..9 o=1..9 b=3..9
+  level easy {
+    let x=1..3 b=3..4
+  }
+  level hard {
+    let x=6..9 b=7..9
+  }
+
+  scene 22x6 {
+    equation eq "{?hx}{o} × {b} = {(10 * x + o) * b}" at=canvas(1, 1)
+    text ask "What is the hidden digit?" narrate below=eq gap=1
+  }
+
+  answer hx=x
+  feedback {
+    when (hx == x + 1 or hx == x - 1) point=eq {
+      say "Close. Multiply your number by {b} and compare it with {(10 * x + o) * b}."
+    }
+  }
+  hint "About how many tens times {b} would make {(10 * x + o) * b}?"
+  hint "Try a digit, multiply, and see if you are too big or too small."
+}

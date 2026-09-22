@@ -1,0 +1,24 @@
+# The picture is the question. The word is never written down, so the child has to say it before
+# they can answer, which is the whole of hearing a first sound.
+item reading.first-sound v=2 skills=[reading.phonics] {
+  title "The first sound"
+  difficulty (if w == "kite" then 2 else if w == "duck" then 1 else 0)
+  let w={"cat", "duck", "hen", "kite", "sun"}
+  level easy {
+    let w={"cat", "hen", "sun"}
+  }
+  level hard {
+    let w={"duck", "kite"}  # kite starts with a k, not the c a child expects
+  }
+
+  scene 19x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      art pic asset="{w}"
+      text ask "Say the word. Write the letter it starts with." width=18
+      word-input box options=["{if w == \"cat\" then \"c\" else if w == \"duck\" then \"d\" else if w == \"hen\" then \"h\" else if w == \"kite\" then \"k\" else \"s\"}"] letters=1
+    }
+  }
+
+  answer box=(if w == "cat" then "c" else if w == "duck" then "d" else if w == "hen" then "h" else if w == "kite" then "k" else "s")
+  hint "Say the word slowly. Stop after the very first sound."
+}

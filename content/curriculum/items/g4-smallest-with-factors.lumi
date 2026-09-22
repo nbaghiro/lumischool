@@ -1,0 +1,25 @@
+# No method is given: guess, count the factors, and try again. The towers show the first six
+# numbers' factor counts, so the child continues a pattern rather than starting cold.
+item factors.smallest-with v=1 stars=3 skills=[number.factors, reasoning.guess-and-check] {
+  title "The smallest with that many factors"
+  difficulty (if k == 6 then 0 else if k == 5 then 1 else 2)
+  let k={5, 6, 8}
+
+  scene 27x24 {
+    sizeorder towers heights=[1, 2, 2, 3, 2, 4] labels=["1", "2", "3", "4", "5", "6"] numbers=true at=canvas(1, 1)
+    text ask "Each tower has one cube for each factor of its number, so 6 has 4. What is the smallest number that has exactly {k} factors?" narrate width=26 below=towers gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 5 then 16 else if k == 6 then 12 else 24)
+  feedback {
+    when (k == 6 and (answer == 18 or answer == 20)) point=ask {
+      say "{answer} has 6 factors, but there is a smaller number that has 6 too."
+    }
+    when (k == 8 and (answer == 30 or answer == 40)) point=ask {
+      say "{answer} has 8 factors, but there is a smaller number that has 8 too."
+    }
+  }
+  hint "Carry the towers on: how many factors do 7, 8, 9 and 10 have?"
+  hint "Keep going in order until one of them has {k}. Write each count down."
+}

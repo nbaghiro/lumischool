@@ -1,0 +1,22 @@
+# The last bubble is empty. Only one of the three lines follows from the first two panels and
+# fits the face in the third, so the child reads the story so far and the picture together.
+item reading.comic-bubble v=1 skills=[reading.inference] {
+  title "What goes in the bubble?"
+  let k=0..1
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic strip who=[if k == 0 then "girl" else "boy", if k == 0 then "dog" else "boy", if k == 0 then "girl" else "boy"] says=[if k == 0 then "Where is my ball?" else "My kite is up!", if k == 0 then "Woof! Woof!" else "The wind is too strong!", ""] moods=[if k == 0 then "worried" else "happy", if k == 0 then "happy" else "worried", if k == 0 then "excited" else "sad"] with=["", "", if k == 0 then "dog" else ""] thinks=[0, 0, 0] holds=["", if k == 0 then "ball" else "", if k == 0 then "ball" else ""] labels=["1", "2", "3"]
+      text ask "What goes in the empty bubble?"
+      choice pick options=[if k == 0 then "You found it!" else "Good night, Dad.", if k == 0 then "Where is my ball?" else "My kite is stuck in a tree!", if k == 0 then "Good night, Dad." else "I love this cake."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "You found it!" else "My kite is stuck in a tree!")
+  feedback {
+    when (pick == "Where is my ball?" and k == 0) point=strip {
+      say "She has already asked that. Look at her face in picture 3, and what the dog has."
+    }
+  }
+  hint "Read the first two bubbles. Then look at the face in picture 3."
+}

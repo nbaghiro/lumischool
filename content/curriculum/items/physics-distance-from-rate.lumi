@@ -1,0 +1,28 @@
+item physics.distance-from-rate v=1 skills=[physics.speed] {
+  title "How far by then?"
+  difficulty (s * k)
+  let s=3..8 k=2..4
+  level easy {
+    let s=3..4 k=2..3
+  }
+  level hard {
+    let s=6..8 k=3..4
+  }
+
+  scene 24x13 {
+    doubleline pace steps=5 topTo=(s * 5) bottomTo=5 topUnit="metres" bottomUnit=seconds mark=k at=canvas(1, 1)
+    text ask "How far has it gone by the mark?" width=16 below=pace gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer (s * k)
+  feedback {
+    when (answer == s + k) point=pace {
+      say "Every second adds {s} metres, so multiply rather than add."
+    }
+    when (answer == s * 5) point=pace {
+      say "That is the whole line. The mark is at {k} seconds."
+    }
+  }
+  hint "What does the top line say at the mark?"
+}

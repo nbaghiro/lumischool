@@ -1,0 +1,16 @@
+# Euler's puzzle for six-year-olds: try each figure with a finger; one of them cannot be done.
+item art.one-line v=1 stars=2 skills=[art.line, reasoning.guess-and-check] {
+  title "Without lifting the pencil"
+  difficulty k
+  let x={"envelope", "window", "cross"} y={"house", "nikolaus", "domino"} z={"square", "bowtie", "star"} k=0..2
+
+  scene 26x18 {
+    oneline figs figures=["{if k == 0 then x else y}", "{if k == 1 then x else if k == 0 then y else z}", "{if k == 2 then x else z}"] at=canvas(1, 1)
+    text ask "Which one can you not draw without lifting your pencil or going over a line twice?" width=24 below=figs gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check art.one-line of=figs pick=cannot
+  hint "Try each one with your finger on the picture. Where did you start?"
+  hint "When you get stuck, count the lines that meet at the corner where you are. Where three lines meet, you have to start or finish there."
+}

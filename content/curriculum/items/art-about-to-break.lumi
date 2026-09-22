@@ -1,0 +1,33 @@
+# The two-star reason: two wave lines, and the one about to break, because its top curls over.
+# The wrong reasons pick the taller line or the one with more water.
+item art.about-to-break v=1 stars=2 skills=[art.line, art.looking, reasoning.explain] {
+  title "Which wave is about to break?"
+  difficulty k
+  let k=0..1 r=0..2
+  let a={pick(k, "loopy", "wavy")}
+  let b={pick(k, "wavy", "loopy")}
+  let right={pick(k, "A: its top curls over, so it is falling", "B: its top curls over, so it is falling")}
+  let w1={pick(k, "B: it is smoother, so it is faster", "A: it is smoother, so it is faster")}
+  let w2={pick(k, "A: it has more water in it", "B: it has more water in it")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x20 {
+    lines two kinds=["{a}", "{b}"] colour=blue at=canvas(1, 1)
+    text ask "Two lines drawn for the top of a wave. Which wave is about to break, and how can you tell?" narrate width=18 right-of=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=two gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "A wave breaks when its top curls over and falls. Look for the line whose crest bends back on itself; a smooth rise and fall is a swell that has not broken yet."
+    }
+  }
+  hint "Look at the tops of the two lines. Which one bends over on itself?"
+  hint "Hokusai drew the breaking wave with hooks curling over: that is the falling foam."
+}

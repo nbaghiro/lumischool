@@ -1,0 +1,35 @@
+# The way in: two ice cubes put out at the same time in two places, drawn after ten minutes,
+# and which is smaller. The sun against the freezer is seen at once; the table against the sun
+# is a smaller gap.
+item chem.smaller-cube v=1 skills=[chemistry.states] {
+  title "Which cube is smaller?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2 s=0..1
+  let pa={pick(k, 0, 1, 0)}
+  let pb={pick(k, 2, 2, 1)}
+  let where={pick(k, "one in the freezer and one in the sun", "one on the table and one in the sun", "one in the freezer and one on the table")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x20 {
+    row two at=canvas(1, 0) space=1 align=end {
+      icemelt a every=10 count=2 place=(if s == 0 then pa else pb)
+      icemelt b every=10 count=2 place=(if s == 0 then pb else pa)
+    }
+    text ask "Mia put two ice cubes out at the same time by the marsh hut, {where}. These are the two after ten minutes, A on the left and B on the right. Which cube is smaller now?" narrate width=32 below=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "B" else "A")
+  feedback {
+    when (pick != (if s == 0 then "B" else "A")) point=two {
+      say "The warmer the place, the faster the ice melts. Look at the second picture of each: which cube has lost more?"
+    }
+  }
+  hint "Look at the second saucer of each pair. Which cube has shrunk more?"
+  hint "Ice melts faster in a warm place. Which of the two places is warmer?"
+}

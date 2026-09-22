@@ -1,0 +1,41 @@
+# The two-star reason: a plant has lost one part, and the child says what it can no longer do,
+# which means knowing each part's job rather than its name. Losing the roots or the flower is
+# plain; losing the leaves or the stem takes the chain "no leaves, so no food" or "no stem, so the
+# leaves lie in the dark".
+item nature.part-lost v=1 stars=2 skills=[nature.plants, reasoning.cause-and-effect] {
+  title "What can it no longer do?"
+  difficulty (if k == 0 or k == 3 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let lost={pick(k, "its roots", "its leaves", "its stem", "its flower")}
+  let right={pick(k, "take in water from the soil", "make its food from the light", "hold its leaves up to the light", "make seeds")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 34x23 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "In a storm, a plant on the marsh bank loses {lost}. The rest is still there. Which of these can it no longer do?" narrate width=22 right-of=fig gap=2
+    choice pick options=["take in water from the soil", "make its food from the light", "hold its leaves up to the light", "make seeds"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "make seeds") point=fig {
+      say "Seeds are the flower's job, and the flower is still there. Think about what the leaves did all day in the light."
+    }
+    when (k == 2 and pick == "take in water from the soil") point=fig {
+      say "The roots are still in the soil, so water still comes in. What held the leaves up where the light is?"
+    }
+    when (k == 0 and pick != "take in water from the soil") point=fig {
+      say "The roots are the part in the soil. Water comes into the plant through them and nowhere else."
+    }
+    when (k == 3 and pick != "make seeds") point=fig {
+      say "The flower is where the seeds are made. Everything else the plant does goes on without it."
+    }
+  }
+  hint "Find the lost part on the drawing. What was its job?"
+  hint "Roots take in water, leaves make food from the light, the stem holds the leaves up, the flower makes seeds. Which job has nobody left to do it?"
+}

@@ -1,0 +1,31 @@
+# A square that stops short: the repeat goes round fewer than four times, so the turtle ends on a
+# corner and the child has to follow the turns to find which.
+item coding.turtle-ends v=1 skills=[coding.drawing, coding.repetition, coding.tracing] {
+  title "Which corner does it stop at?"
+  difficulty (2 * r + n)
+  let r=2..3 n=2..3 t=0..1
+  level easy {
+    let r={2}
+  }
+  level hard {
+    let r={3}
+  }
+
+  scene 31x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["repeat {r}", "  forward {n}", "  turn {if t == 0 then \"left\" else \"right\"}"]
+      turtle tt cols=5 rows=5 col=(if t == 0 then 1 else 5) row=5 face=(if t == 0 then "right" else "left") moves=["repeat {r}", "  forward {n}", "  turn {if t == 0 then \"left\" else \"right\"}"] upto=0
+    }
+    text ask "Where does the turtle stop?" width=13 below=top gap=1
+    row ans right-of=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=tt col=col row=row
+  hint "One time round draws one side and turns. How many sides does it draw?"
+  hint "Put your finger on the turtle and draw each side with it."
+}

@@ -1,0 +1,28 @@
+# A note that fills a whole bar of three: the dotted minim, a minim with a dot that adds half
+# again. At hard the dotted crotchet, one and a half.
+item music.dotted-minim v=1 skills=[music.rhythm, music.note-values] {
+  title "The dot"
+  difficulty (if v == 1.5 then 1 else 0)
+  let v={3, 1.5}
+  level easy {
+    let v={3}
+  }
+  level hard {
+    let v={1.5}
+  }
+
+  scene 34x20 {
+    notes bar clef=treble notes=[G4, A4] values=[v, 3 - v] meter=3 at=canvas(1, 1)
+    text ask "A dot after a note adds half the note again. The first note has a dot. How many beats does it last?" narrate width=32 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == plain(v / 1.5)) point=bar {
+      say "That is the note without its dot. The dot adds half of that again."
+    }
+  }
+  hint "What is the note without the dot worth? Then add half of that."
+  hint "{if v == 3 then \"A minim is two beats; half of two is one more.\" else \"A crotchet is one beat; half of one is a half more.\"}"
+}

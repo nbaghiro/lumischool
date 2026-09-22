@@ -1,0 +1,46 @@
+lesson physics-sounds-come-from-shaking v=1 format=teach grade=1 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "Sounds come from shaking"
+  goal "Say that a sound is made by something shaking, that a harder shake is a louder sound, and that a shorter band makes a higher note."
+
+  look {
+    scene 36x12 {
+      row both at=canvas(1, 0) space=2 align=start {
+        bands b pluck=1
+        ricedrum d hit=2
+      }
+    }
+    say """
+      Every sound is made by something shaking. Pluck a band and it shakes so fast it looks
+      blurred. Hit a drum and its skin shakes, and the rice on top jumps to show it. The harder you
+      hit, the harder it shakes, and the louder the sound.
+      """
+  }
+  do {
+    practice physics.band-plucked count=2 seed=1
+    practice physics.drum-still count=2 seed=2
+    practice physics.drum-harder count=2 seed=3
+    practice physics.drum-louder count=2 seed=4
+  }
+  try stars=2 {
+    show physics.band-highest a=12 b=6 c=9
+  }
+  try stars=3 {
+    show physics.drum-order f=1
+  }
+  remember {
+    say "No shaking, no sound. A bigger shake makes a louder sound."
+  }
+
+  grown-ups """
+    Put a few grains of rice on a pan lid or a drum and tap it gently, then harder. Stretch an
+    elastic band round a box and pluck it, then press it down halfway along and pluck the shorter
+    part. The high and low question is the first time pitch and loudness come apart: a short band
+    is higher, not louder. Children often mix the two words, so use both on purpose.
+    """
+  level easy {
+    grown-ups "At this level the two drums compared are hit softly and hard, so the rice shows the difference plainly."
+  }
+  level hard {
+    grown-ups "At this level the two drums compared are hit one step apart, so the rice has to be looked at closely."
+  }
+}

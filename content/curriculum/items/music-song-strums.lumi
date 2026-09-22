@@ -1,0 +1,46 @@
+# Ben strums four down strums in every bar, and the strums of one chord, or the strums before the
+# chord first changes back to C (bars 1 to 3 of London Bridge, 1 to 4 of Skip to My Lou), are counted.
+item music.song-strums v=1 skills=[music.chord-changes, music.strumming, multiplication.groups] {
+  title "Strums in the song"
+  difficulty (if q == 2 then 1 else 0)
+  let s=0..1 q=0..2
+  let song={pick(s, "London Bridge", "Skip to My Lou")}
+  let w1={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w2={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w3={pick(s, "fall-ing down,", "Lou, lou,")}
+  let w4={pick(s, "fall-ing down.", "skip to my lou,")}
+  let w5={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w6={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w7={pick(s, "my fair", "skip to my lou, my")}
+  let w8={pick(s, "la-dy.", "dar-ling.")}
+  let c4={pick(s, "C", "G")}
+  let asked={pick(q, "strums of G does he play", "strums of C does he play", "strums does he play before the chord first changes back to C")}
+  let right={pick(s * 3 + q, 8, 24, 12, 12, 20, 16)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x28 {
+    row chart space=2 align=start at=canvas(1, 1) {
+      table bars cols=2 head=["Bar", "Chord"] cells=["1", "C", "2", "C", "3", "G", "4", c4, "5", "C", "6", "C", "7", "G", "8", "C"]
+      table words cols=1 head=["{song}"] cells=[w1, w2, w3, w4, w5, w6, w7, w8]
+    }
+    text ask "Ben plays {song} once through, with four down strums in every bar. How many {asked}?" narrate width=34 below=chart gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer * 4 == right) point=bars {
+      say "That counts the bars. Every bar has four strums."
+    }
+    when (q == 2 and answer == right + 4) point=bars {
+      say "The bar where C comes back is not before the change. Stop at the bar before it."
+    }
+  }
+  hint "{if q == 2 then \"In which bar does C first come back? Count the bars before it.\" else \"How many bars have that chord?\"}"
+  hint "Each bar has four strums."
+}

@@ -1,0 +1,10 @@
+item art.make-a-rubbing v=1 stars=3 skills=[art.texture, art.printing, reasoning.plan] {
+  title "Rubbings and prints"
+
+  scene 34x16 {
+    text ask "Make rubbings of three different things at home, each in its own colour, on one sheet. On the screen, print a pattern of leaves instead." width=12 at=canvas(1, 1)
+    paintsheet sheet w=18 h=11 paper="plain" guide="none" outline="none" pots=["green", "orange", "brown"] stamps=["leaf"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Rubbings of three different surfaces the child chose (a leaf, a coin, bark, a grater), each showing its own texture because the crayon was rubbed flat and even, or on screen a pattern of leaf prints placed on purpose." notice=["Three different textures", "Each texture shows clearly", "The crayon rubbed flat and even"] ask="What made the lines show up in your rubbing?"
+}

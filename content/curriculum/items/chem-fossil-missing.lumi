@@ -1,0 +1,15 @@
+item chem.fossil-missing v=1 skills=[chemistry.rocks, ordering] {
+  title "The missing picture"
+  difficulty b
+  let b=0..3
+
+  scene 28x28 {
+    text ask "One picture of a fossil forming is missing. What should it show?" width=26 at=canvas(1, 0)
+    fossilsteps f order=[1, 2, 3, 4] blank=b letters=1 below=ask gap=0
+    choice pick options=["It dies and sinks", "Mud covers it", "It turns to rock", "It is found"] stack=column below=f gap=0
+  }
+
+  check chem.rocks of=f pick=missing
+  hint "What does the picture before the gap show, and the one after it?"
+  hint "What has to happen between those two?"
+}

@@ -1,0 +1,24 @@
+# Two routes with the same steps in a different order end in the same square; turning one step
+# round does not. The answer can be reasoned without walking either route, or checked by walking.
+item geography.two-routes v=1 stars=2 skills=[geography.directions, reasoning.compare] {
+  title "Do they end in the same place?"
+  let e=1..2 s=1..2 k=0..2
+  let b1={if k == 1 then e else s}
+  let d1={if k == 1 then "east" else "south"}
+  let b2={if k == 1 then s else e}
+  let d2={if k == 0 then "east" else if k == 1 then "north" else "west"}
+
+  scene 34x13 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=start {
+        compass rose needle=0
+        text ask "Ada and Ben both start at the tree. Ada walks {e} east, then {s} south. Ben walks {b1} {d1}, then {b2} {d2}. Do they end in the same square?" width=23
+      }
+      choice pick options=["the same square", "different squares"]
+    }
+  }
+
+  answer pick=(if k == 0 then "the same square" else "different squares")
+  hint "Look at the two lists of steps. Are they the same steps?"
+  hint "Walking the same steps in a different order ends in the same place. Does Ben go the same ways as Ada?"
+}

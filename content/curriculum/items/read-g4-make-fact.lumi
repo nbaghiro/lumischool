@@ -1,0 +1,15 @@
+# Making something to a constraint: a sentence about the same thing that anyone could check. Many
+# answers are right, so a grown-up marks it.
+item reading.make-it-a-fact v=1 stars=3 skills=[reading.fact-opinion, writing.composing] {
+  title "Turn it into a fact"
+  let k=0..3
+
+  scene 34x13 {
+    text ask "This is an opinion: {if k == 0 then \"Our garden is lovely.\" else if k == 1 then \"The park is too small.\" else if k == 2 then \"This book is boring.\" else \"Our dog is the cleverest dog in the street.\"} Write a fact about the same thing, something anyone could check." width=33 at=canvas(1, 1)
+    writinglines lines lines=2 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A sentence about the same garden, park, book or dog that could be checked by counting, measuring, looking or asking, such as 'Our garden has three apple trees' or 'The book has 96 pages', with no words such as lovely, boring, too small or cleverest."
+  hint "What could you count, measure or look at about it?"
+  hint "Read your sentence back. Could anyone disagree with it and still be right? If so, change it."
+}

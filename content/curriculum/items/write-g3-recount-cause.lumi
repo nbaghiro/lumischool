@@ -1,0 +1,22 @@
+# Four events with no time words at all: the order has to come from what makes what happen, the
+# audit's raise for putting sentences in order by their first word.
+item writing.recount-cause v=2 skills=[writing.recounts] {
+  title "What had to happen first?"
+  difficulty t
+  let t=0..1 q=0..1 a1={if t == 0 then "We planted the seeds in pots." else "The wind grabbed my kite."} a2={if t == 0 then "We covered them with soil." else "It landed on the shed roof."} a3={if t == 0 then "Green shoots came up." else "Dad got the ladder out."} a4={if t == 0 then "We moved the plants outside." else "He passed the kite down to me."}
+  level easy {
+    let t={0}  # the seeds, whose order is the order of planting
+  }
+  level hard {
+    let t={1}  # the kite, whose order is worked out from what caused what
+  }
+
+  scene 26x18 {
+    text ask "Number the sentences 1 to 4 in the order they happened." width=25 at=canvas(1, 1)
+    sequence s items=["{if q == 0 then a3 else a2}", "{if q == 0 then a1 else a4}", "{if q == 0 then a4 else a1}", "{if q == 0 then a2 else a3}"] blanks=[r1, r2, r3, r4] below=ask gap=1
+  }
+
+  answer r1=(if q == 0 then 3 else 2) r2=(if q == 0 then 1 else 4) r3=(if q == 0 then 4 else 1) r4=(if q == 0 then 2 else 3)
+  hint "None of them has a time word. Which one could only happen after another one?"
+  hint "Find the first thing, then ask what it made happen next."
+}

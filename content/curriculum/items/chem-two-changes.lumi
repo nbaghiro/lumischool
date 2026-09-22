@@ -1,0 +1,35 @@
+# The two-star reason: two rows that change two things at once, and why they cannot be
+# compared. The right reason is that either change could have made the difference; the wrong
+# ones sound like reasons (the times are too close, the cups are different sizes).
+item chem.two-changes v=1 stars=2 skills=[chemistry.dissolving, reasoning.fair-test] {
+  title "Why can these two not be compared?"
+  difficulty k
+  let k=0..1 r=0..2
+  let t1={pick(k, 20, 10)}
+  let t2={pick(k, 40, 30)}
+  let story={pick(k, "Nour wants to know whether stirring helps. She compares these two cups.", "Ben wants to know whether warm water helps. He compares these two cups.")}
+  let right={pick(k, "Two things changed at once", "Two things changed at once")}
+  let w1={pick(k, "The times are too far apart", "The stirred cup is always first")}
+  let w2={pick(k, "Cold water cannot be compared", "Forty seconds is too short")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x26 {
+    table data cols=3 head=["Water °C", "Stirred?", "Seconds"] cells=["{t1}", "no", "{if k == 0 then 120 else 100}", "{t2}", "yes", "{if k == 0 then 30 else 40}"] at=canvas(1, 0)
+    text ask "{story} The second cup was much faster. Why can these two rows not show what {if k == 0 then \"stirring\" else \"warm water\"} does on its own?" narrate width=32 below=data gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Look at both columns: the temperature changed and so did the stirring. To test one thing, the other has to stay the same."
+    }
+  }
+  hint "Read across each row. How many things are different between the two cups?"
+  hint "A fair comparison changes one thing only. When two things change, you cannot tell which one did it."
+}

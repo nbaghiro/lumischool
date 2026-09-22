@@ -1,0 +1,27 @@
+# Minutes in fives, 2.MD.7: the long hand on any number, not only the quarters.
+item time.five-minutes v=1 skills=[time.five-minutes] {
+  title "Minutes past"
+  difficulty k
+  let h=1..11 k={1, 2, 4, 5, 7, 8, 10, 11}
+  level easy {
+    let k={1, 2, 4}
+  }
+  level hard {
+    let k={8, 10, 11}
+  }
+
+  scene 26x8 {
+    clock face h=h m=(5 * k) at=canvas(1, 1)
+    text ask "How many minutes past {h} is it?" narrate width=16 right-of=face gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (5 * k)
+  feedback {
+    when (answer == k) point=face {
+      say "The long hand points at {k}, and every number is 5 minutes. Count round in fives."
+    }
+  }
+  hint "Start at the 12 and count in fives to the long hand."
+  hint "The long hand is on the {k}. What is {k} fives?"
+}

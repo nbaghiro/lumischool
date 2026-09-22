@@ -1,0 +1,33 @@
+# Six things sorted into soaks up and keeps out, with one in the wrong column. A metal key under
+# soaks up is seen at once; a raincoat under soaks up, or a wool hat under keeps out, needs the
+# rule rather than the look.
+item chem.wrong-soak-column v=1 skills=[chemistry.materials, reasoning.find-the-mistake] {
+  title "One is in the wrong column"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let stray={pick(k, "key", "brick", "sock", "book", "raincoat", "boot")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 32x32 {
+    text ask "Ben sorted eight things by whether water soaks in. One is in the wrong column. Which?" narrate width=28 at=canvas(1, 1)
+    wordsort s heads=["soaks up water", "keeps water out"] words=["towel", "key", "sock", "brick", "raincoat", "book", "boot", "bottle"] into=[0, if k == 0 then 0 else 1, if k == 2 then 1 else 0, if k == 1 then 0 else 1, if k == 4 then 0 else 1, if k == 3 then 1 else 0, if k == 5 then 0 else 1, 1] below=ask gap=1
+    choice pick options=[if k <= 1 then "key" else "sock", if k <= 1 then "brick" else "book", if k <= 3 then "towel" else "raincoat", "boot"] below=s gap=1
+  }
+
+  answer pick=stray
+  feedback {
+    when (k >= 4 and pick != stray) point=s {
+      say "A raincoat and a boot are soft and bendy, but water runs off them. Soft is not the same as soaking up."
+    }
+    when (k <= 3 and pick != stray) point=s {
+      say "Read each heading, then each thing under it. Would water really soak into that one?"
+    }
+  }
+  hint "Say each heading, then each thing under it. Would water soak into it, or run off?"
+  hint "Threads and paper soak water up. Metal, brick, plastic and rubber keep it out, even when they are soft."
+}

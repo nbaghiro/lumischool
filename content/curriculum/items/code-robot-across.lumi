@@ -1,0 +1,32 @@
+# The first coding question: the program as picture blocks beside the grid, and the answer is the
+# square the robot stops on, worked out by running the program the child sees.
+item coding.robot-across v=2 skills=[coding.sequences] {
+  title "Where does the robot stop?"
+  difficulty (a + b)
+  let a=1..3 b=1..2
+  level easy {
+    let a=1..3 b={1}
+  }
+
+  scene 24x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}"] words=false
+      maze g cols=6 rows=4 code=["right {a}", "down {b}"] upto=0 trail=none
+    }
+    text ask "Which square does the robot stop on?" width=22 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=g col=col row=row
+  feedback {
+    when (col == a) point=g {
+      say "The robot starts on column 1, so {a} to the right lands on column {1 + a}."
+    }
+  }
+  hint "Move a finger one square at a time, and do the blocks from the top."
+}

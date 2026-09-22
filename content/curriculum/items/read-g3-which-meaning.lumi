@@ -1,0 +1,25 @@
+# Every choice is a real meaning of the same word (the audit's raise for word-meaning), so only the
+# sentence can decide which one is meant here. s moves the meaning from one sentence to the next.
+item reading.which-meaning v=1 skills=[reading.vocabulary, reading.context] {
+  title "Which meaning is it here?"
+  difficulty (if k == 0 then pick(s, 1, 0, 2) else if k == 1 then pick(s, 1, 2, 0) else if k == 2 then pick(s, 1, 0, 2) else if k == 3 then pick(s, 2, 1, 0) else pick(s, 1, 0, 2))
+  let k=0..4 s=0..2
+  level easy {
+    where (k == 0 and s == 1 or k == 1 and s == 2 or k == 2 and s == 1 or k == 3 and s == 2 or k == 4 and s == 1)
+  }
+  level hard {
+    where (k == 0 and s == 2 or k == 1 and s == 1 or k == 2 and s == 2 or k == 3 and s == 0 or k == 4 and s == 2)
+  }
+
+  scene 32x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text sent "{if k == 0 then (if s == 0 then \"The old bed had a broken spring that poked Ivy in the back.\" else if s == 1 then \"The lambs on the farm are born in spring.\" else \"We filled our bottles at a spring near the top of the hill.\") else if k == 1 then (if s == 0 then \"The box was so light that Kofi carried it with one hand.\" else if s == 1 then \"Orla wore a light blue coat to the party.\" else \"Please turn off the light when you leave the room.\") else if k == 2 then (if s == 0 then \"Dad struck a match to light the candles.\" else if s == 1 then \"Our team won the match by two goals.\" else \"Your socks do not match: one is red and one is green.\") else if k == 3 then (if s == 0 then \"Grandma keeps old photos in a trunk in the attic.\" else if s == 1 then \"The squirrel ran straight up the trunk.\" else \"The elephant sprayed water over its back with its trunk.\") else (if s == 0 then \"It is not fair that Joss had two turns.\" else if s == 1 then \"We rode the big wheel at the fair.\" else \"Nia's fair hair shone in the sun.\")}" width=31
+      text ask "What does {if k == 0 then \"spring\" else if k == 1 then \"light\" else if k == 2 then \"match\" else if k == 3 then \"trunk\" else \"fair\"} mean in this sentence?" width=31
+      choice pick options=[if k == 0 then "a coil of metal" else if k == 1 then "not heavy" else if k == 2 then "a stick that makes a flame" else if k == 3 then "a big box with a lid" else "the same for everyone", if k == 0 then "the season after winter" else if k == 1 then "pale, not dark" else if k == 2 then "a game two teams play" else if k == 3 then "the thick stem of a tree" else "a place with rides", if k == 0 then "water coming out of the ground" else if k == 1 then "a lamp that shines" else if k == 2 then "to go well together" else if k == 3 then "an elephant's long nose" else "pale, not dark"] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then if s == 0 then "a coil of metal" else if s == 1 then "the season after winter" else "water coming out of the ground" else if k == 1 then if s == 0 then "not heavy" else if s == 1 then "pale, not dark" else "a lamp that shines" else if k == 2 then if s == 0 then "a stick that makes a flame" else if s == 1 then "a game two teams play" else "to go well together" else if k == 3 then if s == 0 then "a big box with a lid" else if s == 1 then "the thick stem of a tree" else "an elephant's long nose" else if s == 0 then "the same for everyone" else if s == 1 then "a place with rides" else "pale, not dark")
+  hint "All three are real meanings of the word. Which one makes sense in this sentence?"
+  hint "Try each meaning in place of the word. Read the sentence again with it."
+}

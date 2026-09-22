@@ -1,0 +1,27 @@
+# Every clue needs two of its parts, and one of them says what the boat does not have, so a
+# child who stops reading halfway lands on a boat that fits half the clue.
+item reading.clue-boat v=1 skills=[reading.find-a-detail] stars=2 {
+  title "Which boat is it?"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3
+
+  scene 30x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage note title="A note left on the quay" text="{if k == 0 then \"My boat has two sails, but it has no flag.\" else if k == 1 then \"My boat has one sail, and it flies a flag.\" else if k == 2 then \"My boat has two round windows and two sails.\" else \"My boat has one sail and no round windows.\"}" width=29 numbers=false
+      moorings boats sails=[1, 2, 1, 2] flags=[1, 0, 0, 1] portholes=[2, 3, 0, 2] names=["Ivy", "Nell", "Kit", "Bo"]
+      text ask "Which boat is it?"
+      choice pick options=["Ivy", "Nell", "Kit", "Bo"]
+    }
+  }
+
+  answer pick=(if k == 0 then "Nell" else if k == 1 then "Ivy" else if k == 2 then "Bo" else "Kit")
+  feedback {
+    when (pick == "Bo" and k == 0) point=boats {
+      say "Bo has two sails, but look at the top of her mast."
+    }
+    when (pick == "Ivy" and k == 2) point=boats {
+      say "Ivy has two round windows. Now count her sails."
+    }
+  }
+  hint "Check each boat against every part of the note, and cross out the ones that fail."
+}

@@ -1,0 +1,20 @@
+item physics.buzzer-sounds v=1 skills=[physics.circuits] {
+  title "Will it buzz?"
+  difficulty (if f == 2 then 4 else if f == 3 then 2 else if f == 1 then 1 else 0)
+  let f=0..2 c=1..2
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f={0, 2}
+  }
+
+  scene 17x20 {
+    series ring cells=c bulbs=0 buzzer=1 closed=(if f == 1 then 0 else 1) loose=(if f == 2 then 1 else 0) show=0 at=canvas(1, 0)
+    text ask "Will the buzzer sound?" width=12 below=ring gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  check physics.circuit of=ring pick=sounds
+  hint "Is the loop joined all the way round?"
+}

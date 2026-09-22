@@ -1,0 +1,29 @@
+# The road is drawn the same length whatever the legs are worth, so the distances have to be added.
+item add.road-legs v=1 skills=[addition.within-hundred] {
+  title "How far altogether?"
+  difficulty (x + y)
+  let x=18..47 y=16..38
+  where (x % 10 + y % 10 >= 10 and x + y < 100)
+  level easy {
+    let x=18..29 y=16..25
+  }
+  level hard {
+    let x=35..47 y=28..38
+  }
+
+  scene 24x17 {
+    roaddistances road stops=["Ash", "Bray", "Cole"] legs=[x, y] unit=km at=canvas(1, 1)
+    text ask "How far is it from Ash to Cole along the road?" narrate width=22 below=road gap=1
+    number-input answer below=ask gap=1
+    text unit "km" right-of=answer gap=0
+  }
+
+  answer (x + y)
+  feedback {
+    when (answer == x + y - 10) point=road {
+      say "The ones make more than ten. Did the ten get carried into the tens?"
+    }
+  }
+  hint "Which two lengths do you drive along to get from Ash to Cole?"
+  hint "Add the tens, then the ones. Do the ones make another ten?"
+}

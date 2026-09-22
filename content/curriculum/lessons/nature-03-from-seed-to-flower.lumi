@@ -1,0 +1,71 @@
+lesson nature-from-seed-to-flower v=1 format=teach grade=1 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "From seed to flower"
+  goal "Put the stages of a growing bean in order, and say what a plant needs to grow."
+
+  look {
+    scene 34x23 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row sky space=2 align=start {
+          growstages bean stages=4 numbers=true
+          art sun asset="sun"
+        }
+        row grass space=2 align=end {
+          flowers meadow count=3 petals=5
+          toadstools caps count=2 spots=5
+        }
+      }
+    }
+    say """
+      Ada finds a bean seed in the soil of the long grass. First a shoot pushes up. Then the stem
+      grows taller and opens more leaves. Last of all a flower opens at the top. To do this a bean
+      needs three things: water from the rain, light from the sun, and warmth. The flower makes
+      new seeds, and it all starts again.
+      """
+  }
+  do {
+    level easy {
+      worked nature.stage-next n=4 level=medium
+    }
+    practice nature.leaves-count count=1 seed=2 easy-seed=1 hard-seed=7
+    practice nature.stage-next count=2 seed=10 easy-seed=1 hard-seed=1
+    practice nature.part-job count=2 seed=10 easy-seed=1 hard-seed=7
+    practice nature.plant-needs count=1 seed=3 easy-seed=7 hard-seed=7
+    practice nature.stages-in-order count=1 seed=9 easy-seed=7 hard-seed=1
+    level hard {
+      show nature.pot-behind k=5
+    }
+  }
+  story {
+    show nature.bean-later s=0 n=2 easy-s=1 easy-n=1 hard-s=1 hard-n=3
+  }
+  try stars=2 {
+    show nature.pot-behind k=3 easy-k=0 hard-k=4
+  }
+  try stars=3 {
+    show nature.round-again k=1 m=0 easy-k=0 easy-m=0 hard-k=2 hard-m=1
+  }
+  remember {
+    say "Seed, shoot, leaves, flower, and then new seeds. A plant needs water, light and warmth."
+  }
+
+  grown-ups """
+    Two things are being learned: the order a bean grows in (seed, shoot, leaves, flower, and the
+    flower's seeds starting it again) and what it needs to do it (water, light and warmth). The
+    common slip in the order is to put the flower straight after the shoot, missing the taller stem
+    with more leaves; the numbering question is drawn with that stage left out of the picture, so
+    watch whether the child puts it in from knowing the order. The common wrong idea about needs is
+    that a plant eats, or that it only needs water. The parts diagram carries no names, so ask the
+    child to say what each lettered part is for. In the two-star question both beans had the same
+    care in every way but one, and the child should say which thing Ben's bean went without and how
+    the story shows it. The three-star question numbers the stages from a stage that is not the seed,
+    and the seed then comes round after the flower. If the order is still guessed after the core,
+    stay here another day and put a bean on damp cotton wool on the windowsill; draw it every few
+    days and number the drawings.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the whole bean, and new seeds after the flower) opens the core, the next stage asked for is a shoot or leaves, the parts asked about are the roots and the flower, the picture for numbering shows all four stages so the cards are matched to it, the story looks one Sunday ahead, the two-star story says outright that Ben's bean was in a dark cupboard, and the cards in the last question start from the shoot."
+  }
+  level hard {
+    grown-ups "At this level the next stage asked for goes past the flower to new seeds, the parts asked about are the leaf and the stem, the picture for numbering shows only the seed and the shoot so two cards are placed from knowing the order, a second reasoning question sits in the core with frost at an open window, the story looks three Sundays ahead from the shoot to new seeds, the two-star story only shows dry soil, and the cards in the last question start from the flower."
+  }
+}

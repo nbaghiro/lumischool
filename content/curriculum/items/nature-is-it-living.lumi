@@ -1,0 +1,37 @@
+# One thing, one question. The easy things are animals and everyday objects; the hard ones are the
+# things children call living because they move or shine: the rocket, the sun, the kite.
+item nature.is-it-living v=1 skills=[nature.living] {
+  title "Living, or not?"
+  difficulty (if k <= 3 then 0 else if k <= 7 then 1 else 2)
+  let k=0..11
+  let thing={if k == 0 then "cat" else if k == 1 then "cup" else if k == 2 then "hen" else if k == 3 then "boat" else if k == 4 then "duck" else if k == 5 then "bicycle" else if k == 6 then "hedgehog" else if k == 7 then "pencil" else if k == 8 then "kite" else if k == 9 then "sun" else if k == 10 then "rocket" else "fish-tank"}
+  let name={if k == 11 then "fish in the tank" else thing}
+  let living={if k == 0 or k == 2 or k == 4 or k == 6 or k == 11 then 1 else 0}
+  level easy {
+    let k=0..5
+  }
+  level hard {
+    let k=6..11
+  }
+
+  scene 32x13 {
+    art pic asset="{thing}" at=canvas(1, 1)
+    text ask "Is the {name} living?" narrate width=16 right-of=pic gap=2
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  answer pick=(if living == 1 then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and living == 0 and (k == 3 or k == 5 or k == 8 or k == 10)) point=pic {
+      say "It moves, but only when the wind, a person or a fire moves it. It never grows and never has young."
+    }
+    when (pick == "Yes" and living == 0 and (k == 1 or k == 7 or k == 9)) point=pic {
+      say "It does not grow, it does not eat, and it cannot have young. Those are the signs of a living thing."
+    }
+    when (pick == "No" and living == 1) point=pic {
+      say "It eats, it grows, and it can have young. That is what makes it living."
+    }
+  }
+  hint "Does it grow bigger over time?"
+  hint "Does it eat or drink, and can it have young of its own?"
+}

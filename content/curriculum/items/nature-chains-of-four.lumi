@@ -1,0 +1,41 @@
+# The three-star: the facts about who eats whom are on the page, and the child builds every chain
+# of exactly four creatures that starts with the plant and counts them. The trap is the longer
+# chain counted as one of the four, or a chain that starts in the middle.
+item nature.chains-of-four v=1 stars=3 skills=[nature.food-chains, reasoning.all-ways] {
+  title "Chains of four"
+  difficulty k
+  let k=0..2
+  let facts={pick(k, "Crabs eat seaweed. Sea turtles eat seaweed. Octopuses eat crabs. Gulls eat crabs. Seals eat octopuses.", "Sea snails eat seaweed. Crabs eat sea snails. Gulls eat crabs. Octopuses eat crabs. Sea turtles eat seaweed.", "Sea snails eat seaweed. Crabs eat seaweed and sea snails. Gulls eat crabs. Octopuses eat crabs. Seals eat octopuses.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x22 {
+    row who at=canvas(1, 1) space=1 align=end {
+      crabs pc count=1
+      octopus po spots=4
+      gull pg flying=0
+    }
+    text facts "{facts}" narrate width=32 below=who gap=1
+    text ask "Using only these facts, how many different chains of exactly four creatures can you write that start with the seaweed?" narrate width=32 below=facts gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (k + 1)
+  feedback {
+    when (answer == k + 2 and k == 2) point=facts {
+      say "Seaweed, snail, crab, octopus, seal is a chain of five, not four. Count only the chains with exactly four creatures."
+    }
+    when (answer == 0) point=facts {
+      say "Start with the seaweed and follow the facts: who eats it, then who eats that, then who eats that."
+    }
+    when (answer > k + 2) point=facts {
+      say "Every chain starts with the seaweed and every arrow must be one of the facts. Write each chain out and check its three arrows."
+    }
+  }
+  hint "Start every chain with the seaweed. Who eats seaweed? Write a chain for each one and keep going."
+  hint "A chain of four has three arrows. Cross out any chain that stops early or runs to five."
+}

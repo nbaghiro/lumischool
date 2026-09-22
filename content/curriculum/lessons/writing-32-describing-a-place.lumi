@@ -1,0 +1,70 @@
+# Describing a place from its picture: a describing word before each thing, in sentences that
+# fit what is drawn.
+lesson writing-a-place-in-a-world v=1 format=teach grade=2 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "Describing a place"
+  goal "Write two sentences that describe a place from its picture, using a describing word in each."
+
+  look {
+    scene 34x17 {
+      row all at=canvas(1, 1) space=2 align=end {
+        lighthouse light stripes=3 beam=1
+        art boat asset="boat"
+        jetty pier posts=5
+      }
+    }
+    say """
+      Tia is at the harbour with her notebook. She can see a tall lighthouse on a grey rock, a
+      small boat, and the sea. If she writes "the boat is on the sea", a reader sees almost
+      nothing. If she writes "a small red boat rocks on the choppy sea", they see the boat,
+      its colour, and the water moving. The describing word goes just before the thing it
+      describes.
+      """
+  }
+  do {
+    level easy {
+      worked writing.word-for-thing k=0 p=0
+    }
+    practice writing.word-for-thing count=1 seed=2 easy-seed=3 hard-seed=1
+    practice writing.match-describing count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.sentence-in-order count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.fits-the-picture count=2 seed=2 easy-seed=1 hard-seed=1
+    practice writing.describing-in-sentence count=2 seed=3 easy-seed=1 hard-seed=2
+    level hard {
+      show writing.sentence-in-order k=0 p=3 level=medium
+    }
+  }
+  story {
+    show writing.count-describing k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show writing.tells-more k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show writing.two-sentences k=0 hard-k=1
+  }
+  remember {
+    say "A describing word says what a thing is like, and it goes just before the thing."
+  }
+
+  grown-ups """
+    The idea is that a place is described one thing at a time, with a word that says what each
+    thing is like set just before it, and that a describing sentence has to be true of the
+    picture. The look is the harbour: the lighthouse, the boat and the sea. The way in picks the
+    describing word from among a thing's name, what it does and another thing. The core matches
+    words to things, puts a describing sentence back in order, chooses the sentence that fits a
+    picture (every word checked), and finds the describing word in a sentence. The wrong idea to
+    watch for is that any word near the thing describes it, or that a colour is the only kind
+    of describing word; ask "what is it like?" for each thing in the picture. The story counts
+    Tia's describing words, the two-star question asks which of two sentences tells the reader
+    more and why, and the three-star question is the child's own two sentences about the
+    picture, which you mark: a capital, a full stop, and a describing word before its thing in
+    each. If the sentences come out bare, walk round the picture together naming what each thing
+    is like before writing.
+    """
+  level easy {
+    grown-ups "At this level the sea's word is worked once in the teacher's pen before the sea and the lighthouse, the match is the sea, the lighthouse and the sand, the muddled sentence is the lighthouse's nearly in order, the pictures to fit are the boat and the kite, the sentences to search are the plainer ones, the story's sentence has two describing words, the two-star prefers the boat's fuller sentence, and the two sentences may use any describing words."
+  }
+  level hard {
+    grown-ups "At this level the thing is the boat, whose words could almost fit each other, the match is the sand, the gull and the rope, the muddled sentence is the boat's, well muddled, with a second, the lighthouse's, in the core, the pictures to fit are the sandcastle and the kite, the sentences to search are the subtler ones, the story's sentence has four describing words and a number that is not one, the two-star has the fuller sentence first, and the two sentences may not use colours."
+  }
+}

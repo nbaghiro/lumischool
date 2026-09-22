@@ -1,0 +1,23 @@
+# The honest picture of dissolving: the thing that dissolved cannot be seen at all, so the child
+# works out which it was from what is still there.
+item chem.what-dissolved v=1 skills=[chemistry.dissolving] {
+  title "Which one dissolved?"
+  difficulty (if k == 3 then 2 else if k == 4 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2, 5}
+  }
+  level hard {
+    let k={3, 4}  # flour that clouds the water, and cork that floats
+  }
+
+  scene 32x12 {
+    mixture mix things=["{if k == 0 then \"sand\" else if k == 1 then \"sugar\" else if k == 2 then \"salt\" else if k == 3 then \"flour\" else if k == 4 then \"cork\" else \"sugar\"}", "{if k == 0 then \"salt\" else if k == 1 then \"pebbles\" else if k == 2 then \"iron\" else if k == 3 then \"sugar\" else if k == 4 then \"salt\" else \"sand\"}"] water=1 names=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"sand\" else if k == 1 then \"sugar\" else if k == 2 then \"salt\" else if k == 3 then \"flour\" else if k == 4 then \"cork\" else \"sugar\"} and {if k == 0 then \"salt\" else if k == 1 then \"pebbles\" else if k == 2 then \"iron filings\" else if k == 3 then \"sugar\" else if k == 4 then \"salt\" else \"sand\"} were stirred into the water. Which one dissolved?" width=12 right-of=mix gap=1
+    choice pick options=["{if k == 0 then \"sand\" else if k == 1 then \"sugar\" else if k == 2 then \"salt\" else if k == 3 then \"flour\" else if k == 4 then \"cork\" else \"sugar\"}", "{if k == 0 then \"salt\" else if k == 1 then \"pebbles\" else if k == 2 then \"iron filings\" else if k == 3 then \"sugar\" else if k == 4 then \"salt\" else \"sand\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "salt" else if k == 1 then "sugar" else if k == 2 then "salt" else if k == 3 then "sugar" else if k == 4 then "salt" else "sugar")
+  hint "Which of the two can you still see in the glass?"
+  hint "If you cannot see it any more, could it still be in the water in bits too small to see?"
+}

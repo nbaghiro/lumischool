@@ -1,0 +1,19 @@
+# The robot is drawn at its start with no trail, so the run has to be traced to find the line that
+# walks it into a rock. The checker runs the program and says which line bumps.
+item coding.bug-bump-line v=1 skills=[coding.debugging, coding.tracing] {
+  title "Where does it bump?"
+  let k=0..2
+
+  scene 32x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right {if k == 1 then 1 else 2}", "down {if k == 0 then 2 else if k == 1 then 1 else 3}", "right {if k == 0 then 1 else 3}", "up 2", "left 1"]
+      maze g map=["S . . . . .", ". # . . # .", ". . . # . .", ". # . . . ."] code=["right {if k == 1 then 1 else 2}", "down {if k == 0 then 2 else if k == 1 then 1 else 3}", "right {if k == 0 then 1 else 3}", "up 2", "left 1"] upto=0 trail=none
+    }
+    text ask "On which line does the robot bump into a rock?" width=22 below=top gap=1
+    choice line options=[1, 2, 3, 4, 5] below=ask gap=1
+  }
+
+  check coding.runs of=g line=bumpline
+  hint "Put a finger on the robot and move it one line at a time."
+  hint "Before each move, look at the squares it will pass. Is there a rock in the way?"
+}

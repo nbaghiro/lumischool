@@ -1,0 +1,23 @@
+# Four turns and one of the first three the wrong way: nothing about the numbers gives it away, so
+# the drawing has to be followed turn by turn and compared with the pale path. The last turn is never
+# the bug, because a wrong last turn could also be mended by walking the last line backwards.
+item coding.bug-wrong-turn v=1 skills=[coding.debugging] {
+  title "One turn the wrong way"
+  difficulty k
+  let k=1..3
+
+  scene 34x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["forward 2", "{if k == 1 then \"turn right\" else \"turn left\"}", "forward 1", "{if k == 2 then \"turn left\" else \"turn right\"}", "forward 2", "{if k == 3 then \"turn left\" else \"turn right\"}", "forward 1", "turn left", "forward 1"]
+      column right space=1 align=start {
+        turtle t cols=7 rows=4 col=1 row=3 moves=["forward 2", "{if k == 1 then \"turn right\" else \"turn left\"}", "forward 1", "{if k == 2 then \"turn left\" else \"turn right\"}", "forward 2", "{if k == 3 then \"turn left\" else \"turn right\"}", "forward 1", "turn left", "forward 1"] target=["forward 2", "turn left", "forward 1", "turn right", "forward 2", "turn right", "forward 1", "turn left", "forward 1"] mark=false
+        text ask "The turtle should follow the pale path. Which line turns the wrong way?" width=17
+        choice pick options=[2, 4, 6]
+      }
+    }
+  }
+
+  check coding.runs of=t goal=target pick=wrong
+  hint "Follow the turtle's line and the pale path together. Where do they first go different ways?"
+  hint "Which turn happens just before that place?"
+}

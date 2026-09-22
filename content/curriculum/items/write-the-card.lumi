@@ -1,0 +1,11 @@
+item writing.write-the-card v=1 skills=[writing.sentences, writing.composing] {
+  title "A sentence about the card"
+  let k=0..1
+
+  scene 36x10 {
+    picturecards card who=["{if k == 0 then \"duck\" else \"rabbit\"}"] where=["{if k == 0 then \"on\" else \"under\"}"] thing=["{if k == 0 then \"rug\" else \"table\"}"] letters=false at=canvas(1, 1)
+    writinglines lines lines=2 width=24 prompt="Write a sentence about the card." right-of=card gap=1
+  }
+
+  check writing.by-eye look-for="One whole sentence that says who is where (the duck is on the rug), with a capital letter at the start and a full stop at the end."
+}

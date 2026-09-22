@@ -1,0 +1,24 @@
+# Just before and just after: the event two steps away is a choice too, so "before" is not enough.
+item reading.before-after v=2 skills=[reading.sequencing] {
+  title "Just before, just after"
+  difficulty (1 - d + (if k == 1 then 1 else 0))
+  let k=0..2 t=1..2 d=0..1
+  level easy {
+    let d={1}  # what came after
+  }
+  level hard {
+    let d={0}  # what came before
+  }
+
+  scene 37x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"First the rain came, so we ate our picnic in the car. When the sun came out, we built a sandcastle on the beach. Then a big wave washed it away.\" else if k == 1 then \"Mum made breakfast before she left for work. At lunchtime Grandad took the dog for a walk. After tea we played cards, and then it was bedtime.\" else \"The ferry left the harbour at nine. It stopped at Seal Island to pick up the post. After that it sailed on to Long Point, where we got off for our picnic.\"}" width=36
+      text ask "What came just {if d == 0 then \"before\" else \"after\"} {if k == 0 then (if t == 1 then \"lunch in the car\" else \"the sandcastle\") else if k == 1 then (if t == 1 then \"the dog walk\" else \"the card game\") else (if t == 1 then \"Seal Island\" else \"Long Point\")}?"
+      choice pick options=[if k == 0 then "the rain" else if k == 1 then "breakfast" else "the harbour", if t == 1 then if k == 0 then "the sandcastle" else if k == 1 then "the card game" else "Long Point" else if k == 0 then "the car picnic" else if k == 1 then "the dog walk" else "Seal Island", if k == 0 then "the wave" else if k == 1 then "bedtime" else "the picnic"]
+    }
+  }
+
+  answer pick=(if d == 0 and t == 1 then if k == 0 then "the rain" else if k == 1 then "breakfast" else "the harbour" else if d == 1 and t == 2 then if k == 0 then "the wave" else if k == 1 then "bedtime" else "the picnic" else if t == 1 then if k == 0 then "the sandcastle" else if k == 1 then "the card game" else "Long Point" else if k == 0 then "the car picnic" else if k == 1 then "the dog walk" else "Seal Island")
+  hint "Find the part of the passage the question is about."
+  hint "Read the sentence {if d == 0 then \"before\" else \"after\"} it. What happened there, straight away?"
+}

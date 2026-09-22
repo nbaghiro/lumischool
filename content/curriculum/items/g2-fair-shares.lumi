@@ -1,0 +1,30 @@
+# Fair shares, answered by cutting. The cake is a whole number of squares long, so a share is a count
+# of squares, and a cut drawn in pencil on the printed sheet can be checked the same way.
+item fraction.fair-shares v=1 skills=[fractions.equal-parts] {
+  title "Cut it fairly"
+  difficulty k
+  let k={2, 3, 4, 6} w={8, 10, 12}
+  where (w % k == 0 and w / k >= 2)
+
+  scene 28x15 {
+    text ask "Cut the cake so {k} children get the same amount." narrate width=26 at=canvas(1, 0)
+    fair-cut cake whole=w into=k below=ask gap=3
+  }
+
+  answer cake=(pieces == k and off == 0) {
+    say "Each of the {k} pieces is {w / k} squares long."
+  }
+  feedback {
+    when (pieces > k) point=cake {
+      say "That makes {pieces} pieces, and there are {k} children. Count the cuts again."
+    }
+    when (pieces < k) point=cake {
+      say "There are {pieces} pieces, and {k} children need a piece each."
+    }
+    when (off > 0) point=cake.biggest {
+      say "There are {k} pieces, but they are not the same size. This one is too big."
+    }
+  }
+  hint "Count the squares along the cake."
+  hint "Share that many squares between {k} children."
+}

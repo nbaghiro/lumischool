@@ -1,0 +1,52 @@
+# The three-star non-routine question: Ada's small pond has room for three creatures, and two are
+# in it already. The third has to be one that can live with them: the heron eats fish and frogs,
+# and the kingfisher eats fish, so the answer is the creature nobody eats and that eats nobody.
+item nature.pond-three v=1 stars=3 skills=[nature.habitats, reasoning.constraints] {
+  title "Room for three"
+  difficulty pick(k, 1, 1, 0, 2, 0, 2)
+  let k=0..5
+  let have={pick(k, "a fish and a frog", "a fish and a duck", "a heron and a duck", "a kingfisher and a frog", "a heron and a dragonfly", "a fish and a dragonfly")}
+  let o1={pick(k, "heron", "heron", "fish", "fish", "fish", "heron")}
+  let o2={pick(k, "kingfisher", "kingfisher", "frog", "duck", "frog", "kingfisher")}
+  let o3={pick(k, "duck", "frog", "dragonfly", "heron", "duck", "frog")}
+  let right={pick(k, "duck", "frog", "dragonfly", "duck", "duck", "frog")}
+  level easy {
+    let k={2, 4}
+  }
+  level hard {
+    let k={3, 5}
+  }
+
+  scene 33x27 {
+    row all at=canvas(1, 1) space=1 align=start {
+      pond pool pads=3 fish=1 frog=true
+      column birds space=1 align=start {
+        row big space=1 align=end {
+          heron tall facing=-1 reeds=2
+          art d asset="duck"
+        }
+        row little space=1 align=end {
+          kingfisher kf flying=0 facing=1
+          dragonfly df facing=1 rings=8
+        }
+      }
+    }
+    text ask "Ada's little pond has room for three creatures. The heron eats fish and frogs, and the kingfisher eats fish. Ada already has {have} in it. Which third creature can live there with them?" narrate width=31 below=all gap=1
+    choice pick options=[o1, o2, o3] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "heron" and right != "heron") point=tall {
+      say "The heron would eat one of the two that are there already. Read what the heron eats."
+    }
+    when (pick == "kingfisher" and right != "kingfisher") point=kf {
+      say "The kingfisher eats fish, and there is a fish in the pond already."
+    }
+    when ((pick == "fish" or pick == "frog") and right != pick) point=pool {
+      say "One of the creatures already in the pond eats that one. Look for a creature that nobody there eats."
+    }
+  }
+  hint "Say who eats whom: the heron eats fish and frogs, the kingfisher eats fish. Who is in the pond already?"
+  hint "Try each choice. Would it eat one of the two, or would one of the two eat it? The right one does neither."
+}

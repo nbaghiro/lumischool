@@ -1,0 +1,23 @@
+# Two remainders at once: the number is found by listing one set and checking it against the other.
+# The window is exactly as wide as the numbers take to repeat, so there is one answer.
+item division.two-rows v=1 stars=3 skills=[division.remainders, reasoning.constraints] {
+  title "The same left over twice"
+  difficulty (lo + (if p == 0 then 12 else if p == 1 then 20 else 15))
+  let p=0..2 r=1..2 lo=(20..60 by 5)
+  level easy {
+    let p={0} lo={20, 25, 30}
+  }
+  level hard {
+    let p={1} lo=(40..60 by 5)  # rows of four and five, so twenty numbers to look through
+  }
+
+  scene 30x14 {
+    mice row count=3 facing=1 at=canvas(1, 1)
+    text ask "Some mice line up. In rows of {if p == 1 then 4 else 3}, they leave {r} over. In rows of {if p == 0 then 4 else 5}, they leave {r} over too. There are between {lo} and {lo + (if p == 0 then 12 else if p == 1 then 20 else 15) - 1} mice. How many mice are there?" width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (lo + (r - lo % (if p == 0 then 12 else if p == 1 then 20 else 15) + (if p == 0 then 12 else if p == 1 then 20 else 15)) % (if p == 0 then 12 else if p == 1 then 20 else 15))
+  hint "List the numbers in the range that leave {r} over in rows of {if p == 1 then 4 else 3}."
+  hint "Check each one with rows of {if p == 0 then 4 else 5}."
+}

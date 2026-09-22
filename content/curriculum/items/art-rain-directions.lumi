@@ -1,0 +1,24 @@
+# The way in: rain drawn as straight lines over the bridge, and how many directions those lines fall
+# in. One is what falling rain looks like; two is what a print gets wrong. Half the versions draw the
+# far bank as well.
+item art.rain-directions v=1 skills=[art.line, art.looking] {
+  title "How many ways is it falling?"
+  difficulty (if arches > 3 then 1 else 0)
+  let r=1..2 arches=3..4 fb=0..1
+  level easy {
+    let arches=3..3
+  }
+  level hard {
+    let arches=4..4
+  }
+
+  scene 19x16 {
+    bridge print arches=arches rain=r weight="both" far=fb at=canvas(1, 0)
+    text ask "The rain in this print is drawn with straight lines. How many directions do they fall in?" narrate width=18 below=print gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=r
+  hint "Follow one rain line from its top to its foot, then find another that does not lie along it."
+  hint "Count the slants, not the lines."
+}

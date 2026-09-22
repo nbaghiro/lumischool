@@ -1,0 +1,26 @@
+# The count is the unknown: the picture must have a given number of blue squares, and line 1 is
+# left blank. The run proves the count by counting line 1. The audit's raise for pixel-repeat.
+item coding.pixel-repeat-count v=2 skills=[coding.repetition, coding.data] {
+  title "How many times for that much blue?"
+  difficulty (4 * b * n)
+  let n=2..4 b=1..2
+
+  scene 37x11 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program c code=["repeat {n}", "  {b} blue {6 - 2 * b} yellow {b} blue", "  {3 - b} yellow {2 * b} blue {3 - b} yellow"] blank=1
+      column q space=1 align=start {
+        text ask "Line 1 says repeat and a number. The picture it paints has {4 * b * n} blue squares. What is the number?" width=13
+        number-input answer
+      }
+    }
+  }
+
+  check coding.runs of=c answer="ran(1)"
+  feedback {
+    when (answer == 2 * n) point=c {
+      say "Line 2 and line 3 both have blue. Add them for one time round."
+    }
+  }
+  hint "How many blue squares does one time round paint? Look at both lines."
+  hint "How many times round make {4 * b * n}?"
+}

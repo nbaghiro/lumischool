@@ -1,0 +1,62 @@
+lesson chemistry-heating-with-a-flame v=2 format=teach grade=3 unit=5 subject=chemistry levels=[easy, medium, hard] {
+  title "Heating with a flame"
+  goal "Use a steady rise to say what a thermometer will read, know that water stops at 100 degrees while it boils, and read when it boiled off a graph."
+
+  look {
+    scene 34x25 {
+      row kit at=canvas(1, 0) space=2 align=end {
+        flame burner height=4 on=1 stand=true holds=0.6
+        heatcurve curve temps=[20, 40, 60, 80, 100, 100, 100] every=2 min=0 max=120 step=20
+      }
+      safety s kit=["goggles", "glove"] letters=0 names=1 below=kit gap=1
+    }
+    say """
+      A grown-up heats the water, wearing an oven glove, and we watch from a step back in goggles.
+      The thermometer climbs by about the same amount every minute until the water reaches 100
+      degrees. Then it stops climbing, however long the flame is left on, because the heat is
+      turning the water into steam. The bubbles are steam, not air. Water left in a puddle turns
+      into vapour too, slowly and without boiling; boiling is the fast way, with the steam made
+      inside the water.
+      """
+  }
+  do {
+    practice chem.flame-read count=1 seed=2
+    practice chem.flame-rise count=1 seed=1
+    level easy {
+      worked chem.stops-at-100 v=80 m=4 level=medium
+    }
+    practice chem.stops-at-100 count=2 seed=1 easy-seed=4
+    practice chem.flame-boil count=2 seed=2 easy-seed=1 hard-seed=3
+    practice chem.boil-curve count=1 seed=5
+    practice chem.boil-temp count=1 seed=2
+  }
+  try stars=2 {
+    show chem.bigger-flame f=1 k=0
+  }
+  try stars=3 {
+    show chem.two-pans a=20 b=50 easy-a=30 easy-b=40 hard-a=10 hard-b=70
+  }
+  remember {
+    say "Water in an open pan stops at 100 degrees while it boils, however big the flame."
+  }
+
+  grown-ups """
+    A grown-up does all the heating, and the child watches from a step back in goggles; a pan on the
+    hob and a cooking thermometer are the same experiment as the burner. The first question, reading
+    the thermometer, is the way in. The core uses the steady rise and the stop at 100: what it will
+    read, whether it is boiling yet, and when it started to boil on a graph. One graph was drawn in a
+    hut up a mountain, where water boils at about 90 degrees; that is true near 3000 metres and is
+    why the flat part is read rather than remembered. The two-star question asks which of two graphs
+    had the bigger flame, and why: both stop at 100, so the bigger flame shows as the line that gets
+    there sooner. The three-star question has two pans climbing at once and asks how long one boils
+    while the other has not started, which needs both timelines side by side. The bubbles in boiling
+    water are steam made inside the water, not air, and the white cloud above the pan is tiny drops
+    that have cooled back into water; the steam itself cannot be seen.
+    """
+  level easy {
+    grown-ups "At this level the thermometer is read as written, the rise runs two or three minutes, the stop at 100 is worked once in the teacher's pen before two rises that stay at 80 or below, the boil is thirty degrees or more away, the graph is as written, the boiling water is at home, at 100, the two-star is as written, and the three-star's pans start ten degrees apart."
+  }
+  level hard {
+    grown-ups "At this level the thermometer is read as written, the rise runs four or five minutes from 30 or 40, both rises reach 90 or would pass 100 and stop there, the boil is ten degrees away either side, the graph is as written, the boiling water is up a mountain, at 90, the two-star is as written, and the three-star's pans start sixty degrees apart."
+  }
+}

@@ -1,0 +1,24 @@
+# Which move is on a given beat, with no strip to read it from, so the repeat has to be unrolled in
+# the head: the audit's raise for the missing frame.
+item coding.dance-frame-of v=1 skills=[coding.tracing, coding.repetition] {
+  title "What happens on this beat?"
+  difficulty f
+  let n=2..3 f=3..8 s=0..1
+  where (f <= 2 * n + 2)
+  level easy {
+    let f=3..4
+  }
+  level hard {
+    let f=6..8
+  }
+
+  scene 30x16 {
+    blocks b code=["{if s == 0 then \"wave\" else \"stamp\"}", "repeat {n}", "  jump", "  spin", "bow"] at=canvas(1, 0)
+    text ask "Each block is one beat. What does the robot do on beat {f}?" width=18 right-of=b gap=2
+    choice pick options=["{if s == 0 then \"wave\" else \"stamp\"}", "jump", "spin", "bow"] below=b gap=1
+  }
+
+  check coding.runs of=b pick="frame({f})"
+  hint "Say the dance out loud, one move a beat, and count on your fingers."
+  hint "The first move is beat 1. Then the repeat gives jump, spin, jump, spin."
+}

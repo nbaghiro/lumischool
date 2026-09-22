@@ -1,0 +1,28 @@
+# How many letters in a row start with c's curl: the family is c, o, a, d and g here, against
+# letters that start straight down or on a slant.
+item writing.curl-count v=1 skills=[writing.letter-formation] {
+  title "How many start with the curl?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x13 {
+    lettercards cards letters=["{pick(k, \"c\", \"d\", \"b\", \"g\")}", "{pick(k, \"a\", \"o\", \"a\", \"o\")}", "{pick(k, \"t\", \"g\", \"d\", \"o\")}", "{pick(k, \"o\", \"l\", \"n\", \"d\")}", "{pick(k, \"i\", \"i\", \"g\", \"m\")}"] at=canvas(1, 1)
+    text ask "How many of these letters start with c's curl?" narrate width=32 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 3 then 4 else 3)
+  feedback {
+    when (answer == 5) point=cards {
+      say "Not every letter starts with the curl. Check each one: does the pencil start near the top and go round to the left?"
+    }
+  }
+  hint "Say each letter and think where its pencil starts. c, o, a, d and g start with the curl."
+  hint "Letters like t, l, i, b, n and m start straight down."
+}

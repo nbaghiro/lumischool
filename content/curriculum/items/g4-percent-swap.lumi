@@ -1,0 +1,26 @@
+# a% of b is b% of a: sometimes the two sides are the same whatever the numbers, and seeing why is
+# the reason asked for. The other versions change one number, so the answer is not always "same".
+item percent.which-more v=1 stars=2 skills=[percentages.of-amount, reasoning.compare-without-totalling] {
+  title "Which is more"
+  difficulty ((if q == 0 then 2 else 0) + (p + n) / 100)
+  let p={10, 20, 25, 50} n={20, 40, 60, 80} q=0..2
+  level hard {
+    let q={0}
+  }
+
+  scene 30x12 {
+    text ask "Which is more? Think about it before you work anything out." narrate width=29 at=canvas(1, 1)
+    text pa "A:   {p}% of {n}" below=ask gap=1
+    text pb "B:   {if q == 0 then n else p}% of {if q == 0 then p else if q == 1 then n + 20 else n - 10}" below=pa gap=0
+    choice pick options=["A", "B", "the same"] below=pb gap=1
+  }
+
+  answer pick=(if q == 0 then "the same" else if q == 1 then "B" else "A")
+  feedback {
+    when (q == 0 and pick != "the same") point=pb {
+      say "Work them both out. {p}% of {n} and {n}% of {p} come out the same. Can you see why?"
+    }
+  }
+  hint "Are the two questions using the same numbers, or different ones?"
+  hint "{p}% of {n} is {p} hundredths of {n}. What is {n}% of {p}?"
+}

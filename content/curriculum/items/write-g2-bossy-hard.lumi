@@ -1,0 +1,33 @@
+# The audit's raise for bossy-word: every choice is a doing word, so the picture and the rest of
+# the instruction decide which one, not the kind of word.
+item writing.bossy-hard v=1 skills=[writing.instructions, writing.vocabulary] {
+  title "The right doing word"
+  difficulty (if k == 3 or k == 5 then 1 else 0)
+  let k=0..5 r=0..2
+  level easy {
+    let k={0, 1, 2, 4}  # crack, stir, pour, plant
+  }
+  level hard {
+    let k={3, 5}  # bake and water: the doing word the picture only hints at
+  }
+  let pic={if k == 0 then "eggs" else if k == 1 then "stir" else if k == 2 then "tin" else if k == 3 then "oven" else if k == 4 then "seed" else "water"}
+  let rest={if k == 0 then "the eggs into the bowl." else if k == 1 then "the mix with a spoon." else if k == 2 then "the mix into the tin." else if k == 3 then "the cake for half an hour." else if k == 4 then "the seed in the soil." else "the pot every day."}
+  let key={if k == 0 then "Crack" else if k == 1 then "Stir" else if k == 2 then "Pour" else if k == 3 then "Bake" else if k == 4 then "Plant" else "Water"}
+  let d1={if k == 0 then "Bake" else if k == 1 then "Crack" else if k == 2 then "Plant" else if k == 3 then "Plant" else if k == 4 then "Bake" else "Crack"}
+  let d2={if k == 0 then "Water" else if k == 1 then "Plant" else if k == 2 then "Crack" else if k == 3 then "Crack" else if k == 4 then "Stir" else "Bake"}
+  let o1={if r == 0 then key else d1}
+  let o2={if r == 1 then key else if r == 0 then d1 else d2}
+  let o3={if r == 2 then key else d2}
+
+  scene 37x10 {
+    picsteps pic pictures=["{pic}"] texts=[""] per=1 numbers=false write=false at=canvas(1, 1)
+    column q right-of=pic gap=1 space=1 align=start {
+      sentence strip before="" blank=5 after="{rest}"
+      choice pick options=["{o1}", "{o2}", "{o3}"]
+    }
+  }
+
+  answer pick=key
+  hint "All three are doing words. Read the instruction with each one. Which makes sense?"
+  hint "Look at the picture. What is happening in it?"
+}

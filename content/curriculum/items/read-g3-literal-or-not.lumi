@@ -1,0 +1,18 @@
+# Literal and nonliteral language side by side, RL.3.4: the same words (moon, cake, dogs,
+# butterflies) are used exactly in two sentences and as a saying in one.
+item reading.literal-or-not v=1 stars=2 skills=[reading.figurative, reading.vocabulary] {
+  title "Which one does not mean what it says?"
+  difficulty (if k == 1 then 2 else if k == 2 then 0 else 1)
+  let k=0..3
+
+  scene 37x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Two of these sentences mean exactly what they say. Which one does not?" width=36
+      choice pick options=[if k == 0 then "The cow jumped over the gate." else if k == 1 then "The spelling test was a piece of cake." else if k == 2 then "Our cat hid from the dogs in the park." else "A butterfly landed on the flower.", if k == 0 then "Kit was over the moon about her bike." else if k == 1 then "Dad cut the cake into eight pieces." else if k == 2 then "The dogs ran after the ball." else "Joss ran in the race on Sunday.", if k == 0 then "The moon rose over the hill." else if k == 1 then "Ivy ate a piece of cake at the party." else if k == 2 then "It was raining cats and dogs all day." else "Joss had butterflies in his tummy."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then "Kit was over the moon about her bike." else if k == 1 then "The spelling test was a piece of cake." else if k == 2 then "It was raining cats and dogs all day." else "Joss had butterflies in his tummy.")
+  hint "For each sentence, ask: could this happen just as the words say?"
+  hint "One sentence is a saying. It tells you about a feeling or about how much, not about real things."
+}

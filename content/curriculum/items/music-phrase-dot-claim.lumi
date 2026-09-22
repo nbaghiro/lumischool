@@ -1,0 +1,30 @@
+# The two-star reason: two claims about bar 4 of the phrase, the dotted note, the quaver and the minim.
+# Its three notes last four beats, and the minim is the longest.
+item music.phrase-dot-claim v=1 stars=2 skills=[music.note-values, reasoning.claims] {
+  title "What does the dot do?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ana says bar 4 has three notes, so it lasts three beats.", "Ben says the dotted note is the longest note in bar 4.")}
+  let right={pick(q, "No: they add up to 4 beats", "No: the minim is longer, 2 beats")}
+  let w1={pick(q, "Yes: each note is one beat", "Yes: the dot makes it longest")}
+  let w2={pick(q, "No: with the dot it is 5 beats", "No: every note here lasts one beat")}
+
+  scene 36x24 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes bar clef=treble notes=[E4, D4, D4] values=[1.5, 0.5, 2] meter=4
+      text ask "{claim} Is that right, and why?" narrate width=17
+    }
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=bar {
+      say "A note does not always last one beat. A dot adds half the note again."
+    }
+    when (pick == w2) point=bar {
+      say "A dot adds half of the note's own length, not a whole beat."
+    }
+  }
+  hint "How long is a crotchet with a dot after it?"
+  hint "Add up the three notes: the dotted note, the quaver with its flag, and the open minim."
+}

@@ -1,0 +1,19 @@
+# The audit's raise for list-word: a word of two beats in a plain box, so the child splits it into
+# beats as well as sounds (rock-et, pen-cil, hedge-hog).
+item writing.list-two-beats v=1 skills=[writing.spelling, writing.lists] {
+  title "A longer word for the list"
+  let k=0..2
+  let w={if k == 0 then "rocket" else if k == 1 then "pencil" else "hedgehog"}
+
+  scene 30x18 {
+    row both at=canvas(1, 1) space=2 align=start {
+      listpad pad title="For the trip" items=["a hat", "a map", ""] count=0 width=12 ticks=true
+      art pic asset="{w}"
+    }
+    text ask "Write the word for the picture on the last line. Clap its beats first." narrate width=28 below=both gap=1
+  }
+
+  check writing.by-eye look-for="The word for the picture on the empty line, spelled so it can be read with a letter or two for every sound in both beats (rokit for rocket is a good attempt at grade one), and on its own line like the other things."
+  hint "Clap the word. How many beats does it have?"
+  hint "Write the first beat, then say the second beat and write that."
+}

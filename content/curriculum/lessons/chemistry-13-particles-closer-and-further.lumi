@@ -1,0 +1,61 @@
+lesson chemistry-particles-closer-and-further v=2 format=teach grade=4 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Particles, closer and further apart"
+  goal "Explain a change of state, and a change of temperature, by what the particles are doing, and know that heating never changes how many there are."
+
+  look {
+    scene 33x12 {
+      row three at=canvas(1, 0) space=1 align=start {
+        particles s spread=0 count=16 moving=1
+        particles l spread=1 count=16 moving=1
+        particles g spread=2 count=12 moving=2
+      }
+    }
+    say """
+      Particles never stop moving. Heat them and they move faster: a solid's jiggle in their rows,
+      a liquid's slide past each other, a gas's fly about. In a closed jar a hotter gas is no further
+      apart, just faster, and heating never makes or loses a particle.
+      """
+  }
+  do {
+    practice chem.jiggle-state count=2 seed=3
+    practice chem.warmer-jar count=2 seed=1
+    level easy {
+      worked chem.same-number n=12 d=1 level=medium
+    }
+    practice chem.same-number count=1 seed=4
+    practice chem.name-the-change count=2 hard-count=1 seed=1
+    level hard {
+      practice chem.jar-mistake count=1 seed=2
+    }
+    practice chem.coldest-jar count=1 seed=5
+  }
+  try stars=2 {
+    show chem.jar-mistake k=0 easy-k=1 hard-k=3
+  }
+  try stars=3 {
+    show chem.half-dark v=5 easy-v=0 hard-v=19
+  }
+  remember {
+    say "Warmer means faster, not bigger and not more. In a closed jar a hotter gas is no further apart."
+  }
+
+  grown-ups """
+    The first two questions are the way in: the marks round each particle show how it moves, and the
+    arrangement shows the state. The jars with lids answer a common mistake, that heating a gas in a
+    closed jar spreads it out; it cannot, the jar is the same size, and what changes is speed. Another
+    common idea is that particles themselves swell when heated, and a third that heating makes new
+    particles; the question about how many are left after heating is there for both. The two-star
+    question is someone else's model to check, and one version has nothing wrong with it. The
+    three-star question has a trap: each dark particle added also makes the jar's total bigger, so
+    half of the old total is the wrong target. A balloon on a warm radiator and the same balloon in
+    the fridge is the kitchen version, and it takes half an hour. The balloon grows on the radiator
+    because its skin can stretch, so the faster particles push it out; a glass jar cannot stretch,
+    which is why the jars in the questions keep their spacing.
+    """
+  level easy {
+    grown-ups "At this level the states and the warmer jar are as written, a cooled jar is counted once in the teacher's pen before a heated jar of ten or twelve, the changes to name are melting and freezing, the coldest jar is as written, the jar to check has too few particles, and the three-star jar holds twelve."
+  }
+  level hard {
+    grown-ups "At this level the states and the warmer jar are as written, the cooled jar holds fourteen or sixteen, the change to name is evaporating or condensing, the coldest jar is as written, the jar to check has nothing wrong with it, after one whose particles are not moving faster, and the three-star jar holds twenty."
+  }
+}

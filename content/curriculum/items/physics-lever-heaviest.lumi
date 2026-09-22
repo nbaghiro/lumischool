@@ -1,0 +1,20 @@
+item physics.lever-heaviest v=1 skills=[physics.machines, reasoning.backwards] stars=3 {
+  title "The heaviest stone"
+  difficulty (p * (10 - f) / f)
+  let f={1, 2, 5} p={10, 20, 30}
+
+  scene 25x18 {
+    lever bar fulcrum=f load=0 push=p at=canvas(1, 0)
+    text ask "With the pivot here, what is the heaviest stone, in newtons, this push can hold level?" width=18 below=bar gap=0
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (p * (10 - f) / f)
+  feedback {
+    when (answer == p and f != 5) point=bar {
+      say "The push is further from the pivot than the stone, so it can hold more than itself."
+    }
+  }
+  hint "What is the push times its steps?"
+  hint "The stone's weight times its steps must match that."
+}

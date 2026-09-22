@@ -1,0 +1,16 @@
+item art.pieces-for-two v=1 skills=[art.shape, reasoning.two-steps] {
+  title "Enough for two"
+  difficulty (if s == "house" then 1 else 0)
+  let s={"boat", "house"} t={"triangle", "square"}
+  where (not (s == "boat" and t == "square"))
+
+  scene 30x12 {
+    collage pic scene=s at=canvas(1, 1)
+    text ask "Ada wants to make two {s}s just like this one. How many {t}s must she cut?" width=12 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check art.shapes of=pic answer="{t}" times=2
+  hint "How many {t}s does one {s} need?"
+  hint "She makes the {s} twice. How many {t}s is that?"
+}

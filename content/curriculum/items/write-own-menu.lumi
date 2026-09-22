@@ -1,0 +1,23 @@
+# The three-star: a menu of the child's own on the frame, three headings, a dish with a price
+# and a describing word under each, marked by a grown-up.
+item writing.own-menu v=1 stars=3 skills=[writing.layout, writing.composing] {
+  title "Your menu"
+  difficulty k
+  let k=0..1
+  let task={pick(k, "Write a menu for your own cafe: one dish under each heading, each with a price written the proper way and one describing word before the dish.", "Write a menu for your own cafe: two dishes under each heading, each with a price written the proper way and one describing word before it, no word used twice.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x17 {
+    text ask "{task}" narrate width=32 at=canvas(1, 1)
+    writingframe frame prompts=["Drinks", "Mains", "Puddings"] lines=2 width=32 note="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A dish under every heading that belongs to it, each on its own line with a price written as a dollar sign, the dollars, a point and two figures for the cents, and one describing word before the dish that would make a customer want it; at the harder level two dishes a heading and no describing word repeated."
+  hint "Think of what you would like to eat, then which heading it goes under."
+  hint "Say the price out loud, then write it: the sign, the dollars, the point, the two cents figures."
+}

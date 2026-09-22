@@ -1,0 +1,20 @@
+item physics.same-time-further v=1 skills=[physics.motion] stars=2 {
+  title "Same time, further"
+  difficulty (100 - (b - a))
+  let a={30, 40} b={50, 60}
+
+  scene 30x7 {
+    table data cols=3 head=["Name", "Metres", "Seconds"] cells=["Ada", a, 10, "Ben", b, 10] at=canvas(1, 0)
+    text ask "Who ran faster?" width=10 right-of=data gap=2
+    choice pick options=["Ada", "Ben"] below=ask gap=1
+  }
+
+  answer pick="Ben"
+  feedback {
+    when (pick == "Ada") point=data {
+      say "They ran for the same time. Who got further in those ten seconds?"
+    }
+  }
+  hint "They both ran for 10 seconds. What is different?"
+  hint "Who got further in those 10 seconds?"
+}

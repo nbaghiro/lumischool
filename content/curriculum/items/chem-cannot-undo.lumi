@@ -1,0 +1,30 @@
+# Whether a burnt candle can be made new again from what came off it, against the changes that
+# can be undone: the burnt wax has become gases that have gone, so no.
+item chem.cannot-undo v=1 skills=[chemistry.burning, chemistry.changes] {
+  title "Can it be undone?"
+  difficulty (if c == "burn-candle" then 0 else 1)
+  let c={"burn-candle", "melt-chocolate", "toast-bread", "freeze-water"} r=0..1
+  let right={if c == "burn-candle" then "No: the gases it made have gone into the air" else if c == "toast-bread" then "No: the bread has become something new" else if c == "melt-chocolate" then "Yes: cool it and it sets again" else "Yes: warm it and it melts again"}
+  let wrong={if c == "burn-candle" then "Yes: catch the smoke and cool it into wax" else if c == "toast-bread" then "Yes: cool it and the toast turns back" else if c == "melt-chocolate" then "No: melting makes a new material" else "No: ice is a new material"}
+  level easy {
+    let c={"burn-candle", "melt-chocolate"}
+  }
+  level hard {
+    let c={"toast-bread", "freeze-water"}
+  }
+
+  scene 34x19 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "Can this change be undone, so that what was there before comes back?" narrate width=32 below=ch gap=1
+    choice pick options=[if r == 0 then right else wrong, if r == 0 then wrong else right] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ch {
+      say "{if c == \"burn-candle\" then \"The wax did not go anywhere you can fetch it from: burning turned it into gases that mixed into the air. Nothing brings it back.\" else if c == \"toast-bread\" then \"Toast is not bread that has been warmed; the heat made something new in it, and cooling does not unmake it.\" else \"Melting and freezing change the state and nothing else. Warm or cool it and the same stuff is back.\"}"
+    }
+  }
+  hint "Is the same stuff still there in a new state, or has something new been made?"
+  hint "Melting and freezing go both ways. Burning and toasting make new things and go one way only."
+}

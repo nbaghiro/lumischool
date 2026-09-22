@@ -1,0 +1,42 @@
+lesson g3-taking-away-in-columns v=1 format=worked grade=3 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Taking away in columns"
+  goal "Take away three-digit numbers, exchanging across the columns, and use taking away to compare and to work back."
+
+  example {
+    worked columns.sub-three-digit a=532 b=278 easy-level=medium
+    say """
+      Two take eight will not go, so exchange a ten: twelve take eight is four. Now two tens take
+      seven will not go either, so exchange a hundred.
+      """
+  }
+  exercises {
+    practice columns.sub-three-digit count=2 seed=4
+    practice columns.sub-zero count=2 seed=6
+    practice sub.farms-compare count=2 seed=3
+    practice sub.fair-at-first count=2 hard-count=1 seed=8
+    level hard {
+      practice sub.robot-mistake count=1 seed=3
+    }
+  }
+  try stars=2 {
+    show sub.robot-mistake ah=7 at=6 ao=4 bh=3 bt=2 bo=8 m=0 hard-at=3 hard-bt=5 hard-m=1
+  }
+  try stars=3 {
+    show sub.biggest-difference a=3 b=8 c=5 easy-a=2 easy-b=4 easy-c=3 hard-a=1 hard-b=9 hard-c=5
+  }
+
+  grown-ups """
+    Zeros are the hard case. If the child gets stuck on 704, do it with rods and hundreds flats
+    once and the exchange becomes obvious. The sheep question compares two amounts, so nothing goes
+    away in the story, and the fair question starts with the unknown, so it is solved by adding:
+    ask which number is bigger before any working. In the two-star question the child has to say
+    which mistake the robot made as well as fix it. In the three-star question, trying two or three
+    pairs and noticing which gives the biggest gap is the method.
+    """
+  level easy {
+    grown-ups "At this level only the ones are exchanged in the column sums to do and the sheep comparison, the zero sums have a few ones to start from, the fair numbers add with no carry, the robot's sum is as written, the smaller digit taken from the bigger, and the cards are 2, 3 and 4."
+  }
+  level hard {
+    grown-ups "At this level the tens are exchanged as well as the ones, in the column sums and the sheep comparison, the zero sums take away from a whole hundred, the one fair question carries twice, the robot forgot the exchanged ten in a sum that needs two exchanges and is asked twice, and the cards are 1, 5 and 9."
+  }
+}

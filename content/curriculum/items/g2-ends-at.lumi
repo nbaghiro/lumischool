@@ -1,0 +1,32 @@
+# The end time is the unknown: count on in quarters from the clock, sometimes past the hour.
+item time.ends-at v=1 skills=[time.quarter-hours, time.elapsed] {
+  title "When does it end?"
+  difficulty (m + d)
+  let h=1..10 m={0, 15, 30, 45} d={15, 30, 45}
+  where (m + d != 60)
+  level easy {
+    let m={0, 15} d={15, 30}
+  }
+  level hard {
+    let m={30, 45} d={30, 45}
+  }
+
+  scene 30x10 {
+    clock face h=h m=m at=canvas(1, 1)
+    text ask "Swimming starts at the time on the clock and lasts {d} minutes. What time does it end?" narrate width=20 right-of=face gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input hour width=3
+      equation colon ":"
+      number-input minutes width=3
+    }
+  }
+
+  answer hour=(h + (m + d) // 60) minutes=((m + d) % 60)
+  feedback {
+    when (hour == h and m + d > 60) point=face {
+      say "The long hand goes past the 12, so the hour goes up by one."
+    }
+  }
+  hint "Where is the long hand now? Move it on {d} minutes, a quarter turn for every 15."
+  hint "Did the long hand go past the 12? Then it is the next hour."
+}

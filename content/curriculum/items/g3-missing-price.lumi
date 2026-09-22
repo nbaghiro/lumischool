@@ -1,0 +1,28 @@
+# A receipt with one price missing and the total given: the total minus the price you know.
+item money.worn-receipt v=1 skills=[money.decimals, subtraction.decimals] {
+  title "The price that is missing"
+  difficulty (j + (if 100 * j % 100 + 100 * s % 100 >= 100 then 2 else 0))
+  let j={1.35, 1.80, 2.15, 2.70} s={2.45, 3.60, 4.25, 1.95}
+  where (j != s)
+  level easy {
+    where (100 * j % 100 + 100 * s % 100 < 100)  # the cents of the total are more than the juice's
+  }
+  level hard {
+    where (100 * j % 100 + 100 * s % 100 >= 100)  # taking the juice away borrows a dollar
+  }
+
+  scene 31x10 {
+    table bill cols=2 head=["Item", "Price"] cells=["Juice", j, "Sandwich", "?", "Total", j + s] at=canvas(1, 1)
+    text ask "The price of the sandwich has worn off the receipt. How much was the sandwich, in dollars?" width=14 right-of=bill gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == j + j + s) point=bill {
+      say "The total already has the sandwich in it. Take the juice away from the total."
+    }
+  }
+  hint "The juice and the sandwich together cost the total. Which part do you know?"
+  hint "Take the juice price away from the total. Count on in cents if it helps."
+}

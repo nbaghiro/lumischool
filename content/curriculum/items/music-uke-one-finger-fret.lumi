@@ -1,0 +1,21 @@
+# The other one-finger chords, read the way C was: count the frets down from the nut.
+item music.uke-one-finger-fret v=1 skills=[music.chord-boxes] {
+  title "Which fret?"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+
+  scene 26x15 {
+    chordbox box tuning=uke chord=(if k == 0 then "Am" else if k == 1 then "C7" else "A7") frets=3 show=dots name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "Count down from the thick line at the top. Which fret is the dot on for {if k == 0 then \"Am\" else if k == 1 then \"C7\" else \"A7\"}?" width=13 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else 1)
+  feedback {
+    when (answer == (if k == 0 then 3 else 2)) point=box {
+      say "Count the spaces between the lines, not the lines."
+    }
+  }
+  hint "Where is the thick line? The first space under it is fret 1."
+  hint "Move your finger down one space at a time until you reach the dot."
+}

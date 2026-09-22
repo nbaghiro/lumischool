@@ -1,0 +1,21 @@
+# A digit missing from each number, for the harder level of adding with an exchange: the ones are
+# worked first, and the tens only come out right once the carried ten is taken off.
+item columns.two-missing-digits v=1 skills=[addition.columns, reasoning.missing-number] {
+  title "A digit missing from each"
+  let t=2..6 d=3..9 s=2..6 u=2..9
+  where (d + u >= 10 and 10 * (t + s) + d + u < 100)
+
+  scene 24x6 {
+    equation sum "{t}{?ones} + {?tens}{u} = {10 * (t + s) + d + u}" at=canvas(1, 1)
+    text ask "Each box holds one digit." narrate below=sum gap=1
+  }
+
+  answer ones=d tens=s
+  feedback {
+    when (tens == s + 1) point=sum {
+      say "The ones made more than ten, so a ten was carried. Take it off before you find the tens digit."
+    }
+  }
+  hint "Start with the ones. What adds to {u} to end in {(10 * (t + s) + d + u) % 10}?"
+  hint "Did the ones make a ten? Then the tens column holds one more than its two digits."
+}

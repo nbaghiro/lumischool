@@ -1,0 +1,30 @@
+# The bus is drawn as it was at the shop, full. The passage says how many got off, so the picture
+# holds the first number and the reading supplies the second.
+item reading.count-in-passage v=2 skills=[reading.comprehension] {
+  title "Reading the numbers"
+  difficulty (n + m)
+  let n=4..9 m=2..4
+  where (n > m)
+
+  scene 30x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="The bus" text="{n} children got on the bus at the shop. At the park {m} of them got off and ran to the swings." width=28
+      bus b windows=n on=n sign="12"
+      row q space=2 align=centre {
+        text ask "How many children are still on the bus?" width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer (n - m)
+  feedback {
+    when (answer == n + m) point=p {
+      say "The ones who got off are not on the bus any more, so take them away."
+    }
+    when (answer == n) point=p {
+      say "That is how many got on. Some of them got off at the park."
+    }
+  }
+  hint "Find both numbers in the passage first, then decide what to do with them."
+}

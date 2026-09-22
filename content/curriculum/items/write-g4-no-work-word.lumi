@@ -1,0 +1,23 @@
+# One word repeats what another already says, and the child writes it rather than picking it.
+# The options hold only this version's word, since every option counts as right.
+item writing.no-work-word v=2 skills=[writing.concision] {
+  title "The word that says it twice"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 1, 4, 5}  # repeat again, joined together, shouted out loud, returned back
+  }
+  level hard {
+    let k={2, 3}  # first began, a free gift
+  }
+
+  scene 32x10 {
+    caption draft text="{if k == 0 then \"Please can you repeat that again?\" else if k == 1 then \"They joined the two ropes together.\" else if k == 2 then \"The show first began at six.\" else if k == 3 then \"Everyone got a free gift in a bag.\" else if k == 4 then \"We all shouted out loud when she won.\" else \"Mo returned back to the shop.\"}" width=30 at=canvas(1, 1)
+    text ask "One word says again what another word has said. Write it." width=30 below=draft gap=1
+    word-input pick options=["{if k == 0 then \"again\" else if k == 1 then \"together\" else if k == 2 then \"first\" else if k == 3 then \"free\" else if k == 4 then \"loud\" else \"back\"}"] letters=8 below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "again" else if k == 1 then "together" else if k == 2 then "first" else if k == 3 then "free" else if k == 4 then "loud" else "back")
+  hint "Which word would you not miss if you took it away?"
+  hint "Look at the doing word. Does it already mean what another word says?"
+}

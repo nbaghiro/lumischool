@@ -1,0 +1,35 @@
+# The way in to tracing: the first row of the table, from a start that is not in the corner.
+item coding.trace-first-step v=1 skills=[coding.tracing] {
+  title "The first row of the table"
+  difficulty (a + (if k == 0 then 2 else 0))
+  let c=2..4 r=1..2 a=1..2 k=0..1
+  level easy {
+    let a={1} k={1}
+  }
+  level hard {
+    let c=3..4 a={2} k={0}  # left two, from a column it can leave
+  }
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["{if k == 0 then \"left\" else \"right\"} {a}", "down 2", "right 1"]
+      tracetable tr code=["{if k == 0 then \"left\" else \"right\"} {a}", "down 2", "right 1"] cols=6 rows=4 col=c row=r filled=0
+    }
+    text ask "The robot starts on column {c}, row {r}. Where is it after step 1?" width=30 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=tr col="after(1).col" row="after(1).row"
+  feedback {
+    when (col == c + a and k == 0) point=p {
+      say "Left makes the column number smaller."
+    }
+  }
+  hint "Step 1 is line 1. Which way does it go, and how far?"
+  hint "Only the column changes on this line. Does it go up or down?"
+}

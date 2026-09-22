@@ -1,0 +1,31 @@
+item data.mean v=1 skills=[data.mean] {
+  title "The mean of four days"
+  difficulty (a + b + c + d)
+  let a=2..12 b=2..12 c=2..12 d=2..12
+  where ((a + b + c + d) % 4 == 0)
+  where (not (a == b and b == c and c == d))
+  where ((a + b + c + d) / 4 != a)
+  level easy {
+    let a=2..6 b=2..6 c=2..6 d=2..6
+  }
+  level hard {
+    let a=7..12 b=7..12 c=7..12 d=7..12
+  }
+
+  scene 26x22 {
+    text ask "Four days of rain, in millimetres. What is the mean?" width=24 at=canvas(1, 0)
+    bargraph rain labels=["Mon", "Tue", "Wed", "Thu"] values=[a, b, c, d] max=12 color=sky below=ask gap=1
+    number-input answer below=rain gap=1
+  }
+
+  answer ((a + b + c + d) / 4)
+  feedback {
+    when (answer == a + b + c + d) point=rain.bar(0) {
+      say "That is the total. Share it out between the four days."
+    }
+    when (answer == max(a, b, c, d)) point=rain.bar(0) {
+      say "The mean is not the tallest bar. Add all four, then divide by 4."
+    }
+  }
+  hint "Add the four numbers, then share the total between four days."
+}

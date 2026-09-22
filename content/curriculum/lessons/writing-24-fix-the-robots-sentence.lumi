@@ -1,0 +1,54 @@
+lesson writing-fix-the-robots-sentence v=1 format=teach grade=3 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Fix the robot's sentence"
+  goal "Check a sentence for capitals, the end mark and spelling, and mend it."
+
+  look {
+    scene 28x20 {
+      column all at=canvas(1, 1) space=1 align=start {
+        fixbot broken says="ben and i fixed to lamps" width=18 fixed=0 ring=-1
+        fixbot mended says="Ben and I fixed two lamps." width=18 fixed=1 ring=4
+      }
+    }
+    say """
+      The lab robot writes fast and never checks. Check three things in turn. Are the capitals
+      there, for the start, for a name and for I? Is there a mark at the end? Is every word the
+      right word? Here the robot wrote to where it meant two.
+      """
+  }
+  do {
+    level easy {
+      worked writing.robot-end-mark k=4 level=medium
+    }
+    practice writing.robot-end-mark count=1 seed=1
+    practice writing.robot-capitals count=2 seed=2
+    practice writing.robot-what-is-wrong count=1 seed=1 hard-seed=7
+    practice writing.robot-right-word count=2 seed=2
+    practice writing.robot-two-kinds count=1 seed=3
+    show writing.robot-rewrite k=0
+  }
+  try stars=2 {
+    show writing.robot-best-fix k=2 p=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.robot-trap t="the lighthouse"
+  }
+  remember {
+    say "Capitals, the mark at the end, and every word the right word."
+  }
+
+  grown-ups """
+    The robot takes the sting out of finding mistakes: it is the robot's sentence, not the child's.
+    The same three checks work on the child's own writing afterwards, one pass for each. Every
+    question is marked by the machine except the rewritten sentence and the three-star sentence,
+    which are yours to read. In the seventh question the robot makes two kinds of mistake at once,
+    so a child who stops at the first one finds out. In the two-star question one of the
+    wrong fixes adds a capital that was not needed, which is a mistake too. The three-star question
+    turns the job round: the child hides one of each kind of mistake and then shows you where.
+    """
+  level easy {
+    grown-ups "At this level a question starting with is is marked once in the teacher's pen before tellings and a where question, the robots miss two capitals, what is wrong and the right word are as written, the two kinds of mistake are a capital and the end mark, the sentence to copy is as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the end marks are for questions, the robots miss three, four or five capitals, what is wrong is to for too, the right word is as written, the two kinds of mistake are a wrong word and a capital, the two-star's sentence is the question about the magnet, and the three-star is as written."
+  }
+}

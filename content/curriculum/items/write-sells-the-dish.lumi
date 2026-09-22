@@ -1,0 +1,36 @@
+# The describing word that sells a dish: the one that makes a reader want it, against words that
+# are true of a dish nobody would order.
+item writing.sells-the-dish v=1 skills=[writing.vocabulary, writing.word-classes] {
+  title "The word that sells it"
+  difficulty k
+  let k=0..2 p=0..3
+  let dish={pick(k, "soup", "cake", "chips")}
+  let d={pick(k, "hot", "fresh", "crispy")}
+  let x={pick(k, "cold", "stale", "soggy")}
+  let y={pick(k, "grey", "flat", "greasy")}
+  let z={pick(k, "thin", "dry", "pale")}
+  let o1={pick(p, d, x, y, z)}
+  let o2={pick(p, x, y, z, d)}
+  let o3={pick(p, y, z, d, x)}
+  let o4={pick(p, z, d, x, y)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x9 {
+    text ask "Sam wants one describing word before {dish} on the menu, a word that makes people want to order it. Which word sells the {dish}?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}", "{o4}"] below=ask gap=1
+  }
+
+  answer pick=d
+  feedback {
+    when (pick != d) point=ask {
+      say "All four describe {dish}, but a menu chooses the word that makes the reader hungry. Would you order {pick} {dish}?"
+    }
+  }
+  hint "Say each word before the dish. Which one would make you order it?"
+  hint "A menu picks the word that sounds good to eat, not just a true one."
+}

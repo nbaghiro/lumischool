@@ -1,0 +1,42 @@
+# A leaf described by its edge, and four leaves to find it among. The description is the sort of
+# thing a child says about a leaf before knowing its name, so the name is learned from the edge and
+# not the other way round.
+item nature.leaf-by-edge v=1 skills=[nature.leaves] {
+  title "Which leaf is that?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3 p=0..3
+  let edge={pick(k, "sharp prickles all round its edge", "points sticking out like the fingers of a hand", "a wavy edge with round bumps along it", "a smooth edge and a pointed tip")}
+  let l1={pick(p, "holly", "ash", "oak", "maple")}
+  let l2={pick(p, "maple", "holly", "ash", "oak")}
+  let l3={pick(p, "oak", "maple", "holly", "ash")}
+  let l4={pick(p, "ash", "oak", "maple", "holly")}
+  let kind={pick(k, "holly", "maple", "oak", "ash")}
+  let where={if l1 == kind then "first" else if l2 == kind then "second" else if l3 == kind then "third" else "fourth"}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x13 {
+    leafrow leaves kinds=[l1, l2, l3, l4] labels=false at=canvas(1, 1)
+    text ask "Ben describes a leaf he found: it has {edge}. Which of these is it?" narrate width=16 right-of=leaves gap=2
+    choice pick options=["first", "second", "third", "fourth"] below=leaves gap=1
+  }
+
+  answer pick=where
+  feedback {
+    when (k == 2 and pick != where) point=leaves {
+      say "Round bumps are not points and not prickles. Look for the edge that goes in and out gently, like waves."
+    }
+    when (k == 3 and pick != where) point=leaves {
+      say "The one Ben means has nothing sticking out of its edge at all. Find the plain one."
+    }
+    when (k <= 1 and pick != where) point=leaves {
+      say "Run your finger round each leaf's edge in the picture. Which one would prick or poke you?"
+    }
+  }
+  hint "Say Ben's words to yourself and look at each leaf's edge in turn."
+  hint "Cross out the leaves that cannot be it. Which one is left?"
+}

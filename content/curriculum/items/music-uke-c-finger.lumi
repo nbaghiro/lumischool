@@ -1,0 +1,19 @@
+# Reading a chord box: a dot is a finger, its number says which finger, and where it sits says the
+# string and the fret. C needs only one of them, which is why it is the first chord.
+item music.uke-c-finger v=1 skills=[music.chord-boxes] {
+  title "The finger for C"
+
+  scene 24x17 {
+    chordbox box tuning=uke chord=C frets=4 show=fingers name=true letters=true lit=[] at=canvas(1, 1)
+    text ask "The number in the dot says which finger. Which finger plays C?" width=12 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 1) point=box {
+      say "Your pointer finger is 1. The dot says 3, which is your ring finger."
+    }
+  }
+  hint "Pointer is 1, middle is 2, ring is 3, little is 4."
+}

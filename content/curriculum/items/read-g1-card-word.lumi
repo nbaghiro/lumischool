@@ -1,0 +1,16 @@
+# More than one right answer: every word the cards can make that fits both ends is accepted, and
+# the cards are chosen so there are exactly three.
+item reading.card-word v=1 stars=3 skills=[reading.blending, reasoning.constraints] {
+  title "A word from the cards"
+  let k=0..4
+
+  scene 26x15 {
+    lettercards cards letters=["{if k == 0 then \"p\" else if k == 1 then \"s\" else if k == 2 then \"t\" else if k == 3 then \"b\" else \"h\"}", "a", "{if k == 1 then \"e\" else if k == 3 then \"u\" else \"o\"}", "i", "{if k == 0 or k == 1 or k == 4 then \"t\" else if k == 2 then \"p\" else \"g\"}"] at=canvas(1, 1)
+    text ask "Use three cards. Make a word that starts with {if k == 0 then \"p\" else if k == 1 then \"s\" else if k == 2 then \"t\" else if k == 3 then \"b\" else \"h\"} and ends with {if k == 0 or k == 1 or k == 4 then \"t\" else if k == 2 then \"p\" else \"g\"}." width=24 below=cards gap=1
+    word-input word options=["{if k == 0 then \"pat\" else if k == 1 then \"sat\" else if k == 2 then \"tap\" else if k == 3 then \"bag\" else \"hat\"}", "{if k == 0 then \"pot\" else if k == 1 then \"set\" else if k == 2 then \"top\" else if k == 3 then \"bug\" else \"hot\"}", "{if k == 0 then \"pit\" else if k == 1 then \"sit\" else if k == 2 then \"tip\" else if k == 3 then \"big\" else \"hit\"}"] letters=3 below=ask gap=1
+  }
+
+  answer word=(if k == 0 then "pat" else if k == 1 then "sat" else if k == 2 then "tap" else if k == 3 then "bag" else "hat")
+  hint "Put the first card down and the last card down. Which card can go in the middle?"
+  hint "Try each middle card and say the word. Is it a real word?"
+}

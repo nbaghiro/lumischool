@@ -1,0 +1,18 @@
+# A reason, not a yes or no: a sieve separates two things only if one is bigger than its holes and
+# the other smaller, and the reasons for "no" are different.
+item chem.sep-sieve-works v=1 stars=2 skills=[chemistry.separating, reasoning.explain] {
+  title "Will this sieve work?"
+  let v=0..5
+
+  scene 36x16 {
+    text ask "The holes in this sieve are the size shown. Will it separate the mixture, and why?" width=32 at=canvas(1, 0)
+    row kit below=ask gap=0 space=1 align=start {
+      sieve s mixture=["{if v == 0 then \"pebbles\" else if v == 1 then \"sand\" else if v == 2 then \"sand\" else if v == 3 then \"sand\" else if v == 4 then \"peas\" else \"peas\"}", "{if v == 0 then \"sand\" else if v == 1 then \"salt\" else if v == 2 then \"flour\" else if v == 3 then \"flour\" else if v == 4 then \"rice\" else \"rice\"}"] holes=(if v == 0 then 2 else if v == 1 then 2 else if v == 2 then 2 else if v == 3 then 1 else if v == 4 then 3 else 2) shaken=0 names=1
+      choice pick options=["Yes, one fits and one does not", "No, both fit through", "No, neither fits"] stack=column
+    }
+  }
+
+  answer pick=(if v == 0 then "Yes, one fits and one does not" else if v == 1 then "No, both fit through" else if v == 2 then "No, both fit through" else if v == 3 then "Yes, one fits and one does not" else if v == 4 then "Yes, one fits and one does not" else "No, neither fits")
+  hint "Look at how fine the mesh is. Would each of the two fit through?"
+  hint "A sieve sorts by size. What happens if both fit through, or neither does?"
+}

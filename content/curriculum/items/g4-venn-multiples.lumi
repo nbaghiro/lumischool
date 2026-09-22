@@ -1,0 +1,29 @@
+# Where one number goes in a Venn of multiples: it has to be tested against both rings.
+item multiples.venn-where v=1 skills=[number.multiples] {
+  title "Which part of the rings"
+  difficulty ((if x % a == 0 and x % b == 0 then 3 else if x % a != 0 and x % b != 0 then 2 else 1) + x / 30)
+  let a={3, 4, 5} b={6, 8, 10} x=13..60
+  where (b % a != 0)
+  where (x % a == 0 or x % b == 0 or x % 7 == 0)
+  level easy {
+    where (x <= 30 and (x % a == 0) != (x % b == 0))  # one ring only
+  }
+  level hard {
+    where (x >= 30 and (x % a == 0) == (x % b == 0))  # both rings, or neither
+  }
+
+  scene 37x19 {
+    venn rings labels=["Multiples of {a}", "Multiples of {b}"] left=["{a}"] both=["{lcm(a, b)}"] right=["{b}"] outside=["1"] at=canvas(1, 1)
+    text ask "Where does {x} go?" narrate width=14 right-of=rings gap=2
+    choice pick options=["left only", "the middle", "right only", "outside"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if x % a == 0 and x % b == 0 then "the middle" else if x % a == 0 then "left only" else if x % b == 0 then "right only" else "outside")
+  feedback {
+    when (pick == "left only" and x % b == 0) point=rings {
+      say "{x} is a multiple of {b} as well, so it belongs in both rings."
+    }
+  }
+  hint "Is {x} a multiple of {a}? Is it a multiple of {b}?"
+  hint "A number in both rings goes where they overlap."
+}

@@ -1,0 +1,23 @@
+# Two bars read and compared: the tallest and the shortest have to be found, then the gap between
+# them worked out. The audit found the old question, pick the tallest bar, answered itself.
+item graph.bars v=2 skills=[data.bar-charts, subtraction.difference] {
+  title "How many more?"
+  difficulty (max(a, b, c) - min(a, b, c))
+  let a=2..6 b=1..6 c=1..6
+  where (a != b and b != c and a != c)
+
+  scene 24x18 {
+    text ask "How many more children chose the most popular fruit than the least popular?" narrate width=22 at=canvas(1, 0)
+    bargraph g labels=["Apples", "Pears", "Plums"] values=[a, b, c] max=6 below=ask gap=1
+    number-input answer below=g gap=1
+  }
+
+  answer (max(a, b, c) - min(a, b, c))
+  feedback {
+    when (answer == max(a, b, c)) point=g {
+      say "That is how many chose the most popular. How many more is that than the least?"
+    }
+  }
+  hint "Which bar is tallest? Which is shortest?"
+  hint "How many squares taller is the tallest bar than the shortest?"
+}

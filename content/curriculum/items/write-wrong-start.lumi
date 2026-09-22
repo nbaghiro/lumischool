@@ -1,0 +1,32 @@
+# Tia's three letters described by where she started them, and the one she started in the wrong
+# place: a curly letter started at the bottom, or with its tall stroke.
+item writing.wrong-start v=1 skills=[writing.letter-formation, reasoning.find-the-mistake] {
+  title "Which one started wrong?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let d1={pick(k, "c: near the top, curling to the left", "d: with the tall stroke, from the top down", "o: near the top, round to the left")}
+  let d2={pick(k, "a: at the bottom, going up first", "g: near the top, curling to the left", "a: near the top, curling to the left")}
+  let d3={pick(k, "o: near the top, round to the left", "c: near the top, curling to the left", "g: at the bottom, with the hook first")}
+  let right={pick(k, "B", "A", "C")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x20 {
+    lettercards cards letters=["{pick(k, \"c\", \"d\", \"o\")}", "{pick(k, \"a\", \"g\", \"a\")}", "{pick(k, \"o\", \"c\", \"g\")}"] at=canvas(1, 1)
+    text ask "Tia wrote three letters and said where she started each one. A: {d1}. B: {d2}. C: {d3}. Which letter did she start in the wrong place?" narrate width=32 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=cards {
+      say "All three are curly letters, so all three should start near the top with the curl to the left. Find the one that did not."
+    }
+  }
+  hint "c, o, a, d and g all start the same way. Which of Tia's starts is different?"
+  hint "A curly letter never starts at the bottom, and d starts with its curl, not its tall stroke."
+}

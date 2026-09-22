@@ -1,0 +1,18 @@
+# All the ways: every pair of things that share a material. Three wooden things make three pairs,
+# not two, which is the step a child has to find for themselves.
+item chem.material-pairs v=1 stars=3 skills=[chemistry.materials, reasoning.all-the-ways] {
+  title "Pairs of the same material"
+  difficulty (if k == 0 or k == 3 then 0 else if k == 2 then 1 else 2)
+  let k=0..4
+
+  scene 22x12 {
+    text ask "How many different pairs can you make from two things made of the same material?" width=21 at=canvas(1, 0)
+    materials row things=["{if k == 0 then \"wooden-spoon\" else if k == 1 then \"plastic-spoon\" else if k == 2 then \"wooden-spoon\" else if k == 3 then \"metal-can\" else \"wool-hat\"}", "{if k == 0 then \"wooden-block\" else if k == 1 then \"plastic-bottle\" else if k == 2 then \"wooden-ruler\" else if k == 3 then \"glass-bottle\" else \"towel\"}", "{if k == 0 then \"metal-key\" else if k == 1 then \"raincoat\" else if k == 2 then \"wooden-block\" else if k == 3 then \"metal-key\" else \"wool-sock\"}", "{if k == 0 then \"metal-can\" else if k == 1 then \"towel\" else if k == 2 then \"metal-key\" else if k == 3 then \"glass-jar\" else \"rubber-band\"}", "{if k == 0 then \"glass-jar\" else if k == 1 then \"wool-sock\" else if k == 2 then \"glass-jar\" else if k == 3 then \"paper-bag\" else \"rubber-boot\"}"] below=ask gap=0
+    number-input answer below=row gap=0
+  }
+
+  check chem.materials of=row answer=same-pairs
+  hint "Which things share a material? Group them first."
+  hint "If three things are made of wood, how many ways can you pick two of them?"
+  hint "Now add up the pairs from every group."
+}

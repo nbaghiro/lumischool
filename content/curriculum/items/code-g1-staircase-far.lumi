@@ -1,0 +1,30 @@
+# A pattern taken past the picture: the turtle's first four blocks are drawn, and the question asks
+# about a block the grid does not reach, so the answer comes from the pattern, not from counting.
+item coding.staircase-far v=1 stars=3 skills=[coding.tracing, reasoning.patterns] {
+  title "The staircase goes on"
+  difficulty n
+  let n=7..12
+
+  scene 32x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      turtle t cols=4 rows=4 col=1 row=1 face=right moves=["right 1", "down 1", "right 1", "down 1"]
+      text say "The turtle does right 1, down 1, right 1, down 1, and keeps going the same way." width=16
+    }
+    text ask "After {n} blocks, how many squares right of the start is it, and how many down?" width=30 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lr "right"
+      number-input across width=3
+      text ld "down"
+      number-input down width=3
+    }
+  }
+
+  answer across=((n + 1) // 2) down=(n // 2)
+  feedback {
+    when (across == n and down == n) point=t {
+      say "Each block moves it one square, but only one way at a time: right, then down."
+    }
+  }
+  hint "After 2 blocks it is 1 right and 1 down. After 4 blocks?"
+  hint "Which blocks go right: the 1st, 3rd, 5th and so on? How many of those are there up to {n}?"
+}

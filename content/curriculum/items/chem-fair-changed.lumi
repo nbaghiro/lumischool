@@ -1,0 +1,19 @@
+# The way in to a fair test: one column of the table changes and the others stay the same, and the
+# child names the one that changes.
+item chem.fair-changed v=1 skills=[chemistry.method, chemistry.dissolving] {
+  title "The one thing that changes"
+  difficulty v
+  let v=0..5
+
+  scene 34x16 {
+    text ask "Three cups of sugar and water, one to a row. Which one thing changes from cup to cup?" width=33 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=3 head=["°C", "Spoons", "Stirs"] cells=[if v == 0 then 20 else if v == 1 then 10 else if v == 2 then 30 else if v == 3 then 20 else if v == 4 then 30 else 20, if v == 0 then 2 else if v == 1 then 1 else if v == 2 then 1 else if v == 3 then 1 else if v == 4 then 2 else 1, if v == 0 then 10 else if v == 1 then 5 else if v == 2 then 10 else if v == 3 then 5 else if v == 4 then 5 else 5, if v == 0 then 40 else if v == 1 then 30 else if v == 2 then 30 else if v == 3 then 20 else if v == 4 then 30 else 20, if v == 0 then 2 else if v == 1 then 1 else if v == 2 then 2 else if v == 3 then 2 else if v == 4 then 2 else 1, if v == 0 then 10 else if v == 1 then 5 else if v == 2 then 10 else if v == 3 then 5 else if v == 4 then 10 else 10, if v == 0 then 60 else if v == 1 then 50 else if v == 2 then 30 else if v == 3 then 20 else if v == 4 then 30 else 20, if v == 0 then 2 else if v == 1 then 1 else if v == 2 then 3 else if v == 3 then 3 else if v == 4 then 2 else 1, if v == 0 then 10 else if v == 1 then 5 else if v == 2 then 10 else if v == 3 then 5 else if v == 4 then 15 else 15]
+      choice pick options=["how hot the water is", "how much sugar", "how many stirs"] stack=column
+    }
+  }
+
+  answer pick=(if v == 0 then "how hot the water is" else if v == 1 then "how hot the water is" else if v == 2 then "how much sugar" else if v == 3 then "how much sugar" else if v == 4 then "how many stirs" else "how many stirs")
+  hint "Look down each column. Which one has the same number in every row?"
+  hint "Which column is the only one where the numbers change?"
+}

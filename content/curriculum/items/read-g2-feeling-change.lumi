@@ -1,0 +1,22 @@
+# The feeling changes during the story, and the question asks about the end. The feeling at the
+# start is always one of the choices.
+item reading.feeling-change v=1 skills=[reading.inference, reading.sequencing] {
+  title "How do they feel at the end?"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=0..3 p=0..2
+
+  scene 36x14 {
+    passage story text="{if k == 0 then \"Sam could not find his dog. He looked in the garden and all round the park. Then he heard a bark from under his bed.\" else if k == 1 then \"Ruby was sure she had lost her ticket. She turned out every pocket. Then her dad held it up and grinned.\" else if k == 2 then \"Omar was excited about the trip to the zoo. In the morning it poured with rain, and the trip was put off.\" else \"Tess thought the dog next door was scary. Today it rolled over and let her tickle its tummy.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "How does {if k == 0 then \"Sam\" else if k == 1 then \"Ruby\" else if k == 2 then \"Omar\" else \"Tess\"} feel at the end?" narrate width=34 below=story gap=1
+    choice pick options=[if k == 0 then if p == 0 then "worried" else if p == 1 then "glad" else "cross" else if k == 1 then if p == 0 then "worried" else if p == 1 then "glad" else "bored" else if k == 2 then if p == 0 then "excited" else if p == 1 then "sad" else "scared" else if p == 0 then "scared" else if p == 1 then "happy" else "cross", if k == 0 then if p == 0 then "glad" else if p == 1 then "cross" else "worried" else if k == 1 then if p == 0 then "glad" else if p == 1 then "bored" else "worried" else if k == 2 then if p == 0 then "sad" else if p == 1 then "scared" else "excited" else if p == 0 then "happy" else if p == 1 then "cross" else "scared", if k == 0 then if p == 0 then "cross" else if p == 1 then "worried" else "glad" else if k == 1 then if p == 0 then "bored" else if p == 1 then "worried" else "glad" else if k == 2 then if p == 0 then "scared" else if p == 1 then "excited" else "sad" else if p == 0 then "cross" else if p == 1 then "scared" else "happy"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "glad" else if k == 1 then "glad" else if k == 2 then "sad" else "happy")
+  feedback {
+    when (pick == (if k == 0 then "worried" else if k == 1 then "worried" else if k == 2 then "excited" else "scared")) point=story {
+      say "That is how the story starts. Read the last sentence again. What changed?"
+    }
+  }
+  hint "How does the story start? How does it end?"
+  hint "Read the last sentence. What happened, and how would it make you feel?"
+}

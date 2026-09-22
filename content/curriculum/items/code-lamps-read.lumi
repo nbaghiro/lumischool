@@ -1,0 +1,20 @@
+item coding.lamps-read v=1 skills=[coding.data] {
+  title "What do the lamps say?"
+  difficulty (n + 4 * (n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2))
+  let n={3, 5, 6, 9, 10, 12}
+  level easy {
+    let n={3, 5, 6}
+  }
+  level hard {
+    let n={11, 13, 14}
+  }
+
+  scene 27x7 {
+    lamps l bits=4 n=n at=canvas(1, 0)
+    text ask "Add the lit lamps. What number do they show?" width=12 right-of=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=l answer=n
+  hint "Add the numbers over the lamps that are lit, and leave out the dark ones."
+}

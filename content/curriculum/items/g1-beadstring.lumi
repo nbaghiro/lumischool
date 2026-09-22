@@ -1,0 +1,25 @@
+item count.beadstring v=1 skills=[counting.to-twenty] {
+  title "Where the marker is"
+  difficulty m
+  let m=4..19
+  level easy {
+    let m=4..9
+  }
+  level hard {
+    let m=13..19
+  }
+
+  scene 26x8 {
+    beadstring line beads=20 mark=m at=canvas(1, 1)
+    text ask "Which bead is the arrow pointing at?" narrate below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer == m + 1) point=line {
+      say "Count the beads, not the gaps between them."
+    }
+  }
+  hint "The beads change colour every five, so count in fives and then on."
+}

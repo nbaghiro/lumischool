@@ -1,0 +1,11 @@
+item writing.fill-the-bubble v=1 skills=[writing.speech, writing.composing] {
+  title "What do they say?"
+  let k=0..1
+
+  scene 35x16 {
+    comic strip who=["{if k == 0 then \"girl\" else \"boy\"}", "{if k == 0 then \"dog\" else \"gran\"}", "{if k == 0 then \"girl\" else \"boy\"}"] says=["{if k == 0 then \"Where is my ball?\" else \"I made you a cake.\"}", "", "{if k == 0 then \"You found it!\" else \"I am glad you like it.\"}"] moods=["worried", "happy", "excited"] with=["", "", "{if k == 0 then \"dog\" else \"gran\"}"] thinks=[0, 0, 0] holds=["", "{if k == 0 then \"ball\" else \"\"}", "{if k == 0 then \"ball\" else \"\"}"] labels=["1", "2", "3"] at=canvas(1, 1)
+    text ask "Write what is said in bubble 2, so the story makes sense." width=33 below=strip gap=1
+  }
+
+  check writing.by-eye look-for="Words the character in picture 2 could say that join picture 1 to picture 3, written inside the bubble, with a capital letter at the start and a mark at the end that matches how it is said."
+}

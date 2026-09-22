@@ -1,0 +1,21 @@
+# A to-do list is in the order the jobs are done. The rows are shuffled three ways, so the boxes
+# are not 1, 2, 3, 4 from the top.
+item writing.list-order v=2 skills=[writing.lists, writing.sequencing] {
+  title "Jobs in order"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2 q=0..2
+  let title={if k == 0 then "Plant a seed" else if k == 1 then "Bake a cake" else "Get ready for bed"}
+  let r0={if k == 0 and q == 0 then "cover it up" else if k == 0 and q == 1 then "put the seed in" else if k == 0 and q == 2 then "water it" else if k == 1 and q == 0 then "bake it in the oven" else if k == 1 and q == 1 then "pour it into a tin" else if k == 1 and q == 2 then "let it cool" else if k == 2 and q == 0 then "put on pyjamas" else if k == 2 and q == 1 then "dry off" else "get into bed"}
+  let r1={if k == 0 and q == 0 then "fill a pot with soil" else if k == 0 and q == 1 then "water it" else if k == 0 and q == 2 then "cover it up" else if k == 1 and q == 0 then "mix the flour and eggs" else if k == 1 and q == 1 then "let it cool" else if k == 1 and q == 2 then "bake it in the oven" else if k == 2 and q == 0 then "have a bath" else if k == 2 and q == 1 then "get into bed" else "put on pyjamas"}
+  let r2={if k == 0 and q == 0 then "water it" else if k == 0 and q == 1 then "fill a pot with soil" else if k == 0 and q == 2 then "put the seed in" else if k == 1 and q == 0 then "let it cool" else if k == 1 and q == 1 then "mix the flour and eggs" else if k == 1 and q == 2 then "pour it into a tin" else if k == 2 and q == 0 then "get into bed" else if k == 2 and q == 1 then "have a bath" else "dry off"}
+  let r3={if k == 0 and q == 0 then "put the seed in" else if k == 0 and q == 1 then "cover it up" else if k == 0 and q == 2 then "fill a pot with soil" else if k == 1 and q == 0 then "pour it into a tin" else if k == 1 and q == 1 then "bake it in the oven" else if k == 1 and q == 2 then "mix the flour and eggs" else if k == 2 and q == 0 then "dry off" else if k == 2 and q == 1 then "put on pyjamas" else "have a bath"}
+
+  scene 30x18 {
+    text ask "{title}: number the jobs 1 to 4 in the order you do them." narrate width=28 at=canvas(1, 1)
+    sequence s items=["{r0}", "{r1}", "{r2}", "{r3}"] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=(if q == 0 then 3 else if q == 1 then 2 else 4) b=(if q == 0 then 1 else if q == 1 then 4 else 3) c=(if q == 0 then 4 else if q == 1 then 1 else 2) d=(if q == 0 then 2 else if q == 1 then 3 else 1)
+  hint "Which job has to happen before any of the others?"
+  hint "Now ask: what can only happen once that is done?"
+}

@@ -1,0 +1,21 @@
+# Three finished sums, one with the carried ten forgotten: find the mistake rather than do a sum.
+item columns.which-wrong v=1 stars=2 skills=[addition.columns, reasoning.find-the-error] {
+  title "One sum is wrong"
+  difficulty (if w == 2 then 0 else if w == 1 then 1 else 2)
+  let a=26..48 b=15..37 c=21..45 w=0..2
+  where (a % 10 + b % 10 >= 10 and c % 10 + 9 >= 10 and a + b < 100 and c + 29 < 100 and c != a)
+
+  scene 20x16 {
+    column sums at=canvas(1, 1) space=1 align=start {
+      text sa "A:  {a} + {b} = {if w == 0 then a + b - 10 else a + b}"
+      text sb "B:  {c} + 29 = {if w == 1 then c + 19 else c + 29}"
+      text sc "C:  {b} + 30 = {if w == 2 then b + 40 else b + 30}"
+    }
+    text ask "Which one is wrong?" narrate below=sums gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then "A" else if w == 1 then "B" else "C")
+  hint "Check the ones in each sum first. Do they end in the right digit?"
+  hint "Now check the tens. Did anyone forget the ten that was carried, or add one too many?"
+}

@@ -1,0 +1,36 @@
+# The story: the drum at the cave mouth and three lamps along the passage, the second as far again
+# as the first and the third twice as far as the second. The distances have to be added before
+# the halvings are seen; at hard the third lamp is asked about, two doublings on.
+item physics.cave-lamps v=1 stars=1 skills=[physics.sound, addition.to-hundred] {
+  title "The lamps in the cave"
+  difficulty (a + (if w == 1 then 4 else 0))
+  let a={3, 5, 6, 10} base={16, 24} w=0..1
+  let asks={pick(w, "What does the meter read at the second lamp?", "What does the meter read at the third lamp?")}
+  level easy {
+    let a={3, 5} base={16} w=0..0
+  }
+  level hard {
+    let a={6, 10} w=1..1
+  }
+
+  scene 34x25 {
+    roaddistances road stops=["Drum", "Lamp 1", "Lamp 2", "Lamp 3"] legs=[a, a, 2 * a] unit=m at=canvas(1, 1)
+    text ask "Mia beats the drum at the mouth of the crystal cave. The lamps down the passage are {a} metres apart at first, and then further. At the first lamp the meter reads {base}. Each time the distance from the drum doubles, the reading halves. {asks}" narrate width=32 below=road gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then base / 2 else base / 4)
+  feedback {
+    when (w == 0 and answer == base) point=road {
+      say "The second lamp is {a} metres past the first, which makes {2 * a} metres from the drum: twice as far as the first lamp, so the reading has halved."
+    }
+    when (w == 1 and answer == base / 2) point=road {
+      say "That is the second lamp's reading, at {2 * a} metres. The third lamp is at {4 * a} metres, twice as far again, so it halves once more."
+    }
+    when (w == 1 and answer == base / 8) point=road {
+      say "The third lamp is {4 * a} metres from the drum, four times the first lamp's {a}: two doublings, so the reading halves twice, not three times."
+    }
+  }
+  hint "How far is each lamp from the drum? Add the legs from the drum to it."
+  hint "Is that double the lamp before? Then the reading is half of the lamp before."
+}

@@ -1,0 +1,32 @@
+# Start unknown in a taking-away story, 1.OA.A.1: the picture is the end of the story.
+item sub.ants-start v=1 skills=[subtraction.start-unknown] {
+  title "Ants on the path"
+  difficulty (b + c)
+  let c=3..8 b=3..9
+  where (b != c)
+  where (b + c <= 17)
+  level easy {
+    let c=3..5 b=3..5
+  }
+  level hard {
+    let c=6..8 b=7..9
+  }
+
+  scene 30x12 {
+    ants line count=c carry=1 at=canvas(1, 1)
+    text ask "Some ants were on the path. {b} went into their nest, and these are left. How many were on the path at first?" narrate width=28 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b + c)
+  feedback {
+    when (answer == c) point=line {
+      say "Those are the ants still on the path. Put back the {b} that went in."
+    }
+    when (answer == b - c or answer == c - b) point=line {
+      say "There were more ants at first, before some went into the nest."
+    }
+  }
+  hint "How many ants are on the path now?"
+  hint "Some went into the nest. Were there more or fewer at the start?"
+}

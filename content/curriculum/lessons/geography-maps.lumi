@@ -1,0 +1,67 @@
+lesson geography-maps v=2 format=teach grade=3 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "Grid references and routes"
+  goal "Read a grid reference, follow a route given as compass directions, and say which way is north."
+
+  look {
+    scene 30x17 {
+      row all at=canvas(1, 1) space=2 align=end {
+        gridmap map cols=5 rows=4 col=4 row=2 thing=hut
+        column side space=1 align=start {
+          compass rose needle=0
+          birdhide hide slots=3
+        }
+      }
+    }
+    say """
+      From the bird hide Ada and Ben look out over the marsh island, and Ada has drawn it as a map.
+      The letters run along the top and the numbers down the side, so every square has a name: the
+      hut is in D2. North is at the top of the map, and the compass says the rest: east is to the
+      right, south is down, west is to the left. A route is a list of moves, like 2 east and 1
+      south, and a finger can walk it square by square.
+      """
+  }
+  do {
+    level easy {
+      worked geography.map-square c=2 r=1 t="hut" level=medium
+    }
+    practice geography.map-square count=1 seed=2 easy-seed=3 hard-seed=1
+    practice nature.what-is-in count=2 seed=7 easy-seed=1 hard-seed=7
+    practice nature.three-moves count=2 seed=2 easy-seed=1 hard-seed=1
+    practice nature.which-way count=2 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.shorter-route k=2
+    }
+  }
+  story {
+    show nature.marsh-km a=3 b=5 w=0 easy-a=2 easy-b=4 easy-w=0 hard-a=6 hard-b=7 hard-w=1
+  }
+  try stars=2 {
+    show nature.shorter-route k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show nature.two-turn-routes a=3 b=2 easy-a=2 easy-b=2 hard-a=4 hard-b=3
+  }
+  remember {
+    say "Letter along the top, then number down the side. North is up, east is right, south is down, west is left."
+  }
+
+  grown-ups """
+    Two habits are being built: reading a square as a letter and then a number, in that order, and
+    turning a compass word into a move on the map. The wrong idea to watch for is the number read
+    first, or read from the top, so B3 becomes C2; the way in is to slide one finger down from the
+    letter and one across from the number until they meet. In the route questions the child should
+    move a finger one square per step and say the direction aloud; a route that goes west at the
+    end is where a finger beats a guess. The story adds the legs of the marsh road there and back.
+    The two-star question compares two routes without walking them, and the reason should come
+    back as "one of them goes and comes back again"; the three-star question counts the routes
+    with exactly two turns, and the way in is to draw east-south-east routes first, changing where
+    the first turn comes, then the south-east-south ones. If squares are still read the wrong way
+    round after the core, stay here another day and play battleships on a five by four grid.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the hut in B1) opens the core, the squares to find are near the top left corner, the square asked about always holds the thing, the routes are three moves of one square each, the ways to walk are north, south, east or west alone, the road's legs are two and four kilometres there and back, Ada's route is the plain one against Ben's that doubles back, and the boat is two squares east and two south, so there are two routes with two turns."
+  }
+  level hard {
+    grown-ups "At this level the squares to find are far from the corner, the square asked about is far from the corner and half the time next to the thing, holding nothing, the routes go two or three squares a move and the last move comes back west, the ways to walk take two directions, a second reasoning question in the core compares two routes of the same length, the road is walked to the tower and back only as far as the tree, Ben's route is the shorter one because Ada doubles back, and the boat is four squares east and three south, so there are five routes with two turns."
+  }
+}

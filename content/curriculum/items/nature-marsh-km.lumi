@@ -1,0 +1,35 @@
+# The story: Ada and Ben walk the marsh road past its stops and back, with the distances written on
+# the road. Two legs there and the same back is a doubling; at hard they turn back partway.
+item nature.marsh-km v=1 skills=[nature.maps, addition.to-hundred] {
+  title "How far did they walk?"
+  difficulty (a + b + w)
+  let a=2..6 b=3..8 w=0..1
+  let asks={pick(w, "They walk from the hide to the tower and back to the hide. How far do they walk altogether?", "They walk from the hide to the tower, and back only as far as the tree. How far do they walk altogether?")}
+  level easy {
+    let a=2..3 b=3..4 w=0..0
+  }
+  level hard {
+    let a=5..6 b=6..8 w=1..1
+  }
+
+  scene 36x21 {
+    roaddistances road stops=["hide", "tree", "tower"] legs=[a, b] unit=km at=canvas(1, 1)
+    text ask "Ada and Ben follow the marsh road. The distances are written on it. {asks}" narrate width=34 below=road gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 2 * (a + b) else 2 * b + a)
+  feedback {
+    when (answer == a + b) point=road {
+      say "That is the way there. They walk back as well."
+    }
+    when (w == 1 and answer == 2 * (a + b)) point=road {
+      say "On the way back they stop at the tree, so the last {a} km is not walked again."
+    }
+    when (w == 0 and answer == 2 * b + a) point=road {
+      say "They walk all the way back to the hide, past the tree."
+    }
+  }
+  hint "Add the legs to find the way there. Then work out how far they come back."
+  hint "There: {a} and {b}. Back: which legs do they walk again?"
+}

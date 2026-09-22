@@ -1,0 +1,15 @@
+# A word card is drawn wider for a longer word, so the row of cards already shows which one is the
+# long one before a single beat is clapped.
+item reading.most-beats v=2 skills=[reading.syllables] {
+  title "The word with the most beats"
+  let x={"rabbit", "garden", "kitten"} p=0..2
+
+  scene 24x14 {
+    wordcards cards words=[if p == 0 then x else "cat", if p == 1 then x else "dog", if p == 2 then x else "sun"] picked=-1 at=canvas(1, 1)
+    text ask "Clap each word. Write the one with the most beats." width=22 below=cards gap=1
+    word-input pick options=["{x}"] letters=6 below=ask gap=1
+  }
+
+  answer pick=x
+  hint "Say each word and clap once for every beat you hear."
+}

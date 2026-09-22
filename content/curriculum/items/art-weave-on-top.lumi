@@ -1,0 +1,24 @@
+# The way in: one row of the weave named, and whether the strip going across is over or under the
+# first strip going down. A row whose `start` is 0 goes over first and one whose start is 1 goes under.
+item art.weave-on-top v=1 skills=[art.pattern, art.looking] {
+  title "Over or under?"
+  difficulty (if row < 3 then 0 else 1)
+  let row=1..4
+  let ans={pick(row - 1, "The strip going across", "The strip going down", "The strip going across", "The strip going down")}
+  level easy {
+    let row=1..2
+  }
+  level hard {
+    let row=3..4
+  }
+
+  scene 19x24 {
+    weave cloth cols=6 rows=4 start=[0, 1, 0, 1] step=1 at=canvas(1, 0)
+    text ask "Look at row {row}, where it meets the very first strip going down. Which of the two is on top there?" narrate width=18 below=cloth gap=1
+    choice pick options=["The strip going across", "The strip going down"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Follow the row across from the left until it meets the first strip coming down."
+  hint "One of the two passes in front of the other, and that one is on top."
+}

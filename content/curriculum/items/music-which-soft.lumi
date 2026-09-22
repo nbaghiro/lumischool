@@ -1,0 +1,18 @@
+# The marks are read, and the reading is what is marked, so the words under them are left off here.
+item music.which-soft v=1 skills=[music.dynamics] {
+  title "Which mark says soft?"
+
+  scene 26x12 {
+    dynamics marks marks=["f", "p", "mf"] words=false ring=-1 at=canvas(1, 1)
+    text ask "Which mark means play softly?" width=24 below=marks gap=1
+    choice pick options=["f", "p", "mf"] below=ask gap=1
+  }
+
+  answer pick="p"
+  feedback {
+    when (pick == "f") point=marks {
+      say "f is for forte, which means loud. p is for piano, which means soft."
+    }
+  }
+  hint "p stands for piano, the Italian word for soft."
+}

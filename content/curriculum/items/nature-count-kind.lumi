@@ -1,0 +1,39 @@
+# Sorting by eye: five leaves of two or three kinds, unnamed, and one kind to count. The child has
+# to tell each leaf's kind from its edge before the count can start.
+item nature.count-kind v=1 skills=[nature.leaves, sorting.one-rule] {
+  title "How many of that kind?"
+  difficulty (n + (if k == 3 then 1 else 0))
+  let c=0..3 k=0..3
+  let kind={pick(k, "holly", "oak", "maple", "ash")}
+  let l1={pick(c, "oak", "maple", "holly", "ash")}
+  let l2={pick(c, "holly", "oak", "ash", "oak")}
+  let l3={pick(c, "oak", "maple", "oak", "ash")}
+  let l4={pick(c, "maple", "maple", "holly", "oak")}
+  let l5={pick(c, "holly", "holly", "ash", "ash")}
+  let n={if c == 0 then pick(k, 2, 2, 1, 0) else if c == 1 then pick(k, 1, 1, 3, 0) else if c == 2 then pick(k, 2, 1, 0, 2) else pick(k, 0, 2, 0, 3)}
+  where (n > 0)
+  level easy {
+    let c=0..1 k=0..0
+  }
+  level hard {
+    let c=2..3 k=1..3
+  }
+
+  scene 34x12 {
+    leafrow leaves kinds=[l1, l2, l3, l4, l5] labels=false at=canvas(1, 1)
+    text ask "Ada lays out five leaves. How many of them are {kind} leaves?" narrate width=10 right-of=leaves gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 5) point=leaves {
+      say "Not all five are the same kind. Look at each leaf's edge and count only the {kind} ones."
+    }
+    when (answer == n + 1 or answer == n - 1) point=leaves {
+      say "Check each leaf's edge again, one at a time. Two kinds can look alike until you look at the edge."
+    }
+  }
+  hint "Go along the row. For each leaf, say its kind from its edge before you count it."
+  hint "Holly is prickly, maple has points, oak has a wavy edge, and ash is smooth."
+}

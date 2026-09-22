@@ -1,0 +1,28 @@
+# Two classic mistakes, one per version: smaller digit from bigger, or the exchanged ten left on
+# the tens column. The child has to find which, not only redo the sum.
+item sub.robot-mistake v=1 stars=2 skills=[subtraction.columns, reasoning.find-the-error] {
+  title "The robot's take-away"
+  difficulty (m + (if at < bt then 1 else 0))
+  let ah=5..9 at=0..9 ao=0..8 bh=1..4 bt=0..9 bo=1..9 m=0..1
+  where (bo > ao and bo - ao != 5)
+  where (m == 1 or at >= bt)
+  level easy {
+    let m={0}
+  }
+  level hard {
+    let m={1}
+    where (at < bt)  # the tens need an exchange as well, so the forgotten ten is one of two
+  }
+
+  scene 34x24 {
+    fixbot bot says="{100 * ah + 10 * at + ao} - {100 * bh + 10 * bt + bo} = {if m == 0 then 100 * (ah - bh) + 10 * abs(at - bt) + bo - ao else 100 * ah + 10 * at + ao - 100 * bh - 10 * bt - bo + 10}" width=14 at=canvas(1, 1)
+    text q1 "What is the right answer?" below=bot gap=1
+    number-input answer right-of=q1 gap=1
+    text q2 "What did the robot do wrong?" below=q1 gap=1
+    choice why options=["It took the smaller digit from the bigger one.", "It forgot the ten it exchanged."] stack=column below=q2 gap=1
+  }
+
+  answer answer=(100 * ah + 10 * at + ao - 100 * bh - 10 * bt - bo) why=(if m == 0 then "It took the smaller digit from the bigger one." else "It forgot the ten it exchanged.")
+  hint "Do the sum yourself first. Where does your working differ from the robot's?"
+  hint "Look at the ones column. Could the robot take {bo} from {ao} without an exchange?"
+}

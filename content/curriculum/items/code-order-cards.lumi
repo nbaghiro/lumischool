@@ -1,0 +1,14 @@
+# The cards are right and only the order is not, so arranging them is the whole task. On screen the
+# child drags them into the slots; on paper they draw each card's arrow in its slot.
+item coding.order-cards v=1 skills=[coding.sequences] {
+  title "Put the cards in order"
+  let k=0..2
+
+  scene 29x12 {
+    maze g map=["{if k == 0 then \"S . # .\" else if k == 1 then \"S # . .\" else \"S . . #\"}", "{if k == 0 then \". . # F\" else if k == 1 then \". # F .\" else \". # . .\"}", "{if k == 0 then \". . . .\" else if k == 1 then \". . . .\" else \". . . F\"}"] at=canvas(1, 0)
+    codepad answer tray=["{if k == 0 then \"right 3\" else if k == 1 then \"right 2\" else \"right 2\"}", "{if k == 0 then \"down 2\" else if k == 1 then \"down 2\" else \"down 2\"}", "{if k == 0 then \"up 1\" else if k == 1 then \"up 1\" else \"right 1\"}"] lines=3 once=true words=false right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Find the path with a finger first. Which card does the robot need first?"
+}

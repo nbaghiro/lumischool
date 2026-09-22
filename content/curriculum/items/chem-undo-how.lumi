@@ -1,0 +1,23 @@
+# For the changes that can be undone, how: cool what was warmed, warm what was cooled, and dry the
+# water away from what dissolved. The way back is in the table the drawing is drawn from.
+item chem.undo-how v=1 skills=[chemistry.changes] {
+  title "How do you change it back?"
+  difficulty (if k == 4 then 2 else if k == 3 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 32x16 {
+    beforeafter ch change=(if k == 0 then "melt-ice" else if k == 1 then "freeze-water" else if k == 2 then "melt-chocolate" else if k == 3 then "boil-water" else "dissolve-sugar") show=1 names=1 at=canvas(1, 0)
+    text ask "How could you change it back?" width=13 right-of=ch gap=1
+    choice pick options=["cool it", "warm it", "let the water dry up"] stack=column below=ask gap=1
+  }
+
+  check chem.change of=ch pick=back
+  hint "What made the change happen? Look at the arrow."
+  hint "To go back, would you do the same thing again, or the opposite?"
+}

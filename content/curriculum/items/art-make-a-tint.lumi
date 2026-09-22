@@ -1,0 +1,22 @@
+# Working backwards from a mix: the pot at the end is lighter or darker, so which paint went in?
+item art.make-a-tint v=1 skills=[art.tints, reasoning.work-backwards] {
+  title "What was added?"
+  difficulty (if t == "black" then 1 else 0)
+  let c={"red", "blue", "green"} t={"white", "black"}
+  level easy {
+    let t={"white"}
+  }
+  level hard {
+    let t={"black"}
+  }
+
+  scene 30x15 {
+    paintpots pots pots=["{c}", "?"] makes="{c}+{t}" labels=true at=canvas(1, 1)
+    text ask "Ada added one paint to the {c}. Which paint did she add?" width=28 below=pots gap=1
+    choice pick options=["white", "black", "yellow"] below=ask gap=1
+  }
+
+  check paint.mixes of=pots pick=missing
+  hint "Look at the pot at the end. Is it lighter or darker than the {c}?"
+  hint "Which paint makes a colour lighter, and which makes it darker?"
+}

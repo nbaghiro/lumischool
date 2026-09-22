@@ -1,0 +1,66 @@
+lesson chemistry-burning-cannot-be-undone v=1 format=teach grade=4 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "Burning: a change that cannot be undone"
+  goal "Say what a candle needs to burn, what the flame makes, and why the burnt wax cannot come back."
+
+  look {
+    scene 34x23 {
+      row all at=canvas(1, 0) space=4 align=end {
+        candle open start=10 burnt=4 lit=1 jar=0
+        candle shut start=10 burnt=4 lit=0 jar=1
+      }
+      beforeafter ch change="burn-candle" show=1 names=0 below=all gap=1
+    }
+    say """
+      In the hut in geyser valley Leo's grown-up lights two candles and puts a jar over one. The
+      open one burns on; the one under the jar goes out in seconds, with wax still on it. A flame
+      needs the air, and it uses the air up. The wax that burns does not melt away or hide: the
+      flame turns it into gases that go into the air, and leaves water drops and soot on the
+      inside of the jar. Nothing brings that wax back. Burning makes new things and goes one way.
+      """
+  }
+  do {
+    level easy {
+      worked chem.which-went-out w=0 s=0
+    }
+    practice chem.which-went-out count=1 seed=1 easy-seed=7 hard-seed=1
+    practice chem.jar-times count=2 seed=1 easy-seed=2 hard-seed=5
+    practice chem.why-longest count=1 seed=1 easy-seed=2 hard-seed=5
+    practice chem.where-the-wax-went count=1 seed=1 easy-seed=1 hard-seed=1
+    practice chem.candle-left count=1 seed=2 easy-seed=1 hard-seed=1
+    practice chem.cannot-undo count=1 hard-count=2 seed=8 easy-seed=6 hard-seed=2
+  }
+  story {
+    show chem.air-for-seconds v=750 w=0 easy-v=500 hard-v=1500 hard-s=60 hard-w=1
+  }
+  try stars=2 {
+    show chem.relit k=0 r=2 hard-k=1 hard-r=1
+  }
+  try stars=3 {
+    show chem.target-time k=0 r=2 hard-k=3 hard-r=1
+  }
+  remember {
+    say "A flame needs air and turns the wax into gases that go. Burning cannot be undone."
+  }
+
+  grown-ups """
+    The idea has three parts: a flame needs air and uses it up, the flame makes new things out
+    of the wax (gases into the air, water drops and soot on the jar), and because the new things
+    have gone, burning cannot be undone, unlike melting or freezing. The look is the two candles
+    and the before-and-after of a burnt candle, and the way in asks only which candle has gone
+    out. The core reads a table of three jars, asks why the biggest jar lasts longest, where the
+    wax went, how much candle has burnt, and whether a change can be undone, against chocolate
+    and ice that can. The wrong idea to watch for is that the wax has melted down into the
+    candle or onto the jar; ask the child to weigh a candle in their head before and after. The
+    story counts seconds from air, five for every 250 ml. The two-star question asks what the
+    relit candle shows (it went out for want of air), and the three-star question picks the jar
+    and the candle that burn for exactly so many seconds from two rates. A grown-up lights the
+    candles; the child watches and times. If the child still says the jar cooled the flame, stay
+    here another day with two jars of different sizes and a stopwatch.
+    """
+  level easy {
+    grown-ups "At this level the candles are worked once in the teacher's pen before a swapped pair, the table is read for one jar's seconds, the wax's way out is asked plainly, the change to judge is the chocolate, which can be undone, the story is a 500 ml jar, the relit candle is the two-star, and the target is twenty seconds, which only the thin candle under the litre jar makes."
+  }
+  level hard {
+    grown-ups "At this level the way in asks which candle still has fresh air, the table is read for the gap between the jars and for a jar not tested, the jar's mist and soot are asked about, the changes to judge are toast and ice, both of them, the story asks the air for sixty seconds, the two-star is the same ten seconds every time, and the target is thirty-two seconds, which only the thick candle under the two-litre jar makes."
+  }
+}

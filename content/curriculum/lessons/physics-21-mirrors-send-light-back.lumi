@@ -1,0 +1,46 @@
+lesson physics-mirrors-send-light-back v=1 format=teach grade=2 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "Mirrors send light back"
+  goal "Follow a beam of light as mirrors turn it, and say where it ends up and how many times it bounced."
+
+  look {
+    scene 32x12 {
+      row both at=canvas(1, 0) space=2 align=start {
+        mirrors box cols=5 rows=4 torch=2 rise=["C2"] goals=["T3", "R4", "B2"]
+        note n "The light goes straight along until it meets the mirror. The mirror sends it up, to A." width=14
+      }
+    }
+    say """
+      Light travels in straight lines. When it meets a mirror it bounces off, and a mirror
+      standing corner to corner turns it round a corner. Put your finger on the torch and follow
+      the light square by square.
+      """
+  }
+  do {
+    practice physics.maze-one count=2 seed=3
+    practice physics.maze-turn count=2 seed=2
+    practice physics.light-maze count=3 seed=5
+    practice physics.maze-bounces count=1 seed=4
+  }
+  try stars=2 {
+    show physics.light-maze-three m="B1" k="B3" r="E3" easy-k="C3" hard-m="C1" hard-k="C3" hard-r="F3"
+  }
+  try stars=3 {
+    show physics.light-maze-four k=0
+  }
+  remember {
+    say "Light goes in straight lines, and a mirror turns it."
+  }
+
+  grown-ups """
+    In a dark room, a torch and a hand mirror make a spot of light you can steer round the walls.
+    Ask the child to hit a teddy on a shelf, and to say which way to tilt the mirror before they
+    move it. The last maze goes all the way round the box and back; a finger on the page is the
+    right tool, and there is no shame in using it.
+    """
+  level easy {
+    grown-ups "At this level the beam leaves the box right beside the mirror it turns on, and in the two-mirror mazes and the three-mirror one the beam never meets a second mirror, so it turns once; the bounces question is as written."
+  }
+  level hard {
+    grown-ups "At this level the beam runs the length of the box after it turns, and in most mazes it meets a second mirror or crosses the whole box before the first."
+  }
+}

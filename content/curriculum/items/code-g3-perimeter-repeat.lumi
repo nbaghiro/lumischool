@@ -1,0 +1,36 @@
+# The rectangle written with a repeat of two, so the distance round is the body doubled: the
+# audit's raise for shape-perimeter.
+item coding.perimeter-repeat v=1 skills=[coding.drawing, coding.repetition] {
+  title "Round a rectangle with a repeat"
+  difficulty (w + h)
+  let w=3..6 h=2..4
+  where (w != h and w * h != 2 * (w + h))
+  level easy {
+    let w=3..4 h=2..3
+  }
+  level hard {
+    let w=5..9 h=3..7  # no grid is drawn, so the sides can be longer than the page
+  }
+
+  scene 34x12 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"]
+      column q space=1 align=start {
+        text ask "How many squares does the turtle travel all the way round?" width=17
+        number-input answer
+      }
+    }
+  }
+
+  check coding.runs of=p answer=moves
+  feedback {
+    when (answer == w + h) point=p {
+      say "That is one time round the repeat. It goes round twice."
+    }
+    when (answer == w * h) point=p {
+      say "The question is the distance round the edge, not the squares inside."
+    }
+  }
+  hint "How far does the turtle go in one time round the repeat?"
+  hint "The repeat does that twice. Add it again."
+}

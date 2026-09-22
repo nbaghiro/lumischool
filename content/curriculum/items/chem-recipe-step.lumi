@@ -1,0 +1,45 @@
+# The three-star: a recipe of four steps, and the first step that cannot be undone. One recipe
+# has no such step at all, which has to be said.
+item chem.recipe-step v=1 stars=3 skills=[chemistry.changes, reasoning.constraints] {
+  title "The step that cannot be undone"
+  difficulty (if k == 1 then 2 else if k == 2 then 1 else 0)
+  let k=0..2
+  let s1={pick(k, "Melt the butter in a pan.", "Melt the chocolate in a bowl.", "Boil a pan of water.")}
+  let s2={pick(k, "Stir in the sugar until it dissolves.", "Stir in the cereal.", "Dissolve a spoon of salt in it.")}
+  let s3={pick(k, "Stir in the flour.", "Spoon it into paper cases.", "Add the pasta and cook it for ten minutes.")}
+  let s4={pick(k, "Bake it in the oven for twenty minutes.", "Put the cases in the fridge to set.", "Pour off the water.")}
+  let right={pick(k, "step 4", "none of them", "step 3")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x32 {
+    text ask "Here is a recipe. Which is the first step that cannot be undone?" narrate width=32 at=canvas(1, 1)
+    text l1 "1. {s1}" width=32 below=ask gap=1
+    text l2 "2. {s2}" width=32 below=l1 gap=0
+    text l3 "3. {s3}" width=32 below=l2 gap=0
+    text l4 "4. {s4}" width=32 below=l3 gap=0
+    choice pick options=["step 1", "step 2", "step 3", "step 4", "none of them"] stack=column below=l4 gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick != right) point=l4 {
+      say "Melting, mixing and setting can all be undone: warm the cases and the chocolate is runny again, cereal and all. Nothing here makes something new."
+    }
+    when (k == 0 and pick == "step 1") point=l1 {
+      say "Melted butter sets again when it cools. Go on down the recipe."
+    }
+    when (k == 0 and pick == "step 2") point=l2 {
+      say "Dissolved sugar comes back when the water dries up. Go on down the recipe."
+    }
+    when (k == 2 and pick == "step 1") point=l1 {
+      say "Boiled water is still water; it cools back. Go on down the recipe."
+    }
+  }
+  hint "Take each step in turn and ask: could this be undone? Melting, dissolving and boiling can."
+  hint "Cooking makes something new, and cannot be undone. If no step cooks anything, say so."
+}

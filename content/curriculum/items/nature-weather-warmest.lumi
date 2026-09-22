@@ -1,0 +1,28 @@
+# The way in: a week's chart read down one column for the warmest day. At k=0 and 1 the warmest day
+# stands a long way above the rest; at 2 and 3 two days are one degree apart.
+item nature.weather-warmest v=1 skills=[nature.weather, data.reading] {
+  title "Which day was warmest?"
+  difficulty (if k < 2 then 0 else 1)
+  let k=0..3
+  let m={pick(k, 9, 12, 14, 16)}
+  let t={pick(k, 17, 11, 15, 11)}
+  let w={pick(k, 11, 19, 13, 15)}
+  let h={pick(k, 10, 13, 12, 14)}
+  let ans={pick(k, "Tuesday", "Wednesday", "Tuesday", "Monday")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 21x32 {
+    table week cols=2 head=["Day", "Warmth"] cells=["Monday", "{m} degrees", "Tuesday", "{t} degrees", "Wednesday", "{w} degrees", "Thursday", "{h} degrees"] at=canvas(1, 0)
+    text ask "This is the warmth measured outside on four days. Which day was warmest?" narrate width=20 below=week gap=1
+    choice pick options=["Monday", "Tuesday", "Wednesday", "Thursday"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Read down the warmth column and find the biggest number."
+  hint "Then read back along that row to the day."
+}

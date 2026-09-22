@@ -1,0 +1,17 @@
+# One card in the wrong column. The four changes are the clearest a child meets at home, so the
+# only argument is about which column each belongs in.
+item chem.undo-sort v=1 skills=[chemistry.changes] {
+  title "Sorted wrong"
+  difficulty w
+  let w=0..3
+
+  scene 35x18 {
+    text ask "One change is in the wrong column. Which one?" width=22 at=canvas(1, 0)
+    wordsort s heads=["can undo", "cannot undo"] words=["melt ice", "toast bread", "freeze water", "fry an egg"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["melt ice", "toast bread", "freeze water", "fry an egg"] stack=column right-of=s gap=1
+  }
+
+  answer pick=(if w == 0 then "melt ice" else if w == 1 then "toast bread" else if w == 2 then "freeze water" else "fry an egg")
+  hint "For each card, ask: could you get back what you started with?"
+  hint "Now check each card is under the right heading."
+}

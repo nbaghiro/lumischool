@@ -1,0 +1,24 @@
+# The last bridge is taken away, so the network no longer sorts every order and the shortcut of
+# writing the numbers in order fails: the audit's raise for net-out. The checker walks the numbers
+# down the same four bridges the drawing draws.
+item coding.net-not-sorted v=1 skills=[coding.algorithms, coding.tracing] {
+  title "A bridge short"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3 i=2..3
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 31x15 {
+    sortnet n inputs=[if k == 0 then 1 else if k == 1 then 2 else if k == 2 then 3 else 1, if k == 0 then 7 else if k == 1 then 9 else if k == 2 then 8 else 6, if k == 0 then 4 else if k == 1 then 5 else if k == 2 then 1 else 3, if k == 0 then 9 else if k == 1 then 6 else if k == 2 then 9 else 8] pairs=[1, 2, 3, 4, 1, 3, 2, 4] at=canvas(1, 0)
+    text ask "This network has only four bridges. Walk each number down. Which number comes out at the bottom of line {i}?" width=16 right-of=n gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=n answer="out({i})"
+  hint "Use a finger for each number. At each bridge, swap them if the bigger one is on the left."
+  hint "Do not write the numbers in order from memory. This network is missing a bridge, so check each one."
+}

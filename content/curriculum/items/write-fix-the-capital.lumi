@@ -1,0 +1,31 @@
+# A word in the draft that needs a capital: a name, a day, a place, or the start of a sentence.
+item writing.fix-the-capital v=1 skills=[writing.capitals, writing.editing] {
+  title "Which word needs a capital?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let t={pick(k, "On Saturday we took the bus to the harbour. gran met us by the boats.", "The cat is called Bun. She sleeps on ben's bed every night.", "We had lunch by the pond. on monday it rained all day.", "Leo and I walked up the hill. At the top we could see the whole of ravensport.")}
+  let right={pick(k, "gran", "ben's", "monday", "ravensport")}
+  let w1={pick(k, "bus", "bed", "pond", "hill")}
+  let w2={pick(k, "boats", "night", "rained", "top")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x16 {
+    passage draft title="First draft" text="{t}" width=32 numbers=false at=canvas(1, 1)
+    text ask "One word has lost its capital letter. Which one?" narrate width=32 below=draft gap=1
+    choice pick options=["{right}", "{w1}", "{w2}"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=draft {
+      say "A capital goes on the first word of a sentence, on a name, on a day of the week and on a place. Which of the three is one of those?"
+    }
+  }
+  hint "Check the first word of each sentence, then every name, day and place."
+  hint "{if k == 0 then \"A sentence starts after a full stop, and Gran is a name.\" else if k == 1 then \"Ben is a name, even with an s on the end.\" else if k == 2 then \"Monday is a day, and it starts a sentence too.\" else \"Ravensport is a place.\"}"
+}

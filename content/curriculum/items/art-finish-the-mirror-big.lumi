@@ -1,0 +1,21 @@
+item art.finish-the-mirror-big v=1 skills=[art.symmetry] {
+  title "A bigger butterfly"
+  difficulty s
+  let s=1..6 k=0..2
+  level easy {
+    let s=1..3
+  }
+  level hard {
+    let s=4..6
+  }
+
+  scene 37x16 {
+    mirrorpick m seed=s rows=5 cols=4 answer=k kind="wings" at=canvas(1, 1)
+    text ask "Which half finishes this butterfly across the dashed line?" width=16 right-of=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check paint.mirror of=m pick=mirror
+  hint "Look at the squares that touch the line. Which half has the same colours touching it?"
+  hint "Now check the squares furthest from the line. They must be furthest from it on the other side too."
+}

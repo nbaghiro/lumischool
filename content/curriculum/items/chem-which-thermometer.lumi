@@ -1,0 +1,37 @@
+# Three thermometers from three places, and which one came from the freezer, the table or the
+# sunny sill. Below zero is the freezer, the middle reading the table, the highest the sun; the
+# order of the three is shuffled.
+item chem.which-thermometer v=1 skills=[chemistry.states] {
+  title "Which thermometer?"
+  difficulty (if q == 1 then 1 else 0)
+  let q=0..2 p=0..2
+  let place={pick(q, "in the freezer", "on the table", "on the sunny windowsill")}
+  let ta={pick(p, -5, 20, 35)}
+  let tb={pick(p, 20, 35, -5)}
+  let tc={pick(p, 35, -5, 20)}
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 34x25 {
+    row three at=canvas(1, 0) space=2 align=end {
+      thermometer a from=-10 to=40 step=10 value=ta
+      thermometer b from=-10 to=40 step=10 value=tb
+      thermometer c from=-10 to=40 step=10 value=tc
+    }
+    text ask "Mia put a thermometer in the freezer, one on the table and one on the sunny windowsill, and here are the three readings, A, B and C. Which thermometer was {place}?" narrate width=32 below=three gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then if ta == -5 then "A" else if tb == -5 then "B" else "C" else if q == 1 then if ta == 20 then "A" else if tb == 20 then "B" else "C" else if ta == 35 then "A" else if tb == 35 then "B" else "C")
+  feedback {
+    when (q == 1 and pick != (if ta == 20 then "A" else if tb == 20 then "B" else "C")) point=three {
+      say "The table is neither the coldest place nor the warmest. Its thermometer reads between the other two."
+    }
+  }
+  hint "Which place is coldest, and which is warmest? Read the three thermometers and put them in order."
+  hint "Below zero is the freezer. The highest reading is the sunny sill. The one between is the table."
+}

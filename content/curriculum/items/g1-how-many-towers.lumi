@@ -1,0 +1,24 @@
+item groups.how-many-towers v=1 stars=2 skills=[multiplication.equal-groups, division.grouping] {
+  title "How many towers"
+  difficulty (k * n)
+  let k=2..5 n=2..5
+  where (k != n)
+
+  scene 28x10 {
+    towers one heights=[k] labels=false level=0 at=canvas(1, 0)
+    text ask "This tower has {k} cubes. Mia builds towers just like it from {k * n} cubes. How many towers can she build?" narrate width=20 right-of=one gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == k) point=one {
+      say "{k} is how many cubes go in one tower. How many towers use up {k * n} cubes?"
+    }
+    when (answer == k * n) point=one {
+      say "That is all the cubes. Each tower takes {k} of them."
+    }
+  }
+  hint "Count in {k}s: {k}, {2 * k}, {3 * k}..."
+  hint "Stop at {k * n}. How many {k}s did you say?"
+}

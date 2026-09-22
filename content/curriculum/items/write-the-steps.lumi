@@ -1,0 +1,19 @@
+# v2, the audit's raise: the pictures are mixed up and carry no numbers, so the child chooses the
+# order and writes steps that someone could follow without seeing any pictures.
+item writing.write-the-steps v=2 stars=3 skills=[writing.instructions, writing.composing] {
+  title "Write the steps"
+  let k=0..1
+  let a={if k == 0 then "water" else "seed"}
+  let b={if k == 0 then "pot" else "sun"}
+  let c={if k == 0 then "seed" else "pot"}
+  let d={if k == 0 then "soil" else "water"}
+
+  scene 35x17 {
+    picsteps pics pictures=["{a}", "{b}", "{c}", "{d}"] texts=["", "", "", ""] per=4 numbers=false write=true at=canvas(1, 1)
+    text ask "The pictures are mixed up. Under each one, write its step for planting a seed, starting with a doing word. Then number the steps 1 to 4 in the order they are done." width=33 below=pics gap=1
+  }
+
+  check writing.by-eye look-for="A step under each picture and the numbers 1 to 4 in an order that works (the pot is filled before the seed goes in, and the watering comes after), each starting with a doing word (Fill, Push, Water, Put), each saying enough that someone could follow it with no pictures: which pot, where the seed goes, how much water."
+  hint "What has to happen before the seed can go in?"
+  hint "Read your steps as if you had never planted a seed. Is anything missing?"
+}

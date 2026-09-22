@@ -1,0 +1,32 @@
+# Two letters making one sound is the first time letters and sounds stop matching one for one, so
+# the question asks for the count that changes: the letters.
+item reading.letters-not-sounds v=1 skills=[reading.digraphs] {
+  title "Letters and sounds"
+  difficulty (if g == "sh" or g == "ch" then 1 else 0)
+  let g={"sh", "ch", "t", "c"}
+  level easy {
+    let g={"t", "c"}
+  }
+  level hard {
+    let g={"sh", "ch"}
+  }
+
+  scene 19x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      soundbuttons sb graphemes=["{g}", "o", "p"] count=false
+      text ask "The dots and the bar show the sounds. How many letters are in the word?" width=18
+      number-input answer
+    }
+  }
+
+  answer (if g == "sh" or g == "ch" then 4 else 3)
+  feedback {
+    when (answer == 3 and g == "sh") point=sb {
+      say "There are three sounds, but the first sound is written with two letters."
+    }
+    when (answer == 3 and g == "ch") point=sb {
+      say "There are three sounds, but the first sound is written with two letters."
+    }
+  }
+  hint "Count the letters, not the dots. A bar under two letters means they make one sound."
+}

@@ -1,0 +1,34 @@
+# Two fields side by side: two areas added, or one long rectangle, which is the distributive law.
+item area.two-fields v=1 skills=[area.composite, multiplication.distributive] {
+  title "Two fields side by side"
+  difficulty (h * (a + b))
+  let h=4..9 a=5..12 b=3..8
+  where (a != b)
+  level easy {
+    let h=4..5 a=5..7 b=3..4
+  }
+  level hard {
+    let h=7..9 a=9..12 b=6..8
+  }
+
+  scene 32x19 {
+    row farm at=canvas(1, 1) space=1 align=end {
+      crops left stage=2 rows=3 plants=5
+      crops right stage=3 rows=3 plants=4
+    }
+    text ask "Two fields share a hedge. Both are {h} m wide. One is {a} m long and the other is {b} m long. What is their area together, in square metres?" narrate width=30 below=farm gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (h * (a + b))
+  feedback {
+    when (answer == h * a or answer == h * b) point=farm {
+      say "That is one field. Add the other one too."
+    }
+    when (answer == 2 * (h + a + b)) point=farm {
+      say "That is the way round the edge. The area is the space inside."
+    }
+  }
+  hint "What is the area of the first field?"
+  hint "Add the second field. Or think of them as one field {a + b} m long."
+}

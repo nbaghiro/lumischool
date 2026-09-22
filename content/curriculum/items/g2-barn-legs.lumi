@@ -1,0 +1,27 @@
+# The sheep are inside, so they cannot be counted: the legs are grouped in fours backwards.
+item groups.barn-legs v=1 skills=[multiplication.fours, division.grouping] {
+  title "Sheep in the barn"
+  difficulty n
+  let n=3..9
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=7..9
+  }
+
+  scene 30x10 {
+    barn shed windows=2 hay=1 at=canvas(1, 1)
+    text ask "All the animals in the barn are sheep. There are {4 * n} legs. How many sheep are there?" narrate width=16 right-of=shed gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 4 * n / 2) point=shed {
+      say "A sheep has 4 legs, not 2. Count the legs in fours."
+    }
+  }
+  hint "How many legs is one sheep? And two sheep?"
+  hint "Count in fours up to {4 * n}. Each four is one sheep."
+}

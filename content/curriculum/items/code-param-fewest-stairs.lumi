@@ -1,0 +1,38 @@
+# Three stars: a staircase that climbs d squares from stairs of different sizes, none bigger than m,
+# with the fewest stairs. Two stairs climb at most m + (m - 1), so the answer is found by trying the
+# biggest sizes first.
+item coding.param-fewest-stairs v=1 stars=3 skills=[coding.procedures, reasoning.constraints, reasoning.fewest] {
+  title "The fewest stairs"
+  difficulty (if k < 2 then 0 else if k < 4 then 1 else 2)
+  let k=0..5
+  let d={pick(k, 5, 6, 7, 9, 10, 11)}
+  let m={pick(k, 3, 3, 4, 4, 4, 5)}
+  let fewest={pick(k, 2, 3, 2, 3, 4, 3)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x26 {
+    row top space=2 align=start at=canvas(1, 1) {
+      program prog code=["define stair size", "  up size", "  right 1", "stair 3", "stair 1"] title="Sam's stairs"
+      turtle t cols=4 rows=6 col=1 row=5 face=right moves=["up 3", "right 1", "up 1", "right 1"]
+    }
+    text ask "Stair 3 then stair 1 climb 4 squares. Sam needs a staircase that climbs {d} squares. Every stair must be a different size, and none can be bigger than {m}. What is the fewest stairs it can have?" narrate width=34 below=top gap=1
+    number-input stairs below=ask gap=1
+  }
+
+  answer stairs=fewest
+  feedback {
+    when (stairs < fewest) point=ask {
+      say "The biggest stairs you may use are {m} and {m - 1}. What do they climb together?"
+    }
+    when (stairs > fewest) point=ask {
+      say "Try the biggest sizes first: can fewer stairs climb {d}?"
+    }
+  }
+  hint "Start with the biggest stair you may use, {m}. What is left to climb?"
+  hint "Two different stairs climb at most {m} and {m - 1} together, which is {2 * m - 1}."
+}

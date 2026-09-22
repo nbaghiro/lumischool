@@ -1,0 +1,27 @@
+item time.interval v=1 skills=[time.elapsed] {
+  title "How long was the film"
+  difficulty len
+  let h=1..9 m=(0..55 by 5) len=(35..150 by 5)
+  where (h * 60 + m + len < 720)
+  level easy {
+    let len=(35..55 by 5)
+  }
+  level hard {
+    let len=(95..150 by 5)
+  }
+
+  scene 30x15 {
+    clock begins h=h m=m at=canvas(1, 1)
+    clock ends h=((h * 60 + m + len) // 60) m=((h * 60 + m + len) % 60) right-of=begins gap=4
+    text ask "The film starts at the first clock and ends at the second. How many minutes long is it?" width=28 below=begins gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer len
+  feedback {
+    when (answer == len - 60) point=ends.centre {
+      say "Count the whole hours as 60 minutes each, then the minutes left over."
+    }
+  }
+  hint "Count on from the first clock to the next o'clock, then on to the second clock."
+}

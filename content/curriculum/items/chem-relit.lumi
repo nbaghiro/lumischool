@@ -1,0 +1,33 @@
+# The two-star reason: the jar is lifted and the candle relit from a match, and it burns again;
+# so it went out for want of air, not for want of wax. At hard, the same seconds under the same
+# jar each time, so the jar holds the same air each time.
+item chem.relit v=1 stars=2 skills=[chemistry.burning, reasoning.evidence] {
+  title "What does that show?"
+  difficulty k
+  let k=0..1 r=0..2
+  let ask2={pick(k, "The candle went out under the jar. Leo's grown-up lifts the jar, holds a match to the wick, and the candle burns again. What does that show?", "Under the same jar the candle goes out after 10 seconds, and again after 10 seconds, and again. What does that show?")}
+  let right={pick(k, "It went out for want of air, not of wax", "The jar holds the same air every time")}
+  let w1={pick(k, "The match gave it new wax to burn", "The candle gets used to the jar")}
+  let w2={pick(k, "Lifting the jar cooled the wick", "The wick is shorter each time")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x27 {
+    candle c start=10 burnt=4 lit=1 jar=0 at=canvas(0, 0)
+    text ask "{ask2}" narrate width=20 right-of=c gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=c gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "{if k == 0 then \"The wax was still there when it went out, and it burns as soon as fresh air reaches it. So it was the air that ran out.\" else \"The same jar, the same air, the same seconds: the time depends on the air in the jar and nothing else.\"}"
+    }
+  }
+  hint "{if k == 0 then \"When it went out, was there wax left? What did lifting the jar let back in?\" else \"What is the same every time the jar goes over the candle?\"}"
+  hint "{if k == 0 then \"A candle with wax that will not burn is missing the other thing a flame needs.\" else \"Ten seconds' worth of air is in the jar each time.\"}"
+}

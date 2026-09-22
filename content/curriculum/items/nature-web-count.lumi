@@ -1,0 +1,41 @@
+# The story: Ada and Ben count the arrows in a bigger web, written out as facts, which is
+# the number of "eats" between the creatures.
+item nature.web-count v=1 skills=[nature.food-webs, addition.to-twenty] {
+  title "Counting the web"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let facts={pick(k, "Crabs and sea snails eat seaweed. Gulls eat crabs and sea snails.", "Crabs and sea snails eat seaweed. Gulls eat crabs and sea snails. Octopuses eat crabs.", "Crabs and sea snails eat seaweed. Gulls eat crabs and sea snails. Octopuses eat crabs and sea snails. Seals eat octopuses.")}
+  let asks={pick(k, "How many arrows does the web have?", "How many arrows does the web have?", "The octopus alone has two arrows into it. How many arrows does the whole web have?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x24 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      crabs pc count=1
+      gull pg flying=0
+      octopus po spots=4
+    }
+    text facts "Ada and Ben write down what they saw eating on the reef: {facts}" narrate width=32 below=pics gap=1
+    text ask "They draw the web with one arrow for each thing eaten. {asks}" narrate width=32 below=facts gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else if k == 1 then 5 else 7)
+  feedback {
+    when (k == 0 and answer == 2) point=facts {
+      say "Two things eat seaweed, and the gull eats two things. That is two arrows and two more."
+    }
+    when (k == 2 and answer == 2) point=facts {
+      say "Two is the octopus's share. The question asks for every arrow in the web."
+    }
+    when (answer == pick(k, 3, 4, 6)) point=facts {
+      say "Every 'eats' is one arrow, and 'crabs and sea snails' is two. Count each pair."
+    }
+  }
+  hint "Each 'eats' is one arrow. Where a creature eats two things, that is two arrows."
+  hint "Go through the facts one at a time and make a mark for each arrow."
+}

@@ -1,0 +1,40 @@
+# The two-star reason: two leaves of the same size and shape, and Ben's claim that they come from
+# the same tree. What shows him wrong is the edge, which is the whole point of sorting leaves.
+item nature.same-shape v=1 stars=2 skills=[nature.leaves, reasoning.counterexample] {
+  title "Same tree?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let x={pick(k, "oak", "holly", "oak", "holly")}
+  let y={pick(k, "ash", "ash", "holly", "oak")}
+  let right={pick(k, "The first is wavy, the second smooth.", "The first is prickly, the second not.", "One edge is wavy, the other prickly.", "One edge is prickly, the other wavy.")}
+  let o1={pick(k, right, "One is bigger than the other.", "One is bigger than the other.", "They are different colours.")}
+  let o2={pick(k, "One is bigger than the other.", right, "They are different colours.", right)}
+  let o3={pick(k, "They are different colours.", "They are different colours.", right, "One is bigger than the other.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    leafrow two kinds=[x, y] labels=false at=canvas(1, 1)
+    text ask "Ben finds these two leaves. They are the same size and the same shape, so he says they must come from the same tree. Ada says no. What shows that Ben is wrong?" narrate width=22 right-of=two gap=2
+    choice pick options=[o1, o2, o3, "Nothing: Ben is right."] stack=column below=two gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Nothing: Ben is right.") point=two {
+      say "Size and shape are not the only things to look at. Run your finger round the edge of each leaf."
+    }
+    when (pick == "One is bigger than the other.") point=two {
+      say "They are drawn the same size. Look at the edges, not the size."
+    }
+    when (pick == "They are different colours.") point=two {
+      say "They are drawn the same colour on purpose. Look at the edges."
+    }
+  }
+  hint "Ben looked at the size and the shape. What has he not looked at?"
+  hint "Follow the edge of each leaf with your finger. Are they the same kind of edge?"
+}

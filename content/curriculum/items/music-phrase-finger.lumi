@@ -1,0 +1,37 @@
+# C position, right hand: thumb on C, one finger to each key up to G. The first note of a bar gives
+# the finger to start it with.
+item music.phrase-finger v=1 skills=[music.fingers, music.staff] {
+  title "Which finger starts the bar?"
+  difficulty (if b == 3 then 0 else 1)
+  let b=1..4
+  let ans={pick(b - 1, 3, 5, 1, 3)}
+  level easy {
+    let b={1, 3}
+  }
+  level hard {
+    let b={2, 4}
+  }
+
+  scene 34x37 {
+    column lines space=1 align=start at=canvas(1, 1) {
+      notes l1 clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4
+      notes l2 clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4
+    }
+    row low space=2 align=start below=lines gap=1 {
+      hand h side=right numbers=piano ring=0 colours=false
+      column side space=1 align=start {
+        text ask "Ana's right hand is in C position: thumb on C, a finger on each key up to G. Which finger plays the first note of bar {b}?" narrate width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer ans
+  feedback {
+    when (answer == ans - 1) point=h {
+      say "The thumb is finger 1 and it plays C, so D is 2 and E is 3. Count on from the thumb."
+    }
+  }
+  hint "What is the first note of bar {b}?"
+  hint "Thumb on C is 1. Count up the letters to that note, one finger each."
+}

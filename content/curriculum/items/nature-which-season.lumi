@@ -1,0 +1,35 @@
+# The way in: one tree, and the season it shows. Bare and full of leaves are the easy two; blossom
+# and falling leaves both have something on the branches and take a closer look.
+item nature.which-season v=1 skills=[nature.seasons] {
+  title "Which season?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let s={if k == 0 then "winter" else if k == 1 then "summer" else if k == 2 then "spring" else "autumn"}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 31x21 {
+    seasontrees tree seasons=[s] names=0 at=canvas(1, 1)
+    text ask "Ada's tree looks like this. Which season is it?" narrate width=18 right-of=tree gap=2
+    choice pick options=["spring", "summer", "autumn", "winter"] below=ask gap=1 stack=column
+  }
+
+  answer pick=s
+  feedback {
+    when (s == "spring" and pick == "autumn") point=tree {
+      say "In autumn the leaves turn and fall to the ground. These are small pink flowers, and the ground is clear."
+    }
+    when (s == "autumn" and pick == "spring") point=tree {
+      say "In spring the tree has blossom and nothing under it. Here the leaves are on the ground."
+    }
+    when (s == "winter" and pick != "winter") point=tree {
+      say "There is nothing on the branches at all. That is the tree in winter."
+    }
+  }
+  hint "Look at the branches. Are they bare, in flower, full of leaves, or losing their leaves?"
+  hint "Now look at the ground under the tree. Is anything lying there?"
+}

@@ -1,0 +1,40 @@
+# The chart and the cards read together: the chord for a bar from the chart, then the string that chord
+# leaves out from its card. C leaves out string 6 and G none; D, which leaves out two, is the third
+# answer offered.
+item music.song-bar-strings v=1 skills=[music.chord-boxes, music.chord-changes] {
+  title "Strings to leave out"
+  let s=0..1 b=1..8
+  let song={pick(s, "London Bridge", "Skip to My Lou")}
+  let w1={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w2={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w3={pick(s, "fall-ing down,", "Lou, lou,")}
+  let w4={pick(s, "fall-ing down.", "skip to my lou,")}
+  let w5={pick(s, "Lon-don Bridge is", "Lou, lou,")}
+  let w6={pick(s, "fall-ing down,", "skip to my lou,")}
+  let w7={pick(s, "my fair", "skip to my lou, my")}
+  let w8={pick(s, "la-dy.", "dar-ling.")}
+  let c4={pick(s, "C", "G")}
+  let right={if pick(s * 8 + b - 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0) == 1 then "none" else "string 6"}
+
+  scene 36x41 {
+    row chart space=2 align=start at=canvas(1, 1) {
+      table bars cols=2 head=["Bar", "Chord"] cells=["1", "C", "2", "C", "3", "G", "4", c4, "5", "C", "6", "C", "7", "G", "8", "C"]
+      table words cols=1 head=["{song}"] cells=[w1, w2, w3, w4, w5, w6, w7, w8]
+    }
+    row low space=2 align=start below=chart gap=1 {
+      chordbox cc tuning=guitar chord=C frets=3 show=fingers name=true letters=false lit=[]
+      chordbox gg tuning=guitar chord=G frets=3 show=fingers name=true letters=false lit=[]
+    }
+    text ask "Ben plays {song}. Which strings does he leave out in bar {b}?" narrate width=34 below=low gap=1
+    choice pick options=["string 6", "none", "5 and 6"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Read bar {b}'s chord in the chart first, then look for crosses above that chord's card."
+    }
+  }
+  hint "Which chord does the chart give bar {b}?"
+  hint "A cross above a string on the card means that string is left out."
+}

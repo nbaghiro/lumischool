@@ -1,0 +1,16 @@
+# A circle has no first stage: where the drop starts decides the order, which is the step a child
+# has to work out rather than recite.
+item chem.cycle-journey v=1 stars=3 skills=[chemistry.water-cycle, reasoning.order] {
+  title "A drop's journey"
+  difficulty (if s == 0 then 0 else 1)
+  let s=0..3
+
+  scene 23x21 {
+    text ask "A drop of water is {if s == 0 then \"in the sea\" else if s == 1 then \"rising from the sea as water vapour\" else if s == 2 then \"in a cloud\" else \"falling as rain\"}. Number the four stages in the order it goes through them, until it is back where it began." width=22 at=canvas(1, 0)
+    sequence seq items=["evaporation", "condensation", "precipitation", "collection"] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=((0 - s + 4) % 4 + 1) b=((1 - s + 4) % 4 + 1) c=((2 - s + 4) % 4 + 1) d=((3 - s + 4) % 4 + 1)
+  hint "Where is the drop now? What is the very next thing that happens to it?"
+  hint "Keep following it round. When it is back at the start, which stage came last?"
+}

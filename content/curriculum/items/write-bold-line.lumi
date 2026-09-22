@@ -1,0 +1,30 @@
+# Which line of the notice should be the big bold one at the top: the one a passer-by has to read
+# first, the ask or the name of the thing, not the small details.
+item writing.bold-line v=1 skills=[writing.persuasion, writing.layout] {
+  title "The bold line"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "SAVE OUR POND", "CAKE SALE SATURDAY", "WALK TO SCHOOL DAY")}
+  let w1={pick(k, "Ducks are nesting in the reeds", "The money buys books for the library", "Fewer cars make the road safer")}
+  let w2={pick(k, "The pond is behind the hall", "Bring your cake to the hall by ten", "Meet at the gate at half past eight")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x17 {
+    text ask "One line of the notice goes at the top, big and bold, to be read from across the road. Which line should it be?" narrate width=32 at=canvas(1, 1)
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "The bold line is the short one that says what the notice is about, so a passer-by stops. The reason and the details come under it in smaller writing."
+    }
+  }
+  hint "Which line could be read in a glance from across the road?"
+  hint "Short, and about the whole thing: the reason and the time go underneath."
+}

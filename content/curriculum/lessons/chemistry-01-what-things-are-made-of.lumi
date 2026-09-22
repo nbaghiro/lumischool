@@ -1,0 +1,56 @@
+lesson chemistry-what-things-are-made-of v=2 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "What things are made of"
+  goal "Say what a thing is made of, find two things made of the same material, and tell a thing apart from its material."
+
+  look {
+    scene 23x13 {
+      materials spoons things=["wooden-spoon", "metal-spoon", "plastic-spoon"] names=1 at=canvas(1, 0)
+      row talk below=spoons gap=0 space=1 align=centre {
+        guide g pose=point
+        bubble b "Three spoons, three materials." width=14 from=g.hand
+      }
+    }
+    say """
+      A thing and what it is made of are two different answers. These are all spoons. One is made
+      of wood, one of metal and one of plastic. The material is the stuff the thing is made from.
+      """
+  }
+  do {
+    practice chem.what-made count=2 seed=1 easy-seed=2 hard-seed=4
+    practice chem.same-material count=2 seed=1
+    level easy {
+      worked chem.odd-material k=3 o=1 level=medium
+    }
+    practice chem.odd-material count=2 seed=2 easy-seed=4 hard-seed=4
+    practice chem.wrong-column count=2 hard-count=1 seed=4
+    level hard {
+      practice chem.counterexample count=1 seed=1
+    }
+    practice chem.sort-count count=1 seed=1
+  }
+  try stars=2 {
+    show chem.counterexample k=0 q=2 hard-k=1
+  }
+  try stars=3 {
+    show chem.material-pairs k=2 easy-k=0 hard-k=1
+  }
+  remember {
+    say "Ask what a thing is made of, not what it is for."
+  }
+
+  grown-ups """
+    Walk round the kitchen and name the material of ten things, then find two different things made
+    of the same material. The first question can be answered from the picture alone, which is the way
+    in; the odd one out and the pairs need the child to say every material before choosing. For the
+    two-star question, the point is that one spoon made of something else is enough to show a rule
+    about every spoon is wrong. For the three-star question, three wooden things make three pairs, not
+    two; let the child find that by pointing at every pair. If a child says a thing is made of two
+    materials, such as a pan with a plastic handle, they are right, and it is worth saying so.
+    """
+  level easy {
+    grown-ups "At this level the things to name are wood and metal, the thing that matches A is wood, metal or glass, the odd one out is worked once in the teacher's pen before rows where a plastic spoon sits among wood or a wooden spoon among metal, the things to count are metal or glass, the spoon that shows Ben wrong is as written, and the three-star row has one wooden pair and one metal pair."
+  }
+  level hard {
+    grown-ups "At this level the things to name are glass and plastic, the thing that matches A is rubber, wool or plastic and is a different kind of thing, the odd one out is a plastic bottle among glass or a metal key among plastic things that include a raincoat, the things to count are plastic, with the raincoat, or metal, with a rubber band and a wooden ruler among them, the spoon that shows Ben wrong is a plastic one among metal, and a second such row is asked, and the three-star row has three plastic things, one of them the raincoat."
+  }
+}

@@ -1,0 +1,26 @@
+item physics.rate-when v=1 skills=[physics.rate] {
+  title "When will it reach it?"
+  difficulty (r * h + (if v % 10 == 0 then 0 else 1))
+  let v={10, 15, 20} r=2..5 h=2..4
+  where (v + r * h <= 40)
+  level easy {
+    let v={10, 20} r=2..3 h=2..3
+  }
+  level hard {
+    let v={15} r=4..5 h=3..4
+  }
+
+  scene 26x14 {
+    thermometer tube from=0 to=40 step=10 value=v unit="C" at=canvas(1, 0)
+    text ask "It warms up {r} degrees every hour. After how many hours will it read {v + r * h}?" width=13 right-of=tube gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (answer == r * h) point=tube {
+      say "That is how many degrees it has to rise. How many hours is that, at {r} an hour?"
+    }
+  }
+  hint "How many degrees does it have to rise altogether?"
+}

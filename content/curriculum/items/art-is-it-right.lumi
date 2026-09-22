@@ -1,0 +1,18 @@
+# Judging a drawing and giving the reason: too many, too few, or right.
+item art.is-it-right v=1 stars=2 skills=[art.looking, reasoning.compare] {
+  title "Is the drawing right?"
+  difficulty (s + abs(d))
+  let s=4..7 d=-2..2
+  where (d != 0 or s == 5)
+
+  scene 34x17 {
+    text ask "Ada drew the ladybird on the left. Is her drawing right? Pick the answer that says why." width=32 at=canvas(1, 1)
+    minibeasts real kinds=["ladybird"] spots=s legs=false below=ask gap=1
+    minibeasts drawn kinds=["ladybird"] spots=(s + d) legs=false right-of=real gap=3
+    choice pick options=["Yes, it is right", "No, too many spots", "No, too few spots"] stack=column right-of=drawn gap=2
+  }
+
+  answer pick=(if d == 0 then "Yes, it is right" else if d > 0 then "No, too many spots" else "No, too few spots")
+  hint "Count the spots on the ladybird, and then on the drawing."
+  hint "Are the two numbers the same? If not, which one is bigger?"
+}

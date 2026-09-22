@@ -1,0 +1,16 @@
+item art.mirror-strokes v=1 skills=[art.pattern, reasoning.division] {
+  title "How many strokes?"
+  difficulty (n + c)
+  let c={4, 6} n={8, 12}
+  where (n % c == 0)
+
+  scene 32x14 {
+    radial pic repeats=n motif="drop" missing=-1 colour=sky at=canvas(1, 1)
+    text ask "Ada painted this with the easel's mirror on, and every stroke she made appeared {c} times round the middle. How many drops did she paint herself?" width=16 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n / c)
+  hint "How many drops are there in all?"
+  hint "Each stroke makes {c} of them. How many lots of {c} make that many?"
+}

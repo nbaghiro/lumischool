@@ -1,0 +1,17 @@
+# A reason for choosing a rock, from the tests the lesson has done. One list of three reasons serves
+# three questions, so the right reason changes with the question.
+item chem.rock-best v=1 stars=2 skills=[chemistry.rocks, reasoning.explain] {
+  title "The right rock for the job"
+  difficulty q
+  let q=0..2
+
+  scene 32x21 {
+    text ask "{if q == 0 then \"Why is slate good for a roof?\" else if q == 1 then \"Why is chalk no good for a path in the rain?\" else \"Why could pumice help to make a raft?\"}" width=23 at=canvas(1, 0)
+    rocks r rocks=["slate", "chalk", "pumice"] test=0 letters=0 names=1 below=ask gap=0
+    choice pick options=["It splits into flat sheets and keeps water out", "It is soft and soaks up water", "It floats"] stack=column below=r gap=0
+  }
+
+  answer pick=(if q == 0 then "It splits into flat sheets and keeps water out" else if q == 1 then "It is soft and soaks up water" else "It floats")
+  hint "What does a roof, a path or a raft need to do?"
+  hint "Which of the three reasons is about that rock, and is what the job needs?"
+}

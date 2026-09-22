@@ -1,0 +1,32 @@
+# No strip to count from: the claps have to be worked out from the blocks, two clap blocks inside
+# one repeat, which is the audit's raise for the clap-counting question.
+item coding.dance-claps-blocks v=1 skills=[coding.repetition] {
+  title "Claps from the blocks"
+  difficulty (n * (c + d))
+  let n=2..4 c=1..3 d=1..2
+  where (c != d)
+  level easy {
+    let n={2}
+  }
+  level hard {
+    let n=3..4 c={3}
+  }
+
+  scene 30x10 {
+    blocks b code=["repeat {n}", "  clap {c}", "  jump", "  clap {d}"] at=canvas(1, 0)
+    text ask "How many claps are in the whole dance?" width=18 right-of=b gap=2
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=b answer=claps
+  feedback {
+    when (answer == c + d) point=b {
+      say "That is one time round. The repeat goes round {n} times."
+    }
+    when (answer == n * c) point=b {
+      say "There are two clap blocks inside the repeat. Count both."
+    }
+  }
+  hint "How many claps is one time round the repeat?"
+  hint "How many times does the repeat go round?"
+}

@@ -1,0 +1,30 @@
+# Angles add, 4.MD.7: two corners side by side make one angle.
+item angles.corners-together v=1 skills=[angles.degrees, angles.additive] {
+  title "Two corners together"
+  difficulty (a + b)
+  let a={45, 90} b={30, 60}
+  level easy {
+    let a={45}
+  }
+  level hard {
+    let a={90}
+  }
+
+  scene 31x19 {
+    row both at=canvas(1, 1) space=3 align=end {
+      setsquare one kind="45" labels=true
+      setsquare two kind="30" labels=true
+    }
+    text ask "Put the {a}° corner of the first set square next to the {b}° corner of the second. What angle do they make together?" narrate width=29 below=both gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a - b or answer == b - a) point=both {
+      say "Side by side, the two angles add together."
+    }
+  }
+  hint "Find the two corners on the set squares."
+  hint "Side by side, the two angles add up."
+}

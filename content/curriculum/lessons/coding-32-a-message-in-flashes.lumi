@@ -1,0 +1,71 @@
+# A pattern of flashes is a code: the key says what each pattern means, a message is its flashes
+# in order, and a new message needs a pattern the key does not already use.
+lesson coding-a-message-in-flashes v=1 format=teach grade=1 unit=6 subject=coding levels=[easy, medium, hard] {
+  title "A message in flashes"
+  goal "Read a pattern of long and short flashes as a code, and choose the program that sends one back."
+
+  look {
+    scene 34x23 {
+      row all at=canvas(1, 1) space=2 align=start {
+        lighthouse tower beam=1
+        column right space=1 align=start {
+          table key cols=2 head=["Flashes", "Means"] cells=["long short short", "come in", "short short", "stay out", "long long", "go round"]
+          program p code=["flash long", "flash short", "flash short", "wait"] title="Lamp 1"
+        }
+      }
+    }
+    say """
+      At the lamp rocks the lamps talk to the boats. A lamp cannot say words, so it flashes: a
+      long flash, a short one, or a wait, which is the lamp dark for a beat. The key says what
+      each pattern means. Lamp 1's program is long, short, short, so it is telling Dad's boat to
+      come in. The order matters: short, short, long is not a message at all.
+      """
+  }
+  do {
+    level easy {
+      worked coding.flash-count k=5
+    }
+    practice coding.flash-count count=1 seed=1 easy-seed=1 hard-seed=1
+    practice coding.flash-spells count=2 seed=1 easy-seed=2 hard-seed=1
+    practice coding.which-program-says count=2 seed=1 easy-seed=2 hard-seed=1
+    practice coding.fill-the-flash count=1 seed=1 easy-seed=2 hard-seed=1
+    practice coding.lamp-flashed-twice count=1 seed=1 easy-seed=2 hard-seed=1
+    level hard {
+      show coding.flash-spells m=1 d=1
+    }
+    practice coding.two-messages count=1 seed=1 easy-seed=3 hard-seed=7
+  }
+  try stars=2 {
+    show coding.same-flashes-wrong-order k=0 r=0 hard-k=1 hard-r=1
+  }
+  try stars=3 {
+    show coding.new-pattern k=0 r=0 hard-k=1 hard-r=1
+  }
+  remember {
+    say "A message is its flashes in order. Read the key, then read the lamp from the top."
+  }
+
+  grown-ups """
+    The idea is that a pattern can stand for a message when both ends share a key, and that the
+    pattern is its parts in order, which is the first idea of a code and of a program. The look
+    is the lighthouse, the key and one lamp's program at the lamp rocks. The way in counts a
+    program's flashes with the waits left out, and the core reads a program against the key,
+    picks the program that sends a wanted message from three, fills the empty line of Pip's
+    program, finds the lamp that flashed twice, and reads two messages Pip sends Dad's boat one
+    after the other. The wrong idea to watch for is reading the flashes as a bag rather than a
+    list: the same flashes in another order are another message, and the two-star question is
+    built on that. In the working, look for the flashes written down in order before the key is
+    read. The three-star question asks for a new pattern that is not in the key and has the
+    fewest flashes, which means crossing the key's rows out first. A child who is stuck can write
+    each program as L and S, one letter a line with the waits left out, and read the letters
+    against the key; if the counting is still wrong, go back to the way in, and stay on this
+    lesson another day. A torch and a hand over it is the whole thing at home: agree a key of
+    two messages and send them across the room.
+    """
+  level easy {
+    grown-ups "At this level a program with a wait is counted once in the teacher's pen before the child's own, every wait comes after the flashes (in the programs to count, the lamps to read against the key and the lamp that flashed twice), the three programs to choose from are the key's three messages, the empty line is one of the first two, the two messages have a wait between them, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the program to count holds a wait, which is not a flash, the lamps to read against the key have a wait between their flashes and there are three of them, the three programs to choose from hold the same flashes in other orders or one flash changed, the empty line is the last, where a wait is sometimes right, the lamp that flashed twice has its wait in the middle, the two messages have no wait between them, so the key splits them, the two-star's other lamp has its long in the middle, and the three-star's new message is come slowly."
+  }
+}

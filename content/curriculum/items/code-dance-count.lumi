@@ -1,0 +1,26 @@
+item coding.dance-count v=1 skills=[coding.repetition] {
+  title "How many claps?"
+  difficulty (n * c)
+  let n=2..3 c=1..2
+  level easy {
+    let c={1}
+  }
+  level hard {
+    let c={2}
+  }
+
+  scene 34x25 {
+    blocks b code=["repeat {n}", "  clap {c}", "  jump"] at=canvas(1, 0)
+    dance d code=["repeat {n}", "  clap {c}", "  jump"] below=b gap=1
+    text ask "How many claps are in the whole dance?" width=20 below=d gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=d answer="count(clap)"
+  feedback {
+    when (answer == c) point=b {
+      say "That is one time round. The repeat goes round {n} times."
+    }
+  }
+  hint "Clap it yourself: clap {c}, jump, and again."
+}

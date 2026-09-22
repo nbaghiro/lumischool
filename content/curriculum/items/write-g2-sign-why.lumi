@@ -1,0 +1,22 @@
+# A sign that tells a fact nobody needs instead of what to do: the child says why it will not work.
+item writing.sign-why v=1 stars=2 skills=[writing.signs, reasoning.explain] {
+  title "Why the sign will not help"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3 r=0..2
+  let need={if k == 0 then "The farm wants the gate kept shut." else if k == 1 then "The pond wants people to stop feeding the ducks." else if k == 2 then "The library wants people to be quiet." else "The pool wants people to walk, not run."}
+  let says={if k == 0 then "The gate is green." else if k == 1 then "The ducks are brown." else if k == 2 then "This room has books." else "The pool is blue."}
+  let right={"It does not say what to do."}
+  let o1={if r == 0 then right else "It is too short."}
+  let o2={if r == 1 then right else if r == 0 then "It is too short." else "It needs a question mark."}
+  let o3={if r == 2 then right else "It needs a question mark."}
+
+  scene 36x19 {
+    sign board lines=["{says}"] kind=post color="berry" at=canvas(1, 1)
+    text ask "{need} Its sign says: {says} Why will the sign not help?" narrate width=19 right-of=board gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What does the place want people to do?"
+  hint "Does the sign ask anyone to do anything?"
+}

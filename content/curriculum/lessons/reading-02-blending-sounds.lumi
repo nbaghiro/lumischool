@@ -1,0 +1,55 @@
+lesson reading-blending-sounds v=1 format=teach grade=1 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "Blending sounds into a word"
+  goal "Push the sounds of a word together and write the whole word."
+
+  look {
+    scene 22x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          dog d facing=1 ball=1
+          soundboxes sb boxes=3 counters=true
+        }
+        wordtrain train parts=["d", "o", "g"] word="dog"
+      }
+    }
+    say """
+      Blending is saying the sounds one at a time and then running them together: d, o, g, dog.
+
+      There is one box and one carriage for each sound, so you know how many sounds to listen for.
+      """
+  }
+  do {
+    practice reading.blend-buttons count=2 seed=3
+    practice reading.spell-the-word count=2 seed=4
+    practice reading.blend-digraph count=1 seed=5 hard-seed=7
+    practice reading.blend-mistake count=1 seed=2
+    level easy {
+      worked reading.count-sounds k=1 level=medium
+    }
+    practice reading.count-sounds count=2 seed=2
+  }
+  try stars=2 {
+    show reading.sounds-or-letters k=0 easy-k=3
+  }
+  try stars=3 {
+    show reading.three-sounds-four-letters w="ship"
+  }
+  remember {
+    say "One box for each sound. Say them slowly, then say them fast."
+  }
+
+  grown-ups """
+    Say the sounds with a small gap between them and let the child run them together. If they say
+    the letter names instead of the sounds, say the sounds again and ask them to copy you. Words
+    such as ship and chin are the step up: two letters make one sound, so the word has fewer sounds
+    than letters. In the two-star question the child judges a reason: counting letters is not the
+    same as counting sounds. The three-star question has many right answers, and a grown-up checks
+    it.
+    """
+  level easy {
+    grown-ups "At this level the buttons are as written, the words to spell are cat, cup and hen, the word with two letters to a sound is fish, Pip's wrong sound is the first or the last, chest is counted once in the teacher's pen before tent and gull, Pip's claim is about tent and ten, where counting the letters gives the answer, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the buttons are as written, the words to spell are sun and owl, the words with two letters to a sound are chest and whale, Pip's wrong sound is the middle one, the sounds to count are in chest and seal, and the two-star and three-star are as written."
+  }
+}

@@ -1,0 +1,38 @@
+# The two-star reason: chocolate melted and set again is the same chocolate in a new shape, and
+# so is water frozen and thawed; a fried egg and toast are not the egg and bread they were. Each
+# version asks whether it is the same stuff, with the reason.
+item chem.same-chocolate v=1 stars=2 skills=[chemistry.changes, reasoning.explain] {
+  title "Is it the same?"
+  difficulty (if k == 1 then 2 else if k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  let c={pick(k, "melt-chocolate", "freeze-water", "cook-egg", "toast-bread")}
+  let story={pick(k, "Ada melts a bar of chocolate, pours it into a star mould, and lets it set.", "Ada freezes a cup of water into a block, then leaves the block on the table until it is water again.", "Ada fries an egg and lets it go cold on the plate.", "Ada toasts a slice of bread and lets it go cold.")}
+  let asks={pick(k, "Is the star the same chocolate?", "Is it the same water?", "Is the cold egg the same as the raw egg was?", "Is the cold toast the same as the bread was?")}
+  let right={pick(k, "Yes: only its shape changed", "Yes: only its state changed", "No: heat made something new", "No: heat made something new")}
+  let w1={pick(k, "No: it is a new material", "No: ice is a different stuff", "Yes: it only went cold again", "Yes: it is bread with a brown edge")}
+  let w2={pick(k, "No: melting used some up", "Yes, but there is less of it", "No: cooling made something new", "No: cooling made something new")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x25 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "{story} {asks}" narrate width=32 below=ch gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k <= 1 and pick != right) point=ch {
+      say "Warm it or cool it, and it goes back. Nothing new was made and nothing was used up: the same stuff, in a new shape or state."
+    }
+    when (k >= 2 and pick != right) point=ch {
+      say "The heat changed it into something new. Cooling it afterwards does not turn it back, so it is not what it was."
+    }
+  }
+  hint "Ask two things: could it go back to how it started, and was anything new made?"
+  hint "Melting and freezing can be undone, so the stuff is the same. Cooking makes something new, and cooling it does not undo that."
+}

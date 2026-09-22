@@ -1,0 +1,14 @@
+item coding.pixel-row v=1 skills=[coding.data] {
+  title "One row of the picture"
+  difficulty r
+  let r=2..4
+
+  scene 30x17 {
+    pixels p cols=7 rows=5 code=["3 white 1 yellow 3 white", "2 white 3 yellow 2 white", "1 white 5 yellow 1 white", "7 yellow", "2 white 1 green 1 white 1 green 2 white"] at=canvas(1, 0)
+    text ask "How many yellow squares does the code paint in row {r}?" width=24 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="row({r}).yellow"
+  hint "Find the line for row {r} and read how many yellow it says."
+}

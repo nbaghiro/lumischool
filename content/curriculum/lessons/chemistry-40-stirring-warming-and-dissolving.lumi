@@ -1,0 +1,64 @@
+lesson chemistry-stirring-and-dissolving v=1 format=teach grade=3 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "Stirring, warming and dissolving"
+  goal "Say what makes sugar dissolve faster, from a table of times, and which pair of rows is a fair comparison."
+
+  look {
+    scene 30x13 {
+      row all at=canvas(1, 0) space=2 align=end {
+        beaker cold max=200 step=50 level=150 unit=ml solid=1 rod=false label="cold"
+        beaker warm max=200 step=50 level=150 unit=ml solid=0 rod=true label="warm"
+      }
+    }
+    say """
+      At the lemonade stall on the salt flats Nour drops a spoon of sugar into a cup of cold water
+      and leaves it. Two minutes later there are still grains on the bottom. She tries a second
+      cup and stirs it: one minute. A third cup with warm water, left still: one minute. A fourth,
+      warm and stirred: half a minute. Stirring helps and warmth helps, and to see what one of
+      them does on its own, only that one thing may change.
+      """
+  }
+  do {
+    level easy {
+      worked chem.which-dissolved k=0 s=0
+    }
+    practice chem.which-dissolved count=1 seed=6 easy-seed=9 hard-seed=1
+    practice chem.stir-time count=2 seed=7 easy-seed=1 hard-seed=2
+    practice chem.helped-most count=1 seed=7 easy-seed=1 hard-seed=1
+    practice chem.fair-which count=2 seed=7 easy-seed=4 hard-seed=8
+    practice chem.fair-changed count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show chem.helped-most k=1 level=medium
+    }
+  }
+  story {
+    show chem.stall-sugar base=120 w=0 easy-base=80 hard-base=160 hard-w=1
+  }
+  try stars=2 {
+    show chem.two-changes k=1 r=2 easy-k=0
+  }
+  try stars=3 {
+    show chem.fastest-plan k=0 r=2 hard-k=1 hard-r=3
+  }
+  remember {
+    say "Stirring and warm water both make sugar dissolve faster. To test one, change only that one."
+  }
+
+  grown-ups """
+    The idea has two halves: stirring and warmth each make sugar dissolve faster, and a fair
+    comparison changes one thing at a time. The table is the lesson's picture, four cups with
+    their seconds, and the questions read it for a time, the fastest cup, the gap between two
+    cups, and which change saved more. The wrong idea to watch for is reading the smallest number
+    as the least help; ask what each row was compared with. The story halves a time once for the
+    warm water and again for the stirring. The two-star question shows two rows that changed two
+    things and asks why they cannot show what one of them does, and the three-star question
+    builds the fastest plan from three helps, all of them. If the pairs are still picked by
+    their times rather than by what differs after the core, stay here another day with two cups
+    and a stopwatch, and let the child choose what to change.
+    """
+  level easy {
+    grown-ups "At this level the stirred cup is picked out once in the teacher's pen, the cups to tell apart differ by stirring, the times are read for one cup or the fastest, warming saves more than stirring by a clear margin, the rows to compare are the plainer pairs, the story halves eighty once, the two rows that cannot be compared differ in temperature and stirring, and the fastest plan is the only one with all three helps among plans with fewer."
+  }
+  level hard {
+    grown-ups "At this level the cups to tell apart differ by warmth, the times are read for the fastest cup and the gap between two, stirring and warming save the same, the rows to compare need every column read, a second helped-most, where stirring saved more, sits in the core, the story halves a hundred and sixty twice, the two-star's two rows are Ben's, and the fastest plan hides among plans with two helps each."
+  }
+}

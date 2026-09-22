@@ -1,0 +1,29 @@
+item groups.array v=1 skills=[multiplication.equal-groups] {
+  title "Rows and columns"
+  difficulty (r * c)
+  let r=2..5 c=2..6
+  where (r != c)
+  level easy {
+    let r=2..3 c=2..5
+  }
+  level hard {
+    let r=4..5 c=4..6
+  }
+
+  scene 26x13 {
+    array dots rows=r cols=c color=sky at=canvas(1, 1)
+    text ask "{r} rows of {c} dots." narrate below=dots gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      equation times "{r} × {c} ="
+      number-input total width=3
+    }
+  }
+
+  answer total=(r * c)
+  feedback {
+    when (total == r + c) point=dots.row(0) {
+      say "Rows of {c} are groups, not one more group. Count one row, then count it again for every row."
+    }
+  }
+  hint "Count one row, then count on that many for each row."
+}

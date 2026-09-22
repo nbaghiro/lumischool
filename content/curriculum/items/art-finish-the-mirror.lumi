@@ -1,0 +1,21 @@
+item art.finish-the-mirror v=1 skills=[art.symmetry] {
+  title "Finish the butterfly"
+  difficulty s
+  let s=1..6 k=0..2
+  level easy {
+    let s=1..3
+  }
+  level hard {
+    let s=4..6
+  }
+
+  scene 32x14 {
+    mirrorpick m seed=s rows=4 cols=3 answer=k kind="wings" at=canvas(1, 1)
+    text ask "The mirror line is dashed. Which half finishes the butterfly?" width=14 right-of=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check paint.mirror of=m pick=mirror
+  hint "Look at the squares that touch the dashed line. Which half has the same colours touching it?"
+  hint "A square far from the line on one side is far from it on the other side too. Check the edges."
+}

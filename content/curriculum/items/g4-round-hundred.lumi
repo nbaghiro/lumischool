@@ -1,0 +1,28 @@
+# The line marks the number and halfway but draws no arrow, so the child decides which way it goes.
+item place.round-hundred v=2 skills=[place-value.rounding] {
+  title "To the nearest hundred"
+  difficulty (5 - abs(t - 5))
+  let h=2..8 t=1..9
+  where (t != 5)
+  level easy {
+    let t={1, 2, 8, 9}
+  }
+  level hard {
+    let t={4, 6}  # one ten from the halfway mark
+  }
+
+  scene 18x15 {
+    rounding line from=(100 * h) to=(100 * h + 100) value=(100 * h + 10 * t) show=false at=canvas(1, 1)
+    text ask "Round {100 * h + 10 * t} to the nearest hundred." narrate below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * round((100 * h + 10 * t) / 100))
+  feedback {
+    when (t > 5 and answer == 100 * h) point=line {
+      say "{100 * h + 10 * t} is past halfway, so it rounds up to {100 * h + 100}."
+    }
+  }
+  hint "Is {100 * h + 10 * t} before or after the halfway mark?"
+  hint "Look at the tens digit. Five or more rounds up."
+}

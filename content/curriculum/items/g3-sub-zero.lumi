@@ -1,0 +1,27 @@
+# A zero in the tens: there is no ten to exchange, so a hundred has to come across first.
+item columns.sub-zero v=1 skills=[subtraction.columns] {
+  title "A zero in the middle"
+  difficulty ((if o == 0 then 6 else 0) + bt + bo - o)
+  let h=3..9 o=0..7 bh=1..5 bt=1..9 bo=1..9
+  where (bo > o and bh < h)
+  level easy {
+    let o=3..7 bt=1..4
+  }
+  level hard {
+    let o={0} bt=6..9 bo=6..9  # a zero in the ones as well
+  }
+
+  scene 22x11 {
+    columns diff a=(100 * h + o) b=(100 * bh + 10 * bt + bo) op=sub at=canvas(1, 1)
+    text ask "There are no tens to exchange. Start with the hundreds." width=20 below=diff gap=1
+  }
+
+  answer diff=(100 * h + o - 100 * bh - 10 * bt - bo)
+  feedback {
+    when (diff == 100 * (h - bh) + 10 * (10 - bt) + 10 + o - bo) point=diff {
+      say "The ten you made for the ones came out of the tens, so there are 9 tens left, not 10."
+    }
+  }
+  hint "Exchange one hundred for ten tens. How many tens are there now?"
+  hint "Now exchange one of those tens for ten ones."
+}

@@ -1,0 +1,52 @@
+lesson g3-times-tables v=1 format=teach grade=3 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Times tables to twelve"
+  goal "Know the tables to twelve, use them backwards, and see a table as a pattern that keeps going."
+
+  look {
+    scene 36x16 {
+      array dots rows=4 cols=6 color=sky at=canvas(1, 1)
+      terms run terms=4 start=4 step=4 shape=dot below=dots gap=1
+      note n "Four, eight, twelve, sixteen: the fours." width=16 right-of=dots gap=2
+    }
+    say """
+      A table is a pattern: the same step, over and over. Four rows of six is the same as six rows
+      of four, so learning one fact learns two.
+      """
+  }
+  do {
+    practice times.sequence count=1 seed=3
+    practice groups.array count=1 seed=8 easy-seed=2
+    level easy {
+      worked times.missing-factor a=4 b=6
+    }
+    practice times.missing-factor count=2 seed=5
+    practice times.in-the-pattern count=2 seed=4 easy-seed=2
+    practice times.fields-alike count=2 hard-count=1 seed=7 easy-seed=3 hard-seed=4
+    level hard {
+      practice times.balance-double count=1 seed=3
+    }
+  }
+  try stars=2 {
+    show times.balance-double a=3 b=8 easy-a=2 easy-b=4 hard-a=4 hard-b=12
+  }
+  try stars=3 {
+    show times.all-arrays n=24 easy-n=12 hard-n=36
+  }
+  remember {
+    say "Six fours and four sixes are the same twenty-four. A table works backwards too: 24 = 6 × 4."
+  }
+
+  grown-ups """
+    Chant the hard ones in the car, but check them out of order. A table known only in sequence is
+    not known yet. The missing factor questions are the tables used backwards, which is division
+    before it has a name. In the two-star question, ask what happens to one number when the other
+    doubles, before anything is worked out. In the three-star question the rows go 2, 3, 4 and so
+    on, and each one that works gives an array; stopping at the right place is part of the puzzle.
+    """
+  level easy {
+    grown-ups "At this level the patterns go up in threes and fours and are checked six or seven steps out, the arrays have two or three rows, a missing factor is worked once in the teacher's pen before the two to find, the factors come from the twos to the fives, the farm has two small fields, the balance is 2 × 4 against 4, and twelve counters make four arrays."
+  }
+  level hard {
+    grown-ups "At this level the patterns go up in sevens, eights and nines and are checked nine or ten steps out, the arrays have four or five rows, the factors come from the sixes, sevens, eights, nines and twelves, the farm has four or five fields, the balance is asked twice with tens and twelves on the left, and thirty-six counters make seven arrays."
+  }
+}

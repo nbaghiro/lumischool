@@ -1,0 +1,36 @@
+# Eight part names sorted under plant and fish, with one in the wrong column. The flower and the
+# tail are the easy strays; scales and a leaf in the wrong column take a moment longer.
+item nature.plant-or-fish v=1 skills=[nature.plants, nature.animals] {
+  title "One is in the wrong column"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let stray={pick(k, "flower", "tail", "roots", "fin", "scales", "leaf")}
+  let o1={pick(k, "stem", "tail", "mouth", "leaf", "scales", "fin")}
+  let o2={pick(k, "flower", "leaf", "roots", "fin", "roots", "leaf")}
+  let o3={pick(k, "mouth", "stem", "tail", "stem", "flower", "mouth")}
+  let o4={pick(k, "fin", "scales", "flower", "mouth", "tail", "roots")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 30x29 {
+    text ask "Ada sorted the parts of a plant and the parts of a fish. One word is in the wrong column. Which one?" narrate width=28 at=canvas(1, 1)
+    wordsort s heads=["plant", "fish"] words=["roots", "fin", "stem", "tail", "leaf", "mouth", "flower", "scales"] into=[if k == 2 then 1 else 0, if k == 3 then 0 else 1, 0, if k == 1 then 0 else 1, if k == 5 then 1 else 0, 1, if k == 0 then 1 else 0, if k == 4 then 0 else 1] below=ask gap=1
+    choice pick options=[o1, o2, o3, o4] below=s gap=1
+  }
+
+  answer pick=stray
+  feedback {
+    when (pick == "mouth" and stray != "mouth") point=s {
+      say "A fish has a mouth, so mouth is right where it is. Look for a plant part under fish, or a fish part under plant."
+    }
+    when (pick == "stem" and stray != "stem") point=s {
+      say "The stem belongs to the plant, and it is under plant. Check the other words one at a time."
+    }
+  }
+  hint "Say each word under plant. Does a plant have that part? Then say each word under fish."
+  hint "Roots, stem, leaf and flower are the plant's. Fin, tail, mouth and scales are the fish's."
+}

@@ -1,0 +1,11 @@
+item reading.order-puddle v=1 skills=[reading.sequencing] {
+  title "Put the story in order"
+
+  scene 32x16 {
+    text ask "Number the sentences 1, 2, 3 and 4 to put the story in order." width=30 at=canvas(1, 1)
+    sequence s items=["Ada jumped in with both feet.", "The rain stopped at last.", "A puddle had grown by the gate.", "Her socks were wet all morning."] blanks=[one, two, three, four] below=ask gap=1
+  }
+
+  answer one=3 two=1 three=2 four=4
+  hint "Which one has to happen before any of the others could?"
+}

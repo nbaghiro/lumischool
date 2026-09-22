@@ -1,0 +1,21 @@
+# A bar written with a beat or two too many, and the one note that has to come out: the child reasons
+# from the extra beats to the note worth exactly that much.
+item music.too-many-beats v=1 stars=2 skills=[music.rhythm, reasoning.find-the-error] {
+  title "One note too many"
+  difficulty (if a + b + c + e == 6 then 1 else 0)
+  let p=0..5
+  let a={if p == 0 then 1 else if p == 1 then 2 else if p == 2 then 1 else if p == 3 then 2 else if p == 4 then 1 else 2}
+  let b={if p == 0 then 1 else if p == 1 then 1 else if p == 2 then 2 else if p == 3 then 1 else if p == 4 then 2 else 2}
+  let c={if p == 0 then 1 else if p == 1 then 1 else if p == 2 then 1 else if p == 3 then 1 else if p == 4 then 2 else 1}
+  let e={if p == 0 then 2 else if p == 1 then 1 else if p == 2 then 1 else if p == 3 then 2 else if p == 4 then 1 else 1}
+
+  scene 26x19 {
+    staff bar notes=[a, b, c, e] at=canvas(1, 1)
+    text ask "This bar should have 4 beats but it has too many. Which one note should come out?" width=24 below=bar gap=1
+    choice pick options=["a crotchet, 1 beat", "a minim, 2 beats"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if a + b + c + e == 5 then "a crotchet, 1 beat" else "a minim, 2 beats")
+  hint "How many beats are in the bar now?"
+  hint "How many beats too many is that? Which one note is worth exactly that?"
+}

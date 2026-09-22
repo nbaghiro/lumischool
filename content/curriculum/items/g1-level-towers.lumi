@@ -1,0 +1,26 @@
+# Making towers level is sharing fairly, and it is the mean before anyone names it.
+item groups.level-towers v=1 stars=3 skills=[division.sharing, reasoning.fair-shares] {
+  title "Make them level"
+  difficulty (x + y + z)
+  let x=1..8 y=1..8 z=1..8
+  where ((x + y + z) % 3 == 0)
+  where (max(x, y, z) - min(x, y, z) >= 3)
+
+  scene 28x16 {
+    towers three heights=[x, y, z] labels=true level=0 at=canvas(1, 0)
+    text ask "Move cubes from tower to tower until all three are the same height. How many cubes tall is each tower then?" narrate width=14 right-of=three gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((x + y + z) / 3)
+  feedback {
+    when (answer == x + y + z) point=three {
+      say "That is all the cubes. They are shared between the three towers."
+    }
+    when (answer == max(x, y, z)) point=three {
+      say "Cubes only move, so the tallest tower has to give some away."
+    }
+  }
+  hint "Take one cube off the tallest tower and put it on the shortest."
+  hint "Keep doing it until no tower is taller than another."
+}

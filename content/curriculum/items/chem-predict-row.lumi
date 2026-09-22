@@ -1,0 +1,29 @@
+# A temperature Ana did not test, placed between two rows of the table or beyond the last one.
+item chem.predict-row v=1 skills=[chemistry.dissolving, reasoning.predict] {
+  title "A row she did not test"
+  difficulty w
+  let w=0..2
+  let temp={pick(w, 30, 50, 80)}
+  let right={pick(w, "between 4 and 6", "between 6 and 8", "more than 8")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 34x28 {
+    table data cols=2 head=["Water °C", "Spoons dissolved"] cells=["10", "3", "20", "4", "40", "6", "60", "8"] at=canvas(1, 0)
+    text ask "Ana did not test water at {temp} °C. How many spoons of salt do you think it would dissolve?" narrate width=32 below=data gap=1
+    choice pick options=["between 4 and 6", "between 6 and 8", "more than 8"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "{if w == 2 then \"80 °C is hotter than any row, so it holds more than the hottest row did.\" else \"Find the two rows either side of \" }{if w == 2 then \"\" else temp}{if w == 2 then \"\" else \" °C. The answer sits between their spoons.\"}"
+    }
+  }
+  hint "{if w == 2 then \"Is 80 °C hotter or colder than every row in the table?\" else \"Which two rows is that temperature between?\"}"
+  hint "Hotter water holds more, so the spoons go up the table with the temperature."
+}

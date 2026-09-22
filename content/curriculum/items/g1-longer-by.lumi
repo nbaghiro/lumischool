@@ -1,0 +1,35 @@
+# Two lengths measured from zero and compared: how much longer is a difference, not a total.
+item measure.longer-by v=1 skills=[measure.length, subtraction.compare] {
+  title "How much longer"
+  difficulty (a - b)
+  let a=5..10 b=2..8
+  where (a > b)
+  where (a - b != b)
+  level easy {
+    let a=5..7 b=2..4
+  }
+  level hard {
+    let a=8..10 b=2..5
+  }
+
+  scene 25x20 {
+    column rs at=canvas(1, 0) space=0 {
+      ruler r1 cm=10 length=a start=0 thing=ribbon
+      ruler r2 cm=10 length=b start=0 thing=pencil
+    }
+    text ask "How many centimetres longer is the ribbon?" narrate width=23 below=rs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=rs {
+      say "That is both of them end to end. Longer asks for the difference."
+    }
+    when (answer == a) point=r1 {
+      say "That is how long the ribbon is. How much of it sticks out past the pencil?"
+    }
+  }
+  hint "How long is the ribbon? How long is the pencil?"
+  hint "How far is it from the end of the pencil to the end of the ribbon?"
+}

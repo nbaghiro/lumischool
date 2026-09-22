@@ -1,0 +1,20 @@
+# A reason about what dissolving does: a dissolved solid is got back by drying the water away, and
+# one that did not dissolve by catching it in paper. Never by tasting.
+item chem.show-still-there v=1 stars=2 skills=[chemistry.dissolving, reasoning.explain] {
+  title "How could you get it back?"
+  difficulty (if t == "sand" then 0 else 1)
+  let t={"salt", "sugar", "sand"}
+  level hard {
+    let t={"salt", "sugar"}
+  }
+
+  scene 31x15 {
+    text ask "The {t} was stirred into the water. {if t == \"sand\" then \"It sank to the bottom.\" else \"Now it cannot be seen.\"} How could you get it back, without tasting?" width=30 at=canvas(1, 0)
+    mixture mix things=["{t}"] water=1 names=0 below=ask gap=0
+    choice pick options=["Let the water dry up", "Pour it through paper", "Stir it for longer"] stack=column right-of=mix gap=1
+  }
+
+  answer pick=(if t == "sand" then "Pour it through paper" else "Let the water dry up")
+  hint "Has it dissolved, or is it sitting on the bottom?"
+  hint "Paper can catch grains. Can it catch something spread through the water in bits too small to see?"
+}

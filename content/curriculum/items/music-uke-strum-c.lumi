@@ -1,0 +1,14 @@
+# A played chord: every string the shape plays has to sound its note, which is what music.chord
+# checks, and it lists the four notes as the solution.
+item music.uke-strum-c v=1 skills=[music.chord-boxes, music.strumming] {
+  title "Strum C"
+
+  scene 32x29 {
+    text ask "Put finger 3 where the card shows. Then strum down across all four strings." width=30 at=canvas(1, 1)
+    chordbox card tuning=uke chord=C frets=4 show=fingers name=true letters=true lit=[] below=ask gap=1
+    fretboard neck tuning=uke frets=4 view=chart labels=letters strum=true right-of=card gap=2
+  }
+
+  check music.chord chord=C tuning=uke
+  hint "Stand your ukulele up next to the card: the strings line up, G C E A."
+}

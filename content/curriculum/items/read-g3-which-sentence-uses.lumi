@@ -1,0 +1,24 @@
+# The other way round from which-meaning: the meaning is given and the child finds the sentence
+# that uses the word that way, so the context has to be read for every sentence.
+item reading.which-sentence-uses v=1 skills=[reading.vocabulary, reading.context] {
+  title "Which sentence uses it that way?"
+  difficulty (if k == 0 then pick(m, 1, 0, 2) else if k == 1 then pick(m, 1, 2, 0) else if k == 2 then pick(m, 1, 0, 2) else if k == 3 then pick(m, 2, 1, 0) else pick(m, 1, 0, 2))
+  let k=0..4 m=0..2
+  level easy {
+    where (k == 0 and m == 1 or k == 1 and m == 2 or k == 2 and m == 1 or k == 3 and m == 2 or k == 4 and m == 1)
+  }
+  level hard {
+    where (k == 0 and m == 2 or k == 1 and m == 1 or k == 2 and m == 2 or k == 3 and m == 0 or k == 4 and m == 2)
+  }
+
+  scene 26x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "In which sentence does {if k == 0 then \"spring\" else if k == 1 then \"light\" else if k == 2 then \"match\" else if k == 3 then \"trunk\" else \"fair\"} mean {if k == 0 then (if m == 0 then \"a coil of metal\" else if m == 1 then \"the season after winter\" else \"water coming out of the ground\") else if k == 1 then (if m == 0 then \"not heavy\" else if m == 1 then \"pale, not dark\" else \"a lamp that shines\") else if k == 2 then (if m == 0 then \"a stick that makes a flame\" else if m == 1 then \"a game two teams play\" else \"to go well together\") else if k == 3 then (if m == 0 then \"a big box with a lid\" else if m == 1 then \"the thick stem of a tree\" else \"an elephant's long nose\") else (if m == 0 then \"the same for everyone\" else if m == 1 then \"a place with rides\" else \"pale, not dark\")}?" width=25
+      choice pick options=[if k == 0 then "We drank from a spring." else if k == 1 then "She wore a light blue coat." else if k == 2 then "Dad struck a match." else if k == 3 then "The elephant lifted its trunk." else "We went to the fair.", if k == 0 then "The bed had a broken spring." else if k == 1 then "Turn off the light." else if k == 2 then "Your socks do not match." else if k == 3 then "The squirrel ran up the trunk." else "It is not fair.", if k == 0 then "Lambs are born in spring." else if k == 1 then "The box was light." else if k == 2 then "We won the match." else if k == 3 then "Photos are kept in the trunk." else "She has fair hair."] stack=column
+    }
+  }
+
+  answer pick=(if k == 0 then if m == 0 then "The bed had a broken spring." else if m == 1 then "Lambs are born in spring." else "We drank from a spring." else if k == 1 then if m == 0 then "The box was light." else if m == 1 then "She wore a light blue coat." else "Turn off the light." else if k == 2 then if m == 0 then "Dad struck a match." else if m == 1 then "We won the match." else "Your socks do not match." else if k == 3 then if m == 0 then "Photos are kept in the trunk." else if m == 1 then "The squirrel ran up the trunk." else "The elephant lifted its trunk." else if m == 0 then "It is not fair." else if m == 1 then "We went to the fair." else "She has fair hair.")
+  hint "Read each sentence. What does the word mean in that one?"
+  hint "Only one sentence uses the word with this meaning. The other two use it another way."
+}

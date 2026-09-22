@@ -1,0 +1,23 @@
+# The machine-marked version of writing a program for someone: four lines, each with its own
+# number, run on the grid and compared with the target.
+item coding.write-rectangle v=1 skills=[coding.drawing, coding.sequences] {
+  title "Write the four lines"
+  difficulty (w + h)
+  let w=2..5 h=2..4
+  where (w != h)
+  level easy {
+    where (w + h <= 6)
+  }
+  level hard {
+    where (w + h >= 7)
+  }
+
+  scene 36x16 {
+    turtle t cols=(w + 2) rows=(h + 2) col=2 row=(h + 2) moves=[] target=["up {h}", "right {w}", "down {h}", "left {w}"] mark=false at=canvas(1, 0)
+    codepad answer tray=["right 1", "up 1", "left 1", "down 1"] lines=4 style=lines key=["up {h}", "right {w}", "down {h}", "left {w}"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which way does the line leave the ring, and how many squares does it go?"
+  hint "Write one line for each side, with its own number."
+}

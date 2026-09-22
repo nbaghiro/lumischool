@@ -1,0 +1,36 @@
+# The way in: three cards from one root word, and the one that says the word with its ending.
+item reading.which-card-says v=1 skills=[reading.morphology, reading.decoding] {
+  title "Which card says it?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3 p=0..2
+  let root={pick(k, "jump", "play", "look", "help")}
+  let want={pick(k, "jumping", "played", "looking", "helped")}
+  let other={pick(k, "jumped", "playing", "looked", "helping")}
+  let a={pick(p, want, root, other)}
+  let b={pick(p, root, other, want)}
+  let c={pick(p, other, want, root)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x13 {
+    wordcards cards words=["{a}", "{b}", "{c}"] picked=-1 at=canvas(1, 1)
+    text ask "Three cards from the word {root}. Which card says {want}?" narrate width=32 below=cards gap=1
+    choice pick options=["{a}", "{b}", "{c}"] below=ask gap=1
+  }
+
+  answer pick=want
+  feedback {
+    when (pick == root) point=cards {
+      say "That card is just the root word, {root}, with nothing on the end. Look for the ending."
+    }
+    when (pick == other) point=cards {
+      say "That card has an ending too, but the other one. Read the last letters."
+    }
+  }
+  hint "All three start with {root}. Look at what comes after it."
+  hint "Ing at the end says it is happening now; ed says it already happened."
+}

@@ -1,0 +1,33 @@
+# The way in: the four bars of the phrase (the Ode to Joy, Beethoven, in C position), two to a line,
+# and the bar that has a named feature. Bar 4 holds the long note and the dot; bar 3 starts on C.
+item music.phrase-which-bar v=1 skills=[music.staff, music.note-values] {
+  title "Which bar?"
+  difficulty (if q <= 1 then 0 else 1)
+  let q=0..4
+  let ask={pick(q, "Which bar has the longest note?", "Which bar starts on middle C?", "Which bar goes down one step at a time?", "Which bar has a note with a dot after it?", "Which bar goes up from E to G?")}
+  let right={pick(q, "bar 4", "bar 3", "bar 2", "bar 4", "bar 1")}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..4
+  }
+
+  scene 36x33 {
+    column lines space=1 align=start at=canvas(1, 1) {
+      notes l1 clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4
+      notes l2 clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4
+    }
+    text ask "The top line is bars 1 and 2, the bottom line bars 3 and 4. {ask}" narrate width=34 below=lines gap=1
+    choice pick options=["bar 1", "bar 2", "bar 3", "bar 4"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lines {
+      say "Count the bars from the start, two on each line. A bar line is the upright line across the staff."
+    }
+  }
+  hint "Find the bar lines first, so you know where each bar begins."
+  hint "{pick(q, \"An open note head lasts longer than a filled one.\", \"Middle C sits on its own short line below the staff.\", \"Down one step is the next line or space lower each time.\", \"Look for a small dot just after a note head.\", \"Up is higher on the staff: E, then F, then G.\")}"
+}

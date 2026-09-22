@@ -1,0 +1,17 @@
+# Writing a title is the gist in a few words. More than one title is right; a grown-up marks it.
+item reading.write-a-title v=1 stars=3 skills=[reading.gist, writing.composing] {
+  title "Write a title"
+  let k=0..2
+
+  scene 37x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"The ferry left the harbour at nine. It stopped at Seal Island to pick up the post. After that it sailed on to Long Point, where we got off for our picnic.\" else if k == 1 then \"Every morning Mr Okafor puts a bowl of water by his shop door. On hot days he fills it twice. The dogs on the street always stop there on the way to the park.\" else \"Hedgehogs sleep through the winter. In autumn they eat as much as they can. Then they find a pile of leaves or a warm corner of a shed, and they do not wake up until spring.\"}" width=36
+      text ask "Write a title of no more than five words that fits all of this passage." width=36
+      writinglines w lines=1 width=36 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A title of five words or fewer that fits the whole passage rather than one sentence of it, such as A Trip on the Ferry, Water for the Street Dogs, or The Long Winter Sleep. It does not give away an ending or say what the passage does not. Any title that meets both is right."
+  hint "Say in one sentence what the whole passage is about."
+  hint "Now make that sentence shorter, five words or fewer."
+}

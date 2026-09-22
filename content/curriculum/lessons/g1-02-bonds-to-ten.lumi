@@ -1,0 +1,54 @@
+lesson g1-bonds-to-ten v=1 format=teach grade=1 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Bonds to ten"
+  goal "Know the pairs that make ten, see them as two rods against a ten, and find a part you cannot see."
+
+  look {
+    scene 30x11 {
+      rods stair rods=[10, 6] mode=stair numbers=true at=canvas(1, 1)
+      numberbond bond whole=10 parts=[6, 4] right-of=stair gap=3
+      note n "Six and four. The piece left over is the answer." width=13 below=stair gap=1
+    }
+    say """
+      Lay a rod against the ten rod and the pair is there to see: the rod, and the piece that fills
+      the gap.
+      """
+  }
+  do {
+    practice bonds.rods count=1 seed=4
+    practice bonds.missing-part count=2 seed=6
+    practice groups.eggbox count=1 seed=6
+    practice bonds.under-the-cup count=1 seed=3
+    practice bonds.balloons-away count=1 seed=2
+    practice bonds.sticker-start count=1 seed=5
+    practice bonds.wrong-bond count=1 seed=7
+  }
+  try stars=2 {
+    show bonds.three-parts p=3 q=2 easy-p=4 easy-q=3 hard-p=1 hard-q=2
+    show bonds.level-the-plank n=10 a=3 easy-n=7 hard-a=4
+  }
+  try stars=3 {
+    show bonds.two-cups d=4 easy-d=2 hard-d=8
+  }
+  remember {
+    say "Pairs that make ten: 1 and 9, 2 and 8, 3 and 7, 4 and 6, 5 and 5."
+  }
+
+  grown-ups """
+    Say the pair both ways round, six and four, four and six, so the child learns one fact instead
+    of two. The counters under the cup cannot be counted, which is the point: the child has to use
+    the pair. The balloons and the sticker chart put the missing part in the middle and at the start
+    of a story, and the wrong bond asks the child to check every pair rather than make one. In the
+    three-star question any pair that makes ten is a fine first guess; what matters is adjusting it
+    until the two numbers are the right distance apart.
+
+    The see-saw is answered by standing weights on step 3. Props hold the plank level until the
+    child presses Check, so the pair has to be worked out rather than watched for. On paper the
+    child writes the two weights in the box over the step.
+    """
+  level easy {
+    grown-ups "At this level the parts to find are one to five, the plank's load is seven, and the two cups are two apart."
+  }
+  level hard {
+    grown-ups "At this level the parts to find are six or more, the egg box has most of its cups empty, and the two cups are eight apart."
+  }
+}

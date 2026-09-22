@@ -1,0 +1,22 @@
+# One row inside a repeat: which line paints it depends on whether it is the first or second line
+# round, so the repeat has to be unrolled to that row.
+item coding.pixel-row-colour v=1 skills=[coding.repetition, coding.data] {
+  title "What is on that row?"
+  difficulty r
+  let r=2..7 a=1..2 b=3..4
+
+  scene 37x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      column left space=1 align=start {
+        program c code=["3 yellow 3 blue", "repeat 3", "  {a} blue {6 - a} yellow", "  {6 - b} yellow {b} blue", "6 blue"]
+        text ask "How many squares on row {r} are blue?" width=21
+        number-input answer
+      }
+      pixels p cols=6 rows=8 code=["3 yellow 3 blue", "repeat 3", "  {a} blue {6 - a} yellow", "  {6 - b} yellow {b} blue", "6 blue"] show=false beside=false
+    }
+  }
+
+  check coding.runs of=p answer="row({r}).blue"
+  hint "Row 1 is line 1. Which line paints row 2, and which paints row 3?"
+  hint "The two lines in the repeat take turns. Keep counting rows until you reach row {r}."
+}

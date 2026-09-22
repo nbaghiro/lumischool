@@ -1,0 +1,70 @@
+lesson nature-a-life-cycle-in-order v=1 format=teach grade=2 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "A life cycle in order"
+  goal "Put the stages of a frog and of a bean in order, and say that a life cycle goes round with no end."
+
+  look {
+    scene 28x24 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          frogcycle life stage=4 ring=1 names=1
+          pond pool pads=3 fish=0 frog=true
+        }
+        growstages bean stages=4 numbers=true names=1
+      }
+    }
+    say """
+      In spring Ada finds frogspawn in the marsh pond, a clump of jelly with black dots. The dots
+      hatch into tadpoles, swimmers with tails. The tadpoles grow back legs and become froglets,
+      and when the tail has gone they are frogs. Then the frogs lay frogspawn, and it starts
+      again. The bean does the same in its row: seed, shoot, leaves, flower, and the flower makes
+      new seeds. A life cycle is a ring. It has no end.
+      """
+  }
+  do {
+    level easy {
+      worked nature.frog-next s=1
+    }
+    practice nature.frog-next count=2 seed=7 easy-seed=7 easy-count=1 hard-seed=1
+    practice nature.frog-in-order count=1 seed=5 easy-seed=1 hard-seed=2
+    practice nature.stages-until count=2 seed=1 easy-seed=2 hard-seed=1
+    practice nature.cycle-round count=2 seed=7 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.same-in-both k=3
+    }
+  }
+  story {
+    show nature.pond-year n=9 m=4 easy-n=6 easy-m=2 hard-n=14 hard-m=6
+  }
+  try stars=2 {
+    show nature.same-in-both k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.frogs-after-years n=1 k=1 y=3 easy-n=1 easy-k=1 easy-y=2 hard-n=1 hard-k=2 hard-y=3
+  }
+  remember {
+    say "Frogspawn, tadpole, froglet, frog, and frogspawn again. A life cycle goes round and has no end."
+  }
+
+  grown-ups """
+    The order comes first and the ring comes second, and the ring is the idea: after the last
+    stage comes the first one again. The wrong idea to watch for is that a life cycle stops at the
+    grown-up, so "what comes after the frog" is answered with "nothing"; the counting question
+    that goes on past the frog to new frogspawn, and the round-again questions, are there to catch
+    it. In the numbering question the cards describe the drawings (jelly with dots, a tail and no
+    legs, back legs and a short tail) rather than naming them, so the child reads each card
+    against the ring before writing a number; watch that the froglet, legs and tail together, is
+    placed third and not last. The story is a take-away, and the ring says which way round: the
+    froglets were tadpoles in May. The two-star question pairs a frog stage with the bean stage
+    that does the same job, which is comparing what a stage is for rather than what it looks like.
+    The three-star question goes round the ring more than once, and the way in is a year at a
+    time on the back of the sheet: after one spring, how many frogs; then every one of those lays
+    spawn. If the order is still guessed after the core, stay here another day and draw the ring
+    together on a big sheet, then walk round it with a finger, twice.
+    """
+  level easy {
+    grown-ups "At this level a worked example (what comes after frogspawn) opens the core, the next stage asked for is the froglet, the ring above the cards shows all four stages, the counts stop at the frog and never go round past it, the round-again questions ask what comes after the frog and after the flower, the story counts six tadpoles with two changed, the partner asked for is the frogspawn's, and the three-star pond starts with one frog that makes one new frog a year, for two years."
+  }
+  level hard {
+    grown-ups "At this level the next stage asked for is the froglet or the frog, the ring above the cards shows only the frogspawn and the tadpole, every count goes on past the frog to new frogspawn, the round-again questions ask what came before the frogspawn and before the seed, a second reasoning question in the core pairs the froglet with the tall bean, the story counts fourteen tadpoles with six changed, the partner asked for is the tadpole's, and the three-star frog makes two new frogs a year, for three years."
+  }
+}

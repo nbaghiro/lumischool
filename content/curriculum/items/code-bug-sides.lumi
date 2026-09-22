@@ -1,0 +1,25 @@
+# The bug the standards name for this age: a loop that runs too few times, so a square has three
+# sides. The checker proves exactly one number mends it, because going round twice is not a square.
+item coding.bug-sides v=1 skills=[coding.debugging, coding.repetition] {
+  title "Only three sides"
+  difficulty w
+  let w=3..4
+
+  scene 30x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["repeat 3", "  forward {w}", "  turn right"] numbers=true
+      turtle t cols=6 rows=6 col=1 row=1 face=right moves=["repeat 3", "  forward {w}", "  turn right"] target=["repeat 4", "  forward {w}", "  turn right"]
+    }
+    text ask "Only three sides. What should the repeat number be?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=t goal=target answer=fix
+  feedback {
+    when (answer == 3) point=b {
+      say "Three times round draws three sides. A square needs one more."
+    }
+  }
+  hint "How many sides does a square have? The repeat draws one side each time round."
+  hint "How many sides are missing from the drawing?"
+}

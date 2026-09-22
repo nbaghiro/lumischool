@@ -1,0 +1,61 @@
+# A program as instructions for a robot: every step exact, nothing left out, in an order where each
+# step has what it needs.
+lesson coding-instructions-for-a-snack v=1 format=teach grade=2 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Instructions for a snack"
+  goal "Write the steps for a snack so a robot can follow them exactly, in order, with nothing missing."
+
+  look {
+    scene 23x22 {
+      art pic asset="kitchen-counter" at=canvas(1, 1)
+      program prog code=["Take two slices of bread", "Spread jam on one slice", "Put the other slice on top", "Cut the sandwich in half"] title="Pip's sandwich" below=pic gap=1
+    }
+    say """
+      At the lamp rocks Pip is teaching the lamp's robot to make snacks. A robot does exactly what
+      each step says, one step at a time, from the top. It cannot guess, so every step has to say
+      exactly what to do, the steps have to come in an order where each one has what it needs, and
+      no step can be left out.
+      """
+  }
+  do {
+    practice coding.snack-first-step count=1 seed=6 easy-seed=1 hard-seed=1
+    level easy {
+      worked coding.snack-order s=0 level=medium
+    }
+    practice coding.snack-order count=1 seed=1 easy-seed=2 hard-seed=7
+    practice coding.snack-after-step count=1 seed=1 easy-seed=2 hard-seed=7
+    practice coding.snack-missing count=2 seed=15 easy-seed=8 hard-seed=1
+    practice coding.snack-exact count=2 seed=3 easy-seed=1 hard-seed=1
+    level hard {
+      show coding.snack-wrong-order r=3
+    }
+    practice coding.lamprocks-sandwich-steps count=1 seed=7
+  }
+  try stars=2 {
+    show coding.snack-wrong-order r=0 easy-r=2 hard-r=4
+  }
+  try stars=3 {
+    show coding.snack-fewest-lines k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "A robot follows each step exactly and in order, so every step must be exact and none left out."
+  }
+
+  grown-ups """
+    The idea is that a program is a list of exact steps, done in order, and that a robot has nothing
+    but those steps to go on. The wrong ideas to watch for are steps a person would understand but a
+    robot could not (a bit, nice, enough), and leaving out a step because a person would do it
+    without being told. In the working, look for the child acting out each step exactly as written.
+    The two-star question finds two lines the wrong way round by reading the program from the top;
+    the three-star question uses a repeat for the steps done each time and keeps the steps done once
+    outside it. A child who is stuck can play the robot while you read the steps aloud, doing only
+    what they say, and go back to the way in; stay on this lesson another day if steps are still
+    vague. Off the page, make a real snack together from steps the child writes, following them
+    exactly.
+    """
+  level easy {
+    grown-ups "At this level the first step is for a bowl of cereal, the order to number is worked once for a jam sandwich before toast is asked, the plate is asked after two lines, the missing steps are the first steps of hot cocoa and a fruit bowl, the vague steps are plainly vague (make it nice, sort out the toast), the robot makes two sandwiches, the two lines the wrong way round are a boiled egg's last two, and the shortest program is for toast, with nothing done once."
+  }
+  level hard {
+    grown-ups "At this level the first step is for a bowl of cereal, the order to number is for hot cocoa, the plate is asked after three lines, the missing steps are in the middle, where one wrong choice is a step the program already has, the vague steps sound exact (enough, the right amount, until it is done, the usual time), porridge's lines 1 and 3 are found the wrong way round before the two-star, where a boiled egg's lines 2 and 4 are, the robot makes four sandwiches, and the shortest program has a step done once at each end."
+  }
+}

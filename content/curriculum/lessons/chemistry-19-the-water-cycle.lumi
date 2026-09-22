@@ -1,0 +1,56 @@
+lesson chemistry-the-water-cycle v=1 format=teach grade=3 unit=8 subject=chemistry levels=[easy, medium, hard] {
+  title "Evaporating, condensing and the water cycle"
+  goal "Name the stages of the water cycle and where each happens, say where drops of condensation come from, and explain things a child has seen with the cycle."
+
+  look {
+    scene 22x16 {
+      watercycle cycle blank=-1 key=1 plain=0 at=canvas(1, 0)
+    }
+    say """
+      The sun warms the sea and water evaporates into the air as vapour, which cannot be seen. High
+      up the vapour cools and condenses into tiny drops, and that is a cloud. The drops join and
+      fall as rain, which collects in rivers and runs back to the sea. Then it goes round again.
+      A puddle dries up the same way, without boiling, and faster when it is warm or windy.
+      """
+  }
+  do {
+    practice chem.cycle-number count=2 hard-count=1 seed=3
+    level hard {
+      practice chem.cycle-reason count=1 seed=7
+    }
+    practice chem.cycle-missing count=1 seed=2
+    practice chem.cycle-next count=2 seed=5
+    level easy {
+      worked chem.cold-glass k=0 n=7 level=medium
+    }
+    practice chem.cold-glass count=2 easy-count=1 seed=1 easy-seed=1
+    practice chem.puddle-hours count=1 seed=4
+  }
+  try stars=2 {
+    show chem.cycle-reason q=1 easy-q=0
+  }
+  try stars=3 {
+    show chem.cycle-journey s=2 easy-s=0
+  }
+  remember {
+    say "Water evaporates, condenses into clouds, falls as rain and collects, and then goes round again."
+  }
+
+  grown-ups """
+    England's Year 4 names evaporation and condensation; precipitation and collection are the words
+    the Met Office uses for the rest of the circle. The first questions, finding where a stage
+    happens in the picture, are the way in. The core names the missing stage, asks what comes next
+    (after collection comes evaporation again), and asks where drops on a cold glass come from: many
+    children think they leaked through the glass, and a glass of iced water on a warm day settles it.
+    The puddle question uses the rate of evaporation: warmer dries faster. The two-star question asks
+    for the reason behind something seen, and the three reasons belong to three different questions.
+    The three-star question starts the drop somewhere other than the sea, so the order has to be
+    worked round the circle rather than recited.
+    """
+  level easy {
+    grown-ups "At this level the numbers on the cycle and the missing word are as written, the next stage is asked for evaporation, condensation and precipitation, the drops outside a cold glass are explained once in the teacher's pen before the glass and the lid as written, the puddles hold 100 ml, the two-star asks why the rain does not run out, and the three-star's drop starts in the sea."
+  }
+  level hard {
+    grown-ups "At this level the numbers on the cycle and the missing word are as written, the next stage is asked for precipitation and collection, whose next step is back at the start, the glass and the lid are as written, the puddles hold 200 ml, the two-star asks why rain is not salty and then why drops form on a cold window, and the three-star's drop starts in a cloud."
+  }
+}

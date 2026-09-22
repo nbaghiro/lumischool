@@ -1,0 +1,33 @@
+# The three-star non-routine question: four trees out of order, and the child has to find the one
+# swap that puts the year right. Two trees are out of place and the rest are where they belong, so
+# the answer is a pair, not a season. Neighbours are easier to see than trees far apart.
+item nature.swap-two v=1 stars=3 skills=[nature.seasons, reasoning.order] {
+  title "Swap two trees"
+  difficulty (if k <= 2 then 0 else if k <= 4 then 1 else 2)
+  let k=0..5
+  let a={if k == 0 then "summer" else if k == 3 then "autumn" else if k == 5 then "winter" else "spring"}
+  let b={if k == 0 then "spring" else if k == 1 then "autumn" else if k == 4 then "winter" else "summer"}
+  let c={if k == 1 then "summer" else if k == 2 then "winter" else if k == 3 then "spring" else "autumn"}
+  let d={if k == 2 then "autumn" else if k == 4 then "summer" else if k == 5 then "spring" else "winter"}
+  let pair={if k == 0 then "1 and 2" else if k == 1 then "2 and 3" else if k == 2 then "3 and 4" else if k == 3 then "1 and 3" else if k == 4 then "2 and 4" else "1 and 4"}
+  let o1={if k <= 2 then "1 and 2" else "1 and 3"}
+  let o2={if k <= 2 then "2 and 3" else "2 and 4"}
+  let o3={if k <= 2 then "3 and 4" else "1 and 4"}
+  let o4={if k == 0 then "1 and 3" else if k == 1 then "2 and 4" else if k == 2 then "1 and 4" else if k == 3 then "1 and 2" else if k == 4 then "2 and 3" else "3 and 4"}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x24 {
+    seasontrees year seasons=[a, b, c, d] names=0 at=canvas(1, 1)
+    text ask "Two of Ada's paintings have been swapped over, so the year is out of order. Swap two trees back to put the year right, starting from spring. Which two?" narrate width=34 below=year gap=1
+    choice pick options=[o1, o2, o3, o4] below=ask gap=1
+  }
+
+  answer pick=pair
+  hint "Which trees are already in the right place for spring, summer, autumn, winter? Leave those alone."
+  hint "The two trees that are wrong are each in the other one's place."
+}

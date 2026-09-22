@@ -1,0 +1,46 @@
+# The creatures that come to the pond and where each one stays: the heron in the shallows at the
+# edge, the duck on the water, the kingfisher on a twig at the edge, the dragonfly in the air above.
+# The duck and the heron are easy to place; the dragonfly and the kingfisher need the look.
+item nature.pond-visitors v=1 skills=[nature.habitats] {
+  title "Where does it stay?"
+  difficulty pick(k, 0, 0, 2, 1)
+  let k=0..3
+  let who={pick(k, "heron", "duck", "kingfisher", "dragonfly")}
+  let look={pick(k, "the tall grey bird on long legs", "the bird with the flat beak", "the small blue and orange bird on a twig", "the one with four thin wings")}
+  let right={pick(k, "at the edge", "on the water", "at the edge", "in the air")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x25 {
+    row all at=canvas(1, 1) space=2 align=end {
+      heron h facing=1 reeds=3
+      art d asset="duck"
+      kingfisher kf flying=0 facing=1
+      dragonfly df facing=1 rings=8
+    }
+    text ask "These creatures come to the pond. Where does the {who} stay?" narrate width=18 below=all gap=1
+    choice pick options=["under the water", "on the water", "at the edge", "in the air"] stack=column right-of=ask gap=2
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "under the water") point=h {
+      say "The heron's long legs keep its body out of the water. It stands in the shallows at the edge."
+    }
+    when (k == 1 and pick != "on the water") point=d {
+      say "A duck floats. It sits on top of the water and paddles with its feet."
+    }
+    when (k == 2 and pick == "in the air") point=kf {
+      say "The kingfisher sits on a twig at the edge and watches. It only flies to catch a fish."
+    }
+    when (k == 3 and pick == "on the water") point=df {
+      say "The dragonfly flies over the water on its four wings, and rests on a reed."
+    }
+  }
+  hint "The {who} is {look}. Look at how it is drawn."
+  hint "Does it have webbed feet for floating, long legs for standing, or wings for flying?"
+}

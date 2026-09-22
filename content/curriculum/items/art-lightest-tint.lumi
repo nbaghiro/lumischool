@@ -1,0 +1,14 @@
+# Comparing shares, not amounts: the mix with the most white is not always the lightest.
+item art.lightest-tint v=1 stars=2 skills=[art.tints, reasoning.compare] {
+  title "The lightest pink"
+  let k=0..2
+
+  scene 34x12 {
+    text ask "Which mix makes the lightest pink? Think about how much red each one has, too." width=14 at=canvas(1, 1)
+    choice pick options=["{if k == 0 then \"1 red and 3 white\" else \"3 red and 3 white\"}", "{if k == 1 then \"1 red and 3 white\" else if k == 0 then \"3 red and 3 white\" else \"2 red and 1 white\"}", "{if k == 2 then \"1 red and 3 white\" else \"2 red and 1 white\"}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=lighter
+  hint "Which mix has the most white? Is there another with as much white?"
+  hint "For each mix, compare the white with the red. Which has the most white for each part of red?"
+}

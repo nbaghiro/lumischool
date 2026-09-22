@@ -1,0 +1,55 @@
+lesson writing-planning-three-sentences v=1 format=teach grade=3 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Planning three sentences"
+  goal "Plan a short piece in three notes before writing any of it."
+
+  look {
+    scene 27x15 {
+      storymap plan stops=["Sky goes dark", "Rain comes down", "Run home"] icons=["cloud", "puddle", "cottage"] heads=["First", "Next", "Last"] blank=-1 at=canvas(1, 1)
+    }
+    say """
+      A plan is not the writing. It is three or four notes in the order they will be written, so
+      that you know where the piece is going before you are halfway through it. Notes can be two or
+      three words; nothing in the plan has to be a sentence.
+      """
+  }
+  do {
+    practice writing.note-or-sentence count=1 seed=2
+    level easy {
+      worked writing.plan-gap s=0 g=1 level=medium
+    }
+    practice writing.plan-gap count=3 seed=1
+    show writing.plan-three t="a windy day"
+    show writing.order-the-plan
+    practice writing.plan-matches count=1 seed=4
+    practice writing.order-six-notes count=1 hard-count=0 seed=1
+    level hard {
+      practice writing.plan-swap count=1 seed=3
+    }
+  }
+  try stars=2 {
+    show writing.plan-swap s=1 w=1 easy-w=0
+  }
+  try stars=3 {
+    show writing.plan-from-piece s=0
+  }
+  remember {
+    say "Plan in notes, not sentences. Three notes is enough."
+  }
+
+  grown-ups """
+    Most of these questions are marked by the machine: telling a note from a sentence, the missing
+    note, which plan a piece came from, and the four notes that belong out of six. The two plans
+    the child writes are their own work, so the answer sheet says what to look for instead. In the
+    plan for a windy day, check the last note: children plan a beginning and a middle and then
+    stop. The two-star question is about order: which two notes would not make sense the way round
+    they are. The three-star plan goes the other way, from a finished piece back to its plan, and
+    the thing worth checking is the middle note: it should pick the important event rather than
+    the first detail.
+    """
+  level easy {
+    grown-ups "At this level the note is as written, a middle note is filled once in the teacher's pen before gaps at the start or the end of a plan, the plan to write and the order are as written, the plan that matches and the six notes are as written, the two-star's swap is the first two notes, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the note is as written, the gaps are all middle notes that have to fit both sides, the plan to write and the order are as written, the plan that matches is as written, the six notes make way for a second pair of notes to swap, the two-star's swap is in the middle, and the three-star is as written."
+  }
+}

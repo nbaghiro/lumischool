@@ -1,0 +1,31 @@
+# Reading a menu board for what sits under a heading, or what two dishes cost together.
+item writing.menu-count v=1 skills=[writing.text-features, money.dollars-and-cents] {
+  title "Read the menu"
+  difficulty w
+  let w=0..1
+  let asks={pick(w, "How many dishes are under Cakes?", "How much do a tea and a scone cost together, in dollars?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x22 {
+    sign board lines=["Drinks", "Tea $2", "Milk $1", "Cakes", "Scone $3", "Bun $2", "Tart $4"] kind=board color=mint at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=board gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 3 else 5)
+  feedback {
+    when (w == 0 and answer == 6) point=board {
+      say "That is every dish on the board. Count only the ones under the Cakes heading."
+    }
+    when (w == 1 and answer == 3) point=board {
+      say "That is the scone alone. Add the tea's price to it."
+    }
+  }
+  hint "{if w == 0 then \"Find the Cakes heading and count the lines under it, up to the end.\" else \"Find the tea's price under Drinks and the scone's under Cakes.\"}"
+  hint "{if w == 0 then \"Scone, bun, tart.\" else \"Two dollars and three dollars.\"}"
+}

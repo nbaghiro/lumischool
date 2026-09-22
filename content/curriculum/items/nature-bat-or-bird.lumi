@@ -1,0 +1,41 @@
+# The two-star reason: the bat against the bird, and which group the bat belongs to and why. Flying
+# is the trap; fur and young born alive are the reasons. The versions turn the same question on the
+# turtle, the seal and the penguin.
+item nature.bat-or-bird v=1 stars=2 skills=[nature.sorting, reasoning.explain] {
+  title "Which group, and why?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let who={pick(k, "a bat", "a seal", "a sea turtle", "a penguin")}
+  let says={pick(k, "Ben says a bat is a bird, because it flies.", "Ben says a seal is a fish, because it swims and lives in the sea.", "Ben says a sea turtle belongs with the furry animals, because it is born alive.", "Ben says a penguin cannot be a bird, because it cannot fly and it swims.")}
+  let right={pick(k, "No: fur, and young born alive", "No: fur, air to breathe, milk for its young", "No: a shell, and it hatches from an egg", "No: feathers, and it hatches from an egg")}
+  let o1={pick(k, "Yes: anything with wings is a bird", "Yes: anything that swims is a fish", "Yes: anything born at sea is born alive", "Yes: a bird has to fly")}
+  let o2={pick(k, "No: it is a kind of mouse", "No: it is a kind of turtle", "No: it is a kind of fish", "No: it is a kind of fish")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    row four at=canvas(1, 1) space=1 align=end {
+      bats pb count=2 flying=1
+      gull pg flying=1
+      seal ps rock=1 facing=1
+    }
+    text ask "{says} Is Ben right?" narrate width=34 below=four gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1) point=four {
+      say "What an animal does, flying or swimming, does not decide its group. What it is covered in and how it is born do."
+    }
+    when (pick == o2) point=four {
+      say "The right group is decided by covering and how the young start: feathers and eggs for birds, fur and born alive for the warm ones, scales for fish, a shell for turtles."
+    }
+  }
+  hint "Ben is sorting by what the animal does. Sort by what covers it and how it is born instead."
+  hint "Fur or feathers or scales or shell? Egg or born alive? Those two questions give the group."
+}

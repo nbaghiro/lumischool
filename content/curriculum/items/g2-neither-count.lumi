@@ -1,0 +1,21 @@
+# Two rules at once over a range: count what fits neither, which is the part children skip.
+item sort.neither-count v=1 stars=3 skills=[sorting.two-rules, reasoning.all-the-ways] {
+  title "In neither ring"
+  difficulty (T / 10 + (if k == 3 then 1 else 0))
+  let k={3, 5} T={20, 30}
+
+  scene 32x21 {
+    venn rings labels=["Even", "Multiple of {k}"] left=["2", "4"] both=["{2 * k}"] right=["{k}"] outside=["1"] at=canvas(1, 0)
+    text ask "Sort every number from 1 to {T} into the rings. How many of them go outside both rings?" narrate width=28 below=rings gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (T / 2 - (T // k + 1) // 2)
+  feedback {
+    when (answer == T / 2) point=rings {
+      say "Those are all the odd numbers. Some odd numbers are multiples of {k}, so they go in a ring."
+    }
+  }
+  hint "A number outside both rings is odd and is not a multiple of {k}."
+  hint "List the odd numbers up to {T}, then cross out the multiples of {k}."
+}

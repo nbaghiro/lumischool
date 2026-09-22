@@ -1,0 +1,16 @@
+# An interpretive question: more than one reason fits, so a grown-up marks it against a stated
+# look-for rather than one key. What makes an answer good is the detail it rests on.
+item reading.why-do-you-think v=1 stars=3 skills=[reading.inference, reading.evidence, reading.interpretation] {
+  title "Why do you think?"
+  let k=0..2
+
+  scene 34x22 {
+    passage p text="{if k == 0 then \"Sol had been told three times to shut the gate. That afternoon the goat was in the vegetable patch, and every cabbage had gone. Sol did not look sorry at all.\" else if k == 1 then \"Bea said the kite string had snapped. But the string was still in one piece, wound neatly round its stick, and the kite was caught in Mrs Fell's tree next door.\" else \"Every day Remy left half of his lunch on the wall by the shed. By the end of the week a thin grey cat was waiting there at noon.\"}" width=33 numbers=false at=canvas(1, 1)
+    text ask "{if k == 0 then \"Why do you think Sol left the gate open?\" else if k == 1 then \"Why do you think Bea said the string had snapped?\" else \"Why do you think Remy left the food on the wall?\"} Write a reason, and the words in the passage that make you think so." width=33 below=p gap=1
+    writinglines lines lines=2 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A reason that fits the passage, and a detail from it that supports the reason. More than one reason can be right: the goat story fits forgetting or wanting the cabbages gone, the kite story fits not wanting to own up to the tree, and the cat story fits feeding a hungry animal on purpose."
+  hint "What happened after the thing they did? Does that give you an idea?"
+  hint "Choose one reason, then find the words in the passage that make it likely."
+}

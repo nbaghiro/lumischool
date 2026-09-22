@@ -1,0 +1,45 @@
+# Which of four cycles has a named kind of stage: the one that rests inside a case, the one that
+# lives in water when young, the one that starts as a seed, the one whose young is called a chick.
+# The four cycles are written out, so the child reads and compares rather than remembers.
+item nature.which-cycle v=1 skills=[nature.life-cycles, reasoning.compare] {
+  title "Which cycle?"
+  difficulty (if k == 3 then 0 else if k == 2 then 1 else 2)
+  let k=0..3
+  let asks={pick(k, "has a resting stage, where the young one stops eating and changes inside a case", "has a young stage that lives in water and breathes it", "has no egg at all, and starts from a seed", "has a young stage called a chick")}
+  let right={pick(k, "the butterfly", "the frog", "the bean", "the hen")}
+  level easy {
+    let k=2..3
+  }
+  level hard {
+    let k=0..1
+  }
+
+  scene 34x30 {
+    column all at=canvas(1, 1) space=0 align=start {
+      text l1 "Frog: frogspawn, tadpole, froglet, frog"
+      text l2 "Butterfly: egg, caterpillar, chrysalis, butterfly"
+      text l3 "Bean: seed, shoot, leaves, flower"
+      text l4 "Hen: egg, chick, hen"
+    }
+    text ask "Which of these cycles {asks}?" narrate width=32 below=all gap=1
+    choice pick options=["the frog", "the butterfly", "the bean", "the hen"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "the frog") point=l1 {
+      say "The frog changes slowly, eating all the while. The chrysalis is the one that shuts itself in a case and stops eating."
+    }
+    when (k == 1 and pick != "the frog") point=l1 {
+      say "The tadpole swims and breathes the water through gills. None of the others start their lives in water."
+    }
+    when (k == 2 and pick != "the bean") point=l3 {
+      say "Three of these start as an egg. Which one starts as a seed instead?"
+    }
+    when (k == 3 and pick != "the hen") point=l4 {
+      say "Read the four lists. Only one has a chick in it."
+    }
+  }
+  hint "Read the four cycles, stage by stage."
+  hint "Which one has a stage that fits what the question says?"
+}

@@ -1,0 +1,40 @@
+lesson g1-taking-away-to-twenty v=1 format=worked grade=1 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Taking away to twenty"
+  goal "Take away by counting back, compare two amounts, and work backwards to where a story started."
+
+  example {
+    worked sub.bus-off n=10 off=4 easy-level=medium hard-level=medium
+    say """
+      Ten on the bus and four get off. Count back from ten: nine, eight, seven, six. Six are left.
+      """
+  }
+  exercises {
+    practice sub.bus-off count=2 seed=2
+    practice sub.towers-difference count=2 seed=3
+    practice sub.fewer-than count=1 seed=6
+    practice sub.take-from-ten count=1 seed=4
+    practice sub.plate-ate count=1 seed=3
+    practice sub.ants-start count=1 seed=8
+  }
+  try stars=2 {
+    show sub.bus-how-many-off n=11 left=4 easy-n=8 easy-left=5 hard-n=12 hard-left=3
+  }
+  try stars=3 {
+    show sub.work-back a=3 b=4 c=5 easy-a=2 easy-b=3 easy-c=2 hard-a=5 hard-c=8
+  }
+
+  grown-ups """
+    Counting back is harder to say than counting on, so let the child use fingers while they say the
+    numbers. How many more is also a taking away, even though nothing leaves: the towers show it as
+    the part of one tower that sticks up above the other. Taking away past ten goes in two steps:
+    the loose counters first, then the rest from the full frame. The biscuits and the ants put the
+    unknown in the middle and at the start. The three-star question goes backwards through two
+    stops, and acting it out with toys is a good way in.
+    """
+  level easy {
+    grown-ups "At this level the bus holds under ten, the towers are close in height, the take-aways only just cross ten, and the work back to the start stays under ten."
+  }
+  level hard {
+    grown-ups "At this level the bus starts with twelve, the differences reach eight, and the work back to the start goes past fifteen."
+  }
+}

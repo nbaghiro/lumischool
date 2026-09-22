@@ -1,0 +1,32 @@
+# Change unknown: the kind of adding story 1.OA.A.1 asks for and the counting-on items never ask.
+item add.bus-how-many-on v=1 skills=[addition.change-unknown] {
+  title "How many got on"
+  difficulty more
+  let n=4..9 more=3..8
+  where (n + more <= 17)
+  where (more != n)
+  level easy {
+    let n=4..6 more=3..4
+  }
+  level hard {
+    let n=6..9 more=6..8
+  }
+
+  scene 30x17 {
+    bus ride windows=9 on=n sign="12" at=canvas(1, 1)
+    text ask "{n} people are on the bus. At the stop some more get on, and now there are {n + more}. How many got on?" width=28 below=ride gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer more
+  feedback {
+    when (answer == n) point=ride {
+      say "{n} were on before the stop. Count on from {n} to {n + more}."
+    }
+    when (answer == 2 * n + more) point=ride {
+      say "There are {n + more} now, so fewer than that got on. Count on from {n} to {n + more}."
+    }
+  }
+  hint "Put {n} in your head and count on until you reach {n + more}."
+  hint "Keep a finger up for each number you say after {n}."
+}

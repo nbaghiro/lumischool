@@ -1,0 +1,34 @@
+# Two objects on two rulers, so the child compares lengths instead of reading one off.
+item measure.longer v=1 skills=[length.compare] {
+  title "How much longer"
+  difficulty (a + b)
+  let a=4..9 b=2..6
+  where (a > b)
+  level easy {
+    let a=4..6 b=2..3
+  }
+  level hard {
+    let a=8..9 b=4..6
+  }
+
+  scene 28x20 {
+    column rulers at=canvas(1, 0) space=1 {
+      ruler top cm=10 length=a thing=stick
+      ruler low cm=10 length=b thing=ribbon
+    }
+    text ask "How much longer is the stick than the ribbon?" narrate width=24 below=rulers gap=1
+    number-input answer below=ask gap=0
+    text unit "cm" right-of=answer gap=0
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=rulers {
+      say "Longer by how much is a difference, so take the shorter length away from the longer one."
+    }
+    when (answer == a) point=top.object-end {
+      say "That is how long the stick is. The question asks how much longer it is than the ribbon."
+    }
+  }
+  hint "Measure each one, then take the smaller number away from the bigger one."
+}

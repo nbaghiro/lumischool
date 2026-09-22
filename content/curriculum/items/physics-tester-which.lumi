@@ -1,0 +1,23 @@
+item physics.tester-which v=1 skills=[physics.circuits, physics.materials] {
+  title "Which stays dark?"
+  difficulty ((if x == "foil" or x == "coin" then 1 else 0) + (if y == "marble" then 1 else 0))
+  let x={"nail", "clip", "foil", "coin"} y={"ruler", "eraser", "stick", "marble"} w=0..1
+  level easy {
+    let x={"nail", "clip"} y={"eraser", "stick"}
+  }
+  level hard {
+    let x={"foil", "coin"} y={"ruler", "marble"}
+  }
+
+  scene 35x15 {
+    row two at=canvas(1, 0) space=2 align=start {
+      tester a thing=(if w == 0 then x else y) show=0 tag="A"
+      tester b thing=(if w == 1 then x else y) show=0 tag="B"
+    }
+    text ask "Which bulb will stay dark?" width=14 below=two gap=0
+    choice pick options=["A", "B"] right-of=ask gap=2
+  }
+
+  check physics.circuit of=a vs=b pick=dark
+  hint "Which of the two things is made of metal?"
+}

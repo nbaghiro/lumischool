@@ -1,0 +1,28 @@
+# The way in: notes and coins laid out largest first, added up as dollars and cents.
+item money.notes-and-coins v=1 skills=[money.decimals] {
+  title "How much money"
+  difficulty (a + b + (if c == "quarter" then 2 else 0) + (if d == "penny" then 2 else if d == "nickel" then 1 else 0))
+  let a={5, 10, 20} b={1, 5} c={"quarter", "dime"} d={"dime", "nickel", "penny"}
+  where (a != b)
+  level easy {
+    let a={5, 10} c={"dime"} d={"dime"}
+  }
+  level hard {
+    let a={20} c={"quarter"} d={"nickel", "penny"}
+  }
+
+  scene 24x12 {
+    money cash pieces=["{a}", "{b}", "{c}", "{d}", "penny"] total=false at=canvas(1, 1)
+    text ask "How many dollars is this?" narrate width=22 below=cash gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(a + b + (if c == "quarter" then 0.25 else 0.10) + (if d == "dime" then 0.10 else if d == "nickel" then 0.05 else 0.01) + 0.01, 2)
+  feedback {
+    when (answer == a + b) point=cash {
+      say "The coins count too. Add their cents after the notes."
+    }
+  }
+  hint "Add the notes first. How many dollars is that?"
+  hint "Now count the coins in cents and write them after the point."
+}

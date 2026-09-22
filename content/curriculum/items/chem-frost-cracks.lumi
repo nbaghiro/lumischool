@@ -1,0 +1,26 @@
+# The way in: the rock that soaks up rain is the one frost can crack, since the water inside it
+# swells as it freezes. The drop test shows which soaks: a dark patch, not a bead.
+item chem.frost-cracks v=1 skills=[chemistry.rocks, chemistry.weathering] {
+  title "Which rock will the frost crack?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3 p=0..2
+  let a={pick(k, "sandstone", "chalk", "sandstone", "chalk")}
+  let b={pick(k, "granite", "basalt", "granite", "marble")}
+  let c={pick(k, "slate", "marble", "basalt", "slate")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x16 {
+    text ask "Ben drops water on three rocks from the cliff. When winter comes, the rain in one of them will freeze and swell, and crack it. Which rock will the frost crack?" narrate width=32 at=canvas(1, 0)
+    rocks r rocks=["{if p == 0 then a else if p == 1 then b else c}", "{if p == 0 then b else if p == 1 then c else a}", "{if p == 0 then c else if p == 1 then a else b}"] test=1 letters=1 below=ask gap=0
+    choice pick options=["A", "B", "C"] below=r gap=0
+  }
+
+  check chem.rocks of=r pick="only(soaks)"
+  hint "Frost can only crack a rock that has water inside it. Look at the drops: which one soaked in?"
+  hint "A dark patch means the water went in. A bead sitting on top means it did not."
+}

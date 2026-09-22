@@ -1,0 +1,14 @@
+# Cutting a finished piece down to a plan, the audit's raise for writing a plan from nothing.
+item writing.plan-from-piece v=1 stars=3 skills=[writing.planning, writing.summarising] {
+  title "Cut it down to a plan"
+  let s=0..1
+
+  scene 36x21 {
+    passage story text="{if s == 0 then \"On Saturday Dad and I took the narrowboat out. We had to go through a lock. I pushed the big wooden arm with all my might. The water rose and lifted us up. At the top we tied up and ate our sandwiches on the roof.\" else \"The snow came in the night. In the morning Kit and her sister built a snowman in the yard. They gave it a carrot nose and Dad's old hat. By lunch the sun was out. By tea there was only the hat left in a puddle.\"}" width=34 numbers=false at=canvas(1, 1)
+    writingframe plan prompts=["First", "Next", "Last"] lines=1 width=34 note="Three notes, not sentences." below=story gap=1
+  }
+
+  check writing.by-eye look-for="Three short notes rather than sentences, in the order the piece tells them, with the last note giving the ending (sandwiches on the roof, or only the hat left) and the middle note picking the most important thing that happened, not the first detail."
+  hint "Which sentence is the start, which is the most important thing in the middle, and which is the end?"
+  hint "Now say each of those three in as few words as you can."
+}

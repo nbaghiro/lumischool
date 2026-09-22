@@ -1,0 +1,32 @@
+# The story: the lemonade stall on the salt flats, where each help halves the time, and the
+# seconds a cup takes with one help or two.
+item chem.stall-sugar v=1 stars=1 skills=[chemistry.dissolving, division.halving] {
+  title "The lemonade stall"
+  difficulty (base / 40 + w)
+  let base={80, 120, 160} w=0..1
+  let asks={pick(w, "How long does a warm cup take?", "How long does a warm cup take if she stirs it as well?")}
+  level easy {
+    let base={80} w=0..0
+  }
+  level hard {
+    let base={120, 160} w=1..1
+  }
+
+  scene 34x25 {
+    beaker cup max=200 step=50 level=150 unit=ml solid=0 rod=false at=canvas(1, 0)
+    text ask "At the stall on the salt flats Nour drops sugar into cold lemonade and leaves it, and it takes {base} seconds to dissolve. Warm water halves the time, and stirring halves it again. {asks}" narrate width=32 below=cup gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then base / 2 else base / 4)
+  feedback {
+    when (w == 1 and answer == base / 2) point=cup {
+      say "That is the warm cup on its own. Stirring halves that time again."
+    }
+    when (answer == base - 2) point=cup {
+      say "Halving is not taking two away. Half of {base} is {base / 2}."
+    }
+  }
+  hint "Half of {base} for the warm water.{if w == 1 then \" Then half again for the stirring.\" else \"\"}"
+  hint "{if w == 0 then \"Halve it once.\" else \"Halve it twice.\"}"
+}

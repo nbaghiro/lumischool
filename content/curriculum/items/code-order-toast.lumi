@@ -1,0 +1,11 @@
+item coding.order-toast v=1 skills=[coding.sequences] {
+  title "The order matters"
+
+  scene 28x16 {
+    text ask "Number the steps in the order they have to happen." width=26 at=canvas(1, 1)
+    sequence s items=["Spread the butter", "Put the bread in the toaster", "Take the toast out", "Get the bread out"] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=4 b=2 c=3 d=1
+  hint "You cannot butter the toast before it comes out of the toaster."
+}

@@ -1,0 +1,41 @@
+# The three-star: two constraints at once. The pair that shares Ada's tank must want the same
+# home, and neither may eat the other, with who eats whom stated on the page. Each version's
+# wrong pairs fail one rule or the other, so the child has to check both.
+item nature.home-for-two v=1 stars=3 skills=[nature.habitats, reasoning.constraints] {
+  title "Room for two"
+  difficulty (if k == 0 then 0 else if k == 2 then 2 else 1)
+  let k=0..3
+  let o1={pick(k, "heron and fish", "frog and fish", "spider and fish", "heron and frog")}
+  let o2={pick(k, "fish and bee", "kingfisher and fish", "frog and pond snail", "two pond snails")}
+  let o3={pick(k, "fish and pond snail", "frog and bee", "heron and fish", "pond snail and bee")}
+  let right={pick(k, "fish and pond snail", "frog and fish", "frog and pond snail", "two pond snails")}
+  let eats={pick(k, "heron and fish", "kingfisher and fish", "heron and fish", "heron and frog")}
+  let homes={pick(k, "fish and bee", "frog and bee", "spider and fish", "pond snail and bee")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x31 {
+    column pics at=canvas(1, 1) space=1 align=start {
+      pond pool pads=3 fish=1 frog=true
+      heron tall facing=1 reeds=2
+    }
+    text ask "Ada makes a home in a tank for two marsh creatures. Both must want the same kind of home, and neither may eat the other. Fish, frogs and pond snails live in water, the spider in a web, the bee on flowers. The heron eats fish and frogs, the kingfisher eats fish, the frog eats spiders. Which two can share the tank?" narrate width=18 right-of=pics gap=2
+    choice pick options=[o1, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == eats) point=tall {
+      say "Check who eats whom. One of those two would eat the other."
+    }
+    when (pick == homes) point=pool {
+      say "Neither of those eats the other, but read where each one lives. A tank of water is no home for one of them."
+    }
+  }
+  hint "Take each pair in turn. First: do both want the water, or the same home? Cross out any pair that does not."
+  hint "Now, for the pairs left: does either one eat the other? The right pair passes both tests."
+}

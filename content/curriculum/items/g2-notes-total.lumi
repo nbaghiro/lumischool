@@ -1,0 +1,27 @@
+# Notes and coins together: dollars first, then the cents, written with a point.
+item money.notes-total v=1 skills=[money.dollars-and-cents] {
+  title "Dollars and cents"
+  difficulty ((if a == "5" then 5 else 10) + (if b == "1" then 1 else 5) + (if c == "quarter" then 1 else 0) + (if e == "penny" then 1 else 0))
+  let a={"5", "10"} b={"1", "5"} c={"quarter", "dime"} e={"dime", "nickel", "penny"}
+  level easy {
+    let a={"5"} b={"1"} c={"dime"} e={"dime", "nickel"}
+  }
+  level hard {
+    let a={"10"} b={"5"} c={"quarter"} e={"nickel", "penny"}
+  }
+
+  scene 30x12 {
+    money purse pieces=[a, b, c, e] total=false at=canvas(1, 1)
+    text ask "How much money is this, in dollars?" narrate width=28 below=purse gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals((if a == "5" then 5 else 10) + (if b == "1" then 1 else 5) + (if c == "quarter" then 0.25 else 0.10) + (if e == "dime" then 0.10 else if e == "nickel" then 0.05 else 0.01), 2)
+  feedback {
+    when (answer == (if a == "5" then 5 else 10) + (if b == "1" then 1 else 5)) point=purse {
+      say "The coins count too. Write the cents after the point."
+    }
+  }
+  hint "Add the notes first. How many dollars is that?"
+  hint "Now add the coins in cents, and write them after the point."
+}

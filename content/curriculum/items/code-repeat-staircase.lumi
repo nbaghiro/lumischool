@@ -1,0 +1,33 @@
+item coding.repeat-staircase v=2 skills=[coding.repetition] {
+  title "A repeat that climbs"
+  difficulty (k + s)
+  set k=3
+  let s=1..2 r=7..8
+  level easy {
+    set k=2
+  }
+  level hard {
+    set k=4
+    let s={1}
+  }
+
+  scene 33x24 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat {k}", "  right {s}", "  up {s}"]
+      turtle t cols=7 rows=8 col=1 row=r moves=["repeat {k}", "  right {s}", "  up {s}"] upto=0
+    }
+    text ask "Which row does the turtle finish on?" width=16 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=t answer=row
+  feedback {
+    when (answer == r - s) point=p {
+      say "The repeat climbs {pick(k - 2, \"two\", \"three\", \"four\")} times, not once."
+    }
+    when (answer == r + k * s) point=t {
+      say "Up goes towards row 1, so the row number gets smaller."
+    }
+  }
+  hint "{pick(k - 2, \"Two\", \"Three\", \"Four\")} times round the repeat, each one going up {s}."
+}

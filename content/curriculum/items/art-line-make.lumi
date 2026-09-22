@@ -1,0 +1,21 @@
+# Three stars: the child draws two things of their own, one near and heavy and one far and light, and
+# lets the width of the line say which is which. Marked by eye against a look-for.
+item art.line-make v=1 stars=3 skills=[art.line, art.making] {
+  title "Draw it near and far"
+  difficulty pair
+  let pair=0..2
+  let two={pick(pair, "a mug at the front and a spoon behind it", "a book at the front and a pencil behind it", "a bowl at the front and a feather behind it")}
+  level easy {
+    let pair=0..0
+  }
+  level hard {
+    let pair=2..2
+  }
+
+  scene 21x26 {
+    text ask "Draw {two}. Use your thickest line for the near, heavy one, and your thinnest for the far, light one, so that anyone looking can tell which is which without being told." narrate width=20 at=canvas(1, 0)
+    paintsheet sheet w=16 h=11 paper="plain" guide="none" outline="none" pots=["black"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="Two things drawn on one sheet where the line itself does the telling: the near, heavy thing outlined with a plainly thicker line than the far, light one, the two lines different enough to see across the room, and the near thing lower or larger on the sheet as well, so the drawing and the line weight agree rather than fight." notice=["One line plainly thicker than the other", "The thick line on the near, heavy thing", "The two things far enough apart to compare"] ask="Which of your two lines is the thicker, and why did you put it there?"
+}

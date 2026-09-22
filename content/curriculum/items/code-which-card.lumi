@@ -1,0 +1,19 @@
+# Four kinds of bug a child meets first: a card pointing the wrong way, a wrong number, a card too
+# many and a card missing. The first two are here; the checker proves the bug is on one card only.
+item coding.which-card v=1 skills=[coding.debugging] {
+  title "Which card is wrong?"
+  difficulty (if k == 0 or k == 3 then 0 else 1)
+  let k=0..3
+
+  scene 31x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["{if k == 2 then \"right 3\" else \"right 2\"}", "{if k == 0 then \"up 2\" else \"down 2\"}", "{if k == 1 then \"right 1\" else if k == 3 then \"left 2\" else \"right 2\"}"] numbers=true words=false
+      maze g map=["S . . # .", ". # . # .", ". # . . F", ". . . # ."] code=["{if k == 2 then \"right 3\" else \"right 2\"}", "{if k == 0 then \"up 2\" else \"down 2\"}", "{if k == 1 then \"right 1\" else if k == 3 then \"left 2\" else \"right 2\"}"] trail=line
+    }
+    text ask "The robot should reach the flag. Which card is wrong?" width=18 below=top gap=1
+    choice pick options=[1, 2, 3] right-of=ask gap=1
+  }
+
+  check coding.runs of=g goal=flag pick=wrong
+  hint "Follow the line the robot drew. Where does it stop going the right way?"
+}

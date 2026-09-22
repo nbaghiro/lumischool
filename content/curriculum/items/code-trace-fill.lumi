@@ -1,0 +1,35 @@
+# The trace table is filled for the first steps and left empty for the rest, which is how a child
+# learns to trace: write where the robot is after every line rather than guessing the end.
+item coding.trace-fill v=1 skills=[coding.tracing] {
+  title "Carry on the table"
+  difficulty (a + b)
+  let a=2..3 b=1..2
+  level easy {
+    let a={2}
+  }
+  level hard {
+    let a={3}
+  }
+
+  scene 32x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right {a}", "down {b}", "left 1", "down 1"]
+      tracetable tr code=["right {a}", "down {b}", "left 1", "down 1"] cols=5 rows=5 filled=1
+    }
+    text ask "Where is the robot after step 3?" width=16 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  check coding.runs of=tr col="after(3).col" row="after(3).row"
+  feedback {
+    when (col == 1 + a) point=p {
+      say "Step 3 is left 1, so the robot comes back one column."
+    }
+  }
+  hint "Fill in the table one row at a time. Each row starts where the one above it ended."
+}

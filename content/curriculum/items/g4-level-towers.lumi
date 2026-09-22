@@ -1,0 +1,29 @@
+# The mean as levelling: cubes move from the tall towers to the short ones until all are the same.
+item data.level-out v=1 skills=[data.mean] {
+  title "Make them level"
+  difficulty (a + b + c + d)
+  let a=1..8 b=1..8 c=1..8 d=1..8
+  where ((a + b + c + d) % 4 == 0 and a != b and b != c and c != d and a != d)
+  where ((a + b + c + d) / 4 != a and (a + b + c + d) / 4 != b)
+  level easy {
+    where (a + b + c + d <= 16)
+  }
+  level hard {
+    where (a + b + c + d >= 24)
+  }
+
+  scene 32x17 {
+    towers t heights=[a, b, c, d] labels=true level=0 at=canvas(1, 1)
+    text ask "Move cubes from tower to tower until all four are the same height. How tall is each tower then?" narrate width=14 right-of=t gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer ((a + b + c + d) / 4)
+  feedback {
+    when (answer == a + b + c + d) point=t {
+      say "That is all the cubes together. Share them between the four towers."
+    }
+  }
+  hint "How many cubes are there altogether?"
+  hint "Share them equally between the four towers."
+}

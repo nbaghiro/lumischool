@@ -1,0 +1,27 @@
+# Two piles are equal, one written with a ten broken into ones: equivalence, not counting.
+item place.same-cubes v=1 stars=2 skills=[place-value.regroup, reasoning.equivalence] {
+  title "The same number of cubes"
+  difficulty (10 * d + o)
+  let t=4..7 o=1..9 d=1..2
+
+  scene 32x16 {
+    row both at=canvas(1, 1) space=3 align=end {
+      placevalue a tens=t ones=o
+      placevalue b tens=(t - d) ones=0
+    }
+    text ask "Both piles have the same number of cubes, but some single cubes are missing from the second pile. How many single cubes should it have?" width=30 below=both gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (o + 10 * d)
+  feedback {
+    when (answer == o) point=b {
+      say "The second pile has fewer rods, so it needs more single cubes to make up for them."
+    }
+    when (answer == 10 * d) point=a {
+      say "The {o} single cubes in the first pile have to be there too."
+    }
+  }
+  hint "Which pile has fewer rods, and how many fewer?"
+  hint "Every missing rod has to come back as ten single cubes."
+}

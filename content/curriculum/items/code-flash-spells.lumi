@@ -1,0 +1,38 @@
+# The key says what a pattern of flashes means, and the lamp's program is read against it: come
+# in is long short short, stay out is short short, go round is long long.
+item coding.flash-spells v=1 skills=[coding.sequences, coding.data] {
+  title "What does the lamp say?"
+  difficulty ((if m == 1 then 0 else 1) + d)
+  let m=0..2 d=0..1
+  let l1={pick(m, "flash long", "flash short", "flash long")}
+  let l2={if d == 0 then pick(m, "flash short", "flash short", "flash long") else "wait"}
+  let l3={if d == 0 then pick(m, "flash short", "wait", "wait") else pick(m, "flash short", "flash short", "flash long")}
+  let l4={if d == 0 then "wait" else pick(m, "flash short", "wait", "wait")}
+  let right={pick(m, "come in", "stay out", "go round")}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 36x23 {
+    row top space=1 align=start at=canvas(1, 1) {
+      table key cols=2 head=["Flashes", "Means"] cells=["long short short", "come in", "short short", "stay out", "long long", "go round"]
+      text ask "Read the lamp's flashes against the key. What is it telling the boat?" width=13
+    }
+    row low space=1 align=start below=top gap=1 {
+      program p code=["{l1}", "{l2}", "{l3}", "{l4}"] title="Lamp 1"
+      choice pick options=["come in", "stay out", "go round"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=key {
+      say "Write the lamp's flashes down in order, long or short, leaving the waits out. Then find that row in the key."
+    }
+  }
+  hint "A wait is the lamp dark for a beat. Only the flashes count."
+  hint "{if m == 0 then \"One long, then two shorts.\" else if m == 1 then \"Two shorts and nothing else.\" else \"Two longs and nothing else.\"}"
+}

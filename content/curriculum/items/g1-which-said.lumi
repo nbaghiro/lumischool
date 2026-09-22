@@ -1,0 +1,21 @@
+# Counting in fives lands only on numbers ending in 5 or 0, so the answer can be seen without counting.
+item count.which-said v=2 skills=[counting.in-steps, reasoning.structure] {
+  title "Which will she say"
+  difficulty k
+  let k=5..10 q=0..2
+  level easy {
+    let k=5..7
+  }
+  level hard {
+    let k=8..10
+  }
+
+  scene 24x9 {
+    text ask "Kim counts in fives: 5, 10, 15, 20, and on. Which of these numbers will she say?" narrate width=22 at=canvas(1, 1)
+    choice pick options=[if q == 0 then 5 * k else 5 * k + 2, if q == 1 then 5 * k else 5 * k - 1, if q == 2 then 5 * k else 5 * k + 3] below=ask gap=1
+  }
+
+  answer pick=(5 * k)
+  hint "Look at the last digit of the numbers she says. What do they end in?"
+  hint "Do any of the three numbers end the same way?"
+}

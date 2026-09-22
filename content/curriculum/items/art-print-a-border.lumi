@@ -1,0 +1,10 @@
+item art.print-a-border v=1 stars=3 skills=[art.pattern, art.printing, reasoning.generalise] {
+  title "Print a border"
+
+  scene 36x17 {
+    text ask "Print a border with a pattern of your own. The part that repeats must be three prints long." width=30 at=canvas(1, 1)
+    paintsheet sheet w=26 h=7 paper="squared" guide="row" outline="none" pots=["red", "yellow", "blue"] stamps=["leaf", "star", "fish"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A part three prints long that the child chose (leaf, leaf, star, or leaf, star, fish) repeated in the same order all the way along the row; spacing that stays roughly even is a bonus, not a need." notice=["A part three prints long", "The same order all the way along", "The child can say the part that repeats"] ask="Which three prints make your pattern, and which would come next?"
+}

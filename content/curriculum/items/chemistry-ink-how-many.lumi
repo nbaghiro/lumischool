@@ -1,0 +1,25 @@
+# The way in: one strip after the water has climbed it, and how many colours the ink came apart into.
+# Two of the five pens split into two colours and three into three.
+item chemistry.ink-how-many v=1 skills=[chemistry.separating, data.reading] {
+  title "How many colours?"
+  difficulty bands
+  let n=0..4
+  let ink={pick(n, "brown", "green", "black2", "black1", "black3")}
+  let bands={pick(n, 2, 2, 2, 3, 3)}
+  level easy {
+    let n=0..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 30x16 {
+    chromatography strip inks=["{ink}"] labels=["A"] run=1 beaker=1 ruler=0 at=canvas(1, 0)
+    text ask "The water has climbed the paper and carried the ink up with it. How many colours did the ink come apart into?" narrate width=22 right-of=strip gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=bands
+  hint "Count the bands of colour on the paper, not the dot the pen made."
+  hint "Each band is one of the colours the ink was mixed from."
+}

@@ -1,0 +1,22 @@
+# An off-by-some sign: the rule and the sign's test disagree for a run of numbers next to the edge,
+# and the child has to count exactly which ones, with the boundary numbers the trap.
+item coding.bug-which-input v=1 stars=2 skills=[coding.debugging, coding.decisions] {
+  title "Where the sign goes wrong"
+  difficulty abs(d)
+  let m=5..12 d={-3, -2, -1, 1, 2, 3}
+
+  scene 32x20 {
+    fork f ask="Is n more than {m + d}?" yes="say yes" no="say no" cond="n is more than {m + d}" n=0 at=canvas(1, 0)
+    text ask "The rule: say yes for every number more than {m}. For how many whole numbers from 1 to 20 is this sign wrong?" width=30 below=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer abs(d)
+  feedback {
+    when (answer == abs(d) + 1) point=f {
+      say "Check the edge numbers one by one. Is {m} more than {m}? Is {m + d} more than {m + d}?"
+    }
+  }
+  hint "Try the numbers between {m} and {m + d}. What does the rule say, and what does the sign say?"
+  hint "A number is only wrong when the rule and the sign give different answers. Check the numbers at each end."
+}

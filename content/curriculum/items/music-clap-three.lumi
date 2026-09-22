@@ -1,0 +1,14 @@
+# Clapped: two bars of three with a rest on the second beat of the first, so the clap has to
+# leave a gap and come back in on three.
+item music.clap-three v=1 skills=[music.rhythm, music.rests] {
+  title "Clap the silence"
+
+  scene 34x17 {
+    notes bar clef=treble notes=[G4, rest, G4, A4, A4, A4] values=[1, 1, 1, 1, 1, 1] meter=3 at=canvas(1, 1)
+    text ask "Clap these two bars, counting one, two, three, one, two, three. On the rest, keep counting but do not clap." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 2, 3, 4, 5] grade=3
+  hint "Say the counts out loud and clap on every note. The rest is a count with no clap."
+  hint "Clap, silence, clap, then clap clap clap."
+}

@@ -1,0 +1,11 @@
+item writing.describe-for-a-friend v=1 skills=[writing.describing, writing.composing] {
+  title "Describe it so it can be found"
+  let k=0..3
+
+  scene 31x21 {
+    creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 1] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["", "", "", ""] ring=k at=canvas(1, 1)
+    writinglines lines lines=2 width=29 prompt="Write two sentences about the ringed one." below=line gap=1
+  }
+
+  check writing.by-eye look-for="Two sentences that together fit the ringed creature and no other; try it by covering the ring and finding the creature from the sentences alone. Describing words (spotty, stripy, long) and numbers (three eyes) are both good."
+}

@@ -1,0 +1,27 @@
+# The missing part of a litre, with the level between the marks.
+item measure.jug-to-litre v=1 skills=[capacity.litres, addition.missing-part] {
+  title "Fill it to a litre"
+  difficulty (1000 - l)
+  let l={100, 300, 400, 700, 900}
+  level easy {
+    let l={700, 900}
+  }
+  level hard {
+    let l={100, 300}
+  }
+
+  scene 34x13 {
+    jug pot max=1000 step=200 level=l unit=ml at=canvas(1, 1)
+    text ask "How many more millilitres of water would fill the jug to 1 litre?" width=20 right-of=pot gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (1000 - l)
+  feedback {
+    when (answer == l) point=pot {
+      say "That is how much is in the jug now. How much more makes 1000 millilitres?"
+    }
+  }
+  hint "How many millilitres make one litre?"
+  hint "Read the jug, then count on in hundreds to 1000."
+}

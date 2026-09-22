@@ -1,0 +1,16 @@
+# Planning an investigation, NGSS 2-PS1-1: no method on the page, marked by a grown-up against the
+# three parts every fair test has.
+item science.plan-a-test v=1 stars=3 skills=[science.fair-test, science.materials] {
+  title "Plan a test"
+  let k=0..2
+  let q={if k == 0 then "which of three cloths keeps a teddy driest in the rain" else if k == 1 then "which of three materials would make the warmest blanket for a teddy" else "which of three kinds of paper is the strongest bag"}
+
+  scene 32x18 {
+    text ask "Plan a test to find out {q}. Write what you will change, what you will keep the same, and what you will look at to decide." width=30 at=canvas(1, 1)
+    writinglines lines lines=3 width=28 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Three parts, each named: the one thing changed on purpose (the material), at least one thing kept the same so the test is fair (such as the amount of water, the time, the size of the pieces or the weight put in), and what will be looked at or measured to decide (how wet, how warm, or how much the bag holds before it tears)."
+  hint "What will be different each time? That is the thing you change."
+  hint "What could spoil the test if it changed too? Keep that the same."
+}

@@ -1,0 +1,14 @@
+item art.next-print v=1 skills=[art.pattern] {
+  title "Which print goes in the gap?"
+  difficulty m
+  let m=5..8
+
+  scene 34x9 {
+    printrow row unit=["leaf", "star"] colours=["green", "orange"] count=8 missing=m at=canvas(1, 1)
+    text ask "Which print goes in the gap?" width=14 below=row gap=1
+    choice pick options=["leaf", "star"] right-of=ask gap=1
+  }
+
+  answer pick=(if m % 2 == 1 then "leaf" else "star")
+  hint "Say the prints out loud from the left. What do you say when you reach the gap?"
+}

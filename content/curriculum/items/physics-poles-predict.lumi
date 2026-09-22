@@ -1,0 +1,13 @@
+item physics.poles-predict v=1 skills=[physics.magnets] {
+  title "Together or apart?"
+  let s=0..1
+
+  scene 24x16 {
+    magnet pair mode=poles same=s show=0 at=canvas(1, 0)
+    text ask "Will these two magnets pull together or push apart?" width=22 below=pair gap=0
+    choice pick options=["Together", "Apart"] below=ask gap=1
+  }
+
+  answer pick=(if s == 1 then "Apart" else "Together")
+  hint "Which letters are facing each other in the middle?"
+}

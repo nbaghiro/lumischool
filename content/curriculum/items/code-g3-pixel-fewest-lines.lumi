@@ -1,0 +1,30 @@
+# The shortest program for a picture: every different row needs a line, and one repeat saves the
+# rest. A row above or below the repeating part needs its own line outside the repeat.
+item coding.pixel-fewest-lines v=1 stars=3 skills=[coding.repetition, coding.data, reasoning.constraints] {
+  title "The fewest lines"
+  difficulty (p + t + y)
+  let p=2..3 r=2..3 t=0..1 y=0..1
+  where (t + p * r + y <= 8)
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=2 align=start {
+      pixels g cols=6 rows=(t + p * r + y) code=["{if t == 1 then \"6 yellow\" else \"\"}", "repeat {r}", "  3 blue 3 white", "  3 white 3 blue", "{if p == 3 then \"  6 green\" else \"\"}", "{if y == 1 then \"6 red\" else \"\"}"] beside=false
+      column q space=1 align=start {
+        text ask "Each line of a program paints one row, and a repeat line counts as a line too. What is the fewest lines a program can use to paint this picture?" width=16
+        number-input answer
+      }
+    }
+  }
+
+  answer (t + 1 + p + y)
+  feedback {
+    when (answer == t + p * r + y) point=g {
+      say "That is a line for every row. A repeat can paint rows that come round again."
+    }
+    when (answer == t + p + y) point=g {
+      say "The repeat line itself counts as a line."
+    }
+  }
+  hint "Which rows are different from each other? Each one needs a line of its own."
+  hint "One repeat can paint the rows that come round again. Remember to count the repeat line."
+}

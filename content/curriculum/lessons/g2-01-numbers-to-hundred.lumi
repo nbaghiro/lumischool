@@ -1,0 +1,49 @@
+lesson g2-numbers-to-one-hundred v=1 format=teach grade=2 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Numbers to one hundred"
+  goal "Read, write, split and order any number up to a hundred."
+
+  look {
+    scene 26x28 {
+      hundred grid from=1 to=50 start=23 add=0 hide=[] at=canvas(1, 1)
+      row side below=grid gap=1 space=2 align=start {
+        ladder rungs from=0 to=100 step=20
+        pvchart chart value="47" show=digits
+      }
+    }
+    say """
+      Every row of the hundred square is ten. Going along adds ones and going down adds ten, which
+      is why the tens digit changes as you go down the column.
+      """
+  }
+  do {
+    practice place-value.tens-ones count=1 seed=3
+    practice hundred.hops count=1 seed=16
+    practice hundred.hops-back count=1 seed=5
+    practice place.partition count=2 seed=4
+    practice place.partition-first count=2 seed=9
+    practice compare.ten-more count=1 seed=2
+    practice order.four-ways count=1 seed=7
+  }
+  try stars=2 {
+    show place.same-cubes t=5 o=4 d=1 easy-t=4 easy-o=2 hard-t=7 hard-o=9 hard-d=2
+  }
+  try stars=3 {
+    show place.all-the-numbers k=3 easy-k=6 hard-k=2
+  }
+  remember {
+    say "Down a row is ten more. Along a square is one more. A number can be split into tens and ones in more than one way."
+  }
+
+  grown-ups """
+    Keep the hundred square where the child can see it. Pointing at it while counting is what turns
+    counting into place value. The splits such as 63 = 50 + 13 matter most: they are the exchange
+    that written subtraction rests on. In the two-star question, ask which pile has fewer rods before
+    any counting. In the three-star question it helps to start a list with the numbers that end in 0.
+    """
+  level easy {
+    grown-ups "At this level the hops go down one row, the numbers are split off a whole ten, the ten-more comparisons are three apart, and four numbers fit the last riddle."
+  }
+  level hard {
+    grown-ups "At this level the hops go down two rows and along two or three, the numbers give up two tens, the comparisons are one apart or equal, and eight numbers fit the last riddle."
+  }
+}

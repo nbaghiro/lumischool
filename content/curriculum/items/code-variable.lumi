@@ -1,0 +1,29 @@
+item coding.variable v=2 skills=[coding.variables] {
+  title "A number that changes"
+  difficulty (a + 2 * b)
+  let a=2..5 b=2..4
+  level easy {
+    let b={2}
+  }
+  level hard {
+    let a=4..5 b={4}
+  }
+
+  scene 22x19 {
+    program p code=["set n to {a}", "add {b} to n", "add {b} to n"] title="n changes" at=canvas(1, 0)
+    variable v name=n code=["set n to {a}", "add {b} to n", "add {b} to n"] blank=true history=false below=p gap=1
+    text ask "What is n at the end?" width=12 right-of=v gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=v answer="value(n)"
+  feedback {
+    when (answer == a + b) point=p {
+      say "There are two add lines, so the {b} goes in twice."
+    }
+    when (answer == 2 * b) point=p {
+      say "n starts at {a}, not at nothing."
+    }
+  }
+  hint "Start at {a} and add {b}, then add {b} again."
+}

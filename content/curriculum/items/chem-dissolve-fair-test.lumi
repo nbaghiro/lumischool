@@ -1,0 +1,25 @@
+# Real results do not fall by the same amount each time, so this reads the table rather than
+# continuing a pattern: the fastest, a difference, and a temperature from a time.
+item chem.dissolve-fair-test v=1 skills=[chemistry.method, chemistry.dissolving] {
+  title "Reading the results"
+  difficulty (if v == 0 then 40 else if v == 1 then 80 else if v == 2 then 30 else if v == 3 then 40 else if v == 4 then 65 else if v == 5 then 30 else if v == 6 then 40 else if v == 7 then 60 else 30)
+  let v=0..8
+  level easy {
+    let v={0, 2, 3, 5, 6, 8}  # differences of thirty or forty seconds
+  }
+  level hard {
+    let v={1, 4, 7}  # sixty seconds or more
+  }
+
+  scene 29x18 {
+    text ask "One spoon of sugar, the same stirring, and water at four temperatures. {if v == 0 then \"At which temperature did the sugar dissolve fastest?\" else if v == 1 then \"How many seconds sooner did it dissolve at 40° than at 10°?\" else if v == 2 then \"At which temperature did it take 55 seconds?\" else if v == 3 then \"At which temperature did the sugar dissolve fastest?\" else if v == 4 then \"How many seconds sooner did it dissolve at 40° than at 10°?\" else if v == 5 then \"At which temperature did it take 50 seconds?\" else if v == 6 then \"At which temperature did the sugar dissolve fastest?\" else if v == 7 then \"How many seconds sooner did it dissolve at 40° than at 10°?\" else \"At which temperature did it take 45 seconds?\"}" width=28 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      table data cols=2 head=["Water °C", "Seconds"] cells=[10, if v == 0 then 120 else if v == 1 then 120 else if v == 2 then 120 else if v == 3 then 100 else if v == 4 then 100 else if v == 5 then 100 else if v == 6 then 90 else if v == 7 then 90 else 90, 20, if v == 0 then 80 else if v == 1 then 80 else if v == 2 then 80 else if v == 3 then 70 else if v == 4 then 70 else if v == 5 then 70 else if v == 6 then 60 else if v == 7 then 60 else 60, 30, if v == 0 then 55 else if v == 1 then 55 else if v == 2 then 55 else if v == 3 then 50 else if v == 4 then 50 else if v == 5 then 50 else if v == 6 then 45 else if v == 7 then 45 else 45, 40, if v == 0 then 40 else if v == 1 then 40 else if v == 2 then 40 else if v == 3 then 35 else if v == 4 then 35 else if v == 5 then 35 else if v == 6 then 30 else if v == 7 then 30 else 30]
+      number-input answer
+    }
+  }
+
+  answer (if v == 0 then 40 else if v == 1 then 80 else if v == 2 then 30 else if v == 3 then 40 else if v == 4 then 65 else if v == 5 then 30 else if v == 6 then 40 else if v == 7 then 60 else 30)
+  hint "Which column do you need: the temperatures or the seconds?"
+  hint "Find the row the question is about. Is there a second row you need too?"
+}

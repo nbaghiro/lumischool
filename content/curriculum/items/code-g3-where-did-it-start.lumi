@@ -1,0 +1,40 @@
+# The start is the unknown: the program and where it stopped are shown, so the child undoes the
+# lines from the bottom up, left for right and down for up.
+item coding.where-did-it-start v=1 skills=[coding.tracing, coding.sequence] {
+  title "Where did it start?"
+  difficulty (a + b + c)
+  let a=2..3 b=1..2 c=1..2 sc=1..2 sr=4..5
+  where (sc + a <= 6 and sc + a - c >= 1 and a != c)
+  level easy {
+    where (a + b + c <= 4)
+  }
+  level hard {
+    where (a + b + c >= 6)
+  }
+
+  scene 33x21 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right {a}", "up {b}", "left {c}", "up 1"]
+      maze g cols=6 rows=5 col=sc row=sr flag=[sc + a - c, sr - b - 1] code=["right {a}", "up {b}", "left {c}", "up 1"] robot=false trail=none
+    }
+    text ask "The robot ran this program and stopped on the flag. Which square did it start on?" width=31 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "column"
+      number-input col width=3
+      text lr "row"
+      number-input row width=3
+    }
+  }
+
+  answer col=sc row=sr
+  feedback {
+    when (col == sc + 2 * (a - c) and row == sr) point=p {
+      say "Going back undoes each line the other way: a right is undone by going left."
+    }
+    when (row == sr - 2 * (b + 1)) point=p {
+      say "To go back, the up lines are undone by going down."
+    }
+  }
+  hint "Start on the flag and read the program from the bottom line up."
+  hint "Undo each line the other way round: up becomes down, left becomes right."
+}

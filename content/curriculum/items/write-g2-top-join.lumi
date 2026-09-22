@@ -1,0 +1,27 @@
+# o, r, v and w finish at the top, so a join from them runs along the top rather than up from the
+# line: the horizontal join England's Year 2 names.
+item writing.top-join v=1 skills=[writing.joining] {
+  title "The join along the top"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3 r=0..2
+  let top={if k == 0 then "on" else if k == 1 then "ri" else if k == 2 then "ve" else "wa"}
+  let b1={if k == 0 then "an" else if k == 1 then "un" else if k == 2 then "it" else "ea"}
+  let b2={if k == 0 then "in" else if k == 1 then "ta" else if k == 2 then "hu" else "mi"}
+  let o1={if r == 0 then top else b1}
+  let o2={if r == 1 then top else if r == 0 then b1 else b2}
+  let o3={if r == 2 then top else b2}
+
+  scene 30x9 {
+    text ask "Most joins go up from the bottom of a letter. Which pair is joined along the top?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["{o1}", "{o2}", "{o3}"] below=ask gap=1
+  }
+
+  answer pick=top
+  feedback {
+    when (pick != top) point=ask {
+      say "Look at where the first letter of each pair finishes: at the bottom, or at the top?"
+    }
+  }
+  hint "Write each first letter. Where does your pencil stop?"
+  hint "Which letters finish at the top? Is one of them first in a pair?"
+}

@@ -1,0 +1,29 @@
+# The story: a five-card story written over two sittings, counted in sentences or in cards left.
+item writing.story-sittings v=1 stars=1 skills=[writing.planning, multiplication.groups] {
+  title "Two sittings"
+  difficulty (n + w)
+  let n=2..3 w=0..1
+  level easy {
+    let n=2..2 w=0..0
+  }
+  level hard {
+    let n=3..3 w=1..1
+  }
+
+  scene 34x12 {
+    text ask "Ada writes her story from a five-card plan. In the first sitting she writes {n} sentences for each of the first three cards. {if w == 0 then \"How many sentences has she written?\" else \"In the second sitting she writes the last two cards with one more sentence each than before. How many sentences is the whole story?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 3 * n else 3 * n + 2 * (n + 1))
+  feedback {
+    when (w == 0 and answer == 5 * n) point=ask {
+      say "Only three cards were written in the first sitting. Three lots of {n}."
+    }
+    when (w == 1 and answer == 5 * n) point=ask {
+      say "The last two cards have {n + 1} sentences each, not {n}. Add those to the first three cards' sentences."
+    }
+  }
+  hint "{if w == 0 then \"Three cards, the same number of sentences on each.\" else \"Count the first sitting's sentences, then the second's: two cards of one more each.\"}"
+  hint "{if w == 0 then \"Three times {n}.\" else \"Three times {n}, then two times {n + 1}.\"}"
+}

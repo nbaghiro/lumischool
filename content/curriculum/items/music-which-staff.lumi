@@ -1,0 +1,30 @@
+# The way in: the bottom staff is the bass staff and the left hand's, the top the treble and the
+# right hand's.
+item music.which-staff v=1 skills=[music.staff] {
+  title "Which staff?"
+  difficulty w
+  let w=0..1
+  let asks={pick(w, "Which staff is the bass staff?", "Which hand plays the notes on the bottom staff?")}
+  let right={pick(w, "the bottom one", "the left hand")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 32x17 {
+    grandstaff gs notes=["F3", "C4", "G4"] letters=false lit=[] landmarks=true at=canvas(1, 1)
+    text ask "{asks}" width=14 right-of=gs gap=1
+    choice pick options=[if w == 0 then "the top one" else "the right hand", if w == 0 then "the bottom one" else "the left hand"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=gs {
+      say "Low notes sit low on the page: the bottom staff with the two-dot clef is the bass, and the left hand plays it."
+    }
+  }
+  hint "The bass clef is the one with two dots. Where is it?"
+  hint "Low on the page is low on the keys, which is the left hand's end."
+}

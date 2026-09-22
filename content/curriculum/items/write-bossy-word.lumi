@@ -1,0 +1,14 @@
+item writing.bossy-word v=1 skills=[writing.instructions, writing.word-classes] {
+  title "The word that tells you what to do"
+  let k=0..2
+
+  scene 35x15 {
+    picsteps pic pictures=["{if k == 0 then \"eggs\" else if k == 1 then \"stir\" else \"tin\"}"] texts=[""] per=1 numbers=false write=false at=canvas(1, 1)
+    sentence strip before="" blank=5 after="{if k == 0 then \"the eggs into the bowl.\" else if k == 1 then \"it all together.\" else \"it into the tin.\"}" right-of=pic gap=1
+    text ask "An instruction starts with a doing word. Which one goes in the gap?" width=22 below=strip gap=1
+    choice pick options=["{if k == 0 then \"Crack\" else if k == 1 then \"Spoon\" else \"Round\"}", "{if k == 0 then \"Yellow\" else if k == 1 then \"Stir\" else \"Tin\"}", "{if k == 0 then \"Egg\" else if k == 1 then \"Soft\" else \"Pour\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Crack" else if k == 1 then "Stir" else "Pour")
+  hint "Put I can in front of each word. The doing word is the one that makes sense."
+}

@@ -1,0 +1,26 @@
+item physics.float-count-sunk v=1 skills=[physics.floating] {
+  title "How many sank?"
+  difficulty (f + s)
+  let f=1..4 s=1..4
+  where (f != s)
+  level easy {
+    let f=1..2 s=1..3
+  }
+  level hard {
+    let f=2..4 s=3..4
+  }
+
+  scene 32x18 {
+    tank t float=f sunk=s at=canvas(1, 1)
+    text ask "How many of the things sank to the bottom?" width=18 below=t gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer s
+  feedback {
+    when (answer == f) point=t {
+      say "Those are the ones at the top. Count the ones resting on the bottom."
+    }
+  }
+  hint "Where does a thing that sinks end up?"
+}

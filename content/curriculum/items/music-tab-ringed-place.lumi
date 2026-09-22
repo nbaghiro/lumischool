@@ -1,0 +1,29 @@
+# Both halves of a tab number at once: the line it is on is the string, the number is the fret.
+item music.tab-ringed-place v=1 skills=[music.tab] {
+  title "String and fret"
+  difficulty (s - 1 + (if f == 0 then 2 else if f == 5 then 1 else 0))
+  let s=1..4 f={0, 1, 2, 3, 5}
+  level easy {
+    where (s <= 2 and f >= 1 and f <= 3)
+  }
+  level hard {
+    where (s >= 3 or f == 0)  # a lower string, or the open string
+  }
+
+  scene 34x11 {
+    tab lines tuning=guitar notes=["s1f0", "s{s}f{f}", "s2f1"] values=[] even=true letters=true ring=1 at=canvas(1, 1)
+    text q1 "Which string is the ringed number on?" width=13 right-of=lines gap=1
+    number-input string right-of=q1 gap=1
+    text q2 "Which fret?" width=13 below=q1 gap=1
+    number-input fret right-of=q2 gap=1
+  }
+
+  answer string=s fret=f
+  feedback {
+    when (string == 7 - s) point=lines {
+      say "That counts from the bottom line. In tab the top line is string 1."
+    }
+  }
+  hint "Count the lines from the top. Which line is the ring on?"
+  hint "The number written on the line is the fret. What does 0 mean?"
+}

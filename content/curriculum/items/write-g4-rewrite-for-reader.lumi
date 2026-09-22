@@ -1,0 +1,16 @@
+# Revising for a reader: the sign's meaning stays and its words change for a six-year-old. Many
+# rewrites are right, so a grown-up marks it.
+item writing.rewrite-for-reader v=2 stars=3 skills=[writing.audience, writing.editing] {
+  title "A sign a six-year-old can read"
+  let k=0..2
+
+  scene 36x17 {
+    caption sign text="{if k == 0 then \"Entry to the pond area is not permitted without an adult.\" else if k == 1 then \"Visitors are requested to refrain from feeding the ducks.\" else \"Please ensure that the gate is securely closed after use.\"}" width=35 at=canvas(1, 1)
+    text ask "A six-year-old cannot read this sign. Write it again so they can, and keep what it asks." width=35 below=sign gap=1
+    writinglines lines lines=2 width=35 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A short sentence in everyday words a six-year-old knows (for the pond sign, Do not go to the pond without a grown-up), asking for the same thing as the sign and nothing more, with a capital and a full stop."
+  hint "What does the sign want people to do, or not do? Say it out loud in your own words."
+  hint "Swap each long word for one a younger child would know. Is the meaning still the same?"
+}

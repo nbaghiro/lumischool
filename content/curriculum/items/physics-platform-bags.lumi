@@ -1,0 +1,28 @@
+# The story question: two bags on the way up to the tree platform, one pull read off the balance and
+# the other given as a difference, so the child reads and then adds rather than reading twice.
+item physics.platform-bags v=1 skills=[physics.weight] {
+  title "Up to the platform"
+  difficulty (a + b)
+  let a={2, 4, 6} b={2, 4}
+
+  scene 34x25 {
+    row up at=canvas(1, 1) space=2 align=end {
+      children kids count=2 names=["Ben", "Mia"] holding="" each=0
+      springscale s max=10 step=2 value=a unit=N
+    }
+    text ask "Ben and Mia haul bags up to the tree platform. Ben's bag pulls {a} newtons. Mia's bag pulls {b} newtons more than Ben's. How hard does Mia's bag pull?" narrate width=32 below=up gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a) point=s {
+      say "That is Ben's bag. Mia's pulls {b} newtons more than that."
+    }
+    when (answer == b) point=s {
+      say "That is only the extra. Start from Ben's {a} newtons and add the extra on."
+    }
+  }
+  hint "Read Ben's bag off the balance first."
+  hint "Mia's bag pulls more. How many more? Add that on."
+}

@@ -1,0 +1,15 @@
+# Three bars in a row on the glockenspiel, C, D and E going up: a first tune played with a mallet and
+# read from the staff above it.
+item music.glock-first-bars v=1 skills=[music.keys] {
+  title "Three bars, going up"
+
+  scene 32x29 {
+    notes staff clef=treble notes=[C5, D5, E5] at=canvas(1, 0)
+    text ask "Play these three notes on the glockenspiel, one bar after another, going up the bars." width=30 below=staff gap=1
+    glockenspiel glock from=C5 bars=5 below=ask gap=1
+  }
+
+  check music.plays notes=[C5, D5, E5]
+  hint "Find the bar with C on it. It is the longest one."
+  hint "The next two bars to the right are D and then E."
+}

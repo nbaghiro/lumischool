@@ -1,0 +1,23 @@
+item physics.parachute-fair v=1 skills=[physics.method] stars=2 {
+  title "A fair drop?"
+  difficulty (if m == n then 0 else 1)
+  let x={3, 4} y={6, 7} m={4, 6} n={4, 6}
+
+  scene 28x21 {
+    row two at=canvas(1, 0) space=1 align=start {
+      parachute a canopy=x weight=m drag=m labels=1 show=0 tag="A"
+      parachute b canopy=y weight=n drag=n labels=1 show=0 tag="B"
+    }
+    text ask "Is dropping these two a fair test of whether a bigger canopy falls more slowly?" width=16 below=two gap=0
+    choice pick options=["Yes", "No"] right-of=ask gap=1
+  }
+
+  answer pick=(if m == n then "Yes" else "No")
+  feedback {
+    when (pick == "Yes" and m != n) point=two {
+      say "The toys weigh different amounts, so the weight could make the difference as well as the canopy."
+    }
+  }
+  hint "What is different about the two drops?"
+  hint "A fair test changes only the thing being tested."
+}

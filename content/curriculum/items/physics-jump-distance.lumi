@@ -1,0 +1,20 @@
+item physics.jump-distance v=1 skills=[physics.motion] {
+  title "How far was the jump?"
+  difficulty ((if d * 2 % 2 == 0 then 0 else 1) + d / 10)
+  let d={1.5, 2.0, 2.5, 3.0, 3.5}
+  level easy {
+    let d={2.0, 3.0}
+  }
+  level hard {
+    let d={1.5, 2.5, 3.5}
+  }
+
+  scene 27x16 {
+    longjump pit to=d max=4 at=canvas(1, 1)
+    text ask "How many metres was the jump?" width=14 below=pit gap=1
+    number-input answer right-of=ask gap=2
+  }
+
+  answer d
+  hint "Which mark did the jumper land on?"
+}

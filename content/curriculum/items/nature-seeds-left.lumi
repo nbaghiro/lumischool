@@ -1,0 +1,35 @@
+# The dandelion clock before and after a puff: the seeds that have blown away are drawn flying, so
+# the count can be checked on the picture, and the question goes both ways.
+item nature.seeds-left v=1 skills=[nature.seeds, subtraction.to-twenty] {
+  title "After the puff"
+  difficulty (s // 4 + w)
+  let s=8..16 b=2..7 w=0..1
+  where (b < s)
+  level easy {
+    let s=8..10 b=2..4 w=0..0
+  }
+  level hard {
+    let s=14..16 b=5..7 w=1..1
+  }
+
+  scene 34x17 {
+    dandelion clock seeds=s blown=(if w == 0 then b else s - b) flower=0 at=canvas(1, 1)
+    text ask "This dandelion clock had {s} seeds. Ada puffs, and {pick(w, \"\", \"now \")}{b} seeds {pick(w, \"blow away. How many seeds are left on the clock?\", \"are left on the clock. How many blew away?\")}" narrate width=20 right-of=clock gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (s - b)
+  feedback {
+    when (answer == s + b) point=clock {
+      say "A puff takes seeds away from the clock. The number left is smaller than {s}, not bigger."
+    }
+    when (answer == b and w == 0 and b != s - b) point=clock {
+      say "{b} is how many blew away. The question asks how many are still on the clock."
+    }
+    when (answer == b and w == 1 and b != s - b) point=clock {
+      say "{b} is how many are left. The question asks how many blew away. Count the flying ones."
+    }
+  }
+  hint "Start with {s}. Are the seeds you know about the ones that left, or the ones that stayed?"
+  hint "Take the ones that left away from {s}. You can check by counting the seeds still on the clock."
+}

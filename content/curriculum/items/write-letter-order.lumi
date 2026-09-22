@@ -1,0 +1,12 @@
+item writing.letter-order v=2 skills=[writing.letters] {
+  title "A letter in order"
+
+  scene 35x18 {
+    art pic asset="owl" at=canvas(1, 1)
+    text ask "Number the parts 1 to 4 to put the letter to the owl in order." width=20 right-of=pic gap=1
+    sequence s items=["Love from Sam", "Dear Owl,", "Bring them to the island tonight.", "We found the lanterns at the top."] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=4 b=1 c=3 d=2
+  hint "A letter starts with who it is to and ends with who it is from. In between, which sentence needs the other one before it?"
+}

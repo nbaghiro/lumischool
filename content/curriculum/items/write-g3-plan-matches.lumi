@@ -1,0 +1,20 @@
+# Three plans for one short piece: one matches, one has two notes swapped, one ends differently.
+item writing.plan-matches v=1 skills=[writing.planning] {
+  title "The plan that fits"
+  let s=0..2 p=0..2 ok={if s == 0 then "Wind takes kite / Stuck in tree / Rake gets it down" else if s == 1 then "Bird on path / Back in nest / Singing next day" else "Lamp goes out / Find batteries / Tent glows again"} swap={if s == 0 then "Stuck in tree / Wind takes kite / Rake gets it down" else if s == 1 then "Back in nest / Bird on path / Singing next day" else "Find batteries / Lamp goes out / Tent glows again"} off={if s == 0 then "Wind takes kite / Stuck in tree / Nell buys a new kite" else if s == 1 then "Bird on path / Back in nest / Omar walks to school" else "Lamp goes out / Find batteries / Lily falls asleep"}
+
+  scene 37x22 {
+    passage story text="{if s == 0 then \"The wind grabbed Nell's kite. It got stuck in the old oak tree. Her brother pulled it down with a rake.\" else if s == 1 then \"Omar found a baby bird on the path. He put it back in its nest. The next day he heard it singing.\" else \"The lamp in the tent went out. Lily found the spare batteries in her bag. Soon the tent glowed again.\"}" width=32 numbers=false at=canvas(1, 1)
+    text ask "Which plan was this written from?" width=30 below=story gap=1
+    choice pick options=["{if p == 0 then ok else if p == 1 then swap else off}", "{if p == 0 then swap else if p == 1 then off else ok}", "{if p == 0 then off else if p == 1 then ok else swap}"] stack=column below=ask gap=1
+  }
+
+  answer pick=ok
+  feedback {
+    when (pick == swap) point=story {
+      say "Those are the right notes. Are they in the order the story tells them?"
+    }
+  }
+  hint "Read the last note of each plan. Does the story end that way?"
+  hint "Now check the first two notes. Which plan has them in the story's order?"
+}

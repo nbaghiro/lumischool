@@ -1,0 +1,31 @@
+item pattern.next v=1 skills=[patterns.repeating] {
+  title "What comes next"
+  difficulty n
+  let n=5..8
+  level easy {
+    let n=5..6
+  }
+  level hard {
+    let n=8..10
+    scene 34x12 {
+      pattern strip unit=[a, b] count=n at=canvas(1, 0)
+      text ask "Which shape fills the gap?" narrate below=strip gap=1
+      choice next options=[a, b, c] below=ask gap=1
+    }
+  }
+  roles a=circle b=triangle c=square
+
+  scene 28x12 {
+    pattern strip unit=[a, b] count=n at=canvas(1, 0)
+    text ask "Which shape fills the gap?" narrate below=strip gap=1
+    choice next options=[a, b, c] below=ask gap=1
+  }
+
+  answer next=(if n % 2 == 1 then "a" else "b")
+  feedback {
+    when (next == "c") point=strip.gap {
+      say "There are no {c.many} in this pattern. Look at the shapes that repeat."
+    }
+  }
+  hint "Say the pattern out loud: {a}, {b}, {a}, {b}."
+}

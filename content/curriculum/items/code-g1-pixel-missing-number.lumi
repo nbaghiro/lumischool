@@ -1,0 +1,23 @@
+# From picture to code: the picture is painted and the code for one row has a number missing, which
+# the child reads off the squares.
+item coding.pixel-missing-number v=1 skills=[coding.data] {
+  title "The missing number"
+  difficulty (a + b + r)
+  let a=1..3 b=1..3 r=1..3
+  level easy {
+    let a=1..2 b=1..2 r={1}
+  }
+  level hard {
+    let a=2..3 b=2..3 r={3}
+  }
+
+  scene 33x9 {
+    pixels p cols=7 rows=3 code=["{a} white {7 - a - b} green {b} white", "{b} white {7 - a - b} green {a} white", "{a + b} white {7 - a - b} green"] show=true beside=false at=canvas(1, 0)
+    text ask "The code for row {r} starts with a number of white squares. What is that number?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if r == 1 then a else if r == 2 then b else a + b)
+  hint "Find row {r} in the picture. Start at the left."
+  hint "Count the white squares before the first green one."
+}

@@ -1,0 +1,60 @@
+lesson writing-writing-a-word-you-hear v=1 format=teach grade=1 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Writing a word you can hear"
+  goal "Say a word slowly, hear the sounds in order, and write them down."
+
+  look {
+    scene 28x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=centre {
+          art pic asset="duck"
+          soundboxes sb boxes=4 counters=true
+        }
+        row talk space=1 align=centre {
+          guide g pose=point
+          bubble b "Say it slowly. Write each sound as you get to it." width=22 from=g.hand
+        }
+      }
+    }
+    say """
+      Writing a word is hearing it in slow motion. Say the word, catch the first sound and write it,
+      then say the word again and catch the next. One box for each sound keeps your place.
+      """
+  }
+  do {
+    level easy {
+      worked writing.missing-sound a=3 p=2 level=medium
+    }
+    show writing.missing-sound a=2 p=1 easy-p=0
+    show writing.missing-sound a=3 p=2 easy-p=0 hard-p=1
+    practice writing.hear-and-write count=2 seed=1
+    practice writing.which-spelling count=2 hard-count=1 seed=6
+    level hard {
+      practice writing.spelling-slip count=1 seed=1
+    }
+    show writing.spell-the-thing k=0 who="pig" easy-k=1
+    show writing.spell-the-thing k=5 who="duck"
+  }
+  try stars=2 {
+    show writing.spelling-slip a=1 m=1 easy-m=0 hard-m=2
+  }
+  try stars=3 {
+    show writing.word-with-sounds n=4
+  }
+  remember {
+    say "Say it slowly. Write the sounds in the order you hear them."
+  }
+
+  grown-ups """
+    Say the word for them the first few times, stretched out. A child who cannot hear the middle
+    sound cannot write it, and stretching the word is the fix for that rather than more practice.
+    The two-star question is someone else's spelling to check: say the animal's name slowly and read
+    what Nia wrote one letter at a time. The three-star question counts sounds, not letters, so ship
+    is three sounds; any real word with the right number of sounds is a good answer.
+    """
+  level easy {
+    grown-ups "At this level duck's ck is written once in the teacher's pen before the first sounds of hen and duck, the words to write and the spellings to choose are as written, the things to spell are a bed and a mat, the two-star's slip is two letters the wrong way round, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the missing sounds are hen's middle and duck's middle, the words to write and the spellings to choose are as written, one spelling makes way for a second slip to name, the things to spell are as written, the two-star's slip is a letter too many, and the three-star is as written."
+  }
+}

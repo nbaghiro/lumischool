@@ -1,0 +1,29 @@
+# A furnace thermometer marked in hundreds: how many of four metals have melted at its reading. The
+# readings sit well away from every melting point, so each one is clearly melted or not.
+item chem.furnace v=1 skills=[chemistry.states] {
+  title "In the furnace"
+  difficulty (t / 100)
+  let t={200, 400, 600, 800, 1200, 1400}
+  level easy {
+    let t={200, 400, 600}
+  }
+  level hard {
+    let t={800, 1200, 1400}
+  }
+
+  scene 34x14 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      table data cols=3 head=["Metal", "Melts", "Boils"] cells=["Lead", 327, 1749, "Gold", 1064, 2856, "Iron", 1538, 2861]
+      thermometer tube from=0 to=1600 step=400 value=t unit="°C"
+      column side space=1 align=start {
+        text ask "The furnace is at this temperature. How many of these metals have melted?" width=9
+        number-input answer
+      }
+    }
+  }
+
+  check chem.state of=tube table=data
+  answer ((if t > 327 then 1 else 0) + (if t > 1064 then 1 else 0) + (if t > 1538 then 1 else 0))
+  hint "Read the thermometer. Which column of the table tells you when a metal melts?"
+  hint "Go down the column. Is the furnace hotter than that number?"
+}

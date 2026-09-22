@@ -1,0 +1,25 @@
+# All the ways: four down strums stay on the numbers and u up strums are added on the ands, which is
+# choosing u of the four ands. There is no method on the page; listing them is the way in.
+item music.strum-how-many-bars v=1 stars=3 skills=[music.strumming, reasoning.all-the-ways] {
+  title "How many bars can you make?"
+  difficulty (if u == 1 then 0 else if u == 3 then 1 else 2)
+  let u=1..3
+
+  scene 30x13 {
+    strumtrack bar strums=D-D-D-D- counts=true chord=none ring=-1 at=canvas(1, 1)
+    text ask "Keep the four down strums. Add {u} up {if u == 1 then \"strum\" else \"strums\"} on the ands. How many different bars can you make?" narrate width=22 below=bar gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if u == 2 then 6 else 4)
+  feedback {
+    when (answer == 4 and u == 2) point=bar {
+      say "Did you try an up strum on the first and with one on the third and? Make a list so none is missed."
+    }
+    when (answer == 3 and u != 2) point=bar {
+      say "There are four ands in the bar. Did you try each one?"
+    }
+  }
+  hint "How many ands are there in the bar? Name them: after 1, after 2, after 3, after 4."
+  hint "Write down the ands you pick for each bar, in order, so you do not count one twice."
+}

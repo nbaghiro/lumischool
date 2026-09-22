@@ -1,0 +1,34 @@
+# The things in the list are several words long, so a comma after the first word of a thing, or
+# before and, is a real choice to rule out: the audit's raise for counting commas.
+item writing.comma-after v=1 skills=[writing.punctuation] {
+  title "Where the comma goes"
+  difficulty c
+  let s=0..2 c=1..2
+  level easy {
+    let c={1}
+  }
+  level hard {
+    let c={2}
+  }
+
+  scene 36x14 {
+    listpad pad title="{if s == 0 then \"By the canal\" else if s == 1 then \"To pack\" else \"At the shop\"}" items=["{if s == 0 then \"a grey heron\" else if s == 1 then \"a warm hat\" else \"red apples\"}", "{if s == 0 then \"a swan\" else if s == 1 then \"a map\" else \"fresh bread\"}", "{if s == 0 then \"two ducks\" else if s == 1 then \"a torch\" else \"hot soup\"}", "{if s == 0 then \"a boat\" else if s == 1 then \"some bread\" else \"cold milk\"}"] count=0 width=12 ticks=false at=canvas(1, 1)
+    column right space=1 align=start right-of=pad gap=1 {
+      passage line text="{if s == 0 then \"We saw a grey heron a swan two ducks and a boat.\" else if s == 1 then \"Mo packed a warm hat a map a torch and some bread.\" else \"Ada got red apples fresh bread hot soup and cold milk.\"}" width=22 numbers=false
+      text ask "After which word does the {if c == 1 then \"first\" else \"second\"} comma go?" width=22
+      choice pick options=["{if s == 0 and c == 1 then \"grey\" else if s == 0 then \"swan\" else if s == 1 and c == 1 then \"warm\" else if s == 1 then \"map\" else if c == 1 then \"red\" else \"bread\"}", "{if s == 0 and c == 1 then \"heron\" else if s == 0 then \"ducks\" else if s == 1 and c == 1 then \"hat\" else if s == 1 then \"torch\" else if c == 1 then \"apples\" else \"soup\"}", "{if s == 0 and c == 1 then \"swan\" else if s == 0 then \"and\" else if s == 1 and c == 1 then \"map\" else if s == 1 then \"and\" else if c == 1 then \"bread\" else \"and\"}"]
+    }
+  }
+
+  answer pick=(if s == 0 and c == 1 then "heron" else if s == 0 then "swan" else if s == 1 and c == 1 then "hat" else if s == 1 then "map" else if c == 1 then "apples" else "bread")
+  feedback {
+    when (pick == "ducks" or pick == "torch" or pick == "soup") point=line {
+      say "That comma would sit just before and. The word and does that job."
+    }
+    when (pick == "grey" or pick == "warm" or pick == "red") point=pad {
+      say "That comma would split one thing in two. Look at the list: where does each thing end?"
+    }
+  }
+  hint "Look at the list on the pad. Where does the first thing end?"
+  hint "A comma goes at the end of a thing, and never just before and."
+}

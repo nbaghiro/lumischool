@@ -1,0 +1,23 @@
+# The first physics question a child can answer by looking: the arrow is either behind the thing or
+# in front of it, and nothing has to be read to tell which.
+item physics.push-or-pull v=1 skills=[physics.forces] {
+  title "Push or pull?"
+  let p=0..1 n={2, 4, 6}
+
+  scene 16x17 {
+    forces f thing=box push=(p * n) pull=((1 - p) * n) labels=false at=canvas(1, 1)
+    text ask "Is the arrow a push or a pull?" width=14 below=f gap=1
+    choice kind options=["Push", "Pull"] below=ask gap=1
+  }
+
+  answer kind=(if p == 1 then "Push" else "Pull")
+  feedback {
+    when (kind == "Pull" and p == 1) point=f {
+      say "The arrow is behind the box, going the way the box will go. That is a push."
+    }
+    when (kind == "Push" and p == 0) point=f {
+      say "The arrow is in front of the box, leading it away. That is a pull."
+    }
+  }
+  hint "Is the arrow behind the box or in front of it?"
+}

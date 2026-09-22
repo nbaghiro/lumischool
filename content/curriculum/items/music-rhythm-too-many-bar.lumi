@@ -1,0 +1,35 @@
+# Three bars written for four beats, and the one that holds too many: four and a half beats, with a
+# minim where a crotchet should be. r moves the wrong bar between A, B and C.
+item music.rhythm-too-many-bar v=1 skills=[music.note-values, music.counting-beats, reasoning.find-the-error] {
+  title "Too many beats"
+  let r=0..2
+  let right={pick(r, "C", "A", "B")}
+
+  scene 30x27 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "A"
+        staff a notes=[pick(r, 1, 1, 2), pick(r, 1, 0.5, 0.5), pick(r, 0.5, 0.5, 0.5), pick(r, 0.5, 2, 0.5), pick(r, 1, 0.5, 0.5)]
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        staff b notes=[pick(r, 2, 1, 1), pick(r, 0.5, 1, 0.5), pick(r, 0.5, 0.5, 0.5), pick(r, 0.5, 0.5, 2), pick(r, 0.5, 1, 0.5)]
+      }
+      row rc space=1 align=centre {
+        text lc "C"
+        staff c notes=[pick(r, 1, 2, 1), pick(r, 0.5, 0.5, 1), pick(r, 0.5, 0.5, 0.5), pick(r, 2, 0.5, 0.5), pick(r, 0.5, 0.5, 1)]
+      }
+    }
+    text ask "Ana wrote three bars of four beats. One has too many. Which one?" narrate width=28 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Count each bar's beats: a minim is two, a crotchet one, and two quavers make one."
+    }
+  }
+  hint "Count the beats in bar A first. Does it make four?"
+  hint "A single quaver is half a beat. Does any bar end with half a beat left over?"
+}

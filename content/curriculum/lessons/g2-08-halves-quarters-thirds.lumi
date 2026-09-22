@@ -1,0 +1,52 @@
+lesson g2-halves-quarters-thirds v=1 format=teach grade=2 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Halves, quarters and thirds"
+  goal "Name a fraction from the equal pieces, find a fraction of a number of things, and compare halves with quarters."
+
+  look {
+    scene 33x16 {
+      fractionwall wall rows=[1, 2, 3, 4] shade=[0, 0] at=canvas(1, 1)
+      pizza pie slices=3 taken=1 toppings=true right-of=wall gap=2
+      note n "Three equal pieces are thirds." width=14 below=wall gap=1
+    }
+    say """
+      The bottom number says how many equal pieces the whole was cut into. More pieces means each
+      one is smaller, which is why a quarter is less than a third.
+      """
+  }
+  do {
+    practice fraction.pizza-parts count=1 seed=3
+    practice fraction.pizza-what-is-left count=2 seed=5
+    practice fraction.shaded count=1 seed=2
+    practice fraction.of-a-set count=2 seed=4
+    practice fraction.whole-from-part count=2 seed=7
+  }
+  try stars=2 {
+    show fraction.bigger-piece a=3 b=4 easy-a=2 easy-b=8 hard-a=8 hard-b=6
+    show fraction.fair-shares k=3 w=12 easy-k=2 easy-w=8 hard-k=6
+  }
+  try stars=3 {
+    show fraction.between-half-and-three-quarters n=12 easy-n=8 hard-n=20
+  }
+  remember {
+    say "Halves, thirds, quarters: the more pieces, the smaller each piece is. A third of 12 is 4."
+  }
+
+  grown-ups """
+    The fraction wall is worth pinning up. Seeing that two quarters line up with one half settles
+    an argument that words cannot. A fraction of a number of buns is a sharing question: split
+    them into that many equal groups and count one group. When a part is shown and the whole is
+    asked for, the child builds the whole back up from equal parts. The two-star question is
+    about reasoning, not measuring: ask who gets more, one of three people or one of four. In the
+    three-star question it helps to find half and three quarters first and list what is between.
+
+    The cake is answered by cutting it. Three children need two cuts, and three cuts for three
+    children is the mistake to expect. On paper the child draws the cuts with a ruler, and the
+    squares along the cake show whether the pieces are the same.
+    """
+  level easy {
+    grown-ups "At this level the pizzas have three or four slices, the sets are halved or cut into thirds, the bars compared are two and eight pieces, and the cake is cut for two."
+  }
+  level hard {
+    grown-ups "At this level the pizzas have six or eight slices, the sets are cut into thirds and quarters, the bars compared are eight and six pieces, the cake is cut for six, and on the bar of twenty four numbers lie between half and three quarters."
+  }
+}

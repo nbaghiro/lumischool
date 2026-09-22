@@ -1,0 +1,29 @@
+item coding.draws-what v=2 skills=[coding.drawing] {
+  title "What does it draw?"
+  difficulty (if w == h then w - 3 else 4 - w + h)
+  let w=3..5 h=2..5
+  where (h <= w)
+  level easy {
+    where (w - h != 1 and w + h <= 8)
+  }
+  level hard {
+    where (w - h <= 1 and w + h >= 7)
+  }
+
+  scene 27x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {w}", "up {h}", "left {w}", "down {h}"]
+      turtle t cols=6 rows=6 col=1 row=6 moves=["right {w}", "up {h}", "left {w}", "down {h}"] mark=false
+    }
+    text ask "What shape has the turtle drawn?" width=22 below=top gap=1
+    choice pick options=["A square", "A rectangle"] below=ask gap=1
+  }
+
+  check coding.runs of=t pick=shape
+  feedback {
+    when (pick == "A square" and h != w) point=t {
+      say "The sides going across are {w} and the sides going up are {h}, and a square has all four the same."
+    }
+  }
+  hint "Compare the block that goes across with the block that goes up."
+}

@@ -1,0 +1,21 @@
+# Placing a mix between two others: lighter than the near field, darker than the far hills.
+item art.middle-hill v=1 skills=[art.space, art.tints, reasoning.compare] {
+  title "Paint for the middle hills"
+  difficulty f
+  let f=3..4 p=0..2
+  level easy {
+    let f={3}
+  }
+  level hard {
+    let f={4}
+  }
+
+  scene 34x12 {
+    text ask "Ada painted the far hills green and {f} white, and the near field plain green. Which paint should she use for the hills in the middle?" width=16 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then \"green and 1 white\" else \"green and 6 white\"}", "{if p == 1 then \"green and 1 white\" else if p == 0 then \"green and 6 white\" else \"green and black\"}", "{if p == 2 then \"green and 1 white\" else \"green and black\"}"] stack=column right-of=ask gap=2
+  }
+
+  check paint.mixes pick=between from="green and {f} white" to="green"
+  hint "Should the middle hills be lighter or darker than the far hills?"
+  hint "And lighter or darker than the near field? Which paint is between the two?"
+}

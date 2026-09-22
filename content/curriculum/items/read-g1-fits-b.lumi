@@ -1,0 +1,16 @@
+# Open: the child writes a sentence of their own that tells two nearly alike pictures apart, and a
+# grown-up checks it against both.
+item reading.fits-b-not-a v=1 stars=3 skills=[reading.sentence-meaning, writing.sentences] {
+  title "True for B, not for A"
+  let k=0..2
+
+  scene 35x13 {
+    picturecards cards who=["{if k == 0 then \"dog\" else if k == 1 then \"cat\" else \"fox\"}", "{if k == 0 then \"dog\" else if k == 1 then \"hen\" else \"fox\"}"] where=["{if k == 0 then \"on\" else if k == 1 then \"in\" else \"by\"}", "{if k == 0 then \"under\" else \"in\"}"] thing=["{if k == 0 then \"bed\" else if k == 1 then \"box\" else \"tub\"}", "{if k == 0 then \"bed\" else if k == 1 then \"box\" else \"tub\"}"] letters=true at=canvas(1, 1)
+    text ask "Write a sentence that is true for picture B but not for picture A." narrate width=14 right-of=cards gap=1
+    writinglines lines lines=1 width=30 prompt="" below=cards gap=1
+  }
+
+  check writing.by-eye look-for="One sentence that says who is in picture B and where, such as The dog is under the bed, and that is false for picture A because the animal or the little word for where is different."
+  hint "What is the same in the two pictures? What is different?"
+  hint "Put the different thing in your sentence."
+}

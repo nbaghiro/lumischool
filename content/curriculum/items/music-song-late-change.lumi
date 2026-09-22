@@ -1,0 +1,34 @@
+# The two-star reason: a change marked one word late. The tune's notes in the bar belong to the new
+# chord, so the old chord clashes with them until the hand catches up. q is the change to G in bar 3,
+# or the change back to C (bar 4 of London Bridge, bar 5 of Skip to My Lou).
+item music.song-late-change v=1 stars=2 skills=[music.chord-changes, reasoning.explain] {
+  title "One word late"
+  let s=0..1 q=0..1 r=0..1
+  let song={pick(s, "London Bridge", "Skip to My Lou")}
+  let late={pick(s * 2 + q, "puts the first G on down instead of on fall-ing in bar 3", "puts the change back to C on down instead of on fall-ing in bar 4", "puts the first G on the second lou instead of on the first Lou in bar 3", "puts the change back to C on the second lou instead of on the first Lou in bar 5")}
+  let bar={pick(s * 2 + q, 3, 4, 3, 5)}
+  let right={pick(s * 2 + q, "Bar 3's tune belongs to G, not C", "Bar 4's tune belongs to C, not G", "Bar 3's tune belongs to G, not C", "Bar 5's tune belongs to C, not G")}
+  let w1={"It is fine: change on any word"}
+  let w2={pick(q, "G is harder to play than C", "C is harder to play than G")}
+
+  scene 36x33 {
+    row top space=2 align=start at=canvas(1, 1) {
+      chordbox c tuning=guitar chord=C frets=3 show=fingers name=true letters=false lit=[]
+      chordbox g tuning=guitar chord=G frets=3 show=fingers name=true letters=false lit=[]
+    }
+    text ask "In {song}, Ben's chart {late}. The first word of bar {bar} sounds wrong. Why?" narrate width=34 below=top gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "A chord has to fit the notes being sung. The notes of bar {bar} fit its new chord, so the change belongs at its start."
+    }
+    when (pick == w2) point=ask {
+      say "A hard chord can still sound right. Think about which chord fits the notes of bar {bar}."
+    }
+  }
+  hint "Which chord does the chart give bar {bar}?"
+  hint "If Ben is still on the old chord when bar {bar} begins, which chord is under its first word?"
+}

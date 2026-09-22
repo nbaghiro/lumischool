@@ -1,0 +1,17 @@
+# One word is in the wrong column. Every word is always one or the other: a hose and a rope bend,
+# a brick and a stone do not. The old version had a plastic ruler, which bends.
+item chem.property-sort v=1 skills=[chemistry.materials] {
+  title "Bendy or stiff?"
+  difficulty w
+  let w=0..3
+
+  scene 28x21 {
+    text ask "One thing is in the wrong column. Which one?" width=22 at=canvas(1, 1)
+    wordsort s heads=["bendy", "stiff"] words=["hose", "brick", "rope", "stone"] into=[if w == 0 then 1 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 0, if w == 3 then 0 else 1] below=ask gap=1
+    choice pick options=["hose", "brick", "rope", "stone"] below=s gap=1
+  }
+
+  answer pick=(if w == 0 then "hose" else if w == 1 then "brick" else if w == 2 then "rope" else "stone")
+  hint "Try bending each one in your head. Which would curve without breaking?"
+  hint "Now check each word against the heading above it."
+}

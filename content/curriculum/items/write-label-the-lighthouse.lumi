@@ -1,0 +1,15 @@
+item writing.label-the-lighthouse v=1 skills=[writing.labels, writing.spelling] {
+  title "The missing label"
+  difficulty (if k == 2 then 1 else 0)
+  let k={0, 2, 3}
+
+  scene 27x27 {
+    labelled house of="lighthouse" labels=[if k == 0 then "" else "lamp", "rail", if k == 2 then "" else "tower", if k == 3 then "" else "door", "rocks"] blank=-1 title="" caption="" at=canvas(1, 1)
+    wordcards bank words=["door", "lamp", "tower"] picked=-1 below=house gap=1
+    text ask "Write the missing label." width=12 below=bank gap=1
+    word-input word options=[if k == 0 then "lamp" else if k == 2 then "tower" else "door"] letters=5 right-of=ask gap=1
+  }
+
+  answer word=(if k == 0 then "lamp" else if k == 2 then "tower" else "door")
+  hint "Follow the line from the empty box to the part of the lighthouse it points at."
+}

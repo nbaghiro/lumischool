@@ -1,0 +1,30 @@
+# Whether three notes add up to a bar of three: crotchets, minims and quavers counted.
+item music.adds-to-three v=1 skills=[music.rhythm, music.note-values] {
+  title "Does it add up?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, 1, 2, 0.5, 1, 2, 1)}
+  let b={pick(k, 1, 1, 0.5, 2, 0.5, 1)}
+  let c={pick(k, 1, 1, 2, 1, 0.5, 2)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 34x21 {
+    notes bar clef=treble notes=[G4, A4, B4] values=[a, b, c] meter=0 at=canvas(1, 1)
+    text ask "These three notes are meant to fill one bar of three-time. Do they add up to exactly three beats?" narrate width=32 below=bar gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if a + b + c == 3 then "yes" else "no")
+  feedback {
+    when (pick != (if a + b + c == 3 then "yes" else "no")) point=bar {
+      say "Count each note: a crotchet is one beat, a minim two, a quaver a half. Add the three and compare with three."
+    }
+  }
+  hint "Say the beats of each note in turn and add as you go."
+  hint "A minim is two, a crotchet one, a quaver a half. Three beats fill the bar; four is too many."
+}

@@ -1,0 +1,53 @@
+lesson g2-amounts-and-change v=1 format=teach grade=2 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Making amounts and giving change"
+  goal "Count coins and notes, and work out the change or the price."
+
+  look {
+    scene 34x34 {
+      row all at=canvas(1, 0) space=2 align=start {
+        column left space=1 {
+          purse bag coins=["quarter", "dime", "dime", "penny"]
+          change line stops=["3.65", "4.00", "5.00"] total=true
+        }
+        till drawer counts=[1, 2, 0, 3] coins=[4, 3, 0, 6]
+      }
+      receipt bill shop="Corner Shop" total=true below=all gap=1
+    }
+    say """
+      Change is what is left, and the easiest way to find it is to count on: from the price to the
+      next whole dollar, then on to the note.
+      """
+  }
+  do {
+    practice money.count-coins count=1 seed=8
+    practice money.notes-total count=1 seed=3
+    practice money.how-many-more count=2 seed=5 easy-seed=1
+    practice money.change-from-dollar count=2 seed=4
+    practice money.price-from-change count=1 seed=6
+    practice money.change count=1 seed=2
+  }
+  try stars=2 {
+    show money.wrong-change c=63 easy-c=86 hard-c=34
+  }
+  try stars=3 {
+    show money.ways-with-quarters v=40 easy-v=30 hard-v=45
+  }
+  remember {
+    say "Count on from the price to the note. The jumps you make are the change."
+  }
+
+  grown-ups """
+    Let the child be the shopkeeper. Counting change out into a hand is a different act from
+    subtracting on paper, and both are worth having. The questions move the unknown about: how
+    much more is needed, how much change comes back, and what something cost when only the change
+    is known. The two-star question shows a real slip, 110 cents instead of 100; adding the price
+    and the change back together is the check that catches it. In the three-star question a list
+    that starts with no quarters, then one quarter, keeps every way in view.
+    """
+  level easy {
+    grown-ups "At this level the purse holds dimes and pennies, the notes are five and one dollar, the change from a dollar is under thirty cents, and thirty cents is paid five ways."
+  }
+  level hard {
+    grown-ups "At this level the purse mixes all three coins, the notes are ten and five dollars with a quarter, the change counted from a dollar is seventy cents or more, the price found from its change is under sixty cents, the wrong change to check is from a dollar for thirty-four cents, and forty-five cents is paid eight ways."
+  }
+}

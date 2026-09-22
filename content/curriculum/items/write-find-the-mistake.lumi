@@ -1,0 +1,16 @@
+# The options are words from the robot's own sentence, so the child has to read the sentence to
+# find the one that is wrong; a word that is not in the sentence would give the answer away.
+item writing.find-the-mistake v=1 skills=[writing.editing] {
+  title "Find the mistake"
+  difficulty (if k == 2 then 0 else 1)
+  let k=0..3
+
+  scene 29x17 {
+    fixbot bot says="{if k == 0 then \"The dog went too the park.\" else if k == 1 then \"I have three dog at home.\" else if k == 2 then \"we walked to the shop.\" else \"She dont like peas.\"}" width=18 fixed=0 ring=-1 at=canvas(1, 1)
+    text ask "One word is wrong. Which one?" width=20 below=bot gap=1
+    choice pick options=[if k == 0 then "dog" else if k == 1 then "have" else if k == 2 then "we" else "She", if k == 0 then "went" else if k == 1 then "three" else if k == 2 then "walked" else "dont", if k == 0 then "too" else if k == 1 then "dog" else if k == 2 then "to" else "like", if k == 0 then "park" else if k == 1 then "home" else if k == 2 then "shop" else "peas"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "too" else if k == 1 then "dog" else if k == 2 then "we" else "dont")
+  hint "Read it aloud. The word that sounds wrong, or looks wrong, is the one."
+}

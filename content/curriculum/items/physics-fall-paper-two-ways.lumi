@@ -1,0 +1,34 @@
+# Two stars: one sheet of paper in two shapes, flat and crumpled into a ball, which weigh the same and
+# do not fall the same. The reason is the one the lesson is for, so the levels differ by the moment
+# the picture is caught rather than by the answer.
+item physics.fall-paper-two-ways v=1 stars=2 skills=[physics.forces, reasoning.evidence] {
+  title "The same paper, two ways"
+  difficulty (if t == 2 then 0 else 1)
+  let t=1..2 o=0..1
+  let t1={pick(o, "flat", "crumpled")}
+  let t2={pick(o, "crumpled", "flat")}
+  level easy {
+    let t=2..2
+  }
+  level hard {
+    let t=1..1
+  }
+
+  scene 30x38 {
+    falling paper things=["{t1}", "{t2}"] time=t show=1 names=1 at=canvas(1, 0)
+    text ask "Both pieces of paper came from one sheet, so they weigh exactly the same. One was left flat and one was crumpled into a ball. Which lands first, and why?" narrate width=20 below=paper gap=1
+    choice pick options=["The ball, because the sheet meets more air", "The flat sheet, because it is wider", "Together, because they weigh the same"] stack=column below=ask gap=1
+  }
+
+  answer pick="The ball, because the sheet meets more air"
+  feedback {
+    when (pick == "Together, because they weigh the same") point=paper {
+      say "Look at the picture again: they have not come down the same distance, so the weight cannot be the whole story."
+    }
+    when (pick == "The flat sheet, because it is wider") point=paper {
+      say "Being wider is right, but a wider shape meets more air, and the air pushes back and slows it down."
+    }
+  }
+  hint "They weigh the same, so the difference has to come from something else."
+  hint "Which shape has to push more air out of the way as it comes down?"
+}

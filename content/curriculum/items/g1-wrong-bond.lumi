@@ -1,0 +1,28 @@
+# Checking three bonds against ten: two are right and one is out by one, so every pair is added.
+item bonds.wrong-bond v=1 skills=[bonds-to-10] {
+  title "The bond that is wrong"
+  let a=1..3 q=0..2 w={-1, 1}
+
+  scene 30x18 {
+    row bonds at=canvas(1, 1) space=2 align=start {
+      column ca space=0 align=centre {
+        text la "A"
+        numberbond b0 whole=10 parts=[a, 10 - a + (if q == 0 then w else 0)]
+      }
+      column cb space=0 align=centre {
+        text lb "B"
+        numberbond b1 whole=10 parts=[a + 3, 7 - a + (if q == 1 then w else 0)]
+      }
+      column cc space=0 align=centre {
+        text lc "C"
+        numberbond b2 whole=10 parts=[a + 5, 5 - a + (if q == 2 then w else 0)]
+      }
+    }
+    text ask "One of these bonds does not make 10. Which one?" narrate below=bonds gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "A" else if q == 1 then "B" else "C")
+  hint "Add the two parts of each bond."
+  hint "Which pair makes a number next to 10, but not 10?"
+}

@@ -1,0 +1,14 @@
+item music.missing-beat v=1 skills=[music.rhythm] {
+  title "Finish the bar"
+  let a={1, 2}
+  let b={1, 2}
+  where (a + b < 4)
+
+  scene 28x14 {
+    text ask "This bar should have 4 beats. How many beats is the missing note?" width=26 at=canvas(1, 1)
+    staff bar notes=[b, a] beats=4 below=ask gap=1
+    number-input answer below=bar gap=1
+  }
+
+  answer (4 - a - b)
+}

@@ -1,0 +1,17 @@
+# Evidence in a poem: the feeling is given and the child picks the line that shows it best. Two
+# lines only describe; one carries the feeling.
+item reading.poem-mood v=1 stars=2 skills=[reading.poetry, reading.evidence, reading.inference] {
+  title "The line that shows the feeling"
+  difficulty (if k == 0 then 1 else 0)
+  let k=0..2
+
+  scene 30x20 {
+    poem p title="" lines=[if k == 0 then "The beach huts shut, the ice cream van" else if k == 1 then "My new shoes squeak on the shiny floor," else "The attic stairs go up and up,", if k == 0 then "drives off along the empty road." else if k == 1 then "I hold my bag with both my hands." else "the light bulb flickers, then goes out.", if k == 0 then "I kick the sand and wish the sun" else if k == 1 then "Then someone smiles and asks my name," else "Something rustles by the trunk,", if k == 0 then "had never packed its bags and gone." else if k == 1 then "and I let go of Mum's hand." else "and I don't wait to find out."] rhymes=[-1, -1, -1, -1] blank=-1 beats=[] width=29 at=canvas(1, 1)
+    text ask "The poet feels {if k == 0 then \"sad that summer is over\" else if k == 1 then \"braver by the end\" else \"scared\"}. Which line shows it best?" width=28 below=p gap=1
+    choice pick options=["line 1", "line 2", "line 3", "line 4"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "line 3" else if k == 1 then "line 4" else "line 4")
+  hint "Which lines only tell you what is there? Which one tells you what the poet does or wants?"
+  hint "Read that line again. Does it show the feeling, or just the place?"
+}

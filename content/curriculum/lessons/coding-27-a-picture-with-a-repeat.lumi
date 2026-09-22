@@ -1,0 +1,51 @@
+lesson coding-a-picture-with-a-repeat v=2 format=teach grade=3 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A picture with a repeat"
+  goal "Spot the rows of a picture that repeat, read its code with a repeat, and write it in as few lines as it can take."
+
+  look {
+    scene 33x10 {
+      row both at=canvas(1, 0) space=1 align=start {
+        program c code=["repeat 2", "  3 blue 3 yellow", "  3 yellow 3 blue"]
+        pixels p cols=6 rows=4 code=["repeat 2", "  3 blue 3 yellow", "  3 yellow 3 blue"] beside=false
+      }
+    }
+    say """
+      The first two rows of this picture come round again, so the code says them once, inside a
+      repeat. Spotting the part of a pattern that repeats is the same skill as spotting where a
+      program needs a repeat.
+      """
+  }
+  do {
+    show coding.row-red-count a=2 c="blue" easy-a=1 hard-a=3
+    practice coding.pixel-repeat count=2 seed=2
+    show coding.pixel-rows n=3 easy-n=2 hard-n=4
+    show coding.pixel-trunk-row n=4 easy-n=3 hard-n=5
+    show coding.pixel-repeat-count n=3 b=1 easy-n=2 hard-b=2
+    show coding.pixel-repeat-count n=2 b=2 easy-n=4 easy-b=1 hard-n=4
+    show coding.pixel-row-colour r=5 easy-r=2 hard-r=7
+  }
+  try stars=2 {
+    show coding.pixel-smallest-repeat p=3 r=2 easy-p=2
+  }
+  try stars=3 {
+    show coding.pixel-fewest-lines p=2 r=3 t=1 y=0 easy-r=2 easy-t=0 hard-p=3 hard-r=2 hard-y=1
+  }
+  remember {
+    say "Find the part that comes round again. That is what goes in the repeat."
+  }
+
+  grown-ups """
+    A knitting pattern, a bead necklace or a row of tiles is the same thing off the page. Ask the
+    child to find the smallest part that repeats before they write any code. With the picture
+    hidden, the rows have to be counted from the code: the repeat paints its lines as many times as
+    its number says. In the two-star question, the first row that matches row 1 marks the end of the
+    part that repeats. In the three-star question every different row needs a line, the repeat line
+    counts as one, and a row that does not come round again needs its own line outside the repeat.
+    """
+  level easy {
+    grown-ups "At this level the one-row picture has one blue at each end, the repeated pattern paints three blue a time round, the picture with a trunk has two rows in the repeat and the trunk on row 5, the repeats to find paint eight and sixteen blue, the row asked about is row 2, the first row of the repeat, the two-star has two rows that come round twice, and the three-star picture is four rows, two coming round twice, with nothing above or below."
+  }
+  level hard {
+    grown-ups "At this level the one-row picture has three blue at each end, the repeated pattern paints seven blue a time round, with three of them off centre, the picture with a trunk has four rows in the repeat and the trunk on row 7, the repeats to find paint twenty-four and thirty-two blue, the row asked about is row 7, the last row of the repeat, the two-star is as written, and the three-star picture is eight rows, with a row above and a row below the three that come round twice."
+  }
+}

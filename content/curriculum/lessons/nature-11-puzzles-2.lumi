@@ -1,0 +1,53 @@
+lesson nature-puzzles-2 v=1 format=puzzles grade=2 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "Nature puzzles: the pond"
+  goal "Name the parts, put the frog's year in order, find each creature's home, read the map and sort the leaves."
+
+  puzzle stars=1 {
+    show nature.plant-part k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=1 {
+    show nature.frog-next s=2 easy-s=1 hard-s=3
+  }
+  puzzle stars=1 {
+    show nature.which-leaf k=1 p=0 easy-k=0 easy-p=2 hard-k=3 hard-p=1
+  }
+  puzzle stars=2 {
+    show nature.map-square x=4 y=2 easy-x=2 easy-y=3 hard-x=5 hard-y=4
+  }
+  puzzle stars=2 {
+    show nature.stages-until s=2 w=0 easy-s=1 easy-w=0 hard-s=2 hard-w=1
+  }
+  puzzle stars=2 {
+    show nature.home-gives k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show nature.seeds-left s=12 b=5 w=0 easy-s=9 easy-b=3 easy-w=0 hard-s=15 hard-b=6 hard-w=1
+  }
+  puzzle stars=2 {
+    show nature.wrong-home k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=3 {
+    show nature.ways-to-tree a=2 b=1 easy-a=1 easy-b=1 hard-a=2 hard-b=2
+  }
+  puzzle stars=3 {
+    show nature.puffs-until-bare s=10 b=4 easy-s=8 easy-b=3 hard-s=15 hard-b=4
+  }
+
+  grown-ups """
+    Let the child try each one alone first. The hints and answers are on this sheet, not on theirs.
+    Every puzzle can be started by looking closely: the letters on the plant, the last stage drawn
+    on the frog's ring, the edges of the leaves, the letters along the top of the map and the
+    numbers down its side. The counting puzzles on the ring and the clock both turn on which way
+    the count goes: round the ring past the frog, and seeds gone against seeds left. The home
+    puzzles turn on what a creature breathes, air or water. The two three-star puzzles are the ones
+    to leave for a quiet moment: every shortest way to the tree, drawn one at a time until every
+    mix of rights and downs is down, and the puffs until the clock is bare, where the last few
+    seeds still need a puff. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level the plant part to find is the flower, the frog's next stage is the tadpole, the leaf to find is the holly, the map has four columns and three rows, the count on the ring stops at the frog, the pond gives the fish its water, the clock loses three of nine seeds, Ben has drawn a hedgehog at the bottom of the pond, the tree is one square right and one down, and the clock of eight seeds is bare in three puffs of three."
+  }
+  level hard {
+    grown-ups "At this level the plant part to find is the stem, the frog's next stage is the frog itself, the leaf to find is the ash, the map has six columns and five rows, the count on the ring goes past the frog to new frogspawn, the pond gives the heron its fish, the clock of fifteen seeds is asked how many blew away, Ben has drawn a heron under the water, the tree is two squares right and two down with six ways to it, and the clock of fifteen seeds needs four puffs of four."
+  }
+}

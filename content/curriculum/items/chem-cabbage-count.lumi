@@ -1,0 +1,27 @@
+# A count across the chart: red and purple both say acid, and blue does not, so the child has to
+# read every cup rather than look for red.
+item chem.cabbage-count v=1 skills=[chemistry.acids] {
+  title "How many acids?"
+  difficulty (if v == 1 then 3 else if v == 2 then 1 else 2)
+  let v=0..3
+  level easy {
+    let v={0, 2}  # one or two acids
+  }
+  level hard {
+    let v={1, 3}  # two or three acids
+  }
+
+  scene 27x11 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cabbage c liquids=["{if v == 0 then \"lemon\" else if v == 1 then \"milk\" else if v == 2 then \"washingsoda\" else \"vinegar\"}", "{if v == 0 then \"water\" else if v == 1 then \"bakingsoda\" else if v == 2 then \"water\" else \"washingsoda\"}", "{if v == 0 then \"vinegar\" else if v == 1 then \"lemon\" else if v == 2 then \"bakingsoda\" else \"lemon\"}", "{if v == 0 then \"washingsoda\" else if v == 1 then \"vinegar\" else if v == 2 then \"milk\" else \"water\"}"] chart=1 show=1 names=0 letters=1
+      column side space=1 align=start {
+        text ask "How many of the cups show an acid?" width=8
+        number-input answer
+      }
+    }
+  }
+
+  check chem.indicator of=c answer="count(acid)"
+  hint "Is red the only colour on the acid side of the chart?"
+  hint "Go along the cups one at a time and find each colour on the chart."
+}

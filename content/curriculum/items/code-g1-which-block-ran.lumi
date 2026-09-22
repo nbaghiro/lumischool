@@ -1,0 +1,31 @@
+# The audit's raise for stopping partway: the robot is shown where it has got to, and the child
+# matches the square to the block, instead of stopping where they are told to.
+item coding.which-block-ran v=1 skills=[coding.tracing] {
+  title "Which block has just run?"
+  difficulty (a + b + c + k)
+  let a=1..3 b=1..2 c=1..2 k=1..3
+  level easy {
+    let a=1..2 b={1} c={1} k=1..2
+  }
+  level hard {
+    let a=2..3 b={2} c={2} k=2..3
+  }
+
+  scene 32x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "down {b}", "right {c}"] numbers=true words=false
+      maze g cols=7 rows=4 code=["right {a}", "down {b}", "right {c}"] upto=k trail=line
+    }
+    text ask "The robot stopped partway. Which block has just run?" width=18 below=top gap=1
+    choice pick options=[1, 2, 3] right-of=ask gap=1
+  }
+
+  answer pick=k
+  feedback {
+    when (pick == k + 1) point=g {
+      say "Follow the line from the start. Which block drew the last part of it?"
+    }
+  }
+  hint "Put a finger on the start and follow the line to the robot."
+  hint "How many parts does the line have so far? Each block draws one part."
+}

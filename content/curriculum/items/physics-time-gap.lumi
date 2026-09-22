@@ -1,0 +1,29 @@
+item physics.time-gap v=1 skills=[physics.motion] {
+  title "How much sooner?"
+  difficulty (b - a)
+  let a={10, 15, 20} b={20, 25, 30}
+  where (b > a)
+  level easy {
+    let a={15, 20} b={20, 25, 30}
+  }
+  level hard {
+    let a={10} b={25, 30}
+  }
+
+  scene 32x12 {
+    stopwatch one seconds=a at=canvas(1, 0)
+    text la "Ben" below=one gap=0
+    stopwatch two seconds=b right-of=one gap=2
+    text lb "Ada" below=two gap=0
+    text ask "They ran the same way. How many seconds sooner did Ben finish?" width=10 right-of=two gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b - a)
+  feedback {
+    when (answer == a and b != 2 * a) point=one {
+      say "That is Ben's time. How much less is it than Ada's?"
+    }
+  }
+  hint "What was each child's time?"
+}

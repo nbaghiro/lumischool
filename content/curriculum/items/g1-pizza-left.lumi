@@ -1,0 +1,25 @@
+# A half of the whole and some slices, mixed in one story: the child has to turn the half into slices.
+item fraction.pizza-left v=1 stars=3 skills=[fractions.halves-quarters, reasoning.two-steps] {
+  title "What is left of the pizza"
+  difficulty (s + k)
+  let s={4, 8} k=1..3
+  where (k < s / 2)
+
+  scene 33x13 {
+    pizza p slices=s taken=0 toppings=true at=canvas(1, 0)
+    text ask "The pizza is cut into {s} equal slices. Sam eats half of the pizza. Then Mia eats {k} of the slices that are left. How many slices are left now?" narrate width=18 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (s / 2 - k)
+  feedback {
+    when (answer == s - 1 - k) point=p {
+      say "Sam ate half of the whole pizza, not one slice. How many slices is half?"
+    }
+    when (answer == s / 2) point=p {
+      say "That is what was left after Sam. Mia ate some too."
+    }
+  }
+  hint "How many slices is half of the pizza?"
+  hint "Take those away, then take away the {k} that Mia ate."
+}

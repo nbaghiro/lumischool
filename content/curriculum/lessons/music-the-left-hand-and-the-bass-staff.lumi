@@ -1,0 +1,65 @@
+# The bottom staff read downwards from middle C, with bass F as the landmark, and played with the
+# left hand.
+lesson music-the-left-hand-and-the-bass-staff v=1 format=teach grade=3 unit=3 subject=music levels=[easy, medium, hard] {
+  title "The left hand and the bass staff"
+  goal "Read the bass staff from middle C down and play a left-hand note."
+
+  look {
+    scene 28x17 {
+      grandstaff gs notes=["C4", "B3", "A3", "G3", "F3"] letters=true lit=[] landmarks=true at=canvas(1, 1)
+    }
+    say """
+      The bottom staff is the bass staff, and its clef has two dots either side of the fourth
+      line: that line is F, bass F. It is the left hand's staff. Middle C sits on its own short
+      line above it, and every step down from there is the letter before: B, A, G, then bass F,
+      then E, D and the low C. Low on the page is low on the keys, at the left hand's end.
+      """
+  }
+  do {
+    show music.which-staff w=0 hard-w=1
+    level easy {
+      worked music.bass-name i=0 level=medium
+    }
+    practice music.bass-name count=2 seed=4 easy-seed=7 hard-seed=6
+    practice music.hand-for-note count=1 seed=1 easy-seed=1 hard-seed=1
+    show music.play-bass
+    practice music.steps-down count=1 seed=4 easy-seed=1 hard-seed=6
+    practice music.wrong-clef-name count=1 seed=6 easy-seed=2 hard-seed=5
+    level hard {
+      show music.which-staff w=0 level=medium
+    }
+  }
+  story {
+    show music.keys-down k=1 w=0 easy-k=0 hard-k=3 hard-w=1
+  }
+  try stars=2 {
+    show music.nearest-lines k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show music.play-two-left
+  }
+  remember {
+    say "The bottom staff is the bass, the left hand's. Down from middle C: B, A, G, bass F, E, D, C."
+  }
+
+  grown-ups """
+    The idea is that the bass staff is read the same way as the treble, one letter a step, but
+    downwards from middle C with bass F on the fourth line as the landmark, and that it belongs
+    to the left hand. The look is the five notes from middle C down to bass F with their
+    letters, and the way in asks which staff is the bass. The core names ringed bass notes,
+    says which hand plays a note, plays a bass note read from the staff (the machine hears the
+    key), counts the steps down from middle C, and catches a note named as if it were on the
+    other clef. The wrong idea to watch for is reading the bass lines with the treble's letters;
+    ask which clef is on the staff before every name. The story counts the keys the left hand
+    walks down, the two-star question tests the claim that the two nearest lines are the same
+    note, and the three-star question is C G C G read from the bass staff and played with the
+    left hand, proved by the pitches. If the naming is slow, stay another day with middle C,
+    B and A only, then bass F.
+    """
+  level easy {
+    grown-ups "At this level B is worked once in the teacher's pen before B and A, the hands are asked for the low C and treble G, the steps down are one or two, the note on the wrong clef is a landmark's neighbour, the story walks down to F and counts once, and the two-star is the two nearest lines."
+  }
+  level hard {
+    grown-ups "At this level the notes to name are E, D and the low C below bass F, the hands are asked for A on the bass staff and E on the treble, and the way in asks which hand plays the bottom staff with the bass staff itself asked in the core, the steps down are five to seven, the note on the wrong clef is further from a landmark, the story walks down to the low C and back, and the two-star is the claim that middle C is the treble's bottom line."
+  }
+}

@@ -1,0 +1,36 @@
+# The paper in the upside-down jar stays dry because the air in the jar keeps the water out.
+# The right reason against two that sound like reasons; at hard the jar is tipped and the paper
+# gets wet, and the reason is that the air escaped.
+item chem.dry-paper v=1 skills=[chemistry.states, reasoning.explain] {
+  title "Why is the paper dry?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2 r=0..2
+  let story={pick(k, "Leo pushes a jar with a dry paper stuck inside it straight down into the tank, mouth first. When he lifts it out, the paper is still dry. Why?", "Leo pushes the jar down into the tank, mouth first, and this time tips it on its side under the water. Bubbles come up, and the paper is wet. Why?", "Leo pushes a jar with a dry paper stuck inside it straight down into the tank, mouth first, and holds it there. What is stopping the water from going up into the jar?")}
+  let right={pick(k, "The air in the jar kept the water out", "The air came out, so the water got in", "The air that is in the jar")}
+  let w1={pick(k, "The jar was too fast for the water", "The paper soaked up the bubbles", "The glass of the jar")}
+  let w2={pick(k, "Paper cannot get wet under water", "The jar broke when it tipped", "The paper stuck inside")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x32 {
+    row scene1 at=canvas(1, 0) space=3 align=end {
+      beaker tank max=500 step=100 level=400 unit=ml solid=0 rod=false
+      materials row things=["glass-jar"] letters=0
+    }
+    text ask "{story}" narrate width=32 below=scene1 gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=row {
+      say "Think about what was in the jar before it went under: air. Air takes up room, and water cannot go where the air still is."
+    }
+  }
+  hint "The jar was full of air. Where can the water go while the air is still in there?"
+  hint "When the jar tips, the air escapes as bubbles, and then there is room for the water."
+}

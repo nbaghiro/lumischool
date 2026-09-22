@@ -1,0 +1,13 @@
+item physics.float-or-sink v=1 skills=[physics.floating] {
+  title "Float or sink?"
+  let k=0..1
+
+  scene 22x20 {
+    tank t float=k sunk=(1 - k) letters=false at=canvas(1, 1)
+    text ask "Does the thing in the tank float or sink?" width=20 below=t gap=1
+    choice what options=["It floats", "It sinks"] below=ask gap=1
+  }
+
+  answer what=(if k == 1 then "It floats" else "It sinks")
+  hint "Is the thing at the top of the water or on the bottom?"
+}

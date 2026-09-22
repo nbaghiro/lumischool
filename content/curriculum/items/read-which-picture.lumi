@@ -1,0 +1,26 @@
+# The sentence is decoded first and the picture only checks it: every card shows the same animal or
+# the same thing as the sentence, so no card can be picked by guessing from one word.
+item reading.which-picture v=1 skills=[reading.sentence-meaning] {
+  title "Which picture?"
+  let k=0..2 s=0..2
+
+  scene 28x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sentence strip before="{if s == 0 then \"The fox is in the box\" else if s == 1 then \"The cat is on the bed\" else \"The hen is on the log\"}" blank=0 after="." size=24
+      picturecards cards who=[if s == 0 then "fox" else if s == 1 then "cat" else "hen", if k == 2 then if s == 0 then "dog" else if s == 1 then "pig" else "duck" else if s == 0 then "fox" else if s == 1 then "cat" else "hen", if k == 2 then if s == 0 then "fox" else if s == 1 then "cat" else "hen" else if s == 0 then "dog" else if s == 1 then "pig" else "duck"] where=[if k == 0 then if s == 0 then "in" else "on" else if s == 0 then "on" else if s == 1 then "under" else "by", if k == 0 then if s == 0 then "on" else if s == 1 then "under" else "by" else if s == 0 then "in" else "on", if s == 0 then "in" else "on"] thing=[if s == 0 then "box" else if s == 1 then "bed" else "log", if s == 0 then "box" else if s == 1 then "bed" else "log", if s == 0 then "box" else if s == 1 then "bed" else "log"] letters=true
+      text ask "Which picture shows it?"
+      choice pick options=["A", "B", "C"]
+    }
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else "C")
+  feedback {
+    when (pick == "A" and k != 0 or pick == "B" and k == 0) point=cards {
+      say "Look at the little word. Is it in, on, under or by?"
+    }
+    when (pick == "C" and k != 2 or pick == "B" and k == 2) point=cards {
+      say "Look again at who it is."
+    }
+  }
+  hint "Read the sentence to the end. Then find the picture that shows all of it."
+}

@@ -1,0 +1,56 @@
+lesson g4-money-with-decimals v=1 format=teach grade=4 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Money with decimals"
+  goal "Add, share and compare prices written as decimals, and work out change from a note."
+
+  look {
+    scene 33x27 {
+      receipt bill shop="Corner Shop" total=true at=canvas(1, 1)
+      column side right-of=bill gap=2 space=2 {
+        pricetag tag now=450 was=600
+        till drawer counts=[1, 2, 0, 3] coins=[4, 3, 0, 6]
+      }
+      change line stops=["3.65", "4.00", "5.00"] total=true below=bill gap=2
+    }
+    say """
+      Cents always take two digits, so four dollars fifty is 4.50. Adding prices is adding the
+      cents and then the dollars, and change is counting on from the price to the note.
+      """
+  }
+  do {
+    practice money.notes-and-coins count=1 seed=4
+    practice money.total count=1 seed=5
+    practice money.count-up count=1 seed=2
+    practice money.change count=2 hard-count=1 seed=3
+    level hard {
+      practice money.best-buy count=1 seed=3
+    }
+    level easy {
+      worked money.missing-price x=1.85 y=1.35 z=2.60 level=medium
+    }
+    practice money.missing-price count=2 seed=6 easy-seed=4 hard-seed=2
+    practice money.unit-price count=1 seed=7
+  }
+  try stars=2 {
+    show money.best-buy a=2.00 b=2.70 easy-a=1.60 easy-b=3.60
+  }
+  try stars=3 {
+    show money.ways-three-coins t=45 easy-t=30 hard-t=50
+  }
+  remember {
+    say "Line up the points, and keep two digits after them. Change is counting up from the price to the note."
+  }
+
+  grown-ups """
+    Give the child the shopping and the receipt and let them check it. A real total that is wrong
+    is worth ten exercises. The missing price is a take-away hidden inside an addition: the total
+    less the two prices that are there. In the two-star question the price of twelve pens from each
+    kind of pack is one good reason; the price of one pen is another. In the three-star question,
+    fix the number of quarters first, then list the dimes.
+    """
+  level easy {
+    grown-ups "At this level the notes are a five or a ten with a one or a five and two dimes and a penny, the shelf prices have cents that never make a dollar, the change is counted up to ten dollars, the change from a note is for whole and half dollars from ten, a receipt whose cents carry is worked once in the teacher's pen before two whose bread and eggs add without a carry, three notebooks cost under five dollars, the pack of 4 at 1.60 is plainly the better buy against 3.60 for 6, and thirty cents is paid five ways."
+  }
+  level hard {
+    grown-ups "At this level the notes are a twenty with a quarter and a nickel or a penny, the shelf prices run to dollars with cents that carry, the change is counted up to twenty dollars, the change is from twenty or fifty dollars for prices with odd cents, the bread and the eggs carry a dollar before the milk comes off, four or five notebooks cost eight dollars or more, the packs are within ten cents a pen and the question is asked twice, and fifty cents is paid ten ways."
+  }
+}

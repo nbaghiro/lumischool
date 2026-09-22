@@ -1,0 +1,49 @@
+lesson coding-repeat-with-a-count v=3 format=teach grade=3 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "Repeat with a count"
+  goal "Read a repeat that holds more than one line, work out where it leaves the robot, and find the count that gets it somewhere."
+
+  look {
+    scene 33x19 {
+      row all at=canvas(1, 0) space=1 align=start {
+        program p code=["repeat 3", "  right 2", "  up 2"] title="climb"
+        turtle t cols=7 rows=8 col=1 row=7 moves=["repeat 3", "  right 2", "  up 2"]
+      }
+    }
+    say """
+      The lines set further in are the ones the repeat holds, and the bracket down their side shows
+      it. Here it holds both lines, so each time round the turtle goes across and then up, and
+      three times round make the staircase.
+      """
+  }
+  do {
+    practice coding.stage-hops count=1 seed=2
+    practice coding.repeat-staircase count=2 seed=3
+    practice coding.repeat-how-many count=2 seed=5 easy-seed=1 hard-seed=1
+    practice coding.repeat-after-round count=2 seed=4
+    practice coding.repeat-lines count=1 seed=2
+  }
+  try stars=2 {
+    show coding.two-repeats k=1 easy-k=2 hard-k=3
+  }
+  try stars=3 {
+    show coding.stairs-and-top n=3 t=2 easy-n=2 hard-t=3
+  }
+  remember {
+    say "The lines further in are the ones that repeat. Count the times round, not the lines."
+  }
+
+  grown-ups """
+    The step worth checking is whether the child counts three times round or three lines. Ask them
+    to say the program out loud in full, which for this one is six moves. The questions then turn
+    the repeat round: finding the count that reaches a flag, and stopping after two times round,
+    which needs the repeat unrolled rather than multiplied out. In the two-star question both
+    programs have to be worked out; neither the bigger count nor the bigger move wins on its own.
+    In the three-star question the landing at the top happens once, so it goes after the repeat.
+    """
+  level easy {
+    grown-ups "At this level the hops go one square at a time for two or three times round, the staircase climbs twice, the flag is reached by two or three times round that go the same distance across and down, the robot goes right one square a time round before the question about twice round, the repeat holds two or three times round, Ana and Ben go four times two against three times three, and the stairs to build have two steps."
+  }
+  level hard {
+    grown-ups "At this level the hops go two squares at a time for three or four times round, the staircase climbs four times, the flag takes three or four times round, one of them the easier level's question, the robot after twice round has gone two across or two down a time round, one of the two as written since the maze allows only three such programs, the repeat holds four or five times round, Ana and Ben go six times two against four times three, which come out the same, and the landing to build is three squares long."
+  }
+}

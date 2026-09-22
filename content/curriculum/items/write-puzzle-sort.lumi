@@ -1,0 +1,17 @@
+# v2: "shining" could be a doing word (the sun is shining), so the version that put it under Doing
+# had two defensible answers; golden can only describe. The options hold only this version's word,
+# since every option in a word-input counts as right.
+item writing.puzzle-sort v=2 skills=[writing.word-classes] stars=2 {
+  title "The odd word out"
+  let w=0..5
+
+  scene 33x20 {
+    text ask "One word is in the wrong column. Write it." width=22 at=canvas(1, 1)
+    wordsort sort heads=["Naming", "Doing", "Describing"] words=["thunder", "crashed", "golden", "meadows", "climbed", "silvery"] into=[if w == 0 then 2 else 0, if w == 1 then 0 else 1, if w == 2 then 1 else 2, if w == 3 then 2 else 0, if w == 4 then 0 else 1, if w == 5 then 1 else 2] below=ask gap=1
+    word-input pick options=["{if w == 0 then \"thunder\" else if w == 1 then \"crashed\" else if w == 2 then \"golden\" else if w == 3 then \"meadows\" else if w == 4 then \"climbed\" else \"silvery\"}"] letters=7 below=sort gap=1
+  }
+
+  answer pick=(if w == 0 then "thunder" else if w == 1 then "crashed" else if w == 2 then "golden" else if w == 3 then "meadows" else if w == 4 then "climbed" else "silvery")
+  hint "Say what each word does: names a thing, tells what someone did, or describes something."
+  hint "Which word is doing a different job from the others in its column?"
+}

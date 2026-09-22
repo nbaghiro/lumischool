@@ -1,0 +1,27 @@
+# Halves and quarters of a length: read the ribbon, then cut it into equal pieces.
+item fraction.ribbon-parts v=1 skills=[fractions.halves-quarters, measure.length] {
+  title "Equal pieces of ribbon"
+  difficulty (4 * q - 2 * h)
+  let q=1..3 h=0..1
+  level easy {
+    let q=1..2 h={1}  # halves
+  }
+  level hard {
+    let q=2..3 h={0}  # quarters
+  }
+
+  scene 29x15 {
+    ruler r cm=12 length=(4 * q) start=0 thing=ribbon at=canvas(1, 0)
+    text ask "The ribbon is cut into {if h == 0 then 4 else 2} equal pieces. How many centimetres long is each piece?" narrate width=27 below=r gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if h == 0 then q else 2 * q)
+  feedback {
+    when (answer == 4 * q) point=r {
+      say "That is the whole ribbon. Each piece is shorter than that."
+    }
+  }
+  hint "How long is the whole ribbon?"
+  hint "Split that length into equal parts. How long is one part?"
+}

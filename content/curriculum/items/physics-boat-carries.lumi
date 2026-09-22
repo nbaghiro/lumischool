@@ -1,0 +1,20 @@
+item physics.boat-carries v=1 skills=[physics.floating, reasoning.constraint] stars=3 {
+  title "The most it can carry"
+  difficulty (s + d)
+  let s=4..6 d=1..2
+
+  scene 17x27 {
+    boat b cargo=0 side=s sits=d at=canvas(1, 0)
+    text ask "Each block makes the boat sit 1 square deeper. The water must stay below the top of its side. What is the most blocks it can carry?" narrate width=15 below=b gap=0
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=b answer=carries
+  feedback {
+    when (answer == s - d) point=b {
+      say "With that many, the water comes right up to the top. One fewer keeps it below."
+    }
+  }
+  hint "How many squares of side are above the water now?"
+  hint "The last square has to stay dry, so how many can it sink?"
+}

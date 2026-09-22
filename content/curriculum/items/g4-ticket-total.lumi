@@ -1,0 +1,31 @@
+# Long multiplication in a story, then one more step: the tickets are paid with notes.
+item multiply.tickets v=1 skills=[multiplication.long, word-problems.two-step] {
+  title "Tickets for a class trip"
+  difficulty (p * n)
+  let p={12, 14, 15, 18, 23, 26} n=21..38
+  where (n % 10 != 0)
+  level easy {
+    let p={12, 14, 15} n=21..29
+  }
+  level hard {
+    let p={18, 23, 26} n=31..38
+  }
+
+  scene 33x8 {
+    pricetag tag now=(100 * p) was=0 at=canvas(1, 1)
+    text ask "One ticket costs {p} dollars. A class buys {n} tickets. How many dollars is that?" narrate width=19 right-of=tag gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (p * n)
+  feedback {
+    when (answer == p * (n // 10 * 10) + n % 10) point=ask {
+      say "Each of the {n % 10} extra tickets costs {p} dollars, not one."
+    }
+    when (answer == p * n // 10) point=ask {
+      say "Check the size: {n} tickets at about {p} dollars is more than {10 * p}."
+    }
+  }
+  hint "Split {n} into tens and ones. What do {n // 10 * 10} tickets cost?"
+  hint "Now add what the other {n % 10} tickets cost."
+}

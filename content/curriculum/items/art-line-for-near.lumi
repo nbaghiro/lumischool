@@ -1,0 +1,30 @@
+# Choosing the weight for a thing from what it is: near and heavy asks for a thick line, far and light
+# for a thin one. The things alternate so the answer is not always the same word.
+item art.line-for-near v=1 skills=[art.line, art.looking] {
+  title "Thick or thin?"
+  difficulty (if k < 3 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "the leg of the table, near the front", "a thin string hanging behind", "the heavy jug at the front", "a far hill behind everything", "the cup right at the front", "a thread on the floor behind")}
+  let ans={pick(k, "A thick line", "A thin line", "A thick line", "A thin line", "A thick line", "A thin line")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={4, 5}
+  }
+
+  scene 22x19 {
+    stilllife pic light="left" things=["jug", "cup"] lamp=true weights=["thick", "thin"] at=canvas(1, 0)
+    text ask "In a drawing like this one, what line would you use for {thing}?" narrate width=18 below=pic gap=1
+    choice pick options=["A thick line", "A thin line"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=pic {
+      say "Thick lines are for what is near and heavy, and thin lines for what is far away or light."
+    }
+  }
+  hint "Is that thing near the front or far behind?"
+  hint "Near and heavy things get the thick line."
+}

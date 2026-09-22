@@ -1,0 +1,31 @@
+# Rows times plants gives one field; the fields times that gives the farm. Two multiplications.
+item times.fields-alike v=1 skills=[multiplication.tables, problems.two-step] {
+  title "Fields that are all the same"
+  difficulty (r * c * n)
+  let r=2..4 c=3..8 n=2..5
+  where (r * c * n <= 120)
+  level easy {
+    let r=2..3 c=3..5 n={2}
+  }
+  level hard {
+    let r=3..4 c=6..8 n=4..5
+  }
+
+  scene 33x12 {
+    crops field stage=3 rows=r plants=c at=canvas(1, 1)
+    text ask "This field has {r} rows of {c} plants. The farm has {n} fields just like it. How many plants are on the farm?" width=16 right-of=field gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (r * c * n)
+  feedback {
+    when (answer == r * c) point=field {
+      say "That is one field. The farm has {n} of them."
+    }
+    when (answer == (r + c) * n) point=field {
+      say "Each row has {c} plants, so one field is {r} lots of {c}, not {r} and {c}."
+    }
+  }
+  hint "How many plants are in one field?"
+  hint "Now you need {n} lots of that number."
+}

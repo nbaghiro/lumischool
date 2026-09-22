@@ -1,0 +1,55 @@
+lesson reading-putting-the-story-in-order v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Putting the story in order"
+  goal "Put the events of a story in the order they happened, using time words when the telling jumps about."
+
+  look {
+    scene 34x14 {
+      storymap map stops=["Nell sets off to see Gran", "The bridge is down", "She borrows a boat", "Tea at Gran's house"] icons=["girl", "bridge", "boat", "cake"] heads=[] blank=-1 at=canvas(1, 1)
+    }
+    say """
+      Some things have to happen before others can. The bridge has to be down before Nell needs a
+      boat, and she has to cross the river before she can have tea at Gran's. Look for the thing
+      that could not have anything before it, and that one is first.
+
+      Time words help too: before, after, by then, an hour earlier. A story does not always tell
+      things in the order they happened, and the time words show the real order.
+      """
+  }
+  do {
+    show reading.order-puddle
+    show reading.story-map-gap k=0
+    show reading.order-cake
+    level easy {
+      worked reading.before-after k=0 t=2 d=0 level=medium
+    }
+    practice reading.before-after count=2 seed=6 hard-seed=9
+    show reading.flashback k=0 d=0 easy-d=1
+    practice reading.order-time-words count=2 hard-count=1 seed=3
+    level hard {
+      practice reading.order-mistake count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show reading.order-mistake k=0 s=2 easy-s=1
+  }
+  try stars=3 {
+    show reading.fill-the-middle k=0
+  }
+  remember {
+    say "Find the one that has to come first, then work forwards. The time words show the real order."
+  }
+
+  grown-ups """
+    Cut the sentences up and let the child slide them around before writing any numbers. Ordering
+    is easier with the hands than in the head. The passages told out of order start at the end and
+    look back; ask what happened before the first sentence. In the two-star question, the swap is
+    where one sentence talks about something that has not happened yet. The three-star question
+    has many right answers, as long as the middle joins the two stops.
+    """
+  level easy {
+    grown-ups "At this level the puddle, the story map and the cake are as written, what came before the sandcastle is worked once in the teacher's pen before two questions about what came after, the flashback question asks which happened last, the time words are as written, the two-star's swap is of the first two sentences, which leaves an it with nothing to point to, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the puddle, the story map and the cake are as written, both questions ask what came just before, one of them in the story whose own time words say before and after, the flashback question asks which happened first, one time-words passage makes way for a second story whose middle two sentences are swapped, the two-star is as written, its swap in the middle, and the three-star is as written."
+  }
+}

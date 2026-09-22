@@ -1,0 +1,50 @@
+# The two-star reason: Leo says drum A is louder, and whether he is right depends on where he is
+# standing as much as on the drums. Both drums are hit the same in two of the three versions, and
+# the rice shows it; the only difference is how far Leo is from each.
+item physics.leos-drum v=1 stars=2 skills=[physics.sound, reasoning.fair-test] {
+  title "Is Leo right?"
+  difficulty pick(k, 1, 2, 0, 0)
+  let k=0..3
+  let ha={pick(k, 2, 2, 3, 1)}
+  let hb={pick(k, 2, 2, 1, 3)}
+  let lx={pick(k, 13, 15, 15, 15)}
+  let right={pick(k, "No, Leo is closer to drum A", "No, they sound the same", "Yes, drum A is louder", "No, drum B is louder")}
+  level easy {
+    let k=2..3
+  }
+  level hard {
+    let k=0..1
+  }
+
+  scene 35x34 {
+    ricedrum a hit=ha tag="A" at=canvas(0, 1)
+    ricedrum b hit=hb tag="B" at=canvas(22, 1)
+    children leo count=1 names=["Leo"] at=canvas(lx, 2)
+    text ask "Both drums are hit at the same moment. Leo says: drum A is louder than drum B. Is he right?" narrate width=33 below=a gap=1
+    choice pick options=["Yes, drum A is louder", "No, drum B is louder", "No, they sound the same", "No, Leo is closer to drum A"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "Yes, drum A is louder") point=leo {
+      say "Look at the rice: both drums were hit just as hard. Drum A sounds louder to Leo only because he is standing right beside it."
+    }
+    when (k == 0 and pick == "No, they sound the same") point=leo {
+      say "They would sound the same to someone in the middle. Look at where Leo is standing."
+    }
+    when (k == 1 and pick == "Yes, drum A is louder") point=a {
+      say "Look at the rice on each drum. Both were hit the same, and Leo is the same distance from both."
+    }
+    when (k == 1 and pick == "No, Leo is closer to drum A") point=leo {
+      say "Count the squares from Leo to each drum. He is the same distance from both."
+    }
+    when (k == 2 and pick != "Yes, drum A is louder") point=a {
+      say "Leo is the same distance from both drums this time. Look at the rice: which skin is shaking more?"
+    }
+    when (k == 3 and pick != "No, drum B is louder") point=b {
+      say "Leo is the same distance from both drums. Look at the rice: drum B was hit harder, so it is the louder one."
+    }
+  }
+  hint "Look at the rice on each drum. Were they hit the same, or was one hit harder?"
+  hint "Now look at where Leo is standing. Is he the same distance from both drums?"
+}

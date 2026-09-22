@@ -1,0 +1,16 @@
+item physics.shadow-longer v=1 skills=[physics.light] {
+  title "Longer than the stick"
+  let t={3, 4} w=0..1
+
+  scene 32x29 {
+    column two at=canvas(1, 0) space=1 align=start {
+      shadows top tall=t shadow=(if w == 0 then t * 2 else t - 1)
+      shadows bottom tall=t shadow=(if w == 1 then t * 2 else t - 1)
+    }
+    text ask "In which picture is the shadow longer than the stick?" width=16 below=two gap=0
+    choice pick options=["Top", "Bottom"] right-of=ask gap=1
+  }
+
+  answer pick=(if w == 0 then "Top" else "Bottom")
+  hint "In each picture, which number is bigger: the stick's or the shadow's?"
+}

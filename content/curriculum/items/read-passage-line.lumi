@@ -1,0 +1,27 @@
+# The lines are numbered so that a question can point at one. Finding a word by its line number is
+# the habit that makes a child go back to the text instead of answering from memory. The answers
+# follow from the passage's width, so the width stays at thirty squares.
+item reading.passage-line v=2 skills=[reading.comprehension] {
+  title "Which line is it on?"
+  difficulty (if w == "garden" then 0 else if w == "hutch" then 1 else 2)
+  let w={"garden", "hutch", "hedge"}
+
+  scene 31x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="Ada's hens" text="Ada keeps 6 hens in the garden. Every morning she opens the hutch and counts them. On Tuesday one hen was missing, and Ada found it under the hedge with 4 eggs." width=30
+      row q space=2 align=centre {
+        art hen asset="hen"
+        text ask "On which line does the word {w} appear?" width=14
+        number-input answer
+      }
+    }
+  }
+
+  answer (if w == "garden" then 1 else if w == "hutch" then 2 else 3)
+  feedback {
+    when (answer == 0) point=p {
+      say "The lines are numbered down the left-hand margin, starting at 1."
+    }
+  }
+  hint "Read along each line until you find the word, then look at the number beside it."
+}

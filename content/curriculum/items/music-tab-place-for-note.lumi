@@ -1,0 +1,34 @@
+# The other way round: a note's letter, and the place on strings 1 to 3 that plays it in first
+# position. G is left out here, since it has two places on these strings.
+item music.tab-place-for-note v=1 skills=[music.tab, music.note-names] {
+  title "Where is the note?"
+  difficulty (if k <= 1 then 0 else if k <= 4 then 1 else 2)
+  let k=0..5
+  let note={pick(k, "E", "F", "B", "C", "D", "A")}
+  let right={pick(k, "string 1, open", "string 1, fret 1", "string 2, open", "string 2, fret 1", "string 2, fret 3", "string 3, fret 2")}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+
+  scene 28x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      tab lines tuning=guitar notes=[] values=[] even=true letters=false ring=-1
+      column side space=1 align=start {
+        text ask "Ana wants to play {note} on the thin strings. Where does she play it?" narrate width=16
+        choice pick options=[pick(k, "string 1, open", "string 2, fret 1", "string 2, open", "string 1, fret 1", "string 3, fret 2", "string 2, fret 3"), pick(k, "string 2, fret 1", "string 1, fret 1", "string 3, fret 2", "string 2, fret 1", "string 2, fret 3", "string 3, fret 2"), pick(k, "string 3, open", "string 1, open", "string 1, open", "string 2, fret 3", "string 2, fret 1", "string 1, fret 1"), pick(k, "string 2, fret 3", "string 2, open", "string 2, fret 3", "string 3, open", "string 1, fret 3", "string 3, open")] stack=column
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lines {
+      say "Say the open notes first: string 1 is E, string 2 is B, string 3 is G. Then count up the frets to {note}."
+    }
+  }
+  hint "Which open string, E, B or G, is {note} itself or the nearest note below it?"
+  hint "Count up from that open note: each fret you use here is the next note."
+}

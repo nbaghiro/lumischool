@@ -1,0 +1,31 @@
+# Two times-ten machines make a times-a-hundred machine, and the input is what is asked for.
+item times.two-machines v=1 skills=[place-value.multiply-by-ten, algebra.function-machines] {
+  title "Back through two machines"
+  difficulty n
+  let n=3..99
+  where (n % 10 != 0)
+  level easy {
+    let n=3..9
+  }
+  level hard {
+    let n=51..99
+  }
+
+  scene 32x12 {
+    machinechain chain rules=["× 10", "× 10"] input="?" middle="" output="{100 * n}" at=canvas(1, 1)
+    text ask "{100 * n} came out. What number went in?" narrate below=chain gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 10 * n) point=chain {
+      say "That is the number between the machines. Go back through the first machine too."
+    }
+    when (answer == 1000 * n) point=chain {
+      say "Going back undoes the machine, so divide by ten each time."
+    }
+  }
+  hint "What does the second machine do? What went into it?"
+  hint "Undo each machine in turn, starting from the end."
+}

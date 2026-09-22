@@ -1,0 +1,25 @@
+# The passage says where each part is, and one label is left empty. The part names (lantern room,
+# gallery, store door, reef) are ones the drawing cannot teach, so the child reads for the sentence
+# that places the part: the audit's raise, since the old labels could be read off the picture.
+item reading.labelled-read v=2 skills=[reading.text-features] {
+  title "Fill in the label"
+  difficulty (if k == 1 then 2 else if k == 3 then 1 else 0)
+  let k={0, 1, 3, 4}
+
+  scene 37x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="A lighthouse stands on a reef. The lantern room is at the very top, and the gallery runs round just below it. The store door is at the foot of the tower." width=36
+      row r space=1 align=start {
+        labelled d of=lighthouse labels=["lantern room", "gallery", "tower", "store door", "reef"] blank=k title="" caption=""
+        column q space=1 align=start {
+          text ask "Which word goes in the empty label?" width=10
+          choice pick options=[if k == 0 then "gallery" else if k == 1 then "reef" else if k == 3 then "store door" else "gallery", if k == 0 then "lantern room" else if k == 1 then "gallery" else if k == 3 then "lantern room" else "reef", if k == 0 then "reef" else if k == 1 then "store door" else if k == 3 then "gallery" else "store door"] stack=column
+        }
+      }
+    }
+  }
+
+  answer pick=(if k == 0 then "lantern room" else if k == 1 then "gallery" else if k == 3 then "store door" else "reef")
+  hint "Find where the empty label's line points."
+  hint "Find the sentence in the passage that says what is in that place."
+}

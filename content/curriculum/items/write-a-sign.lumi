@@ -1,0 +1,18 @@
+# v2, the audit's raise: a command and a reason joined with because, and a prompt that no longer
+# gives away the words of the sign.
+item writing.write-a-sign v=2 stars=3 skills=[writing.signs, writing.composing, writing.joining-sentences] {
+  title "Write a sign"
+  let k=0..2
+  let pic={if k == 0 then "sandcastle" else if k == 1 then "fish-tank" else "treehouse"}
+  let place={if k == 0 then "the sandcastle" else if k == 1 then "the fish tank" else "the treehouse"}
+
+  scene 36x13 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    sign board lines=["", ""] kind="board" color="glow" right-of=pic gap=1
+    text ask "Write a sign for {place}. Tell people what to do, and give the reason with because." width=14 right-of=board gap=1
+  }
+
+  check writing.by-eye look-for="A command that starts with a doing word or with Please, then because and a reason that fits the place (Please do not tap the glass because the fish get scared), with a capital letter and a mark at the end."
+  hint "What might people do that would spoil it? Tell them not to, or tell them what to do instead."
+  hint "Why? Put the reason after because."
+}

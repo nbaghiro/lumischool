@@ -1,0 +1,22 @@
+# Matching a drawing to its subject by looking, when every drawing is nearly right.
+item art.which-drawing v=1 skills=[art.looking] {
+  title "Which drawing is right?"
+  difficulty p
+  let p=5..7 k=0..2
+
+  scene 37x13 {
+    flowers real count=1 petals=p at=canvas(1, 1)
+    flowers a count=1 petals=(if k == 0 then p else p - 1) right-of=real gap=2
+    flowers b count=1 petals=(if k == 1 then p else if k == 0 then p + 1 else p - 1) right-of=a gap=1
+    flowers c count=1 petals=(if k == 2 then p else p + 1) right-of=b gap=1
+    text la "A" below=a gap=0
+    text lb "B" below=b gap=0
+    text lc "C" below=c gap=0
+    text ask "Three children drew the flower on the left. Which drawing has the right number of petals?" width=11 right-of=c gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "B" else "C")
+  hint "How many petals does the flower on the left have?"
+  hint "Count the petals on each drawing. Which one has the same number?"
+}

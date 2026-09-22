@@ -1,0 +1,14 @@
+# A plan is written in notes; the way in is telling a note from a sentence.
+item writing.note-or-sentence v=1 skills=[writing.planning] {
+  title "A note, not a sentence"
+  let t=0..2 p=0..2 n={if t == 0 then "Boat starts to sink" else if t == 1 then "Owl on the gate" else "Lamp goes out"} s1={if t == 0 then "The little boat began to sink." else if t == 1 then "An owl sat on the gate all night." else "The lamp in the tent went out."} s2={if t == 0 then "We saw the boat go down." else if t == 1 then "It hooted at the moon." else "Lily could not see a thing."}
+
+  scene 26x15 {
+    text ask "Which one is a note for a plan, not a sentence?" width=24 at=canvas(1, 1)
+    choice pick options=["{if p == 0 then n else if p == 1 then s1 else s2}", "{if p == 0 then s1 else if p == 1 then s2 else n}", "{if p == 0 then s2 else if p == 1 then n else s1}"] stack=column below=ask gap=1
+  }
+
+  answer pick=n
+  hint "A sentence starts with a capital and ends with a full stop. Which one does not?"
+  hint "Which one says the idea in as few words as it can?"
+}

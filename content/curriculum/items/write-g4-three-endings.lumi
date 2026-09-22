@@ -1,0 +1,16 @@
+# One start, three joining words, three endings that each have to make sense: composing to a
+# constraint, so a grown-up marks it.
+item writing.three-endings v=2 stars=3 skills=[writing.joining-sentences, writing.composing] {
+  title "One start, three endings"
+  let k=0..3
+
+  scene 36x20 {
+    caption start text="{if k == 0 then \"The lights went out\" else if k == 1 then \"Our tent blew over\" else if k == 2 then \"The river was high\" else \"Dad burnt the toast\"} ..." width=24 at=canvas(1, 1)
+    text ask "Write the start three times: once with because, once with but and once with so. Each ending must make sense with its word." width=35 below=start gap=1
+    writinglines lines lines=3 width=35 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Three sentences on the same start: the because ending gives a reason, the so ending gives what came of it, and the but ending turns it round (for the lights: because the storm cut the power, so we lit candles, but the torch still worked), each with one full stop and a comma before so and but."
+  hint "Say the start with because. Why might it have happened?"
+  hint "Now say it with so: what happened next? And with but: what went the other way?"
+}

@@ -1,0 +1,22 @@
+# Twice as far in twice the time is the same speed: the child has to hold both numbers at once,
+# which is the step from "fewer seconds wins" to speed.
+item physics.same-speed v=1 skills=[physics.motion, reasoning.compare] stars=3 {
+  title "Who was faster?"
+  difficulty ((if k == 2 then 2 else 1) + d / 100)
+  let d={10, 20} k=1..3
+
+  scene 32x16 {
+    table data cols=3 head=["Name", "Metres", "Seconds"] cells=["Ada", d, 5, "Ben", 2 * d, 5 * k] at=canvas(1, 0)
+    text ask "Who ran faster, or were they just as fast?" width=12 right-of=data gap=2
+    choice pick options=["Ada", "Ben", "The same"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 1 then "Ben" else if k == 2 then "The same" else "Ada")
+  feedback {
+    when (pick == "Ben" and k == 2) point=data {
+      say "Ben went twice as far, and he took twice as long too."
+    }
+  }
+  hint "How much further did Ben go than Ada?"
+  hint "Did he take the same time, twice as long, or longer still?"
+}

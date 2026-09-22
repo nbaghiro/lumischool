@@ -1,0 +1,50 @@
+lesson coding-square-rectangle-staircase v=3 format=teach grade=3 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A square, a rectangle, a staircase"
+  goal "Tell a shape from its program, work out the distance all the way round and back again, and write a rectangle."
+
+  look {
+    scene 34x17 {
+      row both at=canvas(1, 0) space=1 align=start {
+        turtle sq cols=6 rows=6 col=1 row=6 moves=["right 4", "up 4", "left 4", "down 4"] mark=false
+        turtle st cols=7 rows=7 col=1 row=7 moves=["right 2", "up 2", "right 2", "up 2", "right 2"] mark=false
+      }
+    }
+    say """
+      A square has four equal sides and comes back to the start; a rectangle has two pairs; a
+      staircase never comes back at all. You can tell which is which from the numbers before you
+      draw anything.
+      """
+  }
+  do {
+    practice coding.which-shape count=1 seed=4
+    practice coding.shape-perimeter count=2 seed=4
+    practice coding.perimeter-repeat count=2 seed=3
+    show coding.missing-side w=6 h=2 easy-w=3 hard-w=8 hard-h=5
+    show coding.missing-side w=4 h=3 easy-h=1 hard-w=9 hard-h=4
+    practice coding.build-rectangle count=1 seed=2
+  }
+  try stars=2 {
+    show coding.rectangle-bug w=4 h=2 k=1 easy-k=2 hard-w=3 hard-k=0
+  }
+  try stars=3 {
+    show coding.rectangles-count s=8 easy-s=6 hard-s=12
+  }
+  remember {
+    say "Add all four sides to go round a rectangle: two of one, two of the other."
+  }
+
+  grown-ups """
+    This is the perimeter lesson from maths, arriving from the other side. If the child has met
+    perimeter already, say so: it is the same adding up. A rectangle written with a repeat of two
+    goes round the body twice, which is the step to check in the middle questions, and the missing
+    side is the same sum worked backwards. In the two-star question the two forward numbers in
+    the program are equal, so the drawing is a square; the dashed rectangle says which one should
+    change. In the three-star question a list of pairs, starting 1 and 7, keeps the count honest.
+    """
+  level easy {
+    grown-ups "At this level the sides stay at four or less, the bug to find is a repeat that stops half way round, and the last question has three rectangles to list."
+  }
+  level hard {
+    grown-ups "At this level the rectangles written with a repeat have sides up to nine and no grid to count on, the wrong line draws a square only one square short of the target, and the last question has six rectangles to list."
+  }
+}

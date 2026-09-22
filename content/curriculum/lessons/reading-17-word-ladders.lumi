@@ -1,0 +1,58 @@
+lesson reading-word-ladders v=1 format=teach grade=1 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "Word ladders"
+  goal "Change one sound in a word to make a new word, and read each word as it changes."
+
+  look {
+    scene 29x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        art cat asset="cat"
+        wordladder lad words=["cat", "cot", "dot", "dog"] blank=-1 changes=1
+        dog d facing=-1 ball=0
+      }
+    }
+    say """
+      Change one letter and you get a new word. Cat turns into cot, cot turns into dot, and dot
+      turns into dog.
+
+      The yellow letter is the one that changed. Say each word as you climb up.
+      """
+  }
+  do {
+    level easy {
+      worked reading.which-sound-changed k=0 level=medium
+    }
+    practice reading.which-sound-changed count=2 hard-count=1 seed=4
+    level hard {
+      practice reading.not-one-change count=1 seed=4
+    }
+    practice reading.word-ladder count=2 seed=2
+    practice reading.change-a-sound count=2 seed=5
+    practice reading.sound-train count=1 seed=3
+    practice reading.ladder-gap count=1 seed=2
+  }
+  try stars=2 {
+    show reading.not-one-change k=1 p=2
+  }
+  try stars=3 {
+    show reading.middle-count k=0 easy-k=3 hard-k=1
+  }
+  remember {
+    say "Change one sound, and you have a new word."
+  }
+
+  grown-ups """
+    Say each word aloud as the child climbs. If they read cut as cat, point at the yellow letter
+    and ask what sound it makes. Only one of the three choices changes a single letter of the word
+    below it and of the word above it, so trying each one in the gap is the right way to work. The
+    empty rung the child writes has two right answers on every ladder, and either is accepted. In
+    the two-star question one word has two letters changed, so every word has to be checked letter
+    by letter. In the three-star question the child tries all five vowels and counts only the real
+    words.
+    """
+  level easy {
+    grown-ups "At this level a ladder whose middle sound changed is read once in the teacher's pen before ladders whose first or last sound changed, the empty rung is pen, pup or bun, the sounds to change are first or last sounds, the missing sound and the empty rung to write are as written, the two-star is as written, and the three-star's frame makes two real words."
+  }
+  level hard {
+    grown-ups "At this level one ladder whose middle sound changed is read, and the second ladder makes way for a second word that is not one change away, the empty rung is as written, the sounds to change are both middle sounds, the missing sound and the empty rung to write are as written, the two-star is as written, and the three-star's frame makes five real words."
+  }
+}

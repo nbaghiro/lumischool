@@ -1,0 +1,26 @@
+# The gap moves: sometimes who, sometimes where, sometimes what it is on. The word is written, not
+# picked, so the child both chooses it and spells it.
+item writing.finish-the-sentence v=1 skills=[writing.sentences, writing.spelling] {
+  title "The missing word"
+  difficulty (if p == 1 then 1 else 0)
+  let a=0..3 p=0..2
+  let who={if a == 0 then "fox" else if a == 1 then "cat" else if a == 2 then "duck" else "pig"}
+  let where={if a == 0 then "in" else if a == 1 then "under" else if a == 2 then "on" else "by"}
+  let thing={if a == 0 then "box" else if a == 1 then "bed" else if a == 2 then "rug" else "tub"}
+  let gone={if p == 0 then who else if p == 1 then where else thing}
+  let front={if a == 0 and p == 0 then "The" else if a == 0 and p == 1 then "The fox is" else if a == 0 and p == 2 then "The fox is in the" else if a == 1 and p == 0 then "The" else if a == 1 and p == 1 then "The cat is" else if a == 1 and p == 2 then "The cat is under the" else if a == 2 and p == 0 then "The" else if a == 2 and p == 1 then "The duck is" else if a == 2 and p == 2 then "The duck is on the" else if a == 3 and p == 0 then "The" else if a == 3 and p == 1 then "The pig is" else "The pig is by the"}
+  let back={if a == 0 and p == 0 then "is in the box." else if a == 0 and p == 1 then "the box." else if a == 0 and p == 2 then "." else if a == 1 and p == 0 then "is under the bed." else if a == 1 and p == 1 then "the bed." else if a == 1 and p == 2 then "." else if a == 2 and p == 0 then "is on the rug." else if a == 2 and p == 1 then "the rug." else if a == 2 and p == 2 then "." else if a == 3 and p == 0 then "is by the tub." else if a == 3 and p == 1 then "the tub." else "."}
+
+  scene 36x12 {
+    picturecards card who=["{who}"] where=["{where}"] thing=["{thing}"] letters=false at=canvas(1, 1)
+    column q right-of=card gap=1 space=1 align=start {
+      sentence strip before="{front}" blank=5 after="{back}"
+      text ask "Write the word that is missing." narrate width=24
+      word-input word options=["{gone}"] letters=5
+    }
+  }
+
+  answer word=gone
+  hint "Look at the picture. Who is it, and where is it?"
+  hint "Read the sentence with your word in the gap. Does it match the picture?"
+}

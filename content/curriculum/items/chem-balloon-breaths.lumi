@@ -1,0 +1,33 @@
+# The story: blowing up balloons for the marsh picnic, so many breaths each, and how many breaths
+# or balloons that makes.
+item chem.balloon-breaths v=1 stars=1 skills=[chemistry.states, multiplication.equal-groups] {
+  title "Balloons for the picnic"
+  difficulty (n * b + (if w == 1 then 3 else 0))
+  let n=2..4 b=2..5 w=0..1
+  where (n * b <= 16)
+  let asks={pick(w, "How many breaths does Mia blow altogether?", "Then she lets one balloon down. How many breaths of air come back out of it?")}
+  level easy {
+    let n=2..2 b=2..3 w=0..0
+  }
+  level hard {
+    let n=3..4 b=3..5 w=1..1
+  }
+
+  scene 34x17 {
+    balloons party count=n at=canvas(1, 0)
+    text ask "Mia blows up {n} balloons for the picnic by the marsh. Each one takes {b} breaths of air. {asks}" narrate width=32 below=party gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then n * b else b)
+  feedback {
+    when (w == 0 and answer == n + b and n + b != n * b) point=party {
+      say "Each balloon takes {b} breaths, and there are {n} balloons: {b} and {b}{if n >= 3 then \" and {b}\" else \"\"}{if n == 4 then \" and {b}\" else \"\"}."
+    }
+    when (w == 1 and answer == n * b) point=party {
+      say "Only one balloon is let down. The air that comes out is the air that went in: {b} breaths."
+    }
+  }
+  hint "{if w == 0 then \"Count {b} for each balloon.\" else \"The air that went into one balloon is what comes back out of it.\"}"
+  hint "{if w == 0 then \"{n} balloons, {b} breaths each: count in {b}s.\" else \"One balloon took {b} breaths, so {b} breaths come out.\"}"
+}

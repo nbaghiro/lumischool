@@ -1,0 +1,32 @@
+# The audit's raise for the thermometer: two readings either side of zero and the rise between them,
+# so the difference has to cross zero.
+item number.temp-difference v=1 skills=[number.negatives, subtraction.difference] {
+  title "How much warmer"
+  difficulty (hi - lo)
+  let lo={-8, -6, -5, -4, -3} hi={2, 4, 5, 7, 9}
+  where (hi != -lo)
+  level easy {
+    where (hi - lo <= 8)
+  }
+  level hard {
+    where (hi - lo >= 13)
+  }
+
+  scene 33x15 {
+    row both at=canvas(1, 1) space=2 align=end {
+      thermometer night from=-10 to=10 step=2 value=lo unit="C"
+      thermometer noon from=-10 to=10 step=2 value=hi unit="C"
+    }
+    text ask "At night it was {lo} degrees. At noon it was {hi} degrees. How many degrees warmer was it at noon?" width=10 right-of=both gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (hi - lo)
+  feedback {
+    when (answer == abs(hi + lo)) point=night {
+      say "Count up from {lo} to zero first, then on from zero to {hi}."
+    }
+  }
+  hint "How far is it from {lo} up to zero?"
+  hint "How far is it from zero up to {hi}? Put the two parts together."
+}

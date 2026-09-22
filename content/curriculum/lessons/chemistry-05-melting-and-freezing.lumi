@@ -1,0 +1,58 @@
+lesson chemistry-melting-and-freezing v=2 format=teach grade=2 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Melting and freezing"
+  goal "Say whether a change is melting or freezing, use a melting point to say whether something is solid or liquid, and read how long melting takes from a graph."
+
+  look {
+    scene 34x15 {
+      row kit at=canvas(1, 1) space=2 align=start {
+        particles s spread=0 count=16 moving=2
+        thermometer tube from=-20 to=100 step=20 value=0 unit="C"
+        particles l spread=1 count=16 moving=1
+      }
+    }
+    say """
+      Warming a solid makes its particles jiggle harder. At one temperature, its melting point, they
+      jiggle hard enough to break out of their rows, and the solid melts into a liquid. Cool the
+      liquid back past the same temperature and it freezes. Ice melts at 0 degrees, chocolate at
+      about 34 and candle wax at about 60.
+      """
+  }
+  do {
+    practice chem.melt-or-freeze count=2 seed=2
+    level easy {
+      worked chem.solid-or-liquid k="wax" v=80 level=medium
+    }
+    practice chem.solid-or-liquid count=2 seed=4 easy-seed=3
+    practice chem.melt-first count=2 seed=1
+    practice chem.ice-flat count=2 seed=3 hard-seed=6
+  }
+  try stars=2 {
+    show chem.flat-reason w=1 easy-w=0
+  }
+  try stars=3 {
+    show chem.room-temp k=0 easy-k=3 hard-k=1
+  }
+  remember {
+    say "A solid melts once it is warmer than its melting point, and freezes again once it is colder."
+  }
+
+  grown-ups """
+    Naming the change from the two pictures is the way in. The melting-point questions put the
+    unknown in two places: whether a thing is solid or liquid at a temperature, and which of two
+    things melts first. The graph question asks for a length of time, read along the bottom. The
+    two-star question asks why the line stays flat: the heat is going into melting or boiling
+    rather than into making it hotter. The three-star question has no method given; the child tries
+    each temperature against two melting points. Chocolate in a bowl over warm water, and the same
+    bowl in the fridge afterwards, shows both halves of the lesson. A grown-up handles the hot water.
+    If a child says a solid melts because its particles get more room, ice is the counterexample: it
+    takes more room than the water it melts into, which is why a full bottle of water can crack in
+    the freezer. What melting needs is warmth, which makes the particles jiggle hard enough to break
+    out of their rows.
+    """
+  level easy {
+    grown-ups "At this level the changes to name are as written, wax in a bath of 80 degrees is worked once in the teacher's pen before baths thirty degrees or more from the melting point, the pair to compare is as written, the graph is read every two minutes, the two-star's flat line is ice melting at zero, and the three-star has the chocolate and the wax both hard, which one temperature fits."
+  }
+  level hard {
+    grown-ups "At this level the changes to name include chocolate melting, the baths are within sixteen degrees of the melting point, the pair to compare is as written, the graph is read every five minutes, the two-star is as written, water boiling, and the three-star has the butter runny and the wax hard, which needs a temperature between 37 and 60."
+  }
+}

@@ -1,0 +1,24 @@
+# All the ways: pairs of whole numbers either side of zero with a given gap. Zero is not allowed.
+item number.pairs-apart v=1 stars=3 skills=[number.negatives, reasoning.all-the-ways] {
+  title "Either side of zero"
+  difficulty d
+  let d=5..9
+
+  scene 30x16 {
+    numberline line from=(0 - d) to=d step=1 at=canvas(1, 1)
+    text ask "Two temperatures are {d} degrees apart. One is below zero and one is above zero, and neither is zero. Both are whole numbers. How many different pairs could they be?" width=29 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (d - 1)
+  feedback {
+    when (answer == d + 1) point=line {
+      say "Neither temperature can be zero. Take out the pairs that use it."
+    }
+    when (answer == d) point=line {
+      say "Check the ends of your list. Does one of them use zero?"
+    }
+  }
+  hint "Try minus 1 for the colder one. What is the warmer one?"
+  hint "Now try minus 2, then minus 3. When do you have to stop?"
+}

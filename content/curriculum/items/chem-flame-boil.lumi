@@ -1,0 +1,35 @@
+# It boils once it has climbed to 100 degrees. A version that lands exactly on 100 is left out,
+# because a pan that has only just reached 100 may not be bubbling yet.
+item chem.flame-boil v=2 skills=[chemistry.heating] {
+  title "Is it boiling yet?"
+  difficulty (10 - abs(s + 10 * m - 100) / 10)
+  let s={20, 30, 40} m=3..10
+  where (s + 10 * m != 100)
+  level easy {
+    where (abs(s + 10 * m - 100) >= 30)
+  }
+  level hard {
+    where (abs(s + 10 * m - 100) == 10)  # ten degrees short of the boil, or ten past it
+  }
+
+  scene 37x14 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      flame burner height=3 on=1 stand=false
+      thermometer tube from=0 to=120 step=20 value=s unit="°C"
+    }
+    text ask "The water starts at {s} degrees and rises 10 degrees a minute. After {m} minutes, is it boiling?" width=13 right-of=kit gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  answer pick=(if s + 10 * m > 100 then "Yes" else "No")
+  feedback {
+    when (pick == "No" and s + 10 * m > 100) point=tube {
+      say "It reaches 100 degrees before then, and then it boils."
+    }
+    when (pick == "Yes" and s + 10 * m < 100) point=tube {
+      say "Work out what it reads after {m} minutes. Has it reached 100 yet?"
+    }
+  }
+  hint "What will the thermometer read after {m} minutes?"
+  hint "At what temperature does water in an open pan boil?"
+}

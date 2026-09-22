@@ -1,0 +1,23 @@
+item coding.until-moves v=1 skills=[coding.decisions, coding.repetition] {
+  title "Keep going until the flag"
+  difficulty (if k == 0 then 5 else if k == 2 then 6 else 8)
+  let k=0..2
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 31x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"]
+      maze g map=["{if k == 0 then \". . . F\" else if k == 1 then \"F . . .\" else \"F . . #\"}", "{if k == 0 then \". # # .\" else if k == 1 then \"# # # .\" else \"# # . #\"}", "{if k == 0 then \"S . . .\" else if k == 1 then \"S . . .\" else \"S . . #\"}"] code=["repeat until at flag", "  if wall ahead", "    turn left", "  otherwise", "    forward 1"] upto=0 trail=none
+    }
+    text ask "How many squares does the robot move before it stops?" width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=moves
+  hint "Follow it with a finger. Ask the if question before every move."
+}

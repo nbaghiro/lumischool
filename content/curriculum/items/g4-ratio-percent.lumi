@@ -1,0 +1,31 @@
+# Parts of a mixture as a percent: the whole is the parts together, not a hundred.
+item percent.of-a-mix v=1 skills=[percentages.of-a-bar, ratio.parts] {
+  title "Juice in the jug"
+  difficulty (a + b)
+  let a=1..7 b=1..7
+  where (a + b in {4, 5, 10} and a != b)
+  level easy {
+    where (a + b <= 5)
+  }
+  level hard {
+    where (a + b == 10)
+  }
+
+  scene 30x18 {
+    ratio bars parts=[a, b] labels=["Juice", "Water"] unit=0 total=false at=canvas(1, 1)
+    text ask "Each block is the same size. What percent of the drink is juice?" narrate width=28 below=bars gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * a / (a + b))
+  feedback {
+    when (answer == a) point=bars {
+      say "That is the number of juice blocks. How many blocks are there in all?"
+    }
+    when (answer == 100 * b / (a + b)) point=bars {
+      say "That is the water. The question asks about the juice."
+    }
+  }
+  hint "How many blocks are there altogether?"
+  hint "What percent is one block? How many of them are juice?"
+}

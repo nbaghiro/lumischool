@@ -1,0 +1,34 @@
+# Counting forward round the year. At easy the count never passes winter; at hard it always does,
+# so the child has to go back to spring and keep counting.
+item nature.seasons-until v=1 skills=[nature.seasons, counting.on] {
+  title "How many seasons?"
+  difficulty ((if t < f then 2 else 0) + (t - f + 4) % 4)
+  let f=0..3 t=0..3
+  where (f != t)
+  let from={if f == 0 then "spring" else if f == 1 then "summer" else if f == 2 then "autumn" else "winter"}
+  let to={if t == 0 then "spring" else if t == 1 then "summer" else if t == 2 then "autumn" else "winter"}
+  level easy {
+    where (t > f)
+  }
+  level hard {
+    where (t < f)
+  }
+
+  scene 36x21 {
+    seasontrees year seasons=["spring", "summer", "autumn", "winter"] names=0 at=canvas(1, 1)
+    text ask "It is {from}. Ada is waiting for {to}. How many seasons must go by before it is {to}?" narrate width=34 below=year gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((t - f + 4) % 4)
+  feedback {
+    when (t < f and answer == f - t and f - t != (t - f + 4) % 4) point=year {
+      say "You counted backwards. The year only goes forward: after winter comes spring, and then on from there."
+    }
+    when (answer == (t - f + 4) % 4 + 1) point=year {
+      say "Count the seasons you step into, not the one you are in now."
+    }
+  }
+  hint "Put your finger on the {from} tree. Step to the next tree and count one."
+  hint "If you reach the winter tree and you are not there yet, go back to the spring tree and keep counting."
+}

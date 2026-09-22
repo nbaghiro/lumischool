@@ -1,0 +1,23 @@
+item bonds.two-cups v=1 stars=3 skills=[bonds-to-10, reasoning.guess-and-check] {
+  title "Two cups, ten counters"
+  difficulty d
+  let d={2, 4, 6, 8}
+
+  scene 26x18 {
+    undercup mat shown=0 cups=2 hidden=0 total=10 at=canvas(1, 1)
+    text ask "Two cups hide 10 counters. One cup hides {d} more than the other. How many are under the cup with more?" narrate width=24 below=mat gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((10 + d) / 2)
+  feedback {
+    when (answer == d) point=mat {
+      say "{d} is how many more. Find two numbers that make 10 and are {d} apart."
+    }
+    when (answer == (10 - d) / 2) point=mat {
+      say "That is the cup with fewer. The other cup has {d} more than that."
+    }
+  }
+  hint "Try a pair that makes 10, such as 6 and 4. How far apart are they?"
+  hint "Change the pair one step at a time until the two numbers are {d} apart."
+}

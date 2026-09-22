@@ -1,0 +1,22 @@
+# The way in for looking closely: count the grains the lens shows.
+item chem.lens-count v=1 skills=[chemistry.materials, counting.to-ten] {
+  title "Grains in the lens"
+  difficulty n
+  let g={"salt", "sugar", "sand", "rice"} n=3..8
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 14x16 {
+    text ask "How many grains of {g} can you see in the lens?" width=13 at=canvas(1, 0)
+    magnifier m kind=g count=n below=ask gap=0
+    number-input answer below=m gap=0
+  }
+
+  answer n
+  hint "Touch each grain in the circle as you count it."
+  hint "Are you counting only the grains inside the lens, and not the heap on the saucer?"
+}

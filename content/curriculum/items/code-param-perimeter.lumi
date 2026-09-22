@@ -1,0 +1,38 @@
+# How long the line is that one call draws all the way round: 4 sides of size, of 2 sizes, or of
+# one more than size.
+item coding.param-perimeter v=1 skills=[coding.procedures, coding.drawing] {
+  title "How long is the line?"
+  difficulty (f + (if n > 3 then 0.5 else 0))
+  let f=0..2 n=2..5
+  let name={pick(f, "square", "frame", "tile")}
+  let l3={pick(f, "    forward size", "    forward size", "    forward size")}
+  let l4={pick(f, "    turn right", "    forward size", "    forward 1")}
+  let l5={pick(f, "  pen up", "    turn right", "    turn right")}
+  let total={pick(f, 4 * n, 8 * n, 4 * n + 4)}
+  level easy {
+    let f=0..0
+  }
+  level hard {
+    let f=1..2
+  }
+
+  scene 34x17 {
+    program prog code=["define {name} size", "  repeat 4", "{l3}", "{l4}", "{l5}", "{name} {n}"] title="Sam's block" at=canvas(1, 1)
+    column side space=1 align=start right-of=prog gap=2 {
+      text ask "How many squares long is the line that {name} {n} draws, all the way round?" narrate width=13
+      number-input len width=3
+    }
+  }
+
+  answer len=total
+  feedback {
+    when (len == 4 * n and f != 0) point=prog {
+      say "That is four sides of {n}. Look at how far {name} goes forward on each side."
+    }
+    when (len == n) point=prog {
+      say "That is one side. The repeat draws four."
+    }
+  }
+  hint "How long is one side of {name} {n}?"
+  hint "There are four sides."
+}

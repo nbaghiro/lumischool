@@ -1,0 +1,22 @@
+# A time word fixes the tense, so the one verb that slips into the present is the mistake.
+item writing.tense-slip v=1 skills=[writing.editing, writing.tense] {
+  title "The word in the wrong time"
+  difficulty (if k == 1 or k == 2 or k == 3 then 1 else 0)
+  let k=0..5
+  level easy {
+    let k={0, 4, 5}  # the slip is the first doing word
+  }
+  level hard {
+    let k={1, 2, 3}  # the slip is the second doing word, after a right one
+  }
+
+  scene 34x13 {
+    caption line text="{if k == 0 then \"Yesterday we walk to the canal and saw a heron.\" else if k == 1 then \"Last night the owl hooted and flies away.\" else if k == 2 then \"Last Sunday Gran made a cake and gives us a slice.\" else if k == 3 then \"Two days ago Kit finds a shell and took it home.\" else if k == 4 then \"Last week the snow fell and we build a snowman.\" else \"Yesterday Omar swims in the lake and caught a fish.\"}" width=32 at=canvas(1, 1)
+    text ask "This already happened, but one word says it is happening now. Which word?" width=32 below=line gap=1
+    choice pick options=["{if k == 0 then \"Yesterday\" else if k == 1 then \"hooted\" else if k == 2 then \"gives\" else if k == 3 then \"ago\" else if k == 4 then \"fell\" else \"swims\"}", "{if k == 0 then \"walk\" else if k == 1 then \"night\" else if k == 2 then \"made\" else if k == 3 then \"took\" else if k == 4 then \"week\" else \"caught\"}", "{if k == 0 then \"saw\" else if k == 1 then \"flies\" else if k == 2 then \"slice\" else if k == 3 then \"finds\" else if k == 4 then \"build\" else \"lake\"}"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "walk" else if k == 1 then "flies" else if k == 2 then "gives" else if k == 3 then "finds" else if k == 4 then "build" else "swims")
+  hint "Which words tell you when it happened?"
+  hint "Find the doing words. Which one would you say about today, not about the past?"
+}

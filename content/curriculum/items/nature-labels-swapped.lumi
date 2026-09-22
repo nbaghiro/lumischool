@@ -1,0 +1,35 @@
+# The three-star: a deduction. Ada stuck four labels on the lettered plant and got exactly two
+# right, so the two wrong labels must have swapped places with each other; Ben says where one of
+# them is, and the child works out which label sits on the part it left. Top and bottom swapped
+# is the plain case; the two middle parts swapped is the hard one.
+item nature.labels-swapped v=1 stars=3 skills=[nature.plants, reasoning.deduction] {
+  title "Which label is there?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let told={pick(k, "flower", "roots", "leaf", "flower", "stem", "leaf")}
+  let on={pick(k, "roots", "flower", "flower", "leaf", "roots", "stem")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 34x17 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "Ada stuck the four labels flower, leaf, stem and roots on the letters, one on each. She got exactly two right. Ben says: your {told} label is on the {on}. Which label is on the {told}?" narrate width=22 right-of=fig gap=2
+    choice pick options=["flower", "leaf", "stem", "roots"] below=fig gap=1
+  }
+
+  answer pick=on
+  feedback {
+    when (pick == told) point=fig {
+      say "That would be the right label for it, but Ben saw the {told} label on the {on}, so it cannot be here as well."
+    }
+    when (pick != on and pick != told) point=fig {
+      say "Two labels are right and two are wrong, and the {told} label is one of the wrong two. If that label were the only one out of place, the {on} would have no label at all. So the two wrong labels swapped with each other."
+    }
+  }
+  hint "Two labels are right and two are wrong. The {told} label is one of the wrong ones. Which label is the other wrong one?"
+  hint "The {told} label is sitting on the {on}. So the {on} label has been pushed off its part, and there is only one empty place for it."
+}

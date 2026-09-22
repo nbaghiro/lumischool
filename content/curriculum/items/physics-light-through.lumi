@@ -1,0 +1,20 @@
+item physics.light-through v=1 skills=[physics.light] {
+  title "Does the light get through?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 19x18 {
+    beam b sheet=k at=canvas(1, 0)
+    text ask "How much of the torch's light gets through the sheet?" width=18 below=b gap=1
+    choice pick options=["All", "Some", "None"] below=ask gap=1
+  }
+
+  check physics.light of=b pick=through
+  hint "Look at the wall behind the sheet. Is it bright, pale or dark?"
+}

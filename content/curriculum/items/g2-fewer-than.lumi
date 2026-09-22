@@ -1,0 +1,29 @@
+# "More" in the question, but the answer is the smaller number: 2.OA.1's hardest compare wording.
+item compare.fewer-than v=1 skills=[subtraction.difference, addition.compare-unknown] {
+  title "More than Ben"
+  difficulty (a + d)
+  let a=45..96 d=12..38
+  where (a - d >= 11)
+  where (a % 10 != 0 and d % 10 != 0 and a != 2 * d)
+  level easy {
+    let a=45..60 d=12..20
+  }
+  level hard {
+    let a=75..96 d=25..38
+  }
+
+  scene 30x12 {
+    text ask "Mira has {a} shells. That is {d} more than Ben has. How many shells does Ben have?" width=28 at=canvas(1, 1)
+    barmodel bars whole=a parts=[?, d] below=ask gap=1
+    number-input answer right-of=bars gap=2 width=5
+  }
+
+  answer (a - d)
+  feedback {
+    when (answer == a + d) point=ask {
+      say "Mira has more, so Ben has fewer than {a}. The word more does not always mean add."
+    }
+  }
+  hint "Who has more shells, Mira or Ben?"
+  hint "Ben's shells and the {d} extra make Mira's {a}. What is the part that is missing?"
+}

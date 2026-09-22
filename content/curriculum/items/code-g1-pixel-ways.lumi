@@ -1,0 +1,22 @@
+# Every row that meets a rule, counted: a block of red of a set length can start in only so many
+# places, which a child finds by moving it along one square at a time.
+item coding.pixel-ways v=1 stars=3 skills=[coding.data, reasoning.all-the-ways] {
+  title "Every way to paint a row"
+  difficulty (n - s)
+  let n=5..7 s=2..3
+
+  scene 32x13 {
+    pixels p cols=n rows=1 code=["1 white {s} red {n - s - 1} white"] at=canvas(1, 0)
+    text ask "A row has {n} squares. {s} red squares sit next to each other and the rest are white, like this one. How many different rows can you make?" width=30 below=p gap=1
+    number-input answer below=ask gap=0
+  }
+
+  answer (n - s + 1)
+  feedback {
+    when (answer == n - s) point=p {
+      say "Did you count the row where the red starts at the very first square?"
+    }
+  }
+  hint "Put the red at the far left first. Then move it one square to the right."
+  hint "Keep moving it one square at a time. When does it reach the end?"
+}

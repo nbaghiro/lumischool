@@ -1,0 +1,19 @@
+# The same drawing in far fewer lines: the long program is written one move a line, and four slots
+# are too few for that, so the child has to find the repeat hiding in it. The builder proves the
+# four-line program draws exactly the same line.
+item coding.refactor-fewest v=1 stars=3 skills=[coding.repetition, reasoning.fewest] {
+  title "The same line in four lines"
+  difficulty (n + t)
+  let n=3..4 s={1} t=1..3
+  where (n * s + t <= 6)  # a wider line would not fit beside the slots
+
+  scene 36x21 {
+    text ask "Fin drew the pale line with a program of {2 * n + 1} lines, one move a line. Write a program that draws exactly the same line in four lines." width=34 at=canvas(1, 0)
+    turtle t cols=(n * s + t + 1) rows=(n + 1) col=1 row=(n + 1) moves=[] target=["repeat {n}", "  right {s}", "  up 1", "right {t}"] mark=false below=ask gap=1
+    codepad answer tray=["repeat 2", "right 1", "up 1"] lines=4 style=lines key=["repeat {n}", "  right {s}", "  up 1", "right {t}"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which two moves come again and again? How many times?"
+  hint "After the part that repeats, what is left to draw?"
+}

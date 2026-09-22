@@ -1,0 +1,14 @@
+# Nothing here is marked by the machine. The item carries a check that says what a grown-up should
+# look for, which is the weaker promise the verifier can keep for a letter the child forms.
+item writing.letter-on-the-line v=1 skills=[writing.letter-formation] {
+  title "Letters that sit on the line"
+  let a={"c", "d", "h", "k"}
+
+  scene 36x14 {
+    text ask "The picture starts with {a}. Trace the {a}, then write three more on each line." width=24 at=canvas(1, 1)
+    art pic asset="{if a == \"c\" then \"cat\" else if a == \"d\" then \"duck\" else if a == \"h\" then \"hen\" else \"kite\"}" right-of=ask gap=1
+    handwriting rules show="{a}" rows=2 trace=3 width=24 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Every letter sits on the baseline rather than floating above it or dipping below, and the tall letters reach the top line while the small ones stop at the dotted line."
+}

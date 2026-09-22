@@ -1,0 +1,23 @@
+# The audit's raise for reading.best-word: every choice fits the grammar, and the rest of the
+# sentence says how strong the word has to be.
+item reading.shades-in-sentence v=1 skills=[reading.vocabulary, reading.inference] {
+  title "The right strength"
+  difficulty (if k == 2 or k == 3 then 1 else 0)
+  let k=0..4
+  level easy {
+    let k={0, 1, 4}  # tapped, slammed, gobbled: the sentence says softly, hard, in one go
+  }
+  level hard {
+    let k={2, 3}  # whimpered and strolled: quietly in her sleep, stopping at every picture
+  }
+
+  scene 36x12 {
+    passage strip text="{if k == 0 then \"He _____ on the door so softly that nobody heard.\" else if k == 1 then \"She _____ the door so hard that the pictures shook.\" else if k == 2 then \"The baby _____ quietly in her sleep.\" else if k == 3 then \"We _____ round the museum, stopping at every picture.\" else \"The dog _____ the whole cake in one go.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Which word fits best?" below=strip gap=1
+    choice pick options=[if k == 0 then "knocked" else if k == 1 then "closed" else if k == 2 then "screamed" else if k == 3 then "raced" else "nibbled", if k == 0 then "tapped" else if k == 1 then "pushed" else if k == 2 then "yelled" else if k == 3 then "dashed" else "tasted", if k == 0 then "banged" else if k == 1 then "slammed" else if k == 2 then "whimpered" else if k == 3 then "hurried" else "licked", if k == 0 then "hammered" else if k == 1 then "touched" else if k == 2 then "roared" else if k == 3 then "strolled" else "gobbled"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "tapped" else if k == 1 then "slammed" else if k == 2 then "whimpered" else if k == 3 then "strolled" else "gobbled")
+  hint "Read to the end of the sentence. Which words tell you how strong or gentle it was?"
+  hint "Put each word in the gap and read the whole sentence. Which one agrees with the rest?"
+}

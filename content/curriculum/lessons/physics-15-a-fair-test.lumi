@@ -1,0 +1,36 @@
+lesson physics-a-fair-test v=1 format=puzzles grade=4 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "A fair test"
+  goal "Change one thing at a time, read a table of results, spot a test that is not fair, and use a pattern to predict."
+
+  puzzle stars=1 {
+    show physics.ramp-rough r=12 d=4 easy-d=3 hard-d=6
+    show physics.friction-order a=1 b=3 hard-a=2
+    say "Everything about the two slopes is the same except the floor, so the floor is what changed."
+  }
+  puzzle stars=2 {
+    show physics.ramp-predict a=8 d=4 easy-a=6 easy-d=3 hard-a=9 hard-d=5
+    show physics.friction-fair s=1 f=0 easy-s=0 hard-f=1
+    show physics.band-fair x=3 y=1 a=8 b=11 easy-y=3
+    show physics.parachute-fair x=3 y=6 m=6 n=4 easy-n=6
+  }
+  puzzle stars=3 {
+    show physics.pendulum-fair f=1
+    show physics.ramp-which-fair f=0
+    show physics.friction-predict f=1 easy-f=0
+    show physics.seesaw-step a=4 p=3 b=6 easy-a=2 easy-p=2 easy-b=4 hard-a=6 hard-p=4 hard-b=8
+  }
+
+  grown-ups """
+    A test is fair when one thing changes and everything else stays put. That is the whole of the
+    sheet, and it is worth saying before the child starts rather than after. The questions come from
+    every part of the year: slopes, floors, bands, parachutes, pendulums and the see-saw. Ask for the
+    reason as well as the answer on each of the three-star puzzles: "because the string changed as
+    well" is the kind of sentence to listen for.
+    """
+  level easy {
+    grown-ups "At this level the carpet's roll is 3 cm shorter, the floors to compare are far apart in grip, the slope's steps are 3 cm from 6, the shoe test changes nothing but the floor and is fair, the bands are the same length and the canopies the same weight, so both tests are fair, the pairs to pick are as written, the lino sits between ice and wood, and the 4 kg weight balances on step 1."
+  }
+  level hard {
+    grown-ups "At this level the carpet's roll is 6 cm shorter, the floors to compare are next to each other in grip, the slope's steps are 5 cm from 9, the shoe test changes the shoe and the floor, the bands and the canopies are as written, the pairs to pick are as written, the doormat is as written, and the 8 kg weight balances on step 3."
+  }
+}

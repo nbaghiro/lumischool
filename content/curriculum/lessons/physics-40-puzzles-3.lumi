@@ -1,0 +1,72 @@
+lesson physics-puzzles-3 v=1 format=puzzles grade=3 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics puzzles: circuits, magnets and speed"
+  goal "Work out which loop lights, what a magnet pulls, which push wins, and who is faster."
+
+  puzzle stars=1 {
+    show physics.does-it-light c=1 n=2 easy-n=1 hard-c=0
+  }
+  puzzle stars=1 {
+    show physics.magnet-count n=5 k=2 easy-n=3 easy-k=1 hard-n=6 hard-k=4
+  }
+  level easy medium {
+    puzzle stars=1 {
+      show physics.pendulum-read l=5 easy-l=3
+    }
+  }
+  level easy {
+    puzzle stars=1 {
+      show physics.which-way-n a=7 b=3
+    }
+  }
+  puzzle stars=2 {
+    show physics.which-dark w=1 f=3 c=1 easy-f=1 hard-f=2
+  }
+  puzzle stars=2 {
+    show physics.balance-needed a=3 d=3 easy-a=2 easy-d=2 hard-a=5 hard-d=4
+  }
+  puzzle stars=2 {
+    show physics.speed-same s=4 u=4 t=6 v=9 easy-s=5 easy-u=6 hard-s=5 hard-u=4 hard-t=8 hard-v=10
+  }
+  puzzle stars=2 {
+    show physics.metal-not-magnetic f=2 x="nail" y="foil" z="stick" w="marble" easy-f=0 easy-x="clip" easy-y="coin" hard-x="clip" hard-y="coin" hard-z="ruler" hard-w="eraser"
+  }
+  puzzle stars=3 {
+    show physics.poles-chain e=1 x=1 y=0 easy-x=0 hard-y=1
+  }
+  puzzle stars=3 {
+    show physics.three-forces a=4 c=4 b=5 easy-a=3 easy-c=2 easy-b=4 hard-a=6 hard-c=6 hard-b=8
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show physics.two-faults c=1 l=1 e=0 hard-e=1
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show physics.speed-meet a=3 b=3 t=5
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, up at the windmill or at the table; the hints and
+    answers are on this sheet, not on theirs. Every puzzle can be started by looking closely: is
+    the loop closed all the way round, which things on the tray have arrows, which arrow is longer,
+    how many squares each runner has covered. The loops come from a circuit that works and a loop
+    with a break, the magnets from the magnets lesson and what lets electricity through, the
+    pushes from force in newtons, and the runners from speed. The two-star puzzles each need a
+    reason: the loop that stays dark has one fault to find, the push that balances is the gap
+    between the two, the same speed can come from different distances and times, and the thing
+    that conducts but is not pulled is metal and not iron. The three-star puzzles are the ones to
+    leave for a quiet moment: the chain of magnets turns on each pair of poles in turn, the three
+    forces have to be added on one side before the other is taken away, the loop with two faults
+    stays dark until both are mended, and the two walkers meet when their distances add to the
+    road. Ask for the reason as well as the answer on each of them. A puzzle left unsolved today
+    is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level a fourth one-star puzzle asks which way a trolley goes under two pushes, and the loop with two faults is left for another day; the loop has one bulb, the tray has three things with one pulled, the pendulum is short, the dark loop's fault is an open switch, the push to balance is small, the two runners are as fast as each other or not by their speeds, the odd thing out is the coin, the chain has two magnets and the three forces are small."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and a fourth three-star puzzle, two walkers meeting on a road; the loop's switch is open, the tray has six things with four pulled, the dark loop's fault is a loose wire, the push to balance is large, the runners' times are long and one of them is faster, the chain has three magnets, the odd thing out is the coin among a clip, a ruler and an eraser, the three forces are large and the loop has two faults."
+  }
+}

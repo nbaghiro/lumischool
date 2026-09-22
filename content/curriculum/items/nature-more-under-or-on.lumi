@@ -1,0 +1,32 @@
+# Comparing what is under the water with what is on top of it, without being told either count.
+# Close counts are harder than far ones, and the pads hide part of some fish.
+item nature.more-under-or-on v=1 skills=[nature.habitats] {
+  title "More under, or more on top?"
+  difficulty (6 - abs(f - p))
+  let f=1..5 p=1..6
+  where (f != p)
+  level easy {
+    where (abs(f - p) >= 3)
+  }
+  level hard {
+    where (abs(f - p) == 1)
+  }
+
+  scene 33x13 {
+    pond water pads=p fish=f frog=true at=canvas(1, 1)
+    text ask "Are there more fish under the water, or more lily pads on top of it?" narrate width=17 right-of=water gap=1
+    choice pick options=["more fish", "more lily pads"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if f > p then "more fish" else "more lily pads")
+  feedback {
+    when (f > p and pick == "more lily pads") point=water {
+      say "Some fish are half under a pad. Count every fish, even the ones with only a tail showing."
+    }
+    when (p > f and pick == "more fish") point=water {
+      say "Count the pads on top of the water, then the fish below. Which number is bigger?"
+    }
+  }
+  hint "Count the fish first and say the number. Then count the pads."
+  hint "The frog is sitting on one of the pads. That pad still counts as a pad."
+}

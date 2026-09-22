@@ -1,0 +1,27 @@
+# Two scripts on one character, and which one runs depends on what was tapped. Children this age
+# find two scripts at once hard, so the question names the one event and asks what that one does.
+item coding.stage-events v=1 skills=[coding.events] {
+  title "The flag, or the crab?"
+  difficulty (2 * k + a)
+  let k=0..1 a=2..3
+  level easy {
+    let k={0}
+  }
+
+  scene 34x17 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["when the flag is tapped", "right {a}", "when tapped", "left 1", "clap 2"]
+      stage s cols=7 col=3 who=crab code=["when the flag is tapped", "right {a}", "when tapped", "left 1", "clap 2"] event=(if k == 0 then "flag" else "tap") upto=0
+    }
+    text ask "{if k == 0 then \"The flag\" else \"The crab\"} is tapped. Which square does the crab end on?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=s answer=col
+  feedback {
+    when (answer == 3 + a and k == 1) point=b {
+      say "Tapping the crab runs the script under when tapped, not the one under the flag."
+    }
+  }
+  hint "Find the when block that matches what was tapped. Only the blocks under it run."
+}

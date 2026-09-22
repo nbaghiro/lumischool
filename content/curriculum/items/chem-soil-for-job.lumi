@@ -1,0 +1,43 @@
+# Choosing a soil by what the test showed: a pot plant wants soil that holds some water and
+# lets the rest out, a path wants water gone at once, a pond wants it kept. The table stays on
+# the page, so the answer comes from the numbers, not from the names.
+item chem.soil-for-job v=1 skills=[chemistry.rocks, reasoning.explain] {
+  title "Which soil for the job?"
+  difficulty (if j == 0 then 1 else 0)
+  let j=0..2 t=0..1
+  let sandMl={pick(t, 80, 70)}
+  let loamMl={pick(t, 40, 45)}
+  let clayMl={pick(t, 10, 15)}
+  let job={pick(j, "a pot plant, which needs soil that holds some water but not all of it", "a garden path, where the rain must drain away at once", "the bottom of a pond, which must keep the water in")}
+  let right={pick(j, "garden soil", "sand", "clay")}
+  level easy {
+    let j=1..2
+  }
+  level hard {
+    let j=0..0
+  }
+
+  scene 34x18 {
+    table t cols=2 head=["Soil", "Through in a minute (ml)"] cells=["sand", "{sandMl}", "garden soil", "{loamMl}", "clay", "{clayMl}"] at=canvas(1, 0)
+    text ask "Ben wants a soil for {job}. Which soil should he use?" narrate width=32 below=t gap=1
+    choice pick options=["sand", "garden soil", "clay"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (j == 0 and pick == "sand") point=t {
+      say "The sand lets nearly all the water straight through, so the plant's roots would be dry an hour after watering."
+    }
+    when (j == 0 and pick == "clay") point=t {
+      say "The clay holds nearly all the water, so the roots would sit in a puddle. The plant wants the middle one."
+    }
+    when (j == 1 and pick != "sand") point=t {
+      say "A path wants the rain gone at once. Which soil lets the most through?"
+    }
+    when (j == 2 and pick != "clay") point=t {
+      say "A pond wants the water kept in. Which soil lets the least through?"
+    }
+  }
+  hint "Does the job want the water to go through fast, to stay, or some of each?"
+  hint "Match that to the table: the most through, the least through, or the number in between."
+}

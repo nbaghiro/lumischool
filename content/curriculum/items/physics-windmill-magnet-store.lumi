@@ -1,0 +1,29 @@
+# The story: Sam sorting the windmill island's scrap with two magnets, and how many clips the two
+# chains hold between them.
+item physics.windmill-magnet-store v=1 skills=[physics.magnets, addition.to-twenty] {
+  title "Sorting the scrap"
+  difficulty (a + b)
+  let v=0..3
+  let a={pick(v, 4, 6, 7, 8)}
+  let b={pick(v, 3, 5, 6, 7)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 29x29 {
+    row top space=2 align=start at=canvas(1, 0) {
+      magnet one mode=chain clips=a clip=1 tag="A"
+      magnet two mode=chain clips=b clip=1 tag="B"
+      windmill mill sails=4
+    }
+    text ask "Sam clears the paper clips from the workshop floor with both magnets at once. How many clips do the two magnets hold between them?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=(a + b)
+  hint "Count the clips on each magnet."
+  hint "Add the two counts together."
+}

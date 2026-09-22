@@ -1,0 +1,23 @@
+item chem.soil-thickest v=1 skills=[chemistry.rocks] {
+  title "The thickest layer"
+  difficulty (if si == max(st, sa, si, cl) or st == max(st, sa, si, cl) then 1 else 0)
+  let st=0..1 sa=1..4 si=1..3 cl=1..3
+  where (st + sa + si + cl <= 8)
+  where ((if sa == max(st, sa, si, cl) then 1 else 0) + (if si == max(st, sa, si, cl) then 1 else 0) + (if cl == max(st, sa, si, cl) then 1 else 0) + (if st == max(st, sa, si, cl) then 1 else 0) == 1)
+  level easy {
+    where (sa == max(st, sa, si, cl) or cl == max(st, sa, si, cl))
+  }
+  level hard {
+    where (si == max(st, sa, si, cl) or st == max(st, sa, si, cl))
+  }
+
+  scene 25x17 {
+    text ask "Which layer of this soil is the thickest?" width=24 at=canvas(1, 0)
+    soiljar j stones=st sand=sa silt=si clay=cl bits=3 names=1 below=ask gap=0
+    choice pick options=["stones", "sand", "silt", "clay"] stack=column right-of=j gap=1
+  }
+
+  check chem.rocks of=j pick=thickest
+  hint "Count how many squares thick each layer is."
+  hint "Which count is the biggest?"
+}

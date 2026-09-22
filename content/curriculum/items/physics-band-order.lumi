@@ -1,0 +1,15 @@
+item physics.band-order v=1 skills=[physics.sound] stars=3 {
+  title "Low to high"
+  let a={5, 8, 11, 14} b={5, 8, 11, 14} c={5, 8, 11, 14}
+  where (a != b and b != c and a != c)
+
+  scene 32x19 {
+    bands bb lengths=[a, b, c] at=canvas(1, 0)
+    text ask "Number the bands from the lowest note, 1, to the highest, 3." width=19 below=bb gap=0
+    sequence order items=["A", "B", "C"] blanks=[ra, rb, rc] right-of=ask gap=1
+  }
+
+  answer ra=(1 + (if b > a then 1 else 0) + (if c > a then 1 else 0)) rb=(1 + (if a > b then 1 else 0) + (if c > b then 1 else 0)) rc=(1 + (if a > c then 1 else 0) + (if b > c then 1 else 0))
+  hint "Which band is longest? Is that the lowest note or the highest?"
+  hint "Now order the other two the same way."
+}

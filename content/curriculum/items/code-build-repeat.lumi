@@ -1,0 +1,15 @@
+# The slots are too few for the long program, so the repeat is what makes it fit. A child who has
+# not seen that yet fills the slots, runs out, and has a reason to want a repeat.
+item coding.build-repeat v=1 skills=[coding.repetition] {
+  title "Climb the steps in three blocks"
+  difficulty k
+  let k=0..1
+
+  scene 31x14 {
+    maze g map=["{if k == 0 then \"# # # F\" else \"# # # # F\"}", "{if k == 0 then \"# # . .\" else \"# # # . .\"}", "{if k == 0 then \"# . . #\" else \"# # . . #\"}", "{if k == 0 then \"S . # #\" else \"# . . # #\"}", "{if k == 0 then \". . . .\" else \"S . # # #\"}"] at=canvas(1, 0)
+    codepad answer tray=["repeat 2", "right 1", "up 1"] lines=3 right-of=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Every step is right 1 then up 1. How many steps are there?"
+}

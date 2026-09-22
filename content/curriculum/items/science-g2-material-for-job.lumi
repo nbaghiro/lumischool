@@ -1,0 +1,18 @@
+# Choosing a material for what it has to do: the job names the property, and the child matches it.
+item science.material-for-job v=1 skills=[science.materials] {
+  title "The right material for the job"
+  let j=0..4
+  let job={if j == 0 then "A window has to let light through" else if j == 1 then "A raincoat has to keep the rain out" else if j == 2 then "A scarf has to be soft and warm" else if j == 3 then "A saucepan has to be strong and must not melt on the stove" else "A bouncy ball has to bend and spring back"}
+  let o1={if j == 0 then "wood" else if j == 1 then "plastic" else if j == 2 then "metal" else if j == 3 then "paper" else "glass"}
+  let o2={if j == 0 then "glass" else if j == 1 then "paper" else if j == 2 then "wool" else if j == 3 then "plastic" else "wood"}
+  let o3={if j == 0 then "wool" else if j == 1 then "wool" else if j == 2 then "glass" else if j == 3 then "metal" else "rubber"}
+
+  scene 30x9 {
+    text ask "{job}. Which material is best for it?" width=28 at=canvas(1, 1)
+    choice pick options=[o1, o2, o3] below=ask gap=1
+  }
+
+  answer pick=(if j == 0 then "glass" else if j == 1 then "plastic" else if j == 2 then "wool" else if j == 3 then "metal" else "rubber")
+  hint "Read what the job needs. Which material can do that?"
+  hint "Think of each one in turn. What would happen if the thing were made of it?"
+}

@@ -1,0 +1,23 @@
+# The same word does a different job in a different sentence, so the sentence decides and the
+# word's ending cannot: the audit's raise for sorting words out of context.
+item writing.class-in-sentence v=1 skills=[writing.word-classes] {
+  title "What job does the word do?"
+  difficulty (if k == 1 or k == 3 or k == 6 or k == 9 then 1 else 0)
+  let k=0..9 w={if k <= 1 then "fish" else if k <= 3 then "light" else if k <= 5 then "swim" else if k <= 7 then "warm" else "snow"}
+  level easy {
+    let k={0, 2, 4, 5, 7, 8}  # the job the word's look suggests
+  }
+  level hard {
+    let k={1, 3, 6, 9}  # we fish, a light bag, warm your hands, it may snow
+  }
+
+  scene 30x11 {
+    caption line text="{if k == 0 then \"A fish swam under the boat.\" else if k == 1 then \"We fish from the old jetty.\" else if k == 2 then \"Mo turned on the light.\" else if k == 3 then \"Mo carried a light bag.\" else if k == 4 then \"We had a long swim.\" else if k == 5 then \"The ducks swim to the bank.\" else if k == 6 then \"Warm your hands by the fire.\" else if k == 7 then \"Ada has warm gloves.\" else if k == 8 then \"The snow fell all night.\" else \"It may snow tonight.\"}" width=28 at=canvas(1, 1)
+    text ask "In this sentence, what job does the word {w} do?" width=28 below=line gap=1
+    choice pick options=["naming", "doing", "describing"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 or k == 2 or k == 4 or k == 8 then "naming" else if k == 3 or k == 7 then "describing" else "doing")
+  hint "In this sentence, is {w} a thing, something that happens, or what a thing is like?"
+  hint "Read the sentence without {w}. What is missing now?"
+}

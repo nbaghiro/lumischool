@@ -1,0 +1,16 @@
+# Kim judges by length. In four versions she is wrong and in two she is right, so the answer has to
+# come from clapping, not from assuming Kim is always wrong.
+item reading.beats-trap v=1 stars=2 skills=[reading.syllables, reasoning.find-the-error] {
+  title "Is Kim right?"
+  difficulty (if k <= 3 then 1 else 0)
+  let k=0..5 p=0..1
+
+  scene 30x9 {
+    text ask "Kim says {if k == 0 then \"strength\" else if k == 1 then \"stretched\" else if k == 2 then \"scratched\" else if k == 3 then \"brought\" else if k == 4 then \"crocodile\" else \"umbrella\"} has more beats than {if k == 0 then \"open\" else if k == 1 then \"idea\" else if k == 2 then \"zebra\" else if k == 3 then \"banana\" else if k == 4 then \"frog\" else \"hat\"}, because it has more letters. Which word really has more beats?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[if p == 0 then if k == 0 then "strength" else if k == 1 then "stretched" else if k == 2 then "scratched" else if k == 3 then "brought" else if k == 4 then "crocodile" else "umbrella" else if k == 0 then "open" else if k == 1 then "idea" else if k == 2 then "zebra" else if k == 3 then "banana" else if k == 4 then "frog" else "hat", if p == 0 then if k == 0 then "open" else if k == 1 then "idea" else if k == 2 then "zebra" else if k == 3 then "banana" else if k == 4 then "frog" else "hat" else if k == 0 then "strength" else if k == 1 then "stretched" else if k == 2 then "scratched" else if k == 3 then "brought" else if k == 4 then "crocodile" else "umbrella"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "open" else if k == 1 then "idea" else if k == 2 then "zebra" else if k == 3 then "banana" else if k == 4 then "crocodile" else "umbrella")
+  hint "Clap both words. Do not count the letters."
+  hint "Is a long word always a word with many beats?"
+}

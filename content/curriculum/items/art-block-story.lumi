@@ -1,0 +1,29 @@
+# The story: the wave printed from blocks, counted in curls or in prints.
+item art.block-story v=1 stars=1 skills=[art.printing, multiplication.groups] {
+  title "Printing the wave"
+  difficulty (r + w)
+  let c=4..6 r=2..3 w=0..1
+  level easy {
+    let c=4..5 r=2..2 w=0..0
+  }
+  level hard {
+    let c=6..6 r=3..3 w=1..1
+  }
+
+  scene 34x12 {
+    text ask "At the painter's hut Ada prints a wave the way Hokusai did: one curl block, printed {c} times along each crest, and {r} crests. {if w == 0 then \"How many curls does she print?\" else \"Then she prints the whole wave again for a friend. How many curls has she printed in all?\"}" narrate width=32 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then c * r else c * r * 2)
+  feedback {
+    when (w == 0 and answer == c + r) point=ask {
+      say "Every crest has {c} curls: that is {r} lots of {c}, not {c} added to {r}."
+    }
+    when (w == 1 and answer == c * r) point=ask {
+      say "That is one wave. She prints the whole thing twice."
+    }
+  }
+  hint "{if w == 0 then \"Each crest is the same number of curls. How many crests?\" else \"Count one wave's curls first, then double it.\"}"
+  hint "{if w == 0 then \"{c} times {r}.\" else \"{c} times {r}, then twice that.\"}"
+}

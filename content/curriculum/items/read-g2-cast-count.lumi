@@ -1,0 +1,17 @@
+# Every person, counted once: a person named two ways (the driver, Mrs Cole) is one, twin sisters
+# are two, and a dog is not a person. There is no method to follow, only careful reading.
+item reading.cast-count v=1 stars=3 skills=[reading.characters, reasoning.all-the-ways] {
+  title "How many people?"
+  difficulty (if k == 2 then 5 else 3)
+  let k=0..3
+
+  scene 36x12 {
+    passage p text="{if k == 0 then \"Nell went to the beach with her mum and her little brother Jack. Mum bought three ice creams, one for each of them. Jack dropped his on the sand.\" else if k == 1 then \"Raj and his grandad took the bus to town. The driver, Mrs Cole, said hello to them. Grandad bought Raj a book, and Raj said thank you.\" else if k == 2 then \"Zoe had a party. Her best friend Kit came, and so did Kit's twin sisters. Zoe's dad made pancakes for all of the children.\" else \"Ivy took her dog to the shop. The shopkeeper gave the dog a biscuit. Ivy's aunt was in the shop too, and she walked home with Ivy.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "How many people are in this story?" narrate below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 3 else if k == 1 then 3 else if k == 2 then 5 else 3)
+  hint "Make a list of every person as you meet them."
+  hint "Is anyone in the story twice, called by two names? Is anyone not a person?"
+}

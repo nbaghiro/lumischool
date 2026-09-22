@@ -1,0 +1,22 @@
+# The number with the bigger ones digit is the smaller number, so the tens have to be read first.
+item place.compare-two-digit v=1 skills=[place-value.compare] {
+  title "More tens is more"
+  difficulty (o - r)
+  let t=2..8 o=5..9 r=0..4 p=0..1
+  level easy {
+    let o=5..6 r=3..4
+  }
+  level hard {
+    let o=8..9 r=0..1
+  }
+
+  scene 17x14 {
+    compare pair left="{if p == 0 then 10 * t + o else 10 * (t + 1) + r}" right="{if p == 0 then 10 * (t + 1) + r else 10 * t + o}" sign="?" at=canvas(1, 1)
+    text ask "Which sign goes in the box?" narrate below=pair gap=1
+    choice pick options=["<", ">"] below=ask gap=1
+  }
+
+  answer pick=(if p == 0 then "<" else ">")
+  hint "Which number has more tens?"
+  hint "The sign opens its wide side to the bigger number."
+}

@@ -1,0 +1,27 @@
+# A column is a tenth of the square: the way in, read straight off the picture.
+item decimal.tenths-shaded v=1 skills=[decimals.tenths] {
+  title "Tenths of a square"
+  difficulty k
+  let k=1..9
+  level easy {
+    let k=1..3
+  }
+  level hard {
+    let k=7..9
+  }
+
+  scene 28x15 {
+    decimalsquare sq hundredths=(10 * k) write=false at=canvas(1, 1)
+    text ask "The whole square is one. What is shaded, as a decimal?" width=12 right-of=sq gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(k / 10, 1)
+  feedback {
+    when (answer == k) point=sq {
+      say "{k} columns are shaded, and each column is one tenth, so write it with a point: 0.{k}."
+    }
+  }
+  hint "Into how many equal columns is the square cut?"
+  hint "How many of those columns are shaded? Write that many tenths with a point."
+}

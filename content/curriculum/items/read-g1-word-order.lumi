@@ -1,0 +1,15 @@
+# Four word cards in the wrong order: the capital shows the start and the mark shows the end, and
+# the rest has to make sense.
+item reading.word-order v=1 skills=[reading.sight-words, reading.sentence-meaning] {
+  title "Make a sentence"
+  let k=0..3
+
+  scene 21x18 {
+    text ask "Put the words in order to make a sentence. Write 1 to 4 in the boxes." narrate width=20 at=canvas(1, 1)
+    sequence s items=["{if k == 0 then \"hello.\" else if k == 1 then \"was\" else if k == 2 then \"come\" else \"have\"}", "{if k == 0 then \"The\" else if k == 1 then \"The\" else if k == 2 then \"you\" else \"We\"}", "{if k == 0 then \"said\" else if k == 1 then \"hot.\" else if k == 2 then \"Can\" else \"cats.\"}", "{if k == 0 then \"fox\" else if k == 1 then \"sun\" else if k == 2 then \"here?\" else \"two\"}"] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=(if k == 0 then 4 else if k == 1 then 3 else if k == 2 then 3 else 2) p2=(if k == 2 then 2 else 1) p3=(if k == 0 then 3 else if k == 1 then 4 else if k == 2 then 1 else 4) p4=(if k == 0 then 2 else if k == 1 then 2 else if k == 2 then 4 else 3)
+  hint "Which word has a capital letter? It goes first."
+  hint "Which word has a mark after it? It goes last. Read it out to check it makes sense."
+}

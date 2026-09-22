@@ -1,0 +1,22 @@
+# The way in for changing shape: the third picture shows what happened, and the child says it.
+item chem.springs-back v=1 skills=[chemistry.materials] {
+  title "Did it go back?"
+  difficulty (if k <= 2 or k == 8 then 0 else 1)
+  let k=0..8
+  level easy {
+    let k={0, 1, 2, 8}  # the sponge, the clay, the rubber band and the ball
+  }
+  level hard {
+    let k=3..7  # the spring, the pipe cleaner and the foil
+  }
+
+  scene 21x15 {
+    squash s thing=(if k == 0 then "sponge" else if k == 1 then "clay" else if k == 2 then "band" else if k == 3 then "spring" else if k == 4 then "spring" else if k == 5 then "pipecleaner" else if k == 6 then "pipecleaner" else if k == 7 then "foil" else "ball") action=(if k == 0 then "squash" else if k == 1 then "squash" else if k == 2 then "stretch" else if k == 3 then "stretch" else if k == 4 then "squash" else if k == 5 then "bend" else if k == 6 then "twist" else if k == 7 then "squash" else "squash") after=1 at=canvas(1, 0)
+    text ask "Did the {if k == 0 then \"sponge\" else if k == 1 then \"clay\" else if k == 2 then \"rubber band\" else if k == 3 then \"spring\" else if k == 4 then \"spring\" else if k == 5 then \"pipe cleaner\" else if k == 6 then \"pipe cleaner\" else if k == 7 then \"foil\" else \"ball\"} go back to its shape when it was let go?" width=19 below=s gap=0
+    choice pick options=["yes", "no"] below=ask gap=0
+  }
+
+  check chem.materials of=s pick=back
+  hint "Compare the first picture with the last one. Are they the same shape?"
+  hint "Does the last picture look like the first one, or like the middle one?"
+}

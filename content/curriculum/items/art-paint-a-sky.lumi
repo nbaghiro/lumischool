@@ -1,0 +1,10 @@
+item art.paint-a-sky v=1 stars=3 skills=[art.tints, art.painting, reasoning.plan] {
+  title "A sky from dark to light"
+
+  scene 34x17 {
+    text ask "Paint a sky in at least four bands, dark blue at the top. Make each band lighter than the one above, and plan how much white each one needs." width=12 at=canvas(1, 1)
+    paintsheet sheet w=18 h=12 paper="plain" guide="none" outline="none" pots=["blue", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Four or more bands (or a blend) from a dark blue at the top to a pale blue at the bottom, each one lighter than the one above, which means planning the white so it does not run out of steps too soon." notice=["Four or more bands", "Each band lighter than the one above", "White added a little at a time"] ask="How did you make each band lighter than the one above it?"
+}

@@ -1,0 +1,28 @@
+# Reading a heating curve: the flat part is the ice melting, and how long it lasts is read off the
+# minutes, not the temperatures, so the child has to use both axes.
+item chem.ice-flat v=1 skills=[chemistry.states, data.line-graph] {
+  title "How long did it stay at 0?"
+  difficulty e
+  let k=0..5 e={2, 5}
+  level easy {
+    let e={2}
+  }
+  level hard {
+    let e={5}
+  }
+
+  scene 35x14 {
+    heatcurve curve temps=[if k == 0 then -20 else if k == 1 then -20 else if k == 2 then -10 else if k == 3 then -10 else if k == 4 then -10 else -20, if k == 0 then -10 else if k == 1 then -10 else if k == 2 then 0 else if k == 3 then 0 else if k == 4 then 0 else -10, if k == 0 then 0 else if k == 1 then 0 else if k == 2 then 0 else if k == 3 then 0 else if k == 4 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else if k == 2 then 0 else if k == 3 then 0 else if k == 4 then 0 else 0, if k == 0 then 0 else if k == 1 then 0 else if k == 2 then 10 else if k == 3 then 0 else if k == 4 then 0 else 0, if k == 0 then 10 else if k == 1 then 0 else if k == 2 then 20 else if k == 3 then 10 else if k == 4 then 0 else 0, if k == 0 then 20 else if k == 1 then 10 else if k == 2 then 30 else if k == 3 then 20 else if k == 4 then 10 else 0] every=e min=-20 max=30 step=10 at=canvas(1, 0)
+    text ask "Ice from the freezer was left in a warm room and its temperature read every {e} minutes. For how many minutes did it stay at 0 degrees?" width=14 right-of=curve gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.state of=curve answer=flat-for
+  feedback {
+    when (answer == 0) point=curve {
+      say "The question asks how long, in minutes, not what temperature."
+    }
+  }
+  hint "Find the part of the line that is flat. Which reading does it start at, and which does it end at?"
+  hint "How many minutes are between those two readings? Count the steps of {e}."
+}

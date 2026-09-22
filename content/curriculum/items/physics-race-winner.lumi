@@ -1,0 +1,23 @@
+item physics.race-winner v=1 skills=[physics.motion] {
+  title "Who won?"
+  let a={12, 14, 16} b={12, 14, 16} c={12, 14, 16}
+  where (a != b and b != c and a != c)
+
+  scene 34x15 {
+    row watches at=canvas(1, 0) space=1 align=start {
+      stopwatch one seconds=a
+      stopwatch two seconds=b
+      stopwatch three seconds=c
+    }
+    text ask "Three children ran the same race. A, B and C are their times, left to right. Who won?" width=20 below=watches gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=1
+  }
+
+  answer pick=(if a < b and a < c then "A" else if b < c then "B" else "C")
+  feedback {
+    when (pick == "A" and a > b and a > c) point=one {
+      say "That is the most seconds. The winner took the fewest."
+    }
+  }
+  hint "Who took the fewest seconds?"
+}

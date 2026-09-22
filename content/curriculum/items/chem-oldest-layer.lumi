@@ -1,0 +1,30 @@
+# Layers settle one on top of another, so the bottom is oldest, as the jar shows: the stones
+# reached the bottom first. The question is asked of the cliff's layers, the jar beside it.
+item chem.oldest-layer v=1 skills=[chemistry.rocks, reasoning.explain] {
+  title "Which layer is oldest?"
+  difficulty (if w == 2 then 1 else 0)
+  let w=0..2
+  let asks={pick(w, "Which layer of the cliff is the oldest?", "Which layer of the cliff is the youngest?", "A fossil in the middle layer is younger than the fossils in which layer?")}
+  let right={pick(w, "the bottom", "the top", "the bottom")}
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 34x26 {
+    soiljar j stones=1 sand=3 silt=2 clay=1 bits=3 names=1 at=canvas(0, 0)
+    text ask "In the jar the stones settled first and lie at the bottom, with each later layer on top of the one before. The cliff's rock layers were laid down the same way, one on top of another over millions of years. {asks}" narrate width=17 right-of=j gap=1
+    choice pick options=["the top", "the middle", "the bottom"] stack=column below=j gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=j {
+      say "Each layer lands on top of the one already there, so the lowest layer was there first and the top one came last."
+    }
+  }
+  hint "Look at the jar. Which layer got to the bottom first? The cliff piled up the same way."
+  hint "First down is oldest; the newest layer is always the one on top."
+}

@@ -1,0 +1,18 @@
+item fraction.cake-cut v=1 skills=[fractions.halves-quarters] {
+  title "Halves or quarters"
+  let s={2, 4}
+
+  scene 26x17 {
+    cake c candles=0 slices=s at=canvas(1, 1)
+    text ask "The cake is cut into equal slices. What is each slice?" narrate width=14 right-of=c gap=1
+    choice pick options=["a half", "a quarter", "a third"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if s == 2 then "a half" else "a quarter")
+  feedback {
+    when (pick == "a third") point=c {
+      say "A third would mean three equal slices. Count the slices."
+    }
+  }
+  hint "Count the slices. Two equal slices are halves, four are quarters."
+}

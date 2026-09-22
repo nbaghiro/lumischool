@@ -1,0 +1,64 @@
+# Every treble note read from the two landmarks, middle C on its short line and treble G on the
+# second line: the lines E G B D F, the spaces F A C E, one letter a step.
+lesson music-reading-the-treble-staff v=1 format=teach grade=3 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Reading the treble staff"
+  goal "Name any note on the treble staff from the landmarks and play it."
+
+  look {
+    scene 28x17 {
+      grandstaff gs notes=["E4", "G4", "B4", "D5", "F5"] letters=true lit=[] landmarks=true at=canvas(1, 1)
+    }
+    say """
+      The treble staff has five lines, and the clef curls round the second one: that line is G.
+      Every line and every space is one letter, so from G the lines climb G, B, D, F and the
+      spaces between them are A, C, E. Below G the bottom line is E, and below that, on its own
+      short line, is middle C. Name a note from the nearest landmark and count the steps.
+      """
+  }
+  do {
+    show music.bottom-line
+    level easy {
+      worked music.treble-name i=1 level=medium
+    }
+    practice music.treble-name count=2 seed=2 easy-seed=1 hard-seed=1
+    show music.play-treble
+    practice music.which-line count=1 seed=1 easy-seed=1 hard-seed=2
+    practice music.line-or-space count=1 seed=3 easy-seed=1 hard-seed=1
+    practice music.name-near-landmark count=1 seed=2 easy-seed=1 hard-seed=2 hard-level=medium
+    level hard {
+      show music.treble-name i=8 level=medium
+    }
+  }
+  story {
+    show music.tune-count k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show music.two-from-landmark k=1 r=1 easy-k=0 hard-k=2 hard-r=2
+  }
+  try stars=3 {
+    show music.play-four
+  }
+  remember {
+    say "Treble G is on the second line. Lines E G B D F, spaces F A C E, one letter a step."
+  }
+
+  grown-ups """
+    The idea is that a treble note is named by counting steps from the nearest landmark, middle
+    C on its short line or treble G on the second line, one letter for every line and every
+    space. The look is the five line notes with their letters and the way in is the bottom line.
+    The core names ringed notes across the staff, plays a note read from it (the machine hears
+    the key), says which line a letter sits on, whether a note is on a line or in a space, and
+    names a note near a landmark. The wrong idea to watch for is counting lines only, so that
+    two lines up is read as two steps; ask the child to say every letter, line and space, out
+    loud. The story counts the space notes in a bandstand tune, the two-star question names a
+    note two steps from a landmark with the reason, and the three-star question is a four-note
+    tune read and played, proved by the pitches. If the naming is slow, stay another day with
+    the landmarks alone, then the notes one step from them.
+    """
+  level easy {
+    grown-ups "At this level F in the space above the bottom line is worked once in the teacher's pen before the notes nearest the landmarks, E, F and A, the lines asked are the bottom and the second, the line or space is asked for E, F or G, the note near a landmark is a step away, the story's tune stays in the bottom spaces, and the two-star is two steps above G."
+  }
+  level hard {
+    grown-ups "At this level the notes to name are the high ones, C to G above the staff's middle, with a second, the top G, in the core, the lines asked are the middle, fourth and top, the line or space is asked for B to E, the note near a landmark is a skip away, the story's tune climbs to E in the top space, and the two-star is two steps above middle C."
+  }
+}

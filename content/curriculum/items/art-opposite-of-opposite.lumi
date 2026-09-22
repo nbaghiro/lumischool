@@ -1,0 +1,14 @@
+item art.opposite-of-opposite v=1 skills=[art.complementary, reasoning.relational] {
+  title "The opposite of the opposite"
+  difficulty (if t == "red" then 1 else 0)
+  let t={"green", "orange", "purple", "red"}
+
+  scene 26x12 {
+    text ask "What is the opposite of the opposite of {t}?" width=14 at=canvas(1, 1)
+    choice pick options=["{t}", "{if t == \"green\" then \"red\" else if t == \"orange\" then \"blue\" else if t == \"purple\" then \"yellow\" else \"green\"}", "{if t == \"green\" or t == \"red\" then \"brown\" else \"grey\"}"] stack=column right-of=ask gap=2
+  }
+
+  answer pick=t
+  hint "What is the opposite of {t}?"
+  hint "Now go straight across the wheel from that colour. Where do you land?"
+}

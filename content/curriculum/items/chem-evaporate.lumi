@@ -1,0 +1,31 @@
+item chem.evaporate v=2 skills=[chemistry.heating] {
+  title "How much water boiled away?"
+  difficulty (a - b)
+  let a={200, 300, 400} b={50, 100, 150}
+  where (b < a and a != 2 * b)
+  level easy {
+    where (a - b <= 150)
+  }
+  level hard {
+    where (a - b >= 250)
+  }
+
+  scene 30x17 {
+    text ask "The beaker started at {a} ml. How many millilitres have boiled away?" width=28 at=canvas(1, 0)
+    flame burner height=4 on=1 stand=false below=ask gap=0
+    beaker glass max=400 step=100 level=b unit=ml right-of=burner gap=1
+    number-input answer right-of=glass gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == b) point=glass {
+      say "That is what is left in the beaker. The question asks what has gone."
+    }
+    when (answer == a + b) point=glass {
+      say "Nothing was added, so take the smaller amount from the bigger one."
+    }
+  }
+  hint "What does the beaker read now?"
+  hint "How much was in it at the start? How far apart are the two amounts?"
+}

@@ -1,0 +1,33 @@
+item physics.heavier-pull v=1 skills=[physics.weight] {
+  title "Which bag is heavier?"
+  difficulty (8 - abs(a - b))
+  let a={2, 4, 6, 8} b={2, 4, 6, 8}
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 4)
+  }
+  level hard {
+    where (abs(a - b) == 2)
+  }
+
+  scene 28x23 {
+    text ask "Ben and Mia each weigh a bag. Which bag pulls harder?" width=22 at=canvas(1, 1)
+    springscale one max=10 step=2 value=a unit=N below=ask gap=1
+    text la "A" below=one gap=1
+    springscale two max=10 step=2 value=b unit=N right-of=one gap=3
+    text lb "B" below=two gap=1
+    choice pick options=["A", "B"] right-of=two gap=2
+  }
+
+  answer pick=(if a > b then "A" else "B")
+  feedback {
+    when (pick == "B" and a > b) point=one {
+      say "The pointer that has come further down belongs to the heavier bag."
+    }
+    when (pick == "A" and b > a) point=two {
+      say "The pointer that has come further down belongs to the heavier bag."
+    }
+  }
+  hint "Which pointer has come further down?"
+  hint "Read each pointer. The bigger number is the harder pull."
+}

@@ -1,0 +1,16 @@
+# Build to a limit: four blocks for a staircase with a flat top, so the child has to decide what
+# goes inside the repeat and what comes after it.
+item coding.stairs-and-top v=1 stars=3 skills=[coding.repetition, coding.drawing] {
+  title "Stairs with a landing"
+  difficulty (n + t)
+  let n=2..3 t=2..3
+
+  scene 36x16 {
+    turtle t cols=7 rows=5 col=1 row=5 moves=[] target=["repeat {n}", "  right 1", "  up 1", "right {t}"] at=canvas(1, 0)
+    codepad answer tray=["right 1", "up 1", "repeat 2"] lines=4 key=["repeat {n}", "  right 1", "  up 1", "right {t}"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which part of the drawing happens again and again? Which part happens only once?"
+  hint "The part that happens once comes after the repeat. Set it further out."
+}

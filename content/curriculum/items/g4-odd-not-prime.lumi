@@ -1,0 +1,26 @@
+# A claim tested by finding the one number that breaks it: a counterexample is a reason.
+item primes.counterexample v=1 stars=2 skills=[number.primes, reasoning.counterexample] {
+  title "Show that she is wrong"
+  difficulty (if w == 9 or w == 15 then 0 else if w == 33 or w == 35 then 2 else 1)
+  let w={9, 15, 21, 25, 27, 33, 35} p=0..3
+  level hard {
+    let w={27, 33, 35}
+  }
+
+  scene 30x9 {
+    text ask "Ivy says every odd number bigger than 1 is prime. Which number shows that she is wrong?" narrate width=29 at=canvas(1, 1)
+    choice pick options=[if p == 0 then w else 2, if p == 1 then w else 13, if p == 2 then w else 7, if p == 3 then w else 4] below=ask gap=1
+  }
+
+  answer pick=w
+  feedback {
+    when (pick == 2 or pick == 4) point=ask {
+      say "That number is even. She only said something about odd numbers."
+    }
+    when (pick == 13 or pick == 7) point=ask {
+      say "That one is odd, but it is prime, so it agrees with her."
+    }
+  }
+  hint "To show she is wrong you need a number that is odd and is not prime."
+  hint "Which of these can be made into equal rows?"
+}

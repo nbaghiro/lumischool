@@ -1,0 +1,48 @@
+lesson coding-sorting-cards v=2 format=teach grade=3 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Sorting cards two at a time"
+  goal "Carry out a sorting program by hand: compare two cards side by side, swap them if they are the wrong way round, and keep going until nothing moves."
+
+  look {
+    scene 17x13 {
+      sortcards c cards=[5, 2, 7, 1, 4] compare=1 swap=true at=canvas(1, 0)
+    }
+    say """
+      A computer sorts by looking at two things at a time. Compare the first two cards: if the
+      bigger is on the left, swap them. Then move one place along and do it again. One pass along
+      the row always carries the biggest card to the end.
+      """
+  }
+  do {
+    show coding.swap-or-not a=6 b=4 easy-a=2 easy-b=8 hard-a=5 hard-b=4
+    practice coding.sort-pass count=2 seed=2 hard-seed=4
+    show coding.sort-swaps k=0 easy-k=1 hard-k=2
+    show coding.passes-needed k=1 easy-k=0 hard-k=3
+    show coding.passes-needed k=2 easy-k=1
+    show coding.total-swaps k=0 easy-k=2
+    show coding.total-swaps k=1 easy-k=3
+  }
+  try stars=2 {
+    show coding.pass-before k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.orders-one-pass k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Compare two side by side. Swap if the bigger is first. Move one along. Stop when a pass has no swaps."
+  }
+
+  grown-ups """
+    Five playing cards on the table are all this needs. Let the child be the computer, and insist
+    on the rule: only ever look at two cards, and only ever swap two that are side by side. Doing
+    passes until nothing swaps sorts the whole row, which the middle questions ask for. In the
+    two-star question, doing one pass on each row and comparing is a fine way in; noticing that the
+    biggest card has to finish last rules some rows out faster. In the three-star question, write
+    the six orders in a list first.
+    """
+  level easy {
+    grown-ups "At this level the two cards are 2 and 8, which stay, the one-pass questions ask for the card in place 2, the first pass to count makes one swap, the rows take one and two passes, the sorts take two and three swaps altogether, the row before the pass is the one whose biggest card was already last but one, and the three-star asks for the orders with no swap, which is the sorted one alone."
+  }
+  level hard {
+    grown-ups "At this level the two cards are 5 and 4, the one-pass questions ask for the card in place 3, the first pass to count makes three swaps from a row that is not simply backwards, both rows take three passes, the sorts are as written, the row before the pass is the one whose 8 travels the whole row, and the three-star asks for the orders with exactly two swaps."
+  }
+}

@@ -1,0 +1,31 @@
+# The picture is hidden and the grid is taller than the tree, so the trunk's row has to be worked
+# out from the code: the audit's raise for pixel-rows.
+item coding.pixel-trunk-row v=1 skills=[coding.repetition, coding.data] {
+  title "Where is the trunk?"
+  difficulty n
+  let n=2..5
+  where (n != 2)  # with two, the trunk is on row 4, the same number as its line
+
+  scene 37x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      column left space=1 align=start {
+        program c code=["2 white 2 green 2 white", "repeat {n}", "  1 white 4 green 1 white", "2 white 2 orange 2 white"]
+        text ask "It paints from the top row down. On which row is the orange trunk?" width=21
+        number-input answer
+      }
+      pixels p cols=6 rows=7 code=["2 white 2 green 2 white", "repeat {n}", "  1 white 4 green 1 white", "2 white 2 orange 2 white"] show=false beside=false
+    }
+  }
+
+  check coding.runs of=p answer=rows
+  feedback {
+    when (answer == 4) point=c {
+      say "Line 4 is the trunk, but line 3 paints {n} rows before it."
+    }
+    when (answer == 7 and n != 5) point=p {
+      say "The grid has 7 rows, but the program does not paint all of them."
+    }
+  }
+  hint "Line 1 paints row 1. How many rows does the repeat paint after it?"
+  hint "The trunk comes on the row after those."
+}

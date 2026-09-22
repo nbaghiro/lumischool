@@ -1,0 +1,24 @@
+# The grid holds the crosses the clues allowed; the asked child's row has only one cross, so the
+# answer needs a second row as well: one thing each, and no two the same.
+item logic.grid-forced v=1 skills=[logic.deduction] {
+  title "What the crosses tell you"
+  let m=0..2 x=0..2 y=0..2
+  where (x != y)
+  let z={3 - x - y}
+  let r0={if m == 0 then "Ann" else if m == 1 then "Ivy" else "Mia"}
+  let r1={if m == 0 then "Ben" else if m == 1 then "Max" else "Kit"}
+  let r2={if m == 0 then "Cal" else if m == 1 then "Sol" else "Raj"}
+  let c0={if m == 0 then "cat" else if m == 1 then "kite" else "hat"}
+  let c1={if m == 0 then "dog" else if m == 1 then "ball" else "scarf"}
+  let c2={if m == 0 then "fish" else if m == 1 then "drum" else "boots"}
+
+  scene 30x20 {
+    logicgrid grid rows=[r0, r1, r2] cols=[c0, c1, c2] marks=[if x == 0 then 0 else 2, if x == 1 then 0 else 2, if x == 2 then 0 else 2, 0, 0, 0, if y == 0 then 2 else 0, if y == 1 then 2 else 0, if y == 2 then 2 else 0] at=canvas(1, 1)
+    text ask "Each child has one of these, and no two have the same. A cross means no. Which one does {r2} have?" width=28 below=grid gap=1
+    choice pick options=[c0, c1, c2] below=ask gap=1
+  }
+
+  answer pick=(if z == 0 then c0 else if z == 1 then c1 else c2)
+  hint "Look at {r0}'s row first. Which box is left without a cross?"
+  hint "That one is taken. Which box in {r2}'s row is left now?"
+}

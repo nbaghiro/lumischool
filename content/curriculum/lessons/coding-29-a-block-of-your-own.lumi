@@ -1,0 +1,48 @@
+lesson coding-a-block-of-your-own v=2 format=teach grade=4 unit=9 subject=coding levels=[easy, medium, hard] {
+  title "A block of your own"
+  goal "Read a program that names a few blocks as one new block, use it more than once, and count what it saves."
+
+  look {
+    scene 30x22 {
+      column all at=canvas(1, 0) space=1 align=start {
+        blocks b code=["define hooray", "  jump", "  clap 2", "hooray", "spin", "hooray"]
+        dance d code=["define hooray", "  jump", "  clap 2", "hooray", "spin", "hooray"]
+      }
+    }
+    say """
+      The pink block on top only says what hooray means. After that, hooray is used like any other
+      block, and each time the robot jumps and claps twice, like the chorus of a song that is written
+      once and sung more than once.
+      """
+  }
+  do {
+    practice coding.define-count count=1 seed=2 hard-seed=7
+    practice coding.define-repeat count=2 seed=3 hard-seed=7
+    practice coding.define-written-out count=2 seed=1
+    practice coding.define-reach count=2 seed=4 hard-seed=7
+    show coding.define-where a=2 z=3 easy-a=1 easy-z=2
+  }
+  try stars=2 {
+    show coding.define-change m=3 u=4 easy-m=2 easy-u=3
+  }
+  try stars=3 {
+    show coding.define-ways s=4 k=2 easy-s=3 easy-k=1
+  }
+  remember {
+    say "A block of your own is a name for some blocks. Using the name does them all, and changing it once changes it everywhere."
+  }
+
+  grown-ups """
+    This is a stretch for this age and is fine to take slowly. The idea to take away is that a long
+    program gets easier to read when a part of it has a name, and easier to change, because changing
+    hooray once changes it everywhere it is used. In the jumps and claps question the hooray after the
+    repeat counts too. The three-star question can be done by writing every program as a row of H
+    and S and crossing out repeats; there are six.
+    """
+  level easy {
+    grown-ups "At this level hooray claps once or twice, the repeated hooray makes nine claps or fewer, Dan writes the twirl out two or three times, the zigzag reaches a flag two or three rows down and one square on, the robot to place zigzags twice and goes one more right, cheer claps twice in a dance of six claps, and the three-star counts the three programs with one hooray in three lines."
+  }
+  level hard {
+    grown-ups "At this level hooray claps two or three times, the repeated hooray makes ten claps or more, Dan writes the twirl out three or four times, the zigzag reaches a flag two or three rows down and two or three squares on, and the robot to place, the cheer with twelve claps and the three-star's six programs are as written, since each is already the item's largest version."
+  }
+}

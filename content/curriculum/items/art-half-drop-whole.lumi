@@ -1,0 +1,21 @@
+# The half-drop hides the grid, and it also cuts tiles at the top and the bottom of a dropped column.
+item art.half-drop-whole v=1 stars=2 skills=[art.pattern, reasoning.what-if] {
+  title "Whole tiles in a half-drop"
+  difficulty r
+  let r=3..5
+
+  scene 34x14 {
+    tilerepeat wall drop=1 cols=4 rows=3 missing=-1 ring=-1 colour=green at=canvas(1, 1)
+    text ask "Ada prints a half-drop on a sheet exactly {r} tiles tall, and cuts off whatever hangs over the top or the bottom. How many whole tiles are left in each dropped column?" width=17 right-of=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (r - 1)
+  feedback {
+    when (answer == r) point=wall {
+      say "The dropped column starts half a tile lower. What happens to the tile at the top, and to the one at the bottom?"
+    }
+  }
+  hint "A dropped column starts half a tile lower. What sticks out at the top, and at the bottom?"
+  hint "Half a tile at the top and half at the bottom make one tile. How many whole ones are left?"
+}

@@ -1,0 +1,29 @@
+# How long the trace will be, before tracing it: the repeat line is a step each time round, so the
+# table is longer than the program and the count comes from the structure.
+item coding.table-rows v=1 skills=[coding.tracing, coding.repetition] {
+  title "How long is the table?"
+  difficulty (n + m)
+  let n=2..4 m=2..3
+
+  scene 34x12 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["right 1", "repeat {n}", "  down 1", "  right 1", "{if m == 3 then \"  \" else \"\"}left 1"]
+      column q space=1 align=start {
+        text ask "A trace table has a row for every step, and the repeat line is a step each time round. How many rows will this table have?" width=18
+        number-input answer
+      }
+    }
+  }
+
+  check coding.runs of=p answer=frames
+  feedback {
+    when (answer == 5) point=p {
+      say "Five lines are written, but some of them run more than once."
+    }
+    when (answer == 1 + m * n + (if m == 2 then 1 else 0)) point=p {
+      say "The repeat line is a step too, each time round."
+    }
+  }
+  hint "Which lines run once? Which run each time round?"
+  hint "Each time round is the repeat line and every line set in under it."
+}

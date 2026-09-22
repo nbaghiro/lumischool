@@ -1,0 +1,19 @@
+# The way in: read the colour each cup turned. On paper the colour is written on the cup, because in
+# black and white it cannot be seen.
+item chem.cabbage-colour v=1 skills=[chemistry.acids] {
+  title "What colour did it turn?"
+  difficulty v
+  let v=0..11
+
+  scene 30x9 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cabbage c liquids=["{if v == 0 then \"lemon\" else if v == 1 then \"lemon\" else if v == 2 then \"lemon\" else if v == 3 then \"milk\" else if v == 4 then \"milk\" else if v == 5 then \"milk\" else if v == 6 then \"washingsoda\" else if v == 7 then \"washingsoda\" else if v == 8 then \"washingsoda\" else if v == 9 then \"bakingsoda\" else if v == 10 then \"bakingsoda\" else \"bakingsoda\"}", "{if v == 0 then \"water\" else if v == 1 then \"water\" else if v == 2 then \"water\" else if v == 3 then \"vinegar\" else if v == 4 then \"vinegar\" else if v == 5 then \"vinegar\" else if v == 6 then \"lemon\" else if v == 7 then \"lemon\" else if v == 8 then \"lemon\" else if v == 9 then \"washingsoda\" else if v == 10 then \"washingsoda\" else \"washingsoda\"}", "{if v == 0 then \"washingsoda\" else if v == 1 then \"washingsoda\" else if v == 2 then \"washingsoda\" else if v == 3 then \"bakingsoda\" else if v == 4 then \"bakingsoda\" else if v == 5 then \"bakingsoda\" else if v == 6 then \"milk\" else if v == 7 then \"milk\" else if v == 8 then \"milk\" else if v == 9 then \"vinegar\" else if v == 10 then \"vinegar\" else \"vinegar\"}"] chart=0 show=1 names=0 letters=1
+      text ask "Red cabbage juice went into each cup. What colour did cup {if v == 0 then \"A\" else if v == 1 then \"B\" else if v == 2 then \"C\" else if v == 3 then \"A\" else if v == 4 then \"B\" else if v == 5 then \"C\" else if v == 6 then \"A\" else if v == 7 then \"B\" else if v == 8 then \"C\" else if v == 9 then \"A\" else if v == 10 then \"B\" else \"C\"} turn?" width=15
+    }
+    choice pick options=["red", "purple", "blue", "green"] below=kit gap=0
+  }
+
+  check chem.indicator of=c pick="colour({if v == 0 then \"A\" else if v == 1 then \"B\" else if v == 2 then \"C\" else if v == 3 then \"A\" else if v == 4 then \"B\" else if v == 5 then \"C\" else if v == 6 then \"A\" else if v == 7 then \"B\" else if v == 8 then \"C\" else if v == 9 then \"A\" else if v == 10 then \"B\" else \"C\"})"
+  hint "Find cup {if v == 0 then \"A\" else if v == 1 then \"B\" else if v == 2 then \"C\" else if v == 3 then \"A\" else if v == 4 then \"B\" else if v == 5 then \"C\" else if v == 6 then \"A\" else if v == 7 then \"B\" else if v == 8 then \"C\" else if v == 9 then \"A\" else if v == 10 then \"B\" else \"C\"} by its letter. What colour is the liquid in it?"
+  hint "Say the colour you see out loud. Which word below names it?"
+}

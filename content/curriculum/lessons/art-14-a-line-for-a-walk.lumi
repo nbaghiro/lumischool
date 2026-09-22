@@ -1,0 +1,63 @@
+lesson art-a-line-for-a-walk v=1 format=teach grade=1 unit=4 subject=art levels=[easy, medium, hard] {
+  title "A line for a walk"
+  goal "Name kinds of line, follow one line where it crosses itself, and take a line for a walk of your own."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=2 align=start {
+        lines kinds kinds=["wavy", "zigzag", "dotted", "spiral"] colour=blue
+        linewalk walk loops=3 filled=true colour=yellow
+      }
+    }
+    say """
+      The artist Paul Klee wrote about a line that goes for a walk, freely, with nowhere it has to
+      get to. A line can be straight, wavy, zigzag, dotted or a spiral. This one went for a walk
+      without the pencil lifting, and crossed over itself three times. The shapes it closed are
+      coloured in.
+      """
+  }
+  do {
+    practice art.find-the-line count=2 seed=1
+    practice art.what-line count=2 seed=2
+    level easy {
+      worked art.line-crossings n=5 level=medium
+    }
+    practice art.line-crossings count=3 easy-count=2 hard-count=2 seed=1
+    level hard {
+      practice art.one-line count=1 seed=1
+    }
+    show art.lines-of-kinds
+  }
+  try stars=2 {
+    show art.one-line x="envelope" y="house" z="star" k=1 hard-k=2
+  }
+  try stars=3 {
+    show art.line-walk
+  }
+  remember {
+    say "A line can go for a walk. Where it crosses itself, it makes a shape to colour."
+  }
+
+  grown-ups """
+    Paul Klee (1879 to 1940) taught at the Bauhaus from 1921 to 1931. His Pedagogical Sketchbook, the
+    second of the Bauhaus books, begins its part on line with a dot that goes for a walk, freely and
+    without a goal. Following a line with a finger where it crosses itself is harder than it looks,
+    and it is the looking this lesson practises. The naming and counting questions are marked by the machine.
+
+    The two-star question is an old puzzle: which figure cannot be drawn without lifting the pencil
+    or going over a line twice. Let the child try each one with a finger. The rule behind it, that
+    a corner where three lines meet has to be a start or an end, is for the child to notice, not
+    for you to tell. The three-star drawing asks the child to plan colours so that no two touching
+    shapes match, which gets hard once there are more than three shapes; a child who needs a fourth
+    colour has found something true.
+
+    Respond by following the child's line with your own finger and saying what it did: "It went
+    round in a loop here and zigzagged there." Ask where it started.
+    """
+  level easy {
+    grown-ups "At this level the lines to find and to name are as written, five crossings are counted once in the teacher's pen before lines that cross two or three times, the five kinds of line are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the lines to find and to name are as written, the lines cross four or five times and one of them makes way for a second set of figures to draw in one line, the five kinds of line are as written, and the two-star and three-star are as written."
+  }
+}

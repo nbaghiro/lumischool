@@ -1,0 +1,21 @@
+item physics.gear-teeth-needed v=1 skills=[physics.machines, reasoning.backwards] stars=3 {
+  title "Choose the gear"
+  difficulty (a + k)
+  let a={12, 24} k={2, 3, 4}
+  where (a / k >= 6)
+
+  scene 29x13 {
+    gears g a=a b=12 at=canvas(1, 0)
+    text ask "Gear B is to be swapped for one that turns {k} times for every turn of A. How many teeth must it have?" narrate width=11 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a / k)
+  feedback {
+    when (answer == a * k) point=g {
+      say "More teeth would make B turn fewer times, not more. Share A's teeth out instead."
+    }
+  }
+  hint "In one turn, how many teeth of A go past?"
+  hint "Each turn of B uses up all of B's teeth. How many teeth must B have?"
+}

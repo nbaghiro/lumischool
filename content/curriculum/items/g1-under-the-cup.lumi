@@ -1,0 +1,31 @@
+# The hidden part cannot be counted, so the answer has to come from the bond.
+item bonds.under-the-cup v=1 skills=[bonds-to-10] {
+  title "Under the cup"
+  difficulty (10 - s)
+  let s=1..9
+  where (s != 5)  # then what shows and what hides are the same number
+  level easy {
+    let s=6..9  # one to four under the cup
+  }
+  level hard {
+    let s=1..4  # six to nine under the cup
+  }
+
+  scene 26x18 {
+    undercup mat shown=s cups=1 hidden=0 total=10 at=canvas(1, 1)
+    text ask "There are 10 counters in all. How many are under the cup?" narrate width=24 below=mat gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 - s)
+  feedback {
+    when (answer == s) point=mat {
+      say "That is how many you can see. The rest are under the cup."
+    }
+    when (answer == 10 + s) point=mat {
+      say "There are only 10 in all, so the cup hides fewer than 10."
+    }
+  }
+  hint "How many can you see? Ten is that many and how many more?"
+  hint "Count on from what you can see up to 10."
+}

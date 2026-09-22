@@ -1,0 +1,20 @@
+# A claim and its reason: sometimes the words rhyme for the reason given, and sometimes the reason
+# is about the start of the words, which is not what a rhyme is.
+item reading.rhyme-claim v=1 stars=2 skills=[reading.rhyme, reasoning.judge-a-claim] {
+  title "Is Kit right?"
+  difficulty (if k == 0 or k == 2 then 1 else 0)
+  let k=0..3
+
+  scene 30x14 {
+    row who at=canvas(1, 1) space=1 align=centre {
+      face kid mood=happy hair=2 name="Kit"
+      bubble says "{if k == 0 then \"Cat and cap rhyme, because they start the same.\" else if k == 1 then \"Hen and pen rhyme, because they end the same.\" else if k == 2 then \"Sun and sock rhyme, because they both start with s.\" else \"Blue and shoe rhyme, because they end with the same sound.\"}" width=18 from=kid
+    }
+    text ask "Is Kit right?" narrate below=who gap=1
+    choice pick options=["yes", "no"] right-of=ask gap=2
+  }
+
+  answer pick=(if k == 1 or k == 3 then "yes" else "no")
+  hint "Say the two words. Do they sound the same at the end?"
+  hint "Does a rhyme need the same start, or the same end?"
+}

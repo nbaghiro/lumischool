@@ -1,0 +1,25 @@
+# The outside faces of a tower of cubes: four round each cube, and one at each end. Spotting the
+# pattern from a small tower is the way in.
+item shapes.tower-faces v=1 stars=3 skills=[shapes.faces, reasoning.patterns] {
+  title "Painting a tower"
+  difficulty n
+  let n=2..6
+
+  scene 30x12 {
+    towers stack heights=[n] labels=false level=0 at=canvas(1, 1)
+    text ask "A tower of {n} cubes is painted all over, top, bottom and sides. How many square faces get painted?" narrate width=22 right-of=stack gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (4 * n + 2)
+  feedback {
+    when (answer == 6 * n) point=stack {
+      say "Where two cubes touch, those faces are hidden inside and do not get painted."
+    }
+    when (answer == 4 * n) point=stack {
+      say "Do not forget the top and the bottom of the tower."
+    }
+  }
+  hint "How many faces can you paint on one side of the tower, from the front?"
+  hint "There are four sides like that. Then add the top and the bottom."
+}

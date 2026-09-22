@@ -1,0 +1,16 @@
+# Four sentences now, and the answer is often the one that says it without the question's words:
+# that Ben was not happy is in "everyone laughed except Ben".
+item reading.which-sentence-page v=2 skills=[reading.comprehension, reading.evidence] {
+  title "Show where it says so"
+  let k=0..4
+
+  scene 36x14 {
+    passage story text="{if k == 0 then \"(A) Every morning Ella gives her cat fish at eight. (B) The cat is called Button. (C) He sleeps on the stairs. (D) He likes to sit in the sun.\" else if k == 1 then \"(A) The class went to the farm. (B) The goat tried to eat Ben's hat. (C) Everyone laughed except Ben. (D) Then they had lunch by the pond.\" else if k == 2 then \"(A) Dev found an old key in the garden. (B) It opened the shed door with a creak. (C) Inside were two old bikes. (D) One had a flat tyre.\" else if k == 3 then \"(A) Our street had a party. (B) Mr Shah brought a big table. (C) Mum made a lemon cake. (D) It was gone in ten minutes.\" else \"(A) June wanted to see the sea. (B) The train took two hours. (C) Then she saw blue water from the window. (D) She could not stop smiling.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "Which sentence tells you {if k == 0 then \"when the cat has his breakfast\" else if k == 1 then \"that Ben was not happy\" else if k == 2 then \"that the key worked\" else if k == 3 then \"that people liked the cake\" else \"that the trip was long\"}?" narrate width=19 below=story gap=1
+    choice pick options=["A", "B", "C", "D"] right-of=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "A" else if k == 1 then "C" else if k == 2 then "B" else if k == 3 then "D" else "B")
+  hint "The right sentence may not use the same words as the question. What would it say?"
+  hint "Try each sentence: if it were the only one you read, would you know the answer?"
+}

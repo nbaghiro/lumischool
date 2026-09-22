@@ -1,0 +1,26 @@
+item art.next-print-three v=1 skills=[art.pattern] {
+  title "A pattern of three"
+  difficulty m
+  let m=4..9
+  level easy {
+    let m=4..6
+  }
+  level hard {
+    let m=7..9
+  }
+
+  scene 34x9 {
+    printrow row unit=["fish", "fish", "shell"] colours=["blue", "blue", "pink"] count=9 missing=m at=canvas(1, 1)
+    text ask "Which print goes in the gap?" width=14 below=row gap=1
+    choice pick options=["fish", "shell"] right-of=ask gap=1
+  }
+
+  answer pick=(if m % 3 == 0 then "shell" else "fish")
+  feedback {
+    when (pick == "fish" and m % 3 == 0) point=row {
+      say "Count in threes: fish, fish, shell. The gap is the third one."
+    }
+  }
+  hint "Say the prints out loud from the left, in groups of three. What do you say at the gap?"
+  hint "Which print starts each group of three? Count along from there to the gap."
+}

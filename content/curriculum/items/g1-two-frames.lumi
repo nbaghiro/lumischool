@@ -1,0 +1,35 @@
+# Slide counters across until the first frame is full: 8 + 5 becomes 10 + 3.
+item add.two-frames v=1 skills=[addition.bridge-ten] {
+  title "Fill the first frame"
+  difficulty (10 - a)
+  let a=6..9 b=3..8
+  where (a + b > 10 and a + b <= 17)
+  where (2 * a + b != 20)  # then the counters that move and the counters that stay are the same number
+  level easy {
+    let a=8..9 b=3..6
+  }
+  level hard {
+    let a=6..7 b=5..8
+  }
+
+  scene 28x15 {
+    row frames at=canvas(1, 1) space=2 {
+      tenframe f1 count=a color=berry
+      tenframe f2 count=b color=sky
+    }
+    text ask "Move counters from the second frame until the first one is full. How many are left in the second frame?" narrate width=26 below=frames gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b - 10)
+  feedback {
+    when (answer == 10 - a) point=f1 {
+      say "That is how many move across. How many stay behind?"
+    }
+    when (answer == a + b) point=f2 {
+      say "That is all the counters. How many are still in the second frame?"
+    }
+  }
+  hint "How many empty squares are in the first frame?"
+  hint "Take that many away from the second frame. What is left?"
+}

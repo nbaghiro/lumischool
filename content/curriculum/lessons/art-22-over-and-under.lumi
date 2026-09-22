@@ -1,0 +1,61 @@
+# Over and under: the rule a weave follows, read along a row and down the rows, and what happens when
+# a row stops following it.
+lesson art-over-and-under v=1 format=teach grade=2 unit=2 subject=art levels=[easy, medium, hard] {
+  title "Weaving: over and under"
+  goal "Read an over and under pattern along a row, find the row that breaks it, and weave one of your own."
+
+  look {
+    scene 13x9 {
+      weave cloth cols=6 rows=4 start=[0, 1, 0, 1] step=1 at=canvas(1, 0)
+    }
+    say """
+      Strips of paper laid one way and woven through the other way make a mat. Each row across goes
+      over a strip, then under the next, then over, then under, all the way. The next row starts the
+      other way round, so the overs and unders step along and the pattern runs in diagonals. That
+      going under is what holds it: a strip that lies over everything is not woven in, and it slides
+      straight out when you lift the mat.
+      """
+  }
+  do {
+    practice art.weave-on-top count=1 seed=1 easy-seed=2 hard-seed=1
+    level easy {
+      worked art.weave-how-many-overs cols=6 s=0 level=medium
+    }
+    practice art.weave-how-many-overs count=2 seed=3 easy-seed=4 hard-seed=4
+    practice art.weave-which-wrong count=2 seed=8 easy-seed=8 hard-seed=2
+    practice art.weave-continue count=2 seed=11 easy-seed=8 hard-seed=2
+    level hard {
+      show art.weave-which-wrong k=4
+    }
+  }
+  story {
+    show art.hut-weave v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show art.weave-holds p=1 easy-p=0 hard-p=2
+  }
+  try stars=3 {
+    show art.weave-make over=1 easy-over=1 hard-over=2
+  }
+  remember {
+    say "Over, under, over, under, and the next row starts the other way round. A row that never goes under is not woven in."
+  }
+
+  grown-ups """
+    Weaving is a pattern a child can feel as well as see, and the useful idea under it is that the rule
+    has to hold everywhere or the thing falls apart. Watch for a child who reads the picture colour by
+    colour rather than crossing by crossing; saying over, under, over, under aloud along a row is the
+    habit to build, and it is also how the row that goes wrong is found. The two-star question turns on
+    the row that lies over everything, which looks tidy and holds nothing, and a child who sees why has
+    understood what the going under is for. The three-star question asks for a pattern of their own,
+    and the thing to look for is whether the rule holds in every row rather than in the first two. Off
+    the page, cut a sheet of paper into strips without cutting through the top edge, and weave strips of
+    another colour through it.
+    """
+  level easy {
+    grown-ups "At this level the row to read is one of the first two, a row of six is counted once in the teacher's pen before a row of four and a row of five, the rows that go wrong break at the third crossing, the empty rows are carried on at the third crossing, the mat in the story is the smallest, the weave that holds is the first of the two, and the pattern to make goes over one and under one."
+  }
+  level hard {
+    grown-ups "At this level the row to read is one of the last two, the rows to count have seven or eight strips, the rows that go wrong break at the fourth crossing or later and the core carries a third of them, the empty rows are carried on at the fifth crossing, the mat in the story is the largest, the weave that holds is the first of the two again, and the pattern to make goes over two and under two."
+  }
+}

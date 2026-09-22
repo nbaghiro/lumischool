@@ -1,0 +1,32 @@
+# The way in: a menu on a board, and the line that is a heading, which names a group of dishes
+# rather than one dish with its price.
+item writing.which-heading v=1 skills=[writing.layout, writing.text-features] {
+  title "Which line is a heading?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let h={pick(k, "Drinks", "Puddings", "Mains")}
+  let d1={pick(k, "Tea 2", "Jelly 3", "Soup 3")}
+  let d2={pick(k, "Milk 1", "Apple pie 4", "Fish pie 5")}
+  let other={pick(k, "Cakes", "Mains", "Drinks")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x22 {
+    sign board lines=["The Harbour Cafe", "{h}", "{d1}", "{d2}", "{other}"] kind=board color=mint at=canvas(1, 1)
+    text ask "Sam's cafe menu is on the board. Which of these lines is a heading, naming a group of dishes?" narrate width=32 below=board gap=1
+    choice pick options=["{h}", "{d1}", "{d2}"] below=ask gap=1
+  }
+
+  answer pick=h
+  feedback {
+    when (pick != h) point=board {
+      say "A dish comes with its price. A heading has no price: it names the group the dishes under it belong to."
+    }
+  }
+  hint "Which line has no price after it?"
+  hint "A heading names a group: drinks, mains, puddings. The dishes sit under it."
+}

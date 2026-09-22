@@ -1,0 +1,45 @@
+# Writing a message: one line of Pip's program is empty, and the key's row says what goes there. A
+# wait in the gap is right only where the message is already whole, and a wait on line 1 of come in
+# leaves short short, which is stay out.
+item coding.fill-the-flash v=1 skills=[coding.sequences, coding.data] {
+  title "The empty line"
+  difficulty (if b == 3 and m != 0 then 1 else 0)
+  let m=0..2 b=1..3
+  let want={pick(m, "come in", "stay out", "go round")}
+  let l1={pick(m, "flash long", "flash short", "flash long")}
+  let l2={pick(m, "flash short", "flash short", "flash long")}
+  let l3={pick(m, "flash short", "wait", "wait")}
+  let right={pick(b - 1, l1, l2, l3)}
+  level easy {
+    let b=1..2
+  }
+  level hard {
+    let b=3..3
+  }
+
+  scene 36x22 {
+    row top space=1 align=start at=canvas(1, 1) {
+      table key cols=2 head=["Flashes", "Means"] cells=["long short short", "come in", "short short", "stay out", "long long", "go round"]
+      text ask "Pip's lamp must say {want}. Line {b} is empty. What goes there?" narrate width=13
+    }
+    row low space=2 align=start below=top gap=1 {
+      program p code=["{l1}", "{l2}", "{l3}"] title="Pip's lamp" blank=b
+      choice pick options=["flash long", "flash short", "wait"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "wait" and right != "wait") point=key {
+      say "A wait is the lamp dark. The key's row for {want} needs a flash there."
+    }
+    when (pick != "wait" and right == "wait") point=p {
+      say "The other lines already say {want}. One more flash makes a pattern the key does not have."
+    }
+    when (pick != right and pick != "wait" and right != "wait") point=key {
+      say "Read the key's row for {want} from the left, and count along to flash number {b}."
+    }
+  }
+  hint "Find {want} in the key. Which flashes does it need, and in what order?"
+  hint "Read the lines that are there. Is the key's row already whole, or is a flash still missing?"
+}

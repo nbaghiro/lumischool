@@ -1,0 +1,54 @@
+lesson reading-a-sentence-and-a-full-stop v=1 format=teach grade=1 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "A sentence and a full stop"
+  goal "Say where a sentence ends, and pick the mark that ends it."
+
+  look {
+    scene 29x18 {
+      row all at=canvas(1, 1) space=1 align=start {
+        picturecards card who=["dog"] where=["on"] thing=["bed"] letters=false
+        column lines space=1 align=start {
+          sentence tell before="The dog is on the bed" blank=0 after="."
+          sentence asking before="Is the dog on the bed" blank=0 after="?"
+          sentence shout before="Get off the bed" blank=0 after="!"
+        }
+      }
+    }
+    say """
+      A sentence is a whole thought. It starts with a capital letter and it ends with a mark.
+
+      A full stop tells you something. A question mark asks. An exclamation mark is said loudly.
+      """
+  }
+  do {
+    level easy {
+      worked reading.how-many-sentences k=2 level=medium
+    }
+    practice reading.how-many-sentences count=2 seed=2
+    practice reading.sentence-end count=2 seed=3
+    practice reading.where-it-ends count=2 seed=5
+    practice reading.name-capital count=2 seed=4
+  }
+  try stars=2 {
+    show reading.mark-and-why k=0
+  }
+  try stars=3 {
+    show reading.tell-and-ask f=2 d=3
+  }
+  remember {
+    say "Capital letter at the start. A mark at the end."
+  }
+
+  grown-ups """
+    Read a page aloud and stop dead at every full stop, longer than feels natural. The child hears
+    the sentence end, which is what the mark is for. The lines with no marks are the real test: read
+    them aloud without stopping, then again with a stop where the child thinks one belongs. In the
+    two-star question the child chooses a reason as well as a mark. The three-star question is
+    marked by you: one sentence that tells and one that asks, each with its capital and its mark.
+    """
+  level easy {
+    grown-ups "At this level four sentences are counted once in the teacher's pen before passages of two or three, the marks to choose are the question mark and the full stop, where the sentence ends and the names are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the passages have three or four sentences, the marks to choose include the exclamation mark, where the sentence ends and the names are as written, and the two-star and three-star are as written."
+  }
+}

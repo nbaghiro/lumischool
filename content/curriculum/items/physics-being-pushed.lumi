@@ -1,0 +1,51 @@
+# The way in: two of Sam's things, and a push arrow on one of them. At easy the arrow is long; at
+# hard the other thing has a pull arrow on it, so the child has to tell a push from a pull rather
+# than find the only arrow on the page.
+item physics.being-pushed v=1 skills=[physics.forces] {
+  title "Which one is being pushed?"
+  difficulty ((6 - n) / 2 + (if q > 0 then 2 else 0))
+  set q=0
+  let w=0..1 n={2, 4, 6}
+  level easy {
+    let n={4, 6}
+  }
+  level hard {
+    set q=4
+    let n={2, 4}
+    scene 27x18 {
+      forces one thing=box push=(w * n) pull=((1 - w) * q) labels=false at=canvas(1, 0)
+      text la "A" below=one gap=0
+      forces two thing=trolley push=((1 - w) * n) pull=(w * q) labels=false right-of=one gap=2
+      text lb "B" below=two gap=0
+      text ask "One of Sam's things is being pushed. Which one?" width=24 below=la gap=1
+      choice pick options=["A", "B"] below=ask gap=1
+    }
+  }
+
+  scene 21x20 {
+    forces one thing=box push=(w * n) labels=false at=canvas(1, 0)
+    text la "A" below=one gap=0
+    forces two thing=trolley push=((1 - w) * n) labels=false right-of=one gap=2
+    text lb "B" below=two gap=0
+    text ask "One of Sam's things is being pushed. Which one?" width=20 below=la gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if w == 1 then "A" else "B")
+  feedback {
+    when (q == 0 and w == 1 and pick == "B") point=one {
+      say "The arrow is on the box. A push is an arrow that starts behind a thing and moves it along."
+    }
+    when (q == 0 and w == 0 and pick == "A") point=two {
+      say "The arrow is on the trolley. A push is an arrow that starts behind a thing and moves it along."
+    }
+    when (q > 0 and w == 1 and pick == "B") point=two {
+      say "That arrow is in front of the trolley, leading it away. That is a pull. The push starts behind the box."
+    }
+    when (q > 0 and w == 0 and pick == "A") point=one {
+      say "That arrow is in front of the box, leading it away. That is a pull. The push starts behind the trolley."
+    }
+  }
+  hint "Find the arrows. Which thing has an arrow behind it?"
+  hint "A push starts behind the thing and moves it along."
+}

@@ -1,0 +1,30 @@
+# The feeling is never named. It is shown by what the character does, and the other choices are
+# the cause of the feeling and a detail that shows nothing, so the evidence has to be told apart.
+item reading.shows-feeling v=1 stars=2 skills=[reading.inference, reading.evidence] {
+  title "What shows the feeling?"
+  difficulty (if k == 1 then 0 else if k == 0 then 1 else 2)
+  let k=0..2
+
+  scene 37x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{if k == 0 then \"Mo stood at the gate by the post box. The bus was already ten minutes late. He looked at his watch, then looked again, and chewed the end of his scarf.\" else if k == 1 then \"The car turned down the hill towards the harbour. Asha could see the sea at last. She bounced in her seat and pointed at every boat she saw.\" else \"His little sister knocked Ben's tower over with one swing of her arm. The blocks lay all over the rug. Ben folded his arms, stamped his foot and would not look at her.\"}" width=36
+      row r1 space=2 align=centre {
+        text ask1 "How did {if k == 0 then \"Mo\" else if k == 1 then \"Asha\" else \"Ben\"} feel?"
+        choice feel options=["worried", "excited", "cross"]
+      }
+      row r2 space=2 align=start {
+        text ask2 "Which words show it?"
+        choice words options=[if k == 0 then "he chewed the end of his scarf" else if k == 1 then "she could see the sea" else "he folded his arms and stamped", if k == 0 then "the bus was late" else if k == 1 then "she bounced and pointed" else "his sister knocked it over"] stack=column
+      }
+    }
+  }
+
+  answer feel=(if k == 0 then "worried" else if k == 1 then "excited" else "cross") words=(if k == 0 then "he chewed the end of his scarf" else if k == 1 then "she bounced and pointed" else "he folded his arms and stamped")
+  feedback {
+    when (words == "the bus was late" or words == "she could see the sea" or words == "his sister knocked it over") point=p {
+      say "Those words say why the feeling came. Which words show what the person did because of it?"
+    }
+  }
+  hint "Picture the person in the last sentence. What are they doing with their hands and feet?"
+  hint "What does someone do when they feel that way? Find those words."
+}

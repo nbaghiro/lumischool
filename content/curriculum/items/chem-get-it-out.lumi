@@ -1,0 +1,23 @@
+# Every way of separating uses one difference between the parts, and in each version exactly one
+# of the four ways gets the named part out on its own.
+item chem.get-it-out v=1 skills=[chemistry.separating] {
+  title "Which way gets it out?"
+  difficulty (if k == 3 or k == 6 then 2 else if k == 2 then 1 else 0)
+  let k=0..6
+  level easy {
+    let k={0, 1, 4, 5}  # iron filings, pebbles, paper clips and peas
+  }
+  level hard {
+    let k={2, 3, 6}  # sand, salt and sugar
+  }
+
+  scene 29x21 {
+    text ask "You have a kitchen sieve, filter paper, a magnet and a sunny windowsill. How would you get the {if k == 0 then \"iron filings\" else if k == 1 then \"pebbles\" else if k == 2 then \"sand\" else if k == 3 then \"salt\" else if k == 4 then \"paper clips\" else if k == 5 then \"dried peas\" else \"sugar\"} out on its own?" width=28 at=canvas(1, 0)
+    mixture mix things=["{if k == 0 then \"iron\" else if k == 1 then \"pebbles\" else if k == 2 then \"sand\" else if k == 3 then \"salt\" else if k == 4 then \"clips\" else if k == 5 then \"peas\" else \"sugar\"}", "{if k == 0 then \"sand\" else if k == 1 then \"sand\" else if k == 2 then \"salt\" else if k == 3 then \"\" else if k == 4 then \"rice\" else if k == 5 then \"flour\" else \"\"}"] water=(if k == 0 then 0 else if k == 1 then 0 else if k == 2 then 1 else if k == 3 then 1 else if k == 4 then 0 else if k == 5 then 0 else 1) names=1 below=ask gap=0
+    choice pick options=["sieve it", "filter it", "use a magnet", "evaporate the water"] stack=column right-of=mix gap=1
+  }
+
+  check chem.separate of=mix pick="get({if k == 0 then \"iron\" else if k == 1 then \"pebbles\" else if k == 2 then \"sand\" else if k == 3 then \"salt\" else if k == 4 then \"clips\" else if k == 5 then \"peas\" else \"sugar\"})"
+  hint "How is the {if k == 0 then \"iron filings\" else if k == 1 then \"pebbles\" else if k == 2 then \"sand\" else if k == 3 then \"salt\" else if k == 4 then \"paper clips\" else if k == 5 then \"dried peas\" else \"sugar\"} different from everything else in the mixture: its size, whether a magnet pulls it, or whether it has dissolved?"
+  hint "Which of the four ways uses that difference?"
+}

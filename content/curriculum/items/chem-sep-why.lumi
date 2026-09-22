@@ -1,0 +1,20 @@
+# Why each way works, in the child's words: the same four reasons are offered every time, and which
+# is right depends on the mixture and the way used.
+item chem.sep-why v=1 stars=2 skills=[chemistry.separating, reasoning.explain] {
+  title "Why does it work?"
+  let v=0..3
+
+  scene 36x20 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      mixture m things=["{if v == 0 then \"iron\" else if v == 1 then \"pebbles\" else if v == 2 then \"sand\" else \"sand\"}", "{if v == 0 then \"sand\" else if v == 1 then \"sand\" else if v == 2 then \"salt\" else \"salt\"}"] water=(if v == 0 then 0 else if v == 1 then 0 else if v == 2 then 1 else 1) names=1
+      column side space=1 align=start {
+        text ask "Why does {if v == 0 then \"a magnet\" else if v == 1 then \"a sieve\" else if v == 2 then \"filter paper\" else \"evaporating the water\"} get the {if v == 0 then \"iron\" else if v == 1 then \"pebbles\" else if v == 2 then \"sand\" else \"salt\"} out of this mixture{if v == 0 then \"\" else if v == 1 then \"\" else if v == 2 then \"\" else \" once the sand is filtered out\"}?" width=22
+        choice pick options=["Iron is magnetic, sand is not", "The pebbles are too big for the holes", "The sand has not dissolved", "Only the water can leave as a gas"] stack=column
+      }
+    }
+  }
+
+  answer pick=(if v == 0 then "Iron is magnetic, sand is not" else if v == 1 then "The pebbles are too big for the holes" else if v == 2 then "The sand has not dissolved" else "Only the water can leave as a gas")
+  hint "What is different about the two parts of this mixture?"
+  hint "Which reason talks about the difference that way uses?"
+}

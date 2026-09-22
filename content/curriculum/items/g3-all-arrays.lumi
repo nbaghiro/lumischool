@@ -1,0 +1,21 @@
+# Every array a number of counters makes, found by trying each row count: the factor pairs.
+item times.all-arrays v=1 stars=3 skills=[multiplication.tables, reasoning.all-the-ways] {
+  title "Every array"
+  difficulty n
+  let n={12, 16, 18, 20, 24, 30, 36}
+
+  scene 30x16 {
+    array dots rows=2 cols=(n / 2) color=mint at=canvas(1, 1)
+    text ask "Ana has {n} counters. She makes arrays with at least 2 rows and at least 2 in each row, using all the counters. 3 rows of 4 and 4 rows of 3 are different arrays. How many arrays can she make?" width=28 below=dots gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((if n % 2 == 0 and n / 2 >= 2 then 1 else 0) + (if n % 3 == 0 and n / 3 >= 2 then 1 else 0) + (if n % 4 == 0 and n / 4 >= 2 then 1 else 0) + (if n % 5 == 0 and n / 5 >= 2 then 1 else 0) + (if n % 6 == 0 and n / 6 >= 2 then 1 else 0) + (if n % 7 == 0 and n / 7 >= 2 then 1 else 0) + (if n % 8 == 0 and n / 8 >= 2 then 1 else 0) + (if n % 9 == 0 and n / 9 >= 2 then 1 else 0) + (if n % 10 == 0 and n / 10 >= 2 then 1 else 0) + (if n % 11 == 0 and n / 11 >= 2 then 1 else 0) + (if n % 12 == 0 and n / 12 >= 2 then 1 else 0) + (if n % 13 == 0 and n / 13 >= 2 then 1 else 0) + (if n % 14 == 0 and n / 14 >= 2 then 1 else 0) + (if n % 15 == 0 and n / 15 >= 2 then 1 else 0) + (if n % 16 == 0 and n / 16 >= 2 then 1 else 0) + (if n % 17 == 0 and n / 17 >= 2 then 1 else 0) + (if n % 18 == 0 and n / 18 >= 2 then 1 else 0))
+  feedback {
+    when (answer * 2 == (if n % 2 == 0 and n / 2 >= 2 then 1 else 0) + (if n % 3 == 0 and n / 3 >= 2 then 1 else 0) + (if n % 4 == 0 and n / 4 >= 2 then 1 else 0) + (if n % 5 == 0 and n / 5 >= 2 then 1 else 0) + (if n % 6 == 0 and n / 6 >= 2 then 1 else 0) + (if n % 7 == 0 and n / 7 >= 2 then 1 else 0) + (if n % 8 == 0 and n / 8 >= 2 then 1 else 0) + (if n % 9 == 0 and n / 9 >= 2 then 1 else 0) + (if n % 10 == 0 and n / 10 >= 2 then 1 else 0) + (if n % 11 == 0 and n / 11 >= 2 then 1 else 0) + (if n % 12 == 0 and n / 12 >= 2 then 1 else 0) + (if n % 13 == 0 and n / 13 >= 2 then 1 else 0) + (if n % 14 == 0 and n / 14 >= 2 then 1 else 0) + (if n % 15 == 0 and n / 15 >= 2 then 1 else 0) + (if n % 16 == 0 and n / 16 >= 2 then 1 else 0) + (if n % 17 == 0 and n / 17 >= 2 then 1 else 0) + (if n % 18 == 0 and n / 18 >= 2 then 1 else 0)) point=dots {
+      say "Did you count each way round? {n} in rows of 2 and in rows of {n / 2} are two arrays."
+    }
+  }
+  hint "Try 2 rows first. Does {n} share into 2 equal rows? Then try 3 rows, 4 rows, and so on."
+  hint "Stop when the rows would have fewer than 2 counters each. Count every array you found."
+}

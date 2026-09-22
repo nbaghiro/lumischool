@@ -1,0 +1,49 @@
+lesson coding-when-the-flag-is-tapped v=1 format=teach grade=1 unit=6 subject=coding levels=[easy, medium, hard] {
+  title "When the flag is tapped"
+  goal "Read a program that starts when the flag is tapped, and say where the rabbit ends up."
+
+  look {
+    scene 34x10 {
+      row all at=canvas(1, 0) space=1 align=start {
+        blocks b code=["when the flag is tapped", "right 3", "jump", "say hello"]
+        stage s cols=7 col=1 who=rabbit code=["when the flag is tapped", "right 3", "jump", "say hello"]
+      }
+    }
+    say """
+      The yellow block on top says when the program starts. Nothing happens until the flag is
+      tapped, and then the blocks under it run from the top. On the screen, tap the flag on the
+      stage.
+      """
+  }
+  do {
+    practice coding.stage-where count=2 seed=3
+    show coding.stage-nothing-yet s=2 a=3 t=0 easy-s=1 easy-a=2 hard-s=3 hard-a=4
+    show coding.stage-nothing-yet s=1 a=4 t=1 easy-a=2 hard-s=3
+    practice coding.stage-crab-left count=2 seed=4
+    practice coding.stage-start-square count=2 seed=5
+  }
+  try stars=2 {
+    show coding.stage-flag-twice s=1 a=3 easy-a=2
+  }
+  try stars=3 {
+    show coding.stage-fewest-blocks e=8 easy-e=5 hard-e=9
+  }
+  remember {
+    say "A when block starts the program. The blocks under it run in order."
+  }
+
+  grown-ups """
+    A when block is the start of a program rather than a step in it, which is the idea of an event.
+    If the child wants to, let them choose what the rabbit does after the jump and act it out.
+    Two questions ask where the rabbit is before and after the flag is tapped, which is the whole
+    idea: until the flag is tapped, nothing moves. In the two-star question the flag is tapped twice,
+    and the second run starts from where the first one stopped. In the three-star question it helps
+    to use as many right 3 blocks as will fit and see what is left.
+    """
+  level easy {
+    grown-ups "At this level the rabbit moves two squares at a time from the first square, so every answer can be counted along the stage."
+  }
+  level hard {
+    grown-ups "At this level the crab goes left four and back three, the rabbit starts further along, and the fewest blocks have to reach square nine."
+  }
+}

@@ -1,0 +1,41 @@
+# A bar in three with one strum ringed, and the count it falls on: a down on a number, an up on the
+# and after it. Hard leaves the counts off the bar, so the child counts the half beats from the start.
+item music.strum-ringed-in-three v=1 skills=[music.strumming, music.counting-beats] {
+  title "Which count?"
+  difficulty (if k == 3 or k == 5 then 1 else 0)
+  let k={0, 2, 3, 4, 5}
+  let right={pick(k, "1", "and after 1", "2", "and after 2", "3", "and after 3")}
+  level easy {
+    let k={0, 2, 4}
+  }
+  level hard {
+    let k={3, 5}
+    scene 34x31 {
+      strumtrack bar strums=D-DUDU counts=false chord=none ring=k at=canvas(1, 1)
+      column side space=1 align=start right-of=bar gap=2 {
+        text ask "The counts are not written. On which count does the ringed strum fall?" narrate width=15
+        choice pick options=["1", "and after 1", "2", "and after 2", "3", "and after 3"] stack=column
+      }
+    }
+  }
+
+  scene 34x31 {
+    strumtrack bar strums=D-DUDU counts=true chord=none ring=k at=canvas(1, 1)
+    column side space=1 align=start right-of=bar gap=2 {
+      text ask "On which count does the ringed strum fall?" narrate width=15
+      choice pick options=["1", "and after 1", "2", "and after 2", "3", "and after 3"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and (k == 3 or k == 5)) point=bar {
+      say "The ringed arrow is short and points up, so it falls on an and. Which number comes just before it?"
+    }
+    when (pick != right and k != 3 and k != 5) point=bar {
+      say "The ringed arrow is long and points down, so it falls on a number. Count the numbers from the start."
+    }
+  }
+  hint "Is the ringed arrow long and down, or short and up?"
+  hint "Count along the bar in half beats: 1, and, 2, and, 3, and."
+}

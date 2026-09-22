@@ -1,0 +1,25 @@
+item data.missing-row v=1 stars=3 skills=[data.picture-graphs, addition.three-numbers] {
+  title "The row that came off"
+  difficulty (a + b + c)
+  let a=2..6 b=2..6 c=1..6
+  where (a != b)
+  where (c != a and c != b and c != a + b)
+
+  scene 32x11 {
+    text ask "Each star is one child. {a + b + c} children chose apples, pears or plums. The plums row has come off the chart. How many chose plums?" width=30 at=canvas(1, 0)
+    picgraph g labels=["Apples", "Pears"] counts=[a, b] prop=star below=ask gap=1
+    number-input answer right-of=g gap=2
+  }
+
+  answer c
+  feedback {
+    when (answer == a + b) point=g {
+      say "That is the apples and the pears together. The plums are the children left over."
+    }
+    when (answer == a + b + c) point=ask {
+      say "That is every child. Take away the ones on the chart."
+    }
+  }
+  hint "How many children are on the chart already?"
+  hint "How many more make {a + b + c}? Those chose plums."
+}

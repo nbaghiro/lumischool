@@ -1,0 +1,15 @@
+# Choosing words for strength in the child's own sentences, with a banned word so the plain one is
+# not available. Many answers are right, so a grown-up marks it.
+item reading.shades-write v=1 stars=3 skills=[reading.vocabulary, writing.composing] {
+  title "Two sentences, two strengths"
+  let k=0..3 who={if k == 0 then "a dog" else if k == 1 then "a horse" else if k == 2 then "a robot" else "a crab"}
+
+  scene 34x15 {
+    text ask "Write two sentences about {who}. In the first it moves as slowly as it can. In the second it goes as fast as it can. Use a different word for how it moves each time, and not walk or run." width=33 at=canvas(1, 1)
+    writinglines lines lines=2 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two sentences about the same animal or robot, with two different movement words chosen for strength, such as crept or plodded for slow and dashed, raced or bolted for fast, and neither sentence uses walk or run."
+  hint "Think of three words for moving slowly. Which is the slowest?"
+  hint "Now three words for moving fast. Which is the fastest?"
+}

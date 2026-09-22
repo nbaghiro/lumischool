@@ -1,0 +1,29 @@
+# A decision written slightly wrong: it does the right thing for every number but one, and the
+# child finds that one. The wrong number is not always the one written in line 1.
+item coding.which-input-breaks v=1 stars=2 skills=[coding.decisions, coding.debugging] {
+  title "Which number goes wrong?"
+  difficulty m
+  let t=4..7 m=0..2
+
+  scene 36x12 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["if n is {if m == 2 then \"at least\" else \"more than\"} {if m == 0 then t else if m == 1 then t - 2 else t + 1}", "  say shout", "otherwise", "  say whisper"] title="Sam's program"
+      column q space=1 align=start {
+        text ask "Sam wants it to shout when n is {t} or more, and whisper for the rest. For which n does it do the wrong thing?" width=17
+        number-input answer
+      }
+    }
+  }
+
+  answer (if m == 1 then t - 1 else t)
+  feedback {
+    when (answer == t - 2 and m == 1) point=p {
+      say "Try {t - 2}: is it more than {t - 2}? Then it whispers, which Sam wants."
+    }
+    when (answer == t + 1 and m == 2) point=p {
+      say "Try {t + 1}: it is at least {t + 1}, so it shouts, which Sam wants."
+    }
+  }
+  hint "Try the numbers near the one in line 1, one at a time, and say what Sam wants for each."
+  hint "Is a number more than itself? Is it at least itself?"
+}

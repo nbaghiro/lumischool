@@ -1,0 +1,43 @@
+# Two days measured side by side, a gauge and a windsock each, and which of them was both wet and
+# windy. At j=0 and 1 only one day is wet at all; at 2 and 3 both days are wet and the windsock is
+# what tells them apart.
+item nature.weather-wet-and-windy v=1 skills=[nature.weather, reasoning.evidence] {
+  title "Wet and windy"
+  difficulty (if j < 2 then 0 else 1)
+  let j=0..3
+  let r1={pick(j, 30, 5, 25, 35)}
+  let r2={pick(j, 5, 30, 30, 25)}
+  let w1={pick(j, 1, 0, 0, 1)}
+  let w2={pick(j, 0, 1, 1, 0)}
+  let ans={pick(j, "Monday", "Tuesday", "Tuesday", "Monday")}
+  level easy {
+    let j={0, 1}
+  }
+  level hard {
+    let j={2, 3}
+  }
+
+  scene 29x42 {
+    text lm "Monday" at=canvas(1, 0)
+    row mon space=2 align=start below=lm gap=0 {
+      raingauge g1 max=50 step=10 level=r1 unit=mm show=1
+      windsock s1 wind=w1 stripes=5
+    }
+    text lt "Tuesday" below=mon gap=1
+    row tue space=2 align=start below=lt gap=0 {
+      raingauge g2 max=50 step=10 level=r2 unit=mm show=1
+      windsock s2 wind=w2 stripes=5
+    }
+    text ask "Wet means twenty millimetres or more in the gauge, and windy means the windsock streaming out level. Which day was both?" narrate width=28 below=tue gap=1
+    choice pick options=["Monday", "Tuesday"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=ask {
+      say "Check both things for each day: twenty millimetres or more in the gauge, and a windsock streaming out level rather than drooping."
+    }
+  }
+  hint "Read each gauge first and mark which days count as wet."
+  hint "Then look at the windsocks: a drooping one means the wind is light."
+}

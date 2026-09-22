@@ -1,0 +1,38 @@
+# The story: Ada and Ben count what they see from the rocks, and the count uses what each creature
+# has: a crab's ten legs, a seal's four flippers, a gull's two wings.
+item nature.shore-count v=1 skills=[nature.habitats, multiplication.tables] {
+  title "Counting on the rocks"
+  difficulty (n + w)
+  let n=2..5 w=0..2
+  let who={pick(w, "gulls", "seals", "crabs")}
+  let each={pick(w, 2, 4, 10)}
+  let what={pick(w, "wings", "flippers", "legs")}
+  level easy {
+    let n=2..3 w=0..0
+  }
+  level hard {
+    let n=4..5 w=2..2
+  }
+
+  scene 34x14 {
+    row who at=canvas(1, 1) space=2 align=end {
+      gull pg flying=0
+      seal ps rock=1 facing=1
+      crabs pc count=2
+    }
+    text ask "From the rocks Ada counts {n} {who}. Each has {each} {what}. How many {what} is that altogether?" narrate width=32 below=who gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * each)
+  feedback {
+    when (answer == n + each and n + each != n * each) point=who {
+      say "Each of the {n} has {each}. Count in {each}s, {n} times, rather than adding the two numbers."
+    }
+    when (answer == n) point=who {
+      say "That is how many creatures there are. The question asks about their {what}."
+    }
+  }
+  hint "One has {each}. Two have {each} and {each} more. Keep going for {n} of them."
+  hint "Count in {each}s: say the numbers as you point at each creature."
+}

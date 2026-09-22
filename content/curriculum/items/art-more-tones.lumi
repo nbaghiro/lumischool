@@ -1,0 +1,27 @@
+# The steps between: n squares have n - 1 gaps, and a new tone goes in every gap.
+item art.more-tones v=1 skills=[art.tone, reasoning.pattern] {
+  title "Tones in between"
+  difficulty n
+  let n=3..6
+  level easy {
+    let n=3..4
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 33x15 {
+    tonescale scale steps=n blank=-1 ring=-1 at=canvas(1, 1)
+    text ask "Ada wants smoother steps, so she shades a new tone between every two squares that sit side by side. How many squares will the scale have then?" width=30 below=scale gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * n - 1)
+  feedback {
+    when (answer == 2 * n) point=scale {
+      say "Count the gaps between the squares, not the squares. Is there a gap after the last one?"
+    }
+  }
+  hint "How many gaps are there between squares that sit side by side?"
+  hint "Each gap gets one new square. Add those to the squares already there."
+}

@@ -1,0 +1,31 @@
+# The distance round the edge of a rectangle of squares, next to the area question that looks alike.
+item area.perimeter-grid v=1 skills=[perimeter.count-edges] {
+  title "Round the edge"
+  difficulty (r + c)
+  let r=2..5 c=3..8
+  where (2 * (r + c) != r * c and r != c)
+  level easy {
+    let r={2, 3} c=3..5
+  }
+  level hard {
+    let r=4..5 c=6..8
+  }
+
+  scene 34x13 {
+    grid g rows=r cols=c shade=0 color=sky cell=2 at=canvas(1, 1)
+    text ask "Each square has sides of 1 cm. How far is it all the way round the edge?" width=12 right-of=g gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * (r + c))
+  feedback {
+    when (answer == r * c) point=g {
+      say "That is how many squares are inside, the area. The question asks for the distance round the edge."
+    }
+    when (answer == r + c) point=g {
+      say "That is only two of the sides. Go all the way round."
+    }
+  }
+  hint "How long is the top edge? How long is the side?"
+  hint "There are four sides. Add them all."
+}

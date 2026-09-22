@@ -1,0 +1,27 @@
+# No method on the page: each mixture is checked against the three tools, and only one needs the
+# water to evaporate before every part is out.
+item chem.which-cannot v=1 stars=3 skills=[chemistry.separating, reasoning.check-each] {
+  title "Which one cannot be done?"
+  difficulty k
+  let k=0..5
+
+  scene 30x22 {
+    text ask "You have a sieve, a magnet and filter paper, and no time to let water evaporate. Which mixture could you not get every part out of?" width=29 at=canvas(1, 0)
+    row three below=ask gap=0 space=1 align=end {
+      mixture m0 things=["{if k == 0 then \"iron\" else if k == 1 then \"sugar\" else if k == 2 then \"peas\" else if k == 3 then \"sand\" else if k == 4 then \"salt\" else \"pebbles\"}", "{if k == 0 then \"sand\" else if k == 1 then \"\" else if k == 2 then \"flour\" else if k == 3 then \"\" else if k == 4 then \"\" else \"sand\"}"] water=(if k == 0 then 0 else if k == 1 then 1 else if k == 2 then 0 else if k == 3 then 1 else if k == 4 then 1 else 0) names=1
+      mixture m1 things=["{if k == 0 then \"sand\" else if k == 1 then \"pebbles\" else if k == 2 then \"sand\" else if k == 3 then \"clips\" else if k == 4 then \"peas\" else \"sugar\"}", "{if k == 0 then \"\" else if k == 1 then \"sand\" else if k == 2 then \"salt\" else if k == 3 then \"rice\" else if k == 4 then \"flour\" else \"\"}"] water=(if k == 0 then 1 else if k == 1 then 0 else if k == 2 then 1 else if k == 3 then 0 else if k == 4 then 0 else 1) names=1
+      mixture m2 things=["{if k == 0 then \"salt\" else if k == 1 then \"clips\" else if k == 2 then \"iron\" else if k == 3 then \"iron\" else if k == 4 then \"pebbles\" else \"sand\"}", "{if k == 0 then \"\" else if k == 1 then \"rice\" else if k == 2 then \"sand\" else if k == 3 then \"sugar\" else if k == 4 then \"sand\" else \"\"}"] water=(if k == 0 then 1 else if k == 1 then 0 else if k == 2 then 0 else if k == 3 then 1 else if k == 4 then 0 else 1) names=1
+    }
+    row letters below=three gap=0 space=8 align=start {
+      text la "A"
+      text lb "B"
+      text lc "C"
+    }
+    choice pick options=["A", "B", "C"] below=letters gap=1
+  }
+
+  answer pick=(if k == 0 then "C" else if k == 1 then "A" else if k == 2 then "B" else if k == 3 then "C" else if k == 4 then "A" else "B")
+  hint "Take each mixture in turn. Which tool would you use on it?"
+  hint "Is there a part that none of the three tools can get out?"
+  hint "What happens to a solid that has dissolved when the water goes through filter paper?"
+}

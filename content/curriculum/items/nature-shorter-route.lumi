@@ -1,0 +1,34 @@
+# The two-star reason: two routes between the same squares, and which is shorter, without walking
+# them. A route that only goes east and south is as short as it can be; one that goes back on itself
+# is longer by twice the doubled-back steps. The reason is the answer, not the count.
+item nature.shorter-route v=1 stars=2 skills=[nature.maps, reasoning.compare] {
+  title "Which route is shorter?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let ada={pick(k, "3 east, then 2 south", "2 south, then 3 east", "1 east, 2 south, then 2 east", "2 east, 1 south, 1 west, then 1 south")}
+  let ben={pick(k, "3 east, 2 south, 1 west, then 1 east", "1 east, 2 south, then 2 east", "3 east, 1 south, then 1 south", "1 east, then 2 south")}
+  let right={pick(k, "Ada's, because Ben goes west and then east again", "They are the same length: both only go east and south", "They are the same length: both only go east and south", "Ben's, because Ada goes east and then back west")}
+  let o1={pick(k, "Ben's, because he takes more turns", "Ada's, because she goes south first", "Ada's, because she goes south sooner", "Ada's, because she takes four moves")}
+  let o2={pick(k, "They are the same length: both end at the well", "Ben's, because he has three moves", "Ben's, because he goes east first", "They are the same length: both end at the well")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x26 {
+    gridmap map cols=6 rows=5 col=2 row=1 thing=hut at=canvas(1, 1)
+    text ask "Ada and Ben both walk from the hut to the well, one square at a time. Ada goes {ada}. Ben goes {ben}. Both arrive. Whose route is shorter, and why?" narrate width=18 right-of=map gap=2
+    choice pick options=[o1, right, o2] stack=column below=map gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o1 or pick == o2) point=map {
+      say "Count the squares each one walks, not the moves or the turns. A route that goes one way and then back again walks those squares twice."
+    }
+  }
+  hint "Add up the squares in each route. A move of 3 east is three squares."
+  hint "Does either route go one way and then back the other way? Those squares are walked for nothing."
+}

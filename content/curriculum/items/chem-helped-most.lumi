@@ -1,0 +1,33 @@
+# Which change helped more, stirring or warming, from three rows: the cold still cup against the
+# cold stirred cup shows what stirring saves, and against the warm still cup what warming saves.
+# In one version the two save the same.
+item chem.helped-most v=1 skills=[chemistry.dissolving, reasoning.compare] {
+  title "Which change helped more?"
+  difficulty (if k == 2 then 2 else if k == 1 then 1 else 0)
+  let k=0..2
+  let base={pick(k, 120, 120, 120)}
+  let stirred={pick(k, 90, 60, 60)}
+  let warm={pick(k, 50, 80, 60)}
+  let right={pick(k, "warming", "stirring", "the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x20 {
+    table data cols=2 head=["Cup", "Seconds"] cells=["cold, still", "{base}", "cold, stirred", "{stirred}", "warm, still", "{warm}"] at=canvas(1, 0)
+    text ask "Nour started with a cold, still cup. Then she tried stirring it, and then she tried warm water instead. Which change made the sugar dissolve sooner, by more seconds?" narrate width=32 below=data gap=1
+    choice pick options=["stirring", "warming", "the same"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Stirring saved {base - stirred} seconds and warming saved {base - warm}. Compare those two numbers, not the times themselves."
+    }
+  }
+  hint "How many seconds did stirring save, against the cold still cup? How many did warming save?"
+  hint "The bigger saving is the change that helped more. If they match, say so."
+}

@@ -1,0 +1,26 @@
+# Reading the table of height against distance: the row a question names. Every table follows the
+# same rule, two squares of push for every square of height, so a row read here is a row a later
+# question can predict.
+item physics.track-table-read v=1 skills=[physics.forces, physics.measuring] {
+  title "Read the table"
+  difficulty h
+  let h=1..6
+  let p={pick(h - 1, 2, 4, 6, 8, 10, 12)}
+  level easy {
+    let h=1..4
+  }
+  level hard {
+    let h=3..6
+  }
+
+  scene 30x37 {
+    ramp track height=h cup=1 pushed=p at=canvas(1, 0)
+    table t cols=2 head=["Height", "Cup pushed"] cells=["1", "2", "2", "4", "3", "6", "4", "8", "5", "10", "6", "12"] below=track gap=1
+    text ask "Sam let the marble go from a height of {h} squares. How many squares was the cup pushed?" narrate width=24 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer answer=p
+  hint "Find the row of the table whose height is the one in the question."
+  hint "Read across that row to the second column."
+}

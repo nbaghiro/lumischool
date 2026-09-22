@@ -1,0 +1,27 @@
+# Two tools share the ringed one's colour, so the colour alone is not enough: the child adds the
+# naming word that leaves only one. The kinds are told apart by shape, so the answer does not rest
+# on seeing colour.
+item writing.tool-clue v=1 skills=[writing.describing] {
+  title "Finish the clue"
+  let k=0..3
+  let t0={if k == 0 then "pencil" else if k == 1 then "brush" else if k == 2 then "crayon" else "pencil"}
+  let t1={if k == 0 then "crayon" else if k == 1 then "pencil" else "brush"}
+  let t2={if k == 0 then "brush" else if k == 1 then "brush" else if k == 2 then "pencil" else "crayon"}
+  let t3={if k == 0 then "crayon" else if k == 1 then "crayon" else if k == 2 then "crayon" else "pencil"}
+  let c0={if k == 0 then "red" else if k == 1 then "yellow" else if k == 2 then "blue" else "green"}
+  let c1={if k == 0 then "red" else if k == 1 then "green" else if k == 2 then "blue" else "yellow"}
+  let c2={if k == 0 then "blue" else if k == 1 then "green" else if k == 2 then "red" else "yellow"}
+  let c3={if k == 0 then "blue" else if k == 1 then "yellow" else if k == 2 then "red" else "blue"}
+  let c={if k == 0 then "red" else if k == 1 then "green" else if k == 2 then "red" else "yellow"}
+  let t={if k == 0 then "pencil" else if k == 1 then "brush" else if k == 2 then "crayon" else "brush"}
+
+  scene 36x8 {
+    arttools set tools=["{t0}", "{t1}", "{t2}", "{t3}"] colours=["{c0}", "{c1}", "{c2}", "{c3}"] layout=row ring=(if k == 0 then 0 else if k == 1 then 2 else if k == 2 then 3 else 1) at=canvas(1, 1)
+    text ask "Finish the clue so it fits only the ringed one: It is a {c} ..." narrate width=17 right-of=set gap=1
+    word-input word options=["{t}"] letters=6 below=ask gap=1
+  }
+
+  answer word=t
+  hint "Which other tool is {c} too?"
+  hint "What kind of tool is the ringed one?"
+}

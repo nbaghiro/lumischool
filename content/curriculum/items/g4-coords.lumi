@@ -1,0 +1,30 @@
+# Two blanks, because a point is a pair and one number is not an answer.
+item coords.read-point v=1 skills=[position.coordinates] {
+  title "Where the point is"
+  difficulty (x + y)
+  let x=1..5 y=1..5
+  where (x != y)  # on the diagonal a swapped pair is the right answer
+  level easy {
+    where (x + y <= 5)
+  }
+  level hard {
+    where (x + y >= 8)
+  }
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=x py=y at=canvas(1, 0)
+    column q right-of=grid gap=2 space=1 align=start {
+      text ask "Write the coordinates of the point." narrate width=15
+      equation eq "( {?px} , {?py} )"
+    }
+  }
+
+  answer px=x py=y
+  feedback {
+    when (px == y and py == x) point=grid {
+      say "Along the bottom first, then up. The across number is written first."
+    }
+  }
+  hint "Which number comes first, the one along the bottom or the one up the side?"
+  hint "Count along the bottom, then count up."
+}

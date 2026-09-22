@@ -1,0 +1,24 @@
+item clock.half-past v=1 skills=[time.half-past] {
+  title "Half past"
+  difficulty h
+  let h=1..12
+  level easy {
+    let h=1..6
+  }
+  level hard {
+    let h=7..12
+  }
+
+  scene 20x7 {
+    clock face h=h m=30 at=canvas(1, 0)
+    text ask "It is half past what?" narrate right-of=face gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (answer == h % 12 + 1) point=face {
+      say "The short hand is halfway. It has passed {h} and not yet reached the next hour."
+    }
+  }
+}

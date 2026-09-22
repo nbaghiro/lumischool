@@ -1,0 +1,28 @@
+item coding.line-total v=2 skills=[coding.sequences] {
+  title "How far in all?"
+  difficulty (a + b)
+  let a=2..4 b=2..3
+  level easy {
+    let a=2..3 b={2}
+  }
+  level hard {
+    let a=3..4 b={3}
+  }
+
+  scene 27x12 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}", "right {b}"] words=false
+      maze g cols=8 rows=2 row=2 code=["right {a}", "right {b}"] upto=0 trail=none
+    }
+    text ask "How many squares does the robot move in all?" width=18 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=moves
+  feedback {
+    when (answer == a or answer == b) point=b {
+      say "Both blocks run, one after the other, so both of them count."
+    }
+  }
+  hint "Count along the squares the robot goes over."
+}

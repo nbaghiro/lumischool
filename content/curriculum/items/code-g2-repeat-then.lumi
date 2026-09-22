@@ -1,0 +1,36 @@
+# A block after the repeat, and the grid taken away, so the total is multiplied and then moved on:
+# the audit's raise for the first repeat question. The stage floor is the number line it walks.
+item coding.repeat-then v=1 skills=[coding.repetition, coding.tracing] {
+  title "A repeat, then one more block"
+  difficulty (n * s + b + d)
+  let n=2..3 s=2..3 b=1..2 d=0..1
+  where (1 + n * s + (if d == 0 then b else 0) <= 8)
+  level easy {
+    let d={0}
+  }
+  level hard {
+    let d={1}
+    where (n * s >= 6)
+  }
+
+  scene 31x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["repeat {n}", "  right {s}", "{if d == 0 then \"right\" else \"left\"} {b}"]
+      stage s cols=8 col=1 who=bot code=["repeat {n}", "  right {s}", "{if d == 0 then \"right\" else \"left\"} {b}"] flag=false upto=0
+    }
+    text ask "The robot starts on square 1. Which square does it stop on?" width=24 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=s answer=col
+  feedback {
+    when (answer == 1 + n * s) point=bl {
+      say "That is where the repeat leaves it. There is one more block after the repeat."
+    }
+    when (answer == 1 + s + (if d == 0 then b else 0 - b)) point=bl {
+      say "The repeat goes round {n} times, not once."
+    }
+  }
+  hint "How far does the repeat move the robot altogether?"
+  hint "Now do the last block from there."
+}

@@ -1,0 +1,33 @@
+# Two prices added before the change is found: the audit's raise for money.change.
+item money.two-items-change v=1 skills=[money.change, problems.two-step] {
+  title "Two things and one note"
+  difficulty (a + b + (if a % 100 + b % 100 >= 100 then 200 else 0))
+  let a=(135..395 by 15) b=(120..480 by 20) note={10, 20}
+  where (a + b < 100 * note and a != b)
+  level easy {
+    let a=(135..195 by 15) b=(120..180 by 20) note={10}
+    where (a % 100 + b % 100 < 100)  # the cents do not make a dollar
+  }
+  level hard {
+    let a=(315..395 by 15) b=(360..480 by 20) note={20}
+    where (a % 100 + b % 100 >= 100)  # the cents carry
+  }
+
+  scene 30x14 {
+    row tags at=canvas(1, 1) space=2 align=start {
+      pricetag t1 now=a was=0
+      pricetag t2 now=b was=0
+    }
+    text ask "You buy both things and pay with a {note} dollar note. How much change do you get, in dollars?" width=28 below=tags gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals((100 * note - a - b) / 100, 2)
+  feedback {
+    when (answer == decimals((100 * note - a) / 100, 2) or answer == decimals((100 * note - b) / 100, 2)) point=tags {
+      say "You bought both things. Add the two prices first."
+    }
+  }
+  hint "What do the two things cost together?"
+  hint "Count on from that total to {note} dollars."
+}

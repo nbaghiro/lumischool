@@ -1,0 +1,31 @@
+# A reader follows a program exactly, so one wrong number sends the pen the wrong distance. The
+# checker proves only one line can be mended, and by one number.
+item coding.one-number-wrong v=1 skills=[coding.debugging, coding.drawing] {
+  title "One number is wrong"
+  difficulty ((if k == 2 or k == 3 then 2 else 0) + (if k % 2 == 1 and h == 2 then 2 else 0) + w + h)
+  let w=3..5 h=2..3 k=1..4
+  level easy {
+    let h={3} k={1, 4}  # the first side or the last, two squares short
+  }
+  level hard {
+    let k=2..3  # a middle side
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["up {if k == 1 then 1 else h}", "right {if k == 2 then 1 else w}", "down {if k == 3 then 1 else h}", "left {if k == 4 then 1 else w}"]
+      turtle t cols=(w + 1) rows=(h + 1) col=1 row=(h + 1) moves=["up {if k == 1 then 1 else h}", "right {if k == 2 then 1 else w}", "down {if k == 3 then 1 else h}", "left {if k == 4 then 1 else w}"] target=["up {h}", "right {w}", "down {h}", "left {w}"] mark=false
+    }
+    text ask "One number is wrong. Which line, and what should the number be?" width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text ll "line"
+      choice line options=[1, 2, 3, 4]
+      text ln "number"
+      number-input num width=3
+    }
+  }
+
+  check coding.runs of=t goal=target line=wrong num=fix
+  hint "Where does the drawing first leave the pale line? Which line drew that side?"
+  hint "How many squares long is that side of the pale shape?"
+}

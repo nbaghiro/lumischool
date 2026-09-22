@@ -1,0 +1,13 @@
+item writing.recount-order v=1 skills=[writing.recounts] {
+  title "What happened first"
+
+  scene 32x20 {
+    telescope scope tilt=35 at=canvas(1, 1)
+    moon m phase=0.5 right-of=scope gap=1
+    text ask "Number the sentences 1, 2 and 3 in the order they happened." width=13 right-of=m gap=1
+    sequence s items=["At last we saw the moon come up.", "First we climbed the hill.", "Then we set up the telescope."] blanks=[a, b, c] below=scope gap=1
+  }
+
+  answer a=3 b=1 c=2
+  hint "First, then and at last are clues to the order."
+}

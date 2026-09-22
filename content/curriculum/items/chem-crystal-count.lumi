@@ -1,0 +1,22 @@
+# The way in: count the crystals on the string. Those on the floor of the jar are left out.
+item chem.crystal-count v=1 skills=[chemistry.crystals] {
+  title "Crystals on the string"
+  difficulty n
+  let d={2, 4, 6} n=3..8
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 25x14 {
+    crystalstring jar days=d crystals=n kind=salt at=canvas(1, 0)
+    text ask "How many crystals are growing on the string?" width=12 right-of=jar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  hint "Count the crystals along the string, from the pencil down."
+  hint "Did you count the crystals at the very top and at the very bottom?"
+}

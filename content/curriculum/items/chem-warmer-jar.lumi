@@ -1,0 +1,26 @@
+# Two jars of the same stuff with their lids on: the hotter one has the faster particles, and they
+# are no further apart, because a closed jar keeps them to the same space. It used to say the opposite.
+item chem.warmer-jar v=1 skills=[chemistry.states, chemistry.particles] {
+  title "Which jar is hotter?"
+  difficulty s
+  let s=0..2 w=0..1
+
+  scene 29x20 {
+    text ask "Both jars hold the same stuff, with the lids on. Which jar is hotter?" width=28 at=canvas(1, 0)
+    row kit below=ask gap=1 space=1 align=start {
+      column align=centre {
+        particles a spread=s count=12 name=0 moving=(1 + w)
+        text la "A"
+      }
+      column align=centre {
+        particles b spread=s count=12 name=0 moving=(2 - w)
+        text lb "B"
+      }
+      choice pick options=["A", "B"] stack=column
+    }
+  }
+
+  check chem.state of=a vs=b pick=hotter
+  hint "The particles are in the same places in both jars. What is different about the marks?"
+  hint "Hotter particles have more energy. How does that change the way they move?"
+}

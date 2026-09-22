@@ -1,0 +1,26 @@
+item physics.wheel-pull v=1 skills=[physics.machines] {
+  title "Pull on the wheel"
+  difficulty w
+  let r=2..6 x=1..2 w={24, 36, 48, 60}
+  where (r > x and w * x % r == 0)
+  level easy {
+    let x={1} w={24, 36}
+  }
+  level hard {
+    let x={2} w={48, 60}
+  }
+
+  scene 30x14 {
+    wheelaxle wa wheel=r axle=x load=w show=0 at=canvas(1, 0)
+    text ask "The load hangs from the axle and you pull on the wheel. How many newtons hold the load still?" width=14 right-of=wa gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.machine of=wa answer=pull
+  feedback {
+    when (answer == w) point=wa {
+      say "The wheel is bigger than the axle, so the pull on it can be smaller than the load."
+    }
+  }
+  hint "How many times bigger is the wheel's radius than the axle's?"
+}

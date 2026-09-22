@@ -1,0 +1,70 @@
+lesson chemistry-puzzles-3 v=1 format=puzzles grade=3 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry puzzles: separating, heating and the water cycle"
+  goal "Work out what a filter, a sieve or a magnet gets back, what a thermometer will read, where the water and the salt go, and which way round the water cycle runs."
+
+  puzzle stars=1 {
+    show chem.filter-or-not t="sugar" easy-t="pebbles" hard-t="flour"
+  }
+  puzzle stars=1 {
+    show chem.get-it-out k=3 easy-k=1 hard-k=6
+  }
+  level easy medium {
+    puzzle stars=1 {
+      show chem.cycle-number i=2 easy-i=0
+    }
+  }
+  level easy {
+    puzzle stars=1 {
+      show chem.flame-read v=50
+    }
+  }
+  puzzle stars=2 {
+    show chem.filter-why q=1 u="sand" d="salt" easy-q=0 hard-u="flour"
+  }
+  puzzle stars=2 {
+    show chem.why-magnet q=0 easy-q=1 hard-q=2
+  }
+  puzzle stars=2 {
+    show chem.salt-evidence q=1 day=4 easy-q=0 hard-day=6
+  }
+  puzzle stars=2 {
+    show chem.cycle-reason q=2 easy-q=0 hard-q=1
+  }
+  puzzle stars=3 {
+    show chem.sand-salt-steps o=2 easy-o=0 hard-o=5
+  }
+  puzzle stars=3 {
+    show chem.two-pans a=20 b=50 easy-a=10 easy-b=40 hard-a=10 hard-b=70
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show chem.crystal-catch-up p=4 q=8 hard-p=2 hard-q=12
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show chem.which-cannot k=3
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, in geyser valley or at the table; the hints and
+    answers are on this sheet, not on theirs. Every puzzle can be started by looking closely: what
+    is in the water, what the thermometer reads, which stage of the cycle the number sits on. The
+    filters and sieves come from getting it back and from sieve, filter or magnet, the
+    thermometers from heating with a flame, the salt from evaporating to get the salt back, the
+    cycle from the water cycle, and the crystals from growing crystals. The two-star puzzles each
+    need a reason: why the sand stays on the paper, why the magnet or the sieve works, which
+    evidence shows the salt is still there, and why the rain is not salty. The three-star puzzles
+    are the ones to leave for a quiet moment: the steps that get sand and salt back on their own,
+    the minutes one pan boils while the other does not, the day two crystals are the same length,
+    and the mixture no tool can take apart. Ask for the reason as well as the answer on each of
+    them. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level there are four one-star puzzles, the flame's thermometer among them, and the crystals and the mixture no tool takes apart are left for another day; the filter is asked about pebbles, the thing to get out is the pebbles, the cycle's number is the vapour rising, the reason is why the salt goes through, why the sieve works, the crust in the dish, and why the rain never runs out, the sand and salt steps start in order, and the pans start at ten and forty."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and a fourth three-star puzzle, the mixture that a sieve, a magnet and filter paper cannot take apart; the filter is asked about flour, the thing to get out is the sugar, the reason is why the flour stays when it looks dissolved, why the filter paper works, the weight of the salty water, and why the rain is not salty, the sand and salt steps come reversed, the pans start at ten and seventy, and the crystals start at two and twelve."
+  }
+}

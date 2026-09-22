@@ -1,0 +1,30 @@
+# One rod against the ten rod: the answer is the gap a child can see but has to name.
+item bonds.rods v=1 skills=[bonds-to-10] {
+  title "How much longer"
+  difficulty (10 - a)
+  let a=2..9
+  where (a != 5)  # the difference would equal the short rod, hiding the mistake
+  level easy {
+    let a=6..9
+  }
+  level hard {
+    let a=2..4
+  }
+
+  scene 24x9 {
+    rods pair rods=[10, a] mode=stair numbers=true at=canvas(1, 1)
+    text ask "How much longer is the top rod?" narrate below=pair gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (10 - a)
+  feedback {
+    when (answer == a) point=pair {
+      say "That is the short rod. The question asks for the difference between them."
+    }
+    when (answer == 10 + a) point=pair {
+      say "Longer by how much is a subtraction, not an addition."
+    }
+  }
+  hint "Lay the short rod against the long one and look at the piece left over."
+}

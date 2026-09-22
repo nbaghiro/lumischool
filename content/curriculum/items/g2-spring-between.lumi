@@ -1,0 +1,27 @@
+# The same reading on the spring balance, which counts down the barrel instead of round a dial.
+item measure.spring-between v=1 skills=[mass.grams, measure.scales] {
+  title "Halfway down the spring"
+  difficulty v
+  let v={150, 250, 350, 450}
+  level easy {
+    let v={150, 250}
+  }
+  level hard {
+    let v={350, 450}
+  }
+
+  scene 26x15 {
+    springscale scale max=500 step=100 value=v unit=g at=canvas(1, 1)
+    text ask "The pointer is between two marks. How heavy is the bag, in grams?" narrate width=16 right-of=scale gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  feedback {
+    when (answer == v - 50 or answer == v + 50) point=scale {
+      say "The pointer is halfway between two numbered marks, not on one."
+    }
+  }
+  hint "The marks go up in 100s. The pointer is between which two?"
+  hint "What number is halfway between them?"
+}

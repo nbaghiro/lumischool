@@ -1,0 +1,14 @@
+# The waltz strum tapped: one tap for each arrow, none for the dot. music.rhythm judges when each tap
+# lands, in beats from the start of the bar, at the grade four window.
+item music.strum-tap-in-three v=1 skills=[music.strumming, music.rhythm] {
+  title "Tap the waltz strum"
+
+  scene 30x15 {
+    strumtrack bar strums=D-DUDU counts=true chord=C ring=-1 at=canvas(1, 1)
+    text ask "Count 1 and 2 and 3 and out loud. Tap once for every arrow, and stay still on the dot." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2, 2.5] grade=4
+  hint "Which counts have an arrow over them? Say those loudly."
+  hint "Is there a tap on the and after 1? Look at the mark over it."
+}

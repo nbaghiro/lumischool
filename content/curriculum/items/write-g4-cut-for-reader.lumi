@@ -1,0 +1,22 @@
+# Every choice is shorter than the draft and each cuts something different, so the child has to
+# decide what this reader needs before choosing. The right note moves between the three places.
+item writing.cut-for-reader v=2 stars=2 skills=[writing.concision, writing.audience] {
+  title "A short note for this reader"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..3
+
+  scene 36x24 {
+    passage draft text="{if k == 0 then \"Please come to the park at three o'clock. We will be sitting by the pond with the little bridge, near the gate.\" else if k == 1 then \"Leo can have his tea at five. He likes the red cup best. Please do not give him nuts, because they make him ill.\" else if k == 2 then \"Our house is number 12, the one with the blue door. You can ring the bell or knock, because both of them work.\" else \"I have lost my pencil case. It is green with a zip. I think I left it in the library on Monday after lunch.\"}" width=35 numbers=false at=canvas(1, 1)
+    text ask "{if k == 0 then \"The note is for Gran, who has never been to this park.\" else if k == 1 then \"The note is for a babysitter who has never met Leo.\" else if k == 2 then \"The note is for a friend who has never been to the house.\" else \"The note is for the class notice board.\"} Which short note still tells the reader what they need?" width=35 below=draft gap=1
+    choice pick options=["{if k == 0 then \"Park at three. See you there.\" else if k == 1 then \"Tea at five, in the red cup.\" else if k == 2 then \"Number 12, with the blue door.\" else \"Lost: my pencil case. Please help.\"}", "{if k == 0 then \"Park at three, by the pond near the gate.\" else if k == 1 then \"Please give Leo his tea.\" else if k == 2 then \"Ring the bell or knock.\" else \"I left something in the library.\"}", "{if k == 0 then \"Park, by the pond near the gate.\" else if k == 1 then \"Tea at five. No nuts: they make him ill.\" else if k == 2 then \"The house with a door and a bell.\" else \"Lost: green pencil case with a zip, in the library.\"}"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Park at three, by the pond near the gate." else if k == 1 then "Tea at five. No nuts: they make him ill." else if k == 2 then "Number 12, with the blue door." else "Lost: green pencil case with a zip, in the library.")
+  feedback {
+    when (pick == "Tea at five, in the red cup." and k == 1) point=draft {
+      say "The cup is nice to know. What would matter most if the babysitter forgot it?"
+    }
+  }
+  hint "Pretend you are the reader. What do you need to know to do the right thing?"
+  hint "Each short note left something out. Which note left out only what the reader can do without?"
+}

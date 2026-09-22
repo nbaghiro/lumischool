@@ -1,0 +1,14 @@
+item art.smaller-further v=1 skills=[art.space] {
+  title "Big and small"
+  difficulty (a - b + q)
+  let a=5..7 b=2..3 q=0..1
+
+  scene 32x11 {
+    text ask "Two trees are the same size in real life. In Ada's picture one is {a} squares tall and the other {b} squares tall. Which one looks {if q == 0 then \"further away\" else \"nearer\"}?" width=30 at=canvas(1, 1)
+    choice pick options=["the taller tree", "the shorter tree"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "the shorter tree" else "the taller tree")
+  hint "Look out of a window at a tree close by and one far away. Which looks bigger?"
+  hint "If two things are really the same size, what makes one look small?"
+}

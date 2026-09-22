@@ -1,0 +1,33 @@
+# The way in: the same spoons of salt stirred into cold water and hot, and the beaker with no
+# grains on its floor is the one that took them all. The order of the two is shuffled, and the
+# hard version asks which beaker would take more spoons before grains stayed.
+item chem.more-spoons v=1 skills=[chemistry.dissolving] {
+  title "Which beaker took more?"
+  difficulty w
+  let w=0..1 s=0..1 n={4, 5}
+  let asks={pick(w, "In which beaker did all of it dissolve?", "Which beaker could take more spoons before grains stayed on the floor?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 34x24 {
+    row two at=canvas(1, 0) space=3 align=end {
+      beaker a max=200 step=50 level=150 unit=ml solid=(if s == 0 then 12 else 0) rod=false label="A"
+      beaker b max=200 step=50 level=150 unit=ml solid=(if s == 0 then 0 else 12) rod=false label="B"
+    }
+    text ask "Ana stirred {n} spoons of salt into each beaker: one of cold water from the tap and one of hot water from the pool. {asks}" narrate width=32 below=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "B" else "A")
+  feedback {
+    when (pick != (if s == 0 then "B" else "A")) point=two {
+      say "Grains on the floor mean some salt did not dissolve. The beaker with a clear floor took all {n} spoons, and it is the hot one."
+    }
+  }
+  hint "Look at the floor of each beaker. Grains left there did not dissolve."
+  hint "{if w == 0 then \"The beaker with no grains dissolved all of its salt.\" else \"Hot water holds more salt than cold, so the beaker that took all of its spoons could take more.\"}"
+}

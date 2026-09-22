@@ -1,0 +1,28 @@
+# Two blocks, one of them with a wrong number: the child finds which block misses and mends it. The
+# checker tries every single change and proves both answers.
+item coding.fix-number v=1 skills=[coding.debugging] {
+  title "Mend the number"
+  difficulty (a + b + w)
+  let a=2..4 b=1..2 w=1..2 d={-1, 1}
+  where (not (w == 2 and b + d < 1))
+  where (not (w == 1 and a + d < 1))
+  where (not (w == 2 and b + d > 3))
+
+  scene 32x20 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {if w == 1 then a + d else a}", "down {if w == 2 then b + d else b}"] numbers=true words=false
+      maze g cols=6 rows=4 flag=[1 + a, 1 + b] code=["right {if w == 1 then a + d else a}", "down {if w == 2 then b + d else b}"] trail=line
+    }
+    text ask "The robot should stop on the flag. Which block has the wrong number, and what should it be?" width=30 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lb "block"
+      choice pick options=[1, 2]
+      text ln "number"
+      number-input answer width=3
+    }
+  }
+
+  check coding.runs of=g goal=flag pick=wrong answer=fix
+  hint "Where does the robot stop? Is it too far, or not far enough?"
+  hint "Is it in the right column? Is it in the right row?"
+}

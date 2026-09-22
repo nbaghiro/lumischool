@@ -1,0 +1,15 @@
+# A word that meets a rule about its sounds, not its letters: ship has four letters but three sounds.
+item writing.word-with-sounds v=1 stars=3 skills=[writing.spelling, reading.phonics] {
+  title "A word with that many sounds"
+  let n=4..5
+  let eg={if n == 4 then "frog, f-r-o-g" else "rocket, r-o-ck-e-t"}
+
+  scene 32x14 {
+    text ask "Write two words that each have {n} sounds, like {eg}. Draw a line between the sounds." width=30 at=canvas(1, 1)
+    handwriting rules show="" rows=2 trace=0 width=30 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two real words, not the example, each with the right number of sounds when said slowly (letters are not the same as sounds: ship is three sounds), spelled so they can be read, with the lines drawn between the sounds."
+  hint "Think of an animal or a toy. Say it slowly and count the sounds on your fingers."
+  hint "Two letters can make one sound, like sh in ship. Count sounds, not letters."
+}

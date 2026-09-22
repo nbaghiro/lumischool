@@ -1,0 +1,22 @@
+# The largest sum from six cards: the two biggest digits go in the hundreds of different numbers,
+# which is not what a child tries first.
+item add.biggest-total v=1 stars=3 skills=[addition.columns, reasoning.extremes] {
+  title "The biggest total"
+  difficulty (c + f)
+  let a=1..2 b={3} c=4..5 d={6} e={7} f=8..9
+
+  scene 30x15 {
+    digitcards cards digits=[d, a, f, c, e, b] at=canvas(1, 1)
+    text ask "Make two three-digit numbers with the six cards, using each card once. Add them. What is the biggest total you can make?" width=28 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * (f + e) + 10 * (d + c) + a + b)
+  feedback {
+    when (answer == 100 * f + 10 * e + d + 100 * c + 10 * b + a) point=cards {
+      say "That puts the three biggest cards in one number. Try the two biggest cards in the hundreds of different numbers."
+    }
+  }
+  hint "Which place is worth the most? Which cards should go there?"
+  hint "Both numbers have a hundreds digit. Put the biggest two cards there, then do the same for the tens."
+}

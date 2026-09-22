@@ -1,0 +1,38 @@
+# The way in: the island from above on its lettered and numbered grid, and the square the tree is
+# in, read as a letter along the top and a number down the side. A small grid at easy; a bigger
+# one at hard, with the tree well in from the edges.
+item nature.map-square v=1 skills=[nature.maps] {
+  title "Which square?"
+  difficulty (x + y - 2)
+  set cols=5 rows=4
+  let x=1..5 y=1..4
+  where (x != y)  # so reading the grid the wrong way round gives a different answer
+  let lt={pick(x - 1, "A", "B", "C", "D", "E", "F")}
+  level easy {
+    set cols=4 rows=3
+    let x=1..4 y=1..3
+  }
+  level hard {
+    set cols=6 rows=5
+    let x=3..6 y=3..5
+  }
+
+  scene 36x18 {
+    gridmap map cols=cols rows=rows col=x row=y thing=tree at=canvas(1, 1)
+    text ask "This is Ada's map of the island in the marsh, seen from above. Which square is the tree in? Write the letter, then the number." narrate width=18 right-of=map gap=2
+    choice letter options=["A", "B", "C", "D", "E", "F"] below=map gap=1
+    number-input number right-of=letter gap=2
+  }
+
+  answer letter=lt number=y
+  feedback {
+    when (number == x and letter != lt and x != y) point=map {
+      say "The letters run along the top and the numbers run down the side. Read the tree's letter from the top first."
+    }
+    when (number == x and letter == lt and x != y) point=map {
+      say "The number comes from the side of the map. Run your finger from the tree straight out to the left edge."
+    }
+  }
+  hint "Put your finger on the tree. Slide it straight up to the top edge: that is the letter."
+  hint "Now slide it straight out to the left edge: that is the number."
+}

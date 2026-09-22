@@ -1,0 +1,38 @@
+# Every rectangle with a given distance round: an all-the-ways question, where a square counts and
+# the same rectangle turned round does not count twice.
+item coding.rectangles-count v=1 stars=3 skills=[coding.drawing, reasoning.all-the-ways] {
+  title "All the rectangles"
+  difficulty s
+  let s=6..10
+  level hard {
+    let s=11..14  # six or seven rectangles to list
+    scene 36x15 {
+      row top at=canvas(1, 0) space=1 align=start {
+        program p code=["repeat 2", "  forward 1", "  turn left", "  forward {s - 1}", "  turn left"] title="one of them"
+        column q space=1 align=start {
+          text ask "The turtle travels {2 * s} squares round a rectangle. How many different rectangles could it be? A square counts, and 2 by 3 is the same as 3 by 2." width=18
+          number-input answer
+        }
+      }
+    }
+  }
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      program p code=["repeat 2", "  forward 1", "  turn left", "  forward {s - 1}", "  turn left"] title="one of them"
+      column q space=1 align=start {
+        text ask "The turtle travels {2 * s} squares round a rectangle. How many different rectangles could it be? A square counts, and 2 by 3 is the same as 3 by 2." width=18
+        number-input answer
+      }
+    }
+  }
+
+  answer (s // 2)
+  feedback {
+    when (answer == s - 1) point=p {
+      say "Did you count a rectangle and the same one turned round as two?"
+    }
+  }
+  hint "One time round the repeat is half the way round. How far is that?"
+  hint "List the pairs of sides that add up to {s}, starting with 1 and {s - 1}."
+}

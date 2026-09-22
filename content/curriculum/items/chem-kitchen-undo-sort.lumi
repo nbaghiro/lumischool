@@ -1,0 +1,41 @@
+# Eight kitchen changes sorted into can undo and cannot undo, with one in the wrong column.
+# Toast under can undo is seen at once; dissolved sugar under cannot undo needs the idea that
+# the sugar is still there and comes back when the water dries.
+item chem.kitchen-undo-sort v=1 skills=[chemistry.changes, reasoning.find-the-mistake] {
+  title "One is in the wrong column"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let stray={pick(k, "toast bread", "fry an egg", "melt butter", "freeze juice", "dissolve sugar", "boil a kettle")}
+  let g={if k <= 1 then 0 else if k <= 3 then 1 else 2}
+  let o1={pick(g, "toast bread", "melt butter", "dissolve sugar")}
+  let o2={pick(g, "fry an egg", "freeze juice", "boil a kettle")}
+  let o3={pick(g, "bake a cake", "bake a cake", "melt butter")}
+  let o4={pick(g, "melt butter", "fry an egg", "freeze juice")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 32x41 {
+    text ask "Ben sorted eight kitchen changes by whether they can be undone. One is in the wrong column. Which?" narrate width=30 at=canvas(1, 1)
+    wordsort s heads=["can undo", "cannot undo"] words=["melt butter", "toast bread", "freeze juice", "fry an egg", "dissolve sugar", "bake a cake", "boil a kettle", "burn a match"] into=[if k == 2 then 1 else 0, if k == 0 then 0 else 1, if k == 3 then 1 else 0, if k == 1 then 0 else 1, if k == 4 then 1 else 0, 1, if k == 5 then 1 else 0, 1] below=ask gap=1
+    choice pick options=[o1, o2, o3, o4] stack=column below=s gap=1
+  }
+
+  answer pick=stray
+  feedback {
+    when (k == 4 and pick != stray) point=s {
+      say "The sugar is still there in the water, only too small to see. Let the water dry up and the sugar is back, so dissolving can be undone."
+    }
+    when (k == 5 and pick != stray) point=s {
+      say "The steam from a kettle is still water. Let it cool and it is water again, so boiling can be undone."
+    }
+    when (k <= 3 and pick != stray) point=s {
+      say "Read each heading, then each change under it. Could you really get the first thing back?"
+    }
+  }
+  hint "Say each heading, then each change under it. Can the first thing come back, or is something new made?"
+  hint "Melting, freezing, dissolving and boiling can be undone. Cooking and burning make something new."
+}

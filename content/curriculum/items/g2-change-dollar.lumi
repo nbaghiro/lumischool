@@ -1,0 +1,34 @@
+# Change from a dollar: count up from the price to 100 cents.
+item money.change-from-dollar v=1 skills=[money.change, subtraction.from-hundred] {
+  title "Change from a dollar"
+  difficulty (100 - c)
+  let c=11..89
+  where (c % 5 != 0)
+  level easy {
+    let c=71..89
+  }
+  level hard {
+    let c=11..29
+  }
+
+  scene 28x14 {
+    row buy at=canvas(1, 1) space=2 align=centre {
+      money bill pieces=["1"] total=false
+      pricetag tag now=c was=0
+    }
+    text ask "You pay for the pencil with a one dollar bill. How much change do you get, in cents?" narrate width=26 below=buy gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 - c)
+  feedback {
+    when (answer == 110 - c) point=tag {
+      say "Count up from {c} to the next ten, then on in tens to 100."
+    }
+    when (answer == c) point=tag {
+      say "That is the price. Change is what is left of the dollar."
+    }
+  }
+  hint "A dollar is 100 cents. How far is it from {c} to 100?"
+  hint "Count up to the next ten first, then count on in tens."
+}

@@ -1,0 +1,36 @@
+# Words to a bar: four fruit words, one of them two quick sounds, and the bar where the pair of
+# quavers sits in the same place.
+item music.rhythm-words-to-bar v=1 skills=[music.note-values, music.rhythm] {
+  title "Which bar says it?"
+  let p=1..3
+  let words={pick(p - 1, "ap-ple, pear, pear, pear", "pear, ap-ple, pear, pear", "pear, pear, ap-ple, pear")}
+  let right={pick(p - 1, "A", "B", "C")}
+
+  scene 30x25 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row ra space=1 align=centre {
+        text la "A"
+        staff a notes=[0.5, 0.5, 1, 1, 1]
+      }
+      row rb space=1 align=centre {
+        text lb "B"
+        staff b notes=[1, 0.5, 0.5, 1, 1]
+      }
+      row rc space=1 align=centre {
+        text lc "C"
+        staff c notes=[1, 1, 0.5, 0.5, 1]
+      }
+    }
+    text ask "Ana claps {words}. Which bar is it?" narrate width=28 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Find where ap-ple comes in the words. The two joined notes must be in the same place in the bar."
+    }
+  }
+  hint "Which word has two quick sounds?"
+  hint "Is it the first, second or third word? Find the bar with the joined pair there."
+}

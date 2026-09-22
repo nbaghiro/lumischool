@@ -1,0 +1,61 @@
+lesson art-mixing-in-proportion v=1 format=teach grade=4 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Mixing in parts"
+  goal "Mix colours in parts, scale a recipe up so the colour stays the same, and compare mixes by the share of each paint."
+
+  look {
+    scene 13x7 {
+      mixingtray tray wells=["yellow 2+blue", "yellow+blue", "blue 2+yellow"] ring=-1 labels=true at=canvas(1, 1)
+    }
+    say """
+      How much of each paint matters. Two parts yellow to one part blue makes a yellow green, like a
+      new leaf. One part yellow to two parts blue makes a blue green, like a pine tree. Mixing in
+      parts means you can make the same green again tomorrow.
+      """
+  }
+  do {
+    practice art.two-to-one count=2 seed=2
+    level easy {
+      worked art.same-green a=3 b=1 m=3 p=0 level=medium
+    }
+    practice art.same-green count=3 seed=4
+    practice art.scale-the-mix count=2 hard-count=1 seed=3
+    level hard {
+      practice art.more-yellow count=1 seed=1
+    }
+    show art.three-greens
+  }
+  try stars=2 {
+    show art.more-yellow k=0 p=1
+  }
+  try stars=3 {
+    show art.how-many-greens n=3 easy-n=2 hard-n=4
+  }
+  remember {
+    say "The same green needs the same parts of each paint for every part of the other. Double one, double the other."
+  }
+
+  grown-ups """
+    Mixing in parts is ratio, met a year or two before it is taught by name. The first questions
+    name what two parts to one make. The next ones scale a recipe up: twice as much of the same
+    green needs twice as much of each paint, and the option that adds one more of each is there
+    because nearly every child picks it first. The machine proves each answer with the same mixing
+    the brush uses, so the green it calls the same really is identical and the one it calls
+    different really is a different green, however close it looks.
+
+    The leaf painting in the middle of the lesson is the child's, marked by a grown-up. The two-star
+    question compares two greens where the one with more yellow in it is not the yellower one, so
+    the child has to compare yellow for each part of blue. The three-star question asks how many
+    different greens up to three parts of each can make. It has no method on the page: children
+    list pairs, notice that two and two is the same green as one and one, and cross out the
+    repeats. A child who gets stuck there has not failed the lesson.
+
+    Respond to the leaf by naming the greens: "This one is yellower, like a new leaf, and this one
+    has more blue." Ask which green they would make more of, and how they would keep it the same.
+    """
+  level easy {
+    grown-ups "At this level the pots are as written, three times a green is mixed once in the teacher's pen before greens doubled, the ringed greens are doubled, the three greens are as written, the two-star is as written, and the three-star counts greens from one or two parts."
+  }
+  level hard {
+    grown-ups "At this level the pots are as written, the greens are made three times over, the ringed greens are tripled or quadrupled and one of them makes way for a second pair of greens to compare, the three greens are as written, the two-star is as written, and the three-star counts greens from one to four parts."
+  }
+}

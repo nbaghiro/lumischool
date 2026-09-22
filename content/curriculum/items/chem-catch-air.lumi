@@ -1,0 +1,43 @@
+# The three-star: catching the air from a bottle in a cup under water, the steps in order. The cup
+# has to be full of water and upside down before the bottle is tipped under it, or the air has
+# nowhere to show itself; the trap is tipping the bottle first.
+item chem.catch-air v=1 stars=3 skills=[chemistry.states, reasoning.planning] {
+  title "Catch the air"
+  difficulty (if p <= 1 then 0 else if p <= 3 then 1 else 2)
+  let p=0..5
+  let a={pick(p, 1, 0, 3, 2, 3, 2)}
+  let b={pick(p, 0, 2, 0, 3, 1, 0)}
+  let c={pick(p, 2, 1, 1, 0, 0, 3)}
+  let d={pick(p, 3, 3, 2, 1, 2, 1)}
+  let wa={pick(a, "Fill the cup under water, upside down", "Push the empty bottle under the water", "Tip the bottle's mouth under the cup", "The bubbles rise and push the water out")}
+  let wb={pick(b, "Fill the cup under water, upside down", "Push the empty bottle under the water", "Tip the bottle's mouth under the cup", "The bubbles rise and push the water out")}
+  let wc={pick(c, "Fill the cup under water, upside down", "Push the empty bottle under the water", "Tip the bottle's mouth under the cup", "The bubbles rise and push the water out")}
+  let wd={pick(d, "Fill the cup under water, upside down", "Push the empty bottle under the water", "Tip the bottle's mouth under the cup", "The bubbles rise and push the water out")}
+  level easy {
+    let p=0..1
+  }
+  level hard {
+    let p=4..5
+  }
+
+  scene 34x33 {
+    row scene1 at=canvas(1, 0) space=3 align=end {
+      beaker tank max=500 step=100 level=400 unit=ml solid=0 rod=false
+      bubbles b count=4
+    }
+    text ask "Leo wants to catch the air from an empty bottle in a cup, under the water in the tank, so he can see it. The steps are muddled. Number them 1 to 4." narrate width=32 below=scene1 gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1)
+  feedback {
+    when (q == 1 and r == 2 and t == 3 and u == 4) point=s {
+      say "The steps are muddled, so they are not in order as they stand. What has to be ready before any air can be caught?"
+    }
+    when ((if a == 0 then q else if b == 0 then r else if c == 0 then t else u) != 1) point=s {
+      say "The cup has to be full of water and upside down first. If it has air in it already, the bottle's air has nowhere to show."
+    }
+  }
+  hint "Where will the air be caught? Get that ready first, full of water so the air can push the water out."
+  hint "Then the bottle goes under, then it tips under the cup, and last the bubbles rise into it."
+}

@@ -1,0 +1,22 @@
+# Balanced forces are the idea: once the toy falls at a steady speed, the air pushes up exactly as
+# hard as the weight pulls down, whatever the canopy is like.
+item physics.parachute-steady v=1 skills=[physics.forces, reasoning.balance] stars=3 {
+  title "Falling steadily"
+  difficulty w
+  let w={4, 6, 8, 10} c=3..7
+
+  scene 26x15 {
+    parachute p canopy=c weight=w drag=w labels=0 show=0 at=canvas(1, 0)
+    text ask "The toy weighs {w} newtons. Its parachute opens, it slows down, and then it falls at a steady speed. How hard does the air push up now?" narrate width=12 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer w
+  feedback {
+    when (answer == 0) point=p {
+      say "It is still falling, so something is still pushing up. Is it more than the weight, less, or the same?"
+    }
+  }
+  hint "If the push up were smaller than the weight, what would happen to the speed?"
+  hint "What does a steady speed tell you about the two forces?"
+}

@@ -1,0 +1,32 @@
+# The way in: a lamp's program read for its flashes, with the waits (the lamp dark for a beat)
+# not counted. A wait after the flashes (k=5, 6) is plainer than one before or among them (k=1 to 3).
+item coding.flash-count v=1 skills=[coding.sequences, coding.data] {
+  title "How many flashes?"
+  difficulty (if k == 0 or k == 4 then 0 else if k >= 5 then 1 else 2)
+  let k=0..6
+  let l1={pick(k, "flash long", "flash long", "flash short", "wait", "flash long", "flash short", "flash long")}
+  let l2={pick(k, "flash short", "flash long", "wait", "flash long", "flash long", "flash long", "flash short")}
+  let l3={pick(k, "flash short", "wait", "flash short", "flash short", "flash short", "wait", "flash long")}
+  let l4={pick(k, "flash short", "flash short", "wait", "flash short", "flash short", "wait", "wait")}
+  level easy {
+    let k={0, 4, 5, 6}
+  }
+  level hard {
+    let k=1..3
+  }
+
+  scene 30x13 {
+    program p code=["{l1}", "{l2}", "{l3}", "{l4}"] title="Lamp 1" at=canvas(1, 1)
+    text ask "Pip's lamp runs this program. How many times does it flash?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 3, 2, 3, 4, 2, 3)
+  feedback {
+    when (answer == 4 and k != 0 and k != 4) point=p {
+      say "A wait line is the lamp staying dark for a beat. It is not a flash."
+    }
+  }
+  hint "Count the lines that say flash."
+  hint "{if k == 0 or k == 4 then \"Every line is a flash.\" else \"A wait is not a flash. Count the flash lines only.\"}"
+}

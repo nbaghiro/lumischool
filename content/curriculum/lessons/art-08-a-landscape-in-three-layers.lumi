@@ -1,0 +1,59 @@
+lesson art-a-landscape-in-three-layers v=1 format=teach grade=3 unit=3 subject=art levels=[easy, medium, hard] {
+  title "A landscape in three layers"
+  goal "Show distance with layers that get paler, cooler and smaller further back, and work out the paint for a layer from the ones either side of it."
+
+  look {
+    scene 21x12 {
+      layers view labels=true ring=-1 sun=true at=canvas(1, 1)
+    }
+    say """
+      A flat sheet can show things far away. Paint the far hills first, pale and a little blue,
+      because the air between you and them makes them look that way. Then the middle hills, greener.
+      Paint the near field last, darkest and with the most detail, overlapping the rest.
+      """
+  }
+  do {
+    practice art.which-layer count=1 seed=1
+    practice art.paint-for-far count=2 seed=2
+    level easy {
+      worked art.middle-hill f=4 p=0 level=medium
+    }
+    practice art.middle-hill count=2 seed=1
+    practice art.smaller-further count=1 seed=3
+    practice art.swap-layers count=2 hard-count=1 seed=1
+    level hard {
+      practice art.further-still count=1 seed=1
+    }
+  }
+  try stars=2 {
+    show art.further-still p=2 hard-p=1
+  }
+  try stars=3 {
+    show art.paint-three-layers
+  }
+  remember {
+    say "Further away is paler, cooler, smaller and less detailed. Paint from the back to the front."
+  }
+
+  grown-ups """
+    The questions are marked by the machine; the paint questions work out which mix is paler or
+    cooler with the same mixing the brush uses. The first names a layer. The next ones need two ideas
+    at once: every option for the far hills is pale, so the child also has to choose the cool one,
+    and the middle hills need a paint between the far hills and the near field. The size question
+    uses a different clue: two things the same size in life look smaller further away.
+
+    The two-star question carries the rule past the picture, to mountains further back than the
+    far hills. The landscape is the child's and the three-star question. Working from the back to
+    the front matters, because each layer has to overlap the one behind it, and letting a layer
+    dry before the next goes on keeps the edges clean.
+
+    Respond by following the eye into the picture: "I start at the near field, and the far hills are
+    so pale they look a long way off." Ask which layer they would make paler still.
+    """
+  level easy {
+    grown-ups "At this level the ringed part, the far paint and the trees are as written, the middle hill between green and four white is mixed once in the teacher's pen before hills between green and three white, the swapped layers are as written, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the ringed part, the far paint and the trees are as written, the middle hills sit between green and four white, one pair of swapped layers makes way for a second set of mountains further still, and the two-star and three-star are as written."
+  }
+}

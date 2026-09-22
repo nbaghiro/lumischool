@@ -1,0 +1,43 @@
+# The three-star: plan a fair test of one thing, from four set-ups, where only the right one
+# changes that thing and nothing else. Each wrong set-up changes the wrong thing, changes two, or
+# changes nothing.
+item nature.plan-test v=1 stars=3 skills=[nature.plants, reasoning.fair-test] {
+  title "Plan a fair test"
+  difficulty k
+  let k=0..2
+  let thing={pick(k, "water", "light", "warmth")}
+  let right={pick(k, "Sill, warm: A watered, B dry", "Warm, watered: A on the sill, B in the dark", "Sill, watered: A in the warm, B in the cold")}
+  let o1={pick(k, "Sill: A warm and watered, B cold and dry", "Watered: A warm on the sill, B cold and dark", "Watered: A on the warm sill, B cold and dark")}
+  let o2={pick(k, "Sill, warm: both watered", "Sill, warm: A watered, B dry", "Sill, warm: A watered, B dry")}
+  let o3={pick(k, "Watered: A on the sill, B in a cupboard", "Warm: A on the sill, B in the dark with more water", "Warm: A on the sill, B in a cupboard")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    row two at=canvas(1, 1) space=2 align=end {
+      crops ta stage=2 rows=2 plants=4
+      crops tb stage=2 rows=2 plants=4
+    }
+    text ask "Ada has two trays of cress, A and B, the same in every way. She wants a fair test of whether cress needs {thing}. Which plan is the fair test?" narrate width=32 below=two gap=1
+    choice pick options=[o1, right, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o2 and k == 0) point=two {
+      say "That changes nothing between the trays, so it tests nothing. One thing has to be different, and it has to be the water."
+    }
+    when (pick == o1) point=two {
+      say "That changes two things at once. If B does badly, which one was it? Change only the {thing}."
+    }
+    when (pick == o3 or pick == o2 and k != 0) point=two {
+      say "Check what is different between A and B in that plan. Is it the {thing}, and is it only the {thing}?"
+    }
+  }
+  hint "In a fair test only the {thing} is different between A and B. Everything else stays the same."
+  hint "For each plan, list what is different between the trays. The right plan has one difference, and it is the {thing}."
+}

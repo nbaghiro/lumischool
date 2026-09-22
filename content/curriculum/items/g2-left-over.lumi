@@ -1,0 +1,31 @@
+# Sharing that does not come out even: what cannot be shared is left in the jar.
+item division.left-over v=1 skills=[division.sharing, division.remainders] {
+  title "Some left over"
+  difficulty (c * e + r)
+  let c=2..4 e=2..4 r=1..3
+  where (r < c and r != e)
+  level easy {
+    let c=2..3 e=2..3 r=1..2
+  }
+  level hard {
+    let c={4} e=3..4 r=1..3
+  }
+
+  scene 30x12 {
+    sweetjar jar count=(c * e + r) color=tang at=canvas(1, 1)
+    text ask "{c * e + r} sweets are shared between {c} children. Each child gets the same, as many as they can. How many sweets are left in the jar?" width=18 right-of=jar gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer r
+  feedback {
+    when (answer == e) point=jar {
+      say "That is how many each child gets. How many are still in the jar at the end?"
+    }
+    when (answer >= c) point=jar {
+      say "If there are {c} or more left, you can give every child one more."
+    }
+  }
+  hint "Give one sweet to each child, then another, while you still can."
+  hint "Stop when there are not enough to give every child one more. How many are left?"
+}

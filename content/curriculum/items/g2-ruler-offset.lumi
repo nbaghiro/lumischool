@@ -1,0 +1,30 @@
+# The ribbon does not start at zero, so the length is a difference, not a reading: the audit's raise
+# for measure.longer.
+item measure.ruler-offset v=1 skills=[length.centimetres, subtraction.difference] {
+  title "It does not start at zero"
+  difficulty (s + len)
+  let s=1..4 len=3..7
+  where (s + len <= 12)
+  level easy {
+    let s={1} len=3..5
+  }
+  level hard {
+    let s=3..4 len=6..7
+  }
+
+  scene 28x10 {
+    ruler r cm=12 length=len start=s thing=ribbon at=canvas(1, 0)
+    text ask "How long is the ribbon?" narrate below=r gap=1
+    number-input answer right-of=ask gap=1
+    text unit "cm" right-of=answer gap=0
+  }
+
+  answer len
+  feedback {
+    when (answer == s + len) point=r.object-end {
+      say "That is the number at the end. The ribbon starts at {s}, not at 0."
+    }
+  }
+  hint "Where does the ribbon start, and where does it end?"
+  hint "Count the centimetres from the start to the end, or take the smaller number from the bigger."
+}

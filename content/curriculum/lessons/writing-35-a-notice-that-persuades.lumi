@@ -1,0 +1,69 @@
+# A notice as a piece of persuasion: a bold line to stop a passer-by, an ask, a reason that
+# matters to the reader, a time and a place, and a picture.
+lesson writing-a-notice-that-persuades v=1 format=teach grade=4 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A notice that persuades"
+  goal "Write a notice that asks for something, with a reason, a picture and a bold first line."
+
+  look {
+    scene 34x12 {
+      row all at=canvas(1, 1) space=3 align=start {
+        sign board lines=["SAVE OUR POND", "Please keep dogs on leads", "Ducks are nesting in the reeds", "By the pond, all spring"] kind=board color=sky
+        art pic asset="duck"
+      }
+    }
+    say """
+      Ada's notice is on the board by the post office. A passer-by reads the bold line from
+      across the road and stops. Then the ask: please keep dogs on leads. Then the reason, and
+      it is a reason that matters to the reader: ducks are nesting. Then when and where. A
+      picture of the thing helps them see it. A notice that only names the pond persuades
+      nobody; a notice that asks and says why gets the dogs on their leads.
+      """
+  }
+  do {
+    level easy {
+      worked writing.notice-parts k=0 r=0
+    }
+    practice writing.which-is-the-ask count=1 seed=2 easy-seed=1 hard-seed=5
+    practice writing.strongest-reason count=2 seed=1 easy-seed=3 hard-seed=3
+    practice writing.bold-line count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.pick-the-picture count=1 seed=1 easy-seed=1 hard-seed=1
+    practice writing.notice-parts count=1 seed=1 easy-seed=4 hard-seed=1 easy-level=medium
+    practice writing.which-is-a-command count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show writing.bold-line k=1 r=0 level=medium
+    }
+  }
+  story {
+    show writing.notice-story n=4 h=2 w=1 easy-n=3 easy-w=0 hard-n=5 hard-h=3
+  }
+  try stars=2 {
+    show writing.which-persuades k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show writing.own-notice k=0 hard-k=1
+  }
+  remember {
+    say "A notice stops you with a bold line, asks for one thing, and says why it matters."
+  }
+
+  grown-ups """
+    The idea is that a notice is persuasion with a layout: a bold line to be read from across
+    the road, an ask that says exactly what to do, a reason that matters to the reader, when
+    and where, and a picture of the thing. The look is Ada's pond notice. The way in finds the
+    ask among a notice's three lines, and the core picks the reason that would move a reader,
+    the line to make bold, the picture that belongs, matches lines to their jobs, and finds the
+    command among sentences. The wrong idea to watch for is a reason that is only a nice fact
+    (dogs enjoy walks) or a bold line that is the whole ask; ask "why should I?" of every
+    reason. The story measures the notice's lines, the two-star question compares a notice
+    that asks and reasons with one that only names the thing, and the three-star question is
+    the child's own notice on the frame, which you mark: a bold line, an ask with a doing word,
+    a reason that matters, a time or place, and a picture. Notices in the town are worth
+    reading together for which of the five they have.
+    """
+  level easy {
+    grown-ups "At this level the food bank notice's parts are worked once in the teacher's pen, the ask is the pond's, the reasons are for the dog lead and the cake sale, the bold line is SAVE OUR POND, the picture is the boat for the harbour, the parts are the food bank's, the command is a plain one, the story has three small lines of two centimetres, the two-star's persuading notice is A, and the child's notice needs any reason."
+  }
+  level hard {
+    grown-ups "At this level the ask is the walk to school, the reasons are for the lights and the cake sale, the bold line is WALK TO SCHOOL DAY with the cake sale's bold line as a second in the core, the picture is the kite for the lost notice, the parts are the sunflower's, the command hides among questions, the story has five small lines of three centimetres and asks for the whole, the two-star's persuading notice is B, and the child's reason has to say what the ask protects or gains."
+  }
+}

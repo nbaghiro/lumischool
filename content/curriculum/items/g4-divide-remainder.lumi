@@ -1,0 +1,24 @@
+item division.remainder v=1 skills=[division.short-with-remainder] {
+  title "Divide, and say what is left"
+  difficulty (d * q + r)
+  let d=3..9 q=40..400 r=1..8
+  where (r < d)
+  level easy {
+    let d=3..5 q=11..30 r=1..4
+  }
+  level hard {
+    let d=6..9 q=(100..400 by 4) r=1..8
+  }
+
+  scene 28x11 {
+    longdiv sum n=(d * q + r) by=d blanks=[quotient, rest] at=canvas(1, 1)
+    text ask "Divide, and write what is left over in the small box." narrate width=24 below=sum gap=1
+  }
+
+  answer quotient=q rest=r
+  feedback {
+    when (rest >= d) point=sum.bar {
+      say "What is left over is always smaller than {d}, or another {d} would fit."
+    }
+  }
+}

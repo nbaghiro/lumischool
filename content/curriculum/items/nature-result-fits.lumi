@@ -1,0 +1,42 @@
+# Which result fits the test: the tray without light grows pale and leggy, the tray without water
+# wilts, the tray in the cold hardly grows. The child matches the thing taken away to what a plant
+# does without it.
+item nature.result-fits v=1 skills=[nature.plants, reasoning.predict] {
+  title "Which result fits?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let without={pick(k, "water", "light", "warmth")}
+  let right={pick(k, "It wilted and dried up", "It grew pale, thin and floppy", "It hardly grew at all")}
+  let o1={pick(k, "It grew pale, thin and floppy", "It wilted and dried up", "It grew tall and green")}
+  let o2={pick(k, "It grew tall and green", "It grew tall and green", "It wilted and dried up")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x24 {
+    row two at=canvas(1, 1) space=2 align=end {
+      crops ta stage=3 rows=2 plants=4
+      crops tb stage=1 rows=2 plants=4
+    }
+    text ask "Tray A had everything a plant needs. Tray B had no {without}. What happened to tray B?" narrate width=32 below=two gap=1
+    choice pick options=[o1, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=tb {
+      say "A plant drinks through its roots. With no water, its leaves go limp and it dries out."
+    }
+    when (k == 1 and pick != right) point=tb {
+      say "A plant makes its food from light. In the dark it stretches, looking for light, and goes pale and thin."
+    }
+    when (k == 2 and pick != right) point=tb {
+      say "In the cold a plant does everything slowly. It stays small."
+    }
+  }
+  hint "What does a plant use {without} for? Take that away and what stops working?"
+  hint "No water: it wilts. No light: it goes pale and stretches. No warmth: it stays small."
+}

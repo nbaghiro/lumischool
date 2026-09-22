@@ -1,0 +1,31 @@
+# The scale played, one octave with the right hand: C major up, C major down (the third finger
+# crosses over the thumb after F), or G major up with its F sharp. The finger row is the book's.
+item music.scale-play v=1 skills=[music.fingers, music.keys] {
+  title "Play the scale"
+  difficulty (if k == 0 then 0 else if k == 2 then 1 else 2)
+  let k=0..2
+  let what={pick(k, "C major going up, from middle C", "G major going up, from the G below middle C, with finger 4 on the black key F sharp", "C major going down, from the C above middle C")}
+  let n1={pick(k, "C4", "G3", "C5")}
+  let n2={pick(k, "D4", "A3", "B4")}
+  let n3={pick(k, "E4", "B3", "A4")}
+  let n4={pick(k, "F4", "C4", "G4")}
+  let n5={pick(k, "G4", "D4", "F4")}
+  let n6={pick(k, "A4", "E4", "E4")}
+  let n7={pick(k, "B4", "Fs4", "D4")}
+  let n8={pick(k, "C5", "G4", "C4")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x18 {
+    text ask "Play {what}, with the fingers written over the keys." narrate width=34 at=canvas(1, 1)
+    piano keys from=G3 whites=11 wide=3 labels=letters fingers=[pick(k, 0, 1, 0), pick(k, 0, 2, 0), pick(k, 0, 3, 0), pick(k, 1, 1, 1), pick(k, 2, 2, 2), pick(k, 3, 3, 3), pick(k, 1, 0, 1), pick(k, 2, 5, 2), pick(k, 3, 0, 3), pick(k, 4, 0, 4), pick(k, 5, 0, 5)] below=ask gap=1
+  }
+
+  check music.plays notes=[{n1}, {n2}, {n3}, {n4}, {n5}, {n6}, {n7}, {n8}]
+  hint "{pick(k, \"Thumb on C. After E, pass the thumb under to play F.\", \"Thumb on G. After B, pass the thumb under to play C. The seventh note is the black key, F sharp.\", \"Finger 5 on the top C. After F, cross finger 3 over the thumb to play E.\")}"
+  hint "Play slowly, and say each finger's number as you play it."
+}
