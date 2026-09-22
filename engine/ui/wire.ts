@@ -192,8 +192,13 @@ export function readChildRecord(v: unknown): ChildRecord | null {
  * body of any other type. The credential is whichever cookie the browser holds, which script never
  * reads.
  */
-export async function call(method: "GET" | "POST", path: string, body?: unknown): Promise<Answer> {
-    const headers: Record<string, string> = { accept: "application/json" };
+export async function call(
+    method: "GET" | "POST",
+    path: string,
+    body?: unknown,
+    extra: Record<string, string> = {},
+): Promise<Answer> {
+    const headers: Record<string, string> = { accept: "application/json", ...extra };
     if (method === "POST") headers["content-type"] = "application/json";
     const init: RequestInit = { method, headers, credentials: "same-origin" };
     if (method === "POST") init.body = JSON.stringify(body ?? {});

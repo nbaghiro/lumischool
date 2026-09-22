@@ -43,9 +43,10 @@ export class Browser {
     async call(
         method: "GET" | "POST",
         path: string,
-        opts: { body?: unknown; origin?: string | null; type?: string } = {},
+        opts: { body?: unknown; origin?: string | null; type?: string; kid?: string } = {},
     ): Promise<Answer> {
         const headers = new Headers();
+        if (opts.kid !== undefined) headers.set("x-kid-session", opts.kid);
         const origin = opts.origin === undefined ? ORIGIN : opts.origin;
         if (origin) headers.set("origin", origin);
         if (this.jar.size)

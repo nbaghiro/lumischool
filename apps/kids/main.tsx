@@ -41,6 +41,7 @@ const LOAD: Record<Now["at"], () => Promise<unknown>> = {
 
 /** Where a load opens: the pictures, the only child's page, or the reason neither can open. */
 async function read(): Promise<Now> {
+    if (location.pathname === "/kids/sign-in") return { at: "closed" };
     const view = await client.view();
     if ("error" in view)
         return view.error === "no-kid-session"

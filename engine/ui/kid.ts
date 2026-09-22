@@ -8,7 +8,7 @@ import type { KidRecord, KidState, KidView, PackView } from "../../server/api";
 import { check, type Draft, type Envelope } from "../answer";
 import type { PackLesson } from "../pack";
 import {
-    call,
+    call as wireCall,
     list,
     num,
     obj,
@@ -21,6 +21,35 @@ import {
     type Answer,
     type Failure,
 } from "./wire";
+import { kidCredential, keepKidCredential, kidQueueName } from "./kid-session";
+
+const call = (method: "GET" | "POST", path: string, body?: unknown): Promise<Answer> => {
+    const credential = kidCredential();
+    return wireCall(method, path, body, credential === null ? {} : { "x-kid-session": credential });
+};
+
+export async function signIn(username: string, pin: string): Promise<true | Failure> {
+    if (kidCredential()) {
+        await send();
+        if ((await (await queue()).all()).length) return stopped ?? { error: "offline", status: 0 };
+    }
+    const a = await call("POST", "/api/kid/sign-in", { username, pin });
+    if (!a.ok) return a.failure;
+    if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
+    keepKidCredential(a.body.credential);
+    queueNow = null;
+    return true;
+}
+
+export async function signOut(): Promise<true | Failure> {
+    await send();
+    if ((await (await queue()).all()).length) return stopped ?? { error: "offline", status: 0 };
+    const a = await call("POST", "/api/kid/sign-out");
+    if (!a.ok) return a.failure;
+    await ended();
+    keepKidCredential("");
+    return true;
+}
 
 /** What a child's page records: the server stamps the family, the device and the number. */
 export type Doing = Envelope extends infer E
@@ -47,6 +76,7 @@ export interface Queued {
 }
 
 interface Queue {
+    persistent: boolean;
     put(rows: readonly Queued[]): Promise<void>;
     /** Every waiting event, oldest first. */
     all(): Promise<Queued[]>;
@@ -77,6 +107,7 @@ function readQueued(v: unknown): Queued | null {
 function memoryQueue(): Queue {
     const rows = new Map<string, Queued>();
     return {
+        persistent: false,
         put: async (add) => {
             for (const r of add) rows.set(r.id, structuredClone(r));
         },
@@ -104,9 +135,9 @@ const finished = (tx: IDBTransaction): Promise<void> =>
     });
 
 async function indexedQueue(): Promise<Queue | null> {
-    if (typeof indexedDB === "undefined") return null;
+    if (typeof indexedDB === "undefined" || !kidCredential()) return null;
     try {
-        const open = indexedDB.open("lumischool-kid", 1);
+        const open = indexedDB.open(kidQueueName(), 1);
         open.onupgradeneeded = () => {
             open.result.createObjectStore("queue", { keyPath: "id" });
         };
@@ -117,6 +148,7 @@ async function indexedQueue(): Promise<Queue | null> {
             await finished(tx);
         };
         return {
+            persistent: true,
             put: (add) => writing((s) => add.forEach((r) => s.put(r))),
             all: async () =>
                 (await done<unknown[]>(db.transaction("queue").objectStore("queue").getAll()))
@@ -132,6 +164,34 @@ async function indexedQueue(): Promise<Queue | null> {
 }
 
 let queueNow: Promise<Queue> | null = null;
+
+async function adoptLegacyQueue(kids: readonly string[]): Promise<void> {
+    if (typeof indexedDB === "undefined" || !kidCredential()) return;
+    try {
+        const target = await queue();
+        if (!target.persistent) return;
+        if (!(await indexedDB.databases()).some((db) => db.name === "lumischool-kid")) return;
+        const db = await done(indexedDB.open("lumischool-kid"));
+        try {
+            if (!db.objectStoreNames.contains("queue")) return;
+            const rows = (
+                await done<unknown[]>(db.transaction("queue").objectStore("queue").getAll())
+            )
+                .map(readQueued)
+                .filter(present)
+                .filter((r) => kids.includes(r.kid_id));
+            if (!rows.length) return;
+            await target.put(rows);
+            const tx = db.transaction("queue", "readwrite");
+            for (const row of rows) tx.objectStore("queue").delete(row.id);
+            await finished(tx);
+        } finally {
+            db.close();
+        }
+    } catch {
+        // Keep the original queue if storage is unavailable; a later load can adopt it.
+    }
+}
 
 /**
  * IndexedDB where the browser has it, and memory where it does not (a private window, a test), where
@@ -378,6 +438,12 @@ async function answered(a: Answer): Promise<Answer> {
 
 /** The children this browser's kid session is for. */
 export async function view(): Promise<KidView | Failure> {
+    if (kidCredential() === null) {
+        const tab = await wireCall("GET", "/api/kid/tab");
+        if (!tab.ok) return tab.failure;
+        if (!obj(tab.body) || !str(tab.body.credential)) return unreadable(tab.status);
+        keepKidCredential(tab.body.credential);
+    }
     const a = await answered(await call("GET", "/api/kid"));
     if (!a.ok) return a.failure;
     const b = a.body;
@@ -393,6 +459,7 @@ export async function view(): Promise<KidView | Failure> {
         : null;
     if (!obj(b) || !family || !kids || !others || typeof b.pin !== "boolean")
         return unreadable(a.status);
+    await adoptLegacyQueue(kids.map((kid) => kid.id));
     await tell({ ended: false });
     return { family, kids, others, pin: b.pin };
 }
@@ -403,6 +470,7 @@ export async function view(): Promise<KidView | Failure> {
  */
 export async function add(pin: string, kidId: string): Promise<true | Failure> {
     const a = await answered(await call("POST", "/api/kid/add", { pin, kid: kidId }));
+    if (a.ok && obj(a.body) && str(a.body.credential)) keepKidCredential(a.body.credential);
     return a.ok ? true : a.failure;
 }
 
@@ -496,5 +564,6 @@ export async function leave(pin: string): Promise<true | Failure> {
     const a = await answered(await call("POST", "/api/kid/leave", { pin }));
     if (!a.ok) return a.failure;
     await ended();
+    keepKidCredential("");
     return true;
 }

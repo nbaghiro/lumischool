@@ -4,7 +4,18 @@
 // it. Every read and write here runs through `withFamily` or one of the store's security-definer
 // functions.
 
-import { createHmac, randomInt, randomUUID } from "node:crypto";
+import { createHmac, randomBytes, randomInt, randomUUID } from "node:crypto";
+import { suggestedUsername, usernameOf } from "../school/family/login";
+import {
+    lockKidLogins,
+    loginPin,
+    loginTry,
+    lookupLogin,
+    saveKidLogin,
+    saveLoginPin,
+    stopKidLogins,
+} from "./db/kid-login";
+import type { KidLogins } from "./api";
 import type { SignInMethod } from "../engine/answer";
 import { isParent } from "../school/family/access";
 import type { FamilyChoice, KidSessions, Me, Start } from "./api";
@@ -644,6 +655,12 @@ export async function addKidWithConsent(
     if (input.notice !== CONSENT_NOTICE) return { error: "notice", notice: CONSENT_NOTICE };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         const kid = await addKid(tx, adult.family.id, { name, grade: input.grade });
+        await saveKidLogin(
+            tx,
+            kid.id,
+            suggestedUsername(name, randomBytes(6).toString("hex")),
+            false,
+        );
         await record(tx, adult.family.id, [
             {
                 kid_id: null,
@@ -782,7 +799,11 @@ export async function setFamilyPin(
     if (!adult.parent) return { error: "not-allowed" };
     if (typeof pin !== "string" || !PIN.test(pin)) return { error: "bad-request" };
     if (!fresh(adult)) return { error: "fresh-sign-in" };
-    await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        await lockKidLogins(tx, adult.family.id);
+        const kidsPin = await loginPin(tx);
+        if (kidsPin && sameHash(kidsPin.hash, kidPinHash(config, adult.family.id, pin)))
+            return { error: "bad-request" as const };
         await setPin(tx, adult.family.id, {
             user: adult.user,
             hash: pinHash(config.pepper, adult.family.id, pin),
@@ -790,8 +811,194 @@ export async function setFamilyPin(
         await record(tx, adult.family.id, [
             { kid_id: null, kind: "pin-set", data: {}, actor: adult.user },
         ]);
+        return { ok: true as const };
     });
-    return { ok: true };
+}
+
+const kidPinHash = (config: AuthConfig, family: string, pin: string): string =>
+    keyed(config.pepper, "kid-pin", `${family}:${pin}`);
+
+export async function kidLoginsFor(adult: Adult): Promise<KidLogins | { error: "not-allowed" }> {
+    if (!adult.parent) return { error: "not-allowed" };
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => ({
+        pinSet: (await loginPin(tx)) !== null,
+        kids: (await kidsOf(tx, adult.family.id)).map((kid) => ({
+            id: kid.id,
+            name: kid.name,
+            username: isRecord(kid.settings) ? usernameOf(kid.settings.username) : null,
+            enabled: isRecord(kid.settings) && kid.settings.kidLogin === true,
+        })),
+    }));
+}
+
+type LoginChange =
+    | { ok: true }
+    | { error: "not-allowed" | "fresh-sign-in" | "bad-request" | "not-found"; problem?: string };
+
+async function revokeLogins(tx: FamilyTx, adult: Adult, kid?: string): Promise<void> {
+    const ended = await endKids(tx, { ids: await stopKidLogins(tx, kid) });
+    const views = [...new Set(ended.map((e) => e.view))];
+    for (const view of views)
+        await record(tx, adult.family.id, [
+            {
+                kid_id: null,
+                actor: adult.user,
+                kind: "kid-session-ended",
+                data: {
+                    view,
+                    keys: ended
+                        .filter((e) => e.view === view)
+                        .map(({ kid, key }) => ({ kid, key })),
+                    reason: "ended",
+                },
+            },
+        ]);
+}
+
+export async function setKidsPin(
+    config: AuthConfig,
+    adult: Adult,
+    pin: unknown,
+): Promise<LoginChange> {
+    if (!adult.parent) return { error: "not-allowed" };
+    if (!fresh(adult)) return { error: "fresh-sign-in" };
+    if (typeof pin !== "string" || !PIN.test(pin)) return { error: "bad-request" };
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        await lockKidLogins(tx, adult.family.id);
+        const parent = await pinFor(tx);
+        if (parent && sameHash(parent.hash, pinHash(config.pepper, adult.family.id, pin)))
+            return {
+                error: "bad-request",
+                problem: "Choose a different PIN from the grown-ups' family PIN.",
+            };
+        await saveLoginPin(
+            tx,
+            adult.family.id,
+            adult.user,
+            kidPinHash(config, adult.family.id, pin),
+        );
+        await revokeLogins(tx, adult);
+        return { ok: true };
+    });
+}
+
+export async function changeKidLogin(
+    adult: Adult,
+    input: { kid: unknown; username: unknown; enabled: unknown },
+): Promise<LoginChange> {
+    if (!adult.parent) return { error: "not-allowed" };
+    if (!fresh(adult)) return { error: "fresh-sign-in" };
+    if (typeof input.kid !== "string" || typeof input.enabled !== "boolean")
+        return { error: "bad-request" };
+    const id = input.kid,
+        enabled = input.enabled;
+    try {
+        return await withFamily(
+            { family: adult.family.id, user: adult.user },
+            async (tx): Promise<LoginChange> => {
+                await lockKidLogins(tx, adult.family.id);
+                const kid = (await kidsOf(tx, adult.family.id)).find((k) => k.id === id);
+                if (!kid) return { error: "not-found" };
+                const name =
+                    input.username === "" || input.username === null
+                        ? suggestedUsername(kid.name, randomBytes(6).toString("hex"))
+                        : usernameOf(input.username);
+                if (!name)
+                    return {
+                        error: "bad-request",
+                        problem: "Use 3–32 letters, numbers or hyphens, starting with a letter.",
+                    };
+                if (
+                    enabled &&
+                    (!(await loginPin(tx)) || !(await consented(tx, adult.family.id)).has(id))
+                )
+                    return {
+                        error: "bad-request",
+                        problem: "Set the kids’ sign-in PIN and give consent for this child first.",
+                    };
+                await saveKidLogin(tx, id, name, enabled);
+                await revokeLogins(tx, adult, id);
+                return { ok: true };
+            },
+        );
+    } catch (error) {
+        const cause = error instanceof Error ? error.cause : null;
+        if (
+            (isRecord(error) && error.code === "23505") ||
+            (isRecord(cause) && cause.code === "23505")
+        )
+            return {
+                error: "bad-request",
+                problem: "That username is unavailable. Choose another.",
+            };
+        throw error;
+    }
+}
+
+export async function signInKid(
+    config: AuthConfig,
+    input: { username: unknown; pin: unknown },
+    ip: string | null,
+    device: string | null,
+): Promise<{ credential: string } | null> {
+    const username = usernameOf(input.username);
+    if (!username || typeof input.pin !== "string" || !PIN.test(input.pin)) return null;
+    const pin = input.pin;
+    const found = await lookupLogin(
+        username,
+        keyed(config.pepper, "kid-name", username),
+        networkHash(config, ip) ?? "unknown",
+        sha256(newSecret()),
+    );
+    if (!found) return null;
+    return withFamily({ family: found.family }, async (tx) => {
+        await lockKidLogins(tx, found.family);
+        const held = await loginPin(tx);
+        if (!held?.user_id || held.attempts >= 15) return null;
+        if (
+            held.attempts >= 5 &&
+            held.seen_at &&
+            Date.now() - Date.parse(held.seen_at) < 15 * MINUTE
+        )
+            return null;
+        const right = sameHash(held.hash, kidPinHash(config, found.family, pin));
+        await loginTry(tx, held.id, right);
+        if (!right) return null;
+        const kid = (await kidsOf(tx, found.family)).find((k) => k.id === found.kid);
+        if (
+            !kid ||
+            !isRecord(kid.settings) ||
+            kid.settings.kidLogin !== true ||
+            usernameOf(kid.settings.username) !== username
+        )
+            return null;
+        await setScope(tx, { family: found.family, user: held.user_id });
+        if (
+            !isParent(
+                (await rowsOf(tx, found.family, held.user_id)).filter((m) => m.ended_at === null),
+            ) ||
+            !(await consented(tx, found.family)).has(found.kid)
+        )
+            return null;
+        const opened = await openKids(tx, found.family, {
+            user: held.user_id,
+            name: device,
+            kids: [found.kid],
+            login: true,
+        });
+        await record(tx, found.family, [
+            {
+                kid_id: null,
+                actor: held.user_id,
+                kind: "kid-session-opened",
+                data: {
+                    view: opened.view,
+                    keys: opened.keys.map(({ kid, key }) => ({ kid, key })),
+                },
+            },
+        ]);
+        return { credential: opened.keys.map((k) => k.credential).join(KIDS_JOIN) };
+    });
 }
 
 /**
@@ -867,6 +1074,7 @@ export async function leaveKidView(
     device: string | null,
     session: string | null,
 ): Promise<Left> {
+    if (kid.keys.some((key) => key.login)) return { error: "not-allowed" };
     if (typeof pin !== "string" || !PIN.test(pin)) return { error: "bad-request" };
     return withFamily({ family: kid.family.id }, async (tx): Promise<Left> => {
         const refused = await checkPin(config, tx, kid.family.id, pin);
@@ -938,6 +1146,7 @@ export async function addToKidView(
     device: string | null,
     cookie: string,
 ): Promise<Joined> {
+    if (kid.keys.some((key) => key.login)) return { error: "not-allowed" };
     const { pin, kid: who } = input;
     if (typeof pin !== "string" || !PIN.test(pin) || typeof who !== "string")
         return { error: "bad-request" };

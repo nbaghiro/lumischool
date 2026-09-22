@@ -77,6 +77,7 @@ globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise
             ? json(204)
             : json(400, { error: "wrong-pin", attemptsLeft: 4 });
     }
+    if (path === "/api/kid/tab") return json(200, { credential: "family.key.secret" });
     if (path === "/api/kid")
         return json(200, {
             family: { name: "Harlow", time_zone: "America/Denver" },

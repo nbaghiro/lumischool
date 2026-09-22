@@ -4,6 +4,7 @@
 // It holds what exists: export and deletion wait on their routes, and say so.
 
 import "./account.css";
+import { KidLogins } from "./kid-logins";
 import {
     batch,
     createEffect,
@@ -140,6 +141,10 @@ export function Account(): JSX.Element {
                         <div class="ga">
                             <You seen={s()} said={said()} onRefetch={() => void refetch()} />
                             <Show when={isParent(s().me.members)}>
+                                <KidLogins
+                                    family={s().me.family.id}
+                                    onChanged={() => void refetch()}
+                                />
                                 <ViewsAndPin
                                     seen={s()}
                                     onPin={() => {

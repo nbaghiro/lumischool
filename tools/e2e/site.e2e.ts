@@ -37,7 +37,7 @@ test("a parent who signs in finds the family's page at /, the site from its logo
 }) => {
     await signInAs(page);
     await expect(page).toHaveURL(`${BASE}/`);
-    const family = page.getByRole("heading", { name: "Hello, Anna Harlow" });
+    const family = page.getByRole("heading", { name: "Hello, Test Parent" });
 
     await page.getByRole("link", { name: "lumischool site" }).click();
     await expect(page).toHaveURL(`${BASE}/home`);

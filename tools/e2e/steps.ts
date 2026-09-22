@@ -1,7 +1,6 @@
-// The steps the end-to-end cases share: a fresh address for each run, a code read from the local
-// outbox, a seeded parent signed in with the fixed local code, a parent opening the children's view on
-// a device and adding the other children to it with the PIN, and holding the grown-ups' tab.
-
+import { randomUUID } from "node:crypto";
+import { cleanup } from "./ready";
+import { NOTICE_VERSION } from "../../school/family/privacy";
 import {
     expect,
     test as base,
@@ -17,9 +16,13 @@ import {
 /** The one origin the cases run against, which the config's `baseURL` is too. */
 export const BASE = process.env.E2E_BASE ?? "http://localhost:8500";
 
-/** A new address for each run and size, so no case meets the codes an earlier one asked for. */
-export const address = (what: string, info: TestInfo): string =>
-    `e2e-${what}-${info.project.name}-${Date.now().toString(36)}@example.com`;
+const addresses = new Set<string>();
+
+export function address(what: string, info: TestInfo): string {
+    const email = `e2e-${what}-${info.project.name}-${randomUUID()}@example.com`;
+    addresses.add(email);
+    return email;
+}
 
 /** The size and browser of this case's project. */
 function device(info: TestInfo): BrowserContextOptions {
@@ -50,7 +53,12 @@ async function withoutHotUpdates(context: BrowserContext): Promise<BrowserContex
 /** Playwright's `test`, with the case's own pages kept from hot updates. */
 export const test = base.extend({
     context: async ({ context }, use) => {
-        await use(await withoutHotUpdates(context));
+        try {
+            await use(await withoutHotUpdates(context));
+        } finally {
+            cleanup([...addresses]);
+            addresses.clear();
+        }
     },
 });
 
@@ -123,99 +131,47 @@ export async function typeCode(
     return code;
 }
 
-/** The seeded parents the cases sign in as, with the addresses `npm run db:demo` gives them. */
-const PARENTS = {
-    "Anna Harlow": "demo-parent1@lumischool.ai",
-    "Ben Harlow": "demo-parent2@lumischool.ai",
-} as const;
-
-type Parent = keyof typeof PARENTS;
-
-type Kept = Awaited<ReturnType<BrowserContext["storageState"]>>;
-
-/** Each seeded parent's session once signed in, by project, so that a project signs each in once. */
-const kept = new Map<string, Kept>();
-
-/** The fixed code a local server accepts beside the emailed one (.docs/auth.md, flow 2). */
-const FIXED_CODE = "12345678";
-
-/** The seeded family's PIN (server/db/seed/demo-household.ts). */
 export const FAMILY_PIN = "2468";
 
-/**
- * Asks for a code for a seeded parent. A code asked for inside the last minute, by hand or by an
- * earlier case, holds the next one back for the rest of that minute, so this waits it out once.
- */
-async function askAsSeeded(page: Page, email: string): Promise<void> {
-    await page.goto("/sign-in");
-    await page.getByLabel("Your email address").fill(email);
-    const typing = page.getByRole("heading", { name: "Type the code" });
-    const held = page.locator("main").getByText(/^Too many codes/);
-    for (let waited = false; ; waited = true) {
-        await page.getByRole("button", { name: "Send me a code" }).click();
-        await expect(typing.or(held)).toBeVisible();
-        if (await typing.isVisible()) return;
-        if (waited) throw new Error(`a code for ${email} was still refused after a minute`);
-        test.info().setTimeout(test.info().timeout + 70_000);
-        await page.waitForTimeout(61_000);
-    }
-}
-
-/**
- * Signs a seeded parent in as any parent signs in: the address, then the fixed local code typed on
- * the code step. The session is kept for the project's later cases and put into a case's browser
- * while it still works; a case that signs out or opens a children's view ends it, and the next case
- * signs in again. The sign-in runs on a page of its own, so a route a case set on its page does not
- * answer it.
- */
-export async function signInAs(page: Page, who: Parent = "Anna Harlow"): Promise<void> {
-    const context = page.context();
-    const key = `${test.info().project.name} ${who}`;
-    const hello = (p: Page): Locator => p.getByRole("heading", { name: `Hello, ${who}` });
-    const own = await context.newPage();
+/** A fresh family created through signup, on a page unaffected by the case's route mocks. */
+export async function signInAs(page: Page): Promise<void> {
+    const own = await page.context().newPage();
     try {
-        const state = kept.get(key);
-        if (state) {
-            await context.addCookies(state.cookies);
-            if ((await context.request.get("/api/me")).ok()) {
-                // the hint the grown-ups' client keeps beside the session, put back on the one origin
-                await own.goto("/api/health");
-                await own.evaluate(
-                    (items) => {
-                        for (const { name, value } of items)
-                            try {
-                                localStorage.setItem(name, value);
-                            } catch {
-                                // a browser that keeps nothing in storage signs in without the hint
-                            }
-                    },
-                    state.origins.flatMap((o) => o.localStorage),
-                );
-            } else {
-                await context.clearCookies();
-                kept.delete(key);
-            }
-        }
-        if (!kept.has(key)) {
-            await signInHere(own, who);
-            kept.set(key, await context.storageState());
-        }
+        await signInHere(own);
     } finally {
         await own.close();
     }
     await page.goto("/");
-    await atScreen(page, hello(page));
+    await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
 }
 
-/**
- * Signs a seeded parent in on this page at `/sign-in`, with the fixed local code, and waits for the
- * family's page, which the sign-in page opens without loading the page again. The session is not kept
- * for later cases.
- */
-export async function signInHere(page: Page, who: Parent = "Anna Harlow"): Promise<void> {
-    await askAsSeeded(page, PARENTS[who]);
-    await page.getByLabel("The 8-digit code").fill(FIXED_CODE);
-    await atScreen(page, page.getByRole("heading", { name: `Hello, ${who}` }));
+export async function signInHere(page: Page): Promise<void> {
+    const email = address("family", test.info());
+    await askForCode(page, email, { name: "Test Parent", family: "Test Family" });
+    await typeCode(page, page.context().request, email);
+    await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
+    for (const name of ["Rosie", "Leo", "Ivy"]) {
+        const added = await page.context().request.post("/api/kids", {
+            headers: { Origin: BASE },
+            data: { name, grade: 1, consent: { notice: NOTICE_VERSION } },
+        });
+        expect(added.ok(), await added.text()).toBe(true);
+    }
+    const pin = await page.context().request.post("/api/family/pin", {
+        headers: { Origin: BASE },
+        data: { pin: FAMILY_PIN },
+    });
+    expect(pin.ok(), await pin.text()).toBe(true);
+    // Refresh the family's data without reloading the modules whose identity some cases check.
+    await page
+        .getByRole("navigation", { name: "The grown-ups' places" })
+        .getByRole("link", { name: "Calendar" })
+        .click();
+    await page
+        .getByRole("navigation", { name: "The grown-ups' places" })
+        .getByRole("link", { name: "Home" })
+        .click();
+    await expect(page.getByRole("button", { name: "Open Rosie's view" })).toBeVisible();
 }
 
 /** The card a grown-ups' screen shows when its code did not load or failed as it drew. */
@@ -277,33 +233,6 @@ export async function holdGrownUps(page: Page): Promise<void> {
 export const childsMap = (page: Page, name: string): Locator =>
     page.getByRole("region", { name: `${name}'s map` });
 
-/**
- * A child goes into the world they are in. There is no button for it: the place the map has its own
- * focus on, which is where the child stands, is the way in by a tap or by Enter, and pinching into it
- * does the same (.docs/journal.md). A child who has done nothing yet stands at their first world the
- * same way, so nothing here names a world.
- */
-export async function goIntoWorld(map: Locator): Promise<void> {
-    await map.locator('.ow-node[tabindex="0"]').click();
-}
-
-/**
- * Out of the roll and back to the map, a step at a time, as a child does it: Escape hands the roll to
- * the place the world is seen as, and Escape again hands the place back to the map. A world with no
- * day on it has no place to be seen as, so its roll hands straight back to the map.
- */
-export async function outToMap(page: Page, map: Locator): Promise<void> {
-    const place = page.locator(".pl");
-    await page.locator(".wd-host").focus();
-    await page.keyboard.press("Escape");
-    await expect(place.or(map)).toHaveClass(/ready/, { timeout: 20_000 });
-    if (await place.count()) {
-        await page.locator(".pl-host").focus();
-        await page.keyboard.press("Escape");
-    }
-    await expect(map).toHaveClass(/ready/, { timeout: 20_000 });
-}
-
 /** Presses and holds, as a grown-up holds the tab in a child's corner. */
 async function hold(page: Page, target: Locator, ms: number): Promise<void> {
     const box = await target.boundingBox();
@@ -312,34 +241,6 @@ async function hold(page: Page, target: Locator, ms: number): Promise<void> {
     await page.mouse.down();
     await page.waitForTimeout(ms);
     await page.mouse.up();
-}
-
-/**
- * What each question on a sheet shows, by its number: its words, or its picture at a size that can
- * be seen. A question that carries a scene draws its words inside the picture, so a picture with no
- * size is a question with nothing on it, and the boxes and buttons under it prove nothing.
- */
-export async function questionsShown(
-    sheet: Locator,
-): Promise<{ n: string; words: boolean; picture: boolean }[]> {
-    return sheet.locator(".ls-q").evaluateAll((qs) =>
-        qs.map((q) => {
-            const ask = q.querySelector(".ls-ask");
-            const box = q.querySelector(".ls-scene svg")?.getBoundingClientRect();
-            return {
-                n: q.getAttribute("data-n") ?? "",
-                words: !!ask && (ask.textContent ?? "").trim().length > 0,
-                picture: !!box && box.width >= 16 && box.height >= 16,
-            };
-        }),
-    );
-}
-
-/** The questions of `sheet` that show neither words nor a picture, which should be none. */
-export async function blankQuestions(sheet: Locator): Promise<string[]> {
-    return (await questionsShown(sheet))
-        .filter((q) => q.n !== "0" && !q.words && !q.picture)
-        .map((q) => q.n);
 }
 
 /** Every visible target in `scope` under 44 px a side, named with its size; a tick is measured by its label. */

@@ -5,6 +5,7 @@
 // browser also keeps a hint that it signed in, and a page asks the API only when the hint is there.
 
 import type {
+    KidLogins,
     KidSessions,
     KidSessionView,
     Sessions,
@@ -21,7 +22,7 @@ import type { Content, Family, Kid, Member } from "../../server/db/schema";
 import type { Draft, Envelope, EventKind } from "../answer";
 import type { PackLesson, PackScene } from "../pack";
 import {
-    call,
+    call as wireCall,
     list,
     num,
     obj,
@@ -33,6 +34,12 @@ import {
     type Answer,
     type Failure,
 } from "./wire";
+import { kidCredential, keepKidCredential } from "./kid-session";
+
+const call = (method: "GET" | "POST", path: string, body?: unknown): Promise<Answer> => {
+    const credential = kidCredential();
+    return wireCall(method, path, body, credential === null ? {} : { "x-kid-session": credential });
+};
 
 const readFamily = (v: unknown): Family | null =>
     obj(v) && str(v.id) && str(v.name) && str(v.time_zone)
@@ -191,6 +198,7 @@ function signedInWith(a: Answer): { me: Me } | Failure {
     const m = obj(a.body) ? readMe(a.body.me) : null;
     if (!m) return unreadable(a.status);
     remember(m);
+    keepKidCredential("");
     return { me: m };
 }
 
@@ -281,8 +289,10 @@ export async function addKid(input: {
  * this browser's session in the same answer, so the hint goes too, and the page goes to `/kids`.
  */
 export async function openKidSession(kids: readonly string[]): Promise<true | Failure> {
-    const a = await call("POST", "/api/kid-sessions", { kids });
+    const a = await call("POST", "/api/kid-sessions", { kids, tab: true });
     if (!a.ok) return refused(a.failure);
+    if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
+    keepKidCredential(a.body.credential);
     forget();
     return true;
 }
@@ -375,6 +385,39 @@ export async function endKidSession(view: string): Promise<true | Failure> {
 /** Sets the family's PIN, or sets it again, which needs a sign-in in the last ten minutes. */
 export async function setPin(pin: string): Promise<true | Failure> {
     const a = await call("POST", "/api/family/pin", { pin });
+    return a.ok ? true : refused(a.failure);
+}
+
+export async function kidLogins(): Promise<KidLogins | Failure> {
+    const a = await call("GET", "/api/kid-logins");
+    if (!a.ok) return refused(a.failure);
+    const kids = obj(a.body)
+        ? list(a.body.kids, (k) =>
+              obj(k) &&
+              str(k.id) &&
+              str(k.name) &&
+              strOrNull(k.username) &&
+              typeof k.enabled === "boolean"
+                  ? { id: k.id, name: k.name, username: k.username, enabled: k.enabled }
+                  : null,
+          )
+        : null;
+    return obj(a.body) && typeof a.body.pinSet === "boolean" && kids
+        ? { pinSet: a.body.pinSet, kids }
+        : unreadable(a.status);
+}
+
+export async function setKidsPin(pin: string): Promise<true | Failure> {
+    const a = await call("POST", "/api/kid-logins/pin", { pin });
+    return a.ok ? true : refused(a.failure);
+}
+
+export async function setKidLogin(
+    kid: string,
+    username: string,
+    enabled: boolean,
+): Promise<true | Failure> {
+    const a = await call("POST", "/api/kid-logins", { kid, username, enabled });
     return a.ok ? true : refused(a.failure);
 }
 

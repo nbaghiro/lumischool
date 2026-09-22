@@ -100,6 +100,9 @@ function Bar(): JSX.Element {
                     <a href="#subjects">Subjects</a>
                 </nav>
                 <div class="site-ways">
+                    <a class="site-in" href="/kids/sign-in" target="_blank" rel="noopener">
+                        Kids’ sign in
+                    </a>
                     <Show
                         when={inside()}
                         fallback={

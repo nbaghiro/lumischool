@@ -322,11 +322,12 @@ test("opening the children's view sends the children and forgets the sign-in, si
         JSON.stringify({ email: ME.user.email, name: ME.user.name, family: FAMILY.name }),
     );
     calls = [];
-    answer = () => ({ status: 204 });
+    answer = () => ({ status: 200, body: { credential: "family.key.secret" } });
     assert.equal(await api.openKidSession([ROSIE.id, LEO.id]), true);
-    assert.deepEqual(calls[0]?.body, { kids: [ROSIE.id, LEO.id] });
+    assert.deepEqual(calls[0]?.body, { kids: [ROSIE.id, LEO.id], tab: true });
     assert.equal(calls[0]?.headers["content-type"], "application/json");
     assert.equal(api.signedIn(), null);
+    assert.equal((await import("../kid-session")).kidCredential(), "family.key.secret");
 });
 
 test("setting a PIN can ask for a sign-in, and ending every view says how many closed", async () => {

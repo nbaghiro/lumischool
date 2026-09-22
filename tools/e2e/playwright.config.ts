@@ -18,7 +18,6 @@ export default defineConfig({
     testDir: import.meta.dirname,
     testMatch: /.*\.e2e\.ts$/,
     globalSetup: join(import.meta.dirname, "ready.ts"),
-    globalTeardown: join(import.meta.dirname, "done.ts"),
     outputDir: join(tmpdir(), "lumischool-e2e"),
     workers: 1,
     fullyParallel: false,

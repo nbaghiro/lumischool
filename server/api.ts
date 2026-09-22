@@ -10,6 +10,11 @@ import type { Family, Key, Kid, Member, User } from "./db/schema";
 
 export type Person = Pick<User, "id" | "email" | "name" | "settings">;
 
+export interface KidLogins {
+    pinSet: boolean;
+    kids: { id: string; name: string; username: string | null; enabled: boolean }[];
+}
+
 /** A family a person may choose, as `my_families` lists it. */
 export interface FamilyChoice {
     family_id: string;

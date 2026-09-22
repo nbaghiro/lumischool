@@ -213,10 +213,10 @@ export async function kidView(kid: KidSession): Promise<KidView> {
         return {
             family: { name: kid.family.name, time_zone: kid.family.time_zone },
             kids: all.filter((k) => ids.has(k.id)),
-            others: all
+            others: (kid.keys.some((key) => key.login) ? [] : all)
                 .filter((k) => !ids.has(k.id) && allowed.has(k.id))
                 .map((k) => ({ id: k.id, name: k.name })),
-            pin: await hasPin(tx),
+            pin: !kid.keys.some((key) => key.login) && (await hasPin(tx)),
         };
     });
 }

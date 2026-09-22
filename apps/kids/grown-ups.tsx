@@ -111,7 +111,7 @@ export function GrownUps(props: {
                 lead={
                     props.view.pin
                         ? "Type the family PIN to leave the children's view and go back to the family's page as you were, or to add another child to the view."
-                        : "This family has no PIN yet, so a grown-up signs in to leave the children's view."
+                        : "A grown-up signs in with their email to open the family’s page. The kids’ PIN only opens your learning page."
                 }
             >
                 <Show when={props.view.pin}>
