@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 140">
+  <!-- A hen standing, side on. Tail plumes first, then the body, the wing, the head and the comb. -->
+  <path data-fill="tang" d="M46 66 C34 58 22 46 16 32 C26 40 40 50 52 62 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M46 60 C42 48 38 34 40 20 C46 32 52 46 55 58 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M44 72 C30 68 16 60 6 50 C18 56 34 64 48 70 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="none" d="M72 112 C71 118 70 122 70 127 M92 112 C92 118 93 122 93 127" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  <path data-fill="none" d="M70 127 L82 131 M70 127 L84 127 M70 127 L82 123 M70 127 L60 130 M93 127 L105 131 M93 127 L107 127 M93 127 L105 123 M93 127 L83 130" stroke="#000" stroke-width="1.6" stroke-linecap="round"/>
+  <path data-fill="card" d="M44 62 C30 68 24 86 34 100 C44 114 76 120 100 112 C120 105 128 88 122 74 C116 60 96 54 76 54 C62 54 50 57 44 62 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <path data-fill="none" d="M38 96 C44 102 50 106 58 108 M36 86 C40 92 45 96 51 99" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="tang" d="M56 72 C72 62 94 64 108 76 C104 86 98 88 94 80 C90 90 84 90 80 82 C76 92 70 92 66 84 C62 88 56 82 56 72 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="none" d="M62 74 C76 68 92 70 102 77 M60 80 C72 75 86 76 96 82" stroke="#000" stroke-width="1.2"/>
+  <circle data-fill="card" cx="118" cy="47" r="17" stroke="#000" stroke-width="2.4"/>
+  <path data-fill="berry" d="M105 34 C104 25 110 21 113 27 C115 19 121 19 123 27 C127 20 133 23 131 32 C125 39 111 40 105 34 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M133 44 L150 49 L133 54 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="berry" d="M127 57 C132 61 132 68 127 71 C122 68 122 60 127 57 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle data-fill="card" cx="124" cy="43" r="4.6" stroke="#000" stroke-width="1.5"/>
+  <circle data-fill="ink" cx="124.4" cy="43.4" r="1.9" stroke="#000" stroke-width="1.8"/>
+  <circle data-anchor="comb" data-side="up" cx="118" cy="22" r="2"/>
+  <circle data-anchor="beak" data-side="right" cx="150" cy="49" r="2"/>
+  <circle data-anchor="wing" data-side="up" cx="84" cy="80" r="2"/>
+  <circle data-anchor="foot" data-side="down" cx="70" cy="130" r="2"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 240">
+  <!-- A diamond kite with four panels and a tail of bows. The four panels are separate fills so
+       the kite is also a picture of a quarter, a half and three quarters. -->
+  <path data-fill="sky" d="M80 14 C60 32 38 52 24 74 L80 74 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M80 14 C100 32 122 52 136 74 L80 74 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <path data-fill="berry" d="M24 74 C40 100 62 128 80 150 L80 74 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M136 74 C120 100 98 128 80 150 L80 74 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <path data-fill="none" d="M80 14 C60 32 38 52 24 74 C40 100 62 128 80 150 C98 128 120 100 136 74 C122 52 100 32 80 14 Z" stroke="#000" stroke-width="2.6" stroke-linejoin="round"/>
+  <path data-fill="none" d="M80 16 V148 M26 74 H134" stroke="#000" stroke-width="2"/>
+  <path data-fill="none" d="M44 66 C56 62 68 60 80 60 C92 60 104 62 116 66" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="none" d="M52 88 C62 92 71 94 80 94 C89 94 98 92 108 88" stroke="#000" stroke-width="1.2"/>
+  <circle data-fill="card" cx="80" cy="74" r="5.6" stroke="#000" stroke-width="1.8"/>
+  <path data-fill="none" d="M80 150 C94 168 66 180 82 198 C96 214 70 224 78 236" stroke="#000" stroke-width="1.8"/>
+  <path data-fill="tang" d="M79 161 L88 155 L87 167 Z M97 161 L88 155 L89 167 Z" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/>
+  <path data-fill="berry" d="M62 179 L71 173 L70 185 Z M80 179 L71 173 L72 185 Z" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/>
+  <path data-fill="sky" d="M76 200 L85 194 L84 206 Z M94 200 L85 194 L86 206 Z" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M67 220 L76 214 L75 226 Z M85 220 L76 214 L77 226 Z" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/>
+  <circle data-anchor="nose" data-side="up" cx="80" cy="14" r="2"/>
+  <circle data-anchor="knot" data-side="up" cx="80" cy="74" r="2"/>
+  <circle data-anchor="left-spar" data-side="left" cx="24" cy="74" r="2"/>
+  <circle data-anchor="right-spar" data-side="right" cx="136" cy="74" r="2"/>
+  <circle data-anchor="tail-end" data-side="down" cx="78" cy="236" r="2"/>
+</svg>

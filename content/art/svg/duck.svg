@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 140">
+  <!-- A duck standing, side on, for story problems that count animals. The body, the neck and the
+       tail are one outline; the head is drawn over the top of it. -->
+  <path data-fill="none" d="M66 104 C65 111 64 116 64 120 M92 104 C92 111 93 116 93 121" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  <path data-fill="tang" d="M51 121 C59 116 71 116 79 121 C72 126 58 126 51 121 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M80 122 C88 117 100 117 108 122 C101 127 87 127 80 122 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M16 42 C40 52 72 46 104 52 C116 54 120 44 124 36 L136 60 C133 70 131 80 130 90 C120 105 70 111 46 101 C30 95 22 80 26 66 C28 56 20 48 16 42 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <path data-fill="none" d="M24 47 C30 52 34 57 36 63 M31 45 C37 51 41 56 43 60" stroke="#000" stroke-width="1.3"/>
+  <path data-fill="sky" d="M56 68 C72 60 96 62 108 73 C100 89 80 95 64 91 C52 87 48 74 56 68 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="none" d="M64 71 C76 68 90 71 99 78 M60 79 C72 76 86 79 95 86 M58 87 C66 87 73 89 78 92" stroke="#000" stroke-width="1.3"/>
+  <circle data-fill="card" cx="139" cy="42" r="19" stroke="none"/>
+  <circle data-fill="glow" cx="139" cy="42" r="19" stroke="#000" stroke-width="2.4"/>
+  <path data-fill="tang" d="M156 34 C168 32 177 37 177 43 C177 49 167 52 155 50 C151 46 151 38 156 34 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M157 43 C164 43.5 170 44 175 44.5" stroke="#000" stroke-width="1.3"/>
+  <circle data-fill="card" cx="145" cy="36" r="5.2" stroke="#000" stroke-width="1.6"/>
+  <circle data-fill="ink" cx="145.6" cy="36.4" r="2.1" stroke="#000" stroke-width="2"/>
+  <path data-fill="none" d="M131 27 C135 23 141 22 146 24" stroke="#000" stroke-width="1.3"/>
+  <circle data-anchor="head" data-side="up" cx="139" cy="23" r="2"/>
+  <circle data-anchor="beak" data-side="right" cx="177" cy="43" r="2"/>
+  <circle data-anchor="wing" data-side="up" cx="80" cy="74" r="2"/>
+  <circle data-anchor="foot" data-side="down" cx="65" cy="122" r="2"/>
+</svg>

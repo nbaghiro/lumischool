@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 240">
+  <!-- A rocket standing on its flame: nose cone, panelled body, porthole, three fins, nozzle. -->
+  <path data-fill="tang" d="M50 128 C34 146 24 164 22 184 L52 176 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M110 128 C126 146 136 164 138 184 L108 176 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M34 152 C40 160 44 168 46 176 M126 152 C120 160 116 168 114 176" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="berry" d="M80 10 C96 30 106 48 110 66 L50 66 C54 48 64 30 80 10 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <path data-fill="none" d="M80 14 C74 32 71 50 70 66 M80 14 C86 32 89 50 90 66" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="card" d="M50 66 C44 100 44 140 50 172 L110 172 C116 140 116 100 110 66 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle data-fill="sky" cx="80" cy="102" r="21" stroke="#000" stroke-width="2.2"/>
+  <circle data-fill="none" cx="80" cy="102" r="15" stroke="#000" stroke-width="1.4"/>
+  <path data-fill="none" d="M70 94 C73 90 78 88 83 89" stroke="#000" stroke-width="1.6"/>
+  <path data-fill="none" d="M47 138 C60 135 100 135 113 138 M46 152 C60 149 100 149 114 152" stroke="#000" stroke-width="1.4"/>
+  <circle data-fill="ink" cx="56" cy="145" r="2" stroke="#000" stroke-width="1.6"/>
+  <circle data-fill="ink" cx="72" cy="145" r="2" stroke="#000" stroke-width="1.6"/>
+  <circle data-fill="ink" cx="88" cy="145" r="2" stroke="#000" stroke-width="1.6"/>
+  <circle data-fill="ink" cx="104" cy="145" r="2" stroke="#000" stroke-width="1.6"/>
+  <path data-fill="ink-soft" d="M54 172 L106 172 L114 194 L46 194 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M62 174 L58 192 M80 174 L80 192 M98 174 L102 192" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="glow" d="M58 194 C62 212 70 224 80 238 C90 224 98 212 102 194 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M69 194 C71 206 75 214 80 224 C85 214 89 206 91 194 Z" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/>
+  <circle data-anchor="nose" data-side="up" cx="80" cy="12" r="2"/>
+  <circle data-anchor="window" data-side="right" cx="101" cy="102" r="2"/>
+  <circle data-anchor="fin" data-side="left" cx="24" cy="182" r="2"/>
+  <circle data-anchor="flame" data-side="down" cx="80" cy="238" r="2"/>
+</svg>

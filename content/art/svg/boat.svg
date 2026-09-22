@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">
+  <!-- A sailing boat, drawn freehand. -->
+  <path data-fill="glow" d="M80 14 C92 30 104 50 112 68 C101 71 90 72 80 72 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M76 20 C64 36 54 54 48 68 C57 71 67 72 76 72 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M78 12 L78 80" stroke="#000" stroke-width="2.4"/>
+  <path data-fill="berry" d="M26 80 C60 84 104 84 138 80 C130 96 118 104 104 104 L58 104 C44 104 33 95 26 80 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <path data-fill="none" d="M14 112 C34 107 54 115 74 110 C94 105 118 113 146 108" stroke="#000" stroke-width="1.6"/>
+  <circle data-anchor="mast" data-side="up" cx="78" cy="12" r="2"/>
+  <circle data-anchor="hull" data-side="down" cx="82" cy="104" r="2"/>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160">
+  <!-- A bicycle with spokes, mudguards, a chain and a basket: the kind of object code draws badly.
+       Tubes are ink lines; the parts that carry colour are the mudguards, the saddle, the basket,
+       the chain ring and the grip. -->
+  <path data-fill="sky" d="M14.8 94.3 A46 46 0 0 1 101.2 94.3 L96.5 96 A41 41 0 0 0 19.5 96 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <path data-fill="sky" d="M142.8 94.3 A46 46 0 0 1 229.2 94.3 L224.5 96 A41 41 0 0 0 147.5 96 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle data-fill="none" cx="58" cy="110" r="40" stroke="#000" stroke-width="4"/>
+  <circle data-fill="none" cx="58" cy="110" r="33" stroke="#000" stroke-width="1.5"/>
+  <path data-fill="none" d="M25 110 H91 M58 77 V143 M35 87 L81 133 M35 133 L81 87" stroke="#000" stroke-width="1.1"/>
+  <circle data-fill="none" cx="186" cy="110" r="40" stroke="#000" stroke-width="4"/>
+  <circle data-fill="none" cx="186" cy="110" r="33" stroke="#000" stroke-width="1.5"/>
+  <path data-fill="none" d="M153 110 H219 M186 77 V143 M163 87 L209 133 M163 133 L209 87" stroke="#000" stroke-width="1.1"/>
+  <path data-fill="none" d="M110 118 L92 58 M92 58 L160 52 M110 118 L164 58 M110 118 L58 110 M92 58 L58 110 M162 56 L186 110" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+  <path data-fill="mint" d="M174 50 L214 50 L208 82 L180 82 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M175 60 L213 60 M177 71 L210 71 M184 51 L182 81 M194 51 L194 81 M204 51 L205 81" stroke="#000" stroke-width="1.1"/>
+  <path data-fill="none" d="M160 52 L169 38" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
+  <path data-fill="none" d="M169 38 C182 31 196 33 202 43" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+  <ellipse data-fill="tang" cx="202" cy="45" rx="4.5" ry="7.5" stroke="#000" stroke-width="1.6" transform="rotate(-22 202 45)"/>
+  <path data-fill="berry" d="M74 56 C82 47 100 47 107 54 C100 63 82 65 74 56 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M58 104 L110 107 M58 116 L112 130" stroke="#000" stroke-width="1.4"/>
+  <path data-fill="none" d="M110 118 L123 134" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+  <rect data-fill="ink" x="117" y="132" width="16" height="6" rx="2" stroke="#000" stroke-width="1.6" transform="rotate(8 125 135)"/>
+  <circle data-fill="glow" cx="110" cy="118" r="12" stroke="#000" stroke-width="1.8"/>
+  <circle data-fill="card" cx="110" cy="118" r="3.4" stroke="#000" stroke-width="1.2"/>
+  <circle data-fill="ink" cx="58" cy="110" r="4.6" stroke="#000" stroke-width="2"/>
+  <circle data-fill="ink" cx="186" cy="110" r="4.6" stroke="#000" stroke-width="2"/>
+  <circle data-anchor="saddle" data-side="up" cx="90" cy="52" r="2"/>
+  <circle data-anchor="handlebar" data-side="up" cx="184" cy="32" r="2"/>
+  <circle data-anchor="basket" data-side="up" cx="194" cy="50" r="2"/>
+  <circle data-anchor="pedal" data-side="down" cx="125" cy="138" r="2"/>
+  <circle data-anchor="front-wheel" data-side="down" cx="186" cy="150" r="2"/>
+  <circle data-anchor="rear-wheel" data-side="down" cx="58" cy="150" r="2"/>
+</svg>

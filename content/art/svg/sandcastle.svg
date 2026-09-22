@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180">
+  <!-- A sandcastle with three crenellated towers, a door, flags and a bucket beside it. -->
+  <path data-fill="none" d="M60 100 L60 62" stroke="#000" stroke-width="2"/>
+  <path data-fill="berry" d="M61 63 L88 71 L61 79 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="none" d="M120 68 L120 26" stroke="#000" stroke-width="2"/>
+  <path data-fill="sky" d="M121 27 L150 36 L121 45 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="none" d="M180 106 L180 70" stroke="#000" stroke-width="2"/>
+  <path data-fill="mint" d="M181 71 L206 79 L181 87 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M34 152 L34 100 L48 100 L48 108 L53 108 L53 100 L67 100 L67 108 L72 108 L72 100 L86 100 L86 152 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M154 152 L154 106 L168 106 L168 114 L173 114 L173 106 L187 106 L187 114 L192 114 L192 106 L206 106 L206 152 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M92 152 L92 68 L106 68 L106 76 L113 76 L113 68 L127 68 L127 76 L134 76 L134 68 L148 68 L148 152 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <path data-fill="sky" d="M54 122 L66 122 L66 136 L54 136 Z" stroke="#000" stroke-width="1.6"/>
+  <path data-fill="sky" d="M174 128 L186 128 L186 142 L174 142 Z" stroke="#000" stroke-width="1.6"/>
+  <path data-fill="sky" d="M112 90 L128 90 L128 106 L112 106 Z" stroke="#000" stroke-width="1.6"/>
+  <path data-fill="none" d="M120 90 L120 106 M112 98 L128 98 M54 129 L66 129 M60 122 L60 136 M174 135 L186 135 M180 128 L180 142" stroke="#000" stroke-width="1.1"/>
+  <path data-fill="ink-soft" d="M110 152 L110 130 C110 120 130 120 130 130 L130 152 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M120 122 L120 152" stroke="#000" stroke-width="1.3"/>
+  <path data-fill="card" d="M14 164 C40 150 60 156 82 152 C104 148 126 156 148 152 C170 148 198 156 226 150 L226 166 C170 172 70 172 14 166 Z" stroke="none" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M14 164 C40 150 60 156 82 152 C104 148 126 156 148 152 C170 148 198 156 226 150 L226 166 C170 172 70 172 14 166 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M30 160 C34 156 40 156 44 160 M96 158 C100 154 106 154 110 158 M170 158 C174 154 180 154 184 158 M200 162 C204 158 210 158 214 162" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="berry" d="M196 122 L226 122 L221 150 L201 150 Z" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M198 130 C206 133 216 133 224 130" stroke="#000" stroke-width="1.3"/>
+  <path data-fill="none" d="M198 124 C202 108 220 108 224 124" stroke="#000" stroke-width="1.8"/>
+  <circle data-anchor="keep" data-side="up" cx="120" cy="68" r="2"/>
+  <circle data-anchor="flag" data-side="up" cx="120" cy="28" r="2"/>
+  <circle data-anchor="door" data-side="up" cx="120" cy="126" r="2"/>
+  <circle data-anchor="bucket" data-side="up" cx="211" cy="122" r="2"/>
+  <circle data-anchor="sand" data-side="down" cx="120" cy="166" r="2"/>
+</svg>

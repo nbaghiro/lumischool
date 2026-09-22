@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180">
+  <!-- A fish tank: water, gravel, weed and three fish. A scene can count the fish, the bubbles or
+       the plants, and the anchors reach the waterline and the gravel. -->
+  <rect data-fill="sky" x="20" y="24" width="200" height="132" rx="8" stroke="#000" stroke-width="2.6"/>
+  <path data-fill="card" d="M23 27 L217 27 L217 46 C192 52 160 42 126 46 C92 50 58 40 23 46 Z" stroke="#000" stroke-width="1.6"/>
+  <path data-fill="none" d="M23 46 C58 40 92 50 126 46 C160 42 192 52 217 46" stroke="#000" stroke-width="1.8"/>
+  <path data-fill="mint" d="M46 148 C34 126 38 102 52 86 C50 108 52 130 58 148 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M66 150 C62 128 72 110 84 100 C74 118 72 132 76 150 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M198 148 C210 126 204 100 190 84 C194 108 192 130 186 148 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M178 150 C176 130 168 114 158 106 C166 122 168 134 166 150 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="berry" d="M96 78 C104 68 124 68 132 78 C124 89 104 89 96 78 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="berry" d="M96 78 L82 69 L85 78 L82 88 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <path data-fill="none" d="M112 69 C114 73 114 83 112 87" stroke="#000" stroke-width="1.2"/>
+  <circle data-fill="ink" cx="126" cy="75" r="1.8" stroke="#000" stroke-width="1.5"/>
+  <path data-fill="tang" d="M140 116 C147 108 163 108 170 116 C163 125 147 125 140 116 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M140 116 L128 109 L131 116 L128 124 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle data-fill="ink" cx="164" cy="113" r="1.6" stroke="#000" stroke-width="1.4"/>
+  <path data-fill="glow" d="M110 124 C103 116 87 116 80 124 C87 133 103 133 110 124 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="glow" d="M110 124 L122 117 L119 124 L122 132 Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle data-fill="ink" cx="86" cy="121" r="1.6" stroke="#000" stroke-width="1.4"/>
+  <circle data-fill="card" cx="204" cy="122" r="3.2" stroke="#000" stroke-width="1.3"/>
+  <circle data-fill="card" cx="209" cy="106" r="4.2" stroke="#000" stroke-width="1.3"/>
+  <circle data-fill="card" cx="202" cy="90" r="3" stroke="#000" stroke-width="1.3"/>
+  <circle data-fill="card" cx="207" cy="74" r="2.4" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="card" d="M22 146 C58 136 98 144 138 138 C178 132 204 142 218 138 L218 154 L22 154 Z" stroke="none" stroke-linejoin="round"/>
+  <path data-fill="tang" d="M22 146 C58 136 98 144 138 138 C178 132 204 142 218 138 L218 154 L22 154 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="none" d="M36 148 C40 144 46 144 50 148 M66 145 C70 141 76 141 80 145 M100 148 C104 144 110 144 114 148 M136 143 C140 139 146 139 150 143 M170 142 C174 138 180 138 184 142" stroke="#000" stroke-width="1.2"/>
+  <rect data-fill="ink-soft" x="14" y="14" width="212" height="13" rx="4" stroke="#000" stroke-width="2.2"/>
+  <rect data-fill="ink-soft" x="14" y="154" width="212" height="12" rx="4" stroke="#000" stroke-width="2.2"/>
+  <circle data-anchor="waterline" data-side="up" cx="120" cy="46" r="2"/>
+  <circle data-anchor="fish" data-side="up" cx="114" cy="70" r="2"/>
+  <circle data-anchor="weed" data-side="up" cx="52" cy="88" r="2"/>
+  <circle data-anchor="gravel" data-side="down" cx="120" cy="150" r="2"/>
+</svg>

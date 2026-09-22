@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140">
+  <!-- A shelf on a wall with books, a plant and a jar of pencils. The plank is one straight line a
+       scene can stand things on; the brackets under it fix it to the wall. -->
+  <rect data-fill="sky" x="26" y="52" width="14" height="44" rx="2" stroke="#000" stroke-width="1.8" transform="rotate(-5 33 74)"/>
+  <rect data-fill="berry" x="41" y="50" width="12" height="46" rx="2" stroke="#000" stroke-width="1.8" transform="rotate(-2 47 73)"/>
+  <rect data-fill="glow" x="54" y="56" width="16" height="40" rx="2" stroke="#000" stroke-width="1.8" transform="rotate(4 62 76)"/>
+  <path data-fill="none" d="M30 60 L38 59 M44 58 L52 57 M58 64 L68 65" stroke="#000" stroke-width="1.3"/>
+  <rect data-fill="mint" x="78" y="84" width="42" height="12" rx="2" stroke="#000" stroke-width="1.8"/>
+  <rect data-fill="tang" x="82" y="72" width="34" height="12" rx="2" stroke="#000" stroke-width="1.8"/>
+  <path data-fill="tang" d="M134 96 L166 96 L162 74 L138 74 Z" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+  <path data-fill="none" d="M137 82 H163" stroke="#000" stroke-width="1.3"/>
+  <path data-fill="mint" d="M150 74 C138 70 132 58 134 46 C142 52 148 62 150 74 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M150 74 C162 68 168 56 166 44 C158 51 152 62 150 74 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="mint" d="M150 72 C150 60 154 48 160 40 C160 52 158 64 154 72 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <rect data-fill="card" x="10" y="96" width="180" height="13" rx="2" stroke="none"/>
+  <rect data-fill="tang" x="10" y="96" width="180" height="13" rx="2" stroke="#000" stroke-width="2.4"/>
+  <path data-fill="none" d="M18 102 C70 100 140 104 184 101" stroke="#000" stroke-width="1.2"/>
+  <path data-fill="ink-soft" d="M36 109 L36 130 L54 109 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <path data-fill="ink-soft" d="M164 109 L164 130 L146 109 Z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle data-anchor="shelf" data-side="up" cx="100" cy="96" r="2"/>
+  <circle data-anchor="books" data-side="up" cx="47" cy="50" r="2"/>
+  <circle data-anchor="plant" data-side="up" cx="150" cy="44" r="2"/>
+  <circle data-anchor="box" data-side="up" cx="99" cy="72" r="2"/>
+  <circle data-anchor="bracket" data-side="down" cx="45" cy="130" r="2"/>
+</svg>

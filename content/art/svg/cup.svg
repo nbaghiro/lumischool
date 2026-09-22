@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- A mug, drawn freehand. Fills are named by token; lines are black and get re-inked. -->
+  <path data-fill="sky" d="M28 36 C48 33 74 33 92 36 L86 96 C84 104 72 109 60 109 C48 109 36 104 34 96 Z" stroke="#000" stroke-width="2.4" stroke-linejoin="round"/>
+  <path data-fill="none" d="M30 48 C50 44 72 44 90 48" stroke="#000" stroke-width="1.4"/>
+  <path data-fill="none" d="M92 48 C106 45 114 54 112 65 C110 77 99 82 87 80" stroke="#000" stroke-width="2.4"/>
+  <path data-fill="none" d="M48 24 C52 18 46 13 50 7 M70 24 C74 18 68 13 72 7" stroke="#000" stroke-width="1.6"/>
+  <circle data-anchor="top" data-side="up" cx="60" cy="33" r="2"/>
+  <circle data-anchor="handle" data-side="right" cx="112" cy="64" r="2"/>
+</svg>
