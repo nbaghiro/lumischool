@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+package-lock.json
+*.tsbuildinfo
+server/db/migrations/
+
+# The prototype keeps its own two-space style until each module moves out of it, and is formatted
+# as it lands at the root. Spikes are thrown away.
+.scratchpad/
+spikes/
+
+# The curriculum and the hand-drawn art are data, kept exactly as their authors and tools wrote them.
+content/
+
+# The documents are wrapped by hand at 100 columns, and reformatting their tables churns every diff.
+*.md

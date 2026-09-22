@@ -1,0 +1,23 @@
+# dependencies, builds and caches
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# the local environment; the example is the one that is shared
+.env
+.env.*
+!.env.example
+
+# the prototypes, kept on this machine and emptied into the root module by module
+.scratchpad/
+
+# test and browser output
+test-results/
+playwright-report/
+*.log
+
+# editors and the system
+.DS_Store
+.idea/
+.vscode/

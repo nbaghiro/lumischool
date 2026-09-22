@@ -1,0 +1,36 @@
+{
+    "name": "lumischool",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "description": "A family can teach a full year of maths without preparing anything",
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "lint": "oxlint --type-aware --deny-warnings --report-unused-disable-directives-severity=error",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "dependencies": {
+        "@fontsource-variable/shantell-sans": "^5.3.0",
+        "@fontsource-variable/spline-sans-mono": "^5.3.0",
+        "@fontsource/andika": "^5.3.0",
+        "drizzle-orm": "^0.45.2",
+        "perfect-freehand": "^1.2.3",
+        "planck": "1.5.0",
+        "postgres": "^3.4.7",
+        "roughjs": "^4.6.6",
+        "solid-js": "^1.9.15"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.63.0",
+        "@resvg/resvg-js": "^2.6.2",
+        "@types/node": "^24.10.1",
+        "drizzle-kit": "^0.31.6",
+        "oxlint": "^1.82.0",
+        "oxlint-tsgolint": "^7.0.2001",
+        "prettier": "^3.9.6",
+        "typescript": "^7.0.2",
+        "vite": "^8.3.0",
+        "vite-plugin-solid": "^2.11.14"
+    }
+}
