@@ -1,7 +1,7 @@
 // The plan a grown-up can change, and a child's record as their view reads it. What a family and its
 // dates are called is names.ts, which the child's app reads without any of this.
 
-import type { Envelope, PlanOp } from "../../engine/answer";
+import type { Envelope, PlanOp, SessionOp } from "../../engine/answer";
 import {
     addDays,
     dayIn,
@@ -29,6 +29,12 @@ export const KIND_LABEL: Record<DayKind, string> = {
 };
 
 export interface PlannedDay {
+    session?: string;
+    projection?: string;
+    completed?: boolean;
+    source?: string | null;
+    plannedMinutes?: number;
+    order?: number;
     on: string;
     kind: DayKind;
     /** The lesson, for every kind but "off". A practice day names the lesson it practises. */
@@ -93,9 +99,9 @@ export function cellsFor(
             out.set(d, { ...base(d), state: "off" });
             continue;
         }
-        const here = sittings.filter(
-            (s) => s.lesson === d.lesson && s.on === d.on && !spent.has(s),
-        );
+        let here = sittings.filter((s) => s.lesson === d.lesson && s.on === d.on && !spent.has(s));
+        if (days.filter((x) => x.on === d.on && x.lesson === d.lesson).length > 1)
+            here = here.slice(0, 1);
         if (!here.length) continue;
         for (const s of here) spent.add(s);
         out.set(d, {
@@ -130,6 +136,16 @@ export function cellsFor(
         const c = out.get(d);
         return c ? [c] : [];
     });
+}
+
+/** Send session completion to lightweight child consumers without making them fold sittings. */
+function plannedCells(days: PlannedDay[], sittings: Sitting[], today: string): PlannedDay[] {
+    const cells = cellsFor(days, sittings, today);
+    return days.map((day, i) =>
+        day.session
+            ? { ...day, completed: cells[i]?.state === "done" || cells[i]?.state === "late" }
+            : day,
+    );
 }
 
 /** The plan as weeks of five columns. */
@@ -461,7 +477,6 @@ export interface PlanInput {
  * has kept so far, and then the next, so a parked lesson comes back after its gap.
  */
 export function trackDays(p: PlanInput): PlannedDay[] {
-    if (!p.lessons.length) return [];
     const schoolDaysOn = (day: string): number[] => {
         const changed = p.moves
             .filter((move) => move.on <= day && move.op.op === "school-days")
@@ -472,12 +487,18 @@ export function trackDays(p: PlanInput): PlannedDay[] {
     const offOn = (day: string): boolean =>
         p.moves.some(({ op }) => op.op === "days-off" && op.from <= day && day <= op.to);
     let dates: string[] = [];
-    for (let d = p.start; dayOf(d) <= dayOf(p.until); d = addDays(d, 1))
-        if (
-            pickWeekdays(schoolDaysOn(d), p.perWeek, turnOf(p.track)).includes(weekdayNumber(d)) &&
-            !offOn(d)
-        )
-            dates.push(d);
+    for (let d = p.start; dayOf(d) <= dayOf(p.until); d = addDays(d, 1)) {
+        const rule = p.moves
+            .flatMap(({ op }) =>
+                op.op === "routine" && op.track === p.track && op.from <= d ? [op] : [],
+            )
+            .at(-1);
+        const weekdays = rule
+            ? rule.weekdays
+            : pickWeekdays(schoolDaysOn(d), p.perWeek, turnOf(p.track));
+        if (weekdays.includes(weekdayNumber(d)) && !offOn(d))
+            for (let n = 0; n < (rule?.sessions ?? 1); n++) dates.push(d);
+    }
     for (const m of p.moves) {
         if (m.op.op !== "shift") continue;
         const { from, weeks: by } = m.op;
@@ -560,14 +581,102 @@ export function trackDays(p: PlanInput): PlannedDay[] {
 
     days.sort((a, b) => dayOf(a.on) - dayOf(b.on));
     const seen = new Map<string, number>();
-    return days.map((d) => {
+    const projected = days.map((d): PlannedDay => {
         if (d.note) return d;
         const n = (seen.get(d.lesson ?? "") ?? 0) + 1;
         seen.set(d.lesson ?? "", n);
         const kind: DayKind = n === 1 ? "lesson" : n === 2 ? "again" : "practice";
         const note = KIND_NOTE[kind];
-        return { on: d.on, kind, lesson: d.lesson, ...(note ? { note } : {}) };
+        return { ...d, kind, ...(note ? { note } : {}) };
     });
+    return placedDays(projected, p);
+}
+
+/** A projection slot has a stable identity independent of whichever lesson pacing puts there. */
+export const sessionKey = (track: string, day: PlannedDay, slot = 0): string =>
+    day.session ?? day.projection ?? `${track}:${day.on}:${slot}`;
+
+export function sessionChanges(moves: PlanInput["moves"]): SessionOp[] {
+    const current = new Map<string, SessionOp>();
+    for (const { op } of moves) if (op.op === "session") current.set(op.id, op);
+    return [...current.values()];
+}
+
+/** Manual placements survive recurrence changes. Moving appends; it never swaps a neighbour. */
+function placedDays(projected: PlannedDay[], p: PlanInput): PlannedDay[] {
+    const slots = new Map<string, number>();
+    const tagged = p.moves.some(
+        (m) => (m.op.op === "session" || m.op.op === "routine") && m.op.track === p.track,
+    );
+    const days = new Map(
+        projected.map((d) => {
+            const slot = slots.get(d.on) ?? 0;
+            slots.set(d.on, slot + 1);
+            const key = sessionKey(p.track, d, slot);
+            return [key, tagged ? { ...d, projection: key } : d] as const;
+        }),
+    );
+    const completed = (d: PlannedDay): boolean => {
+        if (!p.sittings.some((s) => s.on === d.on && s.lesson === d.lesson)) return false;
+        const cell = cellsFor([...days.values()], p.sittings, p.today).find((c) =>
+            d.session
+                ? c.session === d.session
+                : d.projection
+                  ? c.projection === d.projection
+                  : c.on === d.on && c.lesson === d.lesson,
+        );
+        return cell?.state === "done" || cell?.state === "late" || cell?.state === "part";
+    };
+    for (const { op } of p.moves) {
+        if (op.op !== "session" || op.track !== p.track) continue;
+        const previous = days.get(op.id) ?? (op.source ? days.get(op.source) : undefined);
+        if (previous && completed(previous)) continue;
+        if (op.source) days.delete(op.source);
+        days.delete(op.id);
+        if (!op.removed && op.onDay)
+            days.set(op.id, {
+                session: op.id,
+                source: op.source,
+                on: op.onDay,
+                lesson: op.lesson,
+                kind: op.kind,
+                note: op.note,
+                plannedMinutes: op.minutes,
+                order: op.order,
+            });
+    }
+    // A change to today's routine cannot erase work already begun today.
+    if (tagged)
+        for (const sitting of p.sittings) {
+            if (
+                ![...days.values()].some((d) => d.on === sitting.on && d.lesson === sitting.lesson)
+            ) {
+                const id = `record:${p.track}:${sitting.on}:${sitting.lesson}`;
+                days.set(id, {
+                    on: sitting.on,
+                    lesson: sitting.lesson,
+                    kind: "lesson",
+                    projection: id,
+                });
+            }
+        }
+    return [...days.values()]
+        .filter((d) => d.on <= p.until || completed(d))
+        .sort((a, b) => a.on.localeCompare(b.on) || (a.order ?? 0) - (b.order ?? 0));
+}
+
+/** Includes manual-only subjects and paused tracks without turning their curriculum back on. */
+export function scheduledTracks(
+    plan: Map<string, TrackOn>,
+    moves: PlanInput["moves"],
+): Map<string, TrackOn> {
+    const out = new Map(plan);
+    for (const { op, on } of moves)
+        if (op.op === "session" || op.op === "routine") {
+            if (!out.has(op.track))
+                out.set(op.track, { on: false, perWeek: 0, since: on, own: true });
+        }
+    return out;
 }
 
 /**
@@ -649,26 +758,36 @@ export function childRecord(
         }));
 
     const moves = movesOf(events, kid.id, timeZone);
-    const plan = [...planOf(events, kid, timeZone, from)].flatMap(([track, on]) => {
-        if (!on.on) return [];
-        const lane = laneOf(lessons, track, kid.grade);
-        const inLane = new Set(lane);
-        return [
-            {
-                track,
-                days: trackDays({
+    const plan = [...scheduledTracks(planOf(events, kid, timeZone, from), moves)].flatMap(
+        ([track, on]) => {
+            const lane = laneOf(lessons, track, kid.grade);
+            const inLane = new Set([
+                ...lane,
+                ...sessionChanges(moves)
+                    .filter((s) => s.track === track)
+                    .map((s) => s.lesson),
+            ]);
+            return [
+                {
                     track,
-                    lessons: lane,
-                    perWeek: on.perWeek,
-                    start: from,
-                    today,
-                    until: addDays(today, PLANNED_AHEAD),
-                    moves,
-                    sittings: mine.filter((s) => inLane.has(s.lesson)),
-                }),
-            },
-        ];
-    });
+                    days: plannedCells(
+                        trackDays({
+                            track,
+                            lessons: lane,
+                            perWeek: on.on ? on.perWeek : 0,
+                            start: from,
+                            today,
+                            until: addDays(today, PLANNED_AHEAD),
+                            moves,
+                            sittings: mine.filter((s) => inLane.has(s.lesson)),
+                        }),
+                        mine.filter((s) => inLane.has(s.lesson)),
+                        today,
+                    ),
+                },
+            ];
+        },
+    );
 
     const ended = new Set(
         events.flatMap((e) => (e.kind === "sitting-ended" ? [e.data.sitting] : [])),

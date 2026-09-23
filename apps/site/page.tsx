@@ -17,7 +17,6 @@ import {
     type JSX,
 } from "solid-js";
 import type { MapView, Size } from "../../engine/space";
-import { me, signedIn } from "../../engine/ui/api";
 import { idle, onDemand } from "../../engine/ui/art";
 import { MapBackdrop, OPENING, type Ground } from "../../engine/ui/backdrop";
 import { atFrom, hashOf, type OverlayAt } from "../../engine/ui/hash";
@@ -78,10 +77,13 @@ const picture =
 
 /**
  * Whether this browser is signed in, shared by everything on the page that changes with it. The hint
- * the browser keeps answers at once, and the API is asked once, and only when there is a hint.
+ * the browser keeps answers when the client loads, and the API is asked only when there is a hint.
  */
-const [inside, setInside] = createSignal(signedIn() !== null);
-void me().then((m) => setInside(m !== null));
+const [inside, setInside] = createSignal(false);
+void import("../../engine/ui/api").then(async ({ me, signedIn }) => {
+    setInside(signedIn() !== null);
+    setInside((await me()) !== null);
+});
 
 /**
  * The bar: the mark, the sections of the page, and the way in, which is signing in or starting a

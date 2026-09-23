@@ -159,7 +159,24 @@ interface RoundRef {
 export type Weekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 /** A change a parent made to the plan. Reversible by replaying the log without it. */
+export interface SessionOp {
+    op: "session";
+    id: string;
+    track: string;
+    /** Projection slot replaced by this placement; null for an extra session. */
+    source: string | null;
+    onDay: string | null;
+    lesson: string;
+    kind: "lesson" | "again" | "practice";
+    minutes: number;
+    order: number;
+    note: string;
+    removed: boolean;
+}
+
 export type PlanOp =
+    | SessionOp
+    | { op: "routine"; track: string; from: string; weekdays: Weekday[]; sessions: number }
     | { op: "shift"; from: string; weeks: number }
     | { op: "park"; lesson: string; from: string; gapWeeks: number }
     | {
@@ -546,6 +563,38 @@ function round(v: unknown): string | null {
 function op(v: unknown): string | null {
     if (!obj(v)) return "op must be an object";
     switch (v.op) {
+        case "session":
+            return typeof v.id === "string" &&
+                v.id.length <= 240 &&
+                str(v.track) &&
+                (v.source === null || (typeof v.source === "string" && v.source.length <= 240)) &&
+                (v.onDay === null || day(v.onDay)) &&
+                str(v.lesson) &&
+                one(v.kind, ["lesson", "again", "practice"] as const) &&
+                typeof v.minutes === "number" &&
+                int(v.minutes) &&
+                v.minutes >= 5 &&
+                v.minutes <= 240 &&
+                typeof v.order === "number" &&
+                int(v.order) &&
+                Math.abs(v.order) <= 1000000 &&
+                typeof v.note === "string" &&
+                v.note.length <= 2000 &&
+                bool(v.removed)
+                ? null
+                : "session needs an identity, lesson, date or later, kind, duration, order and note";
+        case "routine":
+            return str(v.track) &&
+                day(v.from) &&
+                Array.isArray(v.weekdays) &&
+                v.weekdays.every((d) => int(d) && d >= 1 && d <= 7) &&
+                new Set(v.weekdays).size === v.weekdays.length &&
+                typeof v.sessions === "number" &&
+                int(v.sessions) &&
+                v.sessions >= 1 &&
+                v.sessions <= 3
+                ? null
+                : "routine needs a subject, start day, distinct weekdays and 1 to 3 sessions";
         case "shift":
             return day(v.from) && int(v.weeks)
                 ? null
@@ -814,6 +863,13 @@ function problemOf(v: unknown): string | null {
     if (!keyOf(EVENT, kind)) return `kind "${String(kind)}" is not an event kind`;
     if (!obj(v.data)) return "data must be an object";
     if ("t" in v.data) return "data must not carry the event's type; that is kind";
+    if (
+        kind === "plan-changed" &&
+        obj(v.data.op) &&
+        (v.data.op.op === "session" || v.data.op.op === "routine") &&
+        v.kid_id === null
+    )
+        return "sessions and routines must name one child";
     return EVENT[kind](v.data);
 }
 

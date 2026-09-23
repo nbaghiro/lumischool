@@ -22,6 +22,8 @@ import {
     planOf,
     startOf,
     trackDays,
+    scheduledTracks,
+    sessionChanges,
     type Cell,
     type PlannedDay,
 } from "./family";
@@ -186,16 +188,23 @@ export function foldCalendar(input: FoldIn): Calendar {
         const lanes = new Map<string, PlannedDay[]>();
         const tracks: KidCalendar["tracks"] = [];
         const cells = new Map<string, CalCell[]>();
-        for (const [track, on] of planOf(input.events, kid, input.timeZone, start)) {
-            if (!on.on) continue;
+        for (const [track, on] of scheduledTracks(
+            planOf(input.events, kid, input.timeZone, start),
+            moves,
+        )) {
             const lane = laneOf(input.lessons, track, kid.grade);
             // a subject with nothing written for this child has nothing to plan, default or not
-            if (!lane.length) continue;
-            const inLane = new Set(lane);
+            if (!lane.length && !sessionChanges(moves).some((s) => s.track === track)) continue;
+            const inLane = new Set([
+                ...lane,
+                ...sessionChanges(moves)
+                    .filter((s) => s.track === track)
+                    .map((s) => s.lesson),
+            ]);
             const days = trackDays({
                 track,
                 lessons: lane,
-                perWeek: on.perWeek,
+                perWeek: on.on ? on.perWeek : 0,
                 start,
                 today: input.today,
                 until: input.until,
@@ -464,6 +473,10 @@ export function saidOf(
 ): string {
     const who = names.kid(c.kid);
     switch (c.op.op) {
+        case "session":
+            return `${who}: ${names.lesson(c.op.lesson)} ${c.op.removed ? "removed from the plan" : c.op.onDay ? `planned for ${names.day(c.op.onDay)}` : "set aside for later"}.`;
+        case "routine":
+            return `${who}: ${names.track(c.op.track)}, ${c.op.weekdays.length * c.op.sessions} sessions a week from ${names.day(c.op.from)}.`;
         case "days-off":
             return c.op.from === c.op.to
                 ? `A day off for ${who} on ${names.day(c.op.from)}: ${c.op.note}.`

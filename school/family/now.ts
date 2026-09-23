@@ -18,10 +18,16 @@ export function nowIn(r: Pick<ChildRecord, "today" | "plan" | "years">): string[
         d.kind !== "off" && d.lesson !== undefined;
     const on = (day: string): string[] =>
         r.plan.flatMap(({ days }) => {
-            const d = days.find((x) => x.on === day && works(x));
-            if (!d || !works(d)) return [];
-            if (!done.has(d.lesson)) return [d.lesson];
-            const later = days.find((x) => x.on > day && works(x) && !done.has(x.lesson ?? ""));
+            const current = days.filter((x) => x.on === day && works(x));
+            const lessons = current.flatMap((d) =>
+                d.lesson && !d.completed && (!done.has(d.lesson) || (d.session && !d.completed))
+                    ? [d.lesson]
+                    : [],
+            );
+            if (lessons.length) return lessons;
+            const later = current.length
+                ? days.find((x) => x.on > day && works(x) && !done.has(x.lesson ?? ""))
+                : undefined;
             return later?.lesson === undefined ? [] : [later.lesson];
         });
     const today = on(r.today);

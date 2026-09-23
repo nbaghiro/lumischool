@@ -194,3 +194,49 @@ test("an arrangement names its part and places one or more pieces, each at a fin
         );
     }
 });
+
+test("session placements and routines validate identity, duration, weekdays and child scope", () => {
+    const op = {
+        op: "session",
+        id: "maths:2026-09-23:0",
+        source: "maths:2026-09-23:0",
+        track: "maths",
+        lesson: "g1-counting",
+        onDay: "2026-09-24",
+        kind: "practice",
+        minutes: 20,
+        order: 0,
+        note: "",
+        removed: false,
+    };
+    const plan = (value: Record<string, unknown>) =>
+        envelope({ kid_id: ID, kind: "plan-changed", data: { op: value } });
+    assert.equal(check(plan(op)).ok, true);
+    for (const change of [
+        { minutes: 0 },
+        { minutes: 241 },
+        { minutes: 2.5 },
+        { onDay: "2026-02-30" },
+        { order: Infinity },
+        { removed: "no" },
+    ])
+        assert.equal(check(plan({ ...op, ...change })).ok, false);
+    assert.equal(check({ ...plan(op), kid_id: null }).ok, false);
+    const routine = {
+        op: "routine",
+        track: "maths",
+        from: "2026-09-23",
+        weekdays: [1, 3, 5],
+        sessions: 2,
+    };
+    assert.equal(check(plan(routine)).ok, true);
+    assert.equal(check(plan({ ...routine, weekdays: [] })).ok, true);
+    for (const change of [
+        { weekdays: [1, 1] },
+        { weekdays: [0] },
+        { sessions: 0 },
+        { sessions: 4 },
+        { from: "bad" },
+    ])
+        assert.equal(check(plan({ ...routine, ...change })).ok, false);
+});
