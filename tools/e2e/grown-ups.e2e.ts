@@ -48,8 +48,9 @@ test("no grown-ups' screen shows the card for a page that did not load", async (
     await dialog.getByRole("button", { name: "Not now" }).click();
     await expect(dialog).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Add another child" })).toBeFocused();
-    // and none after the map, which is drawn last
-    await expect(page.locator(".page-ground svg").first()).toBeAttached();
+    // Bring the phone's below-the-fold map into view before expecting its deferred drawing.
+    await page.locator(".page-ground").scrollIntoViewIfNeeded();
+    await expect(page.locator(".page-ground svg, .page-ground img").first()).toBeAttached();
     await expect(errorCard(page)).toHaveCount(0);
     await signOut(page);
 });
@@ -236,7 +237,7 @@ test("the bar stays as a grown-up moves between Home, Calendar and Explore and b
         expect(places.getByRole("link", { name })).toHaveAttribute("aria-current", "page");
     await current("Home");
     await places.getByRole("link", { name: "Calendar" }).click();
-    await atScreen(page, page.getByRole("heading", { name: /^Week of / }));
+    await atScreen(page, page.getByRole("heading", { name: "The calendar", exact: true }));
     await current("Calendar");
     await places.getByRole("link", { name: "Explore" }).click();
     await atScreen(page, page.getByRole("heading", { name: "Every lesson", level: 1 }));

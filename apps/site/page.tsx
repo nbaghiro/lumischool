@@ -56,7 +56,8 @@ const warmMap = (): void => {
  */
 const [hash, setHash] = createSignal(location.hash);
 addEventListener("popstate", () => setHash(location.hash));
-const looking = (): OverlayAt | null => atFrom(hash());
+// The page's #map section is distinct from the explicit #/map overlay route.
+const looking = (): OverlayAt | null => (hash() === "#map" ? null : atFrom(hash()));
 /** The entry the look pushed, so closing it goes back to the page's own rather than past it. */
 const LOOK = { look: true };
 const pushedLook = (): boolean => {

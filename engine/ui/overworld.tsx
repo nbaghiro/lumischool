@@ -391,7 +391,13 @@ export function Overworld(props: {
         // the map takes the keyboard as it opens, so the zoom keys, the arrows, Enter and Escape all
         // work from the moment it is shown; the camera does not move for it. With no place chosen the
         // host takes it rather than a place, so nothing is ringed
-        if (first && isScreen()) {
+        const active = document.activeElement;
+        // Finishing a background paint must not steal focus from a menu or form already in use.
+        if (
+            first &&
+            isScreen() &&
+            (!active || active === document.body || host?.contains(active))
+        ) {
             if (chosen()) focusNode(focus(), true);
             else host?.focus({ preventScroll: true });
         }

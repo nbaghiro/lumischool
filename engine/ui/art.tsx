@@ -22,6 +22,9 @@ export const idle = (): Promise<void> =>
         else setTimeout(done, 200);
     });
 
+let leaving = false;
+let watchingNavigation = false;
+
 /**
  * `load`'s module, and if the import fails, the page loaded again, once for this page in this tab.
  * An import fails when the server no longer has the chunk a page names (after a new build, or a
@@ -29,8 +32,19 @@ export const idle = (): Promise<void> =>
  * throws, so a page the server cannot serve never reloads in a loop, and a tab that keeps nothing
  * never reloads, since it could not tell a second failure from a first.
  */
-export const onDemand = <T,>(load: () => Promise<T>): Promise<T> =>
-    load().catch((error: unknown) => {
+export const onDemand = <T,>(load: () => Promise<T>): Promise<T> => {
+    if (!watchingNavigation) {
+        watchingNavigation = true;
+        // WebKit can reject imports after beforeunload but before pagehide.
+        window.addEventListener("beforeunload", () => {
+            leaving = true;
+        });
+        window.addEventListener("pageshow", () => {
+            leaving = false;
+        });
+    }
+    return load().catch((error: unknown) => {
+        if (leaving) throw error;
         const key = `reloaded:${location.pathname}`;
         try {
             if (sessionStorage.getItem(key) === null) {
@@ -44,6 +58,7 @@ export const onDemand = <T,>(load: () => Promise<T>): Promise<T> =>
         }
         throw error;
     });
+};
 
 /** The bar's bird (mark.tsx), drawn by draw.ts: the one dynamic import of it, here with the boxes', so the bar's own chunk names no list of chunks to preload. */
 export const drawBird = (host: HTMLElement): Promise<void> =>

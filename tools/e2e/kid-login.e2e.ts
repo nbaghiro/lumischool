@@ -178,8 +178,26 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
     await Promise.all([login(rosie, `rosie-${suffix}`), login(leo, `leo-${suffix}`)]);
     expect(await who(rosie)).toEqual(["Rosie"]);
     expect(await who(leo)).toEqual(["Leo"]);
+    let releaseRecord: () => void = () => {};
+    const recordGate = new Promise<void>((resolve) => {
+        releaseRecord = resolve;
+    });
+    await rosie.route("**/api/kid/*/record", async (route) => {
+        await recordGate;
+        await route.continue();
+    });
     await rosie.reload();
-    await expect(rosie.getByRole("button", { name: "Your profile" })).toBeVisible();
+    const profile = rosie.getByRole("button", { name: "Your profile" });
+    await expect(profile).toBeVisible();
+    await profile.click();
+    // WebKit does not focus buttons on a pointer click; also exercise keyboard focus explicitly.
+    await profile.focus();
+    releaseRecord();
+    await expect(rosie.locator(".ow-host.ready:not([inert])")).toBeVisible();
+    await expect(profile).toBeFocused();
+    await expect(profile).toHaveAttribute("aria-expanded", "true");
+    await rosie.keyboard.press("Escape");
+    await rosie.unroute("**/api/kid/*/record");
     expect(await who(rosie)).toEqual(["Rosie"]);
 
     for (const tab of [rosie, leo]) {

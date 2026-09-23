@@ -147,7 +147,9 @@
     box-shadow: none;
 }
 .ow-flyhud .steer {
-    font-size: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .ow-lever {
     display: flex;

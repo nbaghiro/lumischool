@@ -1,4 +1,5 @@
 import "./flight.css";
+import { iconElement } from "./icon";
 import { el, SvgPen as Pen } from "./svg";
 import type { Tokens } from "../paper";
 import { advance, loop, ticker } from "../motion/loop";
@@ -107,7 +108,7 @@ export function fly(o: FlyOptions): Flying {
     const z0 = o.view.cam.z;
     let zoom = 1;
     function zoomBy(factor: number): void {
-        zoom = clamp(zoom * factor, 0.7, 1.4);
+        zoom = clamp(zoom * factor, 0.4, 1.4);
         if (o.still) draw(0);
     }
     let landing: Landing | null = null;
@@ -267,8 +268,12 @@ export function fly(o: FlyOptions): Flying {
         return b;
     };
     const stopBtn = button("Stop", "stop", "Stop flying and land at the nearest world");
-    const left = button("↰", "steer", "Steer left"),
-        right = button("↱", "steer", "Steer right");
+    const left = button("", "steer", "Steer left"),
+        right = button("", "steer", "Steer right");
+    left.append(iconElement("back"));
+    right.append(iconElement("right"));
+    left.title = "Steer left";
+    right.title = "Steer right";
     const zoomOut = button("−", "zoom", "Zoom out while flying"),
         zoomIn = button("+", "zoom", "Zoom in while flying");
     zoomOut.addEventListener("click", () => zoomBy(1 / 1.15));
@@ -560,7 +565,7 @@ export function fly(o: FlyOptions): Flying {
             cam = { c: { x: mx.x, y: my.x, z: mz.x }, v: { x: mx.v, y: my.v, z: mz.v } };
         }
         if (on) o.view.set(cam.c);
-        zoomOut.disabled = zoom <= 0.7;
+        zoomOut.disabled = zoom <= 0.4;
         zoomIn.disabled = zoom >= 1.4;
         notchBtns.forEach((b, i) => b.setAttribute("aria-checked", String(i === plane.notch)));
         const now = performance.now();

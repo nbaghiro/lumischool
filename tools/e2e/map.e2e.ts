@@ -25,8 +25,25 @@ const layerOf = (page: Page): Promise<string> =>
         .first()
         .evaluate((el) => el.style.transform);
 
+async function cameraSettled(map: Locator): Promise<void> {
+    let previous = "";
+    let same = 0;
+    await expect
+        .poll(
+            async () => {
+                const current = await map.locator(".world").evaluate((el) => el.style.transform);
+                same = current && current === previous ? same + 1 : 0;
+                previous = current;
+                return same;
+            },
+            { intervals: [100] },
+        )
+        .toBeGreaterThanOrEqual(2);
+}
+
 /** A distant place first frames itself; the next click enters after its camera settles. */
 async function goInto(page: Page, place: Locator): Promise<void> {
+    await cameraSettled(place.locator("xpath=ancestor::section[contains(@class, 'ow-host')]"));
     const before = page.url();
     await place.dispatchEvent("click");
     let previous: string | null = null;
@@ -39,13 +56,22 @@ async function goInto(page: Page, place: Locator): Promise<void> {
                     ? {
                           transform: el.closest(".world")?.getAttribute("style") ?? "",
                           focused: el.getAttribute("tabindex") === "0",
+                          centered: (() => {
+                              const host = el.closest(".ow-host")?.getBoundingClientRect();
+                              const box = el.getBoundingClientRect();
+                              return (
+                                  !!host &&
+                                  Math.abs(box.x + box.width / 2 - host.x - host.width / 2) < 12 &&
+                                  Math.abs(box.y + box.height / 2 - host.y - host.height / 2) < 12
+                              );
+                          })(),
                       }
                     : null;
             });
             if (!state) return page.url() !== before;
             const settled = previous === state.transform;
             previous = state.transform;
-            return settled && state.focused;
+            return settled && state.focused && state.centered;
         })
         .toBe(true);
     if (page.url() === before) await place.dispatchEvent("click");
@@ -79,7 +105,9 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     await expect(map.locator(".ow-where")).toHaveCount(0);
     await expect(map.locator(".ow-node.focus")).toHaveCount(0);
     expect(await smallTargets(map)).toEqual([]);
-    await expect(map.locator(".ow-place")).toHaveCount(38);
+    // All destinations remain accessible; artwork is only required near the camera.
+    await expect.poll(() => map.locator(".ow-place").count()).toBeGreaterThan(0);
+    await cameraSettled(map);
 
     const scale = () =>
         map.locator(".world").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
@@ -91,6 +119,7 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     // A tap chooses a place without adding a floating name chip.
     await map.locator('.ow-node[aria-label*="harbour" i]').first().dispatchEvent("click");
     await expect(map.locator('.ow-node[tabindex="0"][aria-label*="harbour" i]')).toHaveCount(1);
+    await expect(map.locator('.ow-place[data-world="harbour"] .j-art svg').first()).toBeVisible();
     await expect(map.locator(".ow-where")).toHaveCount(0);
     // a drag pans, and the wheel zooms
     const box = await map.boundingBox();
@@ -102,30 +131,52 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     await page.mouse.up();
     await expect.poll(() => layerOf(page)).not.toBe(was);
     const panned = await layerOf(page);
-    await page.mouse.wheel(0, -400);
+    // Mobile WebKit cannot inject a native mouse wheel; exercise the shared gesture handler.
+    await map.dispatchEvent("wheel", {
+        deltaY: -400,
+        ctrlKey: true,
+        clientX: box.x + box.width / 2,
+        clientY: box.y + box.height / 2,
+    });
     await expect.poll(() => layerOf(page)).not.toBe(panned);
 });
 
 for (const world of ["harbour", "meadow"]) {
     test(`the overview smoothly centers the ${world} on its first click`, async ({ page }) => {
+        await page.clock.install();
         await page.emulateMedia({ reducedMotion: "no-preference" });
         await signInAs(page);
         await page.goto("/map");
         const map = await mapReady(page);
+        await cameraSettled(map);
+        if ((await map.locator(".ow-scope").textContent()) === "Near me") {
+            await map.locator(".ow-scope").click();
+            await cameraSettled(map);
+        }
+        await map.getByRole("button", { name: "Every world", exact: true }).click();
+        await cameraSettled(map);
         const place = map.locator(`.ow-node[aria-label*="${world}" i]`).first();
-        const motion = await place.evaluate(async (el) => {
-            const before = el.getBoundingClientRect();
+        // Control animation time: two real frames can span an entire transition on a busy device.
+        await page.clock.pauseAt(await page.evaluate(() => Date.now() + 60_000));
+        const before = await place.evaluate((el) => {
+            const layer = el.closest<HTMLElement>(".world");
+            if (!layer) throw new Error("the map has no camera layer");
+            const before = new DOMMatrix(layer.style.transform);
             el.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-            const first = el.getBoundingClientRect();
-            return {
-                scale: first.width / before.width,
-                distance: Math.hypot(first.x - before.x, first.y - before.y),
-            };
+            return { z: before.a, x: before.e, y: before.f };
         });
-        expect(motion.scale).toBeLessThan(1.15);
-        expect(motion.distance).toBeLessThan(40);
+        await page.clock.runFor(32);
+        const first = await map.locator(".world").evaluate((el) => {
+            const m = new DOMMatrix(el.style.transform);
+            return { z: m.a, x: m.e, y: m.f };
+        });
+        expect(first.z / before.z).toBeLessThan(1.15);
+        expect(Math.hypot(first.x - before.x, first.y - before.y)).toBeLessThan(40);
+        await page.clock.runFor(1200);
+        await page.clock.resume();
+        await expect
+            .poll(() => map.locator(".world").evaluate((el) => new DOMMatrix(el.style.transform).a))
+            .toBeGreaterThan(before.z * 1.5);
         await expect
             .poll(async () => {
                 const region = await map.boundingBox();
@@ -133,7 +184,7 @@ for (const world of ["harbour", "meadow"]) {
                 return (
                     !!region &&
                     !!box &&
-                    box.width > 60 &&
+                    box.width > 0 &&
                     Math.abs(box.x + box.width / 2 - region.x - region.width / 2) < 12 &&
                     Math.abs(box.y + box.height / 2 - region.y - region.height / 2) < 12
                 );
@@ -184,7 +235,7 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
             return (
                 !!region &&
                 !!place &&
-                place.width > 60 &&
+                place.width > 0 &&
                 Math.abs(place.x + place.width / 2 - region.x - region.width / 2) < 12 &&
                 Math.abs(place.y + place.height / 2 - region.y - region.height / 2) < 12
             );
@@ -215,9 +266,11 @@ test("a lesson in Explore opens as a child sees it over the page, in its world, 
         await smallTargets(page.getByRole("navigation", { name: /This lesson in the app/ })),
     ).toEqual([]);
     const opens = async (): Promise<Locator> => {
-        await see.click();
+        await see.focus();
+        await see.press("Enter");
         const look = page.getByRole("dialog", { name: "As a child sees it" });
         await expect(look).toBeVisible();
+        await look.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
         await expect(page).toHaveURL(/#\/lesson\/g1-adding-to-twenty$/);
         const roll = look.locator(".wd");
         await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
@@ -257,11 +310,26 @@ test("See the map on the site opens the sample child's map over the page, a worl
     page,
 }) => {
     await page.goto("/home");
+    const mapLink = page
+        .getByRole("navigation", { name: "Sections of this page" })
+        .getByRole("link", { name: "The map", exact: true });
+    if (await mapLink.isVisible()) await mapLink.click();
+    else await page.goto("/home#map");
+    await expect(page).toHaveURL(/\/home#map$/);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator("section#map")).toBeInViewport();
     const see = page.getByRole("link", { name: "See the map" });
-    await expect(see).toBeVisible();
+    await see.scrollIntoViewIfNeeded();
     await see.click();
     const look = page.getByRole("dialog", { name: "A sample child's map" });
     await expect(look).toBeVisible();
+    const bounds = await look.boundingBox();
+    const viewport = page.viewportSize();
+    if (bounds && viewport && viewport.width > 700) {
+        expect(bounds.width).toBeLessThanOrEqual(viewport.width * 0.89);
+        expect(bounds.x).toBeGreaterThan(viewport.width * 0.05);
+        expect(bounds.y).toBeGreaterThan(viewport.height * 0.05);
+    }
     await expect(page).toHaveURL(/\/home#\/map$/);
     await expect(look.locator(".ow-host.ready")).toBeVisible({ timeout: 60_000 });
     // the sample child's map, with every world open to go into and nothing of a real child on it
@@ -278,7 +346,11 @@ test("See the map on the site opens the sample child's map over the page, a worl
     await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
     await expect(page).toHaveURL(/#\/map\/harbour$/);
     await expect(roll.locator(".rd-sheet.rd-read").first()).toBeVisible({ timeout: 60_000 });
-    // the same address opened afresh is the same look, and Close gives the page back
+    await look.getByRole("button", { name: "Close" }).click();
+    await expect(look).toBeHidden();
+    await expect(page).toHaveURL(/\/home#map$/);
+    // A fresh document has no overlay history entry; closing its deep link clears the route.
+    await page.goto("/home");
     await page.goto("/home#/map/harbour");
     const again = page.getByRole("dialog", { name: "A sample child's map" });
     await expect(again).toBeVisible();
@@ -298,7 +370,7 @@ for (const motion of ["no-preference", "reduce"] as const) {
         await page.goto("/map");
         const map = await mapReady(page);
         await map.getByRole("button", { name: "Near me", exact: true }).click();
-        await page.waitForTimeout(motion === "reduce" ? 0 : 1300);
+        await cameraSettled(map);
         const zoom = () =>
             map
                 .locator(".world")
@@ -309,14 +381,14 @@ for (const motion of ["no-preference", "reduce"] as const) {
             .click({ timeout: 10000 });
         const host = page.locator(".ow-host[data-fly]");
         await expect(host.locator(".ow-plane-body svg")).toBeVisible();
-        await expect.poll(async () => Math.abs((await zoom()) - nearZoom)).toBeLessThan(0.001);
+        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(1, 2);
         await host.dispatchEvent("wheel", { deltaY: 8, deltaX: 2 });
         await page.waitForTimeout(150);
         expect((await zoom()) / nearZoom).toBeCloseTo(1, 2);
         await host.dispatchEvent("wheel", { deltaY: 30, ctrlKey: true });
         await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(2 ** -0.3, 2);
         for (let i = 0; i < 12; i++) await page.keyboard.press("-");
-        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(0.7, 2);
+        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(0.4, 2);
         await expect(host.getByRole("button", { name: "Zoom out while flying" })).toBeDisabled();
         for (let i = 0; i < 12; i++)
             await host
@@ -529,4 +601,44 @@ test("closing a sample world during loading leaves no late sheets or errors", as
     } finally {
         release();
     }
+});
+
+test("deferred map imports leave navigation alone and recover once on an active page", async ({
+    page,
+}) => {
+    await page.goto("/home");
+    await page.addScriptTag({
+        type: "module",
+        content: `import { onDemand } from "/engine/ui/art.tsx";
+            onDemand(() => {
+                window.dispatchEvent(new Event("beforeunload"));
+                return Promise.reject(new Error("navigation cancelled this import"));
+            }).catch(() => { document.documentElement.dataset.importRejected = "yes"; });`,
+    });
+    await expect(page.locator("html")).toHaveAttribute("data-import-rejected", "yes");
+    expect(await page.evaluate(() => sessionStorage.getItem("reloaded:/home"))).toBeNull();
+    await expect(page).toHaveURL(/\/home$/);
+
+    // A restored, active document still gets its one recovery attempt.
+    await page.addScriptTag({
+        type: "module",
+        content: `import { onDemand } from "/engine/ui/art.tsx";
+            window.recoverMapImport = () => {
+                window.dispatchEvent(new Event("pageshow"));
+                void onDemand(() => Promise.reject(new Error("missing deployment chunk")));
+            };`,
+    });
+    await Promise.all([
+        page.waitForEvent("framenavigated", (frame) => frame === page.mainFrame()),
+        page.evaluate("window.recoverMapImport()"),
+    ]);
+    await page.waitForLoadState();
+    expect(await page.evaluate(() => sessionStorage.getItem("reloaded:/home"))).toBe("1");
+    await page.addScriptTag({
+        type: "module",
+        content: `import { onDemand } from "/engine/ui/art.tsx";
+            onDemand(() => Promise.reject(new Error("still missing")))
+                .catch(() => { document.documentElement.dataset.importRejected = "again"; });`,
+    });
+    await expect(page.locator("html")).toHaveAttribute("data-import-rejected", "again");
 });

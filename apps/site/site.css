@@ -32,6 +32,15 @@
     font: 400 var(--t-body) / 1.6 var(--f-read);
 }
 
+@media (min-width: 701px) {
+    .site .ov {
+        inset: 0;
+        width: min(88dvw, 1440px);
+        height: 88dvh;
+        margin: auto;
+    }
+}
+
 .site h1,
 .site h2,
 .site h3 {
@@ -216,10 +225,6 @@
     max-width: 31rem;
     padding: clamp(20px, 2.2vw, 30px);
     background-color: var(--card);
-    background-image:
-        linear-gradient(var(--grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 20px 20px;
     box-shadow:
         0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
         0 10px 26px -12px color-mix(in srgb, var(--ink) 30%, transparent);
