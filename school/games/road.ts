@@ -443,7 +443,7 @@ export const roadGame: ActionGame<RoadState> = {
     levels: ROAD_LEVELS,
     rate: RATE,
     cover: { art: "racecar", params: { vx: 3, vy: -1 } },
-    hint: "Right arrow or space to go faster, left arrow to brake, up and down to change lane",
+    hint: "Hold the road to go faster; drag up or down to change lane. Right-click and hold to brake. Or use space to go, left arrow to brake, and up/down to steer.",
     controls: {
         arrows: { up: "Lane up", down: "Lane down", left: "Brake", right: "Go" },
         go: "Go",

@@ -14,6 +14,7 @@ export type Screen =
     | "print"
     | "account"
     | "letters"
+    | "games"
     | "missing";
 
 const PATHS: Readonly<Record<string, Screen>> = {
@@ -28,6 +29,7 @@ const PATHS: Readonly<Record<string, Screen>> = {
     "/print": "print",
     "/account": "account",
     "/letters": "letters",
+    "/games": "games",
 };
 
 /** A lesson in Explore: `/explore/` and the lesson's id. */

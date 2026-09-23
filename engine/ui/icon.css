@@ -1,0 +1,26 @@
+.control-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 24px;
+}
+svg.control-icon {
+    display: block;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    overflow: visible;
+}
+.game-room button:has(.control-icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.game-room .game-primary .control-icon {
+    filter: brightness(0) invert(1);
+}
+.game-room button.game-icon:disabled {
+    opacity: 0.4;
+    cursor: default;
+}

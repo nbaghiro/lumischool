@@ -177,7 +177,6 @@ export const HOP = {
         "squares a second",
         "a rabbit in the water paddles back without a long wait",
     ),
-    presses: knob(24, 12, 48, 4, "presses", "arrow presses from nought to the longest hop"),
     sweep: knob(
         0.45,
         0.2,
@@ -213,7 +212,7 @@ const SWIMMER = { w: 3, h: 2, surface: 1.5 } as const;
 
 export const perOf = (L: HopLevel): number => (STREAM.x1 - STREAM.x0 - 2) / (L.to - L.from);
 export const xOf = (L: HopLevel, n: number): number => STREAM.x0 + 1 + (n - L.from) * perOf(L);
-export const keyStepOf = (L: HopLevel): number => L.most / HOP.presses.value;
+export const keyStepOf = (L: HopLevel): number => L.tick / 2;
 /** A stone's half width in squares: one, or less where two stones stand close. */
 export function halfOf(L: HopLevel): number {
     const sorted = [...L.stones].sort((a, b) => a - b);
@@ -282,13 +281,13 @@ export interface HopState {
     /** The hop the arrow keys have set, in the line's units, less than nought to the left. */
     aim: number | null;
     keyAt: number;
+    keyHeld: boolean;
     flight: { from: Pt; v: Pt; T: number; t: number; x: number } | null;
     landing: Landing | null;
     timer: number;
     sunk: boolean[];
     depth: number[];
-    trail: Pt[];
-    trails: Pt[][];
+    trail: (Pt & { step: number })[];
     cam: Cam;
     hops: number;
     dips: number;
@@ -318,13 +317,13 @@ export function start(level: number): HopState {
         hand: null,
         aim: null,
         keyAt: -999,
+        keyHeld: false,
         flight: null,
         landing: null,
         timer: 0,
         sunk: L.stones.map(() => false),
         depth: L.stones.map(() => 0),
         trail: [],
-        trails: [],
         cam: { x: 0, y: 0, zoom: 1 },
         hops: 0,
         dips: 0,
@@ -379,7 +378,8 @@ function hopWith(s: HopState, units: number, out: Happening[]): void {
     s.hops++;
     s.pull = null;
     s.grab = null;
-    if (s.trail.length) s.trails = [s.trail, ...s.trails].slice(0, 2);
+    s.aim = null;
+    s.keyHeld = false;
     s.trail = [];
     out.push({ cue: "lift" });
     if (L.sinking.includes(L.stones[s.stone] ?? NaN) && !s.sunk[s.stone]) {
@@ -394,7 +394,13 @@ export function hopBy(s: HopState, units: number): void {
 }
 
 function hands(s: HopState, pad: Pad, out: Happening[]): void {
-    const t = pad.touch;
+    if (s.hand && !pad.touch && !pad.lifted) {
+        s.hand = null;
+        s.grab = null;
+        s.pull = null;
+        if (s.phase === "held") s.phase = "sit";
+    }
+    const t = pad.touch ?? (s.hand ? pad.lifted : null);
     if (t) {
         const began = !s.hand;
         s.hand = { ...t };
@@ -420,7 +426,7 @@ function hands(s: HopState, pad: Pad, out: Happening[]): void {
 }
 
 function keys(s: HopState, pad: Pad, out: Happening[]): void {
-    if (pad.touch || s.phase === "held") return;
+    if (pad.touch || s.phase !== "sit") return;
     const L = s.L,
         by = keyStepOf(L),
         clamp = (v: number) => Math.max(-L.most, Math.min(L.most, v));
@@ -431,8 +437,13 @@ function keys(s: HopState, pad: Pad, out: Happening[]): void {
         s.touched = true;
     }
     const hold = pad.holding.includes("right") ? 1 : pad.holding.includes("left") ? -1 : 0;
-    if (hold && s.steps - s.keyAt > RATE * 0.3)
-        s.aim = clamp((s.aim ?? 0) + hold * HOP.sweep.value * L.most * DT);
+    if (hold) {
+        const ramp = Math.min(1, (s.steps - s.keyAt) / (RATE * 0.2));
+        s.aim = clamp((s.aim ?? 0) + hold * HOP.sweep.value * L.most * DT * ramp);
+    } else if (s.keyHeld && s.aim !== null) {
+        s.aim = clamp(Math.round(s.aim / by) * by);
+    }
+    s.keyHeld = hold !== 0;
     if (
         pad.tapped &&
         s.phase === "sit" &&
@@ -488,6 +499,7 @@ export function step(s: HopState, pad: Pad): Happening[] {
     const out: Happening[] = [],
         L = s.L;
     s.steps++;
+    s.trail = s.trail.filter((p) => s.steps - p.step < RATE * 0.3);
     if (!s.won) {
         hands(s, pad, out);
         keys(s, pad, out);
@@ -500,7 +512,7 @@ export function step(s: HopState, pad: Pad): Happening[] {
             if (!f) break;
             f.t += DT;
             s.at = flightAt(f.from, f.v, HOP.gravity.value, Math.min(f.t, f.T));
-            if (s.steps % 3 === 0) s.trail.push({ ...s.at });
+            if (s.steps % 3 === 0) s.trail.push({ ...s.at, step: s.steps });
             if (f.t < f.T) break;
             s.at = { x: f.x, y: TOP };
             const where = landingAt(L, f.x, standing(s));
@@ -793,8 +805,13 @@ export function frame(s: HopState, rest = false): Frame {
         });
         if (big) marks.push({ kind: "word", x, y: LINE_Y + 1.3, text: written(n), size: 0.9 });
     }
-    for (const tr of s.trails) if (tr.length) marks.push({ kind: "dots", pts: tr, faint: true });
-    if (s.trail.length) marks.push({ kind: "dots", pts: s.trail });
+    if (!rest)
+        for (const p of s.trail)
+            marks.push({
+                kind: "dots",
+                pts: [p],
+                opacity: 0.45 * (1 - (s.steps - p.step) / (RATE * 0.3)),
+            });
     const aimed = s.won
         ? null
         : s.phase === "held" && s.pull && Math.hypot(s.pull.x, s.pull.y) >= HOP.minPull.value
@@ -863,10 +880,16 @@ export const rabbitGame: ActionGame<HopState> = {
     rate: RATE,
     bleed: true,
     touch: true,
+    cancelInput: (s) => {
+        s.hand = null;
+        s.grab = null;
+        s.pull = null;
+        if (s.phase === "held") s.phase = "sit";
+    },
     plays: { activity: "jump.land-on", levels: [0, 1] },
     cover: { art: "rabbits", params: { count: 1, facing: 1 } },
-    hint: "Pull the rabbit back and let go to hop, or set the hop with the arrow keys and press space",
-    controls: {},
+    hint: "Pull the rabbit back and release to hop. Or use Aim left and Aim right to set the hop, then press Hop. The left and right arrow keys also aim; space makes the hop.",
+    controls: { arrows: { left: "Aim left", right: "Aim right" }, go: "Hop" },
     start,
     step,
     frame,

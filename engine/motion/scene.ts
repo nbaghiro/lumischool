@@ -141,7 +141,7 @@ export type Happening =
  * pen's colour and dashed rather than coloured where they are a hint, so no hint is colour alone.
  */
 export type Mark =
-    | { kind: "dots"; pts: Pt[]; faint?: boolean }
+    | { kind: "dots"; pts: Pt[]; faint?: boolean; opacity?: number }
     /**
      * A straight line, or an arc when `bend` lifts its middle by that many squares (a sag when it is
      * less than nought), with a head at `b` when it is an arrow. A rod is drawn heavy and a thin line

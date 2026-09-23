@@ -195,3 +195,53 @@ tests pass; sound opt-in and reduced motion work; leaving or switching a child s
 parent preview records nothing; offline retries do not duplicate summaries; no production import,
 iframe, asset or navigation link reaches scratchpad. Whole-folder deletion still requires the other
 retirement decisions, not just the game player.
+
+## Approved play experience and first implementation
+
+The Games library leads into the app's existing stage layout. Action games have a focused scene;
+turn games keep a paper workspace with their legal-move tray. World locations can provide additional
+entry points later, while Games remains the direct way to find every listed game.
+
+The shared host in `engine/ui/games.tsx` asks its app wrapper to switch page presentation through
+`onPlaying`. It owns the ready/pause dialog, challenge selection, sound and accessibility preferences,
+keyboard focus, browser history and return to the library. Game rules remain in `school/games`.
+Full-bleed framing no longer hides a game's controls. Rowing and Rabbit crossing declare named
+buttons for their existing actions. Keyboard activation of a held-action button advances one stroke
+or adjustment; pointer holds retain their continuous input. Measuring keeps its existing move tray.
+
+The board uses the remaining layout height after navigation, objective and controls. Tests cover
+ready/play/pause, challenge changes, return, browser history, viewport fit and rowing button input
+on desktop, tablet and phone viewport profiles. These browser profiles do not replace physical-device
+playtesting with children.
+
+This is the first shared-layout implementation, not completion of every game's interaction redesign.
+Portrait camera framing still needs authored decisions for wide scenes, so targets are not silently
+cropped to enlarge artwork. In-world gesture demonstrations, redesigned completion moments, more
+contextual controls for the other action games, child-app entry and lesson return paths, and world
+entry transitions remain separate implementation slices. No learning records are written by this host.
+
+The player chrome uses compact icon buttons with accessible names and native hover titles; duplicate
+arrow/action labels are omitted from the pad. Touch targets remain at least 44 pixels. Turn-game move
+trays retain their meaningful choices. The pause panel uses a game-art stamp and the app's paper
+palette, with instructions and accessibility preferences in disclosures. Instructions open on entry
+and collapse when continuing a session. The authored objective remains available in How to play;
+the active challenge and changing game state remain visible during play.
+
+`engine/ui/select.tsx` is the shared native select for games, parent forms, calendar controls and
+letter preferences. Its paper picker is a CSS enhancement, with the native picker retained in browsers
+that do not support customizable selects. Labels, form values, keyboard behaviour and refs retain the
+native select contract. The accessibility lint maps this component to its underlying select element.
+
+Compact game controls use the existing `icon` drawing family through `engine/ui/icon.tsx`, including
+separate undo and restart shapes, playback, direction and launch controls. They do not use font
+characters as icons. The same artwork serves Solid controls and the imperative action pad; controls
+keep their accessible names, hover titles and touch targets. An unavailable undo is visually muted.
+
+The shared action player consumes mouse/touch grabs before the next animation frame, captures one
+primary pointer, and uses its actual release position. Direct-touch and slingshot games retain their
+authored gestures; direction games accept swipes. For action games without those gestures, holding
+the field invokes the primary action; games with a brake also accept right-button holds. The road
+therefore supports acceleration, lane swipes and braking directly on the scene. Keyboard and button
+alternatives remain available. A game can cancel a held gesture through `cancelInput` on capture loss
+or pause; Rabbit crossing implements this without launching. Its trail fades over 0.3 seconds,
+keyboard taps advance half a numbered interval, held aiming eases in, and takeoff clears the old aim.

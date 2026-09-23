@@ -99,6 +99,10 @@ export interface ActionGame<S> extends Base {
     levels: ActionLevel[];
     /** Steps per second; the page's fixed loop runs at this rate. */
     rate: number;
+    commands?: readonly { id: string; label: string; key?: string }[];
+    command?(s: S, id: string): void;
+    checkpoint?(s: S): unknown;
+    restore?(s: S, value: unknown): boolean;
     /** The buttons under the field: what each arrow it uses is called here, and the big buttons. Every one has a key. */
     controls: { arrows?: Partial<Record<Dir, string>>; go?: string; brake?: string };
     start(level: number, seed?: number): S;
@@ -116,13 +120,15 @@ export interface ActionGame<S> extends Base {
      * goes where the finger is) rather than a swipe. The game reads it from the pad's `touch`.
      */
     touch?: true;
+    /** Abandon a held gesture on pause or pointer cancellation, without launching it. */
+    cancelInput?(s: S): void;
     /** The numbers that make it feel the way it does, which the review drawer can turn while it runs. */
     tuning?: Tuning;
     /** Takes the last thing back, where the game allows it, and says whether there was one. */
     back?(s: S): boolean;
     /**
-     * Drawn full-bleed: the field takes the room under the bar, the goal is a thing on the field, and
-     * the buttons beside it are gone, with the keys and the text form still there. See .docs/games.md.
+     * Drawn full-bleed: the field can show extra world around the authored view.
+     * Controls remain available independently of scene framing.
      */
     bleed?: true;
     /** The activity whose versions this game plays, and the level each version opens, for a link that names the activity. */

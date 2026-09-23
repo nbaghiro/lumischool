@@ -42,6 +42,7 @@ function drawMarks(g: SVGElement, marks: Mark[]): void {
                         cy: p.y.toFixed(2),
                         r: 0.13,
                         class: m.faint ? "dot faint" : "dot",
+                        opacity: m.opacity ?? 1,
                     },
                     g,
                 );
@@ -337,6 +338,11 @@ export class Stage {
         this.resize(scene);
         if (this.live()) this.tick.start();
         else this.o.onFrame?.(this.time, 0);
+    }
+
+    /** Replace placeholders when a drawing arrives without restarting the round or its motion. */
+    loaded(art: string): void {
+        for (const h of this.held.values()) if (h.art === art) this.draw(h, h.params);
     }
 
     /** Forget every part and mark, for a new round. */

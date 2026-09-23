@@ -1,6 +1,6 @@
 // The apps' own controls, as one set: each icon is drawn on the same 2-square box with one stroke
-// weight, round ends and a single marker under the pencil, so a row of them reads as one hand. An icon
-// always sits beside its word; the word, not the drawing, names the button. See .docs/shelf.md.
+// weight, round ends and a single marker under the pencil, so a row of them reads as one hand. Each control
+// supplies a visible label or an accessible name and tooltip for compact controls. See .docs/shelf.md.
 import { group, plain, type Ctx } from "../../ink/surface";
 import type { Marker } from "../../paper";
 import { defineDrawing } from "../drawing";
@@ -18,6 +18,16 @@ export const ICONS = [
     "add",
     "help",
     "sound",
+    "undo",
+    "restart",
+    "play",
+    "pause",
+    "stop",
+    "up",
+    "down",
+    "right",
+    "launch",
+    "grab",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -33,6 +43,16 @@ export const ICON_LABEL: Record<IconName, string> = {
     add: "Add",
     help: "Help",
     sound: "Sound",
+    undo: "Undo",
+    restart: "Start again",
+    play: "Play",
+    pause: "Pause",
+    stop: "Brake",
+    up: "Up",
+    down: "Down",
+    right: "Right",
+    launch: "Launch",
+    grab: "Pick up or release",
 };
 
 /**
@@ -79,6 +99,73 @@ function arrow<G>(c: Ctx<G>, from: Pt, to: Pt, head = 7.5): void {
 }
 
 const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
+    undo: (c) => {
+        c.pen.path(c.g, "M8 15H22C37 15 36 33 22 33", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [16, 7],
+                [8, 15],
+                [16, 23],
+            ],
+            "ruler",
+            line(c),
+        );
+    },
+    restart: (c) => {
+        c.pen.path(c.g, "M9 13A13 13 0 1 1 8 27", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [9, 5],
+                [9, 14],
+                [18, 14],
+            ],
+            "ruler",
+            line(c),
+        );
+    },
+    play: (c) => {
+        const d = poly([
+            [12, 7],
+            [33, 20],
+            [12, 33],
+        ]);
+        wash(c, d, "mint");
+        c.pen.path(c.g, d, "ruler", null, line(c));
+    },
+    pause: (c) => {
+        for (const x of [11, 25]) {
+            const d = rounded(x, 7, 5, 26, 1);
+            wash(c, d, "glow");
+            c.pen.path(c.g, d, "ruler", null, line(c));
+        }
+    },
+    stop: (c) => {
+        const d = rounded(9, 9, 22, 22, 2);
+        wash(c, d, "berry");
+        c.pen.path(c.g, d, "ruler", null, line(c));
+    },
+    up: (c) => arrow(c, [20, 33], [20, 7]),
+    down: (c) => arrow(c, [20, 7], [20, 33]),
+    right: (c) => arrow(c, [7, 20], [33, 20]),
+    launch: (c) => {
+        c.pen.path(c.g, "M7 31Q12 7 31 10", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [24, 4],
+                [32, 10],
+                [25, 17],
+            ],
+            "ruler",
+            line(c),
+        );
+    },
+    grab: (c) => {
+        c.pen.path(c.g, "M20 5V21C20 32 31 33 31 23", "ruler", null, line(c));
+        c.pen.path(c.g, rounded(7, 27, 12, 9, 1), "ruler", null, line(c));
+    },
     home: (c) => {
         wash(
             c,
@@ -315,20 +402,11 @@ export const icon = defineDrawing<{ name: IconName; on: boolean }>({
     family: "apps",
     title: "Icons for the apps' controls",
     group: "Marks",
-    about: "Home, journal, map, print, settings, back, sign out, add, help and sound, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. An icon always sits beside its word, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
+    about: "Home, journal, map, print, settings, back, sign out, add, help and sound, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
     params: { name: "home", on: false },
     settings: { name: { kind: "one of", of: ICONS }, on: { kind: "flag" } },
     takes: [
-        { label: "Home", params: { name: "home", on: false } },
-        { label: "Journal", params: { name: "journal", on: false } },
-        { label: "Map", params: { name: "map", on: false } },
-        { label: "Print", params: { name: "print", on: false } },
-        { label: "Settings", params: { name: "settings", on: false } },
-        { label: "Back", params: { name: "back", on: false } },
-        { label: "Sign out", params: { name: "signout", on: false } },
-        { label: "Add", params: { name: "add", on: false } },
-        { label: "Help", params: { name: "help", on: false } },
-        { label: "Sound", params: { name: "sound", on: false } },
+        ...ICONS.map((name) => ({ label: ICON_LABEL[name], params: { name, on: false } })),
         { label: "Journal, the page you are on", params: { name: "journal", on: true } },
     ],
     box: () => ({ w: 2, h: 2 }),

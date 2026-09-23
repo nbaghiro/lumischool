@@ -2147,6 +2147,12 @@ Four builds from one tree, each its own Vite entry, each capped by the phase fie
 Printing is not a build. It is a target: `ink/` paginates, the home app prints, and a job renders the
 same sheets to PDF through a PDF surface.
 
+The shared game player lives in `engine/ui/games.tsx`, with browser adapters in `game-turn.ts` and
+`game-action.ts`. Its declared boundary permits reading `school/games` contracts and catalogue;
+game rules never import the player. App wrappers choose the surrounding page presentation through
+the player's `onPlaying` callback. Turn games retain a paper workspace and action games use a
+focused stage. See [games-migration.md](games-migration.md) for the current migration scope.
+
 ## Guards
 
 Six carried over from galleo, with `check:boundaries` reading `boundaries.ts` rather than a lint

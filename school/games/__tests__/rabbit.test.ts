@@ -359,3 +359,59 @@ test("every drawing the rabbit crossing draws is on the shelf, the stones and th
     for (const id of ["steppingstone", "carrot", "swimmingrabbit", "reeds", "rabbits"])
         assert.ok(seen.has(id), `${id} was drawn`);
 });
+
+test("a jump clears its aim and its short trail fades away after landing", async () => {
+    const R = await import("../rabbit");
+    const s = R.start(0);
+    s.aim = 3;
+    R.hopBy(s, 3);
+    assert.equal(s.aim, null);
+    for (let i = 0; i < 10; i++) R.step(s, emptyPad());
+    assert.ok(s.trail.length > 0);
+    assert.ok(s.trail.length <= 6);
+    await rabbitRest(s);
+    for (let i = 0; i < 20; i++) R.step(s, emptyPad());
+    assert.equal(s.trail.length, 0);
+    assert.equal(R.rabbitGame.frame(s).marks?.filter((m) => m.kind === "dots").length, 0);
+});
+
+test("a quick mouse drag uses the release position and a cancelled grab never jumps", async () => {
+    const R = await import("../rabbit");
+    const s = R.start(0),
+        p = emptyPad();
+    const grab = { x: s.at.x, y: s.at.y - 1.2 };
+    p.touch = grab;
+    R.step(s, p);
+    spent(p);
+    p.touch = null;
+    p.lifted = { x: grab.x - (3 * R.HOP.pull.value) / s.L.most, y: grab.y };
+    R.step(s, p);
+    assert.equal(s.hops, 1);
+    await rabbitRest(s);
+    assert.equal(s.L.stones[s.stone], 3);
+    const q = emptyPad();
+    q.touch = { x: s.at.x, y: s.at.y - 1.2 };
+    R.step(s, q);
+    assert.equal(s.phase, "held");
+    R.rabbitGame.cancelInput?.(s);
+    assert.equal(s.phase, "sit");
+    assert.equal(s.hops, 1);
+});
+
+test("held arrow aiming starts smoothly and ignores arrows while airborne", async () => {
+    const R = await import("../rabbit");
+    const s = R.start(0),
+        p = emptyPad();
+    p.pressed = ["right"];
+    p.holding = ["right"];
+    R.step(s, p);
+    spent(p);
+    const initial = s.aim ?? 0;
+    R.step(s, p);
+    assert.ok((s.aim ?? 0) > initial);
+    assert.ok((s.aim ?? 0) - initial < R.keyStepOf(s.L));
+    R.hopBy(s, 3);
+    p.pressed = ["right"];
+    R.step(s, p);
+    assert.equal(s.aim, null);
+});

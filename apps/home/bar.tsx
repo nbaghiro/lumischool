@@ -49,6 +49,7 @@ const PLACES: readonly { href: string; long: string; short: string; at: (p: stri
             at: (p) => p === "/explore" || p.startsWith("/explore/"),
         },
         { href: "/map", long: "Map", short: "Map", at: (p) => p === "/map" },
+        { href: "/games", long: "Games", short: "Games", at: (p) => p === "/games" },
         { href: "/calendar", long: "Calendar", short: "Calendar", at: (p) => p === "/calendar" },
         { href: "/plan", long: "Change the plan", short: "Plan", at: (p) => p === "/plan" },
     ];

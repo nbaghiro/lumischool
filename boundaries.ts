@@ -112,6 +112,7 @@ export const MODULES: Record<string, Module> = {
         at: "engine/ui",
         phase: "run",
         reach: [
+            "games",
             "paper",
             "ink",
             "parts",
