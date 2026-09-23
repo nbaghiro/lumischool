@@ -168,3 +168,38 @@ test("navigation bypasses a slow background read; abandoned paper is disposed an
     (await retry)?.dispose();
     shelf.dispose();
 });
+
+test("two readers cannot claim the same pending prepared sheet", async () => {
+    const shelf = preparedPaper<Fake>();
+    const d = drawer();
+    const prepared = shelf.read("lesson", () => d.draw("first"));
+    await new Promise((r) => setTimeout(r, 5));
+    const first = shelf.read("lesson", () => d.draw("unused"), true);
+    const second = shelf.read("lesson", () => d.draw("second"), true);
+    assert.equal(first, prepared);
+    assert.notEqual(first, second);
+    await new Promise((r) => setTimeout(r, 5));
+    await d.land("first");
+    await d.land("second");
+    const a = await first;
+    const b = await second;
+    assert.ok(a && b);
+    assert.notEqual(a, b);
+    shelf.dispose();
+    a.dispose();
+    assert.equal(b.gone, false, "closing one reader cannot destroy another reader's paper");
+    b.dispose();
+});
+
+test("disposing preparation releases both claimed pending draws when they arrive late", async () => {
+    const shelf = preparedPaper<Fake>();
+    const d = drawer();
+    const a = shelf.read("same", () => d.draw("a"), true);
+    const b = shelf.read("same", () => d.draw("b"), true);
+    await new Promise((r) => setTimeout(r, 5));
+    shelf.dispose();
+    assert.deepEqual(await Promise.all([a, b]), [null, null]);
+    await d.land("a");
+    await d.land("b");
+    assert.ok(d.made.every((p) => p.gone));
+});

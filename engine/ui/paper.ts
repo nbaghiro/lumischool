@@ -127,17 +127,19 @@ export function preparedPaper<P extends { dispose(): void }>(
         started: boolean;
         paper?: P;
     };
-    const jobs = new Map<string, Job>();
+    const jobs = new Set<Job>();
+    const available = new Map<string, Job>();
     let running = 0;
     let disposed = false;
     const drop = (job: Job): void => {
-        jobs.delete(job.key);
+        jobs.delete(job);
+        if (available.get(job.key) === job) available.delete(job.key);
         job.paper?.dispose();
         job.resolve(null);
     };
     const pump = (): void => {
         if (running >= 2 || disposed) return;
-        const pending = [...jobs.values()].filter((j) => !j.started);
+        const pending = [...jobs].filter((j) => !j.started);
         const job = pending.find((j) => j.take) ?? (running === 0 ? pending[0] : undefined);
         if (!job) return;
         job.started = true;
@@ -145,16 +147,19 @@ export function preparedPaper<P extends { dispose(): void }>(
         void (async () => {
             // Let input and the camera paint between synchronous sheet renders.
             await new Promise((done) => setTimeout(done, 0));
-            if (disposed || jobs.get(job.key) !== job) return;
+            if (disposed || !jobs.has(job)) return;
             const paper = await job.draw().catch(() => null);
-            if (disposed || jobs.get(job.key) !== job) {
+            if (disposed || !jobs.has(job)) {
                 paper?.dispose();
                 return;
             }
             if (paper) job.paper = paper;
             job.resolve(paper);
-            if (job.take || !paper) jobs.delete(job.key);
-            const ready = [...jobs.values()].filter((j) => j.paper && !j.take);
+            if (job.take || !paper) {
+                jobs.delete(job);
+                if (available.get(job.key) === job) available.delete(job.key);
+            }
+            const ready = [...jobs].filter((j) => j.paper && !j.take);
             while (ready.length > limit) {
                 const old = ready.shift();
                 if (old) drop(old);
@@ -168,29 +173,31 @@ export function preparedPaper<P extends { dispose(): void }>(
     return {
         read(key, draw, take = false) {
             if (disposed) return Promise.resolve(null);
-            let job = jobs.get(key);
+            let job = available.get(key);
             if (!job) {
                 let resolve: (p: P | null) => void = () => {};
                 const promise = new Promise<P | null>((done) => {
                     resolve = done;
                 });
                 job = { key, draw, promise, resolve, take, started: false };
-                jobs.set(key, job);
+                jobs.add(job);
+                available.set(key, job);
             }
             if (take) {
                 job.take = true;
-                if (job.paper) jobs.delete(key);
+                available.delete(key);
+                if (job.paper) jobs.delete(job);
             }
             pump();
             return job.promise;
         },
         keep(keys) {
-            for (const job of jobs.values())
+            for (const job of jobs)
                 if (!job.take && !job.paper && !keys.includes(job.key)) drop(job);
         },
         dispose() {
             disposed = true;
-            for (const job of jobs.values()) drop(job);
+            for (const job of jobs) drop(job);
         },
     };
 }
