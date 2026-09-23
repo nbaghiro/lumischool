@@ -33,6 +33,13 @@ steers, and reduced motion advances only when a control is used. Flight progress
 The production controls and drawing layer live in `engine/ui/flight.ts` and `flight.css`, using
 the existing `engine/motion/plane.ts` physics. The scratchpad now imports that implementation.
 
+Flight zoom stays between 70 and 140 percent of the near-place scale, using the same camera
+spring. Mouse wheel, trackpad or touchscreen pinch, plus/minus keys and compact zoom buttons
+change it without interrupting steering. Ordinary trackpad scrolling does not change flight zoom;
+flight shares the regular map's wheel classifier and also accepts native browser pinch events. The scope control reads the camera scale, treating up to 1.4 times the full-country
+fit as an overview; it offers Near me there. World names remain on the map itself without
+a floating name chip.
+
 ## Preparing lessons before arrival
 
 The marketing map overlay opens near the sample child's current world. Its world, day and lessons

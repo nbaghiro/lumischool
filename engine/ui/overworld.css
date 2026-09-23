@@ -60,22 +60,6 @@
     z-index: 6;
     margin: 0;
 }
-.ow-where {
-    top: 12px;
-    left: 12px;
-    max-width: calc(100% - 24px);
-    padding: 9px 16px;
-    border-radius: 12px;
-    font: 700 16px var(--f-read);
-    color: var(--ink);
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow:
-        0 0 0 1.5px var(--grid),
-        0 8px 18px -14px rgba(27, 37, 64, 0.4);
-}
-.ow-where:empty {
-    display: none;
-}
 .ow-home {
     left: 12px;
     bottom: 12px;
@@ -153,11 +137,6 @@
 }
 
 @media (max-width: 700px) {
-    .ow-where {
-        top: auto;
-        bottom: 70px;
-        max-width: calc(100% - 16px);
-    }
     .ow-home {
         left: 8px;
         bottom: 8px;

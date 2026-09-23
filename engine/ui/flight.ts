@@ -4,7 +4,16 @@ import type { Tokens } from "../paper";
 import { advance, loop, ticker } from "../motion/loop";
 import { down, emptyPad, keyDir, spent, stickDir, up, type Dir } from "../motion/pad";
 import { springAt, type Spring } from "../motion/spring";
-import { hash, rand, type Camera, type Pt, type Overworld } from "../space";
+import {
+    clamp,
+    readWheel,
+    wheelFactor,
+    hash,
+    rand,
+    type Camera,
+    type Pt,
+    type Overworld,
+} from "../space";
 import type { CanvasView } from "./view";
 import {
     approach,
@@ -96,6 +105,11 @@ export function fly(o: FlyOptions): Flying {
     let on = true,
         cam: { c: Camera; v: Camera } = { c: { ...o.view.cam }, v: { x: 0, y: 0, z: 0 } };
     const z0 = o.view.cam.z;
+    let zoom = 1;
+    function zoomBy(factor: number): void {
+        zoom = clamp(zoom * factor, 0.7, 1.4);
+        if (o.still) draw(0);
+    }
     let landing: Landing | null = null;
     let parked = 0;
     let landingNode: number | null = null;
@@ -239,7 +253,7 @@ export function fly(o: FlyOptions): Flying {
     hud.setAttribute("role", "group");
     hud.setAttribute(
         "aria-label",
-        "Flying the paper plane. Left and right arrows steer, up and down change speed, L lands at the nearest world, Escape stops.",
+        "Flying the paper plane. Left and right arrows steer, up and down change speed, plus and minus zoom, L lands at the nearest world, Escape stops.",
     );
     const words = document.createElement("p");
     words.className = "sr ow-flywords";
@@ -255,6 +269,10 @@ export function fly(o: FlyOptions): Flying {
     const stopBtn = button("Stop", "stop", "Stop flying and land at the nearest world");
     const left = button("↰", "steer", "Steer left"),
         right = button("↱", "steer", "Steer right");
+    const zoomOut = button("−", "zoom", "Zoom out while flying"),
+        zoomIn = button("+", "zoom", "Zoom in while flying");
+    zoomOut.addEventListener("click", () => zoomBy(1 / 1.15));
+    zoomIn.addEventListener("click", () => zoomBy(1.15));
     const lever = div("ow-lever");
     lever.setAttribute("role", "radiogroup");
     lever.setAttribute("aria-label", "Speed");
@@ -273,7 +291,7 @@ export function fly(o: FlyOptions): Flying {
     landingHint.id = `flight-landing-${o.from}`;
     hud.setAttribute("aria-describedby", landingHint.id);
     stopBtn.setAttribute("aria-keyshortcuts", "L Escape");
-    hud.append(stopBtn, left, lever, right, landingHint);
+    hud.append(stopBtn, left, lever, right, zoomOut, zoomIn, landingHint);
     o.hud.append(hud, words);
     const touch = div("hud ow-flytouch");
     o.hud.append(touch);
@@ -281,15 +299,26 @@ export function fly(o: FlyOptions): Flying {
     for (const layer of [hud, touch]) {
         for (const event of ["pointerdown", "pointermove", "pointerup", "pointercancel"])
             layer.addEventListener(event, blockPointer);
-        layer.addEventListener(
-            "wheel",
-            (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            },
-            { passive: false },
-        );
     }
+    let trackpadAt = -Infinity;
+    const wheel = (e: WheelEvent): void => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const read = readWheel(e, trackpadAt, e.timeStamp);
+        trackpadAt = read.trackpadAt;
+        if (read.zoom) zoomBy(wheelFactor(e));
+    };
+    let gestureScale = 1;
+    const gesture = (e: Event): void => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (!("scale" in e) || typeof e.scale !== "number" || e.scale <= 0) return;
+        if (e.type === "gesturechange") zoomBy(e.scale / gestureScale);
+        gestureScale = e.scale;
+    };
+    o.hud.addEventListener("wheel", wheel, { capture: true, passive: false });
+    for (const event of ["gesturestart", "gesturechange", "gestureend"])
+        o.hud.addEventListener(event, gesture, { capture: true, passive: false });
     o.hud.dataset.fly = "on";
     hud.focus({ preventScroll: true });
     const keyup = (e: KeyboardEvent) => {
@@ -324,11 +353,24 @@ export function fly(o: FlyOptions): Flying {
     hold(right, "right");
     stopBtn.addEventListener("click", requestLanding);
     let drag: { id: number; x: number; d: Dir | null } | null = null;
+    const fingers = new Map<number, Pt>();
+    const span = (): number => {
+        const [a, b] = [...fingers.values()];
+        return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
+    };
     touch.addEventListener("pointerdown", (e) => {
+        fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (drag?.d) up(pad, drag.d);
         drag = { id: e.pointerId, x: e.clientX, d: null };
         touch.setPointerCapture(e.pointerId);
     });
     touch.addEventListener("pointermove", (e) => {
+        const before = span();
+        if (fingers.has(e.pointerId)) fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (fingers.size > 1) {
+            if (before > 0) zoomBy(span() / before);
+            return;
+        }
         if (!drag || drag.id !== e.pointerId) return;
         const d: Dir | null =
             e.clientX - drag.x > 24 ? "right" : e.clientX - drag.x < -24 ? "left" : null;
@@ -339,10 +381,10 @@ export function fly(o: FlyOptions): Flying {
         }
     });
     const dragEnd = (e: PointerEvent) => {
-        if (drag?.id === e.pointerId) {
-            if (drag.d) up(pad, drag.d);
-            drag = null;
-        }
+        fingers.delete(e.pointerId);
+        if (drag?.d) up(pad, drag.d);
+        const remaining = [...fingers.entries()][0];
+        drag = remaining ? { id: remaining[0], x: remaining[1].x, d: null } : null;
     };
     touch.addEventListener("pointerup", dragEnd);
     touch.addEventListener("pointercancel", dragEnd);
@@ -508,7 +550,7 @@ export function fly(o: FlyOptions): Flying {
         const want: Camera = {
             x: plane.x + plane.vx * 0.8,
             y: plane.y + plane.vy * 0.8,
-            z: o.zoom?.() ?? z0,
+            z: (o.zoom?.() ?? z0) * zoom,
         };
         if (o.still) cam = { c: want, v: { x: 0, y: 0, z: 0 } };
         else {
@@ -518,6 +560,8 @@ export function fly(o: FlyOptions): Flying {
             cam = { c: { x: mx.x, y: my.x, z: mz.x }, v: { x: mx.v, y: my.v, z: mz.v } };
         }
         if (on) o.view.set(cam.c);
+        zoomOut.disabled = zoom <= 0.7;
+        zoomIn.disabled = zoom >= 1.4;
         notchBtns.forEach((b, i) => b.setAttribute("aria-checked", String(i === plane.notch)));
         const now = performance.now();
         if (now - lastWords > 7000 && plane.phase === "air") {
@@ -603,6 +647,9 @@ export function fly(o: FlyOptions): Flying {
         delete o.hud.dataset.fly;
         delete o.hud.dataset.plane;
         o.hud.removeEventListener("keyup", keyup);
+        o.hud.removeEventListener("wheel", wheel, true);
+        for (const event of ["gesturestart", "gesturechange", "gestureend"])
+            o.hud.removeEventListener(event, gesture, true);
         window.removeEventListener("blur", release);
         o.ended();
     }
@@ -618,6 +665,14 @@ export function fly(o: FlyOptions): Flying {
 
     return {
         key(e: KeyboardEvent): boolean {
+            if (e.key === "0" || e.key === "Home") {
+                if (e.type === "keydown") zoomBy(1 / zoom);
+                return true;
+            }
+            if (["+", "=", "-", "_"].includes(e.key)) {
+                if (e.type === "keydown") zoomBy(e.key === "-" || e.key === "_" ? 1 / 1.15 : 1.15);
+                return true;
+            }
             const enter = e.key === "Enter" && !(e.target instanceof HTMLButtonElement);
             if (e.key === "Escape" || e.key.toLowerCase() === "l" || enter) {
                 e.stopPropagation();

@@ -111,8 +111,7 @@
         0 0 24px #fff;
 }
 
-.ow-host[data-fly] .ow-home,
-.ow-host[data-fly] .ow-where {
+.ow-host[data-fly] .ow-home {
     display: none;
 }
 .ow-host .ow-flytouch {
@@ -179,18 +178,19 @@
 .ow-fly {
     animation: flight-plane-in 300ms ease-out both;
 }
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     .ow-host .ow-flyhud {
         display: grid;
-        grid-template-columns: 44px 1fr 44px;
+        grid-template-columns: 44px 44px 1fr 44px 44px;
         gap: 2px;
         bottom: 8px;
     }
     .ow-flyhud .stop {
-        grid-column: 2;
+        grid-column: 3;
         grid-row: 2;
     }
-    .ow-flyhud .steer {
+    .ow-flyhud .steer,
+    .ow-flyhud .zoom {
         grid-row: 2;
     }
     .ow-flyhud .ow-lever {

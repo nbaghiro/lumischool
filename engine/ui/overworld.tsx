@@ -297,9 +297,7 @@ export function Overworld(props: {
         props.onView({
             place: (i) => placeRect(i),
             controls: () =>
-                [...h.querySelectorAll(".ow-home, .ow-where, .ow-card")].map((e) =>
-                    e.getBoundingClientRect(),
-                ),
+                [...h.querySelectorAll(".ow-home, .ow-card")].map((e) => e.getBoundingClientRect()),
         });
     }
 
@@ -397,7 +395,7 @@ export function Overworld(props: {
     function onFrame(cam: Camera): void {
         if (!view) return;
         moved(cam);
-        if (!view.flying) setAt(cam.z <= everything(view).z * 1.15 ? "all" : "frame");
+        setAt(cam.z <= everything(view).z * 1.4 ? "all" : "frame");
         const s = view.world.style;
         s.setProperty("--mz", String(cam.z));
         s.setProperty("--miz", String(1 / cam.z));
@@ -927,10 +925,6 @@ export function Overworld(props: {
         view = undefined;
     });
 
-    const where = (): string => {
-        const p = place(focus());
-        return p?.shown ? nameOf(props.view, focus()) : "";
-    };
     return (
         <section
             ref={(el) => {
@@ -944,13 +938,6 @@ export function Overworld(props: {
         >
             <Show when={hud()}>
                 <h1 class="sr">{props.title}</h1>
-                {/* A child's map says where they are in the guide's line and in the place's own
-                    lettering, so the chip is only for a viewer reading the whole country (18 September 2026). */}
-                <Show when={grown() && chosen()}>
-                    <p class="hud ow-where" aria-hidden="true">
-                        {where()}
-                    </p>
-                </Show>
                 <div class="hud ow-home">
                     <Show when={props.view.limits.fly && props.view.landings.length > 0 && ready()}>
                         <button

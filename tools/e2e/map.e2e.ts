@@ -84,14 +84,14 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     const scale = () =>
         map.locator(".world").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
     const openingScale = await scale();
-    await expect(map.locator(".ow-scope")).toHaveText("Every world");
-    await map.locator(".ow-scope").click();
-    await expect.poll(async () => openingScale / (await scale())).toBeCloseTo(1.3, 1);
     await expect(map.locator(".ow-scope")).toHaveText("Near me");
+    await map.locator(".ow-scope").click();
+    await expect.poll(scale).toBeGreaterThan(openingScale * 1.5);
 
-    // a tap chooses a place, and the chip names it
+    // A tap chooses a place without adding a floating name chip.
     await map.locator('.ow-node[aria-label*="harbour" i]').first().dispatchEvent("click");
-    await expect(map.locator(".ow-where")).toHaveText("The harbour", { timeout: 20_000 });
+    await expect(map.locator('.ow-node[tabindex="0"][aria-label*="harbour" i]')).toHaveCount(1);
+    await expect(map.locator(".ow-where")).toHaveCount(0);
     // a drag pans, and the wheel zooms
     const box = await map.boundingBox();
     if (!box) throw new Error("the map has no box");
@@ -297,7 +297,6 @@ for (const motion of ["no-preference", "reduce"] as const) {
         await signInAs(page);
         await page.goto("/map");
         const map = await mapReady(page);
-        await map.getByRole("button", { name: "Every world", exact: true }).click();
         await map.getByRole("button", { name: "Near me", exact: true }).click();
         await page.waitForTimeout(motion === "reduce" ? 0 : 1300);
         const zoom = () =>
@@ -311,6 +310,22 @@ for (const motion of ["no-preference", "reduce"] as const) {
         const host = page.locator(".ow-host[data-fly]");
         await expect(host.locator(".ow-plane-body svg")).toBeVisible();
         await expect.poll(async () => Math.abs((await zoom()) - nearZoom)).toBeLessThan(0.001);
+        await host.dispatchEvent("wheel", { deltaY: 8, deltaX: 2 });
+        await page.waitForTimeout(150);
+        expect((await zoom()) / nearZoom).toBeCloseTo(1, 2);
+        await host.dispatchEvent("wheel", { deltaY: 30, ctrlKey: true });
+        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(2 ** -0.3, 2);
+        for (let i = 0; i < 12; i++) await page.keyboard.press("-");
+        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(0.7, 2);
+        await expect(host.getByRole("button", { name: "Zoom out while flying" })).toBeDisabled();
+        for (let i = 0; i < 12; i++)
+            await host
+                .locator(".ow-flytouch")
+                .dispatchEvent("wheel", { deltaY: -100, ctrlKey: true });
+        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(1.4, 2);
+        await expect(host.getByRole("button", { name: "Zoom in while flying" })).toBeDisabled();
+        await host.getByRole("button", { name: "Zoom out while flying" }).click();
+        await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(1.4 / 1.15, 2);
         const controls = await host.locator(".ow-flyhud").boundingBox();
         expect(controls?.height).toBeLessThan(100);
         expect(controls?.width).toBeLessThan(page.viewportSize()?.width ?? 0);
@@ -379,6 +394,7 @@ test("the map scope switch returns to the selected world without changing button
     const map = look.locator(".ow-host.ready");
     await expect(map).toBeVisible({ timeout: 60_000 });
     const harbour = map.locator('.ow-node[aria-label*="harbour" i]').first();
+    await map.getByRole("button", { name: "Every world", exact: true }).click();
     await harbour.dispatchEvent("click");
     const scope = map.locator(".ow-scope");
     await expect(scope).toHaveText("Every world");
