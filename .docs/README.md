@@ -4,6 +4,8 @@ One current-state document per domain. Start here to find where something lives,
 
 | Document | Covers |
 |---|---|
+| [game-variations-plan.md](game-variations-plan.md) | Generated game challenges: seeds/configuration, solvability gates, difficulty, child records, progression, execution phases and parallel ownership |
+| [painting-integration-plan.md](painting-integration-plan.md) | Approved painting V2 into a shared production workspace, lessons, private picture wall and Painter's Hut; saving, acceptance gates and parallel ownership |
 | [map-loading-plan.md](map-loading-plan.md) | Authorized shared map/world/lesson implementation specification and execution record: code baseline, product priorities, resource ownership, selective loading, renderer experiment, ordered work packages, state protection, visual quality, tests and release gates |
 | [game-engine-direction.md](game-engine-direction.md) | Proposed engine growth before migration: shared sessions, interacting objects, objectives, construction, checkpoints and proving games |
 | [games-migration.md](games-migration.md) | Current 17-game/83-level inventory, reusable rules and physics, remaining prototype player/audio, recording gaps and proposed app integration slices |
