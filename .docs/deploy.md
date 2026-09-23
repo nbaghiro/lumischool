@@ -1,6 +1,65 @@
 # Deploy
 
-Status: deployment pending; repository readiness checked on 22 September 2026. No Render service exists yet. The Render project and Neon project with its production branch exist; database schema state has not been verified by SQL. This document records the deployment recipe and the original implementation plan.
+Status: production Neon database migrated and verified on 23 September 2026. Render application deployment is a separate step. The recipe below includes the original deployment planning notes.
+
+## Remaining launch steps (23 September 2026)
+
+- Neon is ready. GitHub `main` exists; the remote head checked was `be6a47f`.
+- Production has only `0000_initial`. The new `0001_weekly_mail` migration is pending and will run
+  during the next Render build. Weekly delivery remains off until a scheduler and the optional mail
+  environment settings are configured; see [weekly-letter.md](weekly-letter.md).
+- Render's `lumischool` project (`prj-daojrs8ae00c73cqdpug`) and `Production` environment
+  (`evm-daojrs8ae00c73cqdpv0`) exist, but contain no service.
+- The root `render.yaml` now explicitly names the GitHub repository and uses
+  `autoDeployTrigger: commit` for `main`. Render's validator returned `valid: true`, with one planned
+  service. Publish this change before connecting the Blueprint. The current checkout also contains
+  ongoing child-login changes; settle and validate the release commit before deploying it.
+- Confirm `lumischool.ai` as the primary domain and configure a verified Resend sending domain,
+  `RESEND_API_KEY` and `RESEND_FROM`. The production server requires these email values to start.
+  Keep the API key in `.env.production.local` or Render's secret environment configuration, never Git.
+- Create the web service in the existing Production environment, in Ohio on Starter, from the
+  connected GitHub repository. Use the commands and environment configuration in `render.yaml`.
+  The direct owner and pooled app database URLs are already saved privately. Keep the generated
+  `AUTH_PEPPER` stable. Start with the assigned HTTPS Render hostname as `APP_ORIGIN`.
+- For Blueprint management, connect the repository through New > Blueprint and leave Auto Sync on.
+  Service auto-deploy on commits and Blueprint Auto Sync are separate settings; both should be on.
+- Wait for a successful deployment and `/api/health`, then register the custom domain on Render.
+  Squarespace currently hosts DNS: the apex has four Squarespace A records and `www` points to
+  `ext-sq.squarespace.com`. Replace those web records after the service is healthy:
+
+  | Host | Type | New value |
+  |---|---|---|
+  | `@` | `A` | `216.24.57.1` |
+  | `www` | `CNAME` | The hostname assigned to the Render service, without `https://` |
+
+  No apex AAAA record was returned during the check. Preserve email MX/TXT records and add the exact
+  Resend verification records supplied for the sending domain. Registering the apex on Render also
+  configures the www redirect. See [Render DNS](https://render.com/docs/configure-other-dns) and
+  [custom domains](https://render.com/docs/custom-domains).
+- Verify DNS and TLS in Render, set `APP_ORIGIN=https://lumischool.ai` once the domain is confirmed and
+  routed, then verify homepage, health, real signup/email, child-view access and production dev-route
+  rejection. An email delivery check needs the intended recipient address.
+
+No Render service, DNS record or email provider configuration was changed during this readiness check.
+
+## Production database verification
+
+Project `winter-glitter-88385847`, branch `production` (`br-red-night-b4apoq97`), database `neondb`,
+Postgres 18.6. The database was empty before applying `0000_initial`. The restricted `lumischool_app`
+login was provisioned by SQL with a generated password, then the standard migration runner applied
+the baseline. A second run was a no-op, and the ledger hash matched the SQL file:
+`83283920566b5f54f4f8e769918eb24e33df4743cd3c0815ef7ea15aab0504f4`.
+
+Verified directly: the owner has `BYPASSRLS`; the app role has no superuser, bypass, role-creation or
+database-creation privileges; all seven tables belong to the owner and force RLS. The app connects
+through the pooled endpoint. Transactional family creation, cross-family read/write denial, scope
+cleanup, auth functions and append-only grants passed. Verification writes were rolled back and all
+seven application tables remain empty.
+
+The direct owner and pooled app connection strings are in the ignored, owner-readable-only
+`.env.production.local`. Configure Render's `DATABASE_URL` and `APP_DATABASE_URL` from those values;
+this database migration did not configure Render secrets or deploy the application. The baseline is
+now deployed and immutable; every subsequent change must be a new forward migration.
 
 ## Current repository readiness
 
@@ -9,10 +68,10 @@ Render port handling and configurable client-address header are implemented. Dat
 commit sequence includes these implementations. Historical implementation steps below describe
 the original plan, not missing code.
 
-The root `render.yaml` and cloud deployment remain pending. The draft below includes `RESEND_FROM`,
-which production startup requires. Neon SQL role attributes and schema state still need verification;
-API metadata alone does not prove an empty database. Render must use Ohio beside the existing Neon
-project. The first Git push, cloud setup, public origin and verified email sender remain deployment
+The root `render.yaml` is present and validates successfully; cloud deployment remains pending. It includes `RESEND_FROM`,
+which production startup requires. Neon SQL role attributes and the deployed baseline were verified
+as recorded above. Render must use Ohio beside the existing Neon project. Publishing the release,
+cloud setup, public origin and verified email sender remain deployment
 steps.
 
 
@@ -52,10 +111,10 @@ Read on 21 September 2026 from its repository and its live services.
 ## What already exists
 
 - Render: `render whoami` answers Naib Baghirov, in the one workspace `Naib's workspace` (`tea-d9an6ofavr4c73alddjg`), which is where galleo deploys. A project `lumischool` (`prj-daojrs8ae00c73cqdpug`) with one environment `Production` (`evm-daojrs8ae00c73cqdpv0`) was created on 21 September 2026 and holds no service, no environment group and no database. `render services` lists exactly one service across the whole workspace, `galleo` (`srv-d9ao36t8nd3s739f1bug`), so nothing of lumischool's runs yet. The workspace also holds an empty project `FlowMaestro`, which is nothing to do with this.
-- What the Render CLI at 2.21 can and cannot do. It can read: `whoami`, `workspaces`, `projects`, `environments`, `services`, `deploys`, `logs`, and `blueprints validate`, which checks a `render.yaml` against the API without writing anything. It has no command that creates a service, and `blueprints` has `validate` as its only subcommand, so applying a Blueprint is dashboard work whatever the file says. It can also create deploys, jobs and one-off restarts on a service that already exists, which is not needed here. A newer CLI, 2.28.0, exists and the installed one says so on every run; it was not upgraded, and nothing in this document needs it.
+- Render CLI 2.21.0 exposes `services create` and `services update`, alongside reads, deploys and Blueprint validation. The `blueprints` command only validates files; initial Blueprint connection uses the dashboard.
 - Neon: `neonctl me` answers the same account, on the `free` plan, in one organization, `Galleo` (`org-square-breeze-14805789`). It holds two projects, `galleo` (`muddy-mountain-43298094`) and `lumischool` (`winter-glitter-88385847`). The lumischool project was made in the console on 22 September 2026 and is read out in full in the Neon section below. The installed CLI at 2.31.1 cannot pin a Postgres major on `projects create`, which is why the console made the project and why its major is 18 rather than the 17 the draft asked for; a newer CLI can, and the section on it comes after the Neon steps.
 - One read was refused. `neonctl connection-string` asked to sign in again in a browser, on scopes the cached credentials do not carry, and timed out after sixty seconds; it was not completed, so no connection string was read and the role-attribute query in step 5 has not been run. Every other read, `me`, `orgs`, `projects`, `branches`, `roles`, `databases` and the endpoints API, answered from the cached credentials. The owner will meet the same browser prompt once, on whichever command first needs the wider scope.
-- Git: the remote is `git@github.com:nbaghiro/lumischool.git`, and `main` has no commit. Render reads the Blueprint from the repository, so the first commit comes before anything on Render.
+- Git: the remote is `git@github.com:nbaghiro/lumischool.git`; `main` is published. Push the final release and blueprint changes before deployment.
 
 ## What the code needs first
 
@@ -85,7 +144,7 @@ In the order that unblocks the build. Each names where; none is the code.
 
 ## Neon, step by step
 
-Every command that creates or changes something is the owner's to run. Steps 1 to 3 are done, and the ids are written out rather than left as placeholders: the organization is `org-square-breeze-14805789` and the project is `winter-glitter-88385847`.
+Steps 1 to 6 are complete, with the production verification above, and the ids are written out rather than left as placeholders: the organization is `org-square-breeze-14805789` and the project is `winter-glitter-88385847`.
 
 1. Confirm the organization and what is in it, read-only:
 
@@ -124,7 +183,7 @@ neonctl psql --project-id winter-glitter-88385847 --database-name neondb -- -v O
 
 Never run `local-roles.sql` against Neon: it sets the password to `lumischool_app`.
 
-Forgetting this step does not break the database, and that is worth knowing rather than relying on. `0000_initial.sql` creates `lumischool_app` itself when it is absent, by SQL, as `NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE`, so the grants always have a role to name. A role made that way has the right attributes but cannot connect, and the server would fail to start on `APP_DATABASE_URL`. The repair is one statement, `ALTER ROLE lumischool_app LOGIN PASSWORD '<the hex>';`, run the same way. Doing step 4 first is still the order to follow, because then the closing block of the migration checks the role the server will actually use.
+Provision the app role before running migrations. The baseline grants its privileges but does not create roles or set environment-specific passwords.
 
 5. Apply the migrations from the laptop against the owner's direct string, so the schema and the grants exist before Render starts the server and the build's `db:migrate` finds nothing pending:
 
@@ -135,15 +194,13 @@ DATABASE_URL='<that string>' npm run db:migrate
 
 `connection-string` needs a wider scope than the reads above and sends you to a browser to sign in again, once, before it answers.
 
-The run ends with every migration in the tree applied, four of them unless decision 15 has folded them into one. If the closing check of `0000_initial.sql` raises about `lumischool_app`, the role was made the wrong way: drop it and redo step 4. Then confirm the attributes with one read-only query, which settles db.md's open decision for this project:
+The run applies the single baseline. If the role invariant fails, stop and inspect the role configuration before retrying. Confirm attributes with a read-only query:
 
 ```
 neonctl psql --project-id winter-glitter-88385847 --database-name neondb -- -c "select rolname, rolsuper, rolbypassrls, rolcreaterole from pg_roles where rolname in ('neondb_owner','lumischool_app','neon_superuser') order by 1;"
 ```
 
-Expect `neondb_owner` with `rolbypassrls` and `rolcreaterole` true and `lumischool_app` with both false. This query has not been run against the project, because `connection-string` asked to sign in again and `neonctl psql` needs the same scope, so db.md's open decision is still open and this is the one read that closes it. Run it before the migration as well as after, since a `rolbypassrls` of false on the owner is cheapest to find on an empty project, where the answer is to make the project again rather than to unpick a schema. If the owner shows `rolbypassrls` false, stop: every table is `FORCE ROW LEVEL SECURITY`, which subjects the table owner to the policies too, and `content` has no insert policy that a null `family_id` can satisfy, so owner catalogue writes would be refused, and the fix is a decision rather than a script. Note that `BYPASSRLS` is a role attribute and Postgres does not pass attributes down through role membership, so membership in `neon_superuser` is not by itself the answer; the attribute has to be on `neondb_owner` itself, which is what the query reads. Neon's documentation says the owner has it on every project made after August 2023, and this query is the confirmation.
-
-What in the migrations runs on Neon, read statement by statement: `CREATE ROLE` inside the first migration's block needs `CREATEROLE`, which the owner has, and is skipped once step 4 has made the role; the definer functions, the forced security, the policies, the constraint triggers and the advisory locks need only ownership; `GRANT USAGE ON SCHEMA public` works because Neon's public schema is owned by the database owner; the drizzle schema is created in the owner's own database; nothing uses `CREATE EXTENSION` or needs a superuser. Neon's pooler is PgBouncer in transaction mode, and `withFamily` sets its three settings transaction-locally and the locks are transaction-level, so both work through it. `prepare: false` is already set.
+Verified on 23 September 2026: `neondb_owner` is a non-superuser with `BYPASSRLS` and `CREATEROLE`; `lumischool_app` has neither attribute. All migration SQL ran successfully without a superuser or an extension. Role provisioning is separate from schema history. The pooled application connection passed transaction-local scope and isolation checks.
 
 6. The two connection strings for Render. The pooled host carries `-pooler`; both end in `sslmode=require`, and a newer string's `channel_binding` is ignored by the driver.
 
@@ -240,7 +297,7 @@ services:
       region: ohio # sits with the Neon project's aws-us-east-2; galleo's pair is oregon and aws-us-west-2
       plan: starter # `free` spins down after 15 min idle and silently drops preDeployCommand; `standard` (2 GB) if the build OOMs
       branch: main
-      autoDeploy: true
+      autoDeployTrigger: commit
       # Migrations run at the END of the build (&&: a failed build never reaches them; a failed
       # migration fails the build, so the old deploy stays live). galleo keeps them here on the same
       # plan; preDeployCommand is the alternative once the plan is settled (.docs/db.md).
@@ -306,7 +363,7 @@ Each with what galleo does and the recommendation.
 - [x] A build and a pack that pass on a clean clone (code change 1) (22 September 2026).
 - [x] The Neon project, its `production` branch, its `neondb` database and its `neondb_owner` role (Neon steps 1 to 3) (22 September 2026).
 - [ ] `npm i -g neon@latest`, which upgrades the CLI in place from 2.31.1 to 5.0.1 (decision 14).
-- [ ] The role-attribute query on `neondb_owner`, before anything else touches the database, which closes db.md's open decision and is the one thing that could send us back to making the project again.
+- [x] Production owner and app role attributes verified before and after migration (23 September 2026).
 - [x] `build` and `start` scripts, `.node-version`, the env table and `.env.example` (code change 2).
 - [x] `configFrom` for production with its tests (code change 3).
 - [x] The Resend transport (code change 4).
@@ -314,9 +371,9 @@ Each with what galleo does and the recommendation.
 - [x] The trusted client-address header (code change 6).
 - [ ] `pack` after `build`, or its own folder (code change 8).
 - [x] Decide the four migrations (decision 15), which is only worth doing before the first commit (22 September 2026).
-- [ ] The first commit and push of `main`.
-- [ ] Neon steps 4 to 6: the app role by SQL, the migrations from the laptop, and the two connection strings.
-- [ ] `render.yaml` at the root, validated, committed.
+- [x] The first commit and push of `main`.
+- [x] Neon steps 4 to 6: app role provisioned, baseline applied and verified, connection strings saved privately (23 September 2026).
+- [ ] Publish the updated `render.yaml`; the local file is present and passed Render validation (23 September 2026).
 - [ ] The Blueprint applied in the dashboard with the four secrets.
 - [ ] The eight checks after the first deploy, the forged-header test included.
 - [ ] The custom domain and `APP_ORIGIN` after it.

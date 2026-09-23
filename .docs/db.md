@@ -222,7 +222,7 @@ The store has its own dependencies (`drizzle-orm`, `postgres`, and `drizzle-kit`
 
 - Whether `server/db/` stays at the root now or waits for `server/`, and whether `engine/answer.ts` becomes the root file `answer.ts`.
 - npm or pnpm at the root, to be settled when the scratchpad's modules move in.
-- Whether Neon's owner role has `BYPASSRLS`, which the forced policies need it to have. We now pin 18 locally, matching the Neon project this deploys to, but have not checked `BYPASSRLS` against it.
+- Resolved on 23 September 2026: production `neondb_owner` has `BYPASSRLS`, and `lumischool_app` does not. The baseline and pooled-connection isolation checks passed on Neon; see [deploy.md](deploy.md).
 - Whether the policies should also require the signed-in user to be an active member of the family set, and whether `withFamily` should set a tutor's kid so that row-level security enforces a tutor's reach inside a family, as [auth.md](auth.md) recommends. Today both are checked in code before `withFamily` is called, which a bug could skip.
 - What a sheet id is. A random id today, so two prints are two sheets.
 - The consent-withdrawal link's kind and lifetime, above.

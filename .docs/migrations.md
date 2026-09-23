@@ -63,3 +63,7 @@ before it can use this history. Once deployed, follow the immutable forward-only
 owned by a non-superuser with `BYPASSRLS`, repeated and concurrent runs, upgrades with existing rows,
 a corrective migration, and transactional failure followed by a successful retry. Store, isolation
 and policy tests run against that migrated schema. These local checks do not verify a live Neon project.
+
+The baseline was deployed to production Neon on 23 September 2026. Its ledger hash, owner/app role
+permissions, forced RLS, pooled login and rollback-only isolation checks were verified; all application
+tables remained empty. See [deploy.md](deploy.md). The baseline must no longer be edited or consolidated.

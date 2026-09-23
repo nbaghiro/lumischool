@@ -7,8 +7,9 @@ services:
       runtime: node
       region: ohio # sits with the Neon project's aws-us-east-2; galleo's pair is oregon and aws-us-west-2
       plan: starter # `free` spins down after 15 min idle and silently drops preDeployCommand; `standard` (2 GB) if the build OOMs
+      repo: https://github.com/nbaghiro/lumischool
       branch: main
-      autoDeploy: true
+      autoDeployTrigger: commit
       # Migrations run at the END of the build (&&: a failed build never reaches them; a failed
       # migration fails the build, so the old deploy stays live). galleo keeps them here on the same
       # plan; preDeployCommand is the alternative once the plan is settled (.docs/db.md).
