@@ -394,6 +394,7 @@ const readView = (v: unknown): KidSessionView | null =>
     v.kids.every(str)
         ? {
               view: v.view,
+              login: v.login === true,
               user_id: v.user_id,
               name: v.name,
               created_at: v.created_at,
@@ -428,12 +429,8 @@ export async function kidLogins(): Promise<KidLogins | Failure> {
     if (!a.ok) return refused(a.failure);
     const kids = obj(a.body)
         ? list(a.body.kids, (k) =>
-              obj(k) &&
-              str(k.id) &&
-              str(k.name) &&
-              strOrNull(k.username) &&
-              typeof k.enabled === "boolean"
-                  ? { id: k.id, name: k.name, username: k.username, enabled: k.enabled }
+              obj(k) && str(k.id) && str(k.name) && strOrNull(k.username)
+                  ? { id: k.id, name: k.name, username: k.username }
                   : null,
           )
         : null;
@@ -447,12 +444,8 @@ export async function setKidsPin(pin: string): Promise<true | Failure> {
     return a.ok ? true : refused(a.failure);
 }
 
-export async function setKidLogin(
-    kid: string,
-    username: string,
-    enabled: boolean,
-): Promise<true | Failure> {
-    const a = await call("POST", "/api/kid-logins", { kid, username, enabled });
+export async function setKidLogin(kid: string, username: string): Promise<true | Failure> {
+    const a = await call("POST", "/api/kid-logins", { kid, username });
     return a.ok ? true : refused(a.failure);
 }
 

@@ -48,7 +48,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
             assert.equal(
                 (
                     await parent.call("POST", "/api/kid-logins", {
-                        body: { kid, username, enabled: true },
+                        body: { kid, username },
                     })
                 ).status,
                 204,
@@ -112,7 +112,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         assert.equal(
             (
                 await parent.call("POST", "/api/kid-logins", {
-                    body: { kid: maya, username: "maya-new", enabled: false },
+                    body: { kid: maya, username: "maya-new" },
                 })
             ).status,
             204,
@@ -134,7 +134,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         await owner.raw`update kids set settings = settings || '{"kidLogin": false}'::jsonb where id = ${maya}`;
         assert.equal((await token("maya-star")).length > 0, true);
         const listed = await parent.call("GET", "/api/kid-logins");
-        assert.equal(at(listed.body, "kids", 0, "enabled"), true);
+        assert.equal(at(listed.body, "kids", 0, "enabled"), undefined);
     });
 
     it("keeps the adult PIN separate, hides missing names, and limits concurrent guesses", async () => {
@@ -170,11 +170,11 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         const kid = await addKid(other, "Maya", 1);
         const d = await other.call("GET", "/api/kid-logins");
         assert.equal(text(at(d.body, "kids", 0, "username")), "maya");
-        assert.equal(at(d.body, "kids", 0, "enabled"), true);
+        assert.equal(at(d.body, "kids", 0, "enabled"), undefined);
         assert.equal(
             (
                 await other.call("POST", "/api/kid-logins", {
-                    body: { kid, username: "MAYA-STAR", enabled: false },
+                    body: { kid, username: "MAYA-STAR" },
                 })
             ).status,
             400,
@@ -182,7 +182,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         assert.equal(
             (
                 await other.call("POST", "/api/kid-logins", {
-                    body: { kid: maya, username: "stolen", enabled: false },
+                    body: { kid: maya, username: "stolen" },
                 })
             ).status,
             404,

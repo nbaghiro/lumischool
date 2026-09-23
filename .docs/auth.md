@@ -5,9 +5,8 @@
 Children can use their own sign-in once a username and the shared kids’ PIN exist. Children still
 have no email address or `users` row. `kids.settings.username` is a globally unique, case-insensitive
 sign-in name, separate from the display name; new children get their normalized name when available,
-then a readable word and numeric suffix as needed. Short names gain a word to meet the minimum length.
-A parent can edit it or leave it blank when saving to generate another. A username requires consent
-and a kids’ PIN. These changes require a parent’s email sign-in in the last ten
+then tries each readable word before adding a numeric suffix. Short names gain a word to meet the minimum length.
+A parent can edit it or leave it blank when saving to generate another. A username is generated when the child is added; signing in requires consent and a kids’ PIN. These changes require a parent’s email sign-in in the last ten
 minutes; a session restored through the adult PIN is insufficient.
 
 The shared **kids’ PIN** is a `kid-pin` key, HMAC-hashed with a separate domain and family id. It
@@ -49,7 +48,7 @@ other accounts on that browser, but never grants cross-family access.
 Ordinary parent sign-out ends parent access and preserves child sessions. Ending a child view affects
 only that view. `Sign out everyone on this browser` revokes the browser key and signs out the current
 parent; every session bound to that browser is refused, across families. It does not affect another
-browser. Existing family-wide child controls and account-wide parent sign-out remain separate.
+browser. Family-wide child controls and parent sign-out for the current family remain separate. The latter does not sign the parent out of other families.
 Parent tabs receive non-secret storage notifications and reload on parent changes; child tabs
 revalidate their own sessions without changing identity. Child sessions also revalidate on visibility
 and every 30 seconds while visible. Suspended/offline tabs observe revocation when they reconnect.
@@ -70,7 +69,7 @@ are refused, so they cannot bypass browser-wide revocation. Deploy after saving 
 work; revocation follows the existing rule that unsent answers in ended views are discarded. No
 family records, lessons, or completed answers are deleted by this authentication upgrade.
 
-Changing a username revokes that child’s username-opened views. Setting
+Saving an unchanged normalized username is a no-op. Changing a username revokes that child’s username-opened views. Setting
 the kids’ PIN revokes all username-opened views in the family. Parent-opened views keep their existing
 rules. Parents can also end individual views or all views, regardless of how they opened.
 
@@ -80,7 +79,9 @@ per network in fifteen minutes. The stored identities are peppered hashes; attem
 a day. Failed PIN attempts are also counted across siblings: five wrong tries impose a fifteen-minute
 wait and fifteen require a parent PIN reset. A family advisory lock serializes successful sign-in
 with configuration changes and revocation. Resetting the PIN does not bypass the public attempt limits.
-
+The Account list describes **children’s sign-ins**, not live tab presence. It shows how access was
+opened, dates (activity is updated at most daily), and individual/all revocation. Account reloads
+these details on focus or becoming visible. Closing a tab is not a reliable sign-out event.
 This section supersedes the original browser-cookie-only and parent-opened-only descriptions below.
 
 Status: proposed, September 2026, and rewritten against the data model the owner approved that month. This document says who can sign in to lumischool, how a child reaches their own pages without an account, how every request is tied to one family before anything is read, and what each caller may read and write, across every flow a family meets. It uses the seven tables of the final schema and adds none: every credential and every secret we send is a row in `keys`, and where an auth need might have wanted a table or a column of its own, the document says which of the seven holds it. The store agent owns the schema and its migration, and "The schema, as auth uses it" lists in one place what auth needs from each table and function. Every flow says what is written and what is checked, and the order of work near the end is a list of steps with what "done" means for each. Where a choice is still the owner's it is marked as a recommendation and repeated as a one-sentence question at the end.

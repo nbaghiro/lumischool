@@ -13,6 +13,7 @@ import {
     For,
     Match,
     on,
+    onCleanup,
     Show,
     Switch,
     type JSX,
@@ -79,6 +80,15 @@ export function Account(): JSX.Element {
     const look = useLook();
     const [seen, { refetch }] = createResource(load);
     createEffect(on(familyChanged, () => void refetch(), { defer: true }));
+    const refreshOnReturn = (): void => {
+        if (document.visibilityState === "visible" && !seen.loading) void refetch();
+    };
+    window.addEventListener("focus", refreshOnReturn);
+    document.addEventListener("visibilitychange", refreshOnReturn);
+    onCleanup(() => {
+        window.removeEventListener("focus", refreshOnReturn);
+        document.removeEventListener("visibilitychange", refreshOnReturn);
+    });
     const [card, setCard] = createSignal<"page" | "pin">("page");
     const [said, setSaid] = createSignal("");
     const signed = (): Seen | null => {
@@ -281,7 +291,7 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
                         Sign out of this browser
                     </Button>
                     <Button second busy={busy() === "everywhere"} onClick={() => void out(true)}>
-                        Sign out everywhere
+                        Sign out of this family on all browsers
                     </Button>
                 </div>
                 <Show when={said()}>
@@ -393,12 +403,12 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
         }
         setSaid(
             view !== null
-                ? "That children's view is closed."
+                ? "That child sign-in has ended."
                 : r === true || r.ended === 0
-                  ? "No children's view was open."
+                  ? "There were no child sign-ins to end."
                   : r.ended === 1
-                    ? "The open children's view is closed."
-                    : `${r.ended} children's views are closed.`,
+                    ? "The child sign-in has ended."
+                    : `${r.ended} child sign-ins have ended.`,
         );
         props.onChanged();
     };
@@ -406,7 +416,7 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
         <Postcard
             focus={false}
             kicker="Your account"
-            title="The children's view and the family PIN"
+            title="Children’s sign-ins and the family PIN"
         >
             <section class="part">
                 <h2>The family PIN</h2>
@@ -423,10 +433,14 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
                 <p class="note">Setting the PIN needs a sign-in in the last ten minutes.</p>
             </section>
             <section class="part">
-                <h2>Open children's views</h2>
+                <h2>Children’s sign-ins</h2>
+                <p class="note">
+                    These are saved sign-ins, not a list of tabs open right now. Closing a tab may
+                    leave its sign-in here until it expires. Last-used dates are approximate.
+                </p>
                 <Show
                     when={views().length}
-                    fallback={<p class="note">No children's view is open on any device.</p>}
+                    fallback={<p class="note">No children are signed in.</p>}
                 >
                     <ul class="ga-list">
                         <For each={views()}>
@@ -435,7 +449,7 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
                                     <div class="ga-row-words">
                                         <b>{v.name ?? "A browser"}</b>
                                         <span>
-                                            {`For ${v.kids.map(kidName).join(", ")}. Opened ${dayOf(v.created_at)}${v.seen_at ? `, last used ${dayOf(v.seen_at)}` : ""}.`}
+                                            {`${v.login ? "Username sign-in" : "Opened by a parent"} for ${v.kids.map(kidName).join(", ")}. Started ${dayOf(v.created_at)}${v.seen_at ? `, last used ${dayOf(v.seen_at)}` : ""}.`}
                                         </span>
                                     </div>
                                     <Button
@@ -443,7 +457,7 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
                                         busy={busy() === v.view}
                                         onClick={() => void end(v.view)}
                                     >
-                                        End this view
+                                        End this sign-in
                                     </Button>
                                 </li>
                             )}
@@ -457,12 +471,12 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
                         busy={busy() === "all"}
                         onClick={() => void end(null)}
                     >
-                        End every open view
+                        End all children’s sign-ins
                     </Button>
                 </div>
                 <p class="note">
-                    Ending a view closes the children's view on the device it is open on. Answers
-                    that device has not sent yet are lost.
+                    Ending a sign-in stops access when that tab next connects. Answers not sent yet
+                    are lost. It does not sign out parents or delete finished work.
                 </p>
                 <Show when={said()}>
                     <Say text={said()} />

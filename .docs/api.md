@@ -4,9 +4,9 @@
 
 | Route | Caller | Request / result |
 | --- | --- | --- |
-| `GET /api/kid-logins` | Parent | `{pinSet, kids: [{id, name, username, enabled}]}` |
+| `GET /api/kid-logins` | Parent | `{pinSet, kids: [{id, name, username}]}` |
 | `POST /api/kid-logins/pin` | Fresh parent | `{pin}` with four digits; 204; must differ from the adult family PIN |
-| `POST /api/kid-logins` | Fresh parent | `{kid, username, enabled}`; blank username generates one; 204 |
+| `POST /api/kid-logins` | Fresh parent | `{kid, username}`; blank username generates one; unchanged normalized usernames preserve sessions; 204 |
 | `POST /api/kid/sign-in` | Public | `{username, pin}`; `{credential}`; generic `wrong-pin` on failed or limited sign-in |
 | `GET /api/kid/tab` | Child view | `{credential}` to adopt a legacy cookie view into the tab |
 | `POST /api/kid/sign-out` | Child view | 204; ends only the supplied view |
@@ -17,6 +17,7 @@ credential in sessionStorage, partition their unsent-answer queue by key id, and
 `POST /api/kid-sessions` with `{kids, tab:true}` returns `{credential}` instead of a cookie. A
 header-authenticated `/api/kid/add` also returns the updated `{credential}`. Username-opened sessions
 cannot add children or leave through the adult PIN; their view returns `others: []` and `pin: false`.
+The list from `GET /api/kid-sessions` includes `login: true` for username sign-ins and `false` for parent-opened views.
 See [auth.md](auth.md#kids-sign-in-and-independent-tabs) for revocation and rate limits.
 
 Status: the first slice, built in September 2026 against [auth.md](auth.md), which remains the specification for every flow. This page is the contract the pages are written against: every route, who may call it, what it returns and how it fails. Where the slice builds less than auth.md describes, the section "Built and not built" at the end says which parts wait.

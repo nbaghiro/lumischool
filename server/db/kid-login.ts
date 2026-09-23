@@ -45,11 +45,14 @@ export async function loginTry(tx: FamilyTx, id: string, right: boolean) {
         .where(and(eq(keys.kind, "kid-pin"), eq(keys.id, id)));
 }
 
-export async function saveKidLogin(tx: FamilyTx, id: string, username: string, enabled: boolean) {
+export async function saveKidLogin(tx: FamilyTx, id: string, username: string) {
+    await tx.execute(
+        sql`select pg_advisory_xact_lock(hashtextextended(${"kid-username:" + username}, 0))`,
+    );
     await tx
         .update(kids)
         .set({
-            settings: sql`${kids.settings} || ${JSON.stringify({ username, kidLogin: enabled })}::jsonb`,
+            settings: sql`${kids.settings} || ${JSON.stringify({ username })}::jsonb`,
         })
         .where(eq(kids.id, id));
 }

@@ -12,7 +12,7 @@ export type Person = Pick<User, "id" | "email" | "name" | "settings">;
 
 export interface KidLogins {
     pinSet: boolean;
-    kids: { id: string; name: string; username: string | null; enabled: boolean }[];
+    kids: { id: string; name: string; username: string | null }[];
 }
 
 /** A family a person may choose, as `my_families` lists it. */
@@ -85,6 +85,7 @@ export interface PackView {
 /** A children's view open on one browser, as the family's page lists it. */
 export type KidSessionView = Pick<Key, "name" | "created_at" | "seen_at"> & {
     view: string;
+    login: boolean;
     /** The parent who opened it. */
     user_id: string;
     kids: string[];

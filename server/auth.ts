@@ -4,8 +4,13 @@
 // it. Every read and write here runs through `withFamily` or one of the store's security-definer
 // functions.
 
-import { createHmac, randomBytes, randomInt, randomUUID } from "node:crypto";
-import { emailOf, suggestedUsername, usernameOf } from "../school/family/login";
+import { createHmac, randomInt, randomUUID } from "node:crypto";
+import {
+    emailOf,
+    suggestedUsername,
+    usernameOf,
+    USERNAME_WORD_COUNT,
+} from "../school/family/login";
 import {
     lockKidLogins,
     loginPin,
@@ -639,9 +644,16 @@ export type Added =
     { kid: Kid } | { error: "not-allowed" | "bad-request" } | { error: "notice"; notice: string };
 
 async function automaticUsername(tx: FamilyTx, childName: string): Promise<string> {
-    const suffix = randomBytes(6).toString("hex");
+    const startAt = randomInt(USERNAME_WORD_COUNT);
     for (let attempt = 0; attempt < 100; attempt++) {
-        const candidate = suggestedUsername(childName, suffix, attempt);
+        // Keep names word-only first; spread numeric fallbacks so a popular name cannot exhaust a short sequence.
+        const candidate = suggestedUsername(
+            childName,
+            startAt,
+            attempt <= USERNAME_WORD_COUNT
+                ? attempt
+                : randomInt(USERNAME_WORD_COUNT + 1, USERNAME_WORD_COUNT * 10_000 + 1),
+        );
         if (await usernameAvailable(tx, candidate)) return candidate;
     }
     // The global index makes this practically unreachable; retain a clear failure if a family
@@ -671,7 +683,7 @@ export async function addKidWithConsent(
     if (input.notice !== CONSENT_NOTICE) return { error: "notice", notice: CONSENT_NOTICE };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         const kid = await addKid(tx, adult.family.id, { name, grade: input.grade });
-        await saveKidLogin(tx, kid.id, await automaticUsername(tx, name), false);
+        await saveKidLogin(tx, kid.id, await automaticUsername(tx, name));
         await record(tx, adult.family.id, [
             {
                 kid_id: null,
@@ -844,7 +856,6 @@ export async function kidLoginsFor(adult: Adult): Promise<KidLogins | { error: "
             id: kid.id,
             name: kid.name,
             username: isRecord(kid.settings) ? usernameOf(kid.settings.username) : null,
-            enabled: isRecord(kid.settings) && usernameOf(kid.settings.username) !== null,
         })),
     }));
 }
@@ -902,12 +913,11 @@ export async function setKidsPin(
 
 export async function changeKidLogin(
     adult: Adult,
-    input: { kid: unknown; username: unknown; enabled: unknown },
+    input: { kid: unknown; username: unknown },
 ): Promise<LoginChange> {
     if (!adult.parent) return { error: "not-allowed" };
     if (!fresh(adult)) return { error: "fresh-sign-in" };
-    if (typeof input.kid !== "string" || typeof input.enabled !== "boolean")
-        return { error: "bad-request" };
+    if (typeof input.kid !== "string") return { error: "bad-request" };
     const id = input.kid;
     try {
         return await withFamily(
@@ -930,7 +940,9 @@ export async function changeKidLogin(
                         error: "bad-request",
                         problem: "Set the kids’ sign-in PIN and give consent for this child first.",
                     };
-                await saveKidLogin(tx, id, name, true);
+                if (isRecord(kid.settings) && usernameOf(kid.settings.username) === name)
+                    return { ok: true };
+                await saveKidLogin(tx, id, name);
                 await revokeLogins(tx, adult, id);
                 return { ok: true };
             },

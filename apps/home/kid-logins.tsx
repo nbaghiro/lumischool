@@ -109,8 +109,8 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                         <h2>Usernames</h2>
                         <p class="note">
                             Use 3–32 letters, numbers or hyphens, starting with a letter. Leave a
-                            username blank to make one automatically. Saving closes that child’s
-                            username sign-ins; answers not sent yet are lost.
+                            username blank to make one automatically. Changing it closes that
+                            child’s username sign-ins; answers not sent yet are lost.
                         </p>
                         <fieldset
                             disabled={busy() || data.loading}
@@ -137,14 +137,15 @@ function LoginRow(props: {
     const [username, setUsername] = createSignal(props.kid.username ?? "");
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
+    const unchanged = (): boolean => usernameOf(username()) === props.kid.username;
     const save = async (): Promise<void> => {
-        if (busy()) return;
+        if (busy() || unchanged()) return;
         if (username() !== "" && !usernameOf(username())) {
             setSaid("Use 3–32 letters, numbers or hyphens, starting with a letter.");
             return;
         }
         setBusy(true);
-        const r = await api.setKidLogin(props.kid.id, username(), true);
+        const r = await api.setKidLogin(props.kid.id, username());
         setBusy(false);
         setSaid(r === true ? "Saved." : failure(r));
         if (r === true) await props.onChanged();
@@ -166,7 +167,7 @@ function LoginRow(props: {
                 autocapitalize="none"
                 autocomplete="off"
             />
-            <Button submit second busy={busy()}>
+            <Button submit second busy={busy()} disabled={unchanged()}>
                 Save {props.kid.name}’s sign-in
             </Button>
             <Show when={said()}>

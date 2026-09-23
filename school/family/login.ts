@@ -5,34 +5,37 @@ export const usernameOf = (value: unknown): string | null => {
     return /^[a-z][a-z0-9-]{2,31}$/.test(name) ? name : null;
 };
 
-export function suggestedUsername(name: string, suffix: string, attempt = 0): string {
+const clues = [
+    "acorn",
+    "badger",
+    "beacon",
+    "comet",
+    "dolphin",
+    "fern",
+    "fox",
+    "lighthouse",
+    "otter",
+    "penguin",
+    "rocket",
+    "sunbeam",
+    "tiger",
+    "willow",
+];
+
+export const USERNAME_WORD_COUNT = clues.length;
+
+export function suggestedUsername(name: string, startAt: number, attempt = 0): string {
     const stem = name
         .normalize("NFKD")
         .replace(/[^a-zA-Z]/g, "")
         .toLowerCase()
         .slice(0, 12);
-    const clues = [
-        "acorn",
-        "badger",
-        "beacon",
-        "comet",
-        "dolphin",
-        "fern",
-        "fox",
-        "lighthouse",
-        "otter",
-        "penguin",
-        "rocket",
-        "sunbeam",
-        "tiger",
-        "willow",
-    ];
-    const value = Number.parseInt(suffix.slice(0, 4), 16) || 0;
     const base = stem || "learner";
     if (attempt === 0 && base.length >= 3) return base;
-    const clue = (clues[value % clues.length] ?? "star").trim();
-    if (attempt <= (base.length < 3 ? 0 : 1)) return `${base}-${clue}`;
-    return `${base}-${clue}-${base.length < 3 ? attempt + 1 : attempt}`;
+    const offset = Math.max(0, attempt - (base.length < 3 ? 0 : 1));
+    const clue = clues[(startAt + offset) % clues.length] ?? "star";
+    const round = Math.floor(offset / clues.length);
+    return `${base}-${clue}${round ? `-${round + 1}` : ""}`;
 }
 
 /** The ordinary mailbox addresses supported by email sign-in; delivery proves ownership.

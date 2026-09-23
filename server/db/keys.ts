@@ -496,6 +496,7 @@ export async function openKids(
 export async function kidViewsOf(tx: FamilyTx): Promise<
     {
         view: string;
+        login: boolean;
         name: string | null;
         user_id: string;
         kids: string[];
@@ -518,6 +519,7 @@ export async function kidViewsOf(tx: FamilyTx): Promise<
         string,
         {
             view: string;
+            login: boolean;
             name: string | null;
             user_id: string;
             kids: string[];
@@ -533,6 +535,7 @@ export async function kidViewsOf(tx: FamilyTx): Promise<
         if (!had) {
             views.set(view, {
                 view,
+                login: isRecord(r.detail) && r.detail.login === true,
                 name: r.name,
                 user_id: r.user_id,
                 kids: [r.kid_id],

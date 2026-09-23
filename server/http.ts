@@ -788,7 +788,6 @@ function routes(config: Config): Route[] {
                 const out = await changeKidLogin(adult, {
                     kid: field(c.body, "kid"),
                     username: field(c.body, "username"),
-                    enabled: field(c.body, "enabled"),
                 });
                 return "error" in out
                     ? problem(REFUSED[out.error], out.error, { problem: out.problem })

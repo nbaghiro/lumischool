@@ -257,7 +257,7 @@ test("the bar stays as a grown-up moves between Home, Calendar and Explore and b
     ).toEqual({ bar: true, parts: true });
 });
 
-test("the account page opens from the menu, lists this browser's session, and Sign out everywhere ends it", async ({
+test("the account page opens from the menu, lists this browser's session, and Sign out of this family on all browsers ends it", async ({
     page,
 }) => {
     await signInAs(page);
@@ -267,7 +267,7 @@ test("the account page opens from the menu, lists this browser's session, and Si
     await expect(page).toHaveURL(/\/account$/);
     await expect(page.getByText(/@example\.com/).first()).toBeVisible();
     await expect(
-        page.getByRole("heading", { name: "The children's view and the family PIN" }),
+        page.getByRole("heading", { name: "Children’s sign-ins and the family PIN" }),
     ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Where you are signed in" })).toBeVisible();
     await expect(page.locator(".ga-row.own")).toHaveCount(1);
@@ -287,7 +287,7 @@ test("the account page opens from the menu, lists this browser's session, and Si
         "aria-pressed",
         "true",
     );
-    await page.getByRole("button", { name: "Sign out everywhere" }).click();
+    await page.getByRole("button", { name: "Sign out of this family on all browsers" }).click();
     await expect(page).toHaveURL(/\/sign-in$/);
     await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
 });
