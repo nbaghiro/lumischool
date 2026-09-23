@@ -27,7 +27,7 @@ are proposals for discussion, not approved implementation requirements.
 | M2 | Guided songs, rhythm echo, beat keeping and composition | Pending with M1. Preserve retained song source/licence information. Decide saving and progress separately from simply making a practice page. |
 | P1 | Digital painting lessons | Pending. Recommend preserving the easel and connecting real lesson submission, replay and grown-up review. |
 | P2 | Free painting, tools, gallery and saved artwork | Pending. Recommend a child-accessible painting space; choose storage and gallery behavior during its detailed review. |
-| G1 | Playable game sessions and selection | Pending. Recommend lesson access plus a child-accessible library using existing root game rules. Inventory games individually before marking parity complete. |
+| G1 | Playable game sessions and selection | Audited in [games-migration.md](games-migration.md): 17 games, 83 levels, root rules already moved; player, sound, entry points and recording remain. Proposed library of 15 listed games, with See-saw and Cut the cake kept for lessons. Product decisions pending. |
 | A1 | Shelf browser, settings/animation inspection and notation editor | Pending. Recommend maintained internal authoring tools. These need not be family-facing features. |
 | A2 | Draw/stroke/anchor editor | Pending. Review whether this remains the chosen art-authoring workflow; preserve authored strokes either way. |
 | A3 | Make: visual question editing, repairs, try/print, save and give | Pending. Decide parent-facing authoring versus internal-only tooling before building a studio surface. |
@@ -38,7 +38,7 @@ are proposals for discussion, not approved implementation requirements.
 | W3 | Spot-the-difference and treasure-grid activities | Pending. Decide each separately and choose map or games-library placement. |
 | W4 | Printable country poster | Pending. Recommend keeping if family map printing remains intended; preserve paper-size and pagination guarantees. |
 | W5 | Future-world concept previews | Pending. Compare with migrated definitions; retain selected design work without requiring a prototype gallery. |
-| F1 | Weekly family letter | Pending. Decide whether this is a real home-app feature and what it should contain. |
+| F1 | Weekly family letter | Approved and implemented at `/letters`, with opt-in private-link or detailed weekly email, shared HTML/text designs and durable Resend delivery. See [weekly-letter.md](weekly-letter.md). Production activation and real-inbox rendering review remain separate; the new implementation has no scratchpad dependency. |
 | F2 | Preview of proposed plan changes | Pending. Compare individually with current plan/calendar behavior before deciding what is missing. |
 | R1 | Alternate parent/site/auth/brand layouts, galleries and iframe launcher | Pending. Recommend retiring superseded presentations after extracting selected assets and unresolved decisions. |
 | T1 | Print, art, privacy, visual comparison and usage-analysis tools | Technical review needed. Preserve unique checks in root tools; replace prototype URLs with real routes. |
