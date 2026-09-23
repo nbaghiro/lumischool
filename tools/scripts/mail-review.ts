@@ -35,7 +35,7 @@ try {
                 true,
                 `${i} overflows at ${width}`,
             );
-            if (i === 0 || i === 9 || i === 10 || i === 12)
+            if (i === 1 || i === 2 || i === 3 || i === 0 || i === 9 || i === 10 || i === 12)
                 await page.screenshot({ path: `${dir}/${i + 1}-${width}.png`, fullPage: true });
         }
         await page.close();

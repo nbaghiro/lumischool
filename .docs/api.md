@@ -278,3 +278,8 @@ require their bound HttpOnly browser cookie. Old unbound sessions require a new 
 
 The browser cookie carries no authority by itself. Its key is revocable and its secret's hash binds
 the session, so browser-wide sign-out remains effective even if a tab retries with its old credential.
+
+
+## Family members
+
+See [multi-parent.md](multi-parent.md) for the parent management and invitation endpoint contracts. Parent removal is family-scoped; joining issues a browser-bound parent session through the existing auth flow.

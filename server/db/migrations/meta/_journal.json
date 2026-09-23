@@ -36,6 +36,13 @@
             "when": 1790167618609,
             "tag": "0004_auth_hardening",
             "breakpoints": true
+        },
+        {
+            "idx": 5,
+            "version": "7",
+            "when": 1790186400000,
+            "tag": "0005_parent_invitations",
+            "breakpoints": true
         }
     ]
 }

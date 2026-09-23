@@ -1,4 +1,11 @@
-import { NOTICE_MAIL, noticeMail, signInMail, weeklyMail } from "./mail-design";
+import {
+    invitationMail,
+    membershipMail,
+    NOTICE_MAIL,
+    noticeMail,
+    signInMail,
+    weeklyMail,
+} from "./mail-design";
 import type { Sent } from "./api";
 import type { WeeklyLetter } from "../school/family/letter";
 
@@ -78,7 +85,13 @@ export function mailPreviews(origin: string): Sent[] {
         signInMail("1234 5678", origin),
         ...Object.keys(NOTICE_MAIL)
             .filter((k): k is keyof typeof NOTICE_MAIL => Object.hasOwn(NOTICE_MAIL, k))
-            .map((k) => noticeMail(k, origin)),
+            .map((k) =>
+                k === "invitation"
+                    ? invitationMail(origin, "fictional-invitation", "The Oakleys", "Sam")
+                    : k === "joined" || k === "removed"
+                      ? membershipMail(origin, "The Oakleys", "Alex", k === "joined")
+                      : noticeMail(k, origin),
+            ),
         weeklyMail(letter, origin, true, stop),
         weeklyMail(many, origin, true, stop),
         weeklyMail(quiet, origin, true, stop),

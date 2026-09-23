@@ -648,3 +648,77 @@ export async function signOutBrowser(): Promise<true | Failure> {
     parentChanged();
     return true;
 }
+
+export async function familyMembers(): Promise<import("../../server/api").FamilyMembers | Failure> {
+    const a = await call("GET", "/api/members");
+    if (!a.ok) return refused(a.failure);
+    const b = a.body;
+    const parents = obj(b)
+        ? list(b.parents, (p) =>
+              obj(p) && str(p.id) && str(p.email) && strOrNull(p.name)
+                  ? { id: p.id, email: p.email, name: p.name }
+                  : null,
+          )
+        : null;
+    const invitations = obj(b)
+        ? list(b.invitations, (i) =>
+              obj(i) &&
+              str(i.id) &&
+              str(i.email) &&
+              str(i.expires) &&
+              typeof i.expired === "boolean"
+                  ? { id: i.id, email: i.email, expires: i.expires, expired: i.expired }
+                  : null,
+          )
+        : null;
+    return parents && invitations ? { parents, invitations } : unreadable(a.status);
+}
+
+export async function inviteParent(email: string): Promise<Failure | null> {
+    const a = await call("POST", "/api/members/invite", { email });
+    return a.ok ? null : a.failure;
+}
+export async function cancelInvitation(id: string): Promise<Failure | null> {
+    const a = await call("POST", "/api/members/cancel", { id });
+    return a.ok ? null : a.failure;
+}
+export async function removeParent(
+    user: string,
+): Promise<{ left: boolean; notificationFailed: boolean } | Failure> {
+    const a = await call("POST", "/api/members/remove", { user });
+    if (!a.ok) return a.failure;
+    if (
+        !obj(a.body) ||
+        typeof a.body.left !== "boolean" ||
+        typeof a.body.notificationFailed !== "boolean"
+    )
+        return unreadable(a.status);
+    if (a.body.left) {
+        forget();
+        parentChanged();
+    }
+    return { left: a.body.left, notificationFailed: a.body.notificationFailed };
+}
+export async function invitation(
+    token: string,
+): Promise<import("../../server/api").Invitation | Failure> {
+    const a = await call("POST", "/api/invitations/preview", { token });
+    if (!a.ok) return a.failure;
+    const b = a.body;
+    return obj(b) && str(b.family) && str(b.inviter) && str(b.email)
+        ? { family: b.family, inviter: b.inviter, email: b.email }
+        : unreadable(a.status);
+}
+export async function acceptInvitation(
+    token: string,
+    code: string,
+    name: string,
+): Promise<{ me: Me; notificationFailed: boolean } | Failure> {
+    const a = await call("POST", "/api/auth/email/invitation/accept", { token, code, name });
+    const result = signedInWith(a);
+    if ("error" in result) return result;
+    return {
+        ...result,
+        notificationFailed: a.ok && obj(a.body) && a.body.notificationFailed === true,
+    };
+}

@@ -12,6 +12,12 @@ import { gzip as gzipCb } from "node:zlib";
 import type { ErrorCode, Problem } from "./api";
 import { EVENT_KINDS, type EventKind } from "../engine/answer";
 import {
+    familyMembers,
+    inviteParent,
+    cancelParentInvitation,
+    invitationPreview,
+    acceptParentInvitation,
+    endParentMembership,
     addKidWithConsent,
     addToKidView,
     adultFrom,
@@ -499,6 +505,68 @@ function routes(config: Config): Route[] {
     };
 
     return [
+        {
+            method: "GET",
+            path: "/api/members",
+            who: "adult",
+            run: async (_c, adult) => json(200, await familyMembers(adult)),
+        },
+        {
+            method: "POST",
+            path: "/api/members/invite",
+            who: "adult",
+            run: async (c, adult) => {
+                await inviteParent(config, adult, field(c.body, "email"), c.ip);
+                return json(200, {});
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/members/cancel",
+            who: "adult",
+            run: async (c, adult) => {
+                await cancelParentInvitation(adult, textField(c.body, "id"));
+                return json(200, {});
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/members/remove",
+            who: "adult",
+            run: async (c, adult) =>
+                json(200, await endParentMembership(config, adult, textField(c.body, "user"))),
+        },
+        {
+            method: "POST",
+            path: "/api/invitations/preview",
+            who: "anyone",
+            run: async (c) => json(200, await invitationPreview(textField(c.body, "token"))),
+        },
+        {
+            method: "POST",
+            path: "/api/auth/email/invitation/accept",
+            who: "anyone",
+            run: async (c) => {
+                const out = await acceptParentInvitation(
+                    config,
+                    {
+                        token: textField(c.body, "token"),
+                        code: textField(c.body, "code"),
+                        name: textField(c.body, "name"),
+                    },
+                    c.req.headers.get("x-sign-in-challenge") ?? c.cookies.get(n.pending) ?? null,
+                    c.device,
+                    c.cookies.get(n.session) ?? null,
+                );
+                if ("error" in out) return declined(out);
+                const response = await parentIn(c, out);
+                return json(
+                    200,
+                    { me: out.me, notificationFailed: out.notificationFailed },
+                    response.headers,
+                );
+            },
+        },
         {
             method: "GET",
             path: "/api/letters",

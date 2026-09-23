@@ -174,3 +174,53 @@ export function weeklyMail(
         subject: `Your week at lumischool · ${date(letter.to)}`,
     };
 }
+
+export function invitationMail(
+    origin: string,
+    token: string,
+    family: string,
+    inviter: string,
+): MailContent {
+    return frame({
+        title: "A place in the family",
+        preheader: `${inviter} invited you to join ${family} on lumischool.`,
+        origin,
+        cover: 0,
+        sections: [
+            {
+                heading: `Join ${family}`,
+                text: `${inviter} has invited you to join as a parent. You will have full access to the family’s children, lessons, calendar and settings.`,
+            },
+            {
+                heading: "Your own sign-in, one family",
+                text: "Use this email address to join. You will share the family’s PIN, while keeping your own sign-in and email choices. Ask the other parent for the PIN; it is never sent by email.",
+            },
+        ],
+        action: { label: "Review invitation", path: `/join#t=${encodeURIComponent(token)}` },
+        footer: "This invitation lasts seven days. If you were not expecting it, you can ignore this email. Opening the link does not join the family.",
+    });
+}
+
+export function membershipMail(
+    origin: string,
+    family: string,
+    person: string,
+    joined: boolean,
+): MailContent {
+    return frame({
+        title: joined ? "Another pair of helping hands" : "Family access has changed",
+        preheader: joined ? "A parent joined your family." : "A parent’s family access has ended.",
+        origin,
+        cover: joined ? 1 : 0,
+        sections: [
+            {
+                heading: family,
+                text: joined
+                    ? `${person} has joined as a parent, with full access to the family.`
+                    : `${person} no longer has parent access to this family. Their past contributions remain in the record. Remaining parents can change the shared PINs in Account.`,
+            },
+        ],
+        action: { label: "Review family members", path: "/account#family-members" },
+        footer: "This message is about family access. Weekly email preferences do not turn off access notifications.",
+    });
+}

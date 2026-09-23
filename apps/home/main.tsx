@@ -21,6 +21,7 @@ const ExploreLesson = lazy(() => import("./explore").then((m) => ({ default: m.E
 const GrownMap = lazy(() => import("./map").then((m) => ({ default: m.GrownMap })));
 const Calendar = lazy(() => import("./calendar-planner").then((m) => ({ default: m.Calendar })));
 const PrintDay = lazy(() => import("./day").then((m) => ({ default: m.PrintDay })));
+const Join = lazy(() => import("./join").then((m) => ({ default: m.Join })));
 const Account = lazy(() => import("./account").then((m) => ({ default: m.Account })));
 const Letters = lazy(() => import("./letters").then((m) => ({ default: m.Letters })));
 const Games = lazy(() => import("./games").then((m) => ({ default: m.Games })));
@@ -41,6 +42,7 @@ const SCREENS: Record<Screen, Component> = {
     calendar: Calendar,
     plan: Calendar,
     print: PrintDay,
+    join: Join,
     account: Account,
     letters: Letters,
     games: Games,
@@ -59,6 +61,7 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
     calendar: Calendar.preload,
     plan: Calendar.preload,
     print: PrintDay.preload,
+    join: Join.preload,
     account: Account.preload,
     letters: Letters.preload,
     games: Games.preload,
@@ -78,6 +81,7 @@ const CARRIES: Record<Screen, boolean> = {
     calendar: true,
     plan: true,
     print: true,
+    join: false,
     account: true,
     letters: true,
     games: true,
@@ -104,14 +108,14 @@ const Bar: Component = () => (
 );
 
 const root = document.getElementById("app");
-if (root && inKidMode() && !["/sign-in", "/start"].includes(location.pathname)) {
+if (root && inKidMode() && !["/sign-in", "/start", "/join"].includes(location.pathname)) {
     location.replace("/kids");
 } else if (root) {
     addEventListener("storage", (event) => {
         if (event.key === PARENT_CHANGE && !inKidMode()) location.reload();
     });
     addEventListener("focus", () => {
-        if (inKidMode() || ["/sign-in", "/start"].includes(location.pathname)) return;
+        if (inKidMode() || ["/sign-in", "/start", "/join"].includes(location.pathname)) return;
         void import("../../engine/ui/api").then(async (api) => {
             const status = await api.parentStatus();
             if ("available" in status && (!status.available || status.locked))

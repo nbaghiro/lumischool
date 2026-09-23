@@ -1,3 +1,7 @@
+# Current multi-parent flow
+
+See [multi-parent.md](multi-parent.md) for the implemented equal-parent invitation and removal flows. Invitations are managed in Account, and acceptance always verifies the invited email with a fresh code. This supersedes historical People-page and session-only acceptance proposals below.
+
 # Authentication and authorisation
 
 ## Kids’ sign-in and independent tabs

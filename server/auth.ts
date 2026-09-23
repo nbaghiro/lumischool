@@ -1,3 +1,17 @@
+import { EXPIRY } from "./db/keys";
+import {
+    reserveInvitation,
+    lockMembers,
+    parentsOf,
+    invitationsOf,
+    invitationActive,
+    invitationIn,
+    cancelInvitation,
+    addParent,
+    removeParent,
+} from "./db/members";
+import { invitationMail, membershipMail } from "./mail-design";
+import { Refused } from "./sync";
 // Who is asking, and how they came to be signed in (.docs/auth.md): the credential checks the entry
 // point in server/http.ts runs before any family is read, sign-in by emailed code, sessions and
 // switching family, signing out, the children's view a parent opens and the family's PIN that leaves
@@ -1346,4 +1360,253 @@ export async function unlockParent(
             ]);
         return true;
     });
+}
+
+function needFreshParent(adult: Adult): void {
+    if (!adult.parent) throw new Refused(403, { error: "not-allowed" });
+    if (!fresh(adult)) throw new Refused(403, { error: "fresh-sign-in" });
+}
+
+async function currentParents(tx: FamilyTx, adult: Adult) {
+    await lockMembers(tx, adult.family.id);
+    const parents = await parentsOf(tx, adult.family.id);
+    if (!parents.some((p) => p.id === adult.user)) throw new Refused(403, { error: "not-allowed" });
+    return parents;
+}
+
+export async function familyMembers(adult: Adult): Promise<import("./api").FamilyMembers> {
+    if (!adult.parent) throw new Refused(403, { error: "not-allowed" });
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        const parents = await currentParents(tx, adult);
+        const invitations = (await invitationsOf(tx, adult.family.id))
+            .filter((k) => isRecord(k.detail) && k.detail.active === true && k.email)
+            .map((k) => ({
+                id: k.id,
+                email: k.email ?? "",
+                expires: EXPIRY.invite(k).toISOString(),
+                expired: !invitationActive(k),
+            }));
+        return { parents, invitations };
+    });
+}
+
+export async function inviteParent(
+    config: AuthConfig,
+    adult: Adult,
+    input: unknown,
+    ip: string | null,
+): Promise<void> {
+    needFreshParent(adult);
+    const email = typeof input === "string" ? emailOf(input) : null;
+    if (!email) throw new Refused(400, { error: "bad-email" });
+    const issued = await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        const parents = await currentParents(tx, adult);
+        if (parents.some((p) => p.email === email))
+            throw new Refused(400, {
+                error: "bad-request",
+                problem: "This person is already a parent in your family.",
+            });
+        const previous = await invitationsOf(tx, adult.family.id);
+        if (
+            previous.filter(
+                (k) => k.user_id !== null && Date.now() - Date.parse(k.created_at) < 3600000,
+            ).length >= 10
+        )
+            throw new Refused(429, { error: "rate-limited" });
+        const budget = await reserveInvitation(
+            tx,
+            adult.family.id,
+            email,
+            networkHash(config, ip),
+            sha256(newSecret()),
+        );
+        if (!budget) throw new Refused(429, { error: "rate-limited" });
+        for (const k of previous.filter((k) => k.email === email)) await cancelInvitation(tx, k.id);
+        const key = await issue(tx, adult.family.id, {
+            kind: "invite",
+            email,
+            user_id: adult.user,
+            detail: { active: true },
+        });
+        return { ...key, inviter: parents.find((p) => p.id === adult.user)?.name ?? "A parent" };
+    });
+    try {
+        await config.send(
+            {
+                to: email,
+                ...invitationMail(
+                    config.origin ?? "http://localhost:8500",
+                    issued.credential,
+                    adult.family.name,
+                    issued.inviter,
+                ),
+            },
+            { key: `invitation/${issued.id}` },
+        );
+    } catch {
+        await withFamily({ family: adult.family.id }, (tx) => cancelInvitation(tx, issued.id));
+        throw new Refused(503, {
+            error: "delivery-failed",
+            problem: "The invitation could not be sent. Please try again shortly.",
+        });
+    }
+}
+
+export async function cancelParentInvitation(adult: Adult, id: string): Promise<void> {
+    needFreshParent(adult);
+    await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        await currentParents(tx, adult);
+        const found = (await invitationsOf(tx, adult.family.id)).find((k) => k.id === id);
+        if (!found) throw new Refused(404, { error: "not-found" });
+        await cancelInvitation(tx, id);
+    });
+}
+
+export async function invitationPreview(token: string): Promise<import("./api").Invitation> {
+    const parsed = parseCredential(token);
+    if (!parsed) throw new Refused(404, { error: "not-found" });
+    return withFamily({ family: parsed.family }, async (tx) => {
+        await lockMembers(tx, parsed.family);
+        const key = await invitationIn(tx, token);
+        const parents = await parentsOf(tx, parsed.family);
+        const inviter = parents.find((p) => p.id === key?.user_id);
+        const family = await familyRow(tx, parsed.family);
+        if (!key?.email || !inviter || !family) throw new Refused(404, { error: "not-found" });
+        return { family: family.name, inviter: inviter.name ?? "A parent", email: key.email };
+    });
+}
+
+async function notifyMembership(
+    config: AuthConfig,
+    family: Family,
+    recipients: { email: string }[],
+    name: string,
+    joined: boolean,
+): Promise<boolean> {
+    const message = membershipMail(
+        config.origin ?? "http://localhost:8500",
+        family.name,
+        name,
+        joined,
+    );
+    const results = await Promise.allSettled(
+        recipients.map((p) => config.send({ to: p.email, ...message })),
+    );
+    return results.some((r) => r.status === "rejected");
+}
+
+export async function acceptParentInvitation(
+    config: AuthConfig,
+    input: { token: string; code: string; name: string },
+    pending: string | null,
+    device: string | null,
+    sent: string | null,
+): Promise<(Opened & { notificationFailed: boolean }) | Declined> {
+    if (!pending) return { error: "no-pending" };
+    const parsed = parseCredential(input.token);
+    if (!parsed || !input.name.trim() || input.name.trim().length > 80)
+        return { error: "bad-request" };
+    const proof = await provenBy(pending, codeHash(config, input.code.replace(/\s|-/g, "")));
+    if ("error" in proof) return proof;
+    const joined = await withFamily({ family: parsed.family }, async (tx) => {
+        await lockMembers(tx, parsed.family);
+        const invitation = await invitationIn(tx, input.token);
+        const parents = await parentsOf(tx, parsed.family);
+        if (
+            !invitation?.email ||
+            invitation.email !== proof.email ||
+            !parents.some((p) => p.id === invitation.user_id)
+        )
+            throw new Refused(400, {
+                error: "bad-request",
+                problem: "This invitation is no longer available, or the email does not match.",
+            });
+        if (!(await useCode(tx, "sign-in", sha256(pending))))
+            throw new Refused(400, { error: "expired" });
+        const login = await lockedLogin(tx, proof.email);
+        const user = login ?? randomUUID();
+        await setScope(tx, { family: parsed.family, user });
+        if (!login) await saveLogin(tx, { id: user, email: proof.email, name: input.name.trim() });
+        const added = await addParent(tx, parsed.family, user);
+        const self = await person(tx, user);
+        await cancelInvitation(tx, invitation.id);
+        const opened = await openIn(tx, parsed.family, user, {
+            method: "email-code",
+            shared: proof.shared,
+            device,
+            held: heldBy(sent),
+            written: added
+                ? [
+                      {
+                          kid_id: null,
+                          actor: user,
+                          kind: "member-added",
+                          data: {
+                              user,
+                              name: self?.name ?? input.name.trim(),
+                              kid: null,
+                              fromDay: null,
+                              toDay: null,
+                              invitedBy: invitation.user_id,
+                          },
+                      },
+                  ]
+                : [],
+        });
+        return { opened, added, recipients: await parentsOf(tx, parsed.family) };
+    });
+    const notificationFailed =
+        joined.added &&
+        (await notifyMembership(
+            config,
+            joined.opened.me.family,
+            joined.recipients,
+            joined.opened.me.user.name ?? proof.email,
+            true,
+        ));
+    return { ...joined.opened, notificationFailed };
+}
+
+export async function endParentMembership(
+    config: AuthConfig,
+    adult: Adult,
+    user: string,
+): Promise<{ left: boolean; notificationFailed: boolean }> {
+    needFreshParent(adult);
+    const recipients = await withFamily(
+        { family: adult.family.id, user: adult.user },
+        async (tx) => {
+            const parents = await currentParents(tx, adult);
+            const target = parents.find((p) => p.id === user);
+            if (!target) throw new Refused(404, { error: "not-found" });
+            const successor = parents.find((p) => p.id !== user);
+            if (!successor)
+                throw new Refused(400, {
+                    error: "bad-request",
+                    problem:
+                        "Invite another parent before leaving. Your family needs at least one parent.",
+                });
+            await lockKidLogins(tx, adult.family.id);
+            await removeParent(tx, adult.family.id, user, successor.id);
+            await record(tx, adult.family.id, [
+                {
+                    kid_id: null,
+                    actor: adult.user,
+                    kind: "member-removed",
+                    data: { user, kid: null, left: user === adult.user },
+                },
+            ]);
+            return { parents, target };
+        },
+    );
+    return {
+        left: adult.user === user,
+        notificationFailed: await notifyMembership(
+            config,
+            adult.family,
+            recipients.parents,
+            recipients.target.name ?? recipients.target.email,
+            false,
+        ),
+    };
 }

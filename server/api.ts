@@ -178,3 +178,13 @@ export interface Problem {
     /** The notice's current version, when a parent consented to an older one. */
     notice?: string;
 }
+
+export interface FamilyMembers {
+    parents: Pick<User, "id" | "name" | "email">[];
+    invitations: { id: string; email: string; expires: string; expired: boolean }[];
+}
+export interface Invitation {
+    family: string;
+    inviter: string;
+    email: string;
+}

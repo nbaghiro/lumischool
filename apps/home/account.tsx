@@ -1,3 +1,4 @@
+import { Members } from "./members";
 // The account page (.docs/auth.md, flows 7, 10 and 12): who is signed in and their family, the other
 // families they are in, sign out here or everywhere, the family PIN, the children's views open in the
 // family, their own sessions, what the notice promised about their data, and paying for lumischool.
@@ -151,6 +152,7 @@ export function Account(): JSX.Element {
                         <div class="ga">
                             <You seen={s()} said={said()} onRefetch={() => void refetch()} />
                             <Show when={isParent(s().me.members)}>
+                                <Members family={s().me.family.id} user={s().me.user.id} />
                                 <KidLogins
                                     family={s().me.family.id}
                                     onChanged={() => void refetch()}

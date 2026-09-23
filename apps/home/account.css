@@ -5,7 +5,8 @@
     flex-direction: column;
     gap: clamp(28px, 4vw, 54px);
 }
-.ga > .postcard {
+.ga > .postcard,
+.ga > #family-members {
     align-self: center;
     width: min(100%, 700px);
     min-height: 0;
@@ -141,4 +142,47 @@
         grid-template-columns: 1fr;
         gap: 12px;
     }
+}
+
+.member-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.member-list > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--grid);
+}
+.member-list > li > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.member-list .note {
+    display: block;
+}
+.member-list .btn,
+.member-invite .btn,
+.member-confirm .btn {
+    width: auto;
+}
+.member-confirm {
+    padding: 16px;
+    background: var(--ground);
+}
+.member-invite {
+    margin-top: 16px;
+}
+
+.member-list > li > div:first-child {
+    flex: 1 1 220px;
+}
+
+#family-members .postcard-msg > .btn {
+    width: auto;
+    justify-self: start;
 }
