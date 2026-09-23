@@ -44,6 +44,10 @@ const pictures = (): Promise<typeof import("./sample")> =>
 // the look a visitor takes over the page, and the map, the worlds and the roll it draws, come with
 // the first See the map, not with the page
 const Overlay = lazy(() => import("../../engine/ui/overlay").then((m) => ({ default: m.Overlay })));
+const warmMap = (): void => {
+    void import("./ground").then((m) => m.warmLook()).catch(() => undefined);
+    void import("../../engine/ui/overlay").catch(() => undefined);
+};
 
 /**
  * Where the look is, as the address after the `#` says (engine/ui/hash.ts), so back, Escape and a
@@ -161,6 +165,8 @@ function Opening(props: { sample: Sample | undefined }): JSX.Element {
                         <a
                             class="btn second"
                             href={hashOf({ world: null, lesson: null })}
+                            onPointerEnter={warmMap}
+                            onFocus={warmMap}
                             onClick={(e) => {
                                 if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
                                 e.preventDefault();
@@ -730,6 +736,20 @@ function Start(props: { sample: Sample | undefined }): JSX.Element {
 }
 
 export function Page(): JSX.Element {
+    onMount(() => {
+        let closed = false;
+        onCleanup(() => {
+            closed = true;
+        });
+        void siteData()
+            .then((m) => m.afterOpening())
+            .then(idle)
+            .then(() => {
+                if (!closed)
+                    void import("./ground").then((m) => m.warmLook()).catch(() => undefined);
+            })
+            .catch(() => undefined);
+    });
     const [sample] = createResource(async () => (await (await siteData()).siteData()).words);
     const words = (): Sample | undefined => (sample.state === "ready" ? sample() : undefined);
     return (

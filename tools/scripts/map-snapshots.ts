@@ -19,6 +19,7 @@ import {
     aimKey,
     OPENING,
     placeStill,
+    stillFor,
     type Aimed,
     type Area,
     type Box,
@@ -545,19 +546,36 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                         : path,
                 );
                 const page = await context.newPage();
-                await page.addInitScript(() => {
+                const snapshotOnly = c.width <= 700;
+                await page.addInitScript((snapshotOnly) => {
                     addEventListener("DOMContentLoaded", () => {
                         const style = document.createElement("style");
                         style.textContent =
-                            ".site-over,.site-cap,.site-bar,.page-main,.page-top,.page-foot,.m-life{visibility:hidden!important}.backdrop-still{display:none!important}";
+                            ".site-over,.site-cap,.site-bar,.page-main,.page-top,.page-foot,.m-life{visibility:hidden!important}" +
+                            (snapshotOnly ? "" : ".backdrop-still{display:none!important}");
                         document.head.append(style);
                     });
-                });
+                }, snapshotOnly);
                 await page.goto(`${origin}${c.path}`);
-                await page.waitForSelector(`${c.box}.drawn`, {
-                    state: "attached",
-                    timeout: 120_000,
-                });
+                if (snapshotOnly) {
+                    await page.waitForFunction(
+                        (box) => {
+                            const image = document.querySelector<HTMLImageElement>(
+                                `${box} .backdrop-still`,
+                            );
+                            return image?.complete && image.naturalWidth > 0;
+                        },
+                        c.box,
+                        { timeout: 30_000 },
+                    );
+                    if (await page.locator(`${c.box} .backdrop-live`).count())
+                        throw new Error(`${f.file}: a mobile backdrop loaded the live map`);
+                } else {
+                    await page.waitForSelector(`${c.box}.drawn`, {
+                        state: "attached",
+                        timeout: 120_000,
+                    });
+                }
                 await page.waitForTimeout(800);
                 const at = await page.evaluate(
                     ({ box, over }) => {
@@ -588,7 +606,9 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                 );
                 if (!at) throw new Error(`${f.file}: ${c.path} has no ${c.box}`);
                 const aim = { ...f.aim, at: f.ats[0], across: f.across };
-                const placed = placeStill(snapshot, aim, at.box, null, at.over);
+                const placed = snapshotOnly
+                    ? stillFor([snapshot], aim, at.box, null, at.over)?.at
+                    : placeStill(snapshot, aim, at.box, null, at.over);
                 if (!placed) {
                     throw new Error(`${f.file}: the snapshot does not stand in for ${aimKey(aim)}`);
                 }

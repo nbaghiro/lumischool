@@ -89,6 +89,8 @@ export function Overworld(props: {
      * the two views read as one movement; null when the map cut, under reduced motion.
      */
     onGoIn?: (place: number, at: DOMRect | null) => void;
+    /** Intent to visit a place, early enough to prepare its real lessons behind the map. */
+    onApproach?: (place: number) => void;
     /**
      * The map opens on a place the viewer is coming back out of, with its picture where the world
      * left it, and pulls back to the map's own camera. Ignored under reduced motion, which cuts.
@@ -414,6 +416,7 @@ export function Overworld(props: {
         const n = nodeAt(props.view.layout, i),
             p = place(i);
         if (!n || !p || !painted) return;
+        if (mayEnter(i)) props.onApproach?.(i);
         painted.token.classList.toggle("away", i !== props.view.here);
         setChosen(true);
         focusNode(i);
@@ -449,6 +452,7 @@ export function Overworld(props: {
             ? (forward ? props.view.country.spurs : props.view.country.spursBack)[cross]
             : (forward ? props.view.country.crossings : props.view.country.back)[cross];
         busy = true;
+        props.onApproach?.(to);
         host?.setAttribute("data-travel", "on");
         p.ride(way.kind);
         const tl = timeline(
@@ -564,6 +568,7 @@ export function Overworld(props: {
             locked(i, "tap");
             return;
         }
+        props.onApproach?.(i);
         busy = true;
         if (quiet) {
             go(i, null);
@@ -800,9 +805,15 @@ export function Overworld(props: {
                 p.place(n.stand, 1);
                 arrived(i);
             });
-            b.addEventListener("focus", () => locked(i, "focus"));
+            for (const [event, how] of [
+                ["focus", "focus"],
+                ["pointerenter", "hover"],
+            ] as const)
+                b.addEventListener(event, () => {
+                    locked(i, how);
+                    if (mayEnter(i)) props.onApproach?.(i);
+                });
             b.addEventListener("blur", () => unlocked(i, "focus"));
-            b.addEventListener("pointerenter", () => locked(i, "hover"));
             b.addEventListener("pointerleave", () => unlocked(i, "hover"));
         });
         const first = typeof props.focus === "number" ? props.focus : props.view.here;

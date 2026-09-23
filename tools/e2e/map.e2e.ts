@@ -405,3 +405,112 @@ test("the map scope switch returns to the selected world without changing button
     }
     await expect(scope).toHaveText("Near me");
 });
+
+for (const reducedMotion of ["reduce", "no-preference"] as const) {
+    test(`a cold sample world waits for its real sheets before landing (${reducedMotion})`, async ({
+        page,
+    }) => {
+        await page.emulateMedia({ reducedMotion });
+        let release = (): void => {};
+        const held = new Promise<void>((done) => {
+            release = done;
+        });
+        await page.route("**/@site-pack/lessons/**", async (route) => {
+            await held;
+            await route.continue();
+        });
+        try {
+            await page.goto("/home#/map/harbour");
+            const look = page.getByRole("dialog", { name: "A sample child's map" });
+            await expect(look.locator(".wd.ready")).toBeVisible({ timeout: 60_000 });
+            await expect(look.getByRole("status")).toHaveText("Opening your lessons…");
+            await page.waitForTimeout(2000);
+            await expect(look.getByRole("status")).toBeVisible();
+            await expect(look.locator(".rd-read")).toHaveCount(0);
+            if (reducedMotion === "no-preference")
+                await page.screenshot({
+                    path: `/tmp/lumischool-world-loading-${test.info().project.name}.png`,
+                });
+            release();
+            await expect(look.getByRole("status")).toHaveCount(0, { timeout: 30_000 });
+            await expect(look.locator(".rd-read").first()).toBeVisible();
+            await expect(page).toHaveURL(/#\/map\/harbour$/);
+        } finally {
+            release();
+        }
+    });
+}
+
+test("a failed sample lesson can retry without changing worlds", async ({ page }) => {
+    let failing = true;
+    await page.route("**/@site-pack/lessons/**", async (route) => {
+        if (failing) await route.fulfill({ status: 503, body: "Unavailable" });
+        else await route.continue();
+    });
+    await page.goto("/home#/map/harbour");
+    const look = page.getByRole("dialog", { name: "A sample child's map" });
+    await expect(look.getByRole("button", { name: "Try again" })).toBeVisible({ timeout: 60_000 });
+    failing = false;
+    await look.getByRole("button", { name: "Try again" }).click();
+    await expect(look.getByRole("status")).toHaveCount(0, { timeout: 30_000 });
+    await expect(look.locator(".rd-read").first()).toBeVisible();
+    await expect(page).toHaveURL(/#\/map\/harbour$/);
+});
+
+test("choosing a sample world prepares lessons before entry and reuses their requests", async ({
+    page,
+}) => {
+    const counts = new Map<string, number>();
+    page.on("request", (request) => {
+        if (request.url().includes("/@site-pack/lessons/"))
+            counts.set(request.url(), (counts.get(request.url()) ?? 0) + 1);
+    });
+    await page.goto("/home#/map");
+    const look = page.getByRole("dialog", { name: "A sample child's map" });
+    await expect(look.locator(".ow-host.ready")).toBeVisible({ timeout: 60_000 });
+    await expect(look.locator(".ow-scope")).toHaveText("Every world");
+    const before = counts.size;
+    const meadow = look.locator('.ow-node[aria-label*="meadow" i]').first();
+    await meadow.dispatchEvent("click");
+    await expect.poll(() => counts.size).toBeGreaterThan(before);
+    await expect(page).toHaveURL(/#\/map$/);
+    const enteredAt = Date.now();
+    await goInto(page, meadow);
+    await expect(look.locator(".rd-read").first()).toBeVisible({ timeout: 30_000 });
+    await expect(look.getByRole("status")).toHaveCount(0);
+    await test.info().attach("prepared-entry", {
+        body: JSON.stringify({ readyMs: Date.now() - enteredAt, requests: [...counts] }),
+        contentType: "application/json",
+    });
+    expect([...counts.values()].every((count) => count === 1)).toBe(true);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(look.getByRole("status")).toHaveCount(0, { timeout: 30_000 });
+    await expect(look.locator(".rd-read").first()).toBeVisible();
+    expect([...counts.values()].every((count) => count === 1)).toBe(true);
+});
+
+test("closing a sample world during loading leaves no late sheets or errors", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    let release = (): void => {};
+    const held = new Promise<void>((done) => {
+        release = done;
+    });
+    await page.route("**/@site-pack/lessons/**", async (route) => {
+        await held;
+        await route.continue();
+    });
+    try {
+        await page.goto("/home#/map/harbour");
+        const look = page.getByRole("dialog", { name: "A sample child's map" });
+        await expect(look.getByRole("status")).toBeVisible({ timeout: 60_000 });
+        await look.getByRole("button", { name: "Close" }).click();
+        release();
+        await expect(look).toHaveCount(0);
+        await page.waitForTimeout(500);
+        await expect(page.locator(".rd-measure, .rd-status, .rd-read")).toHaveCount(0);
+        expect(errors).toEqual([]);
+    } finally {
+        release();
+    }
+});

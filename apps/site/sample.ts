@@ -57,6 +57,14 @@ const drawerOf = async (of: readonly Scene[]): Promise<SceneDrawer> =>
 /** The sheet, with the lesson's renderer, which comes with the first sheet drawn rather than with the page. */
 const sheets = () => import("../../engine/ui/lesson");
 
+export async function prepareLessons(s: School, ids: readonly string[]): Promise<void> {
+    const [, scene] = await Promise.all([sheets(), import("../../engine/ui/scene")]);
+    for (const id of ids) {
+        const lesson = await lessonOf(s, id);
+        if (lesson) await drawerOf(scene.scenesIn(lesson));
+    }
+}
+
 /**
  * A drawing's square, from the box it is in: the smaller of what the width and the height allow,
  * read once and then on resize. A wide drawing in a short box is limited by the height rather than
@@ -258,12 +266,12 @@ async function sheetOf(
     id: string,
     o: { narrow: boolean; measureIn: HTMLElement; date?: string },
 ): Promise<Measured | null> {
-    const lesson = await lessonOf(s, id);
-    if (!lesson) return null;
-    const [{ lookSheet }, { scenesIn }] = await Promise.all([
+    const [lesson, { lookSheet }, { scenesIn }] = await Promise.all([
+        lessonOf(s, id),
         sheets(),
         import("../../engine/ui/scene"),
     ]);
+    if (!lesson) return null;
     const draw = await drawerOf(scenesIn(lesson));
     return lookSheet({
         lesson,

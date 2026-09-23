@@ -9,6 +9,7 @@ import "./overlay.css";
 import type { MapView } from "../space";
 import {
     createResource,
+    createEffect,
     createSignal,
     Match,
     onCleanup,
@@ -20,6 +21,7 @@ import {
 import { upOf, type OverlayAt } from "./hash";
 import { Overworld } from "./overworld";
 import { Reading, type ReadingSource } from "./reading";
+import { readingShelf } from "./reading-source";
 
 export type { OverlayAt };
 
@@ -33,6 +35,8 @@ export interface OverlaySource {
     nameOf(world: string): string;
     /** The world a lesson is met in, for a look the page named by the lesson alone (hash.ts). */
     whereIs(lesson: string): string | null;
+    /** The sample child's own location when first opening the marketing map. */
+    opening?: number;
 }
 
 /** The world a place on the map is of, by its index in the view. */
@@ -60,6 +64,14 @@ export function Overlay(props: {
     let dialog: HTMLDialogElement | undefined;
     let stage: HTMLDivElement | undefined;
     const [source] = createResource(() => props.source().catch(() => null));
+    const shelf = readingShelf((world) => source()?.reading(world) ?? null);
+    onCleanup(() => shelf.dispose());
+    createEffect(() => {
+        const s = source();
+        if (!s || s.opening === undefined) return;
+        const world = worldAt(s.map(), s.opening);
+        if (world) shelf.warm(world);
+    });
     // `box` is where the view being left put the world on the screen, so the one opening picks the
     // movement up there, as on the map screen (apps/home/map.tsx)
     const [box, setBox] = createSignal<DOMRect | undefined>();
@@ -114,7 +126,7 @@ export function Overlay(props: {
     /** The world's reading the look is in, or null on the map and for a world the source cannot show. */
     const readingOf = (s: OverlaySource): ReadingSource | null => {
         const world = at(s).world;
-        return world ? s.reading(world) : null;
+        return world ? shelf.source(world) : null;
     };
     const title = (s: OverlaySource): string => {
         const world = at(s).world;
@@ -180,7 +192,11 @@ export function Overlay(props: {
                                 <Match when={!at(s()).world}>
                                     <Overworld
                                         view={s().map()}
-                                        focus={placeBack() ?? "all"}
+                                        focus={placeBack() ?? s().opening ?? "all"}
+                                        onApproach={(place) => {
+                                            const world = worldAt(s().map(), place);
+                                            if (world) shelf.warm(world);
+                                        }}
                                         arrive={back()}
                                         class="ov-map"
                                         title="The map of every world"

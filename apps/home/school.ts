@@ -150,12 +150,18 @@ export function lessonOf(s: School, id: string): Promise<PackLesson | null> {
     if (!had) {
         const facts = s.pack.index.lessons.find((l) => l.id === id);
         had = facts
-            ? api.packLesson(s.pack.pack, facts.file).then((l) => {
-                  if (!("error" in l)) return l;
-                  // a read that failed is asked for again next time, not remembered as no lesson
-                  lessons.delete(key);
-                  return null;
-              })
+            ? api
+                  .packLesson(s.pack.pack, facts.file)
+                  .then((l) => {
+                      if (!("error" in l)) return l;
+                      // a read that failed is asked for again next time, not remembered as no lesson
+                      lessons.delete(key);
+                      return null;
+                  })
+                  .catch(() => {
+                      lessons.delete(key);
+                      return null;
+                  })
             : Promise.resolve(null);
         lessons.set(key, had);
     }

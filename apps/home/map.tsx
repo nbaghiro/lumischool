@@ -12,6 +12,7 @@ import {
     createSignal,
     lazy,
     Match,
+    onCleanup,
     Suspense,
     Switch,
     type JSX,
@@ -21,6 +22,7 @@ import { onDemand, still } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Overworld } from "../../engine/ui/overworld";
+import { readingShelf } from "../../engine/ui/reading-source";
 import { useLook, Waiting } from "../../engine/ui/page";
 import { Postcard } from "../../engine/ui/postcard";
 import { go, search } from "../../engine/ui/router";
@@ -100,6 +102,13 @@ export function GrownMap(): JSX.Element {
                         const at = createMemo(() => inWorld(s(), where()), undefined, {
                             equals: (a, b) => a.world === b.world && a.lesson === b.lesson,
                         });
+                        const shelf = readingShelf((world) =>
+                            readingOf(s(), world, {
+                                level: "medium",
+                                key: true,
+                            }),
+                        );
+                        onCleanup(() => shelf.dispose());
                         return (
                             <Switch>
                                 <Match when={at().world} keyed>
@@ -108,10 +117,13 @@ export function GrownMap(): JSX.Element {
                                             fallback={<p class="mp-note">The world is opening.</p>}
                                         >
                                             <Reading
-                                                source={readingOf(s(), world, {
-                                                    level: "medium",
-                                                    key: true,
-                                                })}
+                                                source={
+                                                    shelf.source(world) ??
+                                                    readingOf(s(), world, {
+                                                        level: "medium",
+                                                        key: true,
+                                                    })
+                                                }
                                                 from={box()}
                                                 lesson={at().lesson}
                                                 class="mp-world"
@@ -138,6 +150,10 @@ export function GrownMap(): JSX.Element {
                                     <Overworld
                                         view={s().map}
                                         focus={placeBack() ?? "overview"}
+                                        onApproach={(place) => {
+                                            const world = worldAt(s().map, place);
+                                            if (world) shelf.warm(world);
+                                        }}
                                         arrive={back()}
                                         class="mp-map"
                                         title="The map of every world"

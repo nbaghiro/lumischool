@@ -10,6 +10,7 @@ import { still } from "../../engine/ui/art";
 import type { Ground } from "../../engine/ui/backdrop";
 import { declaredOf, loadDrawings } from "../../engine/ui/drawings";
 import type { OverlaySource } from "../../engine/ui/overlay";
+import { entryLessons, mayPrepare } from "../../engine/ui/reading-source";
 import { Overworld } from "../../engine/ui/overworld";
 import { refsOf, sizeOn } from "../../school/worlds/art";
 import { apply } from "../../school/worlds/choice";
@@ -54,15 +55,44 @@ export async function ground(): Promise<Ground> {
  * and each world's roll with the sample's record and the lessons as the child has them, from the
  * visitor's pack, whose reader comes with the look and never with the opening map.
  */
-export async function look(): Promise<OverlaySource> {
+async function readLook(): Promise<OverlaySource> {
     const [{ schoolOf }, { reading }] = await Promise.all([import("./school"), import("./sample")]);
-    const s = await schoolOf();
+    const s = await schoolOf(true);
     const map = await mapOf(s.data.journey, { open: true });
     return {
         map: () => map,
+        opening: map.here ?? map.places.find((p) => p.shown?.world === s.child.hereWorld.id)?.i,
         nameOf: (id) => worldById(id).name,
         // the site opens no look by a lesson alone
         whereIs: () => null,
         reading: (id) => reading(s, id),
     };
+}
+
+let preview: Promise<OverlaySource> | null = null;
+export function look(): Promise<OverlaySource> {
+    return (preview ??= readLook().catch((error: unknown) => {
+        preview = null;
+        throw error;
+    }));
+}
+
+let warming: Promise<void> | null = null;
+export function warmLook(): Promise<void> {
+    if (!mayPrepare()) return Promise.resolve();
+    return (warming ??= (async () => {
+        const [{ schoolOf }, { reading, prepareLessons }] = await Promise.all([
+            import("./school"),
+            import("./sample"),
+        ]);
+        const s = await schoolOf(true);
+        const source = reading(s, s.child.hereWorld.id);
+        if (source)
+            await prepareLessons(
+                s,
+                entryLessons(source.world({ narrow: false, height: () => null })),
+            );
+    })().catch(() => {
+        warming = null;
+    }));
 }

@@ -141,6 +141,7 @@ export async function fetchLessons(c: Loaded, ids: readonly string[]): Promise<P
                 pending = client
                     .lesson(c.kid.id, c.pack.pack, facts.file)
                     .then((lesson) => ("error" in lesson ? null : lesson))
+                    .catch(() => null)
                     .then((lesson) => {
                         if (!lesson) c.lessonReads.delete(id);
                         return lesson;

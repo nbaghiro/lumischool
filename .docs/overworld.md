@@ -33,6 +33,34 @@ steers, and reduced motion advances only when a control is used. Flight progress
 The production controls and drawing layer live in `engine/ui/flight.ts` and `flight.css`, using
 the existing `engine/motion/plane.ts` physics. The scratchpad now imports that implementation.
 
+## Preparing lessons before arrival
+
+The marketing map overlay opens near the sample child's current world. Its world, day and lessons
+are still those selected by the sample journal. `landingRow` in `engine/ui/paper.ts` is shared by the
+camera and preparation; no showcase lesson is substituted for the destination.
+
+After the marketing opening draws and the browser is idle, the destination's lesson data, renderer
+and drawings are warmed. Hovering or focusing See the map also warms the overlay module. Explicit
+entry bypasses the site's idle/opening wait. Pack and lesson ID identify cached visitor reads, and
+failed reads are removed so retry can succeed.
+
+`readingShelf` prepares and measures the selected world's destination sheets behind the map on
+hover, keyboard focus or selection. A short dwell avoids rendering for every place crossed by the
+pointer. It keeps at most six unused prepared sheets, distinguishes wide and narrow layouts, and
+transfers ownership to the reader. Its lifetime scopes the cache to the source pack, reading mode
+and level. Navigation has a reserved slot past slow speculative work; obsolete queued work is
+dropped, and late results are disposed when the overlay closes. Save-data and slow connections
+skip speculative work. Children warm the same destination data and drawings, while their answers
+are read through their own authenticated state loader, never through the visitor cache.
+
+The illustrated world entrance can appear while its destination sheets load. The camera waits
+for the actual sheets and their measured layout before settling on the day. A small paper status
+explains the wait and offers retry after failure. Reduced motion uses the same readiness condition.
+The shared nearby-paper loader publishes each completed sheet immediately, limits concurrent
+preparation to two sheets, and discards obsolete work. Nearby sheets are prepared beyond the visible
+area; distant sheets are released while their heights remain known. A width change clears old paper
+and starts preparation together, keeping their order deterministic.
+
 `school/worlds/geography.ts` owns coastlines, fixed `WORLD_SITES`, region labels and map extent.
 The shared view selects one subject location from the per-grade progress records; the underlying
 records remain separate. Routes to another land use sea travel (or the world's air route).

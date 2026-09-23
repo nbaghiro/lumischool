@@ -36,16 +36,20 @@ export interface School {
 }
 
 let school: Promise<School> | null = null;
+let requestNow = (): void => {};
+const requested = new Promise<void>((done) => {
+    requestNow = done;
+});
 
 /**
  * The pack and the child, read once, after the opening map is drawn and the page is idle. The
  * drawings every world names are loaded first, since the views are built from their sizes.
  */
-export function schoolOf(): Promise<School> {
+export function schoolOf(urgent = false): Promise<School> {
+    if (urgent) requestNow();
     school ??= (async () => {
         const data = await siteData();
-        await afterOpening();
-        await idle();
+        await Promise.race([afterOpening().then(idle), requested]);
         const r = await fetch(`${data.pack}/index.json`);
         if (!r.ok) throw new Error(`the visitor's pack answered ${r.status}`);
         const index = readIndex(await r.json());
@@ -82,7 +86,8 @@ const lessons = new Map<string, Promise<PackLesson | null>>();
 
 /** A lesson's file from the visitor's pack, kept once read, so a sheet drawn again is not fetched twice. */
 export function lessonOf(s: School, id: string): Promise<PackLesson | null> {
-    let had = lessons.get(id);
+    const key = `${s.data.pack}|${id}`;
+    let had = lessons.get(key);
     if (!had) {
         const facts = s.index.lessons.find((l) => l.id === id);
         had = facts
@@ -92,13 +97,14 @@ export function lessonOf(s: School, id: string): Promise<PackLesson | null> {
                       const l = readLesson(await r.json());
                       return l.ok ? l.lesson : null;
                   })
+                  .catch(() => null)
                   .then((l) => {
                       // a read that failed is asked for again next time, not remembered as no lesson
-                      if (l === null) lessons.delete(id);
+                      if (l === null) lessons.delete(key);
                       return l;
                   })
             : Promise.resolve(null);
-        lessons.set(id, had);
+        lessons.set(key, had);
     }
     return had;
 }

@@ -10,6 +10,43 @@
     visibility: hidden;
     pointer-events: none;
 }
+.rd-status {
+    position: absolute;
+    z-index: 8;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 16px 22px;
+    border: 1px solid var(--grid);
+    border-radius: 12px;
+    background: var(--paper, white);
+    box-shadow: 0 4px 14px #252a3220;
+    font-size: 20px;
+    animation: rd-status-in 180ms ease-out 160ms both;
+}
+.rd-loading .j-sheet {
+    visibility: hidden;
+}
+@keyframes rd-status-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 6px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rd-status {
+        animation: none;
+    }
+}
 .rd-sheet {
     gap: 14px;
     padding: 0 28px 28px;

@@ -19,6 +19,8 @@ import {
 } from "solid-js";
 import type { Measured } from "./lesson";
 import { nearPaper } from "./paper";
+import { PaperStatus } from "./paper-status";
+import { entryLessons } from "./reading-source";
 import { matches, Near } from "./viewport";
 import { World } from "./world";
 
@@ -60,14 +62,37 @@ export function Reading(props: {
         drawn: () => setDrew((n) => n + 1),
     });
     onCleanup(() => paper.forget());
-    // a phone turned draws every sheet again at its width, so nothing measured at the old one is kept
-    createEffect(on(narrow, () => paper.forget(), { defer: true }));
     const view = createMemo(() => {
         drew();
         return props.source.world({
             narrow: narrow(),
             height: (lesson) => paper.height(lesson),
         });
+    });
+    const entry = createMemo(() => entryLessons(view(), props.lesson));
+    const [entered, setEntered] = createSignal(false);
+    let nearby: readonly string[] = [];
+    const wanted = (): string[] => [...new Set([...entry(), ...nearby])];
+    const failed = (): boolean => {
+        drew();
+        return entry().some((id) => paper.failed(id));
+    };
+    const waiting = (): boolean => {
+        drew();
+        return !entered() && entry().some((id) => !paper.sheet(id));
+    };
+    createEffect(
+        on(
+            () => [narrow(), props.lesson, props.source],
+            () => {
+                paper.forget();
+                setEntered(false);
+                paper.lookBack(wanted());
+            },
+        ),
+    );
+    createEffect(() => {
+        if (!waiting()) setEntered(true);
     });
     /** The day on the roll that holds the lesson it opens at, by the id the roll opens at. */
     const day = (): string | undefined => {
@@ -120,6 +145,7 @@ export function Reading(props: {
         }
         const p = paper.sheet(s.lesson);
         const h = paper.height(s.lesson);
+        had.el.style.width = `${view().layout.o.sheet}px`;
         if (h !== null) had.el.style.minHeight = `${h}px`;
         if (p && !had.slot.contains(p.el)) {
             had.slot.replaceChildren(p.el);
@@ -142,12 +168,21 @@ export function Reading(props: {
                 view={view()}
                 from={props.from}
                 sheet={card}
-                lookBack={(near) => paper.lookBack(near)}
+                lookBack={(near) => {
+                    nearby = near;
+                    paper.lookBack(wanted());
+                }}
+                waiting={waiting()}
                 open={day()}
                 land={props.lesson ? { lesson: props.lesson, y: 0 } : undefined}
-                class={props.class}
+                class={`${props.class ?? ""}${waiting() ? " rd-loading" : ""}`}
                 title={props.title}
                 onOut={(at) => props.onOut(at)}
+            />
+            <PaperStatus
+                waiting={waiting()}
+                failed={failed()}
+                retry={() => paper.lookBack(wanted())}
             />
         </>
     );

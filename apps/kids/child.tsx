@@ -120,6 +120,8 @@ export function ChildMap(props: {
     const [sheetRun, setSheetRun] = createSignal(0);
     // the map's first frame is all there, which is when today's sheets are drawn out of sight
     const [mapDrawn, setMapDrawn] = createSignal(false);
+    let warming = 0;
+    onCleanup(() => clearTimeout(warming));
     const narrow = matches("(max-width: 700px)");
     let page: HTMLDivElement | undefined;
     const onMap = (): Extract<Screen, { at: "map" }> | false => {
@@ -312,6 +314,21 @@ export function ChildMap(props: {
                                             class="kid-map-world"
                                             title={`${props.kid.name}'s map`}
                                             onDrawn={() => setMapDrawn(true)}
+                                            onApproach={(place) => {
+                                                clearTimeout(warming);
+                                                warming = window.setTimeout(() => {
+                                                    void loadInside()
+                                                        .then((mod) =>
+                                                            mod.warmWorld(
+                                                                c(),
+                                                                m(),
+                                                                place,
+                                                                narrow(),
+                                                            ),
+                                                        )
+                                                        .catch(() => undefined);
+                                                }, 160);
+                                            }}
                                             onGoIn={(place, box) => {
                                                 const n = m().layout.nodes[place];
                                                 const selected = m().places[place];

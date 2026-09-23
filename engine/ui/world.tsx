@@ -34,6 +34,7 @@ import type { WorldPainted } from "./scenery";
 import { CanvasView } from "./view";
 import { worldPainter } from "./painters";
 import { WayOut } from "./wayout";
+import { landingRow } from "./paper";
 
 /** What a sheet raises to ask for something on it to be seen (lesson.tsx raises it by this name). */
 const REVEAL = "lumischool:reveal";
@@ -79,6 +80,8 @@ export function World(props: {
      * lesson is named once, with the others that came near at the same rest.
      */
     lookBack?: (lessons: readonly string[]) => void;
+    /** Hold at the illustrated entrance until the actual destination sheets are measured. */
+    waiting?: boolean;
     /**
      * The way out of the roll, which is the place the world is seen as (engine/ui/place.tsx): pulling
      * back past the sheets hands over, and so does Escape. The roll pulls back and hands the page the
@@ -118,6 +121,7 @@ export function World(props: {
     let brush = 0;
     /** The wait between the arrival and the camera coming down to today, cleared when the roll goes. */
     let arriving = 0;
+    const [arrivalDue, setArrivalDue] = createSignal(false);
     /** A sheet's ask waiting for the viewer's hand to leave the paper, cleared when the roll goes. */
     let asking = 0;
     let level: RollLevel = "day";
@@ -125,6 +129,7 @@ export function World(props: {
     let busy = false;
     const quiet = still();
     const [ready, setReady] = createSignal(false);
+    const [paintedLayout, setPaintedLayout] = createSignal<WorldView["layout"]>();
     /** Whether the camera is moving, for the way out to stay out of sight while it does. */
     const [moving, setMoving] = createSignal(false);
 
@@ -277,17 +282,7 @@ export function World(props: {
     /** The day the place handed the roll over at, the row of the sheet the page lands on, today's row, the last row of a term, or a term's card. */
     function landing(term?: number): { y: number; own: boolean; says: string } | null {
         const l = layout();
-        const today = l.rows.find((r) => r.day.state === "today");
-        const asked = props.open ? l.rows.find((r) => r.day.id === props.open) : undefined;
-        const landed = l.rows.find(
-            (r) => !!props.land && r.day.lessons.includes(props.land.lesson),
-        );
-        const row =
-            asked ??
-            landed ??
-            (term !== undefined && today?.day.term !== term
-                ? l.rows.filter((r) => r.day.term === term).at(-1)
-                : (today ?? l.rows.at(-1)));
+        const row = landingRow(props.view, { day: props.open, lesson: props.land?.lesson, term });
         if (row) {
             const i = l.rows.indexOf(row);
             const titles = (props.view.days[i]?.sheets ?? []).map((s) => s.title).join(" and ");
@@ -316,6 +311,19 @@ export function World(props: {
     let asked = "";
     /** Whether the child's arrival is over: no past sheet is asked for before, so the roll is not laid out again under the camera coming down to today. */
     let arrived = false;
+    createEffect(() => {
+        if (!arrivalDue() || props.waiting || !ready() || paintedLayout() !== layout()) return;
+        const v = view;
+        if (!v || busy) return;
+        setArrivalDue(false);
+        arrived = true;
+        const at = landing(props.view.arrival?.term);
+        if (at) {
+            const camera = readAt(v, at.y, at.own);
+            if (quiet) v.set(camera);
+            else v.flyTo(camera);
+        }
+    });
     /**
      * Asks the page for the past sheets near where the camera rests at reading distance, which it
      * draws as they were left. It names every one that is near, not only the new ones, so the page
@@ -502,12 +510,13 @@ export function World(props: {
             paintNear(true);
             rest(v.cam.z >= DAY_AT);
             setReady(true);
+            setPaintedLayout(layout());
             return;
         }
         const at0 = landing(props.view.arrival?.term);
         // the place hands the roll a day and the box its paper ended in: the roll opens there and
         // grows out of it, which is the dive the map and the world already share
-        if (props.open && at0) {
+        if (props.open && at0 && !props.waiting) {
             const to = readAt(v, at0.y, at0.own);
             const box = props.from && !quiet ? cameraOnBox(v, at0.y, props.from) : null;
             v.set(box ?? to);
@@ -517,6 +526,7 @@ export function World(props: {
             if (box) grow(v, box, to);
             announce(at0.says);
             setReady(true);
+            setPaintedLayout(layout());
             return;
         }
         const arrival = props.view.arrival;
@@ -531,17 +541,21 @@ export function World(props: {
             painted.assemble(arrival.term);
             announce(`${name(props.view.open)}. ${arrival.says}`);
             if (came) grow(v, came, open);
-            const p = painted;
             arriving = window.setTimeout(() => {
-                arrived = true;
-                if (view !== v || painted !== p) return;
+                if (view !== v || busy) return;
                 // a child who has moved the paper themselves is not taken back, which is their own
                 // hand and nothing else: a move the roll made as the world put itself together, or a
                 // sheet asking to be seen, used to cancel the landing and leave the roll at the horizon
-                if (v.movedAgo() < ARRIVING) return;
-                const at = landing(arrival.term);
-                if (at) v.flyTo(readAt(v, at.y, at.own));
+                if (v.movedAgo() < ARRIVING) {
+                    arrived = true;
+                    return;
+                }
+                setArrivalDue(true);
             }, ARRIVING);
+        } else if (props.waiting) {
+            v.set(horizonCam(v, props.view.arrival?.term ?? 0));
+            paintNear(true);
+            setArrivalDue(true);
         } else {
             const at = landing(arrival?.term);
             if (at) v.set(readAt(v, at.y, at.own));
@@ -554,6 +568,7 @@ export function World(props: {
             );
         }
         setReady(true);
+        setPaintedLayout(layout());
     }
 
     /**
@@ -655,8 +670,7 @@ export function World(props: {
 
     return (
         <section
-            class={`wd${props.class ? ` ${props.class}` : ""}`}
-            classList={{ ready: ready() }}
+            class={`wd${props.class ? ` ${props.class}` : ""}${ready() ? " ready" : ""}`}
             aria-label={props.title}
         >
             <h1 class="sr">{props.title}</h1>
