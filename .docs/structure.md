@@ -407,7 +407,9 @@ its world drawings synchronously, and from 16 September 2026, when the painters 
 not moved; since the seam went they come through the loader alone (`engine/ui/drawings.ts`), each
 from its own chunk of the catalogue, so a page downloads the drawings its worlds name and no others. The map's box is squared paper from the first stylesheet, and as the screen is drawn it shows a
 snapshot of the framed map from `engine/ui/snapshots/`; the live map is drawn after the drawings have
-loaded, again once the page is idle and a step at a time, and fades in over the snapshot. It is the
+loaded, again once the page is idle and a step at a time, and fades in over the snapshot. Screens
+opened at 700 px or narrower keep the snapshot for decorative backgrounds, including after rotation,
+to avoid rendering a full SVG map behind the page. Interactive maps still use the live renderer. It is the
 country with nobody on it (`countryViewOf` in `school/worlds/view.ts`, drawn by `Overworld`): every
 world of every year and the ways between them, in their colours, with no child's path, place or
 dated stamps. It loads the map's own modules, about 0.2 MB more, which carry no notation and never

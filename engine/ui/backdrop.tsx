@@ -4,6 +4,7 @@
 // is Overworld (overworld.tsx) framed on the page's aim, drawn from the view the page gives once its box
 // comes near the window and the page has nothing else to do, and it fades in over the snapshot. The
 // snapshot is grown about the aim until it covers the box, so a wide, short window shows no bare edge.
+// On phones it remains the background, avoiding the full decorative SVG scene.
 
 import "./backdrop.css";
 import { createEffect, createSignal, on, onCleanup, onMount, Show, type JSX } from "solid-js";
@@ -68,6 +69,17 @@ export function MapBackdrop(props: {
     let aim = props.aim;
     const sample = props.sample === true;
     let box: HTMLDivElement | undefined;
+    let disposed = false;
+    let snapshotOnly = false;
+    let announced = false;
+    const announce = (): void => {
+        if (disposed || announced) return;
+        announced = true;
+        props.onDrawn?.();
+    };
+    onCleanup(() => {
+        disposed = true;
+    });
     const [drawn, setDrawn] = createSignal(false);
     const [live, setLive] = createSignal<Ground | null>(null);
     const [picture, setPicture] = createSignal<{ src: string; at: Box } | null>(null);
@@ -95,11 +107,14 @@ export function MapBackdrop(props: {
     onMount(() => {
         frame();
         if (!box) return;
+        // Decorative maps keep their snapshot on phones to avoid a second, large SVG scene.
+        snapshotOnly = matchMedia("(max-width: 700px)").matches && picture() !== null;
         const watch = new ResizeObserver(() => {
             if (picture()) frame();
         });
         watch.observe(box);
         onCleanup(() => watch.disconnect());
+        if (snapshotOnly) return;
         onCleanup(
             whenNear(box, () => {
                 // a map whose modules the server no longer has loads the page again, once, rather
@@ -107,7 +122,7 @@ export function MapBackdrop(props: {
                 void onDemand(props.ground).then(async (ground) => {
                     // the drawings the screen's own cards wait for go first
                     await idle();
-                    setLive(ground);
+                    if (!disposed) setLive(ground);
                 });
             }),
         );
@@ -136,6 +151,9 @@ export function MapBackdrop(props: {
                         class="backdrop-still"
                         src={p().src}
                         alt=""
+                        onLoad={() => {
+                            if (snapshotOnly) announce();
+                        }}
                         style={{
                             left: `${p().at.left}px`,
                             top: `${p().at.top}px`,
@@ -159,8 +177,13 @@ export function MapBackdrop(props: {
                         title="The map"
                         onDrawn={() => {
                             setDrawn(true);
-                            props.onDrawn?.();
-                            setTimeout(() => setPicture(null), still() ? 0 : FADE + 100);
+                            announce();
+                            setTimeout(
+                                () => {
+                                    if (!disposed) setPicture(null);
+                                },
+                                still() ? 0 : FADE + 100,
+                            );
                         }}
                     />
                 )}
