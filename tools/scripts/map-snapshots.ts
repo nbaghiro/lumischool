@@ -6,7 +6,6 @@
 // tools/scripts/__tests__/map-snapshots.test.ts draws them again and fails when a picture has changed.
 // `--compare` builds the apps and measures each snapshot against the live map it stands in for.
 
-import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
@@ -441,26 +440,41 @@ export async function difference(
 const formatted = async (text: string, file: string): Promise<string> =>
     format(text, { ...(await resolveConfig(file)), filepath: file });
 
-/** Writes every snapshot and its framing module, refusing any image over its budget. */
-/**
- * The harness draws the live map behind the snapshots that are on disk when it is built, and what it
- * draws depends on them, so the pictures a run writes were drawn against the run before it. The map
- * is therefore drawn again until two passes running write the same pictures, which is the state the
- * test finds when it draws the map afresh and compares. Three passes have always been enough.
- */
+// Rebuild against the preceding pass's framing; rasterization may differ without moving the map.
 async function snapshotAll(browser: Browser): Promise<void> {
-    let before = "";
+    let before: Drawn[] = [];
     for (let pass = 1; pass <= 4; pass++) {
-        if (pass > 1) process.stdout.write("drawn again, since the last drawing moved it\n");
+        if (pass > 1) process.stdout.write("checking against a fresh drawing\n");
         const after = await snapshotPass(browser);
-        if (pass > 1 && after === before) return;
+        if (pass > 1) {
+            let stable = true;
+            for (const fresh of after) {
+                const kept = before.find((d) => d.file === fresh.file);
+                if (!kept) throw new Error(`missing preceding drawing for ${fresh.file}`);
+                const d = await difference(browser, fresh.webp, kept.webp);
+                const placed = JSON.stringify(fresh.snapshot) === JSON.stringify(kept.snapshot);
+                const same = placed && d.mean <= SAME.mean && d.far <= SAME.far;
+                stable &&= same;
+                process.stdout.write(
+                    `${fresh.file}: mean ${d.mean.toFixed(4)}, ${(d.far * 100).toFixed(4)}% far apart, framing ${placed ? "unchanged" : "changed"}\n`,
+                );
+            }
+            if (stable) {
+                process.stdout.write(
+                    "snapshots match a fresh drawing within the visual test limits\n",
+                );
+                return;
+            }
+        }
         before = after;
     }
-    process.stdout.write("the drawing was still moving after four passes\n");
+    throw new Error(
+        "snapshots did not converge after four passes; inspect the reported differences",
+    );
 }
 
-/** One drawing of every framing, written out, and a digest of the pictures it wrote. */
-async function snapshotPass(browser: Browser): Promise<string> {
+/** One drawing of every framing, written out for the next harness build. */
+async function snapshotPass(browser: Browser): Promise<Drawn[]> {
     const { dir, dist } = await buildHarness();
     try {
         const drawn: Drawn[] = [];
@@ -493,9 +507,7 @@ ${mine.map(({ file, snapshot: s }) => `{ src: new URL(${JSON.stringify(`./${file
                 await formatted(module, join(OUT, `${name}.ts`)),
             );
         }
-        return drawn
-            .map((d) => `${d.file}:${createHash("sha256").update(d.webp).digest("hex")}`)
-            .join(" ");
+        return drawn;
     } finally {
         await rm(dir, { recursive: true, force: true });
     }

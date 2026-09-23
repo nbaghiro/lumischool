@@ -17,6 +17,30 @@ export interface Size {
     h: number;
 }
 
+/** Backing pixels, independent of CSS size and camera zoom. */
+export function surfaceSizes(
+    wanted: readonly Size[],
+    totalPixels: number,
+    surfacePixels: number,
+): Size[] {
+    if (
+        !Number.isFinite(totalPixels) ||
+        !Number.isFinite(surfacePixels) ||
+        totalPixels < 0 ||
+        surfacePixels < 0
+    )
+        throw new RangeError("Invalid pixel budget");
+    const bounded = wanted.map(({ w, h }) => {
+        if (!Number.isFinite(w) || !Number.isFinite(h) || w < 0 || h < 0)
+            throw new RangeError("Invalid surface size");
+        const scale = w * h ? Math.min(1, Math.sqrt(surfacePixels / (w * h))) : 0;
+        return { w: w * scale, h: h * scale };
+    });
+    const sum = bounded.reduce((n, s) => n + s.w * s.h, 0);
+    const scale = sum ? Math.min(1, Math.sqrt(totalPixels / sum)) : 0;
+    return bounded.map(({ w, h }) => ({ w: Math.floor(w * scale), h: Math.floor(h * scale) }));
+}
+
 export interface Rect {
     x: number;
     y: number;

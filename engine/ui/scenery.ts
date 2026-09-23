@@ -398,6 +398,15 @@ export interface Piece {
     paint(): Element[];
 }
 
+export function releaseScenery(elements: readonly Element[]): void {
+    for (const element of elements) {
+        const drawings = [element, ...element.querySelectorAll(".j-art")];
+        for (const drawing of drawings)
+            if (drawing instanceof HTMLElement) PLACED.get(drawing)?.playing?.stop();
+        element.remove();
+    }
+}
+
 /** Everything a ground or a path painter needs about the stretch it is painting. */
 interface Ctx {
     p: Pad;
@@ -6570,7 +6579,7 @@ const longDay = (iso: string): string =>
 
 /** A year's roll drawn from its view into a page's world layer (world.tsx), and what the page plays on it. */
 export interface WorldPainted {
-    pieces: { rect: Rect; paint(): void }[];
+    pieces: { rect: Rect; paint(): (() => void) | void }[];
     /** A world putting itself together as the child arrives: what stands on a term's horizon rises into place. */
     assemble(term: number): void;
     /** Settle every drawing while a sheet has the child's attention, and wake them after. */
@@ -6646,11 +6655,11 @@ export function paintWorldView(o: {
             if (standingOf(e)?.on === o.play) bloom(e, still);
         }
     };
-    const place = (els: Element[], arrive?: number, ahead = false): void => {
+    const place = (els: Element[], arrive?: number, ahead = false, celebrate = true): void => {
         for (const e of els) {
             if (ahead) e.classList.add("ahead");
             if (arrive !== undefined && e instanceof HTMLElement) e.dataset.arrive = String(arrive);
-            dayEvents(e, arrive);
+            if (celebrate) dayEvents(e, arrive);
             (FLAGS.some((c) => e.classList.contains(c)) ? L.flags : L.art).append(e);
         }
     };
@@ -6743,8 +6752,18 @@ export function paintWorldView(o: {
                 rowsIn(r),
             ),
         { motion: false, play },
-    ))
-        pieces.push({ rect: piece.rect, paint: () => place(piece.paint()) });
+    )) {
+        let seen = false;
+        pieces.push({
+            rect: piece.rect,
+            paint() {
+                const elements = piece.paint();
+                place(elements, undefined, false, !seen);
+                seen = true;
+                return () => releaseScenery(elements);
+            },
+        });
+    }
     l.rows.forEach((row, r) => {
         const w = pictureOf(row.world);
         if (!w) return;

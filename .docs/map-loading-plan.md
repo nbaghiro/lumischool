@@ -1,11 +1,10 @@
 # Shared map, world and lesson loading: execution plan
 
-Status: final implementation specification, awaiting the user's explicit go. Reconciled with
-HEAD `e42d1bf` and the local working tree on 23 September 2026 by the original map/lesson-loading
-session. The user's acceptance of the design priorities is not authorization to implement yet.
-Application code has not been changed for this review. This plan supersedes the execution details
+Status: implementation authorized by the user's explicit go on 23 September 2026. The design review
+was reconciled with HEAD `e42d1bf` and the local working tree by the original map/lesson-loading
+session. The execution record below tracks subsequent code and verification changes. This plan supersedes the execution details
 of [the handoff proposal](map-loading.md), retaining that document as background evidence.
-Implementation, committing, pushing and deployment remain separately authorized actions.
+Committing, pushing and deployment remain separately authorized actions.
 
 Read this document in three passes: [baseline and priorities](#current-baseline-and-nonnegotiable-priorities),
 [architecture contracts](#contracts-and-ownership), then [ordered work packages](#ordered-work-packages).
@@ -352,8 +351,8 @@ unrelated auth/game/flight work. No worktree, stash or reset is part of this pla
 
 ## Ordered work packages
 
-The phase table is the overview; this is the implementation checklist. All packages below are
-pending. Paths for new modules are proposed homes, not files already implemented. Prefer extending
+The phase table is the overview; this is the implementation checklist. Progress is recorded in
+the execution record below. Paths for new modules are proposed homes, not files already implemented. Prefer extending
 the existing owner when it cleanly holds the concept; do not create a framework merely to match
 a filename. Pure residency/admission rules can live in `engine/space-residency.ts`; DOM and
 document lifecycle adapters belong in `engine/ui/residency.ts`. School-specific dependencies
@@ -824,4 +823,76 @@ and avoiding a new import dependency on the critical path. The experiment and ph
 designed to expose these before a whole-product rollout. They are not a promise that every
 browser fault or unsupported future lesson has already been solved.
 
-Await the user's confirmation of this plan before changing application code.
+Implementation is authorized. Commit, push, deployment and physical-device acceptance remain separate gates.
+
+## Execution record
+
+Execution started from clean HEAD `2957871`. The authentication work noted above is now committed;
+the existing flight and lesson-loading behavior remains the baseline to preserve.
+
+- Baseline: all 30 existing desktop/phone tests in `map.e2e.ts` and `kid-map.e2e.ts` passed
+  in 2.9 minutes. These are browser behavior
+  checks, not physical-device performance measurements.
+- Ownership work in progress: camera disposal now releases its observer, handlers, RAF, timers,
+  pointer state and canvas storage. Atlas, World and Place use destruction on unmount;
+  ordinary camera stop still preserves the view. Moving scenery has explicit teardown and
+  animation groups can release immediately when their scene is removed.
+- New repeated map/world open-close checks pass on desktop and phone Chrome, asserting no
+  detached camera observers and zero retained backing pixels for destroyed paper canvases.
+  The probe intentionally retains references for inspection; it does not measure browser GC.
+- Terrain marks, features and country travellers now have per-piece release and a retention
+  margin. Ordinary scenery in World and Place releases its drawing registrations when evicted.
+  Broad terrain, dependency metadata, admission, weighted lesson caches and backend selection
+  remain pending. Total map residency and the physical crash are not yet resolved.
+
+### Ownership and state audit at execution start
+
+| Owner | Resources and release boundary | Next constraint |
+| --- | --- | --- |
+| `CanvasView` | Paper canvas, camera RAF/settle timer, input handlers, resize observer. Destroy on scene unmount, stop only for camera changes. | Paper backing is now capped at 2 million pixels per view, 4 million across views, with DPR at most 1.5. The broader graphics ledger remains pending. |
+| `paintMapView` / `paintTerrain` | Terrain and place layers, idle group, traveller rebuild, visibility/resize/intersection observers, celebration timers. Stop before replacement and after late construction. | Terrain marks, features and country travellers now return disposable ownership. Broad masks and place compositions remain retained; their migration must cover non-returned elements appended directly into shared SVG layers. |
+| `paintWorldView` | Ground/art/flags, arrival ticker, idle group, delayed gate moments. World owns lifetime. Ordinary scenery has individual disposal. | Broad stretch ground/horizon still needs migration. A height update currently rebuilds scenery; separate layout revision from visual revision before changing this. |
+| `Place` | Its own camera and art group, dive/grow/pull transition ticker, delayed moments and paper shells. Ordinary scenery has individual disposal. | Broad stretch ground/horizon and paper shells still need migration; this is the actual child route. |
+| `readingShelf` / `preparedPaper` | Measurement host and unclaimed sheet roots. Reader exclusively owns a claimed root. | Concurrent claims now need separate DOM; immutable source data can still be deduplicated. Weighted limits remain pending. |
+| `Reading` / `nearPaper` | Read-only nearby sheets and retained heights; generation rejects late results. | Entry currently waits for every sibling on the destination day. Keep this until the precise-target readiness change is tested. |
+| Parent `Journal` | Separate raw-read, paper, heights, pending and card maps. | Async reads can finish after unmount; migrate to explicit generation and shared admission. Do not assume Reading's cleanup covers this path. |
+| `todaysSheets` / `sheetFor` | Live lesson root, Sitting, instantiated questions, submitted turns and local widget state. | Pin the whole active lesson until its draft restoration contract is complete. Do not put it in read-only sheet eviction. |
+| `JourneyMap` / `MapPicture` / `Near` | One-way near-viewport admission creates persistent scenes. | Reversible visibility and static compositions are still required. |
+
+State safety classifications for the first residency migration:
+
+- Pure terrain and decorative art can be reconstructed from stable parameters and seeds, provided
+  their animation, observer and timer handles are released. Progress/moment occurrence stays in
+  the model; recreating art must not emit learning events or replay a visit's celebration.
+- Read-only past sheets can be reconstructed from their exact pack and event revision, but the
+  presented section and focused controls stay mounted for accessibility. Parent marking and
+  child question editors are not classified as read-only just because their surrounding roll is.
+- Typed drafts in `Strip` live in a Solid signal; `put` updates that signal and submission calls
+  `acts.typed`. The event-derived `state.written` is not a complete restore point for unsent
+  typing. Arrangement/program editing and guide interaction state likewise need pinning before
+  any new eviction. `sheetFor` owns Sitting and instantiated questions independently of scenery.
+- The answer queue in `engine/ui/kid.ts` may use a memory fallback when IndexedDB is unavailable.
+  Unsaved input and unsent queue entries rule out automatic reload as asset-failure recovery.
+- Printing uses the complete canonical lesson route in `apps/home/explore.tsx`; viewport residency
+  must not determine print content. Calendar printing is a separate existing surface.
+
+The first full check during execution stopped at concurrent authentication edits in `server/auth.ts`
+and `server/http.ts`. Those files are owned by the authentication session and are not changed by
+this work. Re-run the integrated check after that batch settles; a passing earlier typecheck is
+not a substitute for the final shared-tree check.
+
+Subsequent checks: the 32-case desktop/phone map suite passed after initial teardown and exclusive
+paper transfer. The expanded 36-case suite passed after World and Place scenery cleanup, with
+resize/intersection observer probes, aggregate canvas limits on resize and identical pencil-path
+reconstruction after terrain eviction. Both additional normal-motion teardown checks passed,
+bringing browser coverage for this batch to 38 passing desktop/phone cases.
+Latest combined log: `/tmp/lumischool-map-foundation-e2e.log`. Pure pixel-allocation
+tests and the seven paper-cache tests pass. These results do not yet satisfy the full phase 1 exit:
+complete world/Place ground ownership, resource admission, suspension and protected state integration
+remain required. No aggressive eviction of active lessons has been introduced. Engine tests (497),
+school tests (341), and both build checks also passed during this foundation work.
+
+The latest integrated check passes typechecking, lint, formatting and suppression guards, then
+stops at `server/db/check-auth-emails.ts` importing `school/family/login`, which the current database
+boundary forbids. This is part of the concurrent authentication work, not a map file. Keep that
+failure visible until the owning session resolves it; do not relax the boundary in this batch.

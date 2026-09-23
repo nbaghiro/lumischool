@@ -31,7 +31,7 @@ import {
 import { idle, still } from "./art";
 import type { MapPainted } from "./map";
 import { announce } from "./say";
-import { CanvasView } from "./view";
+import type { CanvasView } from "./view";
 import { mapPainter } from "./painters";
 import type { Flying } from "./flight";
 import { readTokens } from "./read-tokens";
@@ -130,11 +130,16 @@ export function Overworld(props: {
     onDrawn?: () => void;
 }): JSX.Element {
     let host: HTMLElement | undefined;
+    let disposed = false;
     let flying: Flying | null = null;
     let loadingFlight = false;
     let view: CanvasView | undefined;
     let painted: MapPainted | undefined;
-    let pending: { piece: MapPainted["pieces"][number]; done: boolean }[] = [];
+    let pending: {
+        piece: MapPainted["pieces"][number];
+        done: boolean;
+        release?: () => void;
+    }[] = [];
     let brush = 0;
     /**
      * A movement is under way, or the map has gone into a place and is done: it stays busy from then
@@ -261,10 +266,19 @@ export function Overworld(props: {
         const step = (): void => {
             brush = 0;
             if (!view) return;
-            // a map that pans has a screen's width of country ready round it; a backdrop flies a little and paints as it goes
+            // Keep a wider release margin so crossing a tile edge does not repeatedly rebuild it.
             const t0 = performance.now(),
-                seen = view.visible(props.aim ? 160 : Math.max(view.vp.w, 600)),
+                margin = props.aim ? 160 : Math.min(256, Math.max(view.vp.w, view.vp.h) / 2),
+                seen = view.visible(margin),
+                keep = view.visible(margin * 2),
                 z = view.cam.z;
+            for (const p of pending) {
+                if (p.release && (!intersects(p.piece.rect, keep) || z < (p.piece.minZ ?? 0))) {
+                    p.release();
+                    p.release = undefined;
+                    p.done = false;
+                }
+            }
             const todo = pending.filter(
                 (p) =>
                     !p.done &&
@@ -273,8 +287,8 @@ export function Overworld(props: {
             );
             for (const p of todo) {
                 p.done = true;
-                p.piece.paint();
-                if (performance.now() - t0 > 10) break;
+                p.release = p.piece.paint() ?? undefined;
+                if (performance.now() - t0 > 4) break;
             }
             if (todo.some((p) => !p.done)) brush = window.setTimeout(step, 0);
             else if (!drawn && painted) firstFrame(painted);
@@ -752,6 +766,7 @@ export function Overworld(props: {
 
     async function drawNow(v: CanvasView): Promise<void> {
         flying?.stop();
+        for (const p of pending) p.release?.();
         painted?.stop();
         painted = undefined;
         riders = null;
@@ -839,8 +854,9 @@ export function Overworld(props: {
         setReady(true);
     }
 
-    onMount(() => {
-        if (!host) return;
+    onMount(async () => {
+        const { CanvasView } = await mapPainter();
+        if (!host || disposed) return;
         const v = new CanvasView(host, {
             bounds: (camera) => fenced(camera),
             frame: (cam) => onFrame(cam),
@@ -917,8 +933,11 @@ export function Overworld(props: {
         ),
     );
     onCleanup(() => {
+        disposed = true;
         clearTimeout(brush);
         flying?.stop();
+        for (const p of pending) p.release?.();
+        pending = [];
         painted?.stop();
         view?.dispose();
         // a settle or a frame still on its way finds no map to move

@@ -116,6 +116,7 @@ export interface TerrainPainted {
     pieces: (Piece & { minZ: number })[];
     /** Redraw how far the child has come, for the colour washing over newly reached land. */
     setReach(r: MapReach): void;
+    release(elements: readonly Element[]): void;
     stop(): void;
 }
 
@@ -693,7 +694,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
                     turn(a, turning);
                     pause?.watch(a);
                 }
-                return [];
+                return a ? [a] : [];
             },
         });
     }
@@ -704,15 +705,17 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             rect: { x: b.at.x - sz.w, y: b.at.y - sz.h, w: sz.w * 2, h: sz.h * 2 },
             minZ: 0.04,
             paint: () => {
-                if (knownAt(b.at))
-                    feature("bridge", { x: b.at.x, y: b.at.y + sz.h * 0.35 }, 0.9, false, ang);
-                return [];
+                const a = knownAt(b.at)
+                    ? feature("bridge", { x: b.at.x, y: b.at.y + sz.h * 0.35 }, 0.9, false, ang)
+                    : null;
+                return a ? [a] : [];
             },
         });
     }
 
     // the country's small life (life.ts), each thing a piece painted as the camera comes near it
     const named = new Set<string>();
+    const lifeStarted = performance.now();
     let sheet: HTMLStyleElement | null = null;
     const keyframes = (name: string, css: () => string) => {
         if (named.has(name)) return;
@@ -734,8 +737,9 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         go.className = "ow-go";
         go.style.transform = `translate(${rest.x.toFixed(1)}px, ${rest.y.toFixed(1)}px) scaleX(${rest.flip})`;
         if (rest.o < 1) go.style.opacity = String(rest.o);
+        const elapsed = (performance.now() - lifeStarted) / 1000;
         if (f)
-            go.style.animation = `${name} ${period}s linear ${(-s.phase * period).toFixed(2)}s infinite`;
+            go.style.animation = `${name} ${period}s linear ${(-(s.phase * period + elapsed) % period).toFixed(2)}s infinite`;
         lifeLayer.append(go);
         pause?.watch(go);
         if (s.shade && f) {
@@ -785,12 +789,13 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             keyframes(bn, () => bobCss(bn, { lift: bob.lift * 2.4, deg: bob.deg }));
             bobbing.className = "ow-bob";
             bobbing.style.transformOrigin = `${dx.toFixed(1)}px ${(dy - h * (1 - bob.pivot)).toFixed(1)}px`;
-            bobbing.style.animation = `${bn} ${bob.period.toFixed(2)}s ease-in-out ${(-s.phase * bob.period * 2).toFixed(2)}s infinite alternate`;
+            bobbing.style.animation = `${bn} ${bob.period.toFixed(2)}s ease-in-out ${(-(s.phase * bob.period * 2 + elapsed) % (bob.period * 2)).toFixed(2)}s infinite alternate`;
             bobbing.append(a);
             go.append(bobbing);
         };
         one(s.art, s.params, s.size, 0, 0);
         if (f) for (const b of s.follow) one(b.art, b.params, b.size, b.dx, b.dy);
+        return go;
     };
     for (const s of view.life) {
         // standing still, what only makes sense moving is left out
@@ -803,10 +808,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         pieces.push({
             rect: { x: x0, y: y0, w: Math.max(...xs) + pad - x0, h: Math.max(...ys) + pad - y0 },
             minZ: 0.04,
-            paint: () => {
-                live(s);
-                return [];
-            },
+            paint: () => [live(s)],
         });
     }
 
@@ -855,10 +857,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             pieces.push({
                 rect,
                 minZ: 0,
-                paint: () => {
-                    tile(rect);
-                    return [];
-                },
+                paint: () => tile(rect),
             });
         }
     // a range's marks are worked out once and shared by every tile they fall in
@@ -871,7 +870,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         return made;
     };
 
-    function tile(r: Rect): void {
+    function tile(r: Rect): Element[] {
         const seed = hash(`${r.x},${r.y}`),
             ink = pad(r, seed, t, "ow-marks"),
             grey = pad(r, seed + 1, t, "ow-marks ow-pencil"),
@@ -1034,6 +1033,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             pencilInk.flush(grey.svg);
             below(grey.svg);
         }
+        return [sea.svg, ink.svg, grey.svg].filter((svg) => svg.parentNode);
     }
     function tree(g: Ink, q: Pt, kind: WoodKind, s: number, c: boolean): void {
         const line = { stroke: c ? t.ink : soft, strokeWidth: 3.6 };
@@ -1144,6 +1144,12 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
     return {
         pieces,
         setReach,
+        release(elements) {
+            for (const element of elements) {
+                pause?.unwatch(element);
+                element.remove();
+            }
+        },
         stop: () => pause?.stop(),
     };
 }
@@ -3252,7 +3258,7 @@ const layer = (cls: string): HTMLDivElement => {
 export interface MapPiece {
     rect: Rect;
     minZ?: number;
-    paint(): void;
+    paint(): (() => void) | void;
 }
 
 /** A map drawn from its view into a page's world layer (overworld.tsx), and what the page moves on it. */
@@ -3331,7 +3337,9 @@ export async function paintMapView(o: {
                 rect: p.rect,
                 minZ: p.minZ,
                 paint: () => {
-                    p.paint();
+                    const elements = p.paint();
+                    if (elements.length) return () => land.release(elements);
+                    return undefined;
                 },
             })),
             ...painted.pieces.map((p) => ({

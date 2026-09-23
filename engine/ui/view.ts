@@ -16,6 +16,7 @@ import {
     readWheel,
     toScreen,
     toWorld,
+    surfaceSizes,
     visibleRect,
     wheelFactor,
     zoomAt,
@@ -48,6 +49,30 @@ const motion = matchMedia("(prefers-reduced-motion: reduce)");
 export const reducedMotion = () => motion.matches;
 
 export class CanvasView {
+    private static readonly surfaces = new Set<CanvasView>();
+    private static sizePaper(): void {
+        const views = [...CanvasView.surfaces];
+        const dpr = Math.min(devicePixelRatio || 1, 1.5);
+        const sizes = surfaceSizes(
+            views.map((v) => ({ w: v.vp.w * dpr, h: v.vp.h * dpr })),
+            4_000_000,
+            2_000_000,
+        );
+        const changed = views.flatMap((v, i) => {
+            const size = sizes[i];
+            return size && (v.paper.width !== size.w || v.paper.height !== size.h)
+                ? [{ v, size }]
+                : [];
+        });
+        // Release old storage before allocating replacements, including during rotation.
+        for (const { v } of changed) v.paper.width = v.paper.height = 0;
+        for (const { v, size } of changed) {
+            v.paper.width = size.w;
+            v.paper.height = size.h;
+            v.drawPaper();
+            v.request();
+        }
+    }
     readonly world: HTMLDivElement;
     readonly paper: HTMLCanvasElement;
     cam: Camera = { x: 0, y: 0, z: 1 };
@@ -94,6 +119,7 @@ export class CanvasView {
         this.colors();
         this.resizing = new ResizeObserver(() => this.measure());
         this.resizing.observe(host);
+        CanvasView.surfaces.add(this);
         this.measure();
         const options = { signal: this.events.signal };
         host.addEventListener("pointerdown", this.down, options);
@@ -133,6 +159,7 @@ export class CanvasView {
             h = this.host.clientHeight || 1;
         const changed = w !== this.vp.w || h !== this.vp.h;
         this.vp = { w, h };
+        CanvasView.sizePaper();
         this.request();
         if (changed) this.hooks.resized?.(this.vp);
     }
@@ -167,6 +194,8 @@ export class CanvasView {
         this.pair = null;
         this.spaceHeld = false;
         this.paper.width = this.paper.height = 0;
+        CanvasView.surfaces.delete(this);
+        CanvasView.sizePaper();
         this.paper.remove();
         this.world.remove();
     }
@@ -320,19 +349,16 @@ export class CanvasView {
     }
 
     private drawPaper(): void {
-        const dpr = devicePixelRatio || 1,
-            W = Math.round(this.vp.w * dpr),
-            H = Math.round(this.vp.h * dpr);
-        if (this.paper.width !== W || this.paper.height !== H) {
-            this.paper.width = W;
-            this.paper.height = H;
-        }
+        const W = this.paper.width,
+            H = this.paper.height,
+            dpr = Math.min(W / this.vp.w, H / this.vp.h);
+        if (!W || !H) return;
         const ctx = this.paper.getContext("2d");
         if (!ctx) return;
         ctx.clearRect(0, 0, W, H);
         ctx.fillStyle = this.gridInk;
         const o = toScreen(this.cam, this.vp, { x: 0, y: 0 }),
-            lw = Math.max(1, Math.round(dpr));
+            lw = Math.max(1, dpr);
         for (const layer of paperLayers(this.cam.z)) {
             if (layer.alpha < 0.02) continue;
             ctx.globalAlpha = layer.alpha;

@@ -4,7 +4,7 @@ One current-state document per domain. Start here to find where something lives,
 
 | Document | Covers |
 |---|---|
-| [map-loading-plan.md](map-loading-plan.md) | Final shared map/world/lesson implementation specification, awaiting go: verified code baseline, product priorities, resource ownership, selective loading, renderer experiment, ordered work packages, state protection, visual quality, tests and release gates |
+| [map-loading-plan.md](map-loading-plan.md) | Authorized shared map/world/lesson implementation specification and execution record: code baseline, product priorities, resource ownership, selective loading, renderer experiment, ordered work packages, state protection, visual quality, tests and release gates |
 | [game-engine-direction.md](game-engine-direction.md) | Proposed engine growth before migration: shared sessions, interacting objects, objectives, construction, checkpoints and proving games |
 | [games-migration.md](games-migration.md) | Current 17-game/83-level inventory, reusable rules and physics, remaining prototype player/audio, recording gaps and proposed app integration slices |
 | [multi-parent.md](multi-parent.md) | Equal-parent invitations, Account management, email design, revocation and manual QA |

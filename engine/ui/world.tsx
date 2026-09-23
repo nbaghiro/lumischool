@@ -117,7 +117,11 @@ export function World(props: {
     let above: HTMLDivElement | undefined;
     let view: CanvasView | undefined;
     let painted: WorldPainted | undefined;
-    let pending: { piece: WorldPainted["pieces"][number]; done: boolean }[] = [];
+    let pending: {
+        piece: WorldPainted["pieces"][number];
+        done: boolean;
+        release?: () => void;
+    }[] = [];
     let brush = 0;
     /** The wait between the arrival and the camera coming down to today, cleared when the roll goes. */
     let arriving = 0;
@@ -354,12 +358,21 @@ export function World(props: {
             brush = 0;
             if (!view) return;
             const t0 = performance.now(),
-                seen = view.visible(Math.max(view.vp.h, 700));
+                margin = Math.min(320, view.vp.h / 2),
+                seen = view.visible(margin),
+                keep = view.visible(margin * 2);
+            for (const p of pending) {
+                if (p.release && !intersects(p.piece.rect, keep)) {
+                    p.release();
+                    p.release = undefined;
+                    p.done = false;
+                }
+            }
             const todo = pending.filter((p) => !p.done && intersects(p.piece.rect, seen));
             for (const p of todo) {
                 p.done = true;
-                p.piece.paint();
-                if (!all && performance.now() - t0 > 10) break;
+                p.release = p.piece.paint() ?? undefined;
+                if (!all && performance.now() - t0 > 4) break;
             }
             if (todo.some((p) => !p.done)) brush = window.setTimeout(step, 0);
         };
@@ -484,6 +497,7 @@ export function World(props: {
         painted?.stop();
         for (const c of Array.from(v.world.children)) if (c !== sheets && c !== above) c.remove();
         v.world.classList.remove("j-world");
+        for (const p of pending) p.release?.();
         painted = paintWorldView({
             host,
             world: v.world,
@@ -649,6 +663,8 @@ export function World(props: {
         clearTimeout(arriving);
         clearTimeout(asking);
         clearTimeout(resting);
+        for (const p of pending) p.release?.();
+        pending = [];
         painted?.stop();
         sheets?.removeEventListener(REVEAL, follow);
         view?.dispose();

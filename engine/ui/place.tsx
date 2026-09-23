@@ -86,7 +86,12 @@ export function Place(props: {
     let host: HTMLElement | undefined;
     let view: CanvasView | undefined;
     let group: Group | null = null;
-    let pending: { rect: Rect; paint: () => void; done: boolean }[] = [];
+    let pending: {
+        rect: Rect;
+        paint: () => (() => void) | void;
+        done: boolean;
+        release?: () => void;
+    }[] = [];
     let laid: Laid[] = [];
     let token: HTMLElement | undefined;
     let flags: HTMLElement | null = null;
@@ -176,12 +181,21 @@ export function Place(props: {
             const v = view;
             if (!v) return;
             const t0 = performance.now(),
-                seen = v.visible(Math.max(v.vp.w, v.vp.h, 700));
+                margin = Math.min(320, Math.max(v.vp.w, v.vp.h) / 2),
+                seen = v.visible(margin),
+                keep = v.visible(margin * 2);
+            for (const p of pending) {
+                if (p.release && !intersects(p.rect, keep)) {
+                    p.release();
+                    p.release = undefined;
+                    p.done = false;
+                }
+            }
             const todo = pending.filter((p) => !p.done && intersects(p.rect, seen));
             for (const p of todo) {
                 p.done = true;
-                p.paint();
-                if (!all && performance.now() - t0 > 10) break;
+                p.release = p.paint() ?? undefined;
+                if (!all && performance.now() - t0 > 4) break;
             }
             if (todo.some((p) => !p.done)) brush = window.setTimeout(step, 0);
         };
@@ -390,6 +404,7 @@ export function Place(props: {
         const art = await worldPainter();
         if (!host || v !== view || n !== drawing) return;
         const t = trail();
+        for (const p of pending) p.release?.();
         group?.dispose();
         v.world.replaceChildren();
         v.world.className = "world j-world pl-world";
@@ -470,18 +485,21 @@ export function Place(props: {
         art.sceneryPieces(view0, host, () => "summer", { play: group }).forEach((piece, i) => {
             const s = land.scenery[i];
             if (!s) return;
+            let seen = false;
             pending.push({
                 rect: piece.rect,
                 done: false,
                 paint: () => {
                     const foot = piece.rect.y + piece.rect.h;
-                    if (s.kind !== "moment" && beyond(foot)) return;
-                    for (const e of piece.paint()) {
+                    if (s.kind !== "moment" && beyond(foot)) return undefined;
+                    const elements = piece.paint();
+                    for (const e of elements) {
                         if (
                             e instanceof HTMLElement &&
                             e.classList.contains("reach") &&
                             e.classList.contains("lit") &&
                             t.standings[i]?.on === props.play &&
+                            !seen &&
                             !quiet
                         )
                             bloom(e, quiet);
@@ -490,6 +508,7 @@ export function Place(props: {
                             e.classList.contains("moment") &&
                             e.classList.contains("inked") &&
                             t.moment === props.play &&
+                            !seen &&
                             !quiet
                         )
                             playMoment(e, L.art, quiet);
@@ -498,6 +517,8 @@ export function Place(props: {
                             : L.art
                         ).append(e);
                     }
+                    seen = true;
+                    return () => art.releaseScenery(elements);
                 },
             });
         });
@@ -957,6 +978,8 @@ export function Place(props: {
     );
     onCleanup(() => {
         transition?.stop();
+        for (const p of pending) p.release?.();
+        pending = [];
         clearTimeout(brush);
         for (const t of playing) clearTimeout(t);
         group?.dispose();

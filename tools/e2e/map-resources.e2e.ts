@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { test } from "./steps";
+import { signInAs, test } from "./steps";
 
 declare global {
     interface Window {
@@ -8,6 +8,7 @@ declare global {
             detachedObservers(): number;
             detachedPixels(): number;
         };
+        mapTilesProbe: { el: Element; key: string; drawing: string }[];
     }
 }
 
@@ -104,3 +105,87 @@ for (const motion of ["reduce", "no-preference"] as const) {
         expect(errors).toEqual([]);
     });
 }
+
+test("atlas terrain detail is released away from the camera and reconstructed with the same ink", async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await signInAs(page);
+    await page
+        .getByRole("navigation", { name: "The grown-ups' places" })
+        .getByRole("link", { name: "Map" })
+        .click();
+    const map = page.locator(".ow-host.ready");
+    await expect(map).toBeVisible({ timeout: 60_000 });
+    const meadow = map.locator('.ow-node[aria-label*="meadow" i]').first();
+    const sky = map.locator('.ow-node[aria-label*="night sky" i]').first();
+    await meadow.dispatchEvent("click");
+    await expect(meadow).toHaveAttribute("tabindex", "0");
+    await expect.poll(() => map.locator(".ow-marks").count()).toBeGreaterThan(0);
+    await map.evaluate((root) => {
+        window.mapTilesProbe = Array.from(root.querySelectorAll(".ow-marks")).map((el) => ({
+            el,
+            key: `${el.getAttribute("viewBox")}|${el.getAttribute("class")}`,
+            drawing: Array.from(el.querySelectorAll("path"))
+                .map((p) => p.getAttribute("d"))
+                .join("|"),
+        }));
+    });
+    await sky.dispatchEvent("click");
+    await expect(sky).toHaveAttribute("tabindex", "0");
+    await expect
+        .poll(() =>
+            page.evaluate(() => window.mapTilesProbe.filter((p) => !p.el.isConnected).length),
+        )
+        .toBeGreaterThan(0);
+    await meadow.dispatchEvent("click");
+    await expect(meadow).toHaveAttribute("tabindex", "0");
+    await expect
+        .poll(() =>
+            map.evaluate((root) => {
+                const now = Array.from(root.querySelectorAll(".ow-marks"));
+                return window.mapTilesProbe.some(
+                    (old) =>
+                        !old.el.isConnected &&
+                        now.some(
+                            (el) =>
+                                `${el.getAttribute("viewBox")}|${el.getAttribute("class")}` ===
+                                    old.key &&
+                                Array.from(el.querySelectorAll("path"))
+                                    .map((p) => p.getAttribute("d"))
+                                    .join("|") === old.drawing,
+                        ),
+                );
+            }),
+        )
+        .toBe(true);
+});
+
+test("multiple maps share a bounded paper canvas allocation across resizing", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    // Phone backdrops intentionally retain their snapshots instead of mounting a live map.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/home");
+    await page.locator("#you").scrollIntoViewIfNeeded();
+    const canvases = page.locator(".ow-host > canvas.paper");
+    await expect.poll(() => canvases.count()).toBeGreaterThan(1);
+    for (const size of [
+        { width: 390, height: 844 },
+        { width: 1440, height: 900 },
+    ]) {
+        await page.setViewportSize(size);
+        await expect
+            .poll(() =>
+                canvases.evaluateAll((els) => {
+                    const pixels = els.map((el) =>
+                        el instanceof HTMLCanvasElement ? el.width * el.height : 0,
+                    );
+                    return (
+                        pixels.every((n) => n <= 2_000_000) &&
+                        pixels.reduce((a, b) => a + b, 0) <= 4_000_000
+                    );
+                }),
+            )
+            .toBe(true);
+    }
+});

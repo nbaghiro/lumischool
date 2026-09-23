@@ -6,12 +6,16 @@
 
 import { onDemand } from "./art";
 
-let mapCode: Promise<typeof import("./map")> | null = null;
+type MapCode = typeof import("./map") & Pick<typeof import("./view"), "CanvasView">;
+let mapCode: Promise<MapCode> | null = null;
 let worldCode: Promise<typeof import("./scenery")> | null = null;
 
 /** The country painter, loaded the first time a map is drawn. */
-export const mapPainter = (): Promise<typeof import("./map")> =>
-    (mapCode ??= onDemand(() => import("./map")).catch((error: unknown) => {
+export const mapPainter = (): Promise<MapCode> =>
+    (mapCode ??= onDemand(async () => {
+        const [map, { CanvasView }] = await Promise.all([import("./map"), import("./view")]);
+        return { ...map, CanvasView };
+    }).catch((error: unknown) => {
         mapCode = null;
         throw error;
     }));
