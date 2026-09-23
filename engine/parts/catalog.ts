@@ -524,6 +524,7 @@ export const CATALOG = {
         ukulele: () => import("./music/ukulele").then((m) => m.ukulele),
     },
     science: {
+        "workshop-piece": () => import("./science/workshop-piece").then((m) => m.workshopPiece),
         bands: () => import("./science/bands").then((m) => m.bands),
         beam: () => import("./science/beam").then((m) => m.beam),
         boat: () => import("./science/boat").then((m) => m.boat),

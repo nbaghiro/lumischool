@@ -737,6 +737,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["science", "length"],
         words: "slope roll ball marble track cup push energy height steeper",
     },
+    "workshop-piece": {
+        on: "science",
+        also: [],
+        shows: ["science", "weight"],
+        words: "workshop crate ramp marble boat crane hook cargo construction",
+    },
     ricedrum: {
         on: "science",
         also: [],

@@ -27,6 +27,7 @@ import { slingGame } from "./sling";
 import { snakeGame } from "./snake";
 import { shutGame } from "./shut-hands";
 import { seesawGame } from "./seesaw";
+import { cargoGame, marbleGame } from "./workshops";
 
 const activity = (kind: string): Listed => {
     const a = ACTIVITIES.find((x) => x.kind === kind);
@@ -64,6 +65,8 @@ export const spellGame = puzzle({
  * keeps this order inside a group, and the page runs a game by its group.
  */
 export const GAMES: Game[] = [
+    cargoGame,
+    marbleGame,
     spellGame,
     ruleGame,
     rabbitGame,
