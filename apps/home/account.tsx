@@ -541,7 +541,11 @@ function SetPin(props: { me: Me; pinSet: boolean; onDone: (set: boolean) => void
         const r = await api.setPin(pin());
         setBusy(false);
         if (r === true) props.onDone(true);
-        else setSaid({ text: failureText(r, local), fresh: r.error === "fresh-sign-in" });
+        else
+            setSaid({
+                text: r.error === "bad-request" && r.problem ? r.problem : failureText(r, local),
+                fresh: r.error === "fresh-sign-in",
+            });
     };
     return (
         <Postcard

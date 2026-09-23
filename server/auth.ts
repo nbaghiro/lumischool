@@ -795,7 +795,9 @@ export async function setFamilyPin(
     config: AuthConfig,
     adult: Adult,
     pin: unknown,
-): Promise<{ ok: true } | { error: "not-allowed" | "bad-request" | "fresh-sign-in" }> {
+): Promise<
+    { ok: true } | { error: "not-allowed" | "bad-request" | "fresh-sign-in"; problem?: string }
+> {
     if (!adult.parent) return { error: "not-allowed" };
     if (typeof pin !== "string" || !PIN.test(pin)) return { error: "bad-request" };
     if (!fresh(adult)) return { error: "fresh-sign-in" };
@@ -803,7 +805,10 @@ export async function setFamilyPin(
         await lockKidLogins(tx, adult.family.id);
         const kidsPin = await loginPin(tx);
         if (kidsPin && sameHash(kidsPin.hash, kidPinHash(config, adult.family.id, pin)))
-            return { error: "bad-request" as const };
+            return {
+                error: "bad-request" as const,
+                problem: "Choose a different PIN from the kids’ sign-in PIN.",
+            };
         await setPin(tx, adult.family.id, {
             user: adult.user,
             hash: pinHash(config.pepper, adult.family.id, pin),

@@ -10,8 +10,9 @@ requires consent and a kids’ PIN. These changes require a parent’s email sig
 minutes; a session restored through the adult PIN is insufficient.
 
 The shared **kids’ PIN** is a `kid-pin` key, HMAC-hashed with a separate domain and family id. It
-must differ from the adult family PIN in either direction. `/kids/sign-in`, linked from the marketing
-header, accepts a username and kids’ PIN. Its `kid-session` names only that child and has
+must differ from the adult family PIN in either direction. The marketing header has one Sign in
+link; that page switches between Grown-ups and Kids. `/sign-in?for=kids` opens the kids’ form directly,
+and `/kids/sign-in` remains a compatible entry. The form accepts a username and kids’ PIN. Its `kid-session` names only that child and has
 `detail.login = true`. It cannot add siblings or restore an adult session, even with the adult PIN.
 Successful sign-in clears the browser’s adult session so navigating to parent pages requires adult
 sign-in again. Failed sign-in changes no browser credentials.
@@ -20,8 +21,8 @@ Current clients keep child credentials in **sessionStorage**, never localStorage
 `X-Kid-Session`. An explicit header wins over the legacy cookie, including an empty or invalid header;
 it never falls back to a different child. Parent-opened views use the same transport. Existing cookie
 views can be adopted once through `/api/kid/tab`. Adult credentials remain HttpOnly cookies. Child
-tab sign-out and revocation never overwrite another tab’s child credential. A marketing link opens
-a fresh tab with `noopener`; signing into two such tabs creates two independent views. Reloading a
+tab sign-out and revocation never overwrite another tab’s child credential. The parent setup link opens
+a fresh tab with `noopener`; signing into two tabs creates two independent views. Reloading a
 tab keeps its view; duplicating a tab may copy its session until a separate sign-in replaces it.
 
 Each view’s short unsent-answer queue has its own IndexedDB database, named with the non-secret

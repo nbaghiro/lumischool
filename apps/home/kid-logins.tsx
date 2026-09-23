@@ -54,7 +54,9 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                 Choose a different PIN from the grown-ups’ family PIN. This PIN never opens the
                 family’s page. Changes need a sign-in in the last ten minutes.
             </p>
-            <a href="/sign-in?again=1&next=%2Faccount">Sign in again</a>
+            <a class="link" href="/sign-in?again=1&next=%2Faccount">
+                Sign in again
+            </a>
             <Show
                 when={ready()}
                 fallback={
@@ -107,7 +109,12 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                         <Show when={!d().kids.length}>
                             <p>Add a child to your family to set up their sign-in.</p>
                         </Show>
-                        <a class="btn second" href="/kids/sign-in" target="_blank" rel="noopener">
+                        <a
+                            class="btn second"
+                            href="/sign-in?for=kids"
+                            target="_blank"
+                            rel="noopener"
+                        >
                             Open kids’ sign-in in a new tab
                         </a>
                     </>
@@ -151,7 +158,7 @@ function LoginRow(props: {
                 autocapitalize="none"
                 autocomplete="off"
             />
-            <label>
+            <label class="check">
                 <input
                     type="checkbox"
                     checked={enabled()}

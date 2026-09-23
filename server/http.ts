@@ -792,7 +792,9 @@ function routes(config: Config): Route[] {
             who: "adult",
             run: async (c, adult) => {
                 const out = await setFamilyPin(config, adult, field(c.body, "pin"));
-                return "error" in out ? problem(REFUSED[out.error], out.error) : json(204, null);
+                return "error" in out
+                    ? problem(REFUSED[out.error], out.error, { problem: out.problem })
+                    : json(204, null);
             },
         },
 

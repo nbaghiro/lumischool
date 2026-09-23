@@ -5,9 +5,10 @@
 // page's first script carries none of it.
 
 import "./bar.css";
-import { createSignal, lazy, Show, Suspense, type JSX } from "solid-js";
+import { createSignal, lazy, onCleanup, Show, Suspense, type JSX } from "solid-js";
 import { Button } from "../../engine/ui/form";
-import { signOut } from "../../engine/ui/kid";
+import { signOut, watch } from "../../engine/ui/kid";
+import { kidCredential } from "../../engine/ui/kid-session";
 import { onDemand } from "../../engine/ui/art";
 import { guideOf, nudge } from "../../engine/ui/nudge";
 
@@ -18,32 +19,40 @@ const GuideButton = lazy(() =>
 export function KidBar(): JSX.Element {
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
+    const [active, setActive] = createSignal(false);
+    onCleanup(
+        watch((s) =>
+            setActive(!s.ended && !!kidCredential() && location.pathname !== "/kids/sign-in"),
+        ),
+    );
     const leave = async (): Promise<void> => {
         if (busy()) return;
         setBusy(true);
         const result = await signOut();
         if (result === true || result.error === "no-kid-session") {
-            location.replace("/kids/sign-in");
+            location.replace("/sign-in?for=kids");
             return;
         }
         setBusy(false);
         setSaid("Connect to the internet so your answers can be sent before you sign out.");
     };
     return (
-        <Show when={guideOf()}>
-            {(id) => (
-                <div class="page-nav kid-bar">
-                    <Button second busy={busy()} onClick={() => void leave()}>
-                        Sign out of this tab
-                    </Button>
-                    <Show when={said()}>
-                        <output>{said()}</output>
-                    </Show>
-                    <Suspense>
-                        <GuideButton id={id()} px={48} class="kid-bar-guide" onClick={nudge} />
-                    </Suspense>
-                </div>
-            )}
+        <Show when={active()}>
+            <div class="page-nav kid-bar">
+                <Button second busy={busy()} onClick={() => void leave()}>
+                    Sign out of this tab
+                </Button>
+                <Show when={said()}>
+                    <output>{said()}</output>
+                </Show>
+                <Show when={guideOf()}>
+                    {(id) => (
+                        <Suspense>
+                            <GuideButton id={id()} px={48} class="kid-bar-guide" onClick={nudge} />
+                        </Suspense>
+                    )}
+                </Show>
+            </div>
         </Show>
     );
 }

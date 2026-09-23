@@ -2,11 +2,14 @@
 // for each step. The address and the code we send to it, then a family to choose when the address
 // has several, or one to start when it has none.
 
+import "./sign-in.css";
+import { Portal } from "solid-js/web";
 import {
     createEffect,
     createSignal,
     createUniqueId,
     For,
+    lazy,
     Match,
     onMount,
     Show,
@@ -27,8 +30,12 @@ import { nextFrom } from "./routes";
 
 const FOOT = [
     "No passwords. A code works for ten minutes.",
-    "Children never sign in and have no email.",
+    "Children use a username and kids’ PIN set by their grown-up. No email address needed.",
 ];
+
+const KidSignIn = lazy(() =>
+    import("../../engine/ui/kid-sign-in").then((m) => ({ default: m.KidSignIn })),
+);
 
 const NAMES =
     "Your name is what your family calls you. Your family's name is such as the Okafors, and only your family sees it.";
@@ -51,8 +58,17 @@ const looksLikeEmail = (s: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test
 
 /** `/sign-in` and `/start`, one flow: `start` asks for the new family's answers with the address. */
 export function SignIn(props: { start: boolean }): JSX.Element {
+    const [bar, setBar] = createSignal<HTMLElement>();
     const look = useLook();
     const query = new URLSearchParams(location.search);
+    const [kids, setKids] = createSignal(!props.start && query.get("for") === "kids");
+    const choose = (kid: boolean): void => {
+        const url = new URL(location.href);
+        if (kid) url.searchParams.set("for", "kids");
+        else url.searchParams.delete("for");
+        history.replaceState(history.state, "", url);
+        setKids(kid);
+    };
     const next = nextFrom(location.search, { local: false });
     const [step, setStep] = createSignal<Step>({ at: "checking" });
     /** Each step moves the map a little along the road, and its card's stamp shows where. */
@@ -61,10 +77,14 @@ export function SignIn(props: { start: boolean }): JSX.Element {
         if (at === "code") return "railway";
         return at === "choose" || at === "none" || props.start ? "meadow" : "harbour";
     };
-    createEffect(() => look({ foot: FOOT, place: place() }));
+    createEffect(() => {
+        if (!kids()) look({ foot: FOOT, place: place() });
+    });
     onMount(() => {
+        setBar(document.querySelector<HTMLElement>(".page-bar") ?? undefined);
         void (async () => {
-            if (!query.has("again") && (await api.me())) go(next, { replace: true });
+            if (!kids() && !query.has("again") && (await api.me()) && !kids())
+                go(next, { replace: true });
             else setStep({ at: "ask", email: "", said: "" });
         })();
     });
@@ -84,36 +104,72 @@ export function SignIn(props: { start: boolean }): JSX.Element {
         setStep({ at: "ask", email, said });
     };
     return (
-        <Switch>
-            <Match when={asking()}>
-                {(s) => (
-                    <Ask
-                        start={props.start}
-                        email={s().email}
-                        said={s().said}
-                        shared={query.has("shared")}
-                        onAsked={(asked) => setStep({ at: "code", asked })}
-                    />
+        <>
+            <Show when={!props.start && bar()}>
+                {(target) => (
+                    <Portal mount={target()} ref={(el) => el.classList.add("sign-in-bar")}>
+                        <fieldset class="sign-in-choices">
+                            <legend class="sr">Who is signing in?</legend>
+                            <button
+                                type="button"
+                                class="btn"
+                                classList={{ second: kids() }}
+                                aria-pressed={!kids()}
+                                onClick={() => choose(false)}
+                            >
+                                Grown-ups
+                            </button>
+                            <button
+                                type="button"
+                                class="btn"
+                                classList={{ second: !kids() }}
+                                aria-pressed={kids()}
+                                onClick={() => choose(true)}
+                            >
+                                Kids
+                            </button>
+                        </fieldset>
+                    </Portal>
                 )}
-            </Match>
-            <Match when={coding()}>
-                {(s) => (
-                    <Code
-                        asked={s().asked}
-                        next={next}
-                        onDifferent={() => lost("", s().asked.email)}
-                        onChoose={(families) => setStep({ at: "choose", families })}
-                        onNone={() => setStep({ at: "none" })}
-                    />
-                )}
-            </Match>
-            <Match when={choosing()}>
-                {(s) => <Choose families={s().families} next={next} onLost={lost} />}
-            </Match>
-            <Match when={step().at === "none"}>
-                <NoFamily onLost={lost} />
-            </Match>
-        </Switch>
+            </Show>
+            <Show
+                when={kids()}
+                fallback={
+                    <Switch>
+                        <Match when={asking()}>
+                            {(s) => (
+                                <Ask
+                                    start={props.start}
+                                    email={s().email}
+                                    said={s().said}
+                                    shared={query.has("shared")}
+                                    onAsked={(asked) => setStep({ at: "code", asked })}
+                                />
+                            )}
+                        </Match>
+                        <Match when={coding()}>
+                            {(s) => (
+                                <Code
+                                    asked={s().asked}
+                                    next={next}
+                                    onDifferent={() => lost("", s().asked.email)}
+                                    onChoose={(families) => setStep({ at: "choose", families })}
+                                    onNone={() => setStep({ at: "none" })}
+                                />
+                            )}
+                        </Match>
+                        <Match when={choosing()}>
+                            {(s) => <Choose families={s().families} next={next} onLost={lost} />}
+                        </Match>
+                        <Match when={step().at === "none"}>
+                            <NoFamily onLost={lost} />
+                        </Match>
+                    </Switch>
+                }
+            >
+                <KidSignIn />
+            </Show>
+        </>
     );
 }
 

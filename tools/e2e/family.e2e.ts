@@ -57,7 +57,9 @@ test("a parent opens a child's view on this device, and that browser's session i
     await signInAs(page);
     await openChildrensView(page, ["Rosie"]);
     const names = await cookieNames(context);
-    expect(names).toContain("ls_kids");
+    expect(
+        await page.evaluate(() => sessionStorage.getItem("lumischool-kid-session")),
+    ).toBeTruthy();
     expect(names, "the session's cookie stays, put away").toContain("ls_session");
     const me = await page.evaluate(async () => {
         const r = await fetch("/api/me");
@@ -66,10 +68,6 @@ test("a parent opens a child's view on this device, and that browser's session i
     expect([me.status, me.body.error], "every adult route refuses it").toEqual([401, "put-away"]);
     expect(await cookieNames(context), "and refusing it clears nothing").toContain("ls_session");
     await expect(page.getByRole("link", { name: "lumischool site" })).toHaveCount(0);
-    // a grown-ups' page asked for on this browser is sent to the children's view, where the
-    // Grown-ups tab is the way back
-    await page.goto("/plan");
-    await expect(page).toHaveURL(/\/kids$/);
 });
 
 test("a grown-up goes round: the view opens, an adult route is refused, the PIN lands on the family's page with no code, and the view opens again", async ({
@@ -97,7 +95,9 @@ test("a grown-up goes round: the view opens, an adult route is refused, the PIN 
     expect(after, "the same session, given back").toBe(before);
     expect(await cookieNames(context)).not.toContain("ls_kids");
     await openChildrensView(page, ["Rosie"]);
-    expect(await cookieNames(context)).toContain("ls_kids");
+    expect(
+        await page.evaluate(() => sessionStorage.getItem("lumischool-kid-session")),
+    ).toBeTruthy();
     await holdGrownUps(page);
     await page.getByLabel("The family PIN").fill(FAMILY_PIN);
     await page.getByRole("button", { name: "Leave the children's view" }).click();

@@ -1,0 +1,26 @@
+.sign-in-bar {
+    margin-left: auto;
+}
+.sign-in-choices {
+    border: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 0 0 0 auto;
+}
+.sign-in-choices .btn {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 14.5px;
+}
+
+@media (max-width: 420px) {
+    .sign-in-choices {
+        gap: 6px;
+    }
+    .sign-in-choices .btn {
+        padding-inline: 10px;
+    }
+}

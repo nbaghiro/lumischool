@@ -51,6 +51,10 @@
         0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent),
         0 18px 36px -20px color-mix(in srgb, var(--ink) 42%, transparent);
 }
+.gh-kid:only-child {
+    width: min(100%, 600px);
+    justify-self: center;
+}
 .gh-head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
