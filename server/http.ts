@@ -1,3 +1,4 @@
+import { isIP } from "node:net";
 // The API server (.docs/api.md). The whole app is one function from a web `Request` to a `Response`,
 // which the tests call in process, and `serve` puts it on Node's own http module. Every route is
 // declared once, with the caller it accepts; the entry point finds that caller from its credential,
@@ -98,12 +99,6 @@ export interface Config extends AuthConfig {
     origins: string[];
     /** Cookie names with `__Host-` and `Secure`, which a browser only accepts over HTTPS. */
     secure: boolean;
-    /**
-     * The header carrying the caller's real address behind Render's proxy, read only in production,
-     * where the socket belongs to the load balancer rather than the caller (.docs/auth.md, "Rate
-     * limits"). Null locally, where the socket's own address is the caller's.
-     */
-    ipHeader: string | null;
     /** Where the line about a failed request goes: the terminal, or a test's list. */
     log: (line: string) => void;
     /** The pack the family's lessons are served from, or null when none is built, which the routes that need it say. */
@@ -129,9 +124,6 @@ function isLoopback(address: string): boolean {
 
 /** The code the code step also accepts locally unless `AUTH_DEV_CODE` names another. */
 const DEV_CODE = "12345678";
-
-/** The header Render's proxy sets in front of Cloudflare, when `CLIENT_IP_HEADER` names no other. */
-const DEFAULT_IP_HEADER = "cf-connecting-ip";
 
 const toStderr = (line: string): void => {
     process.stderr.write(`${line}\n`);
@@ -176,7 +168,6 @@ function productionConfig(env: Record<string, string | undefined>): Config | { p
         send: resendTransport(key, from),
         devCode: null,
         secure: true,
-        ipHeader: env.CLIENT_IP_HEADER || DEFAULT_IP_HEADER,
         log: toStderr,
         pack: null,
     };
@@ -186,7 +177,9 @@ function productionConfig(env: Record<string, string | undefined>): Config | { p
  * The configuration from the environment, or why the server must not start. A fixed code is refused
  * outside `LUMISCHOOL_ENV=local` whatever else is set, since anyone who typed it could sign in.
  */
-export function configFrom(env: Record<string, string | undefined>): Config | { problem: string } {
+export function serviceConfigFrom(
+    env: Record<string, string | undefined>,
+): Config | { problem: string } {
     if (env.AUTH_DEV_CODE !== undefined && env.LUMISCHOOL_ENV !== "local")
         return {
             problem:
@@ -218,10 +211,23 @@ export function configFrom(env: Record<string, string | undefined>): Config | { 
         send: consoleTransport,
         devCode,
         secure: false,
-        ipHeader: null,
         log: toStderr,
         pack: null,
     };
+}
+
+/** HTTP ingress restrictions do not apply to the background mail job. */
+export function configFrom(env: Record<string, string | undefined>): Config | { problem: string } {
+    const config = serviceConfigFrom(env);
+    if ("problem" in config || config.env === "local") return config;
+    if (
+        env.RENDER !== "true" ||
+        env.RENDER_SERVICE_TYPE !== "web" ||
+        !env.RENDER_SERVICE_ID ||
+        !/^[a-z0-9-]+\.onrender\.com$/.test(env.RENDER_EXTERNAL_HOSTNAME ?? "")
+    )
+        return { problem: "Production requires Render's web-service environment markers" };
+    return config;
 }
 
 type Method = "GET" | "POST";
@@ -555,7 +561,9 @@ function routes(config: Config): Route[] {
                 if ("error" in asked)
                     return asked.error === "rate-limited"
                         ? problem(429, "rate-limited", { retryAfter: 60 })
-                        : problem(400, "bad-email");
+                        : asked.error === "delivery-failed"
+                          ? problem(503, "delivery-failed")
+                          : problem(400, "bad-email");
                 const headers = new Headers();
                 headers.append("set-cookie", cookie(config, n.pending, asked.pending, MINUTES_15));
                 return field(c.body, "tab") === true
@@ -659,7 +667,18 @@ function routes(config: Config): Route[] {
                 const out = await unlockParent(config, credential, field(c.body, "pin"));
                 return out === true
                     ? json(204, null)
-                    : problem(out.error === "signed-out" ? 401 : 403, out.error);
+                    : problem(
+                          out.error === "signed-out"
+                              ? 401
+                              : out.error === "rate-limited"
+                                ? 429
+                                : 403,
+                          out.error,
+                          {
+                              ...("retryAfter" in out ? { retryAfter: out.retryAfter } : {}),
+                              ...("attemptsLeft" in out ? { attemptsLeft: out.attemptsLeft } : {}),
+                          },
+                      );
             },
         },
         {
@@ -1191,15 +1210,11 @@ function matcher(path: string): (pathname: string) => Record<string, string> | n
 /** The most a body may be, from auth.md's limit on a batch. */
 export const BODY_LIMIT = 1024 * 1024;
 
-/**
- * The address the network limit counts (.docs/auth.md, "Rate limits"): `config.ipHeader` in
- * production, since the socket there belongs to Render's load balancer, and never the whole
- * `x-forwarded-for`, which a client can seed and Render only appends to. The socket's own address
- * otherwise, as `answer` read it.
- */
+/** Production trusts Render's managed ingress; local requests use their socket address. */
 function clientIp(req: Request, socket: string | null, config: Config): string | null {
-    if (!config.ipHeader) return socket;
-    return req.headers.get(config.ipHeader) ?? socket;
+    if (config.env === "local") return socket;
+    const forwarded = req.headers.get("cf-connecting-ip")?.trim();
+    return forwarded && !forwarded.includes("%") && isIP(forwarded) ? forwarded : null;
 }
 
 /**
@@ -1233,6 +1248,16 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
     return async (req, ip = null) => {
         const url = new URL(req.url);
         const method = req.method.toUpperCase();
+        const address = clientIp(req, ip, config);
+        if (
+            config.env === "production" &&
+            !address &&
+            url.pathname.startsWith("/api/") &&
+            url.pathname !== "/api/health"
+        ) {
+            config.log("Managed ingress request missing a valid client IP");
+            return cors(req, problem(503, "server"));
+        }
         if (
             url.pathname === "/api/letters/unsubscribe" &&
             (method === "GET" || method === "POST")
@@ -1307,7 +1332,7 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                 url,
                 params: hit.params,
                 body,
-                ip: clientIp(req, ip, config),
+                ip: address,
                 cookies: cookiesOf(req, [n.session, n.pending, n.kids, n.browser]),
                 device: deviceName(req.headers.get("user-agent")),
             };

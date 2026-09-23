@@ -191,7 +191,15 @@ export const MODULES: Record<string, Module> = {
         at: "server",
         phase: "server",
         reach: ["db", "answer", "family", "record", "year", "pack", "assistant"],
-        packages: ["node:crypto", "node:fs", "node:http", "node:path", "node:util", "node:zlib"],
+        packages: [
+            "node:crypto",
+            "node:fs",
+            "node:http",
+            "node:net",
+            "node:path",
+            "node:util",
+            "node:zlib",
+        ],
     },
 };
 

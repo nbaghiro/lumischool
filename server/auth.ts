@@ -15,6 +15,7 @@ import {
     lockKidLogins,
     loginPin,
     loginTry,
+    loginSucceeded,
     lookupLogin,
     saveKidLogin,
     usernameAvailable,
@@ -41,6 +42,7 @@ import {
     type Written,
 } from "./db/events";
 import {
+    deliveryFailed,
     endHeld,
     endKids,
     endOwnSession,
@@ -252,11 +254,21 @@ export async function kidSessionFrom(cookie: string | null): Promise<KidSession 
     return withFamily({ family: found.family_id }, async (tx) => {
         const family = await familyRow(tx, found.family_id);
         if (!family) return null;
+        const allowed = await consented(tx, family.id);
+        const members = await rowsOf(tx, family.id, first.user_id);
+        const parent = isParent(members.filter((m) => m.ended_at === null));
+        const invalid = found.keys.filter(
+            (k) => k.view === first.view && (!parent || !allowed.has(k.kid_id)),
+        );
+        await endKids(tx, { ids: invalid.map((k) => k.id) });
+        if (!parent) return null;
+        const eligible = found.keys.filter((k) => k.view === first.view && allowed.has(k.kid_id));
+        if (!eligible.length) return null;
         return {
             family,
             view: first.view,
             opener: first.user_id,
-            keys: found.keys.filter((k) => k.view === first.view),
+            keys: eligible,
             today: dayIn(family.time_zone),
             seen: found.seen,
         };
@@ -354,7 +366,8 @@ function signIn(
     });
 }
 
-export type Asked = { pending: string } | { error: "bad-email" | "rate-limited" };
+export type Asked =
+    { pending: string } | { error: "bad-email" | "rate-limited" | "delivery-failed" };
 
 /**
  * Flow 2's first request: a code for an address, held by a new pending cookie. The answer is the same
@@ -382,7 +395,12 @@ export async function askForCode(
         detail: { shared: input.shared, ...(input.start ? { start: input.start } : {}) },
     });
     if (!issued) return { error: "rate-limited" };
-    await config.send(codeEmail(email, code, config.origin));
+    try {
+        await config.send(codeEmail(email, code, config.origin));
+    } catch {
+        await deliveryFailed(sha256(pending));
+        return { error: "delivery-failed" };
+    }
     return { pending };
 }
 
@@ -970,17 +988,18 @@ export async function signInKid(
     const username = usernameOf(input.username);
     if (!username || typeof input.pin !== "string" || !PIN.test(input.pin)) return null;
     const pin = input.pin;
+    const attempt = sha256(newSecret());
     const found = await lookupLogin(
         username,
         keyed(config.pepper, "kid-name", username),
         networkHash(config, ip) ?? "unknown",
-        sha256(newSecret()),
+        attempt,
     );
     if (!found) return null;
     return withFamily({ family: found.family }, async (tx) => {
         await lockKidLogins(tx, found.family);
         const held = await loginPin(tx);
-        if (!held?.user_id || held.attempts >= 15) return null;
+        if (!held?.user_id) return null;
         if (
             held.attempts >= 5 &&
             held.seen_at &&
@@ -1018,6 +1037,7 @@ export async function signInKid(
                 },
             },
         ]);
+        await loginSucceeded(tx, attempt);
         return { credential: opened.keys.map((k) => k.credential).join(KIDS_JOIN) };
     });
 }

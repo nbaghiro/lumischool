@@ -61,7 +61,7 @@ Independent sign-ins or the app's new-tab action create independent views. Closi
 revoke its server key; parents can end it from the open-views list.
 
 Email-code requests use `tab: true` to receive a short-lived challenge kept in the requesting tab.
-Verify and family-selection requests send `X-Sign-In-Challenge`. Cookie-changing requests use an origin-wide Web Lock where available so simultaneous first sign-ins do not race the browser-binding cookie. An invalid explicit challenge
+Verify and family-selection requests send `X-Sign-In-Challenge`. Sign-in requires working session storage and origin-wide Web Locks, so simultaneous first sign-ins cannot race the browser-binding cookie. Unsupported or storage-blocked browsers get an actionable message before a sign-in request is sent; sign-out remains available. Native duplicate tabs can still share a credential. An invalid explicit challenge
 never falls back to the legacy pending cookie. Parent sign-in no longer ends child views.
 
 **Upgrade:** sessions issued before browser binding require fresh sign-in. Old unbound credentials
@@ -74,14 +74,30 @@ the kids’ PIN revokes all username-opened views in the family. Parent-opened v
 rules. Parents can also end individual views or all views, regardless of how they opened.
 
 Public failures use the same response for unknown names, wrong PINs and throttling.
-`kid_login_lookup` atomically counts attempts before lookup: five per normalized username and twenty
-per network in fifteen minutes. The stored identities are peppered hashes; attempt rows expire after
-a day. Failed PIN attempts are also counted across siblings: five wrong tries impose a fifteen-minute
-wait and fifteen require a parent PIN reset. A family advisory lock serializes successful sign-in
+`kid_login_lookup` atomically reserves attempts before lookup: five per normalized username and twenty
+per network in fifteen minutes. Successful sign-in removes its own reservation in the same transaction
+that opens the session. Failures and in-flight requests count; repeated successful sign-ins do not.
+The stored identities are peppered hashes; attempt rows expire after a day. Failed PIN attempts are
+also counted across siblings: five wrong tries impose a fifteen-minute wait. The next guess after that
+cooldown starts a new attempt window; the public kids’ PIN cannot be permanently locked. Sustained
+abuse can still cause temporary denial of service, a tradeoff of short public usernames and four-digit PINs. A family advisory lock serializes successful sign-in
 with configuration changes and revocation. Resetting the PIN does not bypass the public attempt limits.
+
+Every child request checks current consent and that the opening parent still has active parent
+membership. Observed invalid keys are deleted, so they cannot resume later. A request already in
+flight when eligibility changes may finish; subsequent requests are refused.
+
 The Account list describes **children’s sign-ins**, not live tab presence. It shows how access was
 opened, dates (activity is updated at most daily), and individual/all revocation. Account reloads
 these details on focus or becoming visible. Closing a tab is not a reliable sign-out event.
+
+Email issuance serializes its aggregate network/global budgets as well as address limits. Delivery
+failures invalidate the challenge and allow an immediate retry within the existing 15-minute/day
+budgets. Resending creates an independent challenge; earlier challenges in other tabs can remain
+valid until their ten-minute expiry. The requesting tab should use its newest code.
+
+Proxy trust and supported email compatibility checks are documented in [auth-hardening-plan.md](auth-hardening-plan.md).
+
 This section supersedes the original browser-cookie-only and parent-opened-only descriptions below.
 
 Status: proposed, September 2026, and rewritten against the data model the owner approved that month. This document says who can sign in to lumischool, how a child reaches their own pages without an account, how every request is tied to one family before anything is read, and what each caller may read and write, across every flow a family meets. It uses the seven tables of the final schema and adds none: every credential and every secret we send is a row in `keys`, and where an auth need might have wanted a table or a column of its own, the document says which of the seven holds it. The store agent owns the schema and its migration, and "The schema, as auth uses it" lists in one place what auth needs from each table and function. Every flow says what is written and what is checked, and the order of work near the end is a list of steps with what "done" means for each. Where a choice is still the owner's it is marked as a recommendation and repeated as a one-sentence question at the end.
@@ -1016,7 +1032,7 @@ Every limit is counted from rows we keep for another reason: `keys` for anything
 
 A used code is deleted at once, so these counts see only codes nobody has used. That is what a limit needs to see: a person signing in normally deletes their own code and is never slowed by their own successes, while a flood of codes sent to an address that did not ask for them stays in `keys` until it is swept, a day after it ran out, and is counted for all of that time.
 
-The network is the client address as Render's proxy reports it, read in one function, with IPv6 addresses grouped by their /64, and it is stored only as a keyed hash in `keys.ip`. The grouping is there because Better Auth's limiter was bypassed in 2026 by rotating addresses inside one IPv6 allocation (CVE-2026-45364). Galleo reads `cf-connecting-ip` on the strength of a comment saying Render's Cloudflare front overwrites it; we could not confirm that in Render's documentation, so the deployment step includes sending a forged header to the live service and checking that the function ignores it.
+The network is the resolved client address, with IPv6 grouped by /64 and only a keyed hash stored in `keys.ip`. Production runs on Render and requires the platform's web-service markers, reads only a single valid `cf-connecting-ip`, and refuses API requests with a missing or malformed value instead of sharing a socket-IP budget. Health probes are exempt. This trusts Render's public edge and every workload able to reach the service privately; environment markers prevent accidental configuration, not malicious internal traffic. Public header overwrite verification on every hostname and review of private-network access are required before enabling it. See [the deployment policy](auth-hardening-plan.md#render-managed-ingress-deployment-policy).
 
 | Limit | Subject | Budget | Counted from |
 |---|---|---|---|
@@ -1208,7 +1224,7 @@ The sweeps in `server/jobs.ts` run on a timer inside the one process, and each i
 
 What the child's build may import is unchanged by this design, and one rule is added to what it may not. It may import what structure.md's run-time phase allows (`answer/`, `pack.ts`, `record/`, `lessons/`, `games/`, `ui/` and the rest). It may not import `server/db/`, which is `check:db`'s rule already, and it may not import `server/`, which is new. Its client, `engine/ui/kid.ts`, uses `fetch` and IndexedDB and has no dependency. The parent's build imports `family/access.ts` and `@simplewebauthn/browser`, and nothing from `server/` or `server/db/` either. `server/` itself may import `server/db/` and may not import the database driver or `drizzle-orm`, which is what keeps every query behind `withFamily` and the definer functions.
 
-The server's environment adds two variables to the store's: `APP_ORIGIN`, the one origin, which the `Origin` check reads; and `AUTH_PEPPER`, the key for the HMACs of codes and the family PIN and for network hashes, which Render generates as galleo's `SESSION_SECRET` is generated. `RESEND_API_KEY` is as galleo has it, the database URLs are the store's, and `CLIENT_IP_HEADER` is as galleo has it once the header is confirmed. The server refuses to start in production without `AUTH_PEPPER` or `RESEND_API_KEY`. The ports are [local.md](local.md)'s: the API on 8501, and the one dev server on 8500 in development.
+The server's environment adds two variables to the store's: `APP_ORIGIN`, the one origin, which the `Origin` check reads; and `AUTH_PEPPER`, the key for the HMACs of codes and the family PIN and for network hashes, which Render generates as galleo's `SESSION_SECRET` is generated. `RESEND_API_KEY` is as galleo has it, the database URLs are the store's, and client-IP handling follows the fixed Render production policy, with no custom proxy settings. The server refuses to start in production without `AUTH_PEPPER` or `RESEND_API_KEY`. The ports are [local.md](local.md)'s: the API on 8501, and the one dev server on 8500 in development.
 
 ## Tests and guards
 

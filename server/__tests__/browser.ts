@@ -34,10 +34,12 @@ export class Browser {
     readonly jar = new Map<string, string>();
     readonly handle: ReturnType<typeof app>;
     readonly ip: string;
+    readonly production: boolean;
 
     constructor(config: Config, ip = "203.0.113.7") {
         this.handle = app(config);
         this.ip = ip;
+        this.production = config.env === "production";
     }
 
     async call(
@@ -52,6 +54,7 @@ export class Browser {
         } = {},
     ): Promise<Answer> {
         const headers = new Headers();
+        if (this.production) headers.set("cf-connecting-ip", this.ip);
         if (opts.challenge !== undefined) headers.set("x-sign-in-challenge", opts.challenge);
         if (opts.kid !== undefined) headers.set("x-kid-session", opts.kid);
         const origin = opts.origin === undefined ? ORIGIN : opts.origin;

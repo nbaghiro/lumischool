@@ -143,6 +143,7 @@ export interface Start {
 
 export type ErrorCode =
     | "bad-request"
+    | "delivery-failed"
     | "bad-email"
     | "no-pending"
     | "wrong-code"

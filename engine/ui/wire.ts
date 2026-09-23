@@ -14,6 +14,7 @@ export type Failure = Omit<Problem, "error"> & { error: ErrorCode | "offline"; s
 const CODES: Record<ErrorCode, true> = {
     "bad-request": true,
     "bad-email": true,
+    "delivery-failed": true,
     "no-pending": true,
     "wrong-code": true,
     "bad-envelope": true,

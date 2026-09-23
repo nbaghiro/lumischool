@@ -1,6 +1,9 @@
+import { suggestedUsername } from "../../school/family/login";
+import { kids } from "../db/schema";
+import { record, CONSENT_NOTICE } from "../db/events";
 import assert from "node:assert/strict";
 import { after, beforeEach, describe, it } from "node:test";
-import { closeApp, open } from "../db/client";
+import { closeApp, open, withFamily } from "../db/client";
 import { prepare, truncate } from "../db/__tests__/test-db";
 import { addKid, at, Browser, codeFor, local, sessionInto, startFamily, text } from "./browser";
 
@@ -67,6 +70,109 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         return text(at(a.body, "credential"));
     };
 
+    it("does not throttle successful repeated sign-ins or revoke an unchanged username", async () => {
+        const first = await token("maya-star");
+        for (let n = 0; n < 7; n++) await token("maya-star");
+        assert.equal(
+            (
+                await parent.call("POST", "/api/kid-logins", {
+                    body: { kid: maya, username: " MAYA-STAR " },
+                })
+            ).status,
+            204,
+        );
+        assert.equal((await browser.call("GET", "/api/kid", { kid: first })).status, 200);
+    });
+
+    it("recovers a family PIN after cooldown even after a legacy permanent lockout", async () => {
+        if (!owner) throw new Error("no database");
+        await owner.raw`update keys set attempts = 15, seen_at = utc_iso(now() - interval '16 minutes') where kind = 'kid-pin' and family_id = ${family}`;
+        assert.equal((await login("maya-star")).status, 200);
+        for (let n = 0; n < 5; n++) await login("maya-star", "0000");
+        assert.equal((await login("theo-moon")).status, 400);
+        await owner.raw`update keys set seen_at = utc_iso(now() - interval '16 minutes') where kind = 'kid-pin' and family_id = ${family}`;
+        assert.equal((await login("theo-moon")).status, 200);
+    });
+
+    it("revokes existing access after consent withdrawal, without affecting siblings", async () => {
+        const one = await token("maya-star"),
+            two = await token("theo-moon");
+        await withFamily({ family, user }, async (tx) => {
+            await record(tx, family, [
+                {
+                    kid_id: maya,
+                    actor: user,
+                    kind: "consent-withdrawn",
+                    data: { kid: maya, notice: CONSENT_NOTICE },
+                },
+            ]);
+        });
+        assert.equal((await browser.call("GET", "/api/kid", { kid: one })).status, 401);
+        assert.equal(
+            (await browser.call("GET", `/api/kid/${maya}/state`, { kid: one })).status,
+            401,
+        );
+        assert.equal((await browser.call("GET", "/api/kid", { kid: two })).status, 200);
+    });
+
+    it("refuses existing child sessions when the opening parent is removed", async () => {
+        if (!owner) throw new Error("no database");
+        const one = await token("maya-star");
+        const [other] = await owner.raw<
+            { id: string }[]
+        >`insert into users (name, email) values ('Other parent', 'replacement@example.test') returning id`;
+        if (!other) throw new Error("missing parent");
+        await owner.raw`insert into members (family_id, user_id) values (${family}, ${other.id})`;
+        await owner.raw`update members set ended_at = utc_iso(now()) where family_id = ${family} and user_id = ${user}`;
+        assert.equal((await browser.call("GET", "/api/kid", { kid: one })).status, 401);
+    });
+
+    it("preserves parent unlock retry metadata", async () => {
+        await parent.call("POST", "/api/auth/lock");
+        const wrong = await parent.call("POST", "/api/auth/unlock", { body: { pin: "0000" } });
+        assert.equal(at(wrong.body, "attemptsLeft"), 14);
+        for (let n = 0; n < 4; n++)
+            await parent.call("POST", "/api/auth/unlock", { body: { pin: "0000" } });
+        const limited = await parent.call("POST", "/api/auth/unlock", { body: { pin: "2468" } });
+        assert.equal(limited.status, 429);
+        assert.ok(Number(at(limited.body, "retryAfter")) > 0);
+    });
+
+    it("allocates popular names after the short friendly sequences are already occupied", async () => {
+        if (!owner) throw new Error("no database");
+        const names = Array.from({ length: 141 }, (_, n) => suggestedUsername("Emma", 0, n));
+        await owner.db.insert(kids).values(
+            names.map((username) => ({
+                family_id: family,
+                name: "Emma",
+                grade: 1,
+                settings: { username },
+            })),
+        );
+        const made = await addKid(parent, "Emma", 1);
+        const rows = await parent.call("GET", "/api/kid-logins");
+        assert.equal(rows.status, 200);
+        assert.ok(made);
+    });
+
+    it("coordinates manual names with automatic allocation in another family", async () => {
+        const other = new Browser(config, "203.0.113.9");
+        await startFamily(other, outbox, {
+            email: "other@example.test",
+            name: "Other",
+            family: "Other",
+        });
+        for (const name of ["Luna", "Dara", "Mila", "Hana"]) {
+            const [manual, automatic] = await Promise.all([
+                parent.call("POST", "/api/kid-logins", {
+                    body: { kid: maya, username: name.toLowerCase() },
+                }),
+                addKid(other, name, 1),
+            ]);
+            assert.ok([204, 400].includes(manual.status));
+            assert.ok(automatic);
+        }
+    });
     it("keeps two tabs independent, never falls back from a bad tab token to a cookie, and signs out only one", async () => {
         const one = await token("  MAYA-STAR ");
         const two = await token("theo-moon");

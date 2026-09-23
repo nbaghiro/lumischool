@@ -282,3 +282,39 @@ test("parent tabs stay signed in beside child tabs, lock together, and can sign 
         leo.getByRole("heading", { name: "Your learning page", exact: true }),
     ).toBeVisible();
 });
+
+for (const capability of ["storage", "locks"] as const) {
+    test(`kids’ sign-in explains unavailable ${capability} without sending credentials`, async ({
+        page,
+    }) => {
+        await page.addInitScript((missing) => {
+            if (missing === "storage") {
+                Object.defineProperty(window, "sessionStorage", {
+                    get() {
+                        throw new Error("blocked");
+                    },
+                });
+            } else {
+                Object.defineProperty(navigator, "locks", { value: undefined });
+            }
+        }, capability);
+        let requests = 0;
+        page.on("request", (request) => {
+            if (request.url().endsWith("/api/kid/sign-in")) requests++;
+        });
+        await page.goto("/sign-in?for=kids");
+        await page.getByLabel("Your username", { exact: true }).fill("rosie");
+        await page.getByLabel("Your kids’ PIN", { exact: true }).fill("1357");
+        await page.getByRole("button", { name: "Open my page" }).click();
+        await expect(
+            page
+                .locator("#main")
+                .getByText(
+                    capability === "storage"
+                        ? "Allow this site to save browser data, then try signing in again."
+                        : "Please update your browser to sign in safely across tabs.",
+                ),
+        ).toBeVisible();
+        expect(requests).toBe(0);
+    });
+}

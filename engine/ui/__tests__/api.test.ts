@@ -4,6 +4,22 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+const tabStorage = new Map<string, string>();
+Object.defineProperty(globalThis, "sessionStorage", {
+    configurable: true,
+    value: {
+        getItem: (k: string) => tabStorage.get(k) ?? null,
+        setItem: (k: string, v: string) => tabStorage.set(k, v),
+        removeItem: (k: string) => tabStorage.delete(k),
+    },
+});
+Object.defineProperty(globalThis, "navigator", {
+    configurable: true,
+    value: {
+        locks: { request: async (_name: string, run: () => Promise<unknown>) => run() },
+    },
+});
+
 const memory = new Map<string, string>();
 Object.defineProperty(globalThis, "localStorage", {
     configurable: true,

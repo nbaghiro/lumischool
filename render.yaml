@@ -30,8 +30,6 @@ services:
             value: "10000"
           - key: PACK_DIR # where `npm run pack` wrote, relative to the repo root Render runs from
             value: dist/pack
-          - key: CLIENT_IP_HEADER # the trusted proxy header for the network limits; verified by the forged-header test
-            value: cf-connecting-ip
           - key: AUTH_PEPPER
             generateValue: true # Render mints a strong secret once; rotating it voids every code and PIN hash
           # --- secrets: set in the Render dashboard (never committed) ---

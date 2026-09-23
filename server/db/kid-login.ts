@@ -39,7 +39,9 @@ export async function loginTry(tx: FamilyTx, id: string, right: boolean) {
     await tx
         .update(keys)
         .set({
-            attempts: right ? 0 : sql`${keys.attempts} + 1`,
+            attempts: right
+                ? 0
+                : sql`case when ${keys.seen_at} < utc_iso(now() - interval '15 minutes') then 1 else ${keys.attempts} + 1 end`,
             seen_at: new Date().toISOString(),
         })
         .where(and(eq(keys.kind, "kid-pin"), eq(keys.id, id)));
@@ -78,4 +80,9 @@ export async function stopKidLogins(tx: FamilyTx, kid?: string) {
             ),
         );
     return rows.map((r) => r.id);
+}
+
+/** A successful sign-in releases only its own in-flight reservation. */
+export async function loginSucceeded(tx: FamilyTx, hash: string): Promise<void> {
+    await tx.execute(sql`select kid_login_succeeded(${hash})`);
 }

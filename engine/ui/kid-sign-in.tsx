@@ -37,7 +37,8 @@ export function KidSignIn(): JSX.Element {
         setSaid(
             answer.error === "offline"
                 ? "This needs the internet. Try again when you are connected."
-                : "Check your username and kids’ PIN, or ask a grown-up. After several tries, wait 15 minutes before trying again.",
+                : (answer.problem ??
+                      "Check your username and kids’ PIN, or ask a grown-up. After several tries, wait 15 minutes before trying again."),
         );
     };
     createEffect(() => look({ logo: "none", foot: FOOT, place: "meadow" }));

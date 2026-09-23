@@ -48,7 +48,13 @@ export async function signIn(username: string, pin: string): Promise<true | Fail
     const a = await call("POST", "/api/kid/sign-in", { username, pin });
     if (!a.ok) return a.failure;
     if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
-    keepKidCredential(a.body.credential);
+    if (!keepKidCredential(a.body.credential))
+        return {
+            error: "bad-request",
+            status: 0,
+            problem:
+                "This tab could not keep your sign-in. Ask a grown-up to allow browser data for this site.",
+        };
     queueNow = null;
     return true;
 }

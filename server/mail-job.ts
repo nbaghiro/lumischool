@@ -1,9 +1,9 @@
-import { configFrom } from "./http";
+import { serviceConfigFrom } from "./http";
 import { loadPack } from "./pack";
 import { deliverLetters } from "./letters";
 import { closeApp } from "./db/client";
 
-const config = configFrom(process.env);
+const config = serviceConfigFrom(process.env);
 if ("problem" in config) throw new Error(config.problem);
 if (process.env.WEEKLY_EMAIL_ENABLED !== "1")
     throw new Error("Set WEEKLY_EMAIL_ENABLED=1 to run weekly delivery.");

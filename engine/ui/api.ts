@@ -58,7 +58,12 @@ const call = (method: "GET" | "POST", path: string, body?: unknown): Promise<Ans
     }
     const request = () => wireCall(method, path, body, headers);
     return method === "POST" && (path.startsWith("/api/auth/") || path === "/api/kid-sessions")
-        ? withBrowserAuthLock(request)
+        ? withBrowserAuthLock(
+              request,
+              path.startsWith("/api/auth/email/") ||
+                  path === "/api/auth/switch" ||
+                  path === "/api/kid-sessions",
+          )
         : request();
 };
 
@@ -325,7 +330,13 @@ export async function openKidSession(kids: readonly string[]): Promise<true | Fa
     const a = await call("POST", "/api/kid-sessions", { kids, tab: true });
     if (!a.ok) return refused(a.failure);
     if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
-    keepKidCredential(a.body.credential);
+    if (!keepKidCredential(a.body.credential))
+        return {
+            error: "bad-request",
+            status: 0,
+            problem:
+                "This tab could not keep the child’s sign-in. Allow browser data for this site and try again.",
+        };
     return true;
 }
 

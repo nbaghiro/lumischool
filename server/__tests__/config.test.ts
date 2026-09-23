@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { LOCAL_PEPPER } from "../db/keys";
 import { codeEmail, consoleTransport } from "../email";
-import { app, configFrom } from "../http";
+import { app, configFrom, serviceConfigFrom } from "../http";
 
-const problemOf = (env: Record<string, string>): string => {
+const problemOf = (env: Record<string, string | undefined>): string => {
     const c = configFrom(env);
     return "problem" in c ? c.problem : "";
 };
@@ -16,7 +16,66 @@ const PROD_ENV: Record<string, string> = {
     AUTH_PEPPER: "a-production-only-pepper",
     RESEND_API_KEY: "re_test_key",
     RESEND_FROM: "code@lumischool.example",
+    RENDER: "true",
+    RENDER_SERVICE_TYPE: "web",
+    RENDER_SERVICE_ID: "srv-test",
+    RENDER_EXTERNAL_HOSTNAME: "lumischool.onrender.com",
 };
+
+it("refuses production outside a Render web service", () => {
+    for (const change of [
+        { RENDER: "false" },
+        { RENDER_SERVICE_TYPE: "pserv" },
+        { RENDER_SERVICE_ID: "" },
+        { RENDER_EXTERNAL_HOSTNAME: "forged.onrender.com.example" },
+    ])
+        assert.match(problemOf({ ...PROD_ENV, ...change }), /Render/);
+});
+
+it("background mail configuration does not require HTTP ingress markers", () => {
+    const cron = { ...PROD_ENV, RENDER_SERVICE_TYPE: "cron", RENDER_EXTERNAL_HOSTNAME: "" };
+    assert.ok(!("problem" in serviceConfigFrom(cron)));
+    assert.match(problemOf(cron), /Render/);
+    assert.ok("problem" in serviceConfigFrom({ ...cron, AUTH_DEV_CODE: "12345678" }));
+});
+
+it("fails closed on absent or malformed Render identities before auth or database work", async () => {
+    const c = configFrom(PROD_ENV);
+    assert.ok(!("problem" in c));
+    const handle = app({ ...c, log: () => {} });
+    for (const value of [
+        "",
+        "garbage",
+        "198.51.100.1, 198.51.100.2",
+        "198.51.100.1:123",
+        "[::1]",
+    ]) {
+        const response = await handle(
+            new Request("https://lumischool.example/api/auth/email/start", {
+                method: "POST",
+                headers: {
+                    origin: "https://lumischool.example",
+                    "content-type": "application/json",
+                    "cf-connecting-ip": value,
+                    "x-forwarded-for": "198.51.100.9",
+                },
+                body: "{}",
+            }),
+            "10.1.2.3",
+        );
+        assert.equal(response.status, 503);
+    }
+    assert.equal(
+        (await handle(new Request("https://lumischool.example/api/auth/email/start"))).status,
+        503,
+    );
+    // Platform health probes do not need a visitor header (POST has no health route).
+    assert.equal(
+        (await handle(new Request("https://lumischool.example/api/health", { method: "POST" })))
+            .status,
+        404,
+    );
+});
 
 /** `PROD_ENV`, with one required variable removed, for a case that checks its refusal. */
 const prodMissing = (key: keyof typeof PROD_ENV): Record<string, string> => {
@@ -113,7 +172,6 @@ describe("the production configuration", () => {
         assert.equal(c.pepper, "a-production-only-pepper");
         assert.equal(c.port, 8501);
         assert.equal(c.host, "0.0.0.0");
-        assert.equal(c.ipHeader, "cf-connecting-ip");
     });
 
     it("reads PORT before API_PORT, since that is what Render injects", () => {

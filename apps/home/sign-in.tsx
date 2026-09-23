@@ -95,7 +95,16 @@ export function SignIn(props: { start: boolean }): JSX.Element {
                 setUnlock(true);
             if (!kids() && !query.has("again") && !unlock() && (await api.me()) && !kids())
                 go(next, { replace: true });
-            else setStep({ at: "ask", email: "", said: "" });
+            else
+                setStep({
+                    at: "ask",
+                    email: "",
+                    said: query.has("left")
+                        ? query.get("mail") === "failed"
+                            ? "You left the family. Some notification emails could not be sent; let the other parents know."
+                            : "You left the family. You can still sign in to your other families."
+                        : "",
+                });
         })();
     });
     const asking = (): Extract<Step, { at: "ask" }> | false => {
@@ -410,7 +419,7 @@ function Code(props: {
         setCode("");
         setWrong(false);
         setSaid({
-            text: `We sent a new code to ${a.email}. The one before it no longer works.`,
+            text: `We sent a new code to ${a.email}. Use the newest code in this tab.`,
             calm: true,
             again: false,
         });

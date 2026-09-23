@@ -7,6 +7,22 @@ import { beforeEach, test } from "node:test";
 import type { Draft } from "../../answer";
 import * as kid from "../kid";
 
+const tabStorage = new Map<string, string>();
+Object.defineProperty(globalThis, "sessionStorage", {
+    configurable: true,
+    value: {
+        getItem: (k: string) => tabStorage.get(k) ?? null,
+        setItem: (k: string, v: string) => tabStorage.set(k, v),
+        removeItem: (k: string) => tabStorage.delete(k),
+    },
+});
+Object.defineProperty(globalThis, "navigator", {
+    configurable: true,
+    value: {
+        locks: { request: async (_name: string, run: () => Promise<unknown>) => run() },
+    },
+});
+
 const ROSIE = "22222222-2222-4222-8222-222222222222";
 const LEO = "33333333-3333-4333-8333-333333333333";
 

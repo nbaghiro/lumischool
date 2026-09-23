@@ -853,3 +853,10 @@ export async function visibleBrowserSessions(
     }
     return { sessions, views };
 }
+
+/** Keep issuance budgets after a transport failure, but permit an immediate bounded retry. */
+export async function deliveryFailed(hash: string): Promise<void> {
+    await withFamily({ family: null }, async (tx) => {
+        await tx.execute(sql`select key_delivery_failed(${hash})`);
+    });
+}
