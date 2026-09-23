@@ -24,7 +24,7 @@ import {
     type Journal,
     type Live,
 } from "../../school/worlds/view";
-import { sidePlaces, worldById, yearOf } from "../../school/worlds/worlds";
+import { elsewhere, WORLDS, worldById, yearOf } from "../../school/worlds/worlds";
 import type { KidRecord, PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 
@@ -91,10 +91,7 @@ export async function loadChild(kid: Kid, still: boolean): Promise<Loaded | null
         declared: () => undefined,
         since,
     };
-    const refs = refsOf([
-        ...sidePlaces(corpus.grades.map((g) => corpus.year(g, kid.name))).map((s) => s.world),
-        ...corpus.grades.flatMap((g) => termsFor(choice, g)),
-    ]);
+    const refs = refsOf(WORLDS.map((world) => world.id));
     const [shelf, today] = await Promise.all([
         loadDrawings(refs),
         fetchLessons(loaded, todayOf(loaded)?.lessons ?? []),
@@ -179,7 +176,10 @@ export const mapOf = (c: Loaded): MapView => {
     const records = recordsOf(c);
     return mapViewOf({
         records,
-        sides: sidePlaces(records.map((r) => r.year)),
+        sides: elsewhere(
+            records.flatMap((r) => r.worlds.map((world) => ({ world }))),
+            records.map((r) => r.year),
+        ),
         corpus: c.corpus,
         worldOf: c.worldOf,
         topics: c.topics,
@@ -192,8 +192,8 @@ export const mapOf = (c: Loaded): MapView => {
     });
 };
 
-/** The child's own year as the journal walks it, which is what the roll and today's lessons are read from. */
-function ownJournal(c: Loaded): Journal {
+/** A subject place keeps the same live record and plan as the yearly journal. */
+function ownJournal(c: Loaded, world: string | null = null): Journal {
     const own = c.record.years.find((y) => y.grade === c.kid.grade);
     const live: Live = {
         grade: c.kid.grade,
@@ -208,7 +208,10 @@ function ownJournal(c: Loaded): Journal {
     };
     return journalOf({
         corpus: c.corpus,
-        place: { kind: "year" },
+        place:
+            world && worldById(world).site?.kind === "track"
+                ? { kind: "world", world: worldById(world) }
+                : { kind: "year" },
         grade: c.kid.grade,
         when: null,
         choice: c.choice,
@@ -226,18 +229,19 @@ export function todayOf(c: Loaded): { date: string; lessons: string[] } | null {
 /** The sheet's width on the roll, in world units. */
 export const sheetWidth = (narrow: boolean): number => (narrow ? NARROW : WIDE).sheet;
 
-/**
- * The child's own year as a roll, opening on the term they went into from the map, or on today, with
- * each sheet at the height the page measured it, or a card's height where it drew none. Going into
- * a world of another year opens their own year at today for now.
- */
+/** Opens the selected subject collection or the year's roll at the selected term. */
 export function worldOf(
     c: Loaded,
-    o: { term: number | null; narrow: boolean; height: (lesson: string) => number | null },
+    o: {
+        term: number | null;
+        world: string | null;
+        narrow: boolean;
+        height: (lesson: string) => number | null;
+    },
 ): WorldView {
     const card = o.narrow ? SHEET_HEIGHT.narrow : SHEET_HEIGHT.wide;
     return worldViewOf({
-        journal: ownJournal(c),
+        journal: ownJournal(c, o.world),
         choice: c.choice,
         corpus: c.corpus,
         worldOf: c.worldOf,

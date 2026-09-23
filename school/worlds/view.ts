@@ -19,7 +19,7 @@ import {
     type MapSail,
     type MapView,
     type MapWay,
-    type MapYear,
+    type MapRegion,
     type Next,
     type PlaceShown,
     type RollLayout,
@@ -41,11 +41,11 @@ import {
 } from "../../engine/space";
 import { artById, RIDERS } from "./art";
 import { apply, termsFor } from "./choice";
-import { FURNITURE_ON, SAILS, SIGHTS, SLOTS, slotOf, YEAR_LABELS } from "./geography";
+import { FURNITURE_ON, SAILS, SIGHTS, SLOTS, slotOf, REGIONS } from "./geography";
 import { corpusFrom, type Corpus } from "./lessons";
 import { bobOf, framesOf, lifeOn, RIDES, TURNING } from "./life";
 import { layoutMap, ownLand } from "./overworld";
-import { placeOf, YEARS } from "./places";
+import { placeOf } from "./places";
 import {
     journey,
     nowOf,
@@ -57,7 +57,7 @@ import {
     type YearRecord,
 } from "./rewards";
 import { daysOf, greetAt, layoutRoll, nameBox, NARROW, skyPlaces, termsIn, WIDE } from "./roll";
-import { edgeOf, landOf, landOnly, reachOf as reachedOf, terrainOf } from "./terrain";
+import { edgeOf, landOf, reachOf as reachedOf, terrainOf } from "./terrain";
 import { dayInWords, layoutTrail, slotsOf, type Slot } from "./trail";
 import type { Applied, Site, World, WorldChoice } from "./types";
 import {
@@ -265,7 +265,7 @@ export function journalOf(o: JournalIn): Journal {
         visit && site?.kind === "track"
             ? trackYear(
                   visit,
-                  grades.map((g) => corpus.year(g, choice.child)),
+                  live ? [live.year] : grades.map((g) => corpus.year(g, choice.child)),
                   choice.child,
               )
             : null;
@@ -308,7 +308,16 @@ export function journalOf(o: JournalIn): Journal {
               year,
               progress,
               onPlan,
-              live && !track ? nowOf(year, progress, live.tracks, live.now) : undefined,
+              live
+                  ? track
+                      ? (
+                            nowOf(live.year, live.progress, live.tracks, live.now) ??
+                            daysOf(live.year, live.progress).days.find((d) => d.state === "today")
+                                ?.lessons ??
+                            []
+                        ).filter((id) => year.lessons.some((lesson) => lesson.id === id))
+                      : nowOf(year, progress, live.tracks, live.now)
+                  : undefined,
           );
     // a child's own days carry the dates they were done on, and today is today
     if (live)
@@ -479,7 +488,7 @@ export function describe(o: {
     const bits = [
         o.grown
             ? side
-                ? `${w.name}, ${standsWhen(w, p.grade).toLowerCase()}`
+                ? `${w.name}, ${standsWhen(w).toLowerCase()}`
                 : `${w.name}, year ${p.grade} term ${p.term}`
             : w.name,
         capital(state),
@@ -609,7 +618,7 @@ export const CHILD_MAP: MapLimits = {
     goIn: "own",
     fly: true,
     pan: "own",
-    zoomOut: "year",
+    zoomOut: "everything",
 };
 export const childWorld = (kid: Extract<WorldLimits, { record: true }>["kid"]): WorldLimits => ({
     sheets: "open",
@@ -683,17 +692,32 @@ export interface MapIn {
 export function mapViewOf(o: MapIn): MapView {
     const { limits, worldOf } = o;
     const journeyed = o.trip ?? journey(o.records, worldOf, o.topics, o.sides, o.grade);
-    // A child's map is the land of the year they stand in, edge to edge, with the sea round it, and
-    // holds nothing of another year's land: its bounds are that land's region, so the camera, the
-    // sea and its fade all stop there, and another year's places and ways are not drawn. Only that
-    // year's places off the run are laid out, which is most of what laying out costs.
     const standing = journeyed.places[journeyed.here];
     const ownGrade = limits.pan === "own" && standing ? standing.grade : null;
-    const trip =
-        ownGrade === null
-            ? journeyed
-            : { ...journeyed, sides: journeyed.sides.filter((s) => s.grade === ownGrade) };
-    // each place off the run stands on the land of the year whose lessons it holds
+    const chosenGrade = ownGrade ?? standing?.grade;
+    const shared = new Map<string, Walked>();
+    for (const side of journeyed.sides) {
+        if (!shared.has(side.world) || side.grade === chosenGrade) shared.set(side.world, side);
+    }
+    const trip = {
+        ...journeyed,
+        sides: [...shared.values()].map((side) =>
+            ownGrade !== null && side.grade !== ownGrade
+                ? {
+                      ...side,
+                      grade: ownGrade,
+                      state: "ahead" as const,
+                      lessons: [],
+                      done: [],
+                      stamp: null,
+                      moment: null,
+                      lit: [],
+                      followers: [],
+                  }
+                : side,
+        ),
+    };
+    // Grade selects the record; fixed world sites select the geography.
     const laid = layoutMap(
         trip.places.map((p) => ({ grade: p.grade, term: p.term, world: p.world })),
         (id) => worldOf(id).chapter.by,
@@ -701,27 +725,12 @@ export function mapViewOf(o: MapIn): MapView {
     );
     const walked = limits.travel === "reached";
     const own = ownGrade === null ? null : ownLand(laid, ownGrade);
-    // A child's map is the whole sea: their own land as before, and the other years' lands drawn in
-    // pencil with their worlds closed, to be seen and not entered, so the look a child knows from a
-    // world not reached means the same thing everywhere. The frame the map opens on, its furniture
-    // and its sail stay on the own land; the bounds and the floor of the zoom are the sea's.
     const layout = laid;
     const mine = (i: number): boolean =>
-        !own ||
-        (i < layout.nodes.length ? layout.nodes[i] : layout.sides[i - layout.nodes.length])
-            ?.grade === standing?.grade;
+        !own || i >= layout.nodes.length || layout.nodes[i]?.grade === standing?.grade;
     const whole = terrainOf(layout, worldOf);
     const country = whole;
-    const walkedReach = reachedOf(layout, trip, whole);
-    // only the child's own land is ever coloured to its coasts; the others stay in pencil however
-    // the years before went, since their worlds are closed on this map
-    const ownLands = own ? landOnly(whole, layout, own.region, mine).lands : null;
-    const reached = ownLands
-        ? {
-              ...walkedReach,
-              whole: walkedReach.whole.filter((ring) => ownLands.includes(ring)),
-          }
-        : walkedReach;
+    const reached = reachedOf(layout, trip, whole);
     // The child sees every place, dimmed until it opens, rather than an unexplained stretch of paper.
     // `known: null` keeps the terrain beneath those places in pencil without washing it into colour.
     const reach: MapReach = { ...reached, known: null };
@@ -740,7 +749,7 @@ export function mapViewOf(o: MapIn): MapView {
             ? ""
             : i < trip.places.length
               ? `Year ${p.grade}, term ${p.term}`
-              : standsWhen(w, p.grade);
+              : standsWhen(w);
         return {
             world: p.world,
             name: w.name,
@@ -875,25 +884,7 @@ export function mapViewOf(o: MapIn): MapView {
         const turning = TURNING[f.art];
         if (turning) f.turning = turning;
     }
-    // the years lettered across the country, for a grown-up, who reads the map by years
-    const years: MapYear[] = !o.grown
-        ? []
-        : YEAR_LABELS.flatMap((y) => {
-              const mine = trip.places.filter((p) => p.grade === y.grade);
-              if (!mine.length) return [];
-              const done = mine.every((p) => p.state === "done");
-              return [
-                  {
-                      grade: y.grade,
-                      at: y.at,
-                      angle: y.angle,
-                      name: `Year ${y.grade}`,
-                      line: YEARS[y.grade] ?? "",
-                      begun: mine.some((p) => p.state !== "ahead"),
-                      finished: done ? (mine.at(-1)?.moment ?? null) : null,
-                  },
-              ];
-          });
+    const regions: MapRegion[] = REGIONS.map((region) => ({ ...region }));
     // the field beside each place the viewer may go to, under its name; the creatures where the map draws them
     const landings: MapView["landings"] = limits.fly
         ? places
@@ -951,7 +942,7 @@ export function mapViewOf(o: MapIn): MapView {
         art,
         life,
         rides: RIDES,
-        years,
+        regions,
         landings,
         sights,
         sail,

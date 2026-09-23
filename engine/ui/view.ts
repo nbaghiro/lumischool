@@ -29,7 +29,7 @@ import { readTokens } from "./read-tokens";
 
 export interface ViewHooks {
     /** Everything worth looking at: what "show it all" fits, and what the camera is kept in reach of. */
-    bounds(): Rect;
+    bounds(camera: Camera): Rect;
     /** Once per frame, after the camera moved or the viewport resized. */
     frame(cam: Camera, vp: Size): void;
     /** True when this pointer belongs to the caller (a pencil drawing) rather than to the camera. */
@@ -123,7 +123,7 @@ export class CanvasView {
     }
 
     private fence(c: Camera): Camera {
-        return clampCamera(c, this.hooks.bounds(), this.vp, this.limits);
+        return clampCamera(c, this.hooks.bounds(c), this.vp, this.limits);
     }
     /** Where the camera is heading: moves chain from there, so a held key does not crawl. */
     private get goal(): Camera {
@@ -470,7 +470,7 @@ export class CanvasView {
                 break;
             case "0":
             case "Home":
-                this.fit(this.hooks.bounds());
+                this.fit(this.hooks.bounds(this.cam));
                 break;
             default:
                 return;

@@ -25,18 +25,23 @@ const layerOf = (page: Page): Promise<string> =>
         .first()
         .evaluate((el) => el.style.transform);
 
-/**
- * Goes into a place: a tap travels there, and a tap on the place the map's focus is on goes in. The
- * taps are dispatched, since on a phone the map opens on the middle of the country and a place off
- * the screen is what a finger pans to first; a place the map's focus is already on goes in at once.
- */
+/** A distant place first frames itself; the next click enters after its camera settles. */
 async function goInto(page: Page, place: Locator): Promise<void> {
-    if ((await place.getAttribute("tabindex")) !== "0") {
-        await place.dispatchEvent("click");
-        await expect(place).toHaveAttribute("tabindex", "0", { timeout: 20_000 });
-        await page.waitForTimeout(1200);
-    }
+    const before = page.url();
     await place.dispatchEvent("click");
+    let previous: string | null = null;
+    await expect
+        .poll(async () => {
+            if (page.url() !== before) return true;
+            const transform = await place.evaluate(
+                (el) => el.closest(".world")?.getAttribute("style") ?? "",
+            );
+            const settled = previous === transform;
+            previous = transform;
+            return settled && (await place.getAttribute("tabindex")) === "0";
+        })
+        .toBe(true);
+    if (page.url() === before) await place.dispatchEvent("click");
 }
 
 /** A world's roll for reading, once its first frame is there. */
@@ -56,17 +61,19 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
         .click();
     const map = await mapReady(page);
     await expect(page).toHaveURL(/\/map$/);
-    // every place of every year, the run and the places off it, each open, and the years lettered
+    // Each world has one location, with geographic region names.
     const places = map.locator(".ow-node");
-    expect(await places.count()).toBeGreaterThan(60);
+    expect(await places.count()).toBe(38);
     await expect(map.locator('.ow-node[aria-disabled="true"]')).toHaveCount(0);
-    expect(await map.locator(".ow-year").count()).toBe(4);
+    expect(await map.locator(".ow-region").count()).toBe(8);
     // nobody stands on it: no guide, no "You are here", no place chosen, so no ring and no name
     await expect(map.locator(".ow-token")).toHaveCount(0);
     await expect(map.getByText("You are here")).toHaveCount(0);
     await expect(map.locator(".ow-where")).toHaveCount(0);
     await expect(map.locator(".ow-node.focus")).toHaveCount(0);
     expect(await smallTargets(map)).toEqual([]);
+    await expect(map.locator(".ow-place")).toHaveCount(38);
+
     // a tap chooses a place, and the chip names it
     await map.locator('.ow-node[aria-label*="harbour" i]').first().dispatchEvent("click");
     await expect(map.locator(".ow-where")).toHaveText("The harbour", { timeout: 20_000 });
@@ -84,13 +91,52 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     await expect.poll(() => layerOf(page)).not.toBe(panned);
 });
 
+for (const world of ["harbour", "meadow"]) {
+    test(`the overview smoothly centers the ${world} on its first click`, async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        await signInAs(page);
+        await page.goto("/map");
+        const map = await mapReady(page);
+        const place = map.locator(`.ow-node[aria-label*="${world}" i]`).first();
+        const motion = await place.evaluate(async (el) => {
+            const before = el.getBoundingClientRect();
+            el.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+            const first = el.getBoundingClientRect();
+            return {
+                scale: first.width / before.width,
+                distance: Math.hypot(first.x - before.x, first.y - before.y),
+            };
+        });
+        expect(motion.scale).toBeLessThan(1.15);
+        expect(motion.distance).toBeLessThan(40);
+        await expect
+            .poll(async () => {
+                const region = await map.boundingBox();
+                const box = await place.boundingBox();
+                return (
+                    !!region &&
+                    !!box &&
+                    box.width > 60 &&
+                    Math.abs(box.x + box.width / 2 - region.x - region.width / 2) < 12 &&
+                    Math.abs(box.y + box.height / 2 - region.y - region.height / 2) < 12
+                );
+            })
+            .toBe(true);
+        await expect(page.locator(".wd")).toHaveCount(0);
+        await place.dispatchEvent("click");
+        await rollReady(page);
+    });
+}
+
 test("a grown-up goes into a world of another year from the map, reads a lesson there as written with the notes, and comes back out to the map and to the home", async ({
     page,
 }) => {
     await signInAs(page);
     await page.goto("/map");
     const map = await mapReady(page);
-    // the fourth year's mountains: no Harlow child is in that year, and nothing of theirs is drawn here
+    // the fourth year's mountains: no test child is in that year, and nothing of theirs is drawn here
     const mountains = map.locator('.ow-node[aria-label*="mountains" i]').first();
     await expect(mountains).toHaveAttribute("aria-label", "The mountains. Year 4, term 1.");
     const entries = await page.evaluate(() => history.length);
@@ -116,11 +162,25 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
     await expect(page).toHaveURL(/\/map$/);
     await expect(page.locator(".wd")).toHaveCount(0);
     await expect(mountains).toHaveAttribute("tabindex", "0");
+    await expect
+        .poll(async () => {
+            const region = await map.boundingBox();
+            const place = await mountains.boundingBox();
+            return (
+                !!region &&
+                !!place &&
+                place.width > 60 &&
+                Math.abs(place.x + place.width / 2 - region.x - region.width / 2) < 12 &&
+                Math.abs(place.y + place.height / 2 - region.y - region.height / 2) < 12
+            );
+        })
+        .toBe(true);
+
     await page
         .getByRole("navigation", { name: "The grown-ups' places" })
         .getByRole("link", { name: "Home" })
         .click();
-    await atScreen(page, page.getByRole("heading", { name: "Hello, Anna Harlow" }));
+    await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
 });
 
 test("a lesson in Explore opens as a child sees it over the page, in its world, and Escape, the back button and Close each return to the lesson with focus on what opened it", async ({

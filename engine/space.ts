@@ -1693,17 +1693,12 @@ export type MapRides = Record<
 >;
 
 /** A year's name lettered across its side of the country, for a grown-up, and what the record says of it. */
-export interface MapYear {
-    grade: number;
+export interface MapRegion {
+    id: string;
     at: Pt;
-    /** In degrees. */
     angle: number;
-    /** "Year 2", and the line under it from story.md. */
     name: string;
     line: string;
-    begun: boolean;
-    /** The day its last world's moment happened, once every world of it is finished, or null. */
-    finished: string | null;
 }
 
 /** A field the paper plane may land on beside a place the viewer may travel to: its middle and the way it runs, in radians. */
@@ -1780,7 +1775,7 @@ export interface MapView {
     pictures: Record<string, WorldPicture>;
     /** The region the map opens on. */
     frame: Rect;
-    /** Whether the years are lettered across the country, as a grown-up reads it. */
+    /** Whether places include curriculum details for a grown-up. */
     grown: boolean;
     /** The child's name and the day their record begins, on the map's title, or null for a map with no child. */
     title: { child: string; since: string } | null;
@@ -1790,8 +1785,8 @@ export interface MapView {
     /** The country's small life between the worlds, where each stands or goes round on this map. */
     life: MapLife[];
     rides: MapRides;
-    /** The years lettered across the country, as a grown-up reads them; empty on a child's map. */
-    years: MapYear[];
+    /** Geographic names shared by every viewer. */
+    regions: MapRegion[];
     /** The fields the paper plane may land on, beside every place this viewer may travel to; empty where the limits allow no plane. */
     landings: MapLanding[];
     /** The creatures the paper plane can spot, where this map draws them. */

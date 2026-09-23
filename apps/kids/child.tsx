@@ -174,16 +174,17 @@ export function ChildMap(props: {
         const s = onMap();
         return s && s.place !== null ? s.place : undefined;
     };
-    /** Back to the map, where the child went in, unless the day has moved them on since. */
+    /** Return to the visited world while it remains open. */
     const backToMap = (box: DOMRect | null): void => {
         const s = inside();
         letGo();
         // Disposing the paper makes the resource's previous result unusable, so draw it again on the map.
         setSheetRun((run) => run + 1);
         const from = s ? s.from : null;
+        const selected = from === null ? undefined : map()?.places[from];
         setScreen({
             at: "map",
-            place: from !== null && from === map()?.here ? from : null,
+            place: from !== null && selected?.open ? from : null,
             ...(box && from !== null ? { box } : {}),
         });
     };
@@ -311,15 +312,19 @@ export function ChildMap(props: {
                                             class="kid-map-world"
                                             title={`${props.kid.name}'s map`}
                                             onDrawn={() => setMapDrawn(true)}
-                                            onLocked={() => undefined}
                                             onGoIn={(place, box) => {
                                                 const n = m().layout.nodes[place];
+                                                const selected = m().places[place];
                                                 const go = (): void => {
                                                     setScreen({
                                                         at: "world",
                                                         term:
                                                             n && n.grade === props.kid.grade
                                                                 ? n.term
+                                                                : null,
+                                                        world:
+                                                            selected?.host !== null
+                                                                ? (selected?.shown?.world ?? null)
                                                                 : null,
                                                         from: place,
                                                         ...(box ? { box } : {}),

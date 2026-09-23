@@ -65,25 +65,9 @@ function boundsOf(view: MapView): Rect {
     return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
 }
 
-/**
- * The zoom a map may draw back to. A map that is a screen, a child's and a grown-up's alike, is the
- * sea with all four lands in it, and its floor is the scale that covers the window with the country
- * rather than the one that fits the country into it: drawn back all the way, sea reaches every edge
- * and there is never paper past it on any side, and what the window cannot hold is there to drag
- * to, the top and bottom of the country on a wide window and the open water beside it either way
- * (`SEA_SIDES`). It is worked out from the window again whenever the window changes size. A map
- * laid in a page, the site's and the backdrops', keeps its floor as it was, since its aim frames
- * it. The frame a map opens on is a separate thing, a child's own land, and a phone opens closer
- * still. */
-const zoomLimits = (
-    view: MapView,
-    vp: { w: number; h: number },
-    screen: boolean,
-): { min: number; max: number } => ({
-    min:
-        view.limits.zoomOut === "everything" && !screen
-            ? 0.028
-            : Math.min(0.9, Math.max(vp.w / view.layout.core.w, vp.h / view.layout.core.h)),
+/** The overview fits every region; the initial frame remains close to the child. */
+const zoomLimits = (view: MapView, vp: { w: number; h: number }): { min: number; max: number } => ({
+    min: Math.min(0.028, (vp.w - 48) / view.layout.core.w, (vp.h - 48) / view.layout.core.h),
     max: 0.9,
 });
 
@@ -203,12 +187,23 @@ export function Overworld(props: {
         props.onLocked(null);
     };
 
-    /**
-     * The frame a map opens on and comes back to: a child's own region, or every world. A phone's
-     * narrow window cannot show the region at a size a child can read, so there it opens on the place
-     * the guide stands at, with the ways leading off it.
-     */
+    const nearPlace = (v: CanvasView, i: number): Camera | null => {
+        const n = nodeAt(props.view.layout, i);
+        if (!n) return null;
+        const w = v.vp.w < 700 ? 4200 : 8400;
+        const h = 5600;
+        return fitRect(
+            { x: n.box.x + n.box.w / 2 - w / 2, y: n.box.y + n.box.h / 2 - h / 2, w, h },
+            v.vp,
+            24,
+            v.limits,
+        );
+    };
+
     const frame = (v: CanvasView): Camera => {
+        const returning = typeof props.focus === "number" ? props.focus : props.arrive?.place;
+        const selected = returning === undefined ? null : nearPlace(v, returning);
+        if (selected) return selected;
         const n = v.vp.w < 700 ? nodeAt(props.view.layout, focus()) : undefined;
         const r: Rect = n
             ? { x: n.box.x - 520, y: n.box.y - 420, w: n.box.w + 1040, h: n.box.h + 1180 }
@@ -607,16 +602,15 @@ export function Overworld(props: {
      * there to drag to. clampCamera lets a hand drag on until 80 pixels of its rect are left, so it is
      * given the sea drawn in by half the window and by that slack, which puts its two limits exactly
      * half a window inside the sea, meeting in the middle where the window is as wide as the sea. The
-     * zoom the last frame drew with stands in for the one being fenced, which the flight's last frames
-     * make the same.
+     * destination zoom determines its bounds, including before a flight begins.
      */
-    const fenced = (): Rect => {
+    const fenced = (camera: Camera): Rect => {
         const b = boundsOf(props.view);
         const v = view;
         if (!v || (props.view.limits.pan !== "own" && !isScreen())) return b;
-        const z = Math.max(v.cam.z, v.limits.min);
-        const hx = v.vp.w / (2 * z),
-            hy = v.vp.h / (2 * z);
+        const z = Math.max(camera.z, v.limits.min);
+        const hx = Math.min(b.w / 2, v.vp.w / (2 * z)),
+            hy = Math.min(b.h / 2, v.vp.h / (2 * z));
         const gx = Math.max(0, v.vp.w / 2 - 80) / z,
             gy = Math.max(0, v.vp.h / 2 - 80) / z;
         return {
@@ -723,13 +717,25 @@ export function Overworld(props: {
             b.classList.add("ow-node");
             b.addEventListener("click", () => {
                 setCard(null);
-                if (focus() === i) {
-                    // the first tap on a map with nobody on it chooses the place; the next goes in
-                    if (chosen()) goIn(i);
-                    else arrived(i);
+                if (busy) return;
+                if (!place(i)?.open) {
+                    if (locked(i, "tap")) return;
+                    setCard(place(i) ?? null);
+                    say(`The way to ${lower(nameOf(props.view, i))} opens as you learn.`);
                     return;
                 }
-                travelTo(i);
+                const camera = nearPlace(v, i);
+                const n = nodeAt(props.view.layout, i);
+                if (!camera || !n) return;
+                if (focus() === i && chosen() && v.cam.z >= camera.z * 0.9) {
+                    goIn(i);
+                    return;
+                }
+                // A map click frames its destination directly; keyboard travel follows the ways.
+                setAt("frame");
+                v.flyTo(camera, 1100);
+                p.place(n.stand, 1);
+                arrived(i);
             });
             b.addEventListener("focus", () => locked(i, "focus"));
             b.addEventListener("blur", () => unlocked(i, "focus"));
@@ -743,7 +749,7 @@ export function Overworld(props: {
         if (n) p.place(n.stand, 1);
         p.token.classList.toggle("away", start !== props.view.here);
         focusNode(start);
-        v.limits = zoomLimits(props.view, v.vp, isScreen());
+        v.limits = zoomLimits(props.view, v.vp);
         const c = props.aim ? aimed(props.aim) : null;
         const all = !c && props.focus === "all";
         setAt(all ? "all" : "frame");
@@ -764,7 +770,7 @@ export function Overworld(props: {
     onMount(() => {
         if (!host) return;
         const v = new CanvasView(host, {
-            bounds: () => fenced(),
+            bounds: (camera) => fenced(camera),
             frame: (cam) => onFrame(cam),
             key: (e) => onKey(e),
             settle: (cam) => {
@@ -785,7 +791,7 @@ export function Overworld(props: {
                 const w = view;
                 if (!w) return;
                 // the floor covers the window with the sea, so it moves with the window
-                w.limits = zoomLimits(props.view, w.vp, isScreen());
+                w.limits = zoomLimits(props.view, w.vp);
                 if (w.cam.z < w.limits.min) w.set({ ...w.cam, z: w.limits.min });
                 const c = props.aim ? aimed(props.aim) : null;
                 if (c && ready()) w.set(c);
@@ -884,7 +890,7 @@ export function Overworld(props: {
                             class="ow-btn"
                             onClick={() => (at() === "all" ? home() : showAll())}
                         >
-                            {at() === "all" ? "This year" : "Every world"}
+                            {at() === "all" ? "Near me" : "Every world"}
                         </button>
                     </Show>
                 </div>

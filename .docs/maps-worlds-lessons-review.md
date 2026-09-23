@@ -74,8 +74,8 @@ Topics such as `art:clock`, `skill:money` and `subject:physics` connect lessons 
 `school/worlds/worlds.ts` is the registry. Each declaration provides its horizon, gate, sky,
 ground, path, landmarks, creatures, guide, weather, chapter moments, map placement, lesson reaches,
 allowed customization and explicit missing-content/art descriptions. A track place selects lessons
-by subject and/or an explicit list of lesson IDs. A track world can have multiple map placements,
-one per relevant grade, so map node count is not the number of world definitions.
+by subject and/or an explicit list of lesson IDs. A subject world has one shared map location. Its record remains grade-specific; the child reads
+their current grade there, while the grown-up can read its full collection.
 
 The garden and fifth-year worlds explicitly describe missing curriculum. An empty place remains an
 empty place; its existence does not establish that its lessons are written. The `needs` and `wants`
@@ -103,9 +103,9 @@ colour reach through `terrain.ts`, and supplies pictures, labels, motion and per
 and geography are local code/data, not fetched map tiles. `engine/space.ts` is the view contract
 between the school model and UI.
 
-The current kid map shows the other main years' lands and worlds in pencil, closed to entry.
-Its initial frame, colour reach and relevant side places follow its own year. The camera's bounds
-cover the sea. Some earlier comments still describe an own-land-only map or blank paper beyond
+The current kid map shows eight geographic regions and the other main worlds in pencil, closed
+to entry. Its initial frame stays near its current year; shared subject locations show its own
+grade's progress. The camera can explore the whole atlas and zoom out to every region. Some earlier comments still describe an own-land-only map or blank paper beyond
 the next world; current `mapViewOf`, `Overworld` and world tests supersede those descriptions.
 
 The parent `/map` is the school as written, with no child's record. Every place is open, no child
@@ -116,9 +116,10 @@ geometry but removes completion meaning. It currently has no place/trail view.
 
 Parent map addresses preserve world and lesson selection. Overlays use hash navigation and focus
 restoration. The kid route instead uses local map/world/place screen state and transfers screen
-rectangles between cameras to make entering and leaving look continuous. One limitation:
-`apps/kids/views.ts:worldOf` always builds the child's own-year journal; entry does not independently
-build a selected subject world's hosted journal.
+rectangles between cameras to make entering and leaving look continuous. Subject-place entry
+carries the selected world through the roll and place screens. Its hosted journal uses the child's own year, completed work, and only the hosted lessons on their current
+plan. Returning to the map preserves the selected place while it remains open. Locked places use
+the shared map's explanatory card.
 
 ## Kid opening: exact loading order
 

@@ -529,12 +529,16 @@ export function reachOf(map: Overworld, trip: Journey, terrain: Terrain): MapRea
         const on = map.nodes.filter((n) =>
             inside(l, { x: n.box.x + n.box.w / 2, y: n.box.y + n.box.h / 2 }),
         );
-        if (on.length) return on.every((n) => trip.places[n.i]?.state === "done");
+
         // a land that holds only places off the run is theirs: coloured to its coasts once each of their moments has happened
         const off = map.sides.flatMap((s, k) =>
             inside(l, { x: s.box.x + s.box.w / 2, y: s.box.y + s.box.h / 2 }) ? [k] : [],
         );
-        if (off.length) return off.every((k) => !!trip.sides?.[k]?.moment);
+        if (on.length || off.length)
+            return (
+                on.every((n) => trip.places[n.i]?.state === "done") &&
+                off.every((k) => !!trip.sides?.[k]?.moment)
+            );
         const c = {
             x: l.reduce((a, q) => a + q.x, 0) / l.length,
             y: l.reduce((a, q) => a + q.y, 0) / l.length,

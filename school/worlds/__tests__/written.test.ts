@@ -7,7 +7,7 @@ import { apply, defaultChoice } from "../choice";
 import { corpusFrom, topicsIn } from "../lessons";
 import type { Applied } from "../types";
 import { GROWN_MAP, GROWN_WORLD, worldViewOf } from "../view";
-import { elsewhere, schoolRun, worldById, yearOf } from "../worlds";
+import { elsewhere, schoolRun, WORLDS, worldById, yearOf } from "../worlds";
 import { daysWritten, journalWritten, schoolViewOf, whereIs, writtenView } from "../written";
 
 const STARTED = "2026-08-31";
@@ -169,4 +169,29 @@ test("a world read as written: every day of the year on the roll with nothing do
     );
     assert.equal(v.layout, built.layout, "the geometry is the roll's own");
     assert.equal(v.limits, GROWN_WORLD);
+});
+
+test("the shared atlas has one site per world, generous spacing, and all grades of a subject", () => {
+    const corpus = corpusFrom(
+        [
+            ...lessonsOf(1),
+            ...lessonsOf(2),
+            factOf("art-one", "art-one", 1, 1, "art"),
+            factOf("art-two", "art-two", 2, 1, "art"),
+        ],
+        STARTED,
+    );
+    const view = schoolViewOf({ corpus, size, still: true });
+    assert.equal(view.places.length, WORLDS.length);
+    assert.equal(new Set(view.places.map((p) => p.shown?.world)).size, WORLDS.length);
+    const hut = view.places.find((p) => p.shown?.world === "painters-hut");
+    assert.ok(hut?.shown?.notes.includes("2 lessons"));
+    for (const [i, a] of view.places.entries()) {
+        for (const b of view.places.slice(i + 1)) {
+            assert.ok(
+                Math.hypot(a.stand.x - b.stand.x, a.stand.y - b.stand.y) >= 2400,
+                `${a.shown?.name} crowds ${b.shown?.name}`,
+            );
+        }
+    }
 });

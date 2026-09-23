@@ -350,11 +350,11 @@
     align-items: center;
     gap: 6px;
     pointer-events: none;
-    transform: translateX(-50%) scale(clamp(1, calc(var(--mgrow, 1) * 0.6), 1.6));
+    transform: translateX(-50%) scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
     transform-origin: 50% 0;
 }
 .ow .ow-name.above {
-    transform: translate(-50%, -100%) scale(clamp(1, calc(var(--mgrow, 1) * 0.6), 1.6));
+    transform: translate(-50%, -100%) scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
     transform-origin: 50% 100%;
 }
 .ow .ow-name .w {
@@ -383,7 +383,7 @@
 }
 
 /* a year's name across its side of the country, as a map letters a region */
-.ow .ow-year {
+.ow .ow-region {
     position: absolute;
     width: max-content;
     display: flex;
@@ -393,16 +393,16 @@
     pointer-events: none;
     transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
 }
-.ow .ow-year .n {
-    font: 700 330px/1 var(--f-hand);
-    letter-spacing: 0.14em;
+.ow .ow-region .n {
+    font: 700 240px/1 var(--f-hand);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-soft);
     text-shadow:
         0 0 14px #fff,
         0 0 28px #fff;
 }
-.ow .ow-year .arc {
+.ow .ow-region .arc {
     font: 600 140px/1 var(--f-hand);
     font-variation-settings: "INFM" 100;
     color: var(--ink-soft);
@@ -410,16 +410,16 @@
         0 0 10px #fff,
         0 0 20px #fff;
 }
-.ow .ow-year .when {
+.ow .ow-region .when {
     font: 500 70px var(--f-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-soft);
 }
-.ow .ow-year.ahead {
+.ow .ow-region.ahead {
     opacity: 0.62;
 }
-.ow .ow-year.done .n {
+.ow .ow-region.done .n {
     color: var(--ink);
     text-decoration: underline wavy color-mix(in srgb, var(--glow) 90%, var(--tang)) 22px;
     text-underline-offset: 70px;
@@ -563,7 +563,7 @@
     text-transform: uppercase;
     color: var(--ink);
     transform: translate(-40%, -55%) rotate(-12deg)
-        scale(clamp(1, calc(var(--mgrow, 1) * 0.6), 1.6));
+        scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
     transform-origin: 50% 50%;
 }
 .m-stamp .s {

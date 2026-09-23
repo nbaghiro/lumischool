@@ -1,5 +1,32 @@
 # Overworld
 
+## Current geography: shared regions, 23 September 2026
+
+The live map now uses eight geographic regions rather than four grade-labelled continents:
+Home country, the Woodlands, Discovery hills, the Highlands, the Wetlands, the Sunlands,
+the Rain coast and the Far shore. Offshore worlds have their own islands and sea passages.
+The earlier year-land descriptions below record the design history; this section supersedes them.
+
+A subject world has one permanent location across grades. The grown-up atlas draws each of the
+38 definitions once and describes its full lesson collection. A child's map also shows all 38
+under the default world choices, including closed future places. Its subject rewards and lessons
+come from that child's current year; seeing another region does not unlock its lessons. Family
+term choices still replace the relevant term world. Grade and term remain curriculum metadata,
+not continent names.
+
+The child's first frame stays near their current world, with a closer view on phones. Every world
+zooms out to the atlas; Near me returns to the local frame. The whole country can be panned.
+Clicking a world smoothly frames it from the current camera position; a second click enters.
+Returning from a world centers that same neighbourhood. Keyboard travel still follows the ways.
+Completed work keeps its colour across regions. A coast fills only when all main and subject
+places on that land are finished. Year-end sailing remains a progress celebration.
+
+`school/worlds/geography.ts` owns coastlines, fixed `WORLD_SITES`, region labels and map extent.
+The shared view selects one subject location from the per-grade progress records; the underlying
+records remain separate. Routes to another land use sea travel (or the world's air route).
+Model tests cover unique locations, minimum spacing and grade-specific rewards. Browser checks
+cover the atlas, child overview, locked-place feedback and map/roll/place navigation.
+
 Status: built as the journal's map, September 2026, in two rounds. In the first, the owner found that the map of every world, the zoomed-out top of the journal, read more like a diagram than a map, and we made it an illustrated map in the sketchbook's hand. In the second, the owner found that seeing every year's worlds and year numbers at once made the later years feel too far away, asked for lands separated by sea that read like a real map, and asked for travel between the worlds with speed control and a little game in it. This document sets out the art direction, the child's map and the grown-up's, the country the worlds now stand in, the ways of travelling we compared and the paper plane we built, the story at the scale of the whole map, the worlds to come and where each will stand, what a parent sees, the poster, and the measurements. The owner chose the new map over the old one, so the old one and its `?map=before` switch are gone. It is written against [journal.md](journal.md), which describes the map's place in the journal and its keyboard journey, [story.md](story.md), the series bible, [motion.md](motion.md) and [animation.md](animation.md) for what may move, [engine.md](engine.md) and [arcade.md](arcade.md) for the game engine and the rules a game keeps, and [tracks.md](tracks.md), [curriculum.md](curriculum.md), [parents.md](parents.md) and [parent-app.md](parent-app.md), and it relaxes none of them.
 
 ## What the owner asked for

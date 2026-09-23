@@ -8,6 +8,7 @@
 // arrow keys across it and a screen reader get the same journey as a list.
 import {
     at,
+    inside,
     type Pt,
     type Rect,
     type RoadKind,
@@ -18,6 +19,7 @@ import {
 } from "../../engine/space";
 import {
     ALTS,
+    LANDS,
     LAND_AT,
     routeOf,
     SEA_SIDES,
@@ -56,12 +58,7 @@ const terrainOfPlace = (id: string): string => {
     return s && s.kind !== "term" ? s.land.terrain : "grass";
 };
 
-/**
- * Where every place off the run stands, in the order given: a world of a term in its term's place, a
- * world to choose beside the first term it may be chosen for, and a place a track brings a child to on
- * a spot its year's land keeps, each land's spots handed out once over that year's places so two never
- * take the same one.
- */
+/** Term and alternative sites follow their slots; subject sites are shared across grades. */
 export function spotsFor(sides: readonly Side[]): (Pt | undefined)[] {
     const out: (Pt | undefined)[] = sides.map(() => undefined);
     const byLand = new Map<number, { id: string; terrain: string; k: number }[]>();
@@ -196,9 +193,12 @@ export function layoutMap(
                 (q.x > land.x && q.x < land.x + land.w && q.y > land.y && q.y < land.y + land.h)
             );
         };
-        const ofYear = nodes.filter(
-            (n) => n.grade === s.grade && (kind === "sea" || kind === "air" || onLand(n)),
-        );
+        const ofYear =
+            site?.kind === "track"
+                ? nodes
+                : nodes.filter(
+                      (n) => n.grade === s.grade && (kind === "sea" || kind === "air" || onLand(n)),
+                  );
         const near = site?.land.near ?? [];
         const inTermOf = (n: string) => {
             const t = siteOf(n);
@@ -273,7 +273,20 @@ export function layoutMap(
             box,
             stand,
             host: host.i,
-            road: { from: host.i, to: i, kind, d: t.d, samples: t.samples(16) },
+            road: {
+                from: host.i,
+                to: i,
+                kind:
+                    kind === "air" ||
+                    kind === "sea" ||
+                    LANDS.some(
+                        (land) => inside(land.coast, mid(host)) && inside(land.coast, mid({ box })),
+                    )
+                        ? kind
+                        : "sea",
+                d: t.d,
+                samples: t.samples(16),
+            },
         });
     }
     const around = (ns: { box: Rect }[], pad: number, below: number): Rect => {

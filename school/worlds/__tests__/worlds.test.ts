@@ -20,7 +20,7 @@ import type { Progress } from "../../record/record";
 import { apply, defaultChoice } from "../choice";
 import { corpusFrom, topicsIn } from "../lessons";
 import { layoutMap, ownLand } from "../overworld";
-import { LAND_AT, SAILS, SEA_SIDES, spotsOn } from "../geography";
+import { LAND_AT, LANDS, REGIONS, SAILS, SEA_SIDES, spotsOn } from "../geography";
 import { journey, type TrackPlan, type YearRecord } from "../rewards";
 import { daysOf } from "../roll";
 import { edgeOf, terrainOf } from "../terrain";
@@ -185,45 +185,19 @@ test("the whole run lays out once, every world on land or at sea as it should be
     }
 });
 
-test("the painter's hut stands on a land's riverbank, one in each year, for art in every grade", () => {
-    // the hut asks for a riverbank, and each land keeps one, so it stands on the land it belongs to
-    const at = spotsOn(3, [{ id: "painters-hut", terrain: "riverbank" }])["painters-hut"];
-    const land = LAND_AT[3];
-    assert.ok(at && land, "the third year's land keeps a spot for it");
-    assert.ok(
-        at.x > land.x && at.x < land.x + land.w && at.y > land.y && at.y < land.y + land.h,
-        "on its own land",
-    );
-    assert.deepEqual(worldById("painters-hut").site, {
-        kind: "track",
-        hosts: { subjects: ["art"] },
-        land: { terrain: "riverbank", near: ["laboratory", "sports-ground"] },
-    });
-    const map = layoutMap(
-        schoolRun(),
-        (id) => worldOf(id).chapter.by,
-        [1, 2, 3, 4].map((grade) => ({ world: "painters-hut", grade })),
-    );
-    const terrain = terrainOf(map, worldOf);
-    const huts = map.sides.filter((s) => s.world === "painters-hut");
-    assert.equal(huts.length, 4, "a hut for each year");
-    for (const hut of huts) {
-        const land = LAND_AT[hut.grade];
-        assert.ok(land, `year ${hut.grade} has a land`);
-        assert.equal(wet(terrain, hut.stand), false, `year ${hut.grade}'s hut stands in the sea`);
+test("subject worlds have permanent, spacious sites across the shared regions", () => {
+    const sites = ["painters-hut", "reed-marsh", "crystal-caves", "dune-oasis", "treetops"];
+    for (const id of sites) {
+        const first = spotsOn(1, [{ id, terrain: "" }])[id];
+        assert.ok(first);
+        for (const grade of [2, 3, 4])
+            assert.deepEqual(spotsOn(grade, [{ id, terrain: "" }])[id], first);
         assert.ok(
-            hut.stand.x > land.x && hut.stand.x < land.x + land.w,
-            `year ${hut.grade}'s hut is off its own land`,
-        );
-        // Its way leaves from a world of its own year. In the one country it left from the
-        // laboratory, the world its declaration names, but each year now has its own hut on its own
-        // land, and the laboratory is on the third year's alone.
-        assert.equal(
-            map.nodes[hut.host]?.grade,
-            hut.grade,
-            `year ${hut.grade}'s hut leaves another year`,
+            LANDS.some((land) => inside(land.coast, first)),
+            `${id} stands on land`,
         );
     }
+    assert.equal(REGIONS.length, 8);
 });
 
 test("a child's map holds every world of every year: their own year's dimmed and closed until each opens, the next distinct, and another year's present and closed with no way in", () => {
@@ -295,7 +269,7 @@ test("a child's map holds every world of every year: their own year's dimmed and
     assert.equal(hut?.shown?.name, "The painter's hut");
 });
 
-test("a child's map opens on the land of the year they stand in and holds the whole sea: the other years' lands are drawn, and only the own land carries the reach", () => {
+test("a child's map opens on the land of the year they stand in and holds the whole sea: the other years' lands are drawn, and earned colour remains across the country", () => {
     for (const [grade, n] of [
         [1, 4],
         [2, 2],
@@ -334,12 +308,7 @@ test("a child's map opens on the land of the year they stand in and holds the wh
             ),
             `year ${grade}: the land itself is not drawn`,
         );
-        // only the own land is ever coloured to its coasts, however the years before went
-        for (const ring of v.reach.whole)
-            assert.ok(
-                !theirs.some((q) => inside(ring, q)),
-                `year ${grade}: another year's land carries the reach`,
-            );
+        assert.ok(v.reach.whole.every((ring) => v.country.lands.includes(ring)));
         // the map's own title, key and compass are this land's, in its own sea
         const own = ownLand(v.layout, grade);
         assert.ok(own);
@@ -1061,7 +1030,7 @@ test("a day whose aside hangs further along the path than its maths leaves the c
     assert.deepEqual(stands(["writing-1-4"]), { map: 3, roll: 3 });
 });
 
-test("the map carries what its painter draws beside the places: every drawing's ref, the country's life, the years for a grown-up only, and landings only where the viewer may go", () => {
+test("the map carries what its painter draws beside the places: every drawing's ref, the country's life, shared geographic region names, and landings only where the viewer may go", () => {
     const child = childMap(1, 4);
     for (const p of Object.values(child.pictures))
         for (const x of p.map.spots) assert.ok(child.art[x.art], `${x.art} has no ref on the view`);
@@ -1069,7 +1038,7 @@ test("the map carries what its painter draws beside the places: every drawing's 
     for (const own of ["lantern", "bridge", "balloon"])
         assert.ok(child.art[own], `the map's own ${own} has no ref on the view`);
     assert.ok(child.pictures.railway, "a closed place is drawn in pencil, so it has a picture");
-    assert.deepEqual(child.years, [], "no year is lettered on a child's map");
+    assert.deepEqual(child.regions, REGIONS, "geographic regions are shared by every child");
     assert.ok(child.rides.rails.guide?.art, "the guide rides the rails");
     assert.deepEqual(
         child.landings.map((l) => l.node).sort((a, b) => a - b),
@@ -1091,14 +1060,7 @@ test("the map carries what its painter draws beside the places: every drawing's 
         child: { name: "Rosie", since: STARTED },
         limits: GROWN_MAP,
     });
-    assert.deepEqual(
-        grown.years.map((y) => [y.grade, y.begun, y.finished !== null]),
-        [
-            [1, true, true],
-            [2, true, false],
-        ],
-        "a grown-up reads each year with its state",
-    );
+    assert.deepEqual(grown.regions, REGIONS);
     assert.deepEqual(grown.landings, [], "a grown-up's own map has no plane");
     assert.ok(
         grown.life.length > child.life.length,
@@ -1221,4 +1183,111 @@ test("a visit to a world opens on it with its arrival line, and reads the sample
     assert.deepEqual(v.arrival, { term: 3, says: worldById("railway").arrive });
     assert.equal(v.limits.sheets, "preview");
     assert.equal(recordsAll(CORPUS, j, CHOICE, () => progressOf(1, 0)).length, 2);
+});
+
+test("a child's subject place keeps its own year's lessons, earned work and planned today", () => {
+    const corpus = corpusFrom(
+        [...lessonsOf(1), ...lessonsOf(2), ...trackOf("art", 1), ...trackOf("art", 2)],
+        STARTED,
+    );
+    const year = corpus.year(1, "Rosie");
+    const progress: Progress = {
+        done: { "art-1-1": { stars: 3, on: "2026-09-01", minutes: 10, right: 1 } },
+        current: "g1-l1",
+        week: 1,
+        unlocked: [],
+    };
+    for (const now of [["g1-l1", "art-1-2"], ["g1-l1"], []]) {
+        const j = journalOf({
+            corpus,
+            place: { kind: "world", world: worldById("painters-hut") },
+            grade: 1,
+            when: null,
+            choice: CHOICE,
+            sample: () => {
+                throw new Error("must use real progress");
+            },
+            live: { grade: 1, year, progress, today: "2026-09-23", before: [], tracks: [], now },
+        });
+        assert.deepEqual(
+            j.year.lessons.map((l) => l.id),
+            trackOf("art", 1).map((l) => l.id),
+        );
+        assert.deepEqual(j.worlds(CHOICE), ["painters-hut"]);
+        assert.deepEqual(
+            j.days.filter((d) => d.state === "done").flatMap((d) => d.lessons),
+            ["art-1-1"],
+        );
+        assert.deepEqual(
+            j.days.filter((d) => d.state === "today").flatMap((d) => d.lessons),
+            now.filter((id) => id.startsWith("art")),
+        );
+        assert.equal(j.days[0]?.date, "2026-09-01");
+        const view = worldViewOf({
+            journal: j,
+            choice: CHOICE,
+            corpus,
+            worldOf,
+            topics: topicsIn(corpus),
+            height: () => 560,
+            size,
+            narrow: false,
+            grown: false,
+            limits: childWorld("kid"),
+        });
+        assert.equal(view.open, "painters-hut");
+        assert.ok(view.layout.stretches.every((s) => s.world === "painters-hut"));
+        assert.ok(view.days.flatMap((d) => d.sheets).every((s) => s.lesson.startsWith("art-1-")));
+        assert.ok(view.trail, "the subject roll also has its own place view");
+    }
+});
+
+test("children share subject locations without borrowing another grade's rewards", () => {
+    const corpus = corpusFrom(
+        [...lessonsOf(1), ...lessonsOf(2), ...trackOf("art", 1), ...trackOf("art", 2)],
+        STARTED,
+    );
+    const make = (grade: number) =>
+        mapViewOf({
+            records: [1, 2].map((g): YearRecord => ({
+                grade: g,
+                year: corpus.year(g, "Rosie"),
+                worlds: yearOf(g),
+                progress: {
+                    done:
+                        g === 1
+                            ? {
+                                  "art-1-1": {
+                                      stars: 3 as const,
+                                      on: STARTED,
+                                      minutes: 1,
+                                      right: 1,
+                                  },
+                              }
+                            : {},
+                    current: g === grade ? `g${g}-l1` : "",
+                    week: 1,
+                    unlocked: [],
+                },
+            })),
+            sides: [1, 2].map((g) => ({ world: "painters-hut", grade: g })),
+            corpus,
+            worldOf,
+            topics: topicsIn(corpus),
+            size,
+            grown: false,
+            child: { name: "Rosie", since: STARTED },
+            grade,
+            limits: CHILD_MAP,
+        });
+    const first = make(1),
+        second = make(2);
+    const hut1 = first.places.filter((p) => p.shown?.world === "painters-hut");
+    const hut2 = second.places.filter((p) => p.shown?.world === "painters-hut");
+    assert.equal(hut1.length, 1);
+    assert.equal(hut2.length, 1);
+    assert.deepEqual(hut1[0]?.box, hut2[0]?.box);
+    assert.equal(hut1[0]?.open, true);
+    assert.equal(hut2[0]?.open, false);
+    assert.equal(second.limits.zoomOut, "everything");
 });

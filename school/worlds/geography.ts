@@ -1,26 +1,4 @@
-// The country the map of every world is drawn on: four lands in one sea, one for each year of the
-// school, with the island the fourth year sails out to in the water between them. .docs/overworld.md
-// has the reasoning; this file is only where things are.
-//
-// The lands lie clockwise round the sea from the south-west, in the order a child meets them. The
-// first year's is the home isle: the meadow inland, the harbour at the head of a bay on its north
-// coast, the railway on the flat by its east shore. The second year's lies across the strait to the
-// east, the woods on its western shoulder, the kitchen's cottage in a clearing and the town on the
-// estuary of its south coast. The third year's is north of that, the night hill on its southern
-// slope, the sports ground on the flat above it and the laboratory on a sea loch cut into its west
-// side. The fourth year's is the last, in the north-west, mountains through the middle of it and a
-// firth to the south-east, and the year leaves it for the open sea and the island.
-//
-// A year ends by sailing to the next land, so the way into the first world of a year is the sea while
-// the ways inside a land are its own: a path, a road, rails or a river, at least three kinds on each,
-// so the keyboard journey and the vehicles it rides survive the crossing moving to the year's end.
-//
-// Every term of a year has its place here, keyed by its slot (`1.2` is year 1, term 2). A place a
-// track brings a child to stands on a spot its land keeps for the kind of country it asks for, so a
-// year has its own marsh, park and painter's hut rather than the school sharing one of each. Units
-// are the map's world units, twenty to a square of the paper; x runs east and y south.
-//
-// Pure data and small helpers, like the rest of the map's geometry, so a test can walk it.
+// Eight regions share one sea; lesson grades do not determine where a world stands.
 import type { Pt, Rect, WoodKind } from "../../engine/space";
 
 /** A land as control points round its coast, clockwise, which terrain.ts smooths and wobbles. */
@@ -276,7 +254,7 @@ export const LANDS: LandShape[] = [
     {
         // the far shore, across the northern ocean: the fifth year's, on a second sheet
         id: "far-shore",
-        from: 5,
+        from: 0,
         wobble: 170,
         coast: [
             p(-9000, -16800),
@@ -299,345 +277,52 @@ export const LANDS: LandShape[] = [
         ],
     },
     {
-        id: "isle-1-1",
-        from: 9,
-        wobble: 110,
+        id: "wetlands",
+        wobble: 150,
         coast: [
-            p(-10050, 1000),
-            p(-10150, 1400),
-            p(-10650, 1600),
-            p(-11150, 1650),
-            p(-11650, 1550),
-            p(-12000, 1200),
-            p(-11950, 750),
-            p(-11650, 450),
-            p(-11150, 300),
-            p(-10550, 250),
-            p(-10100, 550),
+            p(-21500, -1600),
+            p(-22500, 500),
+            p(-24300, 1900),
+            p(-26500, 2600),
+            p(-28600, 1300),
+            p(-30000, -800),
+            p(-29400, -3200),
+            p(-27500, -4700),
+            p(-25000, -4500),
+            p(-22800, -3500),
         ],
     },
     {
-        id: "isle-1-2",
-        from: 9,
-        wobble: 110,
+        id: "sunlands",
+        wobble: 170,
         coast: [
-            p(-7050, 700),
-            p(-7050, 1150),
-            p(-7550, 1400),
-            p(-8150, 1500),
-            p(-8700, 1300),
-            p(-8900, 900),
-            p(-9050, 450),
-            p(-8750, 50),
-            p(-8150, -100),
-            p(-7550, -50),
-            p(-7200, 300),
+            p(29900, -1600),
+            p(31400, 900),
+            p(30500, 3300),
+            p(28600, 5000),
+            p(26000, 5100),
+            p(23800, 3500),
+            p(22000, 1400),
+            p(22900, -1100),
+            p(24900, -3300),
+            p(27600, -3700),
         ],
     },
     {
-        id: "isle-1-3",
-        from: 9,
-        wobble: 110,
+        id: "raincoast",
+        wobble: 160,
         coast: [
-            p(-3150, 11200),
-            p(-3250, 11600),
-            p(-3700, 11850),
-            p(-4250, 11950),
-            p(-4700, 11700),
-            p(-4950, 11350),
-            p(-4950, 11000),
-            p(-4750, 10600),
-            p(-4250, 10450),
-            p(-3650, 10450),
-            p(-3350, 10800),
-        ],
-    },
-    {
-        id: "isle-1-4",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-4050, 400),
-            p(-4250, 750),
-            p(-4500, 1150),
-            p(-5150, 1050),
-            p(-5650, 950),
-            p(-6050, 600),
-            p(-5950, 200),
-            p(-5600, -100),
-            p(-5150, -250),
-            p(-4550, -350),
-            p(-4100, -50),
-        ],
-    },
-    {
-        id: "isle-2-1",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(6050, 10850),
-            p(6000, 11250),
-            p(5500, 11450),
-            p(4950, 11700),
-            p(4400, 11450),
-            p(4250, 11000),
-            p(4000, 10600),
-            p(4350, 10200),
-            p(4950, 10100),
-            p(5500, 10150),
-            p(5950, 10450),
-        ],
-    },
-    {
-        id: "isle-2-2",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(18650, 11450),
-            p(18450, 11800),
-            p(18150, 12200),
-            p(17550, 12200),
-            p(17150, 11900),
-            p(16650, 11650),
-            p(16800, 11250),
-            p(17050, 10850),
-            p(17550, 10750),
-            p(18100, 10750),
-            p(18450, 11050),
-        ],
-    },
-    {
-        id: "isle-2-3",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(6350, 1850),
-            p(6300, 2250),
-            p(5800, 2500),
-            p(5250, 2500),
-            p(4750, 2400),
-            p(4400, 2050),
-            p(4400, 1600),
-            p(4800, 1350),
-            p(5250, 1000),
-            p(5800, 1150),
-            p(6350, 1400),
-        ],
-    },
-    {
-        id: "isle-2-4",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(15400, 11750),
-            p(15200, 12100),
-            p(14800, 12350),
-            p(14250, 12550),
-            p(13700, 12350),
-            p(13500, 11950),
-            p(13300, 11500),
-            p(13700, 11150),
-            p(14250, 11000),
-            p(14800, 11050),
-            p(15300, 11300),
-        ],
-    },
-    {
-        id: "isle-3-1",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(2100, -6250),
-            p(2000, -5850),
-            p(1500, -5600),
-            p(950, -5500),
-            p(350, -5600),
-            p(100, -6050),
-            p(150, -6500),
-            p(450, -6850),
-            p(950, -7100),
-            p(1500, -6900),
-            p(1900, -6650),
-        ],
-    },
-    {
-        id: "isle-3-2",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(16800, -850),
-            p(16600, -500),
-            p(16300, -100),
-            p(15650, -150),
-            p(15150, -350),
-            p(14850, -650),
-            p(14750, -1100),
-            p(15050, -1500),
-            p(15650, -1600),
-            p(16200, -1500),
-            p(16750, -1350),
-        ],
-    },
-    {
-        id: "isle-3-3",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(16500, -11350),
-            p(16450, -10900),
-            p(15950, -10650),
-            p(15350, -10500),
-            p(14800, -10750),
-            p(14650, -11200),
-            p(14650, -11550),
-            p(14800, -11950),
-            p(15350, -12050),
-            p(15900, -12000),
-            p(16400, -11800),
-        ],
-    },
-    {
-        id: "isle-3-4",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(13200, -12250),
-            p(13050, -11850),
-            p(12600, -11600),
-            p(12050, -11500),
-            p(11450, -11600),
-            p(11150, -12050),
-            p(11250, -12500),
-            p(11600, -12800),
-            p(12050, -13100),
-            p(12600, -12900),
-            p(13050, -12650),
-        ],
-    },
-    {
-        id: "isle-3-5",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(18600, -7750),
-            p(18550, -7300),
-            p(18050, -7000),
-            p(17450, -7100),
-            p(16950, -7250),
-            p(16650, -7550),
-            p(16550, -8000),
-            p(16900, -8350),
-            p(17450, -8500),
-            p(18000, -8400),
-            p(18350, -8150),
-        ],
-    },
-    {
-        id: "isle-4-1",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-2400, -5350),
-            p(-2450, -4900),
-            p(-3000, -4700),
-            p(-3550, -4650),
-            p(-4050, -4850),
-            p(-4300, -5200),
-            p(-4500, -5600),
-            p(-4150, -6000),
-            p(-3550, -6050),
-            p(-3050, -6000),
-            p(-2650, -5750),
-        ],
-    },
-    {
-        id: "isle-4-2",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-4500, -10750),
-            p(-4650, -10350),
-            p(-5100, -10150),
-            p(-5650, -10100),
-            p(-6200, -10150),
-            p(-6600, -10550),
-            p(-6400, -10950),
-            p(-6150, -11350),
-            p(-5650, -11600),
-            p(-5150, -11350),
-            p(-4550, -11200),
-        ],
-    },
-    {
-        id: "isle-4-3",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-8100, -12250),
-            p(-8350, -11900),
-            p(-8650, -11500),
-            p(-9250, -11500),
-            p(-9850, -11600),
-            p(-10100, -12050),
-            p(-10100, -12500),
-            p(-9700, -12800),
-            p(-9250, -13050),
-            p(-8750, -12850),
-            p(-8250, -12700),
-        ],
-    },
-    {
-        id: "isle-4-4",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-15300, -11050),
-            p(-15450, -10650),
-            p(-15900, -10400),
-            p(-16450, -10350),
-            p(-16950, -10550),
-            p(-17200, -10850),
-            p(-17400, -11300),
-            p(-17000, -11650),
-            p(-16450, -11750),
-            p(-15800, -11850),
-            p(-15500, -11450),
-        ],
-    },
-    {
-        id: "isle-4-5",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-17100, -8350),
-            p(-17350, -8000),
-            p(-17750, -7750),
-            p(-18250, -7500),
-            p(-18800, -7800),
-            p(-19200, -8150),
-            p(-19000, -8550),
-            p(-18700, -8900),
-            p(-18250, -9200),
-            p(-17600, -9150),
-            p(-17150, -8850),
-        ],
-    },
-    {
-        id: "isle-4-6",
-        from: 9,
-        wobble: 110,
-        coast: [
-            p(-17400, -3250),
-            p(-17500, -2850),
-            p(-17950, -2550),
-            p(-18550, -2500),
-            p(-19150, -2600),
-            p(-19450, -3050),
-            p(-19400, -3500),
-            p(-19100, -3900),
-            p(-18550, -4000),
-            p(-17900, -4050),
-            p(-17500, -3700),
+            p(1700, 15800),
+            p(3400, 17700),
+            p(2400, 19600),
+            p(300, 20800),
+            p(-2200, 21400),
+            p(-4600, 20500),
+            p(-6500, 19100),
+            p(-7600, 17100),
+            p(-6500, 15000),
+            p(-4300, 14200),
+            p(-1700, 14600),
         ],
     },
 ];
@@ -651,7 +336,7 @@ export const slotOf = (grade: number, term: number): string => `${grade}.${term}
  * and holds whichever world stands in that term.
  */
 export const SLOTS: Record<string, Pt> = {
-    "0.1": p(-17000, 7100),
+    "0.1": p(-17700, 8000),
     "1.1": p(-14650, 6600),
     "1.2": p(-11050, 3600),
     "1.3": p(-5650, 6800),
@@ -677,8 +362,8 @@ export const SLOTS: Record<string, Pt> = {
  */
 export const ALTS: Record<string, Pt> = {
     "0.1": p(-17400, 8400),
-    "1.1": p(-15600, 4600),
-    "1.2": p(-9000, 4400),
+    "1.1": p(-16800, 4600),
+    "1.2": p(-9700, 8500),
     "1.3": p(-7250, 8450),
     "2.1": p(7650, 7800),
     "2.2": p(11950, 8850),
@@ -694,155 +379,62 @@ export const ALTS: Record<string, Pt> = {
     "5.3": p(8900, -15600),
 };
 
-/** A spot a land keeps for a place a track brings a child to, and the kind of country it is. */
-export interface Spot {
-    terrain: string;
-    at: Pt;
+/** Fixed sites keep a shared subject world in the same place for every family and grade. */
+export const WORLD_SITES: Record<string, Pt> = {
+    "reed-marsh": p(-26600, -2600),
+    "painters-hut": p(-23800, -1400),
+    "long-grass": p(-27100, 500),
+    "bandstand-park": p(9200, 8200),
+    "old-tower": p(-13200, -4600),
+    "ferry-town": p(-7200, 4300),
+    "crystal-caves": p(-13200, -8250),
+    "fossil-cliffs": p(-800, 19000),
+    treetops: p(-4300, 17200),
+    "dune-oasis": p(25100, -1000),
+    "salt-flats": p(28400, 1000),
+    "geyser-valley": p(25300, 2800),
+    "coral-reef": p(4900, 16100),
+    "cloud-islands": p(20000, -10500),
+    "book-island": p(-18500, -15500),
+    "printing-works": p(-23500, -11500),
+    "post-office": p(8000, 14300),
+    "windmill-island": p(15500, 14600),
+    "clockwork-island": p(19200, -4300),
+    "lamp-rocks": p(-20500, 13100),
+};
+
+/** Each offshore world has a small, asymmetric coast around its permanent site. */
+for (const id of [
+    "coral-reef",
+    "book-island",
+    "printing-works",
+    "post-office",
+    "windmill-island",
+    "clockwork-island",
+    "lamp-rocks",
+]) {
+    const at = WORLD_SITES[id];
+    if (!at) continue;
+    const outline = [
+        [-1500, -300],
+        [-1150, -1050],
+        [-150, -1350],
+        [1000, -1000],
+        [1550, -150],
+        [1050, 800],
+        [150, 1150],
+        [-1000, 800],
+    ];
+    LANDS.push({ id, wobble: 80, coast: outline.map(([x = 0, y = 0]) => p(at.x + x, at.y + y)) });
 }
 
-/**
- * The spots each land keeps for the places a track brings a child to: one for each place its year's
- * lessons bring a child to, since each year has its own marsh, park and painter's hut. A place
- * takes the first free spot of its kind in the order its id sorts, so a kind several places share
- * (the seaside) lists its spots in that order. The places that ask for an island stand on isles in
- * the land's own water, and the cloud islands over it. Every way to them was checked clear of every
- * place's drawings when they were set out, on the grown-up's map, which holds them all. */
-export const SPOTS: Record<number, Spot[]> = {
-    1: [
-        { terrain: "seaside", at: p(-7600, 9650) },
-        { terrain: "isle", at: p(-4100, 10950) },
-        { terrain: "sky", at: p(-2000, 8250) },
-        { terrain: "isle", at: p(-5000, 150) },
-        { terrain: "cave", at: p(-10850, 6650) },
-        { terrain: "seaside", at: p(-17850, 5150) },
-        { terrain: "bay", at: p(-6350, 4900) },
-        { terrain: "cliffs", at: p(-6600, 8400) },
-        { terrain: "isle", at: p(-8000, 450) },
-        { terrain: "grass", at: p(-8600, 7400) },
-        { terrain: "hilltop", at: p(-10600, 8400) },
-        { terrain: "riverbank", at: p(-14600, 9900) },
-        { terrain: "isle", at: p(-11000, 750) },
-        { terrain: "lakeshore", at: p(-14100, 8400) },
-        { terrain: "seaside", at: p(-12600, 10150) },
-    ],
-    2: [
-        { terrain: "seaside", at: p(12400, 3700) },
-        { terrain: "isle", at: p(5400, 1600) },
-        { terrain: "sky", at: p(3300, 7900) },
-        { terrain: "isle", at: p(14400, 11500) },
-        { terrain: "cave", at: p(10150, 3450) },
-        { terrain: "seaside", at: p(7150, 7950) },
-        { terrain: "cliffs", at: p(7400, 4450) },
-        { terrain: "seaside", at: p(16400, 7200) },
-        { terrain: "isle", at: p(17700, 11200) },
-        { terrain: "grass", at: p(8900, 6450) },
-        { terrain: "riverbank", at: p(14150, 8450) },
-        { terrain: "isle", at: p(5100, 10600) },
-        { terrain: "lakeshore", at: p(11900, 5700) },
-        { terrain: "seaside", at: p(16900, 5700) },
-        { terrain: "seaside", at: p(9650, 9450) },
-    ],
-    3: [
-        { terrain: "seaside", at: p(14150, -6700) },
-        { terrain: "isle", at: p(17600, -8000) },
-        { terrain: "isle", at: p(12200, -12500) },
-        { terrain: "sky", at: p(10100, -1400) },
-        { terrain: "isle", at: p(1100, -6500) },
-        { terrain: "cave", at: p(10650, -6450) },
-        { terrain: "seaside", at: p(8650, -3450) },
-        { terrain: "cliffs", at: p(12900, -3950) },
-        { terrain: "seaside", at: p(7900, -6700) },
-        { terrain: "riverbank", at: p(6650, -5200) },
-        { terrain: "isle", at: p(15500, -11600) },
-        { terrain: "lakeshore", at: p(6400, -8950) },
-        { terrain: "seaside", at: p(9650, -5200) },
-        { terrain: "seaside", at: p(9650, -8950) },
-        { terrain: "isle", at: p(15800, -1100) },
-    ],
-    4: [
-        { terrain: "seaside", at: p(-14550, -7700) },
-        { terrain: "isle", at: p(-18100, -8600) },
-        { terrain: "isle", at: p(-5500, -11000) },
-        { terrain: "sky", at: p(-6400, -2600) },
-        { terrain: "isle", at: p(-16300, -11300) },
-        { terrain: "cave", at: p(-11300, -5450) },
-        { terrain: "seaside", at: p(-13550, -4450) },
-        { terrain: "cliffs", at: p(-10550, -9200) },
-        { terrain: "seaside", at: p(-8550, -5200) },
-        { terrain: "riverbank", at: p(-15550, -4700) },
-        { terrain: "isle", at: p(-3400, -5600) },
-        { terrain: "isle", at: p(-18400, -3500) },
-        { terrain: "lakeshore", at: p(-11300, -3450) },
-        { terrain: "seaside", at: p(-9050, -3700) },
-        { terrain: "seaside", at: p(-8300, -8950) },
-        { terrain: "isle", at: p(-9100, -12500) },
-    ],
-};
-
-/**
- * The kind of country a place asks for, from the word its own declaration uses: the worlds were
- * written with a word apiece (`site.land.terrain`), and the lands keep spots by kind.
- */
-const KIND: Record<string, string> = {
-    lakeshore: "lakeshore",
-    "frozen-lake": "lakeshore",
-    riverbank: "riverbank",
-    valley: "riverbank",
-    hilltop: "hilltop",
-    "walled-hill": "hilltop",
-    "sea-cliffs": "cliffs",
-    "seaside-park": "seaside",
-    "across-the-bay": "bay",
-    "south-shore": "seaside",
-    "far-shore": "seaside",
-    home: "grass",
-    sky: "sky",
-    "under-the-mountains": "cave",
-    atoll: "isle",
-    "book-island": "isle",
-    "windmill-island": "isle",
-    "clockwork-island": "isle",
-    "lamp-rocks": "isle",
-    "post-office": "isle",
-    "printing-works": "isle",
-};
-
-/**
- * Where the places off the run stand on one land: each takes the first free spot of the kind it asks
- * for, or the first free spot of any kind, in the order they are given, so the same set of places
- * always lands the same way. A land with more places than spots puts the rest in a row below it.
- */
 export function spotsOn(
-    grade: number,
+    _grade: number,
     places: readonly { id: string; terrain: string }[],
 ): Record<string, Pt> {
-    const spots = SPOTS[grade] ?? [];
-    const taken = new Set<number>();
-    const out: Record<string, Pt> = {};
-    const land = LAND_AT[grade];
-    let spare = 0;
-    for (const place of [...places].sort((a, b) => a.id.localeCompare(b.id))) {
-        const kind = KIND[place.terrain] ?? place.terrain;
-        let at = spots.findIndex((s, i) => !taken.has(i) && s.terrain === kind);
-        // a place that does not ask for water is never put in it: the sky and the isles are kept for
-        // the places that belong there, and anything else takes the next spot on the land itself
-        if (at < 0)
-            at = spots.findIndex(
-                (s, i) => !taken.has(i) && s.terrain !== "sky" && s.terrain !== "isle",
-            );
-        if (at < 0) at = spots.findIndex((_, i) => !taken.has(i));
-        if (at < 0) {
-            out[place.id] = land
-                ? p(land.x + 1200 + spare * 2600, land.y + land.h + 1800)
-                : p(spare * 2600, 0);
-            spare += 1;
-            continue;
-        }
-        taken.add(at);
-        const spot = spots[at];
-        if (spot) out[place.id] = spot.at;
-    }
-    return out;
+    return Object.fromEntries(
+        places.flatMap(({ id }) => (WORLD_SITES[id] ? [[id, WORLD_SITES[id]]] : [])),
+    );
 }
 
 /**
@@ -879,6 +471,8 @@ export const SPURS: Record<string, Pt[]> = {};
 
 /** Rivers, as control points from spring to mouth: one to a land, and each the way into a world. */
 export const RIVERS: Pt[][] = [
+    [p(-28300, -3600), p(-26800, -1900), p(-25200, -700), p(-23900, 500), p(-24500, 1800)],
+    [p(-5000, 15000), p(-3600, 16700), p(-2600, 17900), p(-800, 18600), p(1700, 19200)],
     [p(-17200, 5000), p(-16350, 6000), p(-15600, 7200), p(-14700, 8450), p(-14050, 9950)],
     [p(10150, 5150), p(11300, 6400), p(12550, 7650), p(13950, 8800), p(15350, 10150)],
     [p(5100, -5800), p(6100, -7000), p(6450, -8350), p(7350, -9650)],
@@ -887,12 +481,18 @@ export const RIVERS: Pt[][] = [
 
 /** Lakes, each a middle and two radii; terrain.ts draws a wobbly outline round it. */
 export const LAKES: { at: Pt; rx: number; ry: number }[] = [
+    { at: p(-27900, -1300), rx: 800, ry: 420 },
+    { at: p(24000, 1000), rx: 650, ry: 320 },
     { at: p(-12450, 8450), rx: 950, ry: 520 },
     { at: p(10050, 5100), rx: 620, ry: 330 },
     { at: p(8450, -8900), rx: 700, ry: 380 },
 ];
 
 export const WOODS: { at: Pt; rx: number; ry: number; kind: WoodKind }[] = [
+    { at: p(-27900, -3400), rx: 700, ry: 340, kind: "trees" },
+    { at: p(-4800, 18600), rx: 1200, ry: 520, kind: "palms" },
+    { at: p(-1700, 16400), rx: 1000, ry: 440, kind: "palms" },
+    { at: p(24300, -2100), rx: 500, ry: 260, kind: "palms" },
     { at: p(-15700, 6150), rx: 620, ry: 300, kind: "trees" },
     { at: p(-10800, 7800), rx: 560, ry: 280, kind: "trees" },
     { at: p(-7650, 5900), rx: 480, ry: 260, kind: "firs" },
@@ -963,11 +563,63 @@ export const SIGHTS: { art: string; at: Pt; name: string; k: number; flip?: bool
 ];
 
 /** Where each year's name is lettered for a grown-up, and at what angle in degrees. */
-export const YEAR_LABELS: { grade: number; at: Pt; angle: number }[] = [
-    { grade: 1, at: p(-11800, 9950), angle: 0 },
-    { grade: 2, at: p(11800, 9950), angle: 0 },
-    { grade: 3, at: p(9200, -3300), angle: 0 },
-    { grade: 4, at: p(-11000, -3250), angle: 0 },
+export const REGIONS: { id: string; name: string; line: string; at: Pt; angle: number }[] = [
+    {
+        id: "year-one",
+        name: "Home country",
+        line: "Fields, gardens and the harbour",
+        at: p(-12700, 10300),
+        angle: -3,
+    },
+    {
+        id: "year-two",
+        name: "The woodlands",
+        line: "Forest paths and warm windows",
+        at: p(11400, 10000),
+        angle: 2,
+    },
+    {
+        id: "year-three",
+        name: "Discovery hills",
+        line: "Stars, experiments and open skies",
+        at: p(9500, -5600),
+        angle: -2,
+    },
+    {
+        id: "year-four",
+        name: "The highlands",
+        line: "Peaks, caves and old stone",
+        at: p(-11600, -10200),
+        angle: -3,
+    },
+    {
+        id: "wetlands",
+        name: "The wetlands",
+        line: "Reeds, rivers and small wonders",
+        at: p(-25700, 2100),
+        angle: 3,
+    },
+    {
+        id: "sunlands",
+        name: "The sunlands",
+        line: "Sand, salt and steaming springs",
+        at: p(27100, 4500),
+        angle: -3,
+    },
+    {
+        id: "raincoast",
+        name: "The rain coast",
+        line: "Tall trees and ancient shores",
+        at: p(-2400, 20700),
+        angle: 2,
+    },
+    {
+        id: "far-shore",
+        name: "The far shore",
+        line: "Canals, cities and distant stars",
+        at: p(1000, -18100),
+        angle: 0,
+    },
 ];
 
 /** The map's title, its key and its compass rose, each in a corner of the sea. */
@@ -1002,15 +654,10 @@ export const SAILS: Record<number, Pt> = {
  * the outermost coasts, where each land keeps isles of its own rather than sharing the water between
  * the lands with the next year's.
  */
-export const SHEET: Rect = { x: -21600, y: -14600, w: 43000, h: 29200 };
+export const SHEET: Rect = { x: -32600, y: -20400, w: 66500, h: 44200 };
 
-/**
- * The open water kept beyond each side of the country, so a hand has as much room to drag sideways
- * as it has up and down. The country is half again as wide as it is tall and a window is wider
- * still, so a map drawn all the way back has slack above and below and none at the sides; this
- * water is that slack. It widens what the map is drawn on and fenced to, and not what the map opens
- * on or works its zoom out from, which stay the country (`core` in engine/space.ts). */
-export const SEA_SIDES = 4000;
+/** Extra sea fills wide screens at the atlas zoom without shrinking the continents. */
+export const SEA_SIDES = 24000;
 /** What a fifth year adds: the far shore, on a sheet taped along the top. */
 export const SHEET_FIVE: Rect = { x: -12000, y: -20400, w: 26000, h: 6000 };
 

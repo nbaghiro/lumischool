@@ -1204,22 +1204,16 @@ export function paintMap(o: MapOptions): Places {
     const run = view.places.filter((p) => p.host === null),
         off = view.places.filter((p) => p.host !== null);
 
-    // the year's name lettered across its side of the country, for a grown-up, who reads the map by years
-    for (const y of view.years) {
+    // Region names belong to the geography, independently of lesson progress.
+    for (const y of view.regions) {
         const d = document.createElement("div");
-        d.className = `ow-year${y.begun ? "" : " ahead"}${y.finished ? " done" : ""}`;
+        d.className = "ow-region";
         d.style.left = `${y.at.x}px`;
         d.style.top = `${y.at.y}px`;
         d.style.setProperty("--turn", `${y.angle}deg`);
         d.innerHTML = `<span class="n"></span><span class="arc"></span>`;
         d.querySelector(".n")?.append(y.name);
         d.querySelector(".arc")?.append(y.line);
-        if (y.finished) {
-            const w = document.createElement("span");
-            w.className = "when";
-            w.textContent = `Finished ${shortDay(y.finished)}`;
-            d.append(w);
-        }
         o.layers.ground.append(d);
     }
 

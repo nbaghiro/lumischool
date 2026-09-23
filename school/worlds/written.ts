@@ -94,11 +94,17 @@ export function schoolViewOf(o: {
     // every world off the run, as `elsewhere` in worlds.ts lists them for the scratchpad's map: the
     // places a track brings a child to, one per year, and each other world where it stands
     const off = [
-        ...sidePlaces(years),
-        ...WORLDS.filter((w) => w.site && w.site.kind !== "track" && !on.has(w.id)).map((w) => ({
-            world: w.id,
-            grade: gradeNear(w),
-        })),
+        ...new Map(
+            [
+                ...sidePlaces(years),
+                ...WORLDS.filter((w) => w.site && w.site.kind !== "track" && !on.has(w.id)).map(
+                    (w) => ({
+                        world: w.id,
+                        grade: gradeNear(w),
+                    }),
+                ),
+            ].map((s) => [s.world, s]),
+        ).values(),
     ];
     const marks = {
         done: [],
@@ -125,10 +131,7 @@ export function schoolViewOf(o: {
             grade: s.grade,
             term: 0,
             world: s.world,
-            lessons: hostedLessons(
-                worldById(s.world),
-                years.filter((y) => y.grade === s.grade),
-            ).map((l) => l.id),
+            lessons: hostedLessons(worldById(s.world), years).map((l) => l.id),
             ...marks,
         })),
     };

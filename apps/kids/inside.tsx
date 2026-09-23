@@ -46,6 +46,7 @@ const Place = lazy(() =>
 export interface InsideScreen {
     at: "place" | "world";
     term: number | null;
+    world: string | null;
     /** The place on the map the child went in at, so they come back out to it. */
     from: number;
     box?: DOMRect;
@@ -182,6 +183,7 @@ export function Inside(props: {
         if (!built && props.waiting) return prev ?? null;
         return worldOf(c, {
             term: props.screen.term,
+            world: props.screen.world,
             narrow: props.narrow,
             height: (id) => built?.height(id) ?? heights.get(id) ?? null,
         });
@@ -190,7 +192,9 @@ export function Inside(props: {
     const land = (): { lesson: string; y: number } | undefined => {
         const built = props.sheets;
         if (!built) return undefined;
+        const shown = new Set(view()?.days.flatMap((day) => day.sheets.map((s) => s.lesson)));
         for (const id of todayOf(props.c)?.lessons ?? []) {
+            if (!shown.has(id)) continue;
             const y = built.landing(id);
             if (y !== null) return { lesson: id, y };
         }
@@ -226,6 +230,7 @@ export function Inside(props: {
                             props.go({
                                 at: "place",
                                 term: props.screen.term,
+                                world: props.screen.world,
                                 from: props.screen.from,
                                 ...(box ? { box } : {}),
                                 ...(day ? { day } : {}),
@@ -249,6 +254,7 @@ export function Inside(props: {
                             props.go({
                                 at: "world",
                                 term: props.screen.term,
+                                world: props.screen.world,
                                 from: props.screen.from,
                                 ...(box ? { box } : {}),
                                 day,
