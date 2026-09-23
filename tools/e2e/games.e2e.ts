@@ -28,7 +28,8 @@ for (const game of ["straight", "jump", "pour"]) {
         await menu.getByRole("button", { name: "Play", exact: true }).click();
         await page.keyboard.press("Escape");
         await expect(menu).toBeVisible();
-        await menu.getByRole("button", { name: "All games", exact: true }).click();
+        await page.keyboard.press("Escape");
+        await page.getByRole("button", { name: "All games", exact: true }).click();
         await expect(page.locator(".game-library")).toBeVisible();
         await expect(page.locator(".page-main")).not.toHaveClass(/stage/);
     });
@@ -144,4 +145,73 @@ test("road supports mouse acceleration and braking directly on the field", async
     await page.waitForTimeout(300);
     expect(await car.getAttribute("style")).toBe(before);
     await page.mouse.up({ button: "right" });
+});
+
+test("clicking the pause backdrop resumes, while clicking inside keeps it open", async ({
+    page,
+}) => {
+    await page.goto("/games?g=marble-workshop&v=1");
+    const menu = page.locator(".game-menu");
+    await expect(menu.getByRole("button", { name: "All games", exact: true })).toHaveCount(0);
+    await menu.getByRole("button", { name: "Play", exact: true }).click();
+    await page.getByRole("button", { name: "Pause & help" }).click();
+    await menu.getByRole("heading", { name: "Marble workshop" }).click();
+    await expect(menu).toBeVisible();
+    await page.mouse.click(5, 5);
+    await expect(menu).not.toBeVisible();
+    await expect(page.getByRole("button", { name: "All games", exact: true })).toBeVisible();
+});
+
+test("the two-ramp challenge can be solved with the visible workshop controls", async ({
+    page,
+}) => {
+    await page.goto("/games?g=marble-workshop&v=1");
+    await page.locator(".game-menu").getByRole("button", { name: "Play", exact: true }).click();
+    for (const name of ["Next ramp", "Turn left", "Turn right", "Undo", "Redo"])
+        await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
+    const field = await page.locator(".field").boundingBox();
+    if (!field) throw new Error("No workshop field");
+    const place = async (id: string, x: number, y: number, turns: number) => {
+        const ramp = await page.locator('[data-key="' + id + '"]').boundingBox();
+        if (!ramp) throw new Error("No ramp");
+        await page.mouse.move(ramp.x + ramp.width / 2, ramp.y + ramp.height / 2);
+        await page.mouse.down();
+        await page.mouse.move(field.x + (x * field.width) / 42, field.y + (y * field.height) / 27, {
+            steps: 3,
+        });
+        await page.mouse.up();
+        for (let n = 0; n < turns; n++)
+            await page.getByRole("button", { name: "Turn right", exact: true }).click();
+    };
+    await place("ramp-1", 6.5, 5.5, 1);
+    await place("ramp-2", 15, 12, 4);
+    await expect(page.locator('[data-game="board"]')).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.locator('[data-game="aside"]')).toContainText("It works!", {
+        timeout: 20000,
+    });
+});
+
+test("cargo exposes its delivery bell without duplicating the hook control", async ({ page }) => {
+    await page.goto("/games?g=cargo-workshop");
+    await page.locator(".game-menu").getByRole("button", { name: "Play", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Ring the bell", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Pick up / release", exact: true })).toHaveCount(
+        1,
+    );
+});
+
+test("keyboard activation of a focused rotation control keeps its normal button behaviour", async ({
+    page,
+}) => {
+    await page.goto("/games?g=marble-workshop&v=1");
+    await page.locator(".game-menu").getByRole("button", { name: "Play", exact: true }).click();
+    const rotate = page.getByRole("button", { name: "Turn right", exact: true });
+    const ramp = page.locator('[data-key="ramp-1"]');
+    const before = await ramp.getAttribute("style");
+    await rotate.focus();
+    await page.keyboard.press("Enter");
+    await expect(rotate).toBeFocused();
+    await expect(ramp).not.toHaveAttribute("style", before ?? "");
+    await expect(page.locator('[data-game="aside"]')).not.toContainText("Watch its path");
 });

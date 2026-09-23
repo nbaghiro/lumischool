@@ -245,3 +245,15 @@ therefore supports acceleration, lane swipes and braking directly on the scene. 
 alternatives remain available. A game can cancel a held gesture through `cancelInput` on capture loss
 or pause; Rabbit crossing implements this without launching. Its trail fades over 0.3 seconds,
 keyboard taps advance half a numbered interval, held aiming eases in, and takeoff clears the old aim.
+
+Workshop reachability is checked by recorded solutions through the fixed-step physics: all four
+marble challenges and four cargo challenges have winning player-input replays. The shared
+`engine/motion/verify.ts` runner bounds simulation time and reports whether an objective was actually
+reached. These are constructive witnesses, not exhaustive proofs for continuous physics. Each
+workshop level must have a corresponding replay fixture; the suite fails if another level is added
+without one. Existing discrete-game graph provers remain the stronger check for turn-based puzzles.
+
+The action host renders declared extra commands, omitting actions already on the primary pad.
+This makes ramp selection, rotation, undo/redo and the cargo delivery bell reachable in the real UI.
+A browser test completes Two ramps with its visible mouse controls as a check on the model/UI gap.
+The pause dialog resumes on backdrop click as well as Escape; navigation stays in the game toolbar.

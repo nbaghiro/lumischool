@@ -345,6 +345,37 @@ export function action(
                     pad.brake = false;
                 },
             );
+        for (const command of game.commands ?? []) {
+            if (command.label === c.go || command.label === c.brake) continue;
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "key";
+            button.setAttribute("aria-label", command.label);
+            button.title = command.label;
+            const icons: Record<string, IconName> = {
+                "Turn left": "restart",
+                "Turn right": "restart",
+                Undo: "undo",
+                "Undo delivery": "undo",
+                Redo: "undo",
+            };
+            const name = icons[command.label];
+            if (name) {
+                const drawing = iconElement(name);
+                if (command.label === "Turn right" || command.label === "Redo")
+                    drawing.style.transform = "scaleX(-1)";
+                button.appendChild(drawing);
+            } else button.textContent = command.label;
+            button.addEventListener("click", (e) => {
+                if (shell.paused()) return;
+                game.command?.(s, command.id);
+                field.draw(sess.frame(shell.still()), 0);
+                hud(true);
+                // Pointer controls return to play; keyboard activation keeps its tab focus.
+                if (e.detail > 0) $("board").focus({ preventScroll: true });
+            });
+            host.appendChild(button);
+        }
     }
 
     let drag: { id: number; x: number; y: number; pulling: boolean; brake: boolean } | null = null;

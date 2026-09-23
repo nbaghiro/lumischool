@@ -953,3 +953,52 @@
         }
     }
 }
+
+.game-room.playing {
+    .game-player {
+        min-height: 320px;
+        padding: 4px 12px;
+        gap: 4px;
+    }
+    .game-toolbar {
+        width: min(100%, var(--game-view-width, 100%));
+        align-self: center;
+        min-height: 44px;
+        flex: 0 0 auto;
+        gap: 6px;
+    }
+    .game-toolbar h1 {
+        flex: 0 1 auto;
+        min-width: 0;
+        max-width: 40%;
+        font-size: 18px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .game-toolbar [data-game="aside"] {
+        flex: 1;
+        min-width: 0;
+        font-size: 12px;
+        color: var(--ink-soft);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .game-challenge {
+        font-size: 12px;
+        max-width: 22%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    @media (max-width: 700px) {
+        .game-player {
+            padding: 4px;
+        }
+        .game-toolbar h1 {
+            font-size: 16px;
+            max-width: 48%;
+        }
+    }
+}

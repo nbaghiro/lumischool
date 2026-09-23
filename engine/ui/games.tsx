@@ -297,7 +297,17 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
             };
             window.addEventListener("keydown", keys);
             window.addEventListener("keyup", keys);
-            const resize = new ResizeObserver(() => runtime?.resize());
+            const resize = new ResizeObserver(() => {
+                runtime?.resize();
+                const surface = board.querySelector<HTMLElement>(
+                    ".field:not([hidden]), .sheet:not([hidden])",
+                );
+                if (surface)
+                    root.style.setProperty(
+                        "--game-view-width",
+                        surface.getBoundingClientRect().width + "px",
+                    );
+            });
             resize.observe(board);
             onCleanup(() => {
                 ended = true;
@@ -370,6 +380,7 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                 <Icon name="back" />
                             </button>
                             <h1>{g().title}</h1>
+                            <p data-game="aside" aria-live="polite" />
                             <span class="game-challenge">{g().levels[level()]?.title}</span>
                             <button
                                 class="game-icon"
@@ -380,7 +391,6 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                 <Icon name="pause" />
                             </button>
                         </header>
-                        <p data-game="aside" aria-live="polite" />
                         <Show when={failure()}>
                             <p role="alert">{failure()}</p>
                         </Show>
@@ -428,6 +438,20 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                             aria-label={`${g().title}: play and settings`}
                             ref={(el) => {
                                 menu = el;
+                                // The native backdrop targets the dialog, outside its content box.
+                                const dismiss = (e: PointerEvent) => {
+                                    if (e.target !== el || e.button !== 0) return;
+                                    const box = el.getBoundingClientRect();
+                                    if (
+                                        e.clientX < box.left ||
+                                        e.clientX > box.right ||
+                                        e.clientY < box.top ||
+                                        e.clientY > box.bottom
+                                    )
+                                        resume();
+                                };
+                                el.addEventListener("pointerdown", dismiss);
+                                onCleanup(() => el.removeEventListener("pointerdown", dismiss));
                                 if (paused())
                                     queueMicrotask(() => {
                                         if (el.isConnected && !el.open) el.showModal();
@@ -522,14 +546,6 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                     }}
                                 >
                                     <Icon name="restart" />
-                                </button>
-                                <button
-                                    class="game-icon"
-                                    aria-label="All games"
-                                    title="All games"
-                                    onClick={() => select(undefined)}
-                                >
-                                    <Icon name="back" />
                                 </button>
                             </div>
                         </dialog>
