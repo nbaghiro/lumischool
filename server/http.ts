@@ -70,8 +70,11 @@ import {
 } from "./sync";
 import { loadPack, watchPack, type Pack } from "./pack";
 import { staticFrom } from "./static";
+import { letterView, changeLetters, unsubscribeRequest, webhookRequest } from "./letters";
+import { mailPreviews } from "./mail-previews";
 
 export interface Config extends AuthConfig {
+    mailWebhookSecret?: string;
     /**
      * `local` runs on a developer's machine with the console transport and no real origin; `production`
      * is Render, behind Cloudflare, with Resend and a real one. Outside local a failed request is
@@ -156,6 +159,8 @@ function productionConfig(env: Record<string, string | undefined>): Config | { p
         host: env.API_HOST || "0.0.0.0",
         port,
         origins: [origin],
+        origin,
+        mailWebhookSecret: env.RESEND_WEBHOOK_SECRET,
         pepper,
         send: resendTransport(key, from),
         devCode: null,
@@ -457,6 +462,35 @@ function routes(config: Config): Route[] {
     };
 
     return [
+        {
+            method: "GET",
+            path: "/api/letters",
+            who: "adult",
+            run: async (c, adult) =>
+                json(
+                    200,
+                    await letterView(
+                        adult,
+                        config.pack,
+                        c.url.searchParams.get("week") ?? undefined,
+                    ),
+                ),
+        },
+        {
+            method: "POST",
+            path: "/api/letters/preferences",
+            who: "adult",
+            run: async (c, adult) => {
+                await changeLetters(adult, field(c.body, "mode"));
+                return json(200, {});
+            },
+        },
+        {
+            method: "GET",
+            path: "/api/dev/mail-previews",
+            who: "local",
+            run: async () => json(200, { emails: mailPreviews(config.origins[0] ?? LOCAL.app) }),
+        },
         {
             method: "GET",
             path: "/api/health",
@@ -1053,6 +1087,24 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
     return async (req, ip = null) => {
         const url = new URL(req.url);
         const method = req.method.toUpperCase();
+        if (
+            url.pathname === "/api/letters/unsubscribe" &&
+            (method === "GET" || method === "POST")
+        ) {
+            try {
+                return await unsubscribeRequest(req, config.pepper);
+            } catch {
+                return problem(500, "server");
+            }
+        }
+        if (url.pathname === "/api/email/webhook" && method === "POST") {
+            if (!config.mailWebhookSecret) return problem(404, "not-found");
+            try {
+                return await webhookRequest(req, config.mailWebhookSecret);
+            } catch {
+                return problem(500, "server");
+            }
+        }
         if (method === "OPTIONS") {
             const res = json(204, null);
             res.headers.set("access-control-allow-methods", "GET, POST");

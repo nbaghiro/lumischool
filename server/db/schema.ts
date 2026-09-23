@@ -256,10 +256,81 @@ export const content = pgTable(
 ).enableRLS();
 export type Content = typeof content.$inferSelect;
 
-export const schema = { families, users, kids, members, keys, events, content };
+export const mailPreferences = pgTable(
+    "mail_preferences",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        family_id: uuid("family_id")
+            .notNull()
+            .references(() => families.id, { onDelete: "cascade" }),
+        user_id: uuid("user_id")
+            .notNull()
+            .references(() => users.id, { onDelete: "cascade" }),
+        mode: text("mode").$type<"off" | "private" | "detailed">().notNull().default("off"),
+        changed_at: text("changed_at").notNull(),
+    },
+    (t) => [
+        unique("mail_preferences_recipient_key").on(t.family_id, t.user_id),
+        check("mail_preferences_mode", sql`${t.mode} in ('off', 'private', 'detailed')`),
+    ],
+).enableRLS();
+export type MailPreference = typeof mailPreferences.$inferSelect;
+
+export const mailDeliveries = pgTable(
+    "mail_deliveries",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        family_id: uuid("family_id")
+            .notNull()
+            .references(() => families.id, { onDelete: "cascade" }),
+        user_id: uuid("user_id")
+            .notNull()
+            .references(() => users.id, { onDelete: "cascade" }),
+        week: date("week").notNull(),
+        status: text("status")
+            .$type<
+                "pending" | "sending" | "sent" | "delivered" | "failed" | "suppressed" | "uncertain"
+            >()
+            .notNull()
+            .default("pending"),
+        recipient: text("recipient").notNull(),
+        mode: text("mode").$type<"private" | "detailed">().notNull(),
+        subject: text("subject").notNull(),
+        body_text: text("body_text").notNull(),
+        body_html: text("body_html").notNull(),
+        created_at: text("created_at").notNull(),
+        attempted_at: text("attempted_at"),
+        lease_until: text("lease_until"),
+        provider_id: text("provider_id"),
+        attempts: integer("attempts").notNull().default(0),
+    },
+    (t) => [
+        unique("mail_deliveries_week_key").on(t.family_id, t.user_id, t.week),
+        index("mail_deliveries_provider_idx").on(t.provider_id),
+        check(
+            "mail_deliveries_status",
+            sql`${t.status} in ('pending', 'sending', 'sent', 'delivered', 'failed', 'suppressed', 'uncertain')`,
+        ),
+    ],
+).enableRLS();
+export type MailDelivery = typeof mailDeliveries.$inferSelect;
+
+export const schema = {
+    families,
+    users,
+    kids,
+    members,
+    keys,
+    events,
+    content,
+    mailPreferences,
+    mailDeliveries,
+};
 
 /** The table names, in an order a truncate can use. */
 export const TABLES = [
+    "mail_deliveries",
+    "mail_preferences",
     "events",
     "keys",
     "members",

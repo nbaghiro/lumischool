@@ -5,6 +5,9 @@
     "type": "module",
     "description": "A family can teach a full year of maths without preparing anything",
     "scripts": {
+        "mail:weekly": "node --import ./tools/scripts/resolve.ts server/mail-job.ts",
+        "mail:previews": "node --import ./tools/scripts/resolve.ts tools/scripts/mail-previews.ts",
+        "mail:review": "node --import ./tools/scripts/resolve.ts tools/scripts/mail-review.ts",
         "db:up": "bash tools/scripts/db-up.sh",
         "db:down": "docker compose down",
         "db:generate": "drizzle-kit generate",

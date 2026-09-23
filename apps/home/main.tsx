@@ -22,6 +22,7 @@ const Calendar = lazy(() => import("./calendar").then((m) => ({ default: m.Calen
 const Plan = lazy(() => import("./plan").then((m) => ({ default: m.Plan })));
 const PrintDay = lazy(() => import("./day").then((m) => ({ default: m.PrintDay })));
 const Account = lazy(() => import("./account").then((m) => ({ default: m.Account })));
+const Letters = lazy(() => import("./letters").then((m) => ({ default: m.Letters })));
 const GrownBar = lazy(() => import("./bar").then((m) => ({ default: m.GrownBar })));
 const AddKidDialog = lazy(() => import("./bar").then((m) => ({ default: m.AddKidDialog })));
 
@@ -37,6 +38,7 @@ const SCREENS: Record<Screen, Component> = {
     plan: Plan,
     print: PrintDay,
     account: Account,
+    letters: Letters,
     missing: Missing,
 };
 
@@ -52,6 +54,7 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
     plan: Plan.preload,
     print: PrintDay.preload,
     account: Account.preload,
+    letters: Letters.preload,
     missing: Missing.preload,
 };
 
@@ -68,6 +71,7 @@ const CARRIES: Record<Screen, boolean> = {
     plan: true,
     print: true,
     account: true,
+    letters: true,
     missing: true,
 };
 

@@ -73,6 +73,7 @@ import type { Family, Key, Kid, Member } from "./db/schema";
 import { codeEmail, type Transport } from "./email";
 
 export interface AuthConfig {
+    origin?: string;
     env: "local" | "production";
     /** The key for code HMACs, network hashes and the family's PIN, which is never in the database. */
     pepper: string;
@@ -376,7 +377,7 @@ export async function askForCode(
         detail: { shared: input.shared, ...(input.start ? { start: input.start } : {}) },
     });
     if (!issued) return { error: "rate-limited" };
-    await config.send(codeEmail(email, code));
+    await config.send(codeEmail(email, code, config.origin));
     return { pending };
 }
 

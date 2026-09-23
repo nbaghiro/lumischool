@@ -225,6 +225,13 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
                 was started, and cannot be changed here yet.
             </p>
             <YourPicture me={me()} onPicked={props.onRefetch} />
+            <Show when={me().members.some((m) => m.kid_id === null && m.ended_at === null)}>
+                <section class="part">
+                    <h2>Your weekly letter</h2>
+                    <p>Read your family's week and choose whether to receive it by email.</p>
+                    <a href="/letters">Letters and email preferences</a>
+                </section>
+            </Show>
             <Show when={others().length}>
                 <section class="part">
                     <h2>Your other families</h2>

@@ -2,14 +2,11 @@ import assert from "node:assert/strict";
 import { after, describe, it } from "node:test";
 import { resendTransport, type Email } from "../email";
 
-// Whether resendTransport's caller can pass a fourth field is a type question, not a runtime one:
-// Email is Omit<Sent, "at">, and this fails to typecheck if a field is ever added to one without the
-// other. The pattern is server/db/__tests__/schema.test.ts's.
 type Equal<A, B> =
     (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 type Expect<T extends true> = T;
 export type EmailIsExactlyToSubjectAndText = Expect<
-    Equal<Email, { to: string; subject: string; text: string }>
+    Equal<Email, { to: string; subject: string; text: string; html?: string }>
 >;
 
 describe("the Resend transport", () => {
@@ -32,7 +29,7 @@ describe("the Resend transport", () => {
                 headers: new Headers(init?.headers),
                 body: typeof init?.body === "string" ? init.body : "",
             });
-            return new Response("", { status: 200 });
+            return Response.json({ id: "message-id" });
         };
         globalThis.fetch = stub;
 
@@ -69,11 +66,36 @@ describe("the Resend transport", () => {
         );
     });
 
-    it("takes only to, subject and text: there is nowhere for a child's name to go", async () => {
-        globalThis.fetch = async () => new Response("", { status: 200 });
+    it("supports text-only emails without adding HTML", async () => {
+        globalThis.fetch = async () => Response.json({ id: "message-id" });
         const send = resendTransport("re_test_key", "code@lumischool.example");
         const email: Email = { to: "anna@example.com", subject: "Your code", text: "1234 5678" };
         await send(email);
         assert.deepEqual(Object.keys(email).sort(), ["subject", "text", "to"]);
+    });
+
+    it("preserves HTML, unsubscribe headers, retry identity and the returned provider ID", async () => {
+        let body: unknown;
+        let key: string | null = null;
+        globalThis.fetch = async (_url, init) => {
+            body = JSON.parse(typeof init?.body === "string" ? init.body : "{}");
+            key = new Headers(init?.headers).get("Idempotency-Key");
+            return Response.json({ id: "weekly-id" });
+        };
+        const id = await resendTransport("test", "letters@example.com")(
+            { to: "parent@example.com", subject: "Weekly", text: "Week", html: "<p>Week</p>" },
+            { key: "weekly/one", headers: { "List-Unsubscribe": "<https://example.com/stop>" } },
+        );
+        assert.equal(id, "weekly-id");
+        assert.equal(key, "weekly/one");
+        assert.deepEqual(body, {
+            from: "letters@example.com",
+            to: "parent@example.com",
+            subject: "Weekly",
+            text: "Week",
+            html: "<p>Week</p>",
+            headers: { "List-Unsubscribe": "<https://example.com/stop>" },
+            tags: [{ name: "category", value: "weekly" }],
+        });
     });
 });

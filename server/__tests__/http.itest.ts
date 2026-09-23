@@ -44,7 +44,7 @@ describe("the entry point", { skip: reason ?? false }, () => {
             family: "Harlow",
         });
         const failed = await b.call("POST", "/api/kids", {
-            body: { name: `Maya Quinn${NUL}`, grade: 1, consent: { notice: "2026-09" } },
+            body: { name: `Maya Quinn${NUL}`, grade: 1, consent: { notice: "2026-09-weekly" } },
         });
         assert.equal(failed.status, 500);
         assert.deepEqual(failed.body, { error: "server" });
@@ -65,7 +65,7 @@ describe("the entry point", { skip: reason ?? false }, () => {
         });
         await startFamily(b, outbox, { email: "sam@example.test", name: "Sam", family: "Oakley" });
         const failed = await b.call("POST", "/api/kids", {
-            body: { name: `Theo${NUL}`, grade: 2, consent: { notice: "2026-09" } },
+            body: { name: `Theo${NUL}`, grade: 2, consent: { notice: "2026-09-weekly" } },
         });
         assert.equal(failed.status, 500);
         assert.match(

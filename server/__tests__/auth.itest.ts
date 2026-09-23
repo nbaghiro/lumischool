@@ -699,7 +699,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         });
         assert.deepEqual(
             [notice.status, notice.body],
-            [409, { error: "notice-changed", notice: "2026-09" }],
+            [409, { error: "notice-changed", notice: "2026-09-weekly" }],
         );
 
         const [theo] = await db()

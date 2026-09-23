@@ -9,6 +9,8 @@ interface TableScope {
 }
 
 export const SCOPE = {
+    mail_preferences: { family: "family_id" },
+    mail_deliveries: { family: "family_id" },
     families: { family: "id" },
     kids: { family: "family_id" },
     members: { family: "family_id" },

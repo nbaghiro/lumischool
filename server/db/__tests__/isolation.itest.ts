@@ -10,7 +10,18 @@ import { closeApp, open, withFamily, type FamilyTx, type Store } from "../client
 import { saveCatalogue, saveContent } from "../content";
 import { append, createFamily, exportFamily } from "../events";
 import { credentialOf, issue, issueCode, sha256, verifyKids } from "../keys";
-import { TABLES, content, events, families, keys, kids, members, users } from "../schema";
+import {
+    TABLES,
+    content,
+    events,
+    families,
+    keys,
+    kids,
+    members,
+    users,
+    mailPreferences,
+    mailDeliveries,
+} from "../schema";
 import { PG, codeOf, must, prepare, truncate } from "./test-db";
 
 const reason = await prepare();
@@ -134,6 +145,8 @@ async function writeFamily(family: string, parent: string, kid: string): Promise
 
 /** B's row ids per table, read by the owner, which is the one role that can see them all. */
 let bRows: Record<(typeof TABLES)[number], string[]> = {
+    mail_preferences: [],
+    mail_deliveries: [],
     families: [],
     users: [],
     members: [],
@@ -211,6 +224,8 @@ describe("isolation between families", { skip: reason ?? false }, () => {
 
         const ids = async (q: Promise<{ id: string }[]>) => (await q).map((r) => r.id);
         bRows = {
+            mail_preferences: [],
+            mail_deliveries: [],
             families: [B],
             users: [UB],
             members: await ids(
@@ -245,6 +260,10 @@ describe("isolation between families", { skip: reason ?? false }, () => {
             keys: await ids(tx.select({ id: keys.id }).from(keys)),
             events: await ids(tx.select({ id: events.id }).from(events)),
             content: await ids(tx.select({ id: content.id }).from(content)),
+            mail_preferences: await ids(
+                tx.select({ id: mailPreferences.id }).from(mailPreferences),
+            ),
+            mail_deliveries: await ids(tx.select({ id: mailDeliveries.id }).from(mailDeliveries)),
         };
     }
 
@@ -476,6 +495,8 @@ describe("isolation between families", { skip: reason ?? false }, () => {
                 keys: [],
                 events: [],
                 content: [catalogueRow],
+                mail_preferences: [],
+                mail_deliveries: [],
             },
             "only the catalogue, which is everybody's",
         );

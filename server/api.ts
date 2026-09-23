@@ -112,10 +112,16 @@ export interface Sessions {
 }
 
 /** An email the console transport printed, as the local outbox lists it. */
+export interface Letters {
+    letter: import("../school/family/letter").WeeklyLetter;
+    mode: "off" | "private" | "detailed";
+}
+
 export interface Sent {
     to: string;
     subject: string;
     text: string;
+    html?: string;
     at: string;
 }
 

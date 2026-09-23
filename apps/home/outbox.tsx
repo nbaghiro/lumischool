@@ -13,7 +13,8 @@ export function Outbox(): JSX.Element {
     const look = useLook();
     createEffect(() => look({ place: "harbour" }));
     const [box, { refetch }] = createResource(
-        async (): Promise<Box | "none"> => (await api.outbox()) ?? "none",
+        async (): Promise<Box | "none"> =>
+            (await api.outbox(new URLSearchParams(location.search).has("previews"))) ?? "none",
     );
     const found = (): Box | null => {
         const b = box.latest;
@@ -43,6 +44,7 @@ export function Outbox(): JSX.Element {
                         lead="What lumischool would have emailed, newest first. Nothing here left this computer."
                         links={
                             <div class="acts">
+                                <a href="/outbox?previews">Browse fictional email designs</a>
                                 <Button second onClick={() => void refetch()}>
                                     Look again
                                 </Button>
@@ -62,6 +64,19 @@ export function Outbox(): JSX.Element {
                                                 To {e.to}, at {new Date(e.at).toLocaleTimeString()}
                                             </span>
                                             <pre>{e.text}</pre>
+                                            <Show when={e.html}>
+                                                <iframe
+                                                    title={`${e.subject} design`}
+                                                    srcdoc={e.html}
+                                                    sandbox=""
+                                                    referrerpolicy="no-referrer"
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "760px",
+                                                        border: "1px solid #dce3ea",
+                                                    }}
+                                                />
+                                            </Show>
                                         </li>
                                     )}
                                 </For>

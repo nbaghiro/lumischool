@@ -7,11 +7,13 @@
 import { readFile } from "node:fs/promises";
 import { join, sep } from "node:path";
 import { hasKidSession, hasSession, isPage, pageFor } from "./pages";
+import { MAIL_WORLDS, mailCover } from "./mail-design";
 
 const DIST = join(import.meta.dirname, "..", "dist");
 
 /** The brand files tools/brand.ts writes at the root of the build (.docs/local.md, "The apps"). */
 const BRAND_FILES: ReadonlySet<string> = new Set([
+    ...MAIL_WORLDS.map(mailCover),
     "/favicon.svg",
     "/favicon-16.png",
     "/favicon-32.png",

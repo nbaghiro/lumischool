@@ -6,12 +6,12 @@
  * The notice's version. The server refuses consent to any other, so this and `CONSENT_NOTICE` in
  * server/db/events.ts move together, which a server test holds.
  */
-export const NOTICE_VERSION = "2026-09";
+export const NOTICE_VERSION = "2026-09-weekly";
 
 /** The notice, a paragraph a line, shown beside the add-a-kid form. */
 export const NOTICE: readonly string[] = [
     "When a parent opens a children's view for this child, it records their answers, the drawings and marks a question asks for, the hints they open, the games they play, and how long each question took on screen.",
-    "It sends those to us and to nobody else. We never send your child's name or work to a model provider or to anyone else.",
+    "It sends those to us. We never send your child's name or work to a model provider. If you explicitly enable detailed weekly emails, we send your child's name and learning summary through Resend to your email provider. You can choose a private link instead, or stop weekly emails at any time.",
     "We keep them while your family's account is open, and delete them after it closes. The period is still to be set; this notice is a draft.",
     "You can see all of it, export it, withdraw your consent and delete your child's record at any time.",
 ];

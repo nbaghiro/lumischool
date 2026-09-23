@@ -1,5 +1,10 @@
 # Data model
 
+Weekly email now has two operational tables, `mail_preferences` and `mail_deliveries`, in addition
+to the seven product tables discussed below. Preferences record explicit recipient choices;
+delivery records hold leases, a stable retry payload until dispatch completes, and provider status.
+They are not progress projections. See [weekly-letter.md](weekly-letter.md) and the forward migration.
+
 Status: options for comparison, September 2026. This document is deliberately not a decision. It
 sets out what the data model has to carry, measures the corpus and the prototype so that the costs
 below are counted rather than asserted, and then describes five whole models so that each one can be

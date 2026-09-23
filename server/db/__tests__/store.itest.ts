@@ -355,7 +355,7 @@ describe("the store", { skip: reason ?? false }, () => {
             for (const row of rows)
                 live.set(row.table_name, [...(live.get(row.table_name) ?? []), row.column_name]);
             assert.deepEqual([...live.keys()].sort(), [...declared.keys()].sort());
-            assert.equal(live.size, 7);
+            assert.equal(live.size, Object.keys(schema).length);
             for (const [table, columns] of declared)
                 assert.deepEqual(
                     live.get(table)?.sort(),
@@ -379,7 +379,7 @@ describe("the store", { skip: reason ?? false }, () => {
                 select c.relname, c.relrowsecurity as rls, c.relforcerowsecurity as forced,
                        (select count(*)::int from pg_policies p where p.schemaname = 'public' and p.tablename = c.relname) as policies
                 from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r'`;
-            assert.equal(rows.length, 7);
+            assert.equal(rows.length, Object.keys(schema).length);
             for (const r of rows)
                 assert.ok(
                     r.rls && r.forced && r.policies > 0,

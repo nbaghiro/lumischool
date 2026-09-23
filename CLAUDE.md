@@ -13,7 +13,7 @@ every surface is in `.scratchpad/`, and the product is being built at the root i
 - [.docs/structure.md](.docs/structure.md), the section "Decided: the shape we build to", says where
   every file goes and who may import whom. If something does not fit it, change the document in the
   same change rather than inventing a folder.
-- [.docs/db.md](.docs/db.md) and [.docs/data-model.md](.docs/data-model.md) for the seven
+- [.docs/db.md](.docs/db.md) and [.docs/data-model.md](.docs/data-model.md) for the nine
   tables, [.docs/auth.md](.docs/auth.md) for sign-in, [.docs/local.md](.docs/local.md) for ports and
   for running things.
 
@@ -152,8 +152,10 @@ Every shape is declared once, and the database is where most of them start.
 - Every drawing is on the art shelf. The shelf's catalogue is the one list of drawings that lessons,
   worlds, games and pages draw from, so a new drawing gets its catalogue entry, its shelf grouping
   and its description in the same change, and a test fails on any drawing defined anywhere else.
-- No third party sees a child's data. Services are self-hosted, email never mentions a child, and
-  the only path from a child's record to a model is `school/assistant/envelope.ts`.
+- Services are self-hosted. Detailed weekly letters send child names and learning summaries through
+  Resend only when the receiving parent explicitly enables them; private-link letters contain no
+  learning details. Authentication mail never contains child data. Model inputs remain governed by
+  `school/assistant/envelope.ts`.
 - Sync is ours and small: a child's view keeps unsent answers in a short queue in the browser and
   sends them in chunks through `withFamily`, where `id` makes a resend harmless and the server
   stamps `device` and `seq`, one stream per kid session. No copy of the log is kept on a device,

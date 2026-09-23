@@ -514,13 +514,66 @@ export const newId = (): string => crypto.randomUUID();
 export const nowAt = (): string => new Date().toISOString();
 
 /** The local outbox, or null anywhere it does not exist, which is every server but a developer's. */
-export async function outbox(): Promise<Outbox | null> {
-    const a = await call("GET", "/api/dev/outbox");
+export async function outbox(previews = false): Promise<Outbox | null> {
+    const a = await call("GET", previews ? "/api/dev/mail-previews" : "/api/dev/outbox");
     if (!a.ok || !obj(a.body)) return null;
     const emails = list(a.body.emails, (e) =>
         obj(e) && str(e.to) && str(e.subject) && str(e.text) && str(e.at)
-            ? { to: e.to, subject: e.subject, text: e.text, at: e.at }
+            ? {
+                  to: e.to,
+                  subject: e.subject,
+                  text: e.text,
+                  at: e.at,
+                  ...(str(e.html) ? { html: e.html } : {}),
+              }
             : null,
     );
     return emails ? { emails } : null;
+}
+
+export async function letters(
+    week?: string,
+): Promise<import("../../server/api").Letters | Failure> {
+    const a = await call("GET", `/api/letters${week ? `?week=${encodeURIComponent(week)}` : ""}`);
+    if (!a.ok) return refused(a.failure);
+    const b = a.body;
+    if (
+        !obj(b) ||
+        (b.mode !== "off" && b.mode !== "private" && b.mode !== "detailed") ||
+        !obj(b.letter)
+    )
+        return unreadable(a.status);
+    const w = b.letter;
+    if (!str(w.from) || !str(w.to) || !str(w.generated) || typeof w.useful !== "boolean")
+        return unreadable(a.status);
+    const children = list(w.children, (c) => {
+        if (!obj(c) || !str(c.id) || !str(c.name)) return null;
+        const sections = list(c.sections, (s) =>
+            obj(s) && str(s.heading) && str(s.text) && (s.lesson === undefined || str(s.lesson))
+                ? {
+                      heading: s.heading,
+                      text: s.text,
+                      ...(str(s.lesson) ? { lesson: s.lesson } : {}),
+                  }
+                : null,
+        );
+        return sections ? { id: c.id, name: c.name, sections } : null;
+    });
+    return children
+        ? {
+              mode: b.mode,
+              letter: {
+                  from: w.from,
+                  to: w.to,
+                  generated: w.generated,
+                  useful: w.useful,
+                  children,
+              },
+          }
+        : unreadable(a.status);
+}
+
+export async function setLetters(mode: "off" | "private" | "detailed"): Promise<Failure | null> {
+    const a = await call("POST", "/api/letters/preferences", { mode });
+    return a.ok ? null : refused(a.failure);
 }

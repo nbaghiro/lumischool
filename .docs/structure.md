@@ -21,6 +21,12 @@ the product's own non-goals ([product.md](product.md)).
 
 ## Decided: the shape we build to
 
+Weekly letters use `school/family/letter.ts` for evidence and prose, `apps/home/letters.tsx` for
+reading/printing/preferences, and `server/letters.ts`, `mail-design.ts`, `mail-job.ts` and
+`db/mail.ts` for delivery. `mail_preferences` and `mail_deliveries` are operational mail tables,
+separate from the seven original product tables. Templates use the root brand/artwork and no
+prototype imports. Detailed mail is permitted only by explicit recipient opt-in; see weekly-letter.md.
+
 These are the rules the tree follows. `boundaries.ts` and its check enforce the reach, the database
 guard in `tools/scripts/check-db.ts` already enforces the database's part of it, and
 [CLAUDE.md](../CLAUDE.md) at the repo root carries the conventions for the code inside it.
@@ -108,7 +114,7 @@ lumischool/
 │  ├─ auth.ts                      codes, passkeys, sessions, children's views, the PIN (first slice)
 │  ├─ sync.ts                      our own: the drafts a page appends, and what a page reads back
 │  ├─ pack.ts                      the pack the family's lessons are served from    (built)
-│  ├─ email.ts                     Resend; never a word about a child               (console only)
+│  ├─ email.ts                     Resend HTML/text transport; opted-in weekly letters
 │  └─ db/                          the database module                                (built)
 │     ├─ schema.ts  scope.ts  client.ts  events.ts  keys.ts  content.ts
 │     ├─ migrations/               the generated SQL, the apply path, the local role setup
@@ -214,7 +220,7 @@ apps/*       by phase, in the table below
 
 | Piece | Home |
 |---|---|
-| The seven tables, the migrations, the seed | `server/db/` |
+| The nine tables, the migrations, the seed | `server/db/` |
 | The one way in, and the lookups before a family is known | `server/db/client.ts` |
 | The row types, `Family`, `Kid`, `Event` and the rest | `server/db/schema.ts`, inferred from the tables, and importable as types from anywhere |
 | The event and answer types | `engine/answer.ts` |

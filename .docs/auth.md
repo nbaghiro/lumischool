@@ -1017,9 +1017,14 @@ Everything it sends goes to adults:
 | A tutor's access has started, or ended | the tutor | on the first and last day |
 | Nobody has used this family | every parent | at 17 months without use |
 
-No email is ever sent to a child or about a child except to the family's adults, and no email contains a kid's name, work, marks or evidence. The family's name, which the family chose, may appear. A test renders every template against fixture children with distinctive names and fails if any of those names appears in a subject or a body. That keeps the email provider out of the set of third parties that hold anything about a child, which is what email plus depends on.
+Email goes only to adults. Authentication and account notices contain no child learning data.
+Weekly letters are off by default. Each active parent may enable a private link or a detailed letter
+containing child names and learning summaries; the preference screen explains delivery through
+Resend and the recipient's provider. The versioned consent notice documents this optional exception.
+Tests verify that the private-link variant excludes child names and learning content.
 
-Email is never a way to get records out: the export is a download, and there is no weekly digest by default, which [parents.md](parents.md) already says should be off until a parent asks for it.
+The complete export remains a download. Optional weekly summaries are described in
+[weekly-letter.md](weekly-letter.md), including unsubscribe, scheduling and retention.
 
 ## The record of access
 

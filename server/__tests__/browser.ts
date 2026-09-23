@@ -140,7 +140,7 @@ export async function signIn(b: Browser, outbox: Email[], email: string): Promis
 /** Flow 4: a kid, with consent to the current notice. */
 export async function addKid(b: Browser, name: string, grade: number): Promise<string> {
     const added = await b.call("POST", "/api/kids", {
-        body: { name, grade, consent: { notice: "2026-09" } },
+        body: { name, grade, consent: { notice: "2026-09-weekly" } },
     });
     return text(at(added.body, "kid", "id"), `a kid, got ${JSON.stringify(added.body)}`);
 }

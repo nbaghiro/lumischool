@@ -1,5 +1,12 @@
 # The database module
 
+Weekly email adds `mail_preferences` and `mail_deliveries` through `0001_weekly_mail.sql`, bringing
+the database to nine tables. Both force family RLS. The scheduler enumerates only active parent
+recipient IDs through a narrow security-definer function, then reads all data through `withFamily`.
+Delivery leases and a family/recipient/week unique key survive restarts. Payloads are cleared once
+dispatch is terminal; child deletion and consent withdrawal suppress retained family payloads.
+The original seven-table discussion below describes product data, not these operational records.
+
 Kids’ sign-in uses the same seven tables. The `kids_username_key` unique expression index covers
 `lower(settings->>'username')` across families; missing usernames remain null. A `kid-pin` key per
 family is protected by `keys_kid_pin_key`. `kid-attempt` keys can have no family and hold only hashed

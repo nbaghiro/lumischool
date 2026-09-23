@@ -1,0 +1,78 @@
+.weekly-paper {
+    max-width: 680px;
+    margin: 28px auto;
+    padding: clamp(24px, 5vw, 48px);
+    background: var(--card);
+    border: 1px solid var(--grid);
+    border-radius: 4px;
+    box-shadow:
+        4px 5px 0 -1px var(--card),
+        4px 5px 0 var(--grid);
+}
+.weekly-letterhead {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--grid);
+    color: var(--pen);
+    font-family: var(--f-hand);
+}
+.weekly-letterhead time {
+    grid-column: 2;
+    white-space: nowrap;
+    font: 12px var(--f-mono);
+    color: var(--ink-soft);
+}
+.weekly-paper h2,
+.weekly-sign {
+    font-family: var(--f-hand);
+}
+.weekly-paper h3 {
+    margin: 28px 0 8px;
+    font-size: 17px;
+    color: var(--pen);
+}
+.weekly-paper p {
+    line-height: 1.8;
+}
+.weekly-sign {
+    margin-top: 32px;
+    color: var(--pen);
+}
+.letter-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.letter-preferences {
+    max-width: 680px;
+    margin: 40px auto;
+}
+.letter-preferences label,
+.letter-preferences select {
+    display: block;
+    margin: 12px 0;
+}
+.letter-preferences select {
+    min-height: 44px;
+    width: 100%;
+    padding: 12px;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--grid);
+    font: inherit;
+}
+@media print {
+    .letter-actions,
+    .letter-preferences,
+    .page-nav {
+        display: none;
+    }
+    .weekly-paper {
+        box-shadow: none;
+        break-after: page;
+        border: 0;
+    }
+}

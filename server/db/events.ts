@@ -309,7 +309,7 @@ export async function savePicture(tx: FamilyTx, user: string, picture: string): 
  * The version of the consent notice the app shows. A `consent-given` names it, and a new wording is a
  * new version that every parent is asked to consent to again (.docs/auth.md, flow 4).
  */
-export const CONSENT_NOTICE = "2026-09";
+export const CONSENT_NOTICE = "2026-09-weekly";
 
 /** A kid, as the add-a-kid form writes one: a name, a grade and the settings a parent chose. */
 export async function addKid(

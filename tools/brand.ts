@@ -3,12 +3,13 @@
 // the apps. resvg turns the drawings into PNGs, and nothing of it ships. Run on its own, this file
 // also writes the files we upload by hand into a folder (.docs/brand.md, "Using the files").
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 import type { Connect, Plugin } from "vite";
 import { BIRD, files, icon, profile, social, svgFile, type Art } from "../engine/parts/brand";
 import { PALETTE } from "../engine/paper";
+import { MAIL_WORLDS, mailCover } from "../server/mail-design";
 
 export interface BrandFile {
     type: string;
@@ -30,9 +31,20 @@ const png = (a: Art, px: number): BrandFile => ({
 
 let made: Map<string, BrandFile> | undefined;
 
+function emailWorld(path: string): BrandFile {
+    return {
+        type: "image/png",
+        body: readFileSync(new URL(`../engine/ui${path}`, import.meta.url)),
+    };
+}
+
 /** Every file the apps link to, by the path it is served at. Drawn once, on first use. */
 export function served(): Map<string, BrandFile> {
     made ??= new Map<string, BrandFile>([
+        ...MAIL_WORLDS.map((world): [string, BrandFile] => {
+            const path = mailCover(world);
+            return [path, emailWorld(path)];
+        }),
         ["/favicon.svg", { type: "image/svg+xml", body: svgFile(BIRD.small(16)) }],
         ["/favicon-16.png", png(BIRD.small(16), 16)],
         ["/favicon-32.png", png(BIRD.small(32), 32)],
