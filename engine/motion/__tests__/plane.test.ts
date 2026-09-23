@@ -4,7 +4,17 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { down, emptyPad, spent, up, type Dir, type Pad } from "../pad";
-import { FLY, fieldAt, step, takeOff, type FlightEvent, type Plane, type Sky } from "../plane";
+import {
+    approach,
+    landStep,
+    FLY,
+    fieldAt,
+    step,
+    takeOff,
+    type FlightEvent,
+    type Plane,
+    type Sky,
+} from "../plane";
 
 const R = FLY.rate,
     DT = 1 / R;
@@ -168,4 +178,32 @@ test("the same hands give the same flight", () => {
         eb = fly(b, sky(), 10, hands);
     assert.deepEqual(ea, eb);
     assert.deepEqual([a.x, a.y, a.heading, a.height], [b.x, b.y, b.heading, b.height]);
+});
+
+test("a requested landing preserves the initial pose and descends to a stationary touchdown", () => {
+    const p = takeOff({ x: 150, y: -200 }, 0);
+    Object.assign(p, { notch: 3, height: 1, speed: 900, vx: 900, vy: 0 });
+    const field = { node: 7, at: { x: 1600, y: 200 }, angle: 0 };
+    const landing = approach(p, field);
+    landStep(p, landing, 0);
+    assert.equal(p.x, 150);
+    assert.equal(p.y, -200);
+    assert.equal(p.height, 1);
+    assert.equal(p.speed, 900);
+    let height = p.height;
+    let sawLand = false,
+        sawRoll = false;
+    for (let t = 0; t < landing.duration + DT; t += DT) {
+        landStep(p, landing, DT);
+        assert.ok(p.height <= height + 1e-9);
+        height = p.height;
+        sawLand ||= p.notch === 0 && p.phase === "air";
+        sawRoll ||= p.phase === "rolling";
+    }
+    assert.ok(sawLand && sawRoll);
+    assert.equal(p.phase, "down");
+    assert.equal(p.speed, 0);
+    assert.equal(p.height, 0);
+    assert.equal(p.landed, 7);
+    assert.deepEqual({ x: p.x, y: p.y }, field.at);
 });

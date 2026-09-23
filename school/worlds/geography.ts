@@ -656,7 +656,7 @@ export const SAILS: Record<number, Pt> = {
  */
 export const SHEET: Rect = { x: -32600, y: -20400, w: 66500, h: 44200 };
 
-/** Extra sea fills wide screens at the atlas zoom without shrinking the continents. */
+/** Extra sea fills wide screens and tall marketing panels at the atlas zoom. */
 export const SEA_SIDES = 24000;
 /** What a fifth year adds: the far shore, on a sheet taped along the top. */
 export const SHEET_FIVE: Rect = { x: -12000, y: -20400, w: 26000, h: 6000 };

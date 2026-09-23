@@ -16,10 +16,22 @@ not continent names.
 
 The child's first frame stays near their current world, with a closer view on phones. Every world
 zooms out to the atlas; Near me returns to the local frame. The whole country can be panned.
+The grown-up Map tab opens 30 percent closer than the full atlas, slightly north of its centre;
+Every world still fits the entire country, and returning from a world keeps its local frame.
 Clicking a world smoothly frames it from the current camera position; a second click enters.
 Returning from a world centers that same neighbourhood. Keyboard travel still follows the ways.
 Completed work keeps its colour across regions. A coast fills only when all main and subject
 places on that land are finished. Year-end sailing remains a progress celebration.
+
+The shared interactive overworld has a Fly button (P). The paper plane uses left/right steering,
+Land/Slow/Cruise/Fast speeds, and Stop, L or Escape to land at the nearest accessible world. A compact hint names that
+world before landing; Enter also lands when the flight area itself has keyboard focus.
+Requested landings ease down to Land speed, descend to the selected field, roll to rest,
+and fade the plane before returning control to the map. Reduced motion lands immediately.
+It can explore the whole atlas; landing fields follow the view's permissions. Touch dragging
+steers, and reduced motion advances only when a control is used. Flight progress is not saved.
+The production controls and drawing layer live in `engine/ui/flight.ts` and `flight.css`, using
+the existing `engine/motion/plane.ts` physics. The scratchpad now imports that implementation.
 
 `school/worlds/geography.ts` owns coastlines, fixed `WORLD_SITES`, region labels and map extent.
 The shared view selects one subject location from the per-grade progress records; the underlying

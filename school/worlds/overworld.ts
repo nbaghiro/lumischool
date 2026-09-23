@@ -315,7 +315,12 @@ export function layoutMap(
     const x1 = Math.max(...sheets.map((r) => r.x + r.w)),
         y1 = Math.max(...sheets.map((r) => r.y + r.h));
     const core = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
-    const bounds = { ...core, x: core.x - SEA_SIDES, w: core.w + 2 * SEA_SIDES };
+    const bounds = {
+        x: core.x - SEA_SIDES,
+        y: core.y - SEA_SIDES,
+        w: core.w + 2 * SEA_SIDES,
+        h: core.h + 2 * SEA_SIDES,
+    };
     return { nodes, roads, sides: offRun, bands, bounds, core };
 }
 

@@ -29,6 +29,16 @@ test("a child's subject place opens its own lessons, returns to its map location
     await map.getByRole("button", { name: "Every world", exact: true }).click();
     await expect(map.getByRole("button", { name: "Near me", exact: true })).toBeVisible();
     await map.getByRole("button", { name: "Near me", exact: true }).click();
+    await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
+    await expect(map.locator(".ow-plane-body svg")).toBeVisible();
+    await map.getByRole("radio", { name: "Fast", exact: true }).click();
+    await page.keyboard.press("ArrowRight");
+    await map.getByRole("button", { name: "Stop flying and land at the nearest world" }).click();
+    await expect(map.locator('.ow-node[tabindex="0"]')).not.toHaveAttribute(
+        "aria-disabled",
+        "true",
+    );
+    await expect(map.locator(".ow-flyhud")).toHaveCount(0);
     const locked = map.locator('.ow-node[aria-disabled="true"]').first();
     await locked.dispatchEvent("click");
     await expect(map.getByRole("note")).toContainText("The way here opens as you learn.");

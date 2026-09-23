@@ -26,7 +26,7 @@ import { Postcard } from "../../engine/ui/postcard";
 import { go, search } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import type { Failure } from "../../engine/ui/wire";
-import { KIDS, signInFor } from "./routes";
+import { signInFor } from "./routes";
 import {
     inWorld,
     mapHref,
@@ -50,7 +50,7 @@ async function read(): Promise<School | Failure | null> {
     const p = await api.pack();
     if ("error" in p) {
         if (p.error === "put-away") {
-            location.replace(KIDS);
+            location.replace("/sign-in?locked=1");
             return null;
         }
         if (p.error === "signed-out") {
@@ -137,7 +137,7 @@ export function GrownMap(): JSX.Element {
                                 <Match when={!at().world}>
                                     <Overworld
                                         view={s().map}
-                                        focus={placeBack() ?? "all"}
+                                        focus={placeBack() ?? "overview"}
                                         arrive={back()}
                                         class="mp-map"
                                         title="The map of every world"

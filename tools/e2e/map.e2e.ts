@@ -33,12 +33,19 @@ async function goInto(page: Page, place: Locator): Promise<void> {
     await expect
         .poll(async () => {
             if (page.url() !== before) return true;
-            const transform = await place.evaluate(
-                (el) => el.closest(".world")?.getAttribute("style") ?? "",
-            );
-            const settled = previous === transform;
-            previous = transform;
-            return settled && (await place.getAttribute("tabindex")) === "0";
+            const state = await place.evaluateAll((els) => {
+                const el = els[0];
+                return el
+                    ? {
+                          transform: el.closest(".world")?.getAttribute("style") ?? "",
+                          focused: el.getAttribute("tabindex") === "0",
+                      }
+                    : null;
+            });
+            if (!state) return page.url() !== before;
+            const settled = previous === state.transform;
+            previous = state.transform;
+            return settled && state.focused;
         })
         .toBe(true);
     if (page.url() === before) await place.dispatchEvent("click");
@@ -73,6 +80,14 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     await expect(map.locator(".ow-node.focus")).toHaveCount(0);
     expect(await smallTargets(map)).toEqual([]);
     await expect(map.locator(".ow-place")).toHaveCount(38);
+
+    const scale = () =>
+        map.locator(".world").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
+    const openingScale = await scale();
+    await expect(map.locator(".ow-scope")).toHaveText("Every world");
+    await map.locator(".ow-scope").click();
+    await expect.poll(async () => openingScale / (await scale())).toBeCloseTo(1.3, 1);
+    await expect(map.locator(".ow-scope")).toHaveText("Near me");
 
     // a tap chooses a place, and the chip names it
     await map.locator('.ow-node[aria-label*="harbour" i]').first().dispatchEvent("click");
@@ -252,6 +267,11 @@ test("See the map on the site opens the sample child's map over the page, a worl
     // the sample child's map, with every world open to go into and nothing of a real child on it
     await expect(look.locator('.ow-node[aria-disabled="true"]')).toHaveCount(0);
     expect(await smallTargets(look.locator(".ov-top"))).toEqual([]);
+    await look.getByRole("button", { name: "Fly the paper plane (P)" }).click();
+    await expect(look.locator(".ow-host[data-fly]")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(look).toBeVisible();
+    await expect(look.locator(".ow-host[data-fly]")).toHaveCount(0);
     const harbour = look.locator('.ow-node[aria-label*="harbour" i]').first();
     await goInto(page, harbour);
     const roll = look.locator(".wd");
@@ -269,4 +289,119 @@ test("See the map on the site opens the sample child's map over the page, a worl
     await expect(
         page.getByRole("heading", { name: "School at home, one world at a time" }),
     ).toBeVisible();
+});
+
+for (const motion of ["no-preference", "reduce"] as const) {
+    test(`paper plane steering, speed and landing with ${motion} motion`, async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: motion });
+        await signInAs(page);
+        await page.goto("/map");
+        const map = await mapReady(page);
+        await map.getByRole("button", { name: "Every world", exact: true }).click();
+        await map.getByRole("button", { name: "Near me", exact: true }).click();
+        await page.waitForTimeout(motion === "reduce" ? 0 : 1300);
+        const zoom = () =>
+            map
+                .locator(".world")
+                .evaluate((el) => Number((el as HTMLElement).style.getPropertyValue("--mz")));
+        const nearZoom = await zoom();
+        await map
+            .getByRole("button", { name: "Fly the paper plane (P)" })
+            .click({ timeout: 10000 });
+        const host = page.locator(".ow-host[data-fly]");
+        await expect(host.locator(".ow-plane-body svg")).toBeVisible();
+        await expect.poll(async () => Math.abs((await zoom()) - nearZoom)).toBeLessThan(0.001);
+        const controls = await host.locator(".ow-flyhud").boundingBox();
+        expect(controls?.height).toBeLessThan(100);
+        expect(controls?.width).toBeLessThan(page.viewportSize()?.width ?? 0);
+        await expect(host.locator(".ow-sock svg").first()).toBeAttached();
+        await host.getByRole("radio", { name: "Fast", exact: true }).click();
+        await expect(host.getByRole("radio", { name: "Fast", exact: true })).toHaveAttribute(
+            "aria-checked",
+            "true",
+        );
+        const before = await host.getAttribute("data-plane");
+        await host.getByRole("button", { name: "Steer left", exact: true }).focus();
+        await page.keyboard.press("ArrowLeft");
+        await expect.poll(() => host.getAttribute("data-plane")).not.toBe(before);
+        await host.getByRole("radio", { name: "Slow", exact: true }).click();
+        await expect(host.getByRole("radio", { name: "Slow", exact: true })).toHaveAttribute(
+            "aria-checked",
+            "true",
+        );
+        if (motion === "reduce") {
+            const rested = await host.getAttribute("data-plane");
+            await page.waitForTimeout(250);
+            expect(await host.getAttribute("data-plane")).toBe(rested);
+        }
+        const destination = (await host.locator(".ow-landing-hint").innerText()).replace(
+            "L to land at ",
+            "",
+        );
+        await page.keyboard.press("l");
+        if (motion === "no-preference") {
+            await expect(host.locator(".ow-landing-hint")).toContainText("Landing at");
+            await expect(host.locator(".ow-plane-body")).toBeAttached();
+            await expect(
+                host.getByRole("button", { name: "Stop flying and land at the nearest world" }),
+            ).toBeDisabled();
+            await page.waitForTimeout(200);
+            await expect(host.locator(".ow-plane-body")).toBeAttached();
+        }
+        await expect(map.locator('.ow-node[tabindex="0"]')).toHaveAttribute(
+            "aria-label",
+            new RegExp(destination, "i"),
+        );
+        await expect(page.locator(".ow-host[data-fly]")).toHaveCount(0);
+        await expect(map.locator('.ow-node[tabindex="0"]')).toBeFocused();
+        await expect(page.locator(".wd")).toHaveCount(0);
+        await map
+            .getByRole("button", { name: "Fly the paper plane (P)" })
+            .click({ timeout: 10000 });
+        await expect(page.locator(".ow-host[data-fly]")).toHaveCount(1);
+        await page.keyboard.press("Escape");
+        await expect(page.locator(".ow-host[data-fly]")).toHaveCount(0);
+        await expect(map).toBeVisible();
+        await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
+        await expect(host.locator(".ow-flyhud")).toBeFocused();
+        await page.keyboard.press("Enter");
+        await expect(page.locator(".ow-host[data-fly]")).toHaveCount(0);
+        await expect(page.locator(".wd")).toHaveCount(0);
+    });
+}
+
+test("the map scope switch returns to the selected world without changing button width", async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/home#/map");
+    const look = page.getByRole("dialog", { name: "A sample child's map" });
+    const map = look.locator(".ow-host.ready");
+    await expect(map).toBeVisible({ timeout: 60_000 });
+    const harbour = map.locator('.ow-node[aria-label*="harbour" i]').first();
+    await harbour.dispatchEvent("click");
+    const scope = map.locator(".ow-scope");
+    await expect(scope).toHaveText("Every world");
+    const closeWidth = (await scope.boundingBox())?.width;
+    await scope.click();
+    await expect(scope).toHaveText("Near me");
+    expect((await scope.boundingBox())?.width).toBe(closeWidth);
+    const far = (await harbour.boundingBox())?.width ?? 0;
+    await scope.click();
+    await expect(scope).toHaveText("Every world");
+    const near = await harbour.boundingBox();
+    const region = await map.boundingBox();
+    if (!near || !region) throw new Error("the map must be visible");
+    expect(near.width).toBeGreaterThan(far * 1.5);
+    expect(Math.abs(near.x + near.width / 2 - region.x - region.width / 2)).toBeLessThan(12);
+    expect(Math.abs(near.y + near.height / 2 - region.y - region.height / 2)).toBeLessThan(12);
+    for (let i = 0; i < 18; i++) {
+        await map.dispatchEvent("wheel", {
+            deltaY: 100,
+            ctrlKey: true,
+            clientX: region.x + region.width / 2,
+            clientY: region.y + region.height / 2,
+        });
+    }
+    await expect(scope).toHaveText("Near me");
 });

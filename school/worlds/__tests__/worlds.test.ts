@@ -686,7 +686,7 @@ test("the site's map and the grown-ups' backdrop draw the whole country, and the
     // the country, not the open water beside it the map may be dragged into
     assert.equal(site.frame, site.layout.core);
     assert.equal(site.layout.core.w + 2 * SEA_SIDES, site.layout.bounds.w);
-    assert.equal(site.layout.core.h, site.layout.bounds.h);
+    assert.equal(site.layout.core.h + 2 * SEA_SIDES, site.layout.bounds.h);
     assert.deepEqual(site.title, { child: "Sample", since: STARTED });
     const backdrop = mapViewOf({
         records: records(1, 4),
@@ -1061,7 +1061,10 @@ test("the map carries what its painter draws beside the places: every drawing's 
         limits: GROWN_MAP,
     });
     assert.deepEqual(grown.regions, REGIONS);
-    assert.deepEqual(grown.landings, [], "a grown-up's own map has no plane");
+    assert.deepEqual(
+        grown.landings.map((f) => f.node),
+        grown.places.filter((p) => p.open).map((p) => p.i),
+    );
     assert.ok(
         grown.life.length > child.life.length,
         "a grown-up's map has the whole country's life",
@@ -1151,8 +1154,9 @@ test("the colour washing out as the map opens is rebuilt from the view alone: th
     assert.equal(grown.places[0]?.shown?.when, "Year 1, term 1");
 });
 
-test("a grown-up's own map differs from the backdrop behind their pages only in going in", () => {
-    assert.deepEqual({ ...GROWN_MAP, goIn: BACKDROP_MAP.goIn }, BACKDROP_MAP);
+test("a grown-up can enter worlds and fly while the backdrop is passive", () => {
+    assert.deepEqual({ ...GROWN_MAP, goIn: BACKDROP_MAP.goIn, fly: false }, BACKDROP_MAP);
+    assert.equal(GROWN_MAP.fly, true);
     assert.equal(GROWN_MAP.goIn, "everywhere");
     assert.equal(BACKDROP_MAP.goIn, "none");
 });

@@ -257,3 +257,60 @@ export function windFrom(w: Pt): string {
         ] ?? "west"
     );
 }
+
+export interface Landing {
+    field: Field;
+    from: Pt;
+    tangent: Pt;
+    height: number;
+    bank: number;
+    notch: number;
+    elapsed: number;
+    duration: number;
+}
+
+/** A guided approach keeps the current velocity, then eases to rest on the chosen field. */
+export function approach(p: Plane, field: Field): Landing {
+    const distance = Math.hypot(field.at.x - p.x, field.at.y - p.y);
+    const duration = Math.max(2.6, (distance * 1.5) / Math.max(FLY.speed[1], p.speed));
+    return {
+        field,
+        from: { x: p.x, y: p.y },
+        tangent: { x: p.vx * duration, y: p.vy * duration },
+        height: p.height,
+        bank: p.bank,
+        notch: p.notch,
+        elapsed: 0,
+        duration,
+    };
+}
+
+export function landStep(p: Plane, landing: Landing, dt: number): boolean {
+    landing.elapsed = Math.min(landing.duration, landing.elapsed + dt);
+    const t = landing.elapsed / landing.duration;
+    const h = t * t * (3 - 2 * t),
+        tangent = t * (1 - t) * (1 - t);
+    const dh = 6 * t * (1 - t),
+        dv = 1 - 4 * t + 3 * t * t;
+    const dx = landing.field.at.x - landing.from.x,
+        dy = landing.field.at.y - landing.from.y;
+    p.x = landing.from.x + dx * h + landing.tangent.x * tangent;
+    p.y = landing.from.y + dy * h + landing.tangent.y * tangent;
+    p.vx = (dx * dh + landing.tangent.x * dv) / landing.duration;
+    p.vy = (dy * dh + landing.tangent.y * dv) / landing.duration;
+    p.speed = Math.hypot(p.vx, p.vy);
+    if (p.speed > 1) {
+        const turn = wrap(Math.atan2(p.vy, p.vx) - p.heading);
+        p.heading += turn * Math.min(1, dt * 4);
+    }
+    const descent = Math.min(1, t / 0.85);
+    p.height = landing.height * (1 - descent * descent * (3 - 2 * descent));
+    p.bank = landing.bank * (1 - h);
+    p.notch = Math.max(0, landing.notch - Math.floor((t * (landing.notch + 1)) / 0.7));
+    p.phase = t === 1 ? "down" : t >= 0.85 ? "rolling" : "air";
+    if (t === 1) {
+        p.speed = 0;
+        p.landed = landing.field.node;
+    }
+    return t === 1;
+}

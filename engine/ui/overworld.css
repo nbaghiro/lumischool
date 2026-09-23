@@ -627,3 +627,7 @@
 .w-off * {
     animation-play-state: paused !important;
 }
+
+.ow-scope {
+    min-width: 148px;
+}

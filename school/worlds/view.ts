@@ -650,11 +650,11 @@ export const BACKDROP_MAP: MapLimits = {
 };
 export const GROWN_WORLD: WorldLimits = { sheets: "look", record: false };
 
-/** The limits a grown-up's own map passes: they may visit any world, and the plane is the child's. */
+/** The limits a grown-up's own map passes: they may visit and fly over every world. */
 export const GROWN_MAP: MapLimits = {
     travel: "everywhere",
     goIn: "everywhere",
-    fly: false,
+    fly: true,
     pan: "all",
     zoomOut: "everything",
 };
@@ -920,6 +920,7 @@ export function mapViewOf(o: MapIn): MapView {
         "lantern",
         "bridge",
         "balloon",
+        ...(o.limits.fly ? ["paperplane", "windsock", "cloud"] : []),
         ...(sail ? ["jetty", "ship"] : []),
         ...RIDERS,
     ]);

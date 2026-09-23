@@ -12,10 +12,6 @@
     flex: 1;
     min-height: 0;
 }
-/* the school as written is the whole country, so the map has no "this year" to come home to */
-.mp-map .ow-home {
-    display: none;
-}
 .mp-note {
     margin: 0;
     padding: 32px var(--gut);

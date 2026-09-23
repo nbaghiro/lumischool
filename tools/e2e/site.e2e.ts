@@ -173,3 +173,39 @@ test("the day section is a still picture of a day, with the sheet in the middle 
     await scrollOver(page, frame);
     expect(asked, "a signed-out page asks the API nothing").toEqual([]);
 });
+
+test("the final marketing map fits all worlds inside its panel, including after resize", async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/home");
+    const last = page.locator(".site-step").last();
+    await expect(last).toBeAttached({ timeout: 60000 });
+    await last.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await expect(last).toHaveClass(/on/);
+    const map = page.locator(".site-journey-world.ready");
+    await expect(map).toBeVisible({ timeout: 60000 });
+    const fits = () =>
+        map.evaluate((el) => {
+            const box = el.getBoundingClientRect();
+            const nodes = [...el.querySelectorAll(".ow-node")];
+            return (
+                nodes.length > 0 &&
+                nodes.every((node) => {
+                    const r = node.getBoundingClientRect();
+                    return (
+                        r.left >= box.left &&
+                        r.right <= box.right &&
+                        r.top >= box.top &&
+                        r.bottom <= box.bottom
+                    );
+                })
+            );
+        });
+    await expect.poll(fits).toBe(true);
+    await page.setViewportSize({ width: 1180, height: 900 });
+    await last.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await expect(last).toHaveClass(/on/);
+    await expect.poll(fits).toBe(true);
+    await map.screenshot({ path: "/tmp/lumischool-marketing-overview.png" });
+});

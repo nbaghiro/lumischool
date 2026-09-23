@@ -33,6 +33,8 @@ import type { MapPainted } from "./map";
 import { announce } from "./say";
 import { CanvasView } from "./view";
 import { mapPainter } from "./painters";
+import type { Flying } from "./flight";
+import { readTokens } from "./read-tokens";
 
 /** Where a page finds the map's places and buttons on the page, to write its own words beside them. */
 export interface MapAt {
@@ -75,10 +77,10 @@ export function Overworld(props: {
     view: MapView;
     /**
      * Where the guide stands and the camera looks, whenever it changes: a place's index, or "all" for
-     * every world where the limits let the map draw back that far. Left out, the guide stands where
+     * every world, or "overview" for a closer atlas view. Left out, the guide stands where
      * the view says the child is.
      */
-    focus?: number | "all";
+    focus?: number | "all" | "overview";
     /** The map takes the wheel to zoom, unless the page around it scrolls. */
     wheel?: boolean;
     /**
@@ -126,6 +128,8 @@ export function Overworld(props: {
     onDrawn?: () => void;
 }): JSX.Element {
     let host: HTMLElement | undefined;
+    let flying: Flying | null = null;
+    let loadingFlight = false;
     let view: CanvasView | undefined;
     let painted: MapPainted | undefined;
     let pending: { piece: MapPainted["pieces"][number]; done: boolean }[] = [];
@@ -213,6 +217,10 @@ export function Overworld(props: {
     // A page that explicitly asks for every world must fit the country, rather than stop at the
     // interactive map's zoom floor and cut its outer lands off.
     const everything = (v: CanvasView): Camera => fitRect(props.view.layout.core, v.vp, 24);
+    const overview = (v: CanvasView): Camera => {
+        const c = everything(v);
+        return { ...c, y: c.y - props.view.layout.core.h * 0.04, z: c.z * 1.3 };
+    };
 
     /** The camera a backdrop's aim asks for. */
     const aimed = (aim: MapAim): Camera | null => {
@@ -387,6 +395,7 @@ export function Overworld(props: {
     function onFrame(cam: Camera): void {
         if (!view) return;
         moved(cam);
+        if (!view.flying) setAt(cam.z <= everything(view).z * 1.15 ? "all" : "frame");
         const s = view.world.style;
         s.setProperty("--mz", String(cam.z));
         s.setProperty("--miz", String(1 / cam.z));
@@ -530,7 +539,7 @@ export function Overworld(props: {
         const v = view,
             i = focus(),
             n = nodeAt(props.view.layout, i);
-        if (!v || !n || !props.onGoIn || busy || !mayEnter(i)) return false;
+        if (!v || !n || !props.onGoIn || busy || flying || !mayEnter(i)) return false;
         const covers = n.box.w * cam.z > v.vp.w * 0.62 || n.box.h * cam.z > v.vp.h * 0.62;
         const inside =
             cam.x > n.box.x - n.box.w * 0.3 &&
@@ -587,11 +596,58 @@ export function Overworld(props: {
         tk.start();
     }
 
+    async function startFly(): Promise<void> {
+        const v = view,
+            p = painted,
+            h = host;
+        if (!v || !p || !h || busy || flying || loadingFlight || !props.view.limits.fly) return;
+        const from =
+            props.view.landings.find((f) => f.node === focus())?.node ??
+            props.view.landings[0]?.node;
+        if (from === undefined) return;
+        loadingFlight = true;
+        let start: typeof import("./flight").fly;
+        try {
+            start = (await import("./flight")).fly;
+        } finally {
+            loadingFlight = false;
+        }
+        if (view !== v || painted !== p || busy) return;
+        setCard(null);
+        v.stop();
+        p.token.classList.add("flying");
+        flying = start({
+            view: v,
+            layer: v.world,
+            hud: h,
+            host: h,
+            t: readTokens(h),
+            mapView: props.view,
+            zoom: () => nearPlace(v, from)?.z ?? v.cam.z,
+            from,
+            to: null,
+            still: quiet,
+            say,
+            landed: (i) => {
+                const n = nodeAt(props.view.layout, i);
+                if (n) p.place(n.stand, 1);
+                arrived(i);
+                const camera = nearPlace(v, i);
+                if (camera) v.flyTo(camera);
+                focusNode(i, true);
+            },
+            ended: () => {
+                flying = null;
+                p.token.classList.remove("flying");
+            },
+        });
+    }
+
     function home(): void {
         const v = view;
         if (!v) return;
         setAt("frame");
-        v.flyTo(frame(v));
+        v.flyTo(nearPlace(v, chosen() ? focus() : (props.view.here ?? focus())) ?? frame(v));
         say(grown() ? "The map." : "Your part of the map. It grows as you go.");
     }
 
@@ -631,6 +687,12 @@ export function Overworld(props: {
 
     function onKey(e: KeyboardEvent): boolean {
         if (!view) return false;
+        if (flying) return flying.key(e);
+        if (e.key === "Enter" && e.repeat) return true;
+        if (e.key.toLowerCase() === "p" && props.view.limits.fly) {
+            void startFly();
+            return true;
+        }
         if (e.type === "keyup") return false;
         const arrow = ARROWS.find((a) => a === e.key);
         if (arrow && !e.shiftKey) {
@@ -686,6 +748,7 @@ export function Overworld(props: {
     }
 
     async function drawNow(v: CanvasView): Promise<void> {
+        flying?.stop();
         painted?.stop();
         painted = undefined;
         riders = null;
@@ -717,7 +780,7 @@ export function Overworld(props: {
             b.classList.add("ow-node");
             b.addEventListener("click", () => {
                 setCard(null);
-                if (busy) return;
+                if (busy || flying || loadingFlight) return;
                 if (!place(i)?.open) {
                     if (locked(i, "tap")) return;
                     setCard(place(i) ?? null);
@@ -742,8 +805,7 @@ export function Overworld(props: {
             b.addEventListener("pointerenter", () => locked(i, "hover"));
             b.addEventListener("pointerleave", () => unlocked(i, "hover"));
         });
-        const first =
-            props.focus === undefined || props.focus === "all" ? props.view.here : props.focus;
+        const first = typeof props.focus === "number" ? props.focus : props.view.here;
         const start = first ?? 0;
         const n = nodeAt(props.view.layout, start);
         if (n) p.place(n.stand, 1);
@@ -753,7 +815,8 @@ export function Overworld(props: {
         const c = props.aim ? aimed(props.aim) : null;
         const all = !c && props.focus === "all";
         setAt(all ? "all" : "frame");
-        const rest = c ?? (all ? everything(v) : frame(v));
+        const rest =
+            c ?? (all ? everything(v) : props.focus === "overview" ? overview(v) : frame(v));
         // Coming back out of a world: the map opens with the place where the world left it and pulls
         // back to where it stands, so the two views are one movement (.docs/journal.md).
         const back = props.arrive && !quiet && !rose ? cameraBack(v, props.arrive) : null;
@@ -794,7 +857,10 @@ export function Overworld(props: {
                 w.limits = zoomLimits(props.view, w.vp);
                 if (w.cam.z < w.limits.min) w.set({ ...w.cam, z: w.limits.min });
                 const c = props.aim ? aimed(props.aim) : null;
-                if (c && ready()) w.set(c);
+                if (ready()) {
+                    if (c) w.set(c);
+                    else if (at() === "all") w.set(everything(w));
+                }
                 tellView();
             },
         });
@@ -832,6 +898,7 @@ export function Overworld(props: {
                 const v = view;
                 if (!v || !ready()) return;
                 if (f === "all") showAll();
+                else if (f === "overview") v.flyTo(overview(v));
                 else if (typeof f === "number") {
                     if (Math.abs(f - focus()) === 1) travel(f);
                     else travelTo(f);
@@ -842,6 +909,7 @@ export function Overworld(props: {
     );
     onCleanup(() => {
         clearTimeout(brush);
+        flying?.stop();
         painted?.stop();
         view?.stop();
         // a settle or a frame still on its way finds no map to move
@@ -873,6 +941,16 @@ export function Overworld(props: {
                     </p>
                 </Show>
                 <div class="hud ow-home">
+                    <Show when={props.view.limits.fly && props.view.landings.length > 0 && ready()}>
+                        <button
+                            type="button"
+                            class="ow-btn"
+                            onClick={startFly}
+                            aria-label="Fly the paper plane (P)"
+                        >
+                            Fly
+                        </button>
+                    </Show>
                     <Show when={props.view.here !== null && focus() !== props.view.here}>
                         <button
                             type="button"
@@ -887,7 +965,7 @@ export function Overworld(props: {
                     <Show when={props.view.limits.zoomOut === "everything"}>
                         <button
                             type="button"
-                            class="ow-btn"
+                            class="ow-btn ow-scope"
                             onClick={() => (at() === "all" ? home() : showAll())}
                         >
                             {at() === "all" ? "Near me" : "Every world"}
