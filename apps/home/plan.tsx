@@ -445,7 +445,12 @@ type WorldsModel = typeof import("./worlds");
  * each with the choice on a card. A term with work in it keeps its world, since what the work made
  * is drawn there, and is not listed.
  */
-function Worlds(props: { loaded: Loaded; kid: Kid; onWrite: Write; onCard: Open }): JSX.Element {
+export function Worlds(props: {
+    loaded: Loaded;
+    kid: Kid;
+    onWrite: Write;
+    onCard: Open;
+}): JSX.Element {
     const [read, { refetch }] = createResource(
         () => [props.kid.id, props.loaded] as const,
         async ([id]) => {

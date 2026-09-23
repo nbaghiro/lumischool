@@ -388,90 +388,43 @@ sheet in `engine/ui/lesson.tsx` read with `{ sheets: "look", key }`, and the pac
 
 ## The calendar and the plan
 
-The calendar is the family's year in three views, and the week is what it opens on, because the week
-is what a grown-up changes: a lesson is a sticker on its day that drags to another day or opens its
-card, a day opens what can be done with it, and the month and the year are for reading rather than
-doing. Every change is an event appended to the family's log and the calendar is folded again from
-it, so a change put back is one more event and nothing is ever rewritten. Change the plan is the
-family's subjects beside it: which subjects each child does and how many days a week, one sheet per
-child, with the school days, the terms and a term's world reached from it.
+Calendar now combines day planning and subject routines in one parent page. The separate Change
+the plan navigation entry is gone; existing `/plan` links open Calendar's Subjects & pace view.
+The production page is `apps/home/calendar-planner.tsx`, using the app's postcards, lesson
+illustrations, subject markers, shared editing cards and real family log. The scratchpad remains
+an independent sample.
 
-The week is a grid of the school days across and the children down, with each planned lesson drawn
-as a sticker carrying the lesson's first drawing. A lesson the pack index has no first drawing for
-falls back to its track's tape and its initial, so a sticker is never an empty box. Dragging a
-sticker to another day writes a move of that track's day, and the day it came from takes whatever
-that track had where it landed, since a track is a sequence and a day cannot be left with a hole in
-it. A sticker's card opens the lesson in Explore, moves it to a chosen day, parks it for a while, or
-sets it to be done once more. A day's own heading opens what can be done with the day: a day off for
-one child or for the family, a family day, which is a day off with a day added to each child so the
-year does not get shorter, and the plan shifted on by a week or two when a week went wrong. On a
-phone the grid stacks into a day at a time with each child under it.
+The week opens first, with a child filter, date navigation and a selected day's detail beside it.
+On phones the days stack and the detail follows them. The month also selects days for editing;
+the year retains term dates, attendance and world choices. Subjects & pace shows each child's
+subject progress and routine. Find lessons searches the real catalogue by grade and subject,
+with previews and additions to a chosen child and day.
 
-The month is the weeks of the month with every day's state on it, school day, day off, outside a
-term, or a day added, and the year is a term at a time: its dates, and for each child the world they
-are in, how many days of the term are done of how many it holds, a strip of the weeks, and, for a
-term that has already started, how far ahead or behind the child is against the days that have
-passed. That last number is a count of days and not a mark, and nothing on either screen is shown in
-a child's view. Both are for reading, and a change made from them would be a change made without the
-week's context, so they offer none.
+Parents can add multiple sessions without replacing existing lessons, including lessons from
+another grade or a subject outside the usual routine. Each placed session has its own identity,
+date, duration, note and order. Moving a sticker adds it to the destination without swapping away
+another session. Move / edit also offers practice, removal and For later. The day detail can
+reorder unfinished sessions, copy a day, or move the week's unfinished sessions forward. Completed
+or started work stays in the record and cannot be moved or removed. One completed sitting cannot
+complete two copies of the same lesson on a day.
 
-Under the three views is the list of changes the family has made, each with who made it and when, and
-each with a way to put it back. Putting a change back writes an undo naming the event it takes out,
-which the fold then reads past, so an undo of an undo puts the original change back in force. A
-family day is several events rather than one, a day off for the family and a day added for each
-child, and its entry puts all of them back together, since taking half of it back would leave the
-family with a day it could not explain.
+A routine chooses weekdays, one to three sessions per chosen day, and an effective date. An empty
+weekday selection pauses it. The preview uses the same adaptive curriculum projection as the
+calendar. Individually placed sessions survive later routine changes. School days, days off,
+family activities and term dates use the existing shared cards. Making a day off parks its
+unfinished individually placed sessions in For later; generated sessions follow the day-off rule.
+World choices still use `Worlds` in `apps/home/plan.tsx` and the existing eligibility fold.
 
-Change the plan is the same log from the other end, and it is the family's subjects: one flat sheet
-per child, side by side where they fit, under a short head card, with the family's terms as a note
-under them (21 September 2026; before that it was seven sections one under another for one child at
-a time, and the day, the lesson and the week were on it too). A sheet holds the child's name and the
-days they work, then one row per subject that is on: the subject's name over its marker, a scale of
-six round targets reading Off and 1 to 5 days a week with the one in force inked, and under them a
-rail of one square per lesson of the child's lane, the ones done filled with the marker and the one
-the child is on ringed, beside the fact in one line, the pace in words, how many are done of how many,
-and the day the last one is planned for. A press on the scale writes one `track` op at once, the same
-event the six word buttons wrote before, so the contract the e2e case checks holds. Where the term
-today falls in cannot hold the rest at this pace, the row says so under the fact, in the sentence
-the year already computes ("Runs 3 days past the end of term 2. Two days a week would fit the rest
-in by then."), since that is what makes the scale mean something. The subjects that are off stand
-under the rows as chips, "Coding, 9 lessons", and one press starts one at once a week, where its
-scale is. The days a child works are a link in the sheet's head that opens the calendar's school-days
-card over the page, and the terms note has a link to the calendar's terms card, so both cards are the
-calendar's, in `apps/home/cards.tsx`, and neither screen copies the other's form. After a change the
-head card says what it did with two links, "Put it back", which writes the undo of that change, and
-"See Rosie's week", which opens the calendar on that child.
+Changes append `plan-changed` events through the existing parent-authorized API. `session` is a
+snapshot of one placement, while `routine` changes the recurring projection from its effective
+date. Both are scoped to one child. Batch changes share a timestamp so the history can undo the
+whole action. The immediate confirmation offers undo and redo; the history remains available
+across reloads. Children consume the same fold, including additional subjects and practice.
 
-A lesson, the two weeks that follow and a week that went wrong are no longer on Change the plan. The
-calendar's lesson card parks, repeats and moves a lesson from its sticker with the lesson in view,
-its day card shifts the plan on by whole weeks, and "See Rosie's week" after a change is the link to
-the real week rather than a second drawing of it. The changes log stays under the calendar.
-
-A child's worlds are chosen on Change the plan as well, shortened to the terms a choice can still be
-made for. For each term a world was made for (the farm for the first term of grade 1 and the last of
-grade 2, the winter fair for the winter term of grades 1 to 3) in the child's own grade or the next,
-with no work in it yet, the sheet has one line, "Grade 2, term 2 is in the kitchen. The winter fair
-was made for it.", and a Choose link that opens a card with the term's own world and the ones made
-for it as pictures, the one in force pressed, and "Keep this". A term with work in it is not listed,
-because its world is fixed from the term's first sitting: what the child's work has made there is
-drawn in that world, and the calendar's year shows which world each term is in. Keeping writes one
-`world-chosen` event holding the family's whole choice, and the fold reads each term, and each
-world's tweaks, as they stood at that term's first work, so a choice from a device that had not yet
-seen the work changes nothing there. An undo does not reach a world choice; a grown-up chooses again
-instead. It is `Worlds` and `WorldCard` in `apps/home/plan.tsx`, with what they work out in
-`apps/home/worlds.ts` (`openChoices`) and the fold in `school/family/chosen.ts`.
-
-Neither screen stores a plan. The plan is the `plan-changed` events in the family's log, folded on
-every read, which is what lets a change be put back without anything being rewritten
-([api.md](api.md), "What the pages derive"). The reads are narrowed by kind and by day before the
-rows are read, and the days are the family's own time zone rather than the browser's, so a family in
-Auckland and a server in UTC agree on which day a sitting fell on.
-
-It is `apps/home/calendar.tsx` and `apps/home/plan.tsx` with their stylesheets, reading through
-`apps/home/log.ts`, which both share, and the cards a change is made on in `apps/home/cards.tsx`,
-which both open. The fold and the change builders are
-`school/family/calendar.ts` over `school/family/family.ts`, and the changes themselves are the nine
-`PlanOp` cases in `engine/answer.ts`. `tools/e2e/grown-ups.e2e.ts` checks both screens.
+The fold lives in `school/family/family.ts` and `school/family/calendar.ts`; `engine/answer.ts`
+validates the operations. `school/family/__tests__/sessions.test.ts` covers placements, routines,
+completion protection and child isolation. `tools/e2e/calendar.e2e.ts` checks saved additions,
+removal, undo, routine changes, the legacy route and responsive layouts against the real API.
 
 ## The map, for grown-ups
 
@@ -527,7 +480,7 @@ with `grown.ts` and `where.ts` holding what they work out and `engine/ui/grown.t
 make. `tools/e2e/grown-ups.e2e.ts` covers all five at a laptop's, an iPad's and a phone's size.
 
 What is designed here and not built: Friday's letters, the week spread, and "what else there is".
-A child's worlds are chosen on Change the plan, and the child's map, the home's card and roll, and the
+A child's worlds are chosen in Calendar's Subjects & pace view, and the child's map, the home's card and roll, and the
 calendar's year all read the same fold of the family's choice from the child's record rather than
 anything in the kid's settings. The calendar's year names each child's world rather than drawing it, and the year is folded in
 the browser from the events themselves rather than on the way out, which [api.md](api.md) says when to

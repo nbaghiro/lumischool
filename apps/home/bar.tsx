@@ -50,8 +50,12 @@ const PLACES: readonly { href: string; long: string; short: string; at: (p: stri
         },
         { href: "/map", long: "Map", short: "Map", at: (p) => p === "/map" },
         { href: "/games", long: "Games", short: "Games", at: (p) => p === "/games" },
-        { href: "/calendar", long: "Calendar", short: "Calendar", at: (p) => p === "/calendar" },
-        { href: "/plan", long: "Change the plan", short: "Plan", at: (p) => p === "/plan" },
+        {
+            href: "/calendar",
+            long: "Calendar",
+            short: "Calendar",
+            at: (p) => p === "/calendar" || p === "/plan",
+        },
     ];
 
 /** Whose family the bar last read: the person and family this browser is signed in as. */

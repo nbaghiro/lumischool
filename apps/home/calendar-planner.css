@@ -1,0 +1,447 @@
+/* The calendar and its usual week share the app's postcards, stickers and subject rails. */
+.cp-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 28px;
+    align-items: start;
+}
+.cp-layout.full {
+    grid-template-columns: minmax(0, 1fr);
+}
+.cp-history {
+    width: min(100%, 76ch);
+    margin-inline: auto;
+}
+.cp-main {
+    min-width: 0;
+}
+.cp-main > .gc-seg {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border: 0;
+    padding: 0 0 16px;
+    margin: 0;
+    border-bottom: 1.5px dashed var(--grid);
+}
+.cp-main > .gc-seg legend {
+    padding-bottom: 10px;
+}
+.cp .postcard .gc-seg {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border: 0;
+    margin: 12px 0 0;
+    padding: 0;
+}
+.cp-week {
+    display: grid;
+    grid-template-columns: repeat(var(--days, 5), minmax(0, 1fr));
+    gap: 10px;
+}
+.cp-day {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+.cp-day .gc-dayhead {
+    min-height: 66px;
+}
+.cp-day.today .gc-date b {
+    background: linear-gradient(transparent 56%, var(--glow) 56%, var(--glow) 92%, transparent 92%);
+}
+.cp-day.selected > .cp-cell {
+    border-color: var(--pen);
+    background-color: color-mix(in srgb, var(--glow) 9%, var(--card));
+}
+.cp-cell {
+    flex: 1;
+    min-width: 0;
+    gap: 14px;
+}
+.cp-cell .gc-sticker-in {
+    width: 100%;
+    min-height: 146px;
+    gap: 5px;
+}
+.cp-cell .gc-pic {
+    height: 66px;
+}
+.cp-load {
+    font-size: 11px;
+    color: var(--ink-soft);
+}
+.cp-empty {
+    padding: 20px 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+.cp-detail {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+    background: var(--card);
+    border-radius: 5px;
+    scroll-margin-top: 20px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 18px 36px -20px color-mix(in srgb, var(--ink) 42%, transparent);
+}
+.cp-detail > .postcard-tape {
+    width: 66px;
+    height: 20px;
+    left: 20px;
+    top: -10px;
+}
+.cp-detail > .postcard-tape.r {
+    display: none;
+}
+.cp-detail .gc-title {
+    font-size: 26px !important;
+}
+.cp-agenda {
+    border-top: 1.5px dashed var(--grid);
+    padding: 14px 0 0;
+}
+.cp-agenda-title {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    border: 0;
+    background: none;
+    padding: 7px 0;
+    text-align: left;
+    color: var(--ink);
+    font: 700 15px var(--f-read);
+    cursor: pointer;
+}
+.cp-agenda .note {
+    font-size: 12px;
+}
+.cp-agenda .acts {
+    gap: 0 12px;
+}
+.cp-agenda .link {
+    font-size: 13px;
+}
+.cp-note {
+    color: var(--pen);
+    font: 500 15px var(--f-hand);
+    padding-block: 8px;
+}
+.cp-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 14px;
+}
+.cp-check input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--pen);
+}
+.cp .gc-head input[type="date"] {
+    width: 150px;
+    min-height: 44px;
+    border: 0;
+    border-bottom: 2px solid var(--ink-soft);
+    background: var(--paper);
+    padding: 6px;
+    font: 14px var(--f-read);
+}
+.cp-month-day.selected {
+    outline: 2px solid var(--pen);
+    outline-offset: -2px;
+    background: color-mix(in srgb, var(--glow) 12%, transparent);
+}
+.cp-month-day .gc-month-in {
+    min-height: 116px;
+    gap: 8px;
+    padding: 10px;
+}
+.cp .gc-strips-name {
+    width: 100%;
+}
+.cp .gc-strip {
+    width: 20px;
+}
+.cp-subjects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 28px;
+}
+.cp-subjects > .gp-sheet {
+    box-shadow: none;
+    padding: 0;
+}
+.cp-subjects:has(> .gp-sheet:only-child) {
+    max-width: 780px;
+    width: 100%;
+    margin: auto;
+}
+.cp-subjects .gp-subj {
+    padding: 18px 0;
+}
+.cp-subjects .gp-scale {
+    flex-wrap: wrap;
+}
+.cp-subjects .gp-rail {
+    max-width: 340px;
+}
+.cp-main > .gc-sheet {
+    padding: 0;
+    box-shadow: none;
+}
+.cp-said {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    align-self: center;
+    width: min(100%, 760px);
+    padding: 10px 18px;
+    background: var(--card);
+    border-left: 4px solid var(--mint);
+    border-radius: 4px;
+}
+.cp-fields,
+.cp-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.cp-field {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.cp-field > span {
+    font: 500 10.5px/1.3 var(--f-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+.cp-field textarea {
+    min-height: 90px;
+    border: 0;
+    border-bottom: 2px solid var(--ink-soft);
+    background: var(--paper);
+    color: var(--pen);
+    font: 500 18px var(--f-hand);
+    padding: 10px;
+    resize: vertical;
+}
+.cp-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.cp-days label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 8px;
+    border: 1px solid var(--ink);
+    border-radius: 6px;
+}
+.cp-days label:has(:checked) {
+    background: color-mix(in srgb, var(--glow) 25%, transparent);
+}
+.cp-days input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--pen);
+}
+.cp-impact {
+    padding: 16px;
+    border-left: 3px solid var(--sky);
+    background: color-mix(in srgb, var(--sky) 14%, transparent);
+}
+.cp-impact h3 {
+    margin-bottom: 8px;
+}
+.cp-impact .btn {
+    margin-top: 12px;
+}
+.cp-library {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.cp-library-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1.5px dashed var(--grid);
+}
+.cp-library-row > .gc-pic {
+    width: 100px;
+    height: 76px;
+    flex-shrink: 0;
+}
+.cp-library-row > div:not(.gc-pic) {
+    flex: 1;
+    min-width: 0;
+}
+.cp-library-row h3 {
+    font: 700 16px/1.4 var(--f-read);
+}
+.cp-library-row .note {
+    font-size: 13px;
+}
+.cp-library-row > a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+}
+.cp-later {
+    padding: 14px 0;
+    border-top: 1px dashed var(--grid);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.cp-editor > fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}
+.cp-editor .gc-card > .postcard {
+    width: 100%;
+}
+.cp-editor {
+    max-height: calc(100dvh - 60px);
+    overflow: auto;
+    padding: 16px 10px;
+}
+.cp-editor > .say {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--card);
+}
+.cp-editor .gc-card-body {
+    gap: 18px;
+}
+.cp-editor .btn {
+    flex-shrink: 0;
+}
+.cp-editor fieldset:disabled {
+    opacity: 0.75;
+}
+@media (max-width: 1100px) {
+    .cp-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .cp-detail {
+        position: relative;
+        top: auto;
+    }
+    .cp-detail > .btn {
+        align-self: flex-start;
+    }
+}
+@media (max-width: 700px) {
+    .cp-week {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .cp-cell {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px 10px;
+    }
+    .cp-cell > .cp-load,
+    .cp-cell > h3,
+    .cp-cell > .note,
+    .cp-cell > .cp-empty {
+        grid-column: 1/-1;
+    }
+    .cp-day .gc-dayhead {
+        min-height: 44px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+    .cp-main.gc-sheet {
+        padding: 20px 14px;
+    }
+    .cp-main > .gc-seg .btn {
+        font-size: 13px;
+        padding-inline: 10px;
+    }
+    .cp-month-day .gc-month-in {
+        min-height: 100px;
+        padding: 8px 4px;
+    }
+    .cp .gc-strip {
+        width: 12px;
+        height: 7px;
+    }
+    .cp .gc-todayword {
+        font-size: 12px;
+    }
+    .cp-library-row {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .cp-library-row > .gc-pic {
+        width: 70px;
+        height: 64px;
+    }
+    .cp-library-row > .btn {
+        margin-left: auto;
+    }
+    .cp-editor {
+        max-height: calc(100dvh - 24px);
+        padding-inline: 0;
+    }
+    .cp-editor .postcard {
+        padding: 24px 18px;
+    }
+    .cp-field {
+        min-width: 125px;
+    }
+}
+@media print {
+    .cp > .postcard,
+    .cp-detail,
+    .cp-said,
+    .cp-history,
+    .cp .gc-log,
+    .cp-main > .gc-seg,
+    .cp .gc-head .acts,
+    .cp-check,
+    .cp .gc-foot,
+    .cp .gc-more {
+        display: none !important;
+    }
+    .cp-layout {
+        display: block;
+    }
+    .cp-week {
+        display: grid;
+        grid-template-columns: repeat(var(--days, 5), minmax(0, 1fr));
+    }
+    .cp-main {
+        box-shadow: none;
+    }
+    .cp-cell .gc-sticker {
+        break-inside: avoid;
+    }
+}
+.cp > .postcard .postcard-msg {
+    padding-right: 0;
+}

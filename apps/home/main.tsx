@@ -18,8 +18,7 @@ const Missing = lazy(() => import("./missing").then((m) => ({ default: m.Missing
 const Explore = lazy(() => import("./explore").then((m) => ({ default: m.Explore })));
 const ExploreLesson = lazy(() => import("./explore").then((m) => ({ default: m.ExploreLesson })));
 const GrownMap = lazy(() => import("./map").then((m) => ({ default: m.GrownMap })));
-const Calendar = lazy(() => import("./calendar").then((m) => ({ default: m.Calendar })));
-const Plan = lazy(() => import("./plan").then((m) => ({ default: m.Plan })));
+const Calendar = lazy(() => import("./calendar-planner").then((m) => ({ default: m.Calendar })));
 const PrintDay = lazy(() => import("./day").then((m) => ({ default: m.PrintDay })));
 const Account = lazy(() => import("./account").then((m) => ({ default: m.Account })));
 const Letters = lazy(() => import("./letters").then((m) => ({ default: m.Letters })));
@@ -36,7 +35,7 @@ const SCREENS: Record<Screen, Component> = {
     lesson: ExploreLesson,
     map: GrownMap,
     calendar: Calendar,
-    plan: Plan,
+    plan: Calendar,
     print: PrintDay,
     account: Account,
     letters: Letters,
@@ -53,7 +52,7 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
     lesson: ExploreLesson.preload,
     map: GrownMap.preload,
     calendar: Calendar.preload,
-    plan: Plan.preload,
+    plan: Calendar.preload,
     print: PrintDay.preload,
     account: Account.preload,
     letters: Letters.preload,

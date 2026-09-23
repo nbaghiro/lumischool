@@ -83,7 +83,7 @@ const local = onThisComputer(location.hostname);
 type View = "week" | "month" | "year";
 const VIEWS: readonly View[] = ["week", "month", "year"];
 
-interface Where {
+export interface Where {
     view: View;
     /** A day in the week or the month shown; the year reads the terms. */
     at: string;
@@ -1125,7 +1125,7 @@ function Loop(): JSX.Element {
     );
 }
 
-function Year(props: {
+export function Year(props: {
     loaded: Loaded;
     where: Where;
     onMove: (next: Partial<Where>) => void;
@@ -1338,7 +1338,7 @@ function Year(props: {
     );
 }
 
-function Changes(props: { loaded: Loaded; onWrite: Write }): JSX.Element {
+export function Changes(props: { loaded: Loaded; onWrite: Write }): JSX.Element {
     const l = (): Loaded => props.loaded;
     const names = {
         kid: (id: string | null): string =>
@@ -1369,9 +1369,8 @@ function Changes(props: { loaded: Loaded; onWrite: Write }): JSX.Element {
                 What the calendar has recorded
             </h2>
             <p class="note">
-                Every change is an event appended to the family's log, never an edit, and the
-                calendar is folded from the log each time. A change put back is one more event, so
-                nothing is ever rewritten.
+                Your recent changes stay here. Put a change back to restore the plan before it.
+                Finished work stays in your child’s record.
             </p>
             <Show when={last()}>
                 {(c) => (
