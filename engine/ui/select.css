@@ -1,0 +1,75 @@
+select.select-control {
+    min-height: 44px;
+    max-width: 100%;
+    min-width: 0;
+    padding: 10px 14px;
+    border: 1px solid var(--grid);
+    border-radius: 9px;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+    color-scheme: light;
+}
+select.select-control:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 3px;
+}
+select.select-control:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+select.select-control[aria-invalid="true"] {
+    border-color: var(--berry);
+}
+
+@supports (appearance: base-select) {
+    select.select-control:not([multiple]):not([size]),
+    select.select-control:not([multiple]):not([size])::picker(select) {
+        appearance: base-select;
+    }
+    select.select-control::picker(select) {
+        background: var(--card);
+        color: var(--ink);
+        font: 16px/1.5 var(--f-read);
+        border: 1px solid var(--grid);
+        border-radius: 10px;
+        padding: 6px;
+        margin-block: 6px;
+        box-shadow: 0 8px 28px #23304424;
+        max-height: min(360px, 60dvh);
+        max-width: calc(100vw - 24px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+    select.select-control::picker-icon {
+        color: var(--pen);
+        margin-inline-start: auto;
+    }
+    select.select-control option {
+        min-height: 44px;
+        padding: 10px 12px;
+        border-radius: 6px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        cursor: pointer;
+        gap: 10px;
+    }
+    select.select-control option:checked {
+        background: var(--paper);
+        color: var(--pen);
+    }
+    select.select-control option:hover,
+    select.select-control option:focus-visible {
+        background: var(--pen);
+        color: white;
+        outline: none;
+    }
+    select.select-control option::checkmark {
+        color: currentColor;
+    }
+    select.select-control option:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

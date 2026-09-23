@@ -4,6 +4,7 @@
 // the eight-digit code in eight boxes, and a row to choose. Their styles are form.css, one sheet for
 // both.
 
+import { Select } from "./select";
 import "./form.css";
 import { createSignal, createUniqueId, For, Show, type JSX } from "solid-js";
 import { digitsOf } from "./codes";
@@ -77,7 +78,7 @@ export function SelectField(props: {
                     {props.hint}
                 </span>
             </Show>
-            <select
+            <Select
                 id={id}
                 name={props.name}
                 aria-describedby={props.hint ? `${id}-hint` : undefined}
@@ -90,7 +91,7 @@ export function SelectField(props: {
                         </option>
                     )}
                 </For>
-            </select>
+            </Select>
         </div>
     );
 }
@@ -132,6 +133,7 @@ export function TextButton(props: {
  * family's school days are days in one zone.
  */
 export function TimeZone(props: { value: string; onChange: (zone: string) => void }): JSX.Element {
+    const id = createUniqueId();
     const [open, setOpen] = createSignal(false);
     let select: HTMLSelectElement | undefined;
     const city = (): string => (props.value.split("/").pop() ?? props.value).replaceAll("_", " ");
@@ -162,9 +164,10 @@ export function TimeZone(props: { value: string; onChange: (zone: string) => voi
                     </>
                 }
             >
-                <label class="zone-pick">
+                <label class="zone-pick" for={id}>
                     Your time zone
-                    <select
+                    <Select
+                        id={id}
                         ref={(el) => {
                             select = el;
                         }}
@@ -177,7 +180,7 @@ export function TimeZone(props: { value: string; onChange: (zone: string) => voi
                                 </option>
                             )}
                         </For>
-                    </select>
+                    </Select>
                 </label>
             </Show>
         </div>

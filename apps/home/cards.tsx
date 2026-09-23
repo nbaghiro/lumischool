@@ -3,6 +3,7 @@
 // terms. Each writes its change through the builders in school/family/calendar.ts and closes; the
 // screen that opened it folds the calendar again from the log.
 
+import { Select } from "../../engine/ui/select";
 import "./cards.css";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import { createSignal, createUniqueId, For, Show, type JSX } from "solid-js";
@@ -235,13 +236,13 @@ export function LessonCard(props: {
             />
             <Show when={change() === "move"}>
                 <div class="gc-row">
-                    <select
+                    <Select
                         aria-label="Move it to"
                         value={to()}
                         onChange={(e) => setTo(e.currentTarget.value)}
                     >
                         <For each={days()}>{(d) => <option value={d}>{dayLong(d)}</option>}</For>
-                    </select>
+                    </Select>
                     <Button
                         onClick={() =>
                             void props.onWrite(
@@ -260,7 +261,7 @@ export function LessonCard(props: {
                     it left off. Nothing is marked, and nothing a child sees changes.
                 </p>
                 <div class="gc-row">
-                    <select
+                    <Select
                         aria-label="For how long"
                         value={park()}
                         onChange={(e) => setPark(e.currentTarget.value)}
@@ -268,7 +269,7 @@ export function LessonCard(props: {
                         <option value="1">One week</option>
                         <option value="2">Two weeks</option>
                         <option value="4">A month</option>
-                    </select>
+                    </Select>
                     <Button
                         onClick={() =>
                             void props.onWrite(
@@ -289,7 +290,7 @@ export function LessonCard(props: {
             </Show>
             <Show when={change() === "again"}>
                 <div class="gc-row">
-                    <select
+                    <Select
                         aria-label="How"
                         value={how()}
                         onChange={(e) =>
@@ -298,7 +299,7 @@ export function LessonCard(props: {
                     >
                         <option value="again">Again with new numbers</option>
                         <option value="practice">A practice sheet</option>
-                    </select>
+                    </Select>
                     <Button
                         onClick={() =>
                             void props.onWrite(
@@ -373,14 +374,14 @@ export function DayCard(props: {
         );
     };
     const whoPicker = (): JSX.Element => (
-        <select
+        <Select
             aria-label="Who it is for"
             value={who()}
             onChange={(e) => setWho(e.currentTarget.value)}
         >
             <For each={l().view.kids}>{(k) => <option value={k.id}>{`For ${k.name}`}</option>}</For>
             <option value="all">For everyone</option>
-        </select>
+        </Select>
     );
     return (
         <Card
@@ -446,7 +447,7 @@ export function DayCard(props: {
                         value={note()}
                         onInput={(e) => setNote(e.currentTarget.value)}
                     />
-                    <select
+                    <Select
                         aria-label="Counts as"
                         value={subject()}
                         onChange={(e) => setSubject(e.currentTarget.value)}
@@ -464,8 +465,8 @@ export function DayCard(props: {
                         >
                             {(s) => <option value={s}>{s[0]?.toUpperCase() + s.slice(1)}</option>}
                         </For>
-                    </select>
-                    <select
+                    </Select>
+                    <Select
                         aria-label="For how long"
                         value={minutes()}
                         onChange={(e) => setMinutes(e.currentTarget.value)}
@@ -477,7 +478,7 @@ export function DayCard(props: {
                                 >{`${m / 60} ${m === 60 ? "hour" : "hours"}`}</option>
                             )}
                         </For>
-                    </select>
+                    </Select>
                 </div>
                 <label class="gc-check">
                     <input
@@ -517,15 +518,15 @@ export function DayCard(props: {
                     {`Move every planned day from ${dayShort(props.on)} on by whole weeks, keeping its weekday. Nothing is lost, and nothing is marked as missed.`}
                 </p>
                 <div class="gc-row">
-                    <select
+                    <Select
                         aria-label="By how many weeks"
                         value={weeks()}
                         onChange={(e) => setWeeks(e.currentTarget.value)}
                     >
                         <option value="1">One week</option>
                         <option value="2">Two weeks</option>
-                    </select>
-                    <select
+                    </Select>
+                    <Select
                         aria-label="Whose plan"
                         value={whose()}
                         onChange={(e) => setWhose(e.currentTarget.value)}
@@ -534,7 +535,7 @@ export function DayCard(props: {
                             {(k) => <option value={k.id}>{`${k.name}'s plan`}</option>}
                         </For>
                         <option value="all">Everyone's plan</option>
-                    </select>
+                    </Select>
                     <Button
                         onClick={() =>
                             void props.onWrite(

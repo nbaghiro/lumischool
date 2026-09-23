@@ -1,3 +1,4 @@
+import { Select } from "../../engine/ui/select";
 import { createEffect, createResource, createSignal, For, Show, type JSX } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { useLook, Waiting } from "../../engine/ui/page";
@@ -147,7 +148,7 @@ export function Letters(): JSX.Element {
                                 zone. Each parent chooses for themselves.
                             </p>
                             <p id="letter-mode-label">What would you like to receive?</p>
-                            <select
+                            <Select
                                 id="letter-mode"
                                 aria-labelledby="letter-mode-label"
                                 value={mode()}
@@ -160,7 +161,7 @@ export function Letters(): JSX.Element {
                                 <option value="off">No weekly emails</option>
                                 <option value="private">A private link</option>
                                 <option value="detailed">The full letter</option>
-                            </select>
+                            </Select>
                             <p class="note">
                                 Choosing the full letter sends your children's names and learning
                                 summaries through Resend and your email provider. Email can be

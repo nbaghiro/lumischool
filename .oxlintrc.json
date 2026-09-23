@@ -102,5 +102,12 @@
                 ]
             }
         ]
+    },
+    "settings": {
+        "jsx-a11y": {
+            "components": {
+                "Select": "select"
+            }
+        }
     }
 }

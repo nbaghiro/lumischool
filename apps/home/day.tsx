@@ -5,6 +5,7 @@
 // Each child's sheet is recorded as `sheet-printed` the way a child's card records one, so the
 // calendar still says what was printed.
 
+import { Select } from "../../engine/ui/select";
 import "./day.css";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import {
@@ -39,7 +40,7 @@ import type { FamilyView, GrownRecord, Me, PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import { familyChanged, knowFamily } from "./bar";
 import { dayLong, paperFor, plannedOn, plural } from "./grown";
-import { KIDS, signInFor } from "./routes";
+import { signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
 
@@ -78,7 +79,7 @@ async function load(): Promise<Loaded | Failure | null> {
     if ("error" in me) {
         if (me.error === "signed-out")
             go(signInFor(`${location.pathname}${location.search}`), { replace: true });
-        if (me.error === "put-away") location.replace(KIDS);
+        if (me.error === "put-away") location.replace("/sign-in?locked=1");
         return me;
     }
     if ("error" in view) return view;
@@ -261,7 +262,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                 </fieldset>
                 <fieldset class="gd-part">
                     <legend>Day</legend>
-                    <select
+                    <Select
                         class="gd-day"
                         aria-label="The day to print"
                         value={on()}
@@ -277,7 +278,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                                 </option>
                             )}
                         </For>
-                    </select>
+                    </Select>
                 </fieldset>
                 <Show when={ready().length}>
                     <div class="acts">
