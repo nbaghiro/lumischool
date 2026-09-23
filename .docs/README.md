@@ -4,10 +4,12 @@ One current-state document per domain. Start here to find where something lives,
 
 | Document | Covers |
 |---|---|
+| [map-loading-plan.md](map-loading-plan.md) | Final shared map/world/lesson implementation specification, awaiting go: verified code baseline, product priorities, resource ownership, selective loading, renderer experiment, ordered work packages, state protection, visual quality, tests and release gates |
 | [game-engine-direction.md](game-engine-direction.md) | Proposed engine growth before migration: shared sessions, interacting objects, objectives, construction, checkpoints and proving games |
 | [games-migration.md](games-migration.md) | Current 17-game/83-level inventory, reusable rules and physics, remaining prototype player/audio, recording gaps and proposed app integration slices |
 | [weekly-letter.md](weekly-letter.md) | Proposed weekly parent email: useful evidence-backed content, visual direction, Resend delivery, preferences and implementation slices |
 | [retirement-plan.md](retirement-plan.md) | Working prototype-retirement decision ledger: owner choices, proposed destinations, implementation order, reference cleanup and the final deletion gate |
+| [scratchpad-product-gaps.md](scratchpad-product-gaps.md) | Updated product audit after Games: remaining painting, music, coding, map activities, annotation, poster and authoring features; all 33 prototype entry points and proposed homes |
 | [scratchpad-audit.md](scratchpad-audit.md) | Current scratchpad retirement audit: verified build independence, repository structure, remaining feature and tooling gaps, all 32 prototype pages, unique data to preserve, deletion order and validation results |
 | [coding-migration.md](coding-migration.md) | Coding interaction migration plan: measured coverage of 36 lessons, per-item inventory, shared player architecture, prediction/toy/build/sound implementation slices and real-app acceptance checks |
 | [product.md](product.md) | What we are building and for whom: the bet, a day and a week, non-goals, subjects beyond maths, trust, milestones, risks |

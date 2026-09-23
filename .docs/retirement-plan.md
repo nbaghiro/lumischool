@@ -4,6 +4,10 @@ Working plan, 22 September 2026. Product decisions are pending unless explicitly
 This document coordinates the [inventory](scratchpad-audit.md) and
 [coding implementation plan](coding-migration.md); it does not approve every prototype feature.
 
+23 September update: [the current product-gap audit](scratchpad-product-gaps.md) supersedes the
+older missing-feature classifications below where work has since moved (Games, flight, letters
+and much of the calendar). Pending product choices remain pending; this is not deletion approval.
+
 ## End state
 
 The `.scratchpad/` directory is removed. Every retained capability runs through a real app or
