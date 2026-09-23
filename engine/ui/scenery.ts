@@ -6613,6 +6613,7 @@ export function paintWorldView(o: {
     // for the size rule; the guides beside the sheets stand still (motion: false below)
     const group = animate({ intensity: "calm", settle: 30, most: 24, zoom: o.zoom });
     const play = still ? null : group;
+    const moments = new Set<ReturnType<typeof setTimeout>>();
     const l = view.layout;
     /** The standing of the scenery a placed drawing is, from the key sceneryPieces writes on it. */
     const standingOf = (e: HTMLElement) =>
@@ -6632,7 +6633,13 @@ export function paintWorldView(o: {
     const dayEvents = (e: Element, arrive: number | undefined): void => {
         if (o.play === undefined || still || !(e instanceof HTMLElement)) return;
         if (e.classList.contains("gate") && arrive !== undefined) {
-            if (momentOn(arrive) === o.play) setTimeout(() => playMoment(e, L.art, still), 1100);
+            if (momentOn(arrive) === o.play) {
+                const timer = setTimeout(() => {
+                    moments.delete(timer);
+                    playMoment(e, L.art, still);
+                }, 1100);
+                moments.add(timer);
+            }
         } else if (e.classList.contains("moment") && e.classList.contains("inked")) {
             if (standingOf(e)?.on === o.play) playMoment(e, L.art, still);
         } else if (e.classList.contains("reach") && e.classList.contains("lit")) {
@@ -6849,7 +6856,9 @@ export function paintWorldView(o: {
         },
         stop() {
             arriving?.stop();
-            group.stop();
+            for (const timer of moments) clearTimeout(timer);
+            moments.clear();
+            group.dispose();
         },
     };
 }

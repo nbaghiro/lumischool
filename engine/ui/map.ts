@@ -59,7 +59,7 @@ import {
     type PeakMarks,
     type PeakRole,
 } from "../parts/outdoors/peaks";
-import { animate, type Group } from "./animate";
+import { animate, type Group, type Playing } from "./animate";
 import { motionOf as playsOf } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { bloom, motionOf, play } from "./player";
@@ -78,6 +78,7 @@ export interface Places {
     ride(kind: RoadKind | null): void;
     /** The page says the map is shown: what the day did inks itself in 450 ms on, as it does when a `.j-map` host gains `shown`. */
     shown(): void;
+    stop(): void;
 }
 
 export interface MapOptions {
@@ -115,6 +116,7 @@ export interface TerrainPainted {
     pieces: (Piece & { minZ: number })[];
     /** Redraw how far the child has come, for the colour washing over newly reached land. */
     setReach(r: MapReach): void;
+    stop(): void;
 }
 
 const ASK =
@@ -1139,7 +1141,11 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             });
         }
     }
-    return { pieces, setReach };
+    return {
+        pieces,
+        setReach,
+        stop: () => pause?.stop(),
+    };
 }
 
 const lerp = (a: Pt, b: Pt, u: number): Pt => ({
@@ -1433,17 +1439,24 @@ export function paintMap(o: MapOptions): Places {
 
     // what the last day of work did inks itself in as the map opens, every time it opens
     const host = o.layers.nodes.closest(".j-map");
+    let watching: MutationObserver | undefined;
+    let stopBalloon: (() => void) | undefined;
+    let celebration: ReturnType<typeof setTimeout> | undefined;
+    const shown = () => {
+        clearTimeout(celebration);
+        celebration = setTimeout(() => {
+            for (const f of news) f();
+        }, 450);
+    };
     if (host && !(o.still ?? STILL)) {
         let on = host.classList.contains("shown");
-        new MutationObserver(() => {
+        watching = new MutationObserver(() => {
             const now = host.classList.contains("shown");
-            if (now && !on)
-                setTimeout(() => {
-                    for (const f of news) f();
-                }, 450);
+            if (now && !on) shown();
             on = now;
-        }).observe(host, { attributes: true, attributeFilter: ["class"] });
-        balloonOnce(o, host as HTMLElement);
+        });
+        watching.observe(host, { attributes: true, attributeFilter: ["class"] });
+        stopBalloon = balloonOnce(o, host as HTMLElement);
     }
     return {
         pieces,
@@ -1451,10 +1464,12 @@ export function paintMap(o: MapOptions): Places {
         token,
         place: put,
         ride,
-        shown: () => {
-            setTimeout(() => {
-                for (const f of news) f();
-            }, 450);
+        shown,
+        stop() {
+            watching?.disconnect();
+            stopBalloon?.();
+            clearTimeout(celebration);
+            news.length = 0;
         },
     };
 }
@@ -1509,7 +1524,7 @@ function drawIn(svg: SVGSVGElement): void {
  * The map's rare sight: once in a visit, when the child has had the map open for a while, a hot-air
  * balloon drifts across the whole country. It is never announced, counted or kept.
  */
-function balloonOnce(o: MapOptions, host: HTMLElement): void {
+function balloonOnce(o: MapOptions, host: HTMLElement): () => void {
     const wait = new Lingering(Number(ASK.get("balloon")) || 50);
     const tick = setInterval(() => {
         if (
@@ -1543,6 +1558,7 @@ function balloonOnce(o: MapOptions, host: HTMLElement): void {
         });
         o.layers.flags.append(a);
     }, 1000);
+    return () => clearInterval(tick);
 }
 
 /**
@@ -2619,17 +2635,29 @@ interface Pose {
  * screen, and everything while the tab is hidden, the way the player rests the drawings' idles: the
  * map paints only what is near the camera, and this pauses what has been painted and scrolled away.
  */
-function offscreen(root: HTMLElement): { watch(el: Element): void } {
+function offscreen(root: HTMLElement): {
+    watch(el: Element): void;
+    unwatch(el: Element): void;
+    stop(): void;
+} {
     const io = new IntersectionObserver(
         (entries) => {
             for (const e of entries) e.target.classList.toggle("mo-off", !e.isIntersecting);
         },
         { root, rootMargin: "120px" },
     );
-    document.addEventListener("visibilitychange", () =>
-        document.documentElement.classList.toggle("mo-hidden", document.hidden),
-    );
-    return { watch: (el) => io.observe(el) };
+    const visibility = () =>
+        document.documentElement.classList.toggle("mo-hidden", document.hidden);
+    visibility();
+    document.addEventListener("visibilitychange", visibility);
+    return {
+        watch: (el) => io.observe(el),
+        unwatch: (el) => io.unobserve(el),
+        stop() {
+            io.disconnect();
+            document.removeEventListener("visibilitychange", visibility);
+        },
+    };
 }
 
 /** The wind over the country: from the west, stronger over the sea, turning a little from place to place, in world units a second. */
@@ -3089,7 +3117,7 @@ export function runLife(o: {
     /** The map's group, which the lit lanterns, the lighthouse's light and what stands and idles play on. */
     idle: Group | null;
     build: () => Living;
-}): { rebuild(): void } {
+}): { rebuild(): void; stop(): void } {
     const t0 = performance.now();
     let world = o.build();
     const place = () => {
@@ -3102,6 +3130,11 @@ export function runLife(o: {
     };
     place();
     const motion = o.idle;
+    const playing: Playing[] = [];
+    const release = () => {
+        for (const drawing of playing) drawing.stop();
+        playing.length = 0;
+    };
     const idle = () => {
         if (!motion) return;
         const lamps = Array.from(o.host.querySelectorAll<SVGSVGElement>(".ow-lamp.on svg.visual"));
@@ -3111,34 +3144,53 @@ export function runLife(o: {
         for (const svg of [...world.idle, ...lamps]) {
             const d = drawingOf(svg.getAttribute("data-visual") ?? ""),
                 plays = d && playsOf(d);
-            if (plays) motion.play(svg, { motion: plays });
+            if (plays) playing.push(motion.play(svg, { motion: plays }));
         }
         if (point)
-            motion.play(point, {
-                motion: { anim: SWEEP, from: "drawing", reads: false, still: null },
-            });
+            playing.push(
+                motion.play(point, {
+                    motion: { anim: SWEEP, from: "drawing", reads: false, still: null },
+                }),
+            );
     };
+    const wake = () => motion?.wake();
     if (!o.still && motion) {
         idle();
-        o.wake.addEventListener("pointermove", () => motion.wake());
+        o.wake.addEventListener("pointermove", wake);
     }
     let again = 0,
+        stopped = false,
         size = `${o.host.clientWidth}x${o.host.clientHeight}`;
     const rebuild = (): void => {
+        if (stopped) return;
         cancelAnimationFrame(again);
         again = requestAnimationFrame(() => {
+            if (stopped) return;
+            release();
             world = o.build();
             place();
             if (!o.still) idle();
         });
     };
-    new ResizeObserver(() => {
+    const resizing = new ResizeObserver(() => {
         const now = `${o.host.clientWidth}x${o.host.clientHeight}`;
         if (now === size) return;
         size = now;
         rebuild();
-    }).observe(o.host);
-    return { rebuild };
+    });
+    resizing.observe(o.host);
+    return {
+        rebuild,
+        stop() {
+            if (stopped) return;
+            stopped = true;
+            cancelAnimationFrame(again);
+            resizing.disconnect();
+            release();
+            o.wake.removeEventListener("pointermove", wake);
+            o.layer.replaceChildren();
+        },
+    };
 }
 
 /**
@@ -3270,6 +3322,7 @@ export async function paintMapView(o: {
     const painted = paintMap({ layers: L, host, t, view, still, play: o.play, idle });
     let washing = 0;
     let watching: IntersectionObserver | null = null;
+    let living: ReturnType<typeof runLife> | undefined;
     return {
         nodes: painted.nodes.map((b): HTMLButtonElement | null => (b.hidden ? null : b)),
         token: painted.token,
@@ -3313,6 +3366,8 @@ export async function paintMapView(o: {
             if (o.play) painted.shown();
         },
         life(cam) {
+            living?.stop();
+            watching?.disconnect();
             const riders = o.riders;
             if (!riders) return { rebuild() {} };
             // what travels holds still while the map's box is off the screen
@@ -3334,7 +3389,7 @@ export async function paintMapView(o: {
                     return { w: host.clientWidth || 1, h: host.clientHeight || 1 };
                 },
             };
-            return runLife({
+            living = runLife({
                 layer: lifeLayer,
                 host,
                 wake: host.parentElement ?? host,
@@ -3350,14 +3405,18 @@ export async function paintMapView(o: {
                         sky: cam(),
                     }),
             });
+            return living;
         },
         rescale() {
             idle?.rescale();
         },
         stop() {
             cancelAnimationFrame(washing);
+            land.stop();
+            painted.stop();
             watching?.disconnect();
-            idle?.stop();
+            living?.stop();
+            idle?.dispose();
             lifeLayer.replaceChildren();
         },
     };

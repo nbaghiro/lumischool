@@ -920,7 +920,7 @@ export function Overworld(props: {
         clearTimeout(brush);
         flying?.stop();
         painted?.stop();
-        view?.stop();
+        view?.dispose();
         // a settle or a frame still on its way finds no map to move
         view = undefined;
     });

@@ -83,6 +83,8 @@ export interface Group {
     rescale(): void;
     /** Settle everything and let it go. */
     stop(): void;
+    /** Release immediately when the owning scene leaves the page. */
+    dispose(): void;
 }
 
 interface Part extends PartPlace {
@@ -899,6 +901,11 @@ class G implements Group {
         this.stopping = true;
         retargetAll();
         kick();
+    }
+
+    dispose(): void {
+        this.stopping = true;
+        for (const i of stage.insts) if (i.group === this) release(i);
     }
 }
 

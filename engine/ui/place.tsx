@@ -10,7 +10,7 @@
 import "./place.css";
 import { createEffect, createSignal, on, onCleanup, onMount, Show, type JSX } from "solid-js";
 import { easeInOut, timeline, valueAt } from "../motion/timeline";
-import { ticker } from "../motion/loop";
+import { ticker, type Ticker } from "../motion/loop";
 import type { Tokens } from "../paper";
 import {
     cameraBetween,
@@ -99,6 +99,7 @@ export function Place(props: {
     let level = "days";
     /** A handover is under way: nothing else moves the camera or hands over again. */
     let busy = false;
+    let transition: Ticker | undefined;
     /** Whether the place has been drawn once, so a view given again keeps the camera where it is. */
     let drew = false;
     /** The near set last asked for, null until one has been, so an empty set is not mistaken for it. */
@@ -389,7 +390,7 @@ export function Place(props: {
         const art = await worldPainter();
         if (!host || v !== view || n !== drawing) return;
         const t = trail();
-        group?.stop();
+        group?.dispose();
         v.world.replaceChildren();
         v.world.className = "world j-world pl-world";
         v.world.dataset.level = level;
@@ -766,7 +767,8 @@ export function Place(props: {
             { name: "out", from: 0, to: 1, at: 0, dur: 0.5, ease: easeInOut },
             { name: "fade", from: 0, to: 1, at: 0, dur: 0.22 },
         ]);
-        ticker({
+        transition?.stop();
+        transition = ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
@@ -776,7 +778,8 @@ export function Place(props: {
                 if (host) host.style.opacity = String(valueAt(tl, "fade", t));
                 return t < tl.length;
             },
-        }).start();
+        });
+        transition.start();
     }
 
     /** Into a day: the place dives into its paper and the roll takes over there. */
@@ -795,7 +798,8 @@ export function Place(props: {
             { name: "in", from: 0, to: 1, at: 0, dur: 0.55, ease: easeInOut },
             { name: "fade", from: 1, to: 0, at: 0.4, dur: 0.18 },
         ]);
-        ticker({
+        transition?.stop();
+        transition = ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
@@ -811,7 +815,8 @@ export function Place(props: {
                 go(stop.key, onScreen(stop.paper));
                 return false;
             },
-        }).start();
+        });
+        transition.start();
     }
 
     /** Back to the map: the place pulls back and fades, and the map opens the place in the box it left. */
@@ -831,7 +836,8 @@ export function Place(props: {
             { name: "out", from: 0, to: 1, at: 0, dur: 0.45, ease: easeInOut },
             { name: "fade", from: 1, to: 0, at: 0.24, dur: 0.21 },
         ]);
-        ticker({
+        transition?.stop();
+        transition = ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
@@ -857,7 +863,8 @@ export function Place(props: {
                 );
                 return false;
             },
-        }).start();
+        });
+        transition.start();
     }
 
     function onFrame(cam: Camera): void {
@@ -949,10 +956,12 @@ export function Place(props: {
         ),
     );
     onCleanup(() => {
+        transition?.stop();
         clearTimeout(brush);
         for (const t of playing) clearTimeout(t);
-        group?.stop();
-        view?.stop();
+        group?.dispose();
+        view?.dispose();
+        view = undefined;
     });
 
     return (

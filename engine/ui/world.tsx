@@ -650,7 +650,9 @@ export function World(props: {
         clearTimeout(asking);
         clearTimeout(resting);
         painted?.stop();
-        view?.stop();
+        sheets?.removeEventListener(REVEAL, follow);
+        view?.dispose();
+        view = undefined;
     });
 
     const overs = (): { rect: Rect; el: HTMLElement }[] =>

@@ -59,6 +59,9 @@ export class CanvasView {
     private anim: { at(t: number): Camera; start: number; ms: number; to: Camera } | null = null;
     private glide: { vx: number; vy: number; t: number } | null = null;
     private raf = 0;
+    private disposed = false;
+    private readonly events = new AbortController();
+    private readonly resizing: ResizeObserver;
     private pointers = new Map<number, Pt>();
     private drag: {
         id: number;
@@ -89,31 +92,43 @@ export class CanvasView {
         this.world.className = "world";
         host.prepend(this.paper, this.world);
         this.colors();
-        new ResizeObserver(() => this.measure()).observe(host);
+        this.resizing = new ResizeObserver(() => this.measure());
+        this.resizing.observe(host);
         this.measure();
-        host.addEventListener("pointerdown", this.down);
-        host.addEventListener("pointermove", this.move);
-        host.addEventListener("pointerup", this.up);
-        host.addEventListener("pointercancel", this.up);
-        host.addEventListener("wheel", this.wheel, { passive: false });
-        host.addEventListener("keydown", this.keydown);
-        host.addEventListener("keyup", (e) => {
-            if (e.key === " ") this.spaceHeld = false;
-        });
+        const options = { signal: this.events.signal };
+        host.addEventListener("pointerdown", this.down, options);
+        host.addEventListener("pointermove", this.move, options);
+        host.addEventListener("pointerup", this.up, options);
+        host.addEventListener("pointercancel", this.up, options);
+        host.addEventListener("wheel", this.wheel, { ...options, passive: false });
+        host.addEventListener("keydown", this.keydown, options);
+        host.addEventListener(
+            "keyup",
+            (e) => {
+                if (e.key === " ") this.spaceHeld = false;
+            },
+            options,
+        );
         // focusing an off-screen node makes the browser try to scroll the box; the camera moves instead
-        host.addEventListener("scroll", () => {
-            host.scrollLeft = 0;
-            host.scrollTop = 0;
-        });
+        host.addEventListener(
+            "scroll",
+            () => {
+                host.scrollLeft = 0;
+                host.scrollTop = 0;
+            },
+            options,
+        );
     }
 
     /** Re-read the paper colour after a theme change. */
     colors(): void {
+        if (this.disposed) return;
         this.gridInk = readTokens(this.host).grid;
         this.request();
     }
 
     private measure(): void {
+        if (this.disposed) return;
         const w = this.host.clientWidth || 1,
             h = this.host.clientHeight || 1;
         const changed = w !== this.vp.w || h !== this.vp.h;
@@ -136,6 +151,25 @@ export class CanvasView {
         this.glide = null;
         clearTimeout(this.settleTimer);
     }
+    dispose(): void {
+        if (this.disposed) return;
+        this.disposed = true;
+        this.stop();
+        cancelAnimationFrame(this.raf);
+        this.raf = 0;
+        this.resizing.disconnect();
+        this.events.abort();
+        for (const id of this.pointers.keys()) {
+            if (this.host.hasPointerCapture(id)) this.host.releasePointerCapture(id);
+        }
+        this.pointers.clear();
+        this.drag = null;
+        this.pair = null;
+        this.spaceHeld = false;
+        this.paper.width = this.paper.height = 0;
+        this.paper.remove();
+        this.world.remove();
+    }
     /** How long ago the viewer last moved the paper themselves, in ms. */
     movedAgo(): number {
         return performance.now() - this.movedAt;
@@ -147,6 +181,7 @@ export class CanvasView {
 
     /** Moves the camera by a world distance and keeps a glide or flight going, as when what it looks at has moved. */
     shift(dx: number, dy: number): void {
+        if (this.disposed) return;
         const by = (c: Camera): Camera => ({ ...c, x: c.x + dx, y: c.y + dy });
         const a = this.anim;
         if (a) this.anim = { ...a, at: (t) => by(a.at(t)), to: by(a.to) };
@@ -155,6 +190,7 @@ export class CanvasView {
     }
 
     set(c: Camera): void {
+        if (this.disposed) return;
         this.stop();
         this.cam = this.fence(c);
         this.request();
@@ -162,6 +198,7 @@ export class CanvasView {
     }
 
     private run(at: (t: number) => Camera, ms: number, to: Camera): void {
+        if (this.disposed) return;
         if (ms <= 0 || reducedMotion()) {
             this.set(to);
             return;
@@ -172,12 +209,14 @@ export class CanvasView {
     }
 
     flyTo(c: Camera, ms?: number): void {
+        if (this.disposed) return;
         const to = this.fence(c),
             f = flight(this.cam, to, this.vp);
         this.run((t) => f.at(easeInOutCubic(t)), ms ?? f.ms, to);
     }
 
     fit(r: Rect, pad = 56, animate = true): void {
+        if (this.disposed) return;
         const c = fitRect(r, this.vp, pad, this.limits);
         if (animate) this.flyTo(c);
         else this.set(c);
@@ -185,6 +224,7 @@ export class CanvasView {
 
     /** Zoom by a factor, about a screen point (the middle of the viewport by default). */
     zoomBy(k: number, at?: Pt, animate = true): void {
+        if (this.disposed) return;
         const from = this.goal,
             s = at ?? { x: this.vp.w / 2, y: this.vp.h / 2 };
         const z = clamp(from.z * k, this.limits.min, this.limits.max);
@@ -201,6 +241,7 @@ export class CanvasView {
     }
 
     panScreen(dx: number, dy: number, animate = true): void {
+        if (this.disposed) return;
         const to = this.fence(panBy(this.goal, dx, dy));
         if (!animate) {
             this.set(to);
@@ -237,11 +278,12 @@ export class CanvasView {
     }
 
     private request(): void {
-        if (!this.raf) this.raf = requestAnimationFrame(this.tick);
+        if (!this.disposed && !this.raf) this.raf = requestAnimationFrame(this.tick);
     }
 
     private tick = (now: number): void => {
         this.raf = 0;
+        if (this.disposed) return;
         let resting = false;
         if (this.anim) {
             const t = Math.min(1, (now - this.anim.start) / this.anim.ms);
@@ -268,11 +310,12 @@ export class CanvasView {
         this.drawPaper();
         this.hooks.frame(this.cam, this.vp);
         if (this.anim || this.glide) this.request();
-        if (resting) this.hooks.settle?.(this.cam);
+        if (resting && !this.disposed) this.hooks.settle?.(this.cam);
     };
 
     private settleSoon(): void {
         clearTimeout(this.settleTimer);
+        if (this.disposed) return;
         this.settleTimer = window.setTimeout(() => this.hooks.settle?.(this.cam), 160);
     }
 
@@ -302,6 +345,7 @@ export class CanvasView {
 
     /** Take over a pointer someone else started tracking (a finger that was drawing joins a pinch). */
     adopt(id: number, at: Pt): void {
+        if (this.disposed) return;
         this.pointers.set(id, at);
         if (this.pointers.size === 2) this.pair = this.two();
     }
