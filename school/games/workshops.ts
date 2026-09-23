@@ -287,7 +287,7 @@ function syncCrates(s: WorkshopState): void {
 function hook(s: WorkshopState): void {
     if (s.held) {
         s.held = null;
-        s.text = "Cargo released. Let it settle before ringing the bell.";
+        s.text = "Crate released. Load every crate onto the boat.";
         return;
     }
     let nearest = "",
@@ -395,9 +395,21 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
         return out;
     }
     if (s.kind === "cargo") {
+        if (pad.touch && !s.touching && !s.held && !pad.tapped) {
+            const crate = [...s.objects.entries()].find(([, body]) => {
+                const at = s.world.where(body);
+                return Math.hypot(at.x - (pad.touch?.x ?? 0), at.y - (pad.touch?.y ?? 0)) < 1.8;
+            });
+            if (crate) {
+                const at = s.world.where(crate[1]);
+                s.hook = { x: at.x, y: at.y - 1.7 };
+                hook(s);
+                s.dragging = s.held;
+            }
+        }
         if (pad.touch) {
             s.hook.x = clamp(pad.touch.x, 1, 41);
-            s.hook.y = clamp(pad.touch.y, 2, 20);
+            s.hook.y = clamp(pad.touch.y - (s.dragging ? 1.7 : 0), 2, 20);
         } else {
             s.hook.x = clamp(
                 s.hook.x + (pad.held === "left" ? -0.14 : pad.held === "right" ? 0.14 : 0),
@@ -410,10 +422,22 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
                 20,
             );
         }
-        if (pad.tapped) hook(s);
+        if (pad.tapped) {
+            if (!s.held && s.goals.done.includes("balanced")) workshopCommand(s, "test");
+            else hook(s);
+        }
         if (pad.brake) workshopCommand(s, "test");
+        if (pad.lifted && s.dragging) {
+            s.hook.x = clamp(pad.lifted.x, 1, 41);
+            s.hook.y = clamp(pad.lifted.y - 1.7, 2, 20);
+        }
         const held = s.held ? s.objects.get(s.held) : undefined;
         if (held) s.world.moveTo(held, { x: s.hook.x, y: s.hook.y + 1.7 });
+        if (pad.lifted && s.dragging) {
+            hook(s);
+            s.dragging = null;
+        }
+        s.touching = !!pad.touch;
         s.world.step(DT);
         for (const [id, b] of s.objects)
             if (s.world.where(b).y > 26) {
@@ -429,6 +453,16 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
         if (b.loaded === s.objects.size && !b.moving) satisfied.add("loaded");
         if (satisfied.has("loaded") && Math.abs(b.moment) < 1.2) satisfied.add("balanced");
         if (observe(s.goals, satisfied, DT).length) out.push({ cue: "ring" });
+        if (!s.held && !s.goals.done.includes("delivered")) {
+            if (satisfied.has("balanced") && s.goals.done.includes("balanced"))
+                s.text = "Ready to sail! Ring the bell, or press Space or Enter.";
+            else if (b.loaded === s.objects.size)
+                s.text = b.moving
+                    ? "Let the crates settle."
+                    : Math.abs(b.moment) < 1.2
+                      ? "The load is balanced. Getting ready to sail…"
+                      : "Move a crate towards the lighter side to balance the boat.";
+        }
     } else if (s.phase === "build") {
         if (pad.touch && !s.touching) {
             const nearest = [...s.construction.design.pieces].sort(
@@ -511,11 +545,13 @@ export function workshopFrame(s: WorkshopState): Frame {
             words(
                 30,
                 8,
-                Math.abs(balance.moment) < 1.2
-                    ? "Weight balanced"
-                    : balance.moment < 0
-                      ? "More weight on the left"
-                      : "More weight on the right",
+                balance.loaded === 0
+                    ? "Load the boat"
+                    : Math.abs(balance.moment) < 1.2
+                      ? "Weight balanced"
+                      : balance.moment < 0
+                        ? "More weight on the left"
+                        : "More weight on the right",
             ),
             { kind: "line", a: { x: 30, y: 10 }, b: { x: 30, y: 22 }, style: "aim" },
         );
@@ -564,7 +600,7 @@ const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
     cover: { art: kind === "cargo" ? "crane" : "ramp" },
     hint:
         kind === "cargo"
-            ? "Move the hook with your finger or arrow keys. Pick up or release with the button or Space. Ring the bell to set sail."
+            ? "Drag a crate onto the boat and let go. Or move the hook above a crate with the arrow keys, then press Space or Enter to pick up or release. Balance the weight around the centre line. When ready, ring the bell or press Space or Enter to sail."
             : "Drag a ramp to move it, or select it and use arrow keys. Turn it with the buttons. Space tests your design.",
     levels: kind === "cargo" ? CARGO_LEVELS : MARBLE_LEVELS,
     controls: {
@@ -594,6 +630,10 @@ const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
     note: (s) => s.text,
     won: (s) => s.phase === "won",
     command: workshopCommand,
+    cancelInput: (s) => {
+        s.dragging = null;
+        s.touching = false;
+    },
     checkpoint: (s) => {
         if (s.kind === "cargo") syncCrates(s);
         return { kind, level: s.level, design: checkpoint(s.construction) };

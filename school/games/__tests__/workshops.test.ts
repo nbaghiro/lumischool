@@ -8,6 +8,7 @@ import {
     workshopCommand,
     MARBLE_LEVELS,
     CARGO_LEVELS,
+    cargoGame,
 } from "../workshops";
 
 type Input = string | Partial<Pad>;
@@ -106,4 +107,55 @@ test("every cargo challenge can be loaded, balanced and delivered through the pl
 
 test("an unedited failed marble run is not certified as solvable", () => {
     assert.equal(replay("marble", 1, [{ tick: 0, input: "test" }], 1200).won, false);
+});
+
+test("cargo can be dragged aboard and delivered with the shared primary action", () => {
+    const s = startWorkshop("cargo", 0),
+        pad = emptyPad();
+    const tick = () => {
+        stepWorkshop(s, pad);
+        spent(pad);
+    };
+    for (let n = 0; n < 120; n++) tick();
+    for (const [i, x] of [28, 32].entries()) {
+        const p = s.definition.pieces[i];
+        assert.ok(p);
+        const body = s.objects.get(p.id);
+        assert.ok(body);
+        const at = s.world.where(body);
+        pad.touch = { x: at.x, y: at.y };
+        tick();
+        assert.equal(s.held, p.id);
+        pad.touch = { x, y: 18 };
+        tick();
+        pad.touch = null;
+        pad.lifted = { x, y: 20 };
+        tick();
+        assert.equal(s.held, null);
+        assert.equal(s.dragging, null);
+        for (let n = 0; n < 180; n++) tick();
+    }
+    assert.match(s.text, /Ready to sail/);
+    pad.tapped = true;
+    tick();
+    assert.equal(s.phase, "won");
+});
+
+test("cancelling a cargo drag keeps the crate held and available to keyboard controls", () => {
+    const s = startWorkshop("cargo", 0),
+        pad = emptyPad();
+    const p = s.definition.pieces[0];
+    assert.ok(p);
+    pad.touch = { x: p.x, y: p.y };
+    stepWorkshop(s, pad);
+    assert.equal(s.held, p.id);
+    cargoGame.cancelInput?.(s);
+    assert.equal(s.dragging, null);
+    assert.equal(s.touching, false);
+    assert.equal(s.held, p.id);
+    spent(pad);
+    pad.touch = null;
+    pad.tapped = true;
+    stepWorkshop(s, pad);
+    assert.equal(s.held, null);
 });

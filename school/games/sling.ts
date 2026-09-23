@@ -4,8 +4,8 @@
 // squares, with y pointing down so a body's angle is the angle the page rotates its drawing by. The tower is Cuisenaire rods
 // from the shelf, one square per unit, and the stars and the ball are the shelf's own props, so
 // the pieces a child knocks over are the ones they count with. A star is down when it lies on the
-// ground or has left the world. There is no score and no limit on shots: when everything has come
-// to rest a new ball is in the sling, the dots of the last two shots stay on the paper, and
+// ground or has left the world. There is no score and no limit on shots: after a brief settling
+// pause a new ball is in the sling, the dots of the last two shots stay on the paper, and
 // changing one thing at a time between two shots is the skill the game rewards. At the harder level
 // the angle is written in degrees on the arc the pull makes, which is the protractor a grade four
 // child is learning to read, used for something.
@@ -228,6 +228,9 @@ export interface SlingState {
     /** The pull being held now, from a drag or from the keys. */
     pull: { x: number; y: number } | null;
     flight: number;
+    grounded: number;
+    settling: number;
+    ready: number;
     trail: { x: number; y: number }[];
     trails: { x: number; y: number }[][];
     shots: number;
@@ -309,6 +312,9 @@ export function start(level: number): SlingState {
         keyAim: { deg: 35, pull: 3 },
         pull: null,
         flight: 0,
+        grounded: 0,
+        settling: 0,
+        ready: 0,
         trail: [],
         trails: [],
         shots: 0,
@@ -352,6 +358,9 @@ function fire(s: SlingState, pull: { x: number; y: number }, out: Happening[]): 
     s.ball = ball;
     s.phase = "fly";
     s.flight = 0;
+    s.grounded = 0;
+    s.settling = 0;
+    s.ready = 0;
     if (s.trail.length) s.trails = [s.trail, ...s.trails].slice(0, 2);
     s.trail = [];
     s.pull = null;
@@ -363,6 +372,7 @@ function fire(s: SlingState, pull: { x: number; y: number }, out: Happening[]): 
 export function step(s: SlingState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
+    s.ready = Math.max(0, s.ready - DT);
     if (s.phase === "aim" && !s.won) {
         for (const d of pad.pressed) {
             if (d === "up") s.keyAim.deg = Math.min(80, s.keyAim.deg + 5);
@@ -421,20 +431,29 @@ export function step(s: SlingState, pad: Pad): Happening[] {
         const at = b ? s.world.where(b) : null;
         if (at && s.phase === "fly" && s.steps % 3 === 0) s.trail.push({ x: at.x, y: at.y });
         const gone = !at || at.x > L.world.w + 3 || at.x < -3 || at.y > L.world.h + 3;
+        s.grounded = at && at.y >= L.ground - SLING.ball.value - 0.15 ? s.grounded + DT : 0;
         if (
             s.phase === "fly" &&
-            (gone || (b && !s.world.moving(b) && s.flight > 0.5) || s.flight > 6)
+            (gone ||
+                s.grounded > 0.6 ||
+                (b && !s.world.moving(b) && s.flight > 0.5) ||
+                s.flight > 6)
         )
             s.phase = "settle";
+        if (s.phase === "settle") s.settling += DT;
         if (
             s.phase === "settle" &&
-            (s.flight > 9 || !s.things.some((t) => s.world.moving(t.body)) || s.won)
+            (s.settling >= 1.2 ||
+                (s.settling >= 0.6 && !s.things.some((t) => s.world.moving(t.body))) ||
+                s.won)
         ) {
             if (b) s.world.remove(b);
             s.ball = null;
             s.phase = "aim";
-            if (!s.won && !s.said)
-                s.said = "Nothing fell that time. The dots show where the ball went.";
+            if (!s.won) {
+                s.ready = 1.5;
+                s.said = "Next ball ready. Pull back and let go.";
+            }
         }
     }
     // The camera shows the whole play while aiming and follows the ball while it flies, keeping
@@ -529,7 +548,7 @@ export function frame(s: SlingState, rest = false): Frame {
             : null);
     if (ballAt)
         sprites.push({
-            key: `ball:${s.shots}`,
+            key: flying ? `ball:${s.shots}` : `loaded:${s.shots}`,
             ...pieceArt({ kind: "ball" }),
             seed: 140,
             x: ballAt.x,
@@ -540,6 +559,8 @@ export function frame(s: SlingState, rest = false): Frame {
     for (const tr of s.trails) marks.push({ kind: "dots", pts: tr, faint: true });
     if (s.trail.length) marks.push({ kind: "dots", pts: s.trail });
     if (s.phase === "aim" && !s.won) {
+        if (s.ready > 0 && !s.pull)
+            marks.push({ kind: "ring", x: L.pouch.x, y: L.pouch.y, r: 1, on: true });
         const tips = [
             { x: L.pouch.x - 0.6, y: L.pouch.y - 0.1 },
             { x: L.pouch.x + 0.6, y: L.pouch.y - 0.1 },
@@ -586,7 +607,10 @@ export function say(s: SlingState): string {
             parts.push(
                 `The ball is in the sling, aimed at ${degreesOf(aim)} degrees with a pull of ${Math.round(Math.hypot(aim.x, aim.y) * 2) / 2} squares.`,
             );
-        else parts.push("The ball is flying.");
+        else
+            parts.push(
+                s.phase === "fly" ? "The ball is flying." : "The next ball is getting ready.",
+            );
     }
     return parts.filter(Boolean).join(" ");
 }
@@ -608,7 +632,12 @@ export const slingGame: ActionGame<SlingState> = {
     step,
     frame,
     say,
-    note: (s) => s.said || (s.shots === 0 ? "Pull the ball back and let go." : ""),
+    note: (s) =>
+        s.won
+            ? "All the stars are down."
+            : s.phase === "settle"
+              ? "Next ball getting ready…"
+              : s.said || (s.shots === 0 ? "Pull the ball back and let go." : ""),
     won: (s) => s.won,
     tuning: SLING,
     pullFrom: (s) => (s.phase === "aim" && !s.won ? s.L.pouch : null),

@@ -88,6 +88,49 @@ test("a pull too short to mean anything fires nothing, and the ball stays in the
     assert.equal(s.phase, "aim");
 });
 
+test("a missed shot reloads promptly and both pointer and keyboard can throw again", () => {
+    for (const level of [0, 1]) {
+        const s = startSling(level),
+            pad = emptyPad();
+        pad.released = at(10, 1);
+        stepSling(s, pad);
+        spent(pad);
+        const flyingKey = slingGame.frame(s).sprites.find((p) => p.key.startsWith("ball:"))?.key;
+        let steps = 0;
+        while (s.phase !== "aim" && steps++ < 240) stepSling(s, pad);
+        assert.equal(s.phase, "aim", "a miss reloads within four seconds");
+        assert.equal(s.shots, 1);
+        assert.match(slingGame.note?.(s) ?? "", /Next ball ready/);
+        assert.deepEqual(slingGame.pullFrom?.(s), s.L.pouch);
+        const loaded = slingGame.frame(s).sprites.find((p) => p.key.startsWith("loaded:"));
+        assert.ok(loaded);
+        assert.notEqual(
+            loaded.key,
+            flyingKey,
+            "the reload does not animate the old ball backwards",
+        );
+        assert.equal(loaded.x, s.L.pouch.x);
+        assert.equal(loaded.y, s.L.pouch.y);
+        pad.tapped = true;
+        stepSling(s, pad);
+        assert.equal(s.shots, 2);
+        assert.equal(s.phase, "fly");
+    }
+});
+
+test("reloading keeps fallen stars and the damaged tower for the next shot", () => {
+    const s = shoot(1, [at(50, 4.5)]);
+    assert.ok(s.starsDown > 0 && !s.won);
+    const down = s.starsDown;
+    const fallen = s.things.filter((t) => t.down);
+    const pad = emptyPad();
+    pad.released = at(45, 4);
+    stepSling(s, pad);
+    assert.equal(s.shots, 2);
+    assert.ok(s.starsDown >= down);
+    assert.ok(fallen.every((t) => s.things.includes(t) && t.down));
+});
+
 test("under reduced motion a shot is worked out to rest and drawn once, at rest", () => {
     const s = startSling(0),
         pad = emptyPad();
