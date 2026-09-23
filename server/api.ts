@@ -112,12 +112,11 @@ export interface Sessions {
     sessions: SessionView[];
 }
 
-/** An email the console transport printed, as the local outbox lists it. */
-export interface Letters {
-    letter: import("../school/family/letter").WeeklyLetter;
+export interface EmailPreferences {
     mode: "off" | "private" | "detailed";
 }
 
+/** An email the console transport printed, as the local outbox lists it. */
 export interface Sent {
     to: string;
     subject: string;

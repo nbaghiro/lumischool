@@ -34,13 +34,19 @@ describe("weekly mail through family-scoped storage", { skip: reason ?? false },
         });
         const scope = { family: who.family, user: who.user };
         assert.equal(await withFamily(scope, (tx) => preference(tx, who.family, who.user)), "off");
-        assert.equal((await browser.call("GET", "/api/letters")).status, 200);
-        assert.equal((await new Browser(config).call("GET", "/api/letters")).status, 401);
+        assert.equal((await browser.call("GET", "/api/letters/preferences")).status, 200);
+        assert.equal(
+            (await new Browser(config).call("GET", "/api/letters/preferences")).status,
+            401,
+        );
         assert.equal(
             (await browser.call("POST", "/api/letters/preferences", { body: { mode: "detailed" } }))
                 .status,
             200,
         );
+        assert.deepEqual((await browser.call("GET", "/api/letters/preferences")).body, {
+            mode: "detailed",
+        });
         const now = "2026-09-21T12:00:00.000Z";
         const row = {
             family_id: who.family,

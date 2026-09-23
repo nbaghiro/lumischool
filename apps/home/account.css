@@ -144,6 +144,20 @@
     }
 }
 
+.weekly-email-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.weekly-email-controls .select-control {
+    width: auto;
+    max-width: 100%;
+}
+.weekly-email-controls > .btn {
+    width: auto;
+}
+
 .member-list {
     list-style: none;
     padding: 0;

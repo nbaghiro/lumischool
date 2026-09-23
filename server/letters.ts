@@ -18,7 +18,7 @@ export interface LettersConfig {
     pack: Pack | null;
 }
 
-export async function letterFor(
+async function letterFor(
     family: string,
     user: string,
     pack: Pack | null,
@@ -50,16 +50,12 @@ export async function letterFor(
     });
 }
 
-export async function letterView(
-    adult: Adult,
-    pack: Pack | null,
-    week?: string,
-): Promise<{ letter: WeeklyLetter; mode: MailPreference["mode"] }> {
-    const letter = await letterFor(adult.family.id, adult.user, pack, week);
+export async function emailPreferences(adult: Adult): Promise<{ mode: MailPreference["mode"] }> {
+    if (!adult.parent) throw new Refused(403, { error: "not-allowed" });
     const mode = await withFamily({ family: adult.family.id, user: adult.user }, (tx) =>
         mail.preference(tx, adult.family.id, adult.user),
     );
-    return { letter, mode };
+    return { mode };
 }
 
 export async function changeLetters(adult: Adult, mode: unknown): Promise<void> {

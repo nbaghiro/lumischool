@@ -3,7 +3,7 @@ import { createHmac } from "node:crypto";
 import { test } from "node:test";
 import { readUnsubscribe, unsubscribeToken, verifiedWebhook } from "../letters";
 import { mailPreviews } from "../mail-previews";
-import { weeklyMail } from "../mail-design";
+import { weeklyMail, invitationMail, membershipMail } from "../mail-design";
 
 test("unsubscribe is bound to a family and parent and cannot be forged", () => {
     const family = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
@@ -58,6 +58,12 @@ test("private email carries no child details and detailed HTML escapes content",
     assert.match(detailed.html, /&lt;img/);
     assert.doesNotMatch(detailed.html, /<img src=x/);
     assert.match(detailed.text, /Distinctive/);
+    for (const message of [privateMail, detailed]) {
+        assert.doesNotMatch(message.text + message.html, /\/letters|Open this week's letter/);
+        assert.match(message.html, /account#weekly-email/);
+        assert.match(message.html, /href="https:\/\/example.com\/"/);
+    }
+    assert.match(privateMail.text, /review your week/);
 });
 
 test("every preview has usable text and HTML without scripts or scratchpad dependencies", () => {
@@ -67,5 +73,23 @@ test("every preview has usable text and HTML without scripts or scratchpad depen
         assert.ok(mail.text.length > 60);
         assert.match(mail.html ?? "", /<html lang="en">/);
         assert.doesNotMatch(mail.html ?? "", /<script|\.scratchpad|localhost/);
+    }
+});
+
+test("invitation and membership mail escape names and link to the intended action", () => {
+    const invite = invitationMail(
+        "https://example.com",
+        "family.key.secret",
+        "<script>family</script>",
+        "Sam <img src=x>",
+    );
+    assert.doesNotMatch(invite.html, /<script>|<img src=x>/);
+    assert.match(invite.html, /&lt;script&gt;/);
+    assert.match(invite.html, /\/join#t=family.key.secret/);
+    assert.match(invite.text, /full access/);
+    for (const joined of [true, false]) {
+        const mail = membershipMail("https://example.com", "<family>", "<parent>", joined);
+        assert.doesNotMatch(mail.html, /<family>|<parent>/);
+        assert.match(mail.html, /account#family-members/);
     }
 });

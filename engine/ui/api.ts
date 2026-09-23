@@ -570,45 +570,14 @@ export async function outbox(previews = false): Promise<Outbox | null> {
     return emails ? { emails } : null;
 }
 
-export async function letters(
-    week?: string,
-): Promise<import("../../server/api").Letters | Failure> {
-    const a = await call("GET", `/api/letters${week ? `?week=${encodeURIComponent(week)}` : ""}`);
+export async function emailPreferences(): Promise<
+    import("../../server/api").EmailPreferences | Failure
+> {
+    const a = await call("GET", "/api/letters/preferences");
     if (!a.ok) return refused(a.failure);
     const b = a.body;
-    if (
-        !obj(b) ||
-        (b.mode !== "off" && b.mode !== "private" && b.mode !== "detailed") ||
-        !obj(b.letter)
-    )
-        return unreadable(a.status);
-    const w = b.letter;
-    if (!str(w.from) || !str(w.to) || !str(w.generated) || typeof w.useful !== "boolean")
-        return unreadable(a.status);
-    const children = list(w.children, (c) => {
-        if (!obj(c) || !str(c.id) || !str(c.name)) return null;
-        const sections = list(c.sections, (s) =>
-            obj(s) && str(s.heading) && str(s.text) && (s.lesson === undefined || str(s.lesson))
-                ? {
-                      heading: s.heading,
-                      text: s.text,
-                      ...(str(s.lesson) ? { lesson: s.lesson } : {}),
-                  }
-                : null,
-        );
-        return sections ? { id: c.id, name: c.name, sections } : null;
-    });
-    return children
-        ? {
-              mode: b.mode,
-              letter: {
-                  from: w.from,
-                  to: w.to,
-                  generated: w.generated,
-                  useful: w.useful,
-                  children,
-              },
-          }
+    return obj(b) && (b.mode === "off" || b.mode === "private" || b.mode === "detailed")
+        ? { mode: b.mode }
         : unreadable(a.status);
 }
 

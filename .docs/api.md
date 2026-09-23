@@ -280,6 +280,11 @@ The browser cookie carries no authority by itself. Its key is revocable and its 
 the session, so browser-wide sign-out remains effective even if a tab retries with its old credential.
 
 
+## Weekly email preferences
+
+Parent-only GET /api/letters/preferences returns { mode: "off" | "private" | "detailed" } without loading the lesson pack or building a report. POST at the same path saves that choice and cancels queued delivery as before. "private" means a reminder linking to the family Home page with no child details. GET /api/letters and the /letters app screen have been removed.
+
+
 ## Family members
 
 See [multi-parent.md](multi-parent.md) for the parent management and invitation endpoint contracts. Parent removal is family-scoped; joining issues a browser-bound parent session through the existing auth flow.

@@ -88,7 +88,7 @@ import {
 } from "./sync";
 import { loadPack, watchPack, type Pack } from "./pack";
 import { staticFrom } from "./static";
-import { letterView, changeLetters, unsubscribeRequest, webhookRequest } from "./letters";
+import { emailPreferences, changeLetters, unsubscribeRequest, webhookRequest } from "./letters";
 import { mailPreviews } from "./mail-previews";
 
 export interface Config extends AuthConfig {
@@ -569,17 +569,9 @@ function routes(config: Config): Route[] {
         },
         {
             method: "GET",
-            path: "/api/letters",
+            path: "/api/letters/preferences",
             who: "adult",
-            run: async (c, adult) =>
-                json(
-                    200,
-                    await letterView(
-                        adult,
-                        config.pack,
-                        c.url.searchParams.get("week") ?? undefined,
-                    ),
-                ),
+            run: async (_c, adult) => json(200, await emailPreferences(adult)),
         },
         {
             method: "POST",

@@ -8,7 +8,7 @@ One current-state document per domain. Start here to find where something lives,
 | [game-engine-direction.md](game-engine-direction.md) | Proposed engine growth before migration: shared sessions, interacting objects, objectives, construction, checkpoints and proving games |
 | [games-migration.md](games-migration.md) | Current 17-game/83-level inventory, reusable rules and physics, remaining prototype player/audio, recording gaps and proposed app integration slices |
 | [multi-parent.md](multi-parent.md) | Equal-parent invitations, Account management, email design, revocation and manual QA |
-| [weekly-letter.md](weekly-letter.md) | Proposed weekly parent email: useful evidence-backed content, visual direction, Resend delivery, preferences and implementation slices |
+| [weekly-letter.md](weekly-letter.md) | Weekly parent email: compact Account preferences, private reminders or detailed reports, background delivery and manual QA |
 | [retirement-plan.md](retirement-plan.md) | Working prototype-retirement decision ledger: owner choices, proposed destinations, implementation order, reference cleanup and the final deletion gate |
 | [scratchpad-product-gaps.md](scratchpad-product-gaps.md) | Updated product audit after Games: remaining painting, music, coding, map activities, annotation, poster and authoring features; all 33 prototype entry points and proposed homes |
 | [scratchpad-audit.md](scratchpad-audit.md) | Current scratchpad retirement audit: verified build independence, repository structure, remaining feature and tooling gaps, all 32 prototype pages, unique data to preserve, deletion order and validation results |

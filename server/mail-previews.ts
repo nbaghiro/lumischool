@@ -44,7 +44,7 @@ export function mailPreviews(origin: string): Sent[] {
             },
         ],
     };
-    const stop = `${origin}/letters`;
+    const stop = `${origin}/account#weekly-email`;
     const quiet: WeeklyLetter = {
         ...letter,
         useful: false,

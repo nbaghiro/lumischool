@@ -1,4 +1,5 @@
 import { Members } from "./members";
+import { Select } from "../../engine/ui/select";
 // The account page (.docs/auth.md, flows 7, 10 and 12): who is signed in and their family, the other
 // families they are in, sign out here or everywhere, the family PIN, the children's views open in the
 // family, their own sessions, what the notice promised about their data, and paying for lumischool.
@@ -253,11 +254,7 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
             </p>
             <YourPicture me={me()} onPicked={props.onRefetch} />
             <Show when={me().members.some((m) => m.kid_id === null && m.ended_at === null)}>
-                <section class="part">
-                    <h2>Your weekly letter</h2>
-                    <p>Read your family's week and choose whether to receive it by email.</p>
-                    <a href="/letters">Letters and email preferences</a>
-                </section>
+                <WeeklyEmail />
             </Show>
             <Show when={others().length}>
                 <section class="part">
@@ -678,5 +675,91 @@ function SetPin(props: { me: Me; pinSet: boolean; onDone: (set: boolean) => void
                 stops working, and a grown-up who forgets it signs in and sets a new one here.
             </p>
         </Postcard>
+    );
+}
+
+function WeeklyEmail(): JSX.Element {
+    const [data, { refetch }] = createResource(api.emailPreferences);
+    const [mode, setMode] = createSignal<"off" | "private" | "detailed">("off");
+    const [saving, setSaving] = createSignal(false);
+    const [message, setMessage] = createSignal("");
+    const saved = () => {
+        const value = data();
+        return value && !("error" in value) ? value : null;
+    };
+    createEffect(() => {
+        const value = saved();
+        if (value) setMode(value.mode);
+    });
+    const save = async () => {
+        setSaving(true);
+        setMessage("");
+        try {
+            const error = await api.setLetters(mode());
+            if (error) setMessage(failureText(error));
+            else {
+                await refetch();
+                setMessage("Your weekly email choice is saved.");
+            }
+        } finally {
+            setSaving(false);
+        }
+    };
+    return (
+        <section class="part" id="weekly-email">
+            <h2>Weekly email</h2>
+            <p>A Monday email for this family. Each parent chooses for themselves.</p>
+            <Show when={!data.loading} fallback={<p>Loading your email choice…</p>}>
+                <Show
+                    when={saved()}
+                    fallback={
+                        <>
+                            <p>We could not load your email choice.</p>
+                            <Button second onClick={() => void refetch()}>
+                                Try again
+                            </Button>
+                        </>
+                    }
+                >
+                    <div class="weekly-email-controls">
+                        <span id="weekly-email-label">Send me</span>
+                        <Select
+                            id="weekly-email-mode"
+                            aria-labelledby="weekly-email-label"
+                            value={mode()}
+                            disabled={saving()}
+                            onChange={(e) => {
+                                const value = e.currentTarget.value;
+                                if (
+                                    value === "off" ||
+                                    value === "private" ||
+                                    value === "detailed"
+                                ) {
+                                    setMode(value);
+                                    setMessage("");
+                                }
+                            }}
+                        >
+                            <option value="off">No weekly emails</option>
+                            <option value="private">A reminder to review our week</option>
+                            <option value="detailed">The full weekly report</option>
+                        </Select>
+                        <Button
+                            second
+                            disabled={saving() || mode() === saved()?.mode}
+                            onClick={() => void save()}
+                        >
+                            {saving() ? "Saving…" : "Save"}
+                        </Button>
+                    </div>
+                    <p class="note">
+                        Reminders contain no children’s names or learning details. Full reports send
+                        those details through Resend and your email provider, and remain in your
+                        inbox after changes in the app. Sign-in emails are unaffected.
+                    </p>
+                </Show>
+            </Show>
+            <output aria-live="polite">{message()}</output>
+        </section>
     );
 }
