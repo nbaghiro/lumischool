@@ -10,7 +10,7 @@ import { foldCalendar, type Calendar } from "../../school/family/calendar";
 import { dayIn, fold, addDays, type Sitting } from "../../school/record/record";
 import type { FamilyView, Me, PackView } from "../../server/api";
 import { knowFamily } from "./bar";
-import { KIDS, signInFor } from "./routes";
+import { signInFor } from "./routes";
 
 export interface Loaded {
     me: Me;
@@ -48,7 +48,7 @@ export async function readFamilyLog(): Promise<Loaded | Failure | null> {
     if ("error" in me) {
         if (me.error === "signed-out")
             go(signInFor(`${location.pathname}${location.search}`), { replace: true });
-        if (me.error === "put-away") location.replace(KIDS);
+        if (me.error === "put-away") location.replace("/sign-in?locked=1");
         return "error" in me ? me : null;
     }
     if ("error" in view) return view;

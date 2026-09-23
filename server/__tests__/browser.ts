@@ -2,7 +2,7 @@
 // function with no network, so row-level security is exercised through the app role as in use.
 
 import { withFamily } from "../db/client";
-import { issue } from "../db/keys";
+import { issue, bindToBrowser } from "../db/keys";
 import { app, configFrom, type Config } from "../http";
 import type { Email } from "../email";
 
@@ -43,9 +43,16 @@ export class Browser {
     async call(
         method: "GET" | "POST",
         path: string,
-        opts: { body?: unknown; origin?: string | null; type?: string; kid?: string } = {},
+        opts: {
+            body?: unknown;
+            origin?: string | null;
+            type?: string;
+            kid?: string;
+            challenge?: string;
+        } = {},
     ): Promise<Answer> {
         const headers = new Headers();
+        if (opts.challenge !== undefined) headers.set("x-sign-in-challenge", opts.challenge);
         if (opts.kid !== undefined) headers.set("x-kid-session", opts.kid);
         const origin = opts.origin === undefined ? ORIGIN : opts.origin;
         if (origin) headers.set("origin", origin);
@@ -153,6 +160,13 @@ export async function sessionInto(b: Browser, family: string, user: string): Pro
     const { credential, id } = await withFamily({ family, user }, (tx) =>
         issue(tx, family, { kind: "session", user_id: user, name: "A test browser" }),
     );
+    let browser = b.jar.get("ls_browser");
+    if (!browser) {
+        const made = await withFamily({ family }, (tx) => issue(tx, family, { kind: "browser" }));
+        browser = made.credential;
+        b.jar.set("ls_browser", browser);
+    }
+    await bindToBrowser(family, [id], browser);
     b.jar.set("ls_session", credential);
     return id;
 }

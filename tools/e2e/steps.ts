@@ -171,7 +171,7 @@ export async function signInHere(page: Page): Promise<void> {
         .getByRole("navigation", { name: "The grown-ups' places" })
         .getByRole("link", { name: "Home" })
         .click();
-    await expect(page.getByRole("button", { name: "Open Rosie's view" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Open Rosie's view" })).toBeVisible();
 }
 
 /** The card a grown-ups' screen shows when its code did not load or failed as it drew. */
@@ -212,7 +212,11 @@ export async function signOut(page: Page): Promise<void> {
 export async function openChildrensView(page: Page, names: readonly string[]): Promise<void> {
     const [first, ...more] = names;
     if (first === undefined) throw new Error("name at least one child");
-    await page.getByRole("button", { name: `Open ${first}'s view` }).click();
+    await page
+        .locator(".gh-open")
+        .filter({ has: page.getByRole("link", { name: `Open ${first}'s view` }) })
+        .getByRole("button", { name: "Use this tab instead" })
+        .click();
     await expect(page).toHaveURL(/\/kids$/);
     await atScreen(page, childsMap(page, first));
     for (const name of more) {
@@ -223,25 +227,16 @@ export async function openChildrensView(page: Page, names: readonly string[]): P
     }
 }
 
-/** Holds the grown-ups' tab in the corner of the children's view until its card opens. */
+/** Opens the grown-ups' corner from the child profile menu. */
 export async function holdGrownUps(page: Page): Promise<void> {
-    await hold(page, page.getByRole("button", { name: "Grown-ups: hold for two seconds" }), 2600);
+    await page.getByRole("button", { name: "Your profile" }).click();
+    await page.getByRole("button", { name: "For grown-ups", exact: true }).click();
     await expect(page.getByRole("heading", { name: "For grown-ups" })).toBeVisible();
 }
 
 /** A child's own page: their map, which the region on it is named for. */
 export const childsMap = (page: Page, name: string): Locator =>
     page.getByRole("region", { name: `${name}'s map` });
-
-/** Presses and holds, as a grown-up holds the tab in a child's corner. */
-async function hold(page: Page, target: Locator, ms: number): Promise<void> {
-    const box = await target.boundingBox();
-    if (!box) throw new Error("there is nothing on the page to hold");
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-    await page.mouse.down();
-    await page.waitForTimeout(ms);
-    await page.mouse.up();
-}
 
 /** Every visible target in `scope` under 44 px a side, named with its size; a tick is measured by its label. */
 export async function smallTargets(scope: Locator): Promise<string[]> {

@@ -13,13 +13,12 @@ export function Who(props: {
     view: KidView;
     offline: boolean;
     onChoose: (kid: Kid) => void;
-    onGrownUps: () => void;
 }): JSX.Element {
     const look = useLook();
     createEffect(() =>
         look({
             logo: "none",
-            end: { kind: "gate", open: props.onGrownUps },
+            end: { kind: "none" },
             foot: [familyName(props.view.family.name)],
             centered: true,
         }),

@@ -23,7 +23,7 @@ import type { Failure } from "../../engine/ui/wire";
 import type { FamilyView, Me } from "../../server/api";
 import { added, familyChanged, knowFamily, openAdd } from "./bar";
 import { GrownHome, toKid } from "./home";
-import { KIDS, signInFor } from "./routes";
+import { signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
 
@@ -40,7 +40,7 @@ async function load(): Promise<Seen | null> {
     if ("error" in me) {
         // the children's view is open on this browser, and its Grown-ups tab is the way back
         if (me.error === "put-away") {
-            location.replace(KIDS);
+            location.replace("/sign-in?locked=1");
             return null;
         }
         if (me.error !== "signed-out") return { failure: me };

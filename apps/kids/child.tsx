@@ -71,13 +71,12 @@ export function ChildMap(props: {
     kid: Kid;
     offline: boolean;
     onBack: () => void;
-    onGrownUps: () => void;
 }): JSX.Element {
     const look = useLook();
     createEffect(() =>
         look({
             logo: "none",
-            end: { kind: "gate", open: props.onGrownUps },
+            end: { kind: "none" },
             foot: [familyName(props.view.family.name)],
             stage: true,
         }),

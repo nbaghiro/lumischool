@@ -34,11 +34,32 @@ import {
     type Answer,
     type Failure,
 } from "./wire";
-import { kidCredential, keepKidCredential } from "./kid-session";
+import {
+    kidCredential,
+    keepKidCredential,
+    clearKidMode,
+    parentChanged,
+    withBrowserAuthLock,
+} from "./kid-session";
 
+let challenge: string | null = null;
 const call = (method: "GET" | "POST", path: string, body?: unknown): Promise<Answer> => {
     const credential = kidCredential();
-    return wireCall(method, path, body, credential === null ? {} : { "x-kid-session": credential });
+    const headers: Record<string, string> =
+        credential === null ? {} : { "x-kid-session": credential };
+    if (path.startsWith("/api/auth/email/")) {
+        let pending = challenge;
+        try {
+            pending = sessionStorage.getItem("lumischool-sign-in-challenge") ?? pending;
+        } catch {
+            /* memory fallback */
+        }
+        if (pending !== null) headers["x-sign-in-challenge"] = pending;
+    }
+    const request = () => wireCall(method, path, body, headers);
+    return method === "POST" && (path.startsWith("/api/auth/") || path === "/api/kid-sessions")
+        ? withBrowserAuthLock(request)
+        : request();
 };
 
 const readFamily = (v: unknown): Family | null =>
@@ -198,7 +219,8 @@ function signedInWith(a: Answer): { me: Me } | Failure {
     const m = obj(a.body) ? readMe(a.body.me) : null;
     if (!m) return unreadable(a.status);
     remember(m);
-    keepKidCredential("");
+    clearKidMode();
+    parentChanged();
     return { me: m };
 }
 
@@ -207,11 +229,22 @@ export async function startEmail(
     email: string,
     o: { shared?: boolean; start?: { name: string; family: string; timeZone: string } } = {},
 ): Promise<true | Failure> {
-    const body: Record<string, unknown> = { email };
+    const ready = await (await import("./kid")).prepareIdentityChange();
+    if (ready !== true) return ready;
+    const body: Record<string, unknown> = { email, tab: true };
     if (o.shared) body.shared = true;
     if (o.start) body.start = o.start;
     const a = await call("POST", "/api/auth/email/start", body);
-    return a.ok ? true : a.failure;
+    if (!a.ok) return a.failure;
+    if (obj(a.body) && str(a.body.challenge)) {
+        challenge = a.body.challenge;
+        try {
+            sessionStorage.setItem("lumischool-sign-in-challenge", challenge);
+        } catch {
+            /* memory fallback */
+        }
+    }
+    return true;
 }
 
 export async function verifyCode(code: string): Promise<Verified | Failure> {
@@ -241,6 +274,7 @@ export async function signOut(everywhere = false): Promise<true | Failure> {
     const a = await call("POST", "/api/auth/sign-out", everywhere ? { everywhere } : {});
     if (!a.ok && a.failure.error !== "signed-out") return a.failure;
     forget();
+    parentChanged();
     return true;
 }
 
@@ -285,15 +319,13 @@ export async function addKid(input: {
 }
 
 /**
- * Opens the children's view on this browser for these children (.docs/auth.md, flow 5). The API ends
- * this browser's session in the same answer, so the hint goes too, and the page goes to `/kids`.
+ * Opens a child view in this tab while preserving the shared parent session and sign-in hint.
  */
 export async function openKidSession(kids: readonly string[]): Promise<true | Failure> {
     const a = await call("POST", "/api/kid-sessions", { kids, tab: true });
     if (!a.ok) return refused(a.failure);
     if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
     keepKidCredential(a.body.credential);
-    forget();
     return true;
 }
 
@@ -344,7 +376,10 @@ export async function sessions(): Promise<Sessions | Failure> {
 export async function endSession(id: string, own: boolean): Promise<true | Failure> {
     const a = await call("POST", "/api/sessions/end", { id });
     if (!a.ok) return refused(a.failure);
-    if (own) forget();
+    if (own) {
+        forget();
+        parentChanged();
+    }
     return true;
 }
 
@@ -576,4 +611,36 @@ export async function letters(
 export async function setLetters(mode: "off" | "private" | "detailed"): Promise<Failure | null> {
     const a = await call("POST", "/api/letters/preferences", { mode });
     return a.ok ? null : refused(a.failure);
+}
+
+export async function parentStatus(): Promise<{ available: boolean; locked: boolean } | Failure> {
+    const a = await call("GET", "/api/auth/status");
+    if (!a.ok) return a.failure;
+    return obj(a.body) &&
+        typeof a.body.available === "boolean" &&
+        typeof a.body.locked === "boolean"
+        ? { available: a.body.available, locked: a.body.locked }
+        : unreadable(a.status);
+}
+export async function lockParent(): Promise<true | Failure> {
+    const a = await call("POST", "/api/auth/lock", {});
+    if (!a.ok) return a.failure;
+    parentChanged();
+    return true;
+}
+export async function unlockParent(pin: string): Promise<true | Failure> {
+    const ready = await (await import("./kid")).prepareIdentityChange();
+    if (ready !== true) return ready;
+    const a = await call("POST", "/api/auth/unlock", { pin });
+    if (!a.ok) return a.failure;
+    clearKidMode();
+    parentChanged();
+    return true;
+}
+export async function signOutBrowser(): Promise<true | Failure> {
+    const a = await call("POST", "/api/auth/browser/sign-out", {});
+    if (!a.ok) return a.failure;
+    forget();
+    parentChanged();
+    return true;
 }

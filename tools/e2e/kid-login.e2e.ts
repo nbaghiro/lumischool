@@ -7,7 +7,7 @@ async function login(page: Page, username: string): Promise<void> {
     await page.getByLabel("Your kids’ PIN", { exact: true }).fill("1357");
     await page.getByRole("button", { name: "Open my page" }).click();
     await expect(page).toHaveURL(/\/kids$/);
-    await expect(page.getByRole("button", { name: "Sign out of this tab" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Your profile" })).toBeVisible();
 }
 
 async function who(page: Page): Promise<string[]> {
@@ -132,7 +132,6 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
         await page
             .getByLabel(`${name}’s username`, { exact: true })
             .fill(`${name.toLowerCase()}-${suffix}`);
-        await page.getByLabel(`Allow ${name} to sign in`).check();
         const saved = page.waitForResponse(
             (r) => r.url().endsWith("/api/kid-logins") && r.request().method() === "POST",
         );
@@ -174,12 +173,13 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
     await page.getByRole("button", { name: "Kids", exact: true }).click();
     const rosie = page;
     const leo = await context.newPage();
-    await login(rosie, `rosie-${suffix}`);
-    await login(leo, `leo-${suffix}`);
+    // Two first sign-ins on a fresh browser binding must not overwrite one another.
+    await context.clearCookies({ name: "ls_browser" });
+    await Promise.all([login(rosie, `rosie-${suffix}`), login(leo, `leo-${suffix}`)]);
     expect(await who(rosie)).toEqual(["Rosie"]);
     expect(await who(leo)).toEqual(["Leo"]);
     await rosie.reload();
-    await expect(rosie.getByRole("button", { name: "Sign out of this tab" })).toBeVisible();
+    await expect(rosie.getByRole("button", { name: "Your profile" })).toBeVisible();
     expect(await who(rosie)).toEqual(["Rosie"]);
 
     for (const tab of [rosie, leo]) {
@@ -191,21 +191,94 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
         expect(new Set(queues).size).toBeGreaterThanOrEqual(2);
         expect(queues.every((q) => /^lumischool-kid-[a-f0-9-]+$/.test(q ?? ""))).toBe(true);
     }
+    await rosie.getByRole("button", { name: "Your profile" }).click();
+    await expect(rosie.getByRole("button", { name: "Switch child", exact: true })).toBeVisible();
+    await rosie.keyboard.press("Escape");
+    await expect(rosie.getByRole("button", { name: "Your profile" })).toBeFocused();
     await queueOne(rosie);
     await queueOne(leo);
-    await rosie.getByRole("button", { name: "Sign out of this tab" }).click();
+    await rosie.getByRole("button", { name: "Your profile" }).click();
+    await rosie.getByRole("button", { name: "Sign out", exact: true }).click();
     await expect(rosie.locator("output")).toContainText("Connect to the internet");
     expect(await waiting(rosie)).toBe(1);
     expect(await waiting(leo)).toBe(1);
     await rosie.unroute("**/api/kid/*/events");
-    await rosie.getByRole("button", { name: "Sign out of this tab" }).click();
+    if (
+        (await rosie
+            .getByRole("button", { name: "Your profile" })
+            .getAttribute("aria-expanded")) === "false"
+    ) {
+        await rosie.getByRole("button", { name: "Your profile" }).click();
+    }
+    await rosie.getByRole("button", { name: "Sign out", exact: true }).click();
     await expect(rosie.getByRole("heading", { name: "Your learning page" })).toBeVisible();
     await rosie.screenshot({ path: info.outputPath("kids-sign-in.png"), fullPage: true });
     expect(await waiting(leo)).toBe(1);
     await leo.unroute("**/api/kid/*/events");
     await leo.reload();
-    await expect(leo.getByRole("button", { name: "Sign out of this tab" })).toBeVisible();
+    await expect(leo.getByRole("button", { name: "Your profile" })).toBeVisible();
     expect(await who(leo)).toEqual(["Leo"]);
-    await leo.getByRole("button", { name: "Sign out of this tab" }).click();
+    await leo.getByRole("button", { name: "Your profile" }).click();
+    await leo.getByRole("button", { name: "Switch child", exact: true }).click();
     await expect(leo.getByRole("heading", { name: "Your learning page" })).toBeVisible();
+});
+
+test("parent tabs stay signed in beside child tabs, lock together, and can sign out the whole browser", async ({
+    page,
+    context,
+}) => {
+    await signInHere(page);
+    await page.goto("/");
+    const account = await context.newPage();
+    await account.goto("/account");
+    await expect(
+        account.getByRole("button", { name: "Lock parent access on this browser", exact: true }),
+    ).toBeVisible();
+    const open = async (name: string) => {
+        const opened = context.waitForEvent("page");
+        await page.getByRole("link", { name: `Open ${name}'s view`, exact: true }).click();
+        const child = await opened;
+        await expect(child).toHaveURL(/\/kids$/);
+        await expect(child.getByRole("button", { name: "Your profile" })).toBeVisible();
+        return child;
+    };
+    const rosie = await open("Rosie");
+    const leo = await open("Leo");
+    expect(await who(rosie)).toEqual(["Rosie"]);
+    expect(await who(leo)).toEqual(["Leo"]);
+    expect((await context.request.get("/api/me")).status()).toBe(200);
+    await account
+        .getByRole("button", { name: "Lock parent access on this browser", exact: true })
+        .click();
+    await expect(
+        account.getByRole("heading", { name: "Unlock parent access", exact: true }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole("heading", { name: "Unlock parent access", exact: true }),
+    ).toBeVisible();
+    expect(await who(rosie)).toEqual(["Rosie"]);
+    await account.getByLabel("Adult family PIN", { exact: true }).fill("2468");
+    await account.getByRole("button", { name: "Unlock parent access", exact: true }).click();
+    await expect(
+        account.getByRole("heading", { name: "Hello, Test Parent", exact: true }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole("heading", { name: "Hello, Test Parent", exact: true }),
+    ).toBeVisible();
+    // A child following a parent URL stays in child mode even though the cookie is available.
+    await rosie.goto("/account");
+    await expect(rosie).toHaveURL(/\/kids$/);
+    expect(await who(rosie)).toEqual(["Rosie"]);
+    await account.goto("/account");
+    account.once("dialog", (dialog) => void dialog.accept());
+    await account
+        .getByRole("button", { name: "Sign out everyone on this browser", exact: true })
+        .click();
+    await expect(account.getByRole("heading", { name: "Sign in", exact: true })).toBeVisible();
+    await expect(
+        rosie.getByRole("heading", { name: "Your learning page", exact: true }),
+    ).toBeVisible();
+    await expect(
+        leo.getByRole("heading", { name: "Your learning page", exact: true }),
+    ).toBeVisible();
 });

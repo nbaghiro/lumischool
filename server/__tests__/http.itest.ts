@@ -85,7 +85,9 @@ describe("the entry point", { skip: reason ?? false }, () => {
         const session = encodeURIComponent(b.jar.get("ls_session") ?? "");
         const res = await b.handle(
             new Request("http://127.0.0.1:8501/api/me", {
-                headers: { cookie: `theme=100%; ls_session=${session}; other=%zz` },
+                headers: {
+                    cookie: `theme=100%; ls_session=${session}; ls_browser=${b.jar.get("ls_browser")}; other=%zz`,
+                },
             }),
             b.ip,
         );

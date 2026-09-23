@@ -21,11 +21,23 @@ import {
     type Answer,
     type Failure,
 } from "./wire";
-import { kidCredential, keepKidCredential, kidQueueName } from "./kid-session";
+import {
+    kidCredential,
+    keepKidCredential,
+    clearKidMode,
+    kidQueueName,
+    PARENT_CHANGE,
+    withBrowserAuthLock,
+} from "./kid-session";
 
 const call = (method: "GET" | "POST", path: string, body?: unknown): Promise<Answer> => {
     const credential = kidCredential();
-    return wireCall(method, path, body, credential === null ? {} : { "x-kid-session": credential });
+    const request = () =>
+        wireCall(method, path, body, credential === null ? {} : { "x-kid-session": credential });
+    return method === "POST" &&
+        ["/api/kid/sign-in", "/api/kid/leave", "/api/kid/add"].includes(path)
+        ? withBrowserAuthLock(request)
+        : request();
 };
 
 export async function signIn(username: string, pin: string): Promise<true | Failure> {
@@ -416,15 +428,31 @@ export function start(): () => void {
         away = true;
         void tell({ offline: true });
     };
-    const seen = (): void => {
-        if (document.visibilityState === "visible") void send();
+    const check = (): void => {
+        if (kidCredential() && navigator.onLine !== false)
+            void call("GET", "/api/kid").then(answered);
     };
+    const seen = (): void => {
+        if (document.visibilityState === "visible") {
+            void send();
+            check();
+        }
+    };
+    const changed = (event: StorageEvent): void => {
+        if (event.key === PARENT_CHANGE) check();
+    };
+    const timer = setInterval(() => {
+        if (document.visibilityState === "visible") check();
+    }, 30_000);
+    addEventListener("storage", changed);
     addEventListener("online", online);
     addEventListener("offline", offline);
     document.addEventListener("visibilitychange", seen);
     if (navigator.onLine === false) offline();
     void send();
     return () => {
+        clearInterval(timer);
+        removeEventListener("storage", changed);
         removeEventListener("online", online);
         removeEventListener("offline", offline);
         document.removeEventListener("visibilitychange", seen);
@@ -564,6 +592,15 @@ export async function leave(pin: string): Promise<true | Failure> {
     const a = await answered(await call("POST", "/api/kid/leave", { pin }));
     if (!a.ok) return a.failure;
     await ended();
-    keepKidCredential("");
+    clearKidMode();
     return true;
+}
+
+/** Changing this tab's identity must not strand its offline answers. */
+export async function prepareIdentityChange(): Promise<true | Failure> {
+    if (!kidCredential()) return true;
+    await send();
+    return (await (await queue()).all()).length
+        ? (stopped ?? { error: "offline", status: 0 })
+        : true;
 }

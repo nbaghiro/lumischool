@@ -54,6 +54,15 @@ export async function saveKidLogin(tx: FamilyTx, id: string, username: string, e
         .where(eq(kids.id, id));
 }
 
+/** Serializes and checks the globally unique username candidates used for automatic names. */
+export async function usernameAvailable(tx: FamilyTx, username: string): Promise<boolean> {
+    await tx.execute(
+        sql`select pg_advisory_xact_lock(hashtextextended(${"kid-username:" + username}, 0))`,
+    );
+    const rows = await tx.execute(sql`select kid_username_available(${username}) as available`);
+    return rows[0]?.available === true;
+}
+
 export async function stopKidLogins(tx: FamilyTx, kid?: string) {
     const rows = await tx
         .select({ id: keys.id })

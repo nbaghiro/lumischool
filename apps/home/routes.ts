@@ -2,6 +2,7 @@
 // says which of this app's screens the path shows, and where a sign-in may go on to.
 
 export type Screen =
+    | "open-child"
     | "family"
     | "sign-in"
     | "start"
@@ -19,6 +20,7 @@ export type Screen =
 
 const PATHS: Readonly<Record<string, Screen>> = {
     "/": "family",
+    "/open-child": "open-child",
     "/sign-in": "sign-in",
     "/start": "start",
     "/outbox": "outbox",

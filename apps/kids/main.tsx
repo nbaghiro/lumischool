@@ -4,7 +4,17 @@
 // only child's page. With no kid session it asks for a grown-up. It reaches the API only through
 // engine/ui/kid.ts.
 
-import { createEffect, createSignal, lazy, Match, onCleanup, Switch, type JSX } from "solid-js";
+import {
+    createEffect,
+    createSignal,
+    lazy,
+    Match,
+    onCleanup,
+    Switch,
+    type Accessor,
+    type Setter,
+    type JSX,
+} from "solid-js";
 import { render } from "solid-js/web";
 import { onDemand } from "../../engine/ui/art";
 import { fontsReady } from "../../engine/ui/fonts";
@@ -55,8 +65,8 @@ async function read(): Promise<Now> {
 /** How often a view that could not open asks again, besides when the network comes back. */
 const RETRY = 5_000;
 
-function View(props: { first: Now }): JSX.Element {
-    const [now, setNow] = createSignal<Now>(props.first);
+function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
+    const { now, setNow } = props;
     const [sending, setSending] = createSignal<Sending>({
         unsent: 0,
         offline: false,
@@ -109,7 +119,6 @@ function View(props: { first: Now }): JSX.Element {
                         view={n().view}
                         offline={sending().offline}
                         onChoose={(kid) => setNow({ at: "child", view: n().view, kid })}
-                        onGrownUps={() => setNow({ at: "grown-ups", view: n().view, from: null })}
                     />
                 )}
             </Match>
@@ -120,9 +129,6 @@ function View(props: { first: Now }): JSX.Element {
                         kid={n().kid}
                         offline={sending().offline}
                         onBack={() => setNow({ at: "who", view: n().view })}
-                        onGrownUps={() =>
-                            setNow({ at: "grown-ups", view: n().view, from: n().kid })
-                        }
                     />
                 )}
             </Match>
@@ -149,13 +155,31 @@ const root = document.getElementById("app");
 if (root) {
     const [first] = await Promise.all([read(), fontsReady()]);
     await LOAD[first.at]();
+    const [now, setNow] = createSignal<Now>(first);
+    const profile = (): { view: KidView; kid?: Kid } | undefined => {
+        const n = now();
+        if (n.at === "child") return { view: n.view, kid: n.kid };
+        if (n.at === "who") return { view: n.view };
+        if (n.at === "grown-ups") return { view: n.view, kid: n.from ?? undefined };
+        return undefined;
+    };
     render(
         () => (
             <Page
                 ground={() => onDemand(() => import("./ground")).then((m) => m.ground())}
-                bar={KidBar}
+                bar={() => (
+                    <KidBar
+                        profile={profile()}
+                        onGrownUps={() => {
+                            const p = profile();
+                            if (p?.view.pin)
+                                setNow({ at: "grown-ups", view: p.view, from: p.kid ?? null });
+                            else location.assign("/sign-in?shared=1");
+                        }}
+                    />
+                )}
             >
-                <View first={first} />
+                <View now={now} setNow={setNow} />
             </Page>
         ),
         root,

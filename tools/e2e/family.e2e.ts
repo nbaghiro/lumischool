@@ -18,6 +18,37 @@ import {
 const cookieNames = async (context: BrowserContext): Promise<string[]> =>
     (await context.cookies()).map((c) => c.name);
 
+test("email validation stays on the form and sends no request for malformed input", async ({
+    page,
+}) => {
+    let requests = 0;
+    page.on("request", (request) => {
+        if (request.url().endsWith("/api/auth/email/start")) requests++;
+    });
+    for (const route of ["/sign-in", "/start"]) {
+        await page.goto(route);
+        if (route === "/start") {
+            await page.getByLabel("Your name", { exact: true }).fill("Sam");
+            await page.getByLabel("Your family's name", { exact: true }).fill("Oakley");
+        }
+        for (const address of [
+            "a..b@example.com",
+            "a@-example.com",
+            `${"a".repeat(65)}@example.com`,
+        ]) {
+            const email = page.getByLabel("Your email address", { exact: true });
+            await email.fill(address);
+            await email.press("Enter");
+            await expect(email).toHaveAttribute("aria-invalid", "true");
+            await expect(email).toBeFocused();
+            await expect(
+                page.getByText("That does not look like an email address. Check it and try again."),
+            ).toBeVisible();
+        }
+    }
+    expect(requests).toBe(0);
+});
+
 test("a wrong code says how many tries are left, another code inside the minute is refused, and an address with no family starts one", async ({
     page,
     request,
@@ -50,7 +81,7 @@ test("a wrong code says how many tries are left, another code inside the minute 
     await signOut(page);
 });
 
-test("a parent opens a child's view on this device, and that browser's session is held put away and unreachable until the PIN", async ({
+test("a child tab uses its own credentials while the parent session stays available", async ({
     page,
     context,
 }) => {
@@ -62,10 +93,15 @@ test("a parent opens a child's view on this device, and that browser's session i
     ).toBeTruthy();
     expect(names, "the session's cookie stays, put away").toContain("ls_session");
     const me = await page.evaluate(async () => {
-        const r = await fetch("/api/me");
+        const r = await fetch("/api/me", {
+            headers: { "x-kid-session": sessionStorage.getItem("lumischool-kid-session") ?? "" },
+        });
         return { status: r.status, body: (await r.json()) as { error?: string } };
     });
-    expect([me.status, me.body.error], "every adult route refuses it").toEqual([401, "put-away"]);
+    expect([me.status, me.body.error], "every adult route refuses it").toEqual([
+        403,
+        "not-allowed",
+    ]);
     expect(await cookieNames(context), "and refusing it clears nothing").toContain("ls_session");
     await expect(page.getByRole("link", { name: "lumischool site" })).toHaveCount(0);
 });
@@ -81,8 +117,17 @@ test("a grown-up goes round: the view opens, an adult route is refused, the PIN 
     });
     expect(before).not.toBe("");
     await openChildrensView(page, ["Rosie"]);
-    const refused = await page.evaluate(async () => (await fetch("/api/kid-sessions")).status);
-    expect(refused).toBe(401);
+    const refused = await page.evaluate(
+        async () =>
+            (
+                await fetch("/api/kid-sessions", {
+                    headers: {
+                        "x-kid-session": sessionStorage.getItem("lumischool-kid-session") ?? "",
+                    },
+                })
+            ).status,
+    );
+    expect(refused).toBe(403);
     await holdGrownUps(page);
     await page.getByLabel("The family PIN").fill(FAMILY_PIN);
     await page.getByRole("button", { name: "Leave the children's view" }).click();

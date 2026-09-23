@@ -37,6 +37,35 @@ const keyRow = async (id: string) => (await db().db.select().from(keys)).find((k
 describe("signing in", { skip: reason ?? false }, () => {
     beforeEach(async () => truncate(db()));
 
+    it("refuses malformed emails and blank registration names before sending any code", async () => {
+        const { config, outbox } = local();
+        const b = new Browser(config);
+        for (const email of [
+            "a..b@example.com",
+            "a@-example.com",
+            "a@example..com",
+            `${"a".repeat(65)}@example.com`,
+            null,
+            42,
+        ]) {
+            const result = await b.call("POST", "/api/auth/email/start", { body: { email } });
+            assert.equal(result.status, 400);
+            assert.equal(
+                at(result.body, "error"),
+                typeof email === "string" ? "bad-email" : "bad-request",
+            );
+        }
+        const result = await b.call("POST", "/api/auth/email/start", {
+            body: {
+                email: "valid@example.test",
+                start: { name: "   ", family: "Oakley", timeZone: "UTC" },
+            },
+        });
+        assert.equal(result.status, 400);
+        assert.equal(outbox.length, 0);
+        assert.equal(b.jar.has("ls_pending"), false);
+    });
+
     it("signs a person in by the code printed for them, and writes no login until the code comes back", async () => {
         const { config, outbox } = local();
         const b = new Browser(config);
@@ -207,6 +236,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         });
         const anna = new Browser(config);
         anna.jar.set("ls_session", second);
+        anna.jar.set("ls_browser", b.jar.get("ls_browser") ?? "");
         assert.equal(
             (await anna.call("GET", "/api/me")).status,
             200,

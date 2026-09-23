@@ -9,6 +9,7 @@ import { setScope, withFamily, type FamilyTx } from "./client";
 import { keys, type Key } from "./schema";
 
 export const KEY_KINDS = [
+    "browser",
     "session",
     "shared-session",
     "kid-session",
@@ -35,6 +36,7 @@ const earliest = (a: Date, b: Date): Date => (a < b ? a : b);
  * without deciding how long it lives. The numbers are the owner's, and none of them is measured.
  */
 export const EXPIRY: Record<KeyKind, (k: Clock) => Date> = {
+    browser: (k) => after(k.seen_at ?? k.created_at, 90 * DAY),
     "sign-in": (k) => after(k.created_at, 10 * MINUTE),
     confirm: (k) => after(k.created_at, 10 * MINUTE),
     invite: (k) => after(k.created_at, 7 * DAY),
@@ -61,6 +63,7 @@ export const isLive = (kind: KeyKind, clock: Clock, now: Date = new Date()): boo
  * wrong try, which `pinTried` writes.
  */
 const SEEN_STEP: Record<KeyKind, number> = {
+    browser: DAY,
     session: DAY,
     "shared-session": MINUTE,
     "kid-session": DAY,
@@ -157,6 +160,7 @@ export const putAwayFor = (detail: unknown): string | null =>
 export async function verify(
     credential: string,
     kinds: readonly KeyKind[],
+    allowLocked = false,
 ): Promise<Verified | "put-away" | null> {
     const parsed = parseCredential(credential);
     if (!parsed) return null;
@@ -168,7 +172,7 @@ export async function verify(
         if (!row || !sameHash(sha256(parsed.secret), row.hash)) return null;
         const kind = row.kind;
         if (!isKind(kind) || !kinds.includes(kind) || !isLive(kind, row)) return null;
-        if (putAwayFor(row.detail) !== null) return "put-away";
+        if (!allowLocked && putAwayFor(row.detail) !== null) return "put-away";
         const now = new Date();
         const seen = dueToSee(kind, row.seen_at, now);
         if (seen)
@@ -747,4 +751,102 @@ export async function myFamilies(
     user: string,
 ): Promise<{ family_id: string; name: string; kid_id: string | null }[]> {
     return withFamily({ family: null, user }, familiesIn);
+}
+
+/** Bind newly issued logins to a revocable browser key. */
+export async function bindToBrowser(
+    family: string,
+    ids: readonly string[],
+    browser: string,
+): Promise<void> {
+    const parsed = parseCredential(browser);
+    if (!ids.length || !parsed) return;
+    await withFamily({ family }, async (tx) => {
+        await tx
+            .update(keys)
+            .set({
+                detail: sql`${keys.detail} || ${JSON.stringify({ browser: sha256(browser), browserFamily: parsed.family, browserId: parsed.id })}::jsonb`,
+            })
+            .where(and(inArray(keys.id, [...ids]), sql`not (${keys.detail} ? 'browser')`));
+    });
+}
+
+export async function browserAllows(
+    family: string,
+    ids: readonly string[],
+    browser: string | null,
+): Promise<boolean> {
+    const rows = await withFamily({ family }, (tx) =>
+        tx
+            .select({ detail: keys.detail })
+            .from(keys)
+            .where(inArray(keys.id, [...ids])),
+    );
+    const bindings = rows.flatMap((r) =>
+        isRecord(r.detail) && typeof r.detail.browser === "string" ? [r.detail.browser] : [],
+    );
+    if (rows.length !== ids.length || bindings.length !== ids.length) return false;
+    if (!browser || bindings.some((b) => !sameHash(b, sha256(browser)))) return false;
+    const held = await verify(browser, ["browser"]);
+    return !!held && held !== "put-away";
+}
+
+export async function endBrowser(credential: string): Promise<void> {
+    const held = await verify(credential, ["browser"]);
+    if (!held || held === "put-away") return;
+    await withFamily({ family: held.family_id }, async (tx) => {
+        await tx.delete(keys).where(and(eq(keys.id, held.id), eq(keys.kind, "browser")));
+    });
+}
+
+/** Resolve browser revocation before showing account lists, without holding nested transactions. */
+export async function visibleBrowserSessions(
+    family: string,
+): Promise<{ sessions: Set<string>; views: Set<string> }> {
+    const rows = await withFamily({ family }, (tx) =>
+        tx
+            .select({ id: keys.id, detail: keys.detail })
+            .from(keys)
+            .where(inArray(keys.kind, ["session", "shared-session", "kid-session"])),
+    );
+    const groups = new Map<string, Set<string>>();
+    for (const row of rows) {
+        if (!isRecord(row.detail)) continue;
+        const { browserFamily, browserId } = row.detail;
+        if (
+            typeof browserFamily !== "string" ||
+            typeof browserId !== "string" ||
+            !UUID.test(browserFamily) ||
+            !UUID.test(browserId)
+        )
+            continue;
+        const ids = groups.get(browserFamily) ?? new Set<string>();
+        ids.add(browserId);
+        groups.set(browserFamily, ids);
+    }
+    const live = new Set<string>();
+    for (const [owner, ids] of groups) {
+        const browsers = await withFamily({ family: owner }, (tx) =>
+            tx
+                .select()
+                .from(keys)
+                .where(and(eq(keys.kind, "browser"), inArray(keys.id, [...ids]))),
+        );
+        for (const browser of browsers)
+            if (isLive("browser", browser)) live.add(`${owner}:${browser.id}`);
+    }
+    const sessions = new Set<string>(),
+        views = new Set<string>();
+    for (const row of rows) {
+        if (
+            !isRecord(row.detail) ||
+            typeof row.detail.browserFamily !== "string" ||
+            typeof row.detail.browserId !== "string" ||
+            !live.has(`${row.detail.browserFamily}:${row.detail.browserId}`)
+        )
+            continue;
+        sessions.add(row.id);
+        if (typeof row.detail.view === "string") views.add(row.detail.view);
+    }
+    return { sessions, views };
 }

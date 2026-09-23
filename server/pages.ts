@@ -9,8 +9,13 @@ export type App = "home" | "kids" | "site";
  * children's view. The prefix is used only over HTTPS.
  */
 export const COOKIES = {
-    secure: { session: "__Host-ls_session", pending: "__Host-ls_pending", kids: "__Host-ls_kids" },
-    plain: { session: "ls_session", pending: "ls_pending", kids: "ls_kids" },
+    secure: {
+        session: "__Host-ls_session",
+        pending: "__Host-ls_pending",
+        browser: "__Host-ls_browser",
+        kids: "__Host-ls_kids",
+    },
+    plain: { session: "ls_session", pending: "ls_pending", browser: "ls_browser", kids: "ls_kids" },
 } as const;
 
 /** A request answered with an app's page, rather than by the API or with a file. */

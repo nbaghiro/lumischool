@@ -817,8 +817,7 @@ function Sec(props: { title: string; children: JSX.Element }): JSX.Element {
 }
 
 /**
- * Flow 5 in one tap: the API ends this browser's session as it opens the child's view, so the page
- * goes to `/kids` from here. A brother or sister joins from inside the view, with the PIN.
+ * Opens an independent child tab by default; using this tab is an explicit alternative.
  */
 function OpenView(props: { kid: Kid; kids: readonly Kid[] }): JSX.Element {
     const [busy, setBusy] = createSignal(false);
@@ -837,17 +836,19 @@ function OpenView(props: { kid: Kid; kids: readonly Kid[] }): JSX.Element {
     };
     return (
         <div class="gh-open">
-            <button
-                type="button"
+            <a
                 class="gh-open-b"
-                aria-disabled={busy() ? true : undefined}
-                aria-describedby="gh-view-note"
-                onClick={() => void open()}
+                href={`/open-child?child=${encodeURIComponent(props.kid.id)}`}
+                target="_blank"
+                rel="noopener noreferrer"
             >
                 <Portrait kid={props.kid} kids={props.kids} />
                 <span>{`Open ${props.kid.name}'s view`}</span>
+            </a>
+            <p class="gh-small">Opens in a new tab. Your parent pages stay signed in.</p>
+            <button type="button" class="link" disabled={busy()} onClick={() => void open()}>
+                Use this tab instead
             </button>
-            <p class="gh-small">This browser then shows only the child's pages.</p>
             <Show when={said()}>
                 <Say text={said()} />
             </Show>

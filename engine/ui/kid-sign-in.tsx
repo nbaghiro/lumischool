@@ -1,3 +1,4 @@
+import { kidCredential, keepKidCredential } from "./kid-session";
 // When the children's view cannot open (.docs/auth.md, flow 5): this browser holds no kid session, so
 // a grown-up signs in and opens it from the family's page; or it holds one and lumischool cannot be
 // reached yet, and the view waits and asks again by itself.
@@ -12,6 +13,7 @@ import { Corner, Postcard, To } from "./postcard";
 const FOOT = ["A grown-up sets up your username and kids’ PIN. You do not need an email address."];
 
 export function KidSignIn(): JSX.Element {
+    if (kidCredential() === null) keepKidCredential("");
     const look = useLook();
     const [username, setUsername] = createSignal("");
     const [pin, setPin] = createSignal("");

@@ -34,7 +34,7 @@ import type { FamilyView, KidSessions, Me, Sessions, SessionView } from "../../s
 import { Drawing } from "../../engine/ui/art";
 import { GROWNUP_WORD, GROWNUPS } from "../../engine/parts/apps/grownup";
 import { familyChanged, GrownStamp, knowFamily, pickedPortrait, portraitOf } from "./bar";
-import { KIDS, signInFor } from "./routes";
+import { signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
 
@@ -50,7 +50,7 @@ async function load(): Promise<Seen | { failure: Failure } | null> {
     const me = await api.me({ ask: true });
     if ("error" in me) {
         if (me.error === "put-away") {
-            location.replace(KIDS);
+            location.replace("/sign-in?locked=1");
             return null;
         }
         if (me.error !== "signed-out") return { failure: me };
@@ -193,6 +193,21 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
         setBusy(null);
         setSaid(`You are still signed in. ${failureText(r, local)}`);
     };
+    const browserAction = async (lock: boolean): Promise<void> => {
+        if (busy()) return;
+        setBusy("out");
+        const answer = lock ? await api.lockParent() : await api.signOutBrowser();
+        if (answer === true) {
+            location.assign(lock ? "/sign-in?locked=1" : "/sign-in");
+            return;
+        }
+        setBusy(null);
+        setSaid(
+            answer.error === "no-pin"
+                ? "Set an adult family PIN below before locking parent access."
+                : failureText(answer, local),
+        );
+    };
     return (
         <Postcard
             kicker="Your account"
@@ -273,6 +288,31 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
                     <Say text={said()} />
                 </Show>
             </section>
+            <Show when={isParent(me().members)}>
+                <div class="acts">
+                    <Button second busy={busy() === "out"} onClick={() => void browserAction(true)}>
+                        Lock parent access on this browser
+                    </Button>
+                    <Button
+                        second
+                        busy={busy() === "out"}
+                        onClick={() => {
+                            if (
+                                confirm(
+                                    "Sign out the parent and every child view on this browser? Answers that have not been sent will be lost.",
+                                )
+                            )
+                                void browserAction(false);
+                        }}
+                    >
+                        Sign out everyone on this browser
+                    </Button>
+                </div>
+                <p class="note">
+                    Parent sign-in is shared across tabs. Lock it before handing this browser to a
+                    child. Signing out only your account keeps children’s views open.
+                </p>
+            </Show>
         </Postcard>
     );
 }
@@ -372,8 +412,8 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
                 <h2>The family PIN</h2>
                 <p class="note">
                     {props.seen.view.pin
-                        ? "The family PIN is set. A grown-up types it to leave the children's view on any of your devices and come back here as they were."
-                        : "Set a PIN so that a grown-up can leave the children's view without signing in again."}
+                        ? "The adult family PIN is set. Use it to unlock parent access or return from a child’s view on this browser."
+                        : "Set an adult PIN to lock and unlock parent access on this browser."}
                 </p>
                 <div class="acts">
                     <Button second onClick={props.onPin}>
@@ -559,7 +599,7 @@ function SetPin(props: { me: Me; pinSet: boolean; onDone: (set: boolean) => void
             focus={false}
             kicker={familyName(props.me.family.name)}
             title={props.pinSet ? "Change the family PIN" : "Set the family PIN"}
-            lead="Four digits a grown-up types to leave the children's view on any of your devices. Choose ones the children do not know."
+            lead="Four digits to unlock parent access. Choose ones the children do not know, different from the kids’ sign-in PIN."
             corner={<Corner place="meadow" seed={853} />}
             address={
                 <form

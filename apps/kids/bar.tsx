@@ -5,10 +5,22 @@
 // page's first script carries none of it.
 
 import "./bar.css";
-import { createSignal, lazy, onCleanup, Show, Suspense, type JSX } from "solid-js";
+import {
+    createSignal,
+    createUniqueId,
+    lazy,
+    onCleanup,
+    onMount,
+    Show,
+    Suspense,
+    type JSX,
+} from "solid-js";
 import { Button } from "../../engine/ui/form";
 import { signOut, watch } from "../../engine/ui/kid";
 import { kidCredential } from "../../engine/ui/kid-session";
+import type { Kid } from "../../server/db/schema";
+import type { KidView } from "../../server/api";
+import { Portrait } from "../../engine/ui/kids";
 import { onDemand } from "../../engine/ui/art";
 import { guideOf, nudge } from "../../engine/ui/nudge";
 
@@ -16,7 +28,31 @@ const GuideButton = lazy(() =>
     onDemand(() => import("../../engine/ui/tutor")).then((m) => ({ default: m.GuideButton })),
 );
 
-export function KidBar(): JSX.Element {
+export function KidBar(props: {
+    profile?: { view: KidView; kid?: Kid };
+    onGrownUps: () => void;
+}): JSX.Element {
+    const [open, setOpen] = createSignal(false);
+    const id = createUniqueId();
+    let menu: HTMLDivElement | undefined;
+    let trigger: HTMLButtonElement | undefined;
+    onMount(() => {
+        const outside = (event: PointerEvent): void => {
+            if (event.target instanceof Node && !menu?.contains(event.target)) setOpen(false);
+        };
+        const escape = (event: KeyboardEvent): void => {
+            if (event.key === "Escape" && open()) {
+                setOpen(false);
+                trigger?.focus();
+            }
+        };
+        document.addEventListener("pointerdown", outside);
+        document.addEventListener("keydown", escape);
+        onCleanup(() => {
+            document.removeEventListener("pointerdown", outside);
+            document.removeEventListener("keydown", escape);
+        });
+    });
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
     const [active, setActive] = createSignal(false);
@@ -39,12 +75,64 @@ export function KidBar(): JSX.Element {
     return (
         <Show when={active()}>
             <div class="page-nav kid-bar">
-                <Button second busy={busy()} onClick={() => void leave()}>
-                    Sign out of this tab
-                </Button>
-                <Show when={said()}>
-                    <output>{said()}</output>
-                </Show>
+                <div
+                    class="kid-profile"
+                    ref={(el) => {
+                        menu = el;
+                    }}
+                    onFocusOut={(event) => {
+                        if (
+                            event.relatedTarget instanceof Node &&
+                            !event.currentTarget.contains(event.relatedTarget)
+                        )
+                            setOpen(false);
+                    }}
+                >
+                    <button
+                        type="button"
+                        class="kid-profile-toggle"
+                        ref={(el) => {
+                            trigger = el;
+                        }}
+                        aria-label="Your profile"
+                        title={props.profile?.kid?.name ?? "Your profile"}
+                        aria-expanded={open()}
+                        aria-controls={id}
+                        onClick={() => setOpen(!open())}
+                    >
+                        <Show when={props.profile?.kid} fallback={<span>Your profile</span>}>
+                            {(kid) => (
+                                <Portrait kid={kid()} kids={props.profile?.view.kids ?? []} />
+                            )}
+                        </Show>
+                    </button>
+                    <Show when={open()}>
+                        <div class="kid-profile-options" id={id}>
+                            <Show when={props.profile?.kid}>
+                                <p class="kid-profile-name">{props.profile?.kid?.name}</p>
+                            </Show>
+                            <Button second busy={busy()} onClick={() => void leave()}>
+                                Switch child
+                            </Button>
+                            <Button second busy={busy()} onClick={() => void leave()}>
+                                Sign out
+                            </Button>
+                            <Button
+                                second
+                                disabled={busy()}
+                                onClick={() => {
+                                    setOpen(false);
+                                    props.onGrownUps();
+                                }}
+                            >
+                                For grown-ups
+                            </Button>
+                        </div>
+                    </Show>
+                    <Show when={said()}>
+                        <output>{said()}</output>
+                    </Show>
+                </div>
                 <Show when={guideOf()}>
                     {(id) => (
                         <Suspense>

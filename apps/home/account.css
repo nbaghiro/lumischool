@@ -112,3 +112,33 @@
     width: 48px;
     height: 48px;
 }
+.kid-login-row {
+    margin-top: 24px;
+}
+.kids-pin-form {
+    gap: 14px;
+}
+.kids-pin-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+.kids-pin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.kids-pin-field .note {
+    margin: 0;
+}
+.kids-pin-form > .btn,
+.kid-login-row > .btn {
+    align-self: flex-start;
+    width: auto;
+}
+@media (max-width: 560px) {
+    .kids-pin-fields {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}

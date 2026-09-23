@@ -5,13 +5,14 @@
 // functions.
 
 import { createHmac, randomBytes, randomInt, randomUUID } from "node:crypto";
-import { suggestedUsername, usernameOf } from "../school/family/login";
+import { emailOf, suggestedUsername, usernameOf } from "../school/family/login";
 import {
     lockKidLogins,
     loginPin,
     loginTry,
     lookupLogin,
     saveKidLogin,
+    usernameAvailable,
     saveLoginPin,
     stopKidLogins,
 } from "./db/kid-login";
@@ -65,6 +66,7 @@ import {
     useCode,
     verify,
     verifyKids,
+    visibleBrowserSessions,
     type Held,
     type KidKey,
 } from "./db/keys";
@@ -347,8 +349,6 @@ function signIn(
     });
 }
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export type Asked = { pending: string } | { error: "bad-email" | "rate-limited" };
 
 /**
@@ -360,8 +360,8 @@ export async function askForCode(
     input: { email: string; shared: boolean; start: Start | null },
     ip: string | null,
 ): Promise<Asked> {
-    const email = input.email.trim().toLowerCase();
-    if (email.length > 254 || !EMAIL.test(email)) return { error: "bad-email" };
+    const email = emailOf(input.email);
+    if (!email) return { error: "bad-email" };
     const code = String(randomInt(0, 100_000_000)).padStart(8, "0");
     // Never in production, whatever the configuration holds: there it would sign in anyone who asked.
     const fixed = config.env === "local" ? config.devCode : null;
@@ -400,13 +400,14 @@ export function startOf(v: unknown): Start | null {
     const { name, family, timeZone } = v;
     if (typeof name !== "string" || typeof family !== "string" || typeof timeZone !== "string")
         return null;
-    if (!family.trim() || family.length > 80 || name.length > 80) return null;
+    if (!name.trim() || !family.trim() || family.trim().length > 80 || name.trim().length > 80)
+        return null;
     try {
         dayIn(timeZone);
     } catch {
         return null;
     }
-    return { name, family, timeZone };
+    return { name: name.trim(), family: family.trim(), timeZone };
 }
 
 async function provenBy(pending: string, attempt: string | null): Promise<Proven | Declined> {
@@ -590,11 +591,14 @@ export async function setMyPicture(
 
 /** Flow 10: the person's sessions in this family, for the account page, this browser's marked. */
 export async function mySessions(adult: Adult): Promise<Sessions> {
+    const visible = await visibleBrowserSessions(adult.family.id);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => ({
-        sessions: (await sessionsOf(tx, adult.user)).map((s) => ({
-            ...s,
-            own: s.id === adult.session.id,
-        })),
+        sessions: (await sessionsOf(tx, adult.user))
+            .filter((s) => visible.sessions.has(s.id))
+            .map((s) => ({
+                ...s,
+                own: s.id === adult.session.id,
+            })),
     }));
 }
 
@@ -634,6 +638,17 @@ export async function consented(tx: FamilyTx, family: string): Promise<Set<strin
 export type Added =
     { kid: Kid } | { error: "not-allowed" | "bad-request" } | { error: "notice"; notice: string };
 
+async function automaticUsername(tx: FamilyTx, childName: string): Promise<string> {
+    const suffix = randomBytes(6).toString("hex");
+    for (let attempt = 0; attempt < 100; attempt++) {
+        const candidate = suggestedUsername(childName, suffix, attempt);
+        if (await usernameAvailable(tx, candidate)) return candidate;
+    }
+    // The global index makes this practically unreachable; retain a clear failure if a family
+    // somehow exhausts the readable candidate space.
+    throw new Error("could not find an available automatic kid username");
+}
+
 /**
  * Flow 4: a kid and the parent's consent to the current notice, in one transaction. The event is the
  * family's, with the kid's id and not their name, so it outlives the kid (auth.md, "What the parent
@@ -656,12 +671,7 @@ export async function addKidWithConsent(
     if (input.notice !== CONSENT_NOTICE) return { error: "notice", notice: CONSENT_NOTICE };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         const kid = await addKid(tx, adult.family.id, { name, grade: input.grade });
-        await saveKidLogin(
-            tx,
-            kid.id,
-            suggestedUsername(name, randomBytes(6).toString("hex")),
-            false,
-        );
+        await saveKidLogin(tx, kid.id, await automaticUsername(tx, name), false);
         await record(tx, adult.family.id, [
             {
                 kid_id: null,
@@ -680,17 +690,14 @@ export type OpenedKids =
     | { error: "no-consent"; kid: string };
 
 /**
- * Flow 5: a parent opens the children's view on the browser they are signed in on, for children of
- * the family with an active consent. In one transaction a key is made for each child, the parent's own
- * session key on this browser is put away for the view rather than deleted, and `kid-session-opened`
- * and `session-changed` are recorded. The browser keeps the session's cookie, which every adult route
- * refuses while the key is put away, and the family's PIN gives it back (flow 7). No fresh sign-in
- * is asked for, since the browser can reach less than it could.
+ * A parent opens child sessions after consent is checked. Tab clients keep the shared parent
+ * session active. The legacy cookie flow still puts it away until the adult PIN restores it.
  */
 export async function openKidView(
     adult: Adult,
     kids: unknown,
     device: string | null,
+    tab = false,
 ): Promise<OpenedKids> {
     if (!adult.parent) return { error: "not-allowed" };
     if (
@@ -713,7 +720,7 @@ export async function openKidView(
             name: device,
             kids: chosen,
         });
-        await putAway(tx, adult.session.id, opened.view);
+        if (!tab) await putAway(tx, adult.session.id, opened.view);
         await record(tx, adult.family.id, [
             {
                 kid_id: null,
@@ -724,12 +731,16 @@ export async function openKidView(
                 },
                 actor: adult.user,
             },
-            {
-                kid_id: null,
-                kind: "session-changed",
-                data: { session: adult.session.id, change: "put-away" },
-                actor: adult.user,
-            },
+            ...(tab
+                ? []
+                : [
+                      {
+                          kid_id: null,
+                          kind: "session-changed" as const,
+                          data: { session: adult.session.id, change: "put-away" as const },
+                          actor: adult.user,
+                      },
+                  ]),
         ]);
         return { credential: opened.keys.map((k) => k.credential).join(KIDS_JOIN) };
     });
@@ -740,8 +751,9 @@ export async function kidSessionsFor(
     adult: Adult,
 ): Promise<KidSessions | { error: "not-allowed" }> {
     if (!adult.parent) return { error: "not-allowed" };
+    const visible = await visibleBrowserSessions(adult.family.id);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => ({
-        views: await kidViewsOf(tx),
+        views: (await kidViewsOf(tx)).filter((v) => visible.views.has(v.view)),
         pin: await hasPin(tx),
     }));
 }
@@ -832,7 +844,7 @@ export async function kidLoginsFor(adult: Adult): Promise<KidLogins | { error: "
             id: kid.id,
             name: kid.name,
             username: isRecord(kid.settings) ? usernameOf(kid.settings.username) : null,
-            enabled: isRecord(kid.settings) && kid.settings.kidLogin === true,
+            enabled: isRecord(kid.settings) && usernameOf(kid.settings.username) !== null,
         })),
     }));
 }
@@ -896,8 +908,7 @@ export async function changeKidLogin(
     if (!fresh(adult)) return { error: "fresh-sign-in" };
     if (typeof input.kid !== "string" || typeof input.enabled !== "boolean")
         return { error: "bad-request" };
-    const id = input.kid,
-        enabled = input.enabled;
+    const id = input.kid;
     try {
         return await withFamily(
             { family: adult.family.id, user: adult.user },
@@ -907,22 +918,19 @@ export async function changeKidLogin(
                 if (!kid) return { error: "not-found" };
                 const name =
                     input.username === "" || input.username === null
-                        ? suggestedUsername(kid.name, randomBytes(6).toString("hex"))
+                        ? await automaticUsername(tx, kid.name)
                         : usernameOf(input.username);
                 if (!name)
                     return {
                         error: "bad-request",
                         problem: "Use 3–32 letters, numbers or hyphens, starting with a letter.",
                     };
-                if (
-                    enabled &&
-                    (!(await loginPin(tx)) || !(await consented(tx, adult.family.id)).has(id))
-                )
+                if (!(await loginPin(tx)) || !(await consented(tx, adult.family.id)).has(id))
                     return {
                         error: "bad-request",
                         problem: "Set the kids’ sign-in PIN and give consent for this child first.",
                     };
-                await saveKidLogin(tx, id, name, enabled);
+                await saveKidLogin(tx, id, name, true);
                 await revokeLogins(tx, adult, id);
                 return { ok: true };
             },
@@ -971,12 +979,7 @@ export async function signInKid(
         await loginTry(tx, held.id, right);
         if (!right) return null;
         const kid = (await kidsOf(tx, found.family)).find((k) => k.id === found.kid);
-        if (
-            !kid ||
-            !isRecord(kid.settings) ||
-            kid.settings.kidLogin !== true ||
-            usernameOf(kid.settings.username) !== username
-        )
+        if (!kid || !isRecord(kid.settings) || usernameOf(kid.settings.username) !== username)
             return null;
         await setScope(tx, { family: found.family, user: held.user_id });
         if (
@@ -1207,6 +1210,7 @@ export async function endKidViews(
     adult: Adult,
 ): Promise<{ ended: number } | { error: "not-allowed" }> {
     if (!adult.parent) return { error: "not-allowed" };
+    const visible = await visibleBrowserSessions(adult.family.id);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         const views = await kidViewsOf(tx);
         const written: Written[] = [];
@@ -1214,7 +1218,7 @@ export async function endKidViews(
         for (const v of views) {
             const ended = await endKids(tx, { view: v.view });
             if (!ended.length) continue;
-            n++;
+            if (visible.views.has(v.view)) n++;
             written.push(
                 {
                     kid_id: null,
@@ -1262,5 +1266,52 @@ export async function endHeldKids(cookie: string | null, user: string): Promise<
             },
             ...putAwayEnded(await endPutAway(tx, kid.view), actor),
         ]);
+    });
+}
+
+/** An explicit browser-wide parent lock; child sessions are unaffected. */
+export async function lockParent(adult: Adult): Promise<true | PinRefused> {
+    if (!adult.parent) return { error: "no-pin" };
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        if (!(await hasPin(tx))) return { error: "no-pin" };
+        await putAway(tx, adult.session.id, adult.session.id);
+        await record(tx, adult.family.id, [
+            {
+                kid_id: null,
+                kind: "session-changed",
+                actor: adult.user,
+                data: { session: adult.session.id, change: "put-away" },
+            },
+        ]);
+        return true;
+    });
+}
+
+export async function unlockParent(
+    config: AuthConfig,
+    credential: string | null,
+    pin: unknown,
+): Promise<true | PinRefused | { error: "signed-out" }> {
+    if (!credential) return { error: "signed-out" };
+    const held = await verify(credential, ["session", "shared-session"], true);
+    if (!held || held === "put-away" || !held.user_id) return { error: "signed-out" };
+    if (typeof pin !== "string" || !PIN.test(pin)) return { error: "wrong-pin", attemptsLeft: 0 };
+    const user = held.user_id;
+    return withFamily({ family: held.family_id, user }, async (tx) => {
+        if (!isParent((await rowsOf(tx, held.family_id, user)).filter((m) => m.ended_at === null)))
+            return { error: "signed-out" };
+        const refused = await checkPin(config, tx, held.family_id, pin);
+        if (refused) return refused;
+        const restored = await restore(tx, credential, held.id);
+        if (restored)
+            await record(tx, held.family_id, [
+                {
+                    kid_id: null,
+                    kind: "session-changed",
+                    actor: held.user_id,
+                    data: { session: held.id, change: "restored" },
+                },
+            ]);
+        return true;
     });
 }

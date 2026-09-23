@@ -118,7 +118,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         );
         const kidCookie = opened.cookies.find((c) => c.startsWith("ls_kids="));
         assert.match(kidCookie ?? "", /HttpOnly; SameSite=Lax; Max-Age=\d+/);
-        assert.deepEqual([...b.jar.keys()].sort(), ["ls_kids", "ls_session"]);
+        assert.deepEqual([...b.jar.keys()].sort(), ["ls_browser", "ls_kids", "ls_session"]);
         assert.equal((b.jar.get("ls_kids") ?? "").split("~").length, 2, "one credential per child");
         const after = await keyRow(session);
         assert.ok(after, "the parent's session key stays");
@@ -268,7 +268,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         const left = await leave(b, PIN);
         assert.equal(left.status, 204, JSON.stringify(left.body));
         assert.ok(left.cookies.some((c) => c.startsWith("ls_kids=;") && /Max-Age=0/.test(c)));
-        assert.deepEqual([...b.jar.keys()], ["ls_session"]);
+        assert.deepEqual([...b.jar.keys()].sort(), ["ls_browser", "ls_session"]);
         assert.equal(sessionIdIn(b), session, "the same key, not a new one");
         const me = await b.call("GET", "/api/me");
         assert.equal(at(me.body, "user", "id"), made.user);
@@ -284,6 +284,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         );
         const old = new Browser(config);
         old.jar.set("ls_kids", kidCookie);
+        old.jar.set("ls_browser", b.jar.get("ls_browser") ?? "");
         assert.equal((await old.call("GET", "/api/kid")).status, 401, "the view's keys are gone");
         const back = await lastEvent("session-changed");
         assert.deepEqual(
@@ -327,6 +328,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         const copy = new Browser(config);
         const opened = await viewFor([made.theo]);
         copy.jar.set("ls_kids", opened.jar.get("ls_kids") ?? "");
+        copy.jar.set("ls_browser", opened.jar.get("ls_browser") ?? "");
         const other = sessionIdIn(opened);
         assert.equal((await leave(copy, PIN)).status, 204);
         assert.equal(at((await copy.call("GET", "/api/me")).body, "user", "id"), made.user);
@@ -414,7 +416,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         );
     });
 
-    it("ends when a grown-up signs in on the browser that holds it, which then holds only the new session", async () => {
+    it("parent sign-in clears legacy routing cookies without ending independent child views", async () => {
         const b = await viewFor([made.maya]);
         const putAway = sessionIdIn(b);
         const kidCookie = b.jar.get("ls_kids") ?? "";
@@ -432,12 +434,8 @@ describe("a children's view", { skip: reason ?? false }, () => {
         assert.equal(await keyRow(putAway), undefined, "the put-away key went with it");
         const old = new Browser(config);
         old.jar.set("ls_kids", kidCookie);
-        assert.equal((await old.call("GET", "/api/kid")).status, 401);
-        const recorded = await lastEvent("kid-session-ended");
-        assert.deepEqual(
-            [at(recorded, "data", "reason"), at(recorded, "actor")],
-            ["sign-in", made.user],
-        );
+        old.jar.set("ls_browser", b.jar.get("ls_browser") ?? "");
+        assert.equal((await old.call("GET", "/api/kid")).status, 200);
     });
 
     it("sends the cookie again when a use moves seen_at, holding only the keys still alive", async () => {

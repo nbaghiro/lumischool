@@ -32,6 +32,8 @@ import {
     setMyPicture,
     KIDS_JOIN,
     leaveKidView,
+    lockParent,
+    unlockParent,
     me,
     openKidView,
     setFamilyPin,
@@ -44,8 +46,17 @@ import {
     type KidSession,
     type Opened,
 } from "./auth";
-import { closeApp, ping } from "./db/client";
-import { EXPIRY, LOCAL_PEPPER, parseCredential } from "./db/keys";
+import { closeApp, ping, withFamily } from "./db/client";
+import {
+    EXPIRY,
+    LOCAL_PEPPER,
+    parseCredential,
+    verify,
+    issue,
+    bindToBrowser,
+    browserAllows,
+    endBrowser,
+} from "./db/keys";
 import type { Key } from "./db/schema";
 import { consoleTransport, outbox, resendTransport } from "./email";
 import { COOKIES } from "./pages";
@@ -338,7 +349,12 @@ function cookiesOf(req: Request, wanted: readonly string[]): Map<string, string>
 }
 
 /** The cookies, named as auth.md names them, and without the prefix where there is no HTTPS. */
-function names(config: Config): { session: string; pending: string; kids: string } {
+function names(config: Config): {
+    session: string;
+    pending: string;
+    kids: string;
+    browser: string;
+} {
     return config.secure ? COOKIES.secure : COOKIES.plain;
 }
 
@@ -447,17 +463,32 @@ async function databaseAnswers(): Promise<boolean> {
 function routes(config: Config): Route[] {
     const n = names(config);
 
-    /**
-     * A grown-up has signed in on a browser that held a children's view: the view ends and its cookie
-     * is cleared in the same answer, so the browser holds one credential and not both. The cookie is
-     * read only to end it (.docs/auth.md, flow 7).
-     */
-    const endingKids = async (c: Ctx, res: Response, user: string): Promise<Response> => {
-        const held = c.req.headers.get("x-kid-session") ?? c.cookies.get(n.kids) ?? null;
-        if (held === null) return res;
-        await endHeldKids(held, user);
-        if (!c.req.headers.has("x-kid-session"))
-            res.headers.append("set-cookie", cookie(config, n.kids, "", 0));
+    const bind = async (
+        c: Ctx,
+        res: Response,
+        family: string,
+        ids: string[],
+    ): Promise<Response> => {
+        let browser = c.cookies.get(n.browser) ?? null;
+        const held = browser ? await verify(browser, ["browser"]) : null;
+        if (!held || held === "put-away") {
+            const made = await withFamily({ family }, (tx) =>
+                issue(tx, family, { kind: "browser" }),
+            );
+            browser = made.credential;
+        }
+        if (browser) {
+            await bindToBrowser(family, ids, browser);
+            res.headers.append("set-cookie", cookie(config, n.browser, browser, 90 * 24 * 60 * 60));
+        }
+        return res;
+    };
+    const parentIn = async (c: Ctx, opened: Opened): Promise<Response> => {
+        const res = await bind(c, signedIn(config, opened), opened.me.family.id, [
+            opened.me.session.id,
+        ]);
+        // Legacy routing cookies must not send a fresh parent tab back into the kids app.
+        if (c.cookies.has(n.kids)) res.headers.append("set-cookie", cookie(config, n.kids, "", 0));
         return res;
     };
 
@@ -527,7 +558,9 @@ function routes(config: Config): Route[] {
                         : problem(400, "bad-email");
                 const headers = new Headers();
                 headers.append("set-cookie", cookie(config, n.pending, asked.pending, MINUTES_15));
-                return json(202, {}, headers);
+                return field(c.body, "tab") === true
+                    ? json(202, { challenge: asked.pending })
+                    : json(202, {}, headers);
             },
         },
         {
@@ -537,14 +570,13 @@ function routes(config: Config): Route[] {
             run: async (c) => {
                 const out = await checkCode(
                     config,
-                    c.cookies.get(n.pending) ?? null,
+                    c.req.headers.get("x-sign-in-challenge") ?? c.cookies.get(n.pending) ?? null,
                     textField(c.body, "code"),
                     c.device,
                     c.cookies.get(n.session) ?? null,
                 );
                 if ("error" in out) return declined(out);
-                if ("credential" in out)
-                    return endingKids(c, signedIn(config, out), out.me.user.id);
+                if ("credential" in out) return parentIn(c, out);
                 return json(200, out);
             },
         },
@@ -562,14 +594,12 @@ function routes(config: Config): Route[] {
                         problem: "send family_id, or start with name, family and timeZone",
                     });
                 const out = await chooseFamily(
-                    c.cookies.get(n.pending) ?? null,
+                    c.req.headers.get("x-sign-in-challenge") ?? c.cookies.get(n.pending) ?? null,
                     choice,
                     c.device,
                     c.cookies.get(n.session) ?? null,
                 );
-                return "error" in out
-                    ? declined(out)
-                    : endingKids(c, signedIn(config, out), out.me.user.id);
+                return "error" in out ? declined(out) : parentIn(c, out);
             },
         },
         {
@@ -578,7 +608,72 @@ function routes(config: Config): Route[] {
             who: "adult",
             run: async (c, adult) => {
                 const opened = await switchFamily(adult, textField(c.body, "family_id"), c.device);
-                return opened ? signedIn(config, opened) : problem(404, "not-found");
+                return opened ? parentIn(c, opened) : problem(404, "not-found");
+            },
+        },
+        {
+            method: "GET",
+            path: "/api/auth/status",
+            who: "anyone",
+            run: async (c) => {
+                const credential = c.cookies.get(n.session) ?? null;
+                const parsed = credential ? parseCredential(credential) : null;
+                if (
+                    !parsed ||
+                    !(await browserAllows(
+                        parsed.family,
+                        [parsed.id],
+                        c.cookies.get(n.browser) ?? null,
+                    ))
+                )
+                    return json(200, { available: false, locked: false });
+                const adult = await adultFrom(credential);
+                return json(200, { available: !!adult, locked: adult === "put-away" });
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/auth/lock",
+            who: "adult",
+            run: async (_c, adult) => {
+                const out = await lockParent(adult);
+                return out === true ? json(204, null) : problem(409, out.error);
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/auth/unlock",
+            who: "anyone",
+            run: async (c) => {
+                const credential = c.cookies.get(n.session) ?? null;
+                const parsed = credential ? parseCredential(credential) : null;
+                if (
+                    !parsed ||
+                    !(await browserAllows(
+                        parsed.family,
+                        [parsed.id],
+                        c.cookies.get(n.browser) ?? null,
+                    ))
+                )
+                    return problem(401, "signed-out");
+                const out = await unlockParent(config, credential, field(c.body, "pin"));
+                return out === true
+                    ? json(204, null)
+                    : problem(out.error === "signed-out" ? 401 : 403, out.error);
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/auth/browser/sign-out",
+            who: "adult",
+            run: async (c, adult) => {
+                await signOut(adult, false);
+                const browser = c.cookies.get(n.browser);
+                if (browser) await endBrowser(browser);
+                const headers = new Headers();
+                for (const name of [n.session, n.kids, n.browser])
+                    headers.append("set-cookie", cookie(config, name, "", 0));
+                return json(204, null, headers);
             },
         },
         {
@@ -712,14 +807,9 @@ function routes(config: Config): Route[] {
                     c.device,
                 );
                 if (!out) return problem(400, "wrong-pin");
-                const previous = c.req.headers.get("x-kid-session");
-                const held = await kidSessionFrom(previous);
-                if (held) await endHeldKids(previous, held.opener);
-                const adult = await adultFrom(c.cookies.get(n.session) ?? null);
-                if (adult && adult !== "put-away") await signOut(adult, false);
-                const headers = new Headers();
-                headers.append("set-cookie", cookie(config, n.session, "", 0));
-                return json(200, out, headers);
+                const parsed = parseCredential(out.credential);
+                if (!parsed) return problem(500, "server");
+                return bind(c, json(200, out), parsed.family, [parsed.id]);
             },
         },
         {
@@ -757,12 +847,26 @@ function routes(config: Config): Route[] {
             path: "/api/kid-sessions",
             who: "adult",
             run: async (c, adult) => {
-                const out = await openKidView(adult, field(c.body, "kids"), c.device);
+                const out = await openKidView(
+                    adult,
+                    field(c.body, "kids"),
+                    c.device,
+                    field(c.body, "tab") === true,
+                );
                 if ("error" in out)
                     return out.error === "no-consent"
                         ? problem(409, "no-consent", { kid: out.kid })
                         : problem(REFUSED[out.error], out.error);
-                if (field(c.body, "tab") === true) return json(200, { credential: out.credential });
+                if (field(c.body, "tab") === true)
+                    return bind(
+                        c,
+                        json(200, { credential: out.credential }),
+                        adult.family.id,
+                        out.credential.split(KIDS_JOIN).flatMap((x) => {
+                            const p = parseCredential(x);
+                            return p ? [p.id] : [];
+                        }),
+                    );
                 // The browser gains the children's view and keeps the session's cookie, whose key is
                 // now put away: every adult route refuses it until the PIN gives it back (flow 7).
                 const headers = new Headers();
@@ -771,7 +875,15 @@ function routes(config: Config): Route[] {
                     "set-cookie",
                     cookie(config, n.kids, out.credential, kidsMaxAge([{ created_at: now }])),
                 );
-                return json(204, null, headers);
+                return bind(
+                    c,
+                    json(204, null, headers),
+                    adult.family.id,
+                    out.credential.split(KIDS_JOIN).flatMap((x) => {
+                        const parsed = parseCredential(x);
+                        return parsed ? [parsed.id] : [];
+                    }),
+                );
             },
         },
         {
@@ -962,14 +1074,27 @@ function routes(config: Config): Route[] {
                     }
                 }
                 if (c.req.headers.has("x-kid-session"))
-                    return json(200, { credential: out.credential });
+                    return bind(
+                        c,
+                        json(200, { credential: out.credential }),
+                        kid.family.id,
+                        out.credential.split(KIDS_JOIN).flatMap((x) => {
+                            const parsed = parseCredential(x);
+                            return parsed ? [parsed.id] : [];
+                        }),
+                    );
                 // The view's cookie now carries the new child's key beside the others.
                 const headers = new Headers();
                 headers.append(
                     "set-cookie",
                     cookie(config, n.kids, out.credential, kidsMaxAge(out.keys)),
                 );
-                return json(204, null, headers);
+                return bind(
+                    c,
+                    json(204, null, headers),
+                    kid.family.id,
+                    out.keys.map((k) => k.id),
+                );
             },
         },
         {
@@ -977,6 +1102,28 @@ function routes(config: Config): Route[] {
             path: "/api/kid/leave",
             who: "kid",
             run: async (c, kid) => {
+                // A tab-opened view can return to the existing parent without rotating that shared session.
+                const credential = c.cookies.get(n.session) ?? null;
+                const active = await adultFrom(credential);
+                if (
+                    c.req.headers.has("x-kid-session") &&
+                    active &&
+                    active !== "put-away" &&
+                    active.parent &&
+                    active.family.id === kid.family.id
+                ) {
+                    if (
+                        !(await browserAllows(
+                            active.family.id,
+                            [active.session.id],
+                            c.cookies.get(n.browser) ?? null,
+                        ))
+                    )
+                        return problem(401, "signed-out");
+                    const unlocked = await unlockParent(config, credential, field(c.body, "pin"));
+                    if (unlocked !== true) return problem(403, unlocked.error);
+                    return json(200, { me: await me(active) });
+                }
                 const out = await leaveKidView(
                     config,
                     kid,
@@ -1007,7 +1154,7 @@ function routes(config: Config): Route[] {
                 );
                 if (!c.req.headers.has("x-kid-session"))
                     headers.append("set-cookie", cookie(config, n.kids, "", 0));
-                return json(204, null, headers);
+                return bind(c, json(204, null, headers), out.me.family.id, [out.me.session.id]);
             },
         },
 
@@ -1108,7 +1255,10 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
         if (method === "OPTIONS") {
             const res = json(204, null);
             res.headers.set("access-control-allow-methods", "GET, POST");
-            res.headers.set("access-control-allow-headers", "content-type");
+            res.headers.set(
+                "access-control-allow-headers",
+                "content-type, x-kid-session, x-sign-in-challenge",
+            );
             return cors(req, res);
         }
         const found = table
@@ -1159,12 +1309,13 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                 params: hit.params,
                 body,
                 ip: clientIp(req, ip, config),
-                cookies: cookiesOf(req, [n.session, n.pending, n.kids]),
+                cookies: cookiesOf(req, [n.session, n.pending, n.kids, n.browser]),
                 device: deviceName(req.headers.get("user-agent")),
             };
             const r = hit.r;
             if (r.who === "adult") {
-                // Adult routes read the session cookie and nothing else; a children's view is ignored.
+                // A child tab never borrows the shared parent cookie, including after expiry.
+                if (req.headers.has("x-kid-session")) return cors(req, problem(403, "not-allowed"));
                 const sent = c.cookies.get(n.session) ?? null;
                 const adult = await adultFrom(sent);
                 // A session put away for a children's view is refused and its cookie kept, since the
@@ -1178,6 +1329,14 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                         refused.headers.append("set-cookie", cookie(config, n.session, "", 0));
                     return cors(req, refused);
                 }
+                if (
+                    !(await browserAllows(
+                        adult.family.id,
+                        [adult.session.id],
+                        c.cookies.get(n.browser) ?? null,
+                    ))
+                )
+                    return cors(req, problem(401, "signed-out"));
                 const res = await r.run(c, adult);
                 // A use that moved `seen_at` sends the cookie again, so the browser keeps it as long as
                 // the key lives rather than thirty days from sign-in, unless the route set or cleared it.
@@ -1197,6 +1356,14 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                         refused.headers.append("set-cookie", cookie(config, n.kids, "", 0));
                     return cors(req, refused);
                 }
+                if (
+                    !(await browserAllows(
+                        kid.family.id,
+                        kid.keys.map((k) => k.id),
+                        c.cookies.get(n.browser) ?? null,
+                    ))
+                )
+                    return cors(req, problem(401, "no-kid-session"));
                 const res = await r.run(c, kid);
                 // As a session's: sent again when `seen_at` moved, holding only the keys still alive.
                 if (!tab && sent !== null && kid.seen && !setsCookie(res, n.kids)) {

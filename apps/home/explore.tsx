@@ -51,7 +51,7 @@ import {
     EVERYTHING,
     type Filters,
 } from "./catalogue";
-import { KIDS, lessonIn, mapHref, signInFor } from "./routes";
+import { lessonIn, mapHref, signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
 
@@ -70,7 +70,7 @@ async function family(): Promise<PackView | Failure | null> {
     if (!("error" in p)) return p;
     packOnce = null;
     if (p.error === "put-away") {
-        location.replace(KIDS);
+        location.replace("/sign-in?locked=1");
         return null;
     }
     if (p.error !== "signed-out") return p;

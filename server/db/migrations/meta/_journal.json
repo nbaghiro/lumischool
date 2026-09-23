@@ -15,6 +15,20 @@
       "when": 1790167618606,
       "tag": "0001_weekly_mail",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790167618607,
+      "tag": "0002_kid_usernames_always_login",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790167618608,
+      "tag": "0003_kid_username_availability",
+      "breakpoints": true
     }
   ]
 }

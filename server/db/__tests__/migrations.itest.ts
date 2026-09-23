@@ -18,6 +18,7 @@ const journal = JSON.parse(readFileSync(join(dir, "meta/_journal.json"), "utf8")
     dialect: string;
     entries: { idx: number; version: string; when: number; tag: string; breakpoints: boolean }[];
 };
+const baseCount = journal.entries.length;
 const baseTime = must(journal.entries.at(-1), "initial migration").when;
 let url = "";
 let owner: Store | null = null;
@@ -77,7 +78,7 @@ describe("forward migrations on an ordinary Postgres owner", { skip: reason ?? f
     it("serializes concurrent runs and records an applied migration only once", async () => {
         await Promise.all([apply(url, dir), apply(url, dir)]);
         const rows = await db().raw`select * from drizzle.__drizzle_migrations`;
-        assert.equal(rows.length, 2);
+        assert.equal(rows.length, baseCount);
     });
 
     it("preserves existing rows across an upgrade and a corrective migration", async () => {
@@ -105,7 +106,7 @@ describe("forward migrations on an ordinary Postgres owner", { skip: reason ?? f
         );
         await apply(url, dir);
         const history = await db().raw`select * from drizzle.__drizzle_migrations`;
-        assert.equal(history.length, 5);
+        assert.equal(history.length, baseCount + 3);
     });
 
     it("rolls back a failed batch without recording it and releases its lock", async () => {
@@ -117,13 +118,19 @@ describe("forward migrations on an ordinary Postgres owner", { skip: reason ?? f
         const columns = await db().raw`select column_name from information_schema.columns
             where table_schema = 'public' and table_name = 'migration_probe'`;
         assert.ok(columns.every((c) => c.column_name !== "abandoned"));
-        assert.equal((await db().raw`select * from drizzle.__drizzle_migrations`).length, 5);
+        assert.equal(
+            (await db().raw`select * from drizzle.__drizzle_migrations`).length,
+            baseCount + 3,
+        );
         // Failed migrations were never applied and can be corrected before retrying.
         writeFileSync(
             join(dir, "0004_failure.sql"),
             "ALTER TABLE migration_probe ADD COLUMN completed boolean;",
         );
         await apply(url, dir);
-        assert.equal((await db().raw`select * from drizzle.__drizzle_migrations`).length, 6);
+        assert.equal(
+            (await db().raw`select * from drizzle.__drizzle_migrations`).length,
+            baseCount + 4,
+        );
     });
 });

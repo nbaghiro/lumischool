@@ -4,3 +4,84 @@
     justify-content: flex-end;
     padding-right: 6px;
 }
+
+.kid-profile {
+    position: relative;
+}
+.kid-profile-toggle {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+.kid-profile-toggle .kid-portrait {
+    width: 36px;
+    aspect-ratio: 4 / 5;
+    rotate: 0deg;
+    filter: none;
+}
+.kid-profile-toggle:hover .kid-portrait,
+.kid-profile-toggle[aria-expanded="true"] .kid-portrait {
+    translate: 0 -2px;
+}
+.kid-profile-name {
+    margin: 0;
+    padding: 0 10px 8px;
+    border-bottom: 1px solid var(--rule);
+    font: 700 16px / 1.2 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+    overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+    .kid-profile-toggle:hover .kid-portrait,
+    .kid-profile-toggle[aria-expanded="true"] .kid-portrait {
+        translate: none;
+    }
+}
+.kid-profile-options {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: min(260px, calc(100vw - 24px));
+    padding: 12px 8px 8px;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow:
+        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
+        0 18px 36px -20px color-mix(in srgb, var(--ink) 50%, transparent);
+}
+.kid-profile-options .btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 10px;
+    font: 700 15px / 1 var(--f-read);
+    color: var(--ink);
+    text-align: left;
+    text-decoration: none;
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.kid-profile-options .btn:hover,
+.kid-profile-options .btn:focus-visible {
+    background: color-mix(in srgb, var(--sky) 22%, transparent);
+}
+.kid-profile-options output {
+    padding: 4px 10px;
+    font-size: 0.9rem;
+}

@@ -1,3 +1,6 @@
+import { emailOf } from "../../school/family/login";
+import { onThisComputer } from "../../engine/ui/device";
+import { inKidMode } from "../../engine/ui/kid-session";
 // Signing in and starting a family (.docs/auth.md, flows 1 and 2), in design B: a postcard on the map
 // for each step. The address and the code we send to it, then a family to choose when the address
 // has several, or one to start when it has none.
@@ -19,7 +22,7 @@ import {
 import * as api from "../../engine/ui/api";
 import { failureText } from "../../engine/ui/failure";
 import { Check, CodeInput, Field, TextButton, TimeZone } from "../../engine/ui/fields";
-import { Button, detectedZone } from "../../engine/ui/form";
+import { Button, PinInput, detectedZone } from "../../engine/ui/form";
 import { useLook } from "../../engine/ui/page";
 import { Addressed, Corner, Postcard, Ps, To, type Place } from "../../engine/ui/postcard";
 import { go, Link } from "../../engine/ui/router";
@@ -54,13 +57,12 @@ type Step =
     | { at: "choose"; families: FamilyChoice[] }
     | { at: "none" };
 
-const looksLikeEmail = (s: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-
 /** `/sign-in` and `/start`, one flow: `start` asks for the new family's answers with the address. */
 export function SignIn(props: { start: boolean }): JSX.Element {
     const [bar, setBar] = createSignal<HTMLElement>();
     const look = useLook();
     const query = new URLSearchParams(location.search);
+    const [unlock, setUnlock] = createSignal(false);
     const [kids, setKids] = createSignal(!props.start && query.get("for") === "kids");
     const choose = (kid: boolean): void => {
         const url = new URL(location.href);
@@ -83,7 +85,15 @@ export function SignIn(props: { start: boolean }): JSX.Element {
     onMount(() => {
         setBar(document.querySelector<HTMLElement>(".page-bar") ?? undefined);
         void (async () => {
-            if (!kids() && !query.has("again") && (await api.me()) && !kids())
+            const status = await api.parentStatus();
+            if (
+                !query.has("again") &&
+                "available" in status &&
+                status.available &&
+                (status.locked || inKidMode())
+            )
+                setUnlock(true);
+            if (!kids() && !query.has("again") && !unlock() && (await api.me()) && !kids())
                 go(next, { replace: true });
             else setStep({ at: "ask", email: "", said: "" });
         })();
@@ -136,6 +146,9 @@ export function SignIn(props: { start: boolean }): JSX.Element {
                 when={kids()}
                 fallback={
                     <Switch>
+                        <Match when={unlock()}>
+                            <ParentUnlock next={next} onEmail={() => setUnlock(false)} />
+                        </Match>
                         <Match when={asking()}>
                             {(s) => (
                                 <Ask
@@ -195,11 +208,23 @@ function Ask(props: {
         if (busy()) return;
         const address = email().trim();
         const problems = {
-            name: props.start && !name().trim() ? "Type what your family calls you." : undefined,
-            family: props.start && !family().trim() ? "Type your family's name." : undefined,
+            name: props.start
+                ? !name().trim()
+                    ? "Type what your family calls you."
+                    : name().trim().length > 80
+                      ? "Use up to 80 characters for your name."
+                      : undefined
+                : undefined,
+            family: props.start
+                ? !family().trim()
+                    ? "Type your family's name."
+                    : family().trim().length > 80
+                      ? "Use up to 80 characters for your family’s name."
+                      : undefined
+                : undefined,
             email: !address
                 ? "Type your email address."
-                : looksLikeEmail(address)
+                : emailOf(address)
                   ? undefined
                   : "That does not look like an email address. Check it and try again.",
         };
@@ -229,6 +254,7 @@ function Ask(props: {
             type="email"
             name="email"
             autocomplete="email"
+            autocapitalize="none"
             value={email()}
             onInput={setEmail}
             error={wrong().email}
@@ -602,6 +628,54 @@ function NoFamily(props: { onLost: (said: string) => void }): JSX.Element {
             }
         >
             <Ps>{NAMES}</Ps>
+        </Postcard>
+    );
+}
+
+function ParentUnlock(props: { next: string; onEmail: () => void }): JSX.Element {
+    const [pin, setPin] = createSignal("");
+    const [busy, setBusy] = createSignal(false);
+    const [said, setSaid] = createSignal("");
+    const unlock = async (): Promise<void> => {
+        if (busy()) return;
+        setBusy(true);
+        const answer = await api.unlockParent(pin());
+        if (answer === true) {
+            location.replace(props.next);
+            return;
+        }
+        setBusy(false);
+        setPin("");
+        setSaid(
+            answer.error === "no-pin"
+                ? "No adult PIN is set. Sign in by email to continue."
+                : failureText(answer, onThisComputer(location.hostname)),
+        );
+    };
+    return (
+        <Postcard
+            kicker="For grown-ups"
+            title="Unlock parent access"
+            lead="Type the adult family PIN. The children’s views stay open."
+        >
+            <form
+                class="form"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    void unlock();
+                }}
+            >
+                <PinInput label="Adult family PIN" value={pin()} onInput={setPin} />
+                <Button submit busy={busy()}>
+                    Unlock parent access
+                </Button>
+                <Show when={said()}>
+                    <Say text={said()} />
+                </Show>
+            </form>
+            <button type="button" class="link" onClick={props.onEmail}>
+                Sign in by email instead
+            </button>
         </Postcard>
     );
 }

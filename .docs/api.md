@@ -257,3 +257,21 @@ Built: sign-in by emailed code (flow 2) with the console transport; starting a f
 Built since: the one origin in development, with the grown-ups' app and the children's view calling these routes ([local.md](local.md)); the children's view's queue in the browser (flow 8); and the local outbox.
 
 Not built yet, in auth.md's order of work: the sign-in link and passkeys; the fresh sign-in for anything but setting the family PIN; invitations and removing members (flow 3), which will also end the children's views a removed parent opened; withdrawing consent, which will also end that child's views, and the confirming email; changing a tutor's window; deleting a kid, closing a family and exporting (flow 12); the sweeps; `?since=` on a child's state; Resend; serving the built apps from the API's process in production, and their content security policies.
+
+
+## Shared parent sign-in and independent child tabs
+
+Parent cookies are shared across tabs; `X-Kid-Session` identifies only the child's view in that tab.
+Adult routes reject that header even if a valid parent cookie is present. Both kinds of session
+require their bound HttpOnly browser cookie. Old unbound sessions require a new sign-in.
+
+- `GET /api/auth/status` returns only `{ available, locked }`, allowing the sign-in page to offer adult PIN unlock.
+- `POST /api/auth/lock` locks this browser's current parent session, leaving child views active.
+- `POST /api/auth/unlock` accepts `{ pin }`, verifies the adult PIN, and restores the held parent session.
+- `POST /api/auth/browser/sign-out` requires parent authorization and revokes all sessions bound to this browser.
+- `POST /api/auth/email/start` accepts `tab: true` and returns `{ challenge }` while also setting the pending cookie for legacy clients. Verify/choose accept it in `X-Sign-In-Challenge`.
+- `POST /api/kid-sessions` with `tab: true` returns a credential without locking the parent session.
+- `POST /api/kid/sign-in` preserves parent and sibling sessions. Switching a duplicated child tab does not revoke its original view.
+
+The browser cookie carries no authority by itself. Its key is revocable and its secret's hash binds
+the session, so browser-wide sign-out remains effective even if a tab retries with its old credential.

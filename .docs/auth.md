@@ -2,40 +2,79 @@
 
 ## Kids’ sign-in and independent tabs
 
-Parents can enable a child’s own sign-in on `/account`. Children still have no email address or
-`users` row. `kids.settings.username` is a globally unique, case-insensitive sign-in name, separate
-from the display name; new children get a name plus a random suffix. A parent can edit it or leave
-it blank when saving to generate another. `kids.settings.kidLogin` defaults to false. Enabling
-requires consent and a kids’ PIN. These changes require a parent’s email sign-in in the last ten
+Children can use their own sign-in once a username and the shared kids’ PIN exist. Children still
+have no email address or `users` row. `kids.settings.username` is a globally unique, case-insensitive
+sign-in name, separate from the display name; new children get their normalized name when available,
+then a readable word and numeric suffix as needed. Short names gain a word to meet the minimum length.
+A parent can edit it or leave it blank when saving to generate another. A username requires consent
+and a kids’ PIN. These changes require a parent’s email sign-in in the last ten
 minutes; a session restored through the adult PIN is insufficient.
 
 The shared **kids’ PIN** is a `kid-pin` key, HMAC-hashed with a separate domain and family id. It
 must differ from the adult family PIN in either direction. The marketing header has one Sign in
 link; that page switches between Grown-ups and Kids. `/sign-in?for=kids` opens the kids’ form directly,
 and `/kids/sign-in` remains a compatible entry. The form accepts a username and kids’ PIN. Its `kid-session` names only that child and has
-`detail.login = true`. It cannot add siblings or restore an adult session, even with the adult PIN.
-Successful sign-in clears the browser’s adult session so navigating to parent pages requires adult
-sign-in again. Failed sign-in changes no browser credentials.
+`detail.login = true`. It cannot add siblings or create a parent session using the adult PIN alone. If this browser already holds an active parent session, adult PIN verification can return to that session.
+Successful child sign-in preserves the shared adult session. Failed sign-in changes no browser credentials.
 
-Current clients keep child credentials in **sessionStorage**, never localStorage or URLs, and send
-`X-Kid-Session`. An explicit header wins over the legacy cookie, including an empty or invalid header;
-it never falls back to a different child. Parent-opened views use the same transport. Existing cookie
-views can be adopted once through `/api/kid/tab`. Adult credentials remain HttpOnly cookies. Child
-tab sign-out and revocation never overwrite another tab’s child credential. The parent setup link opens
-a fresh tab with `noopener`; signing into two tabs creates two independent views. Reloading a
-tab keeps its view; duplicating a tab may copy its session until a separate sign-in replaces it.
+Parents stay signed in across tabs through their HttpOnly session cookie. Children use independent
+`sessionStorage` credentials sent as `X-Kid-Session`; the explicit header, including an empty or
+invalid value, never falls back to a cookie. Every adult route rejects requests carrying that header.
+The home app checks child mode before mounting private pages and sends the tab back to `/kids`.
+An empty child credential retains child mode after sign-out. Only successful adult authentication
+or PIN unlock clears it. Fresh parent tabs inherit the browser's parent session: this is a convenience
+mode, not a browser-wide child lock. A child with access to a fresh tab can reach those parent pages.
 
-Each view’s short unsent-answer queue has its own IndexedDB database, named with the non-secret
-family/key ids. A sibling’s tab cannot send, discard or clear it. Before voluntary sign-out or a
-replacement sign-in, the current tab sends its waiting answers; without a connection it stays open.
-Revoked views discard only their own queue. Closing a tab does not revoke its server key; parents
-can close that view from the existing open-views list. There is no local copy of the child’s log.
+The parent home opens each child's view through a `noopener` link to `/open-child?child=<id>`.
+That page creates the child session using the existing parent cookie, stores the credential in its
+own tab, and opens `/kids`. The URL never carries a credential. “Use this tab instead” is the explicit
+same-tab alternative. Opening either view no longer puts the parent's session away.
 
-Changing a username or enabling/disabling sign-in revokes that child’s username-opened views. Setting
+`Lock parent access on this browser` explicitly puts the shared parent session away under its own
+session id. Every parent tab is then refused, while children keep working. `/api/auth/unlock` checks
+the adult family PIN on the server, with its existing rate limits. Unlocking a locked session marks
+it as PIN-authenticated, so it cannot perform actions needing recent email verification. Email
+sign-in remains available when no adult PIN was set or the session expired. A child sign-in PIN
+never unlocks parent access. Returning from a parent-opened child tab to an already active parent
+session verifies the adult PIN without replacing that shared parent session.
+
+All newly issued parent and child sessions are bound to a `browser` key in the existing keys table.
+Its credential stays in an HttpOnly, SameSite cookie (`__Host-ls_browser` under HTTPS); session
+`detail.browser` stores its hash. The browser key alone grants no family access. A request must
+present its own session and the matching, live browser key. The browser key is scoped to the first
+family that issued it, can bind later sessions from other families, and expires after 90 days idle.
+Deleting that first family also invalidates its browser key. This may require fresh sign-in for
+other accounts on that browser, but never grants cross-family access.
+
+Ordinary parent sign-out ends parent access and preserves child sessions. Ending a child view affects
+only that view. `Sign out everyone on this browser` revokes the browser key and signs out the current
+parent; every session bound to that browser is refused, across families. It does not affect another
+browser. Existing family-wide child controls and account-wide parent sign-out remain separate.
+Parent tabs receive non-secret storage notifications and reload on parent changes; child tabs
+revalidate their own sessions without changing identity. Child sessions also revalidate on visibility
+and every 30 seconds while visible. Suspended/offline tabs observe revocation when they reconnect.
+
+Each view's unsent-answer queue remains partitioned by its family/key ids in IndexedDB. Switching
+identity or voluntarily signing out waits for queued answers to send; offline work cannot silently
+move to another child. Revoked views clear only their own queue. Native browser duplication can
+copy a tab credential: those duplicates share a view and its queue, and ending that view ends both.
+Independent sign-ins or the app's new-tab action create independent views. Closing a tab does not
+revoke its server key; parents can end it from the open-views list.
+
+Email-code requests use `tab: true` to receive a short-lived challenge kept in the requesting tab.
+Verify and family-selection requests send `X-Sign-In-Challenge`. Cookie-changing requests use an origin-wide Web Lock where available so simultaneous first sign-ins do not race the browser-binding cookie. An invalid explicit challenge
+never falls back to the legacy pending cookie. Parent sign-in no longer ends child views.
+
+**Upgrade:** sessions issued before browser binding require fresh sign-in. Old unbound credentials
+are refused, so they cannot bypass browser-wide revocation. Deploy after saving outstanding offline
+work; revocation follows the existing rule that unsent answers in ended views are discarded. No
+family records, lessons, or completed answers are deleted by this authentication upgrade.
+
+Changing a username revokes that child’s username-opened views. Setting
 the kids’ PIN revokes all username-opened views in the family. Parent-opened views keep their existing
 rules. Parents can also end individual views or all views, regardless of how they opened.
 
-Public failures use the same response for unknown names, disabled access, wrong PINs and throttling.
+Public failures use the same response for unknown names, wrong PINs and throttling.
 `kid_login_lookup` atomically counts attempts before lookup: five per normalized username and twenty
 per network in fifteen minutes. The stored identities are peppered hashes; attempt rows expire after
 a day. Failed PIN attempts are also counted across siblings: five wrong tries impose a fifteen-minute

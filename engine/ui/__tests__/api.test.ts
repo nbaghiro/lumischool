@@ -119,7 +119,7 @@ test("a code is asked for with a JSON body, and each way verifying can go comes 
     assert.equal(await api.startEmail("anna@example.com"), true);
     assert.equal(calls[0]?.method, "POST");
     assert.equal(calls[0]?.headers["content-type"], "application/json");
-    assert.deepEqual(calls[0]?.body, { email: "anna@example.com" });
+    assert.deepEqual(calls[0]?.body, { email: "anna@example.com", tab: true });
     assert.deepEqual(await api.verifyCode("11111111"), {
         error: "wrong-code",
         status: 400,
@@ -150,7 +150,7 @@ test("starting a family carries its answers on the code", async () => {
     answer = () => ({ status: 202, body: {} });
     const start = { name: "Sam", family: "Okafor", timeZone: "Europe/London" };
     assert.equal(await api.startEmail("sam@example.com", { start }), true);
-    assert.deepEqual(calls[0]?.body, { email: "sam@example.com", start });
+    assert.deepEqual(calls[0]?.body, { email: "sam@example.com", start, tab: true });
 });
 
 test("a sign-in leaves a hint, and a session the API has ended forgets it", async () => {
@@ -316,7 +316,7 @@ test("appends under a session send drafts, and read back what the server stored"
     });
 });
 
-test("opening the children's view sends the children and forgets the sign-in, since the API ends this browser's session", async () => {
+test("opening a child tab keeps the shared parent sign-in", async () => {
     memory.set(
         "lumischool.signed-in",
         JSON.stringify({ email: ME.user.email, name: ME.user.name, family: FAMILY.name }),
@@ -326,7 +326,7 @@ test("opening the children's view sends the children and forgets the sign-in, si
     assert.equal(await api.openKidSession([ROSIE.id, LEO.id]), true);
     assert.deepEqual(calls[0]?.body, { kids: [ROSIE.id, LEO.id], tab: true });
     assert.equal(calls[0]?.headers["content-type"], "application/json");
-    assert.equal(api.signedIn(), null);
+    assert.equal(api.signedIn()?.email, ME.user.email);
     assert.equal((await import("../kid-session")).kidCredential(), "family.key.secret");
 });
 

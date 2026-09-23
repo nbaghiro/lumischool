@@ -1,3 +1,4 @@
+import { inKidMode, PARENT_CHANGE } from "../../engine/ui/kid-session";
 // The grown-ups' app, on every path of the one origin but `/kids` (.docs/local.md, "The apps"). One
 // page, whose path names the screen; each screen's code is loaded the first time it is opened, and
 // the first is loaded with the fonts, so the first paint is the whole screen, styled. The bar is the
@@ -26,7 +27,10 @@ const Games = lazy(() => import("./games").then((m) => ({ default: m.Games })));
 const GrownBar = lazy(() => import("./bar").then((m) => ({ default: m.GrownBar })));
 const AddKidDialog = lazy(() => import("./bar").then((m) => ({ default: m.AddKidDialog })));
 
+const OpenChild = lazy(() => import("./open-child").then((m) => ({ default: m.OpenChild })));
+
 const SCREENS: Record<Screen, Component> = {
+    "open-child": OpenChild,
     family: Family,
     "sign-in": () => <SignIn start={false} />,
     start: () => <SignIn start />,
@@ -44,6 +48,7 @@ const SCREENS: Record<Screen, Component> = {
 };
 
 const LOAD: Record<Screen, () => Promise<unknown>> = {
+    "open-child": OpenChild.preload,
     family: Family.preload,
     "sign-in": SignIn.preload,
     start: SignIn.preload,
@@ -62,6 +67,7 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
 
 /** Which screens carry the grown-ups' bar: every one but the sign-in, the start and the outbox, whose cards stand alone. */
 const CARRIES: Record<Screen, boolean> = {
+    "open-child": false,
     family: true,
     "sign-in": false,
     start: false,
@@ -98,7 +104,24 @@ const Bar: Component = () => (
 );
 
 const root = document.getElementById("app");
-if (root) {
+if (root && inKidMode() && !["/sign-in", "/start"].includes(location.pathname)) {
+    location.replace("/kids");
+} else if (root) {
+    addEventListener("storage", (event) => {
+        if (event.key === PARENT_CHANGE && !inKidMode()) location.reload();
+    });
+    addEventListener("focus", () => {
+        if (inKidMode() || ["/sign-in", "/start"].includes(location.pathname)) return;
+        void import("../../engine/ui/api").then(async (api) => {
+            const status = await api.parentStatus();
+            if ("available" in status && (!status.available || status.locked))
+                location.replace("/sign-in");
+        });
+    });
+    addEventListener("pageshow", (event) => {
+        if (event.persisted) location.reload();
+    });
+
     const first = screenHere(location.pathname);
     // the bar's code comes with the first screen that carries it, so the first paint has both
     await Promise.all([fontsReady(), LOAD[first](), CARRIES[first] && GrownBar.preload()]);

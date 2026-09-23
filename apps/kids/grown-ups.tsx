@@ -180,9 +180,7 @@ export function GrownUps(props: {
                     </Button>
                 </div>
                 <p class="note">
-                    Signing in on this device closes the children's view here and takes the place of
-                    the session the PIN would bring back. A grown-up can open the view again from
-                    the family's page.
+                    This tab becomes a parent page. Other children’s tabs stay as they are.
                 </p>
             </Postcard>
         </Column>

@@ -296,6 +296,7 @@ describe(
                 );
             const parentOnly = new Browser(config);
             parentOnly.jar.set("ls_session", a.parent.jar.get("ls_session") ?? "");
+            parentOnly.jar.set("ls_browser", a.parent.jar.get("ls_browser") ?? "");
             for (const [method, path] of [
                 ["GET", "/api/kid"],
                 ["GET", `/api/kid/${a.kid}/state`],
@@ -318,6 +319,12 @@ describe(
                 a.family,
                 "B's view beside A's session is ignored",
             );
+            assert.equal(
+                (await parentOnly.call("GET", "/api/kid")).status,
+                401,
+                "a child credential copied without its browser binding is refused",
+            );
+            parentOnly.jar.set("ls_browser", b.view.jar.get("ls_browser") ?? "");
             const view = await parentOnly.call("GET", "/api/kid");
             assert.deepEqual(
                 items(at(view.body, "kids")).map((k) => at(k, "id")),

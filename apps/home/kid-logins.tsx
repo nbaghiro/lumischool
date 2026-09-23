@@ -1,3 +1,4 @@
+import { usernameOf } from "../../school/family/login";
 import { createResource, createSignal, For, Show, type JSX } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { Field } from "../../engine/ui/fields";
@@ -22,8 +23,8 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
         const d = data();
         return !!d && !("error" in d) && d;
     };
-    const changed = (): void => {
-        void refetch();
+    const changed = async (): Promise<void> => {
+        await refetch();
         props.onChanged();
     };
     const save = async (): Promise<void> => {
@@ -34,6 +35,7 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
         }
         setBusy(true);
         const r = await api.setKidsPin(pin());
+        if (r === true) await changed();
         setBusy(false);
         setPin("");
         setAgain("");
@@ -42,7 +44,6 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                 ? "The kids’ PIN is set. Previous username sign-ins are closed."
                 : failure(r),
         );
-        if (r === true) changed();
     };
     return (
         <Postcard focus={false} kicker="Your account" title="Kids’ sign-in">
@@ -74,20 +75,30 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                             wait. Answers not sent yet are lost.
                         </p>
                         <form
-                            class="form"
+                            class="form kids-pin-form"
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 void save();
                             }}
                         >
-                            <p class="note">New kids’ PIN</p>
-                            <PinInput label="New kids’ PIN" value={pin()} onInput={setPin} />
-                            <p class="note">Type the kids’ PIN again</p>
-                            <PinInput
-                                label="Type the kids’ PIN again"
-                                value={again()}
-                                onInput={setAgain}
-                            />
+                            <div class="kids-pin-fields">
+                                <div class="kids-pin-field">
+                                    <p class="note">New kids’ PIN</p>
+                                    <PinInput
+                                        label="New kids’ PIN"
+                                        value={pin()}
+                                        onInput={setPin}
+                                    />
+                                </div>
+                                <div class="kids-pin-field">
+                                    <p class="note">Type it again</p>
+                                    <PinInput
+                                        label="Type the kids’ PIN again"
+                                        value={again()}
+                                        onInput={setAgain}
+                                    />
+                                </div>
+                            </div>
                             <Button submit busy={busy()}>
                                 Save kids’ PIN
                             </Button>
@@ -101,22 +112,17 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                             username blank to make one automatically. Saving closes that child’s
                             username sign-ins; answers not sent yet are lost.
                         </p>
-                        <For each={d().kids}>
-                            {(kid) => (
-                                <LoginRow kid={kid} pinSet={d().pinSet} onChanged={changed} />
-                            )}
-                        </For>
+                        <fieldset
+                            disabled={busy() || data.loading}
+                            style={{ border: "0", padding: "0", margin: "0", "min-width": "0" }}
+                        >
+                            <For each={d().kids}>
+                                {(kid) => <LoginRow kid={kid} onChanged={changed} />}
+                            </For>
+                        </fieldset>
                         <Show when={!d().kids.length}>
                             <p>Add a child to your family to set up their sign-in.</p>
                         </Show>
-                        <a
-                            class="btn second"
-                            href="/sign-in?for=kids"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            Open kids’ sign-in in a new tab
-                        </a>
                     </>
                 )}
             </Show>
@@ -126,24 +132,26 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
 
 function LoginRow(props: {
     kid: Logins["kids"][number];
-    pinSet: boolean;
-    onChanged: () => void;
+    onChanged: () => Promise<void>;
 }): JSX.Element {
     const [username, setUsername] = createSignal(props.kid.username ?? "");
-    const [enabled, setEnabled] = createSignal(props.kid.enabled);
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
     const save = async (): Promise<void> => {
         if (busy()) return;
+        if (username() !== "" && !usernameOf(username())) {
+            setSaid("Use 3–32 letters, numbers or hyphens, starting with a letter.");
+            return;
+        }
         setBusy(true);
-        const r = await api.setKidLogin(props.kid.id, username(), enabled());
+        const r = await api.setKidLogin(props.kid.id, username(), true);
         setBusy(false);
         setSaid(r === true ? "Saved." : failure(r));
-        if (r === true) props.onChanged();
+        if (r === true) await props.onChanged();
     };
     return (
         <form
-            class="form part"
+            class="form part kid-login-row"
             onSubmit={(e) => {
                 e.preventDefault();
                 void save();
@@ -158,15 +166,6 @@ function LoginRow(props: {
                 autocapitalize="none"
                 autocomplete="off"
             />
-            <label class="check">
-                <input
-                    type="checkbox"
-                    checked={enabled()}
-                    disabled={!props.pinSet}
-                    onChange={(e) => setEnabled(e.currentTarget.checked)}
-                />{" "}
-                Allow {props.kid.name} to sign in
-            </label>
             <Button submit second busy={busy()}>
                 Save {props.kid.name}’s sign-in
             </Button>
