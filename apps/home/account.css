@@ -232,6 +232,16 @@
     justify-self: start;
 }
 
+.ga .btn.ga-danger {
+    background: #a82035;
+    border-color: #a82035;
+    color: #fff;
+}
+.ga .btn.ga-danger:hover {
+    background: #87192a;
+    border-color: #87192a;
+}
+
 .ga-account-field {
     min-width: 0;
 }

@@ -46,6 +46,7 @@ import {
     CONSENT_NOTICE,
     createFamily,
     familyRow,
+    deleteFamily,
     kidsOf,
     log,
     person,
@@ -76,6 +77,7 @@ import {
     newSecret,
     openKids,
     parseCredential,
+    preserveBrowserBindings,
     pinFor,
     pinHash,
     pinTried,
@@ -1625,6 +1627,26 @@ export async function endParentMembership(
             false,
         ),
     };
+}
+
+export async function closeFamily(
+    adult: Adult,
+    family: unknown,
+    name: unknown,
+): Promise<
+    { ok: true } | { error: "not-allowed" | "fresh-sign-in" | "bad-request" | "not-found" }
+> {
+    if (!adult.parent) return { error: "not-allowed" };
+    if (!fresh(adult)) return { error: "fresh-sign-in" };
+    if (family !== adult.family.id || typeof name !== "string") return { error: "bad-request" };
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        const row = await familyRow(tx, adult.family.id);
+        if (!row) return { error: "not-found" };
+        if (name.trim() !== row.name) return { error: "bad-request" };
+        await preserveBrowserBindings(tx, row.id);
+        if (!(await deleteFamily(tx, row.id))) return { error: "not-found" };
+        return { ok: true };
+    });
 }
 
 export async function updateAccountField(

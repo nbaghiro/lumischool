@@ -913,3 +913,19 @@ export async function deliveryFailed(hash: string): Promise<void> {
         await tx.execute(sql`select key_delivery_failed(${hash})`);
     });
 }
+
+// Browser credentials can protect sessions in several families; they contain no person or child data.
+export async function preserveBrowserBindings(tx: FamilyTx, family: string): Promise<void> {
+    await tx
+        .update(keys)
+        .set({
+            family_id: null,
+            user_id: null,
+            kid_id: null,
+            email: null,
+            name: null,
+            ip: null,
+            detail: { originFamily: family },
+        })
+        .where(and(eq(keys.kind, "browser"), eq(keys.family_id, family)));
+}

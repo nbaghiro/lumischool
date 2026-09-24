@@ -46,6 +46,10 @@ export function policySql(): string {
         }
     }
 
+    const detached =
+        "kind = 'browser' AND family_id IS NULL AND detail->>'originFamily' = (SELECT app_family())::text";
+    stmt(`CREATE POLICY detached_browser ON keys USING (${detached}) WITH CHECK (${detached});`);
+
     // `users` has no family: a user is readable as oneself or through any membership in the current
     // family, an ended one included, so a removed tutor's name stays readable in the history.
     const self = "id = (SELECT app_user())";

@@ -163,10 +163,10 @@ export const keys = pgTable(
             foreignColumns: [kids.family_id, kids.id],
         }).onDelete("cascade"),
         unique("keys_hash_key").on(t.hash),
-        // Only codes held before a family is known have none: sign-in and confirm.
+        // Anonymous browser bindings survive family deletion to protect other families’ sessions.
         check(
             "keys_family_null_only_before_a_family",
-            sql`${t.family_id} is not null or ${t.kind} in ('sign-in', 'confirm', 'kid-attempt')`,
+            sql`${t.family_id} is not null or ${t.kind} in ('sign-in', 'confirm', 'kid-attempt') or (${t.kind} = 'browser' and ${t.user_id} is null and ${t.kid_id} is null and ${t.email} is null and ${t.detail}->>'originFamily' is not null)`,
         ),
         check(
             "keys_session_names_a_user",

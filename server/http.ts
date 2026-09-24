@@ -29,6 +29,7 @@ import {
     endKidView,
     endKidViews,
     endMySession,
+    closeFamily,
     kidSessionFrom,
     kidSessionsFor,
     kidLoginsFor,
@@ -1067,6 +1068,22 @@ function routes(config: Config): Route[] {
                 const headers = new Headers();
                 // this browser's own session ended: its cookie goes with it, as a sign-out's does
                 if (out.own) headers.append("set-cookie", cookie(config, n.session, "", 0));
+                return json(204, null, headers);
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/family/delete",
+            who: "adult",
+            run: async (c, adult) => {
+                const out = await closeFamily(
+                    adult,
+                    field(c.body, "family"),
+                    field(c.body, "name"),
+                );
+                if ("error" in out) return problem(REFUSED[out.error], out.error);
+                const headers = new Headers();
+                headers.append("set-cookie", cookie(config, n.session, "", 0));
                 return json(204, null, headers);
             },
         },

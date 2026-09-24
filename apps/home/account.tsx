@@ -166,6 +166,9 @@ export function Account(): JSX.Element {
                             />
                             <YourData />
                             <Paying />
+                            <Show when={isParent(s().me.members)}>
+                                <DeleteFamily me={s().me} kids={s().view.kids} />
+                            </Show>
                         </div>
                     )}
                 </Match>
@@ -497,9 +500,9 @@ function YourData(): JSX.Element {
                 <For each={NOTICE}>{(line) => <li>{line}</li>}</For>
             </ul>
             <p class="note">
-                Seeing it is every page of this app. Exporting it and deleting a child's record are
-                not built yet, and are on the list for the launch. Until they are, a parent asks us
-                and we do it by hand.
+                Seeing it is every page of this app. Exporting it and deleting one child’s record
+                are not available here yet. You can delete the whole family at the bottom of this
+                page.
             </p>
         </Postcard>
     );
@@ -704,6 +707,93 @@ function WeeklyEmail(): JSX.Element {
             </Show>
             <output aria-live="polite">{message()}</output>
         </section>
+    );
+}
+
+function DeleteFamily(props: { me: Me; kids: FamilyView["kids"] }): JSX.Element {
+    const [confirming, setConfirming] = createSignal(false);
+    const [name, setName] = createSignal("");
+    const [busy, setBusy] = createSignal(false);
+    const [said, setSaid] = createSignal("");
+    const [freshRequired, setFreshRequired] = createSignal(false);
+    const remove = async (): Promise<void> => {
+        if (busy() || name().trim() !== props.me.family.name) return;
+        setBusy(true);
+        const result = await api.deleteFamily(props.me.family.id, name());
+        if (result === true) {
+            location.replace("/sign-in");
+            return;
+        }
+        setBusy(false);
+        setFreshRequired(result.error === "fresh-sign-in");
+        setSaid(failureText(result, local));
+    };
+    return (
+        <Postcard focus={false} kicker="Your family" title="Delete family">
+            <p>
+                Permanently delete {familyName(props.me.family.name, true)}, including every child’s
+                lessons, progress, artwork and plans. Everyone loses access to this family. Your
+                account and other families stay.
+            </p>
+            <p class="note">
+                {props.kids.length
+                    ? `Children in this family: ${props.kids.map((kid) => kid.name).join(", ")}.`
+                    : "This family has no children."}
+            </p>
+            <Show
+                when={confirming()}
+                fallback={
+                    <button type="button" class="btn ga-danger" onClick={() => setConfirming(true)}>
+                        Delete family
+                    </button>
+                }
+            >
+                <form
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        void remove();
+                    }}
+                >
+                    <p>
+                        This cannot be undone. Type <strong>{props.me.family.name}</strong> to
+                        confirm.
+                    </p>
+                    <Field
+                        name="delete-family-name"
+                        label="Family name to delete"
+                        value={name()}
+                        onInput={setName}
+                    />
+                    <div class="acts">
+                        <button
+                            type="submit"
+                            class="btn ga-danger"
+                            disabled={busy() || name().trim() !== props.me.family.name}
+                        >
+                            {busy() ? "Deleting…" : "Permanently delete family"}
+                        </button>
+                        <Button
+                            second
+                            disabled={busy()}
+                            onClick={() => {
+                                setConfirming(false);
+                                setName("");
+                                setSaid("");
+                                setFreshRequired(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </form>
+            </Show>
+            <Show when={said()}>
+                <Say text={said()} />
+            </Show>
+            <Show when={freshRequired()}>
+                <a href="/sign-in?again=1&next=%2Faccount">Sign in again to continue</a>
+            </Show>
+        </Postcard>
     );
 }
 

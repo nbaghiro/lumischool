@@ -46,8 +46,8 @@ Its credential stays in an HttpOnly, SameSite cookie (`__Host-ls_browser` under 
 `detail.browser` stores its hash. The browser key alone grants no family access. A request must
 present its own session and the matching, live browser key. The browser key is scoped to the first
 family that issued it, can bind later sessions from other families, and expires after 90 days idle.
-Deleting that first family also invalidates its browser key. This may require fresh sign-in for
-other accounts on that browser, but never grants cross-family access.
+Deleting that first family detaches its anonymous browser key under its original namespace,
+preserving other families’ sessions without granting cross-family access.
 
 Ordinary parent sign-out ends parent access and preserves child sessions. Ending a child view affects
 only that view. `Sign out everyone on this browser` revokes the browser key and signs out the current
@@ -1485,6 +1485,25 @@ Magic links:
 - The Copenhagen Book, email verification. https://thecopenhagenbook.com/email-verification
 - OWASP, Email Validation and Session Management cheat sheets, 2026. https://cheatsheetseries.owasp.org/
 - RFC 6750, OAuth 2.0 Bearer Token Usage, section 5.3, October 2012. https://www.rfc-editor.org/rfc/rfc6750
+
+
+### Deleting a family
+
+Account ends with a parent-only Delete family card. The confirmation requires the stored family
+name and sends the family ID as well, so switching families in another tab cannot delete a different
+family. POST /api/family/delete requires a parent session created by email within ten minutes;
+PIN-unlocked sessions cannot authorize deletion. The existing database cascade removes the family,
+memberships, children, learning records, content, artwork, invitations and family sessions. User
+accounts remain so other families and email sign-in still work. The current parent cookie is cleared.
+
+Anonymous browser-binding keys can protect sessions in several families. Before deletion they are
+detached from the family, stripped of identifying columns, and retained under their original random
+family namespace in detail.originFamily. A narrow browser-only RLS policy permits the existing
+credential verifier to reach them in that namespace. These keys grant no family access themselves
+and keep the existing expiry rule. This avoids invalidating unrelated families' active sessions.
+Migration 0007 adds the constraint and policy. No actual family is deleted by migration.
+
+
 Current account policy: invitations, invitation cancellation, parent membership management, and
 kids’ PIN/username changes require active parent access but no recent email sign-in. Parent sessions
 unlocked with the family PIN can perform these actions. Parent-only authorization, family isolation,

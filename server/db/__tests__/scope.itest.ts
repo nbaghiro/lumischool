@@ -20,9 +20,15 @@ describe("the policies in the database", { skip: reason ?? false }, () => {
 
     it("has a policy on every declared table that compares its family column with the setting, and no table left out", async () => {
         const policies = await db().raw<
-            { tablename: string; cmd: string; qual: string | null; with_check: string | null }[]
+            {
+                tablename: string;
+                policyname: string;
+                cmd: string;
+                qual: string | null;
+                with_check: string | null;
+            }[]
         >`
-            select tablename, cmd, qual, with_check from pg_policies where schemaname = 'public'`;
+            select tablename, policyname, cmd, qual, with_check from pg_policies where schemaname = 'public'`;
         const tables = await db().raw<{ relname: string }[]>`
             select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r'`;
         assert.deepEqual(
@@ -36,6 +42,15 @@ describe("the policies in the database", { skip: reason ?? false }, () => {
             assert.ok(own.length > 0, `${table} has no policy`);
             for (const p of own) {
                 const text = `${p.qual ?? ""} ${p.with_check ?? ""}`;
+                if (table === "keys" && p.policyname === "detached_browser") {
+                    assert.equal(p.qual, p.with_check);
+                    assert.equal(p.cmd, "ALL");
+                    assert.match(text, /kind = 'browser'/);
+                    assert.match(text, /family_id IS NULL/);
+                    assert.match(text, /originFamily/);
+                    assert.match(text, /app_family\(\)/);
+                    continue;
+                }
                 assert.match(
                     text,
                     new RegExp(`\\b${scope.family} = \\( SELECT app_family\\(\\)`),

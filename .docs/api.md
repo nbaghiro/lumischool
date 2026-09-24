@@ -311,6 +311,12 @@ Children’s account list: `GET /api/kid-sessions` returns `{views: [{view, kid,
 Parent session management groups `GET /api/sessions` by the current user’s browser bindings within the family. The returned representative `id` selects all that user’s sessions in that browser for `POST /api/sessions/end`. Other users and child keys are untouched; ending the current browser clears the parent cookie.
 
 
+`POST /api/family/delete {family, name}` permanently deletes the current family after exact name
+confirmation. Parents only, with recent email authentication. Returns 204 and clears the parent
+session cookie. A mismatched ID/name returns bad-request; old or PIN-authenticated sessions return
+fresh-sign-in. Other families, user accounts and their browser bindings are preserved.
+
+
 Current account policy: invitations, invitation cancellation, parent membership management, and
 kids’ PIN/username changes require active parent access but no recent email sign-in. Parent sessions
 unlocked with the family PIN can perform these actions. Parent-only authorization, family isolation,

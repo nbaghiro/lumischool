@@ -50,6 +50,13 @@
       "when": 1790205431676,
       "tag": "0006_solid_the_liberteens",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790265600000,
+      "tag": "0007_family_deletion",
+      "breakpoints": true
     }
   ]
 }
