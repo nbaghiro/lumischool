@@ -74,6 +74,7 @@ export const MODULES: Record<string, Module> = {
     // the coding items' settings from the drawings' params, so a drawing keeps its program and runs it
     coding: { at: "engine/coding", phase: "run", reach: [], packages: [] },
     // paint that mixes like paint, which the painting drawings, the Paint tab and the verifier share
+    painting: { at: "engine/painting", phase: "run", reach: ["answer", "pigment"], packages: [] },
     pigment: { at: "engine/pigment", phase: "run", reach: [], packages: [] },
     // a part the child arranges: its boards, measures and layouts over the lever's and the cuts' maths,
     // which the verifier walks and a page judges by
@@ -101,6 +102,7 @@ export const MODULES: Record<string, Module> = {
             "sound",
             "answer",
             "pack",
+            "painting",
             "arrange",
             "paper",
             "coding",
@@ -122,8 +124,11 @@ export const MODULES: Record<string, Module> = {
             "space",
             "answer",
             "pack",
+            "painting",
             "arrange",
             "coding",
+            "pigment",
+            "numbers",
         ],
         packages: [
             "solid-js",
@@ -177,7 +182,7 @@ export const MODULES: Record<string, Module> = {
     db: {
         at: "server/db",
         phase: "server",
-        reach: ["answer"],
+        reach: ["answer", "painting"],
         packages: [
             "drizzle-orm",
             "postgres",
@@ -190,7 +195,7 @@ export const MODULES: Record<string, Module> = {
     server: {
         at: "server",
         phase: "server",
-        reach: ["db", "answer", "family", "record", "year", "pack", "assistant"],
+        reach: ["db", "answer", "painting", "family", "record", "year", "pack", "assistant"],
         packages: [
             "node:crypto",
             "node:fs",
