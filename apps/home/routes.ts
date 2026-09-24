@@ -11,7 +11,6 @@ export type Screen =
     | "lesson"
     | "map"
     | "calendar"
-    | "plan"
     | "print"
     | "join"
     | "account"
@@ -28,7 +27,6 @@ const PATHS: Readonly<Record<string, Screen>> = {
     "/explore": "explore",
     "/map": "map",
     "/calendar": "calendar",
-    "/plan": "plan",
     "/print": "print",
     "/join": "join",
     "/account": "account",

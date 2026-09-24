@@ -13,7 +13,7 @@ describe("the grown-ups' app's screens", () => {
         assert.equal(screenOf("/start", here), "start");
         assert.equal(screenOf("/outbox", here), "outbox");
         assert.equal(screenOf("/calendar", here), "calendar");
-        assert.equal(screenOf("/plan/", here), "plan");
+        assert.equal(screenOf("/plan/", here), "missing");
         assert.equal(screenOf("//", here), "family");
     });
 

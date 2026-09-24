@@ -389,7 +389,7 @@ sheet in `engine/ui/lesson.tsx` read with `{ sheets: "look", key }`, and the pac
 ## The calendar and the plan
 
 Calendar now combines day planning and subject routines in one parent page. The separate Change
-the plan navigation entry is gone; existing `/plan` links open Calendar's Subjects & pace view.
+the plan navigation entry and `/plan` route are removed. Subjects & pace opens at `/calendar?view=subjects`.
 The production page is `apps/home/calendar-planner.tsx`, using the app's postcards, lesson
 illustrations, subject markers, shared editing cards and real family log. The scratchpad remains
 an independent sample.
@@ -789,3 +789,7 @@ days rather than a verdict, and leaves out a mistake that came up only once. Bot
   the parent's device moved a lesson it had already printed.
 - Whether a world picture on a stamp or a letterhead should be the world as the family changed it, as
   built, or always the world as it comes, so that two families' letters from the harbour look alike.
+
+The retired standalone Calendar and Change Plan screen implementations have been removed.
+`calendar.tsx` retains the current Calendar’s year and change-history sections; `plan.tsx` retains
+its world picker. Their shared styles remain only where the active Calendar uses them.

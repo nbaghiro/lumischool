@@ -22,7 +22,7 @@ import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
 import { useLook, Waiting } from "../../engine/ui/page";
 import { Postcard } from "../../engine/ui/postcard";
-import { go, Link, path, search } from "../../engine/ui/router";
+import { go, Link, search } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { Near } from "../../engine/ui/viewport";
 import { isParent } from "../../school/family/access";
@@ -46,7 +46,7 @@ import { addDays, mondayOf } from "../../school/record/record";
 import { subjectFacts } from "../../school/tracks";
 import type { Kid } from "../../server/db/schema";
 import { familyChanged, openAdd } from "./bar";
-import { Changes, Year, type Where } from "./calendar";
+import { Changes, Year } from "./calendar";
 import {
     Card,
     DayCard,
@@ -191,11 +191,7 @@ export function Calendar(): JSX.Element {
     const query = () => new URLSearchParams(search());
     const view = (): View => {
         const v = query().get("view");
-        return v === "month" || v === "year" || v === "subjects" || v === "lessons"
-            ? v
-            : path() === "/plan"
-              ? "subjects"
-              : "week";
+        return v === "month" || v === "year" || v === "subjects" || v === "lessons" ? v : "week";
     };
     const who = (): string =>
         got()?.view.kids.some((k) => k.id === query().get("who"))
@@ -219,10 +215,6 @@ export function Calendar(): JSX.Element {
         });
         go(`/calendar?${q}`);
     };
-    createEffect(() => {
-        if (path() === "/plan" && got())
-            go(`/calendar?view=subjects&who=${encodeURIComponent(who())}`, { replace: true });
-    });
     const close = (): void => {
         if (!busy()) {
             setCard(undefined);
@@ -1382,10 +1374,7 @@ export function Calendar(): JSX.Element {
         } else move({ at: addDays(day(), n * 7) });
     };
     return (
-        <Show
-            when={loaded.latest}
-            fallback={<Waiting kicker="For grown-ups" title="Opening the calendar" />}
-        >
+        <Show when={loaded.latest} fallback={<Waiting kicker="For grown-ups" title="Opening the calendar" />}>
             <Show
                 when={got()}
                 fallback={
@@ -1587,13 +1576,8 @@ export function Calendar(): JSX.Element {
                                     <Show when={view() === "year"}>
                                         <Year
                                             loaded={l()}
-                                            where={{
-                                                view: "year",
-                                                at: day(),
-                                                who: who(),
-                                                lay: "days",
-                                            }}
-                                            onMove={(next: Partial<Where>) => move(next)}
+                                            kids={kids()}
+                                            onWeek={(at, who) => move({ view: "week", at, who })}
                                             onCard={open}
                                             onWrite={write}
                                         />

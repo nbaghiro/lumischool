@@ -55,7 +55,7 @@ const PLACES: readonly { href: string; long: string; short: string; at: (p: stri
             href: "/calendar",
             long: "Calendar",
             short: "Calendar",
-            at: (p) => p === "/calendar" || p === "/plan",
+            at: (p) => p === "/calendar",
         },
     ];
 

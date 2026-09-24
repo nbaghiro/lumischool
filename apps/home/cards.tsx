@@ -1,8 +1,3 @@
-// The cards a change to the plan is made on, lifted off the calendar or off Change the plan in the
-// page's dialog (engine/ui/dialog.tsx): a lesson's day, a day, a child's school days and the family's
-// terms. Each writes its change through the builders in school/family/calendar.ts and closes; the
-// screen that opened it folds the calendar again from the log.
-
 import { Select } from "../../engine/ui/select";
 import "./cards.css";
 import type { SceneDrawer } from "../../engine/ui/scene";
@@ -14,23 +9,16 @@ import * as api from "../../engine/ui/api";
 import { CloseX } from "../../engine/ui/dialog";
 import { Button } from "../../engine/ui/form";
 import { Postcard } from "../../engine/ui/postcard";
-import { go } from "../../engine/ui/router";
+
 import { Say } from "../../engine/ui/say";
-import {
-    dayState,
-    defaultTerms,
-    weekDays,
-    type CalCell,
-    type KidCalendar,
-    type Term,
-} from "../../school/family/calendar";
+import { defaultTerms, type KidCalendar, type Term } from "../../school/family/calendar";
 import * as acts from "../../school/family/calendar";
-import { CELL_LABEL } from "../../school/family/family";
+
 import { gradeName } from "../../school/family/names";
-import { addDays, mondayOf } from "../../school/record/record";
+
 import { subjectFacts } from "../../school/tracks";
 import type { Kid } from "../../server/db/schema";
-import { dayLong, dayMark, dayShort, names, plural } from "./grown";
+import { dayLong, dayShort, names, plural } from "./grown";
 import type { Loaded } from "./log";
 
 /** The drawer of a pack's scenes, with the drawings the scenes given name loaded first. */
@@ -137,209 +125,6 @@ export function Card(props: {
                 <div class="gc-card-body">{props.children}</div>
             </Postcard>
         </div>
-    );
-}
-
-export function Note(props: { title: string; line: string; onClose: () => void }): JSX.Element {
-    return (
-        <Card kicker="The calendar" title={props.title} onClose={props.onClose}>
-            <p class="note">{props.line}</p>
-        </Card>
-    );
-}
-
-type LessonChange = "move" | "park" | "again" | "off";
-
-export function LessonCard(props: {
-    loaded: Loaded;
-    kid: Kid;
-    cell: CalCell;
-    onClose: () => void;
-    onWrite: Write;
-}): JSX.Element {
-    const l = (): Loaded => props.loaded;
-    const c = props.cell;
-    const lesson = c.lesson ?? "";
-    const facts = (): LessonFacts | undefined => factsOf(l(), lesson);
-    const k = (): KidCalendar | undefined => calOf(l(), props.kid);
-    const school = (d: string): boolean => {
-        const kid = k();
-        return !!kid && dayState(l().cal, kid, d).state === "school";
-    };
-    const days = (): string[] =>
-        [...weekDays(mondayOf(c.on), true), ...weekDays(addDays(mondayOf(c.on), 7), true)].filter(
-            (d) => d !== c.on && d >= l().cal.today && school(d),
-        );
-    const [to, setTo] = createSignal(days()[0] ?? "");
-    const next = (): string => {
-        let d = addDays(c.on < l().cal.today ? l().cal.today : c.on, 1);
-        for (let i = 0; i < 60 && !school(d); i++) d = addDays(d, 1);
-        return d;
-    };
-    const from = (): string => (c.on < l().cal.today ? l().cal.today : c.on);
-    const [why, setWhy] = createSignal("");
-    const [park, setPark] = createSignal("1");
-    const [how, setHow] = createSignal<"again" | "practice">("again");
-    const [change, setChange] = createSignal<LessonChange | null>(null);
-    const title = titleOf(l(), lesson);
-    const changes = (): { value: LessonChange; label: string }[] => [
-        ...(c.state === "planned" && days().length
-            ? [{ value: "move" as const, label: "Move it" }]
-            : []),
-        ...(c.state === "planned" || c.state === "missed"
-            ? [{ value: "park" as const, label: "Park it" }]
-            : []),
-        { value: "again", label: "Do it again" },
-        ...(c.state === "missed" ? [{ value: "off" as const, label: "A day off" }] : []),
-    ];
-    return (
-        <Card
-            kicker={`${props.kid.name} · ${dayLong(c.on)}`}
-            title={title}
-            picture={
-                <Show
-                    when={facts()?.first}
-                    fallback={
-                        <span class="gc-card-pic gc-plain" aria-hidden="true">
-                            {trackTitle(c.track).slice(0, 1)}
-                        </span>
-                    }
-                >
-                    <span
-                        class="gc-card-pic on-paper"
-                        style={{ "--m": `var(--${subjectFacts(c.track).marker})` }}
-                        aria-hidden="true"
-                        ref={(el) => void drawFirst(l(), facts(), el)}
-                    />
-                </Show>
-            }
-            onClose={props.onClose}
-        >
-            <p class="gc-card-fact">
-                {`${trackTitle(c.track)} · ${CELL_LABEL[c.state].toLowerCase()}${c.minutes ? ` · ${c.minutes} min` : ""}`}
-            </p>
-            <div class="acts">
-                <button
-                    type="button"
-                    class="btn"
-                    data-focus=""
-                    onClick={() => go(`/explore/${encodeURIComponent(lesson)}`)}
-                >
-                    Open the lesson
-                </button>
-            </div>
-            <Seg
-                legend="Change this day"
-                options={changes()}
-                value={change()}
-                onChange={setChange}
-            />
-            <Show when={change() === "move"}>
-                <div class="gc-row">
-                    <Select
-                        aria-label="Move it to"
-                        value={to()}
-                        onChange={(e) => setTo(e.currentTarget.value)}
-                    >
-                        <For each={days()}>{(d) => <option value={d}>{dayLong(d)}</option>}</For>
-                    </Select>
-                    <Button
-                        onClick={() =>
-                            void props.onWrite(
-                                acts.moveDay(writing(), props.kid.id, c.track, c.on, to()),
-                                `${title} moved from ${dayShort(c.on)} to ${dayShort(to())} for ${props.kid.name}.`,
-                            )
-                        }
-                    >
-                        Move it there
-                    </Button>
-                </div>
-            </Show>
-            <Show when={change() === "park"}>
-                <p class="note">
-                    Its days come out from here and go back after the gap, and it is picked up where
-                    it left off. Nothing is marked, and nothing a child sees changes.
-                </p>
-                <div class="gc-row">
-                    <Select
-                        aria-label="For how long"
-                        value={park()}
-                        onChange={(e) => setPark(e.currentTarget.value)}
-                    >
-                        <option value="1">One week</option>
-                        <option value="2">Two weeks</option>
-                        <option value="4">A month</option>
-                    </Select>
-                    <Button
-                        onClick={() =>
-                            void props.onWrite(
-                                acts.parkLesson(
-                                    writing(),
-                                    props.kid.id,
-                                    lesson,
-                                    from(),
-                                    Number(park()),
-                                ),
-                                `${title} is parked for ${props.kid.name} for ${plural(Number(park()), "week")}, from ${dayShort(from())}. It comes back after that, and nothing is marked.`,
-                            )
-                        }
-                    >
-                        Park it
-                    </Button>
-                </div>
-            </Show>
-            <Show when={change() === "again"}>
-                <div class="gc-row">
-                    <Select
-                        aria-label="How"
-                        value={how()}
-                        onChange={(e) =>
-                            setHow(e.currentTarget.value === "practice" ? "practice" : "again")
-                        }
-                    >
-                        <option value="again">Again with new numbers</option>
-                        <option value="practice">A practice sheet</option>
-                    </Select>
-                    <Button
-                        onClick={() =>
-                            void props.onWrite(
-                                acts.doAgain(writing(), props.kid.id, lesson, next(), how()),
-                                how() === "again"
-                                    ? `${title} again with new numbers on ${dayShort(next())} for ${props.kid.name}.`
-                                    : `A practice sheet from ${title} on ${dayShort(next())} for ${props.kid.name}.`,
-                            )
-                        }
-                    >
-                        {`Put it on ${dayMark(next())}`}
-                    </Button>
-                </div>
-            </Show>
-            <Show when={change() === "off"}>
-                <p class="note">
-                    {`Record ${dayShort(c.on)} as a day off for ${props.kid.name}, so it stops reading as not done. The lesson stays where the plan puts it next.`}
-                </p>
-                <div class="gc-row">
-                    <input
-                        type="text"
-                        aria-label="Why, in your words"
-                        placeholder="A cold, a visit"
-                        maxlength={80}
-                        value={why()}
-                        onInput={(e) => setWhy(e.currentTarget.value)}
-                    />
-                    <Button
-                        onClick={() =>
-                            void props.onWrite(
-                                acts.daysOff(writing(), props.kid.id, c.on, c.on, why()),
-                                `${dayLong(c.on)} is a day off for ${props.kid.name}: ${why().trim() || "A day off"}.`,
-                            )
-                        }
-                    >
-                        Make it a day off
-                    </Button>
-                </div>
-            </Show>
-        </Card>
     );
 }
 

@@ -70,6 +70,10 @@ test("the merged calendar saves extra sessions, removes only one, and preserves 
         true,
     );
     await page.screenshot({ path: info.outputPath("calendar.png"), fullPage: true });
-    await page.goto("/plan");
+    await page.getByRole("button", { name: "The year", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "The school year", exact: true })).toBeVisible();
+    await page.locator(".gc-weeks button").first().click();
+    await expect(page).toHaveURL(/view=week/);
+    await page.goto("/calendar?view=subjects");
     await expect(page).toHaveURL(/\/calendar\?view=subjects/);
 });

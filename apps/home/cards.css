@@ -5,10 +5,6 @@
 .gc-seg {
     width: auto;
 }
-.gc-quiet {
-    font-size: 13.5px;
-    color: var(--ink-soft);
-}
 /* the buttons share a bottom line: the group with a legend above it stands its legend over its own
    buttons rather than pushing them below the plain buttons beside it */
 .gc-tools {
@@ -24,10 +20,6 @@
 }
 
 /* a lesson the pack has no first drawing for shows its track's tape and initial rather than a hole */
-.gc-plain {
-    font: 700 26px / 1 var(--f-hand);
-    color: color-mix(in srgb, var(--m, var(--sky)) 70%, var(--ink));
-}
 
 /* The card a change is made on: a postcard lifted off the calendar in the page's dialog
    (engine/ui/dialog.css), with the picture in its title and its body's rows. */
@@ -42,31 +34,10 @@
     padding-right: 0;
     font-size: clamp(24px, 2.2vw, 30px);
 }
-.gc-card-pic {
-    display: grid;
-    flex: 0 0 auto;
-    place-items: center;
-    width: 64px;
-    height: 52px;
-    overflow: hidden;
-}
-.gc-card-pic svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-.gc-card-pic.gc-plain {
-    width: auto;
-    padding: 0 8px;
-}
 .gc-card-body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-}
-.gc-card-fact {
-    font-size: 14px;
-    color: var(--ink-soft);
 }
 .gc-row {
     display: flex;

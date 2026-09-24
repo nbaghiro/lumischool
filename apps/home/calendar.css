@@ -1,7 +1,3 @@
-/* The family's calendar (calendar.tsx): the week as a sheet of stickers, the month on squared paper,
-   the year as its terms, and the cards a change is made on. Light only, every target at least 44 px,
-   and nothing moves under reduced motion. */
-
 .gc {
     display: flex;
     flex-direction: column;
@@ -12,26 +8,12 @@
     width: min(100%, 760px);
     min-height: 0;
 }
-/* The card above the sheets keeps a postcard's shape with a third less air: the count as its one
-   line, and which view and whose side by side, each legend above its own group. */
 .gc > .postcard.one.wide {
     padding-top: 20px;
     padding-bottom: 18px;
 }
 .gc > .postcard .postcard-msg {
     gap: 6px;
-}
-.gc-filters {
-    gap: 6px 28px;
-    margin-top: 4px;
-}
-.gc-filters .gc-seg {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    border: 0;
 }
 .gc-seg legend {
     width: 100%;
@@ -47,8 +29,6 @@
     padding: 0 14px;
     font-size: 15px;
 }
-
-/* The sheet each view is drawn on, taped over the map as the other cards are. */
 .gc-sheet {
     position: relative;
     display: flex;
@@ -73,17 +53,6 @@
     font-variation-settings:
         "INFM" 70,
         "BNCE" 20;
-}
-
-/* The week: a column a day and a row a child, or the other way round. */
-.gc-grid {
-    display: grid;
-    grid-template-columns: 132px repeat(var(--cols, 5), minmax(0, 1fr));
-    gap: 8px;
-    align-items: stretch;
-}
-.gc-corner {
-    min-height: 1px;
 }
 .gc-dayhead {
     display: flex;
@@ -125,26 +94,6 @@
     font: 600 13px var(--f-hand);
     color: var(--pen);
 }
-.gc-offnote {
-    font-size: 12.5px;
-    color: var(--ink-soft);
-}
-.gc-kidhead {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 6px 4px;
-    font-size: 13px;
-    color: var(--ink-soft);
-}
-.gc-kidhead b {
-    font: 700 20px / 1.1 var(--f-hand);
-    color: var(--ink);
-}
-.gc-kidhead .link {
-    min-height: 44px;
-    font-size: 13.5px;
-}
 .gc-cell {
     position: relative;
     display: flex;
@@ -169,14 +118,6 @@
 .gc-cell.over {
     border-color: var(--pen);
     background: color-mix(in srgb, var(--sky) 18%, transparent);
-}
-.gc-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
 }
 .gc-sticker {
     position: relative;
@@ -277,22 +218,6 @@
     padding-top: 12px;
     border-top: 1.5px dashed var(--grid);
 }
-.gc-carried {
-    max-width: 62ch;
-    font-size: 14px;
-}
-.gc-carried ul {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin: 0;
-    padding-left: 1.1em;
-}
-
-/* The month: one sheet of squared paper, the days ruled on it in the hand font, each lesson a strip
-   of its subject's tape (done filled, planned outlined, missed hatched, so a state reads in ink
-   alone), weekends and breaks rested and days off hatched as the week's cells are, days before the
-   year begins faded, and the day the family is on looped in pencil. */
 .gc-month {
     --sq: 20px;
     display: grid;
@@ -321,7 +246,6 @@
     border-top: 1.5px solid color-mix(in srgb, var(--ink) 22%, var(--grid));
     border-left: 1.5px solid color-mix(in srgb, var(--ink) 22%, var(--grid));
 }
-/* the seven names come first, so every eighth child from the first is a Monday */
 .gc-month-day:nth-child(7n + 1) {
     border-left: 0;
 }
@@ -371,11 +295,6 @@
     mix-blend-mode: multiply;
     rotate: -2deg;
 }
-.gc-month-off,
-.gc-month-printed {
-    font-size: 11px;
-    color: var(--ink-soft);
-}
 .gc-strips {
     display: flex;
     flex-wrap: wrap;
@@ -408,23 +327,6 @@
     background: repeating-linear-gradient(45deg, var(--edge) 0 1.5px, transparent 1.5px 4.5px);
     border-color: color-mix(in srgb, var(--edge) 55%, transparent);
 }
-/* the loop fills the day's box; its drawing keeps its own shape inside it, so the box is chosen to
-   match the day's, wide on a screen and tall on a phone */
-.gc-month-loop {
-    position: absolute;
-    inset: -6px -4px;
-    pointer-events: none;
-}
-.gc-month-loop-in {
-    position: absolute;
-    inset: 0;
-    display: block;
-}
-.gc-month-loop-in svg {
-    display: block;
-}
-
-/* The year: its terms, each child under them. */
 .gc-terms {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -483,7 +385,6 @@
     align-items: center;
     gap: 10px;
 }
-/* the world's picture keeps the painter's ratio, and clips what the scaled picture puts outside it */
 .gc-world {
     flex: none;
     width: 96px;
@@ -501,7 +402,6 @@
     list-style: none;
 }
 .gc-week {
-    /* a week is pressed to open it, so it is a target of its own and not a mark 24 px wide */
     width: 44px;
     height: 44px;
     padding: 0;
@@ -539,8 +439,6 @@
         width: 44px;
     }
 }
-
-/* What the calendar has recorded. */
 .gc-log {
     display: flex;
     flex-direction: column;
@@ -570,27 +468,7 @@
     color: var(--ink-soft);
 }
 
-.gc-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-.gc-stack-day {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.gc-stack-who {
-    font: 700 16px / 1.1 var(--f-hand);
-}
-
 @media (max-width: 900px) {
-    .gc-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-    .gc-corner {
-        display: none;
-    }
     .gc-cell {
         min-height: 0;
     }
@@ -598,10 +476,6 @@
         min-height: 68px;
     }
 }
-
-/* Print this month: the sheet alone, in ink. The tapes keep their fill, outline and hatch, which is
-   what carries a state, in the printer's grey rather than the subject's colour, and the paper's
-   squares, the rests and the hatching are asked to print, since a browser drops backgrounds. */
 @media print {
     .page:has(.gc) :is(.page-top, .page-ground, .page-foot, .page-skip, .page-nav) {
         display: none;
@@ -639,9 +513,5 @@
     }
     .gc-month-day.off {
         background-image: repeating-linear-gradient(45deg, #c4c4c4 0 4px, transparent 4px 10px);
-    }
-    /* the pencil loop round today prints as pencil, not as the pen's blue */
-    .gc-month-loop svg path {
-        stroke: #222;
     }
 }
