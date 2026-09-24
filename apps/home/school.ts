@@ -1,3 +1,4 @@
+import { worldViewOf } from "../../school/worlds/reading";
 // The worlds as a grown-up looks at them with nobody's record (.docs/parent-app.md, "The map, for
 // grown-ups"): the school as written from the family's pack, a world's roll of every lesson it holds,
 // and a lesson's sheet as written. The map screen (map.tsx) and the overlay a lesson page opens
@@ -20,8 +21,14 @@ import { apply, readChoice } from "../../school/worlds/choice";
 import { corpusFrom, topicsIn, type Corpus } from "../../school/worlds/lessons";
 import { NARROW, WIDE } from "../../school/worlds/roll";
 import type { Applied } from "../../school/worlds/types";
-import { GROWN_WORLD, worldViewOf } from "../../school/worlds/view";
-import { journalWritten, schoolViewOf, whereIs, writtenView } from "../../school/worlds/written";
+import { GROWN_WORLD } from "../../school/worlds/view";
+import {
+    journalWritten,
+    neighboursWritten,
+    schoolViewOf,
+    whereIs,
+    writtenView,
+} from "../../school/worlds/written";
 import { WORLDS, worldById } from "../../school/worlds/worlds";
 import type { PackView } from "../../server/api";
 import { mapHref, whereIn, type WhereOnMap } from "./routes";
@@ -107,27 +114,28 @@ export const sheetWidth = (narrow: boolean): number => (narrow ? NARROW : WIDE).
 export const CARD = 620;
 
 /**
- * A world's roll as written: a visit to it where it stands, with every day of its year on the roll
+ * A world's roll as written: only the days in its selected term, with annual day IDs intact
  * and nothing done, arriving at the world's own term. `height` is what each sheet measured, with
  * `CARD` standing in until one is drawn.
  */
 export function worldWritten(
     s: School,
     world: string,
-    o: { narrow: boolean; height: (lesson: string) => number | null },
+    o: { narrow: boolean; height: (lesson: string) => number | null; grade?: number },
 ): WorldView {
     // the worlds' own terms, with nobody's tweaks, which is what a choice nobody has made reads as
     const { choice } = readChoice(null, "");
     const journal = journalWritten({
         corpus: s.corpus,
         place: { kind: "world", world: worldById(world) },
-        grade: null,
+        grade: o.grade ?? null,
         when: null,
         choice,
     });
     return writtenView(
         worldViewOf({
             journal,
+            visitOnly: true,
             choice,
             corpus: s.corpus,
             worldOf: s.worldOf,
@@ -211,10 +219,21 @@ const pictureOf = (s: School, f: LessonFacts) => async (host: HTMLElement) => {
 export function readingOf(
     s: School,
     world: string,
-    o: { level: Level; key: boolean },
+    o: { level: Level; key: boolean; grade?: number },
 ): ReadingSource {
+    const site = worldById(world).site;
+    const variants =
+        site?.kind === "choice"
+            ? site.terms
+                  .filter((t) => s.corpus.grades.includes(t.grade))
+                  .map((t) => ({ value: t.grade, label: `Year ${t.grade}, term ${t.term}` }))
+            : [];
+    const grade = variants.some((v) => v.value === o.grade) ? o.grade : variants[0]?.value;
     return {
-        world: (r) => worldWritten(s, world, r),
+        variants,
+        variant: grade,
+        neighbours: neighboursWritten(s.corpus, world, grade),
+        world: (r) => worldWritten(s, world, { ...r, grade }),
         sheet: (lesson, r) => sheetWritten(s, lesson, { ...o, ...r }),
         card(lesson) {
             const f = s.pack.index.lessons.find((l) => l.id === lesson);

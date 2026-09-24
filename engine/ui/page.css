@@ -472,3 +472,11 @@ body {
         animation: none;
     }
 }
+
+.page-waiting-label:has(button) {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.page-waiting-label button {
+    pointer-events: auto;
+}

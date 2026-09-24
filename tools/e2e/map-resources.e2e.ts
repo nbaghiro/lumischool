@@ -324,6 +324,27 @@ test("lesson entry keeps populated scenery through background lesson preparation
     await map.waitFor();
     const probe = await page.evaluateHandle(() => {
         const changes: number[] = [];
+        const jumps: number[] = [];
+        let target: HTMLElement | null = null;
+        let anchor: number | null = null;
+        let lastCamera = "";
+        let stable = 0;
+        let frame = 0;
+        const sample = (): void => {
+            target ??= document.querySelector<HTMLElement>(".wd .rd-read");
+            const camera =
+                document.querySelector<HTMLElement>(".wd-host .world")?.style.transform ?? "";
+            stable = camera && camera === lastCamera ? stable + 1 : 0;
+            lastCamera = camera;
+            if (target) {
+                const top = target.getBoundingClientRect().top;
+                if (anchor === null && stable >= 3 && top > 60 && top < innerHeight - 100)
+                    anchor = top;
+                if (anchor !== null && Math.abs(top - anchor) > 2) jumps.push(top - anchor);
+            }
+            frame = requestAnimationFrame(sample);
+        };
+        sample();
         const observer = new MutationObserver((records) => {
             const replaced = records.some(
                 (record) =>
@@ -336,7 +357,15 @@ test("lesson entry keeps populated scenery through background lesson preparation
             if (replaced) changes.push(document.querySelectorAll(".wd-host .l-art > *").length);
         });
         observer.observe(document.body, { childList: true, subtree: true });
-        return { changes, stop: () => observer.disconnect() };
+        return {
+            changes,
+            jumps,
+            anchor: () => anchor,
+            stop: () => {
+                observer.disconnect();
+                cancelAnimationFrame(frame);
+            },
+        };
     });
     try {
         const place = map.locator('.ow-node[aria-label*="mountains" i]').first();
@@ -376,6 +405,11 @@ test("lesson entry keeps populated scenery through background lesson preparation
             .toBeGreaterThanOrEqual(4);
         expect(await probe.evaluate((p) => p.changes.every((count) => count > 0))).toBe(true);
         await expect(page.locator(".wd .rd-sheet").first()).toBeVisible();
+        expect(await probe.evaluate((p) => p.anchor())).not.toBeNull();
+        expect(
+            await probe.evaluate((p) => p.jumps),
+            "neighbouring loads must not move the landed lesson",
+        ).toEqual([]);
     } finally {
         await probe.evaluate((p) => p.stop());
         await probe.dispose();

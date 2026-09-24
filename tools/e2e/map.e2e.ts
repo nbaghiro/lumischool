@@ -649,3 +649,38 @@ test("flight zoom catches up after a delayed frame without advancing plane physi
         250,
     );
 });
+
+test("neighbour lesson failures stay local and retry without replacing the landed sheet", async ({
+    page,
+}) => {
+    let entered = false;
+    let failing = true;
+    await page.route("**/@site-pack/lessons/**", async (route) => {
+        if (entered && failing) await route.fulfill({ status: 503, body: "Unavailable" });
+        else await route.continue();
+    });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/home#/map/harbour");
+    const look = page.getByRole("dialog", { name: "A sample child's map" });
+    const landed = look.locator(".rd-read").first();
+    await expect(landed).toBeAttached({ timeout: 60000 });
+    const sheet = await landed.elementHandle();
+    if (!sheet) throw new Error("the destination sheet is missing");
+    entered = true;
+    const error = look
+        .locator(".rd-lesson-status", { hasText: "This lesson couldn’t load." })
+        .first();
+    await expect(error).toBeAttached({ timeout: 30000 });
+    expect(await sheet.evaluate((el) => el.isConnected && el.classList.contains("rd-read"))).toBe(
+        true,
+    );
+    await expect(look.locator(".rd-status")).toHaveCount(0);
+    const retry = error.getByRole("button", { name: "Try again" });
+    failing = false;
+    await retry.dispatchEvent("click");
+    await expect(look.locator(".rd-lesson-status")).toHaveCount(0, { timeout: 30000 });
+    expect(await sheet.evaluate((el) => el.isConnected && el.classList.contains("rd-read"))).toBe(
+        true,
+    );
+    await sheet.dispose();
+});

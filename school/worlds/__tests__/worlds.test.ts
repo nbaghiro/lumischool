@@ -1,3 +1,4 @@
+import { worldViewOf } from "../reading";
 // The worlds model on a small made-up corpus: what the record makes of the map, and what each page's
 // view of it may hold. The rules a child's view keeps are the ones .docs/overworld.md states: nothing
 // every world is on the page, unavailable ones are closed, and nothing a viewer who looks or previews
@@ -37,7 +38,6 @@ import {
     recordsAll,
     SITE_MAP,
     siteWorld,
-    worldViewOf,
 } from "../view";
 import { schoolRun, worldById, yearOf } from "../worlds";
 import { refsOf } from "../art";

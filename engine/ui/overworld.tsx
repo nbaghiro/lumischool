@@ -29,7 +29,7 @@ import {
     type MapView,
     type Rect,
 } from "../space";
-import { idle, still } from "./art";
+import { Drawing, idle, still } from "./art";
 import type { MapPainted } from "./map";
 import { announce } from "./say";
 import type { CanvasView } from "./view";
@@ -87,8 +87,6 @@ export function Overworld(props: {
      * the view says the child is.
      */
     focus?: number | "all" | "overview";
-    /** Draw a static scene for compact previews, regardless of the system motion preference. */
-    still?: boolean;
     /** The map takes the wheel to zoom, unless the page around it scrolls. */
     wheel?: boolean;
     /**
@@ -165,7 +163,7 @@ export function Overworld(props: {
     let requested = 0;
     let completed = 0;
     let model = "";
-    const quiet = props.still === true || still() || mapVariant === "no-motion";
+    const quiet = still() || mapVariant === "no-motion";
     const hud = (): boolean => props.hud !== false;
     const [focus, setFocus] = createSignal<number>(props.view.here ?? 0);
     /**
@@ -1061,7 +1059,8 @@ export function Overworld(props: {
             </Show>
             <Show when={hud()}>
                 <h1 class="sr">{props.title}</h1>
-                <div class="hud ow-home">
+                <fieldset class="hud ow-home">
+                    <legend class="sr">Map controls</legend>
                     <Show when={props.view.limits.fly && props.view.landings.length > 0 && ready()}>
                         <button
                             type="button"
@@ -1069,7 +1068,12 @@ export function Overworld(props: {
                             onClick={startFly}
                             aria-label="Fly the paper plane (P)"
                         >
-                            Fly
+                            <Drawing
+                                id="paperplane"
+                                params={{ bank: 0 }}
+                                seed={3}
+                                class="ow-tool-art ow-tool-plane"
+                            />
                         </button>
                     </Show>
                     <Show when={props.view.here !== null && focus() !== props.view.here}>
@@ -1079,8 +1083,14 @@ export function Overworld(props: {
                             onClick={() => {
                                 if (props.view.here !== null) travelTo(props.view.here);
                             }}
+                            aria-label="Where I am"
                         >
-                            Where I am
+                            <Drawing
+                                id="icon"
+                                params={{ name: "locate", on: false }}
+                                seed={2711}
+                                class="ow-tool-art"
+                            />
                         </button>
                     </Show>
                     <Show when={props.view.limits.zoomOut === "everything"}>
@@ -1088,11 +1098,18 @@ export function Overworld(props: {
                             type="button"
                             class="ow-btn ow-scope"
                             onClick={() => (at() === "all" ? home() : showAll())}
+                            aria-label={at() === "all" ? "Near me" : "Every world"}
                         >
-                            {at() === "all" ? "Near me" : "Every world"}
+                            <Drawing
+                                id="icon"
+                                params={{ name: at() === "all" ? "locate" : "map", on: false }}
+                                seed={2711}
+                                class="ow-tool-art"
+                            />
+                            <span class="sr">{at() === "all" ? "Near me" : "Every world"}</span>
                         </button>
                     </Show>
-                </div>
+                </fieldset>
                 <Show when={card()}>
                     {(c) => (
                         <div class="hud ow-card" role="note">

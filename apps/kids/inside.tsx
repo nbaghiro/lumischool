@@ -1,3 +1,5 @@
+import { worldViewOf } from "../../school/worlds/reading";
+import { childWorld } from "../../school/worlds/view";
 // What a child sees once they are inside a world: the place the world is seen as and the roll they
 // read it at, and the moves between them. It is loaded when the child goes in, not with the map, so
 // the map screen carries none of it (tools/__tests__/first-view.test.ts holds that budget).
@@ -31,8 +33,8 @@ import { mayPrepare } from "../../engine/ui/reading-source";
 import { PaperStatus } from "../../engine/ui/paper-status";
 import type { Kid } from "../../server/db/schema";
 import type { Sheets } from "./lesson";
-import { Opening } from "./opening-card";
-import { fetchLessons, sheetWidth, todayOf, worldOf, type Loaded } from "./views";
+import { Loading } from "./loading";
+import { fetchLessons, sheetWidth, todayOf, ownJournal, SHEET_HEIGHT, type Loaded } from "./views";
 
 const World = lazy(() =>
     onDemand(() => import("../../engine/ui/world")).then((m) => ({ default: m.World })),
@@ -184,7 +186,7 @@ export function Inside(props: {
                 failed={failedEntry()}
                 retry={() => lookBack(nearby)}
             />
-            <Switch fallback={<Opening />}>
+            <Switch fallback={<Loading />}>
                 <Match when={props.screen.at === "world" && view()}>
                     {(drawn) => (
                         <World
@@ -270,4 +272,31 @@ export async function warmWorld(
     const read = await fetchLessons(c, ids);
     const scene = await import("../../engine/ui/scene");
     await scene.scenes(read.flatMap(scene.scenesIn));
+}
+
+/** Opens the selected subject collection or the year's roll at the selected term. */
+function worldOf(
+    c: Loaded,
+    o: {
+        term: number | null;
+        world: string | null;
+        narrow: boolean;
+        height: (lesson: string) => number | null;
+    },
+): WorldView {
+    const card = o.narrow ? SHEET_HEIGHT.narrow : SHEET_HEIGHT.wide;
+    return worldViewOf({
+        journal: ownJournal(c, o.world),
+        choice: c.choice,
+        corpus: c.corpus,
+        worldOf: c.worldOf,
+        topics: c.topics,
+        height: (lesson) => o.height(lesson) ?? card,
+        size: c.size,
+        narrow: o.narrow,
+        grown: false,
+        arriveAt: o.term ?? undefined,
+        visitOnly: o.term !== null || o.world !== null,
+        limits: childWorld(c.kid.id),
+    });
 }

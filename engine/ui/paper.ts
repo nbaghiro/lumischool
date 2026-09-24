@@ -17,13 +17,14 @@ export interface NearPaper<P> {
     /** The height a lesson's paper measured, in the roll's units, kept once it has been drawn once. */
     height(lesson: string): number | null;
     failed(lesson: string): boolean;
+    loading(lesson: string): boolean;
     /** Lets every sheet go and forgets every height: a phone turned draws everything again at its width. */
     forget(): void;
 }
 
 /**
  * `draw` draws one lesson's paper and measures it, or null when it cannot be drawn; `drawn` hears
- * when a sheet lands, fails, or goes, so the reader can update without waiting for the batch.
+ * when a sheet queues, lands, fails, or goes, so the reader can update without waiting for the batch.
  */
 export function nearPaper<P extends { height: number; dispose(): void }>(o: {
     draw(lesson: string): Promise<P | null>;
@@ -86,17 +87,17 @@ export function nearPaper<P extends { height: number; dispose(): void }>(o: {
             if (went) o.drawn();
             const want = near.filter((id) => !paper.has(id) && !asking.has(id));
             if (!want.length) return;
-            let retrying = false;
             const at = look;
             for (const id of want) {
-                if (failed.delete(id)) retrying = true;
+                failed.delete(id);
                 asking.set(id, at);
                 queue.push({ id, at });
             }
             pump();
-            if (retrying) o.drawn();
+            o.drawn();
         },
         failed: (lesson) => failed.has(lesson),
+        loading: (lesson) => wanted.has(lesson) && asking.has(lesson),
         sheet: (lesson) => paper.get(lesson) ?? null,
         height: (lesson) => heights.get(lesson) ?? null,
         forget() {

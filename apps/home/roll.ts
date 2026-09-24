@@ -1,3 +1,4 @@
+import { worldViewOf } from "../../school/worlds/reading";
 // A child's roll as a grown-up reads it on the home: the child's own year in their own worlds, as the
 // child's view lays it out, with the grown-up's limits (school/worlds/view.ts, GROWN_WORLD), from the
 // record the server folds for a parent. The drawings its worlds name are loaded once per child.
@@ -11,13 +12,7 @@ import { apply, termsFor } from "../../school/worlds/choice";
 import { corpusFrom, topicsIn } from "../../school/worlds/lessons";
 import { NARROW } from "../../school/worlds/roll";
 import type { Applied } from "../../school/worlds/types";
-import {
-    emptyProgress,
-    GROWN_WORLD,
-    journalOf,
-    worldViewOf,
-    type Live,
-} from "../../school/worlds/view";
+import { emptyProgress, GROWN_WORLD, journalOf, type Live } from "../../school/worlds/view";
 import { worldById } from "../../school/worlds/worlds";
 import type { GrownRecord } from "../../server/api";
 import type { Kid } from "../../server/db/schema";

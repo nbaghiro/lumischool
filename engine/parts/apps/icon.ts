@@ -29,6 +29,7 @@ export const ICONS = [
     "right",
     "launch",
     "grab",
+    "locate",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -55,6 +56,7 @@ export const ICON_LABEL: Record<IconName, string> = {
     right: "Right",
     launch: "Launch",
     grab: "Pick up or release",
+    locate: "Your location",
 };
 
 /**
@@ -151,6 +153,18 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
     up: (c) => arrow(c, [20, 33], [20, 7]),
     down: (c) => arrow(c, [20, 7], [20, 33]),
     right: (c) => arrow(c, [7, 20], [33, 20]),
+    locate: (c) => {
+        wash(c, "M20 10A10 10 0 1 0 20 30A10 10 0 1 0 20 10", "glow");
+        c.pen.path(c.g, "M20 10A10 10 0 1 0 20 30A10 10 0 1 0 20 10", "ruler", null, line(c));
+        c.pen.path(c.g, "M20 4V12M20 28V36M4 20H12M28 20H36", "ruler", null, line(c));
+        c.pen.path(
+            c.g,
+            "M20 17A3 3 0 1 0 20 23A3 3 0 1 0 20 17",
+            "ruler",
+            c.pen.fill("glow"),
+            line(c),
+        );
+    },
     launch: (c) => {
         c.pen.path(c.g, "M7 31Q12 7 31 10", "ruler", null, line(c));
         c.pen.linear(

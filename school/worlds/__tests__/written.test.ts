@@ -1,3 +1,4 @@
+import { worldViewOf } from "../reading";
 // The school as written, with nobody's record: the map of every world for a grown-up's own map, a
 // world read as written, and where a lesson stands. On the same small made-up corpus as worlds.test.ts.
 import assert from "node:assert/strict";
@@ -6,7 +7,7 @@ import type { LessonFacts } from "../../../engine/pack";
 import { apply, defaultChoice } from "../choice";
 import { corpusFrom, topicsIn } from "../lessons";
 import type { Applied } from "../types";
-import { GROWN_MAP, GROWN_WORLD, worldViewOf } from "../view";
+import { GROWN_MAP, GROWN_WORLD } from "../view";
 import { elsewhere, schoolRun, WORLDS, worldById, yearOf } from "../worlds";
 import { daysWritten, journalWritten, schoolViewOf, whereIs, writtenView } from "../written";
 
@@ -194,4 +195,49 @@ test("the shared atlas has one site per world, generous spacing, and all grades 
             );
         }
     }
+});
+
+test("an explicit visit projects only its term without rewriting annual days or progress", () => {
+    for (const id of ["railway", "winter-fair", "valley-farm", "canal-town"]) {
+        const journal = journalWritten({
+            corpus: CORPUS,
+            place: { kind: "world", world: worldById(id) },
+            grade: null,
+            when: null,
+            choice: CHOICE,
+        });
+        const original = JSON.stringify(journal.days);
+        const view = worldViewOf({
+            journal,
+            visitOnly: true,
+            choice: CHOICE,
+            corpus: CORPUS,
+            worldOf,
+            topics: TOPICS,
+            height: () => 1200,
+            size,
+            narrow: false,
+            grown: true,
+            limits: GROWN_WORLD,
+        });
+        assert.deepEqual(
+            view.layout.rows.map((r) => r.day),
+            journal.days.filter((d) => d.term === journal.arrive),
+        );
+        assert.deepEqual(new Set(view.layout.stretches.map((s) => s.world)), new Set([id]));
+        assert.equal(JSON.stringify(journal.days), original);
+        assert.equal(view.arrival?.term, journal.arrive);
+    }
+});
+
+test("alternative term notes name their actual eligible lessons", () => {
+    const map = schoolViewOf({ corpus: CORPUS, size, still: true });
+    assert.equal(
+        map.places.find((p) => p.shown?.world === "valley-farm")?.shown?.notes[0],
+        "Year 1, term 1: 3 lessons · Year 2, term 3: 3 lessons",
+    );
+    assert.equal(
+        map.places.find((p) => p.shown?.world === "winter-fair")?.shown?.notes[0],
+        "Year 1, term 2: 3 lessons · Year 2, term 2: 3 lessons",
+    );
 });

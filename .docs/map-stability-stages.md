@@ -336,3 +336,33 @@ rerun after fixing the test to await camera settling before its second world-ent
 Map-file formatting and lint passed. The full repository check was attempted but stopped
 at a concurrent snapshot-tool type error in `tools/scripts/map-snapshots.ts:633`; it is not
 represented as a complete green validation. Physical-device crash validation remains open.
+
+## Lesson layout publication
+
+A subsequent frame trace kept the same loaded lesson element throughout entry, but recorded
+its top moving from 292 to 5932 to 13352 CSS pixels before returning to 292. Incoming lesson
+heights were moving the live sheet rows immediately, while the camera correction waited for
+the prepared scenery. Retaining the background alone did not make layout publication atomic.
+
+World now keeps the displayed model separate from incoming preparation. It publishes the
+prepared background, sheet rows and anchored camera together, and presents that camera before
+another browser frame. Rows use stable day/lesson keys; prepared sheet content is read when
+its row is committed, rather than directly on each cache notification. Existing lesson DOM
+is retained and positioning reacts independently of lesson identity.
+
+The Reading flow exposes queued/loading and failed neighbouring lessons within their own
+preview cards, with a local retry action and busy state. Initial-entry loading retains the
+existing status. The two concurrent preparation slots, cache limits, height retention and
+late-result disposal remain. Background preparation does not require loading the entire roll.
+
+The entry regression samples screen position after landing and requires it to stay within
+2 CSS pixels while neighbouring sheets finish. A separate failure/retry regression keeps a
+handle on the original loaded sheet and checks that it remains connected and ready throughout
+neighbour retry. These run in desktop Chrome and phone-sized WebKit alongside the child flow.
+
+Validation for this stage: all 18 targeted browser cases passed across Chrome and phone-sized
+WebKit, with the position/retry/child cases repeated after final publication changes. The eight
+paper tests pass, including loading-state notification and bounded concurrency. The full
+`LUMISCHOOL_REQUIRE_DB=1 npm run check` passed, including snapshot comparisons and both builds.
+This supersedes the earlier full-check blockers for the current working tree; it does not
+replace physical iPhone validation.

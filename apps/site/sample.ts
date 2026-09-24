@@ -1,3 +1,4 @@
+import { worldViewOf } from "../../school/worlds/reading";
 // The pictures of the sample child below the site's opening, each drawn into a box the page has
 // sized from the visitor's pack and the site's data (school.ts): a question drawn its ways, the printed
 // lesson, a subject's landmark, a lesson's first picture, the map at each stop of the journey, the
@@ -27,7 +28,8 @@ import { artById } from "../../school/worlds/art";
 import { readChoice } from "../../school/worlds/choice";
 import { NARROW, WIDE } from "../../school/worlds/roll";
 import { rollJournal, stopViews, viewOfTrip, visitJournal } from "../../school/worlds/sample";
-import { siteWorld, worldViewOf } from "../../school/worlds/view";
+import { siteWorld } from "../../school/worlds/view";
+import { neighboursWritten } from "../../school/worlds/written";
 import { worldById } from "../../school/worlds/worlds";
 import { lessonOf, schoolOf, type School } from "./school";
 
@@ -217,9 +219,9 @@ export async function drawSample(host: HTMLElement, p: SamplePicture): Promise<v
 }
 
 /** The sample child's map at each stop of the site's journey. */
-export async function stops(quiet = still()): Promise<ReturnType<typeof stopViews>> {
+export async function stops(): Promise<ReturnType<typeof stopViews>> {
     const s = await schoolOf();
-    const motionless = quiet || still();
+    const motionless = still();
     return stopViews(s.child, {
         worldOf: motionless ? s.stillOf : s.worldOf,
         size: s.size,
@@ -363,9 +365,11 @@ export function reading(s: School, id: string): ReadingSource | null {
     if (world.id !== id) return null;
     const journal = visitJournal(s.child, world, CHOICE);
     return {
+        neighbours: neighboursWritten(s.corpus, id),
         world: (o) =>
             worldViewOf({
                 journal,
+                visitOnly: true,
                 choice: CHOICE,
                 corpus: s.corpus,
                 worldOf: s.worldOf,

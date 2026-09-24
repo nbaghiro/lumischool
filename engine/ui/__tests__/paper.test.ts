@@ -61,17 +61,23 @@ test("paper is drawn once when near, kept while near, let go of when not, and it
     );
     assert.equal(near.sheet("a"), null);
     await d.land("a", 700);
-    assert.equal(drawn, 1, "ready paper is published while the other lesson is still loading");
+    assert.equal(
+        drawn,
+        2,
+        "queued and ready paper are published while the other lesson is still loading",
+    );
+    assert.equal(near.loading("a"), false);
+    assert.equal(near.loading("b"), true);
     await d.land("b", 600);
     assert.equal(near.sheet("a")?.height, 700);
     assert.equal(near.height("b"), 600);
-    assert.equal(drawn, 2);
+    assert.equal(drawn, 3);
     const a = near.sheet("a");
     near.lookBack(["b"]);
     assert.equal(near.sheet("a"), null);
     assert.equal(a?.gone, true, "paper no longer near is let go of");
     assert.equal(near.height("a"), 700, "what it measured is kept");
-    assert.equal(drawn, 3);
+    assert.equal(drawn, 4);
     near.lookBack(["b", "a"]);
     assert.deepEqual(d.asked, ["a", "b", "a"], "paper that comes near again is drawn again");
 });
@@ -84,7 +90,7 @@ test("paper that lands once it is no longer near, or after a forget, is let go o
     near.lookBack([]);
     await d.land("a");
     assert.equal(near.sheet("a"), null, "landed after the camera left it");
-    assert.equal(drawn, 0);
+    assert.equal(drawn, 1, "only the initial loading state was published");
     await d.land("missing");
     assert.equal(near.sheet("missing"), null);
     near.lookBack(["c"]);

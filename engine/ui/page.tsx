@@ -350,7 +350,11 @@ function GateTab(props: { open: () => void }): JSX.Element {
  * What a screen shows while it loads: nothing for a moment, since most loads are quicker than that,
  * and then a note that says what is being fetched.
  */
-export function Waiting(props: { title: string }): JSX.Element {
+export function Waiting(props: {
+    title: string;
+    retry?: () => void;
+    pending?: boolean;
+}): JSX.Element {
     const [shown, setShown] = createSignal(false);
     const timer = setTimeout(() => setShown(true), 400);
     onCleanup(() => clearTimeout(timer));
@@ -358,8 +362,18 @@ export function Waiting(props: { title: string }): JSX.Element {
         <Show when={shown()}>
             <output class="page-waiting" aria-live="polite">
                 <span class="page-waiting-label">
-                    <span class="page-waiting-spinner" aria-hidden="true" />
-                    {props.title}…
+                    <Show when={props.pending !== false}>
+                        <span class="page-waiting-spinner" aria-hidden="true" />
+                    </Show>
+                    <span>
+                        {props.title}
+                        {props.pending !== false ? "…" : ""}
+                    </span>
+                    <Show when={props.retry}>
+                        <Button second onClick={() => props.retry?.()}>
+                            Try again
+                        </Button>
+                    </Show>
                 </span>
             </output>
         </Show>

@@ -4,7 +4,7 @@
 import { reads } from "../../engine/ui/reads";
 import type { Declared } from "../../engine/motion/world";
 import type { PackLesson } from "../../engine/pack";
-import type { MapView, WorldView } from "../../engine/space";
+import type { MapView } from "../../engine/space";
 import { onDemand } from "../../engine/ui/art";
 import * as client from "../../engine/ui/kid";
 import { refsOf, sizeOn } from "../../school/worlds/art";
@@ -17,11 +17,9 @@ import type { Applied, WorldChoice } from "../../school/worlds/types";
 import { NARROW, WIDE } from "../../school/worlds/roll";
 import {
     CHILD_MAP,
-    childWorld,
     emptyProgress,
     journalOf,
     mapViewOf,
-    worldViewOf,
     type Journal,
     type Live,
 } from "../../school/worlds/view";
@@ -179,7 +177,7 @@ export const mapOf = (c: Loaded): MapView => {
 };
 
 /** A subject place keeps the same live record and plan as the yearly journal. */
-function ownJournal(c: Loaded, world: string | null = null): Journal {
+export function ownJournal(c: Loaded, world: string | null = null): Journal {
     const own = c.record.years.find((y) => y.grade === c.kid.grade);
     const live: Live = {
         grade: c.kid.grade,
@@ -214,29 +212,3 @@ export function todayOf(c: Loaded): { date: string; lessons: string[] } | null {
 
 /** The sheet's width on the roll, in world units. */
 export const sheetWidth = (narrow: boolean): number => (narrow ? NARROW : WIDE).sheet;
-
-/** Opens the selected subject collection or the year's roll at the selected term. */
-export function worldOf(
-    c: Loaded,
-    o: {
-        term: number | null;
-        world: string | null;
-        narrow: boolean;
-        height: (lesson: string) => number | null;
-    },
-): WorldView {
-    const card = o.narrow ? SHEET_HEIGHT.narrow : SHEET_HEIGHT.wide;
-    return worldViewOf({
-        journal: ownJournal(c, o.world),
-        choice: c.choice,
-        corpus: c.corpus,
-        worldOf: c.worldOf,
-        topics: c.topics,
-        height: (lesson) => o.height(lesson) ?? card,
-        size: c.size,
-        narrow: o.narrow,
-        grown: false,
-        arriveAt: o.term ?? undefined,
-        limits: childWorld(c.kid.id),
-    });
-}

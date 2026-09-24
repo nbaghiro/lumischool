@@ -154,10 +154,30 @@ export function schoolViewOf(o: {
     for (const p of view.places) {
         const w = held(p.i);
         if (!p.shown || !w) continue;
+        const site = worldById(w.world).site;
+        const choices =
+            site?.kind === "choice"
+                ? site.terms
+                      .map((t) => ({
+                          ...t,
+                          count: yearOfGrade(t.grade).lessons.filter(
+                              (l) => termOf(yearOfGrade(t.grade), l.unit) === t.term,
+                          ).length,
+                      }))
+                      .filter((t) => t.count > 0)
+                : [];
         const n = w.lessons.length;
         p.shown.label = `${p.shown.name}. ${p.shown.when}.`;
         p.shown.notes = [
-            n === 1 ? "1 lesson" : n ? `${n} lessons` : "No lessons are written for it yet",
+            choices.length
+                ? choices
+                      .map((t) => `Year ${t.grade}, term ${t.term}: ${t.count} lessons`)
+                      .join(" · ")
+                : n === 1
+                  ? "1 lesson"
+                  : n
+                    ? `${n} lessons`
+                    : "No lessons are written for it yet",
             worldOf(w.world).about,
         ];
     }
@@ -208,4 +228,32 @@ export function journalWritten(o: Omit<JournalIn, "sample" | "live">): Journal {
         next: null,
         today: undefined,
     };
+}
+
+/** Adjacent written term visits, including the boundary between school years. */
+export function neighboursWritten(
+    corpus: Corpus,
+    world: string,
+    grade?: number,
+): { world: string; label: string }[] {
+    const site = worldById(world).site;
+    const choice =
+        site?.kind === "choice"
+            ? (site.terms.find((t) => t.grade === grade) ?? site.terms[0])
+            : null;
+    const run = schoolRun().filter((p) =>
+        corpus
+            .year(p.grade, "")
+            .lessons.some((l) => termOf(corpus.year(p.grade, ""), l.unit) === p.term),
+    );
+    const at = run.findIndex((p) =>
+        choice ? p.grade === choice.grade && p.term === choice.term : p.world === world,
+    );
+    if (at < 0) return [];
+    const before = run[at - 1],
+        after = run[at + 1];
+    return [
+        ...(before ? [{ world: before.world, label: "Previous world" }] : []),
+        ...(after ? [{ world: after.world, label: "Next world" }] : []),
+    ];
 }

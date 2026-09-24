@@ -180,6 +180,7 @@ export class CanvasView {
         this.anim = null;
         this.glide = null;
         clearTimeout(this.settleTimer);
+        this.settleTimer = 0;
     }
     dispose(): void {
         if (this.disposed) return;
@@ -340,21 +341,39 @@ export class CanvasView {
                 resting = true;
             }
         }
+        this.present();
+        this.hooks.frame(this.cam, this.vp);
+        this.diagnostic.frame(performance.now() - started);
+        if (this.anim || this.glide) this.request();
+        // A layout or resize frame must also return to rest, without ending an active gesture.
+        if (
+            !this.disposed &&
+            !this.anim &&
+            !this.glide &&
+            !this.pointers.size &&
+            (resting || !this.settleTimer)
+        )
+            this.hooks.settle?.(this.cam);
+    };
+
+    /** Publish a coordinated layout/camera change before the browser presents another frame. */
+    present(): void {
+        if (this.disposed) return;
         // Clip locally as well as at the host's viewport, including any retained painted layers.
         const ink = visibleRect(this.cam, { w: this.vp.w + 192, h: this.vp.h + 192 });
         this.world.style.clipPath = `polygon(${ink.x}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y + ink.h}px, ${ink.x}px ${ink.y + ink.h}px)`;
         this.world.style.transform = cssTransform(this.cam, this.vp);
         this.drawPaper();
-        this.hooks.frame(this.cam, this.vp);
-        this.diagnostic.frame(performance.now() - started);
-        if (this.anim || this.glide) this.request();
-        if (resting && !this.disposed) this.hooks.settle?.(this.cam);
-    };
+    }
 
     private settleSoon(): void {
         clearTimeout(this.settleTimer);
         if (this.disposed) return;
-        this.settleTimer = window.setTimeout(() => this.hooks.settle?.(this.cam), 160);
+        this.settleTimer = window.setTimeout(() => {
+            this.settleTimer = 0;
+            if (!this.disposed && !this.anim && !this.glide && !this.pointers.size)
+                this.hooks.settle?.(this.cam);
+        }, 160);
     }
 
     private drawPaper(): void {

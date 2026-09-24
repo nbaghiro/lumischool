@@ -11,6 +11,7 @@ import {
     createMemo,
     createSignal,
     getOwner,
+    For,
     on,
     onCleanup,
     runWithOwner,
@@ -28,6 +29,9 @@ import { World } from "./world";
 export const CARD = 620;
 
 export interface ReadingSource {
+    variants?: readonly { value: number; label: string }[];
+    variant?: number;
+    neighbours?: readonly { world: string; label: string }[];
     /** The roll, laid out round the heights the sheets measured; `CARD` stands in until one is drawn. */
     world(o: { narrow: boolean; height: (lesson: string) => number | null }): WorldView;
     /** A lesson's sheet, drawn and measured for the roll to lay, or null while it cannot be read. */
@@ -51,6 +55,9 @@ export function Reading(props: {
     class?: string;
     /** Out of the roll, with the box the map opens the place in, or null when it cut. */
     onOut: (at: DOMRect | null) => void;
+    onVariant?: (grade: number) => void;
+    onWorld?: (world: string) => void;
+    onApproachWorld?: (world: string) => void;
 }): JSX.Element {
     const narrow = matches("(max-width: 700px)");
     // bumped whenever paper lands or goes, so the roll lays out again round what it measured
@@ -109,12 +116,21 @@ export function Reading(props: {
         let had = made.get(s.lesson);
         if (!had) {
             const words = props.source.card(s.lesson);
+            const loading = (): boolean => {
+                drew();
+                return paper.loading(s.lesson);
+            };
+            const failed = (): boolean => {
+                drew();
+                return paper.failed(s.lesson);
+            };
             let slot: HTMLElement | undefined;
             const el = runWithOwner(owner, () => (
                 <article
                     class="j-sheet squared wd-sheet rd-sheet"
                     style={{ width: `${view().layout.o.sheet}px`, "min-height": `${CARD}px` }}
                     data-lesson={s.lesson}
+                    aria-busy={loading()}
                     aria-label={s.title}
                 >
                     <div
@@ -133,6 +149,22 @@ export function Reading(props: {
                             {(draw) => <Near class="rd-pic" draw={draw()} />}
                         </Show>
                     </div>
+                    <Show when={loading() || failed()}>
+                        <div class="rd-lesson-status">
+                            <span>
+                                {failed() ? "This lesson couldn’t load." : "Loading this lesson…"}
+                            </span>
+                            <Show when={failed()}>
+                                <button
+                                    type="button"
+                                    class="btn second"
+                                    onClick={() => paper.lookBack(wanted())}
+                                >
+                                    Try again
+                                </button>
+                            </Show>
+                        </div>
+                    </Show>
                     <div class="j-cover" aria-hidden="true">
                         <span class="label">{words.label}</span>
                         <span class="t hand">{s.title}</span>
@@ -179,6 +211,41 @@ export function Reading(props: {
                 title={props.title}
                 onOut={(at) => props.onOut(at)}
             />
+            <Show
+                when={
+                    props.onWorld &&
+                    !waiting() &&
+                    (props.source.neighbours?.length || props.source.variants?.length)
+                }
+            >
+                <nav class="rd-neighbours" aria-label="Neighbouring worlds">
+                    <Show when={props.onVariant && props.source.variants?.length}>
+                        <select
+                            aria-label="Lessons to browse"
+                            value={props.source.variant}
+                            onChange={(event) =>
+                                props.onVariant?.(Number(event.currentTarget.value))
+                            }
+                        >
+                            <For each={props.source.variants}>
+                                {(v) => <option value={v.value}>{v.label}</option>}
+                            </For>
+                        </select>
+                    </Show>
+                    <For each={props.source.neighbours}>
+                        {(place) => (
+                            <button
+                                type="button"
+                                onPointerEnter={() => props.onApproachWorld?.(place.world)}
+                                onFocus={() => props.onApproachWorld?.(place.world)}
+                                onClick={() => props.onWorld?.(place.world)}
+                            >
+                                {place.label}
+                            </button>
+                        )}
+                    </For>
+                </nav>
+            </Show>
             <PaperStatus
                 waiting={waiting()}
                 failed={failed()}

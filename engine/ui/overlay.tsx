@@ -168,6 +168,12 @@ export function Overlay(props: {
                                     {(reading) => (
                                         <Reading
                                             source={reading}
+                                            onApproachWorld={(id) => shelf.warm(id)}
+                                            onWorld={(world) => {
+                                                setBox(undefined);
+                                                setBack(undefined);
+                                                props.go({ world, lesson: null });
+                                            }}
                                             from={box()}
                                             lesson={at(s()).lesson}
                                             class="ov-world"

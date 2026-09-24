@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { signInAs, test } from "./steps";
+import { childsMap, openChildrensView, signInAs, test } from "./steps";
 
 test("slow pages show a centered map loader before their content arrives", async ({ page }) => {
     await signInAs(page);
@@ -43,4 +43,49 @@ test("slow pages show a centered map loader before their content arrives", async
             await page.unroute("**/api/family");
         }
     }
+});
+
+test("child entry and data loads keep the map behind a centered loader, with retry on failure", async ({
+    page,
+}) => {
+    await signInAs(page);
+    await openChildrensView(page, ["Rosie"]);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    for (const endpoint of ["**/api/kid", "**/api/kid/*/record"]) {
+        let release = (): void => {};
+        const held = new Promise<void>((resolve) => {
+            release = resolve;
+        });
+        await page.route(endpoint, async (route) => {
+            await held;
+            await route.continue();
+        });
+        try {
+            await page.reload({ waitUntil: "domcontentloaded" });
+            await expect(page.locator(".page-waiting")).toBeVisible();
+            await expect(page.locator(".page-ground")).toBeVisible();
+            await expect(page.locator(".page-waiting-spinner")).toHaveCSS("animation-name", "none");
+            await expect(
+                page.getByText(
+                    /Your map is on its way|Your page is on its way|Your page is opening/,
+                ),
+            ).toHaveCount(0);
+            release();
+            await expect(childsMap(page, "Rosie")).toBeVisible();
+            await expect(page.locator(".page-waiting")).toHaveCount(0);
+        } finally {
+            release();
+            await page.unroute(endpoint);
+        }
+    }
+    await page.route("**/api/kid", (route) =>
+        route.fulfill({ status: 503, json: { error: "server" } }),
+    );
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.getByText("Your page could not load", { exact: true })).toBeVisible();
+    await expect(page.locator(".page-ground")).toBeVisible();
+    await expect(page.locator("article.postcard")).toHaveCount(0);
+    await page.unroute("**/api/kid");
+    await page.getByRole("button", { name: "Try again", exact: true }).click();
+    await expect(childsMap(page, "Rosie")).toBeVisible();
 });

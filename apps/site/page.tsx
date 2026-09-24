@@ -504,9 +504,8 @@ function JourneyMap(props: {
     const [host, setHost] = createSignal<HTMLDivElement>();
     const [near, setNear] = createSignal(false);
     const wide = matches("(min-width: 1081px)");
-    const [stops] = createResource(
-        () => ({ near: near(), quiet: !wide() }),
-        async ({ near, quiet }) => (near ? (await pictures()).stops(quiet) : undefined),
+    const [stops] = createResource(near, async (on) =>
+        on ? (await pictures()).stops() : undefined,
     );
     onMount(() => {
         const el = host();
@@ -541,31 +540,13 @@ function JourneyMap(props: {
         <div ref={setHost} class="site-window paper">
             <Show when={near() && stop()}>
                 {(st) => (
-                    <Show
-                        when={!wide()}
-                        fallback={
-                            <Overworld
-                                view={st().view}
-                                focus={st().at}
-                                hud={false}
-                                class="site-journey-world"
-                                title="A sample child's map"
-                            />
-                        }
-                    >
-                        <Show when={st()} keyed>
-                            {(current) => (
-                                <Overworld
-                                    view={current.view}
-                                    focus={current.at}
-                                    still
-                                    hud={false}
-                                    class="site-journey-world"
-                                    title="A sample child's map"
-                                />
-                            )}
-                        </Show>
-                    </Show>
+                    <Overworld
+                        view={st().view}
+                        focus={st().at}
+                        hud={false}
+                        class="site-journey-world"
+                        title="A sample child's map"
+                    />
                 )}
             </Show>
         </div>

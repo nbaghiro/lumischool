@@ -56,7 +56,7 @@ import {
     type TrackPlan,
     type YearRecord,
 } from "./rewards";
-import { daysOf, greetAt, layoutRoll, nameBox, NARROW, skyPlaces, termsIn, WIDE } from "./roll";
+import { daysOf, greetAt, nameBox, skyPlaces, termsIn } from "./roll";
 import { edgeOf, landOf, reachOf as reachedOf, terrainOf } from "./terrain";
 import { dayInWords, layoutTrail, slotsOf, type Slot } from "./trail";
 import type { Applied, Site, World, WorldChoice } from "./types";
@@ -1066,133 +1066,6 @@ export function countryViewOf(o: {
     });
     for (const p of view.places) if (p.shown) p.shown.notes = [];
     return view;
-}
-
-export interface WorldIn {
-    journal: Journal;
-    choice: WorldChoice;
-    corpus: Corpus;
-    worldOf: (id: string) => Applied;
-    topics: (lesson: string) => string[];
-    /** A sheet's measured height in world units, which the page measures before it lays the roll out. */
-    height: (lesson: string) => number;
-    size: (art: string) => { w: number; h: number };
-    /** A phone's narrow roll, where the lesson reflows. */
-    narrow: boolean;
-    grown: boolean;
-    /** The term a child arrives at from the map, whose world the view opens on with the guide's line. */
-    arriveAt?: number;
-    limits: WorldLimits;
-}
-
-/**
- * A year's roll as one page draws it, opening on the world the journal visits or on today: its worlds'
- * pictures, the roll laid out, each day's sheets, and how the record has left each drawing beside the
- * path. Nothing a viewer who looks or previews can do is in it, since the limits say so, and a view
- * that records nothing carries no kid.
- */
-export function worldViewOf(o: WorldIn): WorldView {
-    const { journal: j, worldOf } = o;
-    const worlds = j.worlds(o.choice);
-    const worldAt = (term: number): string => worlds[term - 1] ?? worlds[0] ?? "meadow";
-    const places = j.bare
-        ? []
-        : journey(
-              [
-                  {
-                      grade: j.grade,
-                      year: j.year,
-                      progress: j.progress,
-                      worlds,
-                      tracks: j.tracks,
-                  },
-              ],
-              worldOf,
-              o.topics,
-              [],
-              j.grade,
-          ).places;
-    const placeOfTerm = (term: number): Walked | undefined => places.find((p) => p.term === term);
-    const term = j.visit ? j.arrive : (o.arriveAt ?? j.today?.term ?? 1);
-    const layout = layoutRoll(
-        {
-            days: j.days,
-            next: j.next,
-            // a child with no day yet walks the world they went into, and not the year's others behind it
-            terms: j.days.length || j.bare ? j.terms : Math.max(1, term),
-            worldOf: worldAt,
-            height: o.height,
-            scenery: (id) => {
-                const w = worldOf(id);
-                return { landmarks: w.landmarks, creatures: w.creatures };
-            },
-            size: o.size,
-            reach: reachesFor(worldOf, o.topics),
-            story: (id) => {
-                const w = worldOf(id);
-                return { moment: w.chapter.moment.art, secret: w.chapter.secret.art };
-            },
-            // a child who has not had their first lesson has no day to lay a row from, and a roll with
-            // no rows draws no world at all, so the term they went into is walked bare instead
-            bare: j.bare || !j.days.length,
-        },
-        o.narrow ? NARROW : WIDE,
-    );
-    const sheetOf = (id: string, state: SheetView["state"]): SheetView => ({
-        lesson: id,
-        title: o.corpus.lesson(id)?.title ?? id,
-        state,
-        on: j.progress.done[id]?.on ?? null,
-    });
-    const days: DayView[] = layout.rows.map((row) => {
-        const followers = placeOfTerm(row.day.term)?.followers ?? [];
-        return {
-            date: row.day.date,
-            sheets: row.day.lessons.map((id) => sheetOf(id, row.day.state)),
-            followers: followers.filter((f) => f.on <= row.day.date).map((f) => f.art),
-            joined: followers.filter((f) => f.on === row.day.date).map((f) => f.art),
-        };
-    });
-    const standings: Standing[] = layout.scenery.map((s) =>
-        standingOf({ s, layout, worldOf, placeOf: placeOfTerm, grown: o.grown }),
-    );
-    const open = j.visit ? j.visit.id : worldAt(term);
-    const arrival = j.visit
-        ? { term: j.arrive, says: j.visit.arrive }
-        : o.arriveAt !== undefined
-          ? { term: o.arriveAt, says: worldOf(worldAt(o.arriveAt)).arrive }
-          : null;
-    const trail = j.bare
-        ? null
-        : trailViewOf({
-              journal: j,
-              term,
-              world: worldOf(worldAt(term)),
-              place: placeOfTerm(term),
-              corpus: o.corpus,
-              topics: o.topics,
-              size: o.size,
-              narrow: o.narrow,
-              grown: o.grown,
-          });
-    return rollViewOf({
-        layout,
-        worlds,
-        worldOf,
-        size: o.size,
-        days,
-        next: j.next ? sheetOf(j.next.id, "closed") : null,
-        standings,
-        open,
-        arrival,
-        trail,
-        card: j.bare
-            ? { label: "Still to come", says: "The lessons here are still being written." }
-            : j.days.length
-              ? undefined
-              : { label: "Your first day", says: "Your first lesson will be here." },
-        limits: o.limits,
-    });
 }
 
 export interface TrailIn {

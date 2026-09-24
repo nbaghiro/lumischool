@@ -2363,3 +2363,9 @@ without overwriting edits. `onSaved` lets the owning screen refresh its data. Ke
 business-specific verification in the screen. `InlineInput` provides the matching controlled input
 and Enter-to-blur behavior for flows such as email verification. Labels and page layout remain the
 caller's responsibility; the controls are not tied to Account or definition-list markup.
+
+The shared map's reading depth is loaded separately from atlas metadata. `school/worlds/view.ts`
+constructs atlas/journal views; `school/worlds/reading.ts` projects an explicit world visit into a
+reading view. `roll.ts` holds shared day/path primitives and bounds; `roll-layout.ts` builds the
+height-dependent lesson roll only when a reading surface needs it. Child entry loads this constructor
+through its existing `apps/kids/inside.tsx` boundary, so atlas startup does not pay for lesson geometry.

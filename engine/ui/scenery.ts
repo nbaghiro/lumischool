@@ -149,8 +149,8 @@ export function placeArt(
     box.style.width = `${w}px`;
     box.style.height = `${h}px`;
     box.append(out.svg);
-    // its idle as it declares it, seeded by where it stands so two of a kind never keep step
-    const at = hash(`${id}${Math.round(x)}${Math.round(y)}`);
+    // Layout changes move a drawing without restarting its seeded idle phase.
+    const at = hash(`${id}-${o.seed}`);
     const plays = o.play ? motionOf(r.v) : undefined;
     const playing = plays && o.play ? o.play.play(out.svg, { motion: plays, key: at }) : undefined;
     PLACED.set(box, {
@@ -398,6 +398,8 @@ const inColumn = (l: RollLayout, x: number, w = 0) =>
 /** A piece of a world painted when it comes into view. It draws into its stretch and returns anything placed beside. */
 export interface Piece {
     rect: Rect;
+    key?: string;
+    origin?: number;
     paint(): Element[];
     release?(): void;
 }
@@ -423,6 +425,7 @@ interface Ctx {
     /** Where the world's name is written on the sky, and the most room it takes. */
     label: Rect & { k: number };
     line: number;
+    origin: number;
     X0: number;
     X1: number;
     wash: number;
@@ -672,8 +675,12 @@ const GROUNDS: Record<GroundKind, Ground> = {
             const g = el("g", { opacity: "0.7" }, c.texture),
                 sw = 140,
                 sh = 100;
-            for (let y = Math.max(c.line + 60, Math.ceil(r.y / sh) * sh); y < r.y + r.h; y += sh) {
-                const shift = (Math.round(y / sh) % 2) * (sw / 2);
+            for (
+                let y = Math.max(c.line + 60, c.origin + Math.ceil((r.y - c.origin) / sh) * sh);
+                y < r.y + r.h;
+                y += sh
+            ) {
+                const shift = (Math.round((y - c.origin) / sh) % 2) * (sw / 2);
                 for (
                     let x = Math.floor((c.l.x0 - 300) / sw) * sw + shift;
                     x < c.l.x1 + 300;
@@ -707,10 +714,13 @@ const GROUNDS: Record<GroundKind, Ground> = {
             // the floor: big tiles five squares across, every other one tinted, so they sit on the paper's grid
             const size = 100,
                 g = el("g", { class: "floor" }, c.washes);
-            const y0 = Math.max(c.line + 180, Math.floor(r.y / size) * size);
+            const y0 = Math.max(
+                c.line + 180,
+                c.origin + Math.floor((r.y - c.origin) / size) * size,
+            );
             for (let y = y0; y < r.y + r.h; y += size) {
                 for (let x = Math.floor(c.X0 / size) * size; x < c.X1; x += size) {
-                    if ((Math.round(x / size) + Math.round(y / size)) % 2 === 0)
+                    if ((Math.round(x / size) + Math.round((y - c.origin) / size)) % 2 === 0)
                         el(
                             "rect",
                             {
@@ -732,7 +742,7 @@ const GROUNDS: Record<GroundKind, Ground> = {
         tile: (c, r, rnd) => {
             const g = el("g", { opacity: "0.7" }, c.texture),
                 gap = 90;
-            const y0 = Math.max(c.line + 200, Math.ceil(r.y / gap) * gap);
+            const y0 = Math.max(c.line + 200, c.origin + Math.ceil((r.y - c.origin) / gap) * gap);
             for (let y = y0; y < r.y + r.h; y += gap) {
                 c.p.pen.line(g, c.l.x0 - 240, y, c.l.x1 + 240, y, "pencil", {
                     stroke: c.ink,
@@ -740,7 +750,7 @@ const GROUNDS: Record<GroundKind, Ground> = {
                     roughness: 0.5,
                 });
                 for (
-                    let x = c.l.x0 - 240 + ((y / gap) % 3) * 150;
+                    let x = c.l.x0 - 240 + (((y - c.origin) / gap) % 3) * 150;
                     x < c.l.x1 + 240;
                     x += 440 + rnd() * 80
                 ) {
@@ -920,11 +930,14 @@ const GROUNDS: Record<GroundKind, Ground> = {
             const band = 160,
                 g = el("g", {}, c.washes);
             for (
-                let y = Math.max(c.line + 60, Math.floor(r.y / band) * band);
+                let y = Math.max(
+                    c.line + 60,
+                    c.origin + Math.floor((r.y - c.origin) / band) * band,
+                );
                 y < r.y + r.h;
                 y += band
             ) {
-                if (Math.round(y / band) % 2 === 0)
+                if (Math.round((y - c.origin) / band) % 2 === 0)
                     el(
                         "rect",
                         {
@@ -1169,12 +1182,12 @@ const GROUNDS: Record<GroundKind, Ground> = {
             const g = el("g", { opacity: "0.7" }, c.texture),
                 row = 24;
             for (
-                let y = Math.max(c.line + 170, Math.ceil(r.y / row) * row);
+                let y = Math.max(c.line + 170, c.origin + Math.ceil((r.y - c.origin) / row) * row);
                 y < r.y + r.h;
                 y += row
             ) {
-                if (Math.floor(y / row) % 7 > 3) continue;
-                const shift = (Math.round(y / row) % 2) * 14;
+                if (Math.floor((y - c.origin) / row) % 7 > 3) continue;
+                const shift = (Math.round((y - c.origin) / row) % 2) * 14;
                 for (let x = c.l.x0 - 260 + shift; x < c.l.x1 + 40; x += 30) {
                     if (inColumn(c.l, x, 28) || rnd() < 0.3) continue;
                     c.p.pen.rect(g, x, y, 26, 19, "pencil", null, {
@@ -1316,7 +1329,10 @@ const GROUNDS: Record<GroundKind, Ground> = {
             const plot = 430,
                 inner = c.l.o.sheet / 2 + LIMITS.clear + 30;
             for (
-                let y = Math.max(c.line + 120, Math.ceil(r.y / plot) * plot);
+                let y = Math.max(
+                    c.line + 120,
+                    c.origin + Math.ceil((r.y - c.origin) / plot) * plot,
+                );
                 y < r.y + r.h - 60;
                 y += plot
             ) {
@@ -1412,7 +1428,7 @@ const GROUNDS: Record<GroundKind, Ground> = {
         tile: (c, r, rnd) => {
             // terraces stepping down the hillside: lengths of low white wall at staggered heights, pots of flowers along them
             for (
-                let y = Math.max(c.line + 300, Math.ceil(r.y / 380) * 380);
+                let y = Math.max(c.line + 300, c.origin + Math.ceil((r.y - c.origin) / 380) * 380);
                 y < r.y + r.h;
                 y += 380
             ) {
@@ -1597,8 +1613,12 @@ const GROUNDS: Record<GroundKind, Ground> = {
             const g = el("g", { opacity: "0.75" }, c.texture),
                 sw = 180,
                 sh = 120;
-            for (let y = Math.max(c.line + 80, Math.ceil(r.y / sh) * sh); y < r.y + r.h; y += sh) {
-                const shift = (Math.round(y / sh) % 3) * (sw / 3);
+            for (
+                let y = Math.max(c.line + 80, c.origin + Math.ceil((r.y - c.origin) / sh) * sh);
+                y < r.y + r.h;
+                y += sh
+            ) {
+                const shift = (Math.round((y - c.origin) / sh) % 3) * (sw / 3);
                 for (
                     let x = Math.floor((c.l.x0 - 300) / sw) * sw + shift;
                     x < c.l.x1 + 300;
@@ -5820,6 +5840,7 @@ export function paintStretch(
     );
 
     const texture = el("g", { class: "tex" }, p.g);
+    let tileKey = id;
     const c: Ctx = {
         p,
         world,
@@ -5829,6 +5850,7 @@ export function paintStretch(
         art,
         label: above.label,
         line,
+        origin: 0,
         X0,
         X1,
         wash,
@@ -5841,7 +5863,7 @@ export function paintStretch(
         water: world.motion
             ? (r) =>
                   Array.from({ length: CURRENTS }, (_, i) => {
-                      const wp = pad(r, hash(`${id}-water-${r.y}-${i}`), t, "j-water");
+                      const wp = pad(r, hash(`${tileKey}-water-${i}`), t, "j-water");
                       wp.svg.style.setProperty("--i", String(i));
                       into.append(wp.svg);
                       return wp.g;
@@ -5887,23 +5909,36 @@ export function paintStretch(
             return els;
         },
     });
-    for (let ty = line; ty < bottom; ty += TILE) {
-        const rect: Rect = { x: X0, y: ty, w: X1 - X0, h: Math.min(TILE, bottom - ty) };
-        pieces.push({
-            rect,
-            paint: () => {
-                ground.tile(c, rect, rand(hash(`${id}-${ty}`)));
-                path.tile(
-                    c,
-                    samples.filter((q) => q.y >= ty - 30 && q.y <= ty + rect.h + 30),
-                );
-                if (world.weather === "snow" && !world.indoor)
-                    flakes(c, rect, rand(hash(`${id}-snow-${ty}`)));
-                if (world.weather === "dew" && !world.indoor)
-                    dewOn(c, rect, rand(hash(`${id}-dew-${ty}`)));
-                return [];
-            },
-        });
+    // Texture tiles start again at each day, so preceding paper cannot shift their pattern.
+    const starts = [
+        { y: line, key: "horizon" },
+        ...l.rows
+            .filter((row) => row.world === s.world && row.day.term === s.term)
+            .map((row) => ({ y: row.rect.y, key: row.day.id })),
+    ];
+    for (const [part, start] of starts.entries()) {
+        const end = starts[part + 1]?.y ?? bottom;
+        for (let ty = start.y; ty < end; ty += TILE) {
+            const rect: Rect = { x: X0, y: ty, w: X1 - X0, h: Math.min(TILE, end - ty) };
+            const key = `${id}-${start.key}-${ty - start.y}`;
+            pieces.push({
+                rect,
+                key,
+                origin: start.y,
+                paint: () => {
+                    ground.tile(c, rect, rand(hash(key)));
+                    path.tile(
+                        c,
+                        samples.filter((q) => q.y >= ty - 30 && q.y <= ty + rect.h + 30),
+                    );
+                    if (world.weather === "snow" && !world.indoor)
+                        flakes(c, rect, rand(hash(`${key}-snow`)));
+                    if (world.weather === "dew" && !world.indoor)
+                        dewOn(c, rect, rand(hash(`${key}-dew`)));
+                    return [];
+                },
+            });
+        }
     }
     const owned = pieces.map((piece, index): Piece => {
         let added: Element[] = [];
@@ -5912,8 +5947,10 @@ export function paintStretch(
             paint() {
                 const parents = [into, p.svg, ...p.svg.querySelectorAll("g")];
                 const before = new Map(parents.map((parent) => [parent, new Set(parent.children)]));
+                c.origin = piece.origin ?? 0;
+                tileKey = piece.key ?? `${id}-piece-${index}`;
                 p.pen = new Pen(p.svg, {
-                    seed: hash(`${id}-piece-${index}`),
+                    seed: hash(tileKey),
                     t,
                     paper: false,
                     roughness: 1,
@@ -6485,8 +6522,12 @@ export function sceneryPieces(
     const out: Piece[] = [],
         l = view.layout,
         art = view.art;
+    const occurrences = new Map<string, number>();
     l.scenery.forEach((s: Scenery, i) => {
         const row = l.rows[s.row];
+        const identity = `${row?.day.id ?? s.world}-${s.kind}-${s.art}`;
+        const occurrence = occurrences.get(identity) ?? 0;
+        occurrences.set(identity, occurrence + 1);
         const picture = pictureIn(view, row?.world ?? s.world ?? "");
         const play = picture.motion ? (o.play ?? null) : null;
         const world: WorldPicture =
@@ -6504,7 +6545,7 @@ export function sceneryPieces(
                 if (st.hide) return [];
                 const cls = `${s.kind}${st.lit ? " lit" : ""}${s.kind === "moment" ? (st.inked ? " inked" : " sketch") : ""}`;
                 const a = placeArt(art[s.art], s.at.x, s.at.y, host, {
-                    seed: hash(`${row?.day.id ?? world.id}-${s.art}-${i}`),
+                    seed: hash(`${identity}-${occurrence}`),
                     flip: s.side > 0 === (s.kind === "creature"),
                     params: st.params,
                     season: row
@@ -6610,7 +6651,7 @@ const longDay = (iso: string): string =>
 /** A year's roll drawn from its view into a page's world layer (world.tsx), and what the page plays on it. */
 export interface WorldPainted {
     frame(camera: Camera, size: Size): void;
-    pieces: { rect: Rect; paint(): (() => void) | void }[];
+    pieces: { rect: Rect; detail?: boolean; paint(): (() => void) | void }[];
     /** A world putting itself together as the child arrives: what stands on a term's horizon rises into place. */
     assemble(term: number): void;
     /** Settle every drawing while a sheet has the child's attention, and wake them after. */
@@ -6725,6 +6766,7 @@ export function paintWorldView(o: {
         painted.pieces.forEach((piece, k) =>
             pieces.push({
                 rect: piece.rect,
+                detail: k !== 0,
                 paint: () => {
                     const elements = piece.paint();
                     place(elements, k === 0 ? s.term : undefined, s.ahead, !celebrated.has(piece));
@@ -6798,6 +6840,7 @@ export function paintWorldView(o: {
         let seen = false;
         pieces.push({
             rect: piece.rect,
+            detail: true,
             paint() {
                 const elements = piece.paint();
                 place(elements, undefined, false, !seen);

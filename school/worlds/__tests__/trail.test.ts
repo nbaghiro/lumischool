@@ -1,3 +1,4 @@
+import { worldViewOf } from "../reading";
 // A world's term as a place (.docs/journal.md, "A world as a place"): the stops are fixed by the day's
 // number before any sheet is opened, the land past the next day is paper on a child's trail, nothing
 // stands on the trail or on a label, and the view says each day as a child says it and keeps the day
@@ -13,7 +14,7 @@ import { corpusFrom, topicsIn } from "../lessons";
 import { daysOf } from "../roll";
 import { dayInWords, layoutTrail, slotsOf, type Slot, type TrailInput } from "../trail";
 import type { Applied } from "../types";
-import { childWorld, GROWN_WORLD, journalOf, trailViewOf, worldViewOf } from "../view";
+import { childWorld, GROWN_WORLD, journalOf, trailViewOf } from "../view";
 import { WORLDS, worldById } from "../worlds";
 
 const STARTED = "2026-08-31";
@@ -411,4 +412,34 @@ test("a world's stamp is one of its own creatures", () => {
             .length,
         1,
     );
+});
+
+test("an explicit child term visit projects the roll without changing annual history or rewards", () => {
+    const journal = journalAt(4);
+    const before = JSON.stringify(journal);
+    const view = worldViewOf({
+        journal,
+        choice: CHOICE,
+        corpus: CORPUS,
+        worldOf,
+        topics: TOPICS,
+        height: () => 1200,
+        size,
+        narrow: false,
+        grown: false,
+        arriveAt: 1,
+        visitOnly: true,
+        limits: childWorld("kid-1"),
+    });
+    assert.deepEqual(
+        view.layout.rows.map((row) => row.day),
+        journal.days.filter((day) => day.term === 1),
+    );
+    assert.deepEqual(
+        view.layout.stretches.map((stretch) => stretch.world),
+        ["meadow"],
+    );
+    assert.equal(view.next, null);
+    assert.equal(JSON.stringify(journal), before);
+    assert.equal(view.trail?.moment, "2026-09-03");
 });

@@ -13,10 +13,7 @@
     flex: 1;
     min-height: 0;
 }
-.kid-map-note {
-    margin: 0;
-    padding: 32px var(--gut);
-}
+
 .kid-map-over {
     position: absolute;
     top: 12px;

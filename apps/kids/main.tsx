@@ -11,6 +11,7 @@ import {
     Match,
     onCleanup,
     Switch,
+    Suspense,
     type Accessor,
     type Setter,
     type JSX,
@@ -20,6 +21,7 @@ import { onDemand } from "../../engine/ui/art";
 import { fontsReady } from "../../engine/ui/fonts";
 import * as client from "../../engine/ui/kid";
 import type { Sending } from "../../engine/ui/kid";
+import { Loading } from "./loading";
 import { Page } from "../../engine/ui/page";
 import { KidBar } from "./bar";
 import type { KidView } from "../../server/api";
@@ -35,19 +37,12 @@ const GrownUps = lazy(() =>
 );
 
 type Now =
+    | { at: "loading" }
     | { at: "closed" }
     | { at: "not-yet"; offline: boolean }
     | { at: "who"; view: KidView }
     | { at: "child"; view: KidView; kid: Kid }
     | { at: "grown-ups"; view: KidView; from: Kid | null };
-
-const LOAD: Record<Now["at"], () => Promise<unknown>> = {
-    closed: Closed.preload,
-    "not-yet": NotYet.preload,
-    who: Who.preload,
-    child: Child.preload,
-    "grown-ups": GrownUps.preload,
-};
 
 /** Where a load opens: the pictures, the only child's page, or the reason neither can open. */
 async function read(): Promise<Now> {
@@ -108,54 +103,59 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
         return n.at === "grown-ups" && n;
     };
     return (
-        <Switch>
-            <Match when={now().at === "closed"}>
-                <Closed />
-            </Match>
-            <Match when={notYet()}>{(n) => <NotYet offline={n().offline} />}</Match>
-            <Match when={who()}>
-                {(n) => (
-                    <Who
-                        view={n().view}
-                        offline={sending().offline}
-                        onChoose={(kid) => setNow({ at: "child", view: n().view, kid })}
-                    />
-                )}
-            </Match>
-            <Match when={child()}>
-                {(n) => (
-                    <Child
-                        view={n().view}
-                        kid={n().kid}
-                        offline={sending().offline}
-                        onBack={() => setNow({ at: "who", view: n().view })}
-                    />
-                )}
-            </Match>
-            <Match when={grownUps()}>
-                {(n) => (
-                    <GrownUps
-                        view={n().view}
-                        sending={sending()}
-                        onAdded={refresh}
-                        onBack={() => {
-                            const from = n().from;
-                            if (sending().ended) refresh();
-                            else if (from) setNow({ at: "child", view: n().view, kid: from });
-                            else setNow({ at: "who", view: n().view });
-                        }}
-                    />
-                )}
-            </Match>
-        </Switch>
+        <Suspense fallback={<Loading />}>
+            <Switch>
+                <Match when={now().at === "loading"}>
+                    <Loading />
+                </Match>
+                <Match when={now().at === "closed"}>
+                    <Closed />
+                </Match>
+                <Match when={notYet()}>
+                    {(n) => <NotYet offline={n().offline} retry={refresh} />}
+                </Match>
+                <Match when={who()}>
+                    {(n) => (
+                        <Who
+                            view={n().view}
+                            offline={sending().offline}
+                            onChoose={(kid) => setNow({ at: "child", view: n().view, kid })}
+                        />
+                    )}
+                </Match>
+                <Match when={child()}>
+                    {(n) => (
+                        <Child
+                            view={n().view}
+                            kid={n().kid}
+                            offline={sending().offline}
+                            onBack={() => setNow({ at: "who", view: n().view })}
+                        />
+                    )}
+                </Match>
+                <Match when={grownUps()}>
+                    {(n) => (
+                        <GrownUps
+                            view={n().view}
+                            sending={sending()}
+                            onAdded={refresh}
+                            onBack={() => {
+                                const from = n().from;
+                                if (sending().ended) refresh();
+                                else if (from) setNow({ at: "child", view: n().view, kid: from });
+                                else setNow({ at: "who", view: n().view });
+                            }}
+                        />
+                    )}
+                </Match>
+            </Switch>
+        </Suspense>
     );
 }
 
 const root = document.getElementById("app");
 if (root) {
-    const [first] = await Promise.all([read(), fontsReady()]);
-    await LOAD[first.at]();
-    const [now, setNow] = createSignal<Now>(first);
+    const [now, setNow] = createSignal<Now>({ at: "loading" });
     const profile = (): { view: KidView; kid?: Kid } | undefined => {
         const n = now();
         if (n.at === "child") return { view: n.view, kid: n.kid };
@@ -184,4 +184,7 @@ if (root) {
         ),
         root,
     );
+    void Promise.all([read(), fontsReady()])
+        .then(([first]) => setNow(first))
+        .catch(() => setNow({ at: "not-yet", offline: !navigator.onLine }));
 }

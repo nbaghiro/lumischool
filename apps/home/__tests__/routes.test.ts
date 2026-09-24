@@ -109,3 +109,16 @@ describe("the map's addresses", () => {
             );
     });
 });
+
+it("a map's alternative grade remains in a shareable address", () => {
+    assert.deepEqual(whereIn("?world=valley-farm&grade=2"), {
+        world: "valley-farm",
+        lesson: null,
+        grade: 2,
+    });
+    assert.equal(mapHref({ world: "valley-farm", grade: 2 }), "/map?world=valley-farm&grade=2");
+    assert.deepEqual(whereIn("?world=valley-farm&grade=invalid"), {
+        world: "valley-farm",
+        lesson: null,
+    });
+});

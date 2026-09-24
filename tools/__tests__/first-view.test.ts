@@ -227,6 +227,14 @@ test("the child's view stays within its budget: what loads with the page, and wh
         map <= BUDGET.kidsMapJs,
         `the child's map screen is ${map} bytes of script before the drawings, over ${BUDGET.kidsMapJs}`,
     );
+    const interior = reach(KIDS_MAP, false)
+        .flatMap((chunk) => sourcesOf(chunk.file))
+        .filter((source) => /school\/worlds\/(reading|roll-layout)\.ts$/.test(source));
+    assert.deepEqual(
+        interior,
+        [],
+        "the child atlas must not eagerly load lesson-roll construction",
+    );
     const held: string[] = [];
     for (const c of reach(KIDS_MAP, true)) {
         const sources = sourcesOf(c.file);

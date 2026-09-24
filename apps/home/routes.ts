@@ -86,6 +86,7 @@ export const kidHref = (kid: { id: string }): string => `/?kid=${encodeURICompon
 
 /** Where a grown-up is on the map: the country, a world, a lesson in its world, or a lesson alone, whose world the map screen finds. */
 export interface WhereOnMap {
+    grade?: number;
     world: string | null;
     lesson: string | null;
 }
@@ -93,7 +94,12 @@ export interface WhereOnMap {
 /** What `/map?world=…&lesson=…` names. */
 export function whereIn(search: string): WhereOnMap {
     const q = new URLSearchParams(search);
-    return { world: q.get("world") || null, lesson: q.get("lesson") || null };
+    const grade = Number(q.get("grade"));
+    return {
+        world: q.get("world") || null,
+        lesson: q.get("lesson") || null,
+        ...(Number.isInteger(grade) && grade > 0 ? { grade } : {}),
+    };
 }
 
 /** The address of a place on the map. */
@@ -101,6 +107,7 @@ export function mapHref(at: Partial<WhereOnMap> = {}): string {
     const q = new URLSearchParams();
     if (at.world) q.set("world", at.world);
     if (at.lesson) q.set("lesson", at.lesson);
+    if (at.grade) q.set("grade", String(at.grade));
     const query = q.toString();
     return query ? `/map?${query}` : "/map";
 }

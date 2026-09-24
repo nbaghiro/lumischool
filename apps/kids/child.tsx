@@ -26,14 +26,13 @@ import { Button } from "../../engine/ui/form";
 import { Offline } from "../../engine/ui/kids";
 import { Overworld } from "../../engine/ui/overworld";
 import { useLook } from "../../engine/ui/page";
-import { Say } from "../../engine/ui/say";
 import { matches } from "../../engine/ui/viewport";
 import { familyName } from "../../school/family/names";
 import type { KidView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import type { InsideScreen } from "./inside";
 import type { Sheets } from "./lesson";
-import { Opening } from "./opening-card";
+import { Loading } from "./loading";
 import { waitsForSheets } from "./opening";
 import {
     fetchLessons,
@@ -45,12 +44,9 @@ import {
     type Loaded,
 } from "./views";
 
-const WAITING = "Your map is on its way.";
 /** How long going into a world waits for today's sheets before opening it anyway, in ms. */
 const SHEETS_READY = 2500;
 
-const AWAY =
-    "Your map needs the internet the first time. It will be here when the internet is back.";
 // every import on a child's way in loads the page again once if the server no longer has it, as after
 // a deploy or with a tab left open while the code changed (onDemand in engine/ui/art.tsx)
 // the world's own screens, the place and the roll, which come with the child going in rather than
@@ -79,6 +75,7 @@ export function ChildMap(props: {
             end: { kind: "none" },
             foot: [familyName(props.view.family.name)],
             stage: true,
+            stageBackdrop: !loaded() || !onMap(),
         }),
     );
     const [loaded, { mutate }] = createResource(
@@ -295,9 +292,7 @@ export function ChildMap(props: {
         >
             <Switch>
                 <Match when={loaded.loading && !loaded()}>
-                    <p class="kid-map-note">
-                        <Say text={WAITING} calm />
-                    </p>
+                    <Loading />
                 </Match>
                 <Match when={loaded()}>
                     {(c) => (
@@ -361,8 +356,8 @@ export function ChildMap(props: {
                             </Match>
                             <Match when={inside() && insideNow()}>
                                 {(s) => (
-                                    <ErrorBoundary fallback={<Opening failed />}>
-                                        <Suspense fallback={<Opening />}>
+                                    <ErrorBoundary fallback={<Loading failed />}>
+                                        <Suspense fallback={<Loading />}>
                                             <Inside
                                                 c={c()}
                                                 kid={props.kid}
@@ -385,9 +380,7 @@ export function ChildMap(props: {
                     )}
                 </Match>
                 <Match when={loaded.state === "errored" || loaded() === null}>
-                    <p class="kid-map-note">
-                        <Say text={AWAY} calm />
-                    </p>
+                    <Loading failed offline={props.offline} />
                 </Match>
             </Switch>
             <div class="kid-map-over">

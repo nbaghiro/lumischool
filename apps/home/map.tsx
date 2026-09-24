@@ -77,7 +77,7 @@ export function GrownMap(): JSX.Element {
         return s && "error" in s ? s : null;
     };
     const where = createMemo(() => whereIn(search()), undefined, {
-        equals: (a, b) => a.world === b.world && a.lesson === b.lesson,
+        equals: (a, b) => a.world === b.world && a.lesson === b.lesson && a.grade === b.grade,
     });
     // `box` is where the view being left put the world on the screen, so the one opening picks the
     // movement up there: the dive into a world and the way back out are one movement (world.tsx)
@@ -100,51 +100,77 @@ export function GrownMap(): JSX.Element {
                 <Match when={loaded()}>
                     {(s) => {
                         const at = createMemo(() => inWorld(s(), where()), undefined, {
-                            equals: (a, b) => a.world === b.world && a.lesson === b.lesson,
+                            equals: (a, b) =>
+                                a.world === b.world && a.lesson === b.lesson && a.grade === b.grade,
                         });
-                        const shelf = readingShelf((world) =>
-                            readingOf(s(), world, {
+                        const shelf = readingShelf((key) => {
+                            const [world, grade] = key.split("|");
+                            return readingOf(s(), world ?? "meadow", {
                                 level: "medium",
                                 key: true,
-                            }),
-                        );
+                                ...(grade ? { grade: Number(grade) } : {}),
+                            });
+                        });
                         onCleanup(() => shelf.dispose());
                         return (
                             <Switch>
-                                <Match when={at().world} keyed>
-                                    {(world) => (
-                                        <Suspense
-                                            fallback={<p class="mp-note">The world is opening.</p>}
-                                        >
-                                            <Reading
-                                                source={
-                                                    shelf.source(world) ??
-                                                    readingOf(s(), world, {
-                                                        level: "medium",
-                                                        key: true,
-                                                    })
+                                <Match
+                                    when={
+                                        at().world
+                                            ? `${at().world}${at().grade ? `|${at().grade}` : ""}`
+                                            : null
+                                    }
+                                    keyed
+                                >
+                                    {(key) => {
+                                        const world = key.split("|")[0] ?? "meadow";
+                                        return (
+                                            <Suspense
+                                                fallback={
+                                                    <p class="mp-note">The world is opening.</p>
                                                 }
-                                                from={box()}
-                                                lesson={at().lesson}
-                                                class="mp-world"
-                                                title={`${s().worldOf(world).name}, as written`}
-                                                onOut={(out) => {
-                                                    const place = placeOf(s().map, world);
-                                                    setBox(undefined);
-                                                    setPlaceBack(place ?? undefined);
-                                                    setBack(
-                                                        place !== null && out
-                                                            ? { place, from: out }
-                                                            : undefined,
-                                                    );
-                                                    // out replaces the world's entry, so back from
-                                                    // the map leaves it rather than returning to
-                                                    // the world
-                                                    go(mapHref(), { replace: true });
-                                                }}
-                                            />
-                                        </Suspense>
-                                    )}
+                                            >
+                                                <Reading
+                                                    source={
+                                                        shelf.source(key) ??
+                                                        readingOf(s(), world, {
+                                                            level: "medium",
+                                                            key: true,
+                                                            grade: at().grade,
+                                                        })
+                                                    }
+                                                    onVariant={(grade) => {
+                                                        setBox(undefined);
+                                                        go(mapHref({ world, grade }));
+                                                    }}
+                                                    onApproachWorld={(id) => shelf.warm(id)}
+                                                    onWorld={(id) => {
+                                                        setBox(undefined);
+                                                        setBack(undefined);
+                                                        go(mapHref({ world: id }));
+                                                    }}
+                                                    from={box()}
+                                                    lesson={at().lesson}
+                                                    class="mp-world"
+                                                    title={`${s().worldOf(world).name}, as written`}
+                                                    onOut={(out) => {
+                                                        const place = placeOf(s().map, world);
+                                                        setBox(undefined);
+                                                        setPlaceBack(place ?? undefined);
+                                                        setBack(
+                                                            place !== null && out
+                                                                ? { place, from: out }
+                                                                : undefined,
+                                                        );
+                                                        // out replaces the world's entry, so back from
+                                                        // the map leaves it rather than returning to
+                                                        // the world
+                                                        go(mapHref(), { replace: true });
+                                                    }}
+                                                />
+                                            </Suspense>
+                                        );
+                                    }}
                                 </Match>
                                 <Match when={!at().world}>
                                     <Overworld

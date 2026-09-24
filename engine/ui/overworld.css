@@ -61,11 +61,16 @@
     margin: 0;
 }
 .ow-home {
-    left: 12px;
-    bottom: 12px;
+    left: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--grid);
+    border-radius: 22px 20px 23px 19px;
+    background: var(--paper);
+    box-shadow: 0 6px 18px -10px rgba(27, 37, 64, 0.35);
 }
 .ow-btn {
     min-width: 48px;
@@ -111,7 +116,7 @@
 /* The card for a world in pencil: its name, and that its way opens as the child learns. */
 .ow-card {
     right: 12px;
-    bottom: 12px;
+    bottom: 84px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -137,13 +142,9 @@
 }
 
 @media (max-width: 700px) {
-    .ow-home {
-        left: 8px;
-        bottom: 8px;
-    }
     .ow-card {
         right: 8px;
-        bottom: 70px;
+        bottom: max(84px, calc(env(safe-area-inset-bottom) + 68px));
         width: calc(100% - 16px);
     }
 }
@@ -607,6 +608,52 @@
     animation-play-state: paused !important;
 }
 
-.ow-scope {
-    min-width: 148px;
+.ow-home:not(:has(button)) {
+    display: none;
+}
+.ow-home .ow-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.ow-home .ow-btn:hover,
+.ow-home .ow-btn:focus-visible {
+    background: var(--glow);
+}
+.ow-tool-art {
+    display: block;
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+}
+.ow-tool-plane {
+    width: 34px;
+    height: 34px;
+}
+.ow-home .ow-btn::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--grid);
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+}
+.ow-home .ow-btn:focus-visible::after {
+    opacity: 1;
+}
+@media (hover: hover) {
+    .ow-home .ow-btn:hover::after {
+        opacity: 1;
+    }
 }

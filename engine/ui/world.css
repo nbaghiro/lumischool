@@ -852,3 +852,45 @@
     font: inherit;
     cursor: pointer;
 }
+
+/* At atlas distance each day remains a complete, selectable card without lesson bodies. */
+.wd-overview {
+    display: none;
+}
+.world:is([data-level="days"], [data-level="far"]) .wd-overview {
+    display: block;
+}
+.world:is([data-level="days"], [data-level="far"]) .wd-sheets > .j-sheet {
+    visibility: hidden;
+}
+.wd-day-card {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: calc(4px * var(--iz, 1));
+    min-height: calc(44px * var(--iz, 1));
+    padding: calc(6px * var(--iz, 1));
+    border: 1px solid var(--grid);
+    border-radius: calc(6px * var(--iz, 1));
+    background: var(--card);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    font-size: calc(13px * var(--iz, 1));
+    line-height: 1.2;
+}
+.wd-day-card .label {
+    font-size: calc(10px * var(--iz, 1));
+}
+.world:is([data-level="days"], [data-level="far"]) .j-date,
+.world:is([data-level="days"], [data-level="far"]) .j-reach {
+    visibility: hidden;
+}
+
+.wd-day-card .hand {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}

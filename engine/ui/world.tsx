@@ -10,7 +10,19 @@ import { sceneWork } from "./scene-work";
 // (drawings.ts) and play through the root's player.
 
 import "./world.css";
-import { createEffect, createSignal, For, on, onCleanup, onMount, Show, type JSX } from "solid-js";
+import {
+    batch,
+    createEffect,
+    createMemo,
+    createSignal,
+    For,
+    on,
+    onCleanup,
+    onMount,
+    Show,
+    untrack,
+    type JSX,
+} from "solid-js";
 import { easeInOut, timeline, valueAt } from "../motion/timeline";
 import { ticker } from "../motion/loop";
 import {
@@ -140,13 +152,14 @@ export function World(props: {
     /** Whether the camera is moving, for the way out to stay out of sight while it does. */
     const [moving, setMoving] = createSignal(false);
 
-    const layout = (): WorldView["layout"] => props.view.layout;
+    const [displayed, setDisplayed] = createSignal(props.view);
+    const layout = (): WorldView["layout"] => displayed().layout;
     const narrow = (): boolean => (view?.vp.w ?? 1024) < 700;
-    const name = (world: string): string => props.view.pictures[world]?.name ?? "";
+    const name = (world: string): string => displayed().pictures[world]?.name ?? "";
 
     /** Whether a row holds a sheet the page drew, which is read close, rather than cards. */
     const owned = (r: number): boolean =>
-        (props.view.days[r]?.sheets ?? []).some((sheet) => props.sheet?.(sheet) !== null);
+        (displayed().days[r]?.sheets ?? []).some((sheet) => props.sheet?.(sheet) !== null);
 
     /**
      * The camera that reads a row's sheet at the top of the screen: a lesson fills the width it can,
@@ -292,7 +305,7 @@ export function World(props: {
         const row = landingRow(props.view, { day: props.open, lesson: props.land?.lesson, term });
         if (row) {
             const i = l.rows.indexOf(row);
-            const titles = (props.view.days[i]?.sheets ?? []).map((s) => s.title).join(" and ");
+            const titles = (displayed().days[i]?.sheets ?? []).map((s) => s.title).join(" and ");
             const k = props.land ? row.day.lessons.indexOf(props.land.lesson) : -1;
             const within = k >= 0 ? row.sheets[k] : undefined;
             return {
@@ -319,7 +332,8 @@ export function World(props: {
     /** Whether the child's arrival is over: no past sheet is asked for before, so the roll is not laid out again under the camera coming down to today. */
     let arrived = false;
     createEffect(() => {
-        if (!arrivalDue() || props.waiting || !ready() || paintedLayout() !== layout()) return;
+        if (!arrivalDue() || props.waiting || !ready() || paintedLayout() !== props.view.layout)
+            return;
         const v = view;
         if (!v || busy) return;
         setArrivalDue(false);
@@ -341,12 +355,12 @@ export function World(props: {
             ask = props.lookBack;
         // far out a sheet is only its cover, so there is nothing to draw; nearer than that a past day
         // is worth drawing, and the level carries rollLevelOf's hysteresis, which a bare zoom does not
-        if (!v || !ask || !arrived || v.flying || level === "far") return;
+        if (!v || !ask || !arrived || v.flying || level !== "day") return;
         const seen = v.visible(Math.max(v.vp.h, 700) * 2);
         const near = layout().rows.flatMap((row, r) =>
             row.day.state === "today" || !intersects(row.rect, seen)
                 ? []
-                : (props.view.days[r]?.sheets ?? []).map((sheet) => sheet.lesson),
+                : (displayed().days[r]?.sheets ?? []).map((sheet) => sheet.lesson),
         );
         const key = near.join(",");
         if (key === asked) return;
@@ -364,13 +378,21 @@ export function World(props: {
                 seen = view.visible(margin),
                 keep = view.visible(margin * 2);
             for (const p of pending) {
-                if (p.release && !intersects(p.piece.rect, keep)) {
+                if (
+                    p.release &&
+                    (!intersects(p.piece.rect, keep) || (level === "far" && p.piece.detail))
+                ) {
                     p.release();
                     p.release = undefined;
                     p.done = false;
                 }
             }
-            const todo = pending.filter((p) => !p.done && intersects(p.piece.rect, seen));
+            const todo = pending.filter(
+                (p) =>
+                    !p.done &&
+                    !(level === "far" && p.piece.detail) &&
+                    intersects(p.piece.rect, seen),
+            );
             for (const p of todo) {
                 p.done = true;
                 p.release = p.piece.paint() ?? undefined;
@@ -393,6 +415,8 @@ export function World(props: {
     /** The layer whose labels grow as the child draws back, and the covers that are read far off, found once per roll drawn. */
     let flags: HTMLElement | null = null;
     let covers: HTMLElement[] = [];
+    const [overview, setOverview] = createSignal<{ from: number; to: number }[]>([]);
+    let overviewKey = "";
     /**
      * The zoom the paper's own rules read. A custom property set on the world is inherited by
      * everything on it, so writing these on the world every frame restyles the whole roll, which is
@@ -408,9 +432,31 @@ export function World(props: {
         flags ??= v.world.querySelector<HTMLElement>(".l-flags");
         flags?.style.setProperty("--grow", labelGrow(cam.z).toFixed(3));
         const iz = String(1 / cam.z);
-        if (level === "far") {
+        if (level !== "day") {
+            const groups: { from: number; to: number }[] = [];
+            const rows = layout().rows;
+            const scale = 2 ** Math.floor(Math.log2(cam.z));
+            for (let i = 0; i < rows.length; i++) {
+                const from = i;
+                const first = rows[from];
+                if (!first) continue;
+                while (
+                    i + 1 < rows.length &&
+                    ((rows[i + 1]?.rect.y ?? Infinity) - first.rect.y) * scale < 76
+                )
+                    i++;
+                groups.push({ from, to: i });
+            }
+            const key = groups.map((group) => `${group.from}:${group.to}`).join(",");
+            if (key !== overviewKey) {
+                overviewKey = key;
+                setOverview(groups);
+                covers = [];
+            }
             if (!covers.length)
-                covers = Array.from(v.world.querySelectorAll<HTMLElement>(".j-cover"));
+                covers = Array.from(
+                    v.world.querySelectorAll<HTMLElement>(".j-cover, .wd-day-card"),
+                );
             for (const c of covers) c.style.setProperty("--iz", iz);
         }
         if (resting) v.world.style.setProperty("--iz", iz);
@@ -479,12 +525,16 @@ export function World(props: {
     /** The layout the roll was last drawn with, so one drawn again keeps the day under the camera. */
     let before: WorldView["layout"] | null = null;
     /** The camera that keeps the same day at the same place on the screen after the roll lays out again. */
-    function anchored(v: CanvasView, was: WorldView["layout"] | null): Camera | null {
+    function anchored(
+        v: CanvasView,
+        was: WorldView["layout"] | null,
+        next: WorldView["layout"],
+    ): Camera | null {
         if (!was) return null;
         const rows = was.rows.filter((row) => row.flag.y <= v.cam.y);
         const at = rows.at(-1) ?? was.rows[0];
         if (!at) return null;
-        const now = layout().rows.find((row) => row.day.id === at.day.id);
+        const now = next.rows.find((row) => row.day.id === at.day.id);
         return now ? { ...v.cam, y: now.flag.y + (v.cam.y - at.flag.y) } : null;
     }
     /** Each draw's number: a roll drawn again while the painter's code is on its way paints once, not twice. */
@@ -506,8 +556,11 @@ export function World(props: {
         const next = props.view;
         const key = JSON.stringify([next, props.play]);
         if (model === key) {
-            before = next.layout;
-            setPaintedLayout(next.layout);
+            batch(() => {
+                setDisplayed(next);
+                before = next.layout;
+                setPaintedLayout(next.layout);
+            });
             return;
         }
         const was = before;
@@ -546,13 +599,18 @@ export function World(props: {
                         cancel();
                         return;
                     }
-                    const cam = anchored(v, was) ?? v.cam;
+                    const cam = anchored(v, was, next.layout) ?? v.cam;
                     const margin = Math.min(320, v.vp.h / 2);
                     const seen = visibleRect(cam, {
                         w: v.vp.w + margin * 2,
                         h: v.vp.h + margin * 2,
                     });
-                    const todo = prepared.filter((p) => !p.done && intersects(p.piece.rect, seen));
+                    const todo = prepared.filter(
+                        (p) =>
+                            !p.done &&
+                            !(level === "far" && p.piece.detail) &&
+                            intersects(p.piece.rect, seen),
+                    );
                     try {
                         for (const p of todo) {
                             p.release = p.piece.paint() ?? undefined;
@@ -584,6 +642,12 @@ export function World(props: {
         v.world.classList.add("j-world");
         painted = replacement;
         pending = prepared;
+        const keep = drawn ? anchored(v, was, next.layout) : null;
+        batch(() => {
+            setDisplayed(next);
+            if (keep && keep.y !== v.cam.y) v.shift(0, keep.y - v.cam.y);
+        });
+        v.present();
         before = next.layout;
         model = key;
         painted.frame(v.cam, v.vp);
@@ -598,8 +662,6 @@ export function World(props: {
         if (!again && props.onOut) host.focus({ preventScroll: true });
         if (again) {
             // a sheet drawn or grown above the camera moves nothing the viewer is looking at
-            const keep = anchored(v, was);
-            if (keep && keep.y !== v.cam.y) v.shift(0, keep.y - v.cam.y);
             paintNear();
             rest(v.cam.z >= DAY_AT);
             setReady(true);
@@ -753,18 +815,29 @@ export function World(props: {
 
     const overs = (): { rect: Rect; el: HTMLElement }[] =>
         layout().rows.flatMap((row, r) => {
-            const day = props.view.days[r];
+            const day = displayed().days[r];
             const el = day ? (props.over?.(day, row.rect) ?? null) : null;
             return el ? [{ rect: row.rect, el }] : [];
         });
 
-    const rows = (): { rect: Rect; sheet: SheetView; today: boolean }[] =>
-        layout().rows.flatMap((row, r) =>
-            row.sheets.flatMap((rect, k) => {
-                const sheet = props.view.days[r]?.sheets[k];
-                return sheet ? [{ rect, sheet, today: row.day.state === "today" }] : [];
-            }),
-        );
+    const rows = createMemo(
+        () =>
+            new Map(
+                layout().rows.flatMap((row, r) =>
+                    row.sheets.flatMap((rect, k) => {
+                        const sheet = displayed().days[r]?.sheets[k];
+                        return sheet
+                            ? [
+                                  [
+                                      `${row.day.id}:${sheet.lesson}:${k}`,
+                                      { rect, sheet, today: row.day.state === "today" },
+                                  ] as const,
+                              ]
+                            : [];
+                    }),
+                ),
+            ),
+    );
 
     return (
         <section
@@ -805,16 +878,64 @@ export function World(props: {
                     }}
                     class="j-layer l-sheets wd-sheets"
                 >
-                    <For each={rows()}>
-                        {(r) => (
-                            <Sheet
-                                rect={r.rect}
-                                sheet={r.sheet}
-                                today={r.today}
-                                own={props.sheet?.(r.sheet) ?? null}
-                                onOpen={props.onOpen}
-                            />
-                        )}
+                    <div class="wd-overview">
+                        <For each={overview()}>
+                            {(group) => {
+                                const row = () => layout().rows[group.from];
+                                const day = () => displayed().days[group.from];
+                                return (
+                                    <button
+                                        type="button"
+                                        class="wd-day-card"
+                                        style={{
+                                            left: "0",
+                                            top: `${row()?.rect.y ?? 0}px`,
+                                            width: `max(${layout().o.sheet}px, calc(180px * var(--iz, 1)))`,
+                                        }}
+                                        onClick={() => {
+                                            const v = view;
+                                            const r = row();
+                                            if (!v || !r) return;
+                                            const camera = readAt(v, r.flag.y - 40, true);
+                                            if (quiet) v.set(camera);
+                                            else v.flyTo(camera);
+                                        }}
+                                    >
+                                        <span class="label">
+                                            {day()?.label ?? `Day ${row()?.day.n ?? 1}`}
+                                        </span>
+                                        <span class="hand">
+                                            {group.to > group.from
+                                                ? `${group.to - group.from + 1} days to explore`
+                                                : day()
+                                                      ?.sheets.map((sheet) => sheet.title)
+                                                      .join(" · ")}
+                                        </span>
+                                    </button>
+                                );
+                            }}
+                        </For>
+                    </div>
+                    <For each={[...rows().keys()]}>
+                        {(key) => {
+                            const first = rows().get(key);
+                            if (!first) return null;
+                            const r = () => rows().get(key) ?? first;
+                            const own = (): HTMLElement | null => {
+                                const sheet = r().sheet;
+                                // Publish prepared content with its committed row, not on a cache notification.
+                                return untrack(() => props.sheet?.(sheet) ?? null);
+                            };
+                            return (
+                                <Sheet
+                                    rect={r().rect}
+                                    sheet={r().sheet}
+                                    today={r().today}
+                                    own={own()}
+                                    onOpen={props.onOpen}
+                                />
+                            );
+                        }}
                     </For>
                 </div>
                 <div
@@ -903,9 +1024,11 @@ function Sheet(props: {
         >
             {(own) => {
                 const el = own();
-                el.style.left = `${props.rect.x}px`;
-                el.style.top = `${props.rect.y}px`;
-                el.classList.toggle("today", props.today);
+                createEffect(() => {
+                    el.style.left = `${props.rect.x}px`;
+                    el.style.top = `${props.rect.y}px`;
+                    el.classList.toggle("today", props.today);
+                });
                 return el;
             }}
         </Show>
