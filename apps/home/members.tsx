@@ -6,7 +6,6 @@ import { Field } from "../../engine/ui/fields";
 import { failureText } from "../../engine/ui/failure";
 import { emailOf } from "../../school/family/login";
 import type { Failure } from "../../engine/ui/wire";
-import { signInFor } from "./routes";
 
 export function Members(props: { family: string; user: string }): JSX.Element {
     const [data, { refetch }] = createResource(
@@ -28,7 +27,6 @@ export function Members(props: { family: string; user: string }): JSX.Element {
     const [email, setEmail] = createSignal("");
     const [busy, setBusy] = createSignal(false);
     const [said, say] = createSignal("");
-    const [reauth, setReauth] = createSignal(false);
     const [removing, setRemoving] = createSignal<{ id: string; name: string } | null>(null);
     const view = () => {
         const d = data();
@@ -36,13 +34,11 @@ export function Members(props: { family: string; user: string }): JSX.Element {
     };
     const fail = (f: Failure) => {
         say(failureText(f));
-        setReauth(f.error === "fresh-sign-in");
     };
     const run = async (work: () => Promise<void>) => {
         if (busy()) return;
         setBusy(true);
         say("");
-        setReauth(false);
         try {
             await work();
         } finally {
@@ -270,11 +266,6 @@ export function Members(props: { family: string; user: string }): JSX.Element {
                     </Show>
                 </Show>
                 <output aria-live="polite">{said()}</output>
-                <Show when={reauth()}>
-                    <a class="link" href={signInFor("/account", { again: true })}>
-                        Sign in again to continue
-                    </a>
-                </Show>
             </Postcard>
         </div>
     );

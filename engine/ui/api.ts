@@ -276,8 +276,8 @@ export const switchFamily = async (family_id: string): Promise<{ me: Me } | Fail
     signedInWith(await call("POST", "/api/auth/switch", { family_id }));
 
 /** Signs out, and forgets the sign-in only once the API has said the session is over. */
-export async function signOut(everywhere = false): Promise<true | Failure> {
-    const a = await call("POST", "/api/auth/sign-out", everywhere ? { everywhere } : {});
+export async function signOut(): Promise<true | Failure> {
+    const a = await call("POST", "/api/auth/sign-out", {});
     if (!a.ok && a.failure.error !== "signed-out") return a.failure;
     forget();
     parentChanged();
@@ -398,21 +398,11 @@ export async function endSession(id: string, own: boolean): Promise<true | Failu
 const readView = (v: unknown): KidSessionView | null =>
     obj(v) &&
     str(v.view) &&
-    str(v.user_id) &&
+    str(v.kid) &&
     strOrNull(v.name) &&
-    str(v.created_at) &&
-    strOrNull(v.seen_at) &&
-    Array.isArray(v.kids) &&
-    v.kids.every(str)
-        ? {
-              view: v.view,
-              login: v.login === true,
-              user_id: v.user_id,
-              name: v.name,
-              created_at: v.created_at,
-              seen_at: v.seen_at,
-              kids: v.kids,
-          }
+    str(v.seen_at) &&
+    typeof v.own === "boolean"
+        ? { view: v.view, kid: v.kid, name: v.name, seen_at: v.seen_at, own: v.own }
         : null;
 
 /** The children's views open in the family, one per browser, and whether the family has a PIN. */
@@ -424,7 +414,7 @@ export async function kidSessions(): Promise<KidSessions | Failure> {
     return views && pin !== null ? { views, pin } : unreadable(a.status);
 }
 
-/** Ends one children's view, on whichever browser holds it. What it had not sent is lost. */
+/** Ends one child’s sessions in the selected browser. What it had not sent is lost. */
 export async function endKidSession(view: string): Promise<true | Failure> {
     const a = await call("POST", "/api/kid-sessions/end", { view });
     return a.ok ? true : refused(a.failure);
@@ -608,13 +598,6 @@ export async function unlockParent(pin: string): Promise<true | Failure> {
     const a = await call("POST", "/api/auth/unlock", { pin });
     if (!a.ok) return a.failure;
     clearKidMode();
-    parentChanged();
-    return true;
-}
-export async function signOutBrowser(): Promise<true | Failure> {
-    const a = await call("POST", "/api/auth/browser/sign-out", {});
-    if (!a.ok) return a.failure;
-    forget();
     parentChanged();
     return true;
 }

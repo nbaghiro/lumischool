@@ -218,8 +218,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         const listed = items(
             at((await (await parent()).call("GET", "/api/kid-sessions")).body, "views"),
         );
-        const mine = listed.at(-1);
-        assert.deepEqual(items(at(mine, "kids")).length, 2, "one view, now with two children");
+        assert.deepEqual(new Set(listed.map((v) => at(v, "kid"))), new Set([made.maya, made.theo]));
         const again = await add({ pin: PIN, kid: made.theo });
         assert.equal(again.status, 204, "a child already in the view is left as they are");
         assert.equal((b.jar.get("ls_kids") ?? "").split("~").length, 2);
@@ -385,28 +384,25 @@ describe("a children's view", { skip: reason ?? false }, () => {
         assert.equal((await leave(b, PIN)).status, 204);
     });
 
-    it("ends when a parent ends it from the family's page, on the browser that holds it, refusing what that browser had not sent", async () => {
+    it("ends only the selected child within a legacy multi-child view", async () => {
         const b = await viewFor([made.maya, made.theo]);
         const grown = await parent();
         const listed = items(at((await grown.call("GET", "/api/kid-sessions")).body, "views"));
-        const mine = listed.at(-1);
-        assert.deepEqual(
-            [items(at(mine, "kids")).length, at(mine, "user_id")],
-            [2, made.user],
-            "views are listed oldest first, so the one this browser just opened is last",
-        );
+        const mine = listed.find((v) => at(v, "kid") === made.maya);
         const view = text(at(mine, "view"));
         assert.equal(at(mine, "name"), null, "no device name reaches the test browser");
         const ended = await grown.call("POST", "/api/kid-sessions/end", { body: { view } });
         assert.equal(ended.status, 204, JSON.stringify(ended.body));
         const refused = await b.call("GET", "/api/kid");
-        assert.deepEqual([refused.status, refused.body], [401, { error: "no-kid-session" }]);
-        assert.ok(!b.jar.has("ls_kids"), "the cookie that opens nothing is cleared");
-        b.jar.set("ls_kids", "left over");
+        assert.equal(refused.status, 200);
+        assert.deepEqual(
+            items(at(refused.body, "kids")).map((kid) => at(kid, "id")),
+            [made.theo],
+        );
         const unsent = await b.call("POST", `/api/kid/${made.maya}/events`, {
             body: { events: [] },
         });
-        assert.equal(unsent.status, 401);
+        assert.equal(unsent.status, 404);
         const again = await grown.call("POST", "/api/kid-sessions/end", { body: { view } });
         assert.equal(again.status, 404);
         const recorded = await lastEvent("kid-session-ended");

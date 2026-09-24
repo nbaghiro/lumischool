@@ -29,7 +29,7 @@ there is no durable background retry queue for membership notifications yet.
 - Invitations are hashed 32-byte secrets, family scoped, single-use and valid for seven days.
   The URL fragment keeps the secret out of HTTP page requests; API preview and acceptance use POST.
   Preview cannot grant access. The email proven by the code must match the invitation.
-- Invite, resend, cancel, removal and leaving require a recent email sign-in, not a PIN unlock.
+- Invite, resend, cancel, removal and leaving require active parent access. Existing and PIN-unlocked parent sessions can manage members without another email sign-in.
 - Acceptance, cancellation, membership checks and removal serialize on the family row. Concurrent
   removal cannot orphan the family. The existing database last-parent trigger remains a second guard.
 - Cancellation/acceptance retains inactive invitation metadata for rate limiting. Resend rotates
@@ -68,7 +68,7 @@ it returns the normal parent session and notificationFailed.
 5. Remove the second parent and confirm their access ends, while the remaining parent can work.
    Reinvite, join again, then have the second parent remove the original PIN setter. Kid sign-in
    should still work with the same username and kids' PIN.
-6. Try leaving as the last parent, and try management after the ten-minute fresh-sign-in window.
+6. Try leaving as the last parent, and verify management still works after ten minutes without another sign-in.
 7. Check invitation, joined, and removed emails at phone/desktop sizes in /outbox?previews.
    No child data or PINs should appear.
 

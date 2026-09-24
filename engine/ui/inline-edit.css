@@ -1,0 +1,35 @@
+.inline-edit {
+    min-width: 0;
+}
+.inline-input,
+select.inline-select {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 4px 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+}
+.inline-input:hover,
+select.inline-select:hover {
+    background: var(--paper);
+}
+.inline-input:focus-visible,
+select.inline-select:focus-visible {
+    outline: 2px solid var(--pen);
+    outline-offset: 3px;
+}
+.inline-input:disabled {
+    opacity: 0.65;
+}
+.inline-status {
+    display: block;
+    font: 13px/1.4 var(--f-read);
+    color: var(--ink-soft);
+}
+.inline-status:empty {
+    display: none;
+}

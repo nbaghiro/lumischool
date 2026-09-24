@@ -8,7 +8,18 @@ import { loginByAddress, sha256 } from "../db/keys";
 import { keys, kids, members, users } from "../db/schema";
 import { prepare, truncate } from "../db/__tests__/test-db";
 import type { Config } from "../http";
-import { at, Browser, codeFor, items, local, ORIGIN, startFamily, text } from "./browser";
+import {
+    at,
+    Browser,
+    codeFor,
+    items,
+    local,
+    ORIGIN,
+    sessionInto,
+    addKid,
+    startFamily,
+    text,
+} from "./browser";
 
 const reason = await prepare();
 const owner: Store | null = reason === null ? open() : null;
@@ -434,7 +445,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         assert.notEqual((await keyRow(id))?.seen_at, sharedSeen);
     });
 
-    it("signs out, after which the old cookie opens nothing, and signs out everywhere in one family", async () => {
+    it("signs out only this session, leaving another browser signed in", async () => {
         const { config, outbox } = local();
         const b = new Browser(config);
         const email = "ben@example.test";
@@ -467,7 +478,7 @@ describe("signing in", { skip: reason ?? false }, () => {
             "only this browser was signed out",
         );
 
-        await other.call("POST", "/api/auth/sign-out", { body: { everywhere: true } });
+        await other.call("POST", "/api/auth/sign-out", { body: {} });
         assert.equal((await other.call("GET", "/api/me")).status, 401);
     });
 
@@ -475,12 +486,22 @@ describe("signing in", { skip: reason ?? false }, () => {
         const { config, outbox } = local();
         const b = new Browser(config);
         const email = "cara@example.test";
-        await startFamily(b, outbox, { email, name: "Cara", family: "Nkemelu" });
+        const made = await startFamily(b, outbox, { email, name: "Cara", family: "Nkemelu" });
+        const original = text(b.jar.get("ls_session"));
+        await sessionInto(b, made.family, made.user);
+        const kid = await addKid(b, "Maya", 1);
+        const opened = await b.call("POST", "/api/kid-sessions", {
+            body: { kids: [kid], tab: true },
+        });
+        assert.equal(opened.status, 200);
+        const child = text(at(opened.body, "credential"));
         const phone = new Browser(config, "198.51.100.4");
         await phone.call("POST", "/api/auth/email/start", { body: { email } });
         await phone.call("POST", "/api/auth/email/verify", {
             body: { code: codeFor(outbox, email) },
         });
+        const oldPhone = text(phone.jar.get("ls_session"));
+        await sessionInto(phone, made.family, made.user);
         const listed = await b.call("GET", "/api/sessions");
         assert.equal(listed.status, 200, JSON.stringify(listed.body));
         const rows = items(at(listed.body, "sessions"));
@@ -504,6 +525,12 @@ describe("signing in", { skip: reason ?? false }, () => {
             "not this browser's cookie",
         );
         assert.equal((await phone.call("GET", "/api/me")).status, 401, "the phone is signed out");
+        phone.jar.set("ls_session", oldPhone);
+        assert.equal(
+            (await phone.call("GET", "/api/me")).status,
+            401,
+            "older phone sessions also end",
+        );
         assert.equal(items(at((await b.call("GET", "/api/sessions")).body, "sessions")).length, 1);
         const again = await b.call("POST", "/api/sessions/end", { body: { id: at(other, "id") } });
         assert.equal(again.status, 404, "a session that has gone");
@@ -514,6 +541,17 @@ describe("signing in", { skip: reason ?? false }, () => {
             "this browser's cookie is cleared",
         );
         assert.equal((await b.call("GET", "/api/me")).status, 401);
+        b.jar.set("ls_session", original);
+        assert.equal(
+            (await b.call("GET", "/api/me")).status,
+            401,
+            "older sessions in this browser also end",
+        );
+        assert.equal(
+            (await b.call("GET", "/api/kid", { kid: child })).status,
+            200,
+            "children stay signed in",
+        );
     });
 
     it("signs out a member whose membership has ended, and clears the cookie", async () => {

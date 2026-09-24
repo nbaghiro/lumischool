@@ -144,7 +144,7 @@ const dueToSee = (kind: KeyKind, seen_at: string | null, now: Date): boolean =>
  * A session is put away, not deleted, while a view is open on its browser, so that the family's PIN
  * can give it back (.docs/auth.md, flow 5). The mark is in `detail` beside the PIN's, rather than a
  * kind of its own or a column, because it changes nothing about how long the key lives or who ends
- * it: `EXPIRY` reads the kind, and sign-out everywhere, removal and a sign-in that replaces what the
+ * it: `EXPIRY` reads the kind, and individual session revocation, removal and a sign-in that replaces what the
  * browser held delete a put-away session with the rest by the kind they already look for.
  */
 export const putAwayFor = (detail: unknown): string | null =>
@@ -342,6 +342,7 @@ export async function sessionsOf(
         kind: "session" | "shared-session";
         putAway: boolean;
         byPin: boolean;
+        browser: string | null;
     })[]
 > {
     const rows = await tx
@@ -370,6 +371,10 @@ export async function sessionsOf(
                           seen_at: r.seen_at,
                           putAway: putAwayFor(r.detail) !== null,
                           byPin: isRecord(r.detail) && r.detail.pin === true,
+                          browser:
+                              isRecord(r.detail) && typeof r.detail.browser === "string"
+                                  ? r.detail.browser
+                                  : null,
                       },
                   ]
                 : [];
@@ -377,19 +382,26 @@ export async function sessionsOf(
         .sort((a, b) => a.created_at.localeCompare(b.created_at));
 }
 
-/** Ends one of a person's own sessions in the current family, and says whether there was one. */
-export async function endOwnSession(tx: FamilyTx, user: string, id: string): Promise<boolean> {
-    const gone = await tx
-        .delete(keys)
-        .where(
-            and(
-                eq(keys.id, id),
-                eq(keys.user_id, user),
-                inArray(keys.kind, ["session", "shared-session"]),
-            ),
+/** End this person's sessions bound to the selected browser, within the current family. */
+export async function endOwnSession(tx: FamilyTx, user: string, id: string): Promise<string[]> {
+    const rows = await tx
+        .select()
+        .from(keys)
+        .where(and(eq(keys.user_id, user), inArray(keys.kind, ["session", "shared-session"])));
+    const selected = rows.find((row) => row.id === id);
+    if (!selected) return [];
+    const binding = isRecord(selected.detail) ? selected.detail.browser : null;
+    const ids = rows
+        .filter(
+            (row) =>
+                row.id === id ||
+                (typeof binding === "string" &&
+                    isRecord(row.detail) &&
+                    row.detail.browser === binding),
         )
-        .returning({ id: keys.id });
-    return gone.length === 1;
+        .map((row) => row.id);
+    const gone = await tx.delete(keys).where(inArray(keys.id, ids)).returning({ id: keys.id });
+    return gone.map((row) => row.id);
 }
 
 /** Ends one session. */
@@ -399,15 +411,6 @@ export async function endSession(tx: FamilyTx, id: string): Promise<boolean> {
         .where(and(eq(keys.id, id), inArray(keys.kind, ["session", "shared-session"])))
         .returning({ id: keys.id });
     return gone.length === 1;
-}
-
-/** Ends every session a person has in the current family, and says how many there were. */
-export async function endSessions(tx: FamilyTx, user: string): Promise<number> {
-    const gone = await tx
-        .delete(keys)
-        .where(and(eq(keys.user_id, user), inArray(keys.kind, ["session", "shared-session"])))
-        .returning({ id: keys.id });
-    return gone.length;
 }
 
 /** The view a children's-view key belongs to, from its `detail`. */
@@ -550,6 +553,64 @@ export async function kidViewsOf(tx: FamilyTx): Promise<
             had.seen_at = r.seen_at;
     }
     return [...views.values()].sort((a, b) => a.created_at.localeCompare(b.created_at));
+}
+
+export type KidBrowser = Pick<Key, "name"> & {
+    view: string;
+    kid: string;
+    own: boolean;
+    seen_at: string;
+};
+
+const childBrowserGroup = (key: Key): string | null => {
+    const detail = key.detail;
+    return key.kid_id &&
+        isRecord(detail) &&
+        typeof detail.browserFamily === "string" &&
+        typeof detail.browserId === "string"
+        ? sha256(JSON.stringify([key.kid_id, detail.browserFamily, detail.browserId]))
+        : null;
+};
+
+export async function kidBrowsersOf(
+    tx: FamilyTx,
+    visible: ReadonlySet<string>,
+    browser: string | null,
+): Promise<KidBrowser[]> {
+    const rows = await tx.select().from(keys).where(eq(keys.kind, "kid-session"));
+    const groups = new Map<string, KidBrowser>();
+    const now = new Date();
+    for (const row of rows) {
+        const group = childBrowserGroup(row);
+        if (!group || !row.kid_id || !visible.has(row.id) || !isLive("kid-session", row, now))
+            continue;
+        const used = row.seen_at ?? row.created_at;
+        const had = groups.get(group);
+        if (had) {
+            if (used > had.seen_at) {
+                had.seen_at = used;
+                had.name = row.name;
+            }
+        } else {
+            groups.set(group, {
+                view: group,
+                kid: row.kid_id,
+                name: row.name,
+                seen_at: used,
+                own: !!browser && isRecord(row.detail) && row.detail.browser === sha256(browser),
+            });
+        }
+    }
+    return [...groups.values()].sort(
+        (a, b) => Number(b.own) - Number(a.own) || b.seen_at.localeCompare(a.seen_at),
+    );
+}
+
+export async function endKidBrowser(tx: FamilyTx, group: string): ReturnType<typeof endKids> {
+    const rows = await tx.select().from(keys).where(eq(keys.kind, "kid-session"));
+    return endKids(tx, {
+        ids: rows.filter((row) => childBrowserGroup(row) === group).map((row) => row.id),
+    });
 }
 
 /** Ends children's-view keys in the current family, by view or by id, and says which went. */
@@ -792,14 +853,6 @@ export async function browserAllows(
     if (!browser || bindings.some((b) => !sameHash(b, sha256(browser)))) return false;
     const held = await verify(browser, ["browser"]);
     return !!held && held !== "put-away";
-}
-
-export async function endBrowser(credential: string): Promise<void> {
-    const held = await verify(credential, ["browser"]);
-    if (!held || held === "put-away") return;
-    await withFamily({ family: held.family_id }, async (tx) => {
-        await tx.delete(keys).where(and(eq(keys.id, held.id), eq(keys.kind, "browser")));
-    });
 }
 
 /** Resolve browser revocation before showing account lists, without holding nested transactions. */

@@ -9,12 +9,11 @@ import type { Failure } from "../../engine/ui/wire";
 import type { KidLogins as Logins } from "../../server/api";
 
 const failure = (f: Failure): string =>
-    f.error === "fresh-sign-in"
-        ? "Sign in again, then come back here to make this change."
-        : (f.problem ?? "We could not save that. Check your connection and try again.");
+    f.problem ?? "We could not save that. Check your connection and try again.";
 
 export function KidLogins(props: { family: string; onChanged: () => void }): JSX.Element {
     const [data, { refetch }] = createResource(() => props.family, api.kidLogins);
+    const [editingPin, setEditingPin] = createSignal(false);
     const [pin, setPin] = createSignal("");
     const [again, setAgain] = createSignal("");
     const [busy, setBusy] = createSignal(false);
@@ -35,7 +34,10 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
         }
         setBusy(true);
         const r = await api.setKidsPin(pin());
-        if (r === true) await changed();
+        if (r === true) {
+            setEditingPin(false);
+            await changed();
+        }
         setBusy(false);
         setPin("");
         setAgain("");
@@ -47,17 +49,7 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
     };
     return (
         <Postcard focus={false} kicker="Your account" title="Kids’ sign-in">
-            <p>
-                Children can open their own learning page with a username and a shared kids’ PIN.
-                Each browser tab keeps its own view.
-            </p>
-            <p class="note">
-                Choose a different PIN from the grown-ups’ family PIN. This PIN never opens the
-                family’s page. Changes need a sign-in in the last ten minutes.
-            </p>
-            <a class="link" href="/sign-in?again=1&next=%2Faccount">
-                Sign in again
-            </a>
+            <p class="note">A username for each child, one shared kids’ PIN.</p>
             <Show
                 when={ready()}
                 fallback={
@@ -68,50 +60,76 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
             >
                 {(d) => (
                     <>
-                        <h2>{d().pinSet ? "Change the kids’ PIN" : "Set the kids’ PIN"}</h2>
-                        <p class="note">
-                            Setting it again closes all views opened with a username and unlocks the
-                            kids’ PIN. After repeated tries, sign-in may still need a 15-minute
-                            wait. Answers not sent yet are lost.
-                        </p>
-                        <form
-                            class="form kids-pin-form"
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                void save();
-                            }}
-                        >
-                            <div class="kids-pin-fields">
-                                <div class="kids-pin-field">
-                                    <p class="note">New kids’ PIN</p>
-                                    <PinInput
-                                        label="New kids’ PIN"
-                                        value={pin()}
-                                        onInput={setPin}
-                                    />
+                        <div class="kid-login-summary">
+                            <span>
+                                {d().pinSet
+                                    ? "Kids’ PIN is set"
+                                    : "Set a PIN to let children sign in"}
+                            </span>
+                            <Show when={!editingPin()}>
+                                <Button
+                                    second
+                                    onClick={() => {
+                                        setEditingPin(true);
+                                        setSaid("");
+                                    }}
+                                >
+                                    {d().pinSet ? "Change kids’ PIN" : "Set kids’ PIN"}
+                                </Button>
+                            </Show>
+                        </div>
+                        <Show when={editingPin()}>
+                            <p class="note">
+                                Use a different PIN from your family PIN. Saving signs children out
+                                of username sessions; unsent answers are lost.
+                            </p>
+                            <form
+                                class="form kids-pin-form"
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    void save();
+                                }}
+                            >
+                                <div class="kids-pin-fields">
+                                    <div class="kids-pin-field">
+                                        <p class="note">New kids’ PIN</p>
+                                        <PinInput
+                                            label="New kids’ PIN"
+                                            value={pin()}
+                                            onInput={setPin}
+                                        />
+                                    </div>
+                                    <div class="kids-pin-field">
+                                        <p class="note">Type it again</p>
+                                        <PinInput
+                                            label="Type the kids’ PIN again"
+                                            value={again()}
+                                            onInput={setAgain}
+                                        />
+                                    </div>
                                 </div>
-                                <div class="kids-pin-field">
-                                    <p class="note">Type it again</p>
-                                    <PinInput
-                                        label="Type the kids’ PIN again"
-                                        value={again()}
-                                        onInput={setAgain}
-                                    />
+                                <div class="acts">
+                                    <Button submit busy={busy()}>
+                                        Save kids’ PIN
+                                    </Button>
+                                    <Button
+                                        second
+                                        disabled={busy()}
+                                        onClick={() => {
+                                            setEditingPin(false);
+                                            setPin("");
+                                            setAgain("");
+                                            setSaid("");
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
                                 </div>
-                            </div>
-                            <Button submit busy={busy()}>
-                                Save kids’ PIN
-                            </Button>
-                        </form>
+                            </form>
+                        </Show>
                         <Show when={said()}>
                             <Say text={said()} />
                         </Show>
-                        <h2>Usernames</h2>
-                        <p class="note">
-                            Use 3–32 letters, numbers or hyphens, starting with a letter. Leave a
-                            username blank to make one automatically. Changing it closes that
-                            child’s username sign-ins; answers not sent yet are lost.
-                        </p>
                         <fieldset
                             disabled={busy() || data.loading}
                             style={{ border: "0", padding: "0", margin: "0", "min-width": "0" }}
@@ -134,6 +152,7 @@ function LoginRow(props: {
     kid: Logins["kids"][number];
     onChanged: () => Promise<void>;
 }): JSX.Element {
+    const [editing, setEditing] = createSignal(false);
     const [username, setUsername] = createSignal(props.kid.username ?? "");
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
@@ -148,31 +167,74 @@ function LoginRow(props: {
         const r = await api.setKidLogin(props.kid.id, username());
         setBusy(false);
         setSaid(r === true ? "Saved." : failure(r));
-        if (r === true) await props.onChanged();
+        if (r === true) {
+            setEditing(false);
+            await props.onChanged();
+        }
     };
     return (
-        <form
-            class="form part kid-login-row"
-            onSubmit={(e) => {
-                e.preventDefault();
-                void save();
-            }}
-        >
-            <Field
-                label={`${props.kid.name}’s username`}
-                name={`username-${props.kid.id}`}
-                value={username()}
-                onInput={setUsername}
-                maxlength={32}
-                autocapitalize="none"
-                autocomplete="off"
-            />
-            <Button submit second busy={busy()} disabled={unchanged()}>
-                Save {props.kid.name}’s sign-in
-            </Button>
+        <div class="kid-login-row">
+            <div class="kid-login-summary">
+                <div class="kid-login-identity">
+                    <strong>{props.kid.name}</strong>
+                    <span>{props.kid.username ?? "No username yet"}</span>
+                </div>
+                <Show when={!editing()}>
+                    <button
+                        type="button"
+                        class="btn second"
+                        aria-label={`Edit ${props.kid.name}’s username`}
+                        onClick={() => {
+                            setUsername(props.kid.username ?? "");
+                            setSaid("");
+                            setEditing(true);
+                        }}
+                    >
+                        Edit
+                    </button>
+                </Show>
+            </div>
+            <Show when={editing()}>
+                <form
+                    class="form"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        void save();
+                    }}
+                >
+                    <Field
+                        label={`${props.kid.name}’s username`}
+                        name={`username-${props.kid.id}`}
+                        value={username()}
+                        onInput={setUsername}
+                        maxlength={32}
+                        autocapitalize="none"
+                        autocomplete="off"
+                    />
+                    <p class="note">
+                        Leave blank for an automatic username. Changing it signs this child out of
+                        username sessions; unsent answers are lost.
+                    </p>
+                    <div class="acts">
+                        <Button submit second busy={busy()} disabled={unchanged()}>
+                            Save {props.kid.name}’s sign-in
+                        </Button>
+                        <Button
+                            second
+                            disabled={busy()}
+                            onClick={() => {
+                                setEditing(false);
+                                setSaid("");
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </form>
+            </Show>
             <Show when={said()}>
                 <Say text={said()} />
             </Show>
-        </form>
+        </div>
     );
 }

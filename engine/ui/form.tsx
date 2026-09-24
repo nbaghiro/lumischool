@@ -42,11 +42,12 @@ export function Button(props: {
 export const detectedZone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 
 /**
- * The family's PIN as four boxes, each showing a dot once its digit is typed, over one input as the
- * code is, which a screen reader hears as a password. `onFull` is called when the fourth digit arrives.
+ * Four visually masked digits. Text mode lacks native password privacy for assistive technology.
+ * `onFull` is called when the fourth digit arrives.
  */
 export function PinInput(props: {
     label: string;
+    type?: "password" | "text";
     value: string;
     onInput: (digits: string) => void;
     onFull?: (digits: string) => void;
@@ -78,7 +79,7 @@ export function PinInput(props: {
             </div>
             <input
                 ref={props.ref}
-                type="password"
+                type={props.type ?? "password"}
                 inputmode="numeric"
                 autocomplete="off"
                 enterkeyhint="go"

@@ -130,8 +130,8 @@ describe(
                 at((await a.parent.call("GET", "/api/kid-sessions")).body, "views"),
             );
             assert.deepEqual(
-                views.map((v) => at(v, "kids")),
-                [[a.kid]],
+                views.map((v) => at(v, "kid")),
+                [a.kid],
                 "A's own view, and not B's",
             );
             const content = items(at((await a.parent.call("GET", "/api/content")).body, "content"));

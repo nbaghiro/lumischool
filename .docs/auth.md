@@ -62,7 +62,7 @@ identity or voluntarily signing out waits for queued answers to send; offline wo
 move to another child. Revoked views clear only their own queue. Native browser duplication can
 copy a tab credential: those duplicates share a view and its queue, and ending that view ends both.
 Independent sign-ins or the app's new-tab action create independent views. Closing a tab does not
-revoke its server key; parents can end it from the open-views list.
+revoke its server key; parents can end access from the signed-in browsers list.
 
 Email-code requests use `tab: true` to receive a short-lived challenge kept in the requesting tab.
 Verify and family-selection requests send `X-Sign-In-Challenge`. Sign-in requires working session storage and origin-wide Web Locks, so simultaneous first sign-ins cannot race the browser-binding cookie. Unsupported or storage-blocked browsers get an actionable message before a sign-in request is sent; sign-out remains available. Native duplicate tabs can still share a credential. An invalid explicit challenge
@@ -75,7 +75,7 @@ family records, lessons, or completed answers are deleted by this authentication
 
 Saving an unchanged normalized username is a no-op. Changing a username revokes that child’s username-opened views. Setting
 the kids’ PIN revokes all username-opened views in the family. Parent-opened views keep their existing
-rules. Parents can also end individual views or all views, regardless of how they opened.
+rules. Parents can also end a child’s access in one browser or all child sessions, regardless of how they opened.
 
 Public failures use the same response for unknown names, wrong PINs and throttling.
 `kid_login_lookup` atomically reserves attempts before lookup: five per normalized username and twenty
@@ -91,9 +91,14 @@ Every child request checks current consent and that the opening parent still has
 membership. Observed invalid keys are deleted, so they cannot resume later. A request already in
 flight when eligibility changes may finish; subsequent requests are refused.
 
-The Account list describes **children’s sign-ins**, not live tab presence. It shows how access was
-opened, dates (activity is updated at most daily), and individual/all revocation. Account reloads
-these details on focus or becoming visible. Closing a tab is not a reliable sign-out event.
+The Account **Signed-in browsers** card combines your own parent sign-ins and children’s sign-ins,
+one row per person and browser binding. Ending your parent row revokes your sessions in that browser
+within this family; children and other parents keep access. The separate parent sessions card is removed.
+It marks this browser and uses the latest activity across that child's sessions (updated at most
+daily). Signing out a row revokes all that child's sessions in that browser, including parent-opened
+and username sign-ins; other children, browsers, and parents stay signed in. The group identifier
+is opaque and resolved within the requesting parent's family. Independent tab credentials remain
+independent. Account refreshes on focus or becoming visible. Closing a tab is not sign-out.
 
 Email issuance serializes its aggregate network/global budgets as well as address limits. Delivery
 failures invalidate the challenge and allow an immediate retry within the existing 15-minute/day
@@ -664,7 +669,7 @@ On the family's page each child has "Open Rosie's view". Pressing it opens the v
 
 When the family has no PIN yet, "The family PIN" on the same page says so and offers to set one, since without it a grown-up leaves the view only by signing in again. Setting the PIN is `POST /api/family/pin {pin}`, four digits, which needs a fresh sign-in, replaces any PIN before it, clears its wrong tries and records `pin-set`.
 
-Afterwards the browser holds the view's cookie and the put-away session's, which reaches nothing until the PIN gives it back. The family's page does not list the browsers a view is open on. Every opening and ending stays in the log as it was (`kid-session-opened` and `kid-session-ended`, with the browser's name, who opened it and `seen_at` on the keys), `GET /api/kid-sessions` still answers the open views to a parent's session for a later surface to read, and nothing in the apps lists them. Under "The family PIN" one button, "End every open view", calls `POST /api/kid-sessions/end-all`, which deletes every view's keys in the family, and with them the sessions put away for those views on their browsers, since nothing could give them back, and records `kid-session-ended` per view with the reason `ended` and `session-changed` with the change `ended` per session, and answers how many views it ended. `POST /api/kid-sessions/end {view}` ends one view the same way. A browser that held a view gets `401 no-kid-session` on its next request, which clears its cookie, and it shows the card that asks for a grown-up; its put-away session's cookie is cleared by the first adult route it reaches, as any dead session's is.
+Afterwards the browser holds the view's cookie and the put-away session's, which reaches nothing until the PIN gives it back. The family's page does not list the browsers a view is open on. Every opening and ending stays in the log as it was (`kid-session-opened` and `kid-session-ended`, with the browser's name, who opened it and `seen_at` on the keys), `GET /api/kid-sessions` still answers the open views to a parent's session for a later surface to read, and nothing in the apps lists them. Under "The family PIN" one button, "End every open view", calls `POST /api/kid-sessions/end-all`, which deletes every view's keys in the family, and with them the sessions put away for those views on their browsers, since nothing could give them back, and records `kid-session-ended` per view with the reason `ended` and `session-changed` with the change `ended` per session, and answers how many views it ended. `POST /api/kid-sessions/end {view}` now takes an opaque child/browser group identifier and ends only that child’s keys in that browser, preserving parent sessions. A browser that held a view gets `401 no-kid-session` on its next request, which clears its cookie, and it shows the card that asks for a grown-up; its put-away session's cookie is cleared by the first adult route it reaches, as any dead session's is.
 
 | What goes wrong | What happens |
 |---|---|
@@ -728,7 +733,7 @@ Afterwards the tutor's session is in the family, and reaches the one kid only on
 
 ### 10. Signing out, and signing out everywhere
 
-The account page (`/account`, from the menu under the grown-up's own stamp on the bar) lists the person's session keys in this family with `GET /api/sessions`: each key's name, when it was made and last used, whether it is a shared-device session, whether it was given by the PIN, and whether it is put away for a children's view, with this browser's own marked and never a hash. Sign out beside each calls `POST /api/sessions/end {id}`, which ends one of the person's own keys and records `signed-out`, clearing the cookie when it was this browser's; Sign out everywhere below calls `POST /api/auth/sign-out {everywhere: true}`. Built on 21 September 2026 with the account page, which also holds the family PIN, the children's views open in the family with End beside each, the person's other families with Switch, the notice's promise about the family's data (export and deletion wait on their routes, flow 12), and what paying for lumischool is, which is nothing yet. Passkeys are listed from `users.passkeys`, each with a name the person can change and a Remove button. Ending a session deletes its key, and the next request from that browser gets `401` and lands on the sign-in page. None of this ends a children's view, which the family's page lists with its own End, because a parent signing out everywhere after losing a phone does not want the children's views closed.
+The account page (`/account`, from the menu under the grown-up's own stamp on the bar) lists the person's session keys in this family with `GET /api/sessions`: each key's name, when it was made and last used, whether it is a shared-device session, whether it was given by the PIN, and whether it is put away for a children's view, with this browser's own marked and never a hash. Sign out beside each calls `POST /api/sessions/end {id}`, which ends one of the person's own keys and records `signed-out`, clearing the cookie when it was this browser's. The single Sign out action calls `POST /api/auth/sign-out {}` and ends only the current parent session across tabs. Lock parent pages lives beside the family PIN; children and other browsers remain signed in. Built on 21 September 2026 with the account page, which also holds the family PIN, the children's views open in the family with End beside each, the person's other families with Switch, the notice's promise about the family's data (export and deletion wait on their routes, flow 12), and what paying for lumischool is, which is nothing yet. Passkeys are listed from `users.passkeys`, each with a name the person can change and a Remove button. Ending a session deletes its key, and the next request from that browser gets `401` and lands on the sign-in page. None of this ends a children's view, which the family's page lists with its own End, because a parent signing out everywhere after losing a phone does not want the children's views closed.
 
 ### 11. Recovery
 
@@ -1018,7 +1023,7 @@ The UK code asks for "an obvious sign to the child when they are being monitored
 | A former co-parent | Reading the kids' records after leaving | The other parent removes them, with a fresh sign-in, which ends their membership and deletes their session keys in the family; everyone is emailed | Whatever they exported before |
 | A former co-parent | Deleting a kid or closing the family | A fresh sign-in; every other parent is emailed at once; a deletion is recorded | Two parents have equal rights, which the owner has settled; the lawyer's list asks what the law expects |
 | A former co-parent | Keeping a children's view open at their home | The family's page lists every open view with who opened it, and a parent ends it | |
-| Someone with a stolen session | Reading and changing the family | HttpOnly cookie; the session list and sign out everywhere; every granting or destructive action needs a sign-in in the last ten minutes | What the session could read before it was ended |
+| Someone with a stolen session | Reading and changing the family | HttpOnly cookie; the session list and individual session revocation; every granting or destructive action needs a sign-in in the last ten minutes | What the session could read before it was ended |
 | Someone with the parent's email | Signing in | Nothing, for a login without a passkey; every family is told by `login-changed` if they change the address or add a passkey | The reason passkeys come early, and the reason for a later "passkey only" setting |
 | An automated sign-up flood | Filling the database, spending the email budget | No login or family is written until a code comes back; limits per address, per network and in total, counted from `keys` | Codes sent to addresses that did not ask, within the limits |
 | Someone guessing codes | Signing in as a parent | Eight digits, five tries a code, ten an hour an address, ten minutes a code | Five in a hundred million, per code |
@@ -1337,7 +1342,7 @@ Each step is small enough to finish and review on its own, and "done" means `npm
 2. The access rules. `family/access.ts` with its three complete records and a member's reach on a day, and `family` added to the `include` list in `tsconfig.json`. Done: its unit tests pass, and adding a dummy event kind in a scratch branch fails the type check.
 3. The server skeleton. `server/http.ts` with the three hosts, the route table, the entry point and its two transactions, the capability check, the `Origin` and content-type rules, security headers and `/health`; `hono` and `@hono/node-server` added to the root manifest; `server` added to `tsconfig.json`; and `check:db` extended. Done: the route-table, isolation and key-rule tests pass against a table of stub routes.
 4. Email. `server/email.ts` with the console transport, Resend, and every template in the table above. Done: the template test passes, and a code arrives at a real inbox from a development key.
-5. Sign-up and sign-in by code and link. Starting a family with the store's one call, sessions as keys, choosing and switching a family, sign out and sign out everywhere, `/api/me`. Done: the tests for flows 1, 2 and 10 pass, and a person can sign up in a browser on `localhost:8500`.
+5. Sign-up and sign-in by code and link. Starting a family with the store's one call, sessions as keys, choosing and switching a family and signing out, `/api/me`. Done: the tests for flows 1, 2 and 10 pass, and a person can sign up in a browser on `localhost:8500`.
 6. People. Invitations as `invite` keys, accepting, removing with `ended_at`, adding a removed member back, leaving, and the last-parent rule. Done: flow 3's tests pass.
 7. Kids and consent. Adding a kid with `consent-given`, the confirming email, withdrawing by deleting the kid's keys in every children's view. Done: flow 4's tests pass, and a draft of the notice is ready for the lawyer.
 8. Children's views, server side. Opening a view with one `kid-session` key per child, the kid routes with the binding, a child's state, ending a view, the family PIN with its waits, and a sign-in ending the view a browser held. Done: the children's view tests pass, including the PIN's limits and a kid's consent withdrawn while a view is open for two.
@@ -1480,3 +1485,8 @@ Magic links:
 - The Copenhagen Book, email verification. https://thecopenhagenbook.com/email-verification
 - OWASP, Email Validation and Session Management cheat sheets, 2026. https://cheatsheetseries.owasp.org/
 - RFC 6750, OAuth 2.0 Bearer Token Usage, section 5.3, October 2012. https://www.rfc-editor.org/rfc/rfc6750
+Current account policy: invitations, invitation cancellation, parent membership management, and
+kids’ PIN/username changes require active parent access but no recent email sign-in. Parent sessions
+unlocked with the family PIN can perform these actions. Parent-only authorization, family isolation,
+last-parent protection, validation and abuse limits remain enforced. Changing the adult family PIN
+and permanently deleting a family still require recent email authentication.

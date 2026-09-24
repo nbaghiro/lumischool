@@ -5,7 +5,17 @@ import assert from "node:assert/strict";
 import { after, beforeEach, describe, it } from "node:test";
 import { closeApp, open, withFamily } from "../db/client";
 import { prepare, truncate } from "../db/__tests__/test-db";
-import { addKid, at, Browser, codeFor, local, sessionInto, startFamily, text } from "./browser";
+import {
+    addKid,
+    at,
+    items,
+    Browser,
+    codeFor,
+    local,
+    sessionInto,
+    startFamily,
+    text,
+} from "./browser";
 
 const reason = await prepare();
 const owner = reason === null ? open() : null;
@@ -69,6 +79,61 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         );
         return text(at(a.body, "credential"));
     };
+
+    it("groups by child and browser and revokes only the selected child's browser access", async () => {
+        browser = parent;
+        const first = await token("maya-star");
+        const second = await token("maya-star");
+        const sibling = await token("theo-moon");
+        const opened = await parent.call("POST", "/api/kid-sessions", {
+            body: { kids: [maya], tab: true },
+        });
+        assert.equal(opened.status, 200);
+        const parentOpened = text(at(opened.body, "credential"));
+        const other = new Browser(config);
+        const away = await other.call("POST", "/api/kid/sign-in", {
+            body: { username: "maya-star", pin: "1357" },
+        });
+        assert.equal(away.status, 200);
+        const awayToken = text(at(away.body, "credential"));
+        const rows = items(at((await parent.call("GET", "/api/kid-sessions")).body, "views"));
+        assert.equal(rows.length, 3);
+        const mine = rows.find((row) => at(row, "kid") === maya && at(row, "own") === true);
+        assert.ok(mine);
+        assert.equal(rows.filter((row) => at(row, "own") === true).length, 2);
+        const group = text(at(mine, "view"));
+        const stranger = new Browser(config);
+        await startFamily(stranger, outbox, {
+            email: "another-family@example.test",
+            name: "Other parent",
+            family: "Other family",
+        });
+        assert.equal(
+            (
+                await stranger.call("POST", "/api/kid-sessions/end", {
+                    body: { view: group },
+                })
+            ).status,
+            404,
+        );
+        assert.equal((await parent.call("GET", "/api/kid", { kid: first })).status, 200);
+        // A tab opened after the list loaded must be included in the same sign-out.
+        const later = await token("maya-star");
+        assert.equal(
+            (await parent.call("POST", "/api/kid-sessions/end", { body: { view: group } })).status,
+            204,
+        );
+        for (const credential of [first, second, parentOpened, later]) {
+            assert.equal((await parent.call("GET", "/api/kid", { kid: credential })).status, 401);
+        }
+        assert.equal((await parent.call("GET", "/api/kid", { kid: sibling })).status, 200);
+        assert.equal((await other.call("GET", "/api/kid", { kid: awayToken })).status, 200);
+        assert.equal((await parent.call("GET", "/api/me")).status, 200);
+        assert.equal(
+            items(at((await parent.call("GET", "/api/kid-sessions")).body, "views")).length,
+            2,
+        );
+    });
 
     it("does not throttle successful repeated sign-ins or revoke an unchanged username", async () => {
         const first = await token("maya-star");
@@ -266,7 +331,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         );
     });
 
-    it("enforces global case-insensitive usernames and fresh parent authentication", async () => {
+    it("enforces global case-insensitive usernames and allows established parent sessions", async () => {
         const other = new Browser(config, "203.0.113.9");
         await startFamily(other, outbox, {
             email: "other@example.test",
@@ -297,11 +362,14 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         await owner.raw`update keys set created_at = utc_iso(now() - interval '11 minutes') where kind = 'session' and family_id = ${family}`;
         assert.equal(
             (await parent.call("POST", "/api/kid-logins/pin", { body: { pin: "9999" } })).status,
-            403,
+            204,
         );
-        await sessionInto(parent, family, user);
         assert.equal(
-            (await parent.call("POST", "/api/kid-logins/pin", { body: { pin: "9999" } })).status,
+            (
+                await parent.call("POST", "/api/kid-logins", {
+                    body: { kid: maya, username: "maya-cloud" },
+                })
+            ).status,
             204,
         );
     });
@@ -343,9 +411,13 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         );
         assert.equal((await parent.call("GET", "/api/me")).status, 200);
         assert.equal(
-            (await parent.call("POST", "/api/kid-logins/pin", { body: { pin: "9999" } })).status,
-            403,
-            "PIN unlock is not fresh email verification",
+            (
+                await parent.call("POST", "/api/kid-logins", {
+                    body: { kid: theo, username: "theo-moon" },
+                })
+            ).status,
+            204,
+            "unlocked parents can manage kids’ sign-in without another email code",
         );
         assert.equal((await parent.call("POST", "/api/auth/sign-out")).status, 204);
         assert.equal((await parent.call("GET", "/api/kid", { kid: two })).status, 200);
@@ -365,7 +437,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         assert.equal((await parent.call("GET", "/api/kid", { kid: two })).status, 200);
     });
 
-    it("revokes this browser's bound sessions without affecting another browser", async () => {
+    it("expired browser bindings cannot be revived and do not affect another browser", async () => {
         const other = await token("theo-moon");
         const otherBrowser = browser;
         browser = parent;
@@ -377,7 +449,11 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
             "a tab credential alone cannot be moved to another browser",
         );
         const heldBrowser = parent.jar.get("ls_browser") ?? "";
-        assert.equal((await parent.call("POST", "/api/auth/browser/sign-out")).status, 204);
+        assert.equal((await parent.call("POST", "/api/auth/browser/sign-out")).status, 404);
+        if (!owner) throw new Error("no database");
+        const browserId = heldBrowser.split(".")[1];
+        assert.ok(browserId);
+        await owner.raw`delete from keys where id = ${browserId}::uuid and kind = 'browser'`;
         assert.equal((await parent.call("GET", "/api/kid", { kid: own })).status, 401);
         copied.jar.set("ls_browser", heldBrowser);
         assert.equal(

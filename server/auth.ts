@@ -61,13 +61,13 @@ import {
     endKids,
     endOwnSession,
     endPutAway,
-    endSession,
-    endSessions,
     familiesIn,
     hasPin,
     issue,
     issueCode,
     kidViewsOf,
+    kidBrowsersOf,
+    endKidBrowser,
     lockedLogin,
     loginByAddress,
     myFamilies,
@@ -602,13 +602,12 @@ export async function switchFamily(
     });
 }
 
-/** Ends this session, or every session the person has in this family, and records which. */
-export async function signOut(adult: Adult, everywhere: boolean): Promise<void> {
+/** Ends this parent session across its tabs, leaving children and other browsers signed in. */
+export async function signOut(adult: Adult): Promise<void> {
     await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
-        if (everywhere) await endSessions(tx, adult.user);
-        else await endSession(tx, adult.session.id);
+        await endOwnSession(tx, adult.user, adult.session.id);
         await record(tx, adult.family.id, [
-            { kid_id: null, kind: "signed-out", data: { everywhere }, actor: adult.user },
+            { kid_id: null, kind: "signed-out", data: { everywhere: false }, actor: adult.user },
         ]);
     });
 }
@@ -629,14 +628,28 @@ export async function setMyPicture(
 /** Flow 10: the person's sessions in this family, for the account page, this browser's marked. */
 export async function mySessions(adult: Adult): Promise<Sessions> {
     const visible = await visibleBrowserSessions(adult.family.id);
-    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => ({
-        sessions: (await sessionsOf(tx, adult.user))
-            .filter((s) => visible.sessions.has(s.id))
-            .map((s) => ({
-                ...s,
-                own: s.id === adult.session.id,
-            })),
-    }));
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        const groups = new Map<string, Sessions["sessions"][number]>();
+        for (const { browser, ...session } of await sessionsOf(tx, adult.user)) {
+            if (!visible.sessions.has(session.id)) continue;
+            const group = browser ?? session.id;
+            const own = session.id === adult.session.id;
+            const previous = groups.get(group);
+            const latest =
+                [
+                    session.seen_at ?? session.created_at,
+                    previous?.seen_at ?? previous?.created_at ?? "",
+                ]
+                    .sort()
+                    .at(-1) ?? session.created_at;
+            if (!previous || own) {
+                groups.set(group, { ...session, own, seen_at: latest });
+            } else {
+                previous.seen_at = latest;
+            }
+        }
+        return { sessions: [...groups.values()].sort((a, b) => Number(b.own) - Number(a.own)) };
+    });
 }
 
 /**
@@ -650,11 +663,12 @@ export async function endMySession(
 ): Promise<{ own: boolean } | { error: "bad-request" | "not-found" }> {
     if (typeof id !== "string" || !id) return { error: "bad-request" };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
-        if (!(await endOwnSession(tx, adult.user, id))) return { error: "not-found" };
+        const ended = await endOwnSession(tx, adult.user, id);
+        if (!ended.length) return { error: "not-found" };
         await record(tx, adult.family.id, [
             { kid_id: null, kind: "signed-out", data: { everywhere: false }, actor: adult.user },
         ]);
-        return { own: id === adult.session.id };
+        return { own: ended.includes(adult.session.id) };
     });
 }
 
@@ -793,11 +807,12 @@ export async function openKidView(
 /** The children's views open in the family and whether it has a PIN, for a parent. */
 export async function kidSessionsFor(
     adult: Adult,
+    browser: string | null = null,
 ): Promise<KidSessions | { error: "not-allowed" }> {
     if (!adult.parent) return { error: "not-allowed" };
     const visible = await visibleBrowserSessions(adult.family.id);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => ({
-        views: (await kidViewsOf(tx)).filter((v) => visible.views.has(v.view)),
+        views: await kidBrowsersOf(tx, visible.sessions, browser),
         pin: await hasPin(tx),
     }));
 }
@@ -811,31 +826,32 @@ const putAwayEnded = (sessions: readonly string[], actor: string | null): Writte
         actor,
     }));
 
-/**
- * A parent ends a children's view from the family's page, on whichever browser holds it. Its keys go,
- * and with them the session put away for it on that browser, since nothing can give it back now, and
- * `kid-session-ended` and `session-changed` are recorded; what that browser had not sent is refused
- * from then on.
- */
+/** End this child's sessions in one browser without touching other children or parents. */
 export async function endKidView(
     adult: Adult,
     view: unknown,
 ): Promise<{ ok: true } | { error: "not-allowed" | "bad-request" | "not-found" }> {
     if (!adult.parent) return { error: "not-allowed" };
-    if (typeof view !== "string") return { error: "bad-request" };
+    if (typeof view !== "string" || !/^[a-f0-9]{64}$/.test(view)) return { error: "bad-request" };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
-        const ended = await endKids(tx, { view });
+        const ended = await endKidBrowser(tx, view);
         if (!ended.length) return { error: "not-found" };
-        const sessions = await endPutAway(tx, view);
-        await record(tx, adult.family.id, [
-            {
+        await record(
+            tx,
+            adult.family.id,
+            [...new Set(ended.map((key) => key.view))].map((id) => ({
                 kid_id: null,
                 kind: "kid-session-ended",
-                data: { view, keys: ended.map(({ kid, key }) => ({ kid, key })), reason: "ended" },
+                data: {
+                    view: id,
+                    keys: ended
+                        .filter((key) => key.view === id)
+                        .map(({ kid, key }) => ({ kid, key })),
+                    reason: "ended",
+                },
                 actor: adult.user,
-            },
-            ...putAwayEnded(sessions, adult.user),
-        ]);
+            })),
+        );
         return { ok: true };
     });
 }
@@ -893,8 +909,7 @@ export async function kidLoginsFor(adult: Adult): Promise<KidLogins | { error: "
 }
 
 type LoginChange =
-    | { ok: true }
-    | { error: "not-allowed" | "fresh-sign-in" | "bad-request" | "not-found"; problem?: string };
+    { ok: true } | { error: "not-allowed" | "bad-request" | "not-found"; problem?: string };
 
 async function revokeLogins(tx: FamilyTx, adult: Adult, kid?: string): Promise<void> {
     const ended = await endKids(tx, { ids: await stopKidLogins(tx, kid) });
@@ -922,7 +937,6 @@ export async function setKidsPin(
     pin: unknown,
 ): Promise<LoginChange> {
     if (!adult.parent) return { error: "not-allowed" };
-    if (!fresh(adult)) return { error: "fresh-sign-in" };
     if (typeof pin !== "string" || !PIN.test(pin)) return { error: "bad-request" };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         await lockKidLogins(tx, adult.family.id);
@@ -948,7 +962,6 @@ export async function changeKidLogin(
     input: { kid: unknown; username: unknown },
 ): Promise<LoginChange> {
     if (!adult.parent) return { error: "not-allowed" };
-    if (!fresh(adult)) return { error: "fresh-sign-in" };
     if (typeof input.kid !== "string") return { error: "bad-request" };
     const id = input.kid;
     try {
@@ -1362,9 +1375,8 @@ export async function unlockParent(
     });
 }
 
-function needFreshParent(adult: Adult): void {
+function needParent(adult: Adult): void {
     if (!adult.parent) throw new Refused(403, { error: "not-allowed" });
-    if (!fresh(adult)) throw new Refused(403, { error: "fresh-sign-in" });
 }
 
 async function currentParents(tx: FamilyTx, adult: Adult) {
@@ -1396,7 +1408,7 @@ export async function inviteParent(
     input: unknown,
     ip: string | null,
 ): Promise<void> {
-    needFreshParent(adult);
+    needParent(adult);
     const email = typeof input === "string" ? emailOf(input) : null;
     if (!email) throw new Refused(400, { error: "bad-email" });
     const issued = await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
@@ -1453,7 +1465,7 @@ export async function inviteParent(
 }
 
 export async function cancelParentInvitation(adult: Adult, id: string): Promise<void> {
-    needFreshParent(adult);
+    needParent(adult);
     await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         await currentParents(tx, adult);
         const found = (await invitationsOf(tx, adult.family.id)).find((k) => k.id === id);
@@ -1572,7 +1584,7 @@ export async function endParentMembership(
     adult: Adult,
     user: string,
 ): Promise<{ left: boolean; notificationFailed: boolean }> {
-    needFreshParent(adult);
+    needParent(adult);
     const recipients = await withFamily(
         { family: adult.family.id, user: adult.user },
         async (tx) => {

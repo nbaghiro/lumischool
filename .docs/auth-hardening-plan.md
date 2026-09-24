@@ -6,7 +6,7 @@ Scope: the September 23 audit. Keep shared parent cookies and independent child 
 - [x] Failed/in-flight kid attempt accounting and bounded family PIN cooldown (no permanent public lockout).
 - [x] Central child consent / opening-parent eligibility checks.
 - [x] Serialized manual and automatic usernames; try all friendly words before numbers; unchanged saves preserve sessions; remove obsolete enable contract.
-- [x] Explicit family-scoped parent sign-out wording and regression coverage.
+- [x] One parent sign-out action with cross-tab and child-session regression coverage.
 - [x] Trusted proxy configuration and deployment verification instructions.
 - [x] Children’s sign-ins list: accurate labels, sign-in method, refreshed on return, clear revocation effects.
 - [x] Browser storage / locking fallback with explicit failure behavior.
@@ -30,7 +30,7 @@ New SQL belongs in forward migrations only. Production proxy behavior and existi
 - Every child request checks current consent and parent membership; invalid keys observed during the check are revoked. Previously accepted requests may finish while a revocation is in flight.
 - Manual and automatic username writes share the same global candidate lock. All 14 friendly words are tried before numeric suffixes. An unchanged normalized username preserves sessions. The obsolete `enabled` API field is removed.
 - Email issuance has an atomic aggregate budget. Delivery failures invalidate the challenge and permit a bounded immediate retry. Resend wording describes independent tab challenges accurately.
-- Parent sign-out explicitly names its family scope. Children’s sign-ins show their origin and approximate activity dates, refresh on return to Account, and explain remote revocation.
+- Parent sign-out ends only this browser’s current parent session. Children’s sign-ins show their origin and approximate activity dates, refresh on return to Account, and explain remote revocation.
 - New sign-ins require session storage and Web Locks. Unsupported browsers get a clear message before submitting credentials; revocation stays available. Shared parent cookies and independent child tabs remain the product model.
 - Migration `0004_auth_hardening.sql` is forward-only. New SECURITY DEFINER functions revoke PUBLIC execution and grant only the application role.
 
@@ -50,7 +50,7 @@ New SQL belongs in forward migrations only. Production proxy behavior and existi
 - Save a changed username, then try the old and new names. Saving an unchanged username is disabled and does not end an existing sign-in.
 - Create children with a name already in use. Verify the friendly suffix and global uniqueness; test a short name and an accented name too.
 - End one child sign-in remotely, then end all. Return to Account from another tab and verify the list refreshes. Completed work remains.
-- Verify parent sign-out for this family leaves other families and child sessions intact; browser-wide sign-out ends all sessions bound to that browser.
+- Verify Sign out ends this parent session across tabs while children and other browsers stay signed in. Verify Lock parent pages beside the family PIN preserves child access and unlocks with the adult PIN.
 - Request/resend an email code in separate tabs. Use each tab’s appropriate code. Check invalid-email feedback and the kids/grown-ups switcher on a phone.
 - Check Account layout, disabled unchanged save buttons, sign-in method labels, and touch targets on desktop, tablet and phone.
 
@@ -171,3 +171,22 @@ No generalized settings framework or new auth-state abstraction was introduced.
 - No browser UI/session behavior changed. No new migration, service restart,
   production mutation, commit or push. Edits frozen after this handoff; no further
   database tests will run from this session unless new work is authorized.
+
+
+## Account sign-out simplification
+
+Account has one Sign out action with “Children stay signed in.” Lock parent pages
+lives beside the family PIN and is shown once a PIN exists. Remote parent sessions
+and children’s sign-ins keep their individual management controls. Removed both
+bulk parent sign-out and browser-wide sign-out from UI, client helpers, HTTP and
+unused database helpers. The existing signed-out event shape remains unchanged;
+new single-session sign-outs record `everywhere: false`. No migration is needed.
+
+
+Validation for account sign-out simplification: all 136 server tests passed, with
+zero skipped, and all four targeted desktop/phone browser tests passed. Typecheck,
+focused lint/format and diff checks passed. Full repository validation stopped on
+five concurrent map lint errors; the sign-out pass did not modify those map files.
+No new migration is required. Restart the local API to load the removed endpoint;
+`dev:api` does not watch server sources. No service restart, commit or push was
+performed by this pass.

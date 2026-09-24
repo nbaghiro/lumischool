@@ -1,10 +1,5 @@
 import { Members } from "./members";
 import { Select } from "../../engine/ui/select";
-// The account page (.docs/auth.md, flows 7, 10 and 12): who is signed in and their family, the other
-// families they are in, sign out here or everywhere, the family PIN, the children's views open in the
-// family, their own sessions, what the notice promised about their data, and paying for lumischool.
-// It holds what exists: export and deletion wait on their routes, and say so.
-
 import "./account.css";
 import { KidLogins } from "./kid-logins";
 import {
@@ -158,17 +153,16 @@ export function Account(): JSX.Element {
                                     family={s().me.family.id}
                                     onChanged={() => void refetch()}
                                 />
-                                <ViewsAndPin
-                                    seen={s()}
-                                    onPin={() => {
-                                        setSaid("");
-                                        setCard("pin");
-                                        scrollTo(0, 0);
-                                    }}
-                                    onChanged={() => void refetch()}
-                                />
                             </Show>
-                            <YourSessions seen={s()} onChanged={() => void refetch()} />
+                            <SignedInBrowsers
+                                seen={s()}
+                                onPin={() => {
+                                    setSaid("");
+                                    setCard("pin");
+                                    scrollTo(0, 0);
+                                }}
+                                onChanged={() => void refetch()}
+                            />
                             <YourData />
                             <Paying />
                         </div>
@@ -184,7 +178,7 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
     const me = (): Me => props.seen.me;
     const others = (): Me["families"] =>
         me().families.filter((f) => f.family_id !== me().family.id);
-    const [busy, setBusy] = createSignal<"switch" | "out" | "everywhere" | null>(null);
+    const [busy, setBusy] = createSignal<"switch" | "out" | null>(null);
     const [said, setSaid] = createSignal("");
     const switchTo = async (family: string): Promise<void> => {
         if (busy()) return;
@@ -194,32 +188,17 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
         if ("me" in r) props.onRefetch();
         else setSaid(failureText(r, local));
     };
-    const out = async (everywhere: boolean): Promise<void> => {
+    const out = async (): Promise<void> => {
         if (busy()) return;
-        setBusy(everywhere ? "everywhere" : "out");
+        setBusy("out");
         setSaid("");
-        const r = await api.signOut(everywhere);
+        const r = await api.signOut();
         if (r === true) {
             location.assign("/sign-in");
             return;
         }
         setBusy(null);
         setSaid(`You are still signed in. ${failureText(r, local)}`);
-    };
-    const browserAction = async (lock: boolean): Promise<void> => {
-        if (busy()) return;
-        setBusy("out");
-        const answer = lock ? await api.lockParent() : await api.signOutBrowser();
-        if (answer === true) {
-            location.assign(lock ? "/sign-in?locked=1" : "/sign-in");
-            return;
-        }
-        setBusy(null);
-        setSaid(
-            answer.error === "no-pin"
-                ? "Set an adult family PIN below before locking parent access."
-                : failureText(answer, local),
-        );
     };
     return (
         <Postcard
@@ -282,46 +261,17 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
             <section class="part">
                 <h2>Sign out</h2>
                 <p class="note">
-                    Sign out of this browser, or of every browser you are signed in to in this
-                    family, a lost phone included.
+                    Signs you out on this browser across tabs. Children stay signed in.
                 </p>
                 <div class="acts">
-                    <Button second busy={busy() === "out"} onClick={() => void out(false)}>
-                        Sign out of this browser
-                    </Button>
-                    <Button second busy={busy() === "everywhere"} onClick={() => void out(true)}>
-                        Sign out of this family on all browsers
+                    <Button second busy={busy() === "out"} onClick={() => void out()}>
+                        Sign out
                     </Button>
                 </div>
                 <Show when={said()}>
                     <Say text={said()} />
                 </Show>
             </section>
-            <Show when={isParent(me().members)}>
-                <div class="acts">
-                    <Button second busy={busy() === "out"} onClick={() => void browserAction(true)}>
-                        Lock parent access on this browser
-                    </Button>
-                    <Button
-                        second
-                        busy={busy() === "out"}
-                        onClick={() => {
-                            if (
-                                confirm(
-                                    "Sign out the parent and every child view on this browser? Answers that have not been sent will be lost.",
-                                )
-                            )
-                                void browserAction(false);
-                        }}
-                    >
-                        Sign out everyone on this browser
-                    </Button>
-                </div>
-                <p class="note">
-                    Parent sign-in is shared across tabs. Lock it before handing this browser to a
-                    child. Signing out only your account keeps children’s views open.
-                </p>
-            </Show>
         </Postcard>
     );
 }
@@ -383,13 +333,33 @@ function YourPicture(props: { me: Me; onPicked: () => void }): JSX.Element {
     );
 }
 
-/** The children's views open in the family, each with End, and the family PIN, moved here from the family's page whole. */
-function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => void }): JSX.Element {
+/** Manage saved access without treating tab sessions as separate devices. */
+function SignedInBrowsers(props: {
+    seen: Seen;
+    onPin: () => void;
+    onChanged: () => void;
+}): JSX.Element {
     const views = (): KidSessions["views"] => props.seen.kidSessions?.views ?? [];
     const kidName = (id: string): string =>
         props.seen.view.kids.find((k) => k.id === id)?.name ?? "a child";
     const [busy, setBusy] = createSignal<string | null>(null);
     const [said, setSaid] = createSignal("");
+    const lock = async (): Promise<void> => {
+        if (busy()) return;
+        setBusy("lock");
+        setSaid("");
+        const answer = await api.lockParent();
+        if (answer === true) {
+            location.assign("/sign-in?locked=1");
+            return;
+        }
+        setBusy(null);
+        setSaid(
+            answer.error === "no-pin"
+                ? "Set a family PIN before locking parent pages."
+                : failureText(answer, local),
+        );
+    };
     const end = async (view: string | null): Promise<void> => {
         if (busy() || (view === null && views().length === 0)) return;
         setBusy(view ?? "all");
@@ -402,7 +372,7 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
         }
         setSaid(
             view !== null
-                ? "That child sign-in has ended."
+                ? "That child is signed out of the selected browser."
                 : r === true || r.ended === 0
                   ? "There were no child sign-ins to end."
                   : r.ended === 1
@@ -412,43 +382,22 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
         props.onChanged();
     };
     return (
-        <Postcard
-            focus={false}
-            kicker="Your account"
-            title="Children’s sign-ins and the family PIN"
-        >
+        <Postcard focus={false} kicker="Your account" title="Signed-in browsers">
             <section class="part">
-                <h2>The family PIN</h2>
                 <p class="note">
-                    {props.seen.view.pin
-                        ? "The adult family PIN is set. Use it to unlock parent access or return from a child’s view on this browser."
-                        : "Set an adult PIN to lock and unlock parent access on this browser."}
+                    Your sign-ins and your children’s, once per person per browser. Closing a tab
+                    does not sign out. Last-used dates are approximate.
                 </p>
-                <div class="acts">
-                    <Button second onClick={props.onPin}>
-                        {props.seen.view.pin ? "Change the family PIN" : "Set the family PIN"}
-                    </Button>
-                </div>
-                <p class="note">Setting the PIN needs a sign-in in the last ten minutes.</p>
-            </section>
-            <section class="part">
-                <h2>Children’s sign-ins</h2>
-                <p class="note">
-                    These are saved sign-ins, not a list of tabs open right now. Closing a tab may
-                    leave its sign-in here until it expires. Last-used dates are approximate.
-                </p>
-                <Show
-                    when={views().length}
-                    fallback={<p class="note">No children are signed in.</p>}
-                >
+                <YourSessions seen={props.seen} onChanged={props.onChanged} />
+                <Show when={views().length}>
                     <ul class="ga-list">
                         <For each={views()}>
                             {(v) => (
                                 <li class="ga-row">
                                     <div class="ga-row-words">
-                                        <b>{v.name ?? "A browser"}</b>
+                                        <b>{kidName(v.kid)}</b>
                                         <span>
-                                            {`${v.login ? "Username sign-in" : "Opened by a parent"} for ${v.kids.map(kidName).join(", ")}. Started ${dayOf(v.created_at)}${v.seen_at ? `, last used ${dayOf(v.seen_at)}` : ""}.`}
+                                            {`${v.own ? "This browser" : (v.name ?? "Another browser")} · Last used ${dayOf(v.seen_at)}`}
                                         </span>
                                     </div>
                                     <Button
@@ -456,31 +405,57 @@ function ViewsAndPin(props: { seen: Seen; onPin: () => void; onChanged: () => vo
                                         busy={busy() === v.view}
                                         onClick={() => void end(v.view)}
                                     >
-                                        End this sign-in
+                                        {`Sign out ${kidName(v.kid)}`}
                                     </Button>
                                 </li>
                             )}
                         </For>
                     </ul>
                 </Show>
-                <div class="acts">
-                    <Button
-                        second
-                        disabled={views().length === 0}
-                        busy={busy() === "all"}
-                        onClick={() => void end(null)}
-                    >
-                        End all children’s sign-ins
-                    </Button>
-                </div>
+                <Show when={views().length > 0}>
+                    <div class="acts">
+                        <Button
+                            second
+                            disabled={views().length === 0}
+                            busy={busy() === "all"}
+                            onClick={() => void end(null)}
+                        >
+                            End all children’s sign-ins
+                        </Button>
+                    </div>
+                </Show>
                 <p class="note">
-                    Ending a sign-in stops access when that tab next connects. Answers not sent yet
-                    are lost. It does not sign out parents or delete finished work.
+                    Signing out affects only that person in that browser. Children stay signed in
+                    when you sign out. Ending a child’s access can lose answers not sent yet.
                 </p>
                 <Show when={said()}>
                     <Say text={said()} />
                 </Show>
             </section>
+            <Show when={isParent(props.seen.me.members)}>
+                <section class="part">
+                    <h2>The family PIN</h2>
+                    <p class="note">
+                        {props.seen.view.pin
+                            ? "The adult family PIN is set. Use it to unlock parent access or return from a child’s view on this browser."
+                            : "Set an adult PIN to lock and unlock parent access on this browser."}
+                    </p>
+                    <div class="acts">
+                        <Button second onClick={props.onPin}>
+                            {props.seen.view.pin ? "Change the family PIN" : "Set the family PIN"}
+                        </Button>
+                    </div>
+                    <p class="note">Setting the PIN needs a sign-in in the last ten minutes.</p>
+                    <Show when={props.seen.view.pin}>
+                        <Button second busy={busy() === "lock"} onClick={() => void lock()}>
+                            Lock parent pages
+                        </Button>
+                        <p class="note">
+                            Children can keep learning. Use your family PIN to return.
+                        </p>
+                    </Show>
+                </section>
+            </Show>
         </Postcard>
     );
 }
@@ -507,32 +482,18 @@ function YourSessions(props: { seen: Seen; onChanged: () => void }): JSX.Element
         setSaid(`${browserOf(s)} is signed out.`);
         props.onChanged();
     };
-    const line = (s: SessionView): string =>
-        [
-            s.kind === "shared-session" ? "a shared device" : "",
-            s.byPin ? "signed in with the family PIN" : "",
-            s.putAway ? "put away while a children's view is open" : "",
-            `signed in ${dayOf(s.created_at)}`,
-            s.seen_at ? `last used ${dayOf(s.seen_at)}` : "",
-        ]
-            .filter(Boolean)
-            .join(", ");
     return (
-        <Postcard focus={false} kicker="Your account" title="Where you are signed in">
-            <p class="note">
-                Each browser you signed in on in this family. Signing one out ends it there; a lost
-                phone is signed out from here.
-            </p>
+        <>
             <ul class="ga-list">
                 <For each={list()}>
                     {(s) => (
                         <li class="ga-row" classList={{ own: s.own }}>
                             <div class="ga-row-words">
-                                <b>{`${browserOf(s)}${s.own ? " (this browser)" : ""}`}</b>
-                                <span>{`${line(s)}.`}</span>
+                                <b>{`${props.seen.me.user.name ?? "Parent"} (you)`}</b>
+                                <span>{`${s.own ? "This browser" : browserOf(s)} · Last used ${dayOf(s.seen_at ?? s.created_at)}`}</span>
                             </div>
                             <Button second busy={busy() === s.id} onClick={() => void end(s)}>
-                                {s.own ? "Sign out" : "Sign out there"}
+                                Sign out
                             </Button>
                         </li>
                     )}
@@ -541,7 +502,7 @@ function YourSessions(props: { seen: Seen; onChanged: () => void }): JSX.Element
             <Show when={said()}>
                 <Say text={said()} />
             </Show>
-        </Postcard>
+        </>
     );
 }
 

@@ -2352,3 +2352,14 @@ understand, and the digest is what makes "which content was this" a field rather
   one of them in until they do. This should be reconciled in `curriculum.md` rather than here.
 - Whether the phase rule moves from a guard to a resolver, which is the one thing a workspace of
   packages is better at. The moment to decide is when `apps/kids` is a real build.
+
+### Inline editing controls
+
+`engine/ui/inline-edit.tsx` and its stylesheet provide shared borderless editing controls.
+`InlineEdit` takes a label, value, an optional options list, validation, and an asynchronous
+`save(value)` callback returning `true` or an error message. Text saves on blur or Enter; choices
+save on selection. It retains failed drafts, reports status accessibly, and accepts refreshed values
+without overwriting edits. `onSaved` lets the owning screen refresh its data. Keep API calls and
+business-specific verification in the screen. `InlineInput` provides the matching controlled input
+and Enter-to-blur behavior for flows such as email verification. Labels and page layout remain the
+caller's responsibility; the controls are not tied to Account or definition-list markup.

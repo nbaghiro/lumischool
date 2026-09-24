@@ -126,7 +126,7 @@ test(
 );
 
 test(
-    "invitations require fresh parent access, recipient proof, live tokens, and bounded sends",
+    "invitations require parent access, recipient proof, live tokens, and bounded sends",
     { skip: reason ?? false },
     async () => {
         const { config, outbox } = local();
@@ -194,7 +194,7 @@ test(
                     body: { email: "fresh@members.test" },
                 })
             ).status,
-            403,
+            200,
         );
     },
 );

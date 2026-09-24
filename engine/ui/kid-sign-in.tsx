@@ -63,6 +63,7 @@ export function KidSignIn(): JSX.Element {
         >
             <form
                 class="form"
+                autocomplete="off"
                 onSubmit={(e) => {
                     e.preventDefault();
                     void submit();
@@ -73,7 +74,7 @@ export function KidSignIn(): JSX.Element {
                         Your username
                         <input
                             name="username"
-                            autocomplete="username"
+                            autocomplete="off"
                             autocapitalize="none"
                             spellcheck={false}
                             maxlength={32}
@@ -83,7 +84,7 @@ export function KidSignIn(): JSX.Element {
                     </label>
                 </div>
                 <p class="note">Your kids’ PIN</p>
-                <PinInput label="Your kids’ PIN" value={pin()} onInput={setPin} />
+                <PinInput type="text" label="Your kids’ PIN" value={pin()} onInput={setPin} />
                 <Button submit busy={busy()}>
                     Open my page
                 </Button>

@@ -119,6 +119,8 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
 }, info) => {
     await signInHere(page);
     await page.goto("/account");
+    await expect(page.getByLabel("New kids’ PIN", { exact: true })).toHaveCount(0);
+    await page.getByRole("button", { name: "Set kids’ PIN", exact: true }).click();
     await page.getByLabel("New kids’ PIN", { exact: true }).fill("1357");
     await page.getByLabel("Type the kids’ PIN again", { exact: true }).fill("1357");
     await page.getByRole("button", { name: "Save kids’ PIN" }).click();
@@ -129,6 +131,7 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
     ).toBeVisible();
     const suffix = Date.now().toString(36);
     for (const name of ["Rosie", "Leo"]) {
+        await page.getByRole("button", { name: `Edit ${name}’s username` }).click();
         await page
             .getByLabel(`${name}’s username`, { exact: true })
             .fill(`${name.toLowerCase()}-${suffix}`);
@@ -137,9 +140,10 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
         );
         await page.getByRole("button", { name: `Save ${name}’s sign-in` }).click();
         expect((await saved).status()).toBe(204);
-        await expect(page.getByLabel(`${name}’s username`, { exact: true })).toHaveValue(
-            `${name.toLowerCase()}-${suffix}`,
-        );
+        await expect(page.getByLabel(`${name}’s username`, { exact: true })).toHaveCount(0);
+        await expect(
+            page.getByText(`${name.toLowerCase()}-${suffix}`, { exact: true }),
+        ).toBeVisible();
     }
     await page.screenshot({ path: info.outputPath("parent-settings.png"), fullPage: true });
     expect(
@@ -241,7 +245,7 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
     await expect(leo.getByRole("heading", { name: "Your learning page" })).toBeVisible();
 });
 
-test("parent tabs stay signed in beside child tabs, lock together, and can sign out the whole browser", async ({
+test("parent tabs stay signed in beside child tabs, lock together, and sign out without closing child views", async ({
     page,
     context,
 }) => {
@@ -250,7 +254,7 @@ test("parent tabs stay signed in beside child tabs, lock together, and can sign 
     const account = await context.newPage();
     await account.goto("/account");
     await expect(
-        account.getByRole("button", { name: "Lock parent access on this browser", exact: true }),
+        account.getByRole("button", { name: "Lock parent pages", exact: true }),
     ).toBeVisible();
     const open = async (name: string) => {
         const opened = context.waitForEvent("page");
@@ -265,9 +269,7 @@ test("parent tabs stay signed in beside child tabs, lock together, and can sign 
     expect(await who(rosie)).toEqual(["Rosie"]);
     expect(await who(leo)).toEqual(["Leo"]);
     expect((await context.request.get("/api/me")).status()).toBe(200);
-    await account
-        .getByRole("button", { name: "Lock parent access on this browser", exact: true })
-        .click();
+    await account.getByRole("button", { name: "Lock parent pages", exact: true }).click();
     await expect(
         account.getByRole("heading", { name: "Unlock parent access", exact: true }),
     ).toBeVisible();
@@ -288,17 +290,27 @@ test("parent tabs stay signed in beside child tabs, lock together, and can sign 
     await expect(rosie).toHaveURL(/\/kids$/);
     expect(await who(rosie)).toEqual(["Rosie"]);
     await account.goto("/account");
-    account.once("dialog", (dialog) => void dialog.accept());
+    await expect(
+        account.getByRole("button", { name: "Sign out everyone on this browser", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+        account.getByRole("button", {
+            name: "Sign out of this family on all browsers",
+            exact: true,
+        }),
+    ).toHaveCount(0);
     await account
-        .getByRole("button", { name: "Sign out everyone on this browser", exact: true })
+        .locator("section.part")
+        .filter({ has: account.getByRole("heading", { name: "Sign out", exact: true }) })
+        .getByRole("button", { name: "Sign out", exact: true })
         .click();
     await expect(account.getByRole("heading", { name: "Sign in", exact: true })).toBeVisible();
+    await expect.poll(() => page.evaluate(async () => (await fetch("/api/me")).status)).toBe(401);
     await expect(
-        rosie.getByRole("heading", { name: "Your learning page", exact: true }),
-    ).toBeVisible();
-    await expect(
-        leo.getByRole("heading", { name: "Your learning page", exact: true }),
-    ).toBeVisible();
+        page.getByRole("heading", { name: "Hello, Test Parent", exact: true }),
+    ).toHaveCount(0);
+    expect(await who(rosie)).toEqual(["Rosie"]);
+    expect(await who(leo)).toEqual(["Leo"]);
 });
 
 for (const capability of ["storage", "locks"] as const) {

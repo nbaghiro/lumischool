@@ -2,6 +2,7 @@
 // Types only, importing only types, so a page's type checker can read it without the server, and
 // tools/scripts/check-db.ts lets an app import it as a type and nothing else from server/.
 
+import type { KidBrowser } from "./db/keys";
 import type { Envelope } from "../engine/answer";
 import type { PackIndex } from "../engine/pack";
 import type { ChildRecord } from "../school/family/family";
@@ -82,17 +83,11 @@ export interface PackView {
     index: PackIndex;
 }
 
-/** A children's view open on one browser, as the family's page lists it. */
-export type KidSessionView = Pick<Key, "name" | "created_at" | "seen_at"> & {
-    view: string;
-    login: boolean;
-    /** The parent who opened it. */
-    user_id: string;
-    kids: string[];
-};
+/** One child’s saved access in a browser, across independently issued tab sessions. */
+export type KidSessionView = KidBrowser;
 
 export interface KidSessions {
-    views: KidSessionView[];
+    views: KidBrowser[];
     /** Whether the family has a PIN to leave a children's view with. */
     pin: boolean;
 }

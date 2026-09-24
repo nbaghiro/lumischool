@@ -62,7 +62,6 @@ import {
     issue,
     bindToBrowser,
     browserAllows,
-    endBrowser,
 } from "./db/keys";
 import type { Key } from "./db/schema";
 import { consoleTransport, outbox, resendTransport } from "./email";
@@ -780,24 +779,10 @@ function routes(config: Config): Route[] {
         },
         {
             method: "POST",
-            path: "/api/auth/browser/sign-out",
-            who: "adult",
-            run: async (c, adult) => {
-                await signOut(adult, false);
-                const browser = c.cookies.get(n.browser);
-                if (browser) await endBrowser(browser);
-                const headers = new Headers();
-                for (const name of [n.session, n.kids, n.browser])
-                    headers.append("set-cookie", cookie(config, name, "", 0));
-                return json(204, null, headers);
-            },
-        },
-        {
-            method: "POST",
             path: "/api/auth/sign-out",
             who: "adult",
-            run: async (c, adult) => {
-                await signOut(adult, bool(field(c.body, "everywhere")));
+            run: async (_c, adult) => {
+                await signOut(adult);
                 const headers = new Headers();
                 headers.append("set-cookie", cookie(config, n.session, "", 0));
                 return json(204, null, headers);
@@ -953,7 +938,7 @@ function routes(config: Config): Route[] {
             path: "/api/kid-sessions",
             who: "adult",
             run: async (_c, adult) => {
-                const out = await kidSessionsFor(adult);
+                const out = await kidSessionsFor(adult, _c.cookies.get(n.browser) ?? null);
                 return "error" in out ? problem(403, out.error) : json(200, out);
             },
         },

@@ -5,8 +5,8 @@
 | Route | Caller | Request / result |
 | --- | --- | --- |
 | `GET /api/kid-logins` | Parent | `{pinSet, kids: [{id, name, username}]}` |
-| `POST /api/kid-logins/pin` | Fresh parent | `{pin}` with four digits; 204; must differ from the adult family PIN |
-| `POST /api/kid-logins` | Fresh parent | `{kid, username}`; blank username generates one; unchanged normalized usernames preserve sessions; 204 |
+| `POST /api/kid-logins/pin` | Parent | `{pin}` with four digits; 204; must differ from the adult family PIN |
+| `POST /api/kid-logins` | Parent | `{kid, username}`; blank username generates one; unchanged normalized usernames preserve sessions; 204 |
 | `POST /api/kid/sign-in` | Public | `{username, pin}`; `{credential}`; generic `wrong-pin` on failed or limited sign-in |
 | `GET /api/kid/tab` | Child view | `{credential}` to adopt a legacy cookie view into the tab |
 | `POST /api/kid/sign-out` | Child view | 204; ends only the supplied view |
@@ -17,7 +17,7 @@ credential in sessionStorage, partition their unsent-answer queue by key id, and
 `POST /api/kid-sessions` with `{kids, tab:true}` returns `{credential}` instead of a cookie. A
 header-authenticated `/api/kid/add` also returns the updated `{credential}`. Username-opened sessions
 cannot add children or leave through the adult PIN; their view returns `others: []` and `pin: false`.
-The list from `GET /api/kid-sessions` includes `login: true` for username sign-ins and `false` for parent-opened views.
+The list from `GET /api/kid-sessions` groups both sign-in methods by child and browser.
 `POST /api/auth/unlock` returns `retryAfter` with 429 or `attemptsLeft` on a wrong PIN.
 Email start returns 503 `delivery-failed` on transport failure; bounded immediate retry is allowed.
 See [auth.md](auth.md#kids-sign-in-and-independent-tabs) for revocation and rate limits.
@@ -163,7 +163,7 @@ A browser that is asking for a code holds `ls_pending`, a cookie that lasts fift
 | `POST /api/auth/email/verify` | `{ code }` | With `start` on the code, `200 { me }` in the new family. Otherwise `200 { me }` with the session cookie when the login is in one family; `200 { choose: FamilyChoice[] }` when it is in several, and the code is kept, proven, for its ten minutes; `200 { start: true }` when the address has no login or no active family, and the page offers to start one. Spaces and a hyphen in the code are ignored. Errors: `no-pending`, `wrong-code`, `expired`, `dead-code` |
 | `POST /api/auth/email/choose` | `{ family_id }` or `{ start: { name, family, timeZone } }` | `200 { me }` with the session cookie. The code is used in the transaction that makes the session, so a step that fails leaves it. The second form makes the login if there is none, the family, its first parent, and the session, in that one transaction, and records `member-added` and `signed-in`. Errors: `bad-request`, `no-pending`, `expired`, `not-found` for a family the login is not in |
 | `POST /api/auth/switch` | `{ family_id }` | `200 { me }`. A new session in the other family that keeps the old one's `created_at`, the old key deleted in the same transaction, the cookie replaced |
-| `POST /api/auth/sign-out` | `{ everywhere? }` | `204`, the cookie cleared, and `signed-out` recorded either way. `everywhere: true` ends every session the person has in this family, this one included |
+| `POST /api/auth/sign-out` | `{}` | `204`, the current parent session ends, its cookie is cleared, and `signed-out` is recorded. Children and other browsers stay signed in |
 | `GET /api/me` | | `200 Me`, or `401 signed-out` |
 
 Every sign-in records `signed-in` in the family, with the method and whether the device is shared. A sign-in by code in a browser that already holds a session of the same person deletes that session in the transaction that makes the new one, whichever family it was in. A sign-in in a browser that holds a children's view cookie ends that view: its keys are deleted, `kid-session-ended` is recorded with the reason `sign-in`, and the cookie is cleared in the same answer. The cookie is read only to end the view, so signing in is also the way out of a children's view for a grown-up who has no PIN.
@@ -176,9 +176,9 @@ All of these need a session. A parent sees the whole family. A tutor sees the fa
 |---|---|
 | `GET /api/family` | `{ family: Family, kids: Kid[], members: Member[], users: Person[], pin: boolean }`. `members` includes ended memberships, so a removed tutor's name still resolves; join `users` by `user_id`. `pin` is whether the family has a PIN, never a hash, which the family's page reads here since 15 September 2026 rather than from the open views. A tutor gets only their reachable kids, their own rows and themselves |
 | `POST /api/kids` | `{ name, grade, consent: { notice } }` answers `{ kid: Kid }`: flow 4, the kid and a `consent-given` against the family in one transaction. `notice` must be the current notice's version, `2026-09`. Parents only. Errors: `bad-request`, `not-allowed`, `notice-changed` |
-| `GET /api/kid-sessions` | `{ views: KidSessionView[], pin: boolean }`, the children's views open in this family and whether it has a PIN, never a hash. Parents only. No app reads it since 15 September 2026, when the owner decided that which browsers hold a view is log data rather than something a parent manages; it stays for a later surface |
+| `GET /api/kid-sessions` | `{ views: KidSessionView[], pin: boolean }`, one row per child/browser binding and whether the family has a PIN. Account reads it. Parents only |
 | `POST /api/kid-sessions` | `{ kids: string[] }` answers `204`: flow 5. In one transaction, one `kid-session` key per child, each with the parent as `user_id`, the browser's name, and one view id in `detail` that all of them share; this browser's session key deleted; and `kid-session-opened` and `signed-out` recorded. The answer clears the session cookie and sets `ls_kids`. It needs no fresh sign-in, since it leaves the browser with less than it held. The family's page sends one child, and the others join from inside the view (`POST /api/kid/add`). Parents only. Errors: `bad-request`, `not-allowed`, `not-found` for a kid not in the family, `no-consent` with `kid` |
-| `POST /api/kid-sessions/end` | `{ view }` answers `204`: the view's keys deleted and `kid-session-ended` recorded with the reason `ended`. Answers that browser had not sent are lost. Parents only. Errors: `bad-request`, `not-allowed`, `not-found` |
+| `POST /api/kid-sessions/end` | `{ view }` answers `204`: the opaque child/browser group's keys deleted and `kid-session-ended` recorded per affected view with the reason `ended`; other children and parents are preserved. Answers that browser had not sent are lost. Parents only. Errors: `bad-request`, `not-allowed`, `not-found` |
 | `POST /api/kid-sessions/end-all` | `{}` answers `200 { ended: number }`: every children's view open in the family ended as above, one `kid-session-ended` per view, which is what "End every open view" on the family's page calls. Parents only. Errors: `not-allowed` |
 | `POST /api/family/pin` | `{ pin }` answers `204`: the family's PIN, four digits, replacing any before it with its count of wrong tries cleared, and `pin-set` recorded. Parents only, signed in within ten minutes, and never by a session a PIN made. Errors: `bad-request`, `not-allowed`, `fresh-sign-in` |
 | `GET /api/kids/:kid/record` | `GrownRecord`, one child folded on the server for a parent's page (see "What the pages derive"). Parents only. Errors: `bad-request`, `not-allowed` for a tutor, `not-found` for a kid not in the family, `server` with `problem` while no pack is built |
@@ -255,7 +255,7 @@ The server reads its configuration once at start, and refuses to start outside `
 
 ## Built and not built
 
-Built: sign-in by emailed code (flow 2) with the console transport; starting a family (flow 1), with the start page's answers carried on the code, or offered after a code to a login with no family; choosing among several families and switching; signing out and signing out everywhere (flow 10); `/api/me`; adding a kid with consent (flow 4, without its confirming email); the family reads; appends under a session and under a children's view, with the binding auth.md sets out; opening, listing and ending children's views, and the family PIN with its limits (flows 5 to 7).
+Built: sign-in by emailed code (flow 2) with the console transport; starting a family (flow 1), with the start page's answers carried on the code, or offered after a code to a login with no family; choosing among several families and switching; signing out and managing individual sessions (flow 10); `/api/me`; adding a kid with consent (flow 4, without its confirming email); the family reads; appends under a session and under a children's view, with the binding auth.md sets out; opening, listing and ending children's views, and the family PIN with its limits (flows 5 to 7).
 
 Built since: the one origin in development, with the grown-ups' app and the children's view calling these routes ([local.md](local.md)); the children's view's queue in the browser (flow 8); and the local outbox.
 
@@ -271,13 +271,13 @@ require their bound HttpOnly browser cookie. Old unbound sessions require a new 
 - `GET /api/auth/status` returns only `{ available, locked }`, allowing the sign-in page to offer adult PIN unlock.
 - `POST /api/auth/lock` locks this browser's current parent session, leaving child views active.
 - `POST /api/auth/unlock` accepts `{ pin }`, verifies the adult PIN, and restores the held parent session.
-- `POST /api/auth/browser/sign-out` requires parent authorization and revokes all sessions bound to this browser.
+- `POST /api/auth/sign-out` ends only the current parent session and clears its cookie. Children and other browsers stay signed in. Remote parent sessions can be ended individually through `/api/sessions/end`.
 - `POST /api/auth/email/start` accepts `tab: true` and returns `{ challenge }` while also setting the pending cookie for legacy clients. Verify/choose accept it in `X-Sign-In-Challenge`.
 - `POST /api/kid-sessions` with `tab: true` returns a credential without locking the parent session.
 - `POST /api/kid/sign-in` preserves parent and sibling sessions. Switching a duplicated child tab does not revoke its original view.
 
 The browser cookie carries no authority by itself. Its key is revocable and its secret's hash binds
-the session, so browser-wide sign-out remains effective even if a tab retries with its old credential.
+the session, so an expired or revoked binding cannot be revived by retrying an old tab credential.
 
 
 ## Weekly email preferences
@@ -305,3 +305,14 @@ and their own private parent gallery. `kid_id` omitted means the caller's own pa
 
 Documents use the versioned `Picture` schema and bounded validation (720 KiB); PNG thumbnails are
 at most 64 KiB. Every response is private. No public artwork URLs or sharing links are created.
+
+Children’s account list: `GET /api/kid-sessions` returns `{views: [{view, kid, name, own, seen_at}], pin}`. Each row groups one child’s sessions by browser binding; `view` is an opaque group identifier, not a credential. `POST /api/kid-sessions/end {view}` revokes all sessions in that child/browser group within the parent’s family, preserving other children and parent sessions.
+
+Parent session management groups `GET /api/sessions` by the current user’s browser bindings within the family. The returned representative `id` selects all that user’s sessions in that browser for `POST /api/sessions/end`. Other users and child keys are untouched; ending the current browser clears the parent cookie.
+
+
+Current account policy: invitations, invitation cancellation, parent membership management, and
+kids’ PIN/username changes require active parent access but no recent email sign-in. Parent sessions
+unlocked with the family PIN can perform these actions. Parent-only authorization, family isolation,
+last-parent protection, validation and abuse limits remain enforced. Changing the adult family PIN
+and permanently deleting a family still require recent email authentication.

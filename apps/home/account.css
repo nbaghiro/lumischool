@@ -114,7 +114,29 @@
     height: 48px;
 }
 .kid-login-row {
-    margin-top: 24px;
+    padding: 12px 0;
+    border-top: 1px solid var(--grid);
+}
+.kid-login-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 8px 0;
+}
+.kid-login-identity {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.kid-login-identity > span {
+    color: var(--ink-soft);
+}
+.kid-login-summary .btn {
+    width: auto;
+    flex-shrink: 0;
 }
 .kids-pin-form {
     gap: 14px;
@@ -189,7 +211,16 @@
     background: var(--ground);
 }
 .member-invite {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 16px;
+}
+.member-invite .field {
+    gap: 8px;
+}
+.member-invite > .note {
+    margin: 0;
 }
 
 .member-list > li > div:first-child {
@@ -199,4 +230,8 @@
 #family-members .postcard-msg > .btn {
     width: auto;
     justify-self: start;
+}
+
+.ga .postcard-msg > .part {
+    margin-top: 24px;
 }

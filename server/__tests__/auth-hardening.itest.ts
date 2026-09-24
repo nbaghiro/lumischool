@@ -119,7 +119,7 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
         assert.equal(rows[0]?.count, 22);
     });
 
-    it("family-wide sign-out preserves the same parent's sessions in other families", async () => {
+    it("sign-out preserves the same parent's sessions in other families", async () => {
         const { config, outbox } = local();
         const a = new Browser(config),
             b = new Browser(config, "203.0.113.8");
@@ -136,10 +136,7 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
         if (!owner) throw new Error("no database");
         await owner.raw`insert into members (family_id, user_id) values (${two.family}, ${one.user})`;
         await sessionInto(b, two.family, one.user);
-        assert.equal(
-            (await a.call("POST", "/api/auth/sign-out", { body: { everywhere: true } })).status,
-            204,
-        );
+        assert.equal((await a.call("POST", "/api/auth/sign-out", { body: {} })).status, 204);
         assert.equal((await a.call("GET", "/api/me")).status, 401);
         assert.equal((await b.call("GET", "/api/me")).status, 200);
     });
