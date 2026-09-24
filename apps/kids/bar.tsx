@@ -111,22 +111,24 @@ export function KidBar(props: {
                             <Show when={props.profile?.kid}>
                                 <p class="kid-profile-name">{props.profile?.kid?.name}</p>
                             </Show>
-                            <Button second busy={busy()} onClick={() => void leave()}>
-                                Switch child
-                            </Button>
-                            <Button second busy={busy()} onClick={() => void leave()}>
-                                Sign out
-                            </Button>
-                            <Button
-                                second
-                                disabled={busy()}
-                                onClick={() => {
-                                    setOpen(false);
-                                    props.onGrownUps();
-                                }}
-                            >
-                                For grown-ups
-                            </Button>
+                            <div class="kid-profile-actions">
+                                <Button second busy={busy()} onClick={() => void leave()}>
+                                    Switch child
+                                </Button>
+                                <Button second busy={busy()} onClick={() => void leave()}>
+                                    Sign out
+                                </Button>
+                                <Button
+                                    second
+                                    disabled={busy()}
+                                    onClick={() => {
+                                        setOpen(false);
+                                        props.onGrownUps();
+                                    }}
+                                >
+                                    For grown-ups
+                                </Button>
+                            </div>
                         </div>
                     </Show>
                     <Show when={said()}>
