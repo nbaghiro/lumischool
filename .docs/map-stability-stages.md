@@ -312,3 +312,27 @@ surface bounds during flight/resizing, and flight/landing with normal and reduce
 Type checking, lint and formatting of the map changes passed. The full repository check
 stopped at formatting of concurrently edited `school/games/sling.ts` and
 `school/games/sling-challenges.ts`; those files were not changed for this fix.
+
+## Lesson-entry background continuity
+
+The mountains entry exposed a separate, deterministic redraw gap. Once the camera reached
+the lesson, nearby paper preparation changed the roll layout four times. Each redraw removed
+all scenery layers and scheduled their pieces for later frames. The mutation trace recorded
+an empty art layer at every replacement, even though the lesson and camera remained present.
+
+World redraws now retain the current background while one replacement is prepared off-page.
+Only pieces near the anchored camera are prepared, using the shared scenery frame allowance.
+The populated layers replace the old layers together; old animations and pieces are then
+released within that same synchronous update. Equivalent models reuse the current scene.
+New requests, user movement and disposal cancel pending preparation and release its work.
+The arrival assembly addresses its own layers so it still works after those layers are moved
+from preparation into the live world. Lesson DOM and answers remain owned by the existing
+sheet layer and are not replaced by this operation.
+
+The repeated mountains trace no longer records empty art layers during the replacements.
+Fourteen entry, readiness/retry and disposal checks passed across Chrome and phone-sized
+WebKit, including a regression observing each background swap. The phone regression was
+rerun after fixing the test to await camera settling before its second world-entry click.
+Map-file formatting and lint passed. The full repository check was attempted but stopped
+at a concurrent snapshot-tool type error in `tools/scripts/map-snapshots.ts:633`; it is not
+represented as a complete green validation. Physical-device crash validation remains open.

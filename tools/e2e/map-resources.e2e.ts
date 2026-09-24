@@ -313,3 +313,71 @@ test("equivalent models and pending progress updates preserve a flight's scene",
     await page.evaluate("window.mapFixture.dispose()");
     await expect(map).toHaveCount(0);
 });
+
+test("lesson entry keeps populated scenery through background lesson preparation", async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await signInAs(page);
+    await page.goto("/map");
+    const map = page.locator(".ow-host.ready");
+    await map.waitFor();
+    const probe = await page.evaluateHandle(() => {
+        const changes: number[] = [];
+        const observer = new MutationObserver((records) => {
+            const replaced = records.some(
+                (record) =>
+                    record.target instanceof Element &&
+                    record.target.matches(".wd-host .world") &&
+                    Array.from(record.removedNodes).some(
+                        (node) => node instanceof Element && node.matches(".l-art"),
+                    ),
+            );
+            if (replaced) changes.push(document.querySelectorAll(".wd-host .l-art > *").length);
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        return { changes, stop: () => observer.disconnect() };
+    });
+    try {
+        const place = map.locator('.ow-node[aria-label*="mountains" i]').first();
+        await place.dispatchEvent("click");
+        let camera = "";
+        await expect
+            .poll(async () => {
+                const transform = await map.locator(".world").evaluate((el) => el.style.transform);
+                const settled = transform === camera;
+                camera = transform;
+                const host = await map.boundingBox();
+                const node = await place.boundingBox();
+                return (
+                    settled &&
+                    !!host &&
+                    !!node &&
+                    Math.abs(node.x + node.width / 2 - host.x - host.width / 2) < 12 &&
+                    Math.abs(node.y + node.height / 2 - host.y - host.height / 2) < 12
+                );
+            })
+            .toBe(true);
+        await place.dispatchEvent("click");
+        await expect(page.locator(".wd.ready")).toBeVisible({ timeout: 60000 });
+        await expect.poll(() => probe.evaluate((p) => p.changes.length)).toBeGreaterThan(0);
+        let previous = 0;
+        let same = 0;
+        await expect
+            .poll(
+                async () => {
+                    const count = await probe.evaluate((p) => p.changes.length);
+                    same = count === previous ? same + 1 : 0;
+                    previous = count;
+                    return same;
+                },
+                { intervals: [300] },
+            )
+            .toBeGreaterThanOrEqual(4);
+        expect(await probe.evaluate((p) => p.changes.every((count) => count > 0))).toBe(true);
+        await expect(page.locator(".wd .rd-sheet").first()).toBeVisible();
+    } finally {
+        await probe.evaluate((p) => p.stop());
+        await probe.dispose();
+    }
+});

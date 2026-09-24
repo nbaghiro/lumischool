@@ -20,6 +20,7 @@ import {
     DAY_AT,
     FAR_AT,
     intersects,
+    visibleRect,
     labelGrow,
     rollLevelOf,
     type Camera,
@@ -488,7 +489,10 @@ export function World(props: {
     }
     /** Each draw's number: a roll drawn again while the painter's code is on its way paints once, not twice. */
     let drawing = 0;
+    let model = "";
+    let cancelPreparation: (() => void) | undefined;
     function retryDraw(v: CanvasView): void {
+        cancelPreparation?.();
         setFailed(false);
         void draw(v).catch(() => {
             if (view === v) setFailed(true);
@@ -499,23 +503,90 @@ export function World(props: {
         // the painter's code comes with the first roll a page draws, not with the page
         const { paintWorldView } = await worldPainter();
         if (!host || v !== view || n !== drawing) return;
+        const next = props.view;
+        const key = JSON.stringify([next, props.play]);
+        if (model === key) {
+            before = next.layout;
+            setPaintedLayout(next.layout);
+            return;
+        }
         const was = before;
-        before = layout();
-        painted?.stop();
-        for (const c of Array.from(v.world.children)) if (c !== sheets && c !== above) c.remove();
-        v.world.classList.remove("j-world");
-        for (const p of pending) p.release?.();
-        painted = paintWorldView({
+        const stage = document.createElement("div");
+        const replacement = paintWorldView({
             host,
-            world: v.world,
-            view: props.view,
+            world: stage,
+            view: next,
             still: quiet,
-            grown: props.view.limits.sheets === "look",
+            grown: next.limits.sheets === "look",
             ...(props.play === undefined ? {} : { play: props.play }),
             zoom: () => v.cam.z,
         });
+        const prepared: typeof pending = replacement.pieces.map((piece) => ({
+            piece,
+            done: false,
+        }));
+        if (drawn) {
+            const complete = await new Promise<boolean>((resolve) => {
+                let work = 0;
+                const cancel = (): void => {
+                    sceneWork.cancel(work);
+                    for (const p of prepared) p.release?.();
+                    replacement.stop();
+                    if (cancelPreparation === cancel) cancelPreparation = undefined;
+                    resolve(false);
+                };
+                cancelPreparation = cancel;
+                const step = (deadline: number): void => {
+                    if (view !== v || n !== drawing || props.view !== next) {
+                        cancel();
+                        return;
+                    }
+                    if (v.flying || v.movedAgo() < STILL_FOR) {
+                        waiting = true;
+                        cancel();
+                        return;
+                    }
+                    const cam = anchored(v, was) ?? v.cam;
+                    const margin = Math.min(320, v.vp.h / 2);
+                    const seen = visibleRect(cam, {
+                        w: v.vp.w + margin * 2,
+                        h: v.vp.h + margin * 2,
+                    });
+                    const todo = prepared.filter((p) => !p.done && intersects(p.piece.rect, seen));
+                    try {
+                        for (const p of todo) {
+                            p.release = p.piece.paint() ?? undefined;
+                            p.done = true;
+                            if (performance.now() >= deadline) break;
+                        }
+                    } catch {
+                        cancel();
+                        setFailed(true);
+                        return;
+                    }
+                    if (todo.some((p) => !p.done)) work = sceneWork.schedule(step);
+                    else {
+                        cancelPreparation = undefined;
+                        resolve(true);
+                    }
+                };
+                work = sceneWork.schedule(step);
+            });
+            if (!complete) return;
+        }
+        // Keep the previous ink until the replacement's visible pieces can be presented together.
+        sceneWork.cancel(brush);
+        brush = 0;
+        painted?.stop();
+        for (const p of pending) p.release?.();
+        for (const c of Array.from(v.world.children)) if (c !== sheets && c !== above) c.remove();
+        v.world.append(...Array.from(stage.children));
+        v.world.classList.add("j-world");
+        painted = replacement;
+        pending = prepared;
+        before = next.layout;
+        model = key;
         painted.frame(v.cam, v.vp);
-        pending = painted.pieces.map((piece) => ({ piece, done: false }));
         flags = null;
         covers = [];
         zoomRead(v.cam, true);
@@ -667,6 +738,7 @@ export function World(props: {
         ),
     );
     onCleanup(() => {
+        cancelPreparation?.();
         sceneWork.cancel(brush);
         clearTimeout(arriving);
         clearTimeout(asking);

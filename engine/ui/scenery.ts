@@ -6884,9 +6884,11 @@ export function paintWorldView(o: {
         pieces,
         assemble(term) {
             if (still) return;
-            const els = [...world.querySelectorAll<HTMLElement>(`[data-arrive="${term}"]`)].sort(
-                (a, b) => parseFloat(a.style.left) - parseFloat(b.style.left),
-            );
+            const els = Object.values(L)
+                .flatMap((layer) => [
+                    ...layer.querySelectorAll<HTMLElement>(`[data-arrive="${term}"]`),
+                ])
+                .sort((a, b) => parseFloat(a.style.left) - parseFloat(b.style.left));
             if (!els.length) return;
             const gap = 0.07,
                 end = settleTime(ARRIVE, 1, 0, 0) + els.length * gap;
