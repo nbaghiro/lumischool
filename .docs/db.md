@@ -228,3 +228,15 @@ The store has its own dependencies (`drizzle-orm`, `postgres`, and `drizzle-kit`
 - The consent-withdrawal link's kind and lifetime, above.
 - Retention after a family closes: there is no column that records a closure, and the sweep that would act on one is not built.
 - How large a drawing and a performance are per question, which [data-model.md](data-model.md) names as the number it would most like and nobody has measured.
+
+## Editable painting storage
+
+`0006_solid_the_liberteens.sql` adds `artworks` and `painting_saves`, both with forced family RLS.
+An artwork belongs either to one child or one parent. Composite family/child foreign keys cascade
+child deletion; family deletion cascades both tables. Family exports include live editable documents and the retained save snapshots with their authors.
+Each save compares its expected revision under the family lock. A stale save creates a separate copy
+instead of replacing another device's work. Operation IDs replay the original response for the latest
+20 saved revisions per artwork. Older retries preserve work as a separate conflict copy.
+Deletion clears the document, title, thumbnail and receipt history, retaining only a tombstone to
+prevent a delayed device upload from resurrecting the deleted artwork.
+Gallery queries fetch only metadata and thumbnails, 24 per page with an updated-time/ID cursor.

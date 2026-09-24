@@ -19,6 +19,8 @@ import {
     kids,
     members,
     users,
+    artworks,
+    paintingSaves,
     mailPreferences,
     mailDeliveries,
 } from "../schema";
@@ -145,6 +147,8 @@ async function writeFamily(family: string, parent: string, kid: string): Promise
 
 /** B's row ids per table, read by the owner, which is the one role that can see them all. */
 let bRows: Record<(typeof TABLES)[number], string[]> = {
+    artworks: [],
+    painting_saves: [],
     mail_preferences: [],
     mail_deliveries: [],
     families: [],
@@ -224,6 +228,8 @@ describe("isolation between families", { skip: reason ?? false }, () => {
 
         const ids = async (q: Promise<{ id: string }[]>) => (await q).map((r) => r.id);
         bRows = {
+            artworks: [],
+            painting_saves: [],
             mail_preferences: [],
             mail_deliveries: [],
             families: [B],
@@ -253,6 +259,8 @@ describe("isolation between families", { skip: reason ?? false }, () => {
     async function everything(tx: FamilyTx) {
         const ids = async (q: Promise<{ id: string }[]>) => (await q).map((r) => r.id).sort();
         return {
+            artworks: await ids(tx.select({ id: artworks.id }).from(artworks)),
+            painting_saves: await ids(tx.select({ id: paintingSaves.id }).from(paintingSaves)),
             families: await ids(tx.select({ id: families.id }).from(families)),
             users: await ids(tx.select({ id: users.id }).from(users)),
             members: await ids(tx.select({ id: members.id }).from(members)),
@@ -495,6 +503,8 @@ describe("isolation between families", { skip: reason ?? false }, () => {
                 keys: [],
                 events: [],
                 content: [catalogueRow],
+                artworks: [],
+                painting_saves: [],
                 mail_preferences: [],
                 mail_deliveries: [],
             },

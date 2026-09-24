@@ -15,6 +15,10 @@ import {
 import type { FamilyTx } from "./client";
 import {
     content,
+    artworks,
+    paintingSaves,
+    type PaintingReceipt,
+    type Artwork,
     events,
     families,
     keys,
@@ -388,6 +392,8 @@ export async function visibleKids(
 }
 
 export interface Export {
+    paintings: Artwork[];
+    painting_history: Omit<PaintingReceipt, "request_hash">[];
     family: Family;
     /** Everyone who has been a member, with their name, including those whose membership ended. */
     users: Pick<User, "id" | "email" | "name">[];
@@ -427,6 +433,13 @@ export async function exportFamily(tx: FamilyTx, id: string): Promise<Export | n
 
     return {
         family,
+        painting_history: (
+            await tx.select().from(paintingSaves).where(eq(paintingSaves.family_id, id))
+        ).map(({ request_hash: _hash, ...saved }) => saved),
+        paintings: await tx
+            .select()
+            .from(artworks)
+            .where(and(eq(artworks.family_id, id), isNull(artworks.deleted_at))),
         users: [...new Map(userRows.map((u) => [u.id, u])).values()],
         members: memberRows.map(({ id: _id, family_id: _family, ...m }) => m),
         kids: kidRows.map(({ family_id: _family, ...k }) => k),

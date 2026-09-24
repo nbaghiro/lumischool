@@ -68,7 +68,7 @@ describe("forward migrations on an ordinary Postgres owner", { skip: reason ?? f
         await apply(url, dir);
         const tables = await db().raw`select relname, relrowsecurity, relforcerowsecurity
             from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r'`;
-        assert.equal(tables.length, 9);
+        assert.equal(tables.length, 11);
         assert.ok(tables.every((t) => t.relrowsecurity && t.relforcerowsecurity));
         const [fn] = await db()
             .raw`select to_regprocedure('kid_login_lookup(text,text,text,text)') as name`;

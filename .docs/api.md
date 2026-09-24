@@ -288,3 +288,20 @@ Parent-only GET /api/letters/preferences returns { mode: "off" | "private" | "de
 ## Family members
 
 See [multi-parent.md](multi-parent.md) for the parent management and invitation endpoint contracts. Parent removal is family-scoped; joining issues a browser-bound parent session through the existing auth flow.
+
+## Painting galleries
+
+All painting endpoints currently require an active parent session. Children's sessions and tutors
+cannot call them during parent QA. Parents can access every consented child's gallery in their family
+and their own private parent gallery. `kid_id` omitted means the caller's own paintings.
+
+- `GET /api/paintings?kid_id=…&before=…`: `{artworks, next}` with 24 metadata/PNG thumbnails per page.
+  `next` is an opaque cursor or null. Editable document bodies are loaded separately.
+- `GET /api/paintings/:id`: `{artwork, document}` for an accessible live painting.
+- `POST /api/paintings/save`: `{scope:{kid_id},document,expected_revision,operation_id,thumbnail}`.
+  Revision zero creates; UUID operation IDs make recent retries harmless. Returns
+  `{artwork,document,conflict}`; a conflict returns a new artwork ID with both versions preserved.
+- `POST /api/paintings/delete`: `{id,revision}`. Returns `{ok:true}`; stale revision returns 409.
+
+Documents use the versioned `Picture` schema and bounded validation (720 KiB); PNG thumbnails are
+at most 64 KiB. Every response is private. No public artwork URLs or sharing links are created.

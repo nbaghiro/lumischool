@@ -187,3 +187,11 @@ export interface Invitation {
     inviter: string;
     email: string;
 }
+
+export type {
+    PaintingScope,
+    ArtworkSummary,
+    PaintingSave,
+    PaintingLoaded,
+    PaintingSaved,
+} from "./db/schema";

@@ -89,6 +89,7 @@ import {
 import { loadPack, watchPack, type Pack } from "./pack";
 import { staticFrom } from "./static";
 import { emailPreferences, changeLetters, unsubscribeRequest, webhookRequest } from "./letters";
+import { listPaintings, loadPainting, savePainting, deletePainting } from "./painting";
 import { mailPreviews } from "./mail-previews";
 
 export interface Config extends AuthConfig {
@@ -566,6 +567,42 @@ function routes(config: Config): Route[] {
                     response.headers,
                 );
             },
+        },
+        {
+            method: "GET",
+            path: "/api/paintings",
+            who: "adult",
+            run: async (c, adult) =>
+                json(
+                    200,
+                    await listPaintings(
+                        adult,
+                        c.url.searchParams.get("kid_id"),
+                        c.url.searchParams.get("before"),
+                    ),
+                ),
+        },
+        {
+            method: "GET",
+            path: "/api/paintings/:id",
+            who: "adult",
+            run: async (c, adult) => json(200, await loadPainting(adult, c.params.id)),
+        },
+        {
+            method: "POST",
+            path: "/api/paintings/save",
+            who: "adult",
+            run: async (c, adult) => json(200, await savePainting(adult, c.body)),
+        },
+        {
+            method: "POST",
+            path: "/api/paintings/delete",
+            who: "adult",
+            run: async (c, adult) =>
+                json(
+                    200,
+                    await deletePainting(adult, field(c.body, "id"), field(c.body, "revision")),
+                ),
         },
         {
             method: "GET",

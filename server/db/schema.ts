@@ -20,6 +20,7 @@ import {
     uniqueIndex,
     uuid,
 } from "drizzle-orm/pg-core";
+import type { Picture } from "../../engine/painting";
 import type { AnyEventData, ContentKind, EventKind } from "../../engine/answer";
 
 /**
@@ -315,7 +316,69 @@ export const mailDeliveries = pgTable(
 ).enableRLS();
 export type MailDelivery = typeof mailDeliveries.$inferSelect;
 
+export const artworks = pgTable(
+    "artworks",
+    {
+        id: uuid("id").primaryKey(),
+        family_id: uuid("family_id")
+            .notNull()
+            .references(() => families.id, { onDelete: "cascade" }),
+        kid_id: uuid("kid_id"),
+        owner_user_id: uuid("owner_user_id").references(() => users.id, { onDelete: "cascade" }),
+        title: text("title").notNull(),
+        document: jsonb("document").$type<Picture>().notNull(),
+        thumbnail: text("thumbnail").notNull(),
+        revision: integer("revision").notNull(),
+        created_at: text("created_at").notNull(),
+        updated_at: text("updated_at").notNull(),
+        updated_by: uuid("updated_by")
+            .notNull()
+            .references(() => users.id),
+        deleted_at: text("deleted_at"),
+    },
+    (t) => [
+        unique("artworks_family_id_key").on(t.family_id, t.id),
+        foreignKey({
+            columns: [t.family_id, t.kid_id],
+            foreignColumns: [kids.family_id, kids.id],
+        }).onDelete("cascade"),
+        check("artworks_owner", sql`(${t.kid_id} is null) <> (${t.owner_user_id} is null)`),
+        check("artworks_revision", sql`${t.revision} > 0`),
+        index("artworks_gallery_idx").on(t.family_id, t.kid_id, t.owner_user_id, t.updated_at),
+    ],
+).enableRLS();
+export type Artwork = typeof artworks.$inferSelect;
+export const paintingSaves = pgTable(
+    "painting_saves",
+    {
+        id: uuid("id").primaryKey(),
+        family_id: uuid("family_id")
+            .notNull()
+            .references(() => families.id, { onDelete: "cascade" }),
+        artwork_id: uuid("artwork_id").notNull(),
+        request_hash: text("request_hash").notNull(),
+        document: jsonb("document").$type<Picture>().notNull(),
+        thumbnail: text("thumbnail").notNull(),
+        revision: integer("revision").notNull(),
+        conflict: integer("conflict").notNull(),
+        saved_at: text("saved_at").notNull(),
+        user_id: uuid("user_id")
+            .notNull()
+            .references(() => users.id),
+    },
+    (t) => [
+        foreignKey({
+            columns: [t.family_id, t.artwork_id],
+            foreignColumns: [artworks.family_id, artworks.id],
+        }).onDelete("cascade"),
+    ],
+).enableRLS();
+
+export type PaintingReceipt = typeof paintingSaves.$inferSelect;
+
 export const schema = {
+    artworks,
+    paintingSaves,
     families,
     users,
     kids,
@@ -329,6 +392,8 @@ export const schema = {
 
 /** The table names, in an order a truncate can use. */
 export const TABLES = [
+    "painting_saves",
+    "artworks",
     "mail_deliveries",
     "mail_preferences",
     "events",
@@ -339,3 +404,33 @@ export const TABLES = [
     "users",
     "families",
 ] as const;
+
+export interface PaintingScope {
+    kid_id: string | null;
+}
+export type ArtworkSummary = Pick<
+    Artwork,
+    | "id"
+    | "kid_id"
+    | "owner_user_id"
+    | "title"
+    | "thumbnail"
+    | "revision"
+    | "created_at"
+    | "updated_at"
+    | "updated_by"
+>;
+export interface PaintingSave {
+    scope: PaintingScope;
+    document: Picture;
+    expected_revision: number;
+    operation_id: string;
+    thumbnail: string;
+}
+export interface PaintingLoaded {
+    artwork: ArtworkSummary;
+    document: Picture;
+}
+export interface PaintingSaved extends PaintingLoaded {
+    conflict: boolean;
+}
