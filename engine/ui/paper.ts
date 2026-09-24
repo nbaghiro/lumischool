@@ -113,6 +113,8 @@ export function nearPaper<P extends { height: number; dispose(): void }>(o: {
 /** One speculative job, with a second slot reserved for navigation past a slow background read. */
 export function preparedPaper<P extends { dispose(): void }>(
     limit = 6,
+    weight: (paper: P) => number = () => 1,
+    budget = limit,
 ): {
     read(key: string, draw: () => Promise<P | null>, take?: boolean): Promise<P | null>;
     keep(keys: readonly string[]): void;
@@ -160,7 +162,10 @@ export function preparedPaper<P extends { dispose(): void }>(
                 if (available.get(job.key) === job) available.delete(job.key);
             }
             const ready = [...jobs].filter((j) => j.paper && !j.take);
-            while (ready.length > limit) {
+            while (
+                ready.length > limit ||
+                ready.reduce((sum, item) => sum + (item.paper ? weight(item.paper) : 0), 0) > budget
+            ) {
                 const old = ready.shift();
                 if (old) drop(old);
             }

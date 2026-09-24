@@ -15,7 +15,11 @@ export function readingShelf(read: (world: string) => ReadingSource | null): {
 } {
     const sources = new Map<string, ReadingSource>();
     const originals = new Map<string, ReadingSource>();
-    const paper = preparedPaper<Measured>();
+    const paper = preparedPaper<Measured>(
+        6,
+        (sheet) => sheet.el.querySelectorAll("*").length + 1,
+        6000,
+    );
     let measure: HTMLElement | undefined;
     let stopped = false;
     let warming = 0;

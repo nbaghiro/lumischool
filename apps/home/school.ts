@@ -3,6 +3,7 @@
 // and a lesson's sheet as written. The map screen (map.tsx) and the overlay a lesson page opens
 // (engine/ui/overlay.tsx) both read it, and neither records anything.
 
+import { reads } from "../../engine/ui/reads";
 import type { Declared } from "../../engine/motion/world";
 import type { LessonFacts, Level, PackLesson } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
@@ -83,16 +84,18 @@ export async function schoolOf(pack: PackView, still: boolean): Promise<School> 
 }
 
 /** The school read once per pack, for the looks a page opens over itself, since the drawings and the map are the same each time. */
-const schools = new Map<string, Promise<School>>();
+const schools = new WeakMap<PackView, Map<boolean, Promise<School>>>();
 export function schoolOnce(pack: PackView, still: boolean): Promise<School> {
-    let had = schools.get(pack.pack);
+    let modes = schools.get(pack);
+    if (!modes) schools.set(pack, (modes = new Map<boolean, Promise<School>>()));
+    let had = modes.get(still);
     if (!had) {
-        had = schoolOf(pack, still);
-        schools.set(pack.pack, had);
-        void had.catch(() => {
-            // Do not cache a rejected build forever after a transient drawing/chunk failure.
-            if (schools.get(pack.pack) === had) schools.delete(pack.pack);
+        const owner = modes;
+        had = schoolOf(pack, still).catch((error: unknown) => {
+            owner.delete(still);
+            throw error;
         });
+        modes.set(still, had);
     }
     return had;
 }
@@ -143,29 +146,18 @@ export const worldOfLesson = (s: School, lesson: string): string | null =>
     whereIs(s.corpus, lesson)?.world ?? null;
 
 /** A lesson's file from the pack, kept once read, so paper that comes near again is not fetched twice. */
-const lessons = new Map<string, Promise<PackLesson | null>>();
+const lessons = new WeakMap<School, ReturnType<typeof reads<PackLesson>>>();
 export function lessonOf(s: School, id: string): Promise<PackLesson | null> {
-    const key = `${s.pack.pack}|${id}`;
-    let had = lessons.get(key);
-    if (!had) {
-        const facts = s.pack.index.lessons.find((l) => l.id === id);
-        had = facts
-            ? api
-                  .packLesson(s.pack.pack, facts.file)
-                  .then((l) => {
-                      if (!("error" in l)) return l;
-                      // a read that failed is asked for again next time, not remembered as no lesson
-                      lessons.delete(key);
-                      return null;
-                  })
-                  .catch(() => {
-                      lessons.delete(key);
-                      return null;
-                  })
-            : Promise.resolve(null);
-        lessons.set(key, had);
-    }
-    return had;
+    let cache = lessons.get(s);
+    if (!cache) lessons.set(s, (cache = reads((lesson) => JSON.stringify(lesson).length * 2)));
+    return cache
+        .read(id, async () => {
+            const facts = s.pack.index.lessons.find((lesson) => lesson.id === id);
+            if (!facts) return null;
+            const result = await api.packLesson(s.pack.pack, facts.file);
+            return "error" in result ? null : result;
+        })
+        .catch(() => null);
 }
 
 /** The drawer of a pack's scenes, with the drawings the scenes given name loaded first. */

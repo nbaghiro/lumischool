@@ -203,3 +203,27 @@ test("disposing preparation releases both claimed pending draws when they arrive
     await d.land("b");
     assert.ok(d.made.every((p) => p.gone));
 });
+
+test("weighted preparation drops optional heavy sheets but always admits a foreground lesson", async () => {
+    const shelf = preparedPaper<Fake>(6, (paper) => paper.height, 100);
+    const make = (lesson: string, height: number): Fake => ({
+        lesson,
+        height,
+        gone: false,
+        dispose() {
+            this.gone = true;
+        },
+    });
+    const a = make("a", 60);
+    const b = make("b", 60);
+    await shelf.read("a", async () => a);
+    await shelf.read("b", async () => b);
+    assert.equal(a.gone, true);
+    assert.equal(b.gone, false);
+    const required = make("required", 1000);
+    assert.equal(await shelf.read("required", async () => required, true), required);
+    shelf.dispose();
+    assert.equal(b.gone, true);
+    assert.equal(required.gone, false);
+    required.dispose();
+});

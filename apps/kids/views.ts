@@ -1,6 +1,7 @@
 // What a child's page is worked out from: their record and the family's pack, read once when the
 // page opens, and the views drawn from them (school/worlds/view.ts) with the child's limits.
 
+import { reads } from "../../engine/ui/reads";
 import type { Declared } from "../../engine/motion/world";
 import type { PackLesson } from "../../engine/pack";
 import type { MapView, WorldView } from "../../engine/space";
@@ -36,9 +37,7 @@ export interface Loaded {
     record: KidRecord;
     pack: PackView;
     /** Today's lessons, fetched ahead as the page opens so that going in and a short drop both find them. */
-    lessons: Map<string, PackLesson>;
-    /** In-flight lesson reads shared by the opening map and the roll. */
-    lessonReads: Map<string, Promise<PackLesson | null>>;
+    lessons: ReturnType<typeof reads<PackLesson>>;
     corpus: Corpus;
     choice: WorldChoice;
     worldOf: (id: string) => Applied;
@@ -79,8 +78,7 @@ export async function loadChild(kid: Kid, still: boolean): Promise<Loaded | null
         kid,
         record,
         pack,
-        lessons: new Map(),
-        lessonReads: new Map(),
+        lessons: reads((lesson) => JSON.stringify(lesson).length * 2),
         corpus,
         choice,
         worldOf,
@@ -92,13 +90,12 @@ export async function loadChild(kid: Kid, still: boolean): Promise<Loaded | null
         since,
     };
     const refs = refsOf(WORLDS.map((world) => world.id));
-    const [shelf, today] = await Promise.all([
+    const [shelf] = await Promise.all([
         loadDrawings(refs),
         fetchLessons(loaded, todayOf(loaded)?.lessons ?? []),
     ]);
     loaded.size = sizeOn(shelf);
     loaded.declared = declaredOf;
-    for (const lesson of today) loaded.lessons.set(lesson.id, lesson);
     return loaded;
 }
 
@@ -112,8 +109,7 @@ export async function reloadChild(c: Loaded): Promise<Loaded | null> {
     const record = await client.read(c.kid.id);
     if ("error" in record) return null;
     const next: Loaded = { ...c, record };
-    for (const lesson of await fetchLessons(next, todayOf(next)?.lessons ?? []))
-        next.lessons.set(lesson.id, lesson);
+    await fetchLessons(next, todayOf(next)?.lessons ?? []);
     return next;
 }
 
@@ -131,27 +127,16 @@ const sent = (): Promise<void> =>
 /** The lessons named, from the pack, leaving out any whose file cannot be read just now. */
 export async function fetchLessons(c: Loaded, ids: readonly string[]): Promise<PackLesson[]> {
     const read = await Promise.all(
-        ids.map(async (id) => {
-            const had = c.lessons.get(id);
-            if (had) return had;
-            const facts = c.pack.index.lessons.find((l) => l.id === id);
-            if (!facts) return null;
-            let pending = c.lessonReads.get(id);
-            if (!pending) {
-                pending = client
-                    .lesson(c.kid.id, c.pack.pack, facts.file)
-                    .then((lesson) => ("error" in lesson ? null : lesson))
-                    .catch(() => null)
-                    .then((lesson) => {
-                        if (!lesson) c.lessonReads.delete(id);
-                        return lesson;
-                    });
-                c.lessonReads.set(id, pending);
-            }
-            const lesson = await pending;
-            if (lesson) c.lessons.set(id, lesson);
-            return lesson;
-        }),
+        ids.map((id) =>
+            c.lessons
+                .read(id, async () => {
+                    const facts = c.pack.index.lessons.find((lesson) => lesson.id === id);
+                    if (!facts) return null;
+                    const lesson = await client.lesson(c.kid.id, c.pack.pack, facts.file);
+                    return "error" in lesson ? null : lesson;
+                })
+                .catch(() => null),
+        ),
     );
     return read.filter((l): l is PackLesson => l !== null);
 }

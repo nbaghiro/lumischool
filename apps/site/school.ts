@@ -4,6 +4,7 @@
 // with the same function the build used (tools/site-sample.ts), so the pictures and the words agree;
 // and a lesson's file is read as a picture asks for it.
 
+import { reads } from "../../engine/ui/reads";
 import { readIndex, readLesson, type PackIndex, type PackLesson } from "../../engine/pack";
 import { idle, still } from "../../engine/ui/art";
 import { declaredOf, loadDrawings } from "../../engine/ui/drawings";
@@ -82,29 +83,19 @@ export function schoolOf(urgent = false): Promise<School> {
     return school;
 }
 
-const lessons = new Map<string, Promise<PackLesson | null>>();
+const lessons = new WeakMap<School, ReturnType<typeof reads<PackLesson>>>();
 
-/** A lesson's file from the visitor's pack, kept once read, so a sheet drawn again is not fetched twice. */
 export function lessonOf(s: School, id: string): Promise<PackLesson | null> {
-    const key = `${s.data.pack}|${id}`;
-    let had = lessons.get(key);
-    if (!had) {
-        const facts = s.index.lessons.find((l) => l.id === id);
-        had = facts
-            ? fetch(`${s.data.pack}/${facts.file}`)
-                  .then(async (r) => {
-                      if (!r.ok) return null;
-                      const l = readLesson(await r.json());
-                      return l.ok ? l.lesson : null;
-                  })
-                  .catch(() => null)
-                  .then((l) => {
-                      // a read that failed is asked for again next time, not remembered as no lesson
-                      if (l === null) lessons.delete(key);
-                      return l;
-                  })
-            : Promise.resolve(null);
-        lessons.set(key, had);
-    }
-    return had;
+    let cache = lessons.get(s);
+    if (!cache) lessons.set(s, (cache = reads((lesson) => JSON.stringify(lesson).length * 2)));
+    return cache
+        .read(id, async () => {
+            const facts = s.index.lessons.find((lesson) => lesson.id === id);
+            if (!facts) return null;
+            const response = await fetch(`${s.data.pack}/${facts.file}`);
+            if (!response.ok) return null;
+            const parsed = readLesson(await response.json());
+            return parsed.ok ? parsed.lesson : null;
+        })
+        .catch(() => null);
 }
