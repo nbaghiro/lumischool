@@ -21,7 +21,7 @@ import {
     type MapAim,
     type Snapshot,
 } from "./snapshot";
-import { whenNear } from "./viewport";
+import { whileNear } from "./viewport";
 
 export type { MapAim };
 export { OPENING };
@@ -72,6 +72,7 @@ export function MapBackdrop(props: {
     let disposed = false;
     let snapshotOnly = false;
     let announced = false;
+    let generation = 0;
     const announce = (): void => {
         if (disposed || announced) return;
         announced = true;
@@ -116,14 +117,21 @@ export function MapBackdrop(props: {
         onCleanup(() => watch.disconnect());
         if (snapshotOnly) return;
         onCleanup(
-            whenNear(box, () => {
-                // a map whose modules the server no longer has loads the page again, once, rather
-                // than leaving the snapshot standing
-                void onDemand(props.ground).then(async (ground) => {
-                    // the drawings the screen's own cards wait for go first
-                    await idle();
-                    if (!disposed) setLive(ground);
-                });
+            whileNear(box, (near) => {
+                const current = ++generation;
+                if (!near) {
+                    announce();
+                    frame();
+                    setDrawn(false);
+                    setLive(null);
+                    return;
+                }
+                void onDemand(props.ground)
+                    .then(async (ground) => {
+                        await idle();
+                        if (!disposed && generation === current) setLive(ground);
+                    })
+                    .catch(() => announce());
             }),
         );
     });
@@ -180,7 +188,7 @@ export function MapBackdrop(props: {
                             announce();
                             setTimeout(
                                 () => {
-                                    if (!disposed) setPicture(null);
+                                    if (!disposed && drawn()) setPicture(null);
                                 },
                                 still() ? 0 : FADE + 100,
                             );

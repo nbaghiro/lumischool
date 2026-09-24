@@ -17,6 +17,31 @@ export function whenNear(el: Element, then: () => void, margin = "100% 0px"): ()
     return () => io.disconnect();
 }
 
+/** A reversible scene lifetime with a small prewarm margin, paused while the tab is hidden. */
+export function whileNear(el: Element, change: (near: boolean) => void): () => void {
+    let near = false;
+    let active: boolean | undefined;
+    const update = (): void => {
+        const next = near && !document.hidden;
+        if (next === active) return;
+        active = next;
+        change(next);
+    };
+    const io = new IntersectionObserver(
+        (entries) => {
+            near = entries.some((entry) => entry.isIntersecting);
+            update();
+        },
+        { rootMargin: "240px 0px" },
+    );
+    io.observe(el);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+        io.disconnect();
+        document.removeEventListener("visibilitychange", update);
+    };
+}
+
 /**
  * A box a picture is drawn into the first time it comes within `margin` of the window. The box is
  * sized by its class before anything is drawn, so a picture arriving never moves the page. It is

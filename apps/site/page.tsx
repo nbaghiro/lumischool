@@ -22,7 +22,7 @@ import { MapBackdrop, OPENING, type Ground } from "../../engine/ui/backdrop";
 import { atFrom, hashOf, type OverlayAt } from "../../engine/ui/hash";
 import { SITE } from "../../engine/ui/snapshots/site";
 import { Mark } from "../../engine/ui/mark";
-import { matches, Near, scrolledPast, whenNear } from "../../engine/ui/viewport";
+import { matches, Near, scrolledPast, whileNear } from "../../engine/ui/viewport";
 import type { Sample } from "../../school/worlds/sample";
 import type { Roll, SamplePicture } from "./sample";
 
@@ -36,10 +36,20 @@ const opening = async (): Promise<Ground> => (await import("./ground")).ground()
  */
 let data: Promise<typeof import("./data")> | null = null;
 const siteData = (): Promise<typeof import("./data")> =>
-    (data ??= idle().then(() => onDemand(() => import("./data"))));
+    (data ??= idle()
+        .then(() => onDemand(() => import("./data")))
+        .catch((error: unknown) => {
+            data = null;
+            throw error;
+        }));
 let drawn: Promise<typeof import("./sample")> | null = null;
 const pictures = (): Promise<typeof import("./sample")> =>
-    (drawn ??= siteData().then(() => onDemand(() => import("./sample"))));
+    (drawn ??= siteData()
+        .then(() => onDemand(() => import("./sample")))
+        .catch((error: unknown) => {
+            drawn = null;
+            throw error;
+        }));
 
 // the look a visitor takes over the page, and the map, the worlds and the roll it draws, come with
 // the first See the map, not with the page
@@ -309,9 +319,31 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
     const [host, setHost] = createSignal<HTMLDivElement>();
     const [near, setNear] = createSignal(false);
     const narrow = matches("(max-width: 700px)");
+    let version = 0;
+    let owned: Roll | undefined;
+    createEffect(() => {
+        if (near()) return;
+        version++;
+        owned?.dispose();
+        owned = undefined;
+    });
+    onCleanup(() => {
+        version++;
+        owned?.dispose();
+    });
     const [roll] = createResource(
         () => (near() ? { host: host(), narrow: narrow() } : undefined),
-        async (o) => (o.host ? (await pictures()).roll(o.host, o.narrow) : undefined),
+        async (o) => {
+            const request = ++version;
+            const result = o.host ? await (await pictures()).roll(o.host, o.narrow) : undefined;
+            if (request !== version) {
+                result?.dispose();
+                return undefined;
+            }
+            owned?.dispose();
+            owned = result;
+            return result;
+        },
     );
     /** The frame's inner width, in px, once it has held still for a moment. */
     const [width, setWidth] = createSignal(0);
@@ -386,7 +418,7 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
     onMount(() => {
         const el = host();
         if (!el) return;
-        onCleanup(whenNear(el, () => setNear(true)));
+        onCleanup(whileNear(el, setNear));
         let settling = 0;
         const sized = new ResizeObserver(() => {
             clearTimeout(settling);
@@ -430,7 +462,7 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
                 aria-hidden="true"
                 inert
             >
-                <Show when={width() > 0 && roll()} keyed>
+                <Show when={near() && width() > 0 && roll()} keyed>
                     {(r) => (
                         <For each={[`${width()}:${scale()}`]}>
                             {() => (
@@ -470,16 +502,7 @@ function JourneyMap(props: {
     onMount(() => {
         const el = host();
         if (!el) return;
-        const io = new IntersectionObserver(
-            (seen) => {
-                if (!seen.some((e) => e.isIntersecting)) return;
-                io.disconnect();
-                setNear(true);
-            },
-            { rootMargin: "100% 0px" },
-        );
-        io.observe(el);
-        onCleanup(() => io.disconnect());
+        onCleanup(whileNear(el, setNear));
     });
     onMount(() => {
         let watching: IntersectionObserver | null = null;
@@ -507,7 +530,7 @@ function JourneyMap(props: {
     const stop = (): { view: MapView; at: number | "all" } | undefined => stops()?.[props.at];
     return (
         <div ref={setHost} class="site-window paper">
-            <Show when={stop()}>
+            <Show when={near() && stop()}>
                 {(st) => (
                     <Overworld
                         view={st().view}
@@ -547,12 +570,12 @@ function MapPicture(props: {
     });
     onMount(() => {
         const el = host();
-        if (el) onCleanup(whenNear(el, () => setNear(true)));
+        if (el) onCleanup(whileNear(el, setNear));
     });
     const vp = (): Size => ({ w: host()?.clientWidth || 1, h: host()?.clientHeight || 1 });
     return (
         <div ref={setHost} class={`${props.class} paper`} aria-hidden="true" inert>
-            <Show when={drawn()}>
+            <Show when={near() && drawn()}>
                 {(d) => (
                     <Overworld
                         view={d().view}

@@ -296,6 +296,7 @@ const sheetDate = (iso: string): string =>
     });
 
 export interface Roll {
+    dispose(): void;
     view: WorldView;
     sheets: (lesson: string) => HTMLElement | null;
 }
@@ -308,27 +309,47 @@ export async function roll(host: HTMLElement, narrow: boolean): Promise<Roll> {
     const s = await schoolOf();
     await document.fonts.ready;
     const built = new Map<string, HTMLElement>();
+    const owned: Measured[] = [];
     const heights = new Map<string, number>();
-    for (const day of s.child.rollDays())
-        for (const id of day.lessons) {
-            const m = await sheetOf(s, id, { narrow, measureIn: host, date: sheetDate(day.date) });
-            if (!m) continue;
-            built.set(id, m.el);
-            heights.set(id, m.height);
-        }
-    const view = worldViewOf({
-        journal: rollJournal(s.child, CHOICE),
-        choice: CHOICE,
-        corpus: s.corpus,
-        worldOf: s.worldOf,
-        topics: s.child.topics,
-        height: (id) => heights.get(id) ?? 900,
-        size: s.size,
-        narrow,
-        grown: false,
-        limits: siteWorld(2),
-    });
-    return { view, sheets: (id) => built.get(id) ?? null };
+    const dispose = (): void => {
+        for (const sheet of owned) sheet.dispose();
+        owned.length = 0;
+        built.clear();
+    };
+    try {
+        for (const day of s.child.rollDays())
+            for (const id of day.lessons) {
+                const m = await sheetOf(s, id, {
+                    narrow,
+                    measureIn: host,
+                    date: sheetDate(day.date),
+                });
+                if (!m) continue;
+                owned.push(m);
+                built.set(id, m.el);
+                heights.set(id, m.height);
+            }
+        const view = worldViewOf({
+            journal: rollJournal(s.child, CHOICE),
+            choice: CHOICE,
+            corpus: s.corpus,
+            worldOf: s.worldOf,
+            topics: s.child.topics,
+            height: (id) => heights.get(id) ?? 900,
+            size: s.size,
+            narrow,
+            grown: false,
+            limits: siteWorld(2),
+        });
+        return {
+            view,
+            sheets: (id) => built.get(id) ?? null,
+            dispose,
+        };
+    } catch (error) {
+        dispose();
+        throw error;
+    }
 }
 
 /**
