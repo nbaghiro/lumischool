@@ -1,4 +1,3 @@
-import { Icon } from "./icon";
 import { onMount, onCleanup, type JSX } from "solid-js";
 import type { Picture } from "../painting";
 import type { PaintingRepository } from "./painting-save";
@@ -26,9 +25,6 @@ export function PaintingWorkspace(props: {
         >
             <div id="workspace">
                 <header class="painting-header">
-                    <button id="back" aria-label="Open your pictures" title="Your pictures">
-                        <Icon name="pictures" />
-                    </button>
                     <input
                         id="title"
                         aria-label="Painting name"
@@ -37,11 +33,9 @@ export function PaintingWorkspace(props: {
                     />
                     <output id="save-state" hidden />
                     <button class="done" id="done">
-                        Done
+                        Save
                     </button>
-                    <button id="options" aria-label="Paper and options" title="Paper and options">
-                        •••
-                    </button>
+                    <button id="gallery">Gallery</button>
                 </header>
                 <div class="paper-area" id="paper-area">
                     <aside id="reference" hidden></aside>

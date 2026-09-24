@@ -35,6 +35,7 @@ export function mountPainting(
     let disposed = false;
     const autosave = paintingAutosave({
         repository: options.repository,
+        manual: true,
         initial: current,
         thumbnail: pictureThumbnail,
         status: (text) => {
@@ -54,12 +55,8 @@ export function mountPainting(
             : options.repository?.revision
               ? "Saved"
               : "A fresh sheet";
-        void autosave.flush();
     }
-    const retry = () => {
-        void autosave?.flush();
-    };
-    window.addEventListener("online", retry);
+
     titleInput.value = current.title;
     let state: EaselState | null = initialState;
     let ready = false,
@@ -332,6 +329,7 @@ export function mountPainting(
     }
     function showMaterials() {
         const host = show("Your materials");
+        button("Paper & download", showPaper, host).className = "library-back";
         const extras = document.createElement("div");
         extras.className = "library-extras";
         host.append(extras);
@@ -422,10 +420,29 @@ export function mountPainting(
             if (safe) options.onBack();
         });
     }
-    $("back").addEventListener("click", gallery);
-    $("done").addEventListener("click", gallery);
+    $("gallery").addEventListener("click", gallery);
+    $("done").addEventListener("click", async () => {
+        save();
+        const before = autosave.commits();
+        $("done").toggleAttribute("disabled", true);
+        try {
+            await autosave.flush();
+            if (autosave.saved() || autosave.commits() > before)
+                say("Picture saved to your gallery.");
+            else {
+                const host = show("Your picture is still here");
+                note(
+                    host,
+                    "We could not save to your gallery. Your draft stays on this device. Try Save again when you are connected.",
+                );
+                button("Keep painting", () => panel.close(), host).className = "primary";
+            }
+        } finally {
+            $("done").removeAttribute("disabled");
+        }
+    });
     titleInput.addEventListener("input", save);
-    $("options").addEventListener("click", () => {
+    function showPaper() {
         const host = show("Your paper");
         const row = document.createElement("div");
         row.className = "pattern-choices";
@@ -453,7 +470,7 @@ export function mountPainting(
             host,
             "Draw with a mouse, finger or pen. Undo: Ctrl/⌘ Z. Redo: Ctrl/⌘ Shift Z. On the paper, arrow keys move and Space starts or stops a line.",
         );
-    });
+    }
 
     function change(action: () => void) {
         undo.push(structuredClone(current));
@@ -1009,7 +1026,7 @@ export function mountPainting(
     return () => {
         save();
         disposed = true;
-        window.removeEventListener("online", retry);
+
         void autosave?.leave();
         observer.disconnect();
         easel.dispose();

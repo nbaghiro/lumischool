@@ -25,6 +25,7 @@ export function paintingAutosave(options: {
     status: (text: string) => void;
     identity: (id: string) => void;
     delay?: number;
+    manual?: boolean;
 }) {
     const repository = options.repository;
     let revision = repository.revision;
@@ -35,6 +36,7 @@ export function paintingAutosave(options: {
     let local: Promise<void> = Promise.resolve();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let conflict = false;
+    let commits = 0;
     let locallySaved = false;
     let invalid = false;
     function persist(item: PaintingRecovery) {
@@ -68,6 +70,7 @@ export function paintingAutosave(options: {
             options.status("Device recovery unavailable. Keep this page open until saved."),
         );
         clearTimeout(timer);
+        if (options.manual) return;
         timer = setTimeout(() => {
             void flush();
         }, options.delay ?? 700);
@@ -84,6 +87,7 @@ export function paintingAutosave(options: {
                     item.operation_id,
                     item.revision,
                 );
+                commits++;
                 revision = result.revision;
                 id = result.document.id;
                 conflict ||= result.conflict;
@@ -109,6 +113,7 @@ export function paintingAutosave(options: {
                           ? "Saved as a separate copy. Both versions are safe."
                           : "Saved",
                 );
+                if (options.manual) return;
             } catch {
                 options.status(
                     locallySaved || repository.recovery
@@ -130,10 +135,13 @@ export function paintingAutosave(options: {
     return {
         change,
         flush,
+        saved: () => !pending && !invalid,
+        commits: () => commits,
         async leave() {
             clearTimeout(timer);
             await local.catch(() => {});
             if (invalid) return false;
+            if (options.manual) return !pending || locallySaved || !!repository.recovery;
             if (locallySaved) {
                 void flush();
                 return true;

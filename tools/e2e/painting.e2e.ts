@@ -11,7 +11,9 @@ for (const width of [1440, 390])
         await signInAs(page);
         await page.goto("/painting");
         await expect(page.locator(".ez-sheet")).toBeVisible();
-        await page.getByRole("button", { name: "Done", exact: true }).click();
+        await page.getByRole("button", { name: "Save", exact: true }).click();
+        await expect(page.locator("#done")).toBeEnabled();
+        await page.getByRole("button", { name: "Gallery", exact: true }).click();
         await expect(page.locator(".painting-gallery-card")).toHaveCount(0);
         await page.getByRole("button", { name: "New painting", exact: true }).click();
         const room = page.locator(".painting-room");
@@ -51,10 +53,13 @@ for (const width of [1440, 390])
         await room.getByRole("button", { name: "blue paint", exact: true }).last().click();
         await room.getByRole("button", { name: "Paint with this", exact: true }).click();
         await room.locator("#done").click();
+        await expect(room.locator("#done")).toBeEnabled();
+        await room.locator("#gallery").click();
         await expect(page.locator(".painting-gallery-card")).toHaveCount(1);
+        await page.waitForTimeout(300);
         await page.screenshot({ path: `/tmp/painting-shelf-${width}.png` });
         await page.reload();
-        await page.getByRole("button", { name: "Open your pictures", exact: true }).click();
+        await page.getByRole("button", { name: "Gallery", exact: true }).click();
         await page.locator(".painting-picture").first().click();
         await expect(room.locator("#title")).toHaveValue("Our first painting");
         await expect(room.locator(".idea-outlines")).toBeVisible();
@@ -70,14 +75,16 @@ for (const width of [1440, 390])
         expect(Math.abs(header.x - paper.x)).toBeLessThan(3);
         expect(Math.abs(header.width - paper.width)).toBeLessThan(3);
         expect(paper.width / paper.height).toBeCloseTo(width < 600 ? 2 / 3 : 3 / 2, 1);
+        await page.waitForTimeout(300);
         await page.screenshot({ path: `/tmp/painting-app-${width}.png` });
         await page.getByRole("link", { name: "Games", exact: true }).click();
         await expect(room).toHaveCount(0);
         await page.getByRole("link", { name: "Painting", exact: true }).click();
-        await page.getByRole("button", { name: "Open your pictures", exact: true }).click();
+        await page.getByRole("button", { name: "Gallery", exact: true }).click();
         await page.locator(".painting-picture").first().click();
         await expect(room.locator("#title")).toHaveValue("Our first painting");
-        await room.locator("#options").click();
+        await room.locator("#materials").click();
+        await room.getByRole("button", { name: "Paper & download", exact: true }).click();
         const downloaded = page.waitForEvent("download");
         await room.getByRole("button", { name: "Download picture", exact: true }).click();
         const file = await downloaded;
@@ -96,7 +103,7 @@ test("signed-out visitors cannot open the painting workspace", async ({ page }) 
 test("parent can manage a child gallery without changing their own pictures", async ({ page }) => {
     await signInAs(page);
     await page.goto("/painting");
-    await page.getByRole("button", { name: "Open your pictures", exact: true }).click();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
     await page.getByLabel("Whose pictures").selectOption({ label: "Rosie" });
     await page.getByRole("button", { name: "New painting", exact: true }).click();
     await page.getByLabel("Painting name", { exact: true }).fill("Rosie’s sky");
@@ -107,13 +114,17 @@ test("parent can manage a child gallery without changing their own pictures", as
     await page.mouse.down();
     await page.mouse.move(box.x + 140, box.y + 100, { steps: 8 });
     await page.mouse.up();
-    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator("#done")).toBeEnabled();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
     await expect(page.locator(".painting-gallery-card")).toHaveCount(1);
     await page.locator(".painting-picture").click();
     await expect(page.locator(".painting-gallery-dialog")).toBeVisible();
     await page.getByRole("button", { name: "Continue painting", exact: true }).click();
     await expect(page.getByLabel("Painting name", { exact: true })).toHaveValue("Rosie’s sky");
-    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator("#done")).toBeEnabled();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
     await page.locator(".painting-picture-menu summary").click();
     await page.getByRole("button", { name: "Make a copy", exact: true }).click();
     await expect(page.locator(".painting-gallery-card")).toHaveCount(2);
@@ -126,7 +137,7 @@ test("parent can manage a child gallery without changing their own pictures", as
     await expect(page.locator(".painting-gallery-card")).toHaveCount(1);
 });
 
-test("offline painting survives reload and syncs when reopened", async ({ page }) => {
+test("offline painting survives reload and saves only on request", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await signInAs(page);
     await page.goto("/painting");
@@ -138,17 +149,20 @@ test("offline painting survives reload and syncs when reopened", async ({ page }
     await page.mouse.down();
     await page.mouse.move(box.x + 130, box.y + 110, { steps: 8 });
     await page.mouse.up();
-    await expect(page.locator("#save-state")).toContainText("waiting to sync");
-    await expect(page.locator("#save-state")).toBeVisible();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Your picture is still here" })).toBeVisible();
     await page.reload();
-    await page.getByRole("button", { name: "Open your pictures", exact: true }).click();
-    await expect(page.locator(".painting-recovery")).toContainText("Offline sky");
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
+    await expect(page.locator(".painting-drafts")).toContainText("Offline sky");
+    await page.locator(".painting-drafts summary").click();
     await page.unroute("**/api/paintings/save");
-    await page.locator(".painting-recovery").click();
+    await page.locator(".painting-drafts button").click();
     await expect(page.getByLabel("Painting name", { exact: true })).toHaveValue("Offline sky");
-    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator("#done")).toBeEnabled();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
     await expect(page.locator(".painting-gallery-card")).toHaveCount(1);
-    await expect(page.locator(".painting-recovery")).toHaveCount(0);
+    await expect(page.locator(".painting-drafts")).toHaveCount(0);
 });
 
 test("two tabs preserve both versions of a painting", async ({ page }) => {
@@ -160,21 +174,43 @@ test("two tabs preserve both versions of a painting", async ({ page }) => {
     await page.mouse.down();
     await page.mouse.move(box.x + 130, box.y + 110, { steps: 8 });
     await page.mouse.up();
-    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator("#done")).toBeEnabled();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
     await expect(page.locator(".painting-gallery-card")).toHaveCount(1);
     await page.locator(".painting-picture").click();
     const other = await page.context().newPage();
     await other.goto("/painting");
-    await other.getByRole("button", { name: "Open your pictures", exact: true }).click();
+    await other.getByRole("button", { name: "Gallery", exact: true }).click();
     await other.locator(".painting-picture").click();
     await expect(other.locator(".ez-sheet")).toBeVisible();
     await page.getByLabel("Painting name", { exact: true }).fill("First tab sky");
-    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator("#done")).toBeEnabled();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
     await expect(page.locator(".painting-picture")).toContainText("First tab sky");
     await other.getByLabel("Painting name", { exact: true }).fill("Second tab sky");
-    await other.getByRole("button", { name: "Done", exact: true }).click();
+    await other.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(other.locator("#done")).toBeEnabled();
+    await other.getByRole("button", { name: "Gallery", exact: true }).click();
     await expect(other.locator(".painting-gallery-card")).toHaveCount(2);
     await expect(other.locator(".painting-gallery-grid")).toContainText("First tab sky");
     await expect(other.locator(".painting-gallery-grid")).toContainText("Second tab sky");
     await other.close();
+});
+
+test("drawing and opening Gallery do not publish a draft", async ({ page }) => {
+    await signInAs(page);
+    await page.goto("/painting");
+    await page.locator("#materials").click();
+    await page.getByRole("button", { name: /Colouring pictures/ }).click();
+    await page.getByRole("button", { name: /A butterfly/ }).click();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
+    await expect(page.locator(".painting-gallery-card")).toHaveCount(0);
+    await page.reload();
+    await expect(page.locator(".idea-outlines")).toBeVisible();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator("#done")).toBeEnabled();
+    await page.getByRole("button", { name: "Gallery", exact: true }).click();
+    await expect(page.locator(".painting-gallery-card")).toHaveCount(1);
 });

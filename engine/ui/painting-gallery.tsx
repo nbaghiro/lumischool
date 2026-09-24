@@ -1,4 +1,4 @@
-import { createResource, createSignal, onCleanup, For, Show, type JSX } from "solid-js";
+import { createResource, createSignal, onMount, onCleanup, For, Show, type JSX } from "solid-js";
 import type { Picture } from "../painting";
 import { isPicture } from "../painting";
 import type { ArtworkSummary } from "../../server/api";
@@ -220,12 +220,45 @@ export function PaintingGallery(props: {
                 "Your device pictures are now in this gallery. The originals are still on this device.",
             );
         });
-    openEditor(fresh(), 0);
+    onMount(async () => {
+        const drafts = await loadPaintingRecovery(props.identityKey, scope()).catch(() => []);
+        const latest = drafts.sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
+        if (latest) openEditor(latest.document, latest.revision, latest);
+        else openEditor(fresh(), 0);
+    });
+    const morePictures = () =>
+        run(async () => {
+            const current = visible();
+            if (!current?.next) return;
+            const result = await props.gateway.list(scope(), current.next);
+            if ("error" in result) throw new Error("list");
+            if (current.owner !== child()) return;
+            mutate({
+                ...current,
+                artworks: [...current.artworks, ...result.artworks],
+                next: result.next,
+            });
+        });
+    const watchMore = (element: HTMLButtonElement) => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) void morePictures();
+        });
+        observer.observe(element);
+        onCleanup(() => observer.disconnect());
+    };
     return (
         <>
             <Show when={shelf()}>
                 <Dialog onClose={() => setShelf(false)}>
-                    <section class="postcard painting-gallery" aria-label="Painting gallery">
+                    <section
+                        class="postcard painting-gallery"
+                        aria-label="Painting gallery"
+                        onScroll={(event) => {
+                            const node = event.currentTarget;
+                            if (node.scrollHeight - node.scrollTop - node.clientHeight < 200)
+                                void morePictures();
+                        }}
+                    >
                         <CloseX onClose={() => setShelf(false)} />
                         <header class="painting-gallery-heading">
                             <div>
@@ -269,28 +302,7 @@ export function PaintingGallery(props: {
                                 <span aria-hidden="true">＋</span>
                                 <strong>New painting</strong>
                             </button>
-                            <For each={visible()?.recovery}>
-                                {(entry) => (
-                                    <button
-                                        class="painting-recovery"
-                                        onClick={() =>
-                                            openEditor(entry.document, entry.revision, entry)
-                                        }
-                                    >
-                                        <strong>{entry.document.title}</strong>
-                                        <span>Saved on this device</span>
-                                        <span>Continue painting</span>
-                                    </button>
-                                )}
-                            </For>
-                            <For
-                                each={visible()?.artworks.filter(
-                                    (artwork) =>
-                                        !visible()?.recovery.some(
-                                            (entry) => entry.document.id === artwork.id,
-                                        ),
-                                )}
-                            >
+                            <For each={visible()?.artworks}>
                                 {(artwork) => (
                                     <article class="painting-gallery-card">
                                         <button
@@ -388,25 +400,27 @@ export function PaintingGallery(props: {
                             <button
                                 disabled={busy()}
                                 class="painting-import"
-                                onClick={() =>
-                                    void run(async () => {
-                                        const current = visible();
-                                        if (!current?.next) return;
-                                        const result = await props.gateway.list(
-                                            scope(),
-                                            current.next,
-                                        );
-                                        if ("error" in result) throw new Error("list");
-                                        mutate({
-                                            ...current,
-                                            artworks: [...current.artworks, ...result.artworks],
-                                            next: result.next,
-                                        });
-                                    })
-                                }
+                                ref={watchMore}
+                                onClick={() => void morePictures()}
                             >
                                 More pictures
                             </button>
+                        </Show>
+                        <Show when={visible()?.recovery.length}>
+                            <details class="painting-drafts">
+                                <summary>Unfinished drafts on this device</summary>
+                                <For each={visible()?.recovery}>
+                                    {(entry) => (
+                                        <button
+                                            onClick={() =>
+                                                openEditor(entry.document, entry.revision, entry)
+                                            }
+                                        >
+                                            {entry.document.title} · Continue drawing
+                                        </button>
+                                    )}
+                                </For>
+                            </details>
                         </Show>
                         <Show when={localPictures().length}>
                             <button class="painting-import" onClick={() => setImporting(true)}>

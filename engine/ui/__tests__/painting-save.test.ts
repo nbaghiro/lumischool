@@ -18,7 +18,7 @@ const coloured = (p: Picture, colour = "#123abc"): Picture => ({
     activity: "colour",
     fills: { "0-0": colour },
 });
-function fixture(save: PaintingRepository["save"], recovery?: PaintingRecovery) {
+function fixture(save: PaintingRepository["save"], recovery?: PaintingRecovery, manual = false) {
     const stored = new Map<string, PaintingRecovery>();
     const statuses: string[] = [];
     const initial = recovery?.document ?? blank();
@@ -39,6 +39,7 @@ function fixture(save: PaintingRepository["save"], recovery?: PaintingRecovery) 
         status: (s) => statuses.push(s),
         identity: () => {},
         delay: 60000,
+        manual,
     });
     return { initial, queue, stored, statuses };
 }
@@ -164,4 +165,38 @@ test("leaving is refused if neither device recovery nor server save succeeds", a
     queue.change(coloured(initial));
     assert.equal(await queue.leave(), false);
     assert.match(status, /Not saved/);
+});
+
+test("manual gallery saving keeps drafts on leave and only publishes an explicit snapshot", async () => {
+    let release: () => void = () => {};
+    const waiting = new Promise<void>((resolve) => {
+        release = resolve;
+    });
+    const sent: Picture[] = [];
+    const f = fixture(
+        async (document) => {
+            sent.push(structuredClone(document));
+            if (sent.length === 1) await waiting;
+            return { document, revision: sent.length, conflict: false };
+        },
+        undefined,
+        true,
+    );
+    f.queue.change(coloured(f.initial));
+    assert.equal(await f.queue.leave(), true);
+    assert.equal(sent.length, 0);
+    assert.equal(f.stored.size, 1);
+    const saving = f.queue.flush();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    f.queue.change(coloured(f.initial, "#abcdef"));
+    release();
+    await saving;
+    assert.equal(sent.length, 1);
+    assert.equal(f.queue.saved(), false);
+    await f.queue.leave();
+    assert.equal(sent.length, 1);
+    await f.queue.flush();
+    assert.equal(sent.length, 2);
+    assert.equal(sent[1]?.fills["0-0"], "#abcdef");
+    assert.equal(f.queue.saved(), true);
 });

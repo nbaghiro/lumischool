@@ -5,6 +5,23 @@ The shared production workspace is available at `/painting`; lesson, map-entry a
 phases remain pending until the access policy is decided.
 Companion: [game-variations-plan.md](game-variations-plan.md), including shared-file ownership.
 
+## Saving update — 24 September 2026
+
+Gallery membership is explicitly opt-in. The canvas header exposes Save and Gallery. Save creates
+or updates the current picture; opening Gallery, leaving, reconnecting and restoring a draft do
+not publish edits. Marks made during a Save remain a local draft until the next explicit Save.
+The shared save coordinator keeps its automatic mode for other consumers; the production painting
+workspace uses manual mode. Existing server revision checks and conflict copies remain intact.
+
+IndexedDB still keeps unfinished work scoped to the account and picture owner. The most recent
+draft restores when the painting table opens; other drafts are in a separate collapsed section,
+not among saved gallery cards. Existing saved pictures are retained. The gallery is a responsive
+scrolling grid with incremental loading and a More pictures fallback. Parent owner selection and
+child-picture preview/edit permissions are unchanged. Paper settings and PNG download are in Materials.
+
+Validation: painting save coordinator unit tests and painting browser coverage for desktop and
+phone-sized layouts, explicit save, recovery, child ownership and concurrent editing.
+
 ## Product target
 
 One shared painting workspace reached from lessons and free painting, with one private child-owned
