@@ -17,6 +17,7 @@ import type { Pt } from "../../engine/space";
 import {
     aimKey,
     OPENING,
+    PHONE_OPENING,
     placeStill,
     stillFor,
     type Aimed,
@@ -542,9 +543,14 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
             build: { outDir: dist, emptyOutDir: true },
         });
         for (const f of FRAMINGS) {
-            const snapshot = SNAPSHOTS.find((s) => fileOf(s) === f.file);
-            if (!f.compare || !snapshot) continue;
+            if (!f.compare) continue;
             const c = f.compare;
+            const phoneOpening = f.sample && c.width <= 700;
+            const source = SNAPSHOTS.find(
+                (s) => fileOf(s) === (phoneOpening ? "site-wide" : f.file),
+            );
+            if (!source) continue;
+            const snapshot = phoneOpening ? { ...source, across: PHONE_OPENING.across } : source;
             const context = await browser.newContext({
                 viewport: { width: c.width, height: c.height },
                 deviceScaleFactor: f.scale,
@@ -617,7 +623,9 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                     { box: c.box, over: c.over },
                 );
                 if (!at) throw new Error(`${f.file}: ${c.path} has no ${c.box}`);
-                const aim = { ...f.aim, at: f.ats[0], across: f.across };
+                const aim = phoneOpening
+                    ? PHONE_OPENING
+                    : { ...f.aim, at: f.ats[0], across: f.across };
                 const placed = snapshotOnly
                     ? stillFor([snapshot], aim, at.box, null, at.over)?.at
                     : placeStill(snapshot, aim, at.box, null, at.over);
@@ -636,7 +644,7 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                     clip: { x: clip.left, y: clip.top, width: clip.width, height: clip.height },
                     animations: "disabled",
                 });
-                const still = readFileSync(join(OUT, `${f.file}.webp`)).toString("base64");
+                const still = readFileSync(join(OUT, `${fileOf(source)}.webp`)).toString("base64");
                 const diff = await page.evaluate(
                     async ({ live, still, placed, clip, box, scale }) => {
                         const load = async (src: string) => {

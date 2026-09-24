@@ -217,12 +217,13 @@ export async function drawSample(host: HTMLElement, p: SamplePicture): Promise<v
 }
 
 /** The sample child's map at each stop of the site's journey. */
-export async function stops(): Promise<ReturnType<typeof stopViews>> {
+export async function stops(quiet = still()): Promise<ReturnType<typeof stopViews>> {
     const s = await schoolOf();
+    const motionless = quiet || still();
     return stopViews(s.child, {
-        worldOf: s.worldOf,
+        worldOf: motionless ? s.stillOf : s.worldOf,
         size: s.size,
-        still: still(),
+        still: motionless,
         declared: s.declared,
     });
 }

@@ -20,6 +20,7 @@ import type { MapView, Size } from "../../engine/space";
 import { idle, onDemand } from "../../engine/ui/art";
 import { MapBackdrop, OPENING, type Ground } from "../../engine/ui/backdrop";
 import { atFrom, hashOf, type OverlayAt } from "../../engine/ui/hash";
+import { PHONE_OPENING } from "../../engine/ui/snapshot";
 import { SITE } from "../../engine/ui/snapshots/site";
 import { Mark } from "../../engine/ui/mark";
 import { matches, Near, scrolledPast, whileNear } from "../../engine/ui/viewport";
@@ -124,14 +125,17 @@ function Bar(): JSX.Element {
                                 <a class="site-in" href="/sign-in">
                                     Sign in
                                 </a>
-                                <a class="btn" href="/start">
+                                <a class="btn site-start" href="/start">
                                     Start a family
                                 </a>
                             </>
                         }
                     >
-                        <a class="btn" href="/">
-                            Open your family's page
+                        <a class="btn" href="/" aria-label="Open your family's page">
+                            <span class="site-family-wide">Open your family's page</span>
+                            <span class="site-family-narrow" aria-hidden="true">
+                                Your family
+                            </span>
                         </a>
                     </Show>
                 </div>
@@ -140,18 +144,22 @@ function Bar(): JSX.Element {
     );
 }
 
+const phoneStills = SITE.filter((snapshot) => snapshot.across === OPENING.wide.across).map(
+    (snapshot) => ({ ...snapshot, across: PHONE_OPENING.across }),
+);
+
 function Opening(props: { sample: Sample | undefined }): JSX.Element {
     const [sheet, setSheet] = createSignal<HTMLElement>();
-    // the phone's layout in site.css, where the sheet stands above the map rather than on it
+    // The phone leaves room for the harbour below the sheet.
     const narrow = matches("(max-width: 700px)");
     return (
         <section class="site-opening" id="top">
             <MapBackdrop
                 sample
                 class="site-map"
-                aim={narrow() ? OPENING.narrow : OPENING.wide}
+                aim={narrow() ? PHONE_OPENING : OPENING.wide}
                 ground={opening}
-                stills={SITE}
+                stills={narrow() ? phoneStills : SITE}
                 keepOff={() => {
                     const over = sheet();
                     return over ? [over] : [];
@@ -495,10 +503,11 @@ function JourneyMap(props: {
 }): JSX.Element {
     const [host, setHost] = createSignal<HTMLDivElement>();
     const [near, setNear] = createSignal(false);
-    const [stops] = createResource(near, async (on) =>
-        on ? (await pictures()).stops() : undefined,
+    const wide = matches("(min-width: 1081px)");
+    const [stops] = createResource(
+        () => ({ near: near(), quiet: !wide() }),
+        async ({ near, quiet }) => (near ? (await pictures()).stops(quiet) : undefined),
     );
-    const wide = matches("(min-width: 1080px)");
     onMount(() => {
         const el = host();
         if (!el) return;
@@ -520,7 +529,7 @@ function JourneyMap(props: {
             for (const stop of props.stops) watching.observe(stop);
         };
         watch();
-        const list = matchMedia("(min-width: 1080px)");
+        const list = matchMedia("(min-width: 1081px)");
         list.addEventListener("change", watch);
         onCleanup(() => {
             watching?.disconnect();
@@ -532,13 +541,31 @@ function JourneyMap(props: {
         <div ref={setHost} class="site-window paper">
             <Show when={near() && stop()}>
                 {(st) => (
-                    <Overworld
-                        view={st().view}
-                        focus={st().at}
-                        hud={false}
-                        class="site-journey-world"
-                        title="A sample child's map"
-                    />
+                    <Show
+                        when={!wide()}
+                        fallback={
+                            <Overworld
+                                view={st().view}
+                                focus={st().at}
+                                hud={false}
+                                class="site-journey-world"
+                                title="A sample child's map"
+                            />
+                        }
+                    >
+                        <Show when={st()} keyed>
+                            {(current) => (
+                                <Overworld
+                                    view={current.view}
+                                    focus={current.at}
+                                    still
+                                    hud={false}
+                                    class="site-journey-world"
+                                    title="A sample child's map"
+                                />
+                            )}
+                        </Show>
+                    </Show>
                 )}
             </Show>
         </div>

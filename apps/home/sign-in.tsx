@@ -80,7 +80,7 @@ export function SignIn(props: { start: boolean }): JSX.Element {
         return at === "choose" || at === "none" || props.start ? "meadow" : "harbour";
     };
     createEffect(() => {
-        if (!kids()) look({ foot: FOOT, place: place() });
+        if (!kids()) look({ auth: true, foot: FOOT, place: place() });
     });
     onMount(() => {
         setBar(document.querySelector<HTMLElement>(".page-bar") ?? undefined);

@@ -17,6 +17,9 @@ export const OPENING: Readonly<Record<"wide" | "narrow", MapAim>> = {
     narrow: { across: 4600 },
 };
 
+// The tall mobile opening uses a wider crop to keep the harbour visible below its card.
+export const PHONE_OPENING: MapAim = { across: 6000, at: { x: 0.5, y: 0.68 } };
+
 /** A rectangle in the map's own units. */
 export interface Area {
     x: number;

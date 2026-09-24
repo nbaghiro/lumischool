@@ -87,6 +87,8 @@ export function Overworld(props: {
      * the view says the child is.
      */
     focus?: number | "all" | "overview";
+    /** Draw a static scene for compact previews, regardless of the system motion preference. */
+    still?: boolean;
     /** The map takes the wheel to zoom, unless the page around it scrolls. */
     wheel?: boolean;
     /**
@@ -163,7 +165,7 @@ export function Overworld(props: {
     let requested = 0;
     let completed = 0;
     let model = "";
-    const quiet = still() || mapVariant === "no-motion";
+    const quiet = props.still === true || still() || mapVariant === "no-motion";
     const hud = (): boolean => props.hud !== false;
     const [focus, setFocus] = createSignal<number>(props.view.here ?? 0);
     /**

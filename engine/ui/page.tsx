@@ -38,6 +38,8 @@ import type { Failure } from "./wire";
 export type End = { kind: "gate"; open: () => void } | { kind: "none" };
 
 export interface Look {
+    /** Compact, lowered authentication cards on phones. */
+    auth: boolean;
     /** Where the logo goes: to the site, or nowhere in the children's view. */
     logo: "site" | "none";
     end: End;
@@ -55,6 +57,7 @@ export interface Look {
 }
 
 const DEFAULT: Look = {
+    auth: false,
     logo: "site",
     end: { kind: "none" },
     foot: [],
@@ -119,6 +122,11 @@ const clearOf = (cards: HTMLElement): DOMRect[] =>
         (r) => new DOMRect(r.left, r.top, r.right - r.left, r.bottom - r.top),
     );
 
+// Wider crops cover the full mobile auth page without enlarging the world to fill a tall card.
+const authStills = COUNTRY.filter((snapshot) => snapshot.across === OPENING.wide.across).map(
+    (snapshot) => ({ ...snapshot, across: 6000 }),
+);
+
 export function Page(props: {
     children: JSX.Element;
     /** The map behind the screens, the country with nobody on it, and the component that draws it, which the app loads once the map's box is near and the page idle. */
@@ -136,7 +144,7 @@ export function Page(props: {
     let cards: HTMLDivElement | undefined;
     return (
         <LookContext.Provider value={(l) => setLook({ ...DEFAULT, ...l })}>
-            <div class="page" classList={{ wide: look().wide }}>
+            <div class="page" classList={{ wide: look().wide, auth: look().auth }}>
                 <a class="page-skip" href="#main">
                     Skip to the main content
                 </a>
@@ -152,9 +160,22 @@ export function Page(props: {
                 <Show when={!look().stage || look().stageBackdrop}>
                     <MapBackdrop
                         class="page-ground"
-                        aim={aimAt(look().place, narrow(), look().centered)}
+                        aim={
+                            look().auth && narrow()
+                                ? { ...aimAt(look().place, true, false), across: 6000 }
+                                : aimAt(look().place, narrow(), look().centered)
+                        }
                         ground={props.ground}
-                        stills={COUNTRY}
+                        stills={look().auth && narrow() ? authStills : COUNTRY}
+                        band={() => {
+                            if (!look().auth || !narrow() || !cards) return null;
+                            return new DOMRect(
+                                0,
+                                cards.getBoundingClientRect().bottom,
+                                window.innerWidth,
+                                Math.min(380, Math.max(300, window.innerWidth * 0.84)),
+                            );
+                        }}
                         keepOff={() => (cards ? clearOf(cards) : [])}
                         fade={narrow() && !look().wide}
                     />
@@ -164,6 +185,7 @@ export function Page(props: {
                     tabindex={-1}
                     class="page-main"
                     classList={{
+                        auth: look().auth,
                         centered: look().centered,
                         stage: look().stage,
                         wide: look().wide,

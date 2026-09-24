@@ -180,6 +180,9 @@
     padding: 0 16px;
     font-size: 14.5px;
 }
+.site-family-narrow {
+    display: none;
+}
 .site-in {
     display: inline-flex;
     align-items: center;
@@ -287,27 +290,32 @@
         0 0 6px var(--paper),
         0 0 12px var(--paper);
 }
-/* On a phone the sheet comes first, taped over the top edge of the map, and the map below it is the
-   harbour and its bay. */
+/* The phone's map fills behind the sheet, with room below it for the harbour and its bay. */
 @media (max-width: 700px) {
     .site-opening {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto clamp(380px, 112vw, 480px) auto;
     }
     .site-over {
         position: relative;
-        order: -1;
-        padding-block: 16px 0;
-        margin-bottom: -26px;
+        grid-area: 1 / 1;
+        padding-block: 40px 0;
     }
     .site-sheet {
         max-width: none;
+        scale: 0.97;
+        transform-origin: top center;
         rotate: -0.4deg;
     }
     .site-map {
-        height: clamp(380px, 112vw, 480px);
+        position: absolute;
+        grid-area: 1 / 1 / 3 / 2;
+        inset: 0;
+        height: auto;
     }
     .site-cap {
+        grid-area: 3 / 1;
         position: relative;
         bottom: auto;
         min-height: calc(3 * 1.55em);
@@ -779,11 +787,30 @@ figure.site-fig figcaption {
 }
 @media (max-width: 700px) {
     .site-bar-in {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        gap: 12px;
         padding-block: 8px;
     }
     .site-ways {
-        flex-wrap: wrap;
+        flex: none;
+    }
+    .site-ways .site-start,
+    .site-family-wide {
+        display: none;
+    }
+    .site-family-narrow {
+        display: inline;
+    }
+    .site-in {
+        justify-content: center;
+        padding: 0 14px;
+        border: 1.5px solid var(--rule-firm);
+        border-radius: 12px;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .site-in:hover {
+        border-color: var(--ink);
     }
     .site-roll {
         height: 520px;

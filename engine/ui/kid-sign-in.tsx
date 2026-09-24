@@ -41,7 +41,7 @@ export function KidSignIn(): JSX.Element {
                       "Check your username and kids’ PIN, or ask a grown-up. After several tries, wait 15 minutes before trying again."),
         );
     };
-    createEffect(() => look({ logo: "none", foot: FOOT, place: "meadow" }));
+    createEffect(() => look({ auth: true, logo: "none", foot: FOOT, place: "meadow" }));
     return (
         <Postcard
             kicker="The children's view"
