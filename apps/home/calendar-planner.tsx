@@ -423,7 +423,10 @@ export function Calendar(): JSX.Element {
                     ),
             );
         return (
-            <div class="cp-week" style={{ "--days": String(days().length) }}>
+            <div
+                class="cp-week"
+                style={{ "--days": String(days().length), "--kids": String(kids().length) }}
+            >
                 <For each={days()}>
                     {(d) => (
                         <section
@@ -919,7 +922,7 @@ export function Calendar(): JSX.Element {
                 note: "",
                 removed: false,
             };
-            await save([draft(kid(), op)], `Added ${lesson.title}.`);
+            await save([draft(kid(), op)], "");
         };
         return (
             <Card

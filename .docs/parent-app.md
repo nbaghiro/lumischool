@@ -400,6 +400,11 @@ the year retains term dates, attendance and world choices. Subjects & pace shows
 subject progress and routine. Find lessons searches the real catalogue by grade and subject,
 with previews and additions to a chosen child and day.
 
+Week cells grow with their lessons, including uneven schedules across several children; the page
+scrolls normally instead of clipping cards or adding a scroll area inside each day. Month labels
+wrap inside their columns, and the year grid fits narrow screens. Adding a lesson closes the editor
+and shows the placement directly, without a second success banner.
+
 Parents can add multiple sessions without replacing existing lessons, including lessons from
 another grade or a subject outside the usual routine. Each placed session has its own identity,
 date, duration, note and order. Moving a sticker adds it to the destination without swapping away
@@ -418,7 +423,7 @@ World choices still use `Worlds` in `apps/home/plan.tsx` and the existing eligib
 Changes append `plan-changed` events through the existing parent-authorized API. `session` is a
 snapshot of one placement, while `routine` changes the recurring projection from its effective
 date. Both are scoped to one child. Batch changes share a timestamp so the history can undo the
-whole action. The immediate confirmation offers undo and redo; the history remains available
+whole action. Other edit confirmations offer undo and redo; the history remains available
 across reloads. Children consume the same fold, including additional subjects and practice.
 
 The fold lives in `school/family/family.ts` and `school/family/calendar.ts`; `engine/answer.ts`

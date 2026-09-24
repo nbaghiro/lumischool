@@ -46,6 +46,16 @@
     gap: 8px;
     min-width: 0;
 }
+@supports (grid-template-rows: subgrid) {
+    .cp-week {
+        grid-template-rows: auto repeat(var(--kids, 1), auto);
+    }
+    .cp-day {
+        display: grid;
+        grid-template-rows: subgrid;
+        grid-row: 1 / -1;
+    }
+}
 .cp-day .gc-dayhead {
     min-height: 66px;
 }
@@ -57,9 +67,17 @@
     background-color: color-mix(in srgb, var(--glow) 9%, var(--card));
 }
 .cp-cell {
-    flex: 1;
+    flex: none;
     min-width: 0;
     gap: 14px;
+}
+.cp-cell > .gc-sticker {
+    flex: none;
+    min-width: 0;
+}
+.cp-cell :is(h3, .gc-sticker-title, .gc-sticker-sub),
+.cp-month-day :is(.gc-strips-name, .gc-month-note, .cp-load) {
+    overflow-wrap: anywhere;
 }
 .cp-cell .gc-sticker-in {
     width: 100%;
@@ -161,9 +179,17 @@
     background: color-mix(in srgb, var(--glow) 12%, transparent);
 }
 .cp-month-day .gc-month-in {
+    min-width: 0;
     min-height: 116px;
     gap: 8px;
     padding: 10px;
+}
+.cp-month-day .gc-strips {
+    min-width: 0;
+    max-width: 100%;
+}
+.cp .gc-terms {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 }
 .cp .gc-strips-name {
     width: 100%;
@@ -358,6 +384,10 @@
         flex-direction: column;
         gap: 20px;
     }
+    .cp-day {
+        display: flex;
+        flex-direction: column;
+    }
     .cp-cell {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -434,6 +464,11 @@
     .cp-week {
         display: grid;
         grid-template-columns: repeat(var(--days, 5), minmax(0, 1fr));
+    }
+    @supports (grid-template-rows: subgrid) {
+        .cp-day {
+            display: grid;
+        }
     }
     .cp-main {
         box-shadow: none;
