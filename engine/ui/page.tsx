@@ -48,6 +48,8 @@ export interface Look {
     place: Place;
     /** A screen that is a stage: it fills the page under the bar, with no map behind it and no cards. */
     stage: boolean;
+    /** Keep the shared map behind a stage, such as the painting table. */
+    stageBackdrop: boolean;
     /** Cards across the whole width, with the map under the first screen only. */
     wide: boolean;
 }
@@ -59,6 +61,7 @@ const DEFAULT: Look = {
     centered: false,
     place: "harbour",
     stage: false,
+    stageBackdrop: false,
     wide: false,
 };
 
@@ -146,7 +149,7 @@ export function Page(props: {
                         <End end={look().end} />
                     </div>
                 </header>
-                <Show when={!look().stage}>
+                <Show when={!look().stage || look().stageBackdrop}>
                     <MapBackdrop
                         class="page-ground"
                         aim={aimAt(look().place, narrow(), look().centered)}

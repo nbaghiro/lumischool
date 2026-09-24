@@ -23,6 +23,7 @@ const Calendar = lazy(() => import("./calendar-planner").then((m) => ({ default:
 const PrintDay = lazy(() => import("./day").then((m) => ({ default: m.PrintDay })));
 const Join = lazy(() => import("./join").then((m) => ({ default: m.Join })));
 const Account = lazy(() => import("./account").then((m) => ({ default: m.Account })));
+const Painting = lazy(() => import("./painting").then((m) => ({ default: m.Painting })));
 const Games = lazy(() => import("./games").then((m) => ({ default: m.Games })));
 const GrownBar = lazy(() => import("./bar").then((m) => ({ default: m.GrownBar })));
 const AddKidDialog = lazy(() => import("./bar").then((m) => ({ default: m.AddKidDialog })));
@@ -44,6 +45,7 @@ const SCREENS: Record<Screen, Component> = {
     join: Join,
     account: Account,
     games: Games,
+    painting: Painting,
     missing: Missing,
 };
 
@@ -62,6 +64,7 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
     join: Join.preload,
     account: Account.preload,
     games: Games.preload,
+    painting: Painting.preload,
     missing: Missing.preload,
 };
 
@@ -81,6 +84,7 @@ const CARRIES: Record<Screen, boolean> = {
     join: false,
     account: true,
     games: true,
+    painting: true,
     missing: true,
 };
 

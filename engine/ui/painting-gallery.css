@@ -1,0 +1,236 @@
+.painting-gallery-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+}
+.painting-gallery h1 {
+    margin: 4px 0;
+}
+.painting-gallery-heading label {
+    display: grid;
+    gap: 6px;
+    font-size: 14px;
+    background: var(--paper, white);
+    padding: 12px;
+    border-radius: 12px;
+}
+.painting-gallery-note {
+    margin: 12px 0 28px;
+}
+.painting-gallery-grid {
+    gap: 24px;
+}
+.painting-gallery-card,
+.painting-new,
+.painting-recovery {
+    position: relative;
+    min-width: 0;
+    background: white;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    box-shadow: 3px 4px 0 #dbe2ea;
+}
+.painting-new,
+.painting-recovery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 210px;
+}
+.painting-new > span {
+    font-size: 64px;
+    color: #304acb;
+    font-weight: 400;
+}
+.painting-picture {
+    width: 100%;
+    padding: 16px;
+    display: grid;
+    gap: 6px;
+    border: 0;
+    text-align: left;
+    background: none;
+}
+.painting-picture img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
+    background: #fafafa;
+    margin-bottom: 10px;
+}
+.painting-picture strong {
+    padding-right: 32px;
+}
+.painting-picture small {
+    color: #626877;
+    font-weight: normal;
+}
+.painting-picture-menu {
+    position: absolute;
+    right: 8px;
+    bottom: 14px;
+}
+.painting-picture-menu summary {
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    list-style: none;
+}
+.painting-picture-menu summary::-webkit-details-marker {
+    display: none;
+}
+.painting-picture-menu > div {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    width: 160px;
+    padding: 6px;
+    background: white;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    box-shadow: 0 5px 18px #23272f22;
+}
+.painting-picture-menu button {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    border: 0;
+    text-align: left;
+    background: white;
+}
+.painting-picture-menu button:hover {
+    background: #edf3f8;
+}
+.painting-gallery-notice {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+}
+.painting-import {
+    margin-top: 28px;
+    background: white;
+    min-height: 44px;
+}
+.painting-gallery-dialog {
+    padding: 32px;
+    width: 100%;
+    min-height: 0;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.painting-gallery-dialog > img {
+    width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+}
+.painting-gallery-dialog label {
+    display: grid;
+    gap: 8px;
+}
+.painting-gallery-dialog input {
+    min-height: 44px;
+}
+.painting-gallery-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.painting-gallery-actions button {
+    min-height: 44px;
+}
+@media (max-width: 600px) {
+    .painting-gallery-heading {
+        gap: 12px;
+    }
+    .painting-gallery-grid {
+        gap: 12px;
+    }
+    .painting-picture {
+        padding: 10px;
+    }
+    .painting-picture strong {
+        font-size: 16px;
+    }
+    .painting-picture small {
+        font-size: 11px;
+    }
+}
+.painting-gallery.postcard {
+    display: block;
+    width: 100%;
+    min-height: 0;
+    background: white;
+    max-width: none;
+    margin: 0;
+    padding: 28px;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+}
+.painting-gallery-heading h1 {
+    font-size: 28px;
+}
+.painting-gallery-heading {
+    padding-right: 32px;
+}
+.painting-gallery-grid {
+    display: flex;
+    overflow-x: auto;
+    padding: 4px 4px 12px;
+    scroll-snap-type: x proximity;
+}
+.painting-gallery-grid > * {
+    flex: 0 0 210px;
+    scroll-snap-align: start;
+}
+.painting-picture-menu > div {
+    bottom: 44px;
+}
+@media (max-width: 600px) {
+    .painting-gallery.postcard {
+        padding: 20px;
+    }
+    .painting-gallery-heading {
+        flex-direction: row;
+        align-items: center;
+    }
+    .painting-gallery-heading .eyebrow,
+    .painting-gallery-note {
+        display: none;
+    }
+    .painting-gallery-heading h1 {
+        font-size: 22px;
+    }
+    .painting-gallery-heading label {
+        max-width: 48%;
+        font-size: 12px;
+        padding: 0;
+    }
+    .painting-gallery-grid {
+        margin-top: 16px;
+    }
+}
+
+.dialog:has(> .painting-gallery) {
+    width: min(1032px, 100vw);
+}
+.painting-gallery.postcard,
+.painting-gallery-dialog {
+    border-top: 5px solid var(--sun, #ffda48);
+}
+.painting-gallery h1,
+.painting-gallery-dialog h2 {
+    font-family: var(--f-hand);
+}
+.painting-gallery .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--pen);
+}

@@ -49,6 +49,7 @@ const PLACES: readonly { href: string; long: string; short: string; at: (p: stri
             at: (p) => p === "/explore" || p.startsWith("/explore/"),
         },
         { href: "/map", long: "Map", short: "Map", at: (p) => p === "/map" },
+        { href: "/painting", long: "Painting", short: "Painting", at: (p) => p === "/painting" },
         { href: "/games", long: "Games", short: "Games", at: (p) => p === "/games" },
         {
             href: "/calendar",
@@ -142,7 +143,11 @@ export function GrownBar(): JSX.Element {
                         <b>{familyName(k().view.family.name)}</b>
                     </p>
                     <nav class="gb-places" aria-label="The grown-ups' places">
-                        <For each={PLACES}>
+                        <For
+                            each={PLACES.filter(
+                                (p) => p.href !== "/painting" || isParent(k().me.members),
+                            )}
+                        >
                             {(p) => (
                                 <a
                                     href={p.href}

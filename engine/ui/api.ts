@@ -1,3 +1,4 @@
+import { isStoredPicture } from "../painting";
 // The grown-ups' way to the API (.docs/api.md): who is signed in on this browser, the family, its
 // children and the children's views, and reading every answer back into the shapes the contract
 // names. Every reader returns null when nobody is signed in, without asking the network, so a page
@@ -690,4 +691,77 @@ export async function acceptInvitation(
         ...result,
         notificationFailed: a.ok && obj(a.body) && a.body.notificationFailed === true,
     };
+}
+
+function readArtwork(v: unknown): import("../../server/api").ArtworkSummary | null {
+    if (
+        !obj(v) ||
+        !str(v.id) ||
+        !strOrNull(v.kid_id) ||
+        !strOrNull(v.owner_user_id) ||
+        !str(v.title) ||
+        !str(v.thumbnail) ||
+        !num(v.revision) ||
+        !str(v.created_at) ||
+        !str(v.updated_at) ||
+        !str(v.updated_by)
+    )
+        return null;
+    return {
+        id: v.id,
+        kid_id: v.kid_id,
+        owner_user_id: v.owner_user_id,
+        title: v.title,
+        thumbnail: v.thumbnail,
+        revision: v.revision,
+        created_at: v.created_at,
+        updated_at: v.updated_at,
+        updated_by: v.updated_by,
+    };
+}
+export async function paintingList(
+    scope: import("../../server/api").PaintingScope,
+    before?: string,
+): Promise<
+    { artworks: import("../../server/api").ArtworkSummary[]; next: string | null } | Failure
+> {
+    const a = await call(
+        "GET",
+        `/api/paintings?${new URLSearchParams({ ...(scope.kid_id ? { kid_id: scope.kid_id } : {}), ...(before ? { before } : {}) })}`,
+    );
+    if (!a.ok) return refused(a.failure);
+    const artworks = obj(a.body) ? list(a.body.artworks, readArtwork) : null;
+    return artworks && obj(a.body) && strOrNull(a.body.next)
+        ? { artworks, next: a.body.next }
+        : unreadable(a.status);
+}
+export async function paintingLoad(
+    id: string,
+): Promise<import("../../server/api").PaintingLoaded | Failure> {
+    const a = await call("GET", `/api/paintings/${encodeURIComponent(id)}`);
+    if (!a.ok) return refused(a.failure);
+    const artwork = obj(a.body) ? readArtwork(a.body.artwork) : null;
+    return artwork && obj(a.body) && isStoredPicture(a.body.document)
+        ? { artwork, document: a.body.document }
+        : unreadable(a.status);
+}
+export async function paintingSave(
+    input: import("../../server/api").PaintingSave,
+): Promise<import("../../server/api").PaintingSaved | Failure> {
+    const a = await call("POST", "/api/paintings/save", input);
+    if (!a.ok) return refused(a.failure);
+    const artwork = obj(a.body) ? readArtwork(a.body.artwork) : null;
+    return artwork &&
+        obj(a.body) &&
+        isStoredPicture(a.body.document) &&
+        typeof a.body.conflict === "boolean"
+        ? { artwork, document: a.body.document, conflict: a.body.conflict }
+        : unreadable(a.status);
+}
+export async function paintingDelete(
+    id: string,
+    revision: number,
+): Promise<{ ok: true } | Failure> {
+    const a = await call("POST", "/api/paintings/delete", { id, revision });
+    return a.ok ? { ok: true } : refused(a.failure);
 }

@@ -10,6 +10,7 @@ type Pt = [number, number];
 export const ICONS = [
     "home",
     "journal",
+    "pictures",
     "map",
     "print",
     "settings",
@@ -35,6 +36,7 @@ export type IconName = (typeof ICONS)[number];
 export const ICON_LABEL: Record<IconName, string> = {
     home: "Home",
     journal: "Journal",
+    pictures: "Your pictures",
     map: "Map",
     print: "Print",
     settings: "Settings",
@@ -217,6 +219,13 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
             "ruler",
             line(c, W * 0.85),
         );
+    },
+    pictures: (c) => {
+        wash(c, rounded(8, 9, 27, 24, 2), "sky");
+        c.pen.path(c.g, "M5 27V5H29", "ruler", null, line(c));
+        c.pen.path(c.g, rounded(8, 9, 27, 24, 2), "ruler", null, line(c));
+        c.pen.path(c.g, "M10 29L18 21L23 26L28 20L33 27", "ruler", null, line(c));
+        c.pen.path(c.g, circle(26, 16, 2), "ruler", null, line(c));
     },
     journal: (c) => {
         wash(c, rounded(9.5, 5.5, 22, 29.5, 3), "sky");
