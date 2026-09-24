@@ -1374,7 +1374,7 @@ export function Calendar(): JSX.Element {
         } else move({ at: addDays(day(), n * 7) });
     };
     return (
-        <Show when={loaded.latest} fallback={<Waiting kicker="For grown-ups" title="Opening the calendar" />}>
+        <Show when={loaded.latest} fallback={<Waiting title="Opening the calendar" />}>
             <Show
                 when={got()}
                 fallback={

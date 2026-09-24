@@ -350,15 +350,18 @@ function GateTab(props: { open: () => void }): JSX.Element {
  * What a screen shows while it loads: nothing for a moment, since most loads are quicker than that,
  * and then a note that says what is being fetched.
  */
-export function Waiting(props: { kicker: string; title: string }): JSX.Element {
+export function Waiting(props: { title: string }): JSX.Element {
     const [shown, setShown] = createSignal(false);
     const timer = setTimeout(() => setShown(true), 400);
     onCleanup(() => clearTimeout(timer));
     return (
         <Show when={shown()}>
-            <Postcard note kicker={props.kicker} title={props.title} focus={false}>
-                <p class="note">One moment.</p>
-            </Postcard>
+            <output class="page-waiting" aria-live="polite">
+                <span class="page-waiting-label">
+                    <span class="page-waiting-spinner" aria-hidden="true" />
+                    {props.title}…
+                </span>
+            </output>
         </Show>
     );
 }

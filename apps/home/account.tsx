@@ -120,10 +120,7 @@ export function Account(): JSX.Element {
         scrollTo(0, 0);
     };
     return (
-        <Show
-            when={seen.latest}
-            fallback={<Waiting kicker="For grown-ups" title="Opening your account" />}
-        >
+        <Show when={seen.latest} fallback={<Waiting title="Opening your account" />}>
             <Switch>
                 <Match when={failed()}>
                     {(f) => (

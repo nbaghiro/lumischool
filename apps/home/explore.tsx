@@ -174,10 +174,7 @@ export function Explore(): JSX.Element {
         return p && "error" in p ? p : null;
     };
     return (
-        <Show
-            when={pack.latest}
-            fallback={<Waiting kicker="Explore" title="Opening every lesson" />}
-        >
+        <Show when={pack.latest} fallback={<Waiting title="Opening every lesson" />}>
             <Show when={failed()}>
                 {(f) => <NotLoaded failure={f()} again={() => void refetch()} />}
             </Show>
@@ -342,7 +339,7 @@ export function ExploreLesson(): JSX.Element {
         return loaded()?.index.lessons.find((l) => l.id === id) ?? null;
     };
     return (
-        <Show when={pack.latest} fallback={<Waiting kicker="Explore" title="Opening the lesson" />}>
+        <Show when={pack.latest} fallback={<Waiting title="Opening the lesson" />}>
             <Show when={failed()}>
                 {(f) => <NotLoaded failure={f()} again={() => void refetch()} />}
             </Show>

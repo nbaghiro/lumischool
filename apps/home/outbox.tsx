@@ -21,10 +21,7 @@ export function Outbox(): JSX.Element {
         return b && b !== "none" ? b : null;
     };
     return (
-        <Show
-            when={box.latest}
-            fallback={<Waiting kicker="On this computer only" title="Opening the outbox" />}
-        >
+        <Show when={box.latest} fallback={<Waiting title="Opening the outbox" />}>
             <Show
                 when={found()}
                 fallback={

@@ -113,10 +113,7 @@ export function Family(): JSX.Element {
         follow(untrack(search));
     });
     return (
-        <Show
-            when={seen.latest}
-            fallback={<Waiting kicker="For grown-ups" title="Opening your family" />}
-        >
+        <Show when={seen.latest} fallback={<Waiting title="Opening your family" />}>
             <Switch>
                 <Match when={failed()}>
                     {(f) => (

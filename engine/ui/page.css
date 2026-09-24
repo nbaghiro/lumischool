@@ -431,3 +431,44 @@ body {
         transition: none;
     }
 }
+
+/* Loading sits over the existing map without reserving a temporary card's space. */
+.page-waiting {
+    position: fixed;
+    inset: var(--bar-h) 0 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    pointer-events: none;
+}
+.page-waiting-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 100%;
+    padding: 12px 18px;
+    border-radius: 24px;
+    background: var(--card);
+    box-shadow: 0 2px 12px #23304412;
+    color: var(--ink-soft);
+    font: 16px/1.4 var(--f-read);
+}
+.page-waiting-spinner {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--grid);
+    border-top-color: var(--pen);
+    border-radius: 50%;
+    animation: page-waiting-turn 900ms linear infinite;
+}
+@keyframes page-waiting-turn {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .page-waiting-spinner {
+        animation: none;
+    }
+}

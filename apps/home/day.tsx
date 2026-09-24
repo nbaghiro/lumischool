@@ -110,10 +110,7 @@ export function PrintDay(): JSX.Element {
         return l && "error" in l ? l : null;
     };
     return (
-        <Show
-            when={loaded.latest}
-            fallback={<Waiting kicker="For grown-ups" title="Opening the day" />}
-        >
+        <Show when={loaded.latest} fallback={<Waiting title="Opening the day" />}>
             <Show when={failed()}>
                 {(f) => (
                     <Postcard note kicker="For grown-ups" title="The day did not load">

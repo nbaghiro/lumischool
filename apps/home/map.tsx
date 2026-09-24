@@ -171,7 +171,7 @@ export function GrownMap(): JSX.Element {
                     }}
                 </Match>
                 <Match when={school.loading}>
-                    <Waiting kicker="The map" title="Opening the map" />
+                    <Waiting title="Opening the map" />
                 </Match>
             </Switch>
         </div>
