@@ -14,6 +14,9 @@ import {
     type Camera,
     type Pt,
     type Overworld,
+    type Rect,
+    intersects,
+    visibleRect,
 } from "../space";
 import type { CanvasView } from "./view";
 import {
@@ -90,7 +93,19 @@ export function fly(o: FlyOptions): Flying {
         q.x <= bounds.x + bounds.w &&
         q.y >= bounds.y &&
         q.y <= bounds.y + bounds.h;
-    const fields = mapView.landings;
+    const clearance = Math.max(320, sizeOf("windsock").h * 2.2 + 60) + 120;
+    const fields = mapView.landings.map((field) => {
+        const note = o.view.world.querySelector<HTMLElement>(`.ow-gnote[data-i="${field.node}"]`);
+        if (!note) return field;
+        // Use layout units so the strip and its actual landing point stay clear at every zoom.
+        return {
+            ...field,
+            at: {
+                ...field.at,
+                y: Math.max(field.at.y, note.offsetTop + note.offsetHeight + clearance),
+            },
+        };
+    });
     const sky: Sky = {
         bounds,
         open,
@@ -133,6 +148,7 @@ export function fly(o: FlyOptions): Flying {
 
     const L = div("ow-fly");
     o.layer.append(L);
+    const scenery: { el: HTMLElement | SVGSVGElement; rect: Rect; shown: boolean }[] = [];
     const pen = new Pen(el("svg", {}), { seed: 9, t, paper: false, roughness: 1 });
     const place = (
         id: string,
@@ -155,6 +171,16 @@ export function fly(o: FlyOptions): Flying {
         a.style.transformOrigin = "50% 100%";
         a.style.transform = `scale(${k})`;
         L.append(a);
+        scenery.push({
+            el: a,
+            rect: {
+                x: at.x - sz.w * k,
+                y: at.y - sz.h * k * 1.5,
+                w: sz.w * k * 2,
+                h: sz.h * k * 2,
+            },
+            shown: true,
+        });
         return a;
     };
     for (const f of fields) {
@@ -214,6 +240,7 @@ export function fly(o: FlyOptions): Flying {
                 );
         }
         L.append(svg);
+        scenery.push({ el: svg, rect: r, shown: true });
         const w = sky.wind(f.at);
         place(
             "windsock",
@@ -231,6 +258,7 @@ export function fly(o: FlyOptions): Flying {
         const svg = el("svg", { viewBox: "-60 -60 120 120", "aria-hidden": "true" }, d);
         pen.polygon(svg, starPts(0, 0, 48, 20), "pencil", pen.fill("glow"), { strokeWidth: 5 });
         L.append(d);
+        scenery.push({ el: d, rect: { x: s.x - 80, y: s.y - 80, w: 160, h: 160 }, shown: true });
         return d;
     });
     const sights = sky.sights.map((s) =>
@@ -534,6 +562,14 @@ export function fly(o: FlyOptions): Flying {
     }
     function draw(dt: number): void {
         if (!on) return;
+        const seen = visibleRect(cam.c, { w: o.view.vp.w + 400, h: o.view.vp.h + 400 });
+        for (const piece of scenery) {
+            const shown = intersects(seen, piece.rect);
+            if (shown !== piece.shown) {
+                piece.el.style.display = shown ? "" : "none";
+                piece.shown = shown;
+            }
+        }
         note();
         const destination =
             landingNode === null
@@ -562,6 +598,9 @@ export function fly(o: FlyOptions): Flying {
             c.at.x += w.x * 0.35 * dt;
             c.at.y += w.y * 0.35 * dt;
             if (c.at.x > bounds.x + bounds.w + 1200) c.at.x = bounds.x - 1200;
+            const near = intersects(seen, { x: c.at.x - 1200, y: c.at.y - 1200, w: 2400, h: 2400 });
+            c.el.style.display = near ? "" : "none";
+            if (!near) continue;
             c.el.style.transform = `translate(${c.at.x}px, ${c.at.y}px) scale(${c.k})`;
             c.el.classList.toggle(
                 "near",

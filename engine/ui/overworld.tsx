@@ -1,3 +1,4 @@
+import { sceneWork } from "./scene-work";
 // The map of the worlds on a page, drawn from the view the page was given (engine/space.ts MapView):
 // a child's own map in the children's view, the sample child's on the site, and the map behind a
 // page's cards (backdrop.tsx). What the viewer may do comes with the view as its limits; the page
@@ -34,6 +35,7 @@ import { announce } from "./say";
 import type { CanvasView } from "./view";
 import { mapPainter } from "./painters";
 import type { Flying } from "./flight";
+import { mapEvent, mapVariant } from "./map-diagnostics";
 import { readTokens } from "./read-tokens";
 
 /** Where a page finds the map's places and buttons on the page, to write its own words beside them. */
@@ -69,7 +71,11 @@ function boundsOf(view: MapView): Rect {
 
 /** The overview fits every region; the initial frame remains close to the child. */
 const zoomLimits = (view: MapView, vp: { w: number; h: number }): { min: number; max: number } => ({
-    min: Math.min(0.028, (vp.w - 48) / view.layout.core.w, (vp.h - 48) / view.layout.core.h),
+    min: Math.min(
+        0.028,
+        Math.max(1, vp.w - 48) / view.layout.core.w,
+        Math.max(1, vp.h - 48) / view.layout.core.h,
+    ),
     max: 0.9,
 });
 
@@ -153,8 +159,11 @@ export function Overworld(props: {
     let riders: { rebuild(): void } | null = null;
     let rebuildRiders = false;
     /** Draws run one after another, so a view that changes while its first frame is painted in steps never paints over the next. */
-    let drawing: Promise<void> = Promise.resolve();
-    const quiet = still();
+    let drawing = false;
+    let requested = 0;
+    let completed = 0;
+    let model = "";
+    const quiet = still() || mapVariant === "no-motion";
     const hud = (): boolean => props.hud !== false;
     const [focus, setFocus] = createSignal<number>(props.view.here ?? 0);
     /**
@@ -167,6 +176,7 @@ export function Overworld(props: {
     const [at, setAt] = createSignal<"frame" | "all">("frame");
     const [card, setCard] = createSignal<MapPlace | null>(null);
     const [ready, setReady] = createSignal(false);
+    const [failed, setFailed] = createSignal(false);
 
     const place = (i: number): MapPlace | undefined => props.view.places[i];
     const grown = (): boolean => props.view.limits.travel === "everywhere";
@@ -263,17 +273,19 @@ export function Overworld(props: {
     /** Paint what the camera can see, a few milliseconds at a time, until it is all there. */
     function paintNear(): void {
         if (!view || brush) return;
-        const step = (): void => {
+        const step = (deadline: number): void => {
             brush = 0;
             if (!view) return;
             // Keep a wider release margin so crossing a tile edge does not repeatedly rebuild it.
-            const t0 = performance.now(),
-                margin = props.aim ? 160 : Math.min(256, Math.max(view.vp.w, view.vp.h) / 2),
+            const margin = props.aim ? 160 : Math.min(256, Math.max(view.vp.w, view.vp.h) / 2),
                 seen = view.visible(margin),
                 keep = view.visible(margin * 2),
                 z = view.cam.z;
             for (const p of pending) {
-                if (p.release && (!intersects(p.piece.rect, keep) || z < (p.piece.minZ ?? 0))) {
+                if (
+                    p.release &&
+                    (!intersects(p.piece.rect, keep) || z < (p.piece.minZ ?? 0) * 0.85)
+                ) {
                     p.release();
                     p.release = undefined;
                     p.done = false;
@@ -285,15 +297,25 @@ export function Overworld(props: {
                     (!p.piece.minZ || z >= p.piece.minZ) &&
                     intersects(p.piece.rect, seen),
             );
+            const distance = (rect: Rect): number =>
+                Math.hypot(
+                    rect.x + rect.w / 2 - (view?.cam.x ?? 0),
+                    rect.y + rect.h / 2 - (view?.cam.y ?? 0),
+                );
+            todo.sort(
+                (a, b) =>
+                    (b.piece.priority ?? 0) - (a.piece.priority ?? 0) ||
+                    distance(a.piece.rect) - distance(b.piece.rect),
+            );
             for (const p of todo) {
                 p.done = true;
                 p.release = p.piece.paint() ?? undefined;
-                if (performance.now() - t0 > 4) break;
+                if (performance.now() >= deadline) break;
             }
-            if (todo.some((p) => !p.done)) brush = window.setTimeout(step, 0);
+            if (todo.some((p) => !p.done)) brush = sceneWork.schedule(step);
             else if (!drawn && painted) firstFrame(painted);
         };
-        brush = window.setTimeout(step, 0);
+        brush = sceneWork.schedule(step);
     }
 
     /** The camera the page was last told about, so it hears once when the map moves away from it. */
@@ -412,21 +434,28 @@ export function Overworld(props: {
         });
     }
 
+    let styledZoom = NaN;
     function onFrame(cam: Camera): void {
         if (!view) return;
+        painted?.frame(cam, view.vp);
         moved(cam);
         setAt(cam.z <= everything(view).z * 1.4 ? "all" : "frame");
-        const s = view.world.style;
-        s.setProperty("--mz", String(cam.z));
-        s.setProperty("--miz", String(1 / cam.z));
-        s.setProperty("--iz", String(1 / cam.z));
-        s.setProperty("--mgrow", clamp(0.2 / cam.z, 1, 3.4).toFixed(3));
-        view.world.dataset.far = cam.z < 0.12 ? "1" : "";
-        // drawn back from the land toward the sea, where its banner and key are too small to read
-        // (overworld.css): more than three tenths out from the zoom the land fills the window at
-        view.world.dataset.sea = cam.z < frame(view).z * 0.7 ? "1" : "";
-        // the waves drift 22 units either way, which is less than a pixel this far out, so they rest there
-        view.world.classList.toggle("ow-calm", cam.z * 22 < 1);
+        // Inherited variables invalidate every drawing; panning must not rewrite them each frame.
+        const z = Math.round(cam.z * 10000) / 10000;
+        if (z !== styledZoom && z > 0) {
+            styledZoom = z;
+            const s = view.world.style;
+            s.setProperty("--mz", String(z));
+            s.setProperty("--miz", String(1 / z));
+            s.setProperty("--iz", String(1 / z));
+            s.setProperty("--mgrow", clamp(0.2 / z, 1, 3.4).toFixed(3));
+            view.world.dataset.far = z < 0.12 ? "1" : "";
+            // drawn back from the land toward the sea, where its banner and key are too small to read
+            // (overworld.css): more than three tenths out from the zoom the land fills the window at
+            view.world.dataset.sea = z < frame(view).z * 0.7 ? "1" : "";
+            // the waves drift 22 units either way, which is less than a pixel this far out, so they rest there
+            view.world.classList.toggle("ow-calm", z * 22 < 1);
+        }
         paintNear();
     }
 
@@ -608,6 +637,7 @@ export function Overworld(props: {
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
+                if (disposed || view !== v) return false;
                 const t = Math.min(time, tl.length);
                 v.set(cameraBetween(from, to, valueAt(tl, "dive", t)));
                 if (host) host.style.opacity = String(valueAt(tl, "fade", t));
@@ -632,13 +662,18 @@ export function Overworld(props: {
         let start: typeof import("./flight").fly;
         try {
             start = (await import("./flight")).fly;
+        } catch {
+            say("Flying could not load. Please try Fly again.");
+            return;
         } finally {
             loadingFlight = false;
+            queueMicrotask(() => void drain(v));
         }
         if (view !== v || painted !== p || busy) return;
         setCard(null);
         v.stop();
         p.token.classList.add("flying");
+        mapEvent(0, "flight-start");
         flying = start({
             view: v,
             layer: v.world,
@@ -649,7 +684,7 @@ export function Overworld(props: {
             zoom: () => nearPlace(v, from)?.z ?? v.cam.z,
             from,
             to: null,
-            still: quiet,
+            still: still(),
             say,
             landed: (i) => {
                 const n = nodeAt(props.view.layout, i);
@@ -660,8 +695,10 @@ export function Overworld(props: {
                 focusNode(i, true);
             },
             ended: () => {
+                mapEvent(0, "flight-stop");
                 flying = null;
                 p.token.classList.remove("flying");
+                void drain(v);
             },
         });
     }
@@ -767,38 +804,70 @@ export function Overworld(props: {
 
     /** Draw the view into the layer: the ground, the places, the ways and the guide, and wire its buttons. */
     function draw(v: CanvasView): void {
-        drawing = drawing.then(() => drawNow(v));
+        requested++;
+        mapEvent(0, "model-request", requested);
+        void drain(v);
     }
 
-    async function drawNow(v: CanvasView): Promise<void> {
-        flying?.stop();
-        for (const p of pending) p.release?.();
-        painted?.stop();
-        painted = undefined;
-        riders = null;
-        drawn = false;
-        v.world.replaceChildren();
-        v.world.classList.remove("ow");
-        pending = [];
-        // the painter's code comes with the first map a page draws, not with the page
+    async function drain(v: CanvasView): Promise<void> {
+        if (drawing || flying || loadingFlight || disposed) return;
+        drawing = true;
+        try {
+            while (completed !== requested && !disposed && !flying && !loadingFlight) {
+                const revision = requested;
+                const next = props.view;
+                const key = JSON.stringify(next);
+                if (key !== model && !(await drawNow(v, next, revision))) {
+                    if (flying || loadingFlight || disposed) break;
+                    continue;
+                }
+                if (revision === requested) model = key;
+                completed = revision;
+            }
+            setFailed(false);
+        } catch {
+            setFailed(true);
+        } finally {
+            drawing = false;
+        }
+    }
+
+    async function drawNow(v: CanvasView, next: MapView, revision: number): Promise<boolean> {
         const { paintMapView } = await mapPainter();
-        if (!host || v !== view) return;
+        if (!host || disposed || v !== view || revision !== requested) return false;
+        const replacement = document.createElement("div");
+        replacement.className = "world";
         const p = await paintMapView({
             host,
-            world: v.world,
-            view: props.view,
+            world: replacement,
+            view: next,
             still: quiet,
             pause: props.steps ? () => new Promise((done) => setTimeout(done, 0)) : undefined,
             play: props.play,
             riders: props.life,
             zoom: () => v.cam.z,
         });
-        if (v !== view) {
+        if (disposed || v !== view || revision !== requested || flying || loadingFlight) {
             p.stop();
-            return;
+            return false;
         }
+        const replacing = !!painted;
+        sceneWork.cancel(brush);
+        brush = 0;
+        for (const piece of pending) piece.release?.();
+        painted?.stop();
+        riders = null;
+        drawn = false;
+        mapEvent(0, "model-swap", revision);
+        v.world.replaceChildren(...replacement.childNodes);
+        v.world.classList.add("ow");
         painted = p;
-        pending = p.pieces.map((piece) => ({ piece, done: false }));
+        styledZoom = NaN;
+        pending = (mapVariant === "terrain" ? [] : p.pieces).map((piece) => ({
+            piece,
+            done: false,
+        }));
+        p.frame(v.cam, v.vp);
         p.nodes.forEach((b, i) => {
             if (!b) return;
             b.classList.add("ow-node");
@@ -835,7 +904,11 @@ export function Overworld(props: {
             b.addEventListener("blur", () => unlocked(i, "focus"));
             b.addEventListener("pointerleave", () => unlocked(i, "hover"));
         });
-        const first = typeof props.focus === "number" ? props.focus : props.view.here;
+        const first = replacing
+            ? focus()
+            : typeof props.focus === "number"
+              ? props.focus
+              : props.view.here;
         const start = first ?? 0;
         const n = nodeAt(props.view.layout, start);
         if (n) p.place(n.stand, 1);
@@ -851,16 +924,17 @@ export function Overworld(props: {
         // back to where it stands, so the two views are one movement (.docs/journal.md).
         const back = props.arrive && !quiet && !rose ? cameraBack(v, props.arrive) : null;
         rose = true;
-        v.set(back ?? rest);
+        v.set(replacing ? v.cam : (back ?? rest));
         // a map drawn again after a dive left the host faded out
         if (host) host.style.opacity = back ? "0" : "1";
         if (back) rise(v, back, rest);
         // a backdrop shows the map as it stands; the colour washes out only as a child's own map opens
         if (!props.aim) p.wash();
         setReady(true);
+        return true;
     }
 
-    onMount(async () => {
+    async function mount(): Promise<void> {
         const { CanvasView } = await mapPainter();
         if (!host || disposed) return;
         const v = new CanvasView(host, {
@@ -884,6 +958,7 @@ export function Overworld(props: {
                 // first size is read by the mount below and this hook takes the changes after it
                 const w = view;
                 if (!w) return;
+                styledZoom = NaN;
                 // the floor covers the window with the sea, so it moves with the window
                 w.limits = zoomLimits(props.view, w.vp);
                 if (w.cam.z < w.limits.min) w.set({ ...w.cam, z: w.limits.min });
@@ -895,10 +970,15 @@ export function Overworld(props: {
                 tellView();
             },
         });
+        // Retain the bounded terrain surface, not a second layer spanning the whole atlas.
+        v.world.style.willChange = "auto";
         view = v;
         // a page that scrolls past the map leaves it the wheel, and so does a backdrop, which nothing reaches
         if (props.wheel === false || !hud()) v.takesWheel = false;
         draw(v);
+    }
+    onMount(() => {
+        void mount().catch(() => setFailed(true));
     });
     createEffect(
         on(
@@ -940,7 +1020,7 @@ export function Overworld(props: {
     );
     onCleanup(() => {
         disposed = true;
-        clearTimeout(brush);
+        sceneWork.cancel(brush);
         flying?.stop();
         for (const p of pending) p.release?.();
         pending = [];
@@ -961,6 +1041,22 @@ export function Overworld(props: {
             data-travel-limit={props.view.limits.travel}
             inert={!hud()}
         >
+            <Show when={failed() && hud()}>
+                <output class="hud ow-card">
+                    <p>The map could not finish loading.</p>
+                    <button
+                        type="button"
+                        class="ow-btn"
+                        onClick={() => {
+                            setFailed(false);
+                            if (view) draw(view);
+                            else void mount().catch(() => setFailed(true));
+                        }}
+                    >
+                        Try again
+                    </button>
+                </output>
+            </Show>
             <Show when={hud()}>
                 <h1 class="sr">{props.title}</h1>
                 <div class="hud ow-home">

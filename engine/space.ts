@@ -139,7 +139,10 @@ export function pinch(c: Camera, vp: Size, from: [Pt, Pt], to: [Pt, Pt], limits:
 
 /** The camera that shows r whole and centred, with pad screen pixels around it. */
 export function fitRect(r: Rect, vp: Size, pad = 40, limits?: Limits): Camera {
-    const z = Math.min((vp.w - pad * 2) / Math.max(1, r.w), (vp.h - pad * 2) / Math.max(1, r.h));
+    const z = Math.min(
+        Math.max(1, vp.w - pad * 2) / Math.max(1, r.w),
+        Math.max(1, vp.h - pad * 2) / Math.max(1, r.h),
+    );
     return {
         x: r.x + r.w / 2,
         y: r.y + r.h / 2,

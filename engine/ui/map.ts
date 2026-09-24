@@ -63,8 +63,9 @@ import { animate, type Group, type Playing } from "./animate";
 import { motionOf as playsOf } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { bloom, motionOf, play } from "./player";
+import { mapSurface } from "./map-surfaces";
 import { readTokens } from "./read-tokens";
-import { artSize, guideOf, placeArt, type Piece } from "./scenery";
+import { artSize, guideOf, placeArt, releaseScenery, type Piece } from "./scenery";
 import { el, render, SvgPen as Pen } from "./svg";
 
 /** The places and ways as paintMap draws them, before the country and the page's own handle are put round them (MapPainted). */
@@ -112,6 +113,7 @@ export interface TerrainOptions {
 }
 
 export interface TerrainPainted {
+    frame(camera: Camera, size: Size): void;
     /** The detail painted as the camera comes near, each with the zoom below which it waits. */
     pieces: (Piece & { minZ: number })[];
     /** Redraw how far the child has come, for the colour washing over newly reached land. */
@@ -381,7 +383,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
     const rimPen = new Pen(p.svg, { seed: 77, t, paper: false, roughness: 1 });
     const rimmer = () => {
         const rims = new Map<string, SVGElement>();
-        return (c: { x: number; y: number; r: number }): SVGElement => {
+        const draw = (c: { x: number; y: number; r: number }): SVGElement => {
             const key = `${Math.round(c.x / 10)},${Math.round(c.y / 10)},${Math.round(c.r / 10)}`;
             const had = rims.get(key);
             if (had) return had;
@@ -419,9 +421,14 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
                     },
                     g,
                 );
-            if (rims.size > 400) rims.clear();
             rims.set(key, g);
             return g;
+        };
+        return {
+            draw,
+            prune() {
+                for (const [key, rim] of rims) if (!rim.parentNode) rims.delete(key);
+            },
         };
     };
     const reachRim = rimmer();
@@ -442,17 +449,18 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             cx: Math.round(c.x),
             cy: Math.round(c.y),
             r: Math.round(c.r),
-            fill: "url(#ow-feather)",
+            fill: `url(#${feather.id})`,
         });
     const setReach = (r: MapReach) => {
         R = r;
-        const kids: SVGElement[] = r.circles.map(reachRim);
+        const kids: SVGElement[] = r.circles.map(reachRim.draw);
         // the island stays in pencil until the child gets there, whatever is washed round it
         for (const ring of r.whole) kids.push(el("path", { d: polyD(ring), fill: "#fff" }));
         for (const isle of T.isles)
             if (!r.isles.includes(isle.node))
                 kids.push(el("path", { d: polyD(isle.outline), fill: "#000" }));
         reachMask.replaceChildren(...kids);
+        reachRim.prune();
         if (knownMask && r.known)
             knownMask.replaceChildren(
                 ...r.known.map(knownRim),
@@ -1141,7 +1149,9 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             });
         }
     }
+    const surface = mapSurface(p.svg, B);
     return {
+        frame: surface.frame,
         pieces,
         setReach,
         release(elements) {
@@ -1333,6 +1343,7 @@ export function paintMap(o: MapOptions): Places {
         if (view.grown && shown.notes.length) {
             const note = document.createElement("div");
             note.className = "m-gnote ow-gnote";
+            note.dataset.i = String(p.i);
             note.style.left = `${box.x}px`;
             note.style.top = `${box.y + box.h + 300}px`;
             for (const x of shown.notes) {
@@ -1465,7 +1476,19 @@ export function paintMap(o: MapOptions): Places {
         stopBalloon = balloonOnce(o, host as HTMLElement);
     }
     return {
-        pieces,
+        pieces: pieces.map((piece) => {
+            let shown = false;
+            return {
+                ...piece,
+                paint() {
+                    const before = news.length;
+                    const result = piece.paint();
+                    if (shown) news.splice(before);
+                    shown = true;
+                    return result;
+                },
+            };
+        }),
         nodes,
         token,
         place: put,
@@ -3257,12 +3280,14 @@ const layer = (cls: string): HTMLDivElement => {
 /** A piece of the map painted once the camera comes near it, and only past `minZ` where it has one. */
 export interface MapPiece {
     rect: Rect;
+    priority?: number;
     minZ?: number;
     paint(): (() => void) | void;
 }
 
 /** A map drawn from its view into a page's world layer (overworld.tsx), and what the page moves on it. */
 export interface MapPainted {
+    frame(camera: Camera, size: Size): void;
     /** Each place's button, by the place's index; null for a place a child's map draws nothing of. */
     nodes: (HTMLButtonElement | null)[];
     /** The guide's token, which the page tags while the guide travels. */
@@ -3330,6 +3355,7 @@ export async function paintMapView(o: {
     let watching: IntersectionObserver | null = null;
     let living: ReturnType<typeof runLife> | undefined;
     return {
+        frame: (camera, size) => land.frame(camera, size),
         nodes: painted.nodes.map((b): HTMLButtonElement | null => (b.hidden ? null : b)),
         token: painted.token,
         pieces: [
@@ -3344,8 +3370,15 @@ export async function paintMapView(o: {
             })),
             ...painted.pieces.map((p) => ({
                 rect: p.rect,
+                priority: 1,
                 paint: () => {
+                    const layers = Object.values(L);
+                    const before = new Set(layers.flatMap((layer) => [...layer.children]));
                     p.paint();
+                    const added = layers.flatMap((layer) =>
+                        [...layer.children].filter((child) => !before.has(child)),
+                    );
+                    return () => releaseScenery(added);
                 },
             })),
         ],

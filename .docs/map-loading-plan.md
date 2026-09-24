@@ -896,3 +896,13 @@ The latest integrated check passes typechecking, lint, formatting and suppressio
 stops at `server/db/check-auth-emails.ts` importing `school/family/login`, which the current database
 boundary forbids. This is part of the concurrent authentication work, not a map file. Keep that
 failure visible until the owning session resolves it; do not relax the boundary in this batch.
+
+### Mobile stability follow-up
+
+The continuing iPhone 17 Pro Max / Chrome report is tracked in
+[map-stability-stages.md](map-stability-stages.md). That record documents viewport-bounded
+terrain/masks, reversible preview lifetimes, owned scenery, shared frame scheduling, flight
+continuity, bounded lesson caches and retry changes. It also records the unresolved local
+WebKit rendering performance gate. These changes do not complete the generated metadata or
+local-tile backend work above, and passing browser correctness tests is not physical-device
+crash acceptance.

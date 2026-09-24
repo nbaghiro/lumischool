@@ -26,6 +26,7 @@ import {
     type Rect,
     type Size,
 } from "../space";
+import { mapDiagnostic } from "./map-diagnostics";
 import { readTokens } from "./read-tokens";
 
 export interface ViewHooks {
@@ -73,6 +74,7 @@ export class CanvasView {
             v.request();
         }
     }
+    private readonly diagnostic = mapDiagnostic();
     readonly world: HTMLDivElement;
     readonly paper: HTMLCanvasElement;
     cam: Camera = { x: 0, y: 0, z: 1 };
@@ -115,6 +117,7 @@ export class CanvasView {
         if (!host.hasAttribute("tabindex")) host.tabIndex = 0;
         this.world = document.createElement("div");
         this.world.className = "world";
+        this.world.style.willChange = "transform";
         host.prepend(this.paper, this.world);
         this.colors();
         this.resizing = new ResizeObserver(() => this.measure());
@@ -180,6 +183,7 @@ export class CanvasView {
     }
     dispose(): void {
         if (this.disposed) return;
+        this.diagnostic.dispose();
         this.disposed = true;
         this.stop();
         cancelAnimationFrame(this.raf);
@@ -311,6 +315,7 @@ export class CanvasView {
     }
 
     private tick = (now: number): void => {
+        const started = performance.now();
         this.raf = 0;
         if (this.disposed) return;
         let resting = false;
@@ -335,9 +340,13 @@ export class CanvasView {
                 resting = true;
             }
         }
+        // Clip locally as well as at the host's viewport, including any retained painted layers.
+        const ink = visibleRect(this.cam, { w: this.vp.w + 192, h: this.vp.h + 192 });
+        this.world.style.clipPath = `polygon(${ink.x}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y + ink.h}px, ${ink.x}px ${ink.y + ink.h}px)`;
         this.world.style.transform = cssTransform(this.cam, this.vp);
         this.drawPaper();
         this.hooks.frame(this.cam, this.vp);
+        this.diagnostic.frame(performance.now() - started);
         if (this.anim || this.glide) this.request();
         if (resting && !this.disposed) this.hooks.settle?.(this.cam);
     };

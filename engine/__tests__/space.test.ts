@@ -282,3 +282,15 @@ test("the paper shows 5 mm squares close in and every fifth line far out", () =>
         [20, 100],
     );
 });
+
+test("fitting a collapsed or tiny container never reverses the camera", () => {
+    const bounds = { x: 0, y: 0, w: 2000, h: 1000 };
+    for (const vp of [
+        { w: 0, h: 0 },
+        { w: 390, h: 1 },
+        { w: 1, h: 844 },
+    ]) {
+        const camera = fitRect(bounds, vp, 24, { min: 0.00001, max: 0.9 });
+        assert.ok(Number.isFinite(camera.z) && camera.z > 0);
+    }
+});

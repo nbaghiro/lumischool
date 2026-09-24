@@ -1,3 +1,4 @@
+import { sceneWork } from "./scene-work";
 // A year's roll on a page, drawn from the view the page was given (engine/space.ts WorldView): the
 // worlds a child walks through, one stretch a term, with the days as rows down the column and each
 // day's sheets on them. A child arrives from the map: the horizon of the term they went into puts
@@ -123,6 +124,7 @@ export function World(props: {
         release?: () => void;
     }[] = [];
     let brush = 0;
+    const [failed, setFailed] = createSignal(false);
     /** The wait between the arrival and the camera coming down to today, cleared when the roll goes. */
     let arriving = 0;
     const [arrivalDue, setArrivalDue] = createSignal(false);
@@ -351,14 +353,13 @@ export function World(props: {
         ask(near);
     }
 
-    /** Paint what the camera can see; all of it at once with `all`, or a few milliseconds at a time. */
-    function paintNear(all = false): void {
+    /** Paint nearby scenery within the document’s shared frame allowance. */
+    function paintNear(): void {
         if (!view || brush) return;
-        const step = (): void => {
+        const step = (deadline: number): void => {
             brush = 0;
             if (!view) return;
-            const t0 = performance.now(),
-                margin = Math.min(320, view.vp.h / 2),
+            const margin = Math.min(320, view.vp.h / 2),
                 seen = view.visible(margin),
                 keep = view.visible(margin * 2);
             for (const p of pending) {
@@ -372,12 +373,11 @@ export function World(props: {
             for (const p of todo) {
                 p.done = true;
                 p.release = p.piece.paint() ?? undefined;
-                if (!all && performance.now() - t0 > 4) break;
+                if (performance.now() >= deadline) break;
             }
-            if (todo.some((p) => !p.done)) brush = window.setTimeout(step, 0);
+            if (todo.some((p) => !p.done)) brush = sceneWork.schedule(step);
         };
-        if (all) step();
-        else brush = window.setTimeout(step, 0);
+        brush = sceneWork.schedule(step);
     }
 
     let resting = 0;
@@ -417,6 +417,7 @@ export function World(props: {
 
     function onFrame(cam: Camera): void {
         if (!view) return;
+        painted?.frame(cam, view.vp);
         setMoving(true);
         const lv = rollLevelOf(cam.z, level);
         if (lv !== level) {
@@ -439,7 +440,7 @@ export function World(props: {
         zoomRead(cam, true);
         if (waiting && view) {
             waiting = false;
-            void draw(view);
+            retryDraw(view);
         }
         paintNear();
         // what idles is sized for the zoom the camera has come to rest at
@@ -487,6 +488,12 @@ export function World(props: {
     }
     /** Each draw's number: a roll drawn again while the painter's code is on its way paints once, not twice. */
     let drawing = 0;
+    function retryDraw(v: CanvasView): void {
+        setFailed(false);
+        void draw(v).catch(() => {
+            if (view === v) setFailed(true);
+        });
+    }
     async function draw(v: CanvasView): Promise<void> {
         const n = ++drawing;
         // the painter's code comes with the first roll a page draws, not with the page
@@ -507,6 +514,7 @@ export function World(props: {
             ...(props.play === undefined ? {} : { play: props.play }),
             zoom: () => v.cam.z,
         });
+        painted.frame(v.cam, v.vp);
         pending = painted.pieces.map((piece) => ({ piece, done: false }));
         flags = null;
         covers = [];
@@ -521,7 +529,7 @@ export function World(props: {
             // a sheet drawn or grown above the camera moves nothing the viewer is looking at
             const keep = anchored(v, was);
             if (keep && keep.y !== v.cam.y) v.shift(0, keep.y - v.cam.y);
-            paintNear(true);
+            paintNear();
             rest(v.cam.z >= DAY_AT);
             setReady(true);
             setPaintedLayout(layout());
@@ -536,7 +544,7 @@ export function World(props: {
             v.set(box ?? to);
             if (host) host.style.opacity = box ? "0" : "1";
             arrived = true;
-            paintNear(true);
+            paintNear();
             if (box) grow(v, box, to);
             announce(at0.says);
             setReady(true);
@@ -551,7 +559,7 @@ export function World(props: {
             const came = props.from ? cameraIn(v, arrival.term, props.from) : null;
             v.set(came ?? open);
             if (host) host.style.opacity = came ? "0" : "1";
-            paintNear(true);
+            paintNear();
             painted.assemble(arrival.term);
             announce(`${name(props.view.open)}. ${arrival.says}`);
             if (came) grow(v, came, open);
@@ -568,13 +576,13 @@ export function World(props: {
             }, ARRIVING);
         } else if (props.waiting) {
             v.set(horizonCam(v, props.view.arrival?.term ?? 0));
-            paintNear(true);
+            paintNear();
             setArrivalDue(true);
         } else {
             const at = landing(arrival?.term);
             if (at) v.set(readAt(v, at.y, at.own));
             arrived = true;
-            paintNear(true);
+            paintNear();
             announce(
                 arrival
                     ? `${name(props.view.open)}. ${arrival.says} ${at?.says ?? ""}`
@@ -643,7 +651,7 @@ export function World(props: {
         if (sheets) v.world.append(sheets);
         if (above) v.world.append(above);
         if (props.wheel === false) v.takesWheel = false;
-        void draw(v);
+        retryDraw(v);
     });
     createEffect(
         on(
@@ -653,13 +661,13 @@ export function World(props: {
                 if (!v) return;
                 // nothing is swapped under a camera that is moving: the roll is drawn again once it stops
                 if (v.flying || v.movedAgo() < STILL_FOR) waiting = true;
-                else void draw(v);
+                else retryDraw(v);
             },
             { defer: true },
         ),
     );
     onCleanup(() => {
-        clearTimeout(brush);
+        sceneWork.cancel(brush);
         clearTimeout(arriving);
         clearTimeout(asking);
         clearTimeout(resting);
@@ -692,6 +700,19 @@ export function World(props: {
             aria-label={props.title}
         >
             <h1 class="sr">{props.title}</h1>
+            <Show when={failed()}>
+                <output class="map-load-error">
+                    <span>This world could not finish loading.</span>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (view) retryDraw(view);
+                        }}
+                    >
+                        Try again
+                    </button>
+                </output>
+            </Show>
             <Show when={props.onOut}>
                 <WayOut
                     over={() => host}

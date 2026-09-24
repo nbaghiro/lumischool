@@ -1,3 +1,4 @@
+import { sceneWork } from "./scene-work";
 // A world's term as a place, drawn from the view the page was given (engine/space.ts TrailView): the
 // trail through the world's own land with a stop for each day, the guide standing at today, the
 // landmarks lit by the lessons beside them, and the moment waiting at the trail's end. A finished
@@ -98,9 +99,11 @@ export function Place(props: {
     let nodes: HTMLElement | null = null;
     let izAt = "";
     let brush = 0;
+    const [failed, setFailed] = createSignal(false);
     /** The waits a moment's own light is played on, cleared when the place goes. */
     const playing: number[] = [];
     let drawing = 0;
+    let groundFrame: ((camera: Camera) => void) | undefined;
     let level = "days";
     /** A handover is under way: nothing else moves the camera or hands over again. */
     let busy = false;
@@ -173,15 +176,14 @@ export function Place(props: {
         );
     };
 
-    /** Paint what the camera can see, a few milliseconds at a time, or all of it at once. */
-    function paintNear(all = false): void {
+    /** Paint nearby scenery within the document’s shared frame allowance. */
+    function paintNear(): void {
         if (!view || brush) return;
-        const step = (): void => {
+        const step = (deadline: number): void => {
             brush = 0;
             const v = view;
             if (!v) return;
-            const t0 = performance.now(),
-                margin = Math.min(320, Math.max(v.vp.w, v.vp.h) / 2),
+            const margin = Math.min(320, Math.max(v.vp.w, v.vp.h) / 2),
                 seen = v.visible(margin),
                 keep = v.visible(margin * 2);
             for (const p of pending) {
@@ -195,12 +197,11 @@ export function Place(props: {
             for (const p of todo) {
                 p.done = true;
                 p.release = p.paint() ?? undefined;
-                if (!all && performance.now() - t0 > 4) break;
+                if (performance.now() >= deadline) break;
             }
-            if (todo.some((p) => !p.done)) brush = window.setTimeout(step, 0);
+            if (todo.some((p) => !p.done)) brush = sceneWork.schedule(step);
         };
-        if (all) step();
-        else brush = window.setTimeout(step, 0);
+        brush = sceneWork.schedule(step);
     }
 
     /**
@@ -399,6 +400,12 @@ export function Place(props: {
     type Painter = Awaited<ReturnType<typeof worldPainter>>;
 
     /** Draw the place: the world round the trail from the roll's painter, and the trail's own on top. */
+    function retryDraw(v: CanvasView): void {
+        setFailed(false);
+        void draw(v).catch(() => {
+            if (view === v) setFailed(true);
+        });
+    }
     async function draw(v: CanvasView): Promise<void> {
         const n = ++drawing;
         const art = await worldPainter();
@@ -445,30 +452,44 @@ export function Place(props: {
 
         // past the next day the land is plain paper, fading out over a tile, as a child's map fades
         const X = land.x1 + 900;
-        fade.style.left = `${-X}px`;
-        fade.style.top = "0px";
-        fade.style.width = `${X * 2}px`;
-        fade.style.height = `${land.bounds.h + TILE}px`;
-        L.ground.style.left = `${X}px`;
         const known = t.layout.known;
-        fade.style.maskImage = fade.style.webkitMaskImage =
-            known >= land.bounds.h
-                ? "none"
-                : `linear-gradient(to bottom, #000 0, #000 ${Math.round(known - TILE * 0.75)}px, rgba(0,0,0,.18) ${Math.round(known - TILE * 0.2)}px, transparent ${Math.round(known + TILE * 0.2)}px)`;
+        groundFrame = (camera) => {
+            painted.frame?.(camera, v.vp);
+            const rect = v.visible();
+            fade.style.left = `${rect.x}px`;
+            fade.style.top = `${rect.y}px`;
+            fade.style.width = `${v.vp.w}px`;
+            fade.style.height = `${v.vp.h}px`;
+            fade.style.transformOrigin = "0 0";
+            fade.style.transform = `scale(${1 / camera.z})`;
+            L.ground.style.left = `${-rect.x * camera.z}px`;
+            L.ground.style.top = `${-rect.y * camera.z}px`;
+            L.ground.style.transformOrigin = "0 0";
+            L.ground.style.transform = `scale(${camera.z})`;
+            const at = (y: number): number => (y - rect.y) * camera.z;
+            fade.style.maskImage = fade.style.webkitMaskImage =
+                known >= land.bounds.h
+                    ? "none"
+                    : `linear-gradient(to bottom, #000 ${at(known - TILE * 0.75)}px, rgba(0,0,0,.18) ${at(known - TILE * 0.2)}px, transparent ${at(known + TILE * 0.2)}px)`;
+        };
+        groundFrame(v.cam);
         const beyond = (y: number): boolean => y > known - TILE * 0.2;
 
-        painted.pieces.forEach((piece, k) =>
+        painted.pieces.forEach((piece, k) => {
+            let celebrated = false;
             pending.push({
                 rect: piece.rect,
                 done: false,
                 paint: () => {
                     if (k > 0 && beyond(piece.rect.y)) return;
-                    for (const e of piece.paint()) {
+                    const elements = piece.paint();
+                    for (const e of elements) {
                         if (
                             e instanceof HTMLElement &&
                             e.classList.contains("gate") &&
                             finished &&
                             t.moment === props.play &&
+                            !celebrated &&
                             !quiet
                         )
                             playing.push(
@@ -479,9 +500,14 @@ export function Place(props: {
                             : L.art
                         ).append(e);
                     }
+                    celebrated = true;
+                    return () => {
+                        art.releaseScenery(elements);
+                        piece.release?.();
+                    };
                 },
-            }),
-        );
+            });
+        });
         art.sceneryPieces(view0, host, () => "summer", { play: group }).forEach((piece, i) => {
             const s = land.scenery[i];
             if (!s) return;
@@ -732,7 +758,7 @@ export function Place(props: {
         drew = true;
         if (again) {
             zoomRead(v.cam, true);
-            paintNear(true);
+            paintNear();
             layPaper(sheetsNow());
             setReady(true);
             askPaper();
@@ -743,7 +769,7 @@ export function Place(props: {
         const from = props.from && !quiet ? cameraFrom(v, open, props.from) : null;
         v.set(from ?? to);
         zoomRead(v.cam, true);
-        paintNear(true);
+        paintNear();
         layPaper(sheetsNow());
         if (from) grow(v, from, to);
         announce(
@@ -891,6 +917,7 @@ export function Place(props: {
     function onFrame(cam: Camera): void {
         const v = view;
         if (!v) return;
+        groundFrame?.(cam);
         setMoving(true);
         const lv = cam.z < across(v) * 1.5 ? "far" : cam.z < IN_AT * 0.75 ? "days" : "day";
         if (lv !== level) {
@@ -962,7 +989,7 @@ export function Place(props: {
         });
         view = v;
         v.world.dataset.level = level;
-        void draw(v);
+        retryDraw(v);
     });
     // paper the page has drawn since arrives in the box its stop was given, without moving anything
     createEffect(() => layPaper(sheetsNow()));
@@ -971,7 +998,7 @@ export function Place(props: {
             () => props.view,
             () => {
                 const v = view;
-                if (v && !busy) void draw(v);
+                if (v && !busy) retryDraw(v);
             },
             { defer: true },
         ),
@@ -980,16 +1007,30 @@ export function Place(props: {
         transition?.stop();
         for (const p of pending) p.release?.();
         pending = [];
-        clearTimeout(brush);
+        sceneWork.cancel(brush);
         for (const t of playing) clearTimeout(t);
         group?.dispose();
         view?.dispose();
         view = undefined;
+        groundFrame = undefined;
     });
 
     return (
         <section class={`pl${props.class ? ` ${props.class}` : ""}`} classList={{ ready: ready() }}>
             <h1 class="sr">{props.title}</h1>
+            <Show when={failed()}>
+                <output class="map-load-error">
+                    <span>This world could not finish loading.</span>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (view) retryDraw(view);
+                        }}
+                    >
+                        Try again
+                    </button>
+                </output>
+            </Show>
             <Show when={props.onOut}>
                 <WayOut
                     over={() => host}

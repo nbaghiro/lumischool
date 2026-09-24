@@ -603,44 +603,24 @@ test("closing a sample world during loading leaves no late sheets or errors", as
     }
 });
 
-test("deferred map imports leave navigation alone and recover once on an active page", async ({
-    page,
-}) => {
+test("failed map imports never reload an active or departing document", async ({ page }) => {
     await page.goto("/home");
-    await page.addScriptTag({
-        type: "module",
-        content: `import { onDemand } from "/engine/ui/art.tsx";
-            onDemand(() => {
-                window.dispatchEvent(new Event("beforeunload"));
-                return Promise.reject(new Error("navigation cancelled this import"));
-            }).catch(() => { document.documentElement.dataset.importRejected = "yes"; });`,
+    const navigations: string[] = [];
+    page.on("framenavigated", (frame) => {
+        if (frame === page.mainFrame()) navigations.push(frame.url());
     });
-    await expect(page.locator("html")).toHaveAttribute("data-import-rejected", "yes");
+    for (const phase of ["beforeunload", "pageshow"]) {
+        await page.addScriptTag({
+            type: "module",
+            content: `import { onDemand } from "/engine/ui/art.tsx";
+                window.dispatchEvent(new Event("${phase}"));
+                onDemand(() => Promise.reject(new Error("missing chunk")))
+                    .catch(() => { document.documentElement.dataset.importRejected = "${phase}"; });`,
+        });
+        await expect(page.locator("html")).toHaveAttribute("data-import-rejected", phase);
+    }
+    expect(navigations).toEqual([]);
     expect(await page.evaluate(() => sessionStorage.getItem("reloaded:/home"))).toBeNull();
-    await expect(page).toHaveURL(/\/home$/);
-
-    // A restored, active document still gets its one recovery attempt.
-    await page.addScriptTag({
-        type: "module",
-        content: `import { onDemand } from "/engine/ui/art.tsx";
-            window.recoverMapImport = () => {
-                window.dispatchEvent(new Event("pageshow"));
-                void onDemand(() => Promise.reject(new Error("missing deployment chunk")));
-            };`,
-    });
-    await Promise.all([
-        page.waitForEvent("framenavigated", (frame) => frame === page.mainFrame()),
-        page.evaluate("window.recoverMapImport()"),
-    ]);
-    await page.waitForLoadState();
-    expect(await page.evaluate(() => sessionStorage.getItem("reloaded:/home"))).toBe("1");
-    await page.addScriptTag({
-        type: "module",
-        content: `import { onDemand } from "/engine/ui/art.tsx";
-            onDemand(() => Promise.reject(new Error("still missing")))
-                .catch(() => { document.documentElement.dataset.importRejected = "again"; });`,
-    });
-    await expect(page.locator("html")).toHaveAttribute("data-import-rejected", "again");
 });
 
 test("flight zoom catches up after a delayed frame without advancing plane physics by the gap", async ({

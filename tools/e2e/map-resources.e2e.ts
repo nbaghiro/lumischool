@@ -168,6 +168,11 @@ test("multiple maps share a bounded paper canvas allocation across resizing", as
     await page.goto("/home");
     await page.locator("#you").scrollIntoViewIfNeeded();
     const canvases = page.locator(".ow-host > canvas.paper");
+    await expect.poll(() => canvases.count()).toBeGreaterThan(0);
+    await page.evaluate(() => {
+        location.hash = "/map";
+    });
+    await expect(page.getByRole("dialog").locator(".ow-host.ready")).toBeVisible();
     await expect.poll(() => canvases.count()).toBeGreaterThan(1);
     for (const size of [
         { width: 390, height: 844 },
@@ -188,4 +193,123 @@ test("multiple maps share a bounded paper canvas allocation across resizing", as
             )
             .toBe(true);
     }
+});
+
+test("terrain surfaces and masks stay viewport bounded through flight and resizing", async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/home#/map");
+    const map = page.getByRole("dialog").locator(".ow-host.ready");
+    await expect(map).toBeVisible({ timeout: 60_000 });
+    await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
+    for (const size of [
+        { width: 390, height: 844 },
+        { width: 844, height: 390 },
+    ]) {
+        await page.setViewportSize(size);
+        for (let step = 0; step < 8; step++) await map.dispatchEvent("wheel", { deltaY: 120 });
+        await expect
+            .poll(() =>
+                map.evaluate((root) => {
+                    const host = root.getBoundingClientRect();
+                    const world = root.querySelector<HTMLElement>(".world");
+                    if (!world) return false;
+                    const camera = new DOMMatrix(getComputedStyle(world).transform);
+                    const clip = world.style.clipPath.match(/-?[\d.]+(?=px)/g)?.map(Number);
+                    if (!clip || clip.length !== 8) return false;
+                    const width = ((clip[2] ?? 0) - (clip[0] ?? 0)) * camera.a;
+                    const height = ((clip[5] ?? 0) - (clip[1] ?? 0)) * camera.d;
+                    if (
+                        Math.abs(width - host.width - 192) > 2 ||
+                        Math.abs(height - host.height - 192) > 2
+                    )
+                        return false;
+                    const surfaces = [
+                        ...root.querySelectorAll<SVGSVGElement>("[data-map-surface]"),
+                    ];
+                    return (
+                        surfaces.length > 0 &&
+                        surfaces.every((svg) => {
+                            const bounds = svg.getBoundingClientRect();
+                            const view = svg.viewBox.baseVal;
+                            return (
+                                bounds.width <= host.width * 1.375 + 2 &&
+                                bounds.height <= host.height * 1.375 + 2 &&
+                                [...svg.querySelectorAll("mask")].every(
+                                    (mask) =>
+                                        Number(mask.getAttribute("width")) <= view.width + 1 &&
+                                        Number(mask.getAttribute("height")) <= view.height + 1,
+                                )
+                            );
+                        })
+                    );
+                }),
+            )
+            .toBe(true);
+    }
+});
+
+test("marketing maps release offscreen scenes and recover on returning", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/home");
+    const journey = page.locator(".site-journey-world");
+    await page.locator("#map").scrollIntoViewIfNeeded();
+    await expect(journey).toBeVisible({ timeout: 60_000 });
+    await page.locator("footer").last().scrollIntoViewIfNeeded();
+    await expect(journey).toHaveCount(0);
+    await page.locator("#map").scrollIntoViewIfNeeded();
+    await expect(journey).toBeVisible();
+    const ids = await page
+        .locator("[data-map-surface] [id]")
+        .evaluateAll((nodes) => nodes.map((node) => node.id));
+    expect(new Set(ids).size).toBe(ids.length);
+});
+
+test("equivalent models and pending progress updates preserve a flight's scene", async ({
+    page,
+}) => {
+    let release = (): void => {};
+    const held = new Promise<void>((done) => {
+        release = done;
+    });
+    await page.route("**/engine/ui/flight.ts*", async (route) => {
+        await held;
+        await route.continue();
+    });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/home");
+    await page.addScriptTag({
+        type: "module",
+        content: `
+        import { mountMap } from "/tools/e2e/map-fixture.tsx";
+        import { look } from "/apps/site/ground.ts";
+        const host = document.createElement("div");
+        host.style.cssText = "position:fixed;inset:0;z-index:9999";
+        document.body.append(host);
+        window.mapFixture = mountMap(host, (await look()).map());
+    `,
+    });
+    const map = page.getByRole("region", { name: "Map continuity fixture" });
+    await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
+    await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
+    await map.evaluate((root) => {
+        root.querySelector("[data-map-surface]")?.setAttribute("data-continuity", "same");
+    });
+    await page.evaluate("window.mapFixture.update(false)");
+    await page.evaluate("window.mapFixture.update(true)");
+    release();
+    await map.dispatchEvent("wheel", { deltaY: 30, ctrlKey: true });
+    await expect(
+        map.getByRole("button", { name: "Stop flying and land at the nearest world", exact: true }),
+    ).toBeVisible();
+    await expect(map.locator("[data-continuity=same]")).toHaveCount(1);
+    await map
+        .getByRole("button", { name: "Stop flying and land at the nearest world", exact: true })
+        .click();
+    await expect(map.locator("[data-continuity=same]")).toHaveCount(0);
+    await expect(map).toHaveClass(/ready/);
+    await page.evaluate("window.mapFixture.dispose()");
+    await expect(map).toHaveCount(0);
 });

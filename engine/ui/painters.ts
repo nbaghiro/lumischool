@@ -1,8 +1,7 @@
 // The painters behind dynamic imports, from one place: the country's (map.ts) for overworld.tsx and
 // the world's (scenery.ts) for world.tsx, so a page's script names the chunks each pulls in once
 // rather than in every component that draws (tools/__tests__/first-view.test.ts), and neither
-// painter is in what a page loads before it draws. A painter the server no longer has loads the page
-// again, once (`onDemand` in art.tsx).
+// painter is in what a page loads before it draws. Failed loads can be retried by their surface.
 
 import { onDemand } from "./art";
 

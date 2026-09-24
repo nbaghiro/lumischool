@@ -31,6 +31,8 @@ import {
     TILE,
     washOf,
     type ArtRef,
+    type Camera,
+    type Size,
     type GroundKind,
     type PathKind,
     type Rect,
@@ -51,6 +53,7 @@ import { motionOf, type Drawing } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { designOf, guideIdle, renderGuide } from "./guide";
 import { applyPuff, bloom, PLACED, playMoment, walkIn } from "./player";
+import { mapSurface } from "./map-surfaces";
 import { readTokens } from "./read-tokens";
 import { el, render, SvgPen as Pen } from "./svg";
 
@@ -396,6 +399,7 @@ const inColumn = (l: RollLayout, x: number, w = 0) =>
 export interface Piece {
     rect: Rect;
     paint(): Element[];
+    release?(): void;
 }
 
 export function releaseScenery(elements: readonly Element[]): void {
@@ -5627,6 +5631,7 @@ const PATHS: Record<PathKind, Path> = {
 const CURRENTS = 4;
 
 export interface Painted {
+    frame?(camera: Camera, size: Size): void;
     els: Element[];
     pieces: Piece[];
 }
@@ -5900,7 +5905,32 @@ export function paintStretch(
             },
         });
     }
-    return { els: [], pieces };
+    const owned = pieces.map((piece, index): Piece => {
+        let added: Element[] = [];
+        return {
+            rect: piece.rect,
+            paint() {
+                const parents = [into, p.svg, ...p.svg.querySelectorAll("g")];
+                const before = new Map(parents.map((parent) => [parent, new Set(parent.children)]));
+                p.pen = new Pen(p.svg, {
+                    seed: hash(`${id}-piece-${index}`),
+                    t,
+                    paper: false,
+                    roughness: 1,
+                });
+                const elements = piece.paint();
+                added = parents.flatMap((parent) =>
+                    [...parent.children].filter((child) => !before.get(parent)?.has(child)),
+                );
+                return elements;
+            },
+            release() {
+                releaseScenery(added);
+                added = [];
+            },
+        };
+    });
+    return { els: [], pieces: owned, frame: mapSurface(p.svg, area).frame };
 }
 
 /** The far row and the sky: the world's horizon drawings where its data puts them. */
@@ -6579,6 +6609,7 @@ const longDay = (iso: string): string =>
 
 /** A year's roll drawn from its view into a page's world layer (world.tsx), and what the page plays on it. */
 export interface WorldPainted {
+    frame(camera: Camera, size: Size): void;
     pieces: { rect: Rect; paint(): (() => void) | void }[];
     /** A world putting itself together as the child arrives: what stands on a term's horizon rises into place. */
     assemble(term: number): void;
@@ -6665,6 +6696,8 @@ export function paintWorldView(o: {
     };
     const todayRow = l.rows.find((r) => r.day.state === "today");
     const pieces: WorldPainted["pieces"] = [];
+    const surfaces: Painted[] = [];
+    const celebrated = new Set<Piece>();
     const momentInked = (term: number): boolean =>
         l.scenery.some(
             (s, k) =>
@@ -6688,10 +6721,19 @@ export function paintWorldView(o: {
             motion: false,
             play,
         });
+        surfaces.push(painted);
         painted.pieces.forEach((piece, k) =>
             pieces.push({
                 rect: piece.rect,
-                paint: () => place(piece.paint(), k === 0 ? s.term : undefined, s.ahead),
+                paint: () => {
+                    const elements = piece.paint();
+                    place(elements, k === 0 ? s.term : undefined, s.ahead, !celebrated.has(piece));
+                    celebrated.add(piece);
+                    return () => {
+                        releaseScenery(elements);
+                        piece.release?.();
+                    };
+                },
             }),
         );
         if (s.card) {
@@ -6836,6 +6878,9 @@ export function paintWorldView(o: {
     }
     let arriving: { stop(): void } | null = null;
     return {
+        frame(camera, size) {
+            for (const surface of surfaces) surface.frame?.(camera, size);
+        },
         pieces,
         assemble(term) {
             if (still) return;
