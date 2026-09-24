@@ -53,6 +53,8 @@ import {
     rowsOf,
     saveLogin,
     savePicture,
+    saveAccountField,
+    lockAccountEmail,
     type Written,
 } from "./db/events";
 import {
@@ -375,7 +377,9 @@ function signIn(
     how: How,
 ): Promise<Opened | Declined> {
     return withFamily({ family, user }, async (tx): Promise<Opened | Declined> => {
-        if (!(await useCode(tx, "sign-in", sha256(pending)))) return { error: "expired" };
+        const proof = await useCode(tx, "sign-in", sha256(pending));
+        if (!proof?.email || (await lockedLogin(tx, proof.email)) !== user)
+            return { error: "expired" };
         return openIn(tx, family, user, how);
     });
 }
@@ -464,7 +468,7 @@ async function provenBy(pending: string, attempt: string | null): Promise<Proven
             return {
                 id: proof.id,
                 email: proof.email,
-                user: proof.user_id ?? (await loginByAddress(proof.email)),
+                user: await loginByAddress(proof.email),
                 shared: isRecord(proof.detail) && proof.detail.shared === true,
                 start: isRecord(proof.detail) ? startOf(proof.detail.start) : null,
             };
@@ -1621,4 +1625,103 @@ export async function endParentMembership(
             false,
         ),
     };
+}
+
+export async function updateAccountField(
+    adult: Adult,
+    family: unknown,
+    field: unknown,
+    value: unknown,
+): Promise<void> {
+    if (family !== adult.family.id) throw new Refused(400, { error: "bad-request" });
+    if (field !== "name" && field !== "family" && field !== "time_zone")
+        throw new Refused(400, { error: "bad-request" });
+    if (field !== "name") needParent(adult);
+    if (typeof value !== "string" || !value.trim() || value.trim().length > 100)
+        throw new Refused(400, { error: "bad-request" });
+    const cleaned = value.trim();
+    if (field === "time_zone") {
+        try {
+            dayIn(cleaned);
+        } catch {
+            throw new Refused(400, { error: "bad-request", problem: "Choose a valid time zone." });
+        }
+    }
+    await withFamily({ family: adult.family.id, user: adult.user }, (tx) =>
+        saveAccountField(tx, adult.user, adult.family.id, field, cleaned),
+    );
+}
+
+export async function requestAccountEmail(
+    config: AuthConfig,
+    adult: Adult,
+    input: unknown,
+    ip: string | null,
+): Promise<{ challenge: string }> {
+    const email = typeof input === "string" ? emailOf(input) : null;
+    if (!email) throw new Refused(400, { error: "bad-email" });
+    if (await loginByAddress(email))
+        throw new Refused(400, {
+            error: "bad-request",
+            problem: "That email already belongs to an account. Choose another address.",
+        });
+    const challenge = newSecret();
+    const code = String(randomInt(0, 100_000_000)).padStart(8, "0");
+    const issued = await issueCode("confirm", {
+        hash: sha256(challenge),
+        email,
+        ip: networkHash(config, ip),
+        user_id: adult.user,
+        accept: [codeHash(config, code)],
+        detail: { purpose: "account-email", session: adult.session.id },
+    });
+    if (!issued) throw new Refused(429, { error: "rate-limited" });
+    try {
+        await config.send(codeEmail(email, code, config.origin, "email-change"));
+    } catch {
+        await deliveryFailed(sha256(challenge));
+        throw new Refused(503, { error: "delivery-failed" });
+    }
+    return { challenge };
+}
+
+export async function confirmAccountEmail(
+    config: AuthConfig,
+    adult: Adult,
+    challenge: unknown,
+    code: unknown,
+): Promise<void> {
+    if (
+        typeof challenge !== "string" ||
+        challenge.length > 200 ||
+        typeof code !== "string" ||
+        !/^\d{8}$/.test(code)
+    )
+        throw new Refused(400, { error: "bad-request" });
+    const hash = sha256(challenge);
+    const proof = await prove("confirm", hash, codeHash(config, code));
+    if (proof.outcome !== "right")
+        throw new Refused(400, { error: proof.outcome === "wrong" ? "wrong-code" : "expired" });
+    if (
+        proof.user_id !== adult.user ||
+        !proof.email ||
+        !isRecord(proof.detail) ||
+        proof.detail.purpose !== "account-email" ||
+        proof.detail.session !== adult.session.id
+    )
+        throw new Refused(403, { error: "not-allowed" });
+    const email = proof.email;
+    await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        const oldEmail = await lockAccountEmail(tx, adult.user);
+        for (const address of [...new Set([oldEmail, email])].sort())
+            await lockedLogin(tx, address);
+        const existing = await lockedLogin(tx, email);
+        if (existing && existing !== adult.user)
+            throw new Refused(400, {
+                error: "bad-request",
+                problem: "That email already belongs to an account.",
+            });
+        if (!(await useCode(tx, "confirm", hash))) throw new Refused(400, { error: "expired" });
+        await saveAccountField(tx, adult.user, adult.family.id, "email", email);
+    });
 }

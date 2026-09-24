@@ -37,6 +37,9 @@ import {
     signInKid,
     mySessions,
     setMyPicture,
+    updateAccountField,
+    requestAccountEmail,
+    confirmAccountEmail,
     KIDS_JOIN,
     leaveKidView,
     lockParent,
@@ -1002,6 +1005,41 @@ function routes(config: Config): Route[] {
             run: async (_c, adult) => {
                 const out = await endKidViews(adult);
                 return "error" in out ? problem(REFUSED[out.error], out.error) : json(200, out);
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/me/details",
+            who: "adult",
+            run: async (c, adult) => {
+                await updateAccountField(
+                    adult,
+                    field(c.body, "family"),
+                    field(c.body, "field"),
+                    field(c.body, "value"),
+                );
+                return json(204, null);
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/me/email/start",
+            who: "adult",
+            run: async (c, adult) =>
+                json(202, await requestAccountEmail(config, adult, field(c.body, "email"), c.ip)),
+        },
+        {
+            method: "POST",
+            path: "/api/me/email/confirm",
+            who: "adult",
+            run: async (c, adult) => {
+                await confirmAccountEmail(
+                    config,
+                    adult,
+                    field(c.body, "challenge"),
+                    field(c.body, "code"),
+                );
+                return json(204, null);
             },
         },
         {

@@ -748,3 +748,26 @@ export async function paintingDelete(
     const a = await call("POST", "/api/paintings/delete", { id, revision });
     return a.ok ? { ok: true } : refused(a.failure);
 }
+
+export async function saveAccountField(
+    family: string,
+    field: "name" | "family" | "time_zone",
+    value: string,
+): Promise<true | Failure> {
+    const a = await call("POST", "/api/me/details", { family, field, value });
+    return a.ok ? true : refused(a.failure);
+}
+export async function requestAccountEmail(email: string): Promise<{ challenge: string } | Failure> {
+    const a = await call("POST", "/api/me/email/start", { email });
+    if (!a.ok) return refused(a.failure);
+    return obj(a.body) && str(a.body.challenge)
+        ? { challenge: a.body.challenge }
+        : unreadable(a.status);
+}
+export async function confirmAccountEmail(
+    challenge: string,
+    code: string,
+): Promise<true | Failure> {
+    const a = await call("POST", "/api/me/email/confirm", { challenge, code });
+    return a.ok ? true : refused(a.failure);
+}

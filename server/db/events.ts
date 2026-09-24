@@ -468,3 +468,33 @@ export async function deleteFamily(tx: FamilyTx, id: string): Promise<boolean> {
         .returning({ id: families.id });
     return gone.length === 1;
 }
+
+export async function saveAccountField(
+    tx: FamilyTx,
+    user: string,
+    family: string,
+    field: "name" | "family" | "time_zone" | "email",
+    value: string,
+): Promise<void> {
+    if (field === "name" || field === "email") {
+        await tx
+            .update(users)
+            .set({ [field]: value })
+            .where(eq(users.id, user));
+    } else {
+        await tx
+            .update(families)
+            .set(field === "family" ? { name: value } : { time_zone: value })
+            .where(eq(families.id, family));
+    }
+}
+
+export async function lockAccountEmail(tx: FamilyTx, user: string): Promise<string> {
+    const [row] = await tx
+        .select({ email: users.email })
+        .from(users)
+        .where(eq(users.id, user))
+        .for("update");
+    if (!row) throw new Error("Account no longer exists");
+    return row.email;
+}

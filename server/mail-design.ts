@@ -57,17 +57,27 @@ function frame(o: {
     return { subject: o.title, text, html };
 }
 
-export function signInMail(code: string, origin: string): MailContent {
+export function signInMail(
+    code: string,
+    origin: string,
+    purpose: "sign-in" | "email-change" = "sign-in",
+): MailContent {
     return frame({
-        title: "Your lumischool sign-in code",
+        title:
+            purpose === "email-change"
+                ? "Confirm your new email address"
+                : "Your lumischool sign-in code",
         preheader: "Your code works once, for ten minutes.",
         origin,
         code,
         cover: Math.floor(Date.now() / 86400000),
         sections: [
             {
-                heading: "Welcome back",
-                text: "Type this code on the page where you asked to sign in. It works for ten minutes, once.",
+                heading: purpose === "email-change" ? "Your new sign-in address" : "Welcome back",
+                text:
+                    purpose === "email-change"
+                        ? "Type this code on your Account page to confirm your new email address. It works for ten minutes, once."
+                        : "Type this code on the page where you asked to sign in. It works for ten minutes, once.",
             },
             {
                 heading: "Did not ask for a code?",

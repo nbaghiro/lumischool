@@ -1490,3 +1490,20 @@ kids’ PIN/username changes require active parent access but no recent email si
 unlocked with the family PIN can perform these actions. Parent-only authorization, family isolation,
 last-parent protection, validation and abuse limits remain enforced. Changing the adult family PIN
 and permanently deleting a family still require recent email authentication.
+
+### Editing account details
+
+Account details are borderless fields. Name and family name save on blur or Enter; the styled time
+zone picker saves on selection. Each field reports saving, success or failure, preserving unsaved
+text on failure. Personal name and email apply across the user's families; family name and time
+zone belong to the current family and require parent access. Family writes include the displayed
+family ID so a stale tab cannot change another family after a switch. Time-zone changes affect
+local-day calculations throughout the family.
+
+Email editing sends an eight-digit code to the new address on blur. The old email stays until the
+code is entered. Confirmation uses existing expiring, attempt-limited `confirm` keys bound to the
+requesting user and session, consumed atomically with the update. Existing accounts cannot be
+merged or overwritten by this flow. Existing sessions and memberships remain. New-address locks
+serialize signup and email changes; old-address locks serialize changes with sign-in. Pending
+sign-in codes resolve the current address owner, and sign-in checks ownership again while consuming
+the code. This prevents an old-address code from reopening an account after its address changes.

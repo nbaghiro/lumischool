@@ -316,3 +316,14 @@ kids’ PIN/username changes require active parent access but no recent email si
 unlocked with the family PIN can perform these actions. Parent-only authorization, family isolation,
 last-parent protection, validation and abuse limits remain enforced. Changing the adult family PIN
 and permanently deleting a family still require recent email authentication.
+
+### Account detail editing
+
+- `POST /api/me/details {family, field, value}` saves `name`, `family`, or `time_zone` and returns 204.
+  An adult may change their name; only a parent may change family fields. `family` must match the
+  active family. Names must be nonempty and at most 100 characters; time zones must be recognized.
+- `POST /api/me/email/start {email}` returns 202 `{challenge}` after sending a confirmation code to
+  an unused, canonical email address. Existing code delivery and attempt budgets apply.
+- `POST /api/me/email/confirm {challenge, code}` returns 204 after consuming a valid eight-digit code
+  belonging to this user and session. It updates the user's email without changing memberships or
+  ending sessions. Confirmation keys cannot be used as sign-in keys. No schema migration is needed.

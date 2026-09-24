@@ -232,6 +232,14 @@
     justify-self: start;
 }
 
+.ga-account-field {
+    min-width: 0;
+}
+.ga-email-code {
+    color: var(--pen);
+    letter-spacing: 0.15em;
+}
+
 .ga .postcard-msg > .part {
     margin-top: 24px;
 }

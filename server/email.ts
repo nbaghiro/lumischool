@@ -72,18 +72,27 @@ export function resendTransport(key: string, from: string): Transport {
 }
 
 /** The code a person types to sign in. Ten minutes is the key's own rule in server/db/keys.ts. */
-export function codeEmail(to: string, code: string, origin = "http://localhost:8500"): Email {
+export function codeEmail(
+    to: string,
+    code: string,
+    origin = "http://localhost:8500",
+    purpose: "sign-in" | "email-change" = "sign-in",
+): Email {
     const spaced = `${code.slice(0, 4)} ${code.slice(4)}`;
     return {
         to,
-        html: signInMail(spaced, origin).html,
+        html: signInMail(spaced, origin, purpose).html,
         subject: `Your lumischool code is ${spaced}`,
         text: [
             `Your code is ${spaced}.`,
             "",
-            "Type it on the page where you asked for it. It works for ten minutes, once.",
+            purpose === "email-change"
+                ? "Type it on your Account page to confirm your new email address. It works for ten minutes, once."
+                : "Type it on the page where you asked for it. It works for ten minutes, once.",
             "",
-            "If you did not ask to sign in to lumischool, you can ignore this email. Nobody can sign in",
+            purpose === "email-change"
+                ? "If you did not ask to change your email address, ignore this email. No change is made"
+                : "If you did not ask to sign in to lumischool, you can ignore this email. Nobody can sign in",
             "without the code.",
         ].join("\n"),
     };

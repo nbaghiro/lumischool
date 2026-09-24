@@ -1,3 +1,4 @@
+import { InlineEdit, InlineInput } from "../../engine/ui/inline-edit";
 import { Members } from "./members";
 import { Select } from "../../engine/ui/select";
 import "./account.css";
@@ -18,7 +19,7 @@ import {
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
-import { Choice } from "../../engine/ui/fields";
+import { Choice, Field } from "../../engine/ui/fields";
 import { Button, PinInput } from "../../engine/ui/form";
 import { useLook, Waiting } from "../../engine/ui/page";
 import { Corner, Postcard } from "../../engine/ui/postcard";
@@ -209,28 +210,9 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
             <Show when={props.said}>
                 <Say calm focus text={props.said} />
             </Show>
-            <dl class="ga-facts">
-                <div>
-                    <dt>Your name</dt>
-                    <dd>{me().user.name?.trim() || "Not given"}</dd>
-                </div>
-                <div>
-                    <dt>Your address</dt>
-                    <dd>{me().user.email}</dd>
-                </div>
-                <div>
-                    <dt>Your family</dt>
-                    <dd>{familyName(me().family.name)}</dd>
-                </div>
-                <div>
-                    <dt>The family's time zone</dt>
-                    <dd>{me().family.time_zone.replaceAll("_", " ")}</dd>
-                </div>
-            </dl>
-            <p class="note">
-                Your name, your address and the family's name and time zone were set when the family
-                was started, and cannot be changed here yet.
-            </p>
+            <Show when={me().family.id} keyed>
+                {(_family) => <AccountDetails me={me()} onChanged={props.onRefetch} />}
+            </Show>
             <YourPicture me={me()} onPicked={props.onRefetch} />
             <Show when={me().members.some((m) => m.kid_id === null && m.ended_at === null)}>
                 <WeeklyEmail />
@@ -722,5 +704,162 @@ function WeeklyEmail(): JSX.Element {
             </Show>
             <output aria-live="polite">{message()}</output>
         </section>
+    );
+}
+
+function AccountDetails(props: { me: Me; onChanged: () => void }): JSX.Element {
+    const zones = [
+        ...new Set(["UTC", props.me.family.time_zone, ...Intl.supportedValuesOf("timeZone")]),
+    ].sort();
+    return (
+        <dl class="ga-facts">
+            <AccountField
+                label="Your name"
+                value={props.me.user.name ?? ""}
+                save={(value) => api.saveAccountField(props.me.family.id, "name", value)}
+                onChanged={props.onChanged}
+            />
+            <AccountEmail value={props.me.user.email} onChanged={props.onChanged} />
+            <AccountField
+                label="Your family"
+                value={props.me.family.name}
+                readonly={!isParent(props.me.members)}
+                save={(value) => api.saveAccountField(props.me.family.id, "family", value)}
+                onChanged={props.onChanged}
+            />
+            <AccountField
+                label="The family's time zone"
+                value={props.me.family.time_zone}
+                readonly={!isParent(props.me.members)}
+                zones={zones}
+                save={(value) => api.saveAccountField(props.me.family.id, "time_zone", value)}
+                onChanged={props.onChanged}
+            />
+        </dl>
+    );
+}
+
+function AccountField(props: {
+    label: string;
+    value: string;
+    readonly?: boolean;
+    zones?: string[];
+    save: (value: string) => Promise<true | Failure>;
+    onChanged: () => void;
+}): JSX.Element {
+    return (
+        <div class="ga-account-field">
+            <dt>{props.label}</dt>
+            <dd>
+                <InlineEdit
+                    label={props.label}
+                    value={props.value}
+                    readonly={props.readonly}
+                    maxlength={100}
+                    options={props.zones?.map((zone) => ({
+                        value: zone,
+                        label: zone.replaceAll("_", " ").replaceAll("/", " / "),
+                    }))}
+                    validate={(value) => (value ? null : "Please enter a value.")}
+                    save={async (value) => {
+                        const result = await props.save(value);
+                        return result === true ? true : failureText(result, local);
+                    }}
+                    onSaved={props.onChanged}
+                />
+            </dd>
+        </div>
+    );
+}
+
+function AccountEmail(props: { value: string; onChanged: () => void }): JSX.Element {
+    const [value, setValue] = createSignal(props.value);
+    const [saved, setSaved] = createSignal(props.value);
+    createEffect(
+        on(
+            () => props.value,
+            (next) => {
+                if (value() === saved()) setValue(next);
+                setSaved(next);
+            },
+            { defer: true },
+        ),
+    );
+    const [pending, setPending] = createSignal<{ challenge: string; email: string } | null>(null);
+    const [code, setCode] = createSignal("");
+    const [busy, setBusy] = createSignal(false);
+    const [message, setMessage] = createSignal("");
+    const request = async (): Promise<void> => {
+        const email = value().trim().toLowerCase();
+        if (busy() || email === props.value || email === pending()?.email) return;
+        setBusy(true);
+        setMessage("Sending a code…");
+        const result = await api.requestAccountEmail(email);
+        setBusy(false);
+        if ("error" in result) setMessage(failureText(result, local));
+        else {
+            setPending({ challenge: result.challenge, email });
+            setCode("");
+            setMessage(
+                `Enter the code sent to ${email}. Your current address stays until verified.`,
+            );
+        }
+    };
+    const verify = async (): Promise<void> => {
+        const p = pending();
+        if (busy() || !p || code().length !== 8) return;
+        setBusy(true);
+        setMessage("Verifying…");
+        const result = await api.confirmAccountEmail(p.challenge, code());
+        setBusy(false);
+        if (result === true) {
+            setValue(p.email);
+            setPending(null);
+            setCode("");
+            setMessage("Saved");
+            props.onChanged();
+        } else {
+            setMessage(failureText(result, local));
+            setCode("");
+        }
+    };
+    return (
+        <div class="ga-account-field">
+            <dt>Your address</dt>
+            <dd>
+                <InlineInput
+                    aria-label="Your address"
+                    type="email"
+                    autocomplete="email"
+                    value={value()}
+                    disabled={busy()}
+                    onInput={(e) => {
+                        setValue(e.currentTarget.value);
+                        setPending(null);
+                        setMessage("");
+                    }}
+                    onBlur={() => void request()}
+                />
+                <Show when={pending()}>
+                    <InlineInput
+                        class="ga-email-code"
+                        aria-label="Email verification code"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        placeholder="8-digit code"
+                        maxlength={8}
+                        value={code()}
+                        disabled={busy()}
+                        onInput={(e) => {
+                            setCode(e.currentTarget.value.replace(/\D/g, ""));
+                            if (code().length === 8) void verify();
+                        }}
+                    />
+                </Show>
+                <output class="inline-status" aria-live="polite">
+                    {message()}
+                </output>
+            </dd>
+        </div>
     );
 }
