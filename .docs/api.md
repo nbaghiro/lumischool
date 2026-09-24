@@ -4,9 +4,9 @@
 
 | Route | Caller | Request / result |
 | --- | --- | --- |
-| `GET /api/kid-logins` | Parent | `{pinSet, kids: [{id, name, username}]}` |
-| `POST /api/kid-logins/pin` | Parent | `{pin}` with four digits; 204; must differ from the adult family PIN |
-| `POST /api/kid-logins` | Parent | `{kid, username}`; blank username generates one; unchanged normalized usernames preserve sessions; 204 |
+| `GET /api/kid-logins` | Parent | `{pinSet, kids: [{id, name, username, ownPin}]}` |
+| `POST /api/kid-logins/pin` | Parent | `{pin}` with four digits; 204; shared PIN; must differ from the Parent PIN; only shared-PIN username sessions are revoked |
+| `POST /api/kid-logins` | Parent | `{kid, username, pin?}`; omit pin to keep its assignment, four digits set an own PIN, null uses the shared PIN (which must exist). Blank username generates one. Changes atomically revoke only this child's username sessions; unchanged values preserve sessions; 204 |
 | `POST /api/kid/sign-in` | Public | `{username, pin}`; `{credential}`; generic `wrong-pin` on failed or limited sign-in |
 | `GET /api/kid/tab` | Child view | `{credential}` to adopt a legacy cookie view into the tab |
 | `POST /api/kid/sign-out` | Child view | 204; ends only the supplied view |
@@ -269,7 +269,6 @@ Adult routes reject that header even if a valid parent cookie is present. Both k
 require their bound HttpOnly browser cookie. Old unbound sessions require a new sign-in.
 
 - `GET /api/auth/status` returns only `{ available, locked }`, allowing the sign-in page to offer adult PIN unlock.
-- `POST /api/auth/lock` locks this browser's current parent session, leaving child views active.
 - `POST /api/auth/unlock` accepts `{ pin }`, verifies the adult PIN, and restores the held parent session.
 - `POST /api/auth/sign-out` ends only the current parent session and clears its cookie. Children and other browsers stay signed in. Remote parent sessions can be ended individually through `/api/sessions/end`.
 - `POST /api/auth/email/start` accepts `tab: true` and returns `{ challenge }` while also setting the pending cookie for legacy clients. Verify/choose accept it in `X-Sign-In-Challenge`.

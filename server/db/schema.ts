@@ -181,7 +181,10 @@ export const keys = pgTable(
         check("keys_pin_names_no_kid", sql`${t.kind} <> 'pin' or ${t.kid_id} is null`),
         uniqueIndex("keys_kid_pin_key")
             .on(t.family_id)
-            .where(sql`kind = 'kid-pin'`),
+            .where(sql`kind = 'kid-pin' and kid_id is null`),
+        uniqueIndex("keys_kid_own_pin_key")
+            .on(t.family_id, t.kid_id)
+            .where(sql`kind = 'kid-pin' and kid_id is not null`),
         // One PIN per family: setting it again replaces the row.
         uniqueIndex("keys_pin_key")
             .on(t.family_id)

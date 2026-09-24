@@ -6,15 +6,26 @@ See [multi-parent.md](multi-parent.md) for the implemented equal-parent invitati
 
 ## Kids’ sign-in and independent tabs
 
-Children can use their own sign-in once a username and the shared kids’ PIN exist. Children still
+Children can use their own sign-in once a username and an effective kids’ PIN exist. Children still
 have no email address or `users` row. `kids.settings.username` is a globally unique, case-insensitive
 sign-in name, separate from the display name; new children get their normalized name when available,
 then tries each readable word before adding a numeric suffix. Short names gain a word to meet the minimum length.
-A parent can edit it or leave it blank when saving to generate another. A username is generated when the child is added; signing in requires consent and a kids’ PIN. These changes require a parent’s email sign-in in the last ten
-minutes; a session restored through the adult PIN is insufficient.
+A parent can edit it or leave it blank when saving to generate another. A username is generated when the child is added; signing in requires consent and a kids’ PIN. These changes require an authenticated parent; they do not require a recent email sign-in.
 
-The shared **kids’ PIN** is a `kid-pin` key, HMAC-hashed with a separate domain and family id. It
-must differ from the adult family PIN in either direction. The marketing header has one Sign in
+The shared **kids’ PIN** is a `kid-pin` key with no child id, HMAC-hashed with a separate domain
+and family id. A child may instead have one `kid-pin` key naming their id, with that id also in
+the hash input. An own PIN replaces the shared PIN for that username; a failed own PIN never
+falls back to checking the shared PIN. Different children may choose the same digits. Both shared
+and own PINs must differ from the Parent PIN, checked in both directions.
+Changing the shared PIN revokes username sessions only for children without an own PIN.
+Changing a child's username, own PIN, or assignment to shared revokes only that child's username
+sessions. Parent-opened child views and other children's sessions remain valid.
+A new child has no override and uses the shared PIN. Returning to shared deletes the override and
+requires a configured shared PIN. An own PIN can be created even before a shared PIN is configured.
+The account row says Shared PIN or Own PIN; assignment and entry fields appear only inside Edit.
+PIN hashes and digits are never returned by the configuration endpoint. Parent removal reassigns
+both shared and own PIN sponsorship to a remaining parent.
+ The marketing header has one Sign in
 link; that page switches between Grown-ups and Kids. `/sign-in?for=kids` opens the kids’ form directly,
 and `/kids/sign-in` remains a compatible entry. The form accepts a username and kids’ PIN. Its `kid-session` names only that child and has
 `detail.login = true`. It cannot add siblings or create a parent session using the adult PIN alone. If this browser already holds an active parent session, adult PIN verification can return to that session.
@@ -91,14 +102,14 @@ Every child request checks current consent and that the opening parent still has
 membership. Observed invalid keys are deleted, so they cannot resume later. A request already in
 flight when eligibility changes may finish; subsequent requests are refused.
 
-The Account **Signed-in browsers** card combines your own parent sign-ins and children’s sign-ins,
-one row per person and browser binding. Ending your parent row revokes your sessions in that browser
-within this family; children and other parents keep access. The separate parent sessions card is removed.
-It marks this browser and uses the latest activity across that child's sessions (updated at most
-daily). Signing out a row revokes all that child's sessions in that browser, including parent-opened
-and username sign-ins; other children, browsers, and parents stay signed in. The group identifier
-is opaque and resolved within the requesting parent's family. Independent tab credentials remain
-independent. Account refreshes on focus or becoming visible. Closing a tab is not sign-out.
+Account has five sections: personal details, family details and parent membership,
+Sign-in & PINs, Notifications, and Delete family. The sign-in card contains child usernames, the kids’ PIN,
+and the Parent PIN (previously labelled family PIN). PIN editors expand in place.
+Account no longer displays or fetches parent or child session lists. Ordinary Sign out affects
+the current parent's browser across tabs; children stay signed in. There is no standalone parent-lock action. Backend session records, expiry, and revocation remain authentication state,
+not analytics events. Closing a tab is not sign-out.
+Weekly email preferences live in Notifications near the bottom. The personal card has no privacy
+disclosure link; the child-consent notice remains in the add-child flow. There is no billing placeholder card.
 
 Email issuance serializes its aggregate network/global budgets as well as address limits. Delivery
 failures invalidate the challenge and allow an immediate retry within the existing 15-minute/day
@@ -733,7 +744,7 @@ Afterwards the tutor's session is in the family, and reaches the one kid only on
 
 ### 10. Signing out, and signing out everywhere
 
-The account page (`/account`, from the menu under the grown-up's own stamp on the bar) lists the person's session keys in this family with `GET /api/sessions`: each key's name, when it was made and last used, whether it is a shared-device session, whether it was given by the PIN, and whether it is put away for a children's view, with this browser's own marked and never a hash. Sign out beside each calls `POST /api/sessions/end {id}`, which ends one of the person's own keys and records `signed-out`, clearing the cookie when it was this browser's. The single Sign out action calls `POST /api/auth/sign-out {}` and ends only the current parent session across tabs. Lock parent pages lives beside the family PIN; children and other browsers remain signed in. Built on 21 September 2026 with the account page, which also holds the family PIN, the children's views open in the family with End beside each, the person's other families with Switch, the notice's promise about the family's data (export and deletion wait on their routes, flow 12), and what paying for lumischool is, which is nothing yet. Passkeys are listed from `users.passkeys`, each with a name the person can change and a Remove button. Ending a session deletes its key, and the next request from that browser gets `401` and lands on the sign-in page. None of this ends a children's view, which the family's page lists with its own End, because a parent signing out everywhere after losing a phone does not want the children's views closed.
+The account page (`/account`, from the menu under the grown-up's own stamp on the bar) lists the person's session keys in this family with `GET /api/sessions`: each key's name, when it was made and last used, whether it is a shared-device session, whether it was given by the PIN, and whether it is put away for a children's view, with this browser's own marked and never a hash. Sign out beside each calls `POST /api/sessions/end {id}`, which ends one of the person's own keys and records `signed-out`, clearing the cookie when it was this browser's. The single Sign out action calls `POST /api/auth/sign-out {}` and ends only the current parent session across tabs. The standalone parent-lock action has been removed. Built on 21 September 2026 with the account page, which also holds the family PIN, the children's views open in the family with End beside each, the person's other families with Switch, the notice's promise about the family's data (export and deletion wait on their routes, flow 12), and what paying for lumischool is, which is nothing yet. Passkeys are listed from `users.passkeys`, each with a name the person can change and a Remove button. Ending a session deletes its key, and the next request from that browser gets `401` and lands on the sign-in page. None of this ends a children's view, which the family's page lists with its own End, because a parent signing out everywhere after losing a phone does not want the children's views closed.
 
 ### 11. Recovery
 

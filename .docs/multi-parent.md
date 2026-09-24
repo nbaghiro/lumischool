@@ -7,7 +7,7 @@ per tab. Two adult identities in the same browser are not isolated parent worksp
 
 ## Product
 
-Account has a Family members card: active parents, pending/expired invitations, Invite a parent,
+Account has a Your family card with editable family details and a Parents section: active parents, pending/expired invitations, Invite a parent,
 Resend, Cancel, Remove, and Leave. Forms and confirmation appear only when needed. The last parent
 cannot leave. Removal keeps historical contributions and suggests changing both shared PINs.
 The card refreshes on return to the tab.
@@ -59,7 +59,7 @@ it returns the normal parent session and notificationFailed.
 
 ## Manual QA
 
-1. Account → Family members → Invite a parent. Inspect the email in /outbox locally.
+1. Account → Your family → Invite a parent. Inspect the email in /outbox locally.
 2. Open the link in a separate browser/profile, enter a name, verify the emailed code, and join.
    Confirm the same children, Calendar and settings are available to both parents.
 3. Check a new user and someone already in another family. The existing account can still choose

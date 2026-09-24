@@ -59,33 +59,52 @@ export function Announcer(): JSX.Element {
 
 /**
  * A line on the sheet, read out as it appears, with the one thing that answers it, if there is one.
- * With `focus` it also takes focus, for a line that is the whole of what a step has to say.
+ * Ordinary notices can be dismissed; focus and recovery messages stay unless explicitly enabled.
+ * New text makes a dismissed notice visible again. With `focus` it also takes focus, for a line that is the whole of what a step has to say.
  */
 export function Say(props: {
     text: string;
     calm?: boolean;
     focus?: boolean;
     action?: { label: string; run: () => void };
+    dismissible?: boolean;
 }): JSX.Element {
-    createEffect(() => announce(props.text, { urgent: !props.calm }));
+    const [dismissed, setDismissed] = createSignal(false);
+    createEffect(() => {
+        announce(props.text, { urgent: !props.calm });
+        setDismissed(false);
+    });
     return (
-        <div
-            class={props.calm ? "say calm" : "say"}
-            tabindex={props.focus ? -1 : undefined}
-            ref={(el) => {
-                if (props.focus) focusOnceShown(el);
-            }}
-        >
-            <p>{props.text}</p>
-            <Show when={props.action}>
-                {(a) => (
-                    <div class="acts">
-                        <Button second onClick={() => a().run()}>
-                            {a().label}
-                        </Button>
-                    </div>
-                )}
-            </Show>
-        </div>
+        <Show when={!dismissed()}>
+            <div
+                classList={{ dismissible: props.dismissible ?? (!props.action && !props.focus) }}
+                class={props.calm ? "say calm" : "say"}
+                tabindex={props.focus ? -1 : undefined}
+                ref={(el) => {
+                    if (props.focus) focusOnceShown(el);
+                }}
+            >
+                <p>{props.text}</p>
+                <Show when={props.dismissible ?? (!props.action && !props.focus)}>
+                    <button
+                        type="button"
+                        class="say-dismiss"
+                        aria-label="Dismiss message"
+                        onClick={() => setDismissed(true)}
+                    >
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </Show>
+                <Show when={props.action}>
+                    {(a) => (
+                        <div class="acts">
+                            <Button second onClick={() => a().run()}>
+                                {a().label}
+                            </Button>
+                        </div>
+                    )}
+                </Show>
+            </div>
+        </Show>
     );
 }

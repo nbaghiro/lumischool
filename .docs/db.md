@@ -9,7 +9,9 @@ The original seven-table discussion below describes product data, not these oper
 
 Kids’ sign-in uses the same seven tables. The `kids_username_key` unique expression index covers
 `lower(settings->>'username')` across families; missing usernames remain null. A `kid-pin` key per
-family is protected by `keys_kid_pin_key`. `kid-attempt` keys can have no family and hold only hashed
+family (with null kid_id) is protected by `keys_kid_pin_key`. Migration 0008 adds optional
+child-specific keys protected by `keys_kid_own_pin_key` on family_id and kid_id. Own PIN hashes
+include the child id, so equal digits can be assigned independently without hash collisions. `kid-attempt` keys can have no family and hold only hashed
 username/network identities. The narrow `kid_login_lookup` SECURITY DEFINER function serializes
 attempt limits before finding an enabled username; it grants execution only to the app role and
 fixes its search path. Subsequent PIN checks and reads run through the selected family’s RLS scope.

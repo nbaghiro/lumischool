@@ -22,7 +22,7 @@ const inAWhile = (seconds: number | undefined): string =>
 
 const answers = (n: number): string => (n === 1 ? "One answer" : `${n} answers`);
 
-const NO_PIN_YET = "Type the family PIN first.";
+const NO_PIN_YET = "Type the parent PIN first.";
 
 function words(f: Failure, unsent: number, adding: string | null): string {
     switch (f.error) {
@@ -33,7 +33,7 @@ function words(f: Failure, unsent: number, adding: string | null): string {
         case "rate-limited":
             return `There have been too many wrong tries. Try the PIN again ${inAWhile(f.retryAfter)}.`;
         case "no-pin":
-            return "The family PIN has stopped working after too many wrong tries. Sign in instead, and set a new PIN on the family's page.";
+            return "The parent PIN has stopped working after too many wrong tries. Sign in instead, and set a new PIN on the family's page.";
         case "no-kid-session":
             return "A grown-up has closed the children's view on this device.";
         case "no-consent":
@@ -110,7 +110,7 @@ export function GrownUps(props: {
                 title="For grown-ups"
                 lead={
                     props.view.pin
-                        ? "Type the family PIN to leave the children's view and go back to the family's page as you were, or to add another child to the view."
+                        ? "Type the parent PIN to leave the children's view and go back to the family's page as you were, or to add another child to the view."
                         : "A grown-up signs in with their email to open the family’s page. The kids’ PIN only opens your learning page."
                 }
             >
@@ -124,7 +124,7 @@ export function GrownUps(props: {
                         }}
                     >
                         <PinInput
-                            label="The family PIN"
+                            label="The parent PIN"
                             value={pin()}
                             onInput={(digits) => {
                                 setPin(digits);

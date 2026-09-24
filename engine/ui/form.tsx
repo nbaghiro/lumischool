@@ -1,5 +1,5 @@
 // The controls a child's screen presses, the same in both apps (fields.tsx has the grown-ups' own,
-// apart so the child's script never carries them): buttons, the family PIN in four boxes, and the
+// apart so the child's script never carries them): buttons, the parent PIN in four boxes, and the
 // browser's own time zone, which the postcards read.
 
 import "./form.css";

@@ -43,7 +43,6 @@ import {
     confirmAccountEmail,
     KIDS_JOIN,
     leaveKidView,
-    lockParent,
     unlockParent,
     me,
     openKidView,
@@ -741,15 +740,6 @@ function routes(config: Config): Route[] {
         },
         {
             method: "POST",
-            path: "/api/auth/lock",
-            who: "adult",
-            run: async (_c, adult) => {
-                const out = await lockParent(adult);
-                return out === true ? json(204, null) : problem(409, out.error);
-            },
-        },
-        {
-            method: "POST",
             path: "/api/auth/unlock",
             who: "anyone",
             run: async (c) => {
@@ -890,9 +880,10 @@ function routes(config: Config): Route[] {
             path: "/api/kid-logins",
             who: "adult",
             run: async (c, adult) => {
-                const out = await changeKidLogin(adult, {
+                const out = await changeKidLogin(config, adult, {
                     kid: field(c.body, "kid"),
                     username: field(c.body, "username"),
+                    pin: field(c.body, "pin"),
                 });
                 return "error" in out
                     ? problem(REFUSED[out.error], out.error, { problem: out.problem })

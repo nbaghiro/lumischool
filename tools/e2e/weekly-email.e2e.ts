@@ -7,10 +7,18 @@ test("weekly email preferences live in Account and persist without a letter page
     await signInAs(page);
     await page.goto("/account#weekly-email");
     const section = page.locator("#weekly-email");
+    await expect(
+        page.getByRole("article", { name: "Notifications", exact: true }).locator("#weekly-email"),
+    ).toBeVisible();
+    await expect(page.getByText("Privacy and your family’s data", { exact: true })).toHaveCount(0);
     const choice = section.getByLabel("Send me");
     const save = section.getByRole("button", { name: "Save", exact: true });
     await expect(choice).toHaveValue("off");
     await expect(save).toBeDisabled();
+    const rowBox = await section.locator(".weekly-email-controls").boundingBox();
+    const saveBox = await save.boundingBox();
+    if (!rowBox || !saveBox) throw new Error("Missing weekly email controls");
+    expect(Math.abs(rowBox.x + rowBox.width - (saveBox.x + saveBox.width))).toBeLessThan(2);
     await choice.selectOption("private");
     await save.click();
     await expect(section.getByRole("status")).toContainText("saved");

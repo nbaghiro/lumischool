@@ -1,8 +1,7 @@
 .inline-edit {
     min-width: 0;
 }
-.inline-input,
-select.inline-select {
+.inline-input {
     display: block;
     width: 100%;
     min-height: 44px;
@@ -13,12 +12,10 @@ select.inline-select {
     color: var(--ink);
     font: inherit;
 }
-.inline-input:hover,
-select.inline-select:hover {
+.inline-input:hover {
     background: var(--paper);
 }
-.inline-input:focus-visible,
-select.inline-select:focus-visible {
+.inline-input:focus-visible {
     outline: 2px solid var(--pen);
     outline-offset: 3px;
 }

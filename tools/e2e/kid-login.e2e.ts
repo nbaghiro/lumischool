@@ -1,10 +1,10 @@
 import { expect, type Page } from "@playwright/test";
 import { test, signInHere } from "./steps";
 
-async function login(page: Page, username: string): Promise<void> {
+async function login(page: Page, username: string, pin = "1357"): Promise<void> {
     await page.goto("/sign-in?for=kids");
     await page.getByLabel("Your username", { exact: true }).fill(username);
-    await page.getByLabel("Your kids’ PIN", { exact: true }).fill("1357");
+    await page.getByLabel("Your kids’ PIN", { exact: true }).fill(pin);
     await page.getByRole("button", { name: "Open my page" }).click();
     await expect(page).toHaveURL(/\/kids$/);
     await expect(page.getByRole("button", { name: "Your profile" })).toBeVisible();
@@ -127,11 +127,11 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
     await expect(
         page
             .locator("#main")
-            .getByText("The kids’ PIN is set. Previous username sign-ins are closed."),
+            .getByText("Shared kids’ PIN saved. Children using it have been signed out."),
     ).toBeVisible();
     const suffix = Date.now().toString(36);
     for (const name of ["Rosie", "Leo"]) {
-        await page.getByRole("button", { name: `Edit ${name}’s username` }).click();
+        await page.getByRole("button", { name: `Edit ${name}’s sign-in` }).click();
         await page
             .getByLabel(`${name}’s username`, { exact: true })
             .fill(`${name.toLowerCase()}-${suffix}`);
@@ -245,7 +245,7 @@ test("parents configure kids’ sign-in and siblings keep independent tabs and a
     await expect(leo.getByRole("heading", { name: "Your learning page" })).toBeVisible();
 });
 
-test("parent tabs stay signed in beside child tabs, lock together, and sign out without closing child views", async ({
+test("parent tabs stay signed in beside child tabs and sign out without closing child views", async ({
     page,
     context,
 }) => {
@@ -255,7 +255,7 @@ test("parent tabs stay signed in beside child tabs, lock together, and sign out 
     await account.goto("/account");
     await expect(
         account.getByRole("button", { name: "Lock parent pages", exact: true }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     const open = async (name: string) => {
         const opened = context.waitForEvent("page");
         await page.getByRole("link", { name: `Open ${name}'s view`, exact: true }).click();
@@ -269,22 +269,6 @@ test("parent tabs stay signed in beside child tabs, lock together, and sign out 
     expect(await who(rosie)).toEqual(["Rosie"]);
     expect(await who(leo)).toEqual(["Leo"]);
     expect((await context.request.get("/api/me")).status()).toBe(200);
-    await account.getByRole("button", { name: "Lock parent pages", exact: true }).click();
-    await expect(
-        account.getByRole("heading", { name: "Unlock parent access", exact: true }),
-    ).toBeVisible();
-    await expect(
-        page.getByRole("heading", { name: "Unlock parent access", exact: true }),
-    ).toBeVisible();
-    expect(await who(rosie)).toEqual(["Rosie"]);
-    await account.getByLabel("Adult family PIN", { exact: true }).fill("2468");
-    await account.getByRole("button", { name: "Unlock parent access", exact: true }).click();
-    await expect(
-        account.getByRole("heading", { name: "Hello, Test Parent", exact: true }),
-    ).toBeVisible();
-    await expect(
-        page.getByRole("heading", { name: "Hello, Test Parent", exact: true }),
-    ).toBeVisible();
     // A child following a parent URL stays in child mode even though the cookie is available.
     await rosie.goto("/account");
     await expect(rosie).toHaveURL(/\/kids$/);
@@ -348,3 +332,69 @@ for (const capability of ["storage", "locks"] as const) {
         expect(requests).toBe(0);
     });
 }
+
+test("a parent can give one child an own PIN, keep siblings shared, and switch back", async ({
+    page,
+    context,
+}) => {
+    await signInHere(page);
+    await page.goto("/account");
+    await page.getByRole("button", { name: "Set kids’ PIN", exact: true }).click();
+    await page.getByLabel("New kids’ PIN", { exact: true }).fill("1357");
+    await page.getByLabel("Type the kids’ PIN again", { exact: true }).fill("1357");
+    await page.getByRole("button", { name: "Save kids’ PIN", exact: true }).click();
+    const suffix = Date.now().toString(36);
+    const rosie = "own-rosie-" + suffix;
+    const leo = "shared-leo-" + suffix;
+    for (const [name, username] of [
+        ["Rosie", rosie],
+        ["Leo", leo],
+    ] as const) {
+        await page.getByRole("button", { name: `Edit ${name}’s sign-in`, exact: true }).click();
+        await page.getByLabel(`${name}’s username`, { exact: true }).fill(username);
+        if (name === "Rosie") {
+            await page.getByRole("radio", { name: "Use own PIN", exact: true }).check();
+            await page.getByLabel("Rosie’s new PIN", { exact: true }).fill("8642");
+            await page.getByLabel("Repeat Rosie’s PIN", { exact: true }).fill("0000");
+            await page.getByRole("button", { name: "Save Rosie’s sign-in", exact: true }).click();
+            await expect(
+                page
+                    .locator("#main")
+                    .getByText("Type the same four-digit PIN twice.", { exact: true }),
+            ).toBeVisible();
+            await page.getByLabel("Repeat Rosie’s PIN", { exact: true }).fill("8642");
+        }
+        await page.getByRole("button", { name: `Save ${name}’s sign-in`, exact: true }).click();
+        await expect(page.getByLabel(`${name}’s username`, { exact: true })).toHaveCount(0);
+    }
+    const row = page.locator(".kid-login-row").filter({ hasText: rosie });
+    await expect(row).toContainText("Own PIN");
+    await expect(page.locator(".kid-login-row").filter({ hasText: leo })).toContainText(
+        "Shared PIN",
+    );
+    await expect(page.getByLabel("Rosie’s new PIN", { exact: true })).toHaveCount(0);
+    const child = await context.newPage();
+    await login(child, rosie, "8642");
+    expect(await who(child)).toEqual(["Rosie"]);
+    await page.getByRole("button", { name: "Change kids’ PIN", exact: true }).click();
+    await page.getByLabel("New kids’ PIN", { exact: true }).fill("9753");
+    await page.getByLabel("Type the kids’ PIN again", { exact: true }).fill("9753");
+    await page.getByRole("button", { name: "Save kids’ PIN", exact: true }).click();
+    await expect(page.getByLabel("New kids’ PIN", { exact: true })).toHaveCount(0);
+    expect(await who(child)).toEqual(["Rosie"]);
+    const sibling = await context.newPage();
+    await login(sibling, leo, "9753");
+    expect(await who(sibling)).toEqual(["Leo"]);
+    await page.getByRole("button", { name: "Edit Rosie’s sign-in", exact: true }).click();
+    await page.getByRole("radio", { name: "Use shared PIN", exact: true }).check();
+    await expect(page.getByLabel("Rosie’s new PIN", { exact: true })).toHaveCount(0);
+    await page.getByRole("button", { name: "Save Rosie’s sign-in", exact: true }).click();
+    await expect(row).toContainText("Shared PIN");
+    await expect(page.getByLabel("Rosie’s username", { exact: true })).toHaveCount(0);
+    expect(await who(child)).toEqual([]);
+    expect(await who(sibling)).toEqual(["Leo"]);
+    await login(child, rosie, "9753");
+    expect(await who(child)).toEqual(["Rosie"]);
+    await page.reload();
+    await expect(row).toContainText("Shared PIN");
+});

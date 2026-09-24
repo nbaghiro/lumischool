@@ -221,7 +221,7 @@ export async function openChildrensView(page: Page, names: readonly string[]): P
     await atScreen(page, childsMap(page, first));
     for (const name of more) {
         await holdGrownUps(page);
-        await page.getByLabel("The family PIN").fill(FAMILY_PIN);
+        await page.getByLabel("The parent PIN").fill(FAMILY_PIN);
         await page.getByRole("button", { name: `Add ${name}` }).click();
         await atScreen(page, page.getByRole("heading", { name: "Who is learning today?" }));
     }

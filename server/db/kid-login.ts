@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import { withFamily, type FamilyTx } from "./client";
 import { keys, kids } from "./schema";
 
@@ -25,14 +25,44 @@ export async function lookupLogin(
     });
 }
 
-export async function loginPin(tx: FamilyTx) {
-    const [pin] = await tx.select().from(keys).where(eq(keys.kind, "kid-pin")).for("update");
+/** The child's own PIN replaces the shared PIN; no authentication fallback is attempted. */
+export async function loginPin(tx: FamilyTx, kid?: string) {
+    const [pin] = await tx
+        .select()
+        .from(keys)
+        .where(
+            and(
+                eq(keys.kind, "kid-pin"),
+                kid ? or(eq(keys.kid_id, kid), isNull(keys.kid_id)) : isNull(keys.kid_id),
+            ),
+        )
+        .orderBy(sql`${keys.kid_id} desc nulls last`)
+        .limit(1)
+        .for("update");
     return pin ?? null;
 }
 
-export async function saveLoginPin(tx: FamilyTx, family: string, user: string, hash: string) {
-    await tx.delete(keys).where(eq(keys.kind, "kid-pin"));
-    await tx.insert(keys).values({ family_id: family, user_id: user, kind: "kid-pin", hash });
+export async function loginPins(tx: FamilyTx) {
+    return tx.select().from(keys).where(eq(keys.kind, "kid-pin")).for("update");
+}
+
+export async function removeLoginPin(tx: FamilyTx, kid: string) {
+    await tx.delete(keys).where(and(eq(keys.kind, "kid-pin"), eq(keys.kid_id, kid)));
+}
+
+export async function saveLoginPin(
+    tx: FamilyTx,
+    family: string,
+    user: string,
+    hash: string,
+    kid?: string,
+) {
+    await tx
+        .delete(keys)
+        .where(and(eq(keys.kind, "kid-pin"), kid ? eq(keys.kid_id, kid) : isNull(keys.kid_id)));
+    await tx
+        .insert(keys)
+        .values({ family_id: family, user_id: user, kid_id: kid ?? null, kind: "kid-pin", hash });
 }
 
 export async function loginTry(tx: FamilyTx, id: string, right: boolean) {

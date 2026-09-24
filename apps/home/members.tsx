@@ -7,14 +7,18 @@ import { failureText } from "../../engine/ui/failure";
 import { emailOf } from "../../school/family/login";
 import type { Failure } from "../../engine/ui/wire";
 
-export function Members(props: { family: string; user: string }): JSX.Element {
+export function Members(props: {
+    family: string;
+    user: string;
+    children?: JSX.Element;
+}): JSX.Element {
     const [data, { refetch }] = createResource(
         () => props.family,
         () => api.familyMembers(),
     );
     onMount(() => {
         const refresh = () => {
-            if (!busy() && document.visibilityState === "visible") void refetch();
+            if (!busy() && !data.loading && document.visibilityState === "visible") void refetch();
         };
         window.addEventListener("focus", refresh);
         document.addEventListener("visibilitychange", refresh);
@@ -29,7 +33,7 @@ export function Members(props: { family: string; user: string }): JSX.Element {
     const [said, say] = createSignal("");
     const [removing, setRemoving] = createSignal<{ id: string; name: string } | null>(null);
     const view = () => {
-        const d = data();
+        const d = data.latest;
         return d && !("error" in d) ? d : null;
     };
     const fail = (f: Failure) => {
@@ -79,18 +83,17 @@ export function Members(props: { family: string; user: string }): JSX.Element {
         say(
             result.notificationFailed
                 ? "Access ended. Some notification emails could not be sent. Let the other parents know."
-                : "Access ended. Consider changing the shared family and kids’ PINs.",
+                : "Access ended. Consider changing the shared parent and kids’ PINs.",
         );
         await refetch();
     };
     return (
         <div id="family-members">
-            <Postcard wide kicker="Your family" title="Family members">
-                <p>
-                    Each parent has full access and their own email sign-in. You share the family
-                    PIN.
-                </p>
-                <Show when={!data.loading} fallback={<p>Loading family members…</p>}>
+            <Postcard wide kicker="Your family" title="Your family">
+                {props.children}
+                <h2 class="members-heading">Parents</h2>
+                <p class="note">Each parent has full access and their own email sign-in.</p>
+                <Show when={data.latest !== undefined} fallback={<p>Loading family members…</p>}>
                     <Show
                         when={view()}
                         fallback={

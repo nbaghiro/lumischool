@@ -2,7 +2,7 @@
 // it): a hello card with today's lessons and what waits to be marked, and a card taped over the map
 // for each child with today's lessons to open or print, the week, where they are on their map, what
 // came back and the one thing to look at, and their view opened on this browser in one tap (flow 5).
-// Under them, the family's own card: the children's view, the family PIN and the other families.
+// Under them, the family's own card: the children's view, the parent PIN and the other families.
 
 import "./home.css";
 import type { SceneDrawer } from "../../engine/ui/scene";
@@ -1082,26 +1082,26 @@ function FamilyCard(props: { me: Me; view: FamilyView; parent: boolean }): JSX.E
                     <p class="kicker">For grown-ups</p>
                     <h2 id={id} class="postcard-title">
                         {props.parent
-                            ? "The children's view and the family PIN"
+                            ? "The children's view and the parent PIN"
                             : "Your other families"}
                     </h2>
                     <Show when={props.parent}>
                         <p id="gh-view-note" class="note">
                             Opening a child's view puts your sign-in away on this browser, which
                             then shows only that child's pages. A grown-up comes back to this page
-                            with the family PIN, as they were, or by signing in again, and can add a
+                            with the parent PIN, as they were, or by signing in again, and can add a
                             brother or sister to the view from inside it with the PIN.
                         </p>
                         <p class="note">
                             {props.view.pin
-                                ? "The family PIN is set."
+                                ? "The parent PIN is set."
                                 : "The family has no PIN yet, so a grown-up leaves the children's view by signing in again."}
                         </p>
                     </Show>
                     <p class="note">
                         {props.parent
-                            ? "The family PIN, the children's views open on your devices, and where you are signed in are on your account page."
-                            : "The families you are in, and where you are signed in, are on your account page."}
+                            ? "Manage your family and both PINs on your account page."
+                            : "Manage your details and switch families on your account page."}
                     </p>
                     <div class="acts">
                         <Link href="/account" class="btn second">

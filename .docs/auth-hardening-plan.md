@@ -50,7 +50,7 @@ New SQL belongs in forward migrations only. Production proxy behavior and existi
 - Save a changed username, then try the old and new names. Saving an unchanged username is disabled and does not end an existing sign-in.
 - Create children with a name already in use. Verify the friendly suffix and global uniqueness; test a short name and an accented name too.
 - End one child sign-in remotely, then end all. Return to Account from another tab and verify the list refreshes. Completed work remains.
-- Verify Sign out ends this parent session across tabs while children and other browsers stay signed in. Verify Lock parent pages beside the family PIN preserves child access and unlocks with the adult PIN.
+- Verify Sign out ends this parent session across tabs while children and other browsers stay signed in.
 - Request/resend an email code in separate tabs. Use each tab’s appropriate code. Check invalid-email feedback and the kids/grown-ups switcher on a phone.
 - Check Account layout, disabled unchanged save buttons, sign-in method labels, and touch targets on desktop, tablet and phone.
 
@@ -140,7 +140,7 @@ Remaining simplification candidates, not removed in this release pass:
    refresh, and put-away/restore bookkeeping still support the old model. Removing
    only the `tab` flag would leave inconsistent unlock/revocation behavior. Convert
    the cookie-based integration fixtures and remove the adoption path together;
-   preserve explicit parent locking and independent child credentials.
+   preserve independent child credentials.
 2. Likewise, retire the pending email-challenge cookie branch after converting the
    server/browser fixtures to the per-tab challenge contract. Current web clients
    already request `{tab:true}`. This can remove another transport selector, but
@@ -175,8 +175,7 @@ No generalized settings framework or new auth-state abstraction was introduced.
 
 ## Account sign-out simplification
 
-Account has one Sign out action with “Children stay signed in.” Lock parent pages
-lives beside the family PIN and is shown once a PIN exists. Remote parent sessions
+Account has one Sign out action with “Children stay signed in.” The standalone parent-lock action and its endpoint have been removed. Remote parent sessions
 and children’s sign-ins keep their individual management controls. Removed both
 bulk parent sign-out and browser-wide sign-out from UI, client helpers, HTTP and
 unused database helpers. The existing signed-out event shape remains unchanged;

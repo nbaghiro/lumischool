@@ -57,6 +57,13 @@
       "when": 1790265600000,
       "tag": "0007_family_deletion",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790279268598,
+      "tag": "0008_kid_own_pins",
+      "breakpoints": true
     }
   ]
 }

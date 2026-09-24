@@ -39,7 +39,7 @@ const WORDS: Record<Failure["error"], (f: Failure, local: boolean) => string> = 
         "The notice changed while this page was open. Read the new one, then tick the box again.",
     "signed-out": () => "You are signed out. Sign in again to carry on.",
     "put-away": () =>
-        "Parent access is locked on this browser. Unlock it with the adult family PIN or sign in by email.",
+        "Parent access is locked on this browser. Unlock it with the parent PIN or sign in by email.",
     "not-allowed": () => "Only a parent in the family can do that.",
     offline: (_f, local) =>
         local
@@ -49,7 +49,7 @@ const WORDS: Record<Failure["error"], (f: Failure, local: boolean) => string> = 
     "no-kid-session": () => "That children's view has already been closed.",
     "wrong-pin": () => "That PIN is not right.",
     "no-pin": () =>
-        "The family PIN has stopped working after too many wrong tries. Set a new one on the family's page.",
+        "The parent PIN has stopped working after too many wrong tries. Set a new one on the family's page.",
     "bad-request": (f) => f.problem ?? SOMETHING,
     "bad-envelope": () => SOMETHING,
     "too-large": () => SOMETHING,

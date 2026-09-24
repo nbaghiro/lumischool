@@ -129,7 +129,7 @@ test("a grown-up goes round: the view opens, an adult route is refused, the PIN 
     );
     expect(refused).toBe(403);
     await holdGrownUps(page);
-    await page.getByLabel("The family PIN").fill(FAMILY_PIN);
+    await page.getByLabel("The parent PIN").fill(FAMILY_PIN);
     await page.getByRole("button", { name: "Leave the children's view" }).click();
     // the family's page, with no code typed: the session that was put away is the one in use
     await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
@@ -144,7 +144,7 @@ test("a grown-up goes round: the view opens, an adult route is refused, the PIN 
         await page.evaluate(() => sessionStorage.getItem("lumischool-kid-session")),
     ).toBeTruthy();
     await holdGrownUps(page);
-    await page.getByLabel("The family PIN").fill(FAMILY_PIN);
+    await page.getByLabel("The parent PIN").fill(FAMILY_PIN);
     await page.getByRole("button", { name: "Leave the children's view" }).click();
     await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
     await signOut(page);
@@ -183,7 +183,7 @@ test("a grown-up leaves the children's view with the family's PIN", async ({ pag
     await signInAs(page);
     await openChildrensView(page, ["Rosie"]);
     await holdGrownUps(page);
-    const pin = page.getByLabel("The family PIN");
+    const pin = page.getByLabel("The parent PIN");
     const leave = page.getByRole("button", { name: "Leave the children's view" });
     await pin.fill("1111");
     await leave.click();

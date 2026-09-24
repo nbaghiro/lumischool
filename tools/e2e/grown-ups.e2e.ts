@@ -258,7 +258,7 @@ test("the bar stays as a grown-up moves between Home, Calendar and Explore and b
     ).toEqual({ bar: true, parts: true });
 });
 
-test("the account page opens from the menu, lists this browser's session, and Sign out ends it", async ({
+test("the account page opens from the menu with concise settings and Sign out", async ({
     page,
 }) => {
     await signInAs(page);
@@ -267,12 +267,10 @@ test("the account page opens from the menu, lists this browser's session, and Si
     await atScreen(page, page.getByRole("heading", { name: "Test Parent" }));
     await expect(page).toHaveURL(/\/account$/);
     await expect(page.getByText(/@example\.com/).first()).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Signed-in browsers" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Where you are signed in" })).toHaveCount(0);
-    await expect(page.locator(".ga-row.own")).toHaveCount(1);
-    await expect(page.locator(".ga-row.own")).toContainText("This browser");
-    await expect(page.getByRole("heading", { name: "Your family's data" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Paying for lumischool" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Signed-in browsers" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Your family", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sign-in & PINs", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Paying for lumischool" })).toHaveCount(0);
     expect(await smallTargets(page.locator("#main"))).toEqual([]);
     // a picture picked here is the one on the stamp on the bar
     await page.getByRole("button", { name: "A beard", exact: true }).click();
@@ -330,82 +328,35 @@ const kidItem = (page: Page, name: string): Locator =>
         .getByRole("listitem")
         .filter({ hasText: name });
 
-test("child browser rows show the child, distinguish this browser, and sign out the selected group", async ({
+test("account does not request session lists and parent PIN edits stay within the card", async ({
     page,
 }) => {
     await signInAs(page);
-    const link = await page.getByRole("link", { name: "Open Rosie's view" }).getAttribute("href");
-    const kid = new URL(link ?? "", "http://localhost").searchParams.get("child");
-    expect(kid).toBeTruthy();
-    let removed = false;
-    await page.route("**/api/kid-sessions", (route) =>
-        route.fulfill({
-            json: {
-                pin: true,
-                views: [
-                    ...(!removed
-                        ? [
-                              {
-                                  view: "here",
-                                  kid,
-                                  own: true,
-                                  name: "Chrome on a Mac",
-                                  seen_at: "2026-09-24T12:00:00.000Z",
-                              },
-                          ]
-                        : []),
-                    {
-                        view: "away",
-                        kid,
-                        own: false,
-                        name: "Safari on an iPad",
-                        seen_at: "2026-09-23T12:00:00.000Z",
-                    },
-                ],
-            },
-        }),
-    );
-    await page.route("**/api/kid-sessions/end", async (route) => {
-        expect(route.request().postData()).toBe(JSON.stringify({ view: "here" }));
-        removed = true;
-        await route.fulfill({ status: 204 });
+    const requests: string[] = [];
+    await page.route(/\/api\/(sessions|kid-sessions)$/, async (route) => {
+        requests.push(route.request().url());
+        await route.fulfill({ status: 500, json: { error: "server" } });
     });
     await page.goto("/account");
-    const section = page.locator("article.postcard").filter({
-        has: page.getByRole("heading", { name: "Signed-in browsers" }),
+    const pins = page.locator("article.postcard").filter({
+        has: page.getByRole("heading", { name: "Sign-in & PINs", exact: true }),
     });
-    await expect(section.locator(".ga-row")).toHaveCount(3);
-    await expect(section.locator(".ga-row.own")).toContainText("Test Parent (you)");
-    const here = section
-        .locator(".ga-row")
-        .filter({ hasText: "This browser" })
-        .filter({ hasText: "Rosie" });
-    await expect(here).toContainText("Rosie");
-    await here.getByRole("button", { name: "Sign out Rosie", exact: true }).click();
-    await expect(section.locator(".ga-row")).toHaveCount(2);
-    await expect(section.locator(".ga-row").filter({ hasText: "Rosie" })).toContainText(
-        "Safari on an iPad",
-    );
-    expect(await smallTargets(section)).toEqual([]);
-});
-
-test("account loads real saved child sign-ins alongside parent access", async ({ page }) => {
-    await signInAs(page);
-    const href = await page.getByRole("link", { name: "Open Rosie's view" }).getAttribute("href");
-    const kid = new URL(href ?? "", "http://localhost").searchParams.get("child");
-    expect(kid).toBeTruthy();
-    const response = await page.context().request.post("/api/kid-sessions", {
-        headers: { Origin: "http://localhost:8500" },
-        data: { kids: [kid], tab: true },
-    });
-    expect(response.status()).toBe(200);
-    await page.goto("/account");
-    await expect(page.getByRole("heading", { name: "Signed-in browsers" })).toBeVisible();
-    const card = page.locator("article.postcard").filter({
-        has: page.getByRole("heading", { name: "Signed-in browsers" }),
-    });
-    await expect(card.getByRole("button", { name: "Sign out Rosie" })).toBeVisible();
-    await expect(card.locator(".ga-row.own")).toContainText("Test Parent (you)");
+    await expect(pins.getByRole("button", { name: "Change parent PIN" })).toBeVisible();
+    expect(requests).toEqual([]);
+    await pins.getByRole("button", { name: "Change parent PIN" }).click();
+    await expect(pins.getByLabel("The new PIN", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Test Parent", exact: true })).toBeVisible();
+    await pins.getByLabel("The new PIN", { exact: true }).fill("8642");
+    await pins.getByLabel("The same PIN again", { exact: true }).fill("8642");
+    await expect(pins.getByText("Parent PIN saved.", { exact: true })).toBeVisible();
+    await pins.getByRole("button", { name: "Dismiss message", exact: true }).click();
+    await expect(pins.getByText("Parent PIN saved.", { exact: true })).toHaveCount(0);
+    await pins.getByRole("button", { name: "Change parent PIN" }).click();
+    await pins.getByLabel("The new PIN", { exact: true }).fill("7531");
+    await pins.getByLabel("The same PIN again", { exact: true }).fill("7531");
+    await expect(pins.getByText("Parent PIN saved.", { exact: true })).toBeVisible();
+    await expect(pins.getByLabel("The new PIN", { exact: true })).toHaveCount(0);
+    await expect(pins.getByRole("button", { name: "Lock parent pages" })).toHaveCount(0);
 });
 
 test("parents can confirm deletion of only their test family from the last account card", async ({

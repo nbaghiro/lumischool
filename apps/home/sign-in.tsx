@@ -665,7 +665,7 @@ function ParentUnlock(props: { next: string; onEmail: () => void }): JSX.Element
         <Postcard
             kicker="For grown-ups"
             title="Unlock parent access"
-            lead="Type the adult family PIN. The children’s views stay open."
+            lead="Type the parent PIN. The children’s views stay open."
         >
             <form
                 class="form"
@@ -674,7 +674,7 @@ function ParentUnlock(props: { next: string; onEmail: () => void }): JSX.Element
                     void unlock();
                 }}
             >
-                <PinInput label="Adult family PIN" value={pin()} onInput={setPin} />
+                <PinInput label="Parent PIN" value={pin()} onInput={setPin} />
                 <Button submit busy={busy()}>
                     Unlock parent access
                 </Button>

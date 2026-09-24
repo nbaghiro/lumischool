@@ -117,7 +117,10 @@ test(
             (await second.call("POST", "/api/members/remove", { body: { user: secondId } })).status,
             400,
         );
-        assert.equal((await second.call("POST", "/api/auth/lock")).status, 204);
+        assert.equal(
+            (await second.call("POST", "/api/kid-sessions", { body: { kids: [child] } })).status,
+            204,
+        );
         assert.equal(
             (await second.call("POST", "/api/auth/unlock", { body: { pin: "1357" } })).status,
             204,

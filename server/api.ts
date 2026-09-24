@@ -13,7 +13,7 @@ export type Person = Pick<User, "id" | "email" | "name" | "settings">;
 
 export interface KidLogins {
     pinSet: boolean;
-    kids: { id: string; name: string; username: string | null }[];
+    kids: { id: string; name: string; username: string | null; ownPin: boolean }[];
 }
 
 /** A family a person may choose, as `my_families` lists it. */

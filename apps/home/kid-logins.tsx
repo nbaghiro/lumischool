@@ -11,7 +11,11 @@ import type { KidLogins as Logins } from "../../server/api";
 const failure = (f: Failure): string =>
     f.problem ?? "We could not save that. Check your connection and try again.";
 
-export function KidLogins(props: { family: string; onChanged: () => void }): JSX.Element {
+export function KidLogins(props: {
+    family: string;
+    onChanged: () => void;
+    children?: JSX.Element;
+}): JSX.Element {
     const [data, { refetch }] = createResource(() => props.family, api.kidLogins);
     const [editingPin, setEditingPin] = createSignal(false);
     const [pin, setPin] = createSignal("");
@@ -19,7 +23,7 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
     const ready = (): Logins | false => {
-        const d = data();
+        const d = data.latest;
         return !!d && !("error" in d) && d;
     };
     const changed = async (): Promise<void> => {
@@ -43,13 +47,14 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
         setAgain("");
         setSaid(
             r === true
-                ? "The kids’ PIN is set. Previous username sign-ins are closed."
+                ? "Shared kids’ PIN saved. Children using it have been signed out."
                 : failure(r),
         );
     };
     return (
-        <Postcard focus={false} kicker="Your account" title="Kids’ sign-in">
-            <p class="note">A username for each child, one shared kids’ PIN.</p>
+        <Postcard focus={false} kicker="Your family" title="Sign-in & PINs">
+            <h2>Kids</h2>
+            <p class="note">One username per child. A shared PIN, or a PIN of their own.</p>
             <Show
                 when={ready()}
                 fallback={
@@ -63,8 +68,8 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                         <div class="kid-login-summary">
                             <span>
                                 {d().pinSet
-                                    ? "Kids’ PIN is set"
-                                    : "Set a PIN to let children sign in"}
+                                    ? "Shared kids’ PIN · Set"
+                                    : "Shared kids’ PIN · Not set"}
                             </span>
                             <Show when={!editingPin()}>
                                 <Button
@@ -80,8 +85,8 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                         </div>
                         <Show when={editingPin()}>
                             <p class="note">
-                                Use a different PIN from your family PIN. Saving signs children out
-                                of username sessions; unsent answers are lost.
+                                Use a different PIN from your parent PIN. Saving signs out children
+                                who use the shared PIN. Children with their own PIN stay signed in.
                             </p>
                             <form
                                 class="form kids-pin-form"
@@ -135,7 +140,13 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                             style={{ border: "0", padding: "0", margin: "0", "min-width": "0" }}
                         >
                             <For each={d().kids}>
-                                {(kid) => <LoginRow kid={kid} onChanged={changed} />}
+                                {(kid) => (
+                                    <LoginRow
+                                        kid={kid}
+                                        sharedPin={d().pinSet}
+                                        onChanged={changed}
+                                    />
+                                )}
                             </For>
                         </fieldset>
                         <Show when={!d().kids.length}>
@@ -144,27 +155,54 @@ export function KidLogins(props: { family: string; onChanged: () => void }): JSX
                     </>
                 )}
             </Show>
+            {props.children}
         </Postcard>
     );
 }
 
 function LoginRow(props: {
     kid: Logins["kids"][number];
+    sharedPin: boolean;
     onChanged: () => Promise<void>;
 }): JSX.Element {
     const [editing, setEditing] = createSignal(false);
     const [username, setUsername] = createSignal(props.kid.username ?? "");
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
-    const unchanged = (): boolean => usernameOf(username()) === props.kid.username;
+    const [own, setOwn] = createSignal(props.kid.ownPin);
+    const [pin, setPin] = createSignal("");
+    const [again, setAgain] = createSignal("");
+    const unchanged = (): boolean =>
+        usernameOf(username()) === props.kid.username &&
+        own() === props.kid.ownPin &&
+        !pin() &&
+        !again();
     const save = async (): Promise<void> => {
         if (busy() || unchanged()) return;
         if (username() !== "" && !usernameOf(username())) {
             setSaid("Use 3–32 letters, numbers or hyphens, starting with a letter.");
             return;
         }
+        if (
+            own() &&
+            (!props.kid.ownPin || pin() || again()) &&
+            (pin().length !== 4 || pin() !== again())
+        ) {
+            setSaid("Type the same four-digit PIN twice.");
+            return;
+        }
+        if (!own() && !props.sharedPin) {
+            setSaid("Set the shared PIN first, or choose Use own PIN.");
+            return;
+        }
         setBusy(true);
-        const r = await api.setKidLogin(props.kid.id, username());
+        const r = await api.setKidLogin(
+            props.kid.id,
+            username(),
+            own() ? pin() || undefined : null,
+        );
+        setPin("");
+        setAgain("");
         setBusy(false);
         setSaid(r === true ? "Saved." : failure(r));
         if (r === true) {
@@ -177,15 +215,21 @@ function LoginRow(props: {
             <div class="kid-login-summary">
                 <div class="kid-login-identity">
                     <strong>{props.kid.name}</strong>
-                    <span>{props.kid.username ?? "No username yet"}</span>
+                    <span>
+                        <span>{props.kid.username ?? "No username yet"}</span> ·{" "}
+                        {props.kid.ownPin ? "Own PIN" : "Shared PIN"}
+                    </span>
                 </div>
                 <Show when={!editing()}>
                     <button
                         type="button"
                         class="btn second"
-                        aria-label={`Edit ${props.kid.name}’s username`}
+                        aria-label={`Edit ${props.kid.name}’s sign-in`}
                         onClick={() => {
                             setUsername(props.kid.username ?? "");
+                            setOwn(props.kid.ownPin);
+                            setPin("");
+                            setAgain("");
                             setSaid("");
                             setEditing(true);
                         }}
@@ -211,9 +255,64 @@ function LoginRow(props: {
                         autocapitalize="none"
                         autocomplete="off"
                     />
+                    <fieldset class="kid-pin-choice" disabled={busy()}>
+                        <legend>PIN</legend>
+                        <label>
+                            <input
+                                type="radio"
+                                name={`pin-mode-${props.kid.id}`}
+                                checked={!own()}
+                                disabled={!props.sharedPin}
+                                onChange={() => {
+                                    setOwn(false);
+                                    setPin("");
+                                    setAgain("");
+                                }}
+                            />
+                            Use shared PIN
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name={`pin-mode-${props.kid.id}`}
+                                checked={own()}
+                                onChange={() => {
+                                    setOwn(true);
+                                    setPin("");
+                                    setAgain("");
+                                }}
+                            />
+                            Use own PIN
+                        </label>
+                    </fieldset>
+                    <Show when={!props.sharedPin}>
+                        <p class="note">Set the shared PIN above to use it here.</p>
+                    </Show>
+                    <Show when={own()}>
+                        <Show when={props.kid.ownPin}>
+                            <p class="note">Leave the PIN blank to keep it.</p>
+                        </Show>
+                        <div class="kids-pin-fields">
+                            <div class="kids-pin-field">
+                                <p class="note">New PIN</p>
+                                <PinInput
+                                    label={`${props.kid.name}’s new PIN`}
+                                    value={pin()}
+                                    onInput={setPin}
+                                />
+                            </div>
+                            <div class="kids-pin-field">
+                                <p class="note">Type it again</p>
+                                <PinInput
+                                    label={`Repeat ${props.kid.name}’s PIN`}
+                                    value={again()}
+                                    onInput={setAgain}
+                                />
+                            </div>
+                        </div>
+                    </Show>
                     <p class="note">
-                        Leave blank for an automatic username. Changing it signs this child out of
-                        username sessions; unsent answers are lost.
+                        Saving changes signs out only this child. Unsent answers may be lost.
                     </p>
                     <div class="acts">
                         <Button submit second busy={busy()} disabled={unchanged()}>
@@ -224,6 +323,8 @@ function LoginRow(props: {
                             disabled={busy()}
                             onClick={() => {
                                 setEditing(false);
+                                setPin("");
+                                setAgain("");
                                 setSaid("");
                             }}
                         >

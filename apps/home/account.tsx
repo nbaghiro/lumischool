@@ -4,7 +4,6 @@ import { Select } from "../../engine/ui/select";
 import "./account.css";
 import { KidLogins } from "./kid-logins";
 import {
-    batch,
     createEffect,
     createResource,
     createSignal,
@@ -27,9 +26,8 @@ import { go } from "../../engine/ui/router";
 import { focusOnceShown, Say } from "../../engine/ui/say";
 import type { Failure } from "../../engine/ui/wire";
 import { isParent } from "../../school/family/access";
-import { familyName, longDate } from "../../school/family/names";
-import { NOTICE } from "../../school/family/privacy";
-import type { FamilyView, KidSessions, Me, Sessions, SessionView } from "../../server/api";
+import { familyName } from "../../school/family/names";
+import type { FamilyView, Me } from "../../server/api";
 import { Drawing } from "../../engine/ui/art";
 import { GROWNUP_WORD, GROWNUPS } from "../../engine/parts/apps/grownup";
 import { familyChanged, GrownStamp, knowFamily, pickedPortrait, portraitOf } from "./bar";
@@ -40,11 +38,9 @@ const local = onThisComputer(location.hostname);
 interface Seen {
     me: Me;
     view: FamilyView;
-    sessions: Sessions;
-    kidSessions: KidSessions | null;
 }
 
-/** Who is signed in, their family, their sessions and, for a parent, the children's views. */
+/** Account identity and family details, without session-list dependencies. */
 async function load(): Promise<Seen | { failure: Failure } | null> {
     const me = await api.me({ ask: true });
     if ("error" in me) {
@@ -56,23 +52,10 @@ async function load(): Promise<Seen | { failure: Failure } | null> {
         go(signInFor("/account"), { replace: true });
         return null;
     }
-    const parent = isParent(me.members);
-    const [view, sessions, kidSessions] = await Promise.all([
-        api.familyRows({ ask: true }),
-        api.sessions(),
-        parent ? api.kidSessions() : Promise.resolve(null),
-    ]);
+    const view = await api.familyRows({ ask: true });
     if ("error" in view) return { failure: view };
-    if ("error" in sessions) return { failure: sessions };
-    if (kidSessions && "error" in kidSessions) return { failure: kidSessions };
-    return { me, view, sessions, kidSessions };
+    return { me, view };
 }
-
-/** The day a key was made or last used, or "today" for an instant of this day. */
-const dayOf = (instant: string): string => longDate(instant.slice(0, 10));
-
-/** What a session is called: the browser the user agent named, or a browser with no name. */
-const browserOf = (s: Pick<SessionView, "name">): string => s.name ?? "A browser";
 
 export function Account(): JSX.Element {
     const look = useLook();
@@ -87,8 +70,6 @@ export function Account(): JSX.Element {
         window.removeEventListener("focus", refreshOnReturn);
         document.removeEventListener("visibilitychange", refreshOnReturn);
     });
-    const [card, setCard] = createSignal<"page" | "pin">("page");
-    const [said, setSaid] = createSignal("");
     const signed = (): Seen | null => {
         const s = seen.latest;
         return s && "me" in s ? s : null;
@@ -111,14 +92,6 @@ export function Account(): JSX.Element {
                 : [],
         });
     });
-    const back = (line: string, again: boolean): void => {
-        batch(() => {
-            setSaid(line);
-            setCard("page");
-        });
-        if (again) void refetch();
-        scrollTo(0, 0);
-    };
     return (
         <Show when={seen.latest} fallback={<Waiting title="Opening your account" />}>
             <Switch>
@@ -132,38 +105,35 @@ export function Account(): JSX.Element {
                         </Postcard>
                     )}
                 </Match>
-                <Match when={card() === "pin" && signed()}>
-                    {(s) => (
-                        <SetPin
-                            me={s().me}
-                            pinSet={s().view.pin}
-                            onDone={(set) => back(set ? "The family PIN is set." : "", set)}
-                        />
-                    )}
-                </Match>
                 <Match when={signed()}>
                     {(s) => (
                         <div class="ga">
-                            <You seen={s()} said={said()} onRefetch={() => void refetch()} />
+                            <You seen={s()} onRefetch={() => void refetch()} />
                             <Show when={isParent(s().me.members)}>
-                                <Members family={s().me.family.id} user={s().me.user.id} />
+                                <Members family={s().me.family.id} user={s().me.user.id}>
+                                    <Show when={s().me.family.id} keyed>
+                                        {(_family) => (
+                                            <FamilyDetails
+                                                me={s().me}
+                                                onChanged={() => void refetch()}
+                                            />
+                                        )}
+                                    </Show>
+                                </Members>
                                 <KidLogins
                                     family={s().me.family.id}
                                     onChanged={() => void refetch()}
-                                />
+                                >
+                                    <ParentPin
+                                        pinSet={s().view.pin}
+                                        onChanged={() => void refetch()}
+                                    />
+                                </KidLogins>
                             </Show>
-                            <SignedInBrowsers
-                                seen={s()}
-                                onPin={() => {
-                                    setSaid("");
-                                    setCard("pin");
-                                    scrollTo(0, 0);
-                                }}
-                                onChanged={() => void refetch()}
-                            />
-                            <YourData />
-                            <Paying />
                             <Show when={isParent(s().me.members)}>
+                                <Postcard focus={false} kicker="Your account" title="Notifications">
+                                    <WeeklyEmail />
+                                </Postcard>
                                 <DeleteFamily me={s().me} kids={s().view.kids} />
                             </Show>
                         </div>
@@ -175,7 +145,7 @@ export function Account(): JSX.Element {
 }
 
 /** Who is signed in, their family and the others they are in, and the way out of this browser or every one. */
-function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.Element {
+function You(props: { seen: Seen; onRefetch: () => void }): JSX.Element {
     const me = (): Me => props.seen.me;
     const others = (): Me["families"] =>
         me().families.filter((f) => f.family_id !== me().family.id);
@@ -207,16 +177,10 @@ function You(props: { seen: Seen; said: string; onRefetch: () => void }): JSX.El
             title={me().user.name?.trim() || me().user.email}
             corner={<Corner place="harbour" seed={903} />}
         >
-            <Show when={props.said}>
-                <Say calm focus text={props.said} />
-            </Show>
             <Show when={me().family.id} keyed>
                 {(_family) => <AccountDetails me={me()} onChanged={props.onRefetch} />}
             </Show>
             <YourPicture me={me()} onPicked={props.onRefetch} />
-            <Show when={me().members.some((m) => m.kid_id === null && m.ended_at === null)}>
-                <WeeklyEmail />
-            </Show>
             <Show when={others().length}>
                 <section class="part">
                     <h2>Your other families</h2>
@@ -315,211 +279,47 @@ function YourPicture(props: { me: Me; onPicked: () => void }): JSX.Element {
     );
 }
 
-/** Manage saved access without treating tab sessions as separate devices. */
-function SignedInBrowsers(props: {
-    seen: Seen;
-    onPin: () => void;
-    onChanged: () => void;
-}): JSX.Element {
-    const views = (): KidSessions["views"] => props.seen.kidSessions?.views ?? [];
-    const kidName = (id: string): string =>
-        props.seen.view.kids.find((k) => k.id === id)?.name ?? "a child";
-    const [busy, setBusy] = createSignal<string | null>(null);
+/** Edit the PIN used to return from a shared child view. */
+function ParentPin(props: { pinSet: boolean; onChanged: () => void }): JSX.Element {
+    const [editing, setEditing] = createSignal(false);
     const [said, setSaid] = createSignal("");
-    const lock = async (): Promise<void> => {
-        if (busy()) return;
-        setBusy("lock");
-        setSaid("");
-        const answer = await api.lockParent();
-        if (answer === true) {
-            location.assign("/sign-in?locked=1");
-            return;
-        }
-        setBusy(null);
-        setSaid(
-            answer.error === "no-pin"
-                ? "Set a family PIN before locking parent pages."
-                : failureText(answer, local),
-        );
-    };
-    const end = async (view: string | null): Promise<void> => {
-        if (busy() || (view === null && views().length === 0)) return;
-        setBusy(view ?? "all");
-        setSaid("");
-        const r = view === null ? await api.endKidSessions() : await api.endKidSession(view);
-        setBusy(null);
-        if (r !== true && "error" in r) {
-            setSaid(failureText(r, local));
-            return;
-        }
-        setSaid(
-            view !== null
-                ? "That child is signed out of the selected browser."
-                : r === true || r.ended === 0
-                  ? "There were no child sign-ins to end."
-                  : r.ended === 1
-                    ? "The child sign-in has ended."
-                    : `${r.ended} child sign-ins have ended.`,
-        );
-        props.onChanged();
-    };
     return (
-        <Postcard focus={false} kicker="Your account" title="Signed-in browsers">
-            <section class="part">
-                <p class="note">
-                    Your sign-ins and your children’s, once per person per browser. Closing a tab
-                    does not sign out. Last-used dates are approximate.
-                </p>
-                <YourSessions seen={props.seen} onChanged={props.onChanged} />
-                <Show when={views().length}>
-                    <ul class="ga-list">
-                        <For each={views()}>
-                            {(v) => (
-                                <li class="ga-row">
-                                    <div class="ga-row-words">
-                                        <b>{kidName(v.kid)}</b>
-                                        <span>
-                                            {`${v.own ? "This browser" : (v.name ?? "Another browser")} · Last used ${dayOf(v.seen_at)}`}
-                                        </span>
-                                    </div>
-                                    <Button
-                                        second
-                                        busy={busy() === v.view}
-                                        onClick={() => void end(v.view)}
-                                    >
-                                        {`Sign out ${kidName(v.kid)}`}
-                                    </Button>
-                                </li>
-                            )}
-                        </For>
-                    </ul>
+        <section class="part">
+            <h2>Parents</h2>
+            <p class="note">Use this PIN to unlock parent pages on a shared browser.</p>
+            <div class="kid-login-summary">
+                <span>{props.pinSet ? "Parent PIN · Set" : "Parent PIN · Not set"}</span>
+                <Show when={!editing()}>
+                    <Button
+                        second
+                        onClick={() => {
+                            setSaid("");
+                            setEditing(true);
+                        }}
+                    >
+                        {props.pinSet ? "Change parent PIN" : "Set parent PIN"}
+                    </Button>
                 </Show>
-                <Show when={views().length > 0}>
-                    <div class="acts">
-                        <Button
-                            second
-                            disabled={views().length === 0}
-                            busy={busy() === "all"}
-                            onClick={() => void end(null)}
-                        >
-                            End all children’s sign-ins
-                        </Button>
-                    </div>
-                </Show>
-                <p class="note">
-                    Signing out affects only that person in that browser. Children stay signed in
-                    when you sign out. Ending a child’s access can lose answers not sent yet.
-                </p>
-                <Show when={said()}>
-                    <Say text={said()} />
-                </Show>
-            </section>
-            <Show when={isParent(props.seen.me.members)}>
-                <section class="part">
-                    <h2>The family PIN</h2>
-                    <p class="note">
-                        {props.seen.view.pin
-                            ? "The adult family PIN is set. Use it to unlock parent access or return from a child’s view on this browser."
-                            : "Set an adult PIN to lock and unlock parent access on this browser."}
-                    </p>
-                    <div class="acts">
-                        <Button second onClick={props.onPin}>
-                            {props.seen.view.pin ? "Change the family PIN" : "Set the family PIN"}
-                        </Button>
-                    </div>
-                    <p class="note">Setting the PIN needs a sign-in in the last ten minutes.</p>
-                    <Show when={props.seen.view.pin}>
-                        <Button second busy={busy() === "lock"} onClick={() => void lock()}>
-                            Lock parent pages
-                        </Button>
-                        <p class="note">
-                            Children can keep learning. Use your family PIN to return.
-                        </p>
-                    </Show>
-                </section>
+            </div>
+            <Show when={editing()}>
+                <SetPin
+                    onDone={(saved) => {
+                        setEditing(false);
+                        if (saved) {
+                            setSaid("Parent PIN saved.");
+                            props.onChanged();
+                        }
+                    }}
+                />
             </Show>
-        </Postcard>
-    );
-}
-
-/** The person's own sessions in this family, this browser's marked, each with Sign out (flow 10). */
-function YourSessions(props: { seen: Seen; onChanged: () => void }): JSX.Element {
-    const list = (): SessionView[] => props.seen.sessions.sessions;
-    const [busy, setBusy] = createSignal<string | null>(null);
-    const [said, setSaid] = createSignal("");
-    const end = async (s: SessionView): Promise<void> => {
-        if (busy()) return;
-        setBusy(s.id);
-        setSaid("");
-        const r = await api.endSession(s.id, s.own);
-        if (r === true && s.own) {
-            location.assign("/sign-in");
-            return;
-        }
-        setBusy(null);
-        if (r !== true) {
-            setSaid(failureText(r, local));
-            return;
-        }
-        setSaid(`${browserOf(s)} is signed out.`);
-        props.onChanged();
-    };
-    return (
-        <>
-            <ul class="ga-list">
-                <For each={list()}>
-                    {(s) => (
-                        <li class="ga-row" classList={{ own: s.own }}>
-                            <div class="ga-row-words">
-                                <b>{`${props.seen.me.user.name ?? "Parent"} (you)`}</b>
-                                <span>{`${s.own ? "This browser" : browserOf(s)} · Last used ${dayOf(s.seen_at ?? s.created_at)}`}</span>
-                            </div>
-                            <Button second busy={busy() === s.id} onClick={() => void end(s)}>
-                                Sign out
-                            </Button>
-                        </li>
-                    )}
-                </For>
-            </ul>
             <Show when={said()}>
                 <Say text={said()} />
             </Show>
-        </>
+        </section>
     );
 }
 
-/** What the notice promised about a child's data, in its own words, and what of it exists to press. */
-function YourData(): JSX.Element {
-    return (
-        <Postcard focus={false} kicker="Your account" title="Your family's data">
-            <p class="note">The notice you agreed to when adding a child says:</p>
-            <ul class="ga-notice">
-                <For each={NOTICE}>{(line) => <li>{line}</li>}</For>
-            </ul>
-            <p class="note">
-                Seeing it is every page of this app. Exporting it and deleting one child’s record
-                are not available here yet. You can delete the whole family at the bottom of this
-                page.
-            </p>
-        </Postcard>
-    );
-}
-
-/** Paying for lumischool, in words: there is nothing to pay yet, and nothing here asks for a card. */
-function Paying(): JSX.Element {
-    return (
-        <Postcard focus={false} kicker="Your account" title="Paying for lumischool">
-            <p class="note">
-                lumischool is in development and has no price yet. Nothing is charged, and no card
-                is asked for. When there is a price it will be set out here first, and your family
-                will be asked before anything changes.
-            </p>
-        </Postcard>
-    );
-}
-
-/** The family's PIN on one card, typed twice since nobody sees it. It needs a recent sign-in. */
-function SetPin(props: { me: Me; pinSet: boolean; onDone: (set: boolean) => void }): JSX.Element {
+function SetPin(props: { onDone: (set: boolean) => void }): JSX.Element {
     const [pin, setPin] = createSignal("");
     const [again, setAgain] = createSignal("");
     const [said, setSaid] = createSignal<{ text: string; fresh: boolean } | null>(null);
@@ -551,73 +351,70 @@ function SetPin(props: { me: Me; pinSet: boolean; onDone: (set: boolean) => void
             });
     };
     return (
-        <Postcard
-            focus={false}
-            kicker={familyName(props.me.family.name)}
-            title={props.pinSet ? "Change the family PIN" : "Set the family PIN"}
-            lead="Four digits to unlock parent access. Choose ones the children do not know, different from the kids’ sign-in PIN."
-            corner={<Corner place="meadow" seed={853} />}
-            address={
-                <form
-                    class="form"
-                    novalidate
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        void save();
-                    }}
-                >
-                    <p class="note">The new PIN</p>
-                    <PinInput
-                        label="The new PIN"
-                        value={pin()}
-                        onInput={setPin}
-                        onFull={() => second?.focus()}
-                        ref={(el) => {
-                            first = el;
-                            focusOnceShown(el);
-                        }}
-                    />
-                    <p class="note">The same PIN again</p>
-                    <PinInput
-                        label="The same PIN again"
-                        value={again()}
-                        onInput={setAgain}
-                        onFull={() => void save()}
-                        ref={(el) => {
-                            second = el;
-                        }}
-                    />
-                    <Show when={said()}>
-                        {(s) => (
-                            <Say
-                                text={s().text}
-                                action={
-                                    s().fresh
-                                        ? {
-                                              label: "Sign in again",
-                                              run: () => go(signInFor("/account", { again: true })),
-                                          }
-                                        : undefined
-                                }
-                            />
-                        )}
-                    </Show>
-                    <div class="acts">
-                        <Button submit busy={busy()}>
-                            Save the PIN
-                        </Button>
-                        <Button second onClick={() => props.onDone(false)}>
-                            Not now
-                        </Button>
-                    </div>
-                </form>
-            }
-        >
+        <section class="part">
             <p class="note">
-                lumischool checks the PIN, and no device keeps it. After too many wrong tries it
-                stops working, and a grown-up who forgets it signs in and sets a new one here.
+                Choose four digits the children do not know, different from the kids’ PIN.
             </p>
-        </Postcard>
+            <form
+                class="form"
+                novalidate
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    void save();
+                }}
+            >
+                <div class="kids-pin-fields">
+                    <div class="kids-pin-field">
+                        <p class="note">The new PIN</p>
+                        <PinInput
+                            label="The new PIN"
+                            value={pin()}
+                            onInput={setPin}
+                            onFull={() => second?.focus()}
+                            ref={(el) => {
+                                first = el;
+                                focusOnceShown(el);
+                            }}
+                        />
+                    </div>
+                    <div class="kids-pin-field">
+                        <p class="note">The same PIN again</p>
+                        <PinInput
+                            label="The same PIN again"
+                            value={again()}
+                            onInput={setAgain}
+                            onFull={() => void save()}
+                            ref={(el) => {
+                                second = el;
+                            }}
+                        />
+                    </div>
+                </div>
+                <Show when={said()}>
+                    {(s) => (
+                        <Say
+                            text={s().text}
+                            action={
+                                s().fresh
+                                    ? {
+                                          label: "Sign in again",
+                                          run: () => go(signInFor("/account", { again: true })),
+                                      }
+                                    : undefined
+                            }
+                        />
+                    )}
+                </Show>
+                <div class="acts">
+                    <Button submit busy={busy()}>
+                        Save the PIN
+                    </Button>
+                    <Button second disabled={busy()} onClick={() => props.onDone(false)}>
+                        Cancel
+                    </Button>
+                </div>
+            </form>
+        </section>
     );
 }
 
@@ -627,7 +424,7 @@ function WeeklyEmail(): JSX.Element {
     const [saving, setSaving] = createSignal(false);
     const [message, setMessage] = createSignal("");
     const saved = () => {
-        const value = data();
+        const value = data.latest;
         return value && !("error" in value) ? value : null;
     };
     createEffect(() => {
@@ -652,7 +449,7 @@ function WeeklyEmail(): JSX.Element {
         <section class="part" id="weekly-email">
             <h2>Weekly email</h2>
             <p>A Monday email for this family. Each parent chooses for themselves.</p>
-            <Show when={!data.loading} fallback={<p>Loading your email choice…</p>}>
+            <Show when={data.latest !== undefined} fallback={<p>Loading your email choice…</p>}>
                 <Show
                     when={saved()}
                     fallback={
@@ -695,11 +492,6 @@ function WeeklyEmail(): JSX.Element {
                             {saving() ? "Saving…" : "Save"}
                         </Button>
                     </div>
-                    <p class="note">
-                        Reminders contain no children’s names or learning details. Full reports send
-                        those details through Resend and your email provider, and remain in your
-                        inbox after changes in the app. Sign-in emails are unaffected.
-                    </p>
                 </Show>
             </Show>
             <output aria-live="polite">{message()}</output>
@@ -795,9 +587,6 @@ function DeleteFamily(props: { me: Me; kids: FamilyView["kids"] }): JSX.Element 
 }
 
 function AccountDetails(props: { me: Me; onChanged: () => void }): JSX.Element {
-    const zones = [
-        ...new Set(["UTC", props.me.family.time_zone, ...Intl.supportedValuesOf("timeZone")]),
-    ].sort();
     return (
         <dl class="ga-facts">
             <AccountField
@@ -807,6 +596,16 @@ function AccountDetails(props: { me: Me; onChanged: () => void }): JSX.Element {
                 onChanged={props.onChanged}
             />
             <AccountEmail value={props.me.user.email} onChanged={props.onChanged} />
+        </dl>
+    );
+}
+
+function FamilyDetails(props: { me: Me; onChanged: () => void }): JSX.Element {
+    const zones = [
+        ...new Set(["UTC", props.me.family.time_zone, ...Intl.supportedValuesOf("timeZone")]),
+    ].sort();
+    return (
+        <dl class="ga-facts">
             <AccountField
                 label="Your family"
                 value={props.me.family.name}

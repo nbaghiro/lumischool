@@ -7,10 +7,6 @@ import { isStoredPicture } from "../painting";
 
 import type {
     KidLogins,
-    KidSessions,
-    KidSessionView,
-    Sessions,
-    SessionView,
     FamilyChoice,
     FamilyView,
     Me,
@@ -341,82 +337,9 @@ export async function openKidSession(kids: readonly string[]): Promise<true | Fa
     return true;
 }
 
-/** Ends every children's view open in the family, on whichever browsers hold them. What they had not sent is lost. */
-export async function endKidSessions(): Promise<{ ended: number } | Failure> {
-    const a = await call("POST", "/api/kid-sessions/end-all", {});
-    if (!a.ok) return refused(a.failure);
-    return obj(a.body) && num(a.body.ended) ? { ended: a.body.ended } : unreadable(a.status);
-}
-
-const readSession = (v: unknown): SessionView | null =>
-    obj(v) &&
-    str(v.id) &&
-    (v.kind === "session" || v.kind === "shared-session") &&
-    strOrNull(v.name) &&
-    str(v.created_at) &&
-    strOrNull(v.seen_at) &&
-    typeof v.own === "boolean" &&
-    typeof v.putAway === "boolean" &&
-    typeof v.byPin === "boolean"
-        ? {
-              id: v.id,
-              kind: v.kind,
-              name: v.name,
-              created_at: v.created_at,
-              seen_at: v.seen_at,
-              own: v.own,
-              putAway: v.putAway,
-              byPin: v.byPin,
-          }
-        : null;
-
 /** A grown-up's own picture on the bar and the account page, by the shelf's name for a portrait. */
 export async function setPicture(picture: string): Promise<true | Failure> {
     const a = await call("POST", "/api/me/picture", { picture });
-    return a.ok ? true : refused(a.failure);
-}
-
-/** The person's own sessions in this family, this browser's marked (.docs/auth.md, flow 10). */
-export async function sessions(): Promise<Sessions | Failure> {
-    const a = await call("GET", "/api/sessions");
-    if (!a.ok) return refused(a.failure);
-    const list_ = obj(a.body) ? list(a.body.sessions, readSession) : null;
-    return list_ ? { sessions: list_ } : unreadable(a.status);
-}
-
-/** Ends one of the person's own sessions. Ending this browser's ends the sign-in here, as Sign out does. */
-export async function endSession(id: string, own: boolean): Promise<true | Failure> {
-    const a = await call("POST", "/api/sessions/end", { id });
-    if (!a.ok) return refused(a.failure);
-    if (own) {
-        forget();
-        parentChanged();
-    }
-    return true;
-}
-
-const readView = (v: unknown): KidSessionView | null =>
-    obj(v) &&
-    str(v.view) &&
-    str(v.kid) &&
-    strOrNull(v.name) &&
-    str(v.seen_at) &&
-    typeof v.own === "boolean"
-        ? { view: v.view, kid: v.kid, name: v.name, seen_at: v.seen_at, own: v.own }
-        : null;
-
-/** The children's views open in the family, one per browser, and whether the family has a PIN. */
-export async function kidSessions(): Promise<KidSessions | Failure> {
-    const a = await call("GET", "/api/kid-sessions");
-    if (!a.ok) return refused(a.failure);
-    const views = obj(a.body) ? list(a.body.views, readView) : null;
-    const pin = obj(a.body) && typeof a.body.pin === "boolean" ? a.body.pin : null;
-    return views && pin !== null ? { views, pin } : unreadable(a.status);
-}
-
-/** Ends one child’s sessions in the selected browser. What it had not sent is lost. */
-export async function endKidSession(view: string): Promise<true | Failure> {
-    const a = await call("POST", "/api/kid-sessions/end", { view });
     return a.ok ? true : refused(a.failure);
 }
 
@@ -431,8 +354,12 @@ export async function kidLogins(): Promise<KidLogins | Failure> {
     if (!a.ok) return refused(a.failure);
     const kids = obj(a.body)
         ? list(a.body.kids, (k) =>
-              obj(k) && str(k.id) && str(k.name) && strOrNull(k.username)
-                  ? { id: k.id, name: k.name, username: k.username }
+              obj(k) &&
+              str(k.id) &&
+              str(k.name) &&
+              strOrNull(k.username) &&
+              typeof k.ownPin === "boolean"
+                  ? { id: k.id, name: k.name, username: k.username, ownPin: k.ownPin }
                   : null,
           )
         : null;
@@ -446,8 +373,12 @@ export async function setKidsPin(pin: string): Promise<true | Failure> {
     return a.ok ? true : refused(a.failure);
 }
 
-export async function setKidLogin(kid: string, username: string): Promise<true | Failure> {
-    const a = await call("POST", "/api/kid-logins", { kid, username });
+export async function setKidLogin(
+    kid: string,
+    username: string,
+    pin?: string | null,
+): Promise<true | Failure> {
+    const a = await call("POST", "/api/kid-logins", { kid, username, pin });
     return a.ok ? true : refused(a.failure);
 }
 
@@ -585,12 +516,6 @@ export async function parentStatus(): Promise<{ available: boolean; locked: bool
         typeof a.body.locked === "boolean"
         ? { available: a.body.available, locked: a.body.locked }
         : unreadable(a.status);
-}
-export async function lockParent(): Promise<true | Failure> {
-    const a = await call("POST", "/api/auth/lock", {});
-    if (!a.ok) return a.failure;
-    parentChanged();
-    return true;
 }
 export async function unlockParent(pin: string): Promise<true | Failure> {
     const ready = await (await import("./kid")).prepareIdentityChange();

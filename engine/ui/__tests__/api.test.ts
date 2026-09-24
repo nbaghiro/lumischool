@@ -264,12 +264,12 @@ test("an API that cannot be reached is offline, and a proxy's own error page is 
     globalThis.fetch = async () => {
         throw new TypeError("fetch failed");
     };
-    assert.deepEqual(await api.endKidSessions(), { error: "offline", status: 0 });
+    assert.deepEqual(await api.setPin("2468"), { error: "offline", status: 0 });
     globalThis.fetch = async () => new Response("<html>bad gateway</html>", { status: 502 });
-    assert.deepEqual(await api.endKidSessions(), { error: "offline", status: 502 });
+    assert.deepEqual(await api.setPin("2468"), { error: "offline", status: 502 });
     globalThis.fetch = answering;
     answer = () => ({ status: 404, body: { error: "not-found" } });
-    assert.deepEqual(await api.endKidSessions(), { error: "not-found", status: 404 });
+    assert.deepEqual(await api.setPin("2468"), { error: "not-found", status: 404 });
 });
 
 test("a kid is added with the notice the parent was shown, and a changed notice comes back to be shown", async () => {
@@ -346,15 +346,11 @@ test("opening a child tab keeps the shared parent sign-in", async () => {
     assert.equal((await import("../kid-session")).kidCredential(), "family.key.secret");
 });
 
-test("setting a PIN can ask for a sign-in, and ending every view says how many closed", async () => {
+test("setting a parent PIN can ask for a sign-in", async () => {
     calls = [];
     answer = () => ({ status: 403, body: { error: "fresh-sign-in" } });
     assert.deepEqual(await api.setPin("2468"), { error: "fresh-sign-in", status: 403 });
     assert.deepEqual(calls[0]?.body, { pin: "2468" });
-    calls = [];
-    answer = () => ({ status: 200, body: { ended: 2 } });
-    assert.deepEqual(await api.endKidSessions(), { ended: 2 });
-    assert.deepEqual(calls[0]?.path, "/api/kid-sessions/end-all");
 });
 
 test("the outbox is read only where it exists", async () => {

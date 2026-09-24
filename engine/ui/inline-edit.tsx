@@ -2,13 +2,12 @@ import {
     createEffect,
     createSignal,
     createUniqueId,
-    For,
     on,
     Show,
     splitProps,
     type JSX,
 } from "solid-js";
-import { Select } from "./select";
+import { SearchSelect } from "./search-select";
 import "./inline-edit.css";
 
 /** A borderless input for controlled flows, such as verifying a changed email address. */
@@ -106,29 +105,18 @@ export function InlineEdit(props: {
                     }
                 >
                     {(options) => (
-                        <Select
-                            class="inline-select"
-                            aria-label={props.label}
-                            aria-describedby={message() ? status : undefined}
-                            aria-invalid={invalid() || undefined}
+                        <SearchSelect
+                            label={props.label}
+                            describedBy={message() ? status : undefined}
+                            invalid={invalid()}
                             value={value()}
                             disabled={busy()}
-                            onChange={(event) => {
-                                setValue(event.currentTarget.value);
+                            options={options()}
+                            onChange={(next) => {
+                                setValue(next);
                                 void save();
                             }}
-                        >
-                            <For each={options()}>
-                                {(option) => (
-                                    <option
-                                        value={option.value}
-                                        selected={option.value === value()}
-                                    >
-                                        {option.label}
-                                    </option>
-                                )}
-                            </For>
-                        </Select>
+                        />
                     )}
                 </Show>
             </Show>

@@ -80,6 +80,141 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         return text(at(a.body, "credential"));
     };
 
+    const editPin = (kid: string, username: string, pin: string | null) =>
+        parent.call("POST", "/api/kid-logins", { body: { kid, username, pin } });
+
+    it("an own PIN replaces shared access and changing the shared PIN leaves own sessions intact", async () => {
+        const oldMaya = await token("maya-star");
+        const theoToken = await token("theo-moon");
+        assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
+        assert.equal((await browser.call("GET", "/api/kid", { kid: oldMaya })).status, 401);
+        assert.equal((await browser.call("GET", "/api/kid", { kid: theoToken })).status, 200);
+        assert.equal((await login("maya-star")).status, 400);
+        const signed = await login("maya-star", "8642");
+        assert.equal(signed.status, 200);
+        const ownToken = text(at(signed.body, "credential"));
+        assert.equal(
+            (await parent.call("POST", "/api/kid-logins/pin", { body: { pin: "9753" } })).status,
+            204,
+        );
+        assert.equal((await browser.call("GET", "/api/kid", { kid: ownToken })).status, 200);
+        assert.equal((await browser.call("GET", "/api/kid", { kid: theoToken })).status, 401);
+        assert.equal((await login("maya-star", "9753")).status, 400);
+        assert.equal((await login("maya-star", "8642")).status, 200);
+        assert.equal((await login("theo-moon", "9753")).status, 200);
+        const detail = await parent.call("GET", "/api/kid-logins");
+        const rows = items(at(detail.body, "kids"));
+        assert.equal(
+            at(
+                rows.find((row) => at(row, "id") === maya),
+                "ownPin",
+            ),
+            true,
+        );
+        assert.equal(
+            at(
+                rows.find((row) => at(row, "id") === theo),
+                "ownPin",
+            ),
+            false,
+        );
+    });
+
+    it("switching back to shared removes the own PIN and only revokes that child's logins", async () => {
+        assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
+        const signed = await login("maya-star", "8642");
+        const ownToken = text(at(signed.body, "credential"));
+        const sibling = await token("theo-moon");
+        const parentOpened = await parent.call("POST", "/api/kid-sessions", {
+            body: { kids: [maya], tab: true },
+        });
+        assert.equal((await editPin(maya, "maya-star", null)).status, 204);
+        assert.equal((await browser.call("GET", "/api/kid", { kid: ownToken })).status, 401);
+        assert.equal((await browser.call("GET", "/api/kid", { kid: sibling })).status, 200);
+        assert.equal(
+            (
+                await parent.call("GET", "/api/kid", {
+                    kid: text(at(parentOpened.body, "credential")),
+                })
+            ).status,
+            200,
+        );
+        assert.equal((await login("maya-star", "8642")).status, 400);
+        assert.equal((await login("maya-star")).status, 200);
+        assert.equal((await editPin(maya, "maya-star", null)).status, 204);
+    });
+
+    it("two own PINs may use the same digits but are separate from every parent PIN", async () => {
+        assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
+        assert.equal((await editPin(theo, "theo-moon", "8642")).status, 204);
+        assert.equal((await login("maya-star", "8642")).status, 200);
+        const other = await login("theo-moon", "8642");
+        assert.equal(other.status, 200);
+        assert.equal(
+            (await parent.call("POST", "/api/family/pin", { body: { pin: "8642" } })).status,
+            400,
+        );
+        assert.equal((await editPin(maya, "maya-star", "2468")).status, 400);
+        assert.equal((await editPin(maya, "maya-star", "7531")).status, 204);
+        assert.equal(
+            (await browser.call("GET", "/api/kid", { kid: text(at(other.body, "credential")) }))
+                .status,
+            200,
+        );
+        assert.equal((await login("maya-star", "8642")).status, 400);
+        assert.equal((await login("maya-star", "7531")).status, 200);
+    });
+
+    it("own PIN failures are isolated and malformed or cross-family changes cannot change access", async () => {
+        assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
+        assert.equal((await editPin(theo, "theo-moon", "7531")).status, 204);
+        for (let n = 0; n < 5; n++) assert.equal((await login("maya-star", "0000")).status, 400);
+        assert.equal((await login("maya-star", "8642")).status, 400);
+        assert.equal((await login("theo-moon", "7531")).status, 200);
+        assert.equal((await editPin(theo, "theo-moon", "bad")).status, 400);
+        const other = new Browser(config, "203.0.113.9");
+        await startFamily(other, outbox, {
+            email: "other@example.test",
+            name: "Other",
+            family: "Other",
+        });
+        assert.equal(
+            (
+                await other.call("POST", "/api/kid-logins", {
+                    body: { kid: theo, username: "theo-moon", pin: "8642" },
+                })
+            ).status,
+            404,
+        );
+        assert.equal((await login("theo-moon", "7531")).status, 200);
+    });
+
+    it("username conflicts roll back PIN changes and an unchanged edit preserves an own PIN session", async () => {
+        assert.equal((await editPin(maya, "theo-moon", "8642")).status, 400);
+        assert.equal((await login("maya-star")).status, 200);
+        assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
+        const own = await login("maya-star", "8642");
+        const credential = text(at(own.body, "credential"));
+        assert.equal(
+            (
+                await parent.call("POST", "/api/kid-logins", {
+                    body: { kid: maya, username: "maya-star" },
+                })
+            ).status,
+            204,
+        );
+        assert.equal((await browser.call("GET", "/api/kid", { kid: credential })).status, 200);
+    });
+
+    it("own PINs work without a shared PIN and returning to shared requires one", async () => {
+        if (!owner) throw new Error("no database");
+        await owner.raw`delete from keys where kind = 'kid-pin' and family_id = ${family}`;
+        assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
+        assert.equal((await login("maya-star", "8642")).status, 200);
+        assert.equal((await editPin(maya, "maya-star", null)).status, 400);
+        assert.equal((await login("maya-star", "8642")).status, 200);
+    });
+
     it("groups by child and browser and revokes only the selected child's browser access", async () => {
         browser = parent;
         const first = await token("maya-star");
@@ -193,7 +328,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     });
 
     it("preserves parent unlock retry metadata", async () => {
-        await parent.call("POST", "/api/auth/lock");
+        await parent.call("POST", "/api/kid-sessions", { body: { kids: [maya] } });
         const wrong = await parent.call("POST", "/api/auth/unlock", { body: { pin: "0000" } });
         assert.equal(at(wrong.body, "attemptsLeft"), 14);
         for (let n = 0; n < 4; n++)
@@ -390,7 +525,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         );
         assert.equal((await parent.call("GET", "/api/kid", { kid: sibling })).status, 200);
     });
-    it("keeps parent and child tabs active in either sign-in order, including locked parent access", async () => {
+    it("keeps parent and child tabs active in either sign-in order", async () => {
         browser = parent;
         const one = await token("maya-star");
         const two = await token("theo-moon");
@@ -398,18 +533,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         for (const credential of [one, two, "", "invalid"]) {
             assert.equal((await parent.call("GET", "/api/me", { kid: credential })).status, 403);
         }
-        assert.equal((await parent.call("POST", "/api/auth/lock")).status, 204);
-        assert.equal((await parent.call("GET", "/api/me")).status, 401);
-        assert.equal((await parent.call("GET", "/api/kid", { kid: one })).status, 200);
-        assert.equal(
-            (await parent.call("POST", "/api/auth/unlock", { body: { pin: "1357" } })).status,
-            403,
-        );
-        assert.equal(
-            (await parent.call("POST", "/api/auth/unlock", { body: { pin: "2468" } })).status,
-            204,
-        );
-        assert.equal((await parent.call("GET", "/api/me")).status, 200);
         assert.equal(
             (
                 await parent.call("POST", "/api/kid-logins", {
@@ -417,7 +540,7 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
                 })
             ).status,
             204,
-            "unlocked parents can manage kids’ sign-in without another email code",
+            "parents can manage kids’ sign-in without another email code",
         );
         assert.equal((await parent.call("POST", "/api/auth/sign-out")).status, 204);
         assert.equal((await parent.call("GET", "/api/kid", { kid: two })).status, 200);
