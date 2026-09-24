@@ -60,9 +60,8 @@ Temporary denial of service from sustained guessing remains possible with public
 ## Render managed-ingress deployment policy
 
 Production uses the Render public-ingress policy automatically; local development
-uses socket addresses. No `CLIENT_IP_TRUST`, `CLIENT_IP_HEADER`, or
-`TRUSTED_PROXY_CIDRS` settings are read. Remove those obsolete dashboard variables
-to avoid confusion; their presence has no effect. Keep `LUMISCHOOL_ENV=production`.
+uses socket addresses. No custom proxy settings are needed or read. Keep
+`LUMISCHOOL_ENV=production`.
 
 Render supplies `RENDER=true`, `RENDER_SERVICE_TYPE=web`, a nonempty
 `RENDER_SERVICE_ID`, and `RENDER_EXTERNAL_HOSTNAME` ending in `.onrender.com`.

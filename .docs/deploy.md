@@ -103,7 +103,7 @@ Read on 21 September 2026 from its repository and its live services.
 | Env in the file | `NODE_ENV=production` as a value, `SESSION_SECRET` generated, everything else `sync: false` and typed into the dashboard | The same shape |
 | Cookies | `galleo_session`, HttpOnly, SameSite=Lax, Secure in production, no `__Host-` | `__Host-ls_*` with Secure, which the API already does when `secure` is true |
 | Email | Resend through `fetch`, a constant From on the apex, a warning at boot without a key | Resend, with the server refusing to start without a key |
-| Client address | The `CLIENT_IP_HEADER` header, default `cf-connecting-ip`, never `x-forwarded-for` | The same, verified by the forged-header test below |
+| Client address | A configured client-IP header, default `cf-connecting-ip` | Fixed `cf-connecting-ip` on Render; no custom proxy settings; verified at the public edge |
 | Neon | Project `galleo`, `aws-us-west-2`, Postgres 18, one role `neondb_owner`, one database `neondb`, default branch `production`, snapshot branches by hand before risky data work | Project `lumischool`, `aws-us-east-2`, Postgres 18, the same default names, two roles, one branch |
 | Neon connection | The direct string on one instance, `prepare: false` set anyway, `sslmode=require` | Direct for the owner, pooled for the app role |
 | CI | GitHub Actions runs the checks; Render deploys on push | None yet; optional for the first deploy |
@@ -124,7 +124,7 @@ In the order that unblocks the build. Each names where; none is the code.
 
    The build and pack use root modules only; no scratchpad or seed worker is required.
 
-2. Scripts and the Node pin. Add `build` as `VITE_CONFIG_NATIVE_IGNORE_WARNING=true vite build`, the flag `dev:web` already sets, and `start` as `node --import ./tools/scripts/resolve.ts server/http.ts`, with `LUMISCHOOL_ENV` coming from the environment rather than the script, so `dev:api` keeps its inline `local`. Add `.node-version` with `24`: the root needs `import.meta.main`, `module.registerHooks` and unflagged type stripping, the laptop runs 25 which Render does not list, and Render's default for new services is 24. The build installs devDependencies on purpose, since `NODE_ENV=production` makes `npm ci` skip them and the build needs Vite and `@resvg/resvg-js`. `drizzle-kit` is not needed at deploy time. Add `PORT`, `CLIENT_IP_HEADER` and `RESEND_API_KEY` to local.md's table and to `.env.example`.
+2. Scripts and the Node pin. Add `build` as `VITE_CONFIG_NATIVE_IGNORE_WARNING=true vite build`, the flag `dev:web` already sets, and `start` as `node --import ./tools/scripts/resolve.ts server/http.ts`, with `LUMISCHOOL_ENV` coming from the environment rather than the script, so `dev:api` keeps its inline `local`. Add `.node-version` with `24`: the root needs `import.meta.main`, `module.registerHooks` and unflagged type stripping, the laptop runs 25 which Render does not list, and Render's default for new services is 24. The build installs devDependencies on purpose, since `NODE_ENV=production` makes `npm ci` skip them and the build needs Vite and `@resvg/resvg-js`. `drizzle-kit` is not needed at deploy time. Add `PORT` and `RESEND_API_KEY` to local.md's table and to `.env.example`.
 
 3. A production configuration. `configFrom` in `server/http.ts` returns a problem for anything but `LUMISCHOOL_ENV=local`, and `server/__tests__/config.test.ts` asserts it. For `production`: `secure: true`, so the `__Host-` names and `Secure` are used; `origins` holds `APP_ORIGIN` alone, required and required to start with `https://`, with no scratchpad origin; `AUTH_PEPPER` required and refused when it equals the local pepper or is short; the host defaults to `0.0.0.0` with no loopback rule, since Render routes there; the port reads `PORT` before `API_PORT`; the transport is Resend; and there is no dev code at all, not merely none in the environment. The `local` routes already answer 404 elsewhere. Tests for each refusal and for `PORT` winning.
 
@@ -132,7 +132,7 @@ In the order that unblocks the build. Each names where; none is the code.
 
 5. The built apps from the Node process. Not built, as api.md's last section says: the server answers `/api/*` and a JSON 404 for the rest. galleo serves its build from the same process after the API routes, and auth.md's "Hosts" chose one origin for the same reasons, so the recommendation is the same and no Render static site. A new `server/static.ts`, used after the route table misses and only in production, answers page requests with the right app's `index.html` by `isPage`, `pageFor`, `hasSession` and `hasKidSession` from `server/pages.ts`, which was written for this; serves `/assets/*` with a long immutable cache and the brand files at the root with a short one; sends HTML with `no-store`, `nosniff` and a content security policy per app modelled on the API's own header; and never answers a dotted path outside `dist/` or anything under `/api/`. `boundaries.ts` needs no change unless a package is added. A smoke test against `npm start` with a built `dist/` can wait. Update api.md and local.md in the same change. The visitor's pack and the site's data are files under `dist/assets/`, so the long immutable cache the assets get covers them; nothing of the site's needs a route.
 
-6. The client's address behind the proxy. `answer` passes the socket's peer address, which on Render is the load balancer, so every family would share one network and its twenty codes an hour. auth.md's "Rate limits" already specifies the fix: one function reads the header named by `CLIENT_IP_HEADER` in production, never `x-forwarded-for` as a whole since Render appends to a client's value rather than replacing it, groups IPv6 by its /64, and the socket address is used locally. `Config` gains the header name, null in `local` so the loopback checks keep working. Which header is right is settled by the live test below, not assumed.
+6. The client's address behind the proxy. Production HTTP startup requires Render's web-service markers and reads one valid `cf-connecting-ip` value. Missing or malformed values refuse API requests with 503, except health probes. Local development uses the socket address. There are no configurable proxy headers or CIDRs. Verify the edge behavior and private-network trust boundary using [the current deployment policy](auth-hardening-plan.md#render-managed-ingress-deployment-policy).
 
 7. The health check and a sleeping compute. `/api/health` gives Postgres one second. Neon's free compute suspends after five minutes idle and can take longer than that to wake, so Render's first probe after an idle spell can fail, and repeated failures restart the service. Raise the wait in production, or tell a wake from an outage, or pay for a longer suspend timeout. A first-week decision, not a blocker.
 
@@ -269,13 +269,7 @@ Then sign in end to end in a browser and check that the session cookie is `__Hos
 
 4. The origin check. The same POST with a foreign origin, and again with none, both answer `403 {"error":"origin"}`, and an `OPTIONS` adds no allow-origin header in production.
 5. The local routes are gone: `/api/dev/outbox` is a 404, `/outbox` is the app's missing page, and the fixed code is refused at the code step.
-6. The forged client-address test that auth.md's "Rate limits" asks for. The network limit is twenty unused codes an hour from one network. From one machine, before the Resend key is set so nothing is delivered, send twenty-one requests, each to a different address on a domain you control and each with forged headers naming a different address:
-
-```
-for n in $(seq 1 21); do curl -s -o /dev/null -w '%{http_code}\n' -X POST https://HOST/api/auth/email/start -H 'origin: https://HOST' -H 'content-type: application/json' -H "x-forwarded-for: 198.51.100.$n" -H "cf-connecting-ip: 203.0.113.$n" -H "true-client-ip: 203.0.113.$n" -d "{\"email\":\"probe$n@your-domain\"}"; done
-```
-
-Expected: 202 twenty times, then 429, which shows the forged values were ignored and all twenty-one counted against the one real network. A 202 on the twenty-first means the trusted header is client-settable on Render: change `CLIENT_IP_HEADER` per decision 5 and run it again. Those twenty unused codes then count against that network for an hour.
+6. Verify client-address handling on every public hostname using [the current ingress verification procedure and recorded results](auth-hardening-plan.md#render-managed-ingress-deployment-policy). Forged client-IP headers must be rejected at the edge or overwritten; forged forwarded chains must not change the resolved network identity. The identity must match the actual public source rather than a shared load balancer. A failed check blocks release; fix ingress before deploying. Do not send batches of real sign-in emails to test this.
 
 7. `render logs --resources <service id> --limit 50` shows the request lines and the line the server prints on start, and no line prints an address or a code once the transport is Resend.
 8. Email: with the key set, ask for a code to a real address and check that it arrives from the fixed From with DKIM aligned, which Resend's domain page shows the records for.
@@ -322,8 +316,6 @@ services:
             value: "10000"
           - key: PACK_DIR # where `npm run pack` wrote, relative to the repo root Render runs from
             value: dist/pack
-          - key: CLIENT_IP_HEADER # the trusted proxy header for the network limits; verified by the forged-header test
-            value: cf-connecting-ip
           # --- secrets: set in the Render dashboard (never committed) ---
           - key: DATABASE_URL # Neon DIRECT connection string, the owner role: migrations and the catalogue only
             sync: false
