@@ -148,16 +148,16 @@ for (const world of ["harbour", "meadow"]) {
         await signInAs(page);
         await page.goto("/map");
         const map = await mapReady(page);
-        await cameraSettled(map);
-        if ((await map.locator(".ow-scope").textContent()) === "Near me") {
-            await map.locator(".ow-scope").click();
-            await cameraSettled(map);
-        }
-        await map.getByRole("button", { name: "Every world", exact: true }).click();
-        await cameraSettled(map);
-        const place = map.locator(`.ow-node[aria-label*="${world}" i]`).first();
-        // Control animation time: two real frames can span an entire transition on a busy device.
+        // Setup and measurement share a clock so slow rendering cannot stretch camera waits.
         await page.clock.pauseAt(await page.evaluate(() => Date.now() + 60_000));
+        await page.clock.runFor(32);
+        if ((await map.locator(".ow-scope").textContent()) === "Near me") {
+            await map.locator(".ow-scope").dispatchEvent("click");
+            await page.clock.fastForward(1500);
+        }
+        await map.getByRole("button", { name: "Every world", exact: true }).dispatchEvent("click");
+        await page.clock.fastForward(1500);
+        const place = map.locator(`.ow-node[aria-label*="${world}" i]`).first();
         const before = await place.evaluate((el) => {
             const layer = el.closest<HTMLElement>(".world");
             if (!layer) throw new Error("the map has no camera layer");
@@ -172,7 +172,7 @@ for (const world of ["harbour", "meadow"]) {
         });
         expect(first.z / before.z).toBeLessThan(1.15);
         expect(Math.hypot(first.x - before.x, first.y - before.y)).toBeLessThan(40);
-        await page.clock.runFor(1200);
+        await page.clock.fastForward(1200);
         await page.clock.resume();
         await expect
             .poll(() => map.locator(".world").evaluate((el) => new DOMMatrix(el.style.transform).a))
@@ -641,4 +641,31 @@ test("deferred map imports leave navigation alone and recover once on an active 
                 .catch(() => { document.documentElement.dataset.importRejected = "again"; });`,
     });
     await expect(page.locator("html")).toHaveAttribute("data-import-rejected", "again");
+});
+
+test("flight zoom catches up after a delayed frame without advancing plane physics by the gap", async ({
+    page,
+}) => {
+    await page.clock.install();
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/home#/map");
+    const map = await mapReady(page);
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 60_000));
+    await page.clock.runFor(32);
+    await map.getByRole("button", { name: "Fly the paper plane (P)" }).dispatchEvent("click");
+    await page.clock.runFor(2000);
+    const zoom = () => map.locator(".world").evaluate((el) => new DOMMatrix(el.style.transform).a);
+    const before = await zoom();
+    const position = () => map.getAttribute("data-plane");
+    const from = (await position())?.split(",").map(Number);
+    await map.dispatchEvent("wheel", { deltaY: 30, ctrlKey: true });
+    // Deliver just one delayed animation frame, as happens when rendering stalls.
+    await page.clock.fastForward(3000);
+    await page.clock.runFor(32);
+    expect((await zoom()) / before).toBeCloseTo(2 ** -0.3, 2);
+    const to = (await position())?.split(",").map(Number);
+    if (!from || !to) throw new Error("the flight must report its position");
+    expect(Math.hypot((to[0] ?? 0) - (from[0] ?? 0), (to[1] ?? 0) - (from[1] ?? 0))).toBeLessThan(
+        250,
+    );
 });

@@ -107,7 +107,23 @@ export function fly(o: FlyOptions): Flying {
         cam: { c: Camera; v: Camera } = { c: { ...o.view.cam }, v: { x: 0, y: 0, z: 0 } };
     const z0 = o.view.cam.z;
     let zoom = 1;
+    let zoomAt = performance.now();
+    function followZoom(): void {
+        const now = performance.now();
+        // Camera easing follows elapsed time; the plane's fixed-step physics remains capped.
+        const z = springAt(
+            FOLLOW,
+            cam.c.z,
+            (o.zoom?.() ?? z0) * zoom,
+            cam.v.z,
+            Math.max(0, now - zoomAt) / 1000,
+        );
+        cam.c.z = z.x;
+        cam.v.z = z.v;
+        zoomAt = now;
+    }
     function zoomBy(factor: number): void {
+        followZoom();
         zoom = clamp(zoom * factor, 0.4, 1.4);
         if (o.still) draw(0);
     }
@@ -559,10 +575,10 @@ export function fly(o: FlyOptions): Flying {
         };
         if (o.still) cam = { c: want, v: { x: 0, y: 0, z: 0 } };
         else {
+            followZoom();
             const mx = springAt(FOLLOW, cam.c.x, want.x, cam.v.x, dt),
-                my = springAt(FOLLOW, cam.c.y, want.y, cam.v.y, dt),
-                mz = springAt(FOLLOW, cam.c.z, want.z, cam.v.z, dt);
-            cam = { c: { x: mx.x, y: my.x, z: mz.x }, v: { x: mx.v, y: my.v, z: mz.v } };
+                my = springAt(FOLLOW, cam.c.y, want.y, cam.v.y, dt);
+            cam = { c: { x: mx.x, y: my.x, z: cam.c.z }, v: { x: mx.v, y: my.v, z: cam.v.z } };
         }
         if (on) o.view.set(cam.c);
         zoomOut.disabled = zoom <= 0.4;
