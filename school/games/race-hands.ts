@@ -214,7 +214,19 @@ function open(round: Round, ctx: Ctx): Session<Position> {
             const landing = car.lanes
                 ? laneCentre(car.x + v.vx)
                 : cellCentre(car.x + v.vx, car.y + v.vy);
-            ctx.stage.marks("aim", [{ kind: "line", a: centre, b: landing, style: "aim" }]);
+            ctx.stage.marks("aim", [
+                {
+                    kind: "line",
+                    a: centre,
+                    b: {
+                        x: centre.x + car.vx * (car.lanes ? perCell : CELL),
+                        y: centre.y + (car.lanes ? 0 : car.vy * CELL),
+                    },
+                    style: "thin",
+                },
+                { kind: "line", a: centre, b: landing, style: "aim" },
+                { kind: "ring", x: landing.x, y: landing.y, r: 0.45 },
+            ]);
             if (!car.lanes) {
                 const ghost: Part = {
                     art: "racecar",

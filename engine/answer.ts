@@ -29,6 +29,66 @@ export interface LoggedMove {
 /** Owed to `mechanic`. */
 export type Outcome = "playing" | "won" | "gave up" | "out of moves";
 
+export const GAME_CHALLENGE_VERSIONS = {
+    rules: "games-1",
+    generator: "pool-1",
+    difficulty: "initial-1",
+} as const;
+
+/** Mechanics revisions invalidate saved arrangements only for the affected games. */
+export const gameRulesVersion = (game: string): string =>
+    [
+        "jump",
+        "road",
+        "cargo-workshop",
+        "marble-workshop",
+        "shunt",
+        "weigh",
+        "share",
+        "snake",
+    ].includes(game)
+        ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+        : ["pay", "straight", "fish"].includes(game)
+          ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+          : GAME_CHALLENGE_VERSIONS.rules;
+
+export type GameValue =
+    null | boolean | number | string | GameValue[] | { [key: string]: GameValue };
+
+export interface GameChallenge {
+    id: string;
+    game: string;
+    phase: number;
+    seed: number;
+    source: "authored" | "generated";
+    generatorVersion: string;
+    rulesVersion: string;
+    configuration: { [key: string]: GameValue };
+    difficulty: {
+        version: string;
+        band: number;
+        reasoning: number;
+        motor: number;
+        content: number;
+    };
+    validation: { method: string; version: string };
+}
+
+export interface GameAttempt {
+    id: string;
+    challenge: GameChallenge;
+    startedAt: string;
+    completedAt: string;
+    outcome: "completed" | "interrupted";
+    moves: number;
+    assistance: number;
+    retries: number;
+    activeMs: number;
+    input: "keyboard" | "pointer" | "mixed" | "unknown";
+    reducedMotion: boolean;
+    objectives: { completed: number; total: number };
+}
+
 /** How an answer reached us. Paper work is marked afterwards, so it carries no timings at all. */
 type Mode = "screen" | "paper";
 
@@ -264,6 +324,7 @@ export interface EventData {
         note: string | null;
     };
     "round-played": { round: RoundRef; moves: LoggedMove[]; outcome: Outcome; capped: boolean };
+    "game-attempted": GameAttempt;
     "plan-changed": { op: PlanOp };
     /**
      * A parent's choice of a child's worlds, whole each time and trimmed to what differs from each
@@ -774,6 +835,8 @@ const EVENT: Record<EventKind, Check> = {
                 : "round-played needs an outcome and capped")
         );
     },
+    "game-attempted": (e) =>
+        isGameAttempt(e) ? null : "game-attempted needs a bounded challenge and terminal attempt",
     "plan-changed": (e) => op(e.op),
     "world-chosen": (e) =>
         yearWorlds(e.terms) &&
@@ -848,6 +911,79 @@ const EVENT: Record<EventKind, Check> = {
 /** Every event kind, from the one place they are declared. */
 export const EVENT_KINDS = Object.keys(EVENT) as EventKind[];
 
+function gameJson(value: unknown, depth = 0, budget = { left: 4096 }): boolean {
+    if (--budget.left < 0 || depth > 12) return false;
+    if (value === null || typeof value === "boolean") return true;
+    if (typeof value === "number") return Number.isFinite(value);
+    if (typeof value === "string") return value.length <= 2048;
+    if (Array.isArray(value))
+        return value.every((entry: unknown) => gameJson(entry, depth + 1, budget));
+    return (
+        obj(value) &&
+        Object.entries(value).every(
+            ([key, entry]) =>
+                key.length <= 100 &&
+                !["__proto__", "constructor", "prototype"].includes(key) &&
+                gameJson(entry, depth + 1, budget),
+        )
+    );
+}
+
+const gameText = (value: unknown): value is string =>
+    typeof value === "string" && value.length > 0 && value.length <= 160;
+const gameCount = (value: unknown): value is number =>
+    typeof value === "number" && Number.isSafeInteger(value) && value >= 0 && value <= 100000000;
+
+export function isGameChallenge(value: unknown): value is GameChallenge {
+    if (
+        !obj(value) ||
+        !obj(value.difficulty) ||
+        !obj(value.validation) ||
+        !obj(value.configuration)
+    )
+        return false;
+    const d = value.difficulty;
+    return (
+        gameText(value.id) &&
+        gameText(value.game) &&
+        gameCount(value.phase) &&
+        typeof value.seed === "number" &&
+        Number.isInteger(value.seed) &&
+        value.seed >= 0 &&
+        value.seed <= 0xffffffff &&
+        one(value.source, ["authored", "generated"] as const) &&
+        gameText(value.generatorVersion) &&
+        gameText(value.rulesVersion) &&
+        gameJson(value.configuration) &&
+        JSON.stringify(value.configuration).length <= 65536 &&
+        gameText(d.version) &&
+        [d.band, d.reasoning, d.motor, d.content].every(
+            (n) => typeof n === "number" && Number.isFinite(n) && n >= 0 && n <= 100,
+        ) &&
+        gameText(value.validation.method) &&
+        gameText(value.validation.version)
+    );
+}
+
+export function isGameAttempt(value: unknown): value is GameAttempt {
+    return (
+        obj(value) &&
+        uuid(value.id) &&
+        isGameChallenge(value.challenge) &&
+        instant(value.startedAt) &&
+        instant(value.completedAt) &&
+        String(value.completedAt) >= String(value.startedAt) &&
+        one(value.outcome, ["completed", "interrupted"] as const) &&
+        [value.moves, value.assistance, value.retries, value.activeMs].every(gameCount) &&
+        one(value.input, ["keyboard", "pointer", "mixed", "unknown"] as const) &&
+        bool(value.reducedMotion) &&
+        obj(value.objectives) &&
+        gameCount(value.objectives.completed) &&
+        gameCount(value.objectives.total) &&
+        value.objectives.completed <= value.objectives.total
+    );
+}
+
 type Checked = { ok: true; envelope: Envelope } | { ok: false; problem: string };
 
 function problemOf(v: unknown): string | null {
@@ -870,6 +1006,8 @@ function problemOf(v: unknown): string | null {
         v.kid_id === null
     )
         return "sessions and routines must name one child";
+    if (kind === "game-attempted" && (v.kid_id === null || v.id !== v.data.id))
+        return "game attempts name a child and use the attempt id as event id";
     return EVENT[kind](v.data);
 }
 

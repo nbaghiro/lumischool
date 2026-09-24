@@ -261,7 +261,11 @@ function footOn(s: SeesawState, at: number, k: number): Pt {
 }
 
 export function start(level: number): SeesawState {
-    const L = SEESAW_LEVELS[level] ?? SEESAW_LEVELS[0];
+    return startSeesawLevel(SEESAW_LEVELS[level] ?? SEESAW_LEVELS[0], level);
+}
+
+/** Open the exact verified challenge configuration. */
+export function startSeesawLevel(L: SeesawLevel, level = 0): SeesawState {
     const gap = 1.4,
         widths = L.bags.map((kg) => bagSize(kg).w);
     let x = FIELD.world.w / 2 - (widths.reduce((a, w) => a + w, 0) + gap * (widths.length - 1)) / 2;
@@ -483,7 +487,7 @@ function moveBag(s: SeesawState, b: Bag, i: number, out: Happening[]): void {
             b.angle = b.sway.angle;
             if (hand) {
                 const aim = footOfHand(b, hand);
-                const k = s.hand ? 1 : Math.min(1, 14 * DT);
+                const k = 1 - Math.exp(-(s.hand ? 30 / Math.sqrt(Math.max(1, b.kg)) : 14) * DT);
                 b.foot = {
                     x: b.foot.x + (aim.x - b.foot.x) * k,
                     y: b.foot.y + (aim.y - b.foot.y) * k,
@@ -797,6 +801,7 @@ export function frame(s: SeesawState, _rest = false): Frame {
         if (under !== 0) {
             const top = footOn(s, under, stack(s, under).length);
             marks.push({ kind: "ring", x: top.x, y: top.y - 0.4, r: 1.1, on: true });
+            marks.push({ kind: "line", a: held.foot, b: top, style: "aim" });
         }
     } else if (s.cursor?.mode === "pick" && !s.won) {
         const b = s.bags[pickable(s)[s.cursor.i] ?? -1];

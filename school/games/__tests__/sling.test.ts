@@ -143,8 +143,20 @@ test("under reduced motion a shot is worked out to rest and drawn once, at rest"
     assert.ok(!slingGame.still.settling?.(s));
     const f = slingGame.frame(s, true);
     assert.equal(f.camera.zoom, 1);
-    assert.ok(
-        f.marks.some((m) => m.kind === "dots" && m.pts.length > 5),
-        "the path is left in dots",
-    );
+    assert.ok(!f.marks.some((m) => m.kind === "dots"), "settled view has no flight clutter");
+});
+
+test("flight history is bounded and disappears shortly after the ball settles", () => {
+    const s = startSling(0);
+    const pad = emptyPad();
+    pad.released = at(30, 3.5);
+    stepSling(s, pad);
+    spent(pad);
+    for (let i = 0; i < 600; i++) {
+        stepSling(s, pad);
+        assert.ok(s.trail.length <= 20);
+    }
+    assert.equal(s.phase, "aim");
+    assert.equal(s.trail.length, 0);
+    assert.ok(!slingGame.frame(s).marks.some((m) => m.kind === "dots"));
 });

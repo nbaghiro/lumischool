@@ -29,12 +29,12 @@ interface Gate {
     hoops: number[];
 }
 
-interface PlaneLevel extends ActionLevel {
+export interface PlaneLevel extends ActionLevel {
     /** The pole's number line: how many steps it is marked in, and the label at each mark ("" for none). */
     ticks: number;
     labels: string[];
     /** A mark's value in the words the sentence uses. */
-    words(tick: number): string;
+    words(this: void, tick: number): string;
     gates: Gate[];
     look: Look;
     done: string;
@@ -196,6 +196,7 @@ export interface PlaneState {
     level: number;
     L: PlaneLevel;
     plane: Flyer;
+    pitch: number;
     cam: Cam;
     done: boolean[];
     /** The step a gate was flown through, for its hoop's flash. */
@@ -225,12 +226,16 @@ const wing = (): Wing => ({
 });
 
 export function start(level: number): PlaneState {
-    const L = PLANE_LEVELS[level] ?? PLANE_LEVELS[0];
+    return startPlaneLevel(PLANE_LEVELS[level] ?? PLANE_LEVELS[0], level);
+}
+
+export function startPlaneLevel(L: PlaneLevel, level = 0): PlaneState {
     const plane = { x: COURSE.pad + 2, y: 10, vx: PLANE.cruise.value, vy: 0 };
     return {
         level,
         L,
         plane,
+        pitch: 0,
         cam: { x: plane.x + 7, y: VIEW.h / 2, zoom: 1 },
         done: L.gates.map(() => false),
         lit: L.gates.map(() => -999),
@@ -309,7 +314,8 @@ export function step(s: PlaneState, pad: Pad): Happening[] {
             );
     }
     const p = s.plane;
-    if (s.steps % 5 === 0) s.trail = [...s.trail, { x: p.x - 1.4, y: p.y + 0.1 }].slice(-26);
+    s.pitch += (noseOf(p) - s.pitch) * (1 - Math.exp(-12 * DT));
+    if (s.steps % 5 === 0) s.trail = [...s.trail, { x: p.x - 1.4, y: p.y + 0.1 }].slice(-10);
     // Through a gate: the hoop the plane was in, if any, when it passed the hoops' line.
     for (const [k, gate] of L.gates.entries()) {
         const hx = poleAt(k) + COURSE.hoop;
@@ -662,7 +668,7 @@ export function frame(s: PlaneState, rest = false): Frame {
         }
     // The plane, with the dots of where it has just been.
     const p = s.plane,
-        nose = noseOf(p);
+        nose = rest ? noseOf(p) : s.pitch;
     if (s.trail.length > 1 && !rest) marks.push({ kind: "dots", pts: s.trail, faint: true });
     if (s.lifting && !rest)
         marks.push({
@@ -742,6 +748,7 @@ export function say(s: PlaneState): string {
 }
 
 export const planeGame: ActionGame<PlaneState> = {
+    objectives: (s) => ({ completed: s.done.filter(Boolean).length, total: s.L.gates.length }),
     id: "plane",
     title: "Paper plane",
     group: "action",

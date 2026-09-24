@@ -425,12 +425,33 @@ export const pourGame: TurnGame = {
             },
             handles: handlesOf,
             preview(_pos, _h, at) {
+                if (at.target) {
+                    const k = kitchenOf(count);
+                    const id = at.target.id;
+                    const jug = k.jug(Number(id.split(":")[1]));
+                    const point =
+                        id === "tap"
+                            ? { x: k.tap.x + TAP_SPOUT.x, y: k.tap.y + TAP_SPOUT.y }
+                            : id === "flowers"
+                              ? { x: k.plant.x + FLOWERS.head.x, y: k.plant.y + FLOWERS.head.y }
+                              : { x: jug.x + MOUTH.x, y: jug.y + MOUTH.y };
+                    ctx.stage.marks("receiver", [
+                        {
+                            kind: "ring",
+                            x: point.x,
+                            y: point.y,
+                            r: 1.2,
+                            on: at.target.carries.moves.length > 0,
+                        },
+                    ]);
+                } else ctx.stage.marks("receiver", []);
                 ctx.stage.show(
                     { parts: [tap(at.target?.id === "tap" && at.target.carries.moves.length > 0)] },
                     { keep: true },
                 );
             },
             unpreview() {
+                ctx.stage.marks("receiver", []);
                 ctx.stage.show({ parts: [tap(false)] }, { keep: true });
             },
             after(pos) {

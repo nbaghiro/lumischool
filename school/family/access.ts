@@ -30,6 +30,7 @@ export const ACCESS: Record<EventKind, Access> = {
     "hint-opened": WORK,
     "help-asked": WORK,
     "round-played": WORK,
+    "game-attempted": PARENT_ONLY,
     "sheet-printed": PAPER,
     marked: PAPER,
     // a grown-up's response to a painting or a piece of writing is written as a mark from paper is

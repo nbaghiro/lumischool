@@ -5,7 +5,7 @@
 // from the shelf, one square per unit, and the stars and the ball are the shelf's own props, so
 // the pieces a child knocks over are the ones they count with. A star is down when it lies on the
 // ground or has left the world. There is no score and no limit on shots: after a brief settling
-// pause a new ball is in the sling, the dots of the last two shots stay on the paper, and
+// pause a new ball is in the sling, the flight trail fades away, and
 // changing one thing at a time between two shots is the skill the game rewards. At the harder level
 // the angle is written in degrees on the arc the pull makes, which is the protractor a grade four
 // child is learning to read, used for something.
@@ -17,13 +17,23 @@ import { fitZoom, follow, type Cam } from "../../engine/motion/camera";
 import { arc, degreesOf, throwOf, withinReach } from "../../engine/motion/flight";
 import { knob } from "../../engine/motion/tune";
 import { bodies, type Bodies, type Body } from "../../engine/motion/bodies";
+import { PHYSICAL_MATERIALS, type PhysicalMaterial } from "../../engine/motion/physical-materials";
 import type { Pad } from "../../engine/motion/pad";
 import type { Frame, Happening, Mark, Sprite } from "../../engine/motion/scene";
 import type { ActionGame, ActionLevel, Levels } from "./game";
 
 export type Piece =
-    | { kind: "rod"; n: number; x: number; y: number; up?: boolean; fixed?: boolean }
-    | { kind: "star"; x: number; y: number };
+    | {
+          kind: "rod";
+          n: number;
+          x: number;
+          y: number;
+          up?: boolean;
+          fixed?: boolean;
+          material?: PhysicalMaterial;
+      }
+    | { kind: "star"; x: number; y: number }
+    | { kind: "weight"; x: number; y: number; r: number; material: "stone" };
 
 export interface SlingLevel extends ActionLevel {
     world: { w: number; h: number };
@@ -143,6 +153,24 @@ const LAID: Levels<SlingLevel> = [
         preview: 0.22,
         numbers: true,
     },
+    {
+        title: "The rolling stone",
+        goal: "Nudge the heavy stone into the timber tower. Knock the star down.",
+        grades: [2, 4],
+        world: { w: 44, h: 22 },
+        ground: 19,
+        pouch: { x: 6.5, y: 13.8 },
+        pieces: [
+            { kind: "rod", n: 4, x: 22, y: 18.5, fixed: true, material: "stone" },
+            { kind: "weight", x: 22, y: 16.8, r: 1.2, material: "stone" },
+            ...tower(32, 19).map((piece) =>
+                piece.kind === "rod" ? { ...piece, material: "timber" as const } : piece,
+            ),
+            { kind: "star", x: 32, y: 11.3 },
+        ],
+        preview: 0.45,
+        numbers: false,
+    },
 ];
 
 /** How much of the world a zoom of one shows. A wider world is shown whole while aiming, at a zoom under one. */
@@ -183,11 +211,19 @@ function pieceArt(p: Piece | { kind: "ball" } | { kind: "pivot" }): {
 } {
     switch (p.kind) {
         case "rod":
+            if (p.material)
+                return {
+                    art: "slingbeam",
+                    params: { length: p.n, material: p.material },
+                    crop: { x: 0, y: 0, w: p.n, h: 1 },
+                };
             return {
                 art: "rods",
-                params: { rods: [p.n], mode: "stair", numbers: true },
+                params: { rods: [p.n], mode: "stair", numbers: false },
                 crop: { x: 1.4, y: 0.9, w: p.n + 0.2, h: 1.2 },
             };
+        case "weight":
+            return { art: "slingweight", crop: { x: 0, y: 0, w: 2, h: 2 } };
         case "star":
             return { art: "prop.star", crop: { x: 0.2, y: 0.3, w: 1.6, h: 1.6 } };
         case "ball":
@@ -232,7 +268,7 @@ export interface SlingState {
     settling: number;
     ready: number;
     trail: { x: number; y: number }[];
-    trails: { x: number; y: number }[][];
+    trailAge: number;
     shots: number;
     starsDown: number;
     hits: number;
@@ -253,6 +289,14 @@ function addPiece(world: Bodies, p: Piece): Body {
             friction: 0.6,
             restitution: 0.1,
         });
+    if (p.kind === "weight")
+        return world.ball({
+            x: p.x,
+            y: p.y,
+            r: p.r,
+            ...PHYSICAL_MATERIALS[p.material],
+            fast: true,
+        });
     return world.box({
         x: p.x,
         y: p.y,
@@ -260,14 +304,16 @@ function addPiece(world: Bodies, p: Piece): Body {
         h: 0.96,
         angle: p.up ? Math.PI / 2 : 0,
         fixed: p.fixed,
-        density: 1,
-        friction: 0.7,
-        restitution: 0.05,
+        ...PHYSICAL_MATERIALS[p.material ?? "timber"],
     });
 }
 
 export function start(level: number): SlingState {
-    const L = SLING_LEVELS[level] ?? SLING_LEVELS[0];
+    return startSlingLevel(SLING_LEVELS[level] ?? SLING_LEVELS[0], level);
+}
+
+/** Start exact stored geometry, used by certified generated challenges and replays. */
+export function startSlingLevel(L: SlingLevel, level = 0): SlingState {
     const world = bodies({ gravity: { x: 0, y: SLING.gravity.value } });
     world.ground({ y: L.ground, from: -20, to: L.world.w + 20, friction: 0.9 });
     const things: Thing[] = L.pieces.map((piece, i) => ({
@@ -316,7 +362,7 @@ export function start(level: number): SlingState {
         settling: 0,
         ready: 0,
         trail: [],
-        trails: [],
+        trailAge: 0,
         shots: 0,
         starsDown: 0,
         hits: 0,
@@ -361,8 +407,8 @@ function fire(s: SlingState, pull: { x: number; y: number }, out: Happening[]): 
     s.grounded = 0;
     s.settling = 0;
     s.ready = 0;
-    if (s.trail.length) s.trails = [s.trail, ...s.trails].slice(0, 2);
     s.trail = [];
+    s.trailAge = 0;
     s.pull = null;
     s.shots++;
     s.said = "";
@@ -372,6 +418,8 @@ function fire(s: SlingState, pull: { x: number; y: number }, out: Happening[]): 
 export function step(s: SlingState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
+    s.trailAge += DT;
+    if (s.trailAge >= 0.8) s.trail = [];
     s.ready = Math.max(0, s.ready - DT);
     if (s.phase === "aim" && !s.won) {
         for (const d of pad.pressed) {
@@ -429,7 +477,11 @@ export function step(s: SlingState, pad: Pad): Happening[] {
         s.flight += DT;
         const b = s.ball;
         const at = b ? s.world.where(b) : null;
-        if (at && s.phase === "fly" && s.steps % 3 === 0) s.trail.push({ x: at.x, y: at.y });
+        if (at && s.phase === "fly" && s.steps % 3 === 0) {
+            s.trail.push({ x: at.x, y: at.y });
+            if (s.trail.length > 20) s.trail.shift();
+            s.trailAge = 0;
+        }
         const gone = !at || at.x > L.world.w + 3 || at.x < -3 || at.y > L.world.h + 3;
         s.grounded = at && at.y >= L.ground - SLING.ball.value - 0.15 ? s.grounded + DT : 0;
         if (
@@ -516,6 +568,7 @@ export function frame(s: SlingState, rest = false): Frame {
             angle: p.angle,
             z: t.piece.kind === "star" ? 3 : 2,
             still: t.piece.kind === "rod" && t.piece.fixed === true,
+            ...(t.piece.kind === "weight" ? { size: t.piece.r * 2 } : {}),
         });
     }
     if (s.plank && L.seesaw) {
@@ -556,8 +609,12 @@ export function frame(s: SlingState, rest = false): Frame {
             angle: flying ? flying.angle : 0,
             z: 4,
         });
-    for (const tr of s.trails) marks.push({ kind: "dots", pts: tr, faint: true });
-    if (s.trail.length) marks.push({ kind: "dots", pts: s.trail });
+    if (!rest && s.trail.length)
+        marks.push({
+            kind: "dots",
+            pts: s.trail,
+            opacity: 0.3 * Math.max(0, 1 - s.trailAge / 0.8),
+        });
     if (s.phase === "aim" && !s.won) {
         if (s.ready > 0 && !s.pull)
             marks.push({ kind: "ring", x: L.pouch.x, y: L.pouch.y, r: 1, on: true });
@@ -568,7 +625,7 @@ export function frame(s: SlingState, rest = false): Frame {
         const at = ballAt ?? L.pouch;
         for (const tip of tips) marks.push({ kind: "line", a: tip, b: at });
         if (s.pull && Math.hypot(s.pull.x, s.pull.y) >= SLING.minPull.value) {
-            marks.push({ kind: "dots", pts: path(s, s.pull, L.preview) });
+            marks.push({ kind: "dots", pts: path(s, s.pull, L.preview), opacity: 0.5 });
             if (L.numbers) {
                 marks.push({
                     kind: "word",
@@ -639,6 +696,10 @@ export const slingGame: ActionGame<SlingState> = {
               ? "Next ball getting ready…"
               : s.said || (s.shots === 0 ? "Pull the ball back and let go." : ""),
     won: (s) => s.won,
+    objectives: (s) => ({
+        completed: s.starsDown,
+        total: s.things.filter((t) => t.piece.kind === "star").length,
+    }),
     tuning: SLING,
     pullFrom: (s) => (s.phase === "aim" && !s.won ? s.L.pouch : null),
     still: { press: () => 1, settling: (s) => s.phase !== "aim" },

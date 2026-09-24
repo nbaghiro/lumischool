@@ -156,6 +156,17 @@ function blocked(s: SnakeState, c: Cell): boolean {
 /** Turns asked for since the last move, kept in order, without turning straight back into the string. */
 function listen(s: SnakeState, pad: Pad): void {
     const last = () => s.queue[s.queue.length - 1] ?? s.dir;
+    if (pad.touch && s.queue.length < 2) {
+        const head = s.body[0],
+            dx = pad.touch.x - head.x - 0.5,
+            dy = pad.touch.y - head.y - 0.5;
+        if (Math.hypot(dx, dy) > 0.8) {
+            const direction =
+                Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : dy > 0 ? "down" : "up";
+            if (direction !== last() && (s.body.length < 2 || !opposite(direction, last())))
+                s.queue.push(direction);
+        }
+    }
     for (const d of pad.pressed)
         if (s.queue.length < 3 && d !== last() && (s.body.length < 2 || !opposite(d, last())))
             s.queue.push(d);
@@ -291,6 +302,7 @@ export function frame(s: SnakeState, rest = false): Frame {
             marks.push({ kind: "word", x: p.x, y: p.y + 0.95, text: String(i), size: 0.62 });
     }
     const h = at(0);
+    if (s.stopped && !s.won) marks.push({ kind: "ring", x: h.x, y: h.y, r: 0.7 });
     sprites.push({
         key: "head",
         art: "guide.firefly",
@@ -351,10 +363,11 @@ export const snakeGame: ActionGame<SnakeState> = {
     id: "snake",
     title: "Bead string",
     group: "action",
+    touch: true,
     levels: SNAKE_LEVELS,
     rate: RATE,
     cover: { art: "beadstring", params: { beads: 10, mark: 7 } },
-    hint: "Arrow keys, a swipe on the paper, or the arrows below to turn",
+    hint: "Arrow keys, a swipe, or hold a point on the paper to steer towards it",
     controls: { arrows: { up: "Up", down: "Down", left: "Left", right: "Right" } },
     start,
     step,
@@ -362,5 +375,6 @@ export const snakeGame: ActionGame<SnakeState> = {
     say,
     note: (s) => s.said,
     won: (s) => s.won,
+    objectives: (s) => ({ completed: s.count / s.L.by, total: s.L.to / s.L.by }),
     still: { press: (s) => s.every },
 };

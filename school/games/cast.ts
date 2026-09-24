@@ -1,3 +1,4 @@
+import { reelStep, type Reel } from "../../engine/motion/reel";
 // Gone fishing: cast the float next to the fish you want, and weigh the catch on the scale.
 //
 // The child fishes from a jetty. A press on the float at the rod's tip, a pull back and a let go cast it
@@ -249,6 +250,7 @@ interface Flight {
 }
 
 export interface CastState {
+    reel: Reel;
     level: number;
     L: CastLevel;
     rnd: () => number;
@@ -355,6 +357,7 @@ export function start(level: number, seed = 1): CastState {
         }
     });
     const s: CastState = {
+        reel: { speed: 0, tension: 0 },
         level,
         L,
         rnd,
@@ -440,6 +443,7 @@ export function plop(s: CastState, x: number, out: Happening[]): void {
 
 function reelIn(s: CastState, out: Happening[]): void {
     s.phase = "reel";
+    s.reel = { speed: 0, tension: 0 };
     s.line = null;
     out.push({ cue: "back" });
 }
@@ -522,7 +526,7 @@ const keyPull = (a: { strength: number; deg: number }): Pt => {
 };
 
 function keys(s: CastState, pad: Pad, out: Happening[]): void {
-    if (pad.touch) return;
+    if (pad.touch || s.phase === "reel") return;
     for (const d of pad.pressed) {
         const a = s.keyAim ?? { strength: 0.6, deg: 40 };
         if (d === "left") a.strength = Math.round(Math.max(0.15, a.strength - 0.05) * 100) / 100;
@@ -647,8 +651,17 @@ export function step(s: CastState, pad: Pad): Happening[] {
         case "bed":
             break;
         case "reel": {
-            s.hook = { x: s.float.x, y: s.hook.y - CASTING.reel.value * DT };
             const f = s.line === null ? undefined : s.fish[s.line];
+            const effort =
+                pad.brake || pad.holding.includes("down") ? 0 : pad.go || pad.touch ? 1 : 0.65;
+            const resistance = f
+                ? 0.2 + 0.45 * (0.5 + 0.5 * Math.sin(s.steps * DT * 3 + f.kind))
+                : 0;
+            const travel = reelStep(s.reel, effort, resistance, CASTING.reel.value * 1.9, DT);
+            s.hook = {
+                x: s.float.x + (f ? Math.sin(s.steps * DT * 7) * s.reel.tension * 0.4 : 0),
+                y: s.hook.y - travel,
+            };
             if (f) {
                 f.x = s.hook.x - f.dir * shapeOf(L, f.kind).size * 0.45;
                 f.y = s.hook.y + 0.3;
@@ -700,7 +713,11 @@ export function step(s: CastState, pad: Pad): Happening[] {
                 s.line = i;
                 f.at = "line";
                 s.phase = "reel";
-                tell(s, `A bite: the ${L.kinds[f.kind]?.tag ?? ""} fish.`);
+                s.reel = { speed: 0, tension: 0 };
+                tell(
+                    s,
+                    `A bite: the ${L.kinds[f.kind]?.tag ?? ""} fish. Hold to reel; let go to ease.`,
+                );
                 out.push(
                     { cue: "lift" },
                     { burst: { kind: "bubble", x: s.hook.x, y: s.hook.y, n: 5 } },
@@ -767,6 +784,9 @@ export function back(s: CastState): boolean {
     throwBack(s, s.pan.length - 1, []);
     return true;
 }
+
+const outTension = (s: CastState): number =>
+    s.phase === "reel" && s.line !== null ? s.reel.tension : 0;
 
 export function frame(s: CastState, rest = false): Frame {
     const L = s.L,
@@ -1012,13 +1032,13 @@ export function frame(s: CastState, rest = false): Frame {
     const bob = rest || (s.phase !== "sink" && s.phase !== "bed") ? 0 : Math.sin(t * 2.6) * 0.08;
     const dip = s.phase === "reel" && s.line !== null ? 0.5 : 0,
         float = { x: s.float.x, y: s.float.y + bob + dip };
-    marks.push({ kind: "line", a: HANDS, b: TIP, style: "rod" });
+    marks.push({ kind: "line", a: HANDS, b: TIP, bend: outTension(s) * 0.55, style: "rod" });
     const out = s.phase === "sink" || s.phase === "bed" || s.phase === "reel";
     marks.push({
         kind: "line",
         a: TIP,
         b: { x: float.x, y: float.y - 0.45 },
-        bend: out ? -1.2 : 0,
+        bend: out ? -1.2 * (1 - outTension(s)) : 0,
         style: "thin",
     });
     sprites.push({
@@ -1114,13 +1134,18 @@ export const castGame: ActionGame<CastState> = {
     bleed: true,
     touch: true,
     cover: { art: "fish", params: { size: 4, tone: "sky", tag: "5", gape: false, facing: 1 } },
-    hint: "Pull back from the float on the rod and let go to cast, and press a fish on the pan to throw it back; or set the cast with the arrow keys and press space",
-    controls: {},
+    hint: "Pull back from the float and release to cast. With a fish on the line, hold the water or space to reel faster; release to ease, or hold down to pause the reel. The rod bends when the fish pulls. Tap a fish on the pan to return it. Arrow keys aim the cast; space casts.",
+    controls: { go: "Cast / reel", brake: "Ease the line" },
     start,
     step,
     frame,
     say,
     back,
+    cancelInput(s) {
+        if (s.phase === "held") s.phase = "rest";
+        s.pull = null;
+        s.hand = null;
+    },
     tuning: CASTING,
     note: (s) => (!s.touched ? s.L.prompt : s.steps - s.saidAt < RATE * 4 || s.won ? s.said : ""),
     won: (s) => s.won,

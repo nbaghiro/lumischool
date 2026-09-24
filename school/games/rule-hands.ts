@@ -40,16 +40,22 @@ const CARD = { own: 10, w: 9.2, h: (1 * 2 + 5) * (9.2 / 10), text: 34 };
 const outCell = (i: number): Pt => ({ x: 9.25, y: 5.4 + 2 * i });
 
 /** Where everything stands on the sheet. */
-const W = 46;
-const GROUND = 37;
-const MACHINE_AT: Pt = { x: 14.5, y: GROUND - MACHINE.foot };
-const BASKET_AT: Pt = { x: 2, y: GROUND - 7.6 };
-const TABLE_AT: Pt = { x: 32.5, y: 22 };
+function layout(bench: Bench) {
+    const ground = bench.wide ? 31 : 37;
+    return {
+        width: bench.wide ? 75 : 46,
+        ground,
+        machine: { x: bench.wide ? 42.5 : 14.5, y: ground - MACHINE.foot },
+        basket: { x: bench.wide ? 30 : 2, y: ground - 7.6 },
+        table: { x: bench.wide ? 60.5 : 32.5, y: bench.wide ? 16 : 22 },
+    };
+}
 const TONES = ["sky", "berry", "glow", "mint"];
 const on = (at: Pt, p: Pt): Pt => ({ x: at.x + p.x, y: at.y + p.y });
 
 /** What the rule round is made of, read once from its start: every number that can be fed, and every card's rule, in order. */
 interface Bench {
+    wide?: boolean;
     inputs: number[];
     cards: string[];
 }
@@ -98,20 +104,23 @@ function ballSpot(bench: Bench, n: number): Pt {
         col = i % 3,
         inRow = Math.min(3, bench.inputs.length - row * 3);
     return {
-        x: BASKET_AT.x + 4.5 + (col - (inRow - 1) / 2) * 3.1 - BALL / 2,
-        y: BASKET_AT.y + 4.1 + 0.6 - BALL - row * 2.7,
+        x: layout(bench).basket.x + 4.5 + (col - (inRow - 1) / 2) * 3.1 - BALL / 2,
+        y: layout(bench).basket.y + 4.1 + 0.6 - BALL - row * 2.7,
     };
 }
 
 function cardSpot(bench: Bench, i: number): Pt {
-    const per = bench.cards.length > 9 ? 4 : 5;
+    const per = bench.wide ? 3 : bench.cards.length > 9 ? 4 : 5;
     const row = Math.floor(i / per),
         col = i % per;
-    return { x: (W - per * CARD.w) / 2 + col * CARD.w, y: 0.5 + row * (CARD.h + 0.5) };
+    return {
+        x: (bench.wide ? 0 : (layout(bench).width - per * CARD.w) / 2) + col * CARD.w,
+        y: 0.5 + row * (CARD.h + 0.5),
+    };
 }
 
-const hopper = (): Pt => on(MACHINE_AT, MACHINE.hopper);
-const slot = (): Pt => on(MACHINE_AT, MACHINE.slot);
+const hopper = (bench: Bench): Pt => on(layout(bench).machine, MACHINE.hopper);
+const slot = (bench: Bench): Pt => on(layout(bench).machine, MACHINE.slot);
 
 function sceneOf(bench: Bench, pos: Position): Scene {
     const r = readRule(pos);
@@ -120,28 +129,28 @@ function sceneOf(bench: Bench, pos: Position): Scene {
         {
             art: "arcade.ground",
             key: "ground",
-            at: { x: 0, y: GROUND - 0.4 },
-            params: { w: W },
+            at: { x: 0, y: layout(bench).ground - 0.4 },
+            params: { w: layout(bench).width },
             z: 1,
         },
         {
             art: "inout",
             key: "table",
-            at: TABLE_AT,
+            at: layout(bench).table,
             params: { rule: pos.won ? r.shown : "", rows: r.rows, blanks: [] },
             z: 20,
         },
         {
             art: "rulemachine",
             key: "machine",
-            at: MACHINE_AT,
+            at: layout(bench).machine,
             params: { rule: r.shown, pull: 0, turn: turns, lit: pos.won },
             z: 30,
         },
         {
             art: "basket",
             key: "basket",
-            at: BASKET_AT,
+            at: layout(bench).basket,
             params: { item: "ball", count: 0, label: "" },
             z: 35,
         },
@@ -180,7 +189,7 @@ function sceneOf(bench: Bench, pos: Position): Scene {
             )
             .filter((p): p is Part => p !== null),
     ];
-    return { parts, size: { w: W, h: GROUND + 0.9 } };
+    return { parts, size: { w: layout(bench).width, h: layout(bench).ground + 0.9 } };
 }
 
 function handlesOf(bench: Bench, pos: Position, minTarget: number): Handle[] {
@@ -188,8 +197,8 @@ function handlesOf(bench: Bench, pos: Position, minTarget: number): Handle[] {
     const feed = (n: number): number => pos.moves.findIndex((m) => m.say === `Feed in ${n}`);
     const name = (label: string): number =>
         pos.moves.findIndex((m) => m.say === `The rule is ${label}`);
-    const into = atLeast({ cx: hopper().x, cy: hopper().y + 0.6, r: 2.6 }, minTarget);
-    const roof = { x: MACHINE_AT.x + 1, y: MACHINE_AT.y, w: 12, h: 12 };
+    const into = atLeast({ cx: hopper(bench).x, cy: hopper(bench).y + 0.6, r: 2.6 }, minTarget);
+    const roof = atLeast({ cx: slot(bench).x, cy: slot(bench).y, r: 3 }, minTarget);
     const balls = bench.inputs
         .filter((n) => !r.fed.includes(n))
         .map((n): Handle => {
@@ -234,7 +243,7 @@ function ruleBeat(
         rnd = seeded(seed),
         a = readRule(from),
         b = readRule(to);
-    const machineAt = MACHINE_AT;
+    const machineAt = layout(bench).machine;
     const turn0 = a.fed.length + (a.named === null ? 0 : 1);
     const leaving = (key: string): Part | undefined => was.parts.find((p) => p.key === key);
     /** The lever pulled and let go, the cogs turned once, and the machine shaking while they turn. Returns when the cogs stop. */
@@ -277,7 +286,7 @@ function ruleBeat(
         const key = `ball:${fedNow}`,
             part = leaving(key);
         if (part) s.extra(part);
-        const mouth = hopper(),
+        const mouth = hopper(bench),
             over = { x: mouth.x - BALL / 2, y: mouth.y - BALL - 2.4 };
         const inside = { x: over.x, y: mouth.y - BALL * 0.6 };
         const dropped =
@@ -310,7 +319,7 @@ function ruleBeat(
             SPRINGS.drive,
         );
         s.cue(appear + 0.1, "lift");
-        const cell = on(TABLE_AT, outCell(row)),
+        const cell = on(layout(bench).table, outCell(row)),
             into = { x: cell.x - BALL / 2, y: cell.y - BALL / 2 };
         const landed = s.lob(
             out,
@@ -332,7 +341,7 @@ function ruleBeat(
     const key = `card:${named}`,
         part = leaving(key);
     if (part) s.extra(part);
-    const mouth = slot(),
+    const mouth = slot(bench),
         over = { x: mouth.x - CARD.w / 2, y: mouth.y - CARD.h - 1.2 };
     s.set("machine", 0, { rule: a.shown, lit: false });
     s.set("table", 0, { rule: "" });
@@ -357,25 +366,39 @@ function ruleBeat(
 }
 
 /** The machine lit: it hops on its legs and sparkles from its bulb. */
-function ruleFinish(seed: number): Beat {
+function ruleFinish(bench: Bench, seed: number): Beat {
     const s = score(),
         rnd = seeded(seed);
     const up = s.track(
         "machine",
         "y",
         0.1,
-        MACHINE_AT.y,
-        MACHINE_AT.y - 0.9,
+        layout(bench).machine.y,
+        layout(bench).machine.y - 0.9,
         { ease: "out" },
         0.18,
     );
     s.squash(
         "machine",
-        s.track("machine", "y", up, MACHINE_AT.y - 0.9, MACHINE_AT.y, { fall: 42 }, 0.21),
+        s.track(
+            "machine",
+            "y",
+            up,
+            layout(bench).machine.y - 0.9,
+            layout(bench).machine.y,
+            { fall: 42 },
+            0.21,
+        ),
         0.05,
     );
-    s.burst(0.05, "sparkle", MACHINE_AT.x + 12.4, MACHINE_AT.y + 1.6, 10 + Math.floor(rnd() * 4));
-    s.burst(up, "dust", MACHINE_AT.x + 7, GROUND, 6);
+    s.burst(
+        0.05,
+        "sparkle",
+        layout(bench).machine.x + 12.4,
+        layout(bench).machine.y + 1.6,
+        10 + Math.floor(rnd() * 4),
+    );
+    s.burst(up, "dust", layout(bench).machine.x + 7, layout(bench).ground, 6);
     return s.beat();
 }
 
@@ -442,10 +465,21 @@ export const ruleGame: TurnGame = {
     ),
     open(round: Round, ctx: Ctx): Session<Position> {
         const bench = benchOf(round);
+        bench.wide = ctx.stage.room >= 900;
         return {
             glide: SPRINGS.back,
-            parts: (pos) => sceneOf(bench, pos),
+            parts: (pos) => {
+                bench.wide = ctx.stage.room >= 900;
+                return sceneOf(bench, pos);
+            },
             handles: (pos) => handlesOf(bench, pos, ctx.minTarget()),
+            preview(_pos, handle) {
+                const at = handle.key.startsWith("ball:") ? hopper(bench) : slot(bench);
+                ctx.stage.marks("receiver", [{ kind: "ring", x: at.x, y: at.y, r: 1.2 }]);
+            },
+            unpreview() {
+                ctx.stage.marks("receiver", []);
+            },
             after(pos) {
                 for (const n of bench.inputs) ctx.stage.tag(`ball:${n}`, "grab", !pos.won);
                 bench.cards.forEach((_, i) =>
@@ -453,8 +487,8 @@ export const ruleGame: TurnGame = {
                 );
             },
             beat: (from, to, o) => ruleBeat(bench, from, to, o.was, o.hand, o.seed),
-            finish: (_pos, o) => ruleFinish(o.seed),
-            star: () => on(MACHINE_AT, { x: 12.4, y: 0.6 }),
+            finish: (_pos, o) => ruleFinish(bench, o.seed),
+            star: () => on(layout(bench).machine, { x: 12.4, y: 0.6 }),
         };
     },
 };

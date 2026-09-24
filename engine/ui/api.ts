@@ -407,8 +407,16 @@ export async function events(
 }
 
 /** Appends under this browser's session; the server stamps family, actor, device and seq. */
-export async function append(drafts: Draft[]): Promise<Envelope[] | Failure> {
-    const a = await call("POST", "/api/events", { events: drafts });
+export async function append(
+    drafts: Draft[],
+    expectedFamily?: string,
+    expectedUser?: string,
+): Promise<Envelope[] | Failure> {
+    const a = await call("POST", "/api/events", {
+        events: drafts,
+        expected_family_id: expectedFamily,
+        expected_user_id: expectedUser,
+    });
     if (!a.ok) return refused(a.failure);
     const out = obj(a.body) ? list(a.body.events, readEnvelope) : null;
     return out ?? unreadable(a.status);

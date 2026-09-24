@@ -1,3 +1,8 @@
+import type { Round } from "./games";
+import type { Ctx } from "./hands";
+import { spellHands } from "./spell-hands";
+import { rallyGame } from "./rally";
+import { golfGame } from "./golf";
 // Every game, in the order the Games tab shows them, grouped by how each one plays.
 //
 // Two mechanics are played as puzzles from a tray of moves, because the question in them is which
@@ -43,10 +48,10 @@ const listedLevels = (a: Listed, titles: string[]): TurnLevel[] =>
         round: () => a.round(i),
     }));
 
-export const spellGame = puzzle({
+const spelling = puzzle({
     id: "spell",
     title: "Spell the picture",
-    hint: "Tap a sound to put it in the next box",
+    hint: "Tap a sound or drag it into a box. Move sounds between boxes, or return one to the tray.",
     cover: { art: "soundboxes", params: { boxes: 3, filled: ["sh", "i", "p"], counters: false } },
     levels: listedLevels(activity("spell"), [
         "Three sounds",
@@ -56,9 +61,14 @@ export const spellGame = puzzle({
     ]),
     ends: {
         won: "That is how it is spelled.",
-        stuck: "Every box is full. Take the last sound out.",
+        stuck: "Every box is full. Move a sound or take one out.",
     },
 });
+
+export const spellGame = {
+    ...spelling,
+    open: (round: Round, ctx: Ctx) => spellHands(round.start, ctx),
+};
 
 /**
  * Every game. Adding one is one entry here: the picker groups the list by each game's `group` and
@@ -84,6 +94,8 @@ export const GAMES: Game[] = [
     raftsGame,
     castGame,
     planeGame,
+    golfGame,
+    rallyGame,
 ];
 
 /** A game by its id, as `?g=` names it. */

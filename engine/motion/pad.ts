@@ -45,6 +45,8 @@ export interface Pad {
     touch: { x: number; y: number } | null;
     /** Set for one step when a held touch lifts, with where it lifted. */
     lifted: { x: number; y: number } | null;
+    /** Pointer release velocity in world squares/second, consumed once; absent for keyboard input. */
+    flick?: { x: number; y: number } | null;
 }
 
 export const emptyPad = (): Pad => ({
@@ -79,6 +81,7 @@ export function spent(p: Pad): void {
     p.released = null;
     p.tapped = false;
     p.lifted = null;
+    p.flick = null;
 }
 
 /** A key's meaning, or null. The same keys in every game, so a child learns them once. */

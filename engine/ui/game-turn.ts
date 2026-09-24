@@ -104,7 +104,7 @@ export function turn(
         hear: shell.hear,
         say: (text) => {
             state.aside = text;
-            $("aside").textContent = text;
+            shell.feedback(text);
         },
         reach: () => ({ reach: Math.max(1, 22 / stage.sq), flickSeconds: 0.35, minSpeed: 14 }),
         floor: minTarget,
@@ -128,7 +128,7 @@ export function turn(
         if (!room.w) return;
         // As small as six pixels a square on a phone held upright, so a wide scene shrinks to fit rather
         // than running off the side; a handle is still grown to the 44 pixel floor when it is pressed.
-        const sq = Math.max(6, Math.min(34, Math.floor(room.w / w), Math.floor(room.h / h)));
+        const sq = Math.max(6, Math.min(Math.floor(room.w / w), Math.floor(room.h / h)));
         host.style.setProperty("--sq", `${sq}px`);
         // On a phone the tray is under the board, and the room the page gives the board has a floor, so a
         // tall tray can still push the page past the window; the board gives up what it overflows by.
@@ -150,15 +150,18 @@ export function turn(
         s.after?.(pos);
         const hint = state.nudges > 1 && !pos.won ? nudge(state.ex, pos) : null;
         $("goal").textContent = pos.won ? game.ends.won : state.round.goal;
-        $("aside").textContent = pos.won
-            ? `${state.attempt.moves.length} moves, and the shortest way was ${state.proof.shortest}.`
-            : outOfMoves()
-              ? game.ends.stuck
-              : hint !== null
-                ? `Try this: ${pos.moves[hint]?.say.toLowerCase()}.`
-                : state.nudges
-                  ? "Have a look at the one with the ring round it."
-                  : state.aside || (state.history.length === 1 ? intro : "");
+        shell.feedback(
+            pos.won
+                ? game.ends.won
+                : outOfMoves()
+                  ? game.ends.stuck
+                  : hint !== null
+                    ? `Try this: ${pos.moves[hint]?.say.toLowerCase()}.`
+                    : state.nudges
+                      ? "Have a look at the one with the ring round it."
+                      : state.aside || (state.history.length === 1 ? intro : ""),
+            pos.won,
+        );
         $("reads").textContent = pos.say;
         const back = $<HTMLButtonElement>("undo");
         back.hidden = false;
@@ -194,6 +197,7 @@ export function turn(
             timer = window.setTimeout(() => {
                 if (shell.paused()) return;
                 state.nudges++;
+                shell.observe?.("assist");
                 draw();
             }, NUDGE_MS);
         if (hadFocus)
@@ -246,6 +250,7 @@ export function turn(
             const move = pos.moves[i];
             if (!move) break;
             const to = move.next();
+            shell.observe?.("move", how === "key" ? "keyboard" : "pointer");
             state.history.push(to);
             state.attempt = record(state.attempt, {
                 say: move.say,
@@ -275,6 +280,7 @@ export function turn(
         state.nudges = 0;
         if (pos.won) {
             state.attempt.outcome = "won";
+            shell.observe?.("won");
             startWin(move?.length ?? 0);
         } else if (!pos.moves.length) shell.hear("crash");
         else if (state.attempt.moves.length >= state.round.bounds.budget)
@@ -335,7 +341,7 @@ export function turn(
             n.textContent = m.chip.note;
             b.appendChild(n);
         }
-        b.addEventListener("click", () => play([i], "key"));
+        b.addEventListener("click", (event) => play([i], event.detail === 0 ? "key" : "tap"));
         // A chip in hand previews what it would do, the way a held handle does, so the keyboard path
         // gets the arc and the ghost too.
         b.addEventListener("focus", () => previewMove(i));
@@ -579,14 +585,14 @@ export function turn(
         e.preventDefault();
         if (!kb.lifted) {
             if (h.tap?.moves.length) {
-                play(h.tap.moves, "tap", { piece: h.key }, h.key);
+                play(h.tap.moves, "key", { piece: h.key }, h.key);
                 return true;
             }
             if (!spots(h).length) {
                 state.aside =
                     (h.targets ?? []).find((t) => t.carries.refuse)?.carries.refuse ??
                     "That one has nowhere to go just now.";
-                $("aside").textContent = state.aside;
+                shell.feedback(state.aside);
                 shell.hear("nope");
                 return true;
             }

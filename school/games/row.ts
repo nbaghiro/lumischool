@@ -253,7 +253,10 @@ export interface RowState {
 }
 
 export function start(level: number): RowState {
-    const L = ROW_LEVELS[level] ?? ROW_LEVELS[0];
+    return startRowLevel(ROW_LEVELS[level] ?? ROW_LEVELS[0], level);
+}
+
+export function startRowLevel(L: RowLevel, level = 0): RowState {
     return {
         level,
         L,
@@ -316,12 +319,13 @@ function pull(s: RowState, amount: number): void {
     st.length += piece;
     s.v = drive(s.v, st.kind === "ahead" ? piece : -piece, st.timing, rhythmOf());
     s.oar = Math.min(1, s.oar + piece);
+    if (st.length >= 1) s.endedAt = s.steps;
 }
 
 function recover(s: RowState): void {
     if (!s.stroke) return;
+    if (s.stroke.length < 1) s.endedAt = s.steps;
     s.stroke = null;
-    s.endedAt = s.steps;
 }
 
 /** Squares a hand has to turn back by before a drive ends or a recovery catches, so a shaking hand is not a stroke. */
@@ -407,7 +411,7 @@ export function step(s: RowState, pad: Pad): Happening[] {
         hands(s, pad, out);
         keys(s, pad, out);
     }
-    if (!s.stroke) s.oar = Math.max(0, s.oar - DT * 2.2);
+    if (!s.stroke || s.stroke.length >= 1) s.oar = Math.max(0, s.oar - DT * 2.2);
     if (!s.won) {
         const was = s.x,
             g = glide(s.v, DT, ROW.water.value, L.current);
@@ -419,14 +423,15 @@ export function step(s: RowState, pad: Pad): Happening[] {
         }
         const ground = groundSpeed(s);
         // The bow comes to rest only gliding: oars still pulling ram the jetty and row past the buoy.
-        const gentle = s.stroke ? 0 : ROW.gentle.value;
+        const pulling = s.stroke !== null && s.stroke.length < 1;
+        const gentle = pulling ? 0 : ROW.gentle.value;
         if (L.end === "jetty") {
             if (s.x >= L.target) {
                 const m = meet(ground, gentle, ROW.bounce.value);
                 if (m.bumped) {
                     tell(
                         s,
-                        s.stroke
+                        pulling
                             ? "The oars were still pulling, so the boat bumped the jetty. Let it glide the last bit."
                             : "Too fast. The boat bumped the jetty.",
                     );
@@ -705,11 +710,11 @@ export function frame(s: RowState, rest = false): Frame {
             style: "aim",
         });
     }
-    // The boat, with its rower and oars drawn again as the blades move through the stroke, in eighths.
+    // Feather the blade above the water on recovery, including after a held key finishes its drive.
     const bow = xOf(L, s.x),
         mid = bow - BOW,
-        stroke = Math.round(s.oar * 8) / 8,
-        lifted = s.stroke === null && s.oar < 0.05 ? 1 : 0;
+        stroke = Math.round((s.stroke?.kind === "astern" ? 1 - s.oar : s.oar) * 32) / 32,
+        lifted = s.stroke === null || s.stroke.length >= 1 ? 1 : 0;
     sprites.push({
         key: "boat",
         art: "rowboat",
@@ -797,6 +802,11 @@ export const rowGame: ActionGame<RowState> = {
     step,
     frame,
     say,
+    cancelInput(s) {
+        recover(s);
+        s.hand = null;
+        s.keyWas = null;
+    },
     tuning: ROW,
     note: (s) =>
         !s.touched && !s.won ? s.L.prompt : s.steps - s.saidAt < RATE * 4 || s.won ? s.said : "",

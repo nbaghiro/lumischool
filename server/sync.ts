@@ -145,6 +145,18 @@ function refusedWrite(error: unknown): never {
  * write, and to a kid they reach today; then the store numbers them under the family's lock.
  */
 export async function appendDrafts(adult: Adult, body: unknown): Promise<Envelope[]> {
+    if (
+        isRecord(body) &&
+        body.expected_family_id !== undefined &&
+        body.expected_family_id !== adult.family.id
+    )
+        throw new Refused(403, { error: "not-allowed", problem: "the active family changed" });
+    if (
+        isRecord(body) &&
+        body.expected_user_id !== undefined &&
+        body.expected_user_id !== adult.user
+    )
+        throw new Refused(403, { error: "not-allowed", problem: "the active parent changed" });
     const batch = batchOf(body, BATCH);
     const caller = callerOf(adult);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {

@@ -1,3 +1,4 @@
+import { suspend, type Suspended } from "../../engine/motion/suspension";
 import { bodies, type Bodies, type Body } from "../../engine/motion/bodies";
 import {
     workshop,
@@ -36,7 +37,7 @@ const words = (x: number, y: number, text: string): Mark => ({
     size: 0.7,
 });
 
-interface WorkshopLevel extends ActionLevel {
+export interface WorkshopLevel extends ActionLevel {
     pieces: Piece[];
     masses?: number[];
     target: number;
@@ -155,6 +156,11 @@ export interface WorkshopState {
     held: string | null;
     dragging: string | null;
     touching: boolean;
+    suspended: Suspended | null;
+    rotating: boolean;
+    preview: { x: number; y: number; angle: number } | null;
+    trail: { x: number; y: number; tick: number }[];
+    settledTicks: number;
     text: string;
     ticks: number;
     attempts: number;
@@ -228,6 +234,15 @@ export function startWorkshop(kind: WorkshopState["kind"], level: number): Works
     const levels = kind === "cargo" ? CARGO_LEVELS : MARBLE_LEVELS;
     const definition = levels[level] ?? levels[0];
     if (!definition) throw new Error("No workshop level.");
+    return startWorkshopLevel(kind, level, definition);
+}
+
+/** Open stored challenge geometry without mutating the authored level catalogue. */
+export function startWorkshopLevel(
+    kind: WorkshopState["kind"],
+    level: number,
+    definition: WorkshopLevel,
+): WorkshopState {
     const construction = workshop(definition.pieces, SIZE);
     const s: WorkshopState = {
         kind,
@@ -244,6 +259,11 @@ export function startWorkshop(kind: WorkshopState["kind"], level: number): Works
         held: null,
         dragging: null,
         touching: false,
+        suspended: null,
+        rotating: false,
+        preview: null,
+        trail: [],
+        settledTicks: 0,
         text: definition.goal,
         ticks: 0,
         attempts: 0,
@@ -287,6 +307,7 @@ function syncCrates(s: WorkshopState): void {
 function hook(s: WorkshopState): void {
     if (s.held) {
         s.held = null;
+        s.suspended = null;
         s.text = "Crate released. Load every crate onto the boat.";
         return;
     }
@@ -309,6 +330,8 @@ function hook(s: WorkshopState): void {
     s.construction.future = [];
     if (s.construction.past.length > 100) s.construction.past.shift();
     s.held = nearest;
+    const body = s.objects.get(nearest);
+    if (body) s.suspended = { ...s.world.where(body), vx: 0, vy: 0 };
     s.selected = nearest;
     s.text = "Lift the crate clear of the dock, move it over the boat, then release.";
 }
@@ -343,6 +366,8 @@ export function workshopCommand(s: WorkshopState, id: string): void {
             s.goals = goalsFor(s);
             s.phase = "test";
             s.attempts++;
+            s.settledTicks = 0;
+            s.trail = [];
             s.ball = s.world.ball({
                 x: 5,
                 y: 2,
@@ -390,6 +415,7 @@ export function workshopCommand(s: WorkshopState, id: string): void {
 export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.ticks++;
+    s.trail = s.trail.filter((p) => s.ticks - p.tick < 240);
     if (s.phase === "won") {
         s.sailed = Math.min(8, s.sailed + DT * 1.5);
         return out;
@@ -432,7 +458,11 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
             s.hook.y = clamp(pad.lifted.y - 1.7, 2, 20);
         }
         const held = s.held ? s.objects.get(s.held) : undefined;
-        if (held) s.world.moveTo(held, { x: s.hook.x, y: s.hook.y + 1.7 });
+        if (held) {
+            const target = { x: s.hook.x, y: s.hook.y + 1.7 };
+            s.suspended = suspend(s.suspended ?? { ...target, vx: 0, vy: 0 }, target, DT);
+            s.world.moveTo(held, s.suspended);
+        }
         if (pad.lifted && s.dragging) {
             hook(s);
             s.dragging = null;
@@ -473,16 +503,29 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
             if (nearest && Math.hypot(nearest.x - pad.touch.x, nearest.y - pad.touch.y) < 5) {
                 s.selected = nearest.id;
                 s.dragging = nearest.id;
+                const dx = pad.touch.x - nearest.x,
+                    dy = pad.touch.y - nearest.y;
+                s.rotating =
+                    Math.abs(dx * Math.cos(nearest.angle) + dy * Math.sin(nearest.angle)) > 3;
             }
         }
-        if (pad.lifted && s.dragging) {
-            edit(s.construction, {
-                kind: "move",
-                id: s.dragging,
-                x: pad.lifted.x,
-                y: pad.lifted.y,
-            });
+        const dragging = s.construction.design.pieces.find((p) => p.id === s.dragging);
+        const point = pad.lifted ?? pad.touch;
+        if (dragging && point) {
+            const angle = Math.atan2(point.y - dragging.y, point.x - dragging.x);
+            s.preview = s.rotating
+                ? { x: dragging.x, y: dragging.y, angle: Math.atan(Math.tan(angle)) }
+                : { ...point, angle: dragging.angle };
+        }
+        if (pad.lifted && dragging && s.preview) {
+            edit(
+                s.construction,
+                s.rotating
+                    ? { kind: "rotate", id: dragging.id, angle: s.preview.angle }
+                    : { kind: "move", id: dragging.id, x: s.preview.x, y: s.preview.y },
+            );
             s.dragging = null;
+            s.preview = null;
         }
         s.touching = !!pad.touch;
         if (pad.tapped) workshopCommand(s, "test");
@@ -494,6 +537,8 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
         if (s.ball) {
             const p = s.world.where(s.ball),
                 satisfied = new Set<string>();
+            if (s.ticks % 5 === 0) s.trail.push({ x: p.x, y: p.y, tick: s.ticks });
+            s.settledTicks = s.world.moving(s.ball, 0.15) ? 0 : s.settledTicks + 1;
             const gate = s.definition.gate;
             if (gate && Math.hypot(p.x - gate.x, p.y - gate.y) < 2) satisfied.add("gate");
             if (
@@ -508,7 +553,7 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
                 s.phase = "won";
                 s.text = "It works! Your marble found its way home.";
                 out.push({ cue: "win" });
-            } else if (p.y > 28 || p.x < -3 || p.x > 45) {
+            } else if (p.y > 28 || p.x < -3 || p.x > 45 || s.settledTicks > 90) {
                 s.phase = "build";
                 rebuild(s);
                 s.text = "Keep the parts that worked. Change a ramp and try another path.";
@@ -538,6 +583,15 @@ export function workshopFrame(s: WorkshopState): Frame {
                 sailed = at.x > 21 ? s.sailed : 0;
             sprites.push(sprite(p.id, "crate", at.x + sailed, at.y, 1.8, 1.8));
             marks.push(words(at.x + sailed, at.y + 0.2, String(s.definition.masses?.[i] ?? 1)));
+            if (s.held === p.id)
+                marks.push({
+                    kind: "line",
+                    a: s.hook,
+                    b: { x: at.x, y: at.y - 0.9 },
+                    style: "thin",
+                });
+            else if (!s.held && Math.hypot(at.x - s.hook.x, at.y - s.hook.y - 1.7) < 3)
+                marks.push({ kind: "ring", x: at.x, y: at.y, r: 1.2 });
         }
         const balance = cargoBalance(s);
         marks.push(
@@ -556,13 +610,20 @@ export function workshopFrame(s: WorkshopState): Frame {
             { kind: "line", a: { x: 30, y: 10 }, b: { x: 30, y: 22 }, style: "aim" },
         );
     } else {
-        for (const p of s.construction.design.pieces) {
+        for (const original of s.construction.design.pieces) {
+            const p =
+                original.id === s.dragging && s.preview ? { ...original, ...s.preview } : original;
             sprites.push(sprite(p.id, "ramp", p.x, p.y, 9, 0.5, p.angle));
             if (p.id === s.selected && s.phase === "build")
-                marks.push(
-                    { kind: "ring", x: p.x, y: p.y, r: 1, on: true },
-                    words(p.x, p.y - 1.2, "Selected"),
-                );
+                for (const side of [-1, 1])
+                    marks.push({
+                        kind: "ring",
+                        x: p.x + side * 4.2 * Math.cos(p.angle),
+                        y: p.y + side * 4.2 * Math.sin(p.angle),
+                        r: 0.35,
+                    });
+            if (p.id === s.selected && s.phase === "build")
+                marks.push({ kind: "ring", x: p.x, y: p.y, r: 1, on: true });
         }
         const p = s.ball ? s.world.where(s.ball) : { x: 5, y: 2 };
         sprites.push(
@@ -579,6 +640,8 @@ export function workshopFrame(s: WorkshopState): Frame {
                 on: s.goals.done.includes("gate"),
             });
     }
+    for (const p of s.trail)
+        marks.push({ kind: "dots", pts: [p], opacity: 0.35 * (1 - (s.ticks - p.tick) / 240) });
     marks.push(
         words(
             21,
@@ -601,7 +664,7 @@ const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
     hint:
         kind === "cargo"
             ? "Drag a crate onto the boat and let go. Or move the hook above a crate with the arrow keys, then press Space or Enter to pick up or release. Balance the weight around the centre line. When ready, ring the bell or press Space or Enter to sail."
-            : "Drag a ramp to move it, or select it and use arrow keys. Turn it with the buttons. Space tests your design.",
+            : "Drag the middle of a ramp to move it, or an end to turn it. Arrow keys move the selected ramp; the turn buttons rotate it. Space tests your design. Your last path stays briefly to help you adjust.",
     levels: kind === "cargo" ? CARGO_LEVELS : MARBLE_LEVELS,
     controls: {
         arrows: { left: "Left", right: "Right", up: "Up", down: "Down" },
@@ -629,9 +692,15 @@ const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
         `${s.definition.goal} ${s.text} ${s.kind === "cargo" ? `${cargoBalance(s).loaded} crates aboard.` : `Selected ${s.selected}. ${s.phase === "build" ? "Building" : "Testing"}.`}`,
     note: (s) => s.text,
     won: (s) => s.phase === "won",
+    objectives: (s) => ({
+        completed: s.goals.done.length,
+        total: s.goals.definitions.length,
+    }),
     command: workshopCommand,
     cancelInput: (s) => {
         s.dragging = null;
+        s.preview = null;
+        s.rotating = false;
         s.touching = false;
     },
     checkpoint: (s) => {

@@ -25,7 +25,7 @@ type Ops = "add" | "times" | "all";
 /** Dice in a throw: two, on every level, which a child reads at a glance. */
 export const DICE = 2;
 
-interface ShutVersion {
+export interface ShutVersion {
     /** The numbers on the box, from 1 up to this. */
     tiles: number;
     ops: Ops;

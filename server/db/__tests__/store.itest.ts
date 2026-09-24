@@ -144,6 +144,31 @@ const SAMPLE: { [K in EventKind]: EventData[K] } = {
         note: null,
     },
     // Not in the seed, because there is no activity in the corpus to point at.
+    "game-attempted": {
+        id: u(999),
+        challenge: {
+            id: "test",
+            game: "jugs",
+            phase: 0,
+            seed: 1,
+            source: "authored",
+            generatorVersion: "1",
+            rulesVersion: "1",
+            configuration: {},
+            difficulty: { version: "1", band: 1, reasoning: 1, motor: 0, content: 1 },
+            validation: { method: "proof", version: "1" },
+        },
+        startedAt: "2026-09-14T09:12:00.000Z",
+        completedAt: "2026-09-14T09:12:01.000Z",
+        outcome: "completed",
+        moves: 4,
+        assistance: 0,
+        retries: 0,
+        activeMs: 1000,
+        input: "keyboard",
+        reducedMotion: false,
+        objectives: { completed: 1, total: 1 },
+    },
     "round-played": {
         round: {
             round: "r1",
@@ -204,7 +229,7 @@ function envelope<K extends EventKind>(
     over: Partial<Envelope> = {},
 ): Envelope {
     return {
-        id: u(nextId++),
+        id: kind === "game-attempted" ? SAMPLE["game-attempted"].id : u(nextId++),
         family_id: F,
         kid_id: MAYA,
         kind,

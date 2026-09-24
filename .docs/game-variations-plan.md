@@ -1,8 +1,7 @@
 # Generated game challenges and progression
 
-Status: implementation plan, 23 September 2026. No generation or progression phases implemented by
-this document. The owner requested plans before assigning parallel execution agents. This is the
-execution specification for extending the existing production Games player, not migrating it again.
+Status: approved and implemented in the production player, 23 September 2026; release verification
+is recorded below. This extends the existing Games player rather than migrating it again.
 Companion: [painting-integration-plan.md](painting-integration-plan.md), especially shared ownership.
 
 ## Product decisions
@@ -154,7 +153,8 @@ Games agent owns `school/games/*`, games tests, `engine/ui/game-*`, `engine/ui/g
 `apps/home/games.tsx`, dedicated game e2e files and this plan. Generic motion changes require an
 explicit bounded design and their own tests.
 
-The parent/coordinator is the sole writer for shared integration files: `engine/answer.ts`, API/event
+During approved execution the parent delegated integration ownership to the Games coordinator, who
+assigned one exclusive persistence agent for shared integration files: `engine/answer.ts`, API/event
 validation, server sync/API and DB migrations, `boundaries.ts`, app routing/navigation, child identity
 adapters, and shared doc indexes. Agents send exact additive patches/schema proposals to that owner.
 Reserve migration names centrally. No parallel edits to shared files, broad formatting or reverting
@@ -167,6 +167,137 @@ authorized phases meet their gates or a concrete dependency is recorded, not mer
 
 ## Execution record
 
-All phases G0–G6 pending. Harbour Cargo model regression suite: five tests passed on 23 September,
-including direct dragging/delivery and cancellation recovery; this is not browser sign-off.
-Update this section with changed files, checks, known limits and next phase after each delivery.
+G0–G6 implementation is complete, including all 19 catalogue games, shared player flow, persistence
+and parent summaries. Browser release verification is recorded separately below.
+
+- G0/G1: all 19 games retain authored links and adapters; typed descriptors include rules,
+  generator and difficulty versions, seed, concrete data and stable configuration fingerprint.
+  Authored action descriptors also fingerprint deterministic initial data, so changed geometry
+  cannot silently reopen under the same title. Expensive validation happens in tests/offline pools.
+- G2/G3: Slingshot supplies three arrangements in each phase with complete multi-shot witnesses
+  and nearby-aim checks. Measure it out supplies sixteen arrangements per phase with uncapped
+  full-graph proofs and legal winning paths.
+- G4: parent-only child selection, unassigned Parent practice, scoped reload selection, terminal
+  attempts, exact retries, optional suggestions, durable bounded offline queue, family/user-bound
+  sync and idempotent uploads. No database schema migration is needed; events use the existing table.
+- G5: bounded certified pools per game, with per-family configuration validation and winning
+  evidence; see inventory below. Old authored phases remain selectable.
+- G6: factual parent completion counts and distinct arrangements, frozen provisional task ratings,
+  current-version-only recommendations and this execution record. Calibration remains a future
+  product exercise; no ability or mastery claims are made.
+
+Limits: these are finite certified pools, not unlimited distinct layouts. Repeats are permitted
+once recent arrangements exhaust a pool. Physics replay evidence is sampled, not exhaustive proof.
+Shut the box preserves fair dice; the existence of a winning seeded path does not make every choice
+or every future roll winnable. Word pools remain authored. Child-facing access/unlocks are unchanged.
+Attempts count discrete input gestures rather than every simulation frame; control-gesture counts
+must not be presented as shot counts. Resuming restores the challenge, not an interrupted world's
+mid-flight state. Progress recommendations are advisory parent-QA data, not authorization decisions.
+The server validates ownership and bounded wire structure; game-specific witness certification
+is a build/test responsibility rather than a server-side replay of client-reported results.
+
+
+### Certified inventory
+
+Counts are concrete arrangements across all existing named phases, excluding authored adapters.
+A permutation/target change is included only where its resulting complete game was checked.
+
+| Game | Arrangements | Gate |
+|---|---:|---|
+| Harbour cargo | 15 | Full pickup, placement, settling and delivery controls |
+| Marble workshop | 12 | Editable ramp construction and complete ball route |
+| Spell the picture | 12 | Authored picture/phoneme data and full position proof |
+| Find the rule | 60 | Full position proof and information audit |
+| Rabbit crossing | 28 | Route graph, complete keyboard and pointer hop witnesses |
+| Row to the jetty | 18 | Legal timed strokes, glide and gentle arrival |
+| Shunting yard | 19 | Full graph plus complete coupling, dragging and lift controls |
+| Measure it out | 96 | Full uncapped position proof and legal solution |
+| Take the corner | 16 | Reflected tracks with full uncapped position proof |
+| Shut the box | 40 | Full seeded position graph and fair-dice audit |
+| Slingshot | 6 | Complete multi-shot replay, automatic reload, 162 nearby-input samples |
+| See-saw | 18 | Complete bag-placement controls |
+| Penny shove | 18 | Complete legal coin throws and target accounting |
+| Cut the cake | 18 | Complete cuts through available controls |
+| Bead string | 6 | Complete legal direction-input routes |
+| The road | 6 | Acceleration, braking and lane-control completion |
+| Rafts | 18 | Complete pointer jumps and all target loads |
+| Gone fishing | 18 | Complete casts, reels and target weight |
+| Paper plane | 12 | Complete climb/dive course, all hoops on the first lap |
+| **Total** | **436** | **19 of 19 listed games** |
+
+Action feedback-controller witnesses establish reachability at the actual simulation rate. They do
+not measure a child's reaction time; road/plane/rowing still need the owner's comfort and difficulty
+review. The three-per-phase pools intentionally stay close to familiar authored mechanics. New
+content should extend these recipe pools and their witness tests before increasing variety claims.
+
+### Verification and QA handoff
+
+- `LUMISCHOOL_REQUIRE_DB=1 npm run check`: exit 0, 1,240 tests passed, no skips; database, server,
+  engine, school, tools and app suites, production build and child-route exclusion passed.
+- Follow-up lint and formatting checks passed after late action-adapter integration.
+- Browser checks (24 September): 28 existing Games regressions passed on desktop and phone;
+  both new persistence scenarios passed after correcting their accessible-name selectors. Covered
+  explicit child selection, offline recovery, one upload per attempt, exact retry, pointer attribution,
+  practice isolation, new arrangement, exact descriptor reload and browser-history return.
+- Final typecheck, lint, format, suppression guard and boundaries passed after final adapter edits.
+
+Manual QA: open Games directly with no selector or report above the library. Play a phase, compare
+**Try again** with **Play another**, and reload a generated arrangement. Pause still offers manual
+phase selection and **New arrangement**. Parent play remains unassigned even if an old child
+selection is stored on the device. Children do not receive new Games access from this work.
+
+### Product revision, 24 September: keep reporting out of Games
+
+The owner requested removal of the Playing as selector and all report/progress UI. This supersedes
+those visible portions of G4/G6 above. `apps/home/games.tsx` now mounts parent practice without an
+attempt owner, event fetching or reporting imports. Its storage namespace is always `practice`;
+cached child selection is never read. Already-owned offline attempts still flush using their
+original family/user/child binding. The shared player retains the injectable `onAttempt` seam for
+later explicitly bound child access. The event schema, outbox, integration tests and progress model
+remain intact, but no completion summaries or progression recommendations are displayed anywhere.
+Play another, Try again and manual phase selection remain.
+
+Browser coverage now seeds an explicitly owned past offline attempt as a test fixture, verifies its
+upload, and then proves parent gameplay cannot add child records despite a stale child-selection
+key. It also checks absence of the selector, reports and recommendation button, exact retry,
+generated reload and history return. Existing server integration tests retain authorization and
+idempotency coverage. No hidden production selector or test-only production UI was introduced.
+
+Revision verification: typecheck, lint and diff whitespace check passed; both revised desktop and
+phone browser cases passed (11.2 seconds).
+
+### Product revision, 24 September: immediate entry and optional challenge choice
+
+Cards now open the arena immediately. Each game's last phase and concrete arrangement are remembered;
+explicit `v` links retain precedence. Action simulations wait for genuine gameplay input, including
+on retry/new arrangement/phase change. Merely opening or dismissing help does not start them. The
+opening card's Enter event is excluded from the new arena, and focus moves to the play surface.
+First-input gating belongs to the shared action runtime, not individual game rules. Attempt active
+time starts with semantic gameplay input. The optional pause menu replaces the numbered dropdown
+with a two-column collection of named challenge cards; no curriculum labels were invented. Help,
+sound and accessibility remain on demand. Reports and automatic advancement remain absent.
+
+Immediate-entry verification: all 43 applicable desktop/phone browser cases passed (the desktop
+project skips the touch-only case). The first run found two old tests reading field bounds before
+render readiness; after adding that wait, the mouse/phase-card rerun passed all four cases. Full
+typecheck, scoped lint, formatting and diff whitespace checks passed. Whole-repository lint also
+reported an unrelated `tools/scripts/map-profile.ts:90` console statement; that file was untouched.
+
+### Garden games and material play, 24 September
+
+Garden mini-golf adds three phases with three certified courses each: an open putting green, garden walls and sand. Pull-back aiming covers every direction; keyboard arrows adjust aim/power and Enter or space putts. A rolling ball must settle before another putt, preserving its position. Slow cup capture, rounded wall contacts and sampled surface friction live in the shared rolling core. Complete legal-input witnesses cover all nine courses, with bank-shot, sand, keyboard and reduced-motion checks.
+
+Pocket rally adds three phases with three circuit arrangements each. Steering, acceleration, braking and lateral grip live in the shared vehicle core. The game uses ordered forward checkpoints, no forced timer, grass slowdown and recovery to the last earned checkpoint. Its finite course configurations retain exact retry and same-phase Play another.
+
+Rally also supports reversing: hold Down or the compact Brake / reverse control to stop, then back
+up; holding a pointer behind the car does the same. Signed throttle and a separate reverse-speed
+limit live in the reusable vehicle core, while braking slows either direction towards rest. Steering
+turns naturally in reverse. Backward checkpoint crossings still cannot advance a lap.
+
+These additions preserve unassigned parent practice and the future recording seam; they add no child access, reports or automatic progression. The bounded pools support repeated play, not a claim of infinitely distinct courses.
+
+The catalogue now has 21 games. The additions contribute nine golf arrangements, nine rally arrangements and three rolling-stone Slingshot arrangements: 457 certified arrangements in total. Existing six Slingshot arrangements retain their material values and witnesses, so the existing rules version remains valid. The new Slingshot slice excludes breakage, fragments and ropes.
+
+Verification for the garden/material additions: all 405 school tests passed; all 533 engine tests passed across the initial run and corrected artwork-guard rerun; 55 database, 142 server and 32 app tests passed. App and child-build checks passed. Desktop/phone Games regressions plus golf passed 49 tests with one desktop skip for the touch-only case; Rally passed six and Slingshot six across its initial run and corrected desktop pointer-projection rerun. Actual phone touch completed golf and Rally. Scoped game lint, full typecheck, formatting and whitespace checks passed.
+
+The combined repository check was not globally green: two unrelated map snapshot tooling assertions failed against concurrent map work, and an unrelated new `tools/e2e/world-entry-review.e2e.ts` file introduced global lint findings. Those files were left to their owner. The original three new drawing guard failures (sand bounds and description policy) were fixed, and the complete four-test artwork guard suite then passed.

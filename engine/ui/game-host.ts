@@ -11,6 +11,7 @@ export interface Shell {
     hear(this: void, cue: Cue): void;
     guide(this: void, pose: GuidePose): void;
     keys(text: string): void;
+    feedback(text: string, won?: boolean): void;
     rows(
         n: 1 | 2 | 3 | 4,
         title: string,
@@ -20,6 +21,8 @@ export interface Shell {
     ): void;
     tuning(t: Tuning | null, note: string): void;
     room(): { w: number; h: number; side: boolean };
+    progress?(completed: number, total: number): void;
+    observe?(kind: "move" | "assist" | "won", input?: "keyboard" | "pointer"): void;
 }
 
 export interface Runtime {

@@ -1200,10 +1200,7 @@ export class Field {
         grow = false,
     ): void {
         // Never wider than the room, so a phone held upright never scrolls sideways to see a field.
-        const sq = Math.max(
-            6,
-            Math.min(40, Math.floor(Math.min(room.w / view.w, room.h / view.h))),
-        );
+        const sq = Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
         // A field drawn full-bleed shows as much more of its world round the game's view as the room has.
         const shown = grow
             ? {
@@ -1225,10 +1222,10 @@ export class Field {
         this.el.style.width = `${shown.w * sq}px`;
         this.el.style.height = `${shown.h * sq}px`;
         this.el.style.setProperty("--sq", `${sq}px`);
-        for (const d of [this.paper, this.world]) {
-            d.style.width = `${world.w * sq}px`;
-            d.style.height = `${world.h * sq}px`;
-        }
+        this.world.style.width = `${world.w * sq}px`;
+        this.world.style.height = `${world.h * sq}px`;
+        this.paper.style.width = "100%";
+        this.paper.style.height = "100%";
         this.ink.setAttribute("viewBox", `0 0 ${world.w} ${world.h}`);
         this.ink.setAttribute("width", String(world.w * sq));
         this.ink.setAttribute("height", String(world.h * sq));
@@ -1426,7 +1423,12 @@ export class Field {
         };
         const world = at(1);
         this.world.style.transform = world;
-        this.paper.style.transform = world;
+        // The paper fills the viewport; its grid follows the same origin and scale as the world.
+        const grid = this.sq * Number(zoom.toFixed(4));
+        const x = (this.view.w * this.sq) / 2 - camera.x * this.sq * zoom + sx;
+        const y = (this.view.h * this.sq) / 2 - camera.y * this.sq * zoom + sy;
+        this.paper.style.backgroundSize = `${grid}px ${grid}px`;
+        this.paper.style.backgroundPosition = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
         for (const [k, l] of this.layers) if (k !== "fixed") l.style.transform = at(Number(k));
         this.stats.frameMs = performance.now() - t0;
     }

@@ -1,5 +1,66 @@
 # Games
 
+The first physical-handling refinement is documented in [physical-games-refinement.md](physical-games-refinement.md).
+
+## Shared sizing (24 September 2026)
+
+The tabletop stage uses the full available row; it no longer has a 1,100px desktop cap.
+Both turn and action renderers scale to the available width and height without fixed 34/40px
+square-size ceilings. Art remains proportional and controls remain outside the play surface.
+Tall authored boards can still be height-limited on landscape screens; filling those side areas
+with interactive content requires a responsive scene layout, rather than stretching the drawings.
+
+## Production player and variations (23 September 2026)
+
+Entry UX, updated 24 September: a game card opens its arena directly, using the last selected phase
+for that game (or its first phase). Explicit `?g=...&v=...` links override that preference. Phase and
+arrangement memory are per game, within the parent-practice storage namespace. Moving simulations
+wait for their first deliberate keyboard, pointer, touch or control input; opening a card or
+opening/closing help never starts motion or active-time accounting. Retry, a new arrangement and
+phase changes return to that ready state. Pause remains available during play and on focus loss.
+The optional pause menu contains expandable **Choose a challenge** cards using existing phase
+names, plus How to play and Sound & accessibility. There is no entry modal or numbered dropdown.
+
+
+The shared player receives feedback from both turn and action runtimes. During play, a compact
+cream note uses that game's catalogue artwork; on completion the authored result moves beside
+Play another. One live status region announces updates. Long in-play notes wrap to two lines,
+with the full message available as the note's title and through the status region. On phones the
+note sits below the compact title row. No completion modal interrupts the field.
+
+The Field's squared paper fills its viewport independently of finite world bounds. Grid spacing
+and offset track the same zoom and translation as the world, including camera shake; sprites,
+collisions and pointer coordinates are unchanged. This also covers zoomed-out or off-centre views.
+
+The production catalogue is `school/games/catalogue.ts`, opened through `/games` and the shared
+`engine/ui/games.tsx` player. The older design notes below retain historical scratchpad paths; the
+production player and generated challenges do not import the scratchpad.
+
+`school/games/challenges.ts` owns versioned concrete descriptors, deterministic seeded selection,
+configuration fingerprints, bounded recent-arrangement avoidance and authored fallback adapters.
+Per-family `*-challenges.ts` modules own finite certified recipe pools, validators and opening the
+existing game from a configuration. No physics search runs in the browser. `Try again` reuses the
+configuration; `Play another` selects within the same named phase. Small pools eventually repeat.
+Old rules or changed authored initial data are rejected by the opening adapter.
+
+Discrete pool tests exhaust their position graphs; action tests replay complete winning inputs,
+including the evolving Slingshot world and workshop controls. These sampled physics witnesses are
+not mathematical guarantees for every timing or device. See [game-variations-plan.md](game-variations-plan.md)
+for inventory, evidence, release checks and limits.
+
+`GameChallenge` and `GameAttempt` in `engine/answer.ts` are bounded wire contracts. The parent Games
+page is unassigned practice, with no child selector, progress report or advancement recommendation.
+It ignores old cached child selections and only flushes already-owned pending attempts. The shared
+player retains its injectable `onAttempt` callback for a future explicitly child-bound entry. The
+`game-attempted` event uses existing authenticated sync with family/user binding and idempotent
+attempt IDs. `engine/ui/game-recording.ts` keeps a recoverable, bounded device outbox. Reloaded
+selection is scoped to family, user and child. Child access remains gated.
+
+`school/games/progress.ts` projects factual completion and distinct-configuration counts. The currently undisplayed recommendation model requires three distinct, unassisted generated configurations in the most recent
+five eligible attempts at the current versions and band. Neither summaries nor recommendations are rendered in the app yet. Initial difficulty ratings describe tasks,
+not measured ability or mastery; no automatic phase changes occur.
+
+
 Status: proposed, September 2026. It is the second document about activities and it does not replace the first. [activities.md](activities.md) owns the model: what a mechanic declares, what an activity declares, what the prover proves, and the promise we make to a parent. This one is a designed set of games to build on top of that model, chosen to spend the art catalogue and to climb from grade one to grade four. Twenty five games, eighteen of them on mechanics we already have and seven on new ones, and no new drawing in any of them.
 
 It asks for four things the model does not have, all of them named in their own sections at the end and none of them large: one change to the contract in `scratchpad/src/play/types.ts`, so that a mechanic's board drawings come from a slot an activity fills rather than from a constant in its code; two additions to the prover; and five settings on drawings that already exist. The contract change turned out to matter more than any single game in the set, which is not how we expected this to come out.

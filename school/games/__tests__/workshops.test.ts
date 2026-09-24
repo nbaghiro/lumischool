@@ -96,6 +96,8 @@ test("every cargo challenge can be loaded, balanced and delivered through the pl
             inputs.push({ tick: tick++, input: { touch: { x: p.x, y: 19.4 }, tapped: true } });
             inputs.push({ tick: tick++, input: { touch: { x: p.x, y: 8 } } });
             inputs.push({ tick: tick++, input: { touch: { x, y: 8 } } });
+            inputs.push({ tick: tick++, input: { touch: { x, y: 18 } } });
+            tick += 60;
             inputs.push({ tick: tick++, input: { touch: { x, y: 18 }, tapped: true } });
             inputs.push({ tick: tick++, input: { touch: null } });
             tick += 150;
@@ -126,8 +128,8 @@ test("cargo can be dragged aboard and delivered with the shared primary action",
         pad.touch = { x: at.x, y: at.y };
         tick();
         assert.equal(s.held, p.id);
-        pad.touch = { x, y: 18 };
-        tick();
+        pad.touch = { x, y: 20 };
+        for (let n = 0; n < 60; n++) tick();
         pad.touch = null;
         pad.lifted = { x, y: 20 };
         tick();

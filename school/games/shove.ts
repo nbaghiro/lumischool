@@ -267,7 +267,7 @@ export interface ShoveState {
     hand: Pt | null;
     held: Coin | null;
     /** The keyboard's choice of piece, and how hard a shove it gets, from nought to one. */
-    cursor: { i: number; strength: number } | null;
+    cursor: { i: number; strength: number; angle?: number } | null;
     last: number;
     steps: number;
     still: number;
@@ -281,7 +281,11 @@ export interface ShoveState {
 }
 
 export function start(level: number): ShoveState {
-    const L = SHOVE_LEVELS[level] ?? SHOVE_LEVELS[0];
+    return startShoveLevel(SHOVE_LEVELS[level] ?? SHOVE_LEVELS[0], level);
+}
+
+/** Open the exact verified challenge configuration. */
+export function startShoveLevel(L: ShoveLevel, level = 0): ShoveState {
     const world = bodies({ gravity: { x: 0, y: 0 } });
     const I = INNER,
         cx = (I.x0 + I.x1) / 2,
@@ -492,11 +496,29 @@ function pick(s: ShoveState, t: Pt, out: Happening[]): void {
     out.push({ cue: "lift" });
 }
 
-function letGo(s: ShoveState, out: Happening[]): void {
+function letGo(s: ShoveState, out: Happening[], flick?: Pt | null): void {
     const c = s.held;
     s.held = null;
     if (!c) return;
     const pull = c.pull;
+    const toward = { x: BOX.x + BOX.w / 2 - c.from.x, y: BOX.y + BOX.h / 2 - c.from.y };
+    if (
+        flick &&
+        Math.hypot(flick.x, flick.y) >= 8 &&
+        pull.x * toward.x + pull.y * toward.y > 0 &&
+        flick.x * pull.x + flick.y * pull.y > 0 &&
+        Math.hypot(pull.x, pull.y) > 0.35
+    ) {
+        const speed = Math.hypot(flick.x, flick.y);
+        const gain = Math.min(SHOVE.speed.value, speed * 0.7) / speed;
+        c.body = bodyFor(s, c.kind, c.at);
+        s.world.launch(c.body, { x: flick.x * gain, y: flick.y * gain }, 0);
+        c.on = "board";
+        s.last = c.id;
+        s.told = "";
+        out.push({ cue: "lift" });
+        return;
+    }
     if (Math.hypot(pull.x, pull.y) >= SHOVE.minPull.value) {
         shove(s, c, pull, out);
         return;
@@ -527,7 +549,17 @@ function hands(s: ShoveState, pad: Pad, out: Happening[]): void {
         }
     }
     if (pad.lifted) {
-        if (s.held) letGo(s, out);
+        if (s.held) {
+            s.held.pull = within({
+                x: pad.lifted.x - s.held.from.x,
+                y: pad.lifted.y - s.held.from.y,
+            });
+            s.held.at = keepOn(s.held.kind, {
+                x: s.held.from.x + s.held.pull.x,
+                y: s.held.from.y + s.held.pull.y,
+            });
+            letGo(s, out, pad.flick);
+        }
         s.hand = null;
     }
 }
@@ -545,12 +577,18 @@ function choices(s: ShoveState): { kind: Piece; coin: Coin | null; at: Pt }[] {
 }
 
 /** The keyboard's shove: from the chosen piece towards the middle of the felt, as hard as the strength says. */
-function keyPull(from: Pt, strength: number): Pt {
+function keyPull(from: Pt, strength: number, angle = 0): Pt {
     const aim = { x: BOX.x + BOX.w / 2 - from.x, y: BOX.y + BOX.h / 2 - from.y },
         len = Math.hypot(aim.x, aim.y) || 1;
     return {
-        x: (-aim.x / len) * strength * SHOVE.pull.value,
-        y: (-aim.y / len) * strength * SHOVE.pull.value,
+        x:
+            (-(aim.x * Math.cos(angle) - aim.y * Math.sin(angle)) / len) *
+            strength *
+            SHOVE.pull.value,
+        y:
+            (-(aim.x * Math.sin(angle) + aim.y * Math.cos(angle)) / len) *
+            strength *
+            SHOVE.pull.value,
     };
 }
 
@@ -597,7 +635,7 @@ function keys(s: ShoveState, pad: Pad, out: Happening[]): void {
         s.coins.push(c);
     }
     s.touched = true;
-    shove(s, c, keyPull(c.from, cur.strength), out);
+    shove(s, c, keyPull(c.from, cur.strength, cur.angle), out);
     cur.i = 0;
 }
 
@@ -801,6 +839,24 @@ export function frame(s: ShoveState, _rest = false): Frame {
             z: c.on === "held" ? 8 : c.on === "home" ? 6 : 5,
         });
     }
+    for (const c of box) {
+        if (isNote(c.kind))
+            marks.push({
+                kind: "box",
+                x: c.at.x - NOTE.w / 2 - 0.15,
+                y: c.at.y - NOTE.h / 2 - 0.15,
+                w: NOTE.w + 0.3,
+                h: NOTE.h + 0.3,
+            });
+        else
+            marks.push({
+                kind: "ring",
+                x: c.at.x,
+                y: c.at.y,
+                r: radius(c.kind) + 0.18,
+                solid: true,
+            });
+    }
     const total = boxTotal(s),
         rings = L.most < ORDER.reduce((n, k) => n + (L.drawer[k] ?? 0), 0),
         under = BOX.y + BOX.h + 1.5;
@@ -848,7 +904,7 @@ export function frame(s: ShoveState, _rest = false): Frame {
                 r: (isNote(chosen.kind) ? NOTE.w / 2 : radius(chosen.kind)) + 0.4,
                 on: true,
             });
-            aim(chosen.at, keyPull(chosen.at, s.cursor.strength), chosen.kind);
+            aim(chosen.at, keyPull(chosen.at, s.cursor.strength, s.cursor.angle), chosen.kind);
         }
     }
     return {
@@ -913,13 +969,38 @@ export const shoveGame: ActionGame<ShoveState> = {
     touch: true,
     plays: { activity: "pay.make-the-amount", levels: [2, 3, 5] },
     cover: { art: "prop.coins", params: { coins: ["penny", "nickel", "dime", "quarter"] } },
-    hint: "Pull a coin back from its pile and let go to shove it onto the felt, or choose a coin with up and down, set how hard with left and right, and press space",
+    hint: "Flick a coin toward the felt, or pull it back and release. Coins can knock each other into place. Up/down choose a coin; left/right set power; Q/E turn the aim; space shoves. Only settled coins on the felt count.",
     controls: {},
+    commands: [
+        { id: "aim-left", label: "Turn left", key: "q" },
+        { id: "aim-right", label: "Turn right", key: "e" },
+    ],
+    command(s, id) {
+        if (s.won || s.held || (id !== "aim-left" && id !== "aim-right")) return;
+        s.cursor ??= { i: 0, strength: 0.5 };
+        s.cursor.angle = (s.cursor.angle ?? 0) + ((id === "aim-left" ? -1 : 1) * Math.PI) / 24;
+        s.touched = true;
+    },
     start,
     step,
     frame,
     say,
     back,
+    cancelInput(s) {
+        const c = s.held;
+        if (c) {
+            if (c.counter) {
+                c.at = { ...c.from };
+                c.body = bodyFor(s, c.kind, c.at);
+                c.on = "board";
+            } else {
+                s.wells[c.kind]++;
+                s.coins = s.coins.filter((coin) => coin !== c);
+            }
+        }
+        s.held = null;
+        s.hand = null;
+    },
     tuning: SHOVE,
     note: (s) =>
         !s.touched && !s.won ? s.L.prompt : s.steps - s.saidAt < RATE * 4 || s.won ? s.said : "",

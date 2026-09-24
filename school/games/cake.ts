@@ -142,6 +142,7 @@ export interface CakeState {
     /** The last tries' cuts, newest first, drawn faint on the cake. */
     before: number[][];
     /** Where the knife is along the cake, whether a finger is holding it, and how far through a chop it is. */
+    gesture: { x: number; y: number; cut: boolean } | null;
     knife: { at: number; held: boolean; shown: boolean; chop: number; lift: number };
     phase: Phase;
     /** Seconds into the phase. */
@@ -223,12 +224,17 @@ function alongOf(s: CakeState, x: number): number {
 }
 
 export function start(level: number): CakeState {
-    const L = CAKE_LEVELS[level] ?? CAKE_LEVELS[0];
+    return startCakeLevel(CAKE_LEVELS[level] ?? CAKE_LEVELS[0], level);
+}
+
+/** Open the exact verified challenge configuration. */
+export function startCakeLevel(L: CakeLevel, level = 0): CakeState {
     const s: CakeState = {
         level,
         L,
         cuts: [],
         before: [],
+        gesture: null,
         knife: { at: L.whole / 2, held: false, shown: false, chop: 0, lift: 0 },
         phase: "cut",
         t: 0,
@@ -267,13 +273,24 @@ function cut(s: CakeState, out: Happening[]): void {
 function hands(s: CakeState, pad: Pad, out: Happening[]): void {
     const k = s.knife;
     if (pad.touch) {
+        if (!s.gesture) s.gesture = { ...pad.touch, cut: false };
+        if (s.gesture.cut) return;
         k.held = true;
         k.shown = true;
         s.touched = true;
         k.at = Math.max(0, Math.min(s.L.whole, alongOf(s, pad.touch.x)));
+        if (pad.touch.y - s.gesture.y > 1.2 && Math.abs(pad.touch.x - s.gesture.x) < 0.6) {
+            cut(s, out);
+            s.gesture.cut = true;
+            k.held = false;
+        }
     }
     if (pad.lifted) {
-        if (k.held) cut(s, out);
+        if (k.held && !s.gesture?.cut) {
+            k.at = Math.max(0, Math.min(s.L.whole, alongOf(s, pad.lifted.x)));
+            cut(s, out);
+        }
+        s.gesture = null;
         k.held = false;
         return;
     }
@@ -298,6 +315,7 @@ const ease = (from: number[], to: number[], k: number) =>
 export function step(s: CakeState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
+    if (pad.lifted && s.phase !== "cut") s.gesture = null;
     s.t += DT;
     s.squash *= Math.exp(-12 * DT);
     s.knife.chop = Math.max(0, s.knife.chop - DT);
@@ -575,7 +593,7 @@ export function frame(s: CakeState, _rest = false): Frame {
                 y: tip - KNIFE_TIP,
                 z: 8,
             });
-            if (k.held || k.chop > 0)
+            if (k.shown || k.held || k.chop > 0)
                 marks.push({
                     kind: "line",
                     a: { x, y: top + 0.1 },
@@ -657,10 +675,14 @@ export const cakeGame: ActionGame<CakeState> = {
     listed: false,
     plays: { activity: "share.fair-shares", levels: [0, 2, 4] },
     cover: { art: "longcake", params: { whole: 12, from: 0, to: 12, candles: 4, lit: true } },
-    hint: "Hold a finger over the cake and let go to cut, or move the knife with the arrow keys and press space",
+    hint: "Place the knife and draw down or let go to cut, or move the knife with the arrow keys and press space",
     controls: {},
     start,
     step,
+    cancelInput: (s) => {
+        s.gesture = null;
+        s.knife.held = false;
+    },
     frame,
     say,
     back,

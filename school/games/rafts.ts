@@ -7,7 +7,7 @@
 // and a sheep landing on a crowded raft can knock another into the river. A sheep in the river
 // paddles back to the bank and joins the back of the flock, so nothing is lost. The counting, the
 // splitting and the sharing are what the jumps make, and the flags show them. See .docs/games.md.
-import { arc, flightAt, lob, throwOf, withinReach } from "../../engine/motion/flight";
+import { arc, flightAt, landing, lob, throwOf, withinReach } from "../../engine/motion/flight";
 import type { Pt } from "../../engine/motion/geometry";
 import { knob } from "../../engine/motion/tune";
 import { bodies, type Bodies, type Body } from "../../engine/motion/bodies";
@@ -308,7 +308,11 @@ const farSpot = (k: number): Pt => ({
 });
 
 export function start(level: number): RaftsState {
-    const L = RAFT_LEVELS[level] ?? RAFT_LEVELS[0];
+    return startRaftLevel(RAFT_LEVELS[level] ?? RAFT_LEVELS[0], level);
+}
+
+/** Open the exact verified challenge configuration. */
+export function startRaftLevel(L: RaftLevel, level = 0): RaftsState {
     const world = bodies({ gravity: { x: 0, y: RAFTS.gravity.value } });
     world.box({
         x: (RIVER.x0 - 4) / 2,
@@ -1137,6 +1141,8 @@ export function frame(s: RaftsState, _rest = false): Frame {
             angle: p.angle,
             z: 6,
         });
+        if (!s.won && r.want !== null && c[i] === r.want && !s.world.moving(r.body, 0.15))
+            marks.push({ kind: "ring", x: p.x + 1.2, y: RIVER.surface - 4.4, r: 1 });
         const end = turned(p, p.angle, -r.w / 2 + 0.2, -THICK / 2);
         if (!s.won)
             marks.push({
@@ -1203,6 +1209,13 @@ export function frame(s: RaftsState, _rest = false): Frame {
     if (aim && Math.hypot(aim.x, aim.y) >= RAFTS.minPull.value) {
         const p = withinReach(aim, RAFTS.maxPull.value),
             from = { x: FRONT.x + p.x, y: Math.min(FRONT.y, FRONT.y + p.y) };
+        const predicted = landing(
+            from,
+            throwOf(p, { most: RAFTS.maxPull.value, speed: RAFTS.speed.value }),
+            RAFTS.gravity.value,
+            RIVER.surface,
+        );
+        if (predicted) marks.push({ kind: "ring", x: predicted.at.x, y: predicted.at.y, r: 0.45 });
         marks.push({
             kind: "dots",
             pts: arc(
@@ -1263,6 +1276,21 @@ export const raftsGame: ActionGame<RaftsState> = {
     note: (s) =>
         !s.touched && !s.won ? s.L.prompt : s.steps - s.saidAt < RATE * 4 || s.won ? s.said : "",
     won: (s) => s.won,
+    objectives: (s) => {
+        const total =
+            s.L.rule === "groups"
+                ? Math.min(s.L.rafts.length, Math.floor(s.L.sheep / (s.L.per ?? 1)))
+                : s.L.rafts.length;
+        const completed = s.won
+            ? total
+            : counts(s).filter(
+                  (n, i) =>
+                      n > 0 &&
+                      n ===
+                          (s.L.rule === "same" ? s.L.sheep / s.L.rafts.length : s.L.rafts[i]?.want),
+              ).length;
+        return { completed, total };
+    },
     still: {
         press: () => Math.round(RATE * 0.25),
         settling: (s) => (s.won ? !finished(s) : busy(s)),

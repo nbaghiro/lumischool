@@ -1,5 +1,6 @@
 import { iconElement } from "./icon";
 import type { IconName } from "../parts/apps/icon";
+import { velocity } from "../motion/gesture";
 import { ticker } from "../motion/loop";
 import { session } from "../motion/session";
 import { down, emptyPad, keyDir, spent, stickDir, swipeDir, up, type Dir } from "../motion/pad";
@@ -48,6 +49,11 @@ export function action(
     const clock = session(game.rate, () => handle(sess.step()));
     let wonShown = false;
     let stopped = false;
+    let engaged = false;
+    const input = (device?: "keyboard" | "pointer"): void => {
+        engaged = true;
+        shell.observe?.("move", device);
+    };
     const perf = { frames: [] as number[], work: [] as number[] };
 
     const tick = ticker({
@@ -62,6 +68,7 @@ export function action(
     function frame(dt: number): void {
         if (shell.paused()) return;
         pollGamepad();
+        if (!engaged) return;
         if (dt > 0) {
             perf.frames.push(dt);
             if (perf.frames.length > 90) perf.frames.shift();
@@ -126,11 +133,15 @@ export function action(
         if (!force && now - lastHud < 250) return;
         lastHud = now;
         const won = sess.won();
+        const objectives = game.objectives?.(s);
+        if (objectives) shell.progress?.(objectives.completed, objectives.total);
         const words = sess.say();
         const first = words.split(". ")[0] ?? "";
         // A full-bleed game's field says where things stand, so the line over it is only what just happened.
-        $("aside").textContent =
-            sess.note() || (game.bleed ? "" : first.endsWith(".") ? first : `${first}.`);
+        shell.feedback(
+            sess.note() || (game.bleed && !won ? "" : first.endsWith(".") ? first : `${first}.`),
+            won,
+        );
         if (words !== lastSaid && (force || now - lastRead > 1000)) {
             $("reads").textContent = words;
             lastSaid = words;
@@ -138,6 +149,7 @@ export function action(
         }
         if (won !== wonShown) {
             wonShown = won;
+            if (won) shell.observe?.("won");
             shell.guide(won ? "cheer" : "idle");
         }
         $("another").hidden = !won;
@@ -206,6 +218,17 @@ export function action(
     function key(e: KeyboardEvent): void {
         if (shell.paused()) return;
         if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+        const command = game.commands?.find((c) => c.key === e.key.toLowerCase());
+        if (command && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            if (e.type === "keydown" && !e.repeat) {
+                input("keyboard");
+                game.command?.(s, command.id);
+                field.draw(sess.frame(shell.still()), 0);
+                hud(true);
+            }
+            return;
+        }
         if (e.type === "keydown" && e.key === "Backspace" && game.back) {
             e.preventDefault();
             takeBack();
@@ -219,7 +242,10 @@ export function action(
         }
         if (d && e.key.startsWith("Arrow")) {
             e.preventDefault();
-            if (!e.repeat) press(d);
+            if (!e.repeat) {
+                input("keyboard");
+                press(d);
+            }
             return;
         }
         if (e.key === " " || e.key === "Enter") {
@@ -227,6 +253,7 @@ export function action(
             e.preventDefault();
             if (e.key === " ") pad.go = true;
             if (!e.repeat) {
+                input("keyboard");
                 pad.tapped = true;
                 pressStill();
             }
@@ -264,7 +291,9 @@ export function action(
                 b.setAttribute("aria-label", label);
                 b.title = label;
                 b.addEventListener("pointerdown", (e) => {
+                    if (shell.paused() || e.button !== 0 || !e.isPrimary) return;
                     e.preventDefault();
+                    input("pointer");
                     b.classList.add("on");
                     press(d);
                 });
@@ -274,7 +303,9 @@ export function action(
                         lift(d);
                     });
                 b.addEventListener("click", (e) => {
+                    if (shell.paused()) return;
                     if (e.detail === 0) {
+                        input("keyboard");
                         press(d);
                         pulse();
                         lift(d);
@@ -290,7 +321,12 @@ export function action(
             b.className = "key big";
             const icons: Record<string, IconName> = {
                 Go: "play",
+                Accelerate: "play",
+                Putt: "play",
+                "Cast / reel": "launch",
+                "Ease the line": "pause",
                 Brake: "stop",
+                "Brake / reverse": "down",
                 Climb: "up",
                 Dive: "down",
                 Hop: "launch",
@@ -304,7 +340,9 @@ export function action(
             b.setAttribute("aria-label", text);
             b.title = text;
             b.addEventListener("pointerdown", (e) => {
+                if (shell.paused() || e.button !== 0 || !e.isPrimary) return;
                 e.preventDefault();
+                input("pointer");
                 b.classList.add("on");
                 on();
             });
@@ -314,7 +352,9 @@ export function action(
                     off();
                 });
             b.addEventListener("click", (e) => {
+                if (shell.paused()) return;
                 if (e.detail === 0) {
+                    input("keyboard");
                     on();
                     pulse();
                     off();
@@ -353,6 +393,7 @@ export function action(
             button.setAttribute("aria-label", command.label);
             button.title = command.label;
             const icons: Record<string, IconName> = {
+                "Back on the road": "restart",
                 "Turn left": "restart",
                 "Turn right": "restart",
                 Undo: "undo",
@@ -368,6 +409,7 @@ export function action(
             } else button.textContent = command.label;
             button.addEventListener("click", (e) => {
                 if (shell.paused()) return;
+                input(e.detail === 0 ? "keyboard" : "pointer");
                 game.command?.(s, command.id);
                 field.draw(sess.frame(shell.still()), 0);
                 hud(true);
@@ -378,6 +420,7 @@ export function action(
         }
     }
 
+    let pointerTrail: { x: number; y: number; t: number }[] = [];
     let drag: { id: number; x: number; y: number; pulling: boolean; brake: boolean } | null = null;
     function pointerStep(): void {
         if (shell.still()) pressStill();
@@ -391,6 +434,7 @@ export function action(
         if (shell.paused() || drag || !e.isPrimary) return;
         const brake = e.button === 2 && !!game.controls.brake;
         if (e.button !== 0 && !brake) return;
+        input("pointer");
         e.preventDefault();
         const w = field.toWorld(e.clientX, e.clientY);
         const from = sess.pullFrom();
@@ -398,6 +442,7 @@ export function action(
             !game.touch &&
             !!from &&
             Math.hypot(w.x - from.x, w.y - from.y) <= Math.max(2.5, 44 / field.px);
+        pointerTrail = [{ ...w, t: e.timeStamp }];
         drag = { id: e.pointerId, x: w.x, y: w.y, pulling, brake };
         field.el.setPointerCapture(e.pointerId);
         if (brake) pad.brake = true;
@@ -413,6 +458,8 @@ export function action(
     const pointerMove = (e: PointerEvent): void => {
         if (!drag || drag.id !== e.pointerId || shell.paused() || drag.brake) return;
         const w = field.toWorld(e.clientX, e.clientY);
+        pointerTrail.push({ ...w, t: e.timeStamp });
+        if (pointerTrail.length > 64) pointerTrail.shift();
         if (game.touch) {
             pad.touch = w;
             pressStill();
@@ -445,8 +492,12 @@ export function action(
         if (!drag || drag.id !== e.pointerId) return;
         const w = field.toWorld(e.clientX, e.clientY);
         if (!drag.brake) {
-            if (game.touch) pad.lifted = w;
-            else if (drag.pulling) {
+            if (game.touch) {
+                pad.lifted = w;
+                pointerTrail.push({ ...w, t: e.timeStamp });
+                const v = velocity(pointerTrail, 100);
+                pad.flick = { x: v.vx, y: v.vy };
+            } else if (drag.pulling) {
                 const from = sess.pullFrom();
                 if (from) pad.released = { x: w.x - from.x, y: w.y - from.y };
             }
@@ -486,12 +537,16 @@ export function action(
                   : stickDir(gp.axes[0] ?? 0, gp.axes[1] ?? 0);
         if (dir !== padWas.dir) {
             if (padWas.dir) lift(padWas.dir);
-            if (dir) press(dir);
+            if (dir) {
+                input();
+                press(dir);
+            }
             padWas.dir = dir;
         }
         const a = btn(0),
             b = btn(1);
         if (a && !padWas.a) {
+            input();
             pad.go = true;
             pad.tapped = true;
             pressStill();
@@ -499,7 +554,10 @@ export function action(
         if (!a && padWas.a) pad.go = false;
         if (b !== padWas.b) {
             pad.brake = b;
-            if (b) pressStill();
+            if (b) {
+                input();
+                pressStill();
+            }
         }
         padWas.a = a;
         padWas.b = b;
@@ -531,6 +589,8 @@ export function action(
     return {
         key,
         command: (id) => {
+            if (shell.paused()) return;
+            input();
             game.command?.(s, id);
             field.draw(sess.frame(shell.still()), 0);
             hud(true);

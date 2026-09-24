@@ -351,6 +351,10 @@ const carOf = (id: string, x: number): Vehicle => ({
 export function start(level: number): YardState {
     const L = YARD_LEVELS[level] ?? YARD_LEVELS[0];
     if (!L) throw new Error("no yard levels");
+    return startYardLevel(L, level);
+}
+
+export function startYardLevel(L: YardLevel, level: number): YardState {
     const v = L.v,
         g = geometry(v.train.length, v.siding),
         line = emptyLine();
@@ -601,7 +605,8 @@ function keys(s: YardState, pad: Pad, out: Happening[]): void {
         const l = loco(s);
         if (Math.sign(l.v) !== dir) s.held = 0;
         s.held += DT;
-        l.v = dir * windUp(s.held);
+        const target = dir * windUp(s.held);
+        l.v += Math.max(-12 * DT, Math.min(12 * DT, target - l.v));
         s.driven = true;
         s.touched = true;
     } else s.held = 0;
@@ -1025,6 +1030,13 @@ export function frame(s: YardState, rest = false): Frame {
         const gap = b.x - b.length / 2 - (a.x + a.length / 2),
             hooked = s.line.hooked[i] === true;
         if (!hooked && gap > 0.35) return;
+        if (hooked && !s.won && Math.abs(loco(s).v) < 0.15 && (a.id === "loco" || b.id === "loco"))
+            marks.push({
+                kind: "ring",
+                x: (a.x + a.length / 2 + b.x - b.length / 2) / 2,
+                y: RAIL_Y - 0.9,
+                r: 0.7,
+            });
         sprites.push({
             key: `hook:${a.id}:${b.id}`,
             art: "coupling",

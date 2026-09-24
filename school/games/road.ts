@@ -125,6 +125,8 @@ export interface RoadState {
     x: number;
     y: number;
     v: number;
+    reverseWait: number;
+    reversing: boolean;
     vy: number;
     lane: number;
     boxes: Box[];
@@ -149,13 +151,18 @@ export const placeOf = (L: RoadLevel, v: number) => ROAD.origin + (v - L.from) *
 const nose = (s: RoadState) => s.x + CAR / 2 - 0.15;
 
 export function start(level: number): RoadState {
-    const L = ROAD_LEVELS[level] ?? ROAD_LEVELS[0];
+    return startRoadLevel(ROAD_LEVELS[level] ?? ROAD_LEVELS[0], level);
+}
+
+export function startRoadLevel(L: RoadLevel, level = 0): RoadState {
     return {
         level,
         L,
         x: 4,
         y: laneY(1),
         v: 0,
+        reverseWait: 0,
+        reversing: false,
         vy: 0,
         lane: 1,
         boxes: L.boxes.map((b) => ({
@@ -191,9 +198,22 @@ export function step(s: RoadState, pad: Pad): Happening[] {
         if (d === "down") s.lane = Math.min(ROAD.lanes - 1, s.lane + 1);
     }
     const braking = pad.brake || pad.holding.includes("left");
+    if (pad.go || pad.holding.includes("right")) s.reversing = false;
     const want =
-        s.won || braking ? 0 : pad.go || pad.holding.includes("right") ? L.top : (L.cruise ?? 0);
-    if (braking) s.v = Math.max(0, s.v - 16 * DT);
+        s.won || braking || s.reversing
+            ? 0
+            : pad.go || pad.holding.includes("right")
+              ? L.top
+              : (L.cruise ?? 0);
+    s.reverseWait = braking && s.v <= 0 ? s.reverseWait + DT : 0;
+    if (s.won) s.v = 0;
+    else if (braking) {
+        if (s.v > 0) s.v = Math.max(0, s.v - 16 * DT);
+        else if (s.reverseWait > 0.45) {
+            s.reversing = true;
+            s.v = Math.max(-L.top * 0.3, s.v - L.accel * DT);
+        }
+    } else if (s.v < 0) s.v = Math.min(0, s.v + 16 * DT);
     else if (s.v < want) s.v = Math.min(want, s.v + L.accel * DT);
     else s.v = Math.max(want, s.v - 2.2 * DT);
     // Steering is a stiff spring to the lane's middle, so a lane change takes about a third of a second.
@@ -201,6 +221,10 @@ export function step(s: RoadState, pad: Pad): Happening[] {
     s.vy += ((lane - s.y) * 90 - s.vy * 16) * DT;
     s.y += s.vy * DT;
     s.x += s.v * DT;
+    if (s.x < CAR / 2) {
+        s.x = CAR / 2;
+        s.v = 0;
+    }
     const end = worldWidth(L) - 1.5;
     if (s.x > end) {
         s.x = end;
@@ -231,7 +255,7 @@ export function step(s: RoadState, pad: Pad): Happening[] {
             b.spin *= k;
         }
     }
-    if (s.v > 0.05) {
+    if (Math.abs(s.v) > 0.05) {
         s.moved = true;
         s.still = 0;
         s.stop = null;
@@ -370,6 +394,8 @@ export function frame(s: RoadState, rest = false): Frame {
             z: 2,
         });
     }
+    const stopping = nose(s) + (Math.sign(s.v) * s.v * s.v) / 32;
+    if (Math.abs(s.v) > 0.4 && !s.won) marks.push({ kind: "ring", x: stopping, y: s.y, r: 0.35 });
     const arrow = Math.round((s.v * 0.5) / CAR / 0.25) * 0.25;
     sprites.push({
         key: "car",
@@ -409,13 +435,15 @@ export function say(s: RoadState): string {
     const L = s.L;
     const at = read(L, valueAt(L, nose(s)));
     const speed =
-        s.v < 0.05
+        Math.abs(s.v) < 0.05
             ? "standing still"
-            : s.v < L.top * 0.4
-              ? "going slowly"
-              : s.v < L.top * 0.8
-                ? "going quite fast"
-                : "going as fast as it can";
+            : s.v < 0
+              ? "Reversing"
+              : s.v < L.top * 0.4
+                ? "going slowly"
+                : s.v < L.top * 0.8
+                  ? "going quite fast"
+                  : "going as fast as it can";
     const where =
         at < L.from
             ? `before ${L.from}`
@@ -443,11 +471,11 @@ export const roadGame: ActionGame<RoadState> = {
     levels: ROAD_LEVELS,
     rate: RATE,
     cover: { art: "racecar", params: { vx: 3, vy: -1 } },
-    hint: "Hold the road to go faster; drag up or down to change lane. Right-click and hold to brake. Or use space to go, left arrow to brake, and up/down to steer.",
+    hint: "Hold the road to go faster; drag up or down to change lane. Right-click and hold to brake, then reverse. Or use space to go, hold left arrow to brake then reverse, and up/down to steer.",
     controls: {
-        arrows: { up: "Lane up", down: "Lane down", left: "Brake", right: "Go" },
+        arrows: { up: "Lane up", down: "Lane down", left: "Brake / reverse", right: "Go" },
         go: "Go",
-        brake: "Brake",
+        brake: "Brake / reverse",
     },
     start,
     step,

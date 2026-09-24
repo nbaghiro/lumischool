@@ -26,6 +26,8 @@ The games were first spread over three tabs, each built at a different time: the
 
 ### The engine
 
+The garden games add reusable `rolling.ts` (bounded rolling disks, surface friction, wall contacts, slow cup capture), `vehicle.ts` (steering, acceleration, braking and lateral tyre grip), and physical material profiles. Course layout, checkpoints, winning conditions and difficulty remain in `school/games/`; artwork remains on the drawing shelf. Physics replay evidence is sampled and does not claim exhaustive solvability.
+
 The engine is in the root. The plain logic is in `engine/motion/`, under the root's rules and tested
 in `engine/motion/__tests__/`; `engine/ui/stage.ts` is the only part that touches the page. The
 hands-on controller and its targets are in `school/games/`, beside the bindings that use them. It

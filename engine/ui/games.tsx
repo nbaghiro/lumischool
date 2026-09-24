@@ -1,9 +1,7 @@
 import { Icon } from "./icon";
-import { Select } from "./select";
 import {
     createEffect,
     createSignal,
-    createUniqueId,
     For,
     onCleanup,
     onMount,
@@ -12,6 +10,13 @@ import {
     type JSX,
 } from "solid-js";
 import { GAMES, gameById } from "../../school/games/catalogue";
+import { isGameChallenge, type GameAttempt, type GameChallenge } from "../answer";
+import {
+    challengeFor,
+    nextChallenge,
+    openChallenge,
+    supportsVariations,
+} from "../../school/games/challenges";
 import type { Game } from "../../school/games/game";
 import type { Drawing } from "../parts/drawing";
 import type { Cue } from "../motion/cues";
@@ -53,18 +58,70 @@ function Cover(props: { game: Game }): JSX.Element {
     );
 }
 
-export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.Element {
-    const challengeId = createUniqueId();
+export function Games(props: {
+    onPlaying?: (playing: boolean) => void;
+    storageKey?: string;
+    onAttempt?: (attempt: GameAttempt) => void;
+}): JSX.Element {
     const params = new URLSearchParams(location.search);
     const [chosen, choose] = createSignal<Game | undefined>(gameById(params.get("g")));
+    const saved = new Map<string, GameChallenge>();
+    const storage = (): string => props.storageKey ?? "games.practice";
+    const stored = (game: Game): GameChallenge | undefined => {
+        const cached = saved.get(game.id);
+        if (cached) return cached;
+        try {
+            const value: unknown = JSON.parse(
+                localStorage.getItem(`${storage()}.${game.id}`) ??
+                    localStorage.getItem(storage()) ??
+                    "null",
+            );
+            if (isGameChallenge(value) && value.game === game.id) {
+                openChallenge(game, value);
+                saved.set(game.id, value);
+                return value;
+            }
+        } catch {
+            /* An old configuration is replaced by its authored phase. */
+        }
+        return undefined;
+    };
+    const phaseFor = (game: Game | undefined, explicit?: number | null): number => {
+        if (!game) return 0;
+        const phase = explicit ?? stored(game)?.phase ?? 0;
+        return Math.min(game.levels.length - 1, Math.max(0, Math.floor(phase)) || 0);
+    };
     const [level, setLevel] = createSignal(
-        Math.min(
-            chosen() ? (chosen()?.levels.length ?? 1) - 1 : 0,
-            Math.max(0, Math.floor(Number(params.get("v")))) || 0,
-        ),
+        phaseFor(chosen(), params.has("v") ? Number(params.get("v")) : undefined),
     );
+    const seed = (): number => crypto.getRandomValues(new Uint32Array(1))[0] ?? 1;
+    const remembered = (game: Game, phase: number): GameChallenge => {
+        const value = stored(game);
+        return value?.phase === phase ? value : challengeFor(game, phase, seed());
+    };
+    const initial = chosen();
+    const [challenge, setChallenge] = createSignal<GameChallenge | undefined>(
+        initial ? remembered(initial, level()) : undefined,
+    );
+    const [completed, setCompleted] = createSignal(false);
+    const [feedback, setFeedback] = createSignal({ text: "", won: false });
+    const [activeTitle, setActiveTitle] = createSignal("");
+    const recent: string[] = [];
+    let retries = 0;
     const [run, setRun] = createSignal(0);
-    const [paused, pause] = createSignal(Boolean(chosen()));
+    const another = (): void => {
+        const game = chosen();
+        if (!game) return;
+        const previous = challenge();
+        if (previous) recent.push(previous.id);
+        if (recent.length > 12) recent.shift();
+        setChallenge(nextChallenge(game, level(), seed(), recent));
+        retries = 0;
+        setRun(run() + 1);
+        begin(false);
+        pause(false);
+    };
+    const [paused, pause] = createSignal(false);
     const [begun, begin] = createSignal(false);
     let menu: HTMLDialogElement | undefined;
     const [sound, setSound] = createSignal(false);
@@ -105,13 +162,16 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
             gain.disconnect();
         };
     };
-    const select = (g: Game | undefined, v = 0): void => {
+    const select = (g: Game | undefined, selected?: number): void => {
+        const v = phaseFor(g, selected);
         const previous = chosen();
         if (!previous && g) libraryScroll = scrollY;
         if (previous) lastGame = previous.id;
         choose(g);
         setLevel(v);
-        pause(Boolean(g));
+        retries = 0;
+        setChallenge(g ? remembered(g, v) : undefined);
+        pause(false);
         begin(false);
         fail("");
         const url = new URL(location.href);
@@ -128,18 +188,29 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
     };
     createEffect(() => props.onPlaying?.(Boolean(chosen())));
     createEffect(() => {
+        const c = challenge();
+        if (c) {
+            saved.set(c.game, c);
+            try {
+                localStorage.setItem(`${storage()}.${c.game}`, JSON.stringify(c));
+            } catch {
+                /* Remember for this visit when device storage is unavailable. */
+            }
+        }
+    });
+    createEffect(() => {
         if (paused() && chosen()) menu?.showModal();
         else menu?.close();
     });
-    const resume = (): void => {
-        begin(true);
-        pause(false);
+    const focusArena = (): void => {
         (
             host?.querySelector<HTMLElement>(".sheet:not([hidden])") ??
             host?.querySelector<HTMLElement>(".board")
-        )?.focus({
-            preventScroll: true,
-        });
+        )?.focus({ preventScroll: true });
+    };
+    const resume = (): void => {
+        pause(false);
+        focusArena();
     };
     onCleanup(() => {
         props.onPlaying?.(false);
@@ -163,19 +234,16 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
         const motion = () => setQuiet(media.matches);
         const blur = () => {
             runtime?.release?.();
-            pause(true);
+            if (begun() && chosen()) pause(true);
         };
         const back = () => {
             const query = new URLSearchParams(location.search);
             const game = gameById(query.get("g"));
             choose(game);
-            setLevel(
-                Math.min(
-                    game ? game.levels.length - 1 : 0,
-                    Math.max(0, Math.floor(Number(query.get("v"))) || 0),
-                ),
-            );
-            pause(Boolean(game));
+            const phase = phaseFor(game, query.has("v") ? Number(query.get("v")) : undefined);
+            setLevel(phase);
+            setChallenge(game ? remembered(game, phase) : undefined);
+            pause(false);
             begin(false);
         };
         window.addEventListener("popstate", back);
@@ -204,10 +272,59 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
         const game = chosen(),
             version = level();
         run();
-        if (!game || !host) return;
+        const selectedChallenge = challenge();
+        if (!game || !host || !selectedChallenge) return;
         const root = host;
         return untrack(() => {
             let ended = false;
+            begin(false);
+            setCompleted(false);
+            setFeedback({ text: "", won: false });
+            const opened = openChallenge(game, selectedChallenge);
+            setActiveTitle(opened.levels[version]?.title ?? "");
+            const attempt: GameAttempt = {
+                id: crypto.randomUUID(),
+                challenge: selectedChallenge,
+                startedAt: new Date().toISOString(),
+                completedAt: new Date().toISOString(),
+                outcome: "interrupted",
+                moves: 0,
+                assistance: 0,
+                retries,
+                activeMs: 0,
+                input: "unknown",
+                reducedMotion: quiet(),
+                objectives: { completed: 0, total: 1 },
+            };
+            let emitted = false;
+            let played = false;
+            let lastTime = performance.now();
+            const account = (): void => {
+                const now = performance.now();
+                if (!paused() && begun() && !emitted) {
+                    played = true;
+                    attempt.activeMs += Math.min(1000, Math.max(0, now - lastTime));
+                }
+                lastTime = now;
+            };
+            const finish = (won: boolean): void => {
+                account();
+                if (emitted || (!played && !won)) return;
+                emitted = true;
+                attempt.completedAt = new Date().toISOString();
+                attempt.activeMs = Math.round(attempt.activeMs);
+                attempt.outcome = won ? "completed" : "interrupted";
+                if (won) attempt.objectives.completed = attempt.objectives.total;
+                props.onAttempt?.(attempt);
+            };
+            const accounting = setInterval(account, 200);
+            const leaving = (): void => finish(false);
+            window.addEventListener("pagehide", leaving);
+            onCleanup(() => {
+                clearInterval(accounting);
+                window.removeEventListener("pagehide", leaving);
+                finish(false);
+            });
             const $ = <T extends HTMLElement = HTMLElement>(id: string): T => {
                 const element = root.querySelector<T>(`[data-game="${id}"]`);
                 if (!element) throw new Error(`Missing game control: ${id}`);
@@ -252,6 +369,31 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
             const shell: Shell = {
                 $,
                 art,
+                feedback: (text, won = false) => {
+                    setFeedback((previous) =>
+                        previous.text === text && previous.won === won ? previous : { text, won },
+                    );
+                },
+                progress: (completed, total) => {
+                    if (!emitted) attempt.objectives = { completed, total };
+                },
+                observe: (kind, input) => {
+                    if (emitted) return;
+                    if (kind === "won") {
+                        setCompleted(true);
+                        finish(true);
+                    } else if (kind === "assist") attempt.assistance++;
+                    else {
+                        begin(true);
+                        played = true;
+                        attempt.moves++;
+                        if (input)
+                            attempt.input =
+                                attempt.input === "unknown" || attempt.input === input
+                                    ? input
+                                    : "mixed";
+                    }
+                },
                 still: quiet,
                 paused,
                 hear,
@@ -270,12 +412,15 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
             try {
                 const v = Math.min(version, game.levels.length - 1);
                 runtime =
-                    game.group === "action"
-                        ? action(shell, field, game, v)
-                        : turn(shell, stage, game, v, []);
+                    opened.group === "action"
+                        ? action(shell, field, opened, v)
+                        : turn(shell, stage, opened, v, []);
             } catch (error) {
                 fail(error instanceof Error ? error.message : "The game could not open.");
             }
+            queueMicrotask(() => {
+                if (!ended && !paused()) focusArena();
+            });
             const keys = (e: KeyboardEvent) => {
                 if (e.key === "Escape" && e.type === "keydown" && !paused()) {
                     e.preventDefault();
@@ -286,6 +431,13 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                     paused() ||
                     e.target instanceof HTMLSelectElement ||
                     e.target instanceof HTMLInputElement
+                )
+                    return;
+                // The card's opening Enter event belongs to the library, not the new arena.
+                if (
+                    e.target instanceof Node &&
+                    !root.contains(e.target) &&
+                    e.target !== document.body
                 )
                     return;
                 if (
@@ -365,6 +517,9 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                 {(g) => (
                     <div
                         class="game-player"
+                        data-challenge={challenge()?.id}
+                        data-challenge-source={challenge()?.source}
+                        data-game-ready={!begun()}
                         classList={{ tabletop: g().group !== "action" }}
                         ref={(el) => {
                             host = el;
@@ -380,8 +535,15 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                 <Icon name="back" />
                             </button>
                             <h1>{g().title}</h1>
-                            <p data-game="aside" aria-live="polite" />
-                            <span class="game-challenge">{g().levels[level()]?.title}</span>
+                            <div class="game-feedback-slot">
+                                <Show when={feedback().text && !feedback().won}>
+                                    <div class="game-feedback" title={feedback().text}>
+                                        <Cover game={g()} />
+                                        <span data-game="aside">{feedback().text}</span>
+                                    </div>
+                                </Show>
+                            </div>
+                            <span class="game-challenge">{activeTitle()}</span>
                             <button
                                 class="game-icon"
                                 aria-label="Pause &amp; help"
@@ -391,6 +553,7 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                 <Icon name="pause" />
                             </button>
                         </header>
+                        <output class="game-feedback-live">{feedback().text}</output>
                         <Show when={failure()}>
                             <p role="alert">{failure()}</p>
                         </Show>
@@ -418,19 +581,25 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                 >
                                     <Icon name="undo" />
                                 </button>
-                                <button
-                                    data-game="another"
-                                    hidden
-                                    onClick={() =>
-                                        level() + 1 < g().levels.length
-                                            ? select(g(), level() + 1)
-                                            : select(undefined)
-                                    }
-                                >
-                                    {level() + 1 < g().levels.length
-                                        ? "Another challenge"
-                                        : "All games"}
+                                <Show when={feedback().won}>
+                                    <div class="game-feedback game-finished">
+                                        <Cover game={g()} />
+                                        <span data-game="aside">{feedback().text}</span>
+                                    </div>
+                                </Show>
+                                <button data-game="another" hidden onClick={another}>
+                                    {supportsVariations(g()) ? "Play another" : "Play again"}
                                 </button>
+                                <Show when={completed()}>
+                                    <button
+                                        onClick={() => {
+                                            retries++;
+                                            setRun(run() + 1);
+                                        }}
+                                    >
+                                        Try again
+                                    </button>
+                                </Show>
                             </div>
                         </div>
                         <dialog
@@ -473,23 +642,32 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                     <h2>{g().title}</h2>
                                 </div>
                             </header>
-                            <label class="game-level" for={challengeId}>
-                                Choose a challenge
-                                <Select
-                                    id={challengeId}
-                                    value={level()}
-                                    onChange={(e) => select(g(), Number(e.currentTarget.value))}
+                            <details class="game-help game-challenges">
+                                <summary>Choose a challenge</summary>
+                                <fieldset
+                                    class="game-challenge-cards"
+                                    aria-label="Choose a challenge"
                                 >
                                     <For each={g().levels}>
                                         {(l, i) => (
-                                            <option value={i()}>
-                                                {i() + 1}. {l.title}
-                                            </option>
+                                            <button
+                                                class="game-challenge-card"
+                                                data-game-phase={i()}
+                                                aria-pressed={level() === i()}
+                                                onClick={() => select(g(), i())}
+                                            >
+                                                {l.title}
+                                            </button>
                                         )}
                                     </For>
-                                </Select>
-                            </label>
-                            <details class="game-help" open={!begun()}>
+                                </fieldset>
+                            </details>
+                            <Show when={supportsVariations(g())}>
+                                <button class="game-new-layout" onClick={another}>
+                                    New arrangement
+                                </button>
+                            </Show>
+                            <details class="game-help">
                                 <summary>How to play</summary>
                                 <p data-game="goal" class="game-goal" />
                                 <p data-game="keys" class="game-keys" />
@@ -530,10 +708,10 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                             <div class="game-actions game-menu-actions">
                                 <button
                                     class="game-primary"
-                                    aria-label={begun() ? "Continue playing" : "Play"}
+                                    aria-label="Continue playing"
                                     onClick={resume}
                                 >
-                                    <Icon name="play" /> {begun() ? "Continue" : "Play"}
+                                    <Icon name="play" /> Continue
                                 </button>
                                 <button
                                     class="game-icon"
@@ -541,6 +719,7 @@ export function Games(props: { onPlaying?: (playing: boolean) => void }): JSX.El
                                     title="Start again"
                                     data-game="again"
                                     onClick={() => {
+                                        retries++;
                                         setRun(run() + 1);
                                         resume();
                                     }}

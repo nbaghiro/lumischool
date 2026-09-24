@@ -112,6 +112,7 @@ export interface ActionGame<S> extends Base {
     /** What just happened, in a sentence or two, for the line under the goal; empty when nothing has. */
     note(s: S): string;
     won(s: S): boolean;
+    objectives?(s: S): { completed: number; total: number };
     frame(s: S, rest?: boolean): Frame;
     /** Where a pull starts, in squares, when there is something to pull: the ball in the sling. */
     pullFrom?(s: S): Pt | null;

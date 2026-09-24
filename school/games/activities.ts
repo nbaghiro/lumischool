@@ -143,7 +143,7 @@ const TWELVE: RuleVersion["cards"] = [
 // One version per card, which is what `let answer=0..8` would generate. Three are listed; the
 // prover is run over all nine in the tests, since that is the point of listing them. The three after
 // them take a number away to feed, then give twelve cards that agree, then take away the 1.
-const finding: Activity<RuleVersion> = {
+export const finding: Activity<RuleVersion> = {
     id: "rule.which-machine",
     title: "Find the rule",
     kind: "rule",
@@ -264,7 +264,7 @@ const CHICANE = [
     "#####FS#####",
 ];
 
-const cornering: Activity<RaceVersion> = {
+export const cornering: Activity<RaceVersion> = {
     id: "race.take-the-corner",
     title: "Take the corner",
     kind: "race",

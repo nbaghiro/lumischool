@@ -275,6 +275,21 @@ export const shutGame: TurnGame = {
             },
             after(pos) {
                 const b = readBox(pos);
+                ctx.stage.marks(
+                    "waiting",
+                    b.dice.flatMap((_, i) => {
+                        const n = waitingOn(b, i),
+                            at = n ? hinge(n) : null;
+                        return at ? [{ kind: "ring" as const, x: at.x, y: at.y - 1, r: 1.25 }] : [];
+                    }),
+                );
+                const t = tray();
+                ctx.stage.marks(
+                    "ready",
+                    !b.live && !pos.won && t
+                        ? [{ kind: "ring", x: t.x + t.w - 1.6, y: t.y + t.h - 1.5, r: 1.2 }]
+                        : [],
+                );
                 const handles = new Set(this.handles(pos).map((h) => h.key));
                 for (let i = 0; i < Math.max(dice, b.dice.length); i++)
                     ctx.stage.tag(`die:${i}`, "grab", !pos.won && handles.has(`die:${i}`));

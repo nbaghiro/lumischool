@@ -238,7 +238,12 @@ export function landingAt(L: HopLevel, x: number, standing: (i: number) => boole
     const f = far / half;
     return {
         stone: best,
-        kind: f <= HOP.firm.value ? "stand" : f <= HOP.tip.value ? "wobble" : "tip",
+        kind:
+            f <= (L.from === 0 && L.to === 20 ? 0.75 : HOP.firm.value)
+                ? "stand"
+                : f <= (L.from === 0 && L.to === 20 ? 1 : HOP.tip.value)
+                  ? "wobble"
+                  : "tip",
     };
 }
 
@@ -559,7 +564,10 @@ export function step(s: HopState, pad: Pad): Happening[] {
                 dx = hx - s.at.x;
             s.facing = dx >= 0 ? 1 : -1;
             s.at = {
-                x: s.at.x + Math.sign(dx) * Math.min(Math.abs(dx), HOP.swim.value * DT),
+                x:
+                    s.at.x +
+                    Math.sign(dx) *
+                        Math.min(Math.abs(dx), Math.max(HOP.swim.value, Math.abs(dx) * 2) * DT),
                 y: STREAM.surface + 0.35 + 0.08 * Math.sin(s.steps * 0.35),
             };
             if (s.steps % 20 === 0)
@@ -784,7 +792,7 @@ export function frame(s: HopState, rest = false): Frame {
             y: s.at.y,
             stand: true,
             angle: s.angle,
-            squash: s.squash,
+            squash: s.phase === "held" || (s.phase === "sit" && s.aim !== null) ? 0.12 : s.squash,
             z: 8,
         });
     }
@@ -821,6 +829,13 @@ export function frame(s: HopState, rest = false): Frame {
             : null;
     if (aimed !== null) {
         const fl = flightOf(s, aimed);
+        const where = landingAt(L, fl.x, standing(s));
+        marks.push({
+            kind: "ring",
+            x: fl.x,
+            y: TOP,
+            r: where.kind === "water" || where.kind === "tip" ? 0.22 : 0.45,
+        });
         marks.push({
             kind: "dots",
             pts: arc(fl.from, fl.v, HOP.gravity.value, { seconds: L.preview, every: 0.05 }),

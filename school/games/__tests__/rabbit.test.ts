@@ -90,10 +90,10 @@ test("every rabbit level has a route of hops to the apple, several hops long, an
 
 test("a rabbit stands only on a stone's top: firm near the middle, wobbling further out, tipping in past the tip share of its half width, and in the water beyond", async () => {
     const R = await import("../rabbit");
-    const firm = R.HOP.firm.value,
-        tip = R.HOP.tip.value,
-        up = () => true;
+    const up = () => true;
     for (const L of R.HOP_LEVELS) {
+        const firm = L.from === 0 && L.to === 20 ? 0.75 : R.HOP.firm.value;
+        const tip = L.from === 0 && L.to === 20 ? 1 : R.HOP.tip.value;
         const half = R.halfOf(L);
         L.stones.forEach((n, i) => {
             for (const f of [0, 0.3, firm - 0.01, firm + 0.01, tip - 0.01, tip + 0.01, 0.99, 1.01])
@@ -120,15 +120,19 @@ test("a rabbit stands only on a stone's top: firm near the middle, wobbling furt
     R.hopBy(wobbly, outBy(0.7));
     await rabbitRest(wobbly);
     assert.ok(L0.stones[wobbly.stone] === 5 && wobbly.dips === 0, "a wobble holds");
-    const tipped = R.start(0);
-    R.hopBy(tipped, outBy(0.9));
+    const forgiving = R.start(0);
+    R.hopBy(forgiving, outBy(0.9));
+    await rabbitRest(forgiving);
+    assert.equal(forgiving.dips, 0, "the introductory stone holds a landing near its edge");
+    const tipped = R.start(2);
+    R.hopBy(tipped, 3 + (0.9 * R.halfOf(tipped.L)) / R.perOf(tipped.L));
     let wobbled = false;
     for (let i = 0; i < 60 * 30 && tipped.phase !== "sit"; i++) {
         R.step(tipped, emptyPad());
         wobbled ||= tipped.phase === "wobble";
     }
     assert.ok(
-        wobbled && tipped.dips === 1 && L0.stones[tipped.stone] === 0,
+        wobbled && tipped.dips === 1 && tipped.L.stones[tipped.stone] === 0,
         "a landing past the tip share wobbles, tips in, and the rabbit swims back to 0",
     );
 });
