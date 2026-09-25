@@ -22,6 +22,7 @@ export function KidLogins(props: {
     const [again, setAgain] = createSignal("");
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
+    const [success, setSuccess] = createSignal(false);
     const ready = (): Logins | false => {
         const d = data.latest;
         return !!d && !("error" in d) && d;
@@ -32,6 +33,7 @@ export function KidLogins(props: {
     };
     const save = async (): Promise<void> => {
         if (busy()) return;
+        setSuccess(false);
         if (pin().length !== 4 || pin() !== again()) {
             setSaid("Type the same four-digit PIN twice.");
             return;
@@ -45,6 +47,7 @@ export function KidLogins(props: {
         setBusy(false);
         setPin("");
         setAgain("");
+        setSuccess(r === true);
         setSaid(
             r === true
                 ? "Shared kids’ PIN saved. Children using it have been signed out."
@@ -53,7 +56,7 @@ export function KidLogins(props: {
     };
     return (
         <Postcard focus={false} kicker="Your family" title="Sign-in & PINs">
-            <h2>Kids</h2>
+            <h2 class="kids-heading">Kids</h2>
             <p class="note">One username per child. A shared PIN, or a PIN of their own.</p>
             <Show
                 when={ready()}
@@ -133,7 +136,7 @@ export function KidLogins(props: {
                             </form>
                         </Show>
                         <Show when={said()}>
-                            <Say text={said()} />
+                            <Say tone={success() ? "success" : "error"} text={said()} />
                         </Show>
                         <fieldset
                             disabled={busy() || data.loading}
@@ -169,6 +172,7 @@ function LoginRow(props: {
     const [username, setUsername] = createSignal(props.kid.username ?? "");
     const [busy, setBusy] = createSignal(false);
     const [said, setSaid] = createSignal("");
+    const [success, setSuccess] = createSignal(false);
     const [own, setOwn] = createSignal(props.kid.ownPin);
     const [pin, setPin] = createSignal("");
     const [again, setAgain] = createSignal("");
@@ -179,6 +183,7 @@ function LoginRow(props: {
         !again();
     const save = async (): Promise<void> => {
         if (busy() || unchanged()) return;
+        setSuccess(false);
         if (username() !== "" && !usernameOf(username())) {
             setSaid("Use 3–32 letters, numbers or hyphens, starting with a letter.");
             return;
@@ -204,6 +209,7 @@ function LoginRow(props: {
         setPin("");
         setAgain("");
         setBusy(false);
+        setSuccess(r === true);
         setSaid(r === true ? "Saved." : failure(r));
         if (r === true) {
             setEditing(false);
@@ -334,7 +340,7 @@ function LoginRow(props: {
                 </form>
             </Show>
             <Show when={said()}>
-                <Say text={said()} />
+                <Say tone={success() ? "success" : "error"} text={said()} />
             </Show>
         </div>
     );

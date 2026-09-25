@@ -312,7 +312,7 @@ function Column(props: {
                 {props.lesson.title}
             </h2>
             <Show when={props.said}>
-                <Say calm text={props.said} />
+                <Say tone="info" text={props.said} />
             </Show>
             <p class="note">
                 Tap what was wrong. Everything you leave is right, so a sheet with nothing wrong is

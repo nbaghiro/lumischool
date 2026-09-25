@@ -210,7 +210,7 @@ export function AddKidDialog(): JSX.Element {
         <>
             <Show when={said()}>
                 <div class="gb-said">
-                    <Say calm focus text={said()} />
+                    <Say tone="success" focus text={said()} />
                 </div>
             </Show>
             <Show when={adding() ? known() : null}>

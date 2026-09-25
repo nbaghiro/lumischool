@@ -349,12 +349,14 @@ test("account does not request session lists and parent PIN edits stay within th
     await pins.getByLabel("The new PIN", { exact: true }).fill("8642");
     await pins.getByLabel("The same PIN again", { exact: true }).fill("8642");
     await expect(pins.getByText("Parent PIN saved.", { exact: true })).toBeVisible();
+    await expect(pins.locator(".say.success")).toContainText("Parent PIN saved.");
     await pins.getByRole("button", { name: "Dismiss message", exact: true }).click();
     await expect(pins.getByText("Parent PIN saved.", { exact: true })).toHaveCount(0);
     await pins.getByRole("button", { name: "Change parent PIN" }).click();
     await pins.getByLabel("The new PIN", { exact: true }).fill("7531");
     await pins.getByLabel("The same PIN again", { exact: true }).fill("7531");
     await expect(pins.getByText("Parent PIN saved.", { exact: true })).toBeVisible();
+    await expect(pins.locator(".say.success")).toContainText("Parent PIN saved.");
     await expect(pins.getByLabel("The new PIN", { exact: true })).toHaveCount(0);
     await expect(pins.getByRole("button", { name: "Lock parent pages" })).toHaveCount(0);
 });

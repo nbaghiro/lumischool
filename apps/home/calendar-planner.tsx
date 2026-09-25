@@ -1444,27 +1444,29 @@ export function Calendar(): JSX.Element {
                         </Postcard>
                         <Show when={said()}>
                             <div class="cp-said">
-                                <Say text={said()} />
-                                <Show when={last().length}>
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        disabled={busy()}
-                                        onClick={() => void undo()}
-                                    >
-                                        Put it back
-                                    </button>
-                                </Show>
-                                <Show when={redo().length}>
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        disabled={busy()}
-                                        onClick={() => void reapply()}
-                                    >
-                                        Redo
-                                    </button>
-                                </Show>
+                                <Say
+                                    tone="success"
+                                    text={said()}
+                                    dismissible
+                                    onDismiss={() => setSaid("")}
+                                    action={
+                                        last().length
+                                            ? {
+                                                  label: "Put it back",
+                                                  run: () => {
+                                                      if (!busy()) void undo();
+                                                  },
+                                              }
+                                            : redo().length
+                                              ? {
+                                                    label: "Redo",
+                                                    run: () => {
+                                                        if (!busy()) void reapply();
+                                                    },
+                                                }
+                                              : undefined
+                                    }
+                                />
                             </div>
                         </Show>
                         <Show when={error() && !card()}>

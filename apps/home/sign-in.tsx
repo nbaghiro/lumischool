@@ -477,7 +477,7 @@ function Code(props: {
                             {(s) => (
                                 <Say
                                     text={s().text}
-                                    calm={s().calm}
+                                    tone={s().calm ? "info" : "error"}
                                     action={
                                         s().again
                                             ? { label: "Send a new code", run: () => void again() }

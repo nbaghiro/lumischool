@@ -263,14 +263,15 @@
     border-color: color-mix(in srgb, var(--berry) 80%, var(--ink));
 }
 
-/* What went wrong, said kindly, in the teacher's pen rather than in red; calm for what is merely so. */
+/* Semantic notices use the app palette, with dark text on a lightly tinted sheet. */
 .say {
     padding: 10px 14px;
     font-size: 15px;
     line-height: 1.5;
     border-radius: 10px;
-    background: color-mix(in srgb, var(--berry) 16%, var(--card));
-    border-left: 4px solid var(--berry);
+    --notice-color: var(--margin);
+    background: color-mix(in srgb, var(--notice-color) 18%, var(--card));
+    border-left: 4px solid var(--notice-color);
 }
 .say.dismissible {
     position: relative;
@@ -301,9 +302,15 @@
     outline: 2px solid var(--pen);
     outline-offset: -4px;
 }
-.say.calm {
-    background: color-mix(in srgb, var(--sky) 18%, var(--card));
-    border-left-color: var(--sky);
+.say.success {
+    --notice-color: var(--ok);
+}
+.say.info {
+    --notice-color: var(--glow);
+}
+.say.error,
+.say.warning {
+    --notice-color: color-mix(in srgb, var(--margin) 75%, var(--ink));
 }
 .say .acts {
     margin-top: 6px;

@@ -344,10 +344,10 @@ export function GrownHome(props: {
                 }
             >
                 <Show when={props.said}>
-                    <Say calm focus text={props.said} />
+                    <Say tone="success" focus text={props.said} />
                 </Show>
                 <Show when={marked()}>
-                    <Say calm focus text={marked()} />
+                    <Say tone="success" focus text={marked()} />
                 </Show>
                 <Show when={bad(pack.latest)}>
                     {(f) => <Say text={`The lessons did not load. ${failureText(f(), local)}`} />}

@@ -225,16 +225,17 @@
     box-shadow: none;
 }
 .cp-said {
+    align-self: center;
+    width: min(100%, 760px);
+}
+.cp-said > .say {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px 20px;
-    align-self: center;
-    width: min(100%, 760px);
-    padding: 10px 18px;
-    background: var(--card);
-    border-left: 4px solid var(--mint);
-    border-radius: 4px;
+}
+.cp-said .acts {
+    margin-top: 0;
 }
 .cp-fields,
 .cp-filters {

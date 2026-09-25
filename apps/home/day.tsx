@@ -296,7 +296,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                     )}
                 </Show>
                 <Show when={said()}>
-                    <Say calm focus text={said()} />
+                    <Say tone="info" focus text={said()} />
                 </Show>
             </section>
             <div class="gd-sheets" data-key={key() ? "yes" : "no"}>

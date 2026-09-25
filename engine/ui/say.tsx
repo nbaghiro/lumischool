@@ -64,21 +64,24 @@ export function Announcer(): JSX.Element {
  */
 export function Say(props: {
     text: string;
-    calm?: boolean;
+    tone?: "success" | "info" | "error" | "warning";
     focus?: boolean;
     action?: { label: string; run: () => void };
     dismissible?: boolean;
+    onDismiss?: () => void;
 }): JSX.Element {
     const [dismissed, setDismissed] = createSignal(false);
     createEffect(() => {
-        announce(props.text, { urgent: !props.calm });
+        announce(props.text, {
+            urgent: props.tone === undefined || props.tone === "error" || props.tone === "warning",
+        });
         setDismissed(false);
     });
     return (
         <Show when={!dismissed()}>
             <div
+                class={`say ${props.tone ?? "error"}`}
                 classList={{ dismissible: props.dismissible ?? (!props.action && !props.focus) }}
-                class={props.calm ? "say calm" : "say"}
                 tabindex={props.focus ? -1 : undefined}
                 ref={(el) => {
                     if (props.focus) focusOnceShown(el);
@@ -90,7 +93,10 @@ export function Say(props: {
                         type="button"
                         class="say-dismiss"
                         aria-label="Dismiss message"
-                        onClick={() => setDismissed(true)}
+                        onClick={() => {
+                            setDismissed(true);
+                            props.onDismiss?.();
+                        }}
                     >
                         <span aria-hidden="true">×</span>
                     </button>

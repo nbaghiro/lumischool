@@ -313,7 +313,7 @@ function ParentPin(props: { pinSet: boolean; onChanged: () => void }): JSX.Eleme
                 />
             </Show>
             <Show when={said()}>
-                <Say text={said()} />
+                <Say tone="success" text={said()} />
             </Show>
         </section>
     );

@@ -59,6 +59,17 @@ test("the merged calendar saves extra sessions, removes only one, and preserves 
     await modal.getByLabel("Sessions on each chosen day").fill("2");
     await modal.getByRole("button", { name: "Apply routine", exact: true }).click();
     await expect(modal).toHaveCount(0);
+    const notice = page.locator(".cp-said");
+    await expect(notice.locator(".say.success.dismissible")).toBeVisible();
+    const close = notice.getByRole("button", { name: "Dismiss message", exact: true });
+    const bounds = await notice.boundingBox();
+    const closeBounds = await close.boundingBox();
+    if (!bounds || !closeBounds) throw new Error("Missing calendar notice");
+    expect(closeBounds.x).toBeGreaterThanOrEqual(bounds.x);
+    expect(closeBounds.x + closeBounds.width).toBeLessThanOrEqual(bounds.x + bounds.width);
+    await close.click();
+    await expect(notice).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Put it back", exact: true })).toHaveCount(0);
     await page.reload();
     await expect(
         page

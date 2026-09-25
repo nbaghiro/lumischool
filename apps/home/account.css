@@ -216,7 +216,8 @@
     margin-top: 16px;
 }
 
-.members-heading {
+.members-heading,
+.kids-heading {
     margin-top: 16px;
 }
 .kid-pin-choice {

@@ -362,6 +362,9 @@ test("a parent can give one child an own PIN, keep siblings shared, and switch b
                     .locator("#main")
                     .getByText("Type the same four-digit PIN twice.", { exact: true }),
             ).toBeVisible();
+            await expect(page.locator(".say.error")).toContainText(
+                "Type the same four-digit PIN twice.",
+            );
             await page.getByLabel("Repeat Rosie’s PIN", { exact: true }).fill("8642");
         }
         await page.getByRole("button", { name: `Save ${name}’s sign-in`, exact: true }).click();
