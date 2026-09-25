@@ -85,6 +85,40 @@ export class CanvasView {
     spaceHeld = false;
     /** Whether the wheel zooms and pans the view; a page that scrolls past the view leaves it the wheel. */
     takesWheel = true;
+    private pageWidth: number | null = null;
+    private pageSpace: HTMLDivElement | null = null;
+    get readingPage(): boolean {
+        return this.pageWidth !== null;
+    }
+
+    /** Change the way the same sheet is navigated, without replacing any lesson DOM. */
+    setPage(width: number | null): void {
+        this.stop();
+        for (const id of this.pointers.keys())
+            if (this.host.hasPointerCapture(id)) this.host.releasePointerCapture(id);
+        this.pointers.clear();
+        this.drag = null;
+        this.pair = null;
+        this.spaceHeld = false;
+        this.host.classList.remove("grabbing");
+        this.pageWidth = width;
+        this.host.classList.toggle("reading-page", width !== null);
+        if (width !== null && !this.pageSpace) {
+            this.pageSpace = document.createElement("div");
+            this.pageSpace.className = "reading-page-space";
+            this.pageSpace.setAttribute("aria-hidden", "true");
+            this.host.append(this.pageSpace);
+        }
+        if (width === null) {
+            this.pageSpace?.remove();
+            this.pageSpace = null;
+            this.host.scrollTop = 0;
+            this.paper.style.transform = "";
+        }
+        this.present();
+        this.request();
+        this.settleSoon();
+    }
     private anim: { at(t: number): Camera; start: number; ms: number; to: Camera } | null = null;
     private glide: { vx: number; vy: number; t: number } | null = null;
     private raf = 0;
@@ -144,6 +178,14 @@ export class CanvasView {
         host.addEventListener(
             "scroll",
             () => {
+                if (this.readingPage) {
+                    const bounds = this.hooks.bounds(this.cam);
+                    this.cam.y = bounds.y + (host.scrollTop + this.vp.h / 2) / this.cam.z;
+                    this.movedAt = performance.now();
+                    this.request();
+                    this.settleSoon();
+                    return;
+                }
                 host.scrollLeft = 0;
                 host.scrollTop = 0;
             },
@@ -205,6 +247,7 @@ export class CanvasView {
         CanvasView.sizePaper();
         this.paper.remove();
         this.world.remove();
+        this.pageSpace?.remove();
     }
     /** How long ago the viewer last moved the paper themselves, in ms. */
     movedAgo(): number {
@@ -362,10 +405,21 @@ export class CanvasView {
     /** Publish a coordinated layout/camera change before the browser presents another frame. */
     present(): void {
         if (this.disposed) return;
+        if (this.pageWidth !== null && this.pageSpace) {
+            const z = Math.min(1, Math.max(0.1, (this.vp.w - 40) / this.pageWidth));
+            const bounds = this.hooks.bounds(this.cam);
+            this.pageSpace.style.height = `${Math.max(this.vp.h, bounds.h * z)}px`;
+            this.cam = { x: 0, y: this.cam.y, z };
+            this.host.scrollTop = Math.max(0, (this.cam.y - bounds.y) * z - this.vp.h / 2);
+            this.cam.y = bounds.y + (this.host.scrollTop + this.vp.h / 2) / z;
+            this.paper.style.transform = `translateY(${this.host.scrollTop}px)`;
+        }
         // Clip locally as well as at the host's viewport, including any retained painted layers.
         const ink = visibleRect(this.cam, { w: this.vp.w + 192, h: this.vp.h + 192 });
         this.world.style.clipPath = `polygon(${ink.x}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y + ink.h}px, ${ink.x}px ${ink.y + ink.h}px)`;
-        this.world.style.transform = cssTransform(this.cam, this.vp);
+        this.world.style.transform = this.readingPage
+            ? `translateY(${this.host.scrollTop}px) ${cssTransform(this.cam, this.vp)}`
+            : cssTransform(this.cam, this.vp);
         this.drawPaper();
     }
 
@@ -414,6 +468,7 @@ export class CanvasView {
     }
 
     private down = (e: PointerEvent): void => {
+        if (this.readingPage) return;
         if (e.target instanceof Element && e.target.closest(".hud")) return;
         if (this.hooks.claim?.(e)) return;
         if (e.pointerType === "mouse" && e.button !== 0 && e.button !== 1) return;
@@ -533,6 +588,7 @@ export class CanvasView {
     };
 
     private wheel = (e: WheelEvent): void => {
+        if (this.readingPage) return;
         if (!this.takesWheel) return;
         e.preventDefault();
         this.stop();
@@ -558,6 +614,10 @@ export class CanvasView {
     private keydown = (e: KeyboardEvent): void => {
         if (e.metaKey || e.ctrlKey || e.altKey) return;
         if (e.target instanceof Element && e.target.closest("input, select, textarea")) return;
+        if (this.readingPage) {
+            if (this.hooks.key?.(e)) e.preventDefault();
+            return;
+        }
         if (e.key === " " && e.target === this.host) {
             this.spaceHeld = true;
             e.preventDefault();

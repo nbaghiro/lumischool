@@ -39,6 +39,21 @@
     height: 0;
     transform-origin: 0 0;
 }
+.wd-host.reading-page {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-anchor: none;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y pinch-zoom;
+    cursor: auto;
+}
+.reading-page-space {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    pointer-events: none;
+}
 .wd-host .j-layer {
     position: absolute;
     left: 0;

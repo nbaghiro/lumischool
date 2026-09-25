@@ -57,9 +57,7 @@ test("a child's subject place opens its own lessons, returns to its map location
     await expect(roll.locator('[data-lesson="art-mixing-the-secondaries"]')).toHaveCount(1);
     await page.locator(".wd-host").focus();
     await page.keyboard.press("Escape");
-    await expect(page.locator(".pl")).toHaveClass(/ready/, { timeout: 60_000 });
-    await page.locator(".pl-host").focus();
-    await page.keyboard.press("Escape");
+    await expect(page.locator(".pl")).toHaveCount(0);
     await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
     await expect(hut).toHaveAttribute("tabindex", "0");
     await expect

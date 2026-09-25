@@ -26,7 +26,10 @@ test("a child can browse the grade journey without fetching closed lessons or ch
     await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
     const meadow = map.getByRole("button", { name: /The meadow/ });
     await meadow.dispatchEvent("click");
-    await meadow.dispatchEvent("click");
+    // A world already centred on a phone may open on the first click.
+    await meadow.evaluateAll((els) =>
+        els[0]?.dispatchEvent(new MouseEvent("click", { bubbles: true })),
+    );
     const roll = page.locator(".wd");
     await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
     expect(current).toContain("g1-counting-to-twenty");
@@ -60,4 +63,17 @@ test("a child can browse the grade journey without fetching closed lessons or ch
     expect(await sheet.evaluate((node, old) => node === old, oldSheet)).toBe(true);
     expect(requested.filter((url) => url.includes("nature-living-or-not"))).toEqual([]);
     await expect(sheet).toHaveClass(/ls-sheet/);
+    // One Back action returns from a term's lessons directly to its overworld location.
+    const back = page.getByRole("button", { name: "Back to the map", exact: true });
+    await back.focus();
+    await back.click();
+    await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
+    await expect(roll).toHaveCount(0);
+    await expect(page.locator(".pl-host")).toHaveCount(0);
+    // Returning keeps this world selected, so one click re-enters it.
+    await meadow.dispatchEvent("click");
+    await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
+    await expect(roll.locator('[data-lesson="g1-counting-to-twenty"]').first()).toHaveClass(
+        /ls-sheet/,
+    );
 });

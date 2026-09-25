@@ -132,6 +132,22 @@ export function World(props: {
     let sheets: HTMLDivElement | undefined;
     let above: HTMLDivElement | undefined;
     let view: CanvasView | undefined;
+    const [pageForm, setPageForm] = createSignal(false);
+    let canvasZoom = 1;
+    function changeForm(): void {
+        const v = view;
+        if (!v || busy || !arrived) return;
+        if (!pageForm()) {
+            canvasZoom = v.cam.z;
+            v.setPage(layout().o.sheet);
+            setPageForm(true);
+        } else {
+            v.setPage(null);
+            setPageForm(false);
+            v.set({ ...v.cam, z: canvasZoom });
+            v.present();
+        }
+    }
     let painted: WorldPainted | undefined;
     let pending: {
         piece: WorldPainted["pieces"][number];
@@ -249,6 +265,10 @@ export function World(props: {
             go = props.onOut,
             h = host;
         if (!v || !go || busy) return;
+        if (v.readingPage) {
+            v.setPage(null);
+            setPageForm(false);
+        }
         if (quiet || !h) {
             go(null, dayAt(v));
             return;
@@ -468,7 +488,7 @@ export function World(props: {
         if (!view) return;
         painted?.frame(cam, view.vp);
         setMoving(true);
-        const lv = rollLevelOf(cam.z, level);
+        const lv = view.readingPage ? "day" : rollLevelOf(cam.z, level);
         if (lv !== level) {
             level = lv;
             view.world.dataset.level = lv;
@@ -482,7 +502,7 @@ export function World(props: {
         setMoving(false);
         if (busy) return;
         // pulled back past the sheets: the place the world is seen as takes over where the camera is
-        if (props.onOut && arrived && cam.z < FAR_AT) {
+        if (props.onOut && arrived && !view?.readingPage && cam.z < FAR_AT) {
             out();
             return;
         }
@@ -790,6 +810,10 @@ export function World(props: {
             key: (e) => onKey(e),
             settle: (cam) => onSettle(cam),
             resized: () => {
+                if (view?.readingPage) {
+                    view.setPage(layout().o.sheet);
+                    return;
+                }
                 if (!props.preview && drawn && arrived && view && !view.flying) {
                     view.zoomBy(1, undefined, false);
                     return;
@@ -886,6 +910,10 @@ export function World(props: {
                     moving={moving}
                     out={() => out()}
                     label="Back to the map"
+                    alternative={{
+                        label: pageForm() ? "Canvas view" : "Page view",
+                        change: changeForm,
+                    }}
                 />
             </Show>
             <div

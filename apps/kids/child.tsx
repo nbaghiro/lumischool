@@ -49,7 +49,7 @@ const SHEETS_READY = 2500;
 
 // every import on a child's way in loads the page again once if the server no longer has it, as after
 // a deploy or with a tab left open while the code changed (onDemand in engine/ui/art.tsx)
-// the world's own screens, the place and the roll, which come with the child going in rather than
+// the world's lesson roll, which comes with the child going in rather than
 // with the map (apps/kids/inside.tsx)
 let insideCode: Promise<typeof import("./inside")> | null = null;
 const loadInside = (): Promise<typeof import("./inside")> =>
@@ -124,7 +124,7 @@ export function ChildMap(props: {
         const s = screen();
         return s.at === "map" && s;
     };
-    /** The world's own screens: the place a child sees it as and the roll they read it at. */
+    /** The lesson roll inside the selected world. */
     const inside = (): InsideScreen | false => {
         const s = screen();
         return s.at !== "map" && s;
@@ -369,7 +369,6 @@ export function ChildMap(props: {
                                                 )}
                                                 narrow={narrow()}
                                                 page={() => page}
-                                                go={(to) => setScreen(to)}
                                                 out={(box) => backToMap(box)}
                                             />
                                         </Suspense>

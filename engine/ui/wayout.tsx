@@ -4,7 +4,7 @@
 // about; the keyboard and a reader reach it on focus as before.
 
 import "./wayout.css";
-import { createEffect, createSignal, on, onCleanup, onMount, type JSX } from "solid-js";
+import { createEffect, createSignal, on, onCleanup, onMount, Show, type JSX } from "solid-js";
 
 export interface WayOutProps {
     /** The canvas the hand moves over, whose pointer events show the way. */
@@ -15,6 +15,7 @@ export interface WayOutProps {
     out: () => void;
     /** The words on it. */
     label: string;
+    alternative?: { label: string; change: () => void };
 }
 
 /** How long the way stays shown after the hand last moved or lifted, in ms. */
@@ -58,13 +59,15 @@ export function WayOut(props: WayOutProps): JSX.Element {
     });
     onCleanup(() => clearTimeout(timer));
     return (
-        <button
-            type="button"
-            class="wo"
-            classList={{ on: wanted() && !props.moving() }}
-            onClick={() => props.out()}
-        >
-            {props.label}
-        </button>
+        <div class="wo-tools" classList={{ on: wanted() && !props.moving() }}>
+            <button type="button" class="wo" onClick={() => props.out()}>
+                {props.label}
+            </button>
+            <Show when={props.alternative}>
+                <button type="button" class="wo" onClick={() => props.alternative?.change()}>
+                    {props.alternative?.label}
+                </button>
+            </Show>
+        </div>
     );
 }

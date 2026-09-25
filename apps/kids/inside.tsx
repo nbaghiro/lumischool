@@ -2,11 +2,10 @@ import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 import { journeyFor } from "../../school/worlds/journeys";
 import "../../engine/ui/reading.css";
 import { childWorld } from "../../school/worlds/view";
-// What a child sees once they are inside a world: the place the world is seen as and the roll they
-// read it at, and the moves between them. It is loaded when the child goes in, not with the map, so
+// What a child sees inside a world: its lesson roll, returning directly to the overworld. It is loaded when the child goes in, not with the map, so
 // the map screen carries none of it (tools/__tests__/first-view.test.ts holds that budget).
 //
-// The past days' sheets are here too, drawn as the child left them when either view comes near them,
+// The past days' sheets are here too, drawn as the child left them when the roll comes near them,
 // with the answers read back from each lesson's own events. The views name every day that is near,
 // so what is no longer near is let go of and a whole term can be walked without growth; what each
 // sheet was read from is kept, so paper that comes near again is drawn without asking the server
@@ -18,10 +17,8 @@ import {
     createMemo,
     createSignal,
     lazy,
-    Match,
     on,
     onCleanup,
-    Switch,
     Show,
     type JSX,
 } from "solid-js";
@@ -42,17 +39,10 @@ import { fetchLessons, sheetWidth, todayOf, ownJournal, SHEET_HEIGHT, type Loade
 const World = lazy(() =>
     onDemand(() => import("../../engine/ui/world")).then((m) => ({ default: m.World })),
 );
-const Place = lazy(() =>
-    onDemand(() => import("../../engine/ui/place")).then((m) => ({ default: m.Place })),
-);
 
-/**
- * Where a child is inside a world: the place it is seen as, or the roll. `box` is where the view
- * being left put the world on the screen, so the one opening picks the movement up there, and `day`
- * is the day it was on, so the other opens at the same day (engine/ui/world.tsx, place.tsx).
- */
+/** A lesson roll entered from the overworld; box carries the entrance animation. */
 export interface InsideScreen {
-    at: "place" | "world";
+    at: "world";
     term: number | null;
     world: string | null;
     /** The place on the map the child went in at, so they come back out to it. */
@@ -73,8 +63,7 @@ export function Inside(props: {
     narrow: boolean;
     /** The page's own element, which a sheet is measured in. */
     page: () => HTMLElement | undefined;
-    /** Where the child goes next: the other screen of the world, or back out to the map. */
-    go: (to: InsideScreen) => void;
+    /** Back to the overworld at the world the child entered. */
     out: (box: DOMRect | null) => void;
 }): JSX.Element {
     const [drew, setDrew] = createSignal(0);
@@ -216,7 +205,7 @@ export function Inside(props: {
     };
     return (
         <>
-            <Show when={props.screen.at === "world" && selectedJourney()}>
+            <Show when={selectedJourney()}>
                 <nav class="rd-neighbours" aria-label="Your world lessons">
                     <button
                         type="button"
@@ -228,75 +217,33 @@ export function Inside(props: {
                 </nav>
             </Show>
             <PaperStatus
-                waiting={props.screen.at === "world" && waitingForEntry()}
+                waiting={waitingForEntry()}
                 failed={failedEntry()}
                 retry={() => lookBack(nearby)}
             />
-            <Switch fallback={<Loading />}>
-                <Match when={props.screen.at === "world" && view()}>
-                    {(drawn) => (
-                        <World
-                            view={drawn()}
-                            from={props.screen.box}
-                            sheet={(sheet) =>
-                                readable(sheet.lesson)
-                                    ? (props.sheets?.sheet(sheet.lesson) ??
-                                      paper.sheet(sheet.lesson)?.el ??
-                                      null)
-                                    : null
-                            }
-                            lookBack={lookBack}
-                            waiting={waitingForEntry()}
-                            land={land()}
-                            play={props.c.record.today}
-                            class={`kid-map-world${waitingForEntry() ? " rd-loading" : ""}`}
-                            title={`${props.kid.name}'s year`}
-                            open={browsing() ? undefined : props.screen.day}
-                            onOut={(box, day) => {
-                                // out of the roll is the place it is read from, and a world with no day
-                                // on it has none, so its roll hands straight back to the map
-                                if (!drawn().trail) {
-                                    props.out(box);
-                                    return;
-                                }
-                                props.go({
-                                    at: "place",
-                                    term: props.screen.term,
-                                    world: props.screen.world,
-                                    from: props.screen.from,
-                                    ...(box ? { box } : {}),
-                                    ...(day ? { day } : {}),
-                                });
-                            }}
-                        />
-                    )}
-                </Match>
-                <Match when={props.screen.at === "place" && view()}>
-                    {(drawn) => (
-                        <Place
-                            view={drawn()}
-                            from={props.screen.box}
-                            at={props.screen.day}
-                            sheet={(sheet) => paper.sheet(sheet.lesson)?.el ?? null}
-                            lookBack={lookBack}
-                            play={props.c.record.today}
-                            class="kid-map-world"
-                            title={`${props.kid.name}'s world`}
-                            onIn={(day, box) =>
-                                props.go({
-                                    at: "world",
-                                    term: props.screen.term,
-                                    world: props.screen.world,
-                                    from: props.screen.from,
-                                    ...(box ? { box } : {}),
-                                    day,
-                                })
-                            }
-                            onOut={(box) => props.out(box)}
-                        />
-                    )}
-                </Match>
-            </Switch>
+            <Show when={view()} fallback={<Loading />}>
+                {(drawn) => (
+                    <World
+                        view={drawn()}
+                        from={props.screen.box}
+                        sheet={(sheet) =>
+                            readable(sheet.lesson)
+                                ? (props.sheets?.sheet(sheet.lesson) ??
+                                  paper.sheet(sheet.lesson)?.el ??
+                                  null)
+                                : null
+                        }
+                        lookBack={lookBack}
+                        waiting={waitingForEntry()}
+                        land={land()}
+                        play={props.c.record.today}
+                        class={`kid-map-world${waitingForEntry() ? " rd-loading" : ""}`}
+                        title={`${props.kid.name}'s year`}
+                        open={browsing() ? undefined : props.screen.day}
+                        onOut={(box) => props.out(box)}
+                    />
+                )}
+            </Show>
         </>
     );
 }
