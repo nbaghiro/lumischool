@@ -773,9 +773,23 @@ export function World(props: {
         sheets?.addEventListener(REVEAL, follow);
         const v = new CanvasView(host, {
             bounds: () => layout().bounds,
+            // Mouse drags begun on lesson text select text; space-drag still moves the canvas.
+            claim: (e) =>
+                e.pointerType === "mouse" &&
+                e.button === 0 &&
+                !view?.spaceHeld &&
+                e.target instanceof Element &&
+                !!e.target.closest(".j-sheet"),
+            // About two short sheets and their gap. Keep this independent of measured lesson
+            // heights so background preparation cannot change the zoom limit under a gesture.
+            // Scripted entrances still use the wider camera limits below.
+            zoomLimits: (vp) => ({ min: clamp(vp.h / 1400, 0.5, 1.2), max: 1.2 }),
             frame: (cam) => onFrame(cam),
             key: (e) => onKey(e),
             settle: (cam) => onSettle(cam),
+            resized: () => {
+                if (drawn && arrived && view && !view.flying) view.zoomBy(1, undefined, false);
+            },
         });
         view = v;
         v.world.dataset.level = "day";

@@ -44,6 +44,8 @@ export interface ViewHooks {
     settle?(cam: Camera): void;
     /** The host changed size, so a camera framed on the box is framed again. */
     resized?(vp: Size): void;
+    /** Manual zoom can stay closer than a scripted entrance or departure. */
+    zoomLimits?(vp: Size): Limits;
 }
 
 const motion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -251,7 +253,7 @@ export class CanvasView {
 
     fit(r: Rect, pad = 56, animate = true): void {
         if (this.disposed) return;
-        const c = fitRect(r, this.vp, pad, this.limits);
+        const c = fitRect(r, this.vp, pad, this.hooks.zoomLimits?.(this.vp) ?? this.limits);
         if (animate) this.flyTo(c);
         else this.set(c);
     }
@@ -261,7 +263,8 @@ export class CanvasView {
         if (this.disposed) return;
         const from = this.goal,
             s = at ?? { x: this.vp.w / 2, y: this.vp.h / 2 };
-        const z = clamp(from.z * k, this.limits.min, this.limits.max);
+        const limits = this.hooks.zoomLimits?.(this.vp) ?? this.limits;
+        const z = clamp(from.z * k, limits.min, limits.max);
         const to = this.fence(zoomAt(from, this.vp, z, s));
         if (!animate) {
             this.set(to);
@@ -414,6 +417,17 @@ export class CanvasView {
         if (e.target instanceof Element && e.target.closest(".hud")) return;
         if (this.hooks.claim?.(e)) return;
         if (e.pointerType === "mouse" && e.button !== 0 && e.button !== 1) return;
+        // A background drag belongs to the camera. Cancel the browser's selection gesture at
+        // pointer-down, before it can extend a text range into a sheet crossed by the pointer.
+        if (
+            e.pointerType === "mouse" &&
+            (this.spaceHeld ||
+                !(e.target instanceof Element) ||
+                !e.target.closest(
+                    ".j-sheet, button, a, input, textarea, select, label, [contenteditable]",
+                ))
+        )
+            e.preventDefault();
         this.stop();
         const p = this.local(e);
         this.pointers.set(e.pointerId, p);
@@ -438,7 +452,15 @@ export class CanvasView {
         const now = this.pair && this.pointers.size >= 2 ? this.two() : null;
         if (this.pair && now) {
             this.movedAt = performance.now();
-            this.cam = this.fence(pinch(this.cam, this.vp, this.pair, now, this.limits));
+            this.cam = this.fence(
+                pinch(
+                    this.cam,
+                    this.vp,
+                    this.pair,
+                    now,
+                    this.hooks.zoomLimits?.(this.vp) ?? this.limits,
+                ),
+            );
             this.pair = now;
             this.request();
             return;
@@ -519,7 +541,8 @@ export class CanvasView {
         this.trackpadAt = read.trackpadAt;
         if (read.zoom) {
             const p = this.local(e);
-            const z = clamp(this.cam.z * wheelFactor(e), this.limits.min, this.limits.max);
+            const limits = this.hooks.zoomLimits?.(this.vp) ?? this.limits;
+            const z = clamp(this.cam.z * wheelFactor(e), limits.min, limits.max);
             this.cam = this.fence(zoomAt(this.cam, this.vp, z, p));
         } else {
             const k = e.deltaMode === 1 ? 20 : e.deltaMode === 2 ? this.vp.h : 1;
