@@ -59,10 +59,16 @@ test(
             200,
         );
         const code = await ask(second, outbox, "second@members.test");
+        const beforeJoin = outbox.length;
         const joined = await second.call("POST", "/api/auth/email/invitation/accept", {
             body: { token, code, name: "Second" },
         });
         assert.equal(joined.status, 200, JSON.stringify(joined.body));
+        assert.deepEqual(
+            outbox.slice(beforeJoin).map((mail) => mail.to),
+            ["first@members.test"],
+            "only existing parents receive the join notification",
+        );
         assert.equal(at(joined.body, "me", "family", "id"), original.family);
         const secondId = text(at(joined.body, "me", "user", "id"));
         assert.equal((await second.call("GET", "/api/family")).status, 200);

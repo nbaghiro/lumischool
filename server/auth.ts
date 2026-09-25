@@ -1601,7 +1601,7 @@ export async function acceptParentInvitation(
                   ]
                 : [],
         });
-        return { opened, added, recipients: await parentsOf(tx, parsed.family) };
+        return { opened, added, recipients: parents.filter((p) => p.id !== user) };
     });
     const notificationFailed =
         joined.added &&
