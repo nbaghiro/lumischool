@@ -104,8 +104,10 @@ function look(at: OverlayAt | null): void {
         return;
     }
     const to = `${here}${hashOf(at)}`;
-    go(to, { replace: pushedLook() });
-    history.replaceState(LOOK, "", to);
+    const pushed = pushedLook();
+    const alreadyOpen = atFrom(location.hash) !== null;
+    go(to, { replace: pushed || alreadyOpen });
+    history.replaceState(pushed || !alreadyOpen ? LOOK : null, "", to);
 }
 
 // wide like every other grown-ups' screen, so the bar and the cards keep their width and the map

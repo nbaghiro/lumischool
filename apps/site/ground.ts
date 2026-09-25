@@ -56,16 +56,20 @@ export async function ground(): Promise<Ground> {
  * visitor's pack, whose reader comes with the look and never with the opening map.
  */
 async function readLook(): Promise<OverlaySource> {
-    const [{ schoolOf }, { reading }] = await Promise.all([import("./school"), import("./sample")]);
+    const [{ schoolOf }, { reading }, { journeyMap }] = await Promise.all([
+        import("./school"),
+        import("./sample"),
+        import("../../school/worlds/written"),
+    ]);
     const s = await schoolOf(true);
-    const map = await mapOf(s.data.journey, { open: true });
+    const map = journeyMap(await mapOf(s.data.journey, { open: true }), s.corpus);
     return {
         map: () => map,
         opening: map.here ?? map.places.find((p) => p.shown?.world === s.child.hereWorld.id)?.i,
         nameOf: (id) => worldById(id).name,
         // the site opens no look by a lesson alone
         whereIs: () => null,
-        reading: (id) => reading(s, id),
+        reading: (id, visit) => reading(s, id, visit),
     };
 }
 
@@ -86,7 +90,7 @@ export function warmLook(): Promise<void> {
             import("./sample"),
         ]);
         const s = await schoolOf(true);
-        const source = reading(s, s.child.hereWorld.id);
+        const source = reading(s, s.child.hereWorld.id, { journey: true });
         if (source)
             await prepareLessons(
                 s,

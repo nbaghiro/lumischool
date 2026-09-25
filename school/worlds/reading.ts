@@ -1,6 +1,8 @@
-import type { DayView, SheetView, Standing, WorldLimits, WorldView } from "../../engine/space";
+import type { Day, DayView, SheetView, Standing, WorldLimits, WorldView } from "../../engine/space";
 import type { Applied, WorldChoice } from "./types";
 import type { Corpus } from "./lessons";
+import type { Journey } from "./journeys";
+import type { Progress } from "../record/record";
 import { journey, type Place as Walked } from "./rewards";
 import { NARROW, WIDE } from "./roll";
 import { layoutRoll } from "./roll-layout";
@@ -137,4 +139,73 @@ export function worldViewOf(o: WorldIn): WorldView {
               : { label: "Your first day", says: "Your first lesson will be here." },
         limits: o.limits,
     });
+}
+
+/** A browsing projection; canonical years, prerequisites and reward membership stay untouched. */
+export function journeyViewOf(
+    o: Omit<WorldIn, "journal" | "choice" | "visitOnly" | "arriveAt"> & {
+        journey: Journey;
+        progress?: Progress;
+        today?: readonly string[];
+    },
+): WorldView {
+    const { journey, progress } = o;
+    const world = o.worldOf(journey.world);
+    const days: Day[] = journey.lessonIds.map((id, i) => ({
+        id: `${journey.id}@${journey.version}:${id}`,
+        n: i + 1,
+        term: 1,
+        lessons: [id],
+        state: o.today?.includes(id) ? "today" : "done",
+        date: progress?.done[id]?.on ?? "",
+    }));
+    const layout = layoutRoll(
+        {
+            days,
+            next: null,
+            terms: 1,
+            worldOf: () => world.id,
+            height: o.height,
+            scenery: () => ({ landmarks: world.landmarks, creatures: world.creatures }),
+            size: o.size,
+            reach: reachesFor(o.worldOf, o.topics),
+            bare: !days.length,
+        },
+        o.narrow ? NARROW : WIDE,
+    );
+    const view = rollViewOf({
+        layout,
+        worlds: [world.id],
+        worldOf: o.worldOf,
+        size: o.size,
+        days: days.map((day, i) => ({
+            date: day.date,
+            label: `Lesson ${i + 1}`,
+            sheets: day.lessons.map((id) => ({
+                lesson: id,
+                title: o.corpus.lesson(id)?.title ?? id,
+                state: progress?.done[id] ? "done" : o.today?.includes(id) ? "today" : "closed",
+                on: progress?.done[id]?.on ?? null,
+            })),
+            followers: [],
+        })),
+        standings: layout.scenery.map((piece) => ({
+            lit: piece.kind === "reach" && !!progress?.done[days[piece.row]?.lessons[0] ?? ""],
+        })),
+        next: null,
+        open: world.id,
+        arrival: { term: 1, says: world.arrive },
+        trail: null,
+        card: days.length
+            ? undefined
+            : {
+                  label: "Still to come",
+                  says: journey.purpose,
+              },
+        limits: o.limits,
+    });
+    return {
+        ...view,
+        stretches: view.stretches.map((s) => ({ ...s, caption: `Grade ${journey.grade} journey` })),
+    };
 }

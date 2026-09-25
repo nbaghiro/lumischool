@@ -54,3 +54,15 @@ test("a look's address reads back as the same look, and up goes out of a world t
     assert.equal(sameAt(null, { world: null, lesson: null }), false);
     assert.equal(sameAt({ world: "a", lesson: null }, { world: "a", lesson: "b" }), false);
 });
+
+test("grade journey links round trip independently of legacy lesson links", () => {
+    const visit = { world: "observatory", lesson: null, grade: 4, journey: true };
+    assert.deepEqual(atFrom(hashOf(visit)), visit);
+    assert.equal(sameAt(visit, { ...visit, grade: 1 }), false);
+    assert.equal(sameAt(visit, { ...visit, journey: false }), false);
+    assert.deepEqual(atFrom("#/map/observatory?grade=oops&journey=1"), {
+        world: "observatory",
+        lesson: null,
+        journey: true,
+    });
+});

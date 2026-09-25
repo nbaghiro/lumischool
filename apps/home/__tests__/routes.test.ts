@@ -122,3 +122,9 @@ it("a map's alternative grade remains in a shareable address", () => {
         lesson: null,
     });
 });
+
+it("journey routes retain grade context without rewriting legacy routes", () => {
+    const visit = { world: "observatory", lesson: null, grade: 4, journey: true };
+    assert.deepEqual(whereIn(new URL(mapHref(visit), "https://example.test").search), visit);
+    assert.equal(mapHref({ world: "mountains" }), "/map?world=mountains");
+});

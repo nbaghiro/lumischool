@@ -91,38 +91,51 @@
 .rd-neighbours {
     position: absolute;
     z-index: 7;
-    bottom: max(12px, env(safe-area-inset-bottom));
+    bottom: max(16px, env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     display: flex;
+    align-items: center;
     gap: 4px;
     padding: 4px;
     border: 1px solid var(--grid);
-    border-radius: 18px;
-    background: var(--paper, white);
+    border-radius: 22px 20px 23px 19px;
+    background: var(--card);
+    box-shadow: 0 6px 18px -10px rgba(27, 37, 64, 0.35);
+    color: var(--ink);
+    font: 700 14px/1.4 var(--f-read);
     max-width: calc(100% - 24px);
 }
 .rd-neighbours button {
     min-height: 44px;
-    padding: 8px 14px;
+    padding: 8px 12px;
     border: 0;
-    border-radius: 14px;
+    border-radius: 10px;
     background: transparent;
-    white-space: nowrap;
-}
-.rd-neighbours button:hover,
-.rd-neighbours button:focus-visible {
-    background: #fbe58d;
-}
-
-.rd-neighbours select {
-    min-height: 44px;
-    max-width: 160px;
-    border: 1px solid var(--grid);
-    border-radius: 12px;
-    background: var(--paper, white);
     color: inherit;
     font: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.rd-neighbours button:hover {
+    background: color-mix(in srgb, var(--glow) 40%, var(--card));
+}
+.rd-neighbours button:focus-visible,
+.rd-neighbours select:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 2px;
+}
+
+.rd-neighbours .select-control {
+    min-height: 44px;
+    max-width: 160px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--glow) 70%, var(--card));
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
 }
 @media (max-width: 700px) {
     .rd-neighbours {
@@ -130,4 +143,16 @@
         justify-content: center;
         width: max-content;
     }
+    .rd-purpose {
+        flex-basis: 100%;
+        text-align: center;
+    }
+}
+
+.rd-purpose {
+    max-width: 36ch;
+    align-self: center;
+    padding: 4px 8px;
+    color: var(--ink-soft);
+    font-weight: 400;
 }

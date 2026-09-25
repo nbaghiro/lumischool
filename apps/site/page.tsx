@@ -80,7 +80,8 @@ function look(at: OverlayAt | null): void {
     if (at === null) {
         if (pushedLook()) history.back();
         else history.replaceState(null, "", here);
-    } else if (pushedLook()) history.replaceState(LOOK, "", `${here}${hashOf(at)}`);
+    } else if (pushedLook() || looking())
+        history.replaceState(pushedLook() ? LOOK : null, "", `${here}${hashOf(at)}`);
     else history.pushState(LOOK, "", `${here}${hashOf(at)}`);
     setHash(location.hash);
 }

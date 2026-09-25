@@ -1,4 +1,6 @@
-import { worldViewOf } from "../../school/worlds/reading";
+import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
+import { journeyFor } from "../../school/worlds/journeys";
+import "../../engine/ui/reading.css";
 import { childWorld } from "../../school/worlds/view";
 // What a child sees once they are inside a world: the place the world is seen as and the roll they
 // read it at, and the moves between them. It is loaded when the child goes in, not with the map, so
@@ -20,6 +22,7 @@ import {
     on,
     onCleanup,
     Switch,
+    Show,
     type JSX,
 } from "solid-js";
 import { onDemand } from "../../engine/ui/art";
@@ -75,6 +78,11 @@ export function Inside(props: {
     out: (box: DOMRect | null) => void;
 }): JSX.Element {
     const [drew, setDrew] = createSignal(0);
+    const [browsing, setBrowsing] = createSignal(false);
+    const readable = (id: string): boolean =>
+        !browsing() ||
+        !!props.c.record.years.find((year) => year.grade === props.kid.grade)?.progress.done[id] ||
+        !!todayOf(props.c)?.lessons.includes(id);
     const read = new Map<
         string,
         { lesson: PackLesson; events: readonly Envelope[]; date: string }
@@ -84,6 +92,7 @@ export function Inside(props: {
         import("../../engine/ui/scene").then((m) => m.scenes(of.flatMap(m.scenesIn)));
     const paper = nearPaper({
         draw: async (id) => {
+            if (!readable(id)) return null;
             const c = props.c;
             const narrow = props.narrow;
             let had = read.get(id);
@@ -93,7 +102,7 @@ export function Inside(props: {
                     client.state(c.kid.id, id),
                 ]);
                 const lesson = reads[0];
-                if (!lesson || "error" in state || c !== props.c) return null;
+                if (!lesson || "error" in state || c !== props.c || !readable(id)) return null;
                 had = {
                     lesson,
                     events: state.events,
@@ -104,7 +113,7 @@ export function Inside(props: {
                 read.set(id, had);
             }
             const [mod, draw] = await Promise.all([lessons(), drawer([had.lesson])]);
-            if (c !== props.c || narrow !== props.narrow) return null;
+            if (c !== props.c || narrow !== props.narrow || !readable(id)) return null;
             return mod.pastSheetOf({
                 kid: c.kid,
                 lesson: had.lesson,
@@ -119,7 +128,7 @@ export function Inside(props: {
         drawn: () => setDrew((n) => n + 1),
     });
     onCleanup(() => paper.forget());
-    const view = createMemo<WorldView | null>((prev) => {
+    const annualView = createMemo<WorldView | null>((prev) => {
         drew();
         const c = props.c,
             built = props.sheets;
@@ -131,6 +140,32 @@ export function Inside(props: {
             world: props.screen.world,
             narrow: props.narrow,
             height: (id) => built?.height(id) ?? paper.height(id) ?? null,
+        });
+    });
+    const selectedJourney = createMemo(() => {
+        const world = annualView()?.open;
+        return world ? journeyFor(world, props.kid.grade, props.c.corpus) : undefined;
+    });
+    const view = createMemo(() => {
+        const selected = selectedJourney();
+        if (!browsing() || !selected) return annualView();
+        drew();
+        const c = props.c;
+        return journeyViewOf({
+            journey: selected,
+            progress: c.record.years.find((year) => year.grade === props.kid.grade)?.progress,
+            today: todayOf(c)?.lessons,
+            corpus: c.corpus,
+            worldOf: c.worldOf,
+            topics: c.topics,
+            height: (id) =>
+                props.sheets?.height(id) ??
+                paper.height(id) ??
+                (props.narrow ? SHEET_HEIGHT.narrow : SHEET_HEIGHT.wide),
+            size: c.size,
+            narrow: props.narrow,
+            grown: false,
+            limits: childWorld(c.kid.id),
         });
     });
     /** Where the roll lands on today's sheet: a sitting picked up again lands at its first question still to do. */
@@ -154,16 +189,16 @@ export function Inside(props: {
             term: v.arrival?.term,
         });
         const live = new Set(todayOf(props.c)?.lessons ?? []);
-        return (row?.day.lessons ?? []).filter((id) => !live.has(id));
+        return (row?.day.lessons ?? []).filter((id) => !live.has(id) && readable(id));
     });
     let nearby: readonly string[] = [];
     const lookBack = (ids: readonly string[]): void => {
         nearby = ids;
-        paper.lookBack([...new Set([...entry(), ...nearby])]);
+        paper.lookBack([...new Set([...entry(), ...nearby])].filter(readable));
     };
     const entryKey = createMemo(() => entry().join("|"));
     createEffect(
-        on([entryKey, () => props.narrow, () => props.c], (now, was) => {
+        on([entryKey, () => props.narrow, () => props.c, browsing], (now, was) => {
             if (was && (now[1] !== was[1] || now[2] !== was[2])) {
                 paper.forget();
                 read.clear();
@@ -181,6 +216,17 @@ export function Inside(props: {
     };
     return (
         <>
+            <Show when={props.screen.at === "world" && selectedJourney()}>
+                <nav class="rd-neighbours" aria-label="Your world lessons">
+                    <button
+                        type="button"
+                        aria-pressed={browsing()}
+                        onClick={() => setBrowsing((value) => !value)}
+                    >
+                        {browsing() ? "My lessons" : "Grade journey"}
+                    </button>
+                </nav>
+            </Show>
             <PaperStatus
                 waiting={props.screen.at === "world" && waitingForEntry()}
                 failed={failedEntry()}
@@ -193,9 +239,11 @@ export function Inside(props: {
                             view={drawn()}
                             from={props.screen.box}
                             sheet={(sheet) =>
-                                props.sheets?.sheet(sheet.lesson) ??
-                                paper.sheet(sheet.lesson)?.el ??
-                                null
+                                readable(sheet.lesson)
+                                    ? (props.sheets?.sheet(sheet.lesson) ??
+                                      paper.sheet(sheet.lesson)?.el ??
+                                      null)
+                                    : null
                             }
                             lookBack={lookBack}
                             waiting={waitingForEntry()}
@@ -203,7 +251,7 @@ export function Inside(props: {
                             play={props.c.record.today}
                             class={`kid-map-world${waitingForEntry() ? " rd-loading" : ""}`}
                             title={`${props.kid.name}'s year`}
-                            open={props.screen.day}
+                            open={browsing() ? undefined : props.screen.day}
                             onOut={(box, day) => {
                                 // out of the roll is the place it is read from, and a world with no day
                                 // on it has none, so its roll hands straight back to the map

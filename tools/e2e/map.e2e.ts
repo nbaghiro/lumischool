@@ -202,16 +202,18 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
     await signInAs(page);
     await page.goto("/map");
     const map = await mapReady(page);
-    // the fourth year's mountains: no test child is in that year, and nothing of theirs is drawn here
+    // A parent browses the place independently of a child's grade or record.
     const mountains = map.locator('.ow-node[aria-label*="mountains" i]').first();
-    await expect(mountains).toHaveAttribute("aria-label", "The mountains. Year 4, term 1.");
+    await expect(mountains).toHaveAttribute(
+        "aria-label",
+        "The mountains. Grade journeys · 1, 2, 3, 4.",
+    );
     const entries = await page.evaluate(() => history.length);
     await goInto(page, mountains);
     const roll = await rollReady(page);
-    await expect(page).toHaveURL(/\/map\?world=mountains$/);
-    // the roll is every day of the year as written, numbered rather than dated, and the first day's
-    // paper lands at reading distance, the lesson as written with the answers and the notes
-    await expect(roll.locator(".j-date .d").first()).toHaveText("Day 1");
+    await expect(page).toHaveURL(/\/map\?world=mountains&journey=1$/);
+    // Journey lessons are numbered rather than dated; parent notes remain available.
+    await expect(roll.locator(".j-date .d").first()).toHaveText("Lesson 1");
     const first = roll.locator(".rd-sheet.rd-read").first();
     await expect(first).toBeVisible({ timeout: 30_000 });
     await expect(first.locator(".ls-answer").first()).toBeVisible();
@@ -344,7 +346,7 @@ test("See the map on the site opens the sample child's map over the page, a worl
     await goInto(page, harbour);
     const roll = look.locator(".wd");
     await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
-    await expect(page).toHaveURL(/#\/map\/harbour$/);
+    await expect(page).toHaveURL(/#\/map\/harbour\?journey=1$/);
     await expect(roll.locator(".rd-sheet.rd-read").first()).toBeVisible({ timeout: 60_000 });
     await look.getByRole("button", { name: "Close" }).click();
     await expect(look).toBeHidden();

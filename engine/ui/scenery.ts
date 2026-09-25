@@ -5905,7 +5905,19 @@ export function paintStretch(
             ground.horizon?.(c, r);
             const els = horizonRow(world, above, art, H, line, host, seed, play);
             if (!world.indoor) weather(c, H, r);
-            els.push(...arrival(s, world, above, art, host, seed, !!o.finished, o.label, play));
+            els.push(
+                ...arrival(
+                    s,
+                    world,
+                    above,
+                    art,
+                    host,
+                    seed,
+                    !!o.finished,
+                    o.label ?? above.caption,
+                    play,
+                ),
+            );
             return els;
         },
     });
@@ -6758,7 +6770,7 @@ export function paintWorldView(o: {
         const painted = paintStretch(view, i, t, host, L.ground, {
             walked,
             finished: momentInked(s.term),
-            label: `Term ${s.term}`,
+            label: view.stretches[i]?.caption ?? `Term ${s.term}`,
             motion: false,
             play,
         });

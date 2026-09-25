@@ -1,4 +1,4 @@
-import { worldViewOf } from "../../school/worlds/reading";
+import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 // The worlds as a grown-up looks at them with nobody's record (.docs/parent-app.md, "The map, for
 // grown-ups"): the school as written from the family's pack, a world's roll of every lesson it holds,
 // and a lesson's sheet as written. The map screen (map.tsx) and the overlay a lesson page opens
@@ -19,10 +19,12 @@ import { subjectFacts } from "../../school/tracks";
 import { refsOf, sizeOn } from "../../school/worlds/art";
 import { apply, readChoice } from "../../school/worlds/choice";
 import { corpusFrom, topicsIn, type Corpus } from "../../school/worlds/lessons";
+import { journeyFor } from "../../school/worlds/journeys";
 import { NARROW, WIDE } from "../../school/worlds/roll";
 import type { Applied } from "../../school/worlds/types";
 import { GROWN_WORLD } from "../../school/worlds/view";
 import {
+    journeyMap,
     journalWritten,
     neighboursWritten,
     schoolViewOf,
@@ -86,7 +88,7 @@ export async function schoolOf(pack: PackView, still: boolean): Promise<School> 
         topics: topicsIn(corpus),
         size,
         declared: declaredOf,
-        map: schoolViewOf({ corpus, size, still, declared: declaredOf }),
+        map: journeyMap(schoolViewOf({ corpus, size, still, declared: declaredOf }), corpus),
     };
 }
 
@@ -219,9 +221,42 @@ const pictureOf = (s: School, f: LessonFacts) => async (host: HTMLElement) => {
 export function readingOf(
     s: School,
     world: string,
-    o: { level: Level; key: boolean; grade?: number },
+    o: { level: Level; key: boolean; grade?: number; journey?: boolean },
 ): ReadingSource {
     const site = worldById(world).site;
+    if (o.journey) {
+        const variants = s.corpus.grades
+            .filter((g) => journeyFor(world, g, s.corpus))
+            .map((g) => ({ value: g, label: `Grade ${g}` }));
+        const grade = variants.some((v) => v.value === o.grade) ? o.grade : variants[0]?.value;
+        const journey = journeyFor(world, grade ?? 1, s.corpus);
+        if (journey)
+            return {
+                variants: variants.filter(
+                    (v) => journeyFor(world, v.value, s.corpus)?.lessonIds.length,
+                ),
+                variant: grade,
+                description: journey.title,
+                alternate: "Original collection",
+                world: (r) =>
+                    journeyViewOf({
+                        journey,
+                        corpus: s.corpus,
+                        worldOf: s.worldOf,
+                        topics: s.topics,
+                        size: s.size,
+                        height: (id) => r.height(id) ?? CARD,
+                        narrow: r.narrow,
+                        grown: true,
+                        limits: GROWN_WORLD,
+                    }),
+                sheet: (lesson, r) => sheetWritten(s, lesson, { ...o, ...r }),
+                card: (id) => ({
+                    label: subjectFacts(s.corpus.lesson(id)?.subject ?? "maths").title,
+                    note: "",
+                }),
+            };
+    }
     const variants =
         site?.kind === "choice"
             ? site.terms
@@ -232,6 +267,7 @@ export function readingOf(
     return {
         variants,
         variant: grade,
+        alternate: "Grade journeys",
         neighbours: neighboursWritten(s.corpus, world, grade),
         world: (r) => worldWritten(s, world, { ...r, grade }),
         sheet: (lesson, r) => sheetWritten(s, lesson, { ...o, ...r }),
@@ -250,7 +286,7 @@ export function readingOf(
 export function overlayOf(s: School, o: { level: Level }): OverlaySource {
     return {
         map: () => s.map,
-        reading: (world) => readingOf(s, world, { level: o.level, key: false }),
+        reading: (world, visit) => readingOf(s, world, { level: o.level, key: false, ...visit }),
         nameOf: (world) => s.worldOf(world).name,
         whereIs: (lesson) => worldOfLesson(s, lesson),
     };

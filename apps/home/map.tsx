@@ -77,10 +77,17 @@ export function GrownMap(): JSX.Element {
         return s && "error" in s ? s : null;
     };
     const where = createMemo(() => whereIn(search()), undefined, {
-        equals: (a, b) => a.world === b.world && a.lesson === b.lesson && a.grade === b.grade,
+        equals: (a, b) =>
+            a.world === b.world &&
+            a.lesson === b.lesson &&
+            a.grade === b.grade &&
+            a.journey === b.journey,
     });
     // `box` is where the view being left put the world on the screen, so the one opening picks the
     // movement up there: the dive into a world and the way back out are one movement (world.tsx)
+    const [journeyGrade, setJourneyGrade] = createSignal(
+        where().journey ? where().grade : undefined,
+    );
     const [box, setBox] = createSignal<DOMRect | undefined>();
     const [back, setBack] = createSignal<{ place: number; from: DOMRect } | undefined>();
     const [placeBack, setPlaceBack] = createSignal<number | undefined>();
@@ -101,14 +108,18 @@ export function GrownMap(): JSX.Element {
                     {(s) => {
                         const at = createMemo(() => inWorld(s(), where()), undefined, {
                             equals: (a, b) =>
-                                a.world === b.world && a.lesson === b.lesson && a.grade === b.grade,
+                                a.world === b.world &&
+                                a.lesson === b.lesson &&
+                                a.grade === b.grade &&
+                                a.journey === b.journey,
                         });
                         const shelf = readingShelf((key) => {
-                            const [world, grade] = key.split("|");
+                            const [world, grade, mode] = key.split("|");
                             return readingOf(s(), world ?? "meadow", {
                                 level: "medium",
                                 key: true,
                                 ...(grade ? { grade: Number(grade) } : {}),
+                                journey: mode === "journey",
                             });
                         });
                         onCleanup(() => shelf.dispose());
@@ -117,7 +128,7 @@ export function GrownMap(): JSX.Element {
                                 <Match
                                     when={
                                         at().world
-                                            ? `${at().world}${at().grade ? `|${at().grade}` : ""}`
+                                            ? `${at().world}|${at().grade ?? ""}|${at().journey ? "journey" : ""}`
                                             : null
                                     }
                                     keyed
@@ -137,13 +148,33 @@ export function GrownMap(): JSX.Element {
                                                             level: "medium",
                                                             key: true,
                                                             grade: at().grade,
+                                                            journey: at().journey,
                                                         })
                                                     }
-                                                    onVariant={(grade) => {
+                                                    onAlternate={() => {
                                                         setBox(undefined);
-                                                        go(mapHref({ world, grade }));
+                                                        go(
+                                                            mapHref({
+                                                                world,
+                                                                journey: !at().journey,
+                                                                ...(!at().journey
+                                                                    ? { grade: journeyGrade() }
+                                                                    : {}),
+                                                            }),
+                                                        );
                                                     }}
-                                                    onApproachWorld={(id) => shelf.warm(id)}
+                                                    onVariant={(grade) => {
+                                                        if (at().journey) setJourneyGrade(grade);
+                                                        setBox(undefined);
+                                                        go(
+                                                            mapHref({
+                                                                world,
+                                                                grade,
+                                                                journey: at().journey,
+                                                            }),
+                                                        );
+                                                    }}
+                                                    onApproachWorld={(id) => shelf.warm(`${id}||`)}
                                                     onWorld={(id) => {
                                                         setBox(undefined);
                                                         setBack(undefined);
@@ -178,7 +209,10 @@ export function GrownMap(): JSX.Element {
                                         focus={placeBack() ?? "overview"}
                                         onApproach={(place) => {
                                             const world = worldAt(s().map, place);
-                                            if (world) shelf.warm(world);
+                                            if (world)
+                                                shelf.warm(
+                                                    `${world}|${journeyGrade() ?? ""}|journey`,
+                                                );
                                         }}
                                         arrive={back()}
                                         class="mp-map"
@@ -188,7 +222,13 @@ export function GrownMap(): JSX.Element {
                                             if (!world) return;
                                             setBack(undefined);
                                             setBox(out ?? undefined);
-                                            go(mapHref({ world }));
+                                            go(
+                                                mapHref({
+                                                    world,
+                                                    grade: journeyGrade(),
+                                                    journey: true,
+                                                }),
+                                            );
                                         }}
                                     />
                                 </Match>

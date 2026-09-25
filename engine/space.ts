@@ -1880,6 +1880,7 @@ export type WorldLimits =
  * day, hangs in front of the far row and moves as the world's own drawings do.
  */
 export interface StretchView {
+    caption?: string;
     label: Rect & { k: number };
     greet: Pt;
     says: string;

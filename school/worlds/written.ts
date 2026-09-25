@@ -5,6 +5,7 @@
 import type { Declared } from "../../engine/motion/world";
 import type { Day, MapView, WorldView } from "../../engine/space";
 import type { Year } from "../year";
+import { journeyFor } from "./journeys";
 import { apply } from "./choice";
 import { topicsIn, type Corpus } from "./lessons";
 import type { Journey, Place as Walked } from "./rewards";
@@ -256,4 +257,42 @@ export function neighboursWritten(
         ...(before ? [{ world: before.world, label: "Previous world" }] : []),
         ...(after ? [{ world: after.world, label: "Next world" }] : []),
     ];
+}
+
+/** Browse labels describe available journeys; annual route geometry and permissions stay intact. */
+export function journeyMap(view: MapView, corpus: Corpus): MapView {
+    return {
+        ...view,
+        places: view.places.map((place) => {
+            if (!place.shown) return place;
+            const shown = place.shown;
+            const journeys = corpus.grades
+                .map((g) => journeyFor(shown.world, g, corpus))
+                .filter((j) => j !== undefined);
+            if (!journeys.length) return place;
+            const available = journeys.filter((j) => j.lessonIds.length > 0);
+            const when = available.length
+                ? `Grade journeys · ${available.map((j) => j.grade).join(", ")}`
+                : "Lessons still to come";
+            return {
+                ...place,
+                shown: {
+                    ...shown,
+                    when,
+                    label: `${shown.name}. ${when}.`,
+                    notes: available.length
+                        ? [
+                              available
+                                  .map(
+                                      (j) =>
+                                          `Grade ${j.grade}: ${j.lessonIds.length} ${j.lessonIds.length === 1 ? "lesson" : "lessons"}`,
+                                  )
+                                  .join(" · "),
+                              journeys[0]?.purpose ?? "",
+                          ]
+                        : [journeys[0]?.purpose ?? "Lessons still to come"],
+                },
+            };
+        }),
+    };
 }

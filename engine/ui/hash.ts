@@ -4,7 +4,12 @@
 // world left for the page to find, which is what a page that does not read the worlds writes.
 // Nothing else is written after the `#`.
 
-export type OverlayAt = { world: string | null; lesson: string | null };
+export type OverlayAt = {
+    world: string | null;
+    lesson: string | null;
+    grade?: number;
+    journey?: boolean;
+};
 
 /** The address after the `#` as it is now, read again whenever `moved` notifies, which is the app's own query signal (router.tsx `search`) on every move. */
 export const hashNow = (moved: () => unknown): string => {
@@ -23,21 +28,33 @@ const read = (s: string | undefined): string | null => {
 
 /** What the address after the `#` names, or null when it names no look. */
 export function atFrom(hash: string): OverlayAt | null {
-    const parts = hash.replace(/^#\/?/, "").split("/");
+    const [path, query] = hash.replace(/^#\/?/, "").split("?");
+    const parts = (path ?? "").split("/");
+    const params = new URLSearchParams(query);
+    const grade = Number(params.get("grade"));
     if (parts[0] === "lesson") {
         const lesson = read(parts[1]);
         return lesson ? { world: null, lesson } : null;
     }
     if (parts[0] !== "map") return null;
     const world = read(parts[1]);
-    return { world, lesson: world ? read(parts[2]) : null };
+    return {
+        world,
+        lesson: world ? read(parts[2]) : null,
+        ...(world && Number.isInteger(grade) && grade > 0 ? { grade } : {}),
+        ...(world && params.get("journey") === "1" ? { journey: true } : {}),
+    };
 }
 
 /** The address after the `#` for a look. */
 export function hashOf(at: OverlayAt): string {
     if (!at.world) return at.lesson ? `#/lesson/${encodeURIComponent(at.lesson)}` : "#/map";
     const world = `#/map/${encodeURIComponent(at.world)}`;
-    return at.lesson ? `${world}/${encodeURIComponent(at.lesson)}` : world;
+    const params = new URLSearchParams();
+    if (at.grade) params.set("grade", String(at.grade));
+    if (at.journey) params.set("journey", "1");
+    const path = at.lesson ? `${world}/${encodeURIComponent(at.lesson)}` : world;
+    return params.size ? `${path}?${params}` : path;
 }
 
 /** One layer up: out of a world, or a lesson in its world, to the map, and off the map to the page, which is null. */
@@ -46,4 +63,10 @@ export const upOf = (at: OverlayAt): OverlayAt | null =>
 
 /** Whether two looks are the same look. */
 export const sameAt = (a: OverlayAt | null, b: OverlayAt | null): boolean =>
-    a === b || (a !== null && b !== null && a.world === b.world && a.lesson === b.lesson);
+    a === b ||
+    (a !== null &&
+        b !== null &&
+        a.world === b.world &&
+        a.lesson === b.lesson &&
+        a.grade === b.grade &&
+        a.journey === b.journey);

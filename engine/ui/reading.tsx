@@ -24,11 +24,14 @@ import { PaperStatus } from "./paper-status";
 import { entryLessons } from "./reading-source";
 import { matches, Near } from "./viewport";
 import { World } from "./world";
+import { Select } from "./select";
 
 /** A sheet's height on the roll while it is a card rather than the lesson, in the roll's units. */
 export const CARD = 620;
 
 export interface ReadingSource {
+    description?: string;
+    alternate?: string;
     variants?: readonly { value: number; label: string }[];
     variant?: number;
     neighbours?: readonly { world: string; label: string }[];
@@ -55,6 +58,7 @@ export function Reading(props: {
     class?: string;
     /** Out of the roll, with the box the map opens the place in, or null when it cut. */
     onOut: (at: DOMRect | null) => void;
+    onAlternate?: () => void;
     onVariant?: (grade: number) => void;
     onWorld?: (world: string) => void;
     onApproachWorld?: (world: string) => void;
@@ -213,14 +217,19 @@ export function Reading(props: {
             />
             <Show
                 when={
-                    props.onWorld &&
                     !waiting() &&
-                    (props.source.neighbours?.length || props.source.variants?.length)
+                    (props.source.neighbours?.length ||
+                        props.source.variants?.length ||
+                        props.source.description ||
+                        props.source.alternate)
                 }
             >
-                <nav class="rd-neighbours" aria-label="Neighbouring worlds">
+                <nav class="rd-neighbours" aria-label="World browsing">
+                    <Show when={props.source.description}>
+                        <span class="rd-purpose">{props.source.description}</span>
+                    </Show>
                     <Show when={props.onVariant && props.source.variants?.length}>
-                        <select
+                        <Select
                             aria-label="Lessons to browse"
                             value={props.source.variant}
                             onChange={(event) =>
@@ -228,9 +237,21 @@ export function Reading(props: {
                             }
                         >
                             <For each={props.source.variants}>
-                                {(v) => <option value={v.value}>{v.label}</option>}
+                                {(v) => (
+                                    <option
+                                        value={v.value}
+                                        selected={v.value === props.source.variant}
+                                    >
+                                        {v.label}
+                                    </option>
+                                )}
                             </For>
-                        </select>
+                        </Select>
+                    </Show>
+                    <Show when={props.onAlternate && props.source.alternate}>
+                        <button type="button" onClick={() => props.onAlternate?.()}>
+                            {props.source.alternate}
+                        </button>
                     </Show>
                     <For each={props.source.neighbours}>
                         {(place) => (

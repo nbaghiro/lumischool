@@ -983,8 +983,9 @@ function Sheet(props: {
         width: `${props.rect.w}px`,
     });
     // a sheet finished today is still in today's row, and it is finished
-    const open = (): boolean => props.today && !props.sheet.on;
-    const label = (): string => (open() ? "Today" : "Finished");
+    const open = (): boolean => props.today && props.sheet.state === "today" && !props.sheet.on;
+    const label = (): string =>
+        open() ? "Today" : props.sheet.state === "done" ? "Finished" : "Coming up";
     return (
         <Show
             when={props.own}

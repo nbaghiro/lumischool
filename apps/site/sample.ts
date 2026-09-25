@@ -1,4 +1,4 @@
-import { worldViewOf } from "../../school/worlds/reading";
+import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 // The pictures of the sample child below the site's opening, each drawn into a box the page has
 // sized from the visitor's pack and the site's data (school.ts): a question drawn its ways, the printed
 // lesson, a subject's landmark, a lesson's first picture, the map at each stop of the journey, the
@@ -30,6 +30,7 @@ import { NARROW, WIDE } from "../../school/worlds/roll";
 import { rollJournal, stopViews, viewOfTrip, visitJournal } from "../../school/worlds/sample";
 import { siteWorld } from "../../school/worlds/view";
 import { neighboursWritten } from "../../school/worlds/written";
+import { journeyFor } from "../../school/worlds/journeys";
 import { worldById } from "../../school/worlds/worlds";
 import { lessonOf, schoolOf, type School } from "./school";
 
@@ -360,11 +361,48 @@ export async function roll(host: HTMLElement, narrow: boolean): Promise<Roll> {
  * to it where it stands, with the sample child's record as far as today, each sheet drawn as the
  * child has it with nothing filled in. Null for a world the shelf does not have.
  */
-export function reading(s: School, id: string): ReadingSource | null {
+export function reading(
+    s: School,
+    id: string,
+    visit: { grade?: number; journey?: boolean } = {},
+): ReadingSource | null {
     const world = worldById(id);
     if (world.id !== id) return null;
+    if (visit.journey) {
+        const available = s.corpus.grades
+            .map((grade) => journeyFor(id, grade, s.corpus))
+            .filter((j) => j !== undefined);
+        const journey = available.find((j) => j.grade === visit.grade) ?? available[0];
+        if (journey)
+            return {
+                description: journey.title,
+                alternate: "Original collection",
+                variants: available
+                    .filter((j) => j.lessonIds.length)
+                    .map((j) => ({ value: j.grade, label: `Grade ${j.grade}` })),
+                variant: journey.grade,
+                world: (o) =>
+                    journeyViewOf({
+                        journey,
+                        corpus: s.corpus,
+                        worldOf: s.worldOf,
+                        topics: s.child.topics,
+                        height: (id) => o.height(id) ?? 900,
+                        size: s.size,
+                        narrow: o.narrow,
+                        grown: false,
+                        limits: siteWorld(2),
+                    }),
+                sheet: (lesson, o) => sheetOf(s, lesson, o),
+                card: (lesson) => ({
+                    label: subjectFacts(s.child.subjectOf(lesson)).title,
+                    note: "",
+                }),
+            };
+    }
     const journal = visitJournal(s.child, world, CHOICE);
     return {
+        alternate: "Grade journeys",
         neighbours: neighboursWritten(s.corpus, id),
         world: (o) =>
             worldViewOf({

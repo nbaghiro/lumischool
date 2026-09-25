@@ -30,7 +30,7 @@ export interface OverlaySource {
     /** The map, whose limits say what may be gone into. */
     map(): MapView;
     /** A world's roll and its sheets, or null for a world this page cannot show. */
-    reading(world: string): ReadingSource | null;
+    reading(world: string, visit?: { grade?: number; journey?: boolean }): ReadingSource | null;
     /** A world's name, for the heading. */
     nameOf(world: string): string;
     /** The world a lesson is met in, for a look the page named by the lesson alone (hash.ts). */
@@ -63,14 +63,25 @@ export function Overlay(props: {
 }): JSX.Element {
     let dialog: HTMLDialogElement | undefined;
     let stage: HTMLDivElement | undefined;
+    const [journeyGrade, setJourneyGrade] = createSignal(
+        props.at?.journey ? props.at.grade : undefined,
+    );
     const [source] = createResource(() => props.source().catch(() => null));
-    const shelf = readingShelf((world) => source()?.reading(world) ?? null);
+    const shelf = readingShelf((key) => {
+        const [world, grade, mode] = key.split("|");
+        return world
+            ? (source()?.reading(world, {
+                  ...(grade ? { grade: Number(grade) } : {}),
+                  journey: mode === "journey",
+              }) ?? null)
+            : null;
+    });
     onCleanup(() => shelf.dispose());
     createEffect(() => {
         const s = source();
         if (!s || s.opening === undefined) return;
         const world = worldAt(s.map(), s.opening);
-        if (world) shelf.warm(world);
+        if (world) shelf.warm(`${world}|${journeyGrade() ?? ""}|journey`);
     });
     // `box` is where the view being left put the world on the screen, so the one opening picks the
     // movement up there, as on the map screen (apps/home/map.tsx)
@@ -126,7 +137,10 @@ export function Overlay(props: {
     /** The world's reading the look is in, or null on the map and for a world the source cannot show. */
     const readingOf = (s: OverlaySource): ReadingSource | null => {
         const world = at(s).world;
-        return world ? shelf.source(world) : null;
+        const visit = at(s);
+        return world
+            ? shelf.source(`${world}|${visit.grade ?? ""}|${visit.journey ? "journey" : ""}`)
+            : null;
     };
     const title = (s: OverlaySource): string => {
         const world = at(s).world;
@@ -168,7 +182,23 @@ export function Overlay(props: {
                                     {(reading) => (
                                         <Reading
                                             source={reading}
-                                            onApproachWorld={(id) => shelf.warm(id)}
+                                            onAlternate={() => {
+                                                setBox(undefined);
+                                                props.go({
+                                                    world: at(s()).world,
+                                                    lesson: null,
+                                                    journey: !at(s()).journey,
+                                                    ...(!at(s()).journey
+                                                        ? { grade: journeyGrade() }
+                                                        : {}),
+                                                });
+                                            }}
+                                            onVariant={(grade) => {
+                                                if (at(s()).journey) setJourneyGrade(grade);
+                                                setBox(undefined);
+                                                props.go({ ...at(s()), grade });
+                                            }}
+                                            onApproachWorld={(id) => shelf.warm(`${id}||`)}
                                             onWorld={(world) => {
                                                 setBox(undefined);
                                                 setBack(undefined);
@@ -201,7 +231,10 @@ export function Overlay(props: {
                                         focus={placeBack() ?? s().opening ?? "all"}
                                         onApproach={(place) => {
                                             const world = worldAt(s().map(), place);
-                                            if (world) shelf.warm(world);
+                                            if (world)
+                                                shelf.warm(
+                                                    `${world}|${journeyGrade() ?? ""}|journey`,
+                                                );
                                         }}
                                         arrive={back()}
                                         class="ov-map"
@@ -211,7 +244,12 @@ export function Overlay(props: {
                                             if (!world) return;
                                             setBack(undefined);
                                             setBox(at ?? undefined);
-                                            props.go({ world, lesson: null });
+                                            props.go({
+                                                world,
+                                                lesson: null,
+                                                grade: journeyGrade(),
+                                                journey: true,
+                                            });
                                         }}
                                     />
                                 </Match>

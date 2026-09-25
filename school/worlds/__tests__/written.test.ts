@@ -9,7 +9,14 @@ import { corpusFrom, topicsIn } from "../lessons";
 import type { Applied } from "../types";
 import { GROWN_MAP, GROWN_WORLD } from "../view";
 import { elsewhere, schoolRun, WORLDS, worldById, yearOf } from "../worlds";
-import { daysWritten, journalWritten, schoolViewOf, whereIs, writtenView } from "../written";
+import {
+    journeyMap,
+    daysWritten,
+    journalWritten,
+    schoolViewOf,
+    whereIs,
+    writtenView,
+} from "../written";
 
 const STARTED = "2026-08-31";
 
@@ -239,5 +246,29 @@ test("alternative term notes name their actual eligible lessons", () => {
     assert.equal(
         map.places.find((p) => p.shown?.world === "winter-fair")?.shown?.notes[0],
         "Year 1, term 2: 3 lessons · Year 2, term 2: 3 lessons",
+    );
+});
+
+test("journey atlas labels report available membership without changing routes or permissions", () => {
+    const corpus = corpusFrom(
+        [
+            factOf("nature-living-or-not", "nature", 1, 1, "nature"),
+            factOf("g1-counting-to-twenty", "maths", 1, 1, "maths"),
+        ],
+        STARTED,
+    );
+    const original = schoolViewOf({ corpus, size, still: true });
+    const snapshot = structuredClone(original.places);
+    const view = journeyMap(original, corpus);
+    assert.equal(view.layout, original.layout);
+    assert.equal(view.limits, original.limits);
+    assert.equal(view.reach, original.reach);
+    assert.deepEqual(original.places, snapshot);
+    const meadow = view.places.find((p) => p.shown?.world === "meadow");
+    assert.equal(meadow?.shown?.when, "Grade journeys · 1");
+    assert.equal(meadow?.shown?.notes[0], "Grade 1: 2 lessons");
+    assert.equal(
+        view.places.find((p) => p.shown?.world === "old-tower")?.shown?.when,
+        "Lessons still to come",
     );
 });
