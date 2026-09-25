@@ -531,3 +531,16 @@
     visibility: hidden;
     pointer-events: none;
 }
+
+/* Each letter owns exactly one of the drawing's equal-width boxes. */
+.ls-letter-boxes {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+}
+.ls-sheet .ls-inbox .ls-letter-boxes .ls-in {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    padding: 0;
+}

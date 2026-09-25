@@ -1375,6 +1375,10 @@ function Strip(props: {
      */
     const onScene = (k: string): boolean => !!props.acts && !!boxes()[k];
     const choiceOnScene = (k: string): boolean => !!props.acts && !!choices()[k]?.length;
+    const letterCount = (k: string): number =>
+        props.scene?.nodes.some((node) => node.id === k && node.type === "word-input")
+            ? Math.round((boxes()[k]?.w ?? 0) / 2)
+            : 0;
     const answerIn = (k: string): JSX.Element => (
         <input
             class="ls-in"
@@ -1429,7 +1433,18 @@ function Strip(props: {
                                           class="ls-inbox-in"
                                           classList={{ taken: taken(), ready: props.current }}
                                       >
-                                          {answerIn(k)}
+                                          {letterCount(k) > 0 ? (
+                                              <LetterInputs
+                                                  count={letterCount(k)}
+                                                  value={typed()[k] ?? ""}
+                                                  label={label(k)}
+                                                  current={props.current}
+                                                  put={(value) => put(k, value)}
+                                                  check={check}
+                                              />
+                                          ) : (
+                                              answerIn(k)
+                                          )}
                                       </span>
                                   ),
                               },
@@ -1644,4 +1659,98 @@ function measured(
     drawn?.remove();
     layer.remove();
     return drawn ? { el: drawn, height, dispose } : null;
+}
+
+/** Separate writing spaces, with one canonical word for checking and saved answer state. */
+function LetterInputs(props: {
+    count: number;
+    value: string;
+    label: string;
+    current: boolean;
+    put: (value: string) => void;
+    check: () => void;
+}): JSX.Element {
+    const fields: HTMLInputElement[] = [];
+    const focus = (index: number): void => {
+        fields[index]?.focus({ preventScroll: true });
+        fields[index]?.select();
+    };
+    const write = (index: number, text: string): void => {
+        const letters = Array.from(text.normalize("NFC")).filter((c) => !/\s/.test(c));
+        const next = Array.from(
+            { length: props.count },
+            (_, i) => Array.from(props.value)[i] ?? " ",
+        );
+        if (!letters.length) next[index] = " ";
+        else
+            letters.slice(0, props.count - index).forEach((letter, offset) => {
+                next[index + offset] = letter;
+            });
+        props.put(next.join(""));
+        // Also normalise the edited DOM value when excess pasted letters leave state unchanged.
+        fields.forEach((field, i) => {
+            field.value = (next[i] ?? "").trim();
+        });
+        if (letters.length) focus(Math.min(props.count - 1, index + letters.length));
+    };
+    return (
+        <span class="ls-letter-boxes">
+            <For each={Array.from({ length: props.count }, (_, i) => i)}>
+                {(index) => (
+                    <input
+                        ref={(el) => {
+                            fields[index] = el;
+                        }}
+                        class="ls-in"
+                        type="text"
+                        autocomplete="off"
+                        spellcheck={false}
+                        autocapitalize="off"
+                        autocorrect="off"
+                        inputMode="text"
+                        enterkeyhint={index === props.count - 1 ? "done" : "next"}
+                        aria-label={`${props.label}, letter ${index + 1} of ${props.count}`}
+                        placeholder={props.current ? "?" : ""}
+                        value={(Array.from(props.value)[index] ?? "").trim()}
+                        onFocus={(e) => e.currentTarget.select()}
+                        onInput={(e) => {
+                            if (!e.isComposing) write(index, e.currentTarget.value);
+                        }}
+                        onCompositionEnd={(e) => write(index, e.currentTarget.value)}
+                        onPaste={(e) => {
+                            e.preventDefault();
+                            write(index, e.clipboardData?.getData("text") ?? "");
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.isComposing) return;
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                if (index < props.count - 1) focus(index + 1);
+                                else props.check();
+                            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                                e.preventDefault();
+                                focus(
+                                    Math.max(
+                                        0,
+                                        Math.min(
+                                            props.count - 1,
+                                            index + (e.key === "ArrowLeft" ? -1 : 1),
+                                        ),
+                                    ),
+                                );
+                            } else if (
+                                e.key === "Backspace" &&
+                                !e.currentTarget.value &&
+                                index > 0
+                            ) {
+                                e.preventDefault();
+                                write(index - 1, "");
+                                focus(index - 1);
+                            }
+                        }}
+                    />
+                )}
+            </For>
+        </span>
+    );
 }
