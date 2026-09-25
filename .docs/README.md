@@ -4,6 +4,8 @@ One current-state document per domain. Start here to find where something lives,
 
 | Document | Covers |
 |---|---|
+| [tutoring-implementation-plan.md](tutoring-implementation-plan.md) | Approval-ready Gemini teaching implementation: runtime, UI, model contracts, routes, persistence, narration, evaluation and phased rollout |
+| [tutoring-experience-exploration.md](tutoring-experience-exploration.md) | Proposed interactive teaching and adaptive tutoring: current-code audit, character and lesson UX options, shared runtime, provider constraints and prototype evaluation |
 | [game-variations-plan.md](game-variations-plan.md) | Generated game challenges: seeds/configuration, solvability gates, difficulty, child records, progression, execution phases and parallel ownership |
 | [painting-integration-plan.md](painting-integration-plan.md) | Approved painting V2 into a shared production workspace, lessons, private picture wall and Painter's Hut; saving, acceptance gates and parallel ownership |
 | [map-stability-stages.md](map-stability-stages.md) | Continuing iPhone crash and flight continuity investigation, implemented safeguards, reproducible profiles, validation evidence and remaining gates |
