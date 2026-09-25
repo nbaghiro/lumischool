@@ -58,6 +58,11 @@ export function Members(props: {
         const error = await api.inviteParent(valid);
         if (error) {
             fail(error);
+            if (error.error === "delivery-failed") {
+                setEmail(valid);
+                setInviting(true);
+            }
+            await refetch();
             return;
         }
         say(`Invitation sent to ${valid}.`);
@@ -168,6 +173,10 @@ export function Members(props: {
                                 </Show>
                                 <Show when={v().invitations.length}>
                                     <h3>Invited</h3>
+                                    <p class="note">
+                                        Resending replaces the earlier link. If sending fails,
+                                        resend to get a working invitation.
+                                    </p>
                                     <ul class="member-list">
                                         <For each={v().invitations}>
                                             {(invitation) => (
@@ -201,8 +210,10 @@ export function Members(props: {
                                                                         await api.cancelInvitation(
                                                                             invitation.id,
                                                                         );
-                                                                    if (error) fail(error);
-                                                                    else {
+                                                                    if (error) {
+                                                                        fail(error);
+                                                                        await refetch();
+                                                                    } else {
                                                                         say(
                                                                             "Invitation cancelled.",
                                                                         );

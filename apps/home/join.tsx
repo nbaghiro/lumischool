@@ -1,4 +1,4 @@
-import { createResource, createSignal, Show, type JSX } from "solid-js";
+import { onMount, onCleanup, createResource, createSignal, Show, type JSX } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { Postcard } from "../../engine/ui/postcard";
 import { Button } from "../../engine/ui/form";
@@ -10,7 +10,7 @@ export function Join(): JSX.Element {
     const token = new URLSearchParams(location.hash.slice(1)).get("t") ?? "";
     const [data, { refetch }] = createResource(() => api.invitation(token));
     const unavailable = () => {
-        const d = data();
+        const d = data.latest;
         return d && "error" in d && d.error === "not-found";
     };
     const [name, setName] = createSignal("");
@@ -21,9 +21,22 @@ export function Join(): JSX.Element {
     const [said, say] = createSignal("");
     const [joined, setJoined] = createSignal(false);
     const view = () => {
-        const d = data();
+        const d = data.latest;
         return d && !("error" in d) ? d : null;
     };
+    const [recover, setRecover] = createSignal(false);
+    onMount(() => {
+        const refresh = () => {
+            if (!joined() && !busy() && !data.loading && document.visibilityState === "visible")
+                void refetch();
+        };
+        window.addEventListener("focus", refresh);
+        document.addEventListener("visibilitychange", refresh);
+        onCleanup(() => {
+            window.removeEventListener("focus", refresh);
+            document.removeEventListener("visibilitychange", refresh);
+        });
+    });
     useLook()({ place: "harbour" });
     const send = async () => {
         const invitation = view();
@@ -31,7 +44,9 @@ export function Join(): JSX.Element {
         setBusy(true);
         say("");
         try {
-            const result = await api.startEmail(invitation.email, { shared: shared() });
+            const current = await refetch();
+            if (!current || "error" in current) return;
+            const result = await api.startEmail(current.email, { shared: shared() });
             if (result !== true) say(failureText(result));
             else {
                 setSent(true);
@@ -48,14 +63,13 @@ export function Join(): JSX.Element {
         say("");
         try {
             const result = await api.acceptInvitation(token, code(), name());
-            if ("error" in result) say(failureText(result));
-            else {
+            if ("error" in result) {
+                say(failureText(result));
+                setRecover(true);
+                await refetch();
+            } else {
                 setJoined(true);
-                say(
-                    result.notificationFailed
-                        ? "You have joined. Some notification emails could not be sent; let the other parents know."
-                        : "You have joined. The other parents have been notified.",
-                );
+                say("You have joined.");
             }
         } finally {
             setBusy(false);
@@ -63,7 +77,7 @@ export function Join(): JSX.Element {
     };
     return (
         <Show
-            when={!data.loading}
+            when={data.latest !== undefined}
             fallback={<Postcard kicker="An invitation" title="Opening your invitation" />}
         >
             <Show
@@ -78,7 +92,7 @@ export function Join(): JSX.Element {
                         }
                         lead={
                             unavailable()
-                                ? "It may have expired or been cancelled. Ask a parent in the family for a new invitation."
+                                ? "It may have expired, been cancelled, or already been used. If you already joined, sign in. Otherwise, ask a parent for a new invitation."
                                 : "Please try again when you have a connection."
                         }
                     >
@@ -176,6 +190,15 @@ export function Join(): JSX.Element {
                                 Ask the other parent for the shared PIN. It is never included in
                                 email.
                             </p>
+                        </Show>
+                        <Show when={recover() && !joined()}>
+                            <p class="note">
+                                If you joined but this page did not finish, sign in to open your
+                                family.
+                            </p>
+                            <a class="link" href="/sign-in">
+                                Sign in
+                            </a>
                         </Show>
                         <output aria-live="polite">{said()}</output>
                     </Postcard>

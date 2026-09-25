@@ -563,11 +563,7 @@ function routes(config: Config): Route[] {
                 );
                 if ("error" in out) return declined(out);
                 const response = await parentIn(c, out);
-                return json(
-                    200,
-                    { me: out.me, notificationFailed: out.notificationFailed },
-                    response.headers,
-                );
+                return json(200, { me: out.me }, response.headers);
             },
         },
         {

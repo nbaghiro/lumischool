@@ -1495,7 +1495,8 @@ export async function inviteParent(
         await withFamily({ family: adult.family.id }, (tx) => cancelInvitation(tx, issued.id));
         throw new Refused(503, {
             error: "delivery-failed",
-            problem: "The invitation could not be sent. Please try again shortly.",
+            problem:
+                "The invitation could not be sent. Earlier links no longer work. Please resend shortly.",
         });
     }
 }
@@ -1503,10 +1504,22 @@ export async function inviteParent(
 export async function cancelParentInvitation(adult: Adult, id: string): Promise<void> {
     needParent(adult);
     await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
-        await currentParents(tx, adult);
-        const found = (await invitationsOf(tx, adult.family.id)).find((k) => k.id === id);
+        const parents = await currentParents(tx, adult);
+        const invitations = await invitationsOf(tx, adult.family.id);
+        const found = invitations.find((k) => k.id === id);
         if (!found) throw new Refused(404, { error: "not-found" });
-        await cancelInvitation(tx, id);
+        if (
+            (isRecord(found.detail) && found.detail.accepted === true) ||
+            parents.some((p) => p.email === found.email)
+        )
+            throw new Refused(409, {
+                error: "bad-request",
+                problem:
+                    "This invitation was already accepted. Use Remove beside the parent to end their access.",
+            });
+        // A stale Cancel button must also revoke a replacement sent by another parent.
+        for (const invitation of invitations.filter((k) => k.email === found.email))
+            await cancelInvitation(tx, invitation.id);
     });
 }
 
@@ -1549,7 +1562,7 @@ export async function acceptParentInvitation(
     pending: string | null,
     device: string | null,
     sent: string | null,
-): Promise<(Opened & { notificationFailed: boolean }) | Declined> {
+): Promise<Opened | Declined> {
     if (!pending) return { error: "no-pending" };
     const parsed = parseCredential(input.token);
     if (!parsed || !input.name.trim() || input.name.trim().length > 80)
@@ -1577,7 +1590,7 @@ export async function acceptParentInvitation(
         if (!login) await saveLogin(tx, { id: user, email: proof.email, name: input.name.trim() });
         const added = await addParent(tx, parsed.family, user);
         const self = await person(tx, user);
-        await cancelInvitation(tx, invitation.id);
+        await cancelInvitation(tx, invitation.id, true);
         const opened = await openIn(tx, parsed.family, user, {
             method: "email-code",
             shared: proof.shared,
@@ -1603,16 +1616,20 @@ export async function acceptParentInvitation(
         });
         return { opened, added, recipients: parents.filter((p) => p.id !== user) };
     });
-    const notificationFailed =
-        joined.added &&
-        (await notifyMembership(
+    // Notifications are best effort and must not hold up the new parent's session response.
+    if (joined.added)
+        void notifyMembership(
             config,
             joined.opened.me.family,
             joined.recipients,
             joined.opened.me.user.name ?? proof.email,
             true,
-        ));
-    return { ...joined.opened, notificationFailed };
+        )
+            .then((failed) => {
+                if (failed) process.stderr.write("Parent join notification delivery failed\n");
+            })
+            .catch(() => process.stderr.write("Parent join notification delivery failed\n"));
+    return joined.opened;
 }
 
 export async function endParentMembership(

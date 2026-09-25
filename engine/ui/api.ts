@@ -599,14 +599,9 @@ export async function acceptInvitation(
     token: string,
     code: string,
     name: string,
-): Promise<{ me: Me; notificationFailed: boolean } | Failure> {
+): Promise<{ me: Me } | Failure> {
     const a = await call("POST", "/api/auth/email/invitation/accept", { token, code, name });
-    const result = signedInWith(a);
-    if ("error" in result) return result;
-    return {
-        ...result,
-        notificationFailed: a.ok && obj(a.body) && a.body.notificationFailed === true,
-    };
+    return signedInWith(a);
 }
 
 function readArtwork(v: unknown): import("../../server/api").ArtworkSummary | null {

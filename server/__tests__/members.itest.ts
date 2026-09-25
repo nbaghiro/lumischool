@@ -330,3 +330,193 @@ test(
         assert.equal(grants.length, 0);
     },
 );
+
+test(
+    "cancellation and acceptance serialize, including signup already holding a valid code",
+    { skip: reason ?? false },
+    async () => {
+        for (const order of ["cancel", "accept", "race"] as const) {
+            const { config, outbox } = local();
+            const parent = new Browser(config);
+            const family = await startFamily(parent, outbox, {
+                email: `parent-${order}@race.test`,
+                name: "Parent",
+                family: "Race",
+            });
+            const email = `guest-${order}@race.test`;
+            assert.equal(
+                (await parent.call("POST", "/api/members/invite", { body: { email } })).status,
+                200,
+            );
+            const token = tokenFor(outbox, email);
+            const guest = new Browser(config);
+            assert.equal(
+                (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
+                200,
+            );
+            const code = await ask(guest, outbox, email);
+            const listing = await parent.call("GET", "/api/members");
+            const id = text(at(listing.body, "invitations", 0, "id"));
+            const cancel = () => parent.call("POST", "/api/members/cancel", { body: { id } });
+            const accept = () =>
+                guest.call("POST", "/api/auth/email/invitation/accept", {
+                    body: { token, code, name: "Guest" },
+                });
+            const [cancelled, accepted] =
+                order === "cancel"
+                    ? [await cancel(), await accept()]
+                    : order === "accept"
+                      ? await (async () => {
+                            const a = await accept();
+                            return [await cancel(), a];
+                        })()
+                      : await Promise.all([cancel(), accept()]);
+            assert.ok(cancelled && accepted);
+            if (cancelled.status === 200) {
+                assert.equal(accepted.status, 400);
+                assert.equal((await guest.call("GET", "/api/me")).status, 401);
+            } else {
+                assert.equal(cancelled.status, 409);
+                assert.equal(accepted.status, 200);
+                assert.equal(at(accepted.body, "me", "family", "id"), family.family);
+            }
+            const after = await parent.call("GET", "/api/members");
+            assert.deepEqual(at(after.body, "invitations"), []);
+            assert.equal(
+                (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
+                404,
+            );
+        }
+    },
+);
+
+test(
+    "a failed resend invalidates old links and a later resend restores signup",
+    { skip: reason ?? false },
+    async () => {
+        assert.ok(owner);
+        const { config, outbox } = local();
+        const parent = new Browser(config);
+        const family = await startFamily(parent, outbox, {
+            email: "resend-parent@test.test",
+            name: "Parent",
+            family: "Resend",
+        });
+        const email = "resend-guest@test.test";
+        const invite = () => parent.call("POST", "/api/members/invite", { body: { email } });
+        assert.equal((await invite()).status, 200);
+        const old = tokenFor(outbox, email);
+        await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
+        const send = config.send;
+        config.send = async () => {
+            throw new Error("delivery failed");
+        };
+        assert.equal((await invite()).status, 503);
+        config.send = send;
+        assert.deepEqual(at((await parent.call("GET", "/api/members")).body, "invitations"), []);
+        const guest = new Browser(config);
+        assert.equal(
+            (await guest.call("POST", "/api/invitations/preview", { body: { token: old } })).status,
+            404,
+        );
+        await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
+        assert.equal((await invite()).status, 200);
+        const token = tokenFor(outbox, email);
+        const code = await ask(guest, outbox, email);
+        assert.equal(
+            (
+                await guest.call("POST", "/api/auth/email/invitation/accept", {
+                    body: { token, code, name: "Guest" },
+                })
+            ).status,
+            200,
+        );
+    },
+);
+
+test(
+    "slow join notifications do not delay acceptance and a lost response recovers through ordinary sign-in",
+    { skip: reason ?? false },
+    async () => {
+        const { config, outbox } = local();
+        const parent = new Browser(config);
+        const family = await startFamily(parent, outbox, {
+            email: "slow-parent@test.test",
+            name: "Parent",
+            family: "Slow",
+        });
+        const email = "slow-guest@test.test";
+        await parent.call("POST", "/api/members/invite", { body: { email } });
+        const token = tokenFor(outbox, email);
+        const guest = new Browser(config);
+        const code = await ask(guest, outbox, email);
+        const send = config.send;
+        let release = () => {};
+        const blocked = new Promise<void>((resolve) => {
+            release = resolve;
+        });
+        config.send = async (mail) => {
+            if (mail.to === "slow-parent@test.test") await blocked;
+            else await send(mail);
+        };
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        try {
+            const result = await Promise.race([
+                guest.call("POST", "/api/auth/email/invitation/accept", {
+                    body: { token, code, name: "Guest" },
+                }),
+                new Promise<never>((_, reject) => {
+                    timer = setTimeout(
+                        () => reject(new Error("Acceptance waited for notification")),
+                        2000,
+                    );
+                }),
+            ]);
+            assert.equal(result.status, 200);
+        } finally {
+            release();
+            clearTimeout(timer);
+            config.send = send;
+        }
+        const recovered = new Browser(config);
+        const newCode = await ask(recovered, outbox, email);
+        const signed = await recovered.call("POST", "/api/auth/email/verify", {
+            body: { code: newCode },
+        });
+        assert.equal(signed.status, 200);
+        assert.equal(at(signed.body, "me", "family", "id"), family.family);
+    },
+);
+
+test(
+    "a stale Cancel also revokes a replacement invitation",
+    { skip: reason ?? false },
+    async () => {
+        assert.ok(owner);
+        const { config, outbox } = local();
+        const parent = new Browser(config);
+        const family = await startFamily(parent, outbox, {
+            email: "stale-parent@test.test",
+            name: "Parent",
+            family: "Stale",
+        });
+        const email = "stale-guest@test.test";
+        const invite = () => parent.call("POST", "/api/members/invite", { body: { email } });
+        assert.equal((await invite()).status, 200);
+        const first = await parent.call("GET", "/api/members");
+        const id = text(at(first.body, "invitations", 0, "id"));
+        await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
+        assert.equal((await invite()).status, 200);
+        const latest = tokenFor(outbox, email);
+        assert.equal(
+            (await parent.call("POST", "/api/members/cancel", { body: { id } })).status,
+            200,
+        );
+        const guest = new Browser(config);
+        assert.equal(
+            (await guest.call("POST", "/api/invitations/preview", { body: { token: latest } }))
+                .status,
+            404,
+        );
+    },
+);

@@ -18,10 +18,9 @@ code at the invited address, and presses Join family. A new account is created o
 an existing account retains its other family memberships. The flow always proves the invited
 address afresh, avoiding a separate wrong-account/switch-account branch.
 
-Membership notifications go to all parents when someone joins, and to the removed person and all
+Membership notifications go to existing parents, excluding the joining parent, when someone joins, and to the removed person and all
 parents when access ends. They contain no child details or PINs. They are independent of weekly
-email choices. A transport failure is surfaced after a successful membership change, without
-rolling back access or inviting duplicate mutations. These notifications are attempted immediately;
+email choices. Removal delivery failures are surfaced after the change. Join delivery failures are logged; they never block signup or roll back access. These notifications are attempted immediately;
 there is no durable background retry queue for membership notifications yet.
 
 ## Security and persistence
@@ -55,7 +54,7 @@ POST /api/members/invite takes email; POST /api/members/cancel takes id.
 POST /api/members/remove takes user and returns left plus notificationFailed.
 POST /api/invitations/preview takes token.
 POST /api/auth/email/invitation/accept takes token, code and name plus the tab's sign-in challenge;
-it returns the normal parent session and notificationFailed.
+it returns the normal parent session. Join notifications run independently after commit and do not delay the response. Delivery failures are logged without personal data.
 
 ## Manual QA
 
@@ -84,3 +83,6 @@ All 13 email designs were rendered at phone and desktop widths without overflow;
 was visually inspected. The Family members card and Join page were visually reviewed. Local
 migration 0005 is applied and the API is running the new routes. No production email, commit,
 push, or deployment was performed.
+
+
+Invitation recovery: acceptance and cancellation serialize on the family row. Cancellation after acceptance returns a conflict and refreshes the parent list, directing the parent to Remove instead. The invitee refreshes availability on foreground and before sending a code, and refreshes after acceptance failures. Used or unavailable links offer ordinary sign-in for interrupted signup. Resend replaces earlier links even if delivery fails; the UI explains this and refreshes the list so the parent can retry. Notifications remain best effort without a durable retry queue.

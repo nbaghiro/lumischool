@@ -49,11 +49,11 @@ export async function invitationIn(tx: FamilyTx, token: string): Promise<Key | n
     return row && invitationActive(row) && sameHash(row.hash, sha256(parsed.secret)) ? row : null;
 }
 
-export async function cancelInvitation(tx: FamilyTx, id: string): Promise<void> {
+export async function cancelInvitation(tx: FamilyTx, id: string, accepted = false): Promise<void> {
     // Retain issuance time for rate limits after cancellation or acceptance.
     await tx
         .update(keys)
-        .set({ detail: { active: false } })
+        .set({ detail: { active: false, accepted } })
         .where(and(eq(keys.id, id), eq(keys.kind, "invite")));
 }
 
