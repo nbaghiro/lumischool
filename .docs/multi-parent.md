@@ -86,3 +86,19 @@ push, or deployment was performed.
 
 
 Invitation recovery: acceptance and cancellation serialize on the family row. Cancellation after acceptance returns a conflict and refreshes the parent list, directing the parent to Remove instead. The invitee refreshes availability on foreground and before sending a code, and refreshes after acceptance failures. Used or unavailable links offer ordinary sign-in for interrupted signup. Resend replaces earlier links even if delivery fails; the UI explains this and refreshes the list so the parent can retry. Notifications remain best effort without a durable retry queue.
+
+### Two-user browser regression suite
+
+`tools/e2e/members.e2e.ts` uses independent inviter and invitee browser contexts,
+with each project's full device settings. Invitations and codes come from the real
+local email outbox, and membership changes use the real API and database. Only
+interrupted delivery and the cancellation race inject a network failure or delay;
+the underlying acceptance and cancellation still execute on the server.
+
+The suite covers joining, persisted access, removal from both users' screens,
+notification recipients, cancellation before code entry and during signup,
+foreground refresh, acceptance winning cancellation, full email sign-in recovery
+after a lost response, and resending into the same tab. The resend case waits for
+the real server cooldown and checks that only the replacement link works.
+
+Run with `npm run test:e2e -- tools/e2e/members.e2e.ts --project=desktop --project=phone --project=phone-webkit`.

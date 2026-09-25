@@ -7,8 +7,9 @@ import { failureText } from "../../engine/ui/failure";
 import { useLook } from "../../engine/ui/page";
 
 export function Join(): JSX.Element {
-    const token = new URLSearchParams(location.hash.slice(1)).get("t") ?? "";
-    const [data, { refetch }] = createResource(() => api.invitation(token));
+    const readToken = () => new URLSearchParams(location.hash.slice(1)).get("t") ?? "";
+    const [token, setToken] = createSignal(readToken());
+    const [data, { refetch, mutate }] = createResource(token, api.invitation);
     const unavailable = () => {
         const d = data.latest;
         return d && "error" in d && d.error === "not-found";
@@ -26,6 +27,20 @@ export function Join(): JSX.Element {
     };
     const [recover, setRecover] = createSignal(false);
     onMount(() => {
+        const invitationChanged = () => {
+            const next = readToken();
+            if (next === token()) return;
+            setName("");
+            setCode("");
+            setSent(false);
+            say("");
+            setJoined(false);
+            setRecover(false);
+            setBusy(false);
+            mutate(undefined);
+            setToken(next);
+        };
+        window.addEventListener("hashchange", invitationChanged);
         const refresh = () => {
             if (!joined() && !busy() && !data.loading && document.visibilityState === "visible")
                 void refetch();
@@ -33,6 +48,7 @@ export function Join(): JSX.Element {
         window.addEventListener("focus", refresh);
         document.addEventListener("visibilitychange", refresh);
         onCleanup(() => {
+            window.removeEventListener("hashchange", invitationChanged);
             window.removeEventListener("focus", refresh);
             document.removeEventListener("visibilitychange", refresh);
         });
@@ -41,12 +57,14 @@ export function Join(): JSX.Element {
     const send = async () => {
         const invitation = view();
         if (!invitation || busy()) return;
+        const requestedToken = token();
         setBusy(true);
         say("");
         try {
             const current = await refetch();
-            if (!current || "error" in current) return;
+            if (token() !== requestedToken || !current || "error" in current) return;
             const result = await api.startEmail(current.email, { shared: shared() });
+            if (token() !== requestedToken) return;
             if (result !== true) say(failureText(result));
             else {
                 setSent(true);
@@ -54,15 +72,17 @@ export function Join(): JSX.Element {
                 say("A code is on its way. Use the newest code from this tab.");
             }
         } finally {
-            setBusy(false);
+            if (token() === requestedToken) setBusy(false);
         }
     };
     const accept = async () => {
         if (busy()) return;
+        const requestedToken = token();
         setBusy(true);
         say("");
         try {
-            const result = await api.acceptInvitation(token, code(), name());
+            const result = await api.acceptInvitation(requestedToken, code(), name());
+            if (token() !== requestedToken) return;
             if ("error" in result) {
                 say(failureText(result));
                 setRecover(true);
@@ -72,7 +92,7 @@ export function Join(): JSX.Element {
                 say("You have joined.");
             }
         } finally {
-            setBusy(false);
+            if (token() === requestedToken) setBusy(false);
         }
     };
     return (
