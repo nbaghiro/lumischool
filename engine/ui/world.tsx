@@ -75,6 +75,8 @@ const longDay = (iso: string): string =>
     });
 
 export function World(props: {
+    /** A fixed illustration frames its lesson directly and refits when its box changes. */
+    preview?: boolean;
     view: WorldView;
     /** The page's own sheet for a lesson, laid where the roll puts it; without one a sheet is a card with its title. */
     sheet?: (s: SheetView) => HTMLElement | null;
@@ -146,7 +148,7 @@ export function World(props: {
     let level: RollLevel = "day";
     /** The way out is under way: nothing else moves the camera or hands over again. */
     let busy = false;
-    const quiet = still();
+    const quiet = still() || !!props.preview;
     const [ready, setReady] = createSignal(false);
     const [paintedLayout, setPaintedLayout] = createSignal<WorldView["layout"]>();
     /** Whether the camera is moving, for the way out to stay out of sight while it does. */
@@ -788,7 +790,13 @@ export function World(props: {
             key: (e) => onKey(e),
             settle: (cam) => onSettle(cam),
             resized: () => {
-                if (drawn && arrived && view && !view.flying) view.zoomBy(1, undefined, false);
+                if (!props.preview && drawn && arrived && view && !view.flying) {
+                    view.zoomBy(1, undefined, false);
+                    return;
+                }
+                if (!props.preview || !drawn || !view) return;
+                const at = landing(props.view.arrival?.term);
+                if (at) view.set(readAt(view, at.y, at.own));
             },
         });
         view = v;

@@ -321,8 +321,7 @@ const SMALLEST = { phone: 0.8, wide: 0.5 };
  * inside the frame, down to a floor that keeps the sheet readable, and `--lift`, how far the roll is
  * drawn up the frame. The frame's edge never falls inside a drawing: beside the sheet it is stepped
  * out past one or in before it, and above the sheet the lift stops short of anything it would cut,
- * today's date included. The roll is drawn again, landing afresh on today, whenever either changes or
- * the frame changes width.
+ * today's date included. One roll stays mounted while its camera and framing settle before reveal.
  */
 function SampleRoll(props: { caption: string | undefined }): JSX.Element {
     const [host, setHost] = createSignal<HTMLDivElement>();
@@ -358,12 +357,13 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
     const [width, setWidth] = createSignal(0);
     const [scale, setScale] = createSignal(1);
     const [lift, setLift] = createSignal(0);
+    const [presented, setPresented] = createSignal(false);
     createEffect(() => setScale(narrow() ? 1 : FIRST));
 
     /** What the picture is drawn at, from where the world's things stand in it as it is drawn now. */
-    const fit = (frame: HTMLElement, r: Roll, again: () => boolean): void => {
+    const fit = (frame: HTMLElement, r: Roll, again: () => boolean): boolean => {
         const sheet = todays(r)[0];
-        if (!sheet) return;
+        if (!sheet) return false;
         const f = frame.getBoundingClientRect();
         const left = f.left + frame.clientLeft,
             top = f.top + frame.clientTop,
@@ -410,7 +410,7 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
         const k2 = Math.min(1, w / (unit + 2 * band));
         if (Math.abs(k2 - k) > 0.005 && again()) {
             setScale(k2);
-            return;
+            return false;
         }
 
         // the world above the sheet is as deep as the world beside it, and never cuts what it would show
@@ -422,6 +422,7 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
             up = Math.min(...over.map((d) => d.top - ROOM_ABOVE));
         }
         setLift(Math.max(0, Math.round(up)));
+        return true;
     };
 
     onMount(() => {
@@ -439,23 +440,34 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
             clearTimeout(settling);
         });
     });
+    let passes = 0;
+    createEffect(() => {
+        roll();
+        width();
+        passes = 0;
+        setPresented(false);
+    });
     createEffect(() => {
         const frame = host(),
             r = roll();
-        if (!frame || !r || !width()) return;
-        let raf = 0,
-            measured: Element | null = null,
-            passes = 0;
-        const drawn = new MutationObserver(() => {
-            const wd = frame.querySelector(".wd.ready");
-            if (!wd || wd === measured) return;
-            measured = wd;
-            // the roll's camera is applied on its view's next frame
+        width();
+        scale();
+        if (!frame || !r) return;
+        let raf = 0;
+        let measured = false;
+        const measure = (): void => {
+            if (measured || !frame.querySelector(".wd.ready")) return;
+            measured = true;
             raf = requestAnimationFrame(() => {
-                raf = requestAnimationFrame(() => fit(frame, r, () => passes++ < 3));
+                raf = requestAnimationFrame(() => {
+                    if (fit(frame, r, () => passes++ < 3))
+                        raf = requestAnimationFrame(() => setPresented(true));
+                });
             });
-        });
+        };
+        const drawn = new MutationObserver(measure);
         drawn.observe(frame, { subtree: true, attributes: true, attributeFilter: ["class"] });
+        measure();
         onCleanup(() => {
             drawn.disconnect();
             cancelAnimationFrame(raf);
@@ -467,23 +479,21 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
             <div
                 ref={setHost}
                 class="site-roll paper"
+                classList={{ "is-ready": presented() }}
                 style={{ "--k": String(scale()), "--lift": `${lift()}px` }}
                 aria-hidden="true"
                 inert
             >
                 <Show when={near() && width() > 0 && roll()} keyed>
                     {(r) => (
-                        <For each={[`${width()}:${scale()}`]}>
-                            {() => (
-                                <WorldRoll
-                                    view={r.view}
-                                    sheet={(s) => r.sheets(s.lesson)}
-                                    wheel={false}
-                                    class="site-roll-world"
-                                    title="A day in a sample child's world"
-                                />
-                            )}
-                        </For>
+                        <WorldRoll
+                            preview
+                            view={r.view}
+                            sheet={(s) => r.sheets(s.lesson)}
+                            wheel={false}
+                            class="site-roll-world"
+                            title="A day in a sample child's world"
+                        />
                     )}
                 </Show>
             </div>
