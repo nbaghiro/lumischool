@@ -52,7 +52,9 @@ const ASSET_CACHE = "public, max-age=31536000, immutable";
 const BRAND_CACHE = "public, max-age=3600";
 
 /** Scripts and styles from this origin only, framed by nobody, modelled on the API's own header. */
-const PAGE_CSP = "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'";
+// Paintings use embedded PNG thumbnails and temporary SVG blobs when composing previews.
+const PAGE_CSP =
+    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'";
 
 const HEADERS = { "x-content-type-options": "nosniff" };
 

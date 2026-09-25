@@ -31,6 +31,10 @@ describe("the built apps served from the Node process", () => {
         assert.equal(await res.text(), "<title>kids</title>");
         assert.equal(res.headers.get("cache-control"), "no-store");
         assert.equal(res.headers.get("content-type"), "text/html; charset=utf-8");
+        assert.equal(
+            res.headers.get("content-security-policy"),
+            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'",
+        );
     });
 
     it("gives an asset a year's immutable cache", async () => {

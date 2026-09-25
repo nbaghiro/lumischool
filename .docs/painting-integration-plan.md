@@ -22,6 +22,11 @@ child-picture preview/edit permissions are unchanged. Paper settings and PNG dow
 Validation: painting save coordinator unit tests and painting browser coverage for desktop and
 phone-sized layouts, explicit save, recovery, child ownership and concurrent editing.
 
+Production pages allow `data:` and `blob:` image sources in their content security policy.
+Gallery thumbnails are embedded PNGs; colouring previews compose temporary SVG blobs on canvas.
+The browser regression in `painting-policy.e2e.ts` checks both against the static server's actual
+policy, which the development server does not apply.
+
 ## Product target
 
 One shared painting workspace reached from lessons and free painting, with one private child-owned
