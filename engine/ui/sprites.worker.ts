@@ -4,6 +4,21 @@ import type { Gradient, Paint, RasterJob, Sketch, SketchNode } from "./sprites";
 
 type Context = OffscreenCanvasRenderingContext2D;
 
+// A canvas's pixels are freed only when the worker collects it, which WebKit does long after a phone
+// has run out of memory, so every canvas here is taken from this pool and shrunk to nothing when given back.
+const spare: OffscreenCanvas[] = [];
+function take(w: number, h: number): Context | null {
+    const canvas = spare.pop() ?? new OffscreenCanvas(1, 1);
+    canvas.width = w;
+    canvas.height = h;
+    return canvas.getContext("2d");
+}
+function give(c: Context): void {
+    c.canvas.width = 0;
+    c.canvas.height = 0;
+    spare.push(c.canvas);
+}
+
 /** The worker's own font set, which the page's type library does not know a worker has. */
 const holds = (v: unknown): v is { add(face: FontFace): unknown } =>
     typeof v === "object" && v !== null && "add" in v && typeof v.add === "function";
@@ -53,16 +68,16 @@ function draw(c: Context, node: SketchNode, alpha: number, job: RasterJob, inPar
         if (node.m) c.transform(...node.m);
         const apart = node.alpha < 1 && node.children.length > 1;
         if (apart) {
-            const layer = new OffscreenCanvas(c.canvas.width, c.canvas.height);
-            const l = layer.getContext("2d");
+            const l = take(c.canvas.width, c.canvas.height);
             if (l) {
                 l.setTransform(c.getTransform());
                 for (const child of node.children) draw(l, child, 1, job, within);
                 c.save();
                 c.setTransform(1, 0, 0, 1, 0, 0);
                 c.globalAlpha = alpha * node.alpha;
-                c.drawImage(layer, 0, 0);
+                c.drawImage(l.canvas, 0, 0);
                 c.restore();
+                give(l);
             }
         } else for (const child of node.children) draw(c, child, alpha * node.alpha, job, within);
         c.restore();
@@ -106,11 +121,12 @@ function draw(c: Context, node: SketchNode, alpha: number, job: RasterJob, inPar
 
 self.onmessage = async (e: MessageEvent<{ id: number; job: RasterJob }>) => {
     const { id, job } = e.data;
+    const held: Context[] = [];
     try {
         await fonts(job.sketch);
-        const canvas = new OffscreenCanvas(job.w, job.h);
-        const c = canvas.getContext("2d");
+        const c = take(job.w, job.h);
         if (!c) throw new Error("No worker canvas");
+        held.push(c);
         const sx = job.w / job.box.w,
             sy = job.h / job.box.h;
         const into = (target: Context) => {
@@ -120,9 +136,9 @@ self.onmessage = async (e: MessageEvent<{ id: number; job: RasterJob }>) => {
         const glow = job.only === null ? job.sketch.glow : [];
         if (glow.length) {
             // a glow is cast by the drawing as a whole, so it is drawn apart and laid down with each shadow
-            const layer = new OffscreenCanvas(job.w, job.h);
-            const l = layer.getContext("2d");
+            const l = take(job.w, job.h);
             if (!l) throw new Error("No worker canvas");
+            held.push(l);
             into(l);
             // each shadow is cast by a copy drawn a canvas away, so only the shadows land here
             for (const g of glow) {
@@ -130,14 +146,16 @@ self.onmessage = async (e: MessageEvent<{ id: number; job: RasterJob }>) => {
                 c.shadowColor = g.colour;
                 c.shadowBlur = g.blur * job.glowScale;
                 c.shadowOffsetX = job.w;
-                c.drawImage(layer, -job.w, 0);
+                c.drawImage(l.canvas, -job.w, 0);
                 c.restore();
             }
-            c.drawImage(layer, 0, 0);
+            c.drawImage(l.canvas, 0, 0);
         } else into(c);
         const pixels = c.getImageData(0, 0, job.w, job.h).data.buffer;
         self.postMessage({ id, w: job.w, h: job.h, pixels }, { transfer: [pixels] });
     } catch {
         self.postMessage({ id });
+    } finally {
+        for (const c of held) give(c);
     }
 };
