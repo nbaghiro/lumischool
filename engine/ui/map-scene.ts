@@ -599,6 +599,9 @@ export function mapScene(o: {
                 !!el.textContent?.trim() &&
                 Array.from(el.querySelectorAll("*")).every((d) => INLINE.has(d.tagName));
             if (whole || text || el.tagName === "BUTTON" || decorated(el)) {
+                // an animated shape would give the overlay, and with it the scaled world, a layer of
+                // its own, sized as if unscaled (view.ts), so it stays here and is not drawn
+                if (!(whole || text) && getComputedStyle(el).animationName !== "none") return;
                 twinOf(el.parentElement ?? o.hidden).append(el);
                 return;
             }
