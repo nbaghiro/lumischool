@@ -27,7 +27,8 @@ const D65 = [
     49.98, 82.75, 93.43, 104.86, 117.81, 115.92, 109.35, 104.79, 104.41, 100, 95.79, 90.01, 87.7,
     83.7, 80.21, 78.28, 71.61, 61.6, 75.09,
 ];
-const XYZ_TO_RGB = [
+type Row = readonly [number, number, number];
+const XYZ_TO_RGB: readonly [Row, Row, Row] = [
     [3.2406, -1.5372, -0.4986],
     [-0.9689, 1.8758, 0.0415],
     [0.0557, -0.204, 1.057],
@@ -38,15 +39,13 @@ const XYZ_TO_RGB = [
  * everything is exactly white, which absorbs the small error of sampling every twenty nanometres.
  */
 const TO_RGB: [number, number, number][] = (() => {
-    const raw = D65.map((d, i) => {
+    const raw = D65.map((d, i): Row => {
         const x = d * (CMF_X[i] ?? 0),
             y = d * (CMF_Y[i] ?? 0),
             z = d * (CMF_Z[i] ?? 0);
-        return XYZ_TO_RGB.map((r) => (r[0] ?? 0) * x + (r[1] ?? 0) * y + (r[2] ?? 0) * z) as [
-            number,
-            number,
-            number,
-        ];
+        const [r, g, b] = XYZ_TO_RGB,
+            at = (m: Row): number => m[0] * x + m[1] * y + m[2] * z;
+        return [at(r), at(g), at(b)];
     });
     const sums = [0, 1, 2].map((c) => raw.reduce((s, t) => s + (t[c] ?? 0), 0));
     return raw.map((t) => [t[0] / (sums[0] ?? 1), t[1] / (sums[1] ?? 1), t[2] / (sums[2] ?? 1)]);
@@ -160,9 +159,7 @@ const BOX: Record<Pigment, { hex: string; strength: number; rho: number[] }> = {
 const ks = (r: number): number => (1 - r) ** 2 / (2 * r);
 /** The reflectance of an opaque layer with that ratio, the function's inverse. */
 const reflect = (k: number): number => 1 + k - Math.sqrt(k * k + 2 * k);
-const KS: Record<Pigment, number[]> = Object.fromEntries(
-    PIGMENTS.map((p) => [p, BOX[p].rho.map(ks)]),
-) as Record<Pigment, number[]>;
+const KS = new Map(PIGMENTS.map((p) => [p, BOX[p].rho.map(ks)]));
 
 const toLinear = (v: number): number => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
 const toGamma = (v: number): number =>
@@ -173,8 +170,10 @@ export const hexOf = (rgb: readonly number[]): string =>
         .map((v) => Math.round(v).toString(16).padStart(2, "0"))
         .join("")
         .toUpperCase()}`;
-export const rgbOf = (hex: string): [number, number, number] =>
-    [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)) as [number, number, number];
+export const rgbOf = (hex: string): [number, number, number] => {
+    const at = (i: number): number => parseInt(hex.slice(i, i + 2), 16);
+    return [at(1), at(3), at(5)];
+};
 
 /** A paint as the parts of each pigment in it, which is how the tray and the record both say it. */
 export interface Part {
@@ -201,7 +200,7 @@ export function mixAmounts(amounts: ArrayLike<number>): [number, number, number]
         let k = 0;
         PIGMENTS.forEach((p, j) => {
             const weight = w[j] ?? 0;
-            if (weight) k += weight * (KS[p][i] ?? 0);
+            if (weight) k += weight * (KS.get(p)?.[i] ?? 0);
         });
         const r = reflect(k / total);
         for (let c = 0; c < 3; c++) lin[c] = (lin[c] ?? 0) + r * (TO_RGB[i]?.[c] ?? 0);

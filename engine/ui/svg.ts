@@ -234,7 +234,7 @@ export function svgSurface(key: string): Surface<Element> {
         imported(parent, f) {
             const g = el("g", { transform: `translate(${-f.from[0]} ${-f.from[1]})` }, parent);
             // the hatches go in the drawing's own defs, as they did when the file was drawn in place
-            const svg = (parent as SVGElement).ownerSVGElement ?? parent;
+            const svg = ownerSvg(parent) ?? parent;
             for (const s of f.shapes) {
                 const shape = g.appendChild(document.createElementNS(NS, s.tag));
                 for (const [k, v] of s.attrs) {
@@ -426,6 +426,12 @@ export function drawAnchors(
 export function drawStroke(parent: Element, s: Stroke, color: string, scale = U): SVGPathElement {
     const { d, opacity } = strokeOutline(s, scale);
     return el("path", { d, fill: color, opacity }, parent);
+}
+
+/** The nearest <svg> above an element, as `ownerSVGElement` finds it, without asking which kind of element it is. */
+function ownerSvg(e: Element): Element | null {
+    for (let p = e.parentElement; p; p = p.parentElement) if (p.localName === "svg") return p;
+    return null;
 }
 
 /** The hatch a named fill becomes on paper, as a pattern in the drawing's own defs. */

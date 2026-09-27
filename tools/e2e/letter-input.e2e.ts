@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import type { KidRecord } from "../../server/api";
+import { readKidRecord } from "../../engine/ui/wire";
 import { childsMap, openChildrensView, signInAs, test } from "./steps";
 
 test("word answers align one editable letter per box and check as a whole word", async ({
@@ -9,7 +9,8 @@ test("word answers align one editable letter per box and check as a whole word",
     await signInAs(page);
     await page.route(/\/api\/kid\/[^/]+\/record$/, async (route) => {
         const response = await route.fetch();
-        const record = (await response.json()) as KidRecord;
+        const record = readKidRecord(await response.json());
+        if (!record) throw new Error("the record did not read");
         const day = record.plan
             .flatMap((track) => track.days)
             .find((day) => day.lesson === "reading-letter-sounds");

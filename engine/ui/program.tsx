@@ -30,6 +30,9 @@ import {
 import { loadDrawings, type Shelf } from "./drawings";
 import { render } from "./svg";
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 /** What a run told the child, and the program the pad shows: theirs, or a program that works once the last try is used. */
 export interface Built {
     state: "right" | "again" | "shown";
@@ -171,7 +174,7 @@ export function ProgramQuestion(props: {
         if (!d || !box || !was || !tile) return;
         const svg = render(
             d,
-            { ...(d.params as object), ...values, ...changes },
+            { ...(isRecord(d.params) ? d.params : {}), ...values, ...changes },
             { host: tile },
         ).svg;
         svg.removeAttribute("class");

@@ -59,7 +59,7 @@ test("a wrong code says how many tries are left, another code inside the minute 
     await page.getByLabel("The 8-digit code").fill(code === "00000000" ? "11111111" : "00000000");
     await expect(page.locator("main").getByText(/does not match.*4 more tries/)).toBeVisible();
     await page.getByRole("button", { name: "Send the code again" }).click();
-    await expect(page.locator("main").getByText(/Too many codes.*in a minute/)).toBeVisible();
+    await expect(page.locator("main").getByText(/Too many tries just now/)).toBeVisible();
     await page.getByLabel("The 8-digit code").fill(code);
     await expect(page.getByRole("heading", { name: "Start a family" })).toBeVisible();
     await page.getByLabel("Your name").fill("Sam");
@@ -96,12 +96,12 @@ test("a child tab uses its own credentials while the parent session stays availa
         const r = await fetch("/api/me", {
             headers: { "x-kid-session": sessionStorage.getItem("lumischool-kid-session") ?? "" },
         });
-        return { status: r.status, body: (await r.json()) as { error?: string } };
+        const body: unknown = await r.json();
+        const error =
+            typeof body === "object" && body !== null && "error" in body ? body.error : undefined;
+        return { status: r.status, error: typeof error === "string" ? error : undefined };
     });
-    expect([me.status, me.body.error], "every adult route refuses it").toEqual([
-        403,
-        "not-allowed",
-    ]);
+    expect([me.status, me.error], "every adult route refuses it").toEqual([403, "not-allowed"]);
     expect(await cookieNames(context), "and refusing it clears nothing").toContain("ls_session");
     await expect(page.getByRole("link", { name: "lumischool site" })).toHaveCount(0);
 });
@@ -112,8 +112,12 @@ test("a grown-up goes round: the view opens, an adult route is refused, the PIN 
 }) => {
     await signInAs(page);
     const before = await page.evaluate(async () => {
-        const me = (await (await fetch("/api/me")).json()) as { session?: { id: string } };
-        return me.session?.id ?? "";
+        const me: unknown = await (await fetch("/api/me")).json();
+        const session =
+            typeof me === "object" && me !== null && "session" in me ? me.session : null;
+        const id =
+            typeof session === "object" && session !== null && "id" in session ? session.id : null;
+        return typeof id === "string" ? id : "";
     });
     expect(before).not.toBe("");
     await openChildrensView(page, ["Rosie"]);
@@ -134,8 +138,12 @@ test("a grown-up goes round: the view opens, an adult route is refused, the PIN 
     // the family's page, with no code typed: the session that was put away is the one in use
     await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
     const after = await page.evaluate(async () => {
-        const me = (await (await fetch("/api/me")).json()) as { session?: { id: string } };
-        return me.session?.id ?? "";
+        const me: unknown = await (await fetch("/api/me")).json();
+        const session =
+            typeof me === "object" && me !== null && "session" in me ? me.session : null;
+        const id =
+            typeof session === "object" && session !== null && "id" in session ? session.id : null;
+        return typeof id === "string" ? id : "";
     });
     expect(after, "the same session, given back").toBe(before);
     expect(await cookieNames(context)).not.toContain("ls_kids");

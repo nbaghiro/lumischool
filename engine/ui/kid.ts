@@ -12,7 +12,7 @@ import {
     list,
     num,
     obj,
-    readChildRecord,
+    readKidRecord,
     readEnvelope,
     readKid,
     str,
@@ -538,18 +538,11 @@ export async function state(kidId: string, lesson?: string): Promise<KidState | 
     return kid && events && tutors ? { kid, events, tutors } : unreadable(a.status);
 }
 
-function readRecord(v: unknown): KidRecord | null {
-    if (!obj(v)) return null;
-    const kid = readKid(v.kid);
-    const record = readChildRecord(v);
-    return kid && str(v.pack) && record ? { kid, pack: v.pack, ...record } : null;
-}
-
 /** One child's record as the API folds it from their log: their plan, each grade's progress and the sitting left open. */
 export async function read(kidId: string): Promise<KidRecord | Failure> {
     const a = await answered(await call("GET", kidPath(kidId, "record")));
     if (!a.ok) return a.failure;
-    return readRecord(a.body) ?? unreadable(a.status);
+    return readKidRecord(a.body) ?? unreadable(a.status);
 }
 
 /** The pack's readers, loaded with the first read of the pack, since this file loads with the page. */
@@ -609,4 +602,35 @@ export async function prepareIdentityChange(): Promise<true | Failure> {
     return (await (await queue()).all()).length
         ? (stopped ?? { error: "offline", status: 0 })
         : true;
+}
+
+/** Tutoring uses the same child credential as the worksheet. */
+export const teachingAccess = (kid: string): Promise<Answer> =>
+    call("GET", `/api/kid/${kid}/tutoring`);
+export const teachingMaterialFor = (kid: string, material: string): Promise<Answer> =>
+    call("GET", `/api/kid/${kid}/tutoring/material/${material}`);
+export function teachingGateway(
+    kid: string,
+    lesson: string,
+): import("./teaching-session").TeachingGateway {
+    const base = `/api/kid/${kid}/tutoring`;
+    return {
+        start: (id, material, preferences) =>
+            call("POST", `${base}/start`, { id, material, preferences, lesson }),
+        load: (id) => call("GET", `${base}/${id}`),
+        turn: (id, command) => call("POST", `${base}/${id}/turn`, command),
+        audio: async (id, revision, signal) => {
+            const credential = kidCredential();
+            const response = await fetch(`${base}/${id}/audio`, {
+                method: "POST",
+                signal,
+                headers: {
+                    "content-type": "application/json",
+                    ...(credential ? { "x-kid-session": credential } : {}),
+                },
+                body: JSON.stringify({ revision }),
+            });
+            return response.ok && response.status !== 204 ? response.blob() : null;
+        },
+    };
 }

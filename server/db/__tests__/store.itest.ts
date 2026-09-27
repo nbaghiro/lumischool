@@ -222,12 +222,15 @@ const SAMPLE: { [K in EventKind]: EventData[K] } = {
     exported: {},
 };
 
+type Stamp = Omit<Envelope, "kind" | "data">;
+type EnvelopeOf<K extends EventKind> = { [P in K]: Stamp & { kind: P; data: EventData[P] } }[K];
+
 let nextId = 1000;
 function envelope<K extends EventKind>(
     kind: K,
     seq: number,
-    over: Partial<Envelope> = {},
-): Envelope {
+    over: Partial<Stamp> = {},
+): EnvelopeOf<K> {
     return {
         id: kind === "game-attempted" ? SAMPLE["game-attempted"].id : u(nextId++),
         family_id: F,
@@ -239,7 +242,7 @@ function envelope<K extends EventKind>(
         seq,
         at: "2026-09-14T09:12:00.000Z",
         ...over,
-    } as Envelope;
+    };
 }
 
 /**
@@ -319,6 +322,14 @@ async function fixtures(
 
 const inF = { family: F, user: NAIB };
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
+const said = (v: unknown, key: string): string => {
+    const text = isRecord(v) ? v[key] : undefined;
+    return typeof text === "string" ? text : "";
+};
+
 async function refused(work: Promise<unknown>, code: string, match?: RegExp): Promise<void> {
     await assert.rejects(work, (error: unknown) => {
         assert.equal(codeOf(error), code, String(error));
@@ -326,13 +337,9 @@ async function refused(work: Promise<unknown>, code: string, match?: RegExp): Pr
             // The rule's name is in the message for a constraint, and in constraint_name for a trigger
             // that raises on its behalf.
             // At commit the driver's own error arrives unwrapped, so the name can be on either.
-            const e = error as {
-                message?: string;
-                constraint_name?: string;
-                cause?: { message?: string; constraint_name?: string };
-            };
+            const cause = isRecord(error) ? error.cause : undefined;
             assert.match(
-                `${e.message} ${e.constraint_name ?? ""} ${e.cause?.message ?? ""} ${e.cause?.constraint_name ?? ""}`,
+                `${said(error, "message")} ${said(error, "constraint_name")} ${said(cause, "message")} ${said(cause, "constraint_name")}`,
                 match,
             );
         }

@@ -84,6 +84,9 @@ export function open(url: string = ownerUrl()): Store {
     return connect(url);
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 /**
  * Whether the owner can reach the database, and the reason when it cannot. The tests use this to skip
  * cleanly rather than fail when there is no Docker.
@@ -95,7 +98,8 @@ export async function reachable(url: string = ownerUrl()): Promise<string | null
         return null;
     } catch (error) {
         // A refused connection carries its reason in `code` and an empty `message`.
-        return (error as { code?: string }).code || (error as Error).message || "unreachable";
+        const code = isRecord(error) && typeof error.code === "string" ? error.code : "";
+        return code || (error instanceof Error ? error.message : "") || "unreachable";
     } finally {
         await probe.end({ timeout: 2 });
     }
@@ -103,7 +107,7 @@ export async function reachable(url: string = ownerUrl()): Promise<string | null
 
 export type Tx = Parameters<Parameters<Database["transaction"]>[0]>[0];
 
-declare const inFamily: unique symbol;
+const inFamily: unique symbol = Symbol("inFamily");
 
 /**
  * A transaction that `withFamily` opened. The store's own operations take this type rather than a
@@ -150,7 +154,7 @@ export async function withFamily<T>(scope: Scope, work: (tx: FamilyTx) => Promis
         await tx.execute(
             sql`select set_config('app.family', ${scope.family ?? ""}, true), set_config('app.user', ${scope.user ?? ""}, true), set_config('statement_timeout', ${statement}, true)`,
         );
-        return work(tx as FamilyTx);
+        return work(Object.assign(tx, { [inFamily]: true as const }));
     });
 }
 

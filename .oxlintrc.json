@@ -54,7 +54,8 @@
             {
                 "ignorePackages": true,
                 "checkTypeImports": true,
-                "css": "always"
+                "css": "always",
+                "json": "always"
             }
         ],
         "no-unused-vars": [
@@ -81,6 +82,7 @@
         "typescript/no-unsafe-return": "error",
         "typescript/no-unsafe-argument": "error",
         "typescript/no-unnecessary-type-assertion": "error",
+        "typescript/no-unsafe-type-assertion": "error",
         "typescript/no-floating-promises": [
             "error",
             {

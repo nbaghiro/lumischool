@@ -21,6 +21,9 @@ export interface Shelf {
     size(ref: string, scale: number, params?: Record<string, unknown>): { w: number; h: number };
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 const loading = new Map<string, Promise<Drawing<unknown> | undefined>>();
 const held = new Map<string, Drawing<unknown>>();
 
@@ -39,7 +42,7 @@ export function sizeFrom(
     scale: number,
     params?: Record<string, unknown>,
 ): { w: number; h: number } {
-    const b = d.box({ ...(d.params as Record<string, unknown>), ...params });
+    const b = d.box({ ...(isRecord(d.params) ? d.params : {}), ...params });
     return { w: b.w * U * scale, h: b.h * U * scale };
 }
 

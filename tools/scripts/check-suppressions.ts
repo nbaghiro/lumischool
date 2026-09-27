@@ -149,6 +149,8 @@ if (broken.length) {
 // Untracked files count: a suppression is caught before it is ever committed.
 const listed = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], {
     encoding: "utf8",
+    // the map's published tiles are thousands of untracked files a version, which pass Node's 1 MB default
+    maxBuffer: 256 * 1024 * 1024,
 })
     .split("\n")
     .filter((f) => SCANNED.test(f) && existsSync(f));

@@ -95,10 +95,16 @@ export async function truncate(owner: Store): Promise<void> {
     );
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 /** The Postgres error code of a rejected query, for asserting which rule refused it. */
 export function codeOf(error: unknown): string | undefined {
-    const e = error as { code?: string; cause?: { code?: string } };
-    return e.code ?? e.cause?.code;
+    if (!isRecord(error)) return undefined;
+    if (typeof error.code === "string") return error.code;
+    return isRecord(error.cause) && typeof error.cause.code === "string"
+        ? error.cause.code
+        : undefined;
 }
 
 /** Codes the tests assert on. */

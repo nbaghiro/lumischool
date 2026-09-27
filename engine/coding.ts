@@ -17,6 +17,7 @@ export type Colour = (typeof COLOURS)[number];
 
 const DANCES = ["clap", "jump", "spin", "wave", "stamp", "hop", "bow"] as const;
 export type Dance = (typeof DANCES)[number];
+const isDance = (w: string): w is Dance => (DANCES as readonly string[]).includes(w);
 
 export type Event = "flag" | "tap";
 
@@ -225,7 +226,8 @@ export function readCond(text: string): Cond | null {
         return { k: "here", what: "gem" };
     if (/^(at flag|on flag|flag here|at a flag)$/.test(s)) return { k: "here", what: "flag" };
     const on = /^(?:on|square is|standing on) (\w+)$/.exec(s);
-    if (on && colourOf(on[1])) return { k: "here", what: colourOf(on[1]) as Colour };
+    const onColour = on ? colourOf(on[1]) : null;
+    if (onColour) return { k: "here", what: onColour };
     // "the number is more than 5" reads the variable called number
     const ns = ws.length && (isName(ws[0] ?? "") || /^-?\d+$/.test(ws[0] ?? "")) ? ws : [];
     for (const [phrase, op] of CMP) {
@@ -352,11 +354,9 @@ function readLine(text: string, line: number, procs: Set<string>): Head | string
         return { h: "step", step: { t: "pick", line } };
 
     // moving to music, and making a sound
-    if ((DANCES as readonly string[]).includes(w0)) {
+    if (isDance(w0)) {
         const n = count(ws.slice(1), w0);
-        return typeof n === "string"
-            ? n
-            : { h: "step", step: { t: "dance", move: w0 as Dance, n, line } };
+        return typeof n === "string" ? n : { h: "step", step: { t: "dance", move: w0, n, line } };
     }
     if (w0 === "play") {
         const note = raw.split(/\s+/)[1] ?? "";
@@ -677,13 +677,13 @@ export function mazeWorld(o: {
     let start = { col: o.col, row: o.row };
     rows.forEach((r, ri) =>
         Array.from(r).forEach((ch, ci) => {
-            const k = keyOf(w, ci + 1, ri + 1);
+            const k = keyOf(w, ci + 1, ri + 1),
+                colour = colourOf(ch.toLowerCase());
             if (ch === "#" || ch === "~") w.blocked.add(k);
             else if (ch === "*") w.gems.add(k);
             else if (ch === "F" || ch === "f") w.flag = k;
             else if (ch === "S" || ch === "s") start = { col: ci + 1, row: ri + 1 };
-            else if (colourOf(ch.toLowerCase()) && ch !== "." && ch.toLowerCase() !== "w")
-                w.colours.set(k, colourOf(ch.toLowerCase()) as Colour);
+            else if (colour && ch !== "." && ch.toLowerCase() !== "w") w.colours.set(k, colour);
         }),
     );
     const inside = (c: { col: number; row: number }) =>
@@ -1168,7 +1168,7 @@ export function outcome(r: Run, p: Program, w: World, spec: string): number | st
     if (after) {
         const f = r.frames[Number(after[1]) - 1];
         const st = f ? f.state : r.end;
-        return after[2] === "face" ? st.face : st[after[2] as "col" | "row"];
+        return after[2] === "face" ? st.face : after[2] === "col" ? st.col : st.row;
     }
     const afterName = /^after\((\d+)\)\.([a-z][a-z0-9_]*)$/.exec(s);
     if (afterName) {

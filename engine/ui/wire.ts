@@ -188,6 +188,14 @@ export function readChildRecord(v: unknown): ChildRecord | null {
     return { today: v.today, start: v.start, tracks, years, plan, unfinished, worlds };
 }
 
+/** One child's record as the API answers it, with the child and the pack's digest beside it. */
+export function readKidRecord(v: unknown): KidRecord | null {
+    if (!obj(v)) return null;
+    const kid = readKid(v.kid);
+    const record = readChildRecord(v);
+    return kid && str(v.pack) && record ? { kid, pack: v.pack, ...record } : null;
+}
+
 /**
  * One request. A POST always sends JSON, `{}` when there is nothing to say, because the API refuses a
  * body of any other type. The credential is whichever cookie the browser holds, which script never
@@ -198,10 +206,11 @@ export async function call(
     path: string,
     body?: unknown,
     extra: Record<string, string> = {},
+    signal?: AbortSignal,
 ): Promise<Answer> {
     const headers: Record<string, string> = { accept: "application/json", ...extra };
     if (method === "POST") headers["content-type"] = "application/json";
-    const init: RequestInit = { method, headers, credentials: "same-origin" };
+    const init: RequestInit = { method, headers, credentials: "same-origin", signal };
     if (method === "POST") init.body = JSON.stringify(body ?? {});
     let res: Response;
     try {

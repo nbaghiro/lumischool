@@ -15,6 +15,9 @@ import { guide } from "./guide";
 import { picturesOf, PICTURES, pictureOf } from "./pictures";
 import { render } from "./svg";
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 /** The player the page's own drawings idle on, calmly, as the sign-in designs have it: one group for the page. */
 let calmGroup: Promise<import("./animate").Group> | null = null;
 const calm = (): Promise<import("./animate").Group> =>
@@ -58,7 +61,11 @@ export async function drawKid(
     if (!picture || !d) return;
     await idle();
     const box = { w: host.clientWidth, h: host.clientHeight };
-    const out = render(d, { ...(d.params as object), ...picture.params }, { host, seed: o.seed });
+    const out = render(
+        d,
+        { ...(isRecord(d.params) ? d.params : {}), ...picture.params },
+        { host, seed: o.seed },
+    );
     const w = out.box.w * U,
         h = out.box.h * U;
     if (!w || !box.w || !box.h) return;

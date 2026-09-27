@@ -147,6 +147,9 @@ async function writeFamily(family: string, parent: string, kid: string): Promise
 
 /** B's row ids per table, read by the owner, which is the one role that can see them all. */
 let bRows: Record<(typeof TABLES)[number], string[]> = {
+    tutoring_sessions: [],
+    tutoring_turns: [],
+    tutoring_usage: [],
     artworks: [],
     painting_saves: [],
     mail_preferences: [],
@@ -228,6 +231,9 @@ describe("isolation between families", { skip: reason ?? false }, () => {
 
         const ids = async (q: Promise<{ id: string }[]>) => (await q).map((r) => r.id);
         bRows = {
+            tutoring_sessions: [],
+            tutoring_turns: [],
+            tutoring_usage: [],
             artworks: [],
             painting_saves: [],
             mail_preferences: [],
@@ -259,6 +265,9 @@ describe("isolation between families", { skip: reason ?? false }, () => {
     async function everything(tx: FamilyTx) {
         const ids = async (q: Promise<{ id: string }[]>) => (await q).map((r) => r.id).sort();
         return {
+            tutoring_sessions: [],
+            tutoring_turns: [],
+            tutoring_usage: [],
             artworks: await ids(tx.select({ id: artworks.id }).from(artworks)),
             painting_saves: await ids(tx.select({ id: paintingSaves.id }).from(paintingSaves)),
             families: await ids(tx.select({ id: families.id }).from(families)),
@@ -503,6 +512,9 @@ describe("isolation between families", { skip: reason ?? false }, () => {
                 keys: [],
                 events: [],
                 content: [catalogueRow],
+                tutoring_sessions: [],
+                tutoring_turns: [],
+                tutoring_usage: [],
                 artworks: [],
                 painting_saves: [],
                 mail_preferences: [],

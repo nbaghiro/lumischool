@@ -60,8 +60,11 @@ import { el, render, SvgPen as Pen } from "./svg";
 interface Resolved {
     ref: ArtRef;
     v: Drawing<unknown>;
-    params: unknown;
+    params: Record<string, unknown>;
 }
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
 
 const CROP_STAGE: Record<Season, number> = { winter: 0, spring: 1, summer: 3, autumn: 4 };
 
@@ -79,13 +82,12 @@ function resolve(
     const v = drawingOf(artKey(ref));
     if (!v) return null;
     if (ref.from === "file") return { ref, v, params: { flip: false } };
-    const params =
+    const params: Record<string, unknown> =
         ref.ref === "seasontrees"
             ? { seasons: [season ?? "summer"], names: 0 }
-            : { ...(v.params as object), ...ref.params, ...extra };
+            : { ...(isRecord(v.params) ? v.params : {}), ...ref.params, ...extra };
     // a field of crops is the farm's tree through the year: sown, up, ripe and cut as its seasons turn
-    if (ref.ref === "crops" && season && !extra?.stage)
-        (params as Record<string, unknown>).stage = CROP_STAGE[season];
+    if (ref.ref === "crops" && season && !extra?.stage) params.stage = CROP_STAGE[season];
     return { ref, v, params };
 }
 
@@ -127,14 +129,14 @@ export function placeArt(
         key = artKey(r.ref);
     // A hand-drawn file mirrors itself and puts its lettering back; a coded drawing turns round only
     // if it has a way to face, because a mirrored label is not something a child should have to read.
-    const own = r.params as Record<string, unknown>;
+    const own = r.params;
     const params =
         r.ref.from === "file"
             ? { flip: !!o.flip }
             : o.flip && typeof own.facing === "number"
               ? { ...own, facing: -own.facing }
               : own;
-    const out = render(r.v, params as never, { host, seed: o.seed });
+    const out = render(r.v, params, { host, seed: o.seed });
     const b = out.box,
         w = b.w * U * r.ref.scale,
         h = b.h * U * r.ref.scale;
@@ -4892,7 +4894,7 @@ const PATHS: Record<PathKind, Path> = {
             const v = drawingOf("buoy");
             const stand = (q: Sample, off: number, kind: string, seed: number): void => {
                 if (!v) return;
-                const own = v.params as Record<string, unknown>;
+                const own = isRecord(v.params) ? v.params : {};
                 const out = render(
                     v,
                     { ...own, kind, sea: 0, light: kind === "bell" ? 1 : 0 },

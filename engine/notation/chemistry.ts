@@ -746,7 +746,7 @@ const rockHas = (kind: string, prop: string): boolean | null => {
     const not = prop.startsWith("not-");
     const name = not ? prop.slice(4) : prop;
     const rock = ROCKS[kind];
-    const v = rock && name in rock.is ? rock.is[name as keyof typeof rock.is] : undefined;
+    const v = rock ? Object.entries(rock.is).find(([k]) => k === name)?.[1] : undefined;
     return v === undefined ? null : v !== not;
 };
 

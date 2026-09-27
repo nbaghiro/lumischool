@@ -5,14 +5,19 @@ import { open, ownerUrl } from "../client";
 
 const FOLDER = fileURLToPath(new URL(".", import.meta.url));
 
-interface Journal {
-    entries: { idx: number; tag: string }[];
-}
-
 /** What the tree says the full set of migrations is, from the journal drizzle-kit writes. */
 export function migrationTags(folder = FOLDER): string[] {
-    const journal = JSON.parse(readFileSync(`${folder}/meta/_journal.json`, "utf8")) as Journal;
-    return journal.entries.map((e) => e.tag);
+    const journal: unknown = JSON.parse(readFileSync(`${folder}/meta/_journal.json`, "utf8"));
+    const entries =
+        typeof journal === "object" && journal !== null && "entries" in journal
+            ? journal.entries
+            : null;
+    if (!Array.isArray(entries)) throw new Error(`${folder}/meta/_journal.json has no entries`);
+    return entries.map((e: unknown) => {
+        const tag = typeof e === "object" && e !== null && "tag" in e ? e.tag : null;
+        if (typeof tag !== "string") throw new Error(`${folder}/meta/_journal.json has an entry with no tag`);
+        return tag;
+    });
 }
 
 /** Applies pending migrations. Returns the tags the tree holds, applied or already there. */

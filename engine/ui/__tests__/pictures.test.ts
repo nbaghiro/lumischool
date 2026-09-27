@@ -4,6 +4,9 @@ import { loaderOf } from "../../parts/catalog";
 import { artKey } from "../../space";
 import { PICTURES, picturesOf } from "../pictures";
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 const CREATURES = PICTURES.map((p) => p.id);
 const drawable = (id: string): boolean => CREATURES.includes(id);
 
@@ -59,7 +62,7 @@ describe("every creature's drawing", () => {
             const load = loaderOf(key);
             assert.ok(load, `${p.id} is not a catalogue drawing at ${key}`);
             const d = await load();
-            const box = d.box({ ...(d.params as object), ...p.params });
+            const box = d.box({ ...(isRecord(d.params) ? d.params : {}), ...p.params });
             assert.ok(box.w > 0 && box.h > 0, `${p.id} draws nothing at ${key}`);
         }
     });

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, describe, it } from "node:test";
 import { open, ownerUrl, type Store } from "../client";
+import { TABLES } from "../schema";
 import { apply } from "../migrations/migrate";
 import { must, prepare } from "./test-db";
 
@@ -13,11 +14,48 @@ const name = `lumischool_migration_${process.pid}`;
 const password = "local_migration_test";
 const dir = mkdtempSync(join(tmpdir(), "lumischool-migrations-"));
 cpSync(new URL("../migrations/", import.meta.url), dir, { recursive: true });
-const journal = JSON.parse(readFileSync(join(dir, "meta/_journal.json"), "utf8")) as {
+interface Entry {
+    idx: number;
     version: string;
-    dialect: string;
-    entries: { idx: number; version: string; when: number; tag: string; breakpoints: boolean }[];
-};
+    when: number;
+    tag: string;
+    breakpoints: boolean;
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
+function readEntry(v: unknown): Entry {
+    if (
+        isRecord(v) &&
+        typeof v.idx === "number" &&
+        typeof v.version === "string" &&
+        typeof v.when === "number" &&
+        typeof v.tag === "string" &&
+        typeof v.breakpoints === "boolean"
+    )
+        return {
+            idx: v.idx,
+            version: v.version,
+            when: v.when,
+            tag: v.tag,
+            breakpoints: v.breakpoints,
+        };
+    throw new Error("the migrations journal has an entry it cannot read");
+}
+
+function readJournal(v: unknown): { version: string; dialect: string; entries: Entry[] } {
+    if (
+        isRecord(v) &&
+        typeof v.version === "string" &&
+        typeof v.dialect === "string" &&
+        Array.isArray(v.entries)
+    )
+        return { version: v.version, dialect: v.dialect, entries: v.entries.map(readEntry) };
+    throw new Error("the migrations journal cannot be read");
+}
+
+const journal = readJournal(JSON.parse(readFileSync(join(dir, "meta/_journal.json"), "utf8")));
 const baseCount = journal.entries.length;
 const baseTime = must(journal.entries.at(-1), "initial migration").when;
 let url = "";
@@ -68,7 +106,7 @@ describe("forward migrations on an ordinary Postgres owner", { skip: reason ?? f
         await apply(url, dir);
         const tables = await db().raw`select relname, relrowsecurity, relforcerowsecurity
             from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r'`;
-        assert.equal(tables.length, 11);
+        assert.equal(tables.length, TABLES.length);
         assert.ok(tables.every((t) => t.relrowsecurity && t.relforcerowsecurity));
         const [fn] = await db()
             .raw`select to_regprocedure('kid_login_lookup(text,text,text,text)') as name`;
