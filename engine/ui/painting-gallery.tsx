@@ -2,7 +2,11 @@ import { createResource, createSignal, onMount, onCleanup, For, Show, type JSX }
 import type { Picture } from "../painting";
 import { isPicture } from "../painting";
 import type { ArtworkSummary } from "../../server/api";
-import { Select } from "./select";
+import type { Kid } from "../../server/db/schema";
+import { Button } from "./form";
+import { Field } from "./fields";
+import { Portrait } from "./kids";
+import { Say } from "./say";
 import { Dialog, CloseX } from "./dialog";
 import { PaintingWorkspace, type PaintingLayout } from "./painting";
 import { IDEAS } from "./painting-ideas";
@@ -24,11 +28,11 @@ export function PaintingGallery(props: {
     identityKey: string;
     /** Which arrangement the easel is laid out in; the gallery itself is the same in every one. */
     layout?: PaintingLayout;
-    children: readonly { id: string; name: string }[];
+    children: readonly Kid[];
 }): JSX.Element {
     const [child, setChild] = createSignal("");
     const scope = () => ({ kid_id: child() || null });
-    const [message, setMessage] = createSignal("");
+    const [said, setSaid] = createSignal<{ text: string; tone: "success" | "error" }>();
     const [busy, setBusy] = createSignal(false);
     const [editor, setEditor] = createSignal<{
         document: Picture;
@@ -84,6 +88,11 @@ export function PaintingGallery(props: {
     onCleanup(() => window.removeEventListener("painting-saved", saved));
     const visible = () => (gallery()?.owner === child() ? gallery() : undefined);
     const ownerName = () => props.children.find((kid) => kid.id === child())?.name;
+    /** The line under the name: what is happening, or what to do with the pictures under it. */
+    const lead = (): string => {
+        if (gallery.loading) return "Opening your pictures…";
+        return visible()?.artworks.length ? "Open a picture to go on painting it." : "";
+    };
     const fresh = (): Picture => ({
         version: 1,
         id: crypto.randomUUID(),
@@ -115,11 +124,14 @@ export function PaintingGallery(props: {
         if (busy()) return;
         actionScope = scope();
         setBusy(true);
-        setMessage("");
+        setSaid(undefined);
         try {
             await action();
         } catch {
-            setMessage("That did not save. Your picture is still here. Please try again.");
+            setSaid({
+                text: "That did not save. Your picture is still here. Please try again.",
+                tone: "error",
+            });
         } finally {
             setBusy(false);
         }
@@ -155,9 +167,33 @@ export function PaintingGallery(props: {
         return result;
     };
     const Notice = (): JSX.Element => (
-        <Show when={message()}>
-            <p role="alert">{message()}</p>
+        <Show when={said()}>
+            {(line) => (
+                <Say
+                    text={line().text}
+                    tone={line().tone}
+                    dismissible
+                    onDismiss={() => setSaid(undefined)}
+                />
+            )}
         </Show>
+    );
+    /** Whose pictures, asked as the calendar asks it: a chip each, the child's own stamp beside their name. */
+    const Chip = (chip: { who: string; name: string; kid?: Kid }): JSX.Element => (
+        <button
+            type="button"
+            class="btn second pick"
+            aria-pressed={child() === chip.who}
+            aria-disabled={busy() ? true : undefined}
+            onClick={() => {
+                if (busy()) return;
+                setChild(chip.who);
+                setSaid(undefined);
+            }}
+        >
+            <Show when={chip.kid}>{(kid) => <Portrait kid={kid()} kids={props.children} />}</Show>
+            {chip.name}
+        </button>
     );
     const legacy = (): Picture[] => {
         const read = (key: string): Record<string, unknown> => {
@@ -219,9 +255,10 @@ export function PaintingGallery(props: {
                 localStorage.setItem(key, "done");
             }
             setImporting(false);
-            setMessage(
-                "Your device pictures are now in this gallery. The originals are still on this device.",
-            );
+            setSaid({
+                text: "Your device pictures are now in this gallery. The originals are still on this device.",
+                tone: "success",
+            });
         });
     onMount(async () => {
         const drafts = await loadPaintingRecovery(props.identityKey, scope()).catch(() => []);
@@ -263,50 +300,41 @@ export function PaintingGallery(props: {
                         }}
                     >
                         <CloseX onClose={() => setShelf(false)} />
-                        <header class="painting-gallery-heading">
-                            <div>
-                                <p class="eyebrow">A little room to make</p>
-                                <h1>{ownerName() ? `${ownerName()}’s pictures` : "My pictures"}</h1>
+                        <header class="painting-gallery-head">
+                            <div class="painting-gallery-headline">
+                                <p class="kicker">Your family's paintings</p>
+                                <h2 class="postcard-title">
+                                    {ownerName() ? `${ownerName()}’s pictures` : "My pictures"}
+                                </h2>
+                                <output class="note">{lead()}</output>
                             </div>
                             <div class="painting-gallery-doing">
-                                <label>
-                                    Whose pictures
-                                    <Select
-                                        value={child()}
-                                        disabled={busy()}
-                                        onChange={(event) => {
-                                            setChild(event.currentTarget.value);
-                                            setMessage("");
-                                        }}
-                                    >
-                                        <option value="">My paintings</option>
+                                <Show when={props.children.length}>
+                                    <fieldset class="painting-gallery-who">
+                                        <legend class="sr">Whose pictures</legend>
+                                        <Chip who="" name="My paintings" />
                                         <For each={props.children}>
-                                            {(kid) => <option value={kid.id}>{kid.name}</option>}
+                                            {(kid) => (
+                                                <Chip who={kid.id} name={kid.name} kid={kid} />
+                                            )}
                                         </For>
-                                    </Select>
-                                </label>
-                                <button
-                                    class="painting-gallery-start"
-                                    onClick={() => openEditor(fresh(), 0)}
-                                >
-                                    New painting
-                                </button>
+                                    </fieldset>
+                                </Show>
+                                <Button onClick={() => openEditor(fresh(), 0)}>New painting</Button>
                             </div>
                         </header>
-                        <Show when={message()}>
-                            <output class="painting-gallery-notice">{message()}</output>
-                        </Show>
-                        <Show when={gallery.loading}>
-                            <output>Opening your pictures…</output>
-                        </Show>
+                        <Notice />
                         <Show when={visible()?.error}>
-                            <p role="alert" class="painting-gallery-notice">
-                                {visible()?.error}{" "}
-                                <button onClick={() => void refetch()}>Try again</button>
-                            </p>
+                            {(text) => (
+                                <Say
+                                    tone="error"
+                                    text={text()}
+                                    action={{ label: "Try again", run: () => void refetch() }}
+                                />
+                            )}
                         </Show>
                         <Show when={!gallery.loading && visible() && !visible()?.artworks.length}>
-                            <p class="painting-gallery-empty">
+                            <p class="note painting-gallery-empty">
                                 No pictures here yet. Start a new painting and it will appear.
                             </p>
                         </Show>
@@ -400,8 +428,9 @@ export function PaintingGallery(props: {
                         </div>
                         <Show when={visible()?.next}>
                             <button
-                                disabled={busy()}
-                                class="painting-import"
+                                type="button"
+                                class="btn second"
+                                aria-disabled={busy() ? true : undefined}
                                 ref={watchMore}
                                 onClick={() => void morePictures()}
                             >
@@ -414,6 +443,8 @@ export function PaintingGallery(props: {
                                 <For each={visible()?.recovery}>
                                     {(entry) => (
                                         <button
+                                            type="button"
+                                            class="link"
                                             onClick={() =>
                                                 openEditor(entry.document, entry.revision, entry)
                                             }
@@ -425,7 +456,7 @@ export function PaintingGallery(props: {
                             </details>
                         </Show>
                         <Show when={localPictures().length}>
-                            <button class="painting-import" onClick={() => setImporting(true)}>
+                            <button type="button" class="link" onClick={() => setImporting(true)}>
                                 Bring in pictures saved on this device
                             </button>
                         </Show>
@@ -461,7 +492,7 @@ export function PaintingGallery(props: {
                     <Dialog onClose={() => setPreview(undefined)}>
                         <section class="postcard painting-gallery-dialog">
                             <CloseX onClose={() => setPreview(undefined)} />
-                            <h2>{item().document.title}</h2>
+                            <h2 class="painting-gallery-name">{item().document.title}</h2>
                             <img
                                 src={
                                     previewImage()?.id === item().document.id
@@ -470,9 +501,8 @@ export function PaintingGallery(props: {
                                 }
                                 alt={item().document.title}
                             />
-                            <div class="painting-gallery-actions">
-                                <button
-                                    class="primary"
+                            <div class="acts">
+                                <Button
                                     onClick={() => {
                                         openEditor(
                                             item().document,
@@ -484,12 +514,14 @@ export function PaintingGallery(props: {
                                     }}
                                 >
                                     Continue painting
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    second
+                                    busy={busy()}
                                     onClick={() => void run(() => downloadPicture(item().document))}
                                 >
                                     Download
-                                </button>
+                                </Button>
                             </div>
                         </section>
                     </Dialog>
@@ -529,19 +561,20 @@ export function PaintingGallery(props: {
                                     if (!busy()) setRename(undefined);
                                 }}
                             />
-                            <h2>A name for your picture</h2>
+                            <h2 class="painting-gallery-name">A name for your picture</h2>
                             <Notice />
-                            <label>
-                                Painting name
-                                <input
-                                    value={title()}
-                                    maxLength={70}
-                                    onInput={(event) => setTitle(event.currentTarget.value)}
-                                />
-                            </label>
-                            <button type="submit" disabled={busy()}>
-                                Keep name
-                            </button>
+                            <Field
+                                label="Painting name"
+                                name="title"
+                                value={title()}
+                                maxlength={70}
+                                onInput={setTitle}
+                            />
+                            <div class="acts">
+                                <Button submit busy={busy()}>
+                                    Keep name
+                                </Button>
+                            </div>
                         </form>
                     </Dialog>
                 )}
@@ -559,16 +592,18 @@ export function PaintingGallery(props: {
                                     if (!busy()) setRemove(undefined);
                                 }}
                             />
-                            <h2>Delete this picture?</h2>
+                            <h2 class="painting-gallery-name">Delete this picture?</h2>
                             <Notice />
                             <p>
                                 {item().title} will be removed from this gallery. This cannot be
                                 undone.
                             </p>
-                            <div class="painting-gallery-actions">
-                                <button onClick={() => setRemove(undefined)}>Keep picture</button>
-                                <button
-                                    disabled={busy()}
+                            <div class="acts">
+                                <Button second onClick={() => setRemove(undefined)}>
+                                    Keep picture
+                                </Button>
+                                <Button
+                                    busy={busy()}
                                     onClick={() =>
                                         void run(async () => {
                                             const result = await props.gateway.remove(
@@ -588,7 +623,7 @@ export function PaintingGallery(props: {
                                     }
                                 >
                                     Delete picture
-                                </button>
+                                </Button>
                             </div>
                         </section>
                     </Dialog>
@@ -598,18 +633,20 @@ export function PaintingGallery(props: {
                 <Dialog onClose={() => setImporting(false)}>
                     <section class="postcard painting-gallery-dialog">
                         <CloseX onClose={() => setImporting(false)} />
-                        <h2>Bring your pictures along</h2>
+                        <h2 class="painting-gallery-name">Bring your pictures along</h2>
                         <Notice />
                         <p>
                             Import {localPictures().length} pictures into{" "}
                             {ownerName() ? `${ownerName()}’s gallery` : "My paintings"}? Your device
                             originals will stay here too.
                         </p>
-                        <div class="painting-gallery-actions">
-                            <button disabled={busy()} onClick={() => void importPictures()}>
+                        <div class="acts">
+                            <Button busy={busy()} onClick={() => void importPictures()}>
                                 Import pictures
-                            </button>
-                            <button onClick={() => setImporting(false)}>Not now</button>
+                            </Button>
+                            <Button second onClick={() => setImporting(false)}>
+                                Not now
+                            </Button>
                         </div>
                     </section>
                 </Dialog>

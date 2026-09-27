@@ -8,6 +8,11 @@ import { glyph, mountEasel, readState, type EaselState, type Tool } from "./pain
 import { materialsUnderHand } from "./painting-hand";
 import type { PaintingLayout } from "./painting";
 
+/** The five a child reaches for first stand on the page at full size; the five that act on paint
+ *  already there sit on the tray beside them, one press away and visibly a different kind of thing. */
+const MAKING: Tool[] = ["pencil", "crayon", "marker", "water", "eraser"];
+const HELPERS: Tool[] = ["fill", "stamp", "stencil", "blend", "dropper"];
+
 export function mountPainting(
     root: HTMLElement,
     key: string,
@@ -238,21 +243,22 @@ export function mountPainting(
         true,
     );
     function refresh() {
-        const basics = $("basics");
-        const visible: Tool[] = ["pencil", "marker", "fill", "eraser"];
-        if (state && !visible.includes(state.tool)) visible.push(state.tool);
-        for (const child of basics.querySelectorAll<HTMLButtonElement>("button")) {
-            if (!visible.some((tool) => tool === child.dataset.choice)) child.remove();
-        }
-        for (const tool of visible) {
-            const b =
-                basics.querySelector<HTMLButtonElement>(`[data-choice="${tool}"]`) ??
-                toolButton(tool, basics);
-            b.setAttribute("aria-pressed", String(state?.tool === tool));
-            const source = root.querySelector(`[data-tool="${tool}"].ez-tool svg`);
-            if (source) {
-                b.querySelector("svg")?.remove();
-                b.prepend(source.cloneNode(true));
+        // The easel redraws each tool in the paint now in the hand, so the dock takes that drawing
+        // again on every refresh rather than keeping the one it was built with.
+        for (const rank of [
+            { host: $("basics"), tools: MAKING },
+            { host: $("helpers"), tools: HELPERS },
+        ]) {
+            for (const tool of rank.tools) {
+                const b =
+                    rank.host.querySelector<HTMLButtonElement>(`[data-choice="${tool}"]`) ??
+                    toolButton(tool, rank.host);
+                b.setAttribute("aria-pressed", String(state?.tool === tool));
+                const source = root.querySelector(`[data-tool="${tool}"].ez-tool svg`);
+                if (source) {
+                    b.querySelector("svg")?.remove();
+                    b.prepend(source.cloneNode(true));
+                }
             }
         }
         root.querySelectorAll<HTMLButtonElement>("#colours button").forEach((b) =>
@@ -337,6 +343,19 @@ export function mountPainting(
     }
     function showMaterials() {
         const host = show("Your materials");
+        // Stamp and stencil are chosen on the page, so the panel they open is the print itself and
+        // it comes before the rest of the table.
+        if (state?.tool === "stamp" || state?.tool === "stencil") {
+            for (const row of root.querySelectorAll<HTMLElement>(".ez-stamps"))
+                if (!row.hidden) host.append(row);
+            note(
+                host,
+                state.tool === "stamp"
+                    ? "Choose a print, then tap the paper. Tap the selected print again to flip it."
+                    : "Choose a shape, then tap the paper. Paint over it and lift the stencil to see your picture.",
+            );
+            button("Use this material", () => panel.close(), host).className = "primary";
+        }
         button("Paper & download", showPaper, host).className = "library-back";
         const extras = document.createElement("div");
         extras.className = "library-extras";
@@ -369,39 +388,6 @@ export function mountPainting(
                 showPictureOptions,
                 host,
             ).className = "library-current";
-        const toolsHeading = document.createElement("h3");
-        toolsHeading.textContent = "Draw and paint";
-        host.append(toolsHeading);
-        const grid = document.createElement("div");
-        grid.className = "material-grid";
-        host.append(grid);
-        for (const tool of [
-            "pencil",
-            "marker",
-            "crayon",
-            "water",
-            "eraser",
-            "blend",
-            "fill",
-            "dropper",
-            "stamp",
-            "stencil",
-        ] satisfies Tool[])
-            toolButton(tool, grid);
-        for (const row of root.querySelectorAll<HTMLElement>(".ez-stamps"))
-            if (!row.hidden) host.append(row);
-        if (state?.tool === "stamp")
-            note(
-                host,
-                "Choose a print, then tap the paper. Tap the selected print again to flip it.",
-            );
-        if (state?.tool === "stencil")
-            note(
-                host,
-                "Choose a shape, then tap the paper. Paint over it and lift the stencil to see your picture.",
-            );
-        if (state?.tool === "stamp" || state?.tool === "stencil")
-            button("Use this material", () => panel.close(), host).className = "primary";
         const heading = document.createElement("h3");
         heading.textContent = "Make a pattern";
         host.append(heading);

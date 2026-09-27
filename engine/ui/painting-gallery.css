@@ -1,38 +1,84 @@
-.painting-gallery-heading {
+/* The painting gallery (painting-gallery.tsx), a postcard lifted into a dialog over the painting
+   page: the head is the calendar's, a kicker, the name, a line under it and a chip row saying whose
+   pictures, and under it the pictures themselves. Light only, every target at least 44 px, and
+   nothing moves under reduced motion. */
+
+/* Four pictures at 190 px and their gaps, where a lifted card is otherwise 560 px wide. */
+.dialog:has(> .painting-gallery) {
+    width: min(1032px, 100vw);
+}
+.painting-gallery.postcard {
     display: flex;
+    flex-direction: column;
+    gap: var(--stack);
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    padding: var(--card-pad-top) var(--card-pad) var(--card-pad-bottom);
+    /* the room the dialog leaves round the card */
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+}
+
+/* A control of the gallery's own stands where it is written, not stretched across the card. */
+.painting-gallery > .btn,
+.painting-gallery > .link {
+    align-self: flex-start;
+}
+.painting-gallery-head {
+    display: flex;
+    flex-wrap: wrap;
     align-items: end;
-    justify-content: space-between;
-    gap: 24px;
+    gap: 12px 20px;
+    margin-bottom: var(--stack);
+    /* the close X in the card's corner */
+    padding-right: 44px;
 }
-.painting-gallery h1 {
-    margin: 4px 0;
-}
-.painting-gallery-heading label {
-    display: grid;
-    gap: 6px;
-    font-size: 14px;
-    background: var(--paper, white);
-    padding: 12px;
-    border-radius: 12px;
+.painting-gallery-headline {
+    display: flex;
+    flex: 1 1 240px;
+    flex-direction: column;
+    gap: var(--stack);
 }
 .painting-gallery-doing {
     display: flex;
-    align-items: end;
-    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin-left: auto;
 }
-.painting-gallery-start {
-    min-height: 44px;
-    padding: 0 18px;
-    background: var(--pen);
-    color: white;
-    font-weight: 700;
-    border: 0;
-    border-radius: 10px;
+/* Whose pictures is one chooser, drawn as the calendar draws its four views: a ring round the group,
+   so the button beside it does not read as another of the choices. */
+.painting-gallery-who {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 4px 6px;
+    border: 1.5px solid var(--grid);
+    border-radius: 999px;
 }
-.painting-gallery-grid {
-    gap: 8px;
+.painting-gallery-who .btn {
+    border-radius: 999px;
 }
+/* A child's chip carries their own stamp, so it gives up the padding the stamp takes. */
+.painting-gallery-who .btn:has(.kid-portrait) {
+    padding-left: 8px;
+}
+.painting-gallery-who .kid-portrait {
+    width: 30px;
+    height: 30px;
+}
+
 /* The pictures are the gallery: no card round them, only enough gap to part one from the next. */
+.painting-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr));
+    gap: 8px;
+    /* room for a picture's focus ring, which is drawn 2 px outside it */
+    padding: 4px 4px 12px;
+}
 .painting-item {
     position: relative;
     min-width: 0;
@@ -43,13 +89,14 @@
     padding: 0;
     border: 0;
     background: none;
+    cursor: pointer;
 }
 .painting-picture img {
     display: block;
     width: 100%;
     aspect-ratio: 3 / 2;
     object-fit: contain;
-    background: var(--paper, #fafafa);
+    background: var(--paper);
 }
 .painting-picture:hover img,
 .painting-picture:focus-visible img {
@@ -64,12 +111,12 @@
 .painting-picture-menu summary {
     display: grid;
     place-items: center;
-    cursor: pointer;
     width: 44px;
     height: 44px;
+    cursor: pointer;
     list-style: none;
     color: var(--ink);
-    background: color-mix(in srgb, var(--paper, white) 86%, transparent);
+    background: color-mix(in srgb, var(--card) 86%, transparent);
     border-radius: 10px;
 }
 .painting-picture-menu summary::-webkit-details-marker {
@@ -78,146 +125,91 @@
 .painting-picture-menu > div {
     position: absolute;
     right: 0;
+    bottom: 44px;
     z-index: 2;
-    width: 160px;
+    width: 168px;
     padding: 6px;
-    background: white;
-    border: 1px solid #dbe2ea;
+    background: var(--card);
+    border: 1.5px solid var(--rule-firm);
     border-radius: 10px;
-    box-shadow: 0 5px 18px #23272f22;
+    box-shadow: 0 5px 18px color-mix(in srgb, var(--ink) 22%, transparent);
 }
 .painting-picture-menu button {
     display: block;
     width: 100%;
     min-height: 44px;
-    border: 0;
+    padding: 0 10px;
+    font: 600 15px / 1.2 var(--f-read);
+    color: var(--ink);
     text-align: left;
-    background: white;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
 }
 .painting-picture-menu button:hover {
-    background: #edf3f8;
+    background: color-mix(in srgb, var(--sky) 20%, transparent);
 }
-.painting-gallery-empty {
-    margin: 20px 0 8px;
-    color: var(--ink-soft);
-}
-.painting-gallery-notice {
-    background: white;
-    padding: 16px;
-    border-radius: 8px;
-}
-.painting-import {
-    margin-top: 28px;
-    background: white;
-    min-height: 44px;
-}
-.painting-gallery-dialog {
-    padding: 32px;
-    width: 100%;
-    min-height: 0;
-    background: white;
+
+/* The drafts this device still holds, and the pictures it saved before there was a gallery: kept
+   quiet under the pictures, since neither is where a family starts. */
+.painting-drafts {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: flex-start;
+}
+.painting-drafts summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--t-small);
+    color: var(--ink-soft);
+    cursor: pointer;
+}
+
+/* A picture, a name, a deletion and an import, each on a card of its own over the gallery. */
+.painting-gallery-dialog.postcard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    min-height: 0;
+    padding: var(--card-pad-top) var(--card-pad) var(--card-pad-bottom);
+}
+.painting-gallery-dialog .painting-gallery-name {
+    padding-right: 44px;
+    font: 700 24px / 1.15 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+    letter-spacing: 0;
 }
 .painting-gallery-dialog > img {
     width: 100%;
     max-height: 50vh;
     object-fit: contain;
+    background: color-mix(in srgb, var(--grid) 26%, transparent);
+    border-radius: 4px;
 }
-.painting-gallery-dialog label {
-    display: grid;
-    gap: 8px;
-}
-.painting-gallery-dialog input {
-    min-height: 44px;
-}
-.painting-gallery-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-.painting-gallery-actions button {
-    min-height: 44px;
-}
-@media (max-width: 600px) {
-    .painting-gallery-heading {
-        gap: 12px;
+
+@media (max-width: 700px) {
+    .painting-gallery.postcard {
+        max-height: calc(100dvh - 24px);
+    }
+    .painting-gallery-doing {
+        margin-left: 0;
+    }
+    /* A phone takes the whole family over two rows, so the chooser takes the card's width and its
+       chips share each row evenly rather than leaving a ragged edge. A chip keeps its 44 px. */
+    .painting-gallery-who {
+        width: 100%;
+        border-radius: 26px;
+    }
+    .painting-gallery-who .btn {
+        flex: 1 1 auto;
+        min-height: 44px;
+        padding: 0 12px;
+        font-size: 14.5px;
     }
     .painting-gallery-grid {
         gap: 6px;
     }
-}
-.painting-gallery.postcard {
-    display: block;
-    width: 100%;
-    min-height: 0;
-    background: white;
-    max-width: none;
-    margin: 0;
-    padding: 28px;
-    max-height: calc(100dvh - 48px);
-    overflow-y: auto;
-}
-.painting-gallery-heading h1 {
-    font-size: 28px;
-}
-.painting-gallery-heading {
-    padding-right: 32px;
-}
-.painting-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr));
-    padding: 4px 4px 12px;
-}
-.painting-picture-menu > div {
-    bottom: 44px;
-}
-@media (max-width: 600px) {
-    .painting-gallery.postcard {
-        padding: 20px;
-    }
-    .painting-gallery-heading {
-        flex-direction: row;
-        align-items: center;
-    }
-    .painting-gallery-heading .eyebrow {
-        display: none;
-    }
-    .painting-gallery-heading h1 {
-        font-size: 22px;
-    }
-    .painting-gallery-heading label {
-        max-width: 48%;
-        font-size: 12px;
-        padding: 0;
-    }
-    .painting-gallery-grid {
-        margin-top: 16px;
-    }
-}
-
-.dialog:has(> .painting-gallery) {
-    width: min(1032px, 100vw);
-}
-.painting-gallery.postcard,
-.painting-gallery-dialog {
-    border-top: 5px solid var(--sun, #ffda48);
-}
-.painting-gallery h1,
-.painting-gallery-dialog h2 {
-    font-family: var(--f-hand);
-}
-.painting-gallery .eyebrow {
-    font-family: var(--f-mono);
-    font-size: 12px;
-    color: var(--pen);
-}
-
-.painting-drafts {
-    margin-top: 20px;
-}
-.painting-drafts button {
-    display: block;
-    margin-top: 8px;
 }

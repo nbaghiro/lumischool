@@ -95,7 +95,8 @@ export function PaintingWorkspace(props: {
                         </button>
                     </Show>
                     <div class="tool-line">
-                        <div id="basics"></div>
+                        <div id="basics" aria-label="What you draw with"></div>
+                        <div id="helpers" aria-label="More ways to paint"></div>
                         <button class="materials-button" id="materials">
                             <span aria-hidden="true">＋</span> Materials
                         </button>

@@ -167,10 +167,13 @@ test("signed-out visitors cannot open the painting workspace", async ({ page }) 
 });
 
 test("parent can manage a child gallery without changing their own pictures", async ({ page }) => {
+    // Whose pictures is a row of chips, one per child, as the calendar asks the same question.
+    const whose = (name: string) =>
+        page.locator(".painting-gallery-who").getByRole("button", { name, exact: true });
     await signInAs(page);
     await page.goto("/painting");
     await page.getByRole("button", { name: "Gallery", exact: true }).click();
-    await page.getByLabel("Whose pictures").selectOption({ label: "Rosie" });
+    await whose("Rosie").click();
     await page
         .locator(".painting-gallery")
         .getByRole("button", { name: "New painting", exact: true })
@@ -197,9 +200,9 @@ test("parent can manage a child gallery without changing their own pictures", as
     await page.locator(".painting-picture-menu summary").click();
     await page.getByRole("button", { name: "Make a copy", exact: true }).click();
     await expect(page.locator(".painting-item")).toHaveCount(2);
-    await page.getByLabel("Whose pictures").selectOption("");
+    await whose("My paintings").click();
     await expect(page.locator(".painting-item")).toHaveCount(0);
-    await page.getByLabel("Whose pictures").selectOption({ label: "Rosie" });
+    await whose("Rosie").click();
     await page.locator(".painting-picture-menu summary").first().click();
     await page.getByRole("button", { name: "Delete", exact: true }).first().click();
     await page.getByRole("button", { name: "Delete picture", exact: true }).click();
@@ -313,6 +316,84 @@ for (const width of [1440, 390])
         await room.getByRole("button", { name: "Undo", exact: true }).first().click();
         await expect(room.locator("#say")).toHaveText("Undone");
         await expect.poll(() => painted(page)).toBe(marks);
+    });
+
+const BAND =
+    "#basics button, #helpers button, #sizes button, #undo, #redo, #colours button, #mix-open, #materials";
+
+for (const width of [1440, 390])
+    test(`the materials at ${width}px are one slim band under the sheet with every tool on it`, async ({
+        page,
+    }) => {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+        await signInAs(page);
+        await page.goto("/painting");
+        const room = page.locator(".painting-room");
+        await expect(room.locator(".ez-sheet")).toBeVisible();
+        for (const name of [
+            "Pencil",
+            "Crayon",
+            "Felt pen",
+            "Watercolour",
+            "Eraser",
+            "Fill",
+            "Stamp",
+            "Stencil",
+            "Blend",
+            "Pick colour",
+        ]) {
+            const tool = room.locator(
+                `#basics [aria-label="${name}"], #helpers [aria-label="${name}"]`,
+            );
+            await expect(tool).toBeVisible();
+            const reach = await tool.boundingBox();
+            expect(reach?.width).toBeGreaterThanOrEqual(44);
+            expect(reach?.height).toBeGreaterThanOrEqual(44);
+        }
+        // the ten tools, the sizes, taking back and the ten colours all stand on the page
+        const band = room.locator(BAND);
+        await expect(band).toHaveCount(27);
+        const rows = await band.evaluateAll(
+            (nodes) => new Set(nodes.map((n) => Math.round(n.getBoundingClientRect().y))).size,
+        );
+        expect(rows).toBe(width === 1440 ? 1 : 4);
+        // and none of them is scrolled off an edge
+        expect(
+            await band.evaluateAll(
+                (nodes) =>
+                    nodes.filter((n) => {
+                        const r = n.getBoundingClientRect();
+                        return (
+                            r.right > innerWidth + 0.5 ||
+                            r.left < -0.5 ||
+                            r.bottom > innerHeight + 0.5
+                        );
+                    }).length,
+            ),
+        ).toBe(0);
+        const dock = await room.locator(".materials-dock").boundingBox();
+        const paper = await room.locator("#paper").boundingBox();
+        if (!dock || !paper) throw new Error("Painting layout missing");
+        expect(dock.height).toBeLessThanOrEqual(width === 1440 ? 70 : 200);
+        expect(dock.y).toBeGreaterThanOrEqual(paper.y + paper.height - 1);
+        // the sheet is the page, so it keeps most of the window's height
+        expect(paper.height / (width === 390 ? 844 : 900)).toBeGreaterThan(
+            width === 390 ? 0.55 : 0.75,
+        );
+        // the panel keeps the paper, the pictures and the patterns, and carries no tools
+        await room.locator("#materials").click();
+        await expect(room.locator("#drawer-content .material-tool")).toHaveCount(0);
+        await expect(
+            room.getByRole("button", { name: "Paper & download", exact: true }),
+        ).toBeVisible();
+        await page.keyboard.press("Escape");
+        // a tool taken from the band is the one that paints
+        await room.locator('#helpers [aria-label="Fill"]').click();
+        await room.locator('#colours [aria-label="blue paint"]').click();
+        const sheet = await room.locator(".ez-sheet").boundingBox();
+        if (!sheet) throw new Error("Missing sheet");
+        await page.mouse.click(sheet.x + sheet.width / 2, sheet.y + sheet.height / 2);
+        await expect.poll(() => painted(page)).toBeGreaterThan(0);
     });
 
 for (const width of [1440, 390])
