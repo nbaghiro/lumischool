@@ -393,17 +393,20 @@ in `engine/ui/overlay.tsx` from the views `apps/home/school.ts` builds, the shee
 
 ## The calendar and the plan
 
-Calendar now combines day planning and subject routines in one parent page. The separate Change
-the plan navigation entry and `/plan` route are removed. Subjects & pace opens at `/calendar?view=subjects`.
-The production page is `apps/home/calendar-planner.tsx`, using the app's postcards, lesson
-illustrations, subject markers, shared editing cards and real family log. The scratchpad remains
-an independent sample.
+Calendar is the one parent page for day planning and subject routines. The separate Change
+the plan navigation entry and `/plan` route are removed, and `/calendar` now renders the workspace
+that was behind `?v2`: the day, the week, the month and the term, with the lessons not yet placed on
+a shelf beside the week. Subjects, school days and term dates are the shared cards the head opens
+rather than views of their own. The production page is `apps/home/calendar-planner.tsx`, using the
+app's postcards, lesson illustrations, subject markers, shared editing cards and real family log.
+The scratchpad remains an independent sample.
 
 The week opens first, with a child filter, date navigation and a selected day's detail beside it.
 On phones the days stack and the detail follows them. The month also selects days for editing.
-Subjects & pace shows each child's subject progress, routine, world choices and, where a subject
-runs past the end of the current term, the catch-up line. Term dates and school days each open
-from one place, the header, and the catalogue is the Explore tab rather than a view of its own.
+The term shows each child's subjects, how many of each a week the plan holds and, where a subject
+runs past the end of the current term, the catch-up line; the world choices that Subjects & pace
+also held have no screen now. Term dates and school days each open from one place, the header, and
+the catalogue is the Explore tab rather than a view of its own.
 
 Week cells grow with their lessons, including uneven schedules across several children; the page
 scrolls normally instead of clipping cards or adding a scroll area inside each day. Month labels
@@ -423,7 +426,8 @@ weekday selection pauses it. The preview uses the same adaptive curriculum proje
 calendar. Individually placed sessions survive later routine changes. School days, days off,
 family activities and term dates use the existing shared cards. Making a day off parks its
 unfinished individually placed sessions in For later; generated sessions follow the day-off rule.
-World choices still use `Worlds` in `apps/home/plan.tsx` and the existing eligibility fold.
+World choices have no screen since `apps/home/plan.tsx` went with Change the plan; the eligibility
+fold stays and nothing writes a new choice.
 
 Changes append `plan-changed` events through the existing parent-authorized API. `session` is a
 snapshot of one placement, while `routine` changes the recurring projection from its effective
@@ -490,6 +494,36 @@ canvas. An empty state that is an answer rather than a load, such as "There is n
 invitation that is no longer available, stays a postcard, since it has something to say and
 somewhere to go next.
 
+## Moving between screens
+
+A move between the grown-ups' screens draws the next screen in the same frame when what it shows has
+been read before, and otherwise keeps the screen before on the page until the next can draw. Before
+this, every move emptied the page at once and each screen asked the API for everything again, so
+the map showed alone for between half a second and three seconds.
+
+The reads every screen shares (who is signed in, the family, the pack's index, each child's record
+and the family's events) are held while the app is open, in `apps/home/shared.ts` over
+`engine/ui/held.ts`. A read answers synchronously when it holds a value, which a Solid resource takes
+as resolved in the same pass, and asks again behind the screen, so a change made on another device
+shows on the next move. Any write the API accepts (`onWrite` in `engine/ui/wire.ts`) marks every
+held read stale, so the next read waits for the network while the screen keeps what it shows. The
+pack's lessons and first drawings are named by the pack's digest, so `api.ts` asks for each once. A
+screen reads through `createHeld(load, from)`, which asks again whenever one of `from` changes, and
+its loader returns a value rather than a promise when everything it needs is held (`after` and `both`
+in `held.ts`). The map keeps the school it builds from a pack (`schoolOnce`), and the calendar's
+`readFamilyLog` keeps its last fold while its reads are the same.
+
+The Router (`engine/ui/router.tsx`) keeps the screen on the page while the next one is made, in the
+document so its drawings read the page's colours but out of sight, and swaps them when the next one
+says it is ready with `useReady`, or after 700 ms, when it shows its own wait instead. `useLook` holds
+the next screen's look until the swap, so the map flies once the screen is up. The next screen's code
+is loaded before it is made, and every screen's code is loaded once the first screen is up and the
+page is idle. There is still no Suspense boundary round the screens, for the reason the Router's
+comment gives.
+
+A new screen reads through `shared.ts` rather than `api.ts`, uses `createHeld`, and calls `useReady`
+with whatever it needs before it can draw.
+
 ## Where it is now
 
 What the app builds is a composition of the three options rather than one of them: the home at `/` is
@@ -506,14 +540,15 @@ screens reads the family's own log through the routes in [api.md](api.md), and n
 counted or scored in anything a child sees.
 
 The screens are `apps/home/`: `home.tsx` with the cards and the morning, `mark.tsx` for marking a
-sheet that came back, `journal.tsx` for a child's roll, `explore.tsx`, `calendar.tsx` and `plan.tsx`,
+sheet that came back, `journal.tsx` for a child's roll, `explore.tsx` and `calendar-planner.tsx`,
 with `grown.ts` and `where.ts` holding what they work out and `engine/ui/grown.ts` the reads only they
-make. `tools/e2e/grown-ups.e2e.ts` covers all five at a laptop's, an iPad's and a phone's size.
+make. `tools/e2e/grown-ups.e2e.ts` covers them at a laptop's, an iPad's and a phone's size.
 
 What is designed here and not built: Friday's letters, the week spread, and "what else there is".
-A child's worlds are chosen in Calendar's Subjects & pace view, and the child's map, the home's card and roll, and the
-calendar's year all read the same fold of the family's choice from the child's record rather than
-anything in the kid's settings. The calendar's year names each child's world rather than drawing it, and the year is folded in
+A child's worlds have no screen that changes them, since the one that did went with Change the plan;
+the child's map, the home's card and roll, and the calendar's term all read the same fold of the
+family's choice from the child's record rather than anything in the kid's settings, and
+`school/family/chosen.ts` still folds the `world-chosen` events a family already has. The calendar's year names each child's world rather than drawing it, and the year is folded in
 the browser from the events themselves rather than on the way out, which [api.md](api.md) says when to
 change.
 
@@ -821,6 +856,5 @@ days rather than a verdict, and leaves out a mistake that came up only once. Bot
 - Whether a world picture on a stamp or a letterhead should be the world as the family changed it, as
   built, or always the world as it comes, so that two families' letters from the harbour look alike.
 
-The retired standalone Calendar and Change Plan screen implementations have been removed.
-`calendar.tsx` retains the current Calendar’s year and change-history sections; `plan.tsx` retains
-its world picker. Their shared styles remain only where the active Calendar uses them.
+The retired standalone Calendar and Change Plan screens are gone, `calendar.tsx` and `plan.tsx` with
+them, and the shared styles they used remain only where the calendar uses them.

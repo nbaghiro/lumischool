@@ -33,7 +33,8 @@ import { LessonSheet } from "../../engine/ui/lesson";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
 import { Postcard } from "../../engine/ui/postcard";
-import { go, Link, path, search } from "../../engine/ui/router";
+import { go, Link, path, search, useReady } from "../../engine/ui/router";
+import { after, createHeld, type Maybe } from "../../engine/ui/held";
 import { matches, Near } from "../../engine/ui/viewport";
 import type { Failure } from "../../engine/ui/wire";
 import { gradeName } from "../../school/family/names";
@@ -54,6 +55,7 @@ import {
     type Filters,
 } from "./catalogue";
 import { lessonIn, signInFor } from "./routes";
+import * as shared from "./shared";
 
 const local = onThisComputer(location.hostname);
 
@@ -65,19 +67,18 @@ const FORMAT_WORDS: Record<string, string> = {
     review: "Review",
 };
 
-/** The family's pack, read once for both screens; a session that has ended goes to sign in and back. */
-let packOnce: Promise<PackView | Failure> | null = null;
-async function family(): Promise<PackView | Failure | null> {
-    const p = await (packOnce ??= api.pack());
-    if (!("error" in p)) return p;
-    packOnce = null;
-    if (p.error === "put-away") {
-        location.replace("/sign-in?locked=1");
+/** The family's pack, shared with every screen; a session that has ended goes to sign in and back. */
+function family(): Maybe<PackView | Failure | null> {
+    return after(shared.pack.read(), (p) => {
+        if (!("error" in p)) return p;
+        if (p.error === "put-away") {
+            location.replace("/sign-in?locked=1");
+            return null;
+        }
+        if (p.error !== "signed-out") return p;
+        go(signInFor(`${location.pathname}${location.search}`), { replace: true });
         return null;
-    }
-    if (p.error !== "signed-out") return p;
-    go(signInFor(`${location.pathname}${location.search}`), { replace: true });
-    return null;
+    });
 }
 
 /** The drawer of a pack's scenes, with the drawings the scenes given name loaded first. */
@@ -102,15 +103,6 @@ const warmSchool = (pack: PackView): void => {
     void import("../../engine/ui/overlay").catch(() => undefined);
     void import("./school").then((m) => m.schoolOnce(pack, still())).catch(() => undefined);
 };
-
-/** A lesson's file, read once per lesson so printing it twice asks the server once. */
-const files = new Map<string, Promise<PackLesson | Failure>>();
-function lessonOnce(digest: string, file: string): Promise<PackLesson | Failure> {
-    const key = `${digest}|${file}`;
-    let had = files.get(key);
-    if (!had) files.set(key, (had = api.packLesson(digest, file)));
-    return had;
-}
 
 // wide like every other grown-ups' screen, so the bar and the cards keep their width and the map
 // keeps its fade when a parent moves between tabs; the harbour lies between the meadow (Home) and
@@ -168,7 +160,8 @@ function Seg<V extends string | number | null>(props: {
 /** The catalogue: every lesson, narrowed by grade, subject and words, set out by grade and subject. */
 export function Explore(): JSX.Element {
     pageLook(useLook());
-    const [pack, { refetch }] = createResource(family);
+    const [pack, { refetch }] = createHeld(family, [shared.pack]);
+    useReady(() => pack.latest !== undefined);
     const loaded = (): PackView | null => {
         const p = pack.latest;
         return p && !("error" in p) ? p : null;
@@ -296,7 +289,7 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     const [paper] = createResource(
         () => (wanted() ? previewed() : null),
         async (f): Promise<{ lesson: PackLesson; draw: SceneDrawer } | null> => {
-            const read = await lessonOnce(props.pack.pack, f.file);
+            const read = await api.packLesson(props.pack.pack, f.file);
             if ("error" in read) return null;
             const m = await import("../../engine/ui/scene");
             return { lesson: read, draw: await m.scenes(m.scenesIn(read)) };

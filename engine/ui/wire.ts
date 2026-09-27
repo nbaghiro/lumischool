@@ -196,6 +196,14 @@ export function readKidRecord(v: unknown): KidRecord | null {
     return kid && str(v.pack) && record ? { kid, pack: v.pack, ...record } : null;
 }
 
+const writes = new Set<() => void>();
+
+/** Hears every write the API accepted, so what a page keeps of earlier reads is asked for again. */
+export function onWrite(heard: () => void): () => void {
+    writes.add(heard);
+    return () => writes.delete(heard);
+}
+
 /**
  * One request. A POST always sends JSON, `{}` when there is nothing to say, because the API refuses a
  * body of any other type. The credential is whichever cookie the browser holds, which script never
@@ -226,7 +234,10 @@ export async function call(
             read = null;
         }
     }
-    if (res.ok) return { ok: true, status: res.status, body: read };
+    if (res.ok) {
+        if (method === "POST") for (const heard of writes) heard();
+        return { ok: true, status: res.status, body: read };
+    }
     // A proxy with nothing behind it answers with a page of its own rather than our JSON.
     if (!obj(read) || !str(read.error) || !isCode(read.error))
         return {

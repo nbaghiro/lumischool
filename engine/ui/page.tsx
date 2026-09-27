@@ -17,6 +17,7 @@ import {
     on,
     onCleanup,
     Show,
+    untrack,
     useContext,
     type Component,
     type Context,
@@ -30,7 +31,7 @@ import { rowsOf } from "./keep-clear";
 import { Waiting } from "./waiting";
 import { Mark } from "./mark";
 import type { Place } from "./postcard";
-import { path } from "./router";
+import { path, useShown } from "./router";
 import { Announcer, Say } from "./say";
 import type { Failure } from "./wire";
 
@@ -91,7 +92,21 @@ const LookContext = import.meta.hot
 export function useLook(): SetLook {
     const set = useContext(LookContext);
     if (!set) throw new Error("useLook is for a screen inside a Page");
-    return set;
+    // a screen made ready behind the one on the page keeps its look until it takes the page's place,
+    // so the map does not fly to it while the screen before is still up
+    const shown = useShown();
+    let held: Partial<Look> | null = null;
+    createEffect(
+        on(shown, (on) => {
+            if (!on || !held) return;
+            set(held);
+            held = null;
+        }),
+    );
+    return (look) => {
+        if (untrack(shown)) set(look);
+        else held = look;
+    };
 }
 
 /** The phone layout, which must match the breakpoint in page.css and the site's. */

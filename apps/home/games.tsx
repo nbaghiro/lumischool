@@ -1,13 +1,16 @@
-import { createResource, onCleanup, Show, type JSX } from "solid-js";
+import { onCleanup, Show, type JSX } from "solid-js";
 import { Games as Library } from "../../engine/ui/games";
 import { gameRecording } from "../../engine/ui/game-recording";
-import * as api from "../../engine/ui/api";
+import { createHeld } from "../../engine/ui/held";
+import { useReady } from "../../engine/ui/router";
+import * as shared from "./shared";
 import { useLook } from "../../engine/ui/page";
 import { isParent } from "../../school/family/access";
 
 export function Games(): JSX.Element {
     const look = useLook();
-    const [who] = createResource(() => api.me({ ask: true }));
+    const [who] = createHeld(() => shared.me.read(), [shared.me]);
+    useReady(() => who.latest !== undefined);
     return (
         <Show
             when={who()}

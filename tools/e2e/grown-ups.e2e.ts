@@ -74,16 +74,19 @@ test("a grown-up signs in twice in a row in one browser, and the family's page o
         await expect(kidItem(page, "Rosie")).toBeVisible();
         await signOut(page);
     }
-    expect(copies, "the family's screen was served importing its own copy each time").toBe(2);
+    // each page load serves the screen's code once, whether a move asked for it or the idle preload did
+    expect(copies, "the family's screen was served importing its own copy").toBeGreaterThanOrEqual(
+        2,
+    );
 });
 
 test("the card for a screen that did not load clears once the app moves to another path", async ({
     page,
 }) => {
+    // the missing page's code does not arrive, neither for the idle preload nor for the move
+    await page.route(/\/apps\/home\/missing\.tsx/, (r) => r.abort());
     await page.goto("/sign-in");
     await atScreen(page, page.getByRole("heading", { name: "Sign in", exact: true }));
-    // the missing page's code, which this page has not loaded, does not arrive
-    await page.route(/\/apps\/home\/missing\.tsx/, (r) => r.abort());
     await page.evaluate(() => {
         history.pushState(null, "", "/no-such-page");
         dispatchEvent(new PopStateEvent("popstate"));

@@ -454,27 +454,46 @@ export async function pack(): Promise<PackView | Failure> {
 const packFile = (digest: string, dir: "lessons" | "scenes", file: string): string =>
     `/api/pack/${encodeURIComponent(digest)}/${dir}/${encodeURIComponent(file.replace(`${dir}/`, ""))}`;
 
-/** A lesson's file from the pack, which the browser may keep for a year. */
-export async function packLesson(digest: string, file: string): Promise<PackLesson | Failure> {
-    const [a, { readLesson }] = await Promise.all([
-        call("GET", packFile(digest, "lessons", file)),
-        readers(),
-    ]);
+/**
+ * A pack's file is named by the pack's digest, so it never changes: each is asked for once while the
+ * page is open, and every screen that asks again, or asks while it is on its way, shares that answer.
+ * A failure is not kept, so the next ask tries again.
+ */
+function once<T extends object>(ask: (path: string) => Promise<T | Failure>) {
+    const kept = new Map<string, Promise<T | Failure>>();
+    return (path: string): Promise<T | Failure> => {
+        const had = kept.get(path);
+        if (had) return had;
+        const asked = ask(path).then((v) => {
+            if ("error" in v) kept.delete(path);
+            return v;
+        });
+        kept.set(path, asked);
+        return asked;
+    };
+}
+
+const lessonAt = once(async (path): Promise<PackLesson | Failure> => {
+    const [a, { readLesson }] = await Promise.all([call("GET", path), readers()]);
     if (!a.ok) return refused(a.failure);
     const read = readLesson(a.body);
     return read.ok ? read.lesson : unreadable(a.status);
-}
+});
 
-/** A lesson's first drawing from the pack, for a page that shows the lesson without opening it. */
-export async function packScene(digest: string, file: string): Promise<PackScene | Failure> {
-    const [a, { readScene }] = await Promise.all([
-        call("GET", packFile(digest, "scenes", file)),
-        readers(),
-    ]);
+const sceneAt = once(async (path): Promise<PackScene | Failure> => {
+    const [a, { readScene }] = await Promise.all([call("GET", path), readers()]);
     if (!a.ok) return refused(a.failure);
     const read = readScene(a.body);
     return read.ok ? read.first : unreadable(a.status);
-}
+});
+
+/** A lesson's file from the pack, which the browser may keep for a year. */
+export const packLesson = (digest: string, file: string): Promise<PackLesson | Failure> =>
+    lessonAt(packFile(digest, "lessons", file));
+
+/** A lesson's first drawing from the pack, for a page that shows the lesson without opening it. */
+export const packScene = (digest: string, file: string): Promise<PackScene | Failure> =>
+    sceneAt(packFile(digest, "scenes", file));
 
 /** A new id for something this browser writes, which is what makes a retried append harmless. */
 export const newId = (): string => crypto.randomUUID();

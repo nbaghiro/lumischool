@@ -17,8 +17,10 @@ import { Button } from "../../engine/ui/form";
 import { call } from "../../engine/ui/wire";
 import { useLook } from "../../engine/ui/page";
 import * as api from "../../engine/ui/api";
+import { createHeld } from "../../engine/ui/held";
+import * as shared from "./shared";
 import { isParent } from "../../school/family/access";
-import { Link } from "../../engine/ui/router";
+import { Link, useReady } from "../../engine/ui/router";
 
 interface OpenPreview {
     run: number;
@@ -89,7 +91,7 @@ const helpGateway = (lesson: string, n: number, variant: string): HelpGateway =>
 async function teachableIn(
     lessonId: string,
 ): Promise<{ question: PackQuestion; scene: Scene; skills: string[]; title: string } | null> {
-    const view = await api.pack();
+    const view = await shared.pack.read();
     if ("error" in view) return null;
     const facts = view.index.lessons.find((l) => l.id === lessonId);
     if (!facts) return null;
@@ -112,7 +114,8 @@ export function Tutoring(): JSX.Element {
     const look = useLook();
     // The board is the place, not a card over the map, so the page carries no backdrop here.
     look({ wide: true, stage: true });
-    const [me] = createResource(() => api.me({ ask: true }));
+    const [me] = createHeld(() => shared.me.read(), [shared.me]);
+    useReady(() => me.latest !== undefined);
     return (
         <Show when={me()} fallback={<p>Opening the teaching table…</p>}>
             {(value) => {
@@ -149,7 +152,7 @@ function Preview(props: { identity: string }): JSX.Element {
         const { scenes } = await import("../../engine/ui/scene");
         return { ...found, draw: await scenes([found.scene]) };
     });
-    const [family] = createResource(() => api.familyRows({ ask: true }));
+    const [family] = createHeld(() => shared.family.read(), [shared.family]);
     const [child, setChild] = createSignal("");
     const [saved, setSaved] = createSignal("");
     const children = () => {

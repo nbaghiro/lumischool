@@ -69,11 +69,11 @@ test("a grown-up finds a lesson in Explore, reads it as a child meets it, prints
     const said = page.locator(".explore-said");
     await expect(said).toHaveText(/^All \d+ lessons$/);
     // the head is a card of its own, narrower than the shelves and centred: two rows of subjects and
-    // the search come to about 210 px on a desk, so lessons begin at once
+    // the search, in a postcard's padding, come to about 240 px on a desk, so lessons begin at once
     const head = page.locator(".explore-row");
     if (page.viewportSize()?.width === 1440) {
         const box = await head.boundingBox();
-        expect(box?.height ?? 999).toBeLessThan(220);
+        expect(box?.height ?? 999).toBeLessThan(260);
         expect(box?.width ?? 9999).toBeLessThan(760);
     }
     expect(await smallTargets(head)).toEqual([]);

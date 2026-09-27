@@ -129,9 +129,15 @@ if (root && inKidMode() && !["/sign-in", "/start", "/join"].includes(location.pa
     render(
         () => (
             <Page ground={() => import("./ground").then((m) => m.ground())} bar={Bar}>
-                <Router screens={SCREENS} screenOf={screenHere} />
+                <Router screens={SCREENS} screenOf={screenHere} load={(s) => LOAD[s]()} />
             </Page>
         ),
         root,
     );
+    // every other screen's code once the first is up and the page is idle, so no move waits for it
+    const rest = (): void => {
+        for (const load of Object.values(LOAD)) void load().catch(() => undefined);
+    };
+    if ("requestIdleCallback" in window) requestIdleCallback(rest, { timeout: 4000 });
+    else setTimeout(rest, 1500);
 }

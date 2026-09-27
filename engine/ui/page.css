@@ -32,6 +32,9 @@ body {
     /* The space between a kicker, the title under it and the line that follows, as the postcard
        stacks its message. */
     --stack: 10px;
+    /* The space between one card on a page and the next, which `.page-cards` sets and a screen
+       laying out its own cards reads. */
+    --card-gap: 30px;
     /* the site's bar, which the map under it starts below; apps/site/site.css has the same */
     --bar-h: 62px;
     --t-small: 14px;
@@ -216,13 +219,27 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 30px;
+    gap: var(--card-gap);
     width: fit-content;
     max-width: 100%;
 }
 .page-main.centered .page-cards {
     width: 100%;
     align-items: center;
+}
+/* A screen lays its cards out as the page's own; the next one is made ready out of sight, in the
+   document so its drawings read the page's colours, and takes the place of this one (router.tsx). */
+.page-screen {
+    display: contents;
+}
+.page-screen.coming {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+    visibility: hidden;
+    pointer-events: none;
 }
 /* A stage fills the page under the bar: no gutter, no wrap, and its one child takes the height. */
 .page-main.stage {
@@ -242,7 +259,8 @@ body {
     min-height: 0;
     gap: 0;
 }
-.page-main.stage .page-cards > * {
+.page-main.stage .page-cards > *,
+.page-main.stage .page-cards > .page-screen > * {
     flex: 1;
     min-height: 0;
 }

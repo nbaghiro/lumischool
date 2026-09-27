@@ -18,6 +18,7 @@ import {
     type JSX,
 } from "solid-js";
 import * as api from "../../engine/ui/api";
+import * as shared from "./shared";
 import { Drawing } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { Dialog, CloseX } from "../../engine/ui/dialog";
@@ -124,11 +125,16 @@ async function ask(): Promise<void> {
     const now = signedInAs();
     if (known()?.key === now && now) return;
     if (known() && known()?.key !== now) setKnown(null);
-    if (asking === now) return;
+    // nobody is signed in on this browser, so there is no family to ask for
+    if (!now || asking === now) return;
     asking = now;
-    const [me, view] = await Promise.all([api.me(), api.familyRows()]);
+    const [me, view] = await Promise.all([
+        Promise.resolve(shared.me.read()),
+        Promise.resolve(shared.family.read()),
+    ]);
     if (asking === now) asking = null;
-    if (me && view && whose(me) === signedInAs()) setKnown({ key: whose(me), me, view });
+    if (!("error" in me) && !("error" in view) && whose(me) === signedInAs())
+        setKnown({ key: whose(me), me, view });
 }
 
 export function GrownBar(): JSX.Element {

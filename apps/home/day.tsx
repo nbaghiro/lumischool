@@ -21,7 +21,7 @@ import {
 import type { Draft } from "../../engine/answer";
 import type { LessonFacts, PackLesson } from "../../engine/pack";
 import * as api from "../../engine/ui/api";
-import { grownRecord } from "../../engine/ui/grown";
+import * as shared from "./shared";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
@@ -34,7 +34,7 @@ import { matches } from "../../engine/ui/viewport";
 import type { Failure } from "../../engine/ui/wire";
 import { askedIn, levelIn } from "../../school/lessons";
 import { familyName, gradeName } from "../../school/family/names";
-import { dayIn, addDays } from "../../school/record/record";
+import { dayIn, addDays } from "../../school/record";
 import { subjectFacts } from "../../school/tracks";
 import type { FamilyView, GrownRecord, Me, PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
@@ -72,9 +72,9 @@ interface Sheet {
 
 async function load(): Promise<Loaded | Failure | null> {
     const [me, view, pack] = await Promise.all([
-        api.me({ ask: true }),
-        api.familyRows({ ask: true }),
-        api.pack(),
+        Promise.resolve(shared.me.read()),
+        Promise.resolve(shared.family.read()),
+        Promise.resolve(shared.pack.read()),
     ]);
     if ("error" in me) {
         if (me.error === "signed-out")
@@ -85,7 +85,9 @@ async function load(): Promise<Loaded | Failure | null> {
     if ("error" in view) return view;
     if ("error" in pack) return pack;
     knowFamily(me, view);
-    const read = await Promise.all(view.kids.map((k) => grownRecord(k.id)));
+    const read = await Promise.all(
+        view.kids.map((k) => Promise.resolve(shared.record.of(k.id).read())),
+    );
     const failed = read.find((r): r is Failure => "error" in r);
     if (failed) return failed;
     return { me, view, pack, records: read.filter((r): r is GrownRecord => !("error" in r)) };

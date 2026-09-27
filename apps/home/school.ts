@@ -11,6 +11,7 @@ import type { Scene } from "../../engine/scene";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import type { MapView, WorldView } from "../../engine/space";
 import * as api from "../../engine/ui/api";
+import type { Maybe } from "../../engine/ui/held";
 import { declaredOf, loadDrawings } from "../../engine/ui/drawings";
 import type { Measured } from "../../engine/ui/lesson";
 import type { OverlaySource } from "../../engine/ui/overlay";
@@ -92,18 +93,27 @@ export async function schoolOf(pack: PackView, still: boolean): Promise<School> 
     };
 }
 
-/** The school read once per pack, for the looks a page opens over itself, since the drawings and the map are the same each time. */
-const schools = new WeakMap<PackView, Map<boolean, Promise<School>>>();
-export function schoolOnce(pack: PackView, still: boolean): Promise<School> {
+/**
+ * The school read once per pack, for the map and the looks a page opens over itself, since the
+ * drawings and the map are the same each time; once it is built it is given at once.
+ */
+const schools = new WeakMap<PackView, Map<boolean, Maybe<School>>>();
+export function schoolOnce(pack: PackView, still: boolean): Maybe<School> {
     let modes = schools.get(pack);
-    if (!modes) schools.set(pack, (modes = new Map<boolean, Promise<School>>()));
+    if (!modes) schools.set(pack, (modes = new Map<boolean, Maybe<School>>()));
     let had = modes.get(still);
     if (!had) {
         const owner = modes;
-        had = schoolOf(pack, still).catch((error: unknown) => {
-            owner.delete(still);
-            throw error;
-        });
+        had = schoolOf(pack, still).then(
+            (built) => {
+                owner.set(still, built);
+                return built;
+            },
+            (error: unknown) => {
+                owner.delete(still);
+                throw error;
+            },
+        );
         modes.set(still, had);
     }
     return had;

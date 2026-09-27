@@ -1,11 +1,12 @@
-import { createResource, Match, Switch, type JSX } from "solid-js";
-import * as api from "../../engine/ui/api";
+import { Match, Switch, type JSX } from "solid-js";
+import { createHeld } from "../../engine/ui/held";
+import * as shared from "./shared";
 import { parentPaintingGateway } from "../../engine/ui/painting-repository";
 import { PaintingGallery } from "../../engine/ui/painting-gallery";
 import type { PaintingLayout } from "../../engine/ui/painting";
 import { useLook } from "../../engine/ui/page";
 import { isParent } from "../../school/family/access";
-import { Link, search } from "../../engine/ui/router";
+import { Link, search, useReady } from "../../engine/ui/router";
 import { signInFor } from "./routes";
 
 /** The four arrangements being tried, at `/painting?v1` to `?v4`; plain `/painting` is the page as
@@ -25,8 +26,9 @@ export function Painting(): JSX.Element {
         return "now";
     };
     look({ wide: true, stage: true, stageBackdrop: true, place: "meadow" });
-    const [me] = createResource(() => api.me({ ask: true }));
-    const [family] = createResource(() => api.familyRows({ ask: true }));
+    const [me] = createHeld(() => shared.me.read(), [shared.me]);
+    const [family] = createHeld(() => shared.family.read(), [shared.family]);
+    useReady(() => me.latest !== undefined);
     return (
         <Switch fallback={<output>Opening the painting table…</output>}>
             <Match when={me() && "error" in (me() ?? {})}>

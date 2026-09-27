@@ -23,7 +23,8 @@ import { Button, PinInput } from "../../engine/ui/form";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
 import { Corner, Postcard } from "../../engine/ui/postcard";
-import { go } from "../../engine/ui/router";
+import { go, useReady } from "../../engine/ui/router";
+import { after, both, createHeld, type Maybe } from "../../engine/ui/held";
 import { focusOnceShown, Say } from "../../engine/ui/say";
 import type { Failure } from "../../engine/ui/wire";
 import { isParent } from "../../school/family/access";
@@ -33,6 +34,7 @@ import { Drawing } from "../../engine/ui/art";
 import { GROWNUP_WORD, GROWNUPS } from "../../engine/parts/apps/grownup";
 import { familyChanged, GrownStamp, knowFamily, pickedPortrait, portraitOf } from "./bar";
 import { signInFor } from "./routes";
+import * as shared from "./shared";
 
 const local = onThisComputer(location.hostname);
 
@@ -42,25 +44,26 @@ interface Seen {
 }
 
 /** Account identity and family details, without session-list dependencies. */
-async function load(): Promise<Seen | { failure: Failure } | null> {
-    const me = await api.me({ ask: true });
-    if ("error" in me) {
-        if (me.error === "put-away") {
-            location.replace("/sign-in?locked=1");
+function load(): Maybe<Seen | { failure: Failure } | null> {
+    return after(both(shared.me.read(), shared.family.read()), ([me, view]) => {
+        if ("error" in me) {
+            if (me.error === "put-away") {
+                location.replace("/sign-in?locked=1");
+                return null;
+            }
+            if (me.error !== "signed-out") return { failure: me };
+            go(signInFor("/account"), { replace: true });
             return null;
         }
-        if (me.error !== "signed-out") return { failure: me };
-        go(signInFor("/account"), { replace: true });
-        return null;
-    }
-    const view = await api.familyRows({ ask: true });
-    if ("error" in view) return { failure: view };
-    return { me, view };
+        if ("error" in view) return { failure: view };
+        return { me, view };
+    });
 }
 
 export function Account(): JSX.Element {
     const look = useLook();
-    const [seen, { refetch }] = createResource(load);
+    const [seen, { refetch }] = createHeld(load, [shared.me, shared.family]);
+    useReady(() => seen.latest !== undefined);
     createEffect(on(familyChanged, () => void refetch(), { defer: true }));
     const refreshOnReturn = (): void => {
         if (document.visibilityState === "visible" && !seen.loading) void refetch();

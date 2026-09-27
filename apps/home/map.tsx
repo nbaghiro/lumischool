@@ -8,7 +8,6 @@
 import "./map.css";
 import {
     createMemo,
-    createResource,
     createSignal,
     lazy,
     Match,
@@ -17,7 +16,6 @@ import {
     Switch,
     type JSX,
 } from "solid-js";
-import * as api from "../../engine/ui/api";
 import { onDemand, still } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
@@ -25,15 +23,17 @@ import { Overworld } from "../../engine/ui/overworld";
 import { readingShelf } from "../../engine/ui/reading-source";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
-import { go, search } from "../../engine/ui/router";
+import { go, search, useReady } from "../../engine/ui/router";
 import type { Failure } from "../../engine/ui/wire";
+import { after, createHeld, type Maybe } from "../../engine/ui/held";
 import { signInFor } from "./routes";
+import * as shared from "./shared";
 import {
     inWorld,
     mapHref,
     placeOf,
     readingOf,
-    schoolOf,
+    schoolOnce,
     whereIn,
     worldAt,
     type School,
@@ -47,26 +47,28 @@ const Reading = lazy(() =>
 );
 
 /** The school as written, or why it could not be read; null once the grown-up has been sent to sign in. */
-async function read(): Promise<School | Failure | null> {
-    const p = await api.pack();
-    if ("error" in p) {
-        if (p.error === "put-away") {
-            location.replace("/sign-in?locked=1");
-            return null;
+function read(): Maybe<School | Failure | null> {
+    return after(shared.pack.read(), (p) => {
+        if ("error" in p) {
+            if (p.error === "put-away") {
+                location.replace("/sign-in?locked=1");
+                return null;
+            }
+            if (p.error === "signed-out") {
+                go(signInFor(`${location.pathname}${location.search}`), { replace: true });
+                return null;
+            }
+            return p;
         }
-        if (p.error === "signed-out") {
-            go(signInFor(`${location.pathname}${location.search}`), { replace: true });
-            return null;
-        }
-        return p;
-    }
-    return schoolOf(p, still());
+        return schoolOnce(p, still());
+    });
 }
 
 export function GrownMap(): JSX.Element {
     // wide as every other grown-ups' screen, so the bar keeps its width between Home and the map
     useLook()({ stage: true, wide: true });
-    const [school, { refetch }] = createResource(read);
+    const [school, { refetch }] = createHeld(read, [shared.pack]);
+    useReady(() => school.latest !== undefined);
     const loaded = (): School | null => {
         const s = school.latest;
         return s && !("error" in s) ? s : null;

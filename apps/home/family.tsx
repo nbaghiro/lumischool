@@ -1,27 +1,18 @@
 // The family's page for a signed-in grown-up: the grown-ups' home (home.tsx). Adding a child is the
 // app's dialog over it (bar.tsx), and the family's PIN is on the account page.
 
-import {
-    createEffect,
-    createResource,
-    createSignal,
-    Match,
-    on,
-    Show,
-    Switch,
-    untrack,
-    type JSX,
-} from "solid-js";
-import * as api from "../../engine/ui/api";
+import { createEffect, createSignal, Match, on, Show, Switch, untrack, type JSX } from "solid-js";
+import { after, both, createHeld, type Maybe } from "../../engine/ui/held";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
-import { go, search } from "../../engine/ui/router";
+import { go, search, useReady } from "../../engine/ui/router";
 import type { Failure } from "../../engine/ui/wire";
 import type { FamilyView, Me } from "../../server/api";
 import { added, familyChanged, knowFamily, openAdd } from "./bar";
 import { GrownHome, toKid } from "./home";
+import * as shared from "./shared";
 import { signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
@@ -34,27 +25,28 @@ type Seen = Signed | { failure: Failure };
  * request, so the API is asked for both whatever this browser remembers; a session it refuses has had
  * its cookie cleared by that answer, and `/` is then the site's.
  */
-async function load(): Promise<Seen | null> {
-    const me = await api.me({ ask: true });
-    if ("error" in me) {
-        // the children's view is open on this browser, and its Grown-ups tab is the way back
-        if (me.error === "put-away") {
-            location.replace("/sign-in?locked=1");
+function load(): Maybe<Seen | null> {
+    return after(both(shared.me.read(), shared.family.read()), ([me, view]) => {
+        if ("error" in me) {
+            // the children's view is open on this browser, and its Grown-ups tab is the way back
+            if (me.error === "put-away") {
+                location.replace("/sign-in?locked=1");
+                return null;
+            }
+            if (me.error !== "signed-out") return { failure: me };
+            if (location.pathname === "/") location.replace("/");
+            else go(signInFor("/"), { replace: true });
             return null;
         }
-        if (me.error !== "signed-out") return { failure: me };
-        if (location.pathname === "/") location.replace("/");
-        else go(signInFor("/"), { replace: true });
-        return null;
-    }
-    const view = await api.familyRows({ ask: true });
-    if ("error" in view) return { failure: view };
-    return { me, view };
+        if ("error" in view) return { failure: view };
+        return { me, view };
+    });
 }
 
 export function Family(): JSX.Element {
     const look = useLook();
-    const [seen, { refetch }] = createResource(load);
+    const [seen, { refetch }] = createHeld(load, [shared.me, shared.family]);
+    useReady(() => seen.latest !== undefined);
     const [said, setSaid] = createSignal("");
     // a child added in the app's dialog: the page reads the family again and says so
     createEffect(

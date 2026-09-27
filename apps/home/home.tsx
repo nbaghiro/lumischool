@@ -26,14 +26,14 @@ import type { Draft, Envelope } from "../../engine/answer";
 import type { LessonFacts } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
-import { grownRecord } from "../../engine/ui/grown";
+import { createHeld } from "../../engine/ui/held";
 import { Drawing } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
 import { Postcard } from "../../engine/ui/postcard";
-import { go, Link, search } from "../../engine/ui/router";
+import { go, Link, search, useReady } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { Near, whenNear } from "../../engine/ui/viewport";
 import type { Failure } from "../../engine/ui/wire";
@@ -42,11 +42,12 @@ import { KIND_LABEL } from "../../school/family/family";
 import type { Attention, Pace } from "../../school/family/morning";
 import { familyName, gradeName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
-import { addDays, dayIn, fold, type Sitting } from "../../school/record/record";
+import { addDays, dayIn, fold, type Sitting } from "../../school/record";
 import type { SheetBack } from "../../school/family/sheets";
 import type { FamilyView, GrownRecord, Me, PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import type { ToWalk } from "./mark";
+import * as shared from "./shared";
 import type { Where } from "./where";
 import {
     dayLong,
@@ -101,14 +102,6 @@ const KIDS = "/kids";
 
 /** How wide a card's world picture is drawn when the card cannot say, in px. */
 const WORLD_W = 200;
-
-/** The family's pack, read once while the app is open. */
-let packOnce: Promise<PackView | Failure> | null = null;
-const packOf = async (): Promise<PackView | Failure> => {
-    const p = await (packOnce ??= api.pack());
-    if ("error" in p) packOnce = null;
-    return p;
-};
 
 /** The drawer of a pack's scenes, with the drawings the scenes given name loaded first. */
 const drawer = (of: readonly Scene[]): Promise<SceneDrawer> =>
@@ -231,7 +224,7 @@ export function GrownHome(props: {
     onAdd: () => void;
 }): JSX.Element {
     const parent = (): boolean => isParent(props.me.members);
-    const [pack] = createResource(packOf);
+    const [pack] = createHeld(() => shared.pack.read(), [shared.pack]);
     const today = (): string => dayIn(new Date().toISOString(), props.view.family.time_zone);
     const facts = createMemo(() => {
         const p = ok(pack.latest);
@@ -241,7 +234,8 @@ export function GrownHome(props: {
         mapArray(
             () => props.view.kids.map((k) => k.id),
             (id) => {
-                const [r, { refetch }] = createResource(() => grownRecord(id));
+                const held = shared.record.of(id);
+                const [r, { refetch }] = createHeld(() => held.read(), [held]);
                 return { id, r, refetch };
             },
         ),
@@ -254,6 +248,13 @@ export function GrownHome(props: {
         const got = all.filter((x): x is GrownRecord => x !== null);
         return got.length === all.length ? got : null;
     };
+    // the cards come onto the page with the records they show, or with what stopped them
+    useReady(
+        () =>
+            loaded() !== null ||
+            bad(pack.latest) !== null ||
+            records().some((x) => bad(x.r.latest) !== null),
+    );
     const [walk, setWalk] = createSignal<ToWalk[] | null>(null);
     const [open, setOpen] = createSignal<string[]>([]);
     const known = (ids: readonly string[]): string[] =>
