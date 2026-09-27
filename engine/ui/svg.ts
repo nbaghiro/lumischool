@@ -25,7 +25,10 @@ export function el<K extends keyof SVGElementTagNameMap>(
     parent?: Element,
 ): SVGElementTagNameMap[K] {
     const e = document.createElementNS(NS, tag);
-    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v));
+    // a `style` attribute is inline markup the pages' CSP refuses (server/static.ts); the CSSOM is not
+    for (const [k, v] of Object.entries(attrs))
+        if (k === "style") e.style.cssText = String(v);
+        else e.setAttribute(k, String(v));
     if (parent) parent.appendChild(e);
     return e;
 }

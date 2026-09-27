@@ -154,6 +154,25 @@ export function keyframesCss(name: string, frames: readonly LifeFrame[]): string
     return `@keyframes ${name}{${frames.map((q) => `${(q.at * 100).toFixed(3)}%{transform:translate(${px(q.x)}px,${px(q.y)}px) rotate(${q.r.toFixed(4)}rad) scaleX(${q.flip});opacity:${q.o}}`).join("")}}`;
 }
 
+/**
+ * A stylesheet made through the CSSOM and adopted by the document, since the pages' CSP
+ * (server/static.ts) refuses a <style> element's text. `drop` takes it off the document again.
+ */
+function adoptedSheet(): { sheet: CSSStyleSheet; drop(): void } {
+    const sheet = new CSSStyleSheet();
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+    return {
+        sheet,
+        drop: () => {
+            document.adoptedStyleSheets = document.adoptedStyleSheets.filter((s) => s !== sheet);
+        },
+    };
+}
+
+// the life's keyframes are named for what they move, so one shared sheet holds each name once for every map
+let lifeSheet: CSSStyleSheet | null = null;
+const lifeNamed = new Set<string>();
+
 /** A drawing's float as a CSS keyframes rule, up and back with a turn, for an element that alternates. */
 export function bobCss(name: string, bob: { lift: number; deg: number }): string {
     return `@keyframes ${name}{from{transform:translateY(${px(bob.lift / 2)}px) rotate(${(-bob.deg).toFixed(2)}deg)}to{transform:translateY(${px(-bob.lift / 2)}px) rotate(${bob.deg.toFixed(2)}deg)}}`;
@@ -732,14 +751,12 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
     }
 
     // the country's small life (life.ts), each thing a piece painted as the camera comes near it
-    const named = new Set<string>();
     const lifeStarted = performance.now();
-    let sheet: HTMLStyleElement | null = null;
     const keyframes = (name: string, css: () => string) => {
-        if (named.has(name)) return;
-        named.add(name);
-        sheet ??= lifeLayer.appendChild(document.createElement("style"));
-        sheet.append(css());
+        if (lifeNamed.has(name)) return;
+        lifeNamed.add(name);
+        lifeSheet ??= adoptedSheet().sheet;
+        lifeSheet.insertRule(css(), lifeSheet.cssRules.length);
     };
     const live = (s: MapLife) => {
         // one element carries the whole thing, its shadow and whatever follows it, so a traveller is one layer
@@ -3126,13 +3143,12 @@ export function runLife(o: {
 }): { rebuild(): void; stop(): void } {
     const t0 = performance.now();
     let world = o.build();
+    const placed = adoptedSheet();
     const place = () => {
-        const sheet = document.createElement("style"),
-            css: string[] = [],
+        const css: string[] = [],
             now = (performance.now() - t0) / 1000;
         for (const mv of world.movers) css.push(...drive(mv, now, o.still));
-        sheet.textContent = css.join("");
-        o.layer.append(sheet);
+        placed.sheet.replaceSync(css.join(""));
     };
     place();
     const motion = o.idle;
@@ -3195,6 +3211,7 @@ export function runLife(o: {
             release();
             o.wake.removeEventListener("pointermove", wake);
             o.layer.replaceChildren();
+            placed.drop();
         },
     };
 }

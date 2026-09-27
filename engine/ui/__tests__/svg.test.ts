@@ -13,7 +13,13 @@ class FakeElement {
     readonly ownerDocument: FakeDocument;
     readonly attributes = new Map<string, string>();
     readonly children: FakeElement[] = [];
-    readonly style = { setProperty: (): void => undefined };
+    // cssText writes the style attribute, as a browser's element style does
+    readonly style = ((owner: FakeElement) => ({
+        setProperty: (): void => undefined,
+        set cssText(v: string) {
+            owner.attributes.set("style", v);
+        },
+    }))(this);
     textContent = "";
 
     constructor(tagName: string, ownerDocument: FakeDocument) {
