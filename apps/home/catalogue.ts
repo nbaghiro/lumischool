@@ -102,17 +102,6 @@ export function foundLine(n: number, of: number): string {
     return n === 1 ? "1 lesson matches" : `${n} lessons match`;
 }
 
-/** The lessons either side of one in its subject, across the grades. */
-export function besideIn<
-    L extends Pick<LessonFacts, "id" | "grade" | "unit" | "subject" | "source">,
->(lessons: readonly L[], id: string): { before: L | null; after: L | null } {
-    const at = lessons.find((l) => l.id === id);
-    if (!at) return { before: null, after: null };
-    const track = lessons.filter((l) => l.subject === at.subject).sort(inOrder);
-    const i = track.indexOf(at);
-    return { before: track[i - 1] ?? null, after: track[i + 1] ?? null };
-}
-
 /** What a grown-up reads a level as. A child's sheet never says which level it is. */
 export const LEVEL_WORDS: Record<Level, string> = {
     easy: "Easier",

@@ -1,7 +1,7 @@
 import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 // The worlds as a grown-up looks at them with nobody's record (.docs/parent-app.md, "The map, for
 // grown-ups"): the school as written from the family's pack, a world's roll of every lesson it holds,
-// and a lesson's sheet as written. The map screen (map.tsx) and the overlay a lesson page opens
+// and a lesson's sheet as written. The map screen (map.tsx) and the overlay the catalogue opens
 // (engine/ui/overlay.tsx) both read it, and neither records anything.
 
 import { reads } from "../../engine/ui/reads";
@@ -286,7 +286,9 @@ export function readingOf(
 export function overlayOf(s: School, o: { level: Level }): OverlaySource {
     return {
         map: () => s.map,
-        reading: (world, visit) => readingOf(s, world, { level: o.level, key: false, ...visit }),
+        // the level the overlay asks for is the reader's own, and `o.level` the one the look opened at
+        reading: (world, visit) =>
+            readingOf(s, world, { ...visit, level: visit?.level ?? o.level, key: false }),
         nameOf: (world) => s.worldOf(world).name,
         whereIs: (lesson) => worldOfLesson(s, lesson),
     };

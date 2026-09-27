@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { LessonFacts } from "../../../engine/pack";
 import {
-    besideIn,
     EVERYTHING,
     filtersFrom,
     found,
@@ -114,17 +113,6 @@ describe("the grown-ups' Explore", () => {
         assert.equal(foundLine(1, 314), "1 lesson matches");
         assert.equal(foundLine(12, 314), "12 lessons match");
         assert.match(foundLine(0, 314), /^No lesson matches\./);
-    });
-
-    it("finds the lessons either side of one in its subject, across the grades", () => {
-        const around = (id: string): (string | null)[] => {
-            const b = besideIn(LESSONS, id);
-            return [b.before?.id ?? null, b.after?.id ?? null];
-        };
-        assert.deepEqual(around("m1-ten"), ["m1-count", "m2-bonds"]);
-        assert.deepEqual(around("m1-count"), [null, "m1-ten"]);
-        assert.deepEqual(around("a3-print"), [null, null]);
-        assert.deepEqual(around("nothing"), [null, null]);
     });
 
     it("reads a lesson at a level it declares, and as written otherwise", () => {

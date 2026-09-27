@@ -1,7 +1,9 @@
 // The grown-ups' Explore: every lesson in the family's pack, found by grade, subject and the words of
-// its title, each opening to its sheet as a child would have it, at any level the lesson declares,
-// with the answers and the notes for grown-ups, ready to print. Which level a sheet is at is said on
-// the grown-up's card and never on the sheet. Nothing here records anything or changes a plan.
+// its title. A lesson opens as a child meets it, in its own world on the world's own paper, over the
+// catalogue rather than on a page of its own: `/explore/<id>` is this screen with that preview open,
+// so the address is still shareable and the way back is the way a parent came. The level a sheet is
+// read at is said over the stage and never on the sheet, and the printed sheet is the grown-up's,
+// with the answers and the notes when they ask for them. Nothing here records anything.
 
 import "./explore.css";
 import type { SceneDrawer } from "../../engine/ui/scene";
@@ -12,7 +14,9 @@ import {
     createSignal,
     For,
     lazy,
+    on,
     onCleanup,
+    onMount,
     Show,
     type JSX,
 } from "solid-js";
@@ -26,21 +30,19 @@ import { Check } from "../../engine/ui/fields";
 import { Button } from "../../engine/ui/form";
 import { atFrom, hashNow, hashOf, type OverlayAt } from "../../engine/ui/hash";
 import { LessonSheet } from "../../engine/ui/lesson";
-import { Part, useLook, Waiting } from "../../engine/ui/page";
-import { Corner, Postcard } from "../../engine/ui/postcard";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
+import { Postcard } from "../../engine/ui/postcard";
 import { go, Link, path, search } from "../../engine/ui/router";
-import { Say } from "../../engine/ui/say";
 import { matches, Near } from "../../engine/ui/viewport";
 import type { Failure } from "../../engine/ui/wire";
 import { gradeName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
 import type { PackView } from "../../server/api";
 import {
-    besideIn,
     filtersFrom,
     found,
     foundLine,
-    GRADES,
     LEVEL_WORDS,
     lessonPath,
     levelFrom,
@@ -51,7 +53,7 @@ import {
     EVERYTHING,
     type Filters,
 } from "./catalogue";
-import { lessonIn, mapHref, signInFor } from "./routes";
+import { lessonIn, signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
 
@@ -88,26 +90,26 @@ let lastSearch = "";
 // the overlay, the worlds and the map come with the first look a grown-up takes, not with the page
 const Overlay = lazy(() => import("../../engine/ui/overlay").then((m) => ({ default: m.Overlay })));
 
-/** The entry the overlay pushed, so closing it goes back to the page's own rather than past it. */
+/** The entry a look pushed, so closing it goes back over that entry rather than past the catalogue. */
 const LOOK = { look: true };
 const pushedLook = (): boolean => {
     const st: unknown = history.state;
     return typeof st === "object" && st !== null && "look" in st;
 };
 
-/** Looks at a lesson as a child sees it, over this page: the address after the `#` opens the overlay. */
-function look(at: OverlayAt | null): void {
-    const here = `${location.pathname}${location.search}`;
-    if (at === null) {
-        if (pushedLook()) history.back();
-        else go(here, { replace: true });
-        return;
-    }
-    const to = `${here}${hashOf(at)}`;
-    const pushed = pushedLook();
-    const alreadyOpen = atFrom(location.hash) !== null;
-    go(to, { replace: pushed || alreadyOpen });
-    history.replaceState(pushed || !alreadyOpen ? LOOK : null, "", to);
+/** The look's own code and the school it reads, started when a parent's hand is on a tile. */
+const warmSchool = (pack: PackView): void => {
+    void import("../../engine/ui/overlay").catch(() => undefined);
+    void import("./school").then((m) => m.schoolOnce(pack, still())).catch(() => undefined);
+};
+
+/** A lesson's file, read once per lesson so printing it twice asks the server once. */
+const files = new Map<string, Promise<PackLesson | Failure>>();
+function lessonOnce(digest: string, file: string): Promise<PackLesson | Failure> {
+    const key = `${digest}|${file}`;
+    let had = files.get(key);
+    if (!had) files.set(key, (had = api.packLesson(digest, file)));
+    return had;
 }
 
 // wide like every other grown-ups' screen, so the bar and the cards keep their width and the map
@@ -122,12 +124,12 @@ const pageLook = (look: ReturnType<typeof useLook>): void =>
 /** What a screen shows when the pack did not come. */
 function NotLoaded(props: { failure: Failure; again: () => void }): JSX.Element {
     return (
-        <Postcard note kicker="Explore" title="The lessons did not load">
-            <Say
-                text={failureText(props.failure, local)}
-                action={{ label: "Try again", run: props.again }}
-            />
-        </Postcard>
+        <Waiting
+            title="The lessons did not load"
+            pending={false}
+            detail={failureText(props.failure, local)}
+            retry={props.again}
+        />
     );
 }
 
@@ -198,11 +200,22 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     const shown = createMemo(() => new Set(found(lessons, filters()).map((l) => l.id)));
     const count = (ls: readonly LessonFacts[]): number =>
         ls.reduce((n, l) => n + (shown().has(l.id) ? 1 : 0), 0);
+    const narrow = matches("(max-width: 700px)");
+    // a grade a parent has closed; narrowing reopens one that has matches, so nothing is hidden by a
+    // filter and a fold at once
+    const [closed, setClosed] = createSignal<ReadonlySet<number>>(new Set());
     const change = (f: Partial<Filters>): void => {
         const next = { ...filters(), ...f };
         setFilters(next);
+        setClosed((was) => {
+            const open = new Set(was);
+            for (const shelf of shelves)
+                if (count(shelf.subjects.flatMap((s) => s.lessons))) open.delete(shelf.grade);
+            return open;
+        });
         lastSearch = searchOf(next);
-        history.replaceState(null, "", `/explore${lastSearch}`);
+        // while a preview is open the address is the lesson's; the catalogue's is where Close returns
+        if (lessonIn(path()) === null) go(`/explore${lastSearch}`, { replace: true });
     };
     let typing = 0;
     const typed = (v: string): void => {
@@ -211,29 +224,179 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
         typing = window.setTimeout(() => change({ words: v }), 180);
     };
     lastSearch = searchOf(filters());
+
+    // The preview over the catalogue: `/explore/<id>` is a lesson, kept as a path so it can be
+    // shared, bookmarked and opened in a tab of its own, and a parent who wanders from it into the
+    // worlds moves after the `#` (engine/ui/hash.ts) over the catalogue's own address.
+    const asked = (): string | null => lessonIn(path());
+    const lessonOf = (id: string | null): LessonFacts | null =>
+        id === null ? null : (lessons.find((l) => l.id === id) ?? null);
+    const at = (): OverlayAt | null => {
+        const wandered = atFrom(hashNow(search));
+        if (wandered) return wandered;
+        const f = lessonOf(asked());
+        return f ? { world: null, lesson: f.id } : null;
+    };
+    /** The lesson the preview opened at, whether the address names it alone or on its world's roll. */
+    const previewed = (): LessonFacts | null => lessonOf(at()?.lesson ?? null);
+    /** An address naming a lesson this pack has not got, which the catalogue says over itself. */
+    const noSuch = (): boolean => asked() !== null && lessonOf(asked()) === null;
+    const declared = (): Level[] => {
+        const f = previewed();
+        return f ? levelsOf(f) : ["medium"];
+    };
+    const [level, setLevel] = createSignal<Level>(levelFrom(location.search, declared()));
+    // a shared address carries the level it was read at, so each lesson opens at its own
+    createEffect(
+        on(
+            path,
+            () => {
+                if (asked() !== null) setLevel(levelFrom(location.search, declared()));
+            },
+            { defer: true },
+        ),
+    );
+    /** Where the preview looks, in the address: a lesson at its own path, the worlds after the `#`. */
+    const look = (to: OverlayAt | null): void => {
+        const here = `/explore${lastSearch}`;
+        if (to === null) {
+            // going back over the entry the look pushed leaves the catalogue where it was read
+            if (pushedLook()) history.back();
+            else go(here, { replace: true });
+            return;
+        }
+        const address =
+            !to.world && to.lesson ? lessonPath(to.lesson, level()) : `${here}${hashOf(to)}`;
+        // one entry for the whole look, so back closes it from wherever a parent has wandered to
+        go(address, { replace: pushedLook(), state: LOOK });
+    };
+    const choose = (l: Level): void => {
+        if (l === level()) return;
+        setLevel(l);
+        const here = at();
+        if (here && !here.world && here.lesson)
+            go(lessonPath(here.lesson, l), { replace: true, state: LOOK });
+    };
+    // an address opened straight at a lesson puts the catalogue under it, so back closes the preview
+    // instead of leaving the app
+    onMount(() => {
+        if (asked() === null || pushedLook()) return;
+        const deep = `${location.pathname}${location.search}${location.hash}`;
+        history.replaceState(null, "", `/explore${lastSearch}`);
+        history.pushState(LOOK, "", deep);
+    });
+
+    // a child's card on the family's home prints today's sheet from here, as the child has it
+    // (home.tsx), so that address comes with the answers off and prints itself once
+    const asChild = new URLSearchParams(location.search).has("print");
+    const [key, setKey] = createSignal(!asChild);
+    const [wanted, setWanted] = createSignal(asChild);
+    const [printing, setPrinting] = createSignal(asChild);
+    /** The lesson's own file and drawings, read when a print is in prospect rather than with the look. */
+    const [paper] = createResource(
+        () => (wanted() ? previewed() : null),
+        async (f): Promise<{ lesson: PackLesson; draw: SceneDrawer } | null> => {
+            const read = await lessonOnce(props.pack.pack, f.file);
+            if ("error" in read) return null;
+            const m = await import("../../engine/ui/scene");
+            return { lesson: read, draw: await m.scenes(m.scenesIn(read)) };
+        },
+    );
+    const width = (): number => (narrow() ? Math.min(innerWidth - 32, 480) : 820);
+    let dropped = false;
+    /** Prints the sheet the frame after its drawings are on the page. */
+    const printNow = (): void => {
+        if (asChild && !dropped) {
+            dropped = true;
+            const f = previewed();
+            if (f) go(lessonPath(f.id, level()), { replace: true, state: LOOK });
+        }
+        requestAnimationFrame(() => requestAnimationFrame(() => print()));
+    };
+    /** Asks for a print: the layer goes up and prints itself, or prints again if it is already up. */
+    const printSheet = (): void => {
+        setWanted(true);
+        if (printing()) printNow();
+        else setPrinting(true);
+    };
+    // the sheet stays up until the browser says the print is over, so what was printed can be read
+    const printDone = (): void => {
+        setPrinting(false);
+    };
+    addEventListener("afterprint", printDone);
+    onCleanup(() => removeEventListener("afterprint", printDone));
+    // the page's title names the lesson the preview is at, which a printout carries in its header
+    const titleWas = document.title;
+    createEffect(() => {
+        const f = previewed();
+        document.title = f ? `${f.title} · lumischool` : titleWas;
+    });
+    onCleanup(() => {
+        document.title = titleWas;
+    });
+
+    /** What the preview puts beside Close: the level the sheets are written at, and the print. */
+    const Tools = (): JSX.Element => (
+        <Show when={previewed()}>
+            {/* on a phone the tools fold behind one control, as the catalogue's own filter does, so
+                the sheet keeps the screen; a hand on them reads the file a print will want */}
+            <details
+                class="explore-tools"
+                open={!narrow()}
+                onPointerEnter={() => setWanted(true)}
+                onFocusIn={() => setWanted(true)}
+            >
+                <summary>Level and print</summary>
+                <div class="explore-tools-of">
+                    <Show when={declared().length > 1}>
+                        <Seg
+                            legend="The level"
+                            quiet
+                            name="level"
+                            options={declared().map((l) => ({ value: l, label: LEVEL_WORDS[l] }))}
+                            value={level()}
+                            onChange={choose}
+                        />
+                    </Show>
+                    <Check
+                        label="Print the answers and the notes for grown-ups"
+                        checked={key()}
+                        onChange={setKey}
+                    />
+                    <Button second onClick={printSheet}>
+                        Print this sheet
+                    </Button>
+                    <p class="note explore-tools-note">
+                        {key()
+                            ? "It prints with the answers and the notes, for you."
+                            : "It prints as a child's sheet, with nothing filled in."}
+                    </p>
+                </div>
+            </details>
+        </Show>
+    );
+
     return (
         <div class="explore">
-            <Postcard
-                wide
-                kicker="Explore"
-                title="Every lesson"
-                lead="Every lesson in every subject, from grade 1 to grade 4."
-                corner={<Corner place="harbour" seed={913} />}
-            >
-                <div class="explore-filters">
-                    <Seg
-                        legend="Grade"
-                        name="grade"
-                        options={[
-                            { value: null, label: "Every grade" },
-                            ...GRADES.map((g) => ({ value: g, label: gradeName(g) })),
-                        ]}
-                        value={filters().grade}
-                        onChange={(grade) => change({ grade })}
-                    />
+            <Show when={noSuch()}>
+                <Postcard note kicker="Explore" title="There is no such lesson">
+                    <p class="note">
+                        The address may be from an older set of lessons. Every lesson the family has
+                        is below.
+                    </p>
+                </Postcard>
+            </Show>
+            <div class="explore-row">
+                <span class="postcard-tape" aria-hidden="true" />
+                <span class="postcard-tape r" aria-hidden="true" />
+                <h1>Every lesson</h1>
+                {/* one set of chips: open beside the name at a desk, behind Filter on a phone */}
+                <details class="explore-row-filter" open={!narrow()}>
+                    <summary>Filter</summary>
                     <Seg
                         legend="Subject"
                         name="subject"
+                        quiet
                         options={[
                             { value: null, label: "Every subject" },
                             ...subjects.map((s) => ({ value: s, label: subjectFacts(s).title })),
@@ -241,65 +404,151 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                         value={filters().subject}
                         onChange={(subject) => change({ subject })}
                     />
-                    <div class="explore-find">
-                        <label class="field explore-search">
-                            <span class="field-label">Search the titles</span>
-                            <input
-                                type="search"
-                                autocomplete="off"
-                                placeholder="making ten, magnets, a story"
-                                value={words()}
-                                onInput={(e) => typed(e.currentTarget.value)}
-                            />
-                        </label>
-                        <p class="explore-said" aria-live="polite">
-                            {foundLine(shown().size, lessons.length)}
-                        </p>
-                    </div>
+                </details>
+                <div class="explore-find">
+                    <label class="field explore-search">
+                        <span class="field-label">Search the titles</span>
+                        <input
+                            type="search"
+                            autocomplete="off"
+                            placeholder="making ten, magnets, a story"
+                            value={words()}
+                            onInput={(e) => typed(e.currentTarget.value)}
+                        />
+                    </label>
+                    <p class="explore-said" aria-live="polite">
+                        {foundLine(shown().size, lessons.length)}
+                    </p>
                 </div>
-            </Postcard>
+            </div>
             <For each={shelves}>
-                {(shelf) => (
-                    <section
-                        class="explore-grade"
-                        aria-label={gradeName(shelf.grade)}
-                        hidden={!count(shelf.subjects.flatMap((s) => s.lessons))}
-                    >
-                        <header class="explore-grade-head">
-                            <h2>{gradeName(shelf.grade)}</h2>
-                            <p class="kicker">
-                                {plural(count(shelf.subjects.flatMap((s) => s.lessons)), "lesson")}
-                            </p>
-                        </header>
-                        <For each={shelf.subjects}>
-                            {(s) => (
-                                <div
-                                    class="explore-subject"
-                                    hidden={!count(s.lessons)}
-                                    style={{ "--m": `var(--${subjectFacts(s.subject).marker})` }}
+                {(shelf) => {
+                    const lessonsHere = (): number =>
+                        count(shelf.subjects.flatMap((s) => s.lessons));
+                    const open = (): boolean => !closed().has(shelf.grade);
+                    const toggle = (): void => {
+                        setClosed((was) => {
+                            const next = new Set(was);
+                            if (!next.delete(shelf.grade)) next.add(shelf.grade);
+                            return next;
+                        });
+                    };
+                    return (
+                        <section
+                            class="explore-grade"
+                            aria-label={gradeName(shelf.grade)}
+                            hidden={!lessonsHere()}
+                        >
+                            <span class="postcard-tape" aria-hidden="true" />
+                            <span class="postcard-tape r" aria-hidden="true" />
+                            {/* the heading is the control, so the whole row folds the grade away */}
+                            <h2 class="explore-grade-head">
+                                <button
+                                    type="button"
+                                    aria-expanded={open()}
+                                    aria-label={`${gradeName(shelf.grade)}, ${plural(lessonsHere(), "lesson")}`}
+                                    onClick={toggle}
                                 >
-                                    <h3>{subjectFacts(s.subject).title}</h3>
-                                    <ul class="explore-tiles">
-                                        <For each={s.lessons}>
-                                            {(l) => (
-                                                <li hidden={!shown().has(l.id)}>
-                                                    <Tile lesson={l} digest={props.pack.pack} />
-                                                </li>
-                                            )}
-                                        </For>
-                                    </ul>
-                                </div>
-                            )}
-                        </For>
-                    </section>
-                )}
+                                    <span class="explore-grade-name">{gradeName(shelf.grade)}</span>
+                                    <span class="kicker">{plural(lessonsHere(), "lesson")}</span>
+                                    <span class="explore-fold" aria-hidden="true" />
+                                </button>
+                            </h2>
+                            <Show when={open()}>
+                                <For each={shelf.subjects}>
+                                    {(s) => (
+                                        <div
+                                            class="explore-subject"
+                                            hidden={!count(s.lessons)}
+                                            style={{
+                                                "--m": `var(--${subjectFacts(s.subject).marker})`,
+                                            }}
+                                        >
+                                            <h3>{subjectFacts(s.subject).title}</h3>
+                                            <ul class="explore-tiles">
+                                                <For each={s.lessons}>
+                                                    {(l) => (
+                                                        <li hidden={!shown().has(l.id)}>
+                                                            <Tile
+                                                                lesson={l}
+                                                                digest={props.pack.pack}
+                                                                warm={() => warmSchool(props.pack)}
+                                                                open={() =>
+                                                                    look({
+                                                                        world: null,
+                                                                        lesson: l.id,
+                                                                    })
+                                                                }
+                                                            />
+                                                        </li>
+                                                    )}
+                                                </For>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </For>
+                            </Show>
+                        </section>
+                    );
+                }}
             </For>
+            {/* the teaching preview is not a filter, so it waits at the foot for a parent who has read */}
+            <p class="explore-foot">
+                <Link href="/tutoring">Try the teaching preview</Link>
+            </p>
+            {/* the look is read as a plain value rather than through Show's accessor, which throws
+                once the look has gone while the overlay is still being taken down */}
+            <Show when={at() !== null}>
+                <Overlay
+                    at={at()}
+                    kicker="As a child sees it"
+                    heading={previewed()?.title}
+                    level={level()}
+                    tools={<Tools />}
+                    source={() =>
+                        import("./school").then(async (m) =>
+                            m.overlayOf(await m.schoolOnce(props.pack, still()), {
+                                level: level(),
+                            }),
+                        )
+                    }
+                    go={look}
+                />
+            </Show>
+            {/* what a print takes: the lesson's own sheet, at the level and with or without the
+                answers, off the screen until the printer has it, so nothing else goes on the paper */}
+            <Show when={printing() && paper()}>
+                {(sheet) => (
+                    <div class="explore-print" data-level={level()} aria-hidden="true">
+                        <LessonSheet
+                            lesson={sheet().lesson}
+                            level={level()}
+                            strip={{
+                                label: subjectFacts(sheet().lesson.subject).title,
+                                date: null,
+                            }}
+                            width={width()}
+                            narrow={narrow()}
+                            limits={{ sheets: "look", key: key() }}
+                            draw={sheet().draw}
+                            ref={printNow}
+                        />
+                    </div>
+                )}
+            </Show>
         </div>
     );
 }
 
 /** A lesson in the catalogue: its first drawing, drawn once it comes near, its title and its kind. */
-function Tile(props: { lesson: LessonFacts; digest: string }): JSX.Element {
+function Tile(props: {
+    lesson: LessonFacts;
+    digest: string;
+    /** Starts what the preview needs while a hand is on the tile, before the tap that opens it. */
+    warm: () => void;
+    /** Opens the preview over the catalogue. A click with a modifier is left to the browser, for a tab of its own. */
+    open: () => void;
+}): JSX.Element {
     const l = props.lesson;
     const sub = [FORMAT_WORDS[l.format] ?? l.format, l.unit === null ? "" : `Unit ${l.unit}`]
         .filter(Boolean)
@@ -316,208 +565,20 @@ function Tile(props: { lesson: LessonFacts; digest: string }): JSX.Element {
         host.replaceChildren(svg);
     };
     return (
-        <Link href={lessonPath(l.id)} class="explore-tile">
+        <a
+            href={lessonPath(l.id)}
+            class="explore-tile"
+            onPointerEnter={() => props.warm()}
+            onFocus={() => props.warm()}
+            onClick={(e) => {
+                if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+                props.open();
+            }}
+        >
             <Near class="explore-pic on-paper" draw={draw} />
             <span class="explore-tile-title">{l.title}</span>
             <span class="explore-tile-sub">{sub}</span>
-        </Link>
-    );
-}
-
-/** One lesson, read at a level with its answers, and printed as it is shown. */
-export function ExploreLesson(): JSX.Element {
-    pageLook(useLook());
-    const [pack, { refetch }] = createResource(family);
-    const failed = (): Failure | null => {
-        const p = pack.latest;
-        return p && "error" in p ? p : null;
-    };
-    const loaded = (): PackView | null => {
-        const p = pack.latest;
-        return p && !("error" in p) ? p : null;
-    };
-    const facts = (): LessonFacts | null => {
-        const id = lessonIn(path());
-        return loaded()?.index.lessons.find((l) => l.id === id) ?? null;
-    };
-    return (
-        <Show when={pack.latest} fallback={<Waiting title="Opening the lesson" />}>
-            <Show when={failed()}>
-                {(f) => <NotLoaded failure={f()} again={() => void refetch()} />}
-            </Show>
-            <Show when={loaded()}>
-                {(p) => (
-                    <Show
-                        when={facts()}
-                        keyed
-                        fallback={
-                            <Postcard note kicker="Explore" title="There is no such lesson">
-                                <p class="note">The address may be from an older set of lessons.</p>
-                                <div class="acts">
-                                    <Link href={`/explore${lastSearch}`}>Every lesson</Link>
-                                </div>
-                            </Postcard>
-                        }
-                    >
-                        {(f) => <Reading pack={p()} facts={f} />}
-                    </Show>
-                )}
-            </Show>
-        </Show>
-    );
-}
-
-function Reading(props: { pack: PackView; facts: LessonFacts }): JSX.Element {
-    const f = props.facts;
-    const declared = levelsOf(f);
-    const [level, setLevel] = createSignal<Level>(levelFrom(location.search, declared));
-    // a child's card on the home prints today's sheet from here, as the child has it
-    const printing = new URLSearchParams(location.search).has("print");
-    const [key, setKey] = createSignal(!printing);
-    const [lesson, { refetch }] = createResource(async (): Promise<PackLesson | Failure> =>
-        api.packLesson(props.pack.pack, f.file),
-    );
-    const narrow = matches("(max-width: 700px)");
-    const width = (): number => (narrow() ? Math.min(innerWidth - 32, 480) : 820);
-    const { before, after } = besideIn(props.pack.index.lessons, f.id);
-    const subject = subjectFacts(f.subject).title;
-    const choose = (l: Level): void => {
-        setLevel(l);
-        history.replaceState(null, "", lessonPath(f.id, l));
-    };
-    // the page's title names the lesson, which a printout carries in its header
-    const was = document.title;
-    createEffect(() => {
-        document.title = `${f.title} · lumischool`;
-    });
-    onCleanup(() => {
-        document.title = was;
-    });
-    const read = (): PackLesson | null => {
-        const l = lesson.latest;
-        return l && !("error" in l) ? l : null;
-    };
-    const [draw] = createResource(read, (l) =>
-        import("../../engine/ui/scene").then((m) => m.scenes(m.scenesIn(l))),
-    );
-    const failed = (): Failure | null => {
-        const l = lesson.latest;
-        return l && "error" in l ? l : null;
-    };
-    const looking = createMemo(() => atFrom(hashNow(search)));
-    let printed = !printing;
-    const printOnce = (): void => {
-        if (printed) return;
-        printed = true;
-        history.replaceState(null, "", lessonPath(f.id, level()));
-        // the sheet's drawings are on the page a frame after it is
-        requestAnimationFrame(() => requestAnimationFrame(() => print()));
-    };
-    return (
-        <div class="explore explore-lesson">
-            <Postcard
-                wide
-                kicker={[subject, gradeName(f.grade), f.unit === null ? "" : `Unit ${f.unit}`]
-                    .filter(Boolean)
-                    .join(" · ")}
-                title={f.title}
-                lead={f.goal ?? undefined}
-                corner={<Corner place="harbour" seed={917} />}
-            >
-                <Show when={declared.length > 1}>
-                    <Part title="Read it at">
-                        <Seg
-                            legend="The level"
-                            quiet
-                            name="level"
-                            options={declared.map((l) => ({ value: l, label: LEVEL_WORDS[l] }))}
-                            value={level()}
-                            onChange={choose}
-                        />
-                        <p class="note">
-                            The level is yours to see. The child's sheet never says which one it is.
-                        </p>
-                    </Part>
-                </Show>
-                <Part title="Print it">
-                    <Check
-                        label="Show the answers and the notes for grown-ups"
-                        checked={key()}
-                        onChange={setKey}
-                    />
-                    <div class="acts">
-                        <Button onClick={() => print()}>Print this sheet</Button>
-                    </div>
-                    <p class="note">
-                        {key()
-                            ? "It prints as you see it, with the answers, for you."
-                            : "It prints as a child's sheet, with nothing filled in."}
-                    </p>
-                </Part>
-                <nav
-                    class="explore-np"
-                    aria-label="This lesson in the app, and the lessons either side"
-                >
-                    <a
-                        href={hashOf({ world: null, lesson: f.id })}
-                        class="link"
-                        onClick={(e) => {
-                            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
-                            e.preventDefault();
-                            look({ world: null, lesson: f.id });
-                        }}
-                    >
-                        See it as a child sees it
-                    </a>
-                    <Link href={mapHref({ lesson: f.id })}>Open on the map</Link>
-                    <Show when={before}>
-                        {(b) => <Link href={lessonPath(b().id)}>{`Before it: ${b().title}`}</Link>}
-                    </Show>
-                    <Show when={after}>
-                        {(a) => <Link href={lessonPath(a().id)}>{`After it: ${a().title}`}</Link>}
-                    </Show>
-                    <Link href={`/explore${lastSearch}`}>Every lesson</Link>
-                </nav>
-            </Postcard>
-            {/* the look is read as a plain value rather than through Show's accessor, which throws
-                once the look has gone while the overlay is still being taken down */}
-            <Show when={looking() !== null}>
-                <Overlay
-                    at={looking()}
-                    kicker="As a child sees it"
-                    source={() =>
-                        import("./school").then(async (m) =>
-                            m.overlayOf(await m.schoolOnce(props.pack, still()), {
-                                level: level(),
-                            }),
-                        )
-                    }
-                    go={look}
-                />
-            </Show>
-            <div class="explore-sheet" data-level={level()}>
-                <Show when={failed()}>
-                    {(fl) => <NotLoaded failure={fl()} again={() => void refetch()} />}
-                </Show>
-                <Show when={read()}>
-                    {(l) => (
-                        <Show when={draw()}>
-                            {(d) => (
-                                <LessonSheet
-                                    lesson={l()}
-                                    level={level()}
-                                    strip={{ label: subject, date: null }}
-                                    width={width()}
-                                    narrow={narrow()}
-                                    limits={{ sheets: "look", key: key() }}
-                                    draw={d()}
-                                    ref={printOnce}
-                                />
-                            )}
-                        </Show>
-                    )}
-                </Show>
-            </div>
-        </div>
+        </a>
     );
 }

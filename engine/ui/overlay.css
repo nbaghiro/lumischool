@@ -38,11 +38,20 @@
 body:has(.ov[open]) {
     overflow: hidden;
 }
+/* what the page puts beside Close, wrapping under the words where a phone has no room for both */
+.ov-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px 12px;
+}
 .ov-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 8px 12px;
     min-height: 64px;
     padding: 8px 16px;
     background: var(--card);

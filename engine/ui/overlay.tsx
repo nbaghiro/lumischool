@@ -3,7 +3,7 @@
 // with the same map and roll the grown-ups' map screen draws, from views the page hands in, since
 // only the page may build them. Where it looks is the address after the `#` (hash.ts), so back,
 // Escape and a shared link all work; focus is held inside it and given back on close; nothing is
-// recorded. It opens the same way over every page: the site's opening, the grown-ups' lesson page.
+// recorded. It opens the same way over every page: the site's opening, the grown-ups' catalogue.
 
 import "./overlay.css";
 import type { MapView } from "../space";
@@ -18,6 +18,7 @@ import {
     Switch,
     type JSX,
 } from "solid-js";
+import type { Level } from "../pack";
 import { upOf, type OverlayAt } from "./hash";
 import { Overworld } from "./overworld";
 import { Reading, type ReadingSource } from "./reading";
@@ -30,7 +31,10 @@ export interface OverlaySource {
     /** The map, whose limits say what may be gone into. */
     map(): MapView;
     /** A world's roll and its sheets, or null for a world this page cannot show. */
-    reading(world: string, visit?: { grade?: number; journey?: boolean }): ReadingSource | null;
+    reading(
+        world: string,
+        visit?: { grade?: number; journey?: boolean; level?: Level },
+    ): ReadingSource | null;
     /** A world's name, for the heading. */
     nameOf(world: string): string;
     /** The world a lesson is met in, for a look the page named by the lesson alone (hash.ts). */
@@ -58,6 +62,12 @@ export function Overlay(props: {
     source: () => Promise<OverlaySource>;
     /** The words over the stage, such as "As a child sees it". */
     kicker: string;
+    /** What the words say until the source has come, so a reader has the name of what is opening. */
+    heading?: string;
+    /** What the page puts beside Close, such as the level a lesson is read at and its print. */
+    tools?: JSX.Element;
+    /** The level the page writes every sheet at. It is part of a reading's key, so a change builds the reading again and keeps the levels apart. */
+    level?: Level;
     /** The overlay asks to look elsewhere: into a world, up to the map, or closed (null). The page changes the address, which changes `at`. */
     go: (at: OverlayAt | null) => void;
 }): JSX.Element {
@@ -67,12 +77,16 @@ export function Overlay(props: {
         props.at?.journey ? props.at.grade : undefined,
     );
     const [source] = createResource(() => props.source().catch(() => null));
+    /** A reading's key on the shelf: the same world at another grade, as a journey, or at another level is another reading. */
+    const keyOf = (world: string, o: { grade?: number; journey?: boolean } = {}): string =>
+        `${world}|${o.grade ?? ""}|${o.journey ? "journey" : ""}|${props.level ?? ""}`;
     const shelf = readingShelf((key) => {
         const [world, grade, mode] = key.split("|");
         return world
             ? (source()?.reading(world, {
                   ...(grade ? { grade: Number(grade) } : {}),
                   journey: mode === "journey",
+                  ...(props.level ? { level: props.level } : {}),
               }) ?? null)
             : null;
     });
@@ -81,7 +95,7 @@ export function Overlay(props: {
         const s = source();
         if (!s || s.opening === undefined) return;
         const world = worldAt(s.map(), s.opening);
-        if (world) shelf.warm(`${world}|${journeyGrade() ?? ""}|journey`);
+        if (world) shelf.warm(keyOf(world, { grade: journeyGrade(), journey: true }));
     });
     // `box` is where the view being left put the world on the screen, so the one opening picks the
     // movement up there, as on the map screen (apps/home/map.tsx)
@@ -139,7 +153,7 @@ export function Overlay(props: {
         const world = at(s).world;
         const visit = at(s);
         return world
-            ? shelf.source(`${world}|${visit.grade ?? ""}|${visit.journey ? "journey" : ""}`)
+            ? shelf.source(keyOf(world, { grade: visit.grade, journey: visit.journey }))
             : null;
     };
     const title = (s: OverlaySource): string => {
@@ -159,11 +173,20 @@ export function Overlay(props: {
             <div class="ov-top">
                 <p class="ov-words">
                     <span class="kicker">{props.kicker}</span>
-                    <Show when={source()}>{(s) => <b>{title(s())}</b>}</Show>
+                    <Show when={source()} fallback={<b>{props.heading}</b>}>
+                        {(s) => <b>{title(s())}</b>}
+                    </Show>
                 </p>
-                <button type="button" class="btn second ov-close" onClick={() => props.go(null)}>
-                    Close
-                </button>
+                <div class="ov-tools">
+                    {props.tools}
+                    <button
+                        type="button"
+                        class="btn second ov-close"
+                        onClick={() => props.go(null)}
+                    >
+                        Close
+                    </button>
+                </div>
             </div>
             <div
                 class="ov-stage"
@@ -198,7 +221,7 @@ export function Overlay(props: {
                                                 setBox(undefined);
                                                 props.go({ ...at(s()), grade });
                                             }}
-                                            onApproachWorld={(id) => shelf.warm(`${id}||`)}
+                                            onApproachWorld={(id) => shelf.warm(keyOf(id))}
                                             onWorld={(world) => {
                                                 setBox(undefined);
                                                 setBack(undefined);
@@ -233,7 +256,10 @@ export function Overlay(props: {
                                             const world = worldAt(s().map(), place);
                                             if (world)
                                                 shelf.warm(
-                                                    `${world}|${journeyGrade() ?? ""}|journey`,
+                                                    keyOf(world, {
+                                                        grade: journeyGrade(),
+                                                        journey: true,
+                                                    }),
                                                 );
                                         }}
                                         arrive={back()}
