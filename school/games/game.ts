@@ -8,6 +8,7 @@
 // it has no position graph, and its gate is a set of named invariants and a seeded replay. The
 // first two share one runtime and the prover as their gate. All three declare their levels the same
 // way: a title, the grades a level is for, and for a turn game the round the prover walks.
+import type { Hum, Kit } from "../../engine/sound/kit";
 import type { Ctx, Session } from "./hands";
 import type { Pt } from "../../engine/motion/geometry";
 import type { Dir, Pad } from "../../engine/motion/pad";
@@ -16,14 +17,9 @@ import type { Timeline } from "../../engine/motion/timeline";
 import type { Tuning } from "../../engine/motion/tune";
 import { bind, type Activity, type Mechanic, type Position, type Round } from "./games";
 
-export type Group = "puzzle" | "hands" | "action";
+export type Group = "hands" | "action";
 
 export const GROUPS: { id: Group; name: string; blurb: string }[] = [
-    {
-        id: "puzzle",
-        name: "Puzzles",
-        blurb: "Choose what to do next. Tap a move, or use the arrow keys and Enter.",
-    },
     {
         id: "hands",
         name: "Hands on",
@@ -81,11 +77,13 @@ interface Base {
      * plays, for the pages and lessons that link to it, and nothing else about it changes.
      */
     listed?: false;
+    /** The game's own sounds for the cues it wants different from everyone's. */
+    sounds?: Kit;
 }
 
 /** A puzzle or a hands-on game: a mechanic, a view of its board, and the tray of its moves. */
 export interface TurnGame extends Base {
-    group: "puzzle" | "hands";
+    group: "hands";
     levels: TurnLevel[];
     /** The sentence that replaces the goal when a round is won, and the one that says why nothing is left to play. */
     ends: { won: string; stuck: string };
@@ -101,6 +99,11 @@ export interface ActionGame<S> extends Base {
     rate: number;
     commands?: readonly { id: string; label: string; key?: string }[];
     command?(s: S, id: string): void;
+    /**
+     * A design to keep, and putting one back: what a build game saves between tries. Returning to a
+     * checkpoint in play needs neither, since the player replays the try up to the step that emitted
+     * a `checkpoint` event.
+     */
     checkpoint?(s: S): unknown;
     restore?(s: S, value: unknown): boolean;
     /** The buttons under the field: what each arrow it uses is called here, and the big buttons. Every one has a key. */
@@ -121,17 +124,27 @@ export interface ActionGame<S> extends Base {
      * goes where the finger is) rather than a swipe. The game reads it from the pad's `touch`.
      */
     touch?: true;
+    /**
+     * Set when the game reads the pad's `intents`: a second finger turning or pinching with the
+     * first, and the wheel or a trackpad's pinch as a zoom.
+     */
+    intents?: true;
     /** Abandon a held gesture on pause or pointer cancellation, without launching it. */
     cancelInput?(s: S): void;
     /** The numbers that make it feel the way it does, which the review drawer can turn while it runs. */
     tuning?: Tuning;
     /** Takes the last thing back, where the game allows it, and says whether there was one. */
     back?(s: S): boolean;
+    /** What goes on sounding while it plays: water running, wind, an engine. */
+    hum?(s: S): Hum[];
     /**
-     * Drawn full-bleed: the field can show extra world around the authored view.
-     * Controls remain available independently of scene framing.
+     * Seen from above, as a table or a course is: room the page has beyond the authored view is shared
+     * above and below it. Left out, the scene is side-on and the room goes to the sky, with the ground
+     * kept at the foot of the field.
      */
-    bleed?: true;
+    seen?: "above";
+    /** The field shows where things stand, so the line above it says only what just happened. */
+    quiet?: true;
     /** The activity whose versions this game plays, and the level each version opens, for a link that names the activity. */
     plays?: { activity: string; levels: number[] };
     /**
@@ -164,21 +177,4 @@ export function levelsOf<V, S, M>(
         grades,
         round: () => bind(m, a, i),
     }));
-}
-
-/** A mechanic played from its tray: its board as the mechanic draws it, and no handles. */
-export function puzzle(o: {
-    id: string;
-    title: string;
-    hint: string;
-    cover: Cover;
-    ends: TurnGame["ends"];
-    levels: TurnLevel[];
-    win?: Timeline;
-}): TurnGame {
-    return {
-        ...o,
-        group: "puzzle",
-        open: () => ({ parts: (pos) => pos.board, handles: () => [] }),
-    };
 }

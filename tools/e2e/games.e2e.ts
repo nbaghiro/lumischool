@@ -9,7 +9,7 @@ for (const game of ["straight", "jump", "pour"]) {
         await expect(page.locator(".page-main")).toHaveClass(/stage/);
         await expect(page.locator(".board > :not([hidden])").first()).toBeVisible();
         await expect(page.locator(".board")).not.toContainText("no drawing called");
-        await expect(page.locator(".board > :not([hidden]) svg").first()).toBeVisible();
+        await expect(page.locator(".board > :not([hidden]) canvas").first()).toBeVisible();
         const bounds = await page.locator(".hands").boundingBox();
         expect(bounds).not.toBeNull();
         if (bounds)
@@ -33,7 +33,7 @@ for (const game of ["straight", "jump", "pour"]) {
     });
 }
 
-test("rowing buttons move the boat and pause holds its state", async ({ page }) => {
+test("the paddle button moves the canoe and pause holds its state", async ({ page }) => {
     await page.goto("/games?g=straight");
     const menu = page.locator(".game-menu");
     await page.getByRole("button", { name: "Pause & help" }).click();
@@ -42,9 +42,14 @@ test("rowing buttons move the boat and pause holds its state", async ({ page }) 
     await menu.getByRole("button", { name: "Continue playing", exact: true }).click();
     const description = page.locator('[data-game="reads"]');
     const before = await description.textContent();
-    await page.getByRole("button", { name: "Row forwards", exact: true }).focus();
-    await page.keyboard.press("Enter");
-    await expect(description).not.toHaveText(before ?? "");
+    // the big button winds up a stroke while it is held and paddles when it is let go
+    const paddle = await page.getByRole("button", { name: "Paddle", exact: true }).boundingBox();
+    if (!paddle) throw new Error("No paddle button");
+    await page.mouse.move(paddle.x + paddle.width / 2, paddle.y + paddle.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(300);
+    await page.mouse.up();
+    await expect(description).not.toHaveText(before ?? "", { timeout: 5000 });
     await page.getByRole("button", { name: "Pause & help" }).click();
     const paused = await description.textContent();
     await page.waitForTimeout(1100);
@@ -98,7 +103,7 @@ test("road controls expose each action once and keep navigation compact", async 
 });
 
 test("undo uses the shared drawing and keeps its action name", async ({ page }) => {
-    await page.goto("/games?g=spell");
+    await page.goto("/games?g=shut");
     const undo = page.getByRole("button", { name: "Undo last move", exact: true });
     await expect(undo.locator('svg[data-visual="icon"]')).toBeVisible();
     await expect(undo).toHaveAttribute("title", "Undo last move");
@@ -164,38 +169,6 @@ test("clicking the pause backdrop resumes, while clicking inside keeps it open",
     await expect(page.getByRole("button", { name: "All games", exact: true })).toBeVisible();
 });
 
-test("the two-ramp challenge can be solved with the visible workshop controls", async ({
-    page,
-}) => {
-    await page.goto("/games?g=marble-workshop&v=1");
-    for (const name of ["Next ramp", "Turn left", "Turn right", "Undo", "Redo"])
-        await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
-    const field = await page.locator(".field").boundingBox();
-    if (!field) throw new Error("No workshop field");
-    const place = async (id: string, x: number, y: number, turns: number) => {
-        const ramp = await page.locator('[data-key="' + id + '"]').boundingBox();
-        if (!ramp) throw new Error("No ramp");
-        await page.mouse.move(ramp.x + ramp.width / 2, ramp.y + ramp.height / 2);
-        await page.mouse.down();
-        await page.mouse.move(field.x + (x * field.width) / 42, field.y + (y * field.height) / 27, {
-            steps: 3,
-        });
-        await page.mouse.up();
-        for (let n = 0; n < turns; n++)
-            await page.getByRole("button", { name: "Turn right", exact: true }).click();
-    };
-    await place("ramp-1", 6.5, 5.5, 1);
-    await place("ramp-2", 15, 12, 4);
-    await expect(page.locator('[data-game="board"]')).toBeFocused();
-    await page.keyboard.press("Enter");
-    await expect(page.locator('[data-game="aside"]')).toContainText("It works!", {
-        timeout: 20000,
-    });
-    await expect(page.locator(".game-finished .game-cover svg")).toBeVisible();
-    await expect(page.locator(".game-toolbar [data-game=aside]")).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
-});
-
 test("cargo exposes its delivery bell without duplicating the hook control", async ({ page }) => {
     await page.goto("/games?g=cargo-workshop");
     await expect(page.getByRole("button", { name: "Ring the bell", exact: true })).toBeVisible();
@@ -208,14 +181,17 @@ test("keyboard activation of a focused rotation control keeps its normal button 
     page,
 }) => {
     await page.goto("/games?g=marble-workshop&v=1");
+    await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
+    // an arrow puts the chosen part on the bench, where it can be turned
+    await page.keyboard.press("ArrowRight");
+    const part = page.locator('[data-key="long:0"]');
+    const before = await part.getAttribute("style");
     const rotate = page.getByRole("button", { name: "Turn right", exact: true });
-    const ramp = page.locator('[data-key="ramp-1"]');
-    const before = await ramp.getAttribute("style");
     await rotate.focus();
     await page.keyboard.press("Enter");
     await expect(rotate).toBeFocused();
-    await expect(ramp).not.toHaveAttribute("style", before ?? "");
-    await expect(page.locator(".game-feedback-live")).not.toContainText("Watch its path");
+    await expect(part).not.toHaveAttribute("style", before ?? "");
+    await expect(page.locator(".game-feedback-live")).not.toContainText("Here they come");
 });
 
 for (const game of ["road", "plane"]) {
@@ -317,26 +293,28 @@ test("touch on the plane field is a deliberate first input", async ({ page }, in
 for (const game of ["sling&v=2", "plane", "rally"]) {
     test(`${game}: grid fills the viewport and follows the camera`, async ({ page }) => {
         await page.goto(`/games?g=${game}`);
-        await expect(page.locator(".field .world svg").first()).toBeVisible();
+        // the GPU's view draws its grid under the world's camera and says where in its attributes
+        await expect(page.locator(".field-gl[data-drawn]")).toBeVisible();
         const check = async () => {
             const result = await page.locator(".field").evaluate((field) => {
-                const paper = field.querySelector(".field-paper");
-                const world = field.querySelector(".world");
-                if (!paper || !world) throw new Error("Missing field layers");
                 const outer = field.getBoundingClientRect();
-                const sheet = paper.getBoundingClientRect();
-                const grid = getComputedStyle(paper);
-                const camera = new DOMMatrix(getComputedStyle(world).transform);
+                const canvas = field.querySelector(":scope > canvas");
+                if (!(canvas instanceof HTMLCanvasElement) || !(field instanceof HTMLElement))
+                    throw new Error("Missing the GPU view");
+                const sheet = canvas.getBoundingClientRect();
+                const [cx = 0, cy = 0, zoom = 1] = (field.dataset.camera ?? "")
+                    .split(",")
+                    .map(Number);
+                const [gx = 0, gy = 0, gz = 0] = (field.dataset.grid ?? "").split(",").map(Number);
+                const sq = parseFloat(getComputedStyle(field).getPropertyValue("--sq"));
                 return {
                     width: sheet.width - field.clientWidth,
                     height: sheet.height - field.clientHeight,
                     left: sheet.left - outer.left - field.clientLeft,
                     top: sheet.top - outer.top - field.clientTop,
-                    x: parseFloat(grid.backgroundPositionX) - camera.e,
-                    y: parseFloat(grid.backgroundPositionY) - camera.f,
-                    size:
-                        parseFloat(grid.backgroundSize) -
-                        parseFloat(getComputedStyle(field).getPropertyValue("--sq")) * camera.a,
+                    x: gx - (field.clientWidth / 2 - cx * gz),
+                    y: gy - (field.clientHeight / 2 - cy * gz),
+                    size: gz - sq * zoom,
                 };
             });
             for (const value of Object.values(result)) expect(Math.abs(value)).toBeLessThan(0.1);
@@ -356,11 +334,13 @@ test("tabletop games use the available room without a fixed desktop width cap", 
     page,
 }) => {
     await page.setViewportSize({ width: 1920, height: 1600 });
-    await page.goto("/games?g=rule&v=0");
-    await expect(page.locator(".sheet")).toBeVisible();
+    await page.goto("/games?g=shut&v=0");
+    // the board is the GPU's scene view, sized in squares as the Stage's sheet was
+    const board = page.locator(".scene");
+    await expect(board).toBeVisible();
     await expect
         .poll(async () =>
-            page.locator(".sheet").evaluate((sheet) => {
+            board.evaluate((sheet) => {
                 const board = sheet.parentElement;
                 if (!board) return false;
                 const style = getComputedStyle(sheet);
@@ -384,6 +364,6 @@ test("tabletop games use the available room without a fixed desktop width cap", 
         .toBe(true);
     const room = await page.locator(".game-stage-wrap").boundingBox();
     expect(room?.width).toBeGreaterThan(1800);
-    const sheet = await page.locator(".sheet").boundingBox();
+    const sheet = await board.boundingBox();
     expect(sheet?.width).toBeGreaterThan(1100);
 });

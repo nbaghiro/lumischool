@@ -52,7 +52,8 @@
 }
 .field input,
 .field select,
-.zone-pick select {
+.zone-pick select,
+.game-search input {
     width: 100%;
     min-height: 44px;
     padding: 8px 2px 4px;
@@ -70,12 +71,14 @@
     color: var(--ink);
 }
 .field input:hover,
-.field select:hover {
+.field select:hover,
+.game-search input:hover {
     background: color-mix(in srgb, var(--sky) 10%, transparent);
 }
 .field input:focus-visible,
 .field select:focus-visible,
-.zone-pick select:focus-visible {
+.zone-pick select:focus-visible,
+.game-search input:focus-visible {
     outline: 2px dashed var(--pen);
     outline-offset: 4px;
     border-bottom-color: var(--pen);

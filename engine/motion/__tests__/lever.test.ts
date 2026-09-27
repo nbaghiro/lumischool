@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { knock, lean, onPlank, swingTo, turning, type Tilt } from "../lever";
+import { knock, lean, onPlank, swingTo, tips, turning, type Tilt } from "../lever";
 
 const k = { per: 0.06, most: 0.3 };
 
@@ -64,4 +64,18 @@ test("a point on the plank turns with it: the right end goes down when the angle
     assert.ok(end.y > pivot.y && end.x < 14);
     const hook = onPlank(pivot, 0.2, 4, 1);
     assert.ok(Math.abs(Math.hypot(hook.x - pivot.x, hook.y - pivot.y) - Math.hypot(4, 1)) < 1e-9);
+});
+
+test("a plank on supports rests while the middle of its loads is over them, and tips over the edge it passes", () => {
+    // a plank of mass 4 from 0 to 8 resting on the bank up to 0 and a stone reaching to 5
+    const plank = { mass: 4, at: 4 };
+    assert.equal(tips([plank], 0, 5), 0);
+    assert.equal(tips([plank, { mass: 6, at: 7 }], 0, 5), 1, "a child at the far end tips it");
+    assert.equal(tips([plank, { mass: 6, at: 5 }], 0, 5), 0, "standing over the stone does not");
+    assert.equal(tips([{ mass: 2, at: -3 }], 0, 5), -1);
+    assert.equal(tips([], 0, 4), 0);
+    // a light plank held down at the back: 20 at 6 against 10 at -4 three times is exactly level
+    const back = [-4, -4, -4].map((at) => ({ mass: 10, at }));
+    assert.equal(tips([...back, { mass: 20, at: 6 }], -4, 0), 0, "an exact balance holds");
+    assert.equal(tips([...back.slice(1), { mass: 20, at: 6 }], -4, 0), 1);
 });

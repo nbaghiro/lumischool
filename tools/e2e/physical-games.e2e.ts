@@ -4,6 +4,7 @@ import { test } from "./steps";
 test("penny shove accepts a forward flick and offers keyboard angle controls", async ({
     page,
     hasTouch,
+    browserName,
 }) => {
     await page.goto("/games?g=pay");
     const pile = page.locator('[data-key="pile:penny:0"]');
@@ -12,7 +13,8 @@ test("penny shove accepts a forward flick and offers keyboard angle controls", a
     if (!box) throw new Error("No coin pile");
     const x = box.x + box.width / 2,
         y = box.y + box.height / 2;
-    if (hasTouch) {
+    // touch is sent through Chrome's own protocol, which only Chromium has; other browsers flick with the mouse
+    if (hasTouch && browserName === "chromium") {
         const touch = await page.context().newCDPSession(page);
         await touch.send("Input.dispatchTouchEvent", {
             type: "touchStart",
@@ -38,9 +40,11 @@ test("penny shove accepts a forward flick and offers keyboard angle controls", a
     await expect(coin).toBeVisible();
     await expect.poll(async () => (await coin.boundingBox())?.x ?? 0).toBeGreaterThan(x);
     await page.getByRole("button", { name: "Turn left", exact: true }).click();
-    const before = await page.locator(".field .ink").innerHTML();
+    // the aim line is ink on the field, so the picture changes
+    const field = page.locator(".field");
+    const before = await field.screenshot();
     await page.keyboard.press("e");
-    await expect.poll(() => page.locator(".field .ink").innerHTML()).not.toBe(before);
+    await expect.poll(async () => (await field.screenshot()).equals(before)).toBe(false);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
         true,
     );
@@ -78,11 +82,12 @@ for (const id of [
     "snake",
     "cargo-workshop",
     "marble-workshop",
+    "wardrobe",
+    "clear",
     "shunt",
     "weigh",
     "share",
     "pour",
-    "race",
     "shut",
     "rule",
     "spell",
@@ -93,9 +98,8 @@ for (const id of [
         const errors: string[] = [];
         page.on("pageerror", (error) => errors.push(error.message));
         await page.goto(`/games?g=${id}`);
-        await expect(
-            page.locator(".board > :not([hidden]) svg[data-visual]").first(),
-        ).toBeVisible();
+        const drawn = page.locator(".board > .field-gl[data-drawn]:not([hidden])");
+        await expect(drawn.first()).toBeVisible();
         await expect(page.locator(".board")).not.toContainText("no drawing called");
         await expect(page.locator(".board")).not.toContainText("NaN");
         const controls = await page.locator(".hands").boundingBox();
@@ -111,30 +115,54 @@ for (const id of [
         await expect(page.locator(".game-menu")).toBeVisible();
         await page.keyboard.press("Escape");
         await expect(page.locator(".game-menu")).not.toBeVisible();
-        await expect(
-            page.locator(".board > :not([hidden]) svg[data-visual]").first(),
-        ).toBeVisible();
+        await expect(drawn.first()).toBeVisible();
         expect(errors).toEqual([]);
     });
 }
 
-test("spelling tiles can be tapped into the word and removed from it", async ({ page }) => {
-    await page.goto("/games?g=spell");
-    const tile = page.locator('[data-key="sound:0"]');
-    await expect(tile).toBeVisible();
-    await tile.click();
-    const filled = page.locator('[data-key="filled:0"]');
-    await expect(filled).toBeVisible();
-    await filled.click();
-    await expect(filled).not.toBeVisible();
+test("shut the box: a die flicked across the felt throws both dice, which tumble to rest showing the throw", async ({
+    page,
+}, info) => {
+    test.skip(info.project.name.startsWith("phone"), "the flick is made with a mouse here");
+    await page.goto("/games?g=shut");
+    const die = page.locator('[data-key="die:0"]');
+    await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
+    await expect(die).toBeVisible();
+    // the board is sized after its tray is drawn, so the die is measured once it has stopped moving
+    let at = await die.boundingBox();
+    for (let i = 0; i < 20; i++) {
+        await page.waitForTimeout(150);
+        const now = await die.boundingBox();
+        if (now && at && now.x === at.x && now.y === at.y) break;
+        at = now;
+    }
+    if (!at) throw new Error("Missing the die");
+    const x = at.x + at.width / 2,
+        y = at.y + at.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x - 60, y - 15, { steps: 6 });
+    await page.mouse.move(x - 160, y - 40, { steps: 4 });
+    await page.mouse.up();
+    await page.waitForTimeout(120);
+    await page.screenshot({ path: `/tmp/shut-throw-${info.project.name}-flight.png` });
+    await expect(page.locator('[data-game="reads"]')).toContainText("The dice show", {
+        timeout: 10_000,
+    });
+    // once the tumble is over the dice lie still
+    await page.waitForTimeout(3000);
+    const rest = await die.boundingBox();
+    await page.waitForTimeout(500);
+    expect(await die.boundingBox()).toEqual(rest);
+    await page.screenshot({ path: `/tmp/shut-throw-${info.project.name}-rest.png` });
 });
 
-test("bead string follows a held point on the paper", async ({ page }) => {
+test("the firefly flies towards a held finger", async ({ page }) => {
     await page.goto("/games?g=snake");
     const head = page.locator('[data-key="head"]');
     await expect(head).toBeVisible();
     const before = await head.boundingBox();
-    if (!before) throw new Error("No bead string head");
+    if (!before) throw new Error("No firefly");
     await page.mouse.move(before.x + before.width / 2, before.y + before.height * 3);
     await page.mouse.down();
     try {
@@ -144,32 +172,4 @@ test("bead string follows a held point on the paper", async ({ page }) => {
     } finally {
         await page.mouse.up();
     }
-});
-
-test("sound tiles can be dragged into a different word position", async ({ page, hasTouch }) => {
-    await page.goto("/games?g=spell");
-    await page.locator('[data-key="sound:0"]').click();
-    await page.locator('[data-key="sound:1"]').click();
-    const first = page.locator('[data-key="filled:0"]');
-    const second = page.locator('[data-key="filled:1"]');
-    await expect(second).toBeVisible();
-    const word = await second.textContent();
-    const a = await first.boundingBox(),
-        b = await second.boundingBox();
-    if (!a || !b) throw new Error("No placed sound tiles");
-    const from = { x: a.x + a.width / 2, y: a.y + a.height / 2 };
-    const to = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
-    if (hasTouch) {
-        const touch = await page.context().newCDPSession(page);
-        await touch.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [from] });
-        await touch.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [to] });
-        await touch.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-        await touch.detach();
-    } else {
-        await page.mouse.move(from.x, from.y);
-        await page.mouse.down();
-        await page.mouse.move(to.x, to.y, { steps: 5 });
-        await page.mouse.up();
-    }
-    await expect(first).toHaveText(word ?? "");
 });

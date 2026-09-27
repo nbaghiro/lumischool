@@ -208,6 +208,9 @@ export function step(s: RoadState, pad: Pad): Happening[] {
     s.reverseWait = braking && s.v <= 0 ? s.reverseWait + DT : 0;
     if (s.won) s.v = 0;
     else if (braking) {
+        // braking hard throws dust from the back tyres, so a skid can be seen as well as felt
+        if (s.v > 2 && s.steps % 6 === 0)
+            out.push({ burst: { kind: "dust", x: s.x - CAR / 2, y: s.y, n: 2, dir: Math.PI } });
         if (s.v > 0) s.v = Math.max(0, s.v - 16 * DT);
         else if (s.reverseWait > 0.45) {
             s.reversing = true;
@@ -271,7 +274,7 @@ export function step(s: RoadState, pad: Pad): Happening[] {
             if (off <= L.within) {
                 s.won = true;
                 s.said = `Stopped on ${said}. ${L.flag ? "That is the flag." : `${L.target} is here.`}`;
-                out.push({ cue: "win" });
+                out.push({ cue: "win" }, { burst: { kind: "sparkle", x: s.x, y: s.y, n: 14 } });
             } else if (v > L.to || v < L.from) {
                 // Off the line there is no number to read, so the sentence says which end it is past.
                 s.said =
@@ -468,6 +471,7 @@ export const roadGame: ActionGame<RoadState> = {
     id: "road",
     title: "The road",
     group: "action",
+    seen: "above",
     levels: ROAD_LEVELS,
     rate: RATE,
     cover: { art: "racecar", params: { vx: 3, vy: -1 } },

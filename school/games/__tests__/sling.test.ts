@@ -160,3 +160,16 @@ test("flight history is bounded and disappears shortly after the ball settles", 
     assert.equal(s.trail.length, 0);
     assert.ok(!slingGame.frame(s).marks.some((m) => m.kind === "dots"));
 });
+
+test("a shot that knocks no star says how near it came, and one that does says what fell", () => {
+    const weak = shoot(0, [at(40, 1.2)]);
+    assert.equal(weak.starsDown, 0);
+    assert.match(weak.said, /short of|Short of|past|grazed|Close/);
+    assert.match(weak.said, /Next ball ready\./);
+    const start = startSling(0);
+    assert.equal(
+        start.shot,
+        undefined,
+        "the starting state carries no shot, so its identity holds",
+    );
+});

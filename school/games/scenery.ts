@@ -67,6 +67,35 @@ export interface Row {
     alpha?: number;
 }
 
+/** How far a ground or a sea runs past the world's ends, so a field wider than the world never shows where it stops. */
+export const BEYOND = 30;
+
+/** A ground from `x0` to `x1` with its top at `top`, drawn in lengths, since one drawing as long as a world is too big to draw at once. */
+export function ground(
+    key: string,
+    x0: number,
+    x1: number,
+    top: number,
+    z: number,
+    seed = 60,
+): Sprite[] {
+    const out: Sprite[] = [];
+    for (let x = x0; x < x1; x += 20) {
+        const w = Math.min(20, x1 - x);
+        out.push({
+            key: `${key}:${x}`,
+            art: "arcade.ground",
+            params: { w },
+            seed: seed + x,
+            x: x + w / 2,
+            y: top + 1.1,
+            z,
+            still: true,
+        });
+    }
+    return out;
+}
+
 export function row(r: Row, eye: Eye, seed: number, t = 0): Sprite[] {
     const span = seen(eye.cam, eye.view, r.depth),
         shift = (r.drift ?? 0) * t,

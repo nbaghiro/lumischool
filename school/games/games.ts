@@ -103,7 +103,7 @@ export interface Slot {
     count: [number, number];
 }
 
-/** One of a mechanic's own settings, in the form a generator and a studio form both read. */
+/** One of a mechanic's own settings, in the form a generator reads. */
 export interface Setting {
     doc: string;
     kind: "pick" | "number" | "numbers" | "rules";
@@ -114,10 +114,9 @@ export interface Setting {
 }
 
 /**
- * What a mechanic says it can take. This is the contract an author, a studio form and a model all
- * work against, and it is the reason an activity can be written rather than coded: everything a
- * mechanic needs is named here, with the range it may take, so a fill can be checked before any
- * position is built.
+ * What a mechanic says it can take. This is the contract an author and a model both work against,
+ * and it is the reason an activity can be written rather than coded: everything a mechanic needs is
+ * named here, with the range it may take, so a fill can be checked before any position is built.
  */
 export interface Contract {
     /** The drawings the mechanic puts on the board, so a palette can show what it will look like. */

@@ -22,6 +22,7 @@ const KEY_MARKS = [
 ] as const;
 
 type KeyMark = (typeof KEY_MARKS)[number];
+const isKeyMark = (s: string): s is KeyMark => KEY_MARKS.some((k) => k === s);
 
 function keyMark<G>(c: Ctx<G>, m: KeyMark, x0: number, x1: number, y: number): void {
     const { pen, g } = c,
@@ -259,8 +260,7 @@ export const mapKey = defineDrawing({
         for (let i = 0; i < n; i++) {
             const y = (3.5 + i * 2) * U,
                 m = p.marks[i] ?? "";
-            if ((KEY_MARKS as readonly string[]).includes(m))
-                keyMark(c, m as KeyMark, 1.2 * U, 3.8 * U, y);
+            if (isKeyMark(m)) keyMark(c, m, 1.2 * U, 3.8 * U, y);
             say(c, 4.5 * U, y + 5, p.labels[i] ?? "", 14, "start");
             a[`row(${i})`] = [4.4 * U, y, "left"];
         }

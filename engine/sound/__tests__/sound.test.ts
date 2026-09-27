@@ -213,7 +213,7 @@ test("a scale is a pattern that is the same from any note", () => {
             noteName(tonic),
         );
     }
-    for (const name of Object.keys(SCALES)) assert.equal(SCALES[name as keyof typeof SCALES][0], 0);
+    for (const steps of Object.values(SCALES)) assert.equal(steps[0], 0);
     assert.equal(degreeOf(noteOf("E4"), noteOf("C4")), 3);
     assert.equal(degreeOf(noteOf("C#4"), noteOf("C4")), null);
     assert.equal(inScale(noteOf("F#5"), noteOf("G4")), true);

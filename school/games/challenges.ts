@@ -1,12 +1,24 @@
 import { rallyChallenge, isRallyConfiguration, openRallyConfiguration } from "./rally-challenges";
 import { golfChallenge, isGolfConfiguration, openGolfConfiguration } from "./golf-challenges";
+import { fishChallenge, isFishConfiguration, openFishConfiguration } from "./fish-challenges";
+import {
+    bridgeChallenge,
+    isBridgeConfiguration,
+    openBridgeConfiguration,
+} from "./bridge-challenges";
+import { clearChallenge, isClearConfiguration, openClearConfiguration } from "./clear-challenges";
 import {
     actionKind,
     actionChallenge,
     isActionConfiguration,
     openActionConfiguration,
 } from "./action-challenges";
-import { yardChallenge, isYardConfiguration, openYardConfiguration } from "./yard-challenges";
+import {
+    yardChallenge,
+    isYardConfiguration,
+    openYardConfiguration,
+    yardWay,
+} from "./yard-challenges";
 import {
     remainingChallenge,
     remainingKind,
@@ -24,17 +36,34 @@ import {
     openRabbitConfiguration,
 } from "./rabbit-challenges";
 import { tableChallenge, isTableConfiguration, openTableConfiguration } from "./table-challenges";
+import {
+    isTrainConfiguration,
+    openTrainConfiguration,
+    trainChallenge,
+    trainWay,
+} from "./train-challenges";
 import { configurationKey } from "../../engine/motion/configuration";
 import { slingChallenge, isSlingConfiguration, openSlingConfiguration } from "./sling-challenges";
-import { ruleChallenge, isRuleConfiguration, openRuleConfiguration } from "./rule-challenges";
+import { machineChallenge, isMachineConfiguration, machineSolve } from "./rule-challenges";
+import { startMachine } from "./rule";
 import {
     gameRulesVersion,
     GAME_CHALLENGE_VERSIONS,
     type GameValue,
     type GameChallenge,
 } from "../../engine/answer";
-import type { Game } from "./game";
+import type { ActionGame, Game, TurnGame } from "./game";
+import type { Round } from "./games";
+import { certified, type Variation } from "../../engine/motion/generator";
 import { isPourConfiguration, openPourConfiguration, pourChallenge } from "./pour-challenges";
+import {
+    blocksCertified,
+    blocksChallenge,
+    isBlocksConfiguration,
+    openBlocksConfiguration,
+    vary,
+} from "./blocks-challenges";
+import { BLOCKS_LEVELS } from "./blocks";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -43,26 +72,368 @@ function identity(game: string, phase: number, value: unknown): string {
     return `${game}:${phase}:${gameRulesVersion(game)}:${(hash >>> 0).toString(16)}`;
 }
 
-export function supportsVariations(game: Game): boolean {
-    return (
-        Boolean(actionKind(game.id)) ||
-        Boolean(remainingKind(game.id)) ||
-        [
-            "golf",
-            "rally",
-            "shunt",
-            "pour",
-            "sling",
-            "rule",
-            "jump",
-            "marble-workshop",
-            "cargo-workshop",
-            "race",
-            "spell",
-            "shut",
-        ].includes(game.id)
-    );
+type Configuration = GameChallenge["configuration"];
+
+/**
+ * A game's variations on the generator kit: the layout the kit generates and reads back, how it is
+ * stored, how hard it is, and the game it opens. The stored shape is what a challenge's identity is
+ * hashed from, so it must not change for a layout that has not.
+ */
+interface Family<T> {
+    variation: Variation<T>;
+    store(layout: T): Configuration;
+    rating(layout: T, phase: number): { reasoning: number; motor: number };
+    open(game: Game, layout: T, phase: number): Game | null;
 }
+
+/** A family with its layout's type hidden, so every game's can sit in one record. */
+interface Variations {
+    generate(
+        seed: number,
+        phase: number,
+    ): { configuration: Configuration; method: string; reasoning: number; motor: number };
+    open(game: Game, configuration: Configuration, phase: number): Game | null;
+}
+
+function family<T>(f: Family<T>): Variations {
+    return {
+        generate(seed, phase) {
+            // the generators certify their own pools, so the seed given is the layout kept
+            const layout = certified(f.variation, seed, phase, 1);
+            return {
+                configuration: f.store(layout),
+                method: f.variation.method,
+                ...f.rating(layout, phase),
+            };
+        },
+        open(game, configuration, phase) {
+            const layout = f.variation.read(configuration, phase);
+            return layout === null ? null : f.open(game, layout, phase);
+        },
+    };
+}
+
+const action = (game: Game): ActionGame<unknown> | null => (game.group === "action" ? game : null);
+const turn = (game: Game): TurnGame | null => (game.group === "action" ? null : game);
+
+/** An action game started from a layout, with one level's words replaced where the layout names them. */
+function started(
+    game: Game,
+    start: () => unknown,
+    phase?: number,
+    words?: { title?: string; goal: string },
+): Game | null {
+    const g = action(game);
+    if (!g) return null;
+    return {
+        ...g,
+        ...(words && phase !== undefined
+            ? { levels: g.levels.map((level, i) => (i === phase ? { ...level, ...words } : level)) }
+            : {}),
+        start,
+    };
+}
+
+/** A turn game whose level plays a layout's round. */
+function rounded(game: Game, phase: number, round: () => Round): Game | null {
+    const g = turn(game);
+    if (!g) return null;
+    return {
+        ...g,
+        levels: g.levels.map((level, i) => (i === phase ? { ...level, round } : level)),
+    };
+}
+
+const typed =
+    <T>(guard: (value: unknown, phase: number) => value is T) =>
+    (value: unknown, phase: number): T | null =>
+        guard(value, phase) ? value : null;
+
+const sampled = "sampled-complete-controls-replay";
+
+const rally = family({
+    variation: {
+        method: sampled,
+        generate: rallyChallenge,
+        read: typed(isRallyConfiguration),
+    },
+    store: (v) => ({ phase: v.phase, variant: v.variant, course: serializable(v.course) }),
+    rating: (_v, phase) => ({ reasoning: 2, motor: phase + 2 }),
+    open: (game, v) => started(game, () => openRallyConfiguration(v)),
+});
+
+const clear = family({
+    variation: {
+        method: "stride-search-and-physics-replay",
+        generate: clearChallenge,
+        read: typed(isClearConfiguration),
+    },
+    store: (v) => ({ phase: v.phase, variant: v.variant, course: serializable(v.course) }),
+    rating: (_v, phase) => ({ reasoning: phase + 2, motor: 2 }),
+    open: (game, v) => started(game, () => openClearConfiguration(v)),
+});
+
+const bridge = family({
+    variation: {
+        method: "plank-search-and-walk-replay",
+        generate: bridgeChallenge,
+        read: (value, phase) =>
+            isBridgeConfiguration(value) && value.phase === phase ? value : null,
+    },
+    store: (v) => ({ phase: v.phase, variant: v.variant, level: serializable(v.level) }),
+    rating: (_v, phase) => ({ reasoning: phase + 1, motor: 1 }),
+    open: (game, v, phase) =>
+        started(game, () => openBridgeConfiguration(v), phase, { goal: v.level.goal }),
+});
+
+const fish = family({
+    variation: { method: sampled, generate: fishChallenge, read: typed(isFishConfiguration) },
+    store: (v) => ({ phase: v.phase, seed: v.seed, level: serializable(v.level) }),
+    rating: (_v, phase) => ({ reasoning: phase + 1, motor: 3 }),
+    open: (game, v, phase) =>
+        started(game, () => openFishConfiguration(v), phase, {
+            title: v.level.title,
+            goal: v.level.goal,
+        }),
+});
+
+const golf = family({
+    variation: {
+        method: sampled,
+        generate: golfChallenge,
+        read: (value, phase) =>
+            isGolfConfiguration(value) && value.phase === phase ? value : null,
+    },
+    store: (v) => ({ phase: v.phase, course: serializable(v.course) }),
+    rating: (_v, phase) => ({ reasoning: phase + 1, motor: 2 }),
+    open: (game, v) => started(game, () => openGolfConfiguration(v)),
+});
+
+const pour = family({
+    variation: {
+        method: "exhaustive-position-graph",
+        generate: pourChallenge,
+        read: typed(isPourConfiguration),
+    },
+    store: (v) => ({ jugs: v.jugs.map((j) => ({ ...j })), target: v.target, unit: v.unit }),
+    rating: (_v, phase) => ({ reasoning: [1, 2, 3, 4, 4, 3][phase] ?? 1, motor: 1 }),
+    open: (game, v, phase) => started(game, () => openPourConfiguration(v, phase)),
+});
+
+const sling = family({
+    variation: {
+        method: "sampled-complete-physics-replay",
+        generate: slingChallenge,
+        read: (value) => (isSlingConfiguration(value) ? value : null),
+    },
+    store: (v) => ({ phase: v.phase, level: serializable(v.level) }),
+    rating: (_v, phase) => ({ reasoning: 1, motor: phase + 2 }),
+    open: (game, v, phase) => {
+        if (v.phase !== phase) throw new Error("Wrong slingshot phase");
+        return started(game, () => openSlingConfiguration(v));
+    },
+});
+
+const rule = family({
+    variation: {
+        method: "order-search-and-roll-replay",
+        generate: machineChallenge,
+        read: typed(isMachineConfiguration),
+        solve: (v) => machineSolve(v.level),
+    },
+    store: (v) => ({ phase: v.phase, variant: v.variant, level: serializable(v.level) }),
+    rating: (_v, phase) => ({ reasoning: phase < 3 ? 2 : 3, motor: 2 }),
+    open: (game, v, phase) => {
+        if (v.phase !== phase) throw new Error("Wrong machine phase");
+        return started(game, () => startMachine(v.level, phase));
+    },
+});
+
+const workshop = family({
+    variation: {
+        method: sampled,
+        generate: workshopChallenge,
+        read: (value) => (isWorkshopConfiguration(value) ? value : null),
+    },
+    store: (v) => ({ phase: v.phase, kind: v.kind, level: serializable(v.level) }),
+    rating: (_v, phase) => ({ reasoning: phase + 1, motor: 2 }),
+    open: (game, v, phase) => {
+        if (v.phase !== phase || `${v.kind}-workshop` !== game.id)
+            throw new Error("Wrong workshop phase");
+        return started(game, () => openWorkshopConfiguration(v));
+    },
+});
+
+const jump = family({
+    variation: {
+        method: "route-graph-and-controls-replay",
+        generate: rabbitChallenge,
+        read: (value, phase) =>
+            typeof value === "object" &&
+            value !== null &&
+            "level" in value &&
+            isRabbitConfiguration(value.level, phase)
+                ? value.level
+                : null,
+    },
+    store: (level) => ({ level: serializable(level) }),
+    rating: () => ({ reasoning: 2, motor: 2 }),
+    open: (game, level, phase) =>
+        started(game, () => openRabbitConfiguration(level, phase), phase, {
+            title: level.title,
+            goal: level.goal,
+        }),
+});
+
+const shunt = family({
+    variation: {
+        method: "sampled-complete-controls-replay",
+        generate: yardChallenge,
+        read: (value, phase) => (isYardConfiguration(value, phase) ? value : null),
+        solve: (c) => yardWay(openYardConfiguration(c)),
+    },
+    store: (c) => ({ phase: c.phase, queue: c.queue }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 4 ? 3 : 2, motor: 2 }),
+    open: (game, c) => started(game, () => openYardConfiguration(c)),
+});
+
+const shut = family({
+    variation: {
+        method: "seeded-graph-and-fair-dice-audit",
+        generate: (seed: number, phase: number) => tableChallenge(seed, "shut", phase),
+        read: (value, phase) => (isTableConfiguration(value, "shut", phase) ? value : null),
+    },
+    store: (v) => ({ kind: v.kind, value: serializable(v.value) }),
+    rating: () => ({ reasoning: 3, motor: 1 }),
+    open: (game, v, phase) => rounded(game, phase, () => openTableConfiguration(v)),
+});
+
+const spell = family({
+    variation: {
+        method: "sampled-complete-controls-replay",
+        generate: trainChallenge,
+        read: (value, phase) => (isTrainConfiguration(value, phase) ? value : null),
+        solve: (c) => trainWay(openTrainConfiguration(c)),
+    },
+    store: (c) => ({ phase: c.phase, word: serializable(c.word) }),
+    rating: (c, phase) => ({
+        reasoning: c.word.sounds.length > 3 ? 2 : 1,
+        motor: phase < 2 ? 2 : 3,
+    }),
+    open: (game, c) => started(game, () => openTrainConfiguration(c)),
+});
+
+const moving = (kind: NonNullable<ReturnType<typeof actionKind>>) =>
+    family({
+        variation: {
+            method: sampled,
+            generate: (seed: number, phase: number) => actionChallenge(seed, kind, phase),
+            read: (value, phase) =>
+                isActionConfiguration(value) && value.kind === kind && value.phase === phase
+                    ? value
+                    : null,
+        },
+        store: (v) => ({ kind: v.kind, phase: v.phase, level: serializable(v.level) }),
+        rating: (_v, phase) => ({
+            reasoning: 1,
+            motor: kind === "plane" ? 3 : kind === "row" && phase >= 4 ? 3 : 2,
+        }),
+        open: (game, v, phase) =>
+            actionKind(game.id) === kind
+                ? started(game, () => openActionConfiguration(v), phase, {
+                      title: v.level.title,
+                      goal: v.level.goal,
+                  })
+                : null,
+    });
+
+const remaining = (kind: NonNullable<ReturnType<typeof remainingKind>>) =>
+    family({
+        variation: {
+            method: sampled,
+            generate: (seed: number, phase: number) => remainingChallenge(seed, kind, phase),
+            read: (value, phase) =>
+                isRemainingConfiguration(value) && value.kind === kind && value.phase === phase
+                    ? value
+                    : null,
+        },
+        store: (v) => {
+            const data = serializable(v);
+            if (!data || typeof data !== "object" || Array.isArray(data))
+                throw new Error("Invalid action configuration");
+            return data;
+        },
+        // Initial ratings describe the authored task and tolerance; they are not ability scores.
+        rating: (v, phase) =>
+            v.kind === "cake"
+                ? {
+                      reasoning:
+                          v.level.given || v.level.gone ? 3 : v.level.names.length > 3 ? 2 : 1,
+                      motor: v.level.within >= 0.8 ? 1 : v.level.within >= 0.6 ? 2 : 3,
+                  }
+                : {
+                      reasoning: kind === "snake" ? 1 : phase < 2 ? 2 : 3,
+                      motor: kind === "snake" || kind === "rafts" ? 3 : 2,
+                  },
+        open: (game, v, phase) =>
+            remainingKind(game.id) === kind
+                ? started(game, () => openRemainingConfiguration(v), phase, {
+                      title: v.level.title,
+                      goal: v.level.goal,
+                  })
+                : null,
+    });
+
+const blocks = family({
+    variation: {
+        method: "crane-plan-and-physics-replay",
+        generate: blocksChallenge,
+        read: (value, phase) => (isBlocksConfiguration(value, phase) ? value : null),
+        solve: (c) => blocksCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, n: c.n }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3,
+        motor: (BLOCKS_LEVELS[phase]?.guide ?? "none") === "ghost" ? 1 : 2,
+    }),
+    open: (game, c, phase) => {
+        const L = BLOCKS_LEVELS[phase];
+        return L
+            ? started(game, () => openBlocksConfiguration(c), phase, {
+                  title: L.title,
+                  goal: vary(L, c.n).goal,
+              })
+            : null;
+    },
+});
+
+/** Every game whose levels have variations, by the game's id. */
+const VARIATIONS: Partial<Record<string, Variations>> = {
+    rally,
+    blocks,
+    clear,
+    bridge,
+    fish,
+    golf,
+    pour,
+    sling,
+    rule,
+    "cargo-workshop": workshop,
+    jump,
+    shunt,
+    spell,
+    shut,
+    straight: moving("row"),
+    road: moving("road"),
+    plane: moving("plane"),
+    share: remaining("cake"),
+    weigh: remaining("seesaw"),
+    snake: remaining("snake"),
+    pay: remaining("shove"),
+    herd: remaining("rafts"),
+};
+
+export const supportsVariations = (game: Game): boolean => VARIATIONS[game.id] !== undefined;
 
 export function challengeFor(
     game: Game,
@@ -73,107 +444,15 @@ export function challengeFor(
     const level = game.levels[phase];
     if (!level || !Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
         throw new Error("Invalid challenge selection");
-    let configuration: GameChallenge["configuration"] = { phase, title: level.title };
+    let configuration: Configuration = { phase, title: level.title };
     let source: GameChallenge["source"] = "authored";
     let method = "authored-regression";
     let reasoning = game.group === "action" ? 1 : 2;
     let motor = game.group === "action" ? 2 : 1;
-    if (generated && game.id === "rally") {
-        const v = rallyChallenge(seed, phase);
-        configuration = { phase: v.phase, variant: v.variant, course: serializable(v.course) };
+    const variations = generated ? VARIATIONS[game.id] : undefined;
+    if (variations) {
+        ({ configuration, method, reasoning, motor } = variations.generate(seed, phase));
         source = "generated";
-        method = "sampled-complete-controls-replay";
-        reasoning = 2;
-        motor = phase + 2;
-    } else if (generated && game.id === "golf") {
-        const v = golfChallenge(seed, phase);
-        configuration = { phase: v.phase, course: serializable(v.course) };
-        source = "generated";
-        method = "sampled-complete-controls-replay";
-        reasoning = phase + 1;
-        motor = 2;
-    } else if (generated && game.id === "pour") {
-        const v = pourChallenge(seed, phase);
-        configuration = { jugs: v.jugs.map((j) => ({ ...j })), target: v.target, unit: v.unit };
-        source = "generated";
-        method = "exhaustive-position-graph";
-        reasoning = [1, 2, 3, 4, 4, 3][phase] ?? 1;
-        motor = 1;
-    } else if (generated && game.id === "sling") {
-        const v = slingChallenge(seed, phase);
-        configuration = { phase: v.phase, level: serializable(v.level) };
-        source = "generated";
-        method = "sampled-complete-physics-replay";
-        reasoning = 1;
-        motor = phase + 2;
-    } else if (generated && game.id === "rule") {
-        const v = ruleChallenge(seed, phase);
-        configuration = {
-            cards: v.cards.map((card) => serializable(card)),
-            answer: v.answer,
-            inputs: v.inputs,
-        };
-        source = "generated";
-        method = "exhaustive-position-graph-and-information-audit";
-        reasoning = phase < 3 ? 2 : 3;
-    } else if (generated && (game.id === "marble-workshop" || game.id === "cargo-workshop")) {
-        const v = workshopChallenge(
-            seed,
-            game.id === "marble-workshop" ? "marble" : "cargo",
-            phase,
-        );
-        configuration = { phase: v.phase, kind: v.kind, level: serializable(v.level) };
-        source = "generated";
-        method = "sampled-complete-controls-replay";
-        reasoning = phase + 1;
-        motor = 2;
-    } else if (generated && game.id === "jump") {
-        configuration = { level: serializable(rabbitChallenge(seed, phase)) };
-        source = "generated";
-        method = "route-graph-and-controls-replay";
-        reasoning = 2;
-        motor = 2;
-    } else if (generated && ["race", "spell", "shut"].includes(game.id)) {
-        const v = tableChallenge(seed, game.id, phase);
-        configuration = { kind: v.kind, value: serializable(v.value) };
-        source = "generated";
-        method =
-            game.id === "shut" ? "seeded-graph-and-fair-dice-audit" : "exhaustive-position-graph";
-        reasoning = game.id === "spell" ? 1 : 3;
-        motor = 1;
-    } else if (generated && game.id === "shunt") {
-        const v = yardChallenge(seed, phase);
-        configuration = { train: v.train, order: v.order, siding: v.siding, windows: v.windows };
-        source = "generated";
-        method = "exhaustive-graph-and-controls-replay";
-        reasoning = phase < 2 ? 2 : phase < 4 ? 3 : 4;
-        motor = 2;
-    } else if (generated && actionKind(game.id)) {
-        const kind = actionKind(game.id);
-        if (!kind) throw new Error("Unknown action family");
-        const v = actionChallenge(seed, kind, phase);
-        configuration = { kind: v.kind, phase: v.phase, level: serializable(v.level) };
-        source = "generated";
-        method = "sampled-complete-controls-replay";
-        reasoning = 1;
-        motor = kind === "plane" ? 3 : kind === "row" && phase >= 4 ? 3 : 2;
-    } else if (generated && remainingKind(game.id)) {
-        const kind = remainingKind(game.id);
-        if (!kind) throw new Error("Unknown action family");
-        const v = remainingChallenge(seed, kind, phase);
-        const data = serializable(v);
-        if (!data || typeof data !== "object" || Array.isArray(data))
-            throw new Error("Invalid action configuration");
-        configuration = data;
-        source = "generated";
-        method = "sampled-complete-controls-replay";
-        // Initial ratings describe the authored task and tolerance; they are not ability scores.
-        reasoning = kind === "snake" ? 1 : phase < 2 ? 2 : 3;
-        motor = kind === "snake" || kind === "rafts" ? 3 : 2;
-        if (v.kind === "cake") {
-            reasoning = v.level.given || v.level.gone ? 3 : v.level.names.length > 3 ? 2 : 1;
-            motor = v.level.within >= 0.8 ? 1 : v.level.within >= 0.6 ? 2 : 3;
-        }
     } else if (game.group === "action") {
         // Snapshot the deterministic initial data, including generated fish/cards and world
         // definitions. Runtime functions stay in the versioned rules, never in persisted JSON.
@@ -246,145 +525,9 @@ export function openChallenge(game: Game, challenge: GameChallenge): Game {
             return { ...game, start: (level) => game.start(level, challenge.seed) };
         return game;
     }
-    if (
-        game.id === "rally" &&
-        game.group === "action" &&
-        isRallyConfiguration(challenge.configuration, challenge.phase)
-    ) {
-        const configuration = challenge.configuration;
-        return { ...game, start: () => openRallyConfiguration(configuration) };
-    }
-    if (
-        game.id === "golf" &&
-        game.group === "action" &&
-        isGolfConfiguration(challenge.configuration) &&
-        challenge.phase === challenge.configuration.phase
-    ) {
-        const configuration = challenge.configuration;
-        return { ...game, start: () => openGolfConfiguration(configuration) };
-    }
-    if (
-        game.group === "action" &&
-        isActionConfiguration(challenge.configuration) &&
-        actionKind(game.id) === challenge.configuration.kind &&
-        challenge.phase === challenge.configuration.phase
-    ) {
-        const configuration = challenge.configuration;
-        return {
-            ...game,
-            levels: game.levels.map((level, i) =>
-                i === challenge.phase
-                    ? { ...level, title: configuration.level.title, goal: configuration.level.goal }
-                    : level,
-            ),
-            start: () => openActionConfiguration(configuration),
-        };
-    }
-    if (
-        game.id === "shunt" &&
-        game.group === "action" &&
-        isYardConfiguration(challenge.configuration, challenge.phase)
-    ) {
-        const configuration = challenge.configuration;
-        return { ...game, start: () => openYardConfiguration(configuration, challenge.phase) };
-    }
-    if (
-        game.group === "action" &&
-        isRemainingConfiguration(challenge.configuration) &&
-        remainingKind(game.id) === challenge.configuration.kind &&
-        challenge.phase === challenge.configuration.phase
-    ) {
-        const configuration = challenge.configuration;
-        return {
-            ...game,
-            levels: game.levels.map((level, i) =>
-                i === challenge.phase
-                    ? { ...level, title: configuration.level.title, goal: configuration.level.goal }
-                    : level,
-            ),
-            start: () => openRemainingConfiguration(configuration),
-        };
-    }
-    if (
-        game.group === "action" &&
-        ["cargo-workshop", "marble-workshop"].includes(game.id) &&
-        isWorkshopConfiguration(challenge.configuration)
-    ) {
-        const configuration = challenge.configuration;
-        if (configuration.phase !== challenge.phase || `${configuration.kind}-workshop` !== game.id)
-            throw new Error("Wrong workshop phase");
-        return { ...game, start: () => openWorkshopConfiguration(configuration) };
-    }
-    if (
-        game.id === "jump" &&
-        game.group === "action" &&
-        isRabbitConfiguration(challenge.configuration.level, challenge.phase)
-    ) {
-        const configuration = challenge.configuration.level;
-        return {
-            ...game,
-            levels: game.levels.map((level, i) =>
-                i === challenge.phase
-                    ? { ...level, title: configuration.title, goal: configuration.goal }
-                    : level,
-            ),
-            start: () => openRabbitConfiguration(configuration, challenge.phase),
-        };
-    }
-    if (
-        game.group !== "action" &&
-        isTableConfiguration(challenge.configuration, game.id, challenge.phase)
-    ) {
-        const configuration = challenge.configuration;
-        return {
-            ...game,
-            levels: game.levels.map((level, i) =>
-                i === challenge.phase
-                    ? { ...level, round: () => openTableConfiguration(configuration) }
-                    : level,
-            ),
-        };
-    }
-    if (
-        game.id === "sling" &&
-        game.group === "action" &&
-        isSlingConfiguration(challenge.configuration)
-    ) {
-        const configuration = challenge.configuration;
-        if (configuration.phase !== challenge.phase) throw new Error("Wrong slingshot phase");
-        return { ...game, start: () => openSlingConfiguration(configuration) };
-    }
-    if (
-        game.id === "rule" &&
-        game.group !== "action" &&
-        isRuleConfiguration(challenge.configuration, challenge.phase)
-    ) {
-        const configuration = challenge.configuration;
-        return {
-            ...game,
-            levels: game.levels.map((level, i) =>
-                i === challenge.phase
-                    ? { ...level, round: () => openRuleConfiguration(configuration) }
-                    : level,
-            ),
-        };
-    }
-    if (
-        game.id === "pour" &&
-        game.group !== "action" &&
-        isPourConfiguration(challenge.configuration, challenge.phase)
-    ) {
-        const configuration = challenge.configuration;
-        return {
-            ...game,
-            levels: game.levels.map((level, i) =>
-                i === challenge.phase
-                    ? { ...level, round: () => openPourConfiguration(configuration) }
-                    : level,
-            ),
-        };
-    }
-    throw new Error("This generated challenge is not supported.");
+    const opened = VARIATIONS[game.id]?.open(game, challenge.configuration, challenge.phase);
+    if (!opened) throw new Error("This generated challenge is not supported.");
+    return opened;
 }
 
 function serializable(value: unknown): GameValue {

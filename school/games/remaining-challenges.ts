@@ -1,24 +1,16 @@
 import { RAFT_LEVELS, startRaftLevel, type RaftLevel } from "./rafts";
-import { CAST_LEVELS, start as startCast, type CastLevel, type CastState } from "./cast";
 import { SHOVE_LEVELS, startShoveLevel, type ShoveLevel } from "./shove";
 import { CAKE_LEVELS, startCakeLevel, type CakeLevel } from "./cake";
 import { SEESAW_LEVELS, startSeesawLevel, type SeesawLevel } from "./seesaw";
-import { start as startSnake, type SnakeLevel, type SnakeState } from "./snake";
+import { FIREFLY_LEVELS, layoutOf, startFirefly, type FireflyLevel } from "./snake";
 
-export type RemainingKind = "cake" | "seesaw" | "snake" | "shove" | "cast" | "rafts";
+export type RemainingKind = "cake" | "seesaw" | "snake" | "shove" | "rafts";
 export type RemainingConfiguration =
     | { kind: "rafts"; phase: number; level: RaftLevel }
-    | {
-          kind: "cast";
-          phase: number;
-          level: Omit<CastLevel, "words">;
-          fish: CastState["fish"];
-          swimSeed: number;
-      }
     | { kind: "shove"; phase: number; level: ShoveLevel }
     | { kind: "cake"; phase: number; level: CakeLevel }
     | { kind: "seesaw"; phase: number; level: SeesawLevel }
-    | { kind: "snake"; phase: number; level: SnakeLevel; cards: SnakeState["cards"] };
+    | { kind: "snake"; phase: number; level: FireflyLevel; layout: number[] };
 
 const LOADS = [
     [6, 7, 8],
@@ -36,8 +28,7 @@ export function remainingChallenge(
     phase: number,
 ): RemainingConfiguration {
     const index = (seed >>> 0) % REMAINING_CHALLENGE_COUNT;
-    const safePhase =
-        Number.isInteger(phase) && phase >= 0 && phase < (kind === "snake" ? 2 : 6) ? phase : 0;
+    const safePhase = Number.isInteger(phase) && phase >= 0 && phase < 6 ? phase : 0;
     if (kind === "rafts") {
         const base = RAFT_LEVELS[safePhase] ?? RAFT_LEVELS[0];
         return {
@@ -47,46 +38,6 @@ export function remainingChallenge(
                 ...base,
                 grades: [...base.grades],
                 rafts: base.rafts.map((raft) => ({ ...raft, x: raft.x + (index - 1) * 0.5 })),
-            },
-        };
-    }
-    if (kind === "cast") {
-        const seeds = [
-            [1, 2, 4],
-            [1, 2, 3],
-            [1, 2, 3],
-            [1, 2, 3],
-            [1, 4, 8],
-            [1, 2, 8],
-        ];
-        const targets = [
-            [7, 9, 8],
-            [19, 17, 14],
-            [1000, 700, 1050],
-            [1.5, 2, 2.25],
-            [35, 40, 45],
-            [1.5, 1.25, 1.75],
-        ];
-        const swimSeed = seeds[safePhase]?.[index] ?? 1;
-        const target = targets[safePhase]?.[index] ?? 10;
-        const initial = startCast(safePhase, swimSeed);
-        const { words, ...base } = initial.L;
-        const goal = `Catch ${base.holds} fish that weigh ${words(target)} together.`;
-        return {
-            kind,
-            phase: safePhase,
-            swimSeed,
-            fish: initial.fish.map((fish) => ({ ...fish })),
-            level: {
-                ...base,
-                grades: [...base.grades],
-                kinds: base.kinds.map((fish) => ({ ...fish })),
-                dial: { ...base.dial },
-                target,
-                title: `${base.holds} fish to make ${words(target)}`,
-                goal,
-                prompt: goal,
-                done: `The scale reads ${words(target)}, and the pan is full.`,
             },
         };
     }
@@ -157,14 +108,17 @@ export function remainingChallenge(
             },
         };
     }
-    const state = startSnake(safePhase, [1, 2, 4][index] ?? 1);
+    const level = FIREFLY_LEVELS[safePhase] ?? FIREFLY_LEVELS[0];
     return {
         kind,
         phase: safePhase,
-        level: { ...state.L, grades: [...state.L.grades], decoys: [...state.L.decoys] },
-        cards: state.cards.map((card) => ({ ...card })),
+        level,
+        layout: layoutOf(level, [1, 2, 4][index] ?? 1),
     };
 }
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
 
 function sameShape(value: unknown, expected: unknown): boolean {
     if (expected === null || typeof expected !== "object") return value === expected;
@@ -174,12 +128,11 @@ function sameShape(value: unknown, expected: unknown): boolean {
             value.length === expected.length &&
             expected.every((item, index) => sameShape(value[index], item))
         );
-    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
-    const actual = value as Record<string, unknown>,
-        entries = Object.entries(expected);
+    if (!isRecord(value)) return false;
+    const entries = Object.entries(expected);
     return (
-        Object.keys(actual).length === entries.length &&
-        entries.every(([key, item]) => sameShape(actual[key], item))
+        Object.keys(value).length === entries.length &&
+        entries.every(([key, item]) => sameShape(value[key], item))
     );
 }
 
@@ -192,12 +145,11 @@ export function isRemainingConfiguration(value: unknown): value is RemainingConf
             kind !== "seesaw" &&
             kind !== "snake" &&
             kind !== "shove" &&
-            kind !== "cast" &&
             kind !== "rafts") ||
         typeof phase !== "number" ||
         !Number.isInteger(phase) ||
         phase < 0 ||
-        phase >= (kind === "snake" ? 2 : 6)
+        phase >= 6
     )
         return false;
     for (let seed = 0; seed < REMAINING_CHALLENGE_COUNT; seed++)
@@ -209,25 +161,13 @@ export function openRemainingConfiguration(configuration: RemainingConfiguration
     if (!isRemainingConfiguration(configuration)) throw new Error("Unverified game arrangement");
     if (configuration.kind === "rafts")
         return startRaftLevel(configuration.level, configuration.phase);
-    if (configuration.kind === "cast") {
-        const state = startCast(configuration.phase, configuration.swimSeed);
-        state.L = {
-            ...configuration.level,
-            words: (CAST_LEVELS[configuration.phase] ?? CAST_LEVELS[0]).words,
-        };
-        state.fish = configuration.fish.map((fish) => ({ ...fish }));
-        return state;
-    }
     if (configuration.kind === "shove")
         return startShoveLevel(configuration.level, configuration.phase);
     if (configuration.kind === "cake")
         return startCakeLevel(configuration.level, configuration.phase);
     if (configuration.kind === "seesaw")
         return startSeesawLevel(configuration.level, configuration.phase);
-    const state = startSnake(configuration.phase);
-    state.L = configuration.level;
-    state.cards = configuration.cards.map((card) => ({ ...card }));
-    return state;
+    return startFirefly(configuration.level, configuration.phase, configuration.layout);
 }
 
 /** Public catalogue IDs intentionally differ from several underlying mechanic names. */
@@ -243,8 +183,6 @@ export function remainingKind(gameId: string): RemainingKind | undefined {
             return "shove";
         case "herd":
             return "rafts";
-        case "fish":
-            return "cast";
         default:
             return undefined;
     }

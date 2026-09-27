@@ -25,6 +25,9 @@ import {
     boxFrame,
 } from "./fretting";
 
+const FINGERS: readonly Finger[] = [1, 2, 3, 4];
+const isFinger = (n: number): n is Finger => FINGERS.some((f) => f === n);
+
 interface ChordBoxParams {
     tuning: TuningName;
     /** A chord from the book, or "none" to draw `places` instead. */
@@ -167,7 +170,7 @@ export const chordBox = defineDrawing<ChordBoxParams>({
                         fingers: t.strings.map((_, i) => {
                             const f =
                                 loose.find((q) => q.string === t.strings.length - i)?.fret ?? 0;
-                            return f >= 1 && f <= 4 ? (f as Finger) : null;
+                            return isFinger(f) ? f : null;
                         }),
                     }
                   : null;

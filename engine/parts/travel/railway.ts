@@ -24,17 +24,19 @@ export const railway = defineDrawing({
     title: "Railway",
     group: "Structures",
     about: "A length of railway seen from the side: a rail on sleepers over a bed of ballast, with a strip of grass in front of it. It can leave a gap, for a pit or a bridge, where the rail, the sleepers and the ballast stop and start again while the grass runs on.",
-    params: { length: 24, gap: 0, at: 0 },
+    params: { length: 24, gap: 0, at: 0, bank: 0 },
     settings: {
         length: { kind: "whole", min: 4, max: 36 },
         gap: { kind: "whole", min: 0, max: 30 },
         at: { kind: "whole", min: 0, max: 36 },
+        bank: { kind: "whole", min: 0, max: 4 },
     },
     takes: [
-        { label: "Twenty-four squares of line", params: { length: 24, gap: 0, at: 0 } },
-        { label: "With a gap for a pit", params: { length: 30, gap: 11, at: 10 } },
+        { label: "Twenty-four squares of line", params: { length: 24, gap: 0, at: 0, bank: 0 } },
+        { label: "With a gap for a pit", params: { length: 30, gap: 11, at: 10, bank: 0 } },
+        { label: "Up on a bank", params: { length: 12, gap: 0, at: 0, bank: 2 } },
     ],
-    box: (p) => ({ w: whole(p.length, 4, 120, 24), h: RAILWAY.h }),
+    box: (p) => ({ w: whole(p.length, 4, 120, 24), h: RAILWAY.h + whole(p.bank, 0, 4, 0) }),
     draw: (c, p): RawAnchors => {
         const { pen, g } = c,
             w = whole(p.length, 4, 120, 24) * U,
@@ -55,7 +57,7 @@ export const railway = defineDrawing({
             0,
             grass,
             w,
-            RAILWAY.h * U - grass,
+            (RAILWAY.h + whole(p.bank, 0, 4, 0)) * U - grass,
             "pencil",
             pen.fill("mint", "hachure", { hachureGap: 10, fillWeight: 0.8 }),
             { stroke: "none" },
@@ -106,7 +108,7 @@ export const railway = defineDrawing({
         };
     },
     describe: (p) =>
-        `A length of railway seen from the side, a rail on wooden sleepers over grey ballast with a strip of green grass in front${Number(p.gap) > 0 ? ", with a gap in the line" : ""}.`,
+        `A length of railway seen from the side, a rail on wooden sleepers over grey ballast with a strip of green grass in front${Number(p.gap) > 0 ? ", with a gap in the line" : ""}${Number(p.bank) > 0 ? ", up on a grassy bank" : ""}.`,
     motion: {
         still: "A railway is the ground the trains run on; if it moved, every carriage on it would seem to move.",
     },

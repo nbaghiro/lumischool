@@ -464,6 +464,16 @@ Where music lives. The park in the worlds is the music world, and the bandstand 
 
 What remains in the pieces built: the window has not been measured on children; the drum shows the pointer's focus ring after a tap, which a child may read as a mark; the song select in the tray is a browser control rather than a drawing; and there is no print of a tune yet.
 
+## Game kits
+
+The games have their own small kit, apart from the instruments: `engine/sound/kit.ts` declares each of
+a game's cues as a few layers of tone or filtered noise on an envelope, voiced louder for a harder hit,
+higher for a count that climbs, and panned by where it happened, with a limit on voices and hums for
+water, wind and an engine. It follows this document's rules: synthesis only, off until the Sound switch
+is on, and every cue drawn as well as heard. [game-engine.md](game-engine.md) has the detail under P5. The
+cues are the ones in `engine/motion/cues.ts`; `creak`, a slow low rasp, was added for a stack of blocks
+rocking before it goes, and the pups' blocks voice it with their wooden kit.
+
 ## Open questions
 
 - Whether the tempo a lesson plays at is a lesson setting or a child's control. We have it as the child's, on the grounds that a metronome nobody can slow down is a machine to fail against, but a grade four phrase written at a tempo has a reason to be played at it.

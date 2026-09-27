@@ -1,4 +1,4 @@
-// The nine mechanics, one case each for the rule that makes the mechanic what it is: the thing a
+// The eight mechanics, one case each for the rule that makes the mechanic what it is: the thing a
 // child has to see is the thing the mechanic refuses to do for them. The cases every mechanic has to
 // pass, that a position is never changed in place and always reads as a sentence, come first.
 import { test } from "node:test";
@@ -10,7 +10,6 @@ import { jump, type JumpVersion } from "../jump";
 import { pay, wanted, type PayVersion } from "../pay";
 import { pour, type PourPos, type PourVersion } from "../pour";
 import { race, swept, CELL, type RacePos, type RaceVersion } from "../race";
-import { distinguishable, label, rule, run, type RuleVersion } from "../rule";
 import { share, type SharePos, type ShareVersion } from "../share";
 import { shunt, CAR, SPUR, type ShuntVersion } from "../shunt";
 import { spell, spellings, type SpellVersion } from "../spell";
@@ -129,46 +128,6 @@ test("the number line draws the jumps taken, and two routes to the same place pl
     assert.equal(jump.key(a), jump.key(b), "the same future, so the same key");
     const drawn = (s: typeof a) => jump.board(s, v).parts[0]?.params.jumps;
     assert.notDeepEqual(drawn(a), drawn(b), "and a different picture, because the route is drawn");
-});
-
-test("the machine cannot be guessed before anything has been fed in", () => {
-    const v: RuleVersion = {
-        cards: [
-            { op: "add", a: 1 },
-            { op: "add", a: 2 },
-        ],
-        answer: 0,
-        inputs: [1, 2],
-    };
-    assert.ok(
-        rule.moves(rule.start(v), v).every((m) => "feed" in m),
-        "only feeds at the start",
-    );
-    const fed = rule.apply(rule.start(v), { feed: 1 }, v);
-    assert.ok(
-        rule.moves(fed, v).some((m) => "name" in m),
-        "and naming opens up once something is known",
-    );
-});
-
-test("a rule reads and runs the way it is written", () => {
-    assert.equal(label({ op: "muladd", a: 2, b: 1 }), "× 2 + 1");
-    assert.equal(label({ op: "muladd", a: 3, b: -1 }), "× 3 - 1");
-    assert.equal(run({ op: "muladd", a: 3, b: -1 }, 4), 11);
-    assert.equal(run({ op: "mul", a: 10 }, 3), 30);
-});
-
-test("two rules that no input can separate are reported by the mechanic's own check", () => {
-    const twins: RuleVersion = {
-        cards: [
-            { op: "add", a: 0 },
-            { op: "mul", a: 1 },
-        ],
-        answer: 0,
-        inputs: [1, 2],
-    };
-    assert.equal(distinguishable(twins, []), false, "+ 0 and x 1 are the same machine");
-    assert.ok(rule.audit?.(twins).length, "so the audit says so");
 });
 
 const LANE: RaceVersion = {
@@ -386,32 +345,6 @@ test("the mechanic refuses a fill that is legal in shape and nonsense in content
             () => jump.accepts({ from: 0, to: 10, step: 1, start: 0, target: 4, cards: [4] }),
         ],
         [
-            "too few cards to make a guess cost anything",
-            () =>
-                rule.accepts({
-                    cards: [
-                        { op: "add", a: 1 },
-                        { op: "add", a: 2 },
-                    ],
-                    answer: 0,
-                    inputs: [1, 2],
-                }),
-        ],
-        [
-            "two cards that read the same",
-            () =>
-                rule.accepts({
-                    cards: [
-                        { op: "add", a: 1 },
-                        { op: "add", a: 1 },
-                        { op: "mul", a: 2 },
-                        { op: "mul", a: 3 },
-                    ],
-                    answer: 0,
-                    inputs: [1, 2],
-                }),
-        ],
-        [
             "a lanes track the scale under it would not fit",
             () => race.accepts({ ...LANE, track: ["S###F"] }),
         ],
@@ -444,20 +377,6 @@ test("the mechanic refuses a fill that is legal in shape and nonsense in content
                     tiles: ["b", "u", "d", "o"],
                     word: "bus",
                     picture: { art: "bus", params: {} },
-                }),
-        ],
-        [
-            "a rule that would show a negative number",
-            () =>
-                rule.accepts({
-                    cards: [
-                        { op: "add", a: 1 },
-                        { op: "muladd", a: 1, b: -8 },
-                        { op: "mul", a: 2 },
-                        { op: "mul", a: 3 },
-                    ],
-                    answer: 1,
-                    inputs: [1, 2],
                 }),
         ],
     ];

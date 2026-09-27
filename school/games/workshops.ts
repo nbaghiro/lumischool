@@ -1,8 +1,10 @@
-import { suspend, type Suspended } from "../../engine/motion/suspension";
-import { bodies, type Bodies, type Body } from "../../engine/motion/bodies";
+// Harbour cargo: a crane lifts crates from the dock onto a barge, and the barge floats. The crane's
+// hook hangs on a rope from a trolley along its jib, so a crate swings as it travels and has to be let
+// settle before it is set down; the barge lists towards the heavier side, and the load is balanced
+// when the weights times their distances from the mast come out even. See .docs/games.md.
+import { bodies, type Bodies, type Body, type Joint } from "../../engine/motion/bodies";
 import {
     workshop,
-    edit,
     undo,
     redo,
     checkpoint,
@@ -14,11 +16,34 @@ import {
     type Piece,
 } from "../../engine/motion/construction";
 import type { Pad } from "../../engine/motion/pad";
-import type { Frame, Sprite, Mark, Happening } from "../../engine/motion/scene";
+import type { Frame, Sprite, Mark, Happening, Water } from "../../engine/motion/scene";
+import { surfaceAt } from "../../engine/motion/surface";
 import type { ActionGame, ActionLevel } from "./game";
+import { BEYOND, ground } from "./scenery";
 
 const SIZE = { w: 42, h: 27 };
 const DT = 1 / 60;
+/** The jib the trolley runs along, and the harbour's still surface, in squares down. */
+const JIB = 2,
+    SEA = 23;
+/** Where the barge is moored, across, and half its length. */
+const MOOR = 30,
+    HALF = 9;
+/**
+ * Each unit of a crate's number is this much mass per square, heavy enough against the barge's
+ * buoyancy that the heaviest crate at an end lists it by several degrees.
+ */
+const HEAVY = 4;
+/**
+ * How far out of balance a load may be and still count as balanced, in weight times squares: a crane
+ * sets a crate down within about a third of a square, and the heaviest crate is a 7.
+ */
+const BALANCED = 2.5;
+/** How much rope is let out while a crate travels, so it passes over the crates below it. */
+const TRAVEL = 8;
+/** How fast a held crate's swing dies, per second. */
+const SWAY = 3;
+const HARBOUR: Water = { x: 17.5, w: 24.5, level: SEA, bottom: 27, waves: 0.03, hue: "sky" };
 const clamp = (n: number, a: number, b: number): number => Math.max(a, Math.min(b, n));
 const sprite = (
     key: string,
@@ -41,7 +66,6 @@ export interface WorkshopLevel extends ActionLevel {
     pieces: Piece[];
     masses?: number[];
     target: number;
-    gate?: { x: number; y: number };
 }
 
 export const CARGO_LEVELS: WorkshopLevel[] = [
@@ -97,179 +121,183 @@ export const CARGO_LEVELS: WorkshopLevel[] = [
     },
 ];
 
-export const MARBLE_LEVELS: WorkshopLevel[] = [
-    {
-        title: "Across the gap",
-        grades: [1, 2],
-        goal: "Move and turn the ramp so the marble reaches the blue tray. Test, adjust and try again.",
-        pieces: [{ id: "ramp-1", x: 8, y: 12, angle: 0.25 }],
-        target: 15,
-    },
-    {
-        title: "Two ramps",
-        grades: [2, 3],
-        goal: "Make a path to the far tray using both ramps.",
-        pieces: [
-            { id: "ramp-1", x: 9, y: 9, angle: 0.3 },
-            { id: "ramp-2", x: 22, y: 16, angle: -0.2 },
-        ],
-        target: 29,
-    },
-    {
-        title: "Through the ring",
-        grades: [3, 4],
-        goal: "Guide the marble through the gold ring before it reaches the tray.",
-        pieces: [
-            { id: "ramp-1", x: 9, y: 9, angle: 0.3 },
-            { id: "ramp-2", x: 19, y: 16, angle: -0.2 },
-            { id: "ramp-3", x: 29, y: 19, angle: 0.2 },
-        ],
-        target: 33,
-        gate: { x: 20, y: 13 },
-    },
-    {
-        title: "The return journey",
-        grades: [4, 4],
-        goal: "Pass through the ring on the right, then return to the tray on the left. Every ramp can be moved and turned.",
-        pieces: [
-            { id: "ramp-1", x: 9, y: 8, angle: 0.3 },
-            { id: "ramp-2", x: 21, y: 14, angle: -0.4 },
-            { id: "ramp-3", x: 12, y: 19, angle: -0.2 },
-        ],
-        target: 8,
-        gate: { x: 24, y: 12 },
-    },
-];
+/**
+ * The crane's moving parts: the trolley on the jib and the hook on its rope. While the hook holds a
+ * crate the rope runs to the crate itself and the hook rides on its top, since a light hook between
+ * a heavy crate and the trolley would let the rope stretch.
+ */
+interface Crane {
+    trolley: Body;
+    hook: Body;
+    rope: Joint;
+    /** How long the rope is let out, in squares, to the hook. */
+    length: number;
+}
 
 export interface WorkshopState {
-    kind: "cargo" | "marble";
     level: number;
     definition: WorkshopLevel;
     construction: Workshop;
     world: Bodies;
     objects: Map<string, Body>;
-    ball: Body | null;
-    phase: "build" | "test" | "won";
+    crane: Crane;
+    barge: Body;
+    /** Seconds each crate has been in the water off the barge. */
+    wet: Map<string, number>;
+    ripples: { x: number; age: number; size: number }[];
+    /** The game's clock, in seconds, which the waves the barge floats on are worked out at. */
+    clock: { t: number };
+    phase: "build" | "won";
     goals: Objectives;
     selected: string;
+    /** Where the hook is wanted: the trolley goes over `x` and lets the rope out to reach `y`. */
     hook: { x: number; y: number };
     held: string | null;
     dragging: string | null;
     touching: boolean;
-    suspended: Suspended | null;
-    rotating: boolean;
-    preview: { x: number; y: number; angle: number } | null;
-    trail: { x: number; y: number; tick: number }[];
-    settledTicks: number;
     text: string;
     ticks: number;
     attempts: number;
     sailed: number;
 }
 
-function goalsFor(s: Pick<WorkshopState, "kind" | "definition">): Objectives {
-    return objectives(
-        s.kind === "cargo"
-            ? [
-                  { id: "loaded", label: "All cargo aboard", seconds: 0.8 },
-                  { id: "balanced", label: "Boat balanced", after: "loaded", seconds: 1 },
-                  { id: "delivered", label: "Delivery complete", after: "balanced" },
-              ]
-            : [
-                  ...(s.definition.gate ? [{ id: "gate", label: "Through the ring" }] : []),
-                  {
-                      id: "caught",
-                      label: "Marble in the tray",
-                      after: s.definition.gate ? "gate" : undefined,
-                      seconds: 0.5,
-                  },
-              ],
-    );
+function goalsFor(): Objectives {
+    return objectives([
+        { id: "loaded", label: "All cargo aboard", seconds: 0.8 },
+        { id: "balanced", label: "Boat balanced", after: "loaded", seconds: 1 },
+        { id: "delivered", label: "Delivery complete", after: "balanced" },
+    ]);
+}
+
+function build(
+    definition: WorkshopLevel,
+    pieces: Piece[],
+    clock: { t: number },
+): {
+    world: Bodies;
+    objects: Map<string, Body>;
+    crane: Crane;
+    barge: Body;
+} {
+    const world = bodies({ gravity: { x: 0, y: 18 } });
+    const objects = new Map<string, Body>();
+    world.ground({ y: 22, from: 0, to: 17 });
+    world.water({
+        y: SEA,
+        from: 17.5,
+        to: 42,
+        density: 6,
+        drag: 3,
+        at: (x) => surfaceAt(HARBOUR, x, clock.t),
+    });
+    // the barge: a hull with a low rail at each end, floating, and kept at its mooring by the game
+    const barge = world.compound({
+        x: MOOR,
+        y: SEA - 0.6,
+        parts: [
+            { box: { x: 0, y: 0, w: HALF * 2, h: 4 } },
+            { box: { x: -HALF + 0.2, y: -2.75, w: 0.4, h: 1.5 } },
+            { box: { x: HALF - 0.2, y: -2.75, w: 0.4, h: 1.5 } },
+        ],
+        density: 1.5,
+        friction: 0.8,
+        damping: { move: 0.5, turn: 1.5 },
+    });
+    for (const [i, p] of pieces.entries())
+        objects.set(
+            p.id,
+            world.box({
+                x: p.x,
+                y: p.y,
+                w: 1.8,
+                h: 1.8,
+                density: (definition.masses?.[i] ?? 1) * HEAVY,
+                friction: 0.7,
+                upright: true,
+                damping: { move: 0.3, turn: 1 },
+                group: "cargo",
+            }),
+        );
+    const trolley = world.box({
+        x: 5,
+        y: JIB,
+        w: 1,
+        h: 0.4,
+        carried: true,
+        group: "crane",
+        ignores: ["crane", "cargo"],
+    });
+    // the hook passes through crates
+    const hook = world.ball({
+        x: 5,
+        y: 10,
+        r: 0.3,
+        density: 6,
+        damping: { move: 2 },
+        group: "crane",
+        ignores: ["crane", "cargo"],
+    });
+    const rope = world.rope(trolley, hook, {
+        at: { x: 5, y: JIB },
+        to: { x: 5, y: 10 },
+        length: 8,
+    });
+    return { world, objects, crane: { trolley, hook, rope, length: 8 }, barge };
 }
 
 function rebuild(s: WorkshopState): void {
-    s.world = bodies({ gravity: { x: 0, y: 18 } });
-    s.objects.clear();
-    s.ball = null;
-    if (s.kind === "cargo") {
-        s.world.ground({ y: 22, from: 0, to: 17 });
-        s.world.ground({ y: 22, from: 21, to: 39 });
-        for (const [i, p] of s.construction.design.pieces.entries())
-            s.objects.set(
-                p.id,
-                s.world.box({
-                    x: p.x,
-                    y: p.y,
-                    w: 1.8,
-                    h: 1.8,
-                    density: s.definition.masses?.[i] ?? 1,
-                    friction: 0.7,
-                    upright: true,
-                    damping: { move: 0.3, turn: 1 },
-                }),
-            );
-    } else {
-        for (const p of s.construction.design.pieces)
-            s.objects.set(
-                p.id,
-                s.world.box({
-                    x: p.x,
-                    y: p.y,
-                    w: 9,
-                    h: 0.5,
-                    angle: p.angle,
-                    fixed: true,
-                    friction: 0.05,
-                    restitution: 0.08,
-                }),
-            );
-        const x = s.definition.target;
-        s.world.ground({ y: 24, from: x - 3, to: x + 3 });
-        s.world.box({ x: x - 3, y: 23, w: 0.4, h: 2, fixed: true });
-        s.world.box({ x: x + 3, y: 23, w: 0.4, h: 2, fixed: true });
-    }
+    const b = build(s.definition, s.construction.design.pieces, s.clock);
+    s.world = b.world;
+    s.objects = b.objects;
+    s.crane = b.crane;
+    s.barge = b.barge;
+    s.wet = new Map();
+    s.hook = { x: 5, y: 10 };
 }
 
-export function startWorkshop(kind: WorkshopState["kind"], level: number): WorkshopState {
-    const levels = kind === "cargo" ? CARGO_LEVELS : MARBLE_LEVELS;
-    const definition = levels[level] ?? levels[0];
+/** A crate's place on the barge, across from the mast and up from the deck, or null when it is not aboard. */
+function aboard(s: WorkshopState, body: Body): { x: number; y: number } | null {
+    const at = s.world.where(body),
+        b = s.world.where(s.barge),
+        c = Math.cos(-b.angle),
+        sn = Math.sin(-b.angle),
+        dx = at.x - b.x,
+        dy = at.y - b.y;
+    const x = dx * c - dy * sn,
+        y = dx * sn + dy * c;
+    return Math.abs(x) < HALF && y < -2 && y > -8 ? { x, y } : null;
+}
+
+export function startWorkshop(level: number): WorkshopState {
+    const definition = CARGO_LEVELS[level] ?? CARGO_LEVELS[0];
     if (!definition) throw new Error("No workshop level.");
-    return startWorkshopLevel(kind, level, definition);
+    return startWorkshopLevel(level, definition);
 }
 
 /** Open stored challenge geometry without mutating the authored level catalogue. */
-export function startWorkshopLevel(
-    kind: WorkshopState["kind"],
-    level: number,
-    definition: WorkshopLevel,
-): WorkshopState {
+export function startWorkshopLevel(level: number, definition: WorkshopLevel): WorkshopState {
     const construction = workshop(definition.pieces, SIZE);
+    const clock = { t: 0 };
     const s: WorkshopState = {
-        kind,
         level,
         definition,
         construction,
-        world: bodies({ gravity: { x: 0, y: 18 } }),
-        objects: new Map(),
-        ball: null,
+        ...build(definition, construction.design.pieces, clock),
+        clock,
+        wet: new Map(),
+        ripples: [],
         phase: "build",
-        goals: goalsFor({ kind, definition }),
+        goals: goalsFor(),
         selected: definition.pieces[0]?.id ?? "",
         hook: { x: 5, y: 10 },
         held: null,
         dragging: null,
         touching: false,
-        suspended: null,
-        rotating: false,
-        preview: null,
-        trail: [],
-        settledTicks: 0,
         text: definition.goal,
         ticks: 0,
         attempts: 0,
         sailed: 0,
     };
-    rebuild(s);
     return s;
 }
 
@@ -283,13 +311,19 @@ export function cargoBalance(s: WorkshopState): {
         moving = false;
     for (const [i, p] of s.construction.design.pieces.entries()) {
         const body = s.objects.get(p.id);
-        if (!body) continue;
-        const at = s.world.where(body);
-        if (at.x > 21 && at.x < 39 && at.y > 12 && at.y < 22 && s.held !== p.id) {
-            loaded++;
-            moment += (at.x - 30) * (s.definition.masses?.[i] ?? 1);
-            moving ||= s.world.moving(body, 0.12);
-        }
+        if (!body || s.held === p.id) continue;
+        const on = aboard(s, body);
+        if (!on) continue;
+        loaded++;
+        moment += on.x * (s.definition.masses?.[i] ?? 1);
+        // still on the barge, as the barge rides the waves: against the deck under it, not the world
+        const v = s.world.velocity(body),
+            vb = s.world.velocity(s.barge),
+            w = s.world.spin(s.barge),
+            at = s.world.where(body),
+            b = s.world.where(s.barge),
+            deck = { x: vb.x - w * (at.y - b.y), y: vb.y + w * (at.x - b.x) };
+        moving ||= Math.hypot(v.x - deck.x, v.y - deck.y) > 0.2;
     }
     return { loaded, moment, moving };
 }
@@ -304,10 +338,15 @@ function syncCrates(s: WorkshopState): void {
     }
 }
 
+/**
+ * Picks up the crate under the hook, or lets go of the one it holds. A crate taken by hand, or one
+ * the hook is only near, has the crane brought over it first, as a crane driver would.
+ */
 function hook(s: WorkshopState): void {
+    const c = s.crane;
     if (s.held) {
         s.held = null;
-        s.suspended = null;
+        setRope(s, c.length);
         s.text = "Crate released. Load every crate onto the boat.";
         return;
     }
@@ -321,7 +360,8 @@ function hook(s: WorkshopState): void {
             distance = d;
         }
     }
-    if (!nearest) {
+    const body = nearest ? s.objects.get(nearest) : undefined;
+    if (!body) {
         s.text = "Lower the hook just above a crate, then pick it up.";
         return;
     }
@@ -329,11 +369,68 @@ function hook(s: WorkshopState): void {
     s.construction.past.push(checkpoint(s.construction));
     s.construction.future = [];
     if (s.construction.past.length > 100) s.construction.past.shift();
+    const at = s.world.where(body),
+        top = { x: at.x, y: at.y - 0.9 },
+        hookAt = { x: at.x, y: top.y - 0.3 };
+    s.world.moveTo(c.trolley, { x: at.x, y: JIB });
+    s.world.moveTo(c.hook, hookAt);
+    s.hook = { x: at.x, y: hookAt.y };
     s.held = nearest;
-    const body = s.objects.get(nearest);
-    if (body) s.suspended = { ...s.world.where(body), vx: 0, vy: 0 };
+    setRope(s, hookAt.y - JIB);
     s.selected = nearest;
-    s.text = "Lift the crate clear of the dock, move it over the boat, then release.";
+    s.text =
+        "Lift the crate clear of the dock, move it over the boat, let it stop swinging, then release.";
+}
+
+/**
+ * Lets the crane's rope out, or winds it in, to `length` squares of rope to the hook, from where the
+ * trolley is now: to the hook itself, or to the top of the crate it holds, just under the hook.
+ */
+function setRope(s: WorkshopState, length: number): void {
+    const c = s.crane,
+        t = s.world.where(c.trolley),
+        crate = s.held ? s.objects.get(s.held) : undefined,
+        load = crate ?? c.hook,
+        at = s.world.where(load);
+    s.world.unjoin(c.rope);
+    c.length = length;
+    c.rope = s.world.rope(c.trolley, load, {
+        at: { x: t.x, y: JIB },
+        to: crate ? { x: at.x, y: at.y - 0.9 } : at,
+        length: crate ? length + 0.3 : length,
+    });
+}
+
+/** Runs the trolley towards the wanted hook and winds the rope towards it, no faster than a crane can. */
+function stepCrane(s: WorkshopState): void {
+    const c = s.crane,
+        t = s.world.where(c.trolley),
+        h = s.world.where(c.hook);
+    // a crate travels high, clear of the others: it is lifted before the trolley moves, and lowered
+    // once it hangs still over its place
+    const over = Math.abs(s.hook.x - t.x) < 0.15 && Math.abs(h.x - t.x) < 0.15,
+        lifting = s.held !== null && !over && c.length > TRAVEL + 0.1;
+    s.world.launch(c.trolley, {
+        x: lifting ? 0 : clamp((s.hook.x - t.x) * 6, -14, 14),
+        y: 0,
+    });
+    const want = clamp(over ? s.hook.y - JIB : Math.min(s.hook.y - JIB, TRAVEL), 1, 20),
+        next = c.length + clamp(want - c.length, -12 * DT, 12 * DT);
+    if (Math.abs(next - c.length) > 1e-6) setRope(s, next);
+    // the driver's hand on the controls: a held crate still swings as it starts and stops, but its
+    // swing dies within a second or so rather than a child's patience
+    const i = s.construction.design.pieces.findIndex((p) => p.id === s.held),
+        crate = s.held ? s.objects.get(s.held) : undefined;
+    if (crate) {
+        const v = s.world.velocity(crate),
+            vt = s.world.velocity(c.trolley),
+            mass = (s.definition.masses?.[i] ?? 1) * HEAVY * 1.8 * 1.8;
+        s.world.push(crate, { x: -SWAY * mass * (v.x - vt.x), y: 0 });
+    }
+    // the barge's mooring lines hold it where it is moored, and let it rise, fall and list
+    const b = s.world.where(s.barge),
+        v = s.world.velocity(s.barge);
+    s.world.push(s.barge, { x: -600 * (b.x - MOOR) - 300 * v.x, y: 0 });
 }
 
 export function workshopCommand(s: WorkshopState, id: string): void {
@@ -341,224 +438,129 @@ export function workshopCommand(s: WorkshopState, id: string): void {
         if (id === "undo" ? undo(s.construction) : redo(s.construction)) {
             s.held = null;
             s.phase = "build";
-            s.goals = goalsFor(s);
+            s.goals = goalsFor();
             rebuild(s);
             s.text = "Your construction is ready.";
         }
         return;
     }
     if (id === "test") {
-        if (s.kind === "cargo") {
-            const b = cargoBalance(s);
-            if (
-                b.loaded === s.objects.size &&
-                Math.abs(b.moment) < 1.2 &&
-                !b.moving &&
-                s.goals.done.includes("balanced")
-            ) {
-                observe(s.goals, new Set(["delivered"]), DT);
-                s.phase = "won";
-                s.text = "Balanced and delivered. The harbour is ready for another journey.";
-            } else
-                s.text = "Load every crate, balance the weight around the mast, and let it settle.";
-        } else if (s.phase !== "test") {
-            rebuild(s);
-            s.goals = goalsFor(s);
-            s.phase = "test";
-            s.attempts++;
-            s.settledTicks = 0;
-            s.trail = [];
-            s.ball = s.world.ball({
-                x: 5,
-                y: 2,
-                r: 0.45,
-                fast: true,
-                friction: 0.05,
-                restitution: 0.1,
-            });
-            s.text = "Watch its path. Return to building whenever you want to change it.";
-        } else {
-            s.phase = "build";
-            rebuild(s);
-            s.text = "Adjust your ramps and try again.";
-        }
+        const b = cargoBalance(s);
+        if (
+            b.loaded === s.objects.size &&
+            Math.abs(b.moment) < BALANCED &&
+            !b.moving &&
+            s.goals.done.includes("balanced")
+        ) {
+            observe(s.goals, new Set(["delivered"]), DT);
+            s.phase = "won";
+            s.text = "Balanced and delivered. The harbour is ready for another journey.";
+        } else s.text = "Load every crate, balance the weight around the mast, and let it settle.";
         return;
     }
-    if (id === "hook") {
-        if (s.phase !== "won") hook(s);
-        return;
-    }
-    if (s.phase !== "build") return;
-    const pieces = s.construction.design.pieces;
-    if (id === "next") {
-        s.selected =
-            pieces[(pieces.findIndex((p) => p.id === s.selected) + 1) % pieces.length]?.id ?? "";
-        return;
-    }
-    const p = pieces.find((p) => p.id === s.selected);
-    if (!p) return;
-    if (id === "left" || id === "right")
-        edit(s.construction, {
-            kind: "rotate",
-            id: p.id,
-            angle: p.angle + ((id === "left" ? -1 : 1) * Math.PI) / 24,
-        });
-    if (id === "up" || id === "down" || id === "west" || id === "east")
-        edit(s.construction, {
-            kind: "move",
-            id: p.id,
-            x: p.x + (id === "west" ? -0.5 : id === "east" ? 0.5 : 0),
-            y: p.y + (id === "up" ? -0.5 : id === "down" ? 0.5 : 0),
-        });
+    if (id === "hook" && s.phase !== "won") hook(s);
 }
 
 export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.ticks++;
-    s.trail = s.trail.filter((p) => s.ticks - p.tick < 240);
+    s.clock.t = s.ticks * DT;
     if (s.phase === "won") {
         s.sailed = Math.min(8, s.sailed + DT * 1.5);
         return out;
     }
-    if (s.kind === "cargo") {
-        if (pad.touch && !s.touching && !s.held && !pad.tapped) {
-            const crate = [...s.objects.entries()].find(([, body]) => {
-                const at = s.world.where(body);
-                return Math.hypot(at.x - (pad.touch?.x ?? 0), at.y - (pad.touch?.y ?? 0)) < 1.8;
-            });
-            if (crate) {
-                const at = s.world.where(crate[1]);
-                s.hook = { x: at.x, y: at.y - 1.7 };
-                hook(s);
-                s.dragging = s.held;
-            }
-        }
-        if (pad.touch) {
-            s.hook.x = clamp(pad.touch.x, 1, 41);
-            s.hook.y = clamp(pad.touch.y - (s.dragging ? 1.7 : 0), 2, 20);
-        } else {
-            s.hook.x = clamp(
-                s.hook.x + (pad.held === "left" ? -0.14 : pad.held === "right" ? 0.14 : 0),
-                1,
-                41,
-            );
-            s.hook.y = clamp(
-                s.hook.y + (pad.held === "up" ? -0.14 : pad.held === "down" ? 0.14 : 0),
-                2,
-                20,
-            );
-        }
-        if (pad.tapped) {
-            if (!s.held && s.goals.done.includes("balanced")) workshopCommand(s, "test");
-            else hook(s);
-        }
-        if (pad.brake) workshopCommand(s, "test");
-        if (pad.lifted && s.dragging) {
-            s.hook.x = clamp(pad.lifted.x, 1, 41);
-            s.hook.y = clamp(pad.lifted.y - 1.7, 2, 20);
-        }
-        const held = s.held ? s.objects.get(s.held) : undefined;
-        if (held) {
-            const target = { x: s.hook.x, y: s.hook.y + 1.7 };
-            s.suspended = suspend(s.suspended ?? { ...target, vx: 0, vy: 0 }, target, DT);
-            s.world.moveTo(held, s.suspended);
-        }
-        if (pad.lifted && s.dragging) {
+    if (pad.touch && !s.touching && !s.held && !pad.tapped) {
+        const crate = [...s.objects.entries()].find(([, body]) => {
+            const at = s.world.where(body);
+            return Math.hypot(at.x - (pad.touch?.x ?? 0), at.y - (pad.touch?.y ?? 0)) < 1.8;
+        });
+        if (crate) {
+            const at = s.world.where(crate[1]);
+            s.hook = { x: at.x, y: at.y - 1.7 };
             hook(s);
-            s.dragging = null;
+            s.dragging = s.held;
         }
-        s.touching = !!pad.touch;
-        s.world.step(DT);
-        for (const [id, b] of s.objects)
-            if (s.world.where(b).y > 26) {
-                const home = s.definition.pieces.find((p) => p.id === id);
-                if (home) {
-                    s.world.moveTo(b, home);
-                    s.text = "The harbour crew brought that crate back to the dock.";
-                    out.push({ cue: "splash" });
-                }
-            }
-        const b = cargoBalance(s),
-            satisfied = new Set<string>();
-        if (b.loaded === s.objects.size && !b.moving) satisfied.add("loaded");
-        if (satisfied.has("loaded") && Math.abs(b.moment) < 1.2) satisfied.add("balanced");
-        if (observe(s.goals, satisfied, DT).length) out.push({ cue: "ring" });
-        if (!s.held && !s.goals.done.includes("delivered")) {
-            if (satisfied.has("balanced") && s.goals.done.includes("balanced"))
-                s.text = "Ready to sail! Ring the bell, or press Space or Enter.";
-            else if (b.loaded === s.objects.size)
-                s.text = b.moving
-                    ? "Let the crates settle."
-                    : Math.abs(b.moment) < 1.2
-                      ? "The load is balanced. Getting ready to sail…"
-                      : "Move a crate towards the lighter side to balance the boat.";
-        }
-    } else if (s.phase === "build") {
-        if (pad.touch && !s.touching) {
-            const nearest = [...s.construction.design.pieces].sort(
-                (a, b) =>
-                    Math.hypot(a.x - (pad.touch?.x ?? 0), a.y - (pad.touch?.y ?? 0)) -
-                    Math.hypot(b.x - (pad.touch?.x ?? 0), b.y - (pad.touch?.y ?? 0)),
-            )[0];
-            if (nearest && Math.hypot(nearest.x - pad.touch.x, nearest.y - pad.touch.y) < 5) {
-                s.selected = nearest.id;
-                s.dragging = nearest.id;
-                const dx = pad.touch.x - nearest.x,
-                    dy = pad.touch.y - nearest.y;
-                s.rotating =
-                    Math.abs(dx * Math.cos(nearest.angle) + dy * Math.sin(nearest.angle)) > 3;
-            }
-        }
-        const dragging = s.construction.design.pieces.find((p) => p.id === s.dragging);
-        const point = pad.lifted ?? pad.touch;
-        if (dragging && point) {
-            const angle = Math.atan2(point.y - dragging.y, point.x - dragging.x);
-            s.preview = s.rotating
-                ? { x: dragging.x, y: dragging.y, angle: Math.atan(Math.tan(angle)) }
-                : { ...point, angle: dragging.angle };
-        }
-        if (pad.lifted && dragging && s.preview) {
-            edit(
-                s.construction,
-                s.rotating
-                    ? { kind: "rotate", id: dragging.id, angle: s.preview.angle }
-                    : { kind: "move", id: dragging.id, x: s.preview.x, y: s.preview.y },
-            );
-            s.dragging = null;
-            s.preview = null;
-        }
-        s.touching = !!pad.touch;
-        if (pad.tapped) workshopCommand(s, "test");
-        for (const d of pad.pressed)
-            workshopCommand(s, d === "left" ? "west" : d === "right" ? "east" : d);
+    }
+    if (pad.touch) {
+        s.hook.x = clamp(pad.touch.x, 1, 41);
+        s.hook.y = clamp(pad.touch.y - (s.dragging ? 1.7 : 0), 3, 20);
     } else {
-        s.world.step(DT);
-        if (pad.tapped) workshopCommand(s, "test");
-        if (s.ball) {
-            const p = s.world.where(s.ball),
-                satisfied = new Set<string>();
-            if (s.ticks % 5 === 0) s.trail.push({ x: p.x, y: p.y, tick: s.ticks });
-            s.settledTicks = s.world.moving(s.ball, 0.15) ? 0 : s.settledTicks + 1;
-            const gate = s.definition.gate;
-            if (gate && Math.hypot(p.x - gate.x, p.y - gate.y) < 2) satisfied.add("gate");
-            if (
-                Math.abs(p.x - s.definition.target) < 2.6 &&
-                p.y > 21 &&
-                p.y < 24 &&
-                !s.world.moving(s.ball, 0.3)
-            )
-                satisfied.add("caught");
-            if (observe(s.goals, satisfied, DT).length) out.push({ cue: "ring" });
-            if (s.goals.done.includes("caught")) {
-                s.phase = "won";
-                s.text = "It works! Your marble found its way home.";
-                out.push({ cue: "win" });
-            } else if (p.y > 28 || p.x < -3 || p.x > 45 || s.settledTicks > 90) {
-                s.phase = "build";
-                rebuild(s);
-                s.text = "Keep the parts that worked. Change a ramp and try another path.";
-            }
+        s.hook.x = clamp(
+            s.hook.x + (pad.held === "left" ? -0.14 : pad.held === "right" ? 0.14 : 0),
+            1,
+            41,
+        );
+        s.hook.y = clamp(
+            s.hook.y + (pad.held === "up" ? -0.14 : pad.held === "down" ? 0.14 : 0),
+            3,
+            20,
+        );
+    }
+    if (pad.tapped) {
+        if (!s.held && s.goals.done.includes("balanced")) workshopCommand(s, "test");
+        else hook(s);
+    }
+    if (pad.brake) workshopCommand(s, "test");
+    if (pad.lifted && s.dragging) {
+        s.hook.x = clamp(pad.lifted.x, 1, 41);
+        s.hook.y = clamp(pad.lifted.y - 1.7, 3, 20);
+        hook(s);
+        s.dragging = null;
+    }
+    s.touching = !!pad.touch;
+    stepCrane(s);
+    s.world.step(DT);
+    const held = s.held ? s.objects.get(s.held) : undefined;
+    if (held) {
+        const at = s.world.where(held);
+        s.world.moveTo(s.crane.hook, { x: at.x, y: at.y - 1.2 });
+    }
+    // a crate that lands hard on the dock, the deck or another crate throws up a little dust
+    const crates = new Set(s.objects.values());
+    for (const h of s.world.hits()) {
+        const crate = crates.has(h.a) ? h.a : crates.has(h.b) ? h.b : null;
+        if (!crate || h.speed < 3 || crate === held) continue;
+        const at = s.world.where(crate);
+        out.push({ cue: "place" }, { burst: { kind: "dust", x: at.x, y: at.y + 0.6, n: 3 } });
+        break;
+    }
+    s.ripples = s.ripples.map((r) => ({ ...r, age: r.age + DT })).filter((r) => r.age < 2.2);
+    // a crate in the harbour splashes, floats or sinks a moment, and the crew bring it back to the dock
+    for (const [id, b] of s.objects) {
+        const at = s.world.where(b),
+            wet = at.x > HARBOUR.x && at.y + 0.9 > SEA && id !== s.held && !aboard(s, b);
+        if (!wet) {
+            s.wet.delete(id);
+            continue;
         }
+        const was = s.wet.get(id) ?? 0;
+        if (was === 0) {
+            s.ripples.push({ x: at.x, age: 0, size: 1 });
+            out.push({ cue: "splash" }, { burst: { kind: "splash", x: at.x, y: SEA, n: 8 } });
+        }
+        s.wet.set(id, was + DT);
+        if (was + DT < 1.2) continue;
+        const home = s.definition.pieces.find((p) => p.id === id);
+        if (home) {
+            s.world.moveTo(b, home);
+            s.wet.delete(id);
+            s.text = "The harbour crew brought that crate back to the dock.";
+        }
+    }
+    const b = cargoBalance(s),
+        satisfied = new Set<string>();
+    if (b.loaded === s.objects.size && !b.moving) satisfied.add("loaded");
+    if (satisfied.has("loaded") && Math.abs(b.moment) < BALANCED) satisfied.add("balanced");
+    if (observe(s.goals, satisfied, DT).length) out.push({ cue: "ring" });
+    if (!s.held && !s.goals.done.includes("delivered")) {
+        if (satisfied.has("balanced") && s.goals.done.includes("balanced"))
+            s.text = "Ready to sail! Ring the bell, or press Space or Enter.";
+        else if (b.loaded === s.objects.size)
+            s.text = b.moving
+                ? "Let the crates settle."
+                : Math.abs(b.moment) < BALANCED
+                  ? "The load is balanced. Getting ready to sail…"
+                  : "Move a crate towards the lighter side to balance the boat.";
     }
     return out;
 }
@@ -566,82 +568,55 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
 export function workshopFrame(s: WorkshopState): Frame {
     const sprites: Sprite[] = [],
         marks: Mark[] = [];
-    if (s.kind === "cargo") {
-        sprites.push(
-            sprite("dock", "ramp", 8.5, 22.5, 17, 1),
-            sprite("barge", "boat", 30 + s.sailed, 23.5, 18, 3),
-        );
-        marks.push(
-            { kind: "line", a: { x: 1, y: 2 }, b: { x: 41, y: 2 }, style: "rod" },
-            { kind: "line", a: { x: s.hook.x, y: 2 }, b: s.hook, style: "thin" },
-        );
-        sprites.push(sprite("hook", "hook", s.hook.x, s.hook.y, 1, 2));
-        for (const [i, p] of s.construction.design.pieces.entries()) {
-            const b = s.objects.get(p.id);
-            if (!b) continue;
-            const at = s.world.where(b),
-                sailed = at.x > 21 ? s.sailed : 0;
-            sprites.push(sprite(p.id, "crate", at.x + sailed, at.y, 1.8, 1.8));
-            marks.push(words(at.x + sailed, at.y + 0.2, String(s.definition.masses?.[i] ?? 1)));
-            if (s.held === p.id)
-                marks.push({
-                    kind: "line",
-                    a: s.hook,
-                    b: { x: at.x, y: at.y - 0.9 },
-                    style: "thin",
-                });
-            else if (!s.held && Math.hypot(at.x - s.hook.x, at.y - s.hook.y - 1.7) < 3)
-                marks.push({ kind: "ring", x: at.x, y: at.y, r: 1.2 });
-        }
-        const balance = cargoBalance(s);
-        marks.push(
-            words(30, 6, `${balance.loaded}/${s.objects.size} aboard`),
-            words(
-                30,
-                8,
-                balance.loaded === 0
-                    ? "Load the boat"
-                    : Math.abs(balance.moment) < 1.2
-                      ? "Weight balanced"
-                      : balance.moment < 0
-                        ? "More weight on the left"
-                        : "More weight on the right",
-            ),
-            { kind: "line", a: { x: 30, y: 10 }, b: { x: 30, y: 22 }, style: "aim" },
-        );
-    } else {
-        for (const original of s.construction.design.pieces) {
-            const p =
-                original.id === s.dragging && s.preview ? { ...original, ...s.preview } : original;
-            sprites.push(sprite(p.id, "ramp", p.x, p.y, 9, 0.5, p.angle));
-            if (p.id === s.selected && s.phase === "build")
-                for (const side of [-1, 1])
-                    marks.push({
-                        kind: "ring",
-                        x: p.x + side * 4.2 * Math.cos(p.angle),
-                        y: p.y + side * 4.2 * Math.sin(p.angle),
-                        r: 0.35,
-                    });
-            if (p.id === s.selected && s.phase === "build")
-                marks.push({ kind: "ring", x: p.x, y: p.y, r: 1, on: true });
-        }
-        const p = s.ball ? s.world.where(s.ball) : { x: 5, y: 2 };
-        sprites.push(
-            sprite("marble", "marble", p.x, p.y, 0.9, 0.9),
-            sprite("tray", "boat", s.definition.target, 24.3, 6, 1.5),
-        );
-        marks.push(words(5, 1, "Start"));
-        if (s.definition.gate)
-            marks.push({
-                kind: "ring",
-                x: s.definition.gate.x,
-                y: s.definition.gate.y,
-                r: 2,
-                on: s.goals.done.includes("gate"),
-            });
+    const barge = s.world.where(s.barge),
+        up = { x: Math.sin(barge.angle), y: -Math.cos(barge.angle) };
+    // the quay the dock stands on runs off to the left, and the harbour off to the right
+    sprites.push(...ground("quay", -BEYOND, HARBOUR.x, 23, 0));
+    sprites.push(sprite("dock", "ramp", 8.5, 22.5, 17, 1), {
+        ...sprite("barge", "boat", barge.x + s.sailed, barge.y, HALF * 2, 4, barge.angle),
+        z: 2,
+    });
+    const trolley = s.world.where(s.crane.trolley),
+        hookAt = s.world.where(s.crane.hook);
+    marks.push(
+        { kind: "line", a: { x: 1, y: JIB }, b: { x: 41, y: JIB }, style: "rod" },
+        { kind: "line", a: { x: trolley.x, y: JIB }, b: hookAt, style: "thin" },
+    );
+    sprites.push({ ...sprite("hook", "hook", hookAt.x, hookAt.y + 0.7, 1, 2), z: 6 });
+    for (const [i, p] of s.construction.design.pieces.entries()) {
+        const b = s.objects.get(p.id);
+        if (!b) continue;
+        const at = s.world.where(b),
+            sailed = aboard(s, b) ? s.sailed : 0;
+        sprites.push({ ...sprite(p.id, "crate", at.x + sailed, at.y, 1.8, 1.8, at.angle), z: 4 });
+        marks.push(words(at.x + sailed, at.y + 0.2, String(s.definition.masses?.[i] ?? 1)));
+        if (s.held === p.id)
+            marks.push({ kind: "line", a: hookAt, b: { x: at.x, y: at.y - 0.9 }, style: "thin" });
+        else if (!s.held && Math.hypot(at.x - s.hook.x, at.y - s.hook.y - 1.7) < 3)
+            marks.push({ kind: "ring", x: at.x, y: at.y, r: 1.2 });
     }
-    for (const p of s.trail)
-        marks.push({ kind: "dots", pts: [p], opacity: 0.35 * (1 - (s.ticks - p.tick) / 240) });
+    const balance = cargoBalance(s);
+    // the mast stands up from the barge's middle and leans as the barge lists
+    marks.push(
+        words(MOOR, 6, `${balance.loaded}/${s.objects.size} aboard`),
+        words(
+            MOOR,
+            8,
+            balance.loaded === 0
+                ? "Load the boat"
+                : Math.abs(balance.moment) < BALANCED
+                  ? "Weight balanced"
+                  : balance.moment < 0
+                    ? "More weight on the left"
+                    : "More weight on the right",
+        ),
+        {
+            kind: "line",
+            a: { x: barge.x + s.sailed - up.x * 2, y: barge.y - up.y * 2 },
+            b: { x: barge.x + s.sailed + up.x * 12, y: barge.y + up.y * 12 },
+            style: "aim",
+        },
+    );
     marks.push(
         words(
             21,
@@ -651,45 +626,39 @@ export function workshopFrame(s: WorkshopState): Frame {
                 .join("   "),
         ),
     );
-    return { sprites, marks, camera: { x: 21, y: 13.5, zoom: 1 }, view: SIZE, world: SIZE };
+    return {
+        sprites,
+        marks,
+        camera: { x: 21, y: 13.5, zoom: 1 },
+        view: SIZE,
+        world: SIZE,
+        time: s.clock.t,
+        water: [{ ...HARBOUR, w: HARBOUR.w + BEYOND, ripples: s.ripples }],
+    };
 }
 
-const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
-    id: kind === "cargo" ? "cargo-workshop" : "marble-workshop",
-    title: kind === "cargo" ? "Harbour cargo" : "Marble workshop",
+export const cargoGame: ActionGame<WorkshopState> = {
+    id: "cargo-workshop",
+    title: "Harbour cargo",
     group: "action",
     rate: 60,
     touch: true,
-    cover: { art: kind === "cargo" ? "crane" : "ramp" },
-    hint:
-        kind === "cargo"
-            ? "Drag a crate onto the boat and let go. Or move the hook above a crate with the arrow keys, then press Space or Enter to pick up or release. Balance the weight around the centre line. When ready, ring the bell or press Space or Enter to sail."
-            : "Drag the middle of a ramp to move it, or an end to turn it. Arrow keys move the selected ramp; the turn buttons rotate it. Space tests your design. Your last path stays briefly to help you adjust.",
-    levels: kind === "cargo" ? CARGO_LEVELS : MARBLE_LEVELS,
+    cover: { art: "crane" },
+    hint: "Drag a crate onto the boat and let go. Or move the hook above a crate with the arrow keys, then press Space or Enter to pick up or release. Balance the weight around the centre line. When ready, ring the bell or press Space or Enter to sail.",
+    levels: CARGO_LEVELS,
     controls: {
         arrows: { left: "Left", right: "Right", up: "Up", down: "Down" },
-        go: kind === "cargo" ? "Pick up / release" : "Test / build",
+        go: "Pick up / release",
     },
-    commands:
-        kind === "cargo"
-            ? [
-                  { id: "hook", label: "Pick up / release" },
-                  { id: "test", label: "Ring the bell" },
-                  { id: "undo", label: "Undo delivery" },
-              ]
-            : [
-                  { id: "next", label: "Next ramp" },
-                  { id: "left", label: "Turn left" },
-                  { id: "right", label: "Turn right" },
-                  { id: "test", label: "Test / build" },
-                  { id: "undo", label: "Undo" },
-                  { id: "redo", label: "Redo" },
-              ],
-    start: (level) => startWorkshop(kind, level),
+    commands: [
+        { id: "hook", label: "Pick up / release" },
+        { id: "test", label: "Ring the bell" },
+        { id: "undo", label: "Undo delivery" },
+    ],
+    start: (level) => startWorkshop(level),
     step: stepWorkshop,
     frame: workshopFrame,
-    say: (s) =>
-        `${s.definition.goal} ${s.text} ${s.kind === "cargo" ? `${cargoBalance(s).loaded} crates aboard.` : `Selected ${s.selected}. ${s.phase === "build" ? "Building" : "Testing"}.`}`,
+    say: (s) => `${s.definition.goal} ${s.text} ${cargoBalance(s).loaded} crates aboard.`,
     note: (s) => s.text,
     won: (s) => s.phase === "won",
     objectives: (s) => ({
@@ -699,20 +668,18 @@ const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
     command: workshopCommand,
     cancelInput: (s) => {
         s.dragging = null;
-        s.preview = null;
-        s.rotating = false;
         s.touching = false;
     },
     checkpoint: (s) => {
-        if (s.kind === "cargo") syncCrates(s);
-        return { kind, level: s.level, design: checkpoint(s.construction) };
+        syncCrates(s);
+        return { kind: "cargo", level: s.level, design: checkpoint(s.construction) };
     },
     restore: (s, value) => {
         if (
             !value ||
             typeof value !== "object" ||
             !("kind" in value) ||
-            value.kind !== kind ||
+            value.kind !== "cargo" ||
             !("level" in value) ||
             value.level !== s.level ||
             !("design" in value) ||
@@ -722,19 +689,13 @@ const game = (kind: WorkshopState["kind"]): ActionGame<WorkshopState> => ({
         s.phase = "build";
         s.held = null;
         s.sailed = 0;
-        s.goals = goalsFor(s);
+        s.goals = goalsFor();
         rebuild(s);
         s.text = "Your saved workshop is ready.";
         return true;
     },
     still: {
         press: () => 12,
-        settling: (s) =>
-            s.kind === "marble"
-                ? s.phase === "test"
-                : [...s.objects.values()].some((b) => s.world.moving(b)) && !s.held,
+        settling: (s) => [...s.objects.values()].some((b) => s.world.moving(b)) && !s.held,
     },
-});
-
-export const cargoGame = game("cargo");
-export const marbleGame = game("marble");
+};

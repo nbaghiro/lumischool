@@ -2,6 +2,7 @@ import { configurationKey } from "../../engine/motion/configuration";
 import { seeded } from "../../engine/motion/spawn";
 import { bind, type Round } from "./games";
 import { pour, type PourVersion } from "./pour";
+import { POUR_LEVELS, startPour, type PourState } from "./pour-hands";
 
 // Each tuple is exhaustively gated by the prover in the generation regression suite.
 const RECIPES: readonly (readonly [number, number, number, number])[] = [
@@ -69,7 +70,8 @@ export function isPourConfiguration(value: unknown, phase: number): value is Pou
     return pourConfigurations(phase).some((v) => configurationKey(v) === configurationKey(value));
 }
 
-export function openPourConfiguration(v: PourVersion): Round {
+/** A pool's version as the pour puzzle, for the prover that holds every one to be winnable with whole pours. */
+export function pourRound(v: PourVersion): Round {
     return bind(
         pour,
         {
@@ -82,5 +84,21 @@ export function openPourConfiguration(v: PourVersion): Round {
             versions: [{ values: JSON.stringify(v), v }],
         },
         0,
+    );
+}
+
+/** A pool's version opened as the game at its phase, which decides whether the jugs are marked. */
+export function openPourConfiguration(v: PourVersion, phase: number): PourState {
+    const base = POUR_LEVELS[phase] ?? POUR_LEVELS[0];
+    return startPour(
+        {
+            ...base,
+            v,
+            goal: `Get exactly ${v.target} ${v.unit} standing in one jug.`,
+            prompt: base.marked
+                ? base.prompt
+                : `Only the brims are marked. ${v.target} ${v.unit} has to be made from what the jugs hold.`,
+        },
+        phase,
     );
 }

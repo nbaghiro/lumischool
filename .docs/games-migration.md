@@ -7,8 +7,8 @@ to change game selection, learning requirements or progress policy. No game code
 
 The rules have already moved. `.scratchpad/src/play/` no longer exists; `school/games/` owns the
 catalogue, mechanics, activities, action simulations, hand bindings, scenery, proof and attempt
-summaries. `engine/motion/` owns reusable motion and physics, and `engine/ui/stage.ts` owns the
-board/field renderers. The app does not yet expose a playable game screen.
+summaries. `engine/motion/` owns reusable motion and physics, and `engine/ui/game-view.ts`,
+`scene-view.ts` and `still-view.ts` are the renderers. The app does not yet expose a playable game screen.
 
 The remaining migration is the browser player, product entry points, sound output and recording.
 Copying the catalogue into another location would duplicate working code without completing it.
@@ -165,7 +165,7 @@ when multiple games share a mechanic. Initial launch can use reviewed explicit l
    reliable return to the lesson. Prove parent preview has no recording side effects. Keep optional
    practice separate from completing a required lesson.
 5. **Move review tools and retire the prototype player.** Put retained proof, tuning and replay
-   inspection in the studio or local review tooling. Replace every live play.html link. Remove the
+   inspection in local review tooling. Replace every live play.html link. Remove the
    migrated scratchpad player files and only the now-unreferenced helpers; audio files are shared
    with music, and world-try.ts serves other games, so neither is wholesale deletion material.
 
@@ -205,7 +205,7 @@ entry points later, while Games remains the direct way to find every listed game
 The shared host in `engine/ui/games.tsx` asks its app wrapper to switch page presentation through
 `onPlaying`. It owns the ready/pause dialog, challenge selection, sound and accessibility preferences,
 keyboard focus, browser history and return to the library. Game rules remain in `school/games`.
-Full-bleed framing no longer hides a game's controls. Rowing and Rabbit crossing declare named
+Filling the room no longer hides a game's controls. Rowing and Rabbit crossing declare named
 buttons for their existing actions. Keyboard activation of a held-action button advances one stroke
 or adjustment; pointer holds retain their continuous input. Measuring keeps its existing move tray.
 

@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 import { rallyCourse } from "../../school/games/rally";
+import { fieldPoints } from "./field";
+import { test } from "./steps";
 
 test("rally can reverse with Down and the on-screen control", async ({ page }) => {
     await page.goto("/games?g=rally&v=0");
@@ -26,25 +28,27 @@ test("rally can reverse with Down and the on-screen control", async ({ page }) =
         .toBeLessThan(parked.y - 10);
     await page.mouse.up();
 });
-import { test } from "./steps";
 
 for (const input of ["pointer", "keyboard"]) {
     test(`pocket rally: ${input} completes a circuit without shortcuts`, async ({ page }, info) => {
         await page.goto("/games?g=rally&v=0");
-        const field = page.locator(".field"),
-            car = page.locator('[data-key="car"]');
+        const car = page.locator('[data-key="car"]');
         await expect(car).toBeVisible();
         await expect(page.locator(".game-menu")).not.toBeVisible();
         const parked = await car.getAttribute("style");
         await page.waitForTimeout(250);
         expect(await car.getAttribute("style")).toBe(parked);
-        const box = await field.boundingBox();
-        if (!box) throw new Error("Missing rally field");
+        const { toScreen, toWorld } = await fieldPoints(page);
         const points = rallyCourse(0, 0).points;
         const touch = input === "pointer" && info.project.name === "phone";
         const cdp = touch ? await page.context().newCDPSession(page) : null;
         let held = "",
             pressed = false;
+        // the car's heading is read from how it moves, so the spec does not depend on how a view draws it
+        const first = points[0],
+            second = points[1];
+        let heading = first && second ? Math.atan2(second.y - first.y, second.x - first.x) : 0;
+        let last: { x: number; y: number } | null = null;
         await page.locator('[data-game="board"]').focus();
         if (input === "keyboard") await page.keyboard.down("Space");
         const end = Date.now() + 35000;
@@ -54,17 +58,12 @@ for (const input of ["pointer", "keyboard"]) {
         ) {
             const pos = await car.evaluate((element) => {
                 const rect = element.getBoundingClientRect();
-                const angle = /rotate\(([-.\d]+)rad\)/.exec(
-                    (element as HTMLElement).style.transform,
-                )?.[1];
-                return {
-                    x: rect.x + rect.width / 2,
-                    y: rect.y + rect.height / 2,
-                    angle: Number(angle ?? 0),
-                };
+                return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
             });
-            const x = ((pos.x - box.x) / box.width) * 36,
-                y = ((pos.y - box.y) / box.height) * 24;
+            const { x, y } = toWorld(pos.x, pos.y);
+            if (last && Math.hypot(x - last.x, y - last.y) > 0.05)
+                heading = Math.atan2(y - last.y, x - last.x);
+            last = { x, y };
             let nearest = 0,
                 distance = Infinity;
             for (const [index, p] of points.entries()) {
@@ -77,8 +76,7 @@ for (const input of ["pointer", "keyboard"]) {
             const target = points[(nearest + 4) % points.length];
             if (!target) throw new Error("Missing path target");
             if (input === "pointer") {
-                const tx = box.x + (target.x / 36) * box.width,
-                    ty = box.y + (target.y / 24) * box.height;
+                const { x: tx, y: ty } = toScreen(target.x, target.y);
                 if (cdp)
                     await cdp.send("Input.dispatchTouchEvent", {
                         type: pressed ? "touchMove" : "touchStart",
@@ -90,7 +88,7 @@ for (const input of ["pointer", "keyboard"]) {
                 }
                 pressed = true;
             } else {
-                const raw = Math.atan2(target.y - y, target.x - x) - pos.angle;
+                const raw = Math.atan2(target.y - y, target.x - x) - heading;
                 const error = Math.atan2(Math.sin(raw), Math.cos(raw));
                 const next = Math.abs(error) < 0.08 ? "" : error > 0 ? "ArrowRight" : "ArrowLeft";
                 if (next !== held) {
@@ -131,4 +129,18 @@ test("pocket rally: reduced motion advances by input and recovery keeps the game
     expect(await car.getAttribute("style")).toBe(stopped);
     await page.getByRole("button", { name: "Back on the road", exact: true }).click();
     await expect(page.locator('[data-game="aside"]')).toContainText("Back on the road");
+});
+
+test("slow for the bends: the signs are read out, and the speed rises as the car goes", async ({
+    page,
+}) => {
+    await page.goto("/games?g=rally&v=3");
+    await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
+    const reads = page.locator('[data-game="reads"]');
+    await expect(reads).toContainText("The bends' signs say 3 and 4");
+    await expect(reads).toContainText("Speed 0");
+    await page.locator('[data-game="board"]').focus();
+    await page.keyboard.down("Space");
+    await expect(reads).toContainText(/Speed [2-9]/, { timeout: 5_000 });
+    await page.keyboard.up("Space");
 });

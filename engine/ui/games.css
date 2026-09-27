@@ -1,6 +1,9 @@
 .game-room {
     width: min(1280px, calc(100% - 32px));
     margin: 28px auto 60px;
+    &:not(.playing) {
+        margin-top: 8px;
+    }
     color: var(--ink);
     button,
     select {
@@ -24,8 +27,91 @@
     [hidden] {
         display: none !important;
     }
+    /* the page's title is a note card on the map, centred over the games, as the other pages' titles
+       are; wider and shorter than a note, so the games start high on the page */
     .game-heading {
-        padding: 20px 8px 32px;
+        display: flex;
+        justify-content: center;
+        padding: 0 8px 20px;
+    }
+    .game-heading .postcard.note {
+        width: min(100%, 640px);
+        padding: 16px 26px 16px;
+        gap: 4px;
+    }
+    .game-heading .postcard-msg {
+        gap: 4px;
+    }
+    .game-heading .postcard-title {
+        margin: 0;
+        font-size: clamp(28px, 2.4vw, 36px);
+        line-height: 1.05;
+    }
+    .game-heading .postcard-lead {
+        max-width: none;
+        margin: 0;
+        font-size: 15.5px;
+        line-height: 1.4;
+    }
+    .game-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 18px;
+        margin-top: 10px;
+    }
+    .game-search {
+        display: flex;
+        flex: 1 1 220px;
+        align-items: center;
+        gap: 12px;
+    }
+    .game-search input {
+        flex: 1;
+        min-width: 0;
+    }
+    /* Set as the chips' legends are, so the three filters read as one set. */
+    .game-filters legend,
+    .game-search-label {
+        width: 52px;
+        margin-right: 0;
+    }
+    .game-search-label {
+        font: 500 12px / 1 var(--f-mono);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-soft);
+    }
+    .game-filters .filter-chip span {
+        justify-content: center;
+        min-width: 44px;
+    }
+    /* On a phone each label sits over its chips, so Any and the four grades keep to one line. */
+    @media (max-width: 520px) {
+        .game-filters .filter-chips legend {
+            float: none;
+            width: 100%;
+            margin-bottom: 6px;
+        }
+        .game-filters .filter-chips {
+            gap: 5px;
+        }
+        .game-filters .filter-chip span {
+            padding: 0 12px;
+        }
+        .game-search {
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .game-search-label {
+            width: 100%;
+        }
+    }
+    .game-none {
+        margin: 0 0 20px;
+        text-align: center;
+        font: 600 16px / 1.4 var(--f-read);
+        color: var(--ink-soft);
     }
     h1 {
         font: 650 clamp(28px, 4vw, 46px)/1.2 var(--f-hand);
@@ -41,12 +127,27 @@
         gap: 20px;
     }
     .game-card {
+        position: relative;
         display: flex;
         flex-direction: column;
         text-align: left;
         gap: 10px;
         padding: 20px;
         box-shadow: 3px 4px 0 var(--grid);
+    }
+    /* one strip across a card's top rather than the postcard's two, which crowd a card this narrow;
+       it stands 14 px above the card, inside the library's 20 px gap */
+    .game-card > .postcard-tape {
+        left: calc(50% - 38px);
+        width: 76px;
+        rotate: -4deg;
+    }
+    .game-card:nth-child(even) > .postcard-tape {
+        rotate: 5deg;
+    }
+    .game-card:nth-child(3n) > .postcard-tape {
+        left: calc(50% - 30px);
+        rotate: -2deg;
     }
     .game-card strong {
         font: 650 24px var(--f-hand);
@@ -130,13 +231,6 @@
         color: var(--ink-soft);
         font-size: 14px;
     }
-    .squared {
-        background-color: white;
-        background-image:
-            linear-gradient(var(--grid) 1px, transparent 1px),
-            linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-        background-size: var(--sq) var(--sq);
-    }
     .board {
         --sq: 20px;
         display: flex;
@@ -144,72 +238,13 @@
         min-height: 120px;
         min-width: 0;
     }
-    .sheet {
-        position: relative;
-        display: block;
-        flex: 0 0 auto;
-        width: calc((var(--w) + 2) * var(--sq));
-        height: calc((var(--h) + 2) * var(--sq));
-        padding: var(--sq);
-        border-radius: 4px;
-        max-width: 100%;
-        box-shadow:
-            0 1px 0 #0000001a,
-            0 10px 24px -16px #00000052;
-        touch-action: none;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-    /* A part is placed by two custom properties the stage writes each frame. There is no CSS
-   transition: the spring is the motion, and under reduced motion the stage writes the end. */
-    .placed {
-        position: absolute;
-        left: var(--sq);
-        top: var(--sq);
-        transform: translate(calc(var(--x) * var(--sq)), calc(var(--y) * var(--sq)))
-            rotate(calc(var(--a, 0) * 1rad));
-        transform-origin: calc(var(--ox, 0) * var(--sq)) calc(var(--oy, 0) * var(--sq));
-        will-change: transform;
-    }
-    /* A squash and a size are about the foot, so a thing that lands spreads on what it landed on. */
-    .placed > svg {
-        display: block;
-        width: calc(var(--w) * var(--sq));
-        height: auto;
-        max-width: none;
-        overflow: visible;
-        transform-origin: 50% 100%;
-        transform: scale(
-            calc(var(--k, 1) * (1 + var(--s, 0))),
-            calc(var(--k, 1) * (1 - var(--s, 0)))
-        );
-    }
-    .placed.grab {
-        cursor: grab;
-    }
-    .placed.lifted {
-        cursor: grabbing;
-        filter: drop-shadow(0 7px 5px #0000002e);
-    }
-    .placed.lifted > svg {
-        transform: scale(1.08);
-        transform-origin: 50% 60%;
-    }
     .placed-label {
         display: block;
         text-align: center;
         white-space: nowrap;
     }
-    /* A ghost is a piece where it would land if the hand let go now: the same drawing, seen through. */
-    .placed.ghost {
-        opacity: 0.42;
-        pointer-events: none;
-    }
-    .sheet > .mote {
-        z-index: 160;
-    }
     /* The board takes the keyboard hand when it has the focus, and shows that it has it. */
-    .sheet:focus-visible {
+    .scene:focus-visible {
         outline: 3px solid var(--pen);
         outline-offset: 3px;
     }
@@ -227,141 +262,54 @@
         user-select: none;
         -webkit-user-select: none;
     }
-    .world,
-    .field-paper,
-    .field > .layer {
-        position: absolute;
-        left: 0;
-        top: 0;
-        transform-origin: 0 0;
-        will-change: transform;
+    /* the still picture of a turn game without WebGL2 keeps the squared paper the GPU would draw */
+    .field-still {
+        background-image:
+            linear-gradient(var(--grid) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: var(--sq) var(--sq);
     }
-    /* A layer with a depth is moved by that share of the camera; the fixed one holds what the game keeps in sight and never moves. */
-    .field > .layer.fixed {
-        will-change: auto;
+    /* The GPU's view: the canvas under the words a game writes, which stay text in the page. */
+    .field-gl > canvas,
+    .field-words,
+    .field-probe {
+        position: absolute;
         inset: 0;
         pointer-events: none;
     }
-    /* A sprite is placed by its transform alone. One that moves is its own layer, rasterised once. */
-    .sprite {
+    .field-words > span {
         position: absolute;
         left: 0;
         top: 0;
-        transform-origin: 50% 50%;
-        pointer-events: none;
-    }
-    .sprite.moves {
-        will-change: transform;
-    }
-    .sprite > svg {
-        display: block;
-    }
-    .sprite.faint {
-        opacity: 0.35;
-    }
-
-    /* Ink over the drawings, in squares, on the stage's overlay and the field's own layer alike. A hint
-   is the pen's ink and dashed rather than a colour, so it is not colour alone. */
-    .ink {
-        overflow: visible;
-        pointer-events: none;
-    }
-    .sheet > .ink {
-        position: absolute;
-        left: var(--sq);
-        top: var(--sq);
-        z-index: 150;
-        width: calc(var(--w) * var(--sq));
-        height: calc(var(--h) * var(--sq));
-    }
-    .world > .ink {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 50;
-        will-change: transform;
-    }
-    .ink .dot {
-        fill: var(--pen);
-    }
-    .ink .dot.faint {
-        opacity: 0.3;
-    }
-    .ink .line {
-        stroke: var(--ink);
-        stroke-width: 0.1;
-        stroke-linecap: round;
-        fill: none;
-    }
-    .ink .aim {
-        stroke: var(--pen);
-        stroke-width: 0.125;
-        stroke-dasharray: 0.35 0.3;
-        stroke-linecap: round;
-        fill: none;
-    }
-    .ink .crash {
-        stroke: var(--berry);
-        stroke-width: 0.15;
-        stroke-dasharray: 0.25 0.25;
-        fill: none;
-    }
-    .ink .rod {
-        stroke: var(--ink);
-        stroke-width: 0.17;
-        stroke-linecap: round;
-        fill: none;
-    }
-    .ink .thin {
-        stroke: var(--ink-soft);
-        stroke-width: 0.06;
-        fill: none;
-    }
-    .ink .stream {
-        stroke: var(--sky);
-        fill: none;
-        stroke-linecap: round;
-    }
-    .ink .stream-edge {
-        stroke: var(--ink-soft);
-        fill: none;
-        stroke-linecap: round;
-    }
-    .ink .head {
-        stroke-dasharray: none;
-        stroke-linejoin: round;
-    }
-    .ink .ring {
-        fill: none;
-        stroke: var(--pen);
-        stroke-width: 0.125;
-        stroke-dasharray: 0.45 0.35;
-        opacity: 0.6;
-    }
-    .ink .ring.solid {
-        stroke-dasharray: none;
-        opacity: 0.5;
-    }
-    .ink .ring.on {
-        opacity: 1;
-        stroke-width: 0.175;
-        stroke-dasharray: none;
-        fill: var(--glow);
-        fill-opacity: 0.28;
-    }
-    .ink .puff {
-        fill: var(--card);
-        stroke: var(--ink-soft);
-        stroke-width: 0.075;
-    }
-    .ink .word {
+        line-height: 1;
+        white-space: nowrap;
         font-family: var(--f-hand);
         font-weight: 650;
-        fill: var(--pen);
-        text-anchor: middle;
-        paint-order: stroke;
-        stroke: #ffffff;
-        stroke-width: 0.12;
+        color: var(--pen);
+        paint-order: stroke fill;
+        -webkit-text-stroke-color: #ffffff;
+    }
+    /* the test copy of every sprite's box is laid out but never seen: a test must find it visible */
+    .field-probe {
+        opacity: 0;
+    }
+    .field-probe > div {
+        position: absolute;
+    }
+    /* a turn game's parts take a click, so a test clicks the copy it finds */
+    .scene .field-probe > div {
+        pointer-events: auto;
+        overflow: hidden;
+    }
+    .scene-labels {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+    .scene-labels > .placed-label {
+        position: absolute;
+        left: 0;
+        top: 0;
     }
 
     .reads {
@@ -706,6 +654,13 @@
         box-shadow: none;
         border-radius: 0;
     }
+    /* a turn game's board stays a sheet on the table */
+    .field.scene {
+        border-radius: 4px;
+        box-shadow:
+            0 1px 0 #0000001a,
+            0 10px 24px -16px #00000052;
+    }
     .hands {
         margin: 0;
         flex-direction: row;
@@ -829,7 +784,7 @@
         gap: 8px;
     }
     .pad:empty,
-    .game-actions:has(> [hidden]:only-child) {
+    .game-actions:not(:has(> :not([hidden]))) {
         display: none;
     }
     .cross {
@@ -982,11 +937,19 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+    /* the note and, once a round is won, its result and what to do next sit in the middle of the top bar, so the bar under the field holds only controls */
     .game-feedback-slot {
         flex: 1;
         min-width: 0;
         display: flex;
+        align-items: center;
         justify-content: center;
+        gap: 8px;
+    }
+    .game-feedback-slot > button {
+        flex: 0 0 auto;
+        min-height: 44px;
+        white-space: nowrap;
     }
     .game-feedback {
         display: flex;
@@ -1025,11 +988,7 @@
         display: block;
         font: 600 18px / 1.2 var(--f-hand);
     }
-    .game-actions:has(.game-finished) {
-        justify-content: center;
-        gap: 8px;
-    }
-    .game-actions:has(.game-finished) [data-game="another"] {
+    .game-feedback-slot [data-game="another"] {
         background: var(--pen);
         color: white;
         border-color: var(--pen);
@@ -1054,6 +1013,14 @@
     @media (max-width: 700px) {
         .game-player {
             padding: 4px;
+        }
+        /* on a phone a finished round takes a row of its own under the title */
+        .game-toolbar:has(.game-finished) {
+            flex-wrap: wrap;
+        }
+        .game-toolbar:has(.game-finished) .game-feedback-slot {
+            order: 3;
+            flex-basis: 100%;
         }
         .game-toolbar h1 {
             font-size: 16px;
@@ -1089,6 +1056,60 @@
         }
         .game-finished {
             max-width: 100%;
+        }
+    }
+}
+
+/* A phone held sideways has height to spare least, so while a game plays the site's bar steps aside
+   and the controls stand in a column beside the field rather than under it. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .page:has(.game-room.playing) .page-top {
+        display: none;
+    }
+    .game-room.playing {
+        .game-player {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-rows: auto minmax(0, 1fr);
+            min-height: 0;
+            gap: 4px 8px;
+        }
+        .game-player > * {
+            grid-column: 1 / -1;
+        }
+        .game-player > .game-stage-wrap {
+            grid-column: 1;
+            grid-row: 2;
+            min-height: 0;
+        }
+        .game-player > .hands {
+            grid-column: 2;
+            grid-row: 2;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: center;
+            gap: 6px;
+            overflow-y: auto;
+        }
+        .pad {
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 6px;
+        }
+        .cross {
+            display: grid;
+            grid-template-columns: repeat(3, 44px);
+            grid-template-rows: repeat(2, 44px);
+            gap: 4px;
+        }
+        .cross.flat {
+            grid-template-rows: 44px;
+        }
+        .key {
+            min-width: 44px;
+            min-height: 44px;
+            padding: 4px 10px;
         }
     }
 }

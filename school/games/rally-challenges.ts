@@ -20,7 +20,7 @@ export function isRallyConfiguration(value: unknown, phase?: number): value is R
         typeof value.variant !== "number" ||
         !Number.isInteger(value.phase) ||
         value.phase < 0 ||
-        value.phase > 2 ||
+        value.phase > 3 ||
         !Number.isInteger(value.variant) ||
         value.variant < 0 ||
         value.variant > 2 ||

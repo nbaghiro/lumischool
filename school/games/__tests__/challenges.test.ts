@@ -3,16 +3,12 @@ import assert from "node:assert/strict";
 import { isGameChallenge } from "../../../engine/answer";
 import { GAMES } from "../catalogue";
 import { challengeFor, nextChallenge, openChallenge, supportsVariations } from "../challenges";
-import { pourConfigurations, openPourConfiguration } from "../pour-challenges";
-import { ruleConfigurations, openRuleConfiguration } from "../rule-challenges";
+import { pourConfigurations, pourRound } from "../pour-challenges";
 import { explore, nudge, prove } from "../prove";
 
-test("every measuring and machine recipe has a complete uncapped proof and legal winning path", () => {
+test("every measuring recipe has a complete uncapped proof and legal winning path", () => {
     for (let phase = 0; phase < 6; phase++) {
-        const rounds = [
-            ...pourConfigurations(phase).map(openPourConfiguration),
-            ...ruleConfigurations(phase).map(openRuleConfiguration),
-        ];
+        const rounds = pourConfigurations(phase).map(pourRound);
         for (const round of rounds) {
             const graph = explore(round);
             const proof = prove(round, graph);
@@ -87,19 +83,13 @@ test("an unknown or capped measuring configuration is rejected before play", () 
             },
         }),
     );
-    const round = openPourConfiguration(
-        pourConfigurations(0)[0] ?? { jugs: [], target: 0, unit: "ml" },
-    );
+    const round = pourRound(pourConfigurations(0)[0] ?? { jugs: [], target: 0, unit: "ml" });
     assert.equal(prove(round, explore(round, 1)).ok, false);
 });
 
-test("tabletop pool has full position graph and authored spelling or fair dice audits", async () => {
+test("tabletop pool has full position graph and fair dice audits", async () => {
     const { tableConfigurations, openTableConfiguration } = await import("../table-challenges");
-    for (const [kind, count] of [
-        ["spell", 4],
-        ["race", 4],
-        ["shut", 5],
-    ] as const)
+    for (const [kind, count] of [["shut", 5]] as const)
         for (let phase = 0; phase < count; phase++)
             for (const c of tableConfigurations(kind, phase)) {
                 const p = prove(openTableConfiguration(c));
@@ -120,7 +110,7 @@ test("authored action geometry changes invalidate a saved descriptor even with a
 });
 
 test("an authored phase without a certified pool falls back in bounded time", () => {
-    const game = GAMES.find((g) => g.id === "pour");
+    const game = GAMES.find((g) => g.id === "shut");
     assert.ok(game && game.group !== "action");
     const first = game.levels[0];
     assert.ok(first);

@@ -10,6 +10,7 @@
 // .docs/games.md.
 import type { Pt } from "../../engine/motion/geometry";
 import { slideDistance } from "../../engine/motion/slide";
+import { aimOfPull, launchOf, nearness, type AimSpec } from "../../engine/motion/aim";
 import { knob } from "../../engine/motion/tune";
 import { bodies, type Bodies, type Body } from "../../engine/motion/bodies";
 import type { Pad } from "../../engine/motion/pad";
@@ -377,12 +378,30 @@ function bodyFor(s: ShoveState, k: Piece, at: Pt): Body {
 
 const dampingOf = (k: Piece) => SHOVE.damping.value * (isNote(k) ? 1.25 : 1);
 /** The velocity a pull gives: straight back through where it was pulled from, faster the further it was pulled. */
-export const shoveOf = (pull: Pt): Pt => {
-    const len = Math.hypot(pull.x, pull.y);
-    if (len === 0) return { x: 0, y: 0 };
-    const speed = SHOVE.speed.value * Math.min(1, len / SHOVE.pull.value);
-    return { x: (-pull.x / len) * speed, y: (-pull.y / len) * speed };
+/** How far short of the line a piece stopped, in words: the line is where it had to get past. */
+const SHORT: Record<ReturnType<typeof nearness>, string> = {
+    "on it": "just behind the line",
+    close: "just behind the line",
+    "a little short": "a little short of the line",
+    short: "well short of the line",
+    "a little long": "behind the line",
+    long: "behind the line",
 };
+
+/** A shove as the shared aim reads a pull: the other way, as fast as the pull is long, up to the fastest. */
+const shoveAim = (): AimSpec => ({
+    min: 0,
+    max: SHOVE.speed.value,
+    per: SHOVE.speed.value / SHOVE.pull.value,
+    dead: 0,
+    lo: -Infinity,
+    hi: Infinity,
+    turn: 0,
+    ramp: 0,
+    turns: "across",
+});
+export const shoveOf = (pull: Pt): Pt =>
+    Math.hypot(pull.x, pull.y) === 0 ? { x: 0, y: 0 } : launchOf(aimOfPull(pull, shoveAim()));
 const within = (pull: Pt): Pt => {
     const len = Math.hypot(pull.x, pull.y),
         most = SHOVE.pull.value;
@@ -650,6 +669,15 @@ export function step(s: ShoveState, pad: Pad): Happening[] {
     if (hit > 0.3 && s.steps - s.lastKnock > 6) {
         s.lastKnock = s.steps;
         out.push({ cue: "bump" });
+        // a knock between two pieces throws a little dust where they met
+        const knock = s.world
+            .hits()
+            .find((h) => h.speed > 1.5 && h.a.shape === "ball" && h.b.shape === "ball");
+        if (knock) {
+            const a = s.world.where(knock.a),
+                b = s.world.where(knock.b);
+            out.push({ burst: { kind: "dust", x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, n: 3 } });
+        }
     }
     for (const c of s.coins) {
         if (c.on === "board" && c.body) {
@@ -669,7 +697,8 @@ export function step(s: ShoveState, pad: Pad): Happening[] {
                 across = lies && !behind && backOf(c.kind, p.x, p.angle) < LINE;
             if (off || behind || across) {
                 goHome(s, c, out);
-                if (behind) tell(s, "It stopped behind the line, so it went back.");
+                if (behind)
+                    tell(s, `It stopped ${SHORT[nearness(p.x - LINE, 0.5)]}, so it went back.`);
                 else if (across) tell(s, "It stopped on the line, so it went back.");
             }
         } else if (c.on === "home") {
@@ -963,9 +992,10 @@ export const shoveGame: ActionGame<ShoveState> = {
     id: "pay",
     title: "Penny shove",
     group: "action",
+    seen: "above",
+    quiet: true,
     levels: SHOVE_LEVELS,
     rate: RATE,
-    bleed: true,
     touch: true,
     plays: { activity: "pay.make-the-amount", levels: [2, 3, 5] },
     cover: { art: "prop.coins", params: { coins: ["penny", "nickel", "dime", "quarter"] } },

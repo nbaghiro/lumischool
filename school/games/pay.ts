@@ -168,10 +168,11 @@ export const pay: Mechanic<PayVersion, PayPos, PayMove> = {
         const kinds = PIECES.filter((k) => (v.drawer[k] ?? 0) > 0);
         if (kinds.length < 2)
             out.push("a drawer of one kind of coin makes the amount by counting, not by choosing");
-        for (const k of Object.keys(v.drawer) as Piece[]) {
-            if (!PIECES.includes(k))
+        for (const key of Object.keys(v.drawer)) {
+            const k = PIECES.find((p) => p === key);
+            if (!k)
                 out.push(
-                    `the drawer holds "${k}", which is not a piece the money drawings can draw`,
+                    `the drawer holds "${key}", which is not a piece the money drawings can draw`,
                 );
             else if ((v.drawer[k] ?? 0) > 9)
                 out.push(

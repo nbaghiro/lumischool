@@ -1,167 +1,169 @@
-// The bead string: the string is as long as the count, the beads alternate in fives, and the paper
-// is the same paper for the same seed.
+// Firefly trail: every level and layout is flown to the end by a finger and by the keys, seeds join
+// only in the order of the count, a knock drops beads that are picked up again, the backwards count
+// shortens the trail, random flying almost never finishes, and a replay is the same flight.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DIRS, emptyPad, spent, type Dir } from "../../../engine/motion/pad";
+import { SHELF_IDS } from "./shelf";
+import { aimOf, pilot } from "./firefly-pilot";
 import {
-    beadColour,
+    FIREFLY,
+    FIREFLY_LEVELS,
+    beadsAt,
+    countOf,
+    seedAt,
     snakeGame,
-    SNAKE_LEVELS,
-    start as startSnake,
-    step as stepSnake,
-    type SnakeState,
+    start,
+    step,
+    wantedSeed,
+    type FireflyState,
 } from "../snake";
+import { emptyPad, spent, type Pad } from "../../../engine/motion/pad";
+import { seeded } from "../../../engine/motion/spawn";
+import { faults } from "../../../engine/motion/tune";
 
-/** The first step of the shortest way to the next number, around the string, or null. */
-function towards(s: SnakeState): Dir | null {
-    const want = s.cards.find((c) => c.n === s.count + s.L.by);
-    if (!want) return null;
-    const key = (x: number, y: number) => y * s.L.cols + x;
-    const blocked = new Set(s.body.slice(0, -1).map((c) => key(c.x, c.y)));
-    const from = new Map<number, [number, Dir]>();
-    const q: [number, number][] = [[s.body[0].x, s.body[0].y]];
-    const seen = new Set([key(s.body[0].x, s.body[0].y)]);
-    while (q.length) {
-        const [x, y] = q.shift() ?? [0, 0];
-        if (x === want.x && y === want.y) break;
-        for (const d of Object.keys(DIRS) as Dir[]) {
-            const nx = x + DIRS[d].x,
-                ny = y + DIRS[d].y,
-                k = key(nx, ny);
-            if (
-                nx < 0 ||
-                ny < 0 ||
-                nx >= s.L.cols ||
-                ny >= s.L.rows ||
-                seen.has(k) ||
-                blocked.has(k)
-            )
-                continue;
-            seen.add(k);
-            from.set(k, [key(x, y), d]);
-            q.push([nx, ny]);
-        }
-    }
-    let k = key(want.x, want.y),
-        first: Dir | null = null;
-    for (let hop = from.get(k); hop; hop = from.get(k)) {
-        first = hop[1];
-        k = hop[0];
-    }
-    return first;
-}
-
-function playSnake(
-    level: number,
-    seed = 1,
-): { s: SnakeState; lengths: [number, number][]; steps: number } {
-    const s = startSnake(level, seed),
-        pad = emptyPad(),
-        lengths: [number, number][] = [];
-    let steps = 0;
-    while (!s.won && steps < 60 * 300) {
-        if (s.tick === s.every - 1 || s.stopped) {
-            const d = towards(s);
-            if (d) pad.pressed.push(d);
-        }
-        const had = s.count;
-        stepSnake(s, pad);
-        spent(pad);
-        steps++;
-        if (s.count !== had) lengths.push([s.count, s.body.length - 1 + s.grow]);
-    }
-    return { s, lengths, steps };
-}
-
-test("the bead string is as long as the last number picked up, at both levels", () => {
-    for (const [level, L] of SNAKE_LEVELS.entries()) {
-        const { s, lengths } = playSnake(level);
-        assert.ok(s.won, `level ${level + 1} is not won`);
-        assert.equal(s.body.length - 1, L.to, "the string at the end is as long as the count");
-        for (const [count, beads] of lengths)
-            assert.equal(beads, count, `after ${count} the string owes or has ${beads} beads`);
-        assert.deepEqual(
-            lengths.map(([c]) => c),
-            Array.from({ length: L.to / L.by }, (_, i) => (i + 1) * L.by),
-            "the count went in order",
-        );
-    }
-});
-
-test("the beads alternate in fives, the way the shelf's bead string does", () => {
-    assert.deepEqual(
-        Array.from({ length: 12 }, (_, i) => beadColour(i + 1)[0]).join(""),
-        "tttttssssstt",
-    );
-});
-
-test("the same seed lays out the same paper, and every number is on it once", () => {
-    const a = startSnake(1, 5),
-        b = startSnake(1, 5),
-        c = startSnake(1, 6);
-    assert.deepEqual(a.cards, b.cards);
-    assert.notDeepEqual(a.cards, c.cards);
-    const L = SNAKE_LEVELS[1];
-    assert.ok(L, "there is a second level");
-    assert.deepEqual(
-        a.cards.map((x) => x.n).sort((p, q) => p - q),
-        [...Array.from({ length: L.to / L.by }, (_, i) => (i + 1) * L.by), ...L.decoys].sort(
-            (p, q) => p - q,
-        ),
-    );
-});
-
-test("a number that is not next is passed over, stays on the paper, and is said", () => {
-    const s = startSnake(1, 1),
-        pad = emptyPad();
-    const head = s.body[0];
-    s.cards.push({ x: head.x + 1, y: head.y, n: 14 });
-    for (let i = 0; i < s.every; i++) {
-        stepSnake(s, pad);
-        spent(pad);
-    }
-    assert.equal(s.body[0].x, head.x + 1);
-    assert.equal(s.count, 0);
-    assert.ok(s.cards.some((c) => c.n === 14 && c.x === head.x + 1));
-    assert.match(snakeGame.say(s), /14 is not next\. Next is 3\./);
-});
-
-test("running into the edge stops the guide and loses nothing, and a turn goes on", () => {
-    const s = startSnake(0, 1),
-        pad = emptyPad();
-    pad.pressed.push("up");
-    let steps = 0;
-    while (!s.stopped && steps++ < 60 * 20) {
-        stepSnake(s, pad);
-        spent(pad);
-    }
-    assert.ok(s.stopped);
-    assert.equal(s.body[0].y, 0);
-    const before = JSON.stringify([s.body, s.count, s.cards]);
-    for (let i = 0; i < 30; i++) {
-        stepSnake(s, pad);
-        spent(pad);
-    }
-    assert.equal(
-        JSON.stringify([s.body, s.count, s.cards]),
-        before,
-        "waiting at the edge changes nothing",
-    );
-    pad.pressed.push("right");
-    stepSnake(s, pad);
-    spent(pad);
-    assert.ok(!s.stopped);
-    assert.equal(s.body[0].x, 4);
-});
-
-test("under reduced motion one press moves the bead string one square", () => {
-    const s = startSnake(0, 1),
-        pad = emptyPad();
-    pad.pressed.push("down");
-    const n = snakeGame.still.press(s);
+function fly(s: FireflyState, pad: Pad, n: number): void {
     for (let i = 0; i < n; i++) {
-        stepSnake(s, pad);
+        step(s, pad);
         spent(pad);
     }
-    assert.deepEqual(s.body[0], { x: 3, y: SNAKE_LEVELS[0].rows / 2 + 1 });
+}
+
+test("every level, in every layout, is flown to the end by a held finger and by the keys", () => {
+    FIREFLY_LEVELS.forEach((L, level) => {
+        for (const seed of [1, 2, 4])
+            for (const input of ["pointer", "keys"] as const) {
+                const s = start(level, seed);
+                pilot(s, input);
+                assert.ok(
+                    s.won,
+                    `${L.title}, layout ${seed}, ${input}: ${s.next} of ${L.seeds} caught, ${s.beads} beads, ${s.loose.length} fallen`,
+                );
+                assert.equal(s.beads, L.back ? 0 : L.seeds * L.by);
+                assert.deepEqual(snakeGame.objectives?.(s), { completed: L.seeds, total: L.seeds });
+            }
+    });
+});
+
+test("a seed joins only when it is next in the count, and the trail grows by the step", () => {
+    const s = start(1);
+    const wrong = s.seeds.find((x) => !countOf(s.L).includes(x.n));
+    assert.ok(wrong);
+    s.at = seedAt(s, wrong);
+    step(s, emptyPad());
+    assert.equal(s.next, 0);
+    assert.equal(s.beads, 0);
+    assert.ok(Math.hypot(wrong.v.x, wrong.v.y) > 1, "a wrong seed is nudged away");
+    assert.match(s.said, new RegExp(`That is ${wrong.n}\\. The next is 5\\.`));
+    const want = wantedSeed(s);
+    assert.ok(want);
+    s.at = seedAt(s, want);
+    step(s, emptyPad());
+    assert.equal(s.next, 1);
+    assert.equal(s.beads, 5);
+    fly(s, emptyPad(), 60);
+    assert.equal(beadsAt(s).length, 5);
+});
+
+test("a nettle knocks the last beads off, and flying through them picks them up again", () => {
+    const s = start(1);
+    for (let k = 0; k < 2; k++) {
+        const want = wantedSeed(s);
+        assert.ok(want);
+        s.at = seedAt(s, want);
+        step(s, emptyPad());
+    }
+    assert.equal(s.beads, 10);
+    const nettle = s.L.nettles[0];
+    assert.ok(nettle);
+    s.at = { x: nettle.x, y: 26 };
+    step(s, emptyPad());
+    assert.equal(s.beads, 5);
+    assert.equal(s.loose.length, 5);
+    assert.match(s.said, /nettles/);
+    fly(s, emptyPad(), 120);
+    for (let t = 0; t < 60 * 30 && s.loose.length; t++) {
+        const pad = emptyPad();
+        pad.touch = aimOf(s);
+        step(s, pad);
+    }
+    assert.equal(s.loose.length, 0);
+    assert.equal(s.beads, 10);
+});
+
+test("counting back starts with a long trail and each seed takes its step off", () => {
+    const level = FIREFLY_LEVELS.findIndex((L) => L.back);
+    const s = start(level);
+    assert.equal(s.beads, 40);
+    const want = wantedSeed(s);
+    assert.equal(want?.n, 36);
+    if (want) s.at = seedAt(s, want);
+    step(s, emptyPad());
+    assert.equal(s.beads, 36);
+});
+
+test("random flying for a minute finishes a level at most one time in five", () => {
+    FIREFLY_LEVELS.forEach((L, level) => {
+        const rnd = seeded(51 + level);
+        let won = 0;
+        const trials = 10;
+        for (let t = 0; t < trials; t++) {
+            const s = start(level, 1 + t),
+                pad = emptyPad();
+            for (let k = 0; k < 60 * 60 && !s.won; k++) {
+                if (k % 30 === 0) pad.touch = { x: rnd() * L.across, y: 2 + rnd() * 24 };
+                step(s, pad);
+                spent(pad);
+            }
+            if (s.won) won++;
+        }
+        assert.ok(won / trials <= 0.2, `${L.title}: ${won} of ${trials}`);
+    });
+});
+
+test("the same hands give the same flight, and under reduced motion a press is its own steps", () => {
+    const run = () => {
+        const s = start(3, 2);
+        pilot(s, "pointer", 60 * 20);
+        return JSON.stringify(s);
+    };
+    assert.equal(run(), run());
+    const normal = start(0),
+        reduced = start(0),
+        pad = emptyPad();
+    pad.holding = ["right"];
+    fly(normal, pad, snakeGame.still.press(normal) * 3);
+    for (let p = 0; p < 3; p++) fly(reduced, pad, snakeGame.still.press(reduced));
+    assert.deepEqual(reduced, normal);
+});
+
+test("every drawing it names is on the shelf, and its tuning is sound", () => {
+    const seen = new Set<string>([snakeGame.cover.art]);
+    FIREFLY_LEVELS.forEach((_, level) => {
+        const s = start(level);
+        for (const sp of snakeGame.frame(s).sprites) seen.add(sp.art);
+        pilot(s, "pointer", 60 * 15);
+        for (const sp of snakeGame.frame(s, true).sprites) seen.add(sp.art);
+    });
+    for (const art of seen) assert.ok(SHELF_IDS.has(art), `${art} is not on the shelf`);
+    assert.deepEqual(faults(FIREFLY), []);
+    for (const L of FIREFLY_LEVELS)
+        assert.ok(!/[—!]/.test(`${L.goal} ${L.prompt} ${snakeGame.hint}`));
+});
+
+test("the garden is drawn in daylight colours, the pond is water the frogs ripple, and a rest frame stands still", () => {
+    const pond = FIREFLY_LEVELS.findIndex((L) => L.pond);
+    const s = start(pond, 1);
+    for (let i = 0; i < 180; i++) step(s, emptyPad());
+    const f = snakeGame.frame(s);
+    assert.ok(!("night" in f));
+    assert.equal(f.water?.length, 1);
+    assert.ok((f.water?.[0]?.ripples?.length ?? 0) > 0);
+    assert.equal(f.time, s.steps / snakeGame.rate);
+    assert.ok(f.lights?.some((l) => l.flicker));
+    assert.ok(f.sprites.some((p) => p.key.startsWith("seed:") && (p.glow ?? 0) > 0));
+    const rest = snakeGame.frame(s, true);
+    assert.equal(rest.time, 0);
+    assert.deepEqual(rest.water?.[0]?.ripples, []);
+    assert.ok(rest.lights?.every((l) => !l.flicker));
+    assert.deepEqual(snakeGame.frame(start(0, 1)).water, []);
 });

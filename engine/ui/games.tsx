@@ -1,4 +1,7 @@
+import { Chips } from "./chips";
 import { Icon } from "./icon";
+import { Postcard } from "./postcard";
+import { isChord, toolsFrom, TOOLS, type Tool } from "./game-tools";
 import {
     createEffect,
     createSignal,
@@ -20,13 +23,60 @@ import {
 import type { Game } from "../../school/games/game";
 import type { Drawing } from "../parts/drawing";
 import type { Cue } from "../motion/cues";
+import type { Hum } from "../sound/kit";
+import { gameSound } from "./game-sound";
 import { loadDrawings } from "./drawings";
 import { render } from "./svg";
-import { Field, Stage } from "./stage";
-import { action } from "./game-action";
-import { turn } from "./game-turn";
-import type { Runtime, Shell } from "./game-host";
+import { play } from "./game-play";
+import { GameView } from "./game-view";
+import { INK, SceneView } from "./scene-view";
+import { StillView } from "./still-view";
+import type { Board, Runtime, Shell } from "./game-host";
 import "./games.css";
+
+interface ViewOptions {
+    host: HTMLElement;
+    art: Map<string, Drawing<unknown>>;
+    still: () => boolean;
+}
+
+/**
+ * The GPU's view, or null where the browser has no WebGL2. The hidden copy of every sprite's box is
+ * kept with `probe=1`, and always for a browser driven by tests.
+ */
+function gpuView(o: ViewOptions & { inkAt?: number }): GameView | null {
+    try {
+        return new GameView({
+            ...o,
+            probe: new URLSearchParams(location.search).get("probe") === "1" || navigator.webdriver,
+        });
+    } catch {
+        return null;
+    }
+}
+
+/** A turn game's board: the scene drawn by the GPU, or a still picture of it without WebGL2. */
+function boardFor(o: ViewOptions & { onFrame: (t: number) => void }): Board & { stop?(): void } {
+    const view = gpuView({ ...o, inkAt: INK });
+    return view
+        ? new SceneView({ ...o, view })
+        : new SceneView({ ...o, still: () => true, view: new StillView(o) });
+}
+
+type GameKind = "all" | "move" | "think";
+const KINDS: readonly { value: GameKind; label: string }[] = [
+    { value: "all", label: "Every game" },
+    { value: "move", label: "Move and explore" },
+    { value: "think", label: "Think and tinker" },
+];
+const GRADES: readonly { value: number | null; label: string }[] = [
+    { value: null, label: "Any" },
+    { value: 1, label: "1" },
+    { value: 2, label: "2" },
+    { value: 3, label: "3" },
+    { value: 4, label: "4" },
+];
+const kindOf = (g: Game): GameKind => (g.group === "action" ? "move" : "think");
 
 function Cover(props: { game: Game }): JSX.Element {
     let host: HTMLSpanElement | undefined;
@@ -123,6 +173,7 @@ export function Games(props: {
     };
     const [paused, pause] = createSignal(false);
     const [begun, begin] = createSignal(false);
+    const [drawn, setDrawn] = createSignal(true);
     let menu: HTMLDialogElement | undefined;
     const [sound, setSound] = createSignal(false);
     const [quiet, setQuiet] = createSignal(false);
@@ -134,33 +185,14 @@ export function Games(props: {
     let host: HTMLDivElement | undefined;
     let runtime: Runtime | undefined;
     let audio: AudioContext | undefined;
-    const hear = (cue: Cue): void => {
+    const player = gameSound(() => audio);
+    const hear = (cue: Cue, how?: { strength?: number; pitch?: number; pan?: number }): void => {
         if (!sound() || !audio || paused()) return;
-        const hz: Record<Cue, number> = {
-            lift: 330,
-            place: 440,
-            back: 294,
-            nope: 220,
-            bump: 160,
-            crash: 110,
-            level: 660,
-            ring: 880,
-            splash: 260,
-            win: 784,
-        };
-        const oscillator = audio.createOscillator(),
-            gain = audio.createGain();
-        oscillator.type = "sine";
-        oscillator.frequency.value = hz[cue];
-        gain.gain.setValueAtTime(0.06, audio.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.15);
-        oscillator.connect(gain).connect(audio.destination);
-        oscillator.start();
-        oscillator.stop(audio.currentTime + 0.16);
-        oscillator.onended = () => {
-            oscillator.disconnect();
-            gain.disconnect();
-        };
+        player.hear(chosen()?.sounds, cue, how);
+    };
+    const hum = (hums: readonly Hum[]): void => {
+        if (sound() && audio && !paused()) player.hum(hums);
+        else player.hush();
     };
     const select = (g: Game | undefined, selected?: number): void => {
         const v = phaseFor(g, selected);
@@ -204,7 +236,7 @@ export function Games(props: {
     });
     const focusArena = (): void => {
         (
-            host?.querySelector<HTMLElement>(".sheet:not([hidden])") ??
+            host?.querySelector<HTMLElement>(".scene:not([hidden])") ??
             host?.querySelector<HTMLElement>(".board")
         )?.focus({ preventScroll: true });
     };
@@ -217,6 +249,39 @@ export function Games(props: {
         if (audio) void audio.close();
     });
     onMount(() => {
+        // the developer's tools load only when asked for, so the page a family opens does not carry them
+        let toolsOff: (() => void) | null = null;
+        let loading = false;
+        // the page can be replaced while the tools load, as when the sign-in check answers
+        let gone = false;
+        const openTools = (which: readonly Tool[]): void => {
+            if (toolsOff || loading) return;
+            loading = true;
+            void import("./game-tools-panel").then((m) => {
+                loading = false;
+                if (!toolsOff && !gone)
+                    toolsOff = m.mountTools(document.body, {
+                        probe: () => runtime?.probe?.() ?? null,
+                        open: which,
+                    });
+            });
+        };
+        const asked = toolsFrom(location.search);
+        if (asked.length) openTools(asked);
+        const chord = (e: KeyboardEvent): void => {
+            if (!isChord(e)) return;
+            e.preventDefault();
+            if (toolsOff) {
+                toolsOff();
+                toolsOff = null;
+            } else openTools(TOOLS.map((t) => t.id));
+        };
+        window.addEventListener("keydown", chord);
+        onCleanup(() => {
+            gone = true;
+            window.removeEventListener("keydown", chord);
+            toolsOff?.();
+        });
         const fitPage = (): void => {
             if (room)
                 room.style.setProperty(
@@ -332,17 +397,19 @@ export function Games(props: {
             };
             class Art extends Map<string, Drawing<unknown>> {
                 pending = new Set<string>();
+                /** The loads not yet waited on, so the player can say it is ready only once its drawings are in. */
+                loads: Promise<unknown>[] = [];
                 override get(ref: string): Drawing<unknown> | undefined {
                     const found = super.get(ref);
                     if (!found && !this.pending.has(ref)) {
                         this.pending.add(ref);
-                        void loadDrawings([ref])
+                        const load = loadDrawings([ref])
                             .then((shelf) => {
                                 if (ended) return;
                                 const drawing = shelf.drawing(ref);
                                 if (drawing) {
                                     this.set(ref, drawing);
-                                    stage.loaded(ref);
+                                    tabletop?.loaded(ref);
                                     runtime?.redraw();
                                 }
                             })
@@ -350,6 +417,7 @@ export function Games(props: {
                                 if (!ended)
                                     fail("A drawing could not load. Please try Start again.");
                             });
+                        this.loads.push(load);
                     }
                     return found;
                 }
@@ -357,15 +425,21 @@ export function Games(props: {
             const art = new Art();
             const board = $("board");
             board.replaceChildren();
-            const stage = new Stage({
-                host: board,
-                art,
-                still: quiet,
-                onFrame: (t) => runtime?.frame?.(t),
-            });
-            const field = new Field({ host: board, art, still: quiet });
-            stage.sheet.hidden = true;
-            field.el.hidden = true;
+            const field =
+                opened.group === "action" ? gpuView({ host: board, art, still: quiet }) : null;
+            if (opened.group === "action" && !field)
+                fail("This game needs a newer browser, one that can draw with WebGL2.");
+            const tabletop =
+                opened.group === "action"
+                    ? null
+                    : boardFor({
+                          host: board,
+                          art,
+                          still: quiet,
+                          onFrame: (t) => runtime?.frame?.(t),
+                      });
+            if (field) field.el.hidden = true;
+            if (tabletop) tabletop.sheet.hidden = true;
             const shell: Shell = {
                 $,
                 art,
@@ -397,6 +471,7 @@ export function Games(props: {
                 still: quiet,
                 paused,
                 hear,
+                hum,
                 guide: () => {},
                 rows: () => {},
                 tuning: () => {},
@@ -411,13 +486,29 @@ export function Games(props: {
             };
             try {
                 const v = Math.min(version, game.levels.length - 1);
-                runtime =
-                    opened.group === "action"
-                        ? action(shell, field, opened, v)
-                        : turn(shell, stage, opened, v, []);
+                if (opened.group === "action") {
+                    if (field) runtime = play(shell, { game: opened, field }, v);
+                } else if (tabletop) runtime = play(shell, { game: opened, board: tabletop }, v);
             } catch (error) {
                 fail(error instanceof Error ? error.message : "The game could not open.");
             }
+            // the player is ready once the level's drawings have loaded and the GPU's view has them in
+            // its pages, so the first thing a child sees is the whole scene; a slow network waits no
+            // more than a few seconds
+            setDrawn(false);
+            const settle = async (): Promise<void> => {
+                for (let round = 0; round < 4; round++) {
+                    await Promise.all(art.loads.splice(0));
+                    runtime?.redraw();
+                    await (field ?? tabletop)?.ready?.();
+                    if (!art.loads.length) return;
+                }
+            };
+            void Promise.race([settle(), new Promise<void>((done) => setTimeout(done, 4000))]).then(
+                () => {
+                    if (!ended) setDrawn(true);
+                },
+            );
             queueMicrotask(() => {
                 if (!ended && !paused()) focusArena();
             });
@@ -451,9 +542,7 @@ export function Games(props: {
             window.addEventListener("keyup", keys);
             const resize = new ResizeObserver(() => {
                 runtime?.resize();
-                const surface = board.querySelector<HTMLElement>(
-                    ".field:not([hidden]), .sheet:not([hidden])",
-                );
+                const surface = board.querySelector<HTMLElement>(".field:not([hidden])");
                 if (surface)
                     root.style.setProperty(
                         "--game-view-width",
@@ -465,14 +554,30 @@ export function Games(props: {
                 ended = true;
                 runtime?.stop();
                 runtime = undefined;
-                stage.clear();
-                field.clear();
+                if (tabletop?.stop) tabletop.stop();
+                else tabletop?.clear();
+                field?.stop();
                 resize.disconnect();
                 window.removeEventListener("keydown", keys);
                 window.removeEventListener("keyup", keys);
             });
         });
     });
+    const [kind, setKind] = createSignal<GameKind>("all");
+    const [grade, setGrade] = createSignal<number | null>(null);
+    const [query, setQuery] = createSignal("");
+    const shown = (): Game[] => {
+        const words = query().trim().toLowerCase();
+        const k = kind();
+        const n = grade();
+        return GAMES.filter(
+            (g) =>
+                g.listed !== false &&
+                (k === "all" || kindOf(g) === k) &&
+                (n === null || g.levels.some((l) => l.grades[0] <= n && n <= l.grades[1])) &&
+                (words === "" || g.title.toLowerCase().includes(words)),
+        );
+    };
     return (
         <section
             ref={(el) => {
@@ -486,24 +591,62 @@ export function Games(props: {
                 when={chosen()}
                 fallback={
                     <>
-                        <header class="game-heading">
-                            <p class="game-kicker">A little room to play</p>
-                            <h1>Games</h1>
-                            <p>Explore, experiment, and try another way. Pick something to play.</p>
-                        </header>
+                        <div class="game-heading">
+                            <Postcard
+                                note
+                                taped
+                                focus={false}
+                                kicker="A little room to play"
+                                title="Games"
+                                lead="Explore, experiment, and try another way. Pick something to play."
+                            >
+                                <div class="game-filters">
+                                    <Chips
+                                        legend="Kind"
+                                        name="game-kind"
+                                        options={KINDS}
+                                        value={kind()}
+                                        onChange={setKind}
+                                    />
+                                    <Chips
+                                        legend="Grade"
+                                        name="game-grade"
+                                        options={GRADES}
+                                        value={grade()}
+                                        onChange={setGrade}
+                                    />
+                                    <label class="game-search">
+                                        <span class="game-search-label">Find</span>
+                                        <input
+                                            type="search"
+                                            placeholder="golf, river"
+                                            autocomplete="off"
+                                            value={query()}
+                                            onInput={(e) => setQuery(e.currentTarget.value)}
+                                        />
+                                    </label>
+                                </div>
+                            </Postcard>
+                        </div>
+                        <Show when={shown().length === 0}>
+                            <p class="game-none">
+                                No game matches these. Try another grade or kind.
+                            </p>
+                        </Show>
                         <div class="game-library">
-                            <For each={GAMES.filter((g) => g.listed !== false)}>
+                            <For each={shown()}>
                                 {(g) => (
                                     <button
                                         class="game-card"
                                         data-game-id={g.id}
                                         onClick={() => select(g)}
                                     >
+                                        <span class="postcard-tape" aria-hidden="true" />
                                         <Cover game={g} />
                                         <strong>{g.title}</strong>
                                         <span>
                                             {g.levels.length} levels ·{" "}
-                                            {g.group === "action"
+                                            {kindOf(g) === "move"
                                                 ? "Move and explore"
                                                 : "Think and tinker"}
                                         </span>
@@ -519,7 +662,7 @@ export function Games(props: {
                         class="game-player"
                         data-challenge={challenge()?.id}
                         data-challenge-source={challenge()?.source}
-                        data-game-ready={!begun()}
+                        data-game-ready={!begun() && drawn()}
                         classList={{ tabletop: g().group !== "action" }}
                         ref={(el) => {
                             host = el;
@@ -541,6 +684,28 @@ export function Games(props: {
                                         <Cover game={g()} />
                                         <span data-game="aside">{feedback().text}</span>
                                     </div>
+                                </Show>
+                                <Show when={feedback().won}>
+                                    <div class="game-feedback game-finished">
+                                        <Cover game={g()} />
+                                        <span data-game="aside">{feedback().text}</span>
+                                    </div>
+                                </Show>
+                                <button data-game="another" hidden onClick={another}>
+                                    {supportsVariations(g()) ? "Play another" : "Play again"}
+                                </button>
+                                <button data-game="watch" hidden onClick={() => runtime?.watch?.()}>
+                                    Watch it again
+                                </button>
+                                <Show when={completed()}>
+                                    <button
+                                        onClick={() => {
+                                            retries++;
+                                            setRun(run() + 1);
+                                        }}
+                                    >
+                                        Try again
+                                    </button>
                                 </Show>
                             </div>
                             <span class="game-challenge">{activeTitle()}</span>
@@ -581,25 +746,16 @@ export function Games(props: {
                                 >
                                     <Icon name="undo" />
                                 </button>
-                                <Show when={feedback().won}>
-                                    <div class="game-feedback game-finished">
-                                        <Cover game={g()} />
-                                        <span data-game="aside">{feedback().text}</span>
-                                    </div>
-                                </Show>
-                                <button data-game="another" hidden onClick={another}>
-                                    {supportsVariations(g()) ? "Play another" : "Play again"}
+                                <button
+                                    class="game-icon"
+                                    data-game="checkpoint"
+                                    hidden
+                                    aria-label="Back to the checkpoint"
+                                    title="Back to the checkpoint"
+                                    onClick={() => runtime?.toCheckpoint?.()}
+                                >
+                                    <Icon name="restart" />
                                 </button>
-                                <Show when={completed()}>
-                                    <button
-                                        onClick={() => {
-                                            retries++;
-                                            setRun(run() + 1);
-                                        }}
-                                    >
-                                        Try again
-                                    </button>
-                                </Show>
                             </div>
                         </div>
                         <dialog
@@ -683,6 +839,7 @@ export function Games(props: {
                                                 audio ??= new AudioContext();
                                                 void audio.resume();
                                                 setSound(e.currentTarget.checked);
+                                                if (!e.currentTarget.checked) player.hush();
                                             }}
                                         />
                                         Sound

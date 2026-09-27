@@ -2,7 +2,7 @@ import { group, type Ctx, type RawAnchors } from "../../ink/surface";
 import { U } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { say, soft } from "../lettering";
-import { placePerson, type PersonParams } from "../people/figure";
+import { DRESSED, placePerson, type PersonParams } from "../people/figure";
 
 const CX = 10 * U;
 const CY = 8 * U;
@@ -28,6 +28,7 @@ const CHILD: PersonParams = {
     colour: "black",
     top: "berry",
     wear: "trousers",
+    ...DRESSED,
     glasses: false,
     hearing: "none",
     aid: "none",

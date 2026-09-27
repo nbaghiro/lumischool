@@ -47,7 +47,15 @@ export interface Pad {
     lifted: { x: number; y: number } | null;
     /** Pointer release velocity in world squares/second, consumed once; absent for keyboard input. */
     flick?: { x: number; y: number } | null;
+    /** What two fingers meant since the game last read them, oldest first, for a game that reads them. */
+    intents?: Intent[];
 }
+
+/**
+ * A meaning read from the hands rather than a device's state: two fingers turning, by radians
+ * clockwise, or pinching, by the factor the view should grow by.
+ */
+export type Intent = { kind: "turn"; by: number } | { kind: "zoom"; by: number };
 
 export const emptyPad = (): Pad => ({
     held: null,
@@ -82,6 +90,7 @@ export function spent(p: Pad): void {
     p.tapped = false;
     p.lifted = null;
     p.flick = null;
+    if (p.intents) p.intents = [];
 }
 
 /** A key's meaning, or null. The same keys in every game, so a child learns them once. */

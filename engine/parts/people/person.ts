@@ -1,33 +1,33 @@
 // One figure for every person the shelf draws, as the drawing a lesson places: a child, a grown-up
 // or an older person in any pose and any look. The construction is figure.ts; the kit and its rules
 // are in .docs/shelf.md.
-import { HAIR_COLOURS, MARKERS, U } from "../../paper";
+import { HAIR_COLOURS } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { MOODS, type Mood } from "../speech";
 import {
     AGES,
     AIDS,
+    BOTTOMS,
+    CLOTH,
+    DRESSED,
+    FEET,
     HAIRS,
     HEARING,
+    LEGS,
+    PATTERNS,
     POSES,
+    PRINTS,
+    SLEEVES,
     WEAR,
-    figure,
+    drawPerson,
     lookOf,
+    personBox,
     pick,
     type Age,
     type Hair,
     type PersonParams,
     type Pose,
 } from "./figure";
-
-function boxOf(p: PersonParams): { w: number; h: number } {
-    const age = pick(AGES, p.age, "child"),
-        aid = pick(AIDS, p.aid, "none");
-    const tall = age === "child" ? 6 : 8;
-    if (aid === "wheelchair")
-        return { w: (age === "child" ? 5 : 6) + (p.pose === "point" ? 1 : 0), h: tall };
-    return { w: p.pose === "point" ? 6 : p.pose === "run" && age !== "child" ? 5 : 4, h: tall };
-}
 
 /** The look a person has when a setting says nothing else. */
 const REST: PersonParams = {
@@ -38,6 +38,7 @@ const REST: PersonParams = {
     colour: "brown",
     top: "sky",
     wear: "trousers",
+    ...DRESSED,
     glasses: false,
     hearing: "none",
     aid: "none",
@@ -59,8 +60,14 @@ export const person = defineDrawing<PersonParams>({
         tone: { kind: "whole", min: 1, max: 6 },
         hair: { kind: "one of", of: HAIRS },
         colour: { kind: "one of", of: HAIR_COLOURS },
-        top: { kind: "one of", of: MARKERS },
+        top: { kind: "one of", of: CLOTH },
+        sleeves: { kind: "one of", of: SLEEVES },
+        print: { kind: "one of", of: PRINTS },
         wear: { kind: "one of", of: WEAR },
+        bottom: { kind: "one of", of: BOTTOMS },
+        pattern: { kind: "one of", of: PATTERNS },
+        legs: { kind: "one of", of: LEGS },
+        feet: { kind: "one of", of: FEET },
         glasses: { kind: "flag" },
         hearing: { kind: "one of", of: HEARING },
         aid: { kind: "one of", of: AIDS },
@@ -177,21 +184,8 @@ export const person = defineDrawing<PersonParams>({
             },
         },
     ],
-    box: boxOf,
-    draw: (c, p) => {
-        const look = lookOf(p),
-            box = boxOf(p),
-            base = box.h * U - 4;
-        const reach = p.pose === "point" ? U * 0.5 : 0;
-        const chairX = p.pose === "run" ? 10 * (look.age === "child" ? 1 : 1.3) : 2 + reach;
-        const x =
-            look.aid === "wheelchair"
-                ? box.w * U * 0.5 - look.dir * chairX
-                : p.pose === "point"
-                  ? (look.dir > 0 ? 2 : box.w - 2) * U
-                  : (box.w * U) / 2;
-        return figure(c, x, base, look, pick(POSES, p.pose, "stand"), p.holding);
-    },
+    box: personBox,
+    draw: drawPerson,
     describe: (p) => describePerson(p),
     // the kit's person breathes and leans as a creature does, blinks, and a raised hand waves
     motion: {
@@ -221,6 +215,9 @@ const HAIR_WORD: Record<Hair, (colour: string) => string> = {
     bob: (c) => `${c} hair in a bob`,
     bald: () => "a bald head",
     scarf: () => "a headscarf",
+    fringe: (c) => `long ${c} hair with a fringe`,
+    ponytail: (c) => `${c} hair in a ponytail`,
+    bunches: (c) => `${c} hair in two bunches`,
 };
 const POSE_WORD: Record<Pose, string> = {
     stand: "standing",
@@ -232,6 +229,8 @@ const POSE_WORD: Record<Pose, string> = {
     sit: "sitting on a stool",
     walk: "walking",
     run: "running",
+    balance: "balancing with both arms out",
+    jump: "jumping with both arms up",
 };
 /** The face as a sighted reader sees it, by its brows and mouth and never by the feeling's name. */
 const FACE_WORD: Record<Mood, string> = {

@@ -48,6 +48,8 @@ function note<G>(c: Ctx<G>, value: number, x: number, y: number): void {
 
 type Piece = string;
 
+const isCoin = (s: string): s is Coin => s in COINS;
+
 const pieceW = (s: Piece): number => (s in COINS ? 2 : NOTE_W + 0.5);
 
 export const moneyRow = defineDrawing({
@@ -81,9 +83,9 @@ export const moneyRow = defineDrawing({
         const a: RawAnchors = {};
         let x = U / 2;
         p.pieces.forEach((k, i) => {
-            if (k in COINS) {
-                coin(c, x + U, 2.2 * U, k as Coin);
-                a[`piece(${i})`] = [x + U, 2.2 * U - COINS[k as Coin].mm * 0.8, "up"];
+            if (isCoin(k)) {
+                coin(c, x + U, 2.2 * U, k);
+                a[`piece(${i})`] = [x + U, 2.2 * U - COINS[k].mm * 0.8, "up"];
             } else {
                 note(c, Number(k), x, 1.1 * U);
                 a[`piece(${i})`] = [x + (NOTE_W / 2) * U, 1.1 * U, "up"];

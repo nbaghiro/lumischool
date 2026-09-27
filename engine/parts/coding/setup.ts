@@ -27,8 +27,12 @@ export const nums = (v: unknown): number[] =>
 export const numOf = (v: unknown, d: number): number =>
     typeof v === "number" && Number.isFinite(v) ? v : d;
 
-export const dirOf = (v: unknown): Dir =>
-    (DIRS as readonly string[]).includes(String(v)) ? (String(v) as Dir) : "right";
+const isDir = (v: unknown): v is Dir => DIRS.some((d) => d === v);
+
+export const dirOf = (v: unknown): Dir => {
+    const s = String(v);
+    return isDir(s) ? s : "right";
+};
 
 /** The drawings that run a program, and the setting each keeps its program in. */
 export const RUNS: Record<string, string> = {

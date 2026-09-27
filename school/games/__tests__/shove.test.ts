@@ -27,10 +27,7 @@ test("every penny shove level's amount can be made on the felt in no more pieces
     for (const L of SHOVE_LEVELS) {
         const made = handfuls(L.drawer).some((h) => {
             const n = Object.values(h).reduce((a, b) => a + b, 0),
-                total = Object.entries(h).reduce(
-                    (sum, [k, c]) => sum + WORTH[k as (typeof SHOVE_KINDS)[number]] * c,
-                    0,
-                );
+                total = SHOVE_KINDS.reduce((sum, k) => sum + WORTH[k] * (h[k] ?? 0), 0);
             return total === targetOf(L) && n <= L.most;
         });
         assert.ok(made, `${L.title} cannot be made`);
@@ -45,10 +42,7 @@ test("a felt filled with any handful from the drawer makes the amount at most on
         const wins = all.filter(
             (h) =>
                 Object.values(h).reduce((a, b) => a + b, 0) <= L.most &&
-                Object.entries(h).reduce(
-                    (sum, [k, c]) => sum + WORTH[k as (typeof SHOVE_KINDS)[number]] * c,
-                    0,
-                ) === targetOf(L),
+                SHOVE_KINDS.reduce((sum, k) => sum + WORTH[k] * (h[k] ?? 0), 0) === targetOf(L),
         );
         assert.ok(wins.length / all.length <= 0.2, `${L.title}: ${wins.length} of ${all.length}`);
     }
@@ -319,4 +313,13 @@ test("the felt's count of pieces is drawn in whole rings, not dashed ones", asyn
         rings = shove.frame(s).marks.filter((m) => m.kind === "ring");
     assert.equal(rings.length, s.L.most);
     assert.ok(rings.every((m) => m.kind === "ring" && m.solid === true && !m.on));
+});
+
+test("a shove through the shared aim is as fast as the pull is long, and a short one says how short", async () => {
+    const { shoveOf, SHOVE } = await import("../shove");
+    const full = shoveOf({ x: -SHOVE.pull.value, y: 0 });
+    assert.ok(Math.abs(full.x - SHOVE.speed.value) < 1e-9 && Math.abs(full.y) < 1e-9);
+    const half = shoveOf({ x: 0, y: SHOVE.pull.value / 2 });
+    assert.ok(Math.abs(half.y + SHOVE.speed.value / 2) < 1e-9);
+    assert.deepEqual(shoveOf({ x: 0, y: 0 }), { x: 0, y: 0 });
 });

@@ -2,7 +2,7 @@ import { type Ctx, type RawAnchors } from "../../ink/surface";
 import { roundedRect, type Fill } from "../../ink/pen";
 import { SKIN, U } from "../../paper";
 import { defineDrawing } from "../drawing";
-import { placePerson, type PersonParams } from "../people/figure";
+import { DRESSED, placePerson, type PersonParams } from "../people/figure";
 
 type Pt = [number, number];
 
@@ -14,6 +14,7 @@ const CHILD: PersonParams = {
     colour: "brown",
     top: "sky",
     wear: "trousers",
+    ...DRESSED,
     glasses: false,
     hearing: "none",
     aid: "none",

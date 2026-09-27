@@ -18,7 +18,10 @@ const STEP_DIR: Pt[] = [
 const MAP_PAD = 3.2;
 
 function mapPoints(p: { heading: string; turns: string[]; stops: string[]; step: number }): Pt[] {
-    let dir = Math.max(0, HEADINGS.indexOf(p.heading as (typeof HEADINGS)[number]));
+    let dir = Math.max(
+        0,
+        HEADINGS.findIndex((h) => h === p.heading),
+    );
     const pts: Pt[] = [[0, 0]];
     const n = p.stops.length;
     for (let k = 0; k <= n; k++) {

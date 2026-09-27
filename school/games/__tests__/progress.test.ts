@@ -1,18 +1,18 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { it } from "node:test";
-import { isGameAttempt, type GameAttempt } from "../../../engine/answer";
+import { gameRulesVersion, isGameAttempt, type GameAttempt } from "../../../engine/answer";
 import { gameProgress } from "../progress";
 const attempt = (n: number): GameAttempt => ({
     id: randomUUID(),
     challenge: {
         id: `test-${n}`,
-        game: "pour",
+        game: "rule",
         phase: 0,
         seed: n,
         source: "generated",
         generatorVersion: "pool-1",
-        rulesVersion: "games-1",
+        rulesVersion: gameRulesVersion("rule"),
         configuration: { target: n },
         difficulty: { version: "initial-1", band: 1, reasoning: 1, motor: 0, content: 1 },
         validation: { method: "search", version: "1" },

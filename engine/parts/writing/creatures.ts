@@ -6,8 +6,8 @@ import { loop } from "../marks";
 
 type Pt = [number, number];
 
-const markerOf = (s: string): Marker =>
-    ["sky", "mint", "berry", "tang", "glow"].includes(s) ? (s as Marker) : "sky";
+const isMarker = (s: string): s is Marker => MARKERS.some((m) => m === s);
+const markerOf = (s: string): Marker => (isMarker(s) ? s : "sky");
 
 const SLOT = 7;
 

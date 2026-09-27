@@ -1,6 +1,6 @@
 import { type Ctx, type RawAnchors } from "../../ink/surface";
 import { type Fill } from "../../ink/pen";
-import { U } from "../../paper";
+import { U, type Marker } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { cap, penned, say } from "../lettering";
 import { type Pt } from "./optics";
@@ -8,19 +8,19 @@ import { type Pt } from "./optics";
 /** The colours out of a prism, from the least bent to the most, with the letter each is written as. */
 export const SPECTRUM = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"] as const;
 
-const BAND: Record<(typeof SPECTRUM)[number], { fill: string }> = {
-    red: { fill: "#E5534B" },
-    orange: { fill: "tang" },
-    yellow: { fill: "glow" },
-    green: { fill: "mint" },
-    blue: { fill: "sky" },
-    indigo: { fill: "#6F79D6" },
-    violet: { fill: "#A47AD8" },
+const BAND: Record<(typeof SPECTRUM)[number], { hex: string } | { marker: Marker }> = {
+    red: { hex: "#E5534B" },
+    orange: { marker: "tang" },
+    yellow: { marker: "glow" },
+    green: { marker: "mint" },
+    blue: { marker: "sky" },
+    indigo: { hex: "#6F79D6" },
+    violet: { hex: "#A47AD8" },
 };
 
 /** A band's fill: its colour on screen, and on paper a hatch at its own angle so neighbours stay apart. */
 function bandFill<G>(c: Ctx<G>, i: number): Fill {
-    const f = BAND[SPECTRUM[i] ?? "red"].fill;
+    const b = BAND[SPECTRUM[i] ?? "red"];
     if (c.paper)
         return {
             fill: c.t.ink,
@@ -29,9 +29,7 @@ function bandFill<G>(c: Ctx<G>, i: number): Fill {
             hachureGap: 4.5,
             fillWeight: 0.7,
         };
-    return f.startsWith("#")
-        ? { fill: f, fillStyle: "solid" }
-        : c.pen.fill(f as "tang" | "glow" | "mint" | "sky");
+    return "hex" in b ? { fill: b.hex, fillStyle: "solid" } : c.pen.fill(b.marker);
 }
 
 export const prism = defineDrawing({

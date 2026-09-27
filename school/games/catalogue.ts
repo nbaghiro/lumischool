@@ -1,28 +1,21 @@
-import type { Round } from "./games";
-import type { Ctx } from "./hands";
-import { spellHands } from "./spell-hands";
 import { rallyGame } from "./rally";
 import { golfGame } from "./golf";
-// Every game, in the order the Games tab shows them, grouped by how each one plays.
-//
-// Two mechanics are played as puzzles from a tray of moves, because the question in them is which
-// move to make: which number to feed the machine, and which sound goes in the next box. The rule
-// machine is drawn as a machine the balls and cards can also be put into (rule-hands.ts), and stays a
-// puzzle because doing so changes none of the thinking. Nine are played by hand, three of them
-// rebuilt that way first (the balance, the yard and the race), five after (the number line, the
-// till, the plates, the jugs, and the straight, which is the race one lane deep), and shut the box,
-// a dice game built for the hand from the start. Three are action games. Every turn game still has
-// its tray, which is the keyboard path and the one a screen reader reads, and every level of every
-// turn game is gated by the prover. See .docs/games.md.
-import { ACTIVITIES, type Listed } from "./activities";
-import { puzzle, type Game, type TurnLevel } from "./game";
+import { clearGame } from "./clear";
+import { bridgeGame } from "./bridge";
+import { blocksGame } from "./blocks";
+import { wardrobeGame } from "./wardrobe";
+// Every game, in the order the Games tab shows them, grouped by how each one plays. The hands-on
+// games are played by moving things on a board, with a tray that is the keyboard path and the one a
+// screen reader reads, and every level of them is gated by the prover; the action games are played
+// through the pad. See .docs/games.md.
+import { ACTIVITIES } from "./activities";
+import type { Game } from "./game";
 import { rabbitGame } from "./rabbit";
 import { shoveGame } from "./shove";
 import { pourGame } from "./pour-hands";
-import { ruleGame } from "./rule-hands";
-import { raceGame } from "./race-hands";
+import { ruleGame } from "./rule";
 import { rowGame } from "./row";
-import { castGame } from "./cast";
+import { fishingGame } from "./fishing";
 import { raftsGame } from "./rafts";
 import { planeGame } from "./plane";
 import { roadGame } from "./road";
@@ -32,43 +25,9 @@ import { slingGame } from "./sling";
 import { snakeGame } from "./snake";
 import { shutGame } from "./shut-hands";
 import { seesawGame } from "./seesaw";
-import { cargoGame, marbleGame } from "./workshops";
-
-const activity = (kind: string): Listed => {
-    const a = ACTIVITIES.find((x) => x.kind === kind);
-    if (!a) throw new Error(`no activity plays ${kind}`);
-    return a;
-};
-
-/** The levels of a listed activity. The titles do not say the version's values, because for these two the values are the answer. */
-const listedLevels = (a: Listed, titles: string[]): TurnLevel[] =>
-    a.versions.map((_, i) => ({
-        title: titles[i] ?? `Level ${i + 1}`,
-        grades: a.grades,
-        round: () => a.round(i),
-    }));
-
-const spelling = puzzle({
-    id: "spell",
-    title: "Spell the picture",
-    hint: "Tap a sound or drag it into a box. Move sounds between boxes, or return one to the tray.",
-    cover: { art: "soundboxes", params: { boxes: 3, filled: ["sh", "i", "p"], counters: false } },
-    levels: listedLevels(activity("spell"), [
-        "Three sounds",
-        "Three sounds, four letters",
-        "Four sounds",
-        "Four sounds, and a choice",
-    ]),
-    ends: {
-        won: "That is how it is spelled.",
-        stuck: "Every box is full. Move a sound or take one out.",
-    },
-});
-
-export const spellGame = {
-    ...spelling,
-    open: (round: Round, ctx: Ctx) => spellHands(round.start, ctx),
-};
+import { cargoGame } from "./workshops";
+import { marbleGame } from "./marble";
+import { trainGame } from "./train";
 
 /**
  * Every game. Adding one is one entry here: the picker groups the list by each game's `group` and
@@ -77,13 +36,12 @@ export const spellGame = {
 export const GAMES: Game[] = [
     cargoGame,
     marbleGame,
-    spellGame,
+    trainGame,
     ruleGame,
     rabbitGame,
     rowGame,
     yardGame,
     pourGame,
-    raceGame,
     shutGame,
     slingGame,
     seesawGame,
@@ -92,14 +50,24 @@ export const GAMES: Game[] = [
     snakeGame,
     roadGame,
     raftsGame,
-    castGame,
+    fishingGame,
     planeGame,
     golfGame,
     rallyGame,
+    bridgeGame,
+    blocksGame,
+    wardrobeGame,
+    clearGame,
 ];
 
+/** Retired games, by id, and the game an old address that names one opens instead. */
+const RETIRED: Partial<Record<string, string>> = { race: "rally" };
+
 /** A game by its id, as `?g=` names it. */
-export const gameById = (id: string | null): Game | undefined => GAMES.find((g) => g.id === id);
+export const gameById = (id: string | null): Game | undefined => {
+    const wanted = (id === null ? undefined : RETIRED[id]) ?? id;
+    return GAMES.find((g) => g.id === wanted);
+};
 
 /**
  * The game and level an activity's version is played at, for an address that names an activity by

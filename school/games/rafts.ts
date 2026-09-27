@@ -12,7 +12,9 @@ import type { Pt } from "../../engine/motion/geometry";
 import { knob } from "../../engine/motion/tune";
 import { bodies, type Bodies, type Body } from "../../engine/motion/bodies";
 import type { Pad } from "../../engine/motion/pad";
-import type { Frame, Happening, Mark, Sprite } from "../../engine/motion/scene";
+import type { Frame, Happening, Mark, Sprite, Water } from "../../engine/motion/scene";
+import { arrive, blend, separate } from "../../engine/motion/steer";
+import { surfaceAt } from "../../engine/motion/surface";
 import type { ActionGame, ActionLevel, Levels } from "./game";
 
 /** A raft on the river: where its middle is tied, how long it is in whole squares, and the number on its flag. */
@@ -216,6 +218,17 @@ export const RIVER = {
     x0: 9,
     x1: 40,
 } as const;
+/** The river as it is drawn and as the rafts float on it: a slow current and small waves. */
+const STREAM: Water = {
+    x: RIVER.x0,
+    w: RIVER.x1 - RIVER.x0,
+    level: RIVER.surface,
+    bottom: RIVER.world.h,
+    // waves low enough that a loaded raft still comes to rest, so a count can be judged
+    waves: 0.02,
+    flow: 0.35,
+    hue: "sky",
+};
 /** The raft drawing's deck and keel in squares down its box, from engine/parts/travel/raft.ts; a test holds them together. */
 export const RAFT_LINES = { deck: 4, keel: 5, box: 5 } as const;
 const THICK = RAFT_LINES.keel - RAFT_LINES.deck;
@@ -296,6 +309,8 @@ export interface RaftsState {
     carried: number[];
     /** Whether the round has said why a sheep slid off, which it says once. */
     taught: boolean;
+    /** Rings on the river where something broke it, `age` seconds ago. */
+    ripples: { x: number; age: number; size: number }[];
 }
 
 const bankSpot = (i: number): Pt => {
@@ -395,7 +410,16 @@ export function startRaftLevel(L: RaftLevel, level = 0): RaftsState {
         landed: 0,
         carried: [],
         taught: false,
+        ripples: [],
     };
+}
+
+/** The river now, with its ripples, as the rafts float on it and the page draws it. */
+const riverOf = (s: RaftsState): Water => ({ ...STREAM, ripples: s.ripples });
+const clockOf = (s: RaftsState): number => s.steps * DT;
+
+function ripple(s: RaftsState, x: number, size: number): void {
+    s.ripples.push({ x, age: 0, size });
 }
 
 function tell(s: RaftsState, text: string): void {
@@ -487,6 +511,7 @@ export function judge(L: RaftLevel, on: number[], bank: number): { right: boolea
 }
 
 function floatRafts(s: RaftsState): void {
+    const river = STREAM;
     for (const r of s.rafts) {
         const p = s.world.where(r.body),
             v = s.world.velocity(r.body),
@@ -496,7 +521,10 @@ function floatRafts(s: RaftsState): void {
             const along = side * Math.min(RAFTS.spread.value, r.w / 2),
                 below = THICK / 2;
             const at = { x: p.x + along * c - below * sn, y: p.y + along * sn + below * c };
-            const depth = Math.max(0, Math.min(1.6, at.y - RIVER.surface));
+            // the water under each end is where the drawn waves put it now; the ripples are only drawn,
+            // since a raft rocked by the ring its own sheep made would never let a count settle
+            const surface = surfaceAt(river, at.x, clockOf(s)),
+                depth = Math.max(0, Math.min(1.6, at.y - surface));
             s.world.pushAt(r.body, { x: 0, y: -RAFTS.float.value * r.w * depth }, at);
         }
         const m = RAFT_DENSITY * r.w * THICK;
@@ -606,6 +634,7 @@ function toRiver(s: RaftsState, sh: Sheep, x: number, out: Happening[], words: s
     sh.t = 0;
     s.moved = true;
     out.push({ cue: "splash" }, { burst: { kind: "splash", x: sh.at.x, y: RIVER.surface, n: 8 } });
+    ripple(s, sh.at.x, 1);
     if (!s.won) tell(s, words);
 }
 
@@ -621,13 +650,33 @@ function walkHome(s: RaftsState, sh: Sheep, from: Pt): void {
 function moveSheep(s: RaftsState, sh: Sheep, out: Happening[]): void {
     switch (sh.on) {
         case "bank": {
-            const spot = bankSpot(Math.max(0, s.flock.indexOf(sh.id))),
-                dx = spot.x - sh.at.x,
-                dy = spot.y - sh.at.y,
-                d = Math.hypot(dx, dy),
-                go = Math.min(d, 4 * DT);
-            if (d > 0.001) sh.at = { x: sh.at.x + (dx / d) * go, y: sh.at.y + (dy / d) * go };
+            const k = Math.max(0, s.flock.indexOf(sh.id)),
+                spot = bankSpot(k);
             sh.angle = 0;
+            if (k === 0) {
+                // the front sheep waits exactly where a pull starts
+                const dx = spot.x - sh.at.x,
+                    dy = spot.y - sh.at.y,
+                    d = Math.hypot(dx, dy),
+                    go = Math.min(d, 4 * DT);
+                if (d > 0.001) sh.at = { x: sh.at.x + (dx / d) * go, y: sh.at.y + (dy / d) * go };
+                return;
+            }
+            // the rest of the flock mills about their places, drifting a little and keeping apart
+            const t = clockOf(s),
+                drift = {
+                    x: spot.x + 0.35 * Math.sin(t * 0.6 + sh.id * 1.7),
+                    y: spot.y + 0.12 * Math.sin(t * 0.9 + sh.id * 2.3),
+                },
+                others = s.sheep.filter((o) => o !== sh && o.on === "bank").map((o) => o.at),
+                v = blend([
+                    [arrive(sh.at, drift, 4, 0.8), 1],
+                    [separate(sh.at, others, 0.95, 1.5), 1],
+                ]);
+            sh.at = {
+                x: Math.min(RIVER.x0 - 0.6, sh.at.x + v.x * DT),
+                y: Math.min(FRONT.y, sh.at.y + v.y * DT),
+            };
             return;
         }
         case "held":
@@ -675,6 +724,7 @@ function moveSheep(s: RaftsState, sh: Sheep, out: Happening[]): void {
             ) {
                 const rv = s.world.velocity(raft.body);
                 sh.landed = true;
+                ripple(s, s.world.where(raft.body).x, 0.35);
                 s.world.launch(sh.body, { x: rv.x + (v.x - rv.x) * 0.25, y: v.y }, 0);
             }
             // Up on a back, or wedged high, however it is being moved: the row makes room under it, and if that fails it walks off.
@@ -710,8 +760,10 @@ function moveSheep(s: RaftsState, sh: Sheep, out: Happening[]): void {
                 go = Math.sign(dx) * Math.min(Math.abs(dx), 5 * DT);
             sh.at = { x: sh.at.x + go, y: RIVER.surface + 0.3 + 0.07 * Math.sin(sh.t * 7) };
             sh.angle = 0.05 * Math.sin(sh.t * 5);
-            if (Math.floor(sh.t * 1.25) !== Math.floor((sh.t - DT) * 1.25))
+            if (Math.floor(sh.t * 1.25) !== Math.floor((sh.t - DT) * 1.25)) {
                 out.push({ burst: { kind: "splash", x: sh.at.x + 0.6, y: RIVER.surface, n: 2 } });
+                ripple(s, sh.at.x + 0.6, 0.3);
+            }
             if (Math.abs(dx) < 0.02)
                 walkHome(s, sh, { x: RIVER.x0 - 0.5, y: RIVER.bank - SHEEP.h / 2 });
             return;
@@ -930,6 +982,7 @@ function finish(s: RaftsState, out: Happening[]): void {
 export function step(s: RaftsState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
+    s.ripples = s.ripples.map((r) => ({ ...r, age: r.age + DT })).filter((r) => r.age < 2.2);
     if (!s.won) {
         hands(s, pad, out);
         keys(s, pad, out);
@@ -944,6 +997,7 @@ export function step(s: RaftsState, pad: Pad): Happening[] {
             r.leant = true;
             const low = turned(q, q.angle, (Math.sign(q.angle) * r.w) / 2, 0);
             out.push({ burst: { kind: "splash", x: low.x, y: RIVER.surface, n: 4 } });
+            ripple(s, low.x, 0.6);
         } else if (r.leant && tilt < RAFTS.lean.value * 0.5) r.leant = false;
     }
     for (const sh of s.sheep) moveSheep(s, sh, out);
@@ -1101,20 +1155,6 @@ export function frame(s: RaftsState, _rest = false): Frame {
             still: true,
         },
     );
-    const deep = Math.ceil(W.h - RIVER.surface + 1);
-    for (let x0 = RIVER.x0; x0 < RIVER.x1; x0 += 17) {
-        const across = Math.min(17, RIVER.x1 - x0);
-        sprites.push({
-            key: `river:${x0}`,
-            art: "sea",
-            params: { across, deep, x0, bed: true },
-            seed: 70 + x0,
-            x: x0 + across / 2,
-            y: RIVER.surface - 0.5 + deep / 2,
-            z: 5,
-            still: true,
-        });
-    }
     const c = counts(s);
     for (const [i, r] of s.rafts.entries()) {
         const p = s.world.where(r.body),
@@ -1232,6 +1272,8 @@ export function frame(s: RaftsState, _rest = false): Frame {
         camera: { x: W.w / 2, y: W.h / 2, zoom: 1 },
         view: { ...RIVER.view },
         world: { ...W },
+        time: clockOf(s),
+        water: [riverOf(s)],
     };
 }
 
@@ -1260,9 +1302,9 @@ export const raftsGame: ActionGame<RaftsState> = {
     id: "herd",
     title: "Rafts",
     group: "action",
+    quiet: true,
     levels: RAFT_LEVELS,
     rate: RATE,
-    bleed: true,
     touch: true,
     cover: { art: "raft", params: { part: "raft", w: 9, flag: "5" } },
     hint: "Pull the front sheep back and let go to jump it onto a raft, or aim with the arrow keys and press space",

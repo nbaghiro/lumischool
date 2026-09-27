@@ -11,7 +11,7 @@ export const gearTurns = (
     turn: number,
 ): { way: 1 | -1; times: number }[] =>
     teeth.map((t, i) => ({
-        way: ((i % 2 === 0 ? 1 : -1) * (turn >= 0 ? 1 : -1)) as 1 | -1,
+        way: (i % 2 === 0) === turn >= 0 ? 1 : -1,
         times: (teeth[0] ?? t) / t,
     }));
 

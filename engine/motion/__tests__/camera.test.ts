@@ -16,6 +16,8 @@ test("the view stays inside the world, and a world narrower than the view is cen
     assert.deepEqual(keepInside({ x: 30, y: 12 }, view, world), { x: 30, y: 12 });
     assert.deepEqual(keepInside({ x: 3, y: 3 }, view, { w: 12, h: 6 }), { x: 6, y: 3 });
     assert.deepEqual(keepInside({ x: 0, y: 0 }, view, world, 1 / 3), { x: 30, y: 15 });
+    // a side-on world shorter than the view stands on the view's foot, with the room above it
+    assert.deepEqual(keepInside({ x: 3, y: 3 }, view, { w: 12, h: 6 }, 1, true), { x: 6, y: 1 });
 });
 
 test("it looks ahead of a moving thing, but only so far", () => {

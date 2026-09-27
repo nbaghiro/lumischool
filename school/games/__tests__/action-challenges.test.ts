@@ -10,7 +10,6 @@ import { emptyPad, spent } from "../../../engine/motion/pad";
 import * as road from "../road";
 import * as row from "../row";
 import * as plane from "../plane";
-import { glide, drive } from "../../../engine/motion/stroke";
 
 const families: [ActionKind, number][] = [
     ["road", 2],
@@ -66,53 +65,22 @@ test("all six road targets can be reached by acceleration, braking and lane cont
         }
 });
 
-function arrival(s: row.RowState, speed: number): number {
-    let x = s.x,
-        v = speed;
-    for (let t = 0; t < 60; t += 0.05) {
-        const g = glide(v, 0.05, row.ROW.water.value, s.L.current);
-        if (x < s.L.target && x + g.moved >= s.L.target) return g.v - s.L.current;
-        if (g.v - s.L.current < 0.02) return 0;
-        x += g.moved;
-        v = g.v;
-    }
-    return 0;
-}
-function stroke(s: row.RowState, length: number, gap: number) {
-    const pad = emptyPad();
-    if (length > 0) {
-        pad.go = true;
-        pad.tapped = true;
-    } else if (length < 0) pad.holding.push("left");
-    for (let i = 0; i < Math.round(Math.abs(length) * row.ROW.hold.value * 60) && !s.won; i++) {
-        row.step(s, pad);
-        spent(pad);
-    }
-    for (let i = 0; i < Math.max(1, Math.round(gap * 60)) && !s.won; i++) row.step(s, emptyPad());
-}
-test("all eighteen rowing distances have full normal-input stroke witnesses", () => {
-    for (let phase = 0; phase < 6; phase++)
+test("every river layout opens as another stretch of its level, with the same count and the same number to stop beside", () => {
+    for (let phase = 0; phase < row.RIVER_LEVELS.length; phase++) {
+        const base = row.RIVER_LEVELS[phase];
+        const seen = new Set<string>();
         for (let seed = 0; seed < 3; seed++) {
             const config = actionChallenge(seed, "row", phase);
-            if (config.kind !== "row") continue;
-            const s = row.startRowLevel(config.level, phase),
-                gentle = row.ROW.gentle.value,
-                r = row.rhythmOf();
-            for (let n = 0; n < 100 && !s.won; n++) {
-                const now = arrival(s, s.v);
-                if (now > 0 && now <= gentle) {
-                    stroke(s, 0, 1);
-                    continue;
-                }
-                const soft = Array.from({ length: 20 }, (_, i) => (i + 1) / 20).find((l) => {
-                    const a = arrival(s, drive(s.v, l, "in time", r));
-                    return a > 0.15 && a <= gentle * 0.8;
-                });
-                stroke(s, soft ?? (now > gentle ? -0.5 : 1), 0.8);
-            }
-            for (let n = 0; n < 60 * 30 && !s.won; n++) row.step(s, emptyPad());
-            assert.ok(s.won, `${phase}/${seed}: ${s.x} towards ${s.L.target}`);
+            assert.ok(isActionConfiguration(config));
+            if (config.kind !== "row" || !base) continue;
+            assert.deepEqual(config.level.count, base.count);
+            assert.equal(config.level.dock, base.dock);
+            seen.add(JSON.stringify([config.level.sides, config.level.bends]));
+            const s = openActionConfiguration(config);
+            assert.ok("boat" in s && s.next === 0);
         }
+        assert.equal(seen.size, 3, `phase ${phase} has three different stretches`);
+    }
 });
 
 test("all twelve plane courses win using only climb and dive controls, without teleporting", () => {

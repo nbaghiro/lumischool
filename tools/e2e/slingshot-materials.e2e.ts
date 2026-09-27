@@ -1,6 +1,5 @@
 import { expect, type Page } from "@playwright/test";
 import { test } from "./steps";
-import { start } from "../../school/games/sling";
 
 async function keyboardShot(page: Page): Promise<void> {
     for (let turn = 0; turn < 5; turn++) await page.keyboard.press("ArrowDown", { delay: 40 });
@@ -30,36 +29,24 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
             path: `/tmp/slingshot-materials-${info.project.name}-${input.replaceAll(" ", "-")}-before.png`,
         });
         if (input === "pointer") {
-            // Transform the authored pouch and legal pull through the rendered, grown viewport.
-            // The browser receives ordinary pointer events; no live game state is accessed or changed.
-            const state = start(2),
-                box = await field.boundingBox();
-            if (!box) throw new Error("Missing sling field");
-            const transform = await field.evaluate((element) => {
-                const paper = element.querySelector(".field-paper");
-                if (!paper) throw new Error("Missing fitted paper");
-                const matrix = new DOMMatrix(getComputedStyle(paper).transform);
-                return {
-                    square: parseFloat(getComputedStyle(element).getPropertyValue("--sq")),
-                    a: matrix.a,
-                    d: matrix.d,
-                    x: matrix.e,
-                    y: matrix.f,
-                };
-            });
-            const point = (x: number, y: number) => ({
-                x: box.x + transform.x + x * transform.square * transform.a,
-                y: box.y + transform.y + y * transform.square * transform.d,
-            });
-            const begin = point(state.L.pouch.x, state.L.pouch.y),
-                angle = (10 * Math.PI) / 180;
-            const end = point(
-                state.L.pouch.x - Math.cos(angle) * 4.5,
-                state.L.pouch.y + Math.sin(angle) * 4.5,
-            );
+            // Press on the loaded ball as it is drawn and pull back past the sling's longest pull
+            // at ten degrees; the game clamps a pull to its longest, so the shot does not depend on
+            // the field's scale. The browser receives ordinary pointer events.
+            const ball = await page.locator('[data-key="loaded:0"]').boundingBox();
+            const field = await page.locator(".field").boundingBox();
+            if (!ball || !field) throw new Error("Missing the loaded ball");
+            const begin = { x: ball.x + ball.width / 2, y: ball.y + ball.height / 2 },
+                angle = (10 * Math.PI) / 180,
+                far = Math.min(begin.x - field.x - 4, 400);
             await page.mouse.move(begin.x, begin.y);
             await page.mouse.down();
-            await page.mouse.move(end.x, end.y, { steps: 12 });
+            await page.mouse.move(
+                begin.x - Math.cos(angle) * far,
+                begin.y + Math.sin(angle) * far,
+                {
+                    steps: 12,
+                },
+            );
             await page.mouse.up();
         } else await keyboardShot(page);
         const another = page.getByRole("button", { name: "Play another", exact: true });
@@ -80,3 +67,39 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
         await expect(another).toBeVisible();
     });
 }
+
+test("stone wall: hard throws with the keys break the wall and knock both stars down", async ({
+    page,
+}) => {
+    await page.goto("/games?g=sling&v=3");
+    await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
+    // the aim starts at 35 degrees and a pull of 3; each arrow turns it 5 degrees or pulls half a square
+    let aim = { deg: 35, pull: 3 };
+    const another = page.getByRole("button", { name: "Play another", exact: true });
+    // every certified wall falls to one of these pairs of throws (school/games/__tests__/sling-materials.test.ts)
+    const throws = [
+        [15, 4.5],
+        [5, 4.5],
+        [30, 3.5],
+        [15, 4],
+        [25, 4],
+        [10, 4.5],
+    ] as const;
+    for (const [deg, pull] of throws) {
+        if (await another.isVisible()) break;
+        while (aim.deg !== deg) {
+            await page.keyboard.press(aim.deg > deg ? "ArrowDown" : "ArrowUp", { delay: 30 });
+            aim = { ...aim, deg: aim.deg + (aim.deg > deg ? -5 : 5) };
+        }
+        while (aim.pull !== pull) {
+            await page.keyboard.press(aim.pull > pull ? "ArrowLeft" : "ArrowRight", { delay: 30 });
+            aim = { ...aim, pull: aim.pull + (aim.pull > pull ? -0.5 : 0.5) };
+        }
+        await page.keyboard.press("Enter");
+        await expect(another.or(page.locator('[data-key="loaded:0"]'))).toBeVisible({
+            timeout: 20_000,
+        });
+        await page.waitForTimeout(400);
+    }
+    await expect(another).toBeVisible({ timeout: 20_000 });
+});

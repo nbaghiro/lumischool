@@ -1,9 +1,18 @@
 import { configurationKey } from "../../engine/motion/configuration";
 import { HOP_LEVELS, hopsTo, start, type HopLevel, type HopState } from "./rabbit";
 
+/** Where the logs start along their drift, in seconds, for each layout of a level with logs. */
+const LOG_STARTS = [0, 1.3, 2.6];
+
 export function rabbitConfigurations(phase: number): HopLevel[] {
     const base = HOP_LEVELS[phase];
     if (!base) return [];
+    const logs = base.logs;
+    if (logs)
+        return LOG_STARTS.map((d) => ({
+            ...base,
+            logs: logs.map((g) => ({ ...g, phase: (g.phase ?? 0) + d })),
+        }));
     return base.stones
         .filter((target) => !base.sinking.includes(target) && (phase !== 1 || target < 0))
         .map((target) => ({

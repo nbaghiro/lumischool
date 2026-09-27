@@ -5,14 +5,19 @@
 // longest hop, so reaching the carrot means hops that add up from stone to stone. A landing near a
 // stone's edge wobbles, nearer still it tips the rabbit in, and a rabbit in the water swims back to the
 // last stone still standing. Dark stones sink as the rabbit hops off them. The camera is close in and
-// follows the rabbit along the stream, looking towards the carrot. See .docs/games.md.
+// follows the rabbit along the stream, looking towards the carrot. On the later levels logs drift
+// along the stream, carrying a rabbit that lands on one, so a gap wider than any hop is crossed by
+// timing a hop onto a passing log and judging the hop off it from wherever it has drifted to. See
+// .docs/games.md.
 import { follow, keepInside, type Cam } from "../../engine/motion/camera";
 import { arc, flightAt, lob } from "../../engine/motion/flight";
 import type { Pt } from "../../engine/motion/geometry";
+import { moverAt, type Path } from "../../engine/motion/mover";
 import { knob } from "../../engine/motion/tune";
 import type { Pad } from "../../engine/motion/pad";
 import type { Frame, Happening, Mark, Sprite } from "../../engine/motion/scene";
 import type { ActionGame, ActionLevel, Levels } from "./game";
+import { BEYOND, ground } from "./scenery";
 
 export interface HopLevel extends ActionLevel {
     from: number;
@@ -32,6 +37,8 @@ export interface HopLevel extends ActionLevel {
     /** Seconds of a hop drawn in dots while it is aimed. */
     preview: number;
     prompt: string;
+    /** Logs drifting there and back along the stream: between two numbers, how long, how fast in units a second, and how far along they start, in seconds. */
+    logs?: { from: number; to: number; w: number; speed: number; phase?: number }[];
 }
 
 export const HOP_LEVELS: Levels<HopLevel> = [
@@ -130,6 +137,43 @@ export const HOP_LEVELS: Levels<HopLevel> = [
         tick: 5,
         labels: 50,
         preview: 0.2,
+    },
+    {
+        title: "Ride the log",
+        grades: [2, 3],
+        goal: "Hop onto the drifting log, ride it, and hop off to the carrot on 16.",
+        prompt: "The gap is too wide to hop. Hop onto the log as it drifts near.",
+        from: 0,
+        to: 20,
+        start: 0,
+        target: 16,
+        stones: [0, 2, 16, 18, 20],
+        sinking: [],
+        most: 5.5,
+        tick: 1,
+        labels: 1,
+        preview: 0.35,
+        logs: [{ from: 4, to: 12, w: 3, speed: 1.6 }],
+    },
+    {
+        title: "Two logs",
+        grades: [3, 4],
+        goal: "Hop from log to log to the carrot on 45.",
+        prompt: "Two logs drift at different speeds. Only 0, 10, 20 and so on are written.",
+        from: 0,
+        to: 50,
+        start: 0,
+        target: 45,
+        stones: [0, 5, 45, 50],
+        sinking: [],
+        most: 12.5,
+        tick: 5,
+        labels: 10,
+        preview: 0.25,
+        logs: [
+            { from: 13, to: 24, w: 6, speed: 4 },
+            { from: 28, to: 38, w: 6, speed: 5, phase: 1.5 },
+        ],
     },
 ];
 
@@ -273,6 +317,9 @@ export interface HopState {
     phase: Phase;
     /** The stone the rabbit stands on, or took off from. */
     stone: number;
+    /** The log the rabbit rides, or -1, and how far along it from its middle, in squares. */
+    log: number;
+    logAt: number;
     /** The stones it has stood on, in order, back to the start; a swim back takes it to the last of them still standing. */
     path: number[];
     /** Where its feet are. */
@@ -312,6 +359,8 @@ export function start(level: number): HopState {
         L,
         phase: "sit",
         stone,
+        log: -1,
+        logAt: 0,
         path: [stone],
         at,
         facing: L.target >= L.start ? 1 : -1,
@@ -347,6 +396,28 @@ const wanted = (s: HopState): Cam => {
     const towards = xOf(s.L, s.L.target) - s.at.x;
     return { x: s.at.x + Math.max(-7, Math.min(7, towards * 0.5)), y: STREAM.surface - 1, zoom: 1 };
 };
+
+/** A log's way along the stream, in squares, at the height a rabbit sits. */
+export function logPath(L: HopLevel, k: number): Path | null {
+    const g = L.logs?.[k];
+    if (!g) return null;
+    return {
+        points: [
+            { x: xOf(L, g.from), y: TOP },
+            { x: xOf(L, g.to), y: TOP },
+        ],
+        speed: g.speed * perOf(L),
+        mode: "bounce",
+        ...(g.phase ? { phase: g.phase } : {}),
+    };
+}
+
+/** Where each log's middle is at a step, in squares. Time is the steps taken, so a replay agrees. */
+export const logsAt = (s: HopState): number[] =>
+    (s.L.logs ?? []).map((_, k) => {
+        const p = logPath(s.L, k);
+        return p ? moverAt(p, s.steps * DT).at.x : 0;
+    });
 
 function tell(s: HopState, text: string): void {
     s.said = text;
@@ -386,6 +457,7 @@ function hopWith(s: HopState, units: number, out: Happening[]): void {
     s.aim = null;
     s.keyHeld = false;
     s.trail = [];
+    s.log = -1;
     out.push({ cue: "lift" });
     if (L.sinking.includes(L.stones[s.stone] ?? NaN) && !s.sunk[s.stone]) {
         s.sunk[s.stone] = true;
@@ -494,6 +566,7 @@ function land(s: HopState, i: number, out: Happening[]): void {
 
 function intoWater(s: HopState, out: Happening[], text: string): void {
     s.phase = "fall";
+    s.log = -1;
     s.flight = { from: { ...s.at }, v: { x: s.facing * 1.5, y: 1 }, T: 0, t: 0, x: s.at.x };
     s.dips++;
     tell(s, text);
@@ -510,6 +583,11 @@ export function step(s: HopState, pad: Pad): Happening[] {
         keys(s, pad, out);
     }
     s.squash *= Math.exp(-12 * DT);
+    // a rabbit on a log goes where the log goes
+    if (s.log >= 0 && (s.phase === "sit" || s.phase === "held")) {
+        const x = logsAt(s)[s.log];
+        if (x !== undefined) s.at = { x: x + s.logAt, y: TOP };
+    }
     s.depth = s.depth.map((d, i) => d + ((s.sunk[i] ? 1 : 0) - d) * Math.min(1, 2.5 * DT));
     const f = s.flight;
     switch (s.phase) {
@@ -520,6 +598,22 @@ export function step(s: HopState, pad: Pad): Happening[] {
             if (s.steps % 3 === 0) s.trail.push({ ...s.at, step: s.steps });
             if (f.t < f.T) break;
             s.at = { x: f.x, y: TOP };
+            const logs = logsAt(s),
+                onto = logs.findIndex(
+                    (x, k) => Math.abs(f.x - x) <= ((L.logs?.[k]?.w ?? 0) * perOf(L)) / 2,
+                );
+            if (onto >= 0) {
+                s.phase = "sit";
+                s.log = onto;
+                s.logAt = f.x - (logs[onto] ?? f.x);
+                s.squash = 0.25;
+                tell(s, "On the log.");
+                out.push(
+                    { cue: "place" },
+                    { burst: { kind: "splash", x: f.x, y: STREAM.surface, n: 4 } },
+                );
+                break;
+            }
             const where = landingAt(L, f.x, standing(s));
             s.landing = where;
             if (where.kind === "stand") land(s, where.stone, out);
@@ -681,30 +775,16 @@ export function frame(s: HopState, rest = false): Frame {
             z: 1,
             still: true,
         },
-        {
-            key: "ground:near",
-            art: "arcade.ground",
-            params: { w: STREAM.x0 },
-            seed: 61,
-            x: STREAM.x0 / 2,
-            y: STREAM.bank + 1.1,
-            z: 2,
-            still: true,
-        },
-        {
-            key: "ground:far",
-            art: "arcade.ground",
-            params: { w: W.w - STREAM.x1 },
-            seed: 62,
-            x: (STREAM.x1 + W.w) / 2,
-            y: STREAM.bank + 1.1,
-            z: 2,
-            still: true,
-        },
+    );
+    // the banks run on past the world's ends, and the stream runs under them, so a field wider than
+    // the world shows water under the grass rather than bare paper
+    sprites.push(
+        ...ground("ground:near", -BEYOND, STREAM.x0, STREAM.bank, 3.5, 61),
+        ...ground("ground:far", STREAM.x1, W.w + BEYOND, STREAM.bank, 3.5, 62),
     );
     const deep = Math.ceil(W.h - STREAM.surface + 1);
-    for (let x0 = STREAM.x0; x0 < STREAM.x1; x0 += 17) {
-        const across = Math.min(17, STREAM.x1 - x0);
+    for (let x0 = -BEYOND; x0 < W.w + BEYOND; x0 += 17) {
+        const across = Math.min(17, W.w + BEYOND - x0);
         sprites.push({
             key: `stream:${x0}`,
             art: "sea",
@@ -754,6 +834,21 @@ export function frame(s: HopState, rest = false): Frame {
             stand: true,
             z: d > 0.3 ? 4.5 : 6,
             alpha: 1 - 0.7 * d,
+        });
+    });
+    logsAt(s).forEach((x, k) => {
+        const w = (L.logs?.[k]?.w ?? 3) * perOf(L);
+        sprites.push({
+            key: `log:${k}`,
+            art: "log",
+            params: { rings: 5, toadstools: 0 },
+            // the log drawing's trunk, without the leaves it lies in
+            crop: { x: 0, y: 1.2, w: 10, h: 3 },
+            size: w,
+            seed: 30 + k,
+            x,
+            y: TOP + (w * 0.3) / 2 - 0.15,
+            z: 5.5,
         });
     });
     if (!s.won)
@@ -864,12 +959,15 @@ const spoken = (n: number) => (n < 0 ? `minus ${-n}` : String(n));
 export function say(s: HopState): string {
     const L = s.L,
         here = spoken(L.stones[s.stone] ?? L.start);
+    const unitsAt = (x: number) => Math.round((L.from + (x - xOf(L, L.from)) / perOf(L)) * 2) / 2;
     const where =
-        s.phase === "sit" || s.phase === "held"
-            ? `on the stone at ${here}`
-            : s.phase === "fall" || s.phase === "swim"
-              ? "in the water, swimming back"
-              : "hopping";
+        s.log >= 0 && (s.phase === "sit" || s.phase === "held")
+            ? `on a log, at about ${spoken(unitsAt(s.at.x))}`
+            : s.phase === "sit" || s.phase === "held"
+              ? `on the stone at ${here}`
+              : s.phase === "fall" || s.phase === "swim"
+                ? "in the water, swimming back"
+                : "hopping";
     const up = L.stones.filter((_, i) => !s.sunk[i]).map(spoken),
         down = L.stones.filter((_, i) => s.sunk[i]).map(spoken);
     const parts = [
@@ -879,6 +977,7 @@ export function say(s: HopState): string {
         `Stones stand at ${up.join(", ")}.`,
         down.length ? `The stones at ${down.join(", ")} have sunk.` : "",
         `The longest hop is ${L.most}.`,
+        ...logsAt(s).map((x) => `A log drifts at about ${spoken(unitsAt(x))}.`),
     ];
     if (s.aim !== null && s.phase === "sit")
         parts.push(
@@ -891,9 +990,9 @@ export const rabbitGame: ActionGame<HopState> = {
     id: "jump",
     title: "Rabbit crossing",
     group: "action",
+    quiet: true,
     levels: HOP_LEVELS,
     rate: RATE,
-    bleed: true,
     touch: true,
     cancelInput: (s) => {
         s.hand = null;

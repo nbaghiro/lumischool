@@ -4,12 +4,13 @@
 // is a setting and never a separate drawing, so any line-up a lesson draws can hold any child. The
 // drawing itself is person.ts; the kit and its rules are in .docs/shelf.md.
 import { Pen, type Fill, type PenOptions } from "../../ink/pen";
-import { group, part, plain, type Ctx, type RawAnchors } from "../../ink/surface";
+import { clip, group, part, plain, type Ctx, type RawAnchors } from "../../ink/surface";
 import {
     HAIR,
     HAIR_COLOURS,
     MARKERS,
     SKIN,
+    U,
     type HairColour,
     type Level,
     type Marker,
@@ -31,6 +32,9 @@ export const HAIRS = [
     "bob",
     "bald",
     "scarf",
+    "fringe",
+    "ponytail",
+    "bunches",
 ] as const;
 export type Hair = (typeof HAIRS)[number];
 export const POSES = [
@@ -43,6 +47,8 @@ export const POSES = [
     "sit",
     "walk",
     "run",
+    "balance",
+    "jump",
 ] as const;
 export type Pose = (typeof POSES)[number];
 export const AGES = ["child", "grownup", "older"] as const;
@@ -51,7 +57,30 @@ export const AIDS = ["none", "wheelchair", "crutches", "cane"] as const;
 export type Aid = (typeof AIDS)[number];
 export const HEARING = ["none", "aid", "implant"] as const;
 export type Hearing = (typeof HEARING)[number];
-export const WEAR = ["trousers", "dress"] as const;
+export const WEAR = ["trousers", "dress", "skirt", "shorts"] as const;
+export type Wear = (typeof WEAR)[number];
+/** What clothes are made in: the five markers, and white. */
+export const CLOTH = ["sky", "mint", "berry", "tang", "glow", "white"] as const;
+export type Cloth = (typeof CLOTH)[number];
+/** Trousers and leggings are grey unless they say otherwise, so the top and the face stay the loud things. */
+export const BOTTOMS = ["grey", ...CLOTH] as const;
+export type Bottom = (typeof BOTTOMS)[number];
+export const SLEEVES = ["long", "short", "none"] as const;
+export type Sleeves = (typeof SLEEVES)[number];
+/** A small picture on the front of a top. */
+export const PRINTS = ["none", "bear", "star", "heart", "flower"] as const;
+export type Print = (typeof PRINTS)[number];
+/**
+ * What a skirt, shorts or a dress is patterned with. A rainbow is decoration and not a category, so it
+ * may carry all five markers where a thing otherwise carries two, and on paper it prints as its lines.
+ */
+export const PATTERNS = ["plain", "stripes", "rainbow", "spots"] as const;
+export type Pattern = (typeof PATTERNS)[number];
+export const FEET = ["shoes", "bare", "boots"] as const;
+export type Feet = (typeof FEET)[number];
+/** Legs under a dress, a skirt or shorts: in leggings, or bare. */
+export const LEGS = ["covered", "bare"] as const;
+export type Legs = (typeof LEGS)[number];
 
 /**
  * Heights above the ground and half-widths, in drawing units. A child's head is a quarter of their
@@ -128,7 +157,13 @@ export interface PersonParams {
     hair: string;
     colour: string;
     top: string;
+    sleeves: string;
+    print: string;
     wear: string;
+    bottom: string;
+    pattern: string;
+    legs: string;
+    feet: string;
     glasses: boolean;
     hearing: string;
     aid: string;
@@ -137,6 +172,16 @@ export interface PersonParams {
     dir: number;
     holding: string;
 }
+
+/** The clothes a person wears when a setting says nothing else: what every person wore before clothes were settings. */
+export const DRESSED = {
+    sleeves: "long",
+    print: "none",
+    bottom: "grey",
+    pattern: "plain",
+    legs: "covered",
+    feet: "shoes",
+} as const satisfies Partial<PersonParams>;
 
 export const pick = <T extends string>(list: readonly T[], v: string, fallback: T): T =>
     list.find((x) => x === v) ?? fallback;
@@ -156,8 +201,16 @@ export interface Look {
     tone: number;
     hair: Hair;
     colour: HairColour;
-    top: Marker;
+    top: Cloth;
+    sleeves: Sleeves;
+    print: Print;
+    wear: Wear;
+    /** A dress's hem, or a skirt's: the legs start below it and a stride parts under it. */
     dress: boolean;
+    bottom: Bottom;
+    pattern: Pattern;
+    bare: boolean;
+    feet: Feet;
     glasses: boolean;
     hearing: Hearing;
     aid: Aid;
@@ -168,14 +221,22 @@ export interface Look {
 export function lookOf(p: PersonParams): Look {
     const age = pick(AGES, p.age, "child");
     const hair = pick(HAIRS, p.hair, "short");
+    const wear = pick(WEAR, p.wear, "trousers");
     return {
         age,
         b: BUILD[age],
         tone: p.tone,
         hair,
         colour: pick(HAIR_COLOURS, p.colour, "brown"),
-        top: markerOf(p.top),
-        dress: p.wear === "dress",
+        top: pick(CLOTH, p.top, "sky"),
+        sleeves: pick(SLEEVES, p.sleeves, "long"),
+        print: pick(PRINTS, p.print, "none"),
+        wear,
+        dress: wear === "dress" || wear === "skirt",
+        bottom: pick(BOTTOMS, p.bottom, "grey"),
+        pattern: pick(PATTERNS, p.pattern, "plain"),
+        bare: wear !== "trousers" && p.legs === "bare",
+        feet: pick(FEET, p.feet, "shoes"),
         glasses: p.glasses,
         hearing: hair === "scarf" ? "none" : pick(HEARING, p.hearing, "none"),
         aid: pick(AIDS, p.aid, "none"),
@@ -210,11 +271,21 @@ function hairFill<G>(c: Ctx<G>, colour: HairColour): Fill {
  */
 const bottoms = <G>(c: Ctx<G>): Fill => ({ fill: c.t.grid, fillStyle: "solid" });
 
+/** A garment's fill: a marker as its colour or its hatch, white as the card, grey as the leggings are. */
+export const cloth = <G>(c: Ctx<G>, v: Bottom): Fill =>
+    v === "grey" ? bottoms(c) : c.pen.fill(v === "white" ? "card" : v);
+
+/** The marker a second thing worn takes its colour beside, for a top that is white. */
+const markerOfCloth = (v: Cloth): Marker => markerOf(v === "white" ? "berry" : v);
+
+/** What the legs are drawn in below a hem: leggings, or skin. */
+const legFill = <G>(c: Ctx<G>, look: Look): Fill => (look.bare ? skin(c, look.tone) : bottoms(c));
+
 /**
  * A figure is drawn with one stroke to a line and the pen's wobble turned down, as the lantern mark
  * is: at a figure's size the shelf's double pencil line turns a sleeve or a cheek into fur.
  */
-const calm = <G>(c: Ctx<G>, strokeWidth: number) => ({
+export const calm = <G>(c: Ctx<G>, strokeWidth: number) => ({
     strokeWidth,
     roughness: 0.6 * c.pen.o.roughness,
     bowing: 0.8 * c.pen.o.roughness,
@@ -222,7 +293,7 @@ const calm = <G>(c: Ctx<G>, strokeWidth: number) => ({
     preserveVertices: true,
 });
 /** One stroke, with its corners kept where they are drawn so a single line closes. */
-const FIRM = { disableMultiStroke: true, preserveVertices: true } as const;
+export const FIRM = { disableMultiStroke: true, preserveVertices: true } as const;
 
 /** The outline of a limb of half-width w along a polyline: mitred joints and a round end at each end. */
 function limb(pts: Pt[], w: number, ends: [boolean, boolean] = [true, false]): Pt[] {
@@ -257,7 +328,7 @@ function limb(pts: Pt[], w: number, ends: [boolean, boolean] = [true, false]): P
 }
 
 /** A path through points with the corners rounded, for a body that should not look cut out. */
-function soft(pts: Pt[], round = 0.35): string {
+export function soft(pts: Pt[], round = 0.35): string {
     const n = pts.length;
     let d = "";
     for (let i = 0; i < n; i++) {
@@ -294,7 +365,31 @@ function hairBehind<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look):
     const { pen, g } = c,
         f = hairFill(c, look.colour),
         o = calm(c, 1.6);
-    if (look.hair === "long") {
+    if (look.hair === "ponytail" || look.hair === "bunches") {
+        const tie = c.pen.fill(beside(markerOfCloth(look.top), 1));
+        const tails = look.hair === "ponytail" ? [-look.dir] : [-1, 1];
+        for (const s of tails) {
+            const rx = x + s * r * 0.92,
+                ry = cy - r * (look.hair === "ponytail" ? 0.72 : 0.3);
+            const tip: Pt = [
+                rx + s * r * (look.hair === "ponytail" ? 0.72 : 0.62),
+                cy + r * (look.hair === "ponytail" ? 1.55 : 1.45),
+            ];
+            pen.path(
+                g,
+                `M${rx - s * r * 0.08} ${ry - r * 0.24}Q${rx + s * r * 0.95} ${ry + r * 0.2} ${tip[0] + s * r * 0.2} ${tip[1]}` +
+                    `Q${tip[0] - s * r * 0.2} ${tip[1] + r * 0.3} ${tip[0] - s * r * 0.38} ${tip[1] - r * 0.12}` +
+                    `Q${rx + s * r * 0.36} ${ry + r * 0.62} ${rx - s * r * 0.1} ${ry + r * 0.26}Z`,
+                "pencil",
+                f,
+                o,
+            );
+            pen.ellipse(g, rx + s * r * 0.08, ry, r * 0.36, r * 0.46, "ruler", tie, {
+                strokeWidth: 1,
+                ...FIRM,
+            });
+        }
+    } else if (look.hair === "long" || look.hair === "fringe") {
         pen.path(
             g,
             `M${x - r * 1.02} ${cy - r * 0.35}Q${x - r * 1.32} ${cy + r * 0.9} ${x - r * 1.24} ${cy + r * 2.2}Q${x - r * 0.6} ${cy + r * 2.36} ${x} ${cy + r * 2.14}` +
@@ -363,7 +458,7 @@ function hairBehind<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look):
                 r * 0.4,
                 r * 0.18,
                 "ruler",
-                c.pen.fill(beside(look.top, 1)),
+                c.pen.fill(beside(markerOfCloth(look.top), 1)),
                 { strokeWidth: 1, ...FIRM },
             );
             pen.path(
@@ -384,7 +479,7 @@ function scarfDrape<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look):
         `M${x - r * 1.16} ${cy - r * 0.1}Q${x - r * 1.3} ${cy + r * 1.2} ${x - r * 1.55} ${cy + r * 2.05}Q${x} ${cy + r * 2.45} ${x + r * 1.55} ${cy + r * 2.05}` +
             `Q${x + r * 1.3} ${cy + r * 1.2} ${x + r * 1.16} ${cy - r * 0.1}A${r * 1.18} ${r * 1.22} 0 0 0 ${x - r * 1.16} ${cy - r * 0.1}Z`,
         "pencil",
-        c.pen.fill(beside(look.top)),
+        c.pen.fill(beside(markerOfCloth(look.top))),
         calm(c, 1.6),
     );
 }
@@ -395,7 +490,7 @@ function scarfHood<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look): 
         c.g,
         `M${x - r * 1.18} ${cy + r * 0.95}Q${x - r * 1.34} ${cy - r * 0.65} ${x} ${cy - r * 1.26}Q${x + r * 1.34} ${cy - r * 0.65} ${x + r * 1.18} ${cy + r * 0.95}Q${x} ${cy + r * 1.55} ${x - r * 1.18} ${cy + r * 0.95}Z`,
         "pencil",
-        c.pen.fill(beside(look.top)),
+        c.pen.fill(beside(markerOfCloth(look.top))),
         calm(c, 1.6),
     );
 }
@@ -499,7 +594,9 @@ function hairOver<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look): v
             break;
         case "puffs":
         case "bun":
-        case "braids": {
+        case "braids":
+        case "ponytail":
+        case "bunches": {
             const s = at(r * 1.03, Math.PI * 1.03);
             pen.path(
                 g,
@@ -521,9 +618,34 @@ function hairOver<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look): v
                     r * 0.6,
                     r * 0.14,
                     "ruler",
-                    c.pen.fill(beside(look.top, 1)),
+                    c.pen.fill(beside(markerOfCloth(look.top), 1)),
                     { strokeWidth: 1, ...FIRM },
                 );
+            break;
+        }
+        case "fringe": {
+            // the cap, then a fringe cut straight across the brow in five soft points
+            const s0 = at(r * 1.08, Math.PI * 1.02);
+            let d = `${arcOver(r * 1.08, Math.PI * 1.02, Math.PI * 1.98)}`;
+            const edge = cy - r * 0.34;
+            for (let k = 0; k <= 5; k++) {
+                const px = x + r * 1.02 - (k / 5) * r * 2.04;
+                d += `Q${px + r * 0.2} ${edge - r * 0.1} ${px} ${edge + (k % 2 ? 0 : r * 0.08)}`;
+            }
+            d += `L${s0[0]} ${s0[1]}Z`;
+            pen.path(g, d, "pencil", f, o);
+            strands([
+                [
+                    [x - r * 0.35, cy - r * 0.95],
+                    [x - r * 0.4, cy - r * 0.65],
+                    [x - r * 0.42, cy - r * 0.4],
+                ],
+                [
+                    [x + r * 0.25, cy - r * 0.95],
+                    [x + r * 0.3, cy - r * 0.65],
+                    [x + r * 0.32, cy - r * 0.4],
+                ],
+            ]);
             break;
         }
         case "long":
@@ -586,14 +708,21 @@ function hairOver<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look): v
     }
 }
 
-const showsEars = (hair: Hair) => hair !== "long" && hair !== "bob" && hair !== "scarf";
+const showsEars = (hair: Hair) =>
+    hair !== "long" && hair !== "fringe" && hair !== "bob" && hair !== "scarf";
+/** Hair that hangs down the back is drawn before the body, so the shoulders lie over it. */
+const down = (hair: Hair) => hair === "long" || hair === "fringe";
+/** Hair that swings loose moves as a part of its own: long hair, a ponytail, bunches and braids. */
+const loose = (hair: Hair) =>
+    down(hair) || hair === "ponytail" || hair === "bunches" || hair === "braids";
 
 /** A head: the ears, the face in its tone, the hair, the features for a mood, and what is worn on it. */
 function head<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look, drape: () => void): void {
     const { pen, g } = c,
         t = skin(c, look.tone),
         w = featureWeight(look.tone, 1.3);
-    if (look.hair !== "long") hairBehind(c, x, cy, r, look);
+    if (!down(look.hair))
+        hairBehind(loose(look.hair) ? part(c, "hair", [x, cy - r]) : c, x, cy, r, look);
     drape();
     const earSide = -look.dir;
     const ears = showsEars(look.hair) ? [-1, 1] : look.hearing !== "none" ? [earSide] : [];
@@ -891,7 +1020,8 @@ type ArmKey =
     | "pump"
     | "drive"
     | "raise"
-    | "race";
+    | "race"
+    | "out";
 
 /** Where an arm on side s bends and ends, from the shoulder, for each thing an arm can do. */
 function armPoints(
@@ -952,6 +1082,10 @@ function armPoints(
             const E: Pt = [S[0] + s * ua * 0.55, S[1] + ua * 0.8];
             return [E, [E[0] + s, E[1] - fa * 0.8]];
         }
+        case "out": {
+            const E: Pt = [S[0] + s * ua * 0.95, S[1] + 2];
+            return [E, [E[0] + s * fa * 0.95, E[1] - fa * 0.2]];
+        }
         case "race": {
             const H: Pt = o.wheel ?? [S[0], S[1] + ua + fa],
                 away = H[0] < S[0] ? 1 : -1;
@@ -970,7 +1104,7 @@ function top<G>(
     look: Look,
     lean = 0,
 ): void {
-    const flare = look.dress ? 7 : 1,
+    const flare = look.wear === "dress" ? 7 : 1,
         u = x + lean;
     const pts: Pt[] = [
         [x - b.hw - flare, hemY],
@@ -983,7 +1117,18 @@ function top<G>(
         [u + b.sw + 0.5 - lean * 0.2, shoulderY + 7],
         [x + b.hw + flare, hemY],
     ];
-    c.pen.path(c.g, soft(pts, 0.32), "pencil", c.pen.fill(look.top), calm(c, 1.7));
+    if (look.wear === "dress")
+        garment(
+            c,
+            soft(pts, 0.32),
+            look,
+            look.top,
+            shoulderY,
+            hemY,
+            x - b.hw - flare,
+            x + b.hw + flare,
+        );
+    else c.pen.path(c.g, soft(pts, 0.32), "pencil", cloth(c, look.top), calm(c, 1.7));
     c.pen.curve(
         c.g,
         [
@@ -996,40 +1141,215 @@ function top<G>(
     );
 }
 
-const shoe = <G>(c: Ctx<G>, cx: number, cy: number, w: number) =>
-    c.pen.ellipse(
-        c.g,
-        cx,
-        cy,
-        w,
-        5.2,
-        "ruler",
-        { fill: c.t.ink, fillStyle: "solid" },
-        { strokeWidth: 1.1, ...FIRM },
+/**
+ * A garment's shape filled, patterned inside its own outline, and inked over the pattern. A rainbow
+ * leaves the card under it on paper, so it prints as the lines between its bands.
+ */
+export function garment<G>(
+    c: Ctx<G>,
+    d: string,
+    look: Look,
+    colour: Bottom,
+    from: number,
+    to: number,
+    left: number,
+    right: number,
+): void {
+    const { pen, g } = c,
+        o = calm(c, 1.7);
+    if (look.pattern === "plain") {
+        pen.path(g, d, "pencil", cloth(c, colour), o);
+        return;
+    }
+    const ground: Bottom = look.pattern === "rainbow" && c.paper ? "white" : colour;
+    pen.path(g, d, "pencil", cloth(c, ground), { ...o, stroke: "none" });
+    const k = clip(c, { kind: "path", d });
+    const line = { strokeWidth: 0.8, stroke: c.paper ? c.t.ink : c.t["ink-soft"], ...FIRM };
+    if (look.pattern === "spots") {
+        const dot = colour === "white" ? c.pen.fill("berry") : c.pen.fill("card");
+        for (let y = from + 2.5, row = 0; y < to + 2; y += 4.6, row++)
+            for (let px = left + (row % 2 ? 2.3 : 0); px < right + 2; px += 4.6)
+                k.pen.circle(k.g, px, y, 2.4, "ruler", dot, { ...line, strokeWidth: 0.6 });
+    } else {
+        const bands: Bottom[] =
+            look.pattern === "rainbow"
+                ? ["berry", "tang", "glow", "mint", "sky"]
+                : [colour, colour === "white" ? "sky" : "white"];
+        const h = look.pattern === "rainbow" ? 4 : 3;
+        for (let y = from, i = 0; y < to + h; y += h, i++) {
+            const band = bands[i % bands.length] ?? colour;
+            if (!c.paper || look.pattern === "stripes")
+                k.pen.rect(k.g, left - 2, y, right - left + 4, h, "ruler", cloth(k, band), {
+                    strokeWidth: 0,
+                    stroke: "none",
+                    ...FIRM,
+                });
+            if (i > 0) k.pen.line(k.g, left - 2, y, right + 2, y, "ruler", line);
+        }
+    }
+    pen.path(g, d, "pencil", null, o);
+}
+
+/** A skirt from the waist to above the knee, flaring, over the top's hem; on a lap it drapes forward. */
+function skirt<G>(
+    c: Ctx<G>,
+    x: number,
+    hipY: number,
+    base: number,
+    b: Build,
+    look: Look,
+    seated: boolean,
+): void {
+    const waist = hipY - 1.5,
+        s = look.dir;
+    const pts: Pt[] = seated
+        ? [
+              [x - s * (b.hw + 1), waist],
+              [x + s * (b.hw + 1), waist],
+              [x + s * (b.hw + b.seat * 0.5), hipY + 4],
+              [x + s * (b.hw + b.seat * 0.4), hipY + 10],
+              [x - s * (b.hw + 2), hipY + 9],
+          ]
+        : [
+              [x - b.hw - 0.5, waist],
+              [x + b.hw + 0.5, waist],
+              [x + b.hw + 6.5, base - b.hip * 0.5],
+              [x - b.hw - 6.5, base - b.hip * 0.5],
+          ];
+    const xs = pts.map((p) => p[0]),
+        ys = pts.map((p) => p[1]);
+    const skirted = part(c, "skirt", [x, waist]);
+    garment(
+        skirted,
+        soft(pts, 0.18),
+        look,
+        look.bottom,
+        Math.min(...ys),
+        Math.max(...ys),
+        Math.min(...xs),
+        Math.max(...xs),
     );
+    skirted.pen.line(skirted.g, x - b.hw, waist + 2, x + b.hw, waist + 2, "ruler", {
+        strokeWidth: 0.9,
+        ...FIRM,
+    });
+}
+
+/** Shorts from the waist to the middle of the thigh, parted between the legs. */
+function shorts<G>(c: Ctx<G>, x: number, hipY: number, base: number, b: Build, look: Look): void {
+    const waist = hipY - 2,
+        hem = base - b.hip * 0.6,
+        w = b.hw + 1.2;
+    const pts: Pt[] = [
+        [x - b.hw, waist],
+        [x + b.hw, waist],
+        [x + w, hem],
+        [x + 1.2, hem],
+        [x, hipY + 5],
+        [x - 1.2, hem],
+        [x - w, hem],
+    ];
+    garment(c, soft(pts, 0.14), look, look.bottom, waist, hem, x - w, x + w);
+}
+
+/** A foot: a shoe, a bare foot in the person's tone, or a welly boot up the ankle. */
+function foot<G>(c: Ctx<G>, look: Look, cx: number, cy: number, w: number): void {
+    const { pen, g } = c,
+        o = { strokeWidth: 1.1, ...FIRM };
+    if (look.feet === "bare") {
+        pen.ellipse(g, cx, cy + 0.4, w * 0.82, 4.4, "ruler", skin(c, look.tone), o);
+        return;
+    }
+    if (look.feet === "boots") {
+        const boot = c.pen.fill(look.top === "glow" ? "tang" : "glow");
+        pen.rect(g, cx - w * 0.3, cy - 9, w * 0.6, 9, "ruler", boot, o);
+        pen.ellipse(g, cx, cy, w, 5.2, "ruler", boot, o);
+        return;
+    }
+    pen.ellipse(g, cx, cy, w, 5.2, "ruler", { fill: c.t.ink, fillStyle: "solid" }, o);
+}
+
+/** What a foot seen from the side is filled with. */
+const footFill = <G>(c: Ctx<G>, look: Look): Fill =>
+    look.feet === "bare"
+        ? skin(c, look.tone)
+        : look.feet === "boots"
+          ? c.pen.fill(look.top === "glow" ? "tang" : "glow")
+          : { fill: c.t.ink, fillStyle: "solid" };
+
+/** A small picture on the front of a top, `s` across its middle; flat on paper so it reads in ink. */
+export function printOn<G>(c: Ctx<G>, look: Look, cx: number, cy: number, s: number): void {
+    if (look.print === "none") return;
+    const { pen, g } = c,
+        o = { strokeWidth: 0.9, ...FIRM };
+    const ink = (m: Marker): Fill => (c.paper ? c.pen.fill("card") : c.pen.fill(m));
+    const dot = (px: number, py: number, rr: number) =>
+        plain(c, { kind: "circle", cx: px, cy: py, r: rr, fill: c.t.ink });
+    if (look.print === "bear") {
+        const face = ink(look.top === "berry" ? "tang" : "berry");
+        for (const k of [-1, 1])
+            pen.circle(g, cx + k * s * 0.72, cy - s * 0.66, s * 0.78, "ruler", face, o);
+        pen.circle(g, cx, cy, s * 2, "ruler", face, o);
+        pen.ellipse(g, cx, cy + s * 0.34, s * 0.9, s * 0.6, "ruler", c.pen.fill("card"), {
+            ...o,
+            strokeWidth: 0.8,
+        });
+        for (const k of [-1, 1]) dot(cx + k * s * 0.38, cy - s * 0.14, s * 0.13);
+        dot(cx, cy + s * 0.24, s * 0.12);
+        if (!c.paper)
+            for (const [dx, dy, m] of [
+                [-1.7, -1.1, "sky"],
+                [1.75, -0.9, "mint"],
+                [-1.85, 0.7, "tang"],
+                [1.6, 1.0, "sky"],
+                [-0.3, -1.75, "glow"],
+            ] as const)
+                plain(c, {
+                    kind: "circle",
+                    cx: cx + dx * s,
+                    cy: cy + dy * s,
+                    r: s * 0.16,
+                    fill: c.t[m],
+                });
+    } else if (look.print === "star") {
+        const pts: Pt[] = Array.from({ length: 10 }, (_, i) => {
+            const a = -Math.PI / 2 + (i * Math.PI) / 5,
+                rr = i % 2 ? s * 0.45 : s * 1.05;
+            return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
+        });
+        pen.polygon(g, pts, "ruler", ink(look.top === "glow" ? "tang" : "glow"), o);
+    } else if (look.print === "heart") {
+        pen.path(
+            g,
+            `M${cx} ${cy + s * 0.95}C${cx - s * 1.5} ${cy - s * 0.1} ${cx - s * 0.7} ${cy - s * 1.2} ${cx} ${cy - s * 0.35}C${cx + s * 0.7} ${cy - s * 1.2} ${cx + s * 1.5} ${cy - s * 0.1} ${cx} ${cy + s * 0.95}Z`,
+            "ruler",
+            ink(look.top === "berry" ? "sky" : "berry"),
+            o,
+        );
+    } else {
+        const petal = ink(look.top === "glow" ? "berry" : "glow");
+        for (let i = 0; i < 5; i++) {
+            const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+            pen.circle(
+                g,
+                cx + Math.cos(a) * s * 0.62,
+                cy + Math.sin(a) * s * 0.62,
+                s * 0.8,
+                "ruler",
+                petal,
+                o,
+            );
+        }
+        pen.circle(g, cx, cy, s * 0.6, "ruler", ink("tang"), o);
+    }
+}
 
 function standingLegs<G>(c: Ctx<G>, x: number, base: number, b: Build, look: Look): void {
     const hipY = base - b.hip,
         ank = base - 4.5,
         g2 = b.gap,
         L = b.leg;
-    if (look.dress) {
-        for (const s of [-1, 1])
-            c.pen.polygon(
-                c.g,
-                limb(
-                    [
-                        [x + s * (g2 + L), base - b.hip * 0.62],
-                        [x + s * (g2 + L * 0.95), ank],
-                    ],
-                    L * 0.82,
-                    [false, false],
-                ),
-                "pencil",
-                bottoms(c),
-                calm(c, 1.4),
-            );
-    } else {
+    if (look.wear === "trousers") {
         c.pen.path(
             c.g,
             soft(
@@ -1045,15 +1365,81 @@ function standingLegs<G>(c: Ctx<G>, x: number, base: number, b: Build, look: Loo
                 0.12,
             ),
             "pencil",
-            bottoms(c),
+            cloth(c, look.bottom),
             calm(c, 1.6),
         );
+    } else {
+        const from = look.dress ? base - b.hip * 0.62 : hipY + 2;
+        for (const s of [-1, 1])
+            c.pen.polygon(
+                c.g,
+                limb(
+                    [
+                        [x + s * (g2 + L), from],
+                        [x + s * (g2 + L * 0.95), ank],
+                    ],
+                    L * 0.82,
+                    [false, false],
+                ),
+                "pencil",
+                legFill(c, look),
+                calm(c, 1.4),
+            );
     }
-    for (const s of [-1, 1]) shoe(c, x + s * (g2 + L + 1.2), base - 2.6, L * 2 + 3.5);
+    for (const s of [-1, 1]) foot(c, look, x + s * (g2 + L + 1.2), base - 2.6, L * 2 + 3.5);
 }
 
-function seatedLegs<G>(c: Ctx<G>, x: number, base: number, hipY: number, b: Build): void {
-    const { pen, g } = c;
+/** Legs in the air, knees up and toes pointed, for a jump; the figure is already lifted off its feet. */
+function jumpLegs<G>(c: Ctx<G>, x: number, base: number, b: Build, look: Look): void {
+    const { pen, g } = c,
+        s0 = look.dir,
+        L = b.leg,
+        hipY = base - b.hip;
+    const from = look.dress ? base - b.hip * 0.62 : hipY + 1;
+    for (const s of [-1, 1]) {
+        const hx = x + s * (b.gap + L),
+            H: Pt = [hx, from],
+            K: Pt = [hx + s * 2.5 + s0 * 3, base - b.hip * 0.38],
+            A: Pt = [hx + s * 1.5 - s0 * 2, base - 3];
+        const fill = look.wear === "trousers" ? cloth(c, look.bottom) : legFill(c, look);
+        pen.polygon(
+            g,
+            limb([H, K, A], look.wear === "trousers" ? L + 0.3 : L * 0.82, [true, false]),
+            "pencil",
+            fill,
+            calm(c, 1.5),
+        );
+        pen.polygon(
+            g,
+            limb(
+                [
+                    [A[0] - s0 * 1.2, A[1] - 1],
+                    [A[0] + s0 * 3.5, A[1] + 3],
+                ],
+                2.6,
+                [true, true],
+            ),
+            "ruler",
+            footFill(c, look),
+            { strokeWidth: 1.1, ...FIRM },
+        );
+    }
+}
+
+function seatedLegs<G>(
+    c: Ctx<G>,
+    x: number,
+    base: number,
+    hipY: number,
+    b: Build,
+    look: Look,
+): void {
+    const { pen, g } = c,
+        lower = look.wear === "trousers" ? cloth(c, look.bottom) : legFill(c, look),
+        thigh =
+            look.wear === "trousers" || look.wear === "shorts"
+                ? cloth(c, look.bottom)
+                : legFill(c, look);
     for (const s of [-1, 1]) {
         const kx = x + s * (b.gap + b.leg + 0.8);
         pen.polygon(
@@ -1063,18 +1449,18 @@ function seatedLegs<G>(c: Ctx<G>, x: number, base: number, hipY: number, b: Buil
                     [kx, hipY + 5],
                     [kx + s * 0.6, base - 4.5],
                 ],
-                b.leg,
+                look.wear === "trousers" ? b.leg : b.leg * 0.85,
                 [false, false],
             ),
             "pencil",
-            bottoms(c),
+            lower,
             calm(c, 1.5),
         );
-        pen.ellipse(g, kx, hipY + 4, b.leg * 2.3, b.leg * 1.9, "ruler", bottoms(c), {
+        pen.ellipse(g, kx, hipY + 4, b.leg * 2.3, b.leg * 1.9, "ruler", thigh, {
             strokeWidth: 1.4,
             ...FIRM,
         });
-        shoe(c, kx + s * 1.8, base - 2.6, b.leg * 2 + 3.5);
+        foot(c, look, kx + s * 1.8, base - 2.6, b.leg * 2 + 3.5);
     }
 }
 
@@ -1094,8 +1480,9 @@ function strideLegs<G>(
     const { pen, g } = c,
         s = look.dir,
         h = b.hip,
-        w = look.dress ? b.leg * 0.82 : b.leg + 0.3;
+        w = look.wear === "trousers" ? b.leg + 0.3 : b.leg * 0.82;
     const top = hipY + (look.dress ? h * 0.3 : -1);
+    const fill = look.wear === "trousers" ? cloth(c, look.bottom) : legFill(c, look);
     // hip, knee, ankle, and the way the foot points from the ankle; the leg behind is drawn first
     const legs: [Pt, Pt, Pt, Pt][] = run
         ? [
@@ -1127,7 +1514,18 @@ function strideLegs<G>(
               ],
           ];
     for (const [H, K, A, t] of legs) {
-        pen.polygon(g, limb([H, K, A], w, [true, false]), "pencil", bottoms(c), calm(c, 1.6));
+        pen.polygon(g, limb([H, K, A], w, [true, false]), "pencil", fill, calm(c, 1.6));
+        if (look.feet === "boots")
+            pen.polygon(
+                g,
+                limb([[K[0] + (A[0] - K[0]) * 0.55, K[1] + (A[1] - K[1]) * 0.55], A], w + 0.8, [
+                    true,
+                    false,
+                ]),
+                "ruler",
+                footFill(c, look),
+                { strokeWidth: 1.1, ...FIRM },
+            );
         const n = Math.hypot(t[0], t[1]),
             u: Pt = [t[0] / n, t[1] / n],
             len = b.leg * 2 + 3;
@@ -1136,7 +1534,7 @@ function strideLegs<G>(
             g,
             limb([heel, [heel[0] + u[0] * len, heel[1] + u[1] * len]], 2.7, [true, true]),
             "ruler",
-            { fill: c.t.ink, fillStyle: "solid" },
+            footFill(c, look),
             { strokeWidth: 1.1, ...FIRM },
         );
     }
@@ -1150,7 +1548,7 @@ function strideLegs<G>(
 export function figure<G>(
     c: Ctx<G>,
     x: number,
-    base: number,
+    floor: number,
     look: Look,
     pose: Pose,
     holding: string,
@@ -1162,6 +1560,9 @@ export function figure<G>(
         s0 = look.dir;
     const racing = pose === "run" && look.aid === "wheelchair";
     const seated = pose === "sit" || look.aid === "wheelchair";
+    const jumping = pose === "jump" && !seated && look.aid === "none";
+    // a jump lifts the whole figure off the floor it stands on; the feet anchor stays on the floor
+    const base = jumping ? floor - b.hip * 0.3 : floor;
     const striding = !seated && (pose === "walk" || pose === "run");
     const a: RawAnchors = {};
     const hipH = racing
@@ -1186,7 +1587,7 @@ export function figure<G>(
     const shoulderY = base - (b.shoulder + lift) + stoop,
         hipY = base - hipH,
         headY = base - (b.head + lift) + stoop;
-    const hemY = look.dress && !seated ? base - b.hip * 0.6 : hipY + 3;
+    const hemY = look.wear === "dress" && !seated ? base - b.hip * 0.6 : hipY + 3;
 
     // the arm on the side the person faces does the pose; the other rests, holds or pushes
     const arms: Record<number, ArmKey> = { [-1]: "rest", 1: "rest" };
@@ -1199,9 +1600,13 @@ export function figure<G>(
         arms[near] = "hold";
         arms[far] = "hold";
     }
-    if (pose === "cheer") {
+    if (pose === "cheer" || pose === "jump") {
         arms[near] = "up";
         arms[far] = "up";
+    }
+    if (pose === "balance") {
+        arms[near] = "out";
+        arms[far] = "out";
     }
     if (striding && pose === "run") {
         arms[near] = "pump";
@@ -1220,7 +1625,7 @@ export function figure<G>(
     }
     if (look.aid === "cane") arms[far] = "cane";
 
-    if (look.hair === "long") hairBehind(c, hx, headY, r, look);
+    if (down(look.hair)) hairBehind(part(c, "hair", [hx, headY - r]), hx, headY, r, look);
     const chair = look.aid === "wheelchair" && !racing ? wheelchair(c, x, base, look) : null;
     const racer = racing ? racingChair(c, x, base, look) : null;
     const arm = (s: number) => {
@@ -1243,15 +1648,39 @@ export function figure<G>(
             moving.g,
             limb([S, E, H], b.arm),
             "pencil",
-            c.pen.fill(look.top),
+            look.sleeves === "long" ? cloth(c, look.top) : skin(c, look.tone),
             calm(c, 1.5),
         );
+        if (look.sleeves === "short")
+            moving.pen.polygon(
+                moving.g,
+                limb([S, [S[0] + (E[0] - S[0]) * 0.55, S[1] + (E[1] - S[1]) * 0.55]], b.arm + 1.1, [
+                    true,
+                    false,
+                ]),
+                "pencil",
+                cloth(c, look.top),
+                calm(c, 1.5),
+            );
+        if (look.sleeves === "none")
+            moving.pen.path(
+                moving.g,
+                bumpy(S[0], S[1] - 1.2, b.arm + 1.8, b.arm * 0.7, 7, 0.16),
+                "ruler",
+                cloth(c, look.top),
+                { strokeWidth: 1.1, ...FIRM },
+            );
         const shape: HandShape =
-            key === "point" ? "point" : key === "wave" || key === "up" ? "open" : "fist";
+            key === "point"
+                ? "point"
+                : key === "wave" || key === "up" || key === "out"
+                  ? "open"
+                  : "fist";
         const end = hand(moving, E, H, b.hand, look.tone, shape);
         if (key === "grip") cuff(c, s, E, H);
         if (key === "point") a.tip = [end[0], end[1], s > 0 ? "right" : "left"];
-        if (key === "wave" || key === "up" || key === "chin") a.hand = [end[0], end[1], "up"];
+        if (key === "wave" || key === "up" || key === "chin" || (key === "out" && s === near))
+            a.hand = [end[0], end[1], "up"];
         if (key === "wheel" || (key === "race" && s === near)) a.hand = [H[0], H[1], "up"];
         if (key === "raise") a.hand = [H[0], H[1] - b.hand, "up"];
     };
@@ -1264,10 +1693,10 @@ export function figure<G>(
             g,
             limb([[bx - s0 * 2, hipY + 1], knee, ankle], b.leg, [true, false]),
             "pencil",
-            bottoms(c),
+            look.wear === "trousers" ? cloth(c, look.bottom) : legFill(c, look),
             calm(c, 1.5),
         );
-        shoe(c, ankle[0] + s0 * 3.5, chair.foot[1] - 2.2, b.leg * 2 + 4);
+        foot(c, look, ankle[0] + s0 * 3.5, chair.foot[1] - 2.2, b.leg * 2 + 4);
     } else if (pose === "sit") {
         const seatY = base - b.seat,
             sw = b.hw + 5;
@@ -1294,10 +1723,11 @@ export function figure<G>(
                 0.4,
             ),
             "pencil",
-            c.pen.fill(beside(look.top, 3)),
+            c.pen.fill(beside(markerOfCloth(look.top), 3)),
             calm(c, 1.6),
         );
     } else if (striding) strideLegs(c, x, base, hipY, b, look, pose === "run");
+    else if (jumping) jumpLegs(c, x, base, b, look);
     else standingLegs(c, x, base, b, look);
 
     pen.rect(
@@ -1311,7 +1741,12 @@ export function figure<G>(
         { strokeWidth: 1.2, ...FIRM },
     );
     top(c, bx, shoulderY, hemY, b, look, lean);
-    if (pose === "sit" && !chair) seatedLegs(c, x, base, hipY, b);
+    if (!racing) {
+        if (look.wear === "skirt") skirt(c, bx, hipY, base, b, look, seated);
+        if (look.wear === "shorts" && !seated) shorts(c, bx, hipY, base, b, look);
+    }
+    printOn(c, look, bx + lean * 0.6, shoulderY + (hipY - shoulderY) * 0.38, r * 0.42);
+    if (pose === "sit" && !chair) seatedLegs(c, x, base, hipY, b, look);
     if (chair) chair.front();
     if (racer) {
         racer.shell();
@@ -1337,7 +1772,7 @@ export function figure<G>(
     a.head = [hx, headY - r * (above[look.hair] ?? 1.1), "up"];
     a.face = [hx + s0 * r * 1.1, headY, s0 > 0 ? "right" : "left"];
     a.chest = [bx + lean * 0.5, shoulderY + (hipY - shoulderY) * 0.4, s0 > 0 ? "right" : "left"];
-    a.feet = [x, base, "down"];
+    a.feet = [x, floor, "down"];
     if (seated && !racer) a.lap = [bx + s0 * 4, hipY - 2, "up"];
     // a racer's number goes on the side of the chair: side on, a bib would hide the lean that makes the chair a racer
     if (racer) a.chair = [racer.plate[0], racer.plate[1], "down"];
@@ -1573,6 +2008,33 @@ function cane<G>(c: Ctx<G>, s: number, grip: Pt, base: number): void {
         { fill: c.t.ink, fillStyle: "solid" },
         { strokeWidth: 1, ...FIRM },
     );
+}
+
+/** A person's box in whole squares: a child six tall and a grown-up eight, wider for a reach or a chair. */
+export function personBox(p: PersonParams): { w: number; h: number } {
+    const age = pick(AGES, p.age, "child"),
+        aid = pick(AIDS, p.aid, "none");
+    const tall = age === "child" ? 6 : 8;
+    if (aid === "wheelchair")
+        return { w: (age === "child" ? 5 : 6) + (p.pose === "point" ? 1 : 0), h: tall };
+    const wide = p.pose === "point" || p.pose === "balance";
+    return { w: wide ? 6 : p.pose === "run" && age !== "child" ? 5 : 4, h: tall };
+}
+
+/** A person standing in their own box: in the middle, or at one side for a reach, or behind a chair's footplate. */
+export function drawPerson<G>(c: Ctx<G>, p: PersonParams): RawAnchors {
+    const look = lookOf(p),
+        box = personBox(p),
+        base = box.h * U - 4;
+    const reach = p.pose === "point" ? U * 0.5 : 0;
+    const chairX = p.pose === "run" ? 10 * (look.age === "child" ? 1 : 1.3) : 2 + reach;
+    const x =
+        look.aid === "wheelchair"
+            ? box.w * U * 0.5 - look.dir * chairX
+            : p.pose === "point"
+              ? (look.dir > 0 ? 2 : box.w - 2) * U
+              : (box.w * U) / 2;
+    return figure(c, x, base, look, pick(POSES, p.pose, "stand"), p.holding);
 }
 
 type PenOpts = NonNullable<Fill>;

@@ -8,9 +8,9 @@ import { emptyPad, spent } from "../../../engine/motion/pad";
 import type { Frame } from "../../../engine/motion/scene";
 import { ACTIVITIES } from "../activities";
 import { prove } from "../prove";
-import { GROUPS } from "../game";
+import { GROUPS, type ActionGame } from "../game";
 import { GAMES, gameById, levelOf } from "../catalogue";
-import { snakeGame, SNAKE_LEVELS } from "../snake";
+import { snakeGame, FIREFLY_LEVELS } from "../snake";
 import { roadGame, ROAD, ROAD_LEVELS } from "../road";
 import { SLING_LEVELS, slingGame } from "../sling";
 import { planeGame } from "../plane";
@@ -83,6 +83,7 @@ test("every game the old Engine and Arcade links name is on the Games tab, with 
         ["weigh", 2],
         ["shunt", 5],
         ["race", 4],
+        ["rule", 6],
         ["straight", 1],
         ["snake", 2],
         ["road", 2],
@@ -102,7 +103,7 @@ test("the road steers between the lanes its drawing draws", async () => {
 test("every drawing a game draws is on the shelf", async () => {
     const known = SHELF_IDS;
     const frames: Frame[] = [
-        ...SNAKE_LEVELS.map((_, l) => snakeGame.frame(snakeGame.start(l))),
+        ...FIREFLY_LEVELS.map((_, l) => snakeGame.frame(snakeGame.start(l))),
         ...ROAD_LEVELS.map((_, l) => roadGame.frame(roadGame.start(l))),
         ...SLING_LEVELS.map((_, l) => slingGame.frame(slingGame.start(l))),
     ];
@@ -119,9 +120,13 @@ test("every drawing a game draws is on the shelf", async () => {
         }
     }
     // The games built to one direction draw their whole scene from the start, and their finish from what is already there.
-    for (const g of [seesawGame, cakeGame, shoveGame] as const)
-        for (let l = 0; l < g.levels.length; l++)
-            frames.push(g.frame(g.start(l) as never), g.frame(g.start(l) as never, true));
+    const startAndFinish = <S>(g: ActionGame<S>): Frame[] =>
+        g.levels.flatMap((_, l) => [g.frame(g.start(l)), g.frame(g.start(l), true)]);
+    frames.push(
+        ...startAndFinish(seesawGame),
+        ...startAndFinish(cakeGame),
+        ...startAndFinish(shoveGame),
+    );
     for (const f of frames)
         for (const s of f.sprites)
             assert.ok(known.has(s.art), `${s.key} asks for ${s.art}, which is not on the shelf`);

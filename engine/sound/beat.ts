@@ -29,7 +29,8 @@ const ALIASES: Record<string, ValueName> = {
 export function beatsOf(v: string | number): number {
     if (typeof v === "number") return v;
     const key = v.trim().toLowerCase();
-    if (key in VALUES) return VALUES[key as ValueName];
+    const value = Object.entries(VALUES).find(([k]) => k === key)?.[1];
+    if (value !== undefined) return value;
     const alias = ALIASES[key];
     if (alias) return VALUES[alias];
     const n = Number(key);
@@ -41,7 +42,7 @@ export function beatsOf(v: string | number): number {
 
 /** The name of a length in beats, or the number when it is not one of the five. */
 export function valueName(beats: number): string {
-    const hit = (Object.keys(VALUES) as ValueName[]).find((k) => VALUES[k] === beats);
+    const hit = Object.entries(VALUES).find(([, b]) => b === beats)?.[0];
     return hit ?? `${beats} beats`;
 }
 

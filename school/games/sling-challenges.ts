@@ -48,6 +48,9 @@ export function slingChallenge(seed: number, phase: number): SlingConfiguration 
     );
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 function sameShape(value: unknown, expected: unknown): boolean {
     if (expected === null || typeof expected !== "object") return value === expected;
     if (Array.isArray(expected)) {
@@ -57,12 +60,11 @@ function sameShape(value: unknown, expected: unknown): boolean {
             expected.every((item, index) => sameShape(value[index], item))
         );
     }
-    if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
-    const actual = value as Record<string, unknown>;
+    if (!isRecord(value)) return false;
     const entries = Object.entries(expected);
     return (
-        Object.keys(actual).length === entries.length &&
-        entries.every(([key, item]) => sameShape(actual[key], item))
+        Object.keys(value).length === entries.length &&
+        entries.every(([key, item]) => sameShape(value[key], item))
     );
 }
 

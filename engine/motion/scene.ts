@@ -1,12 +1,13 @@
 // What the engine draws, as data.
 //
 // A game never touches the page. A turn game gives a scene: shelf drawings named by key and placed
-// on a sheet of squares, which the stage keeps while a key survives, glides when a place changes and
+// on a sheet of squares, which the board keeps while a key survives, glides when a place changes and
 // draws again when a setting changes. An action game gives a frame: keyed sprites under a camera,
-// which the field moves as layers the browser composites. Both carry marks, which are ink over the
+// which the game view draws on the GPU. Both carry marks, which are ink over the
 // drawings (a ring round a target, an aim, the dots of a flight, a word), and both are plain data,
 // so a test reads them in node and the prover never sees them. See .docs/engine.md.
 import type { Cue } from "./cues";
+import type { GameEvent } from "./goals";
 import type { Pt } from "./geometry";
 import type { Spring } from "./spring";
 
@@ -109,6 +110,59 @@ export interface Sprite {
      * things at a time.
      */
     live?: boolean;
+    /** A teacher's pen on the drawing's own anchors, drawn into its look. */
+    marks?: Part["marks"];
+    /**
+     * Glows this many squares round its centre: a halo in the hue of the light, drawn under the
+     * sprite so its own light does not tint it.
+     */
+    glow?: number;
+}
+
+/** The colours a light or a stretch of water is drawn in, from the palette. */
+export type Hue = "glow" | "tang" | "sky" | "mint" | "berry";
+
+/**
+ * Water across the world from `x` for `w` squares, its still surface at `level` and its bed at
+ * `bottom`. It is drawn over the world's sprites at or under its depth, so what sinks shows through
+ * it, and under the ones above, so what floats sits on it. `surfaceAt` in engine/motion/surface.ts
+ * is where the surface is at a place and a moment, the same as it is drawn.
+ */
+/** A body of drops, drawn as one water: their places as x, y pairs, each drop `r` squares across its middle. */
+export interface Pool {
+    drops: number[];
+    r: number;
+    hue?: Hue;
+    /** Drawn over the sprites at or under this depth and under the ones above, like a water; 3 when left out. */
+    z?: number;
+}
+
+export interface Water {
+    x: number;
+    w: number;
+    level: number;
+    bottom: number;
+    /** How high its waves reach, in squares; 0.12 when left out, and 0 for a still pond. */
+    waves?: number;
+    /** Squares a second its surface travels to the right, for a river; less than nought runs left. */
+    flow?: number;
+    /** Rings running out from where something broke the surface, `age` seconds ago, `size` from nought to one and more. */
+    ripples?: { x: number; age: number; size?: number }[];
+    /** 3 when left out: over the ground and under what stands in it. */
+    z?: number;
+    hue?: Hue;
+}
+
+/** A light in the world, `r` squares round, washing its hue into the paper under it. */
+export interface Light {
+    x: number;
+    y: number;
+    r: number;
+    /** From nought to one; one when left out. */
+    strength?: number;
+    hue?: Hue;
+    /** Flickers like a flame or a firefly, except under reduced motion. */
+    flicker?: boolean;
 }
 
 /** An action game's world at one step of its loop, as the field draws it. */
@@ -120,6 +174,15 @@ export interface Frame {
     /** How much of the world is in view, in squares. */
     view: { w: number; h: number };
     world: { w: number; h: number };
+    /**
+     * The game's clock in seconds, which waves and flickers are drawn at, so what a game floats on
+     * the water and the water agree. Left out, the view keeps a clock of its own.
+     */
+    time?: number;
+    water?: Water[];
+    /** Water as drops, run together where they touch: a pour, a stream down a run. */
+    liquid?: Pool[];
+    lights?: Light[];
 }
 
 /** The small things a burst throws, each a shelf drawing: dust, sparkles, drops of water and bubbles. */
@@ -128,10 +191,13 @@ export type BurstKind = "dust" | "sparkle" | "splash" | "bubble";
 /**
  * What a step asks of the page besides a new frame: a sound, a puff of dust, a burst of small
  * things thrown round `dir` (radians, straight up when left out), or a shake. None of them carries
- * information, so reduced motion drops all but the sound.
+ * information, so reduced motion drops all but the sound. An event is what happened, for goals,
+ * checkpoints and replay rather than for the eye.
  */
 export type Happening =
-    | { cue: Cue }
+    | { event: GameEvent }
+    /** A sound, as hard as `strength` says from nought to one, `pitch` times higher, and at `pan` from -1 at the left to 1. */
+    | { cue: Cue; strength?: number; pitch?: number; pan?: number }
     | { puff: { x: number; y: number; n: number } }
     | { burst: { kind: BurstKind; x: number; y: number; n: number; dir?: number } }
     | { shake: number };

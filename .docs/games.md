@@ -2,6 +2,372 @@
 
 The first physical-handling refinement is documented in [physical-games-refinement.md](physical-games-refinement.md).
 
+## The first physics wave (26 September 2026)
+
+The games below took up the physics of P4 in [game-engine.md](game-engine.md). A home for the pups
+has roofs, arches and a door frame, three new jobs (a roof to a height, a door beside a room, three
+rooms in a row), blocks that meet a neighbour they are let go beside, a closer view, and a family
+that walks in. Charlie's bridge has planks that bend under her and a level with a rope bridge, where
+the planks hung between two posts have to add up to the gap. The marble workshop has a splitter that
+halves a batch, a bucket that tips out fives and keeps what is left, and a level of a hundred
+marbles. In Harbour cargo the crane carries a crate on a rope, lifting it before it travels and
+lowering it once it hangs still, and the barge floats and lists towards the heavier side; the band
+counted as balanced is 2.5 weight-squares wide, since a crane sets a crate down within about a third
+of a square. The rafts float on the river's waves and the flock mills on the bank. Gone fishing's
+float rides the lake's surface, bites ring the water, and a shoal scatters together. Down the river
+shows its current as streaks, quicker through the rapids, and a stroke as a ring.
+
+## Checkpoints, watching a try, and two fingers (26 September 2026)
+
+From P5 in [game-engine.md](game-engine.md), every action game can return to a checkpoint and show a
+won try again. Down the river is the first to use checkpoints: each gate of the count taken is one,
+and Back to the checkpoint beside the undo button puts the canoe just past the last of them, so a
+missed number further on costs only the stretch since that gate. Its gates and the number on the line
+are one goal in order, which the progress bar counts. Watch it again, beside Play another, plays a won
+try from the start with the hands it was played with; it is left out under reduced motion. In A home
+for the pups two fingers turn a held block in the same fifteen-degree steps as the turn keys, and a
+pinch, the wheel or the plus and minus keys zoom in on the building site while building.
+
+## A home for the pups (26 September 2026, rebuilt 27 September 2026)
+
+A home for the pups (`school/games/blocks.ts`, `?g=blocks`) is a building game for the Pup family, an
+original family of four dogs on the art shelf (see [shelf.md](shelf.md)). Each level is a job one of
+the pups asks for on a pinned note: a room 2 squares wide for Dot's bed, three rooms in a row, a
+lookout exactly 6 squares tall on a flag, a room 4 squares wide from exactly 10 blocks, a room under a
+pointed roof 4 squares to its tip, a room with an area of 6 squares on a windy hilltop, a room 3 squares
+wide with its floor 2 squares above a pond, a room with a door and a roof 5 and a half squares high, and
+a garden wall exactly 7 and a half squares long.
+
+The first version had the child drag blocks from a pile, nudge them with nine buttons and press Test
+the house. The owner found it a chore rather than play, so the game was rebuilt around a crane, after
+the crane drops of Tower Bloxx, the build-then-test of Bad Piggies and the wolf of the three little
+pigs. A crane stands over the building site with a block hanging from its hook. The child holds a
+finger over the site and the crane follows it, or drives it with the left and right arrows, and lets
+go (or presses Drop) to drop the block. The block swings on its rope as the crane starts and stops,
+and it falls as it swings, so a hasty drop lands wide and a patient one lands under the hook; a block
+dropped while it hangs still, a hair from a neighbour, meets that neighbour's side. The rope winds in
+over whatever is under the hook, so a block always falls a short way. A tap on a block in the pile, or
+the up and down arrows, hangs a different block; Turn (or B, or two fingers) hangs a block on its side,
+which a roof or an arch cannot do. The early levels draw where the block would land, the middle ones
+only a line straight down, and the last ones nothing, so the aim comes to rest in the child's eye.
+
+We chose the crane over a flick with a strength because the swing gives the hand something to judge
+by degrees on every block, whatever its size, and because waiting for a swing to die away is itself a
+way to aim that a young child finds on their own. A flick would have made a tall stack a matter of luck.
+
+When the house matches the note and has stood still for a moment, the wolf walks up, breathes in with
+his cheeks puffed, and blows: a gust from `engine/motion/gust.ts` pushes every block by its height.
+A house whose blocks move or turn past a small limit has fallen, is put back exactly as it was built
+from the design kept in `engine/motion/construction.ts`, and the wolf does not come again until the
+house has changed. Thin walls fall on the windy hilltop and thick ones stand. A house that stands is
+moved into: the wolf walks off, and each pup walks, as a runner from `engine/motion/walker.ts` drawn
+by `engine/motion/actor.ts`, into the room or up onto a floor on stilts, and the family cheers. The
+measuring is `engine/motion/room.ts`, and after each block settles the note says what it found ("The
+room is 3 squares wide. Dot wants 2 squares."). The back arrow takes back the last block dropped.
+
+The world is 72 squares by nearly 27, twice as wide as the view, with hills, clouds and trees along
+it and ground hatched down to its bottom edge, so no edge of the world shows at any size the page
+grows the view to. Blocks sound as wood, lower the bigger they are and louder the harder they land;
+a rocking block creaks (the `creak` cue in `engine/motion/cues.ts`); the wolf's breath is the wind hum.
+
+The levels have variations (`school/games/blocks-challenges.ts`), each the number on the note: a width,
+a count of rooms or blocks, a height, an area or a length. The solver certifies each by driving the
+crane with a finger, block by block, until the house stands and the family moves in, and the pads it
+pressed replay to the same win, which is the game's replay witness. `school/games/__tests__/blocks.test.ts`
+builds every level and variation, builds two by the keys alone, shows a swinging drop landing wide and
+a still one landing under the hook, thin walls falling and coming back, the wolf waiting for a change,
+and random drops doing the job at most one time in five; `tools/e2e/pup-blocks.e2e.ts` builds Dot's
+room in the app by mouse and by keys.
+
+## Charlie's bridge (26 September 2026)
+
+Charlie's bridge (`school/games/bridge.ts`, `?g=bridge`) is the first game built around Charlie, the
+named character on the art shelf. Charlie and her dog want to reach a picnic on the far bank of a
+stream. The stream is measured by a line along the water, stones stand in it at numbers on that line
+(with a landing stone at each bank's edge, at nought and at the far bank's number), and planks with
+their lengths written on them lie on the grass. The child drags a plank over the stream and lets go,
+and it falls where it was let go and settles on whatever is under it, as a rigid body in
+`engine/motion/bodies.ts`. Nothing snaps into place. A plank shorter than its gap falls in; one that
+only just reaches rests on the edge of a stone; one that sticks out past its stone holds until
+Charlie walks out along it, and her weight, pressed on the plank under her feet at every step, tips
+it. The mathematics is reading the gaps off the line and choosing a plank long enough for each: whole
+numbers, a line with no numbers on the stones, centimetres, and metres in tenths at grade 4.
+
+A first version snapped planks onto the stones and decided tipping by a rule. The owner compared every
+game against the six they like (Slingshot, Penny shove, The road, Pocket rally, Paper plane and Garden
+mini-golf) and found the snapping one a quiz with a walk at the end, so the planks became bodies and
+the weighted-plank level was dropped: with planks free to land anywhere, a plank long enough to be
+weighed down is also long enough to reach the stone, so the weights were never needed. Moments stay
+with the see-saw.
+
+Nothing is checked until Charlie walks, a wrong bridge is seen to be wrong in the water, and a fall
+costs nothing: she swims back and climbs out, and the plank floats back to the grass. Charlie walks
+on `engine/motion/walker.ts` over whatever `rayDown` finds under her, and her drawing follows what
+she does through `engine/motion/actor.ts`: it fades from her wave into her stride, puts her arms out
+on a tipping plank, squashes when she lands and cheers at the picnic. With the keys, left and right
+choose a plank and then move it half a unit at a time (a tenth on the metres level), up picks up and
+lets go, down puts it back, and the big button is Go. `bridge-challenges.ts` gives each level other
+stone layouts that the same planks bridge exactly. The tests in `school/games/__tests__/bridge.test.ts`
+cross every level and layout by hand and by the keys, show a short plank falling in and a long one
+tipping under Charlie, and check that random planks let go near the stones make a bridge at most one
+time in five; `tools/e2e/charlie-bridge.e2e.ts` plays it in the app.
+
+## Rabbit crossing on drifting logs (26 September 2026)
+
+Rabbit crossing gained two levels, "Ride the log" (grades 2 to 3) and "Two logs" (grades 3 to 4), at
+the end of its list so stored layouts of the others still open. A gap wider than any hop is crossed by
+timing a hop onto a log that drifts along the stream and judging the hop off it from wherever it has
+drifted to, so the number line is read from a moving position. A log's drift is a path in
+`engine/motion/mover.ts`, a function of the step count alone, so replays and reduced motion agree.
+`rabbit-challenges.ts` varies where the logs start along their drift, and the tests cross every
+layout with the keys and with a pull by trying each hop on a copy first, as a child aims.
+
+## Measure it out, poured by hand (26 September 2026)
+
+Measure it out (`school/games/pour-hands.ts`, `?g=pour`) is now an action game in which the jugs are
+picked up by their handles and tipped. It was a hands-on turn game whose drags only chose the
+puzzle's listed moves; the owner found the turn games too plain next to the six they like, so the
+pour itself became the control. A jug lifted clear of the rims tips by how far the hand is lowered
+below the carry line, turning about its spout so the stream stays where it was aimed, and the
+further it tips the faster it pours: a fuller jug pours at a smaller tilt, and a steep tip gushes
+(`engine/motion/vessel.ts`). Poured into another jug it stops by itself at that jug's brim, before a
+drop is spilt, so the puzzle's exact amounts can still be made; tipped again over a full jug it
+spills, and the spill is lost. A jug set down under the tap fills while the tap is held, and one
+tipped over the flowers is emptied. The round is won when a jug standing on the counter holds the
+target within a fiftieth of the smaller jug, with nothing pouring for half a second.
+
+The first two levels keep their scales, so an amount can be poured by eye and checked on the marks;
+the other four are the classic puzzle with only the brim marked, so the amount has to be made from
+what the jugs hold. The puzzle is still `pour.ts`, and its prover still holds every level, and every
+generated version in `pour-challenges.ts`, to be winnable with whole pours. With the keys, left and
+right choose a jug and then where to hold it, up picks up and puts down, holding down tips, and
+holding the big button runs the tap. The tests in `school/games/__tests__/pour-hands.test.ts` win
+every level along the puzzle's fewest pours by hand and with the keys, show the brim stop and the
+spill, check that random tipping makes the amount at most one time in five, and hold replays and
+reduced motion to the same jugs. The rules version for "pour" moved to `-physical-2`, so stored
+versions of the turn game do not open as the new one.
+
+Since 27 September the water is real drops. The jugs still count their water exactly, and what
+leaves a jug falls as drops of the particle liquid in `engine/motion/liquid.ts` that each carry their
+share, so the puzzle and the brim stop stay exact while the stream is something to watch. A jug's
+scale and the water drawn in it show what has landed, so the reading rises as the stream arrives
+and matches the real volume once it has. The stream from the tap or a tipped jug wavers a little,
+thins as a jug empties and breaks into drops at its end; the water in a jug keeps a level surface
+however the jug is turned, leans when the jug is carried and swings back, and rings where the stream
+lands, with a splash. Under reduced motion the stream still falls and the surface stands level and
+still. The rules version for "pour" is now `-liquid-1`.
+
+## Charlie's market stall (26 September 2026)
+
+Charlie's market stall (`school/games/wardrobe.ts`, `?g=wardrobe`) replaces the turn game that was
+first built under this id, a dress-up puzzle played from a tray. Charlie shops at a clothes stall.
+Trying things on is free: a tap on a thing hanging on the stall puts it on her, or takes it off, and
+the receipt beside her adds up what she wears. Nothing about dressing is checked. Paying is a
+fairground penny pitch seen from the side. The coin in Charlie's hand is pulled back and let go, or
+aimed with the arrows (up and down for the angle, left and right for the strength) and thrown with
+the big button, and a short dotted arc shows how the throw leaves her hand but not where it lands.
+Coins are balls in `engine/motion/bodies.ts` that bounce off the counter's edge, the dish's rims and
+each other. A coin that comes to rest outside the dish is seen where it stopped for a moment and then
+goes back to the purse, with a word on how near it came from `nearness` in `engine/motion/aim.ts`.
+The round is won when Charlie wears a whole outfit (a top and a bottom, or a dress, and something on
+her feet) and the coins resting in the dish make exactly the receipt's total. A coin too many is
+tapped out of the dish again, or taken back with Backspace. Charlie then cheers.
+
+The mathematics is in the amount and in the choice of coins, never in the throw. The levels go from
+pennies and nickels to ten cents, then dimes to twenty, then quarters to fifty and to a dollar with
+the dish further along the counter, then dollars and cents with a purse that holds more than any
+outfit costs, and last a dish that the stallholder slides to a new place after every throw, with a
+purse short of small coins so that a total has to be made mostly in quarters. A coin is chosen by
+tapping it in the purse or with C, and a thing on the stall with N and T.
+
+It is an action game gated by `school/games/__tests__/wardrobe.test.ts`: every level is dressed and
+paid exactly through a real pad, once by pulling back and letting go and once by the keys alone;
+every outfit a level offers can be paid exactly from its purse; random throws paid exactly in none of
+twelve tries on any level, against an allowance of one in five; the same inputs give the same stall,
+reduced motion settles where fixed steps do, every drawing is on the shelf and the tuning table has
+no faults. A scene holds seven fixed bodies and the coins, at most about twenty. The dish moves only
+between throws, since `bodies.ts` has no body that is moved by the game and still carries what rests
+on it. The drawings added for it are `stallcounter` and `coindish`, beside `garment`, `clothesrail`,
+`charlie`, `person`, `dog`, `prop.coins`, `purse`, `pricetag` and `receipt`.
+`tools/e2e/charlie-wardrobe.e2e.ts` plays a level in the app by hand and dresses and throws with the
+keys.
+
+## Penny shove, the slingshot and the stall on the shared aim (26 September 2026)
+
+Penny shove now turns a pull into a shove through `engine/motion/aim.ts`, the aim control golf and
+the stall share: the other way from the pull, as fast as the pull is long up to the fastest shove.
+The flick, the keys and the aim commands are unchanged, and the aim line still shows where a shove
+will stop. A piece that stops before the line now says how far short it was ("a little short of the
+line", "well short of the line") before it goes back to its pile.
+
+The slingshot's launch goes through the same aim, with the dotted arc it already drew. A shot that
+knocks no star now says how near it came to one ("A little short of a star", "Well past the
+stars") as the next ball loads. The new record of a shot is set only when a ball is let go, so the
+starting state, and the identity of a stored challenge, are as they were.
+
+Charlie's market stall's last level has a dish the stallholder glides back and forth along the
+counter the whole time, coins in flight or not, rather than one that jumps to a new place after
+each throw. The dish is carried by the game (a carried body in `bodies.ts`, following a path in
+`mover.ts`), and a coin resting in it rides along and counts, judged by how it moves against the
+dish rather than against the counter. The tests throw where the dish will be when the coin lands,
+as a child learns to lead it. The stall's rules version moved on, since its state changed shape.
+
+## Shut the box, thrown by hand (26 September 2026)
+
+The throw in Shut the box is now physical. A die flicked across the felt sends both dice the way and
+as hard as the hand went, turned into a launch by `engine/motion/aim.ts`; they fly, knock off the
+box's walls and each other, and tumble to rest, rolling over their edges as they go, with a knock
+heard on each wall and a hard throw jolting the box. A die let go without a flick, a tap and the keys
+throw them from where they lie towards the far end of the felt. Shutting numbers is unchanged: a
+settled die is dragged or tapped onto a number, and the game keeps its turn shell, so the prover
+still walks every level and the tray is still every move as a button.
+
+What the dice show is not the simulation's to say. The mechanic's throw is decided first, from the
+level's seed and the box as it stands, exactly as before, and `engine/motion/tumble.ts` simulates the
+dice as bodies with no gravity and bends each path towards where the mechanic lands them and how they
+lie, a little at the start and wholly by the end. So every throw looks different while the odds are
+the ones `odds` in `shut.ts` proves, and taking a move back and throwing again still gives the same
+dice. We chose this over reading the faces off the simulation, which would have needed its own
+evidence that each face comes up a sixth of the time on every device and would have broken the
+reproducible throws a replay depends on. No rules or configurations changed, so the rules version for
+Shut the box is unchanged and its generated arrangements still open.
+
+`school/games/__tests__/shut-throw.test.ts` shuts every level with moves a hand plays, checks that
+every beat starts on the board before its move (or in the hand) and ends exactly on the board after,
+that four different flicks fly four ways and all turn up the mechanic's faces, that a hard flick is
+heard on the walls and jolts the box, and that the same throw tumbles the same way. The shut the box
+case in `tools/e2e/physical-games.e2e.ts` flicks a die in the app and waits for the dice to rest.
+
+## Firefly trail, the bead string rebuilt (26 September 2026)
+
+The bead string (`school/games/snake.ts`, still `?g=snake`) was a snake on squared paper that stepped
+a square at a time, and the owner found it and the other plain games dull for their core, not their
+details, so it was rebuilt rather than adjusted. It is now Firefly trail. A firefly flies a night
+garden seen from the side and never stops: a finger held on the field is where it flies towards,
+turning no faster than a firefly can, and the arrow keys turn it while the big button speeds it up.
+Numbered seeds glow in the garden. Only the next number in the count joins the trail, and the trail
+then grows by the count's step, one glowing bead for each one counted and a colour for each step, so
+the trail is always as long as the count and a length of it reads in steps. A seed that is not next
+is nudged away and floats back; the one wanted pulses, and an arrow at the edge of the view points
+to it when it is out of sight.
+
+The garden is a place to fly through. Nettles and frogs that snap at a low trail knock the last beads
+off, and on the last level so does flying through the trail itself; the beads scatter and float down
+to a height above the hazards, so they can always be flown through and picked up again, and the level
+is finished only when every seed is caught and every bead is back on the string. Spiders' webs slow
+the firefly, gusts of wind push it, and hedges turn it back. On the windy hill the count goes
+backwards: the trail starts forty beads long and each seed takes four off. The six levels are
+twos to 20 (grade 1), fives by the nettles to 40 (grades 1 to 2), tens over a pond with frogs to 60
+(grade 2), threes in a hedge maze with webs to 30 (grades 2 to 3), back in fours from 40 on the windy
+hill (grade 3), and sixes to 60 at midnight with drifting seeds and a trail that must not tangle
+(grade 4). Layouts shuffle which number glows at which spot. Three drawings joined the shelf:
+`glowbead`, `nettle` and `frog`.
+
+The tests in `school/games/__tests__/snake.test.ts` fly every level in three layouts to the end by a
+held finger and by the keys (a route-finding pilot in `firefly-pilot.ts` that goes round the hedges,
+nettles, webs and frogs and picks fallen beads up first), check that a seed joins only in order, that
+a nettle's beads are picked up again, that random flying for a minute finishes nothing, that a replay
+is the same flight and that a reduced-motion press is its own steps. `tools/e2e/firefly-trail.e2e.ts`
+plays the first level in the app.
+
+## Gone fishing, rebuilt (26 September 2026)
+
+Gone fishing (`school/games/fishing.ts`, still `?g=fish`) was rebuilt from the start, because the old
+game was a cast followed by a wait for whichever fish reached the hook first, with nothing to judge
+after the cast. Charlie fishes from a jetty with a scale beside her, and the fish below carry their
+weights on their tags, lighter ones near the top and heavier ones deeper. A pull back from the float
+and a let go casts it through the shared aim (`engine/motion/aim.ts`) with a dotted start of the
+throw, and it flies on a line that hangs and pulls like a line, a chain of points stepped by
+`engine/motion/line.ts`. A finger held in the water, or the up and down keys, sets how deep the hook
+goes. A fish notices a still bait near its own depth and not too far across, one at a time, so the
+depth chooses the fish: a curious one comes from further off, a quick one bites fast, and a shy one
+waits for a still float and is put off by a splash or a moving hook. It nibbles, and the float bobs;
+then it bites, and the float goes under. A strike then hooks it; too soon scares it off and too late
+lets it go, and nothing but the fish is lost. A hooked fish runs now and then. Reeling brings it in
+and pulls the line tighter, the rod bending to show how tight, and a line held tight through a run
+snaps and the fish swims off; letting go, or easing, lets it run. Reeled hard through a bed of weed
+(`pondweed`, new on the shelf), the hook snags until it is eased free. A landed fish swings onto the
+scale, whose pan takes a few, and the round is won when the needle reads the weight marked on the
+dial exactly. A fish on the pan can be pressed, or Backspace used, to throw it back.
+
+The six levels keep the old weights (two that make ten, three that make twenty, a kilogram in grams,
+two and a half kilograms, fifty, and a kilogram and a half) at two spots, a sea with coral and a lake
+with reeds, with weed beds added from the second level on. The state is plain data, with the seeded
+generator's state in it, so the same hands catch the same fish and a stored day is only data.
+`fish-challenges.ts` gives each level three other days, another seed and another weight to make, and
+replaces the old entry in `remaining-challenges.ts`; the rules version for `fish` moved to its own
+line. `engine/motion/reel.ts`, which only the old game used, was removed. The tests in
+`school/games/__tests__/fishing.test.ts` fish every level and every day to its weight by hand and
+every level by the keys, and check one fish at a time at the bait, the strike, the snap, the snag,
+throwing back, random hands (at most one win in five), the same hands giving the same catch and
+reduced motion; `tools/e2e/gone-fishing.e2e.ts` casts, waits for the bite and strikes in the app.
+
+## Marble workshop, rebuilt as a marble run (26 September 2026)
+
+The marble workshop (`school/games/marble.ts`, `?g=marble-workshop`) is no longer three ramps nudged
+towards one tray. Hoppers along the top each drop a numbered batch of marbles, cups on the floor each
+want a number of marbles, and the child builds the run between them from a parts tray: short, middle
+and long ramps, a springy bouncer, a funnel and a see-saw that tips under a pile of marbles. A part is
+dragged anywhere on the bench and turned by an end, by any angle, with a gentle pull to the nearest
+15 degrees within 3; with the keys, N chooses a part, the arrows move it half a square and Q and E
+turn it 5 degrees. A faint path shows where one marble from each hopper would go through the machine
+as it stands, recomputed as a part moves, so a child aims by it and gets better at reading it. Go
+drops every marble, and planck decides the rest: marbles knock each other, bounce, pile up and tip
+the see-saw, and each cup counts as it fills, with a ring and sparkles when it reaches its number. A
+run that misses shows what each cup got and returns to the machine as it was built.
+
+The mathematics is in the numbers. The first level is one hopper of 5 and a cup of 5 behind a block;
+then a 5 and a 3 into a cup of 8; which two of 6, 4 and 3 make 10; 7 and 5 over a wall with the
+bouncer; sharing 5, 3 and 8 into two cups of 8, where the middle hopper has to join the 5 and not
+the 8; and 24 marbles into two cups of 12. Harbour cargo keeps
+`workshops.ts` to itself, and the marble levels have no generated arrangements for now: the old ones
+moved a tray the new levels do not have. The rules version is `games-1-marble-run-1`. The tests in
+`school/games/__tests__/marble.test.ts` build a winning machine on every level through the child's
+own controls, by hand and by the keys, check that random machines make the numbers at most one time in
+five and an empty bench never, that a run repeats itself exactly, and that reduced motion judges a
+run as the steps do; `tools/e2e/marble-workshop.e2e.ts` builds the first level with the keys and
+drags and turns a part in the app. The parts are one shelf drawing, `marblerun`.
+
+The tenth level, "A water run", has tanks in place of hoppers: they hold 5 and 3 litres and let the
+water out as drops that run down the ramps like marbles, keep running, and pool in a cup read in
+litres. The child builds the run so all the water arrives, and the cup wants 8. A cup counts as full
+within half a litre, since a drop or two of a good run splashes wide however the run is built; the
+reading still says what landed. The rules version for the workshop is now `-marble-run-3`.
+
+## Down the river, Row to the jetty rebuilt (26 September 2026)
+
+Row to the jetty was a boat on a straight line with one stroke button, and the owner found it plain:
+the only decision was when to stop rowing. It is rebuilt from scratch as Down the river
+(`school/games/row.ts`, the id `straight` kept). A canoe goes down a long winding river seen from
+above, drawn from the new shelf drawings `riverreach`, `canoe`, `rivergate` and `boulder`. The river
+runs faster where it narrows into rapids (chevrons on the water), slack water sits behind each rock,
+and the canoe glides after every stroke and is carried by the water it is in. A stroke on one side
+pushes it on and turns its bow away from that side, harder the longer the drag or the key is held,
+and a stroke made too soon after the last pushes less, so paddling well has a rhythm. The physics is a
+new pure module, `engine/motion/canoe.ts`; the oar stroke module the old game used is removed with it.
+Rocks and logs drifting across the river (on paths from `mover.ts`) bump the canoe about and never end
+the run, and a faint dotted line ahead of the canoe shows where it would drift with nothing done.
+
+The mathematics is in where the targets are. Across the river stand pairs of gates with a number on
+each, and the canoe has to pass through the one that comes next in a count: ones, twos, fives, tens,
+threes, and 0.3 at a time at grade 4. A gate out of the count says which number it was and which
+comes next, and the river carries the canoe back above it to try again, so nothing is lost. The count
+ends at a wide pool with a line of posts along its bank, and the canoe has to come to rest against
+the bank with its bow beside the number that comes next, which on the fourth level is read off a line
+with only 0 and 100 written and on the sixth off a line in tenths. That last part is stopping on a
+number line, so the game still plays the `race.stop-on-the-line` activity for a link that names it.
+
+With a finger: drag back through the water beside the canoe to paddle on that side, drag forward to
+back water, or hold a finger still in the water to hold the paddle back. With the keys: hold and let
+go of up (or the big button) to paddle, left and right to turn, and hold down to back water, which
+backs the canoe slowly once it has all but stopped. `action-challenges.ts` gives each level two more
+stretches of river (the gates' sides mirrored or turned about, the bends shifted, the rocks moved
+across), and the rules version for `straight` is now `river-1`. The tests in
+`school/games/__tests__/row.test.ts` paddle every level and layout to a win with the keys alone and
+with drags alone through a paddler in `river-pilot.ts` that uses only the Pad, check the strokes, the
+rhythm, the gates' carry back, the rocks, the docking and reduced motion, and show random paddling
+winning none of sixty runs; `tools/e2e/down-the-river.e2e.ts` paddles in the app.
+
 ## Shared sizing (24 September 2026)
 
 The tabletop stage uses the full available row; it no longer has a 1,100px desktop cap.
@@ -28,7 +394,7 @@ Play another. One live status region announces updates. Long in-play notes wrap 
 with the full message available as the note's title and through the status region. On phones the
 note sits below the compact title row. No completion modal interrupts the field.
 
-The Field's squared paper fills its viewport independently of finite world bounds. Grid spacing
+The game view's squared paper fills its viewport independently of finite world bounds. Grid spacing
 and offset track the same zoom and translation as the world, including camera shake; sprites,
 collisions and pointer coordinates are unchanged. This also covers zoomed-out or off-centre views.
 
@@ -74,24 +440,26 @@ This section lists what is built, and it is kept up to date; the rest of the doc
 | Game (`?g=`) | Group | Mechanic | Levels, with their grades, positions and shortest win |
 |---|---|---|---|
 | Spell the picture (`spell`) | puzzle | `spell` | 1 three sounds, grades 1 to 2, 259 positions, 3 moves; 2 three sounds, four letters, 1 to 2, 259, 3; 3 four sounds, 1 to 2, 1555, 4; 4 four sounds, and a choice, 1 to 2, 1555, 4 |
-| Find the rule (`rule`) | puzzle, on a machine a ball and a card can be put into | `rule` | 1 the first machine, grades 3 to 4, 151 positions, 2 moves; 2 the second machine, 3 to 4, 151, 2; 3 the third machine, 3 to 4, 151, 2; 4 three numbers to feed, 3 to 4, 71, 2; 5 twelve cards that agree, grade 4, 196, 2; 6 twelve cards, and no 1, grade 4, 196, 2 |
-| See-saw (`weigh`) | action, full-bleed, off the list | none | 1 seven kilograms, grade 1; 2 ten, in two bags, 1 to 2; 3 both sides, 2; 4 further out, 3; 5 two to balance, 3 to 4; 6 either side, any step, 4 (see "Built since: one direction for every game") |
-| Rabbit crossing (`jump`) | action, full-bleed | `jump` | 1 0 to 20, land on 13, grades 1 to 2; 2 -10 to 10, land on -4, 3 to 4; 3 stones that sink, 2 to 3; 4 only some numbers written, 3 to 4; 5 back past nought, grade 4; 6 tens to a hundred, 3 to 4 (see "Land on the number, rebuilt as Rabbit crossing") |
-| Penny shove (`pay`) | action, full-bleed | none | 1 ten cents, grade 1; 2 twenty-five cents in three coins, 1 to 2; 3 65 cents in four coins, 1 to 2; 4 change from a dollar, 2 to 3; 5 99 cents, 2 to 3; 6 $1.87 in seven pieces, 3 to 4 |
-| Row to the jetty (`straight`) | action, full-bleed | `race` | 1 one hundred metres, grades 1 to 2; 2 fifty metres in fives, 1 to 2; 3 only some numbers, 2 to 3; 4 against the current, 2 to 3; 5 the buoy on 64, 3 to 4; 6 the buoy on 35, against the current, grade 4 (see "Stop on the line, rebuilt as Row to the jetty") |
-| Shunting yard (`shunt`) | action, full-bleed | `shunt` | 1 one carriage out of place, grades 1 to 2; 2 standing backwards, 1 to 3; 3 four jumbled, room for three, 2 to 3; 4 four jumbled, room for two, 2 to 4; 5 five carriages, room for two, 3 to 4; 6 six carriages, room for three, 3 to 4 (see "Shunt the carriages, rebuilt as Shunting yard") |
-| Cut the cake (`share`) | action, full-bleed, off the list | none | 1 two, grades 1 to 2; 2 three, 2; 3 four, 2 to 3; 4 a quarter has gone, 3; 5 six, 3 to 4; 6 the same as Ann's, 4 |
-| Measure it out (`pour`) | hands on, a free drag | `pour` | 1 500 and 300, measure 200, grades 2 to 3, 14 positions, 2 moves; 2 500 and 300, measure 100, 2 to 4, 14, 4; 3 5 and 3, measure 4, 3 to 4, 16, 6; 4 7 and 3, measure 5, 3 to 4, 20, 8; 5 900 and 400, measure 600, 3 to 4, 26, 8; 6 1 litre and 300, measure 100, grade 4, 24, 6 |
-| Take the corner (`race`) | hands on, an aim | `race` | 1 the ring, cross the finish, grades 3 to 4, 1470 positions, 15 moves; 2 the ring, stop on the finish, 3 to 4, 1527, 17; 3 the chicane, cross the finish, 3 to 4, 1251, 13; 4 the chicane, stop on the finish, grade 4, 1270, 14 |
-| Bead string (`snake`) | action | none | 1 count to ten, grade 1; 2 count in threes, grades 2 to 3 |
+| The number machine (`rule`) | action | none | 1 the adding machine, grade 3; 2 the doubling machine, 3; 3 over the hump, 3 to 4; 4 a stone on the 1, 4; 5 two machines, 4; 6 the long track, 4 (see "The number machine, Find the rule rebuilt (26 September 2026)") |
+| See-saw (`weigh`) | action, off the list | none | 1 seven kilograms, grade 1; 2 ten, in two bags, 1 to 2; 3 both sides, 2; 4 further out, 3; 5 two to balance, 3 to 4; 6 either side, any step, 4 (see "Built since: one direction for every game") |
+| Rabbit crossing (`jump`) | action | `jump` | 1 0 to 20, land on 13, grades 1 to 2; 2 -10 to 10, land on -4, 3 to 4; 3 stones that sink, 2 to 3; 4 only some numbers written, 3 to 4; 5 back past nought, grade 4; 6 tens to a hundred, 3 to 4 (see "Land on the number, rebuilt as Rabbit crossing") |
+| Penny shove (`pay`) | action | none | 1 ten cents, grade 1; 2 twenty-five cents in three coins, 1 to 2; 3 65 cents in four coins, 1 to 2; 4 change from a dollar, 2 to 3; 5 99 cents, 2 to 3; 6 $1.87 in seven pieces, 3 to 4 |
+| Down the river (`straight`) | action | `race` | 1 count to five, grade 1; 2 count in twos, 1 to 2; 3 count in fives, 2; 4 tens, and only the ends written, 2 to 3; 5 count in threes, 3; 6 counting in tenths, 4 (see "Down the river, Row to the jetty rebuilt (26 September 2026)") |
+| Shunting yard (`shunt`) | action | `shunt` | 1 two sidings, adding to 5 and 4, grades 1 to 2; 2 make ten, 1 to 2; 3 one carriage out of place, 1 to 3; 4 standing backwards, 1 to 3; 5 four jumbled, 2 to 3; 6 three sidings, one uphill, 2 to 4 (see "Shunting yard, rebuilt as a hump yard") |
+| Cut the cake (`share`) | action, off the list | none | 1 two, grades 1 to 2; 2 three, 2; 3 four, 2 to 3; 4 a quarter has gone, 3; 5 six, 3 to 4; 6 the same as Ann's, 4 |
+| Measure it out (`pour`) | action, tipped by hand (see "Measure it out, poured by hand") | `pour` | 1 500 and 300, measure 200, grades 2 to 3, 14 positions, 2 moves; 2 500 and 300, measure 100, 2 to 4, 14, 4; 3 5 and 3, measure 4, 3 to 4, 16, 6; 4 7 and 3, measure 5, 3 to 4, 20, 8; 5 900 and 400, measure 600, 3 to 4, 26, 8; 6 1 litre and 300, measure 100, grade 4, 24, 6 |
+| Firefly trail (`snake`) | action | none | 1 count in twos, grade 1; 2 fives by the nettles, 1 to 2; 3 tens over the pond, 2; 4 threes in the hedge maze, 2 to 3; 5 back in fours on the windy hill, 3; 6 sixes at midnight, 4 (see "Firefly trail, the bead string rebuilt") |
 | The road (`road`) | action | none | 1 stop on 20, grades 1 to 2; 2 stop on 70, grades 2 to 4 |
 | Slingshot (`sling`) | action | none | 1 three stars, grades 1 to 2; 2 over the wall, grades 3 to 4 |
 | Shut the box (`shut`) | hands on, a drag | `shut` | two dice: 1 up to 6, grade 1; 2 up to 8, 1 to 2; 3 up to 9, add or times, 2 to 3; 4 up to 9, three ways, 3 to 4; 5 up to 10, three ways, grade 4 (see "Built since: shut the box") |
-| Rafts (`herd`) | action, full-bleed | none | 1 five on the raft, grade 1; 2 seven and three, 1 to 2; 3 the same on each, 2 to 3; 4 four to a raft, 3 to 4; 5 five, three and two, 1 to 2; 6 sixes from twenty, 3 to 4 (see "Sheepdog, rebuilt as Rafts") |
-| Gone fishing (`fish`) | action, full-bleed | none | 1 two that make ten, grade 1; 2 three that make twenty, 1 to 2; 3 one kilogram, 2 to 3; 4 two and a half kilograms, 3 to 4; 5 three that make fifty, 2 to 3; 6 a kilogram and a half in three, 3 to 4 (see "Gone fishing, rebuilt as Cast") |
+| Rafts (`herd`) | action | none | 1 five on the raft, grade 1; 2 seven and three, 1 to 2; 3 the same on each, 2 to 3; 4 four to a raft, 3 to 4; 5 five, three and two, 1 to 2; 6 sixes from twenty, 3 to 4 (see "Sheepdog, rebuilt as Rafts") |
+| Gone fishing (`fish`) | action | none | 1 two that make ten, grade 1; 2 three that make twenty, 1 to 2; 3 one kilogram, 2 to 3; 4 two and a half kilograms, 3 to 4; 5 three that make fifty, 2 to 3; 6 a kilogram and a half, 3 to 4 (see "Gone fishing, rebuilt (26 September 2026)") |
 | Paper plane (`plane`) | action | none | 1 up to ten, grade 1; 2 tens to a hundred, grade 2; 3 halves, quarters and eighths, grade 3; 4 tenths, grade 4 |
+| Charlie's bridge (`bridge`) | action | none | 1 one stone, grade 1; 2 two stones, 1 to 2; 3 a wider stream, 2; 4 stones with no numbers, 2 to 3; 5 centimetres, 3; 6 tenths of a metre, 4; 7 a rope bridge, 2 to 3; 8 the pulley lift, 3 to 4 (see "Charlie's bridge (26 September 2026)") |
+| A home for the pups (`blocks`) | action | varied numbers on each note | 1 a bed for Dot, grade 1; 2 three rooms in a row, 1 to 2; 3 Pip's lookout, 1 to 2; 4 ten blocks by the river, 2; 5 a pointed roof, 2 to 3; 6 windy hilltop, 2 to 3; 7 over the pond, 3; 8 a door for the family, 3 to 4; 9 a garden wall in halves, 4 (see "A home for the pups") |
+| Charlie's market stall (`wardrobe`) | action | none | 1 pennies and nickels, grade 1; 2 dimes as well, 1 to 2; 3 up to fifty cents, 2; 4 up to a dollar, 2 to 3; 5 dollars and cents, 3; 6 the dish on the move, 4 (see "Charlie's market stall (26 September 2026)") |
 
-Two of the ten activities in `activities.ts` became one game each way round: the two race activities are two games, Stop on the line on the lanes and Take the corner on the circuit, and the circuit adds two levels of its own that ask for a stop on the finish. The yard adds two levels of its own in the same way. A test checks that every version of every activity is a level of some game, so none was dropped when the tabs became one.
+The race activity that is left, Stop on the line, is played by Down the river. Take the corner was retired in September 2026, and its idea, choosing a speed before a corner, became Pocket rally's fourth level; an old `?g=race` address opens Pocket rally. Find the rule's activity was retired with its turn game, since the number machine carries the same idea as an action game. The yard adds two levels of its own in the same way. A test checks that every version of every activity is a level of some game, so none was dropped when the tabs became one.
 
 Adding a game is one entry in `GAMES` in `scratchpad/src/play/games.ts`, in the shape declared in `scratchpad/src/play/game.ts`: an id, a title, a group, a hint and its levels. The picker groups the list by each game's group and shows every level, and the page runs a game by its group.
 
@@ -1132,6 +1500,8 @@ Each plan below is written against the runtime in [engine.md](engine.md), under 
 
 ## Spell the picture (`spell`)
 
+Superseded: the game is rebuilt as the Sound train; see "Spell the picture (`spell`), rebuilt as the Sound train" at the end of this document. The plan follows as written.
+
 The verb is to pick a letter tile out of a rack and drop it into the next box, where it lands with a click and its sound is said; a tile aimed at a later box slides along into the next one, so the hand cannot be wrong where the tray is not. The scene is a school desk with a wooden letter rack, the sound boxes on a card, and the picture propped against a pencil pot. The ladder keeps its four levels and adds a word with a sound spelled by two letters on one tile, then a word of five sounds. The finish is the picture coming to life with its own idle motion from `animation.ts`, and the tiles hopping in order as their sounds are said again. Size: medium, a tile drawing with a letter setting, `settle` taught to leave a copy of a tile in the rack, and a binding; it can stay a puzzle with a board, as the rule machine did.
 
 ## Land on the number (`jump`)
@@ -1160,7 +1530,7 @@ The verb is to change speed by one and watch the runner go: a runner from `runne
 
 # Built since: one direction for every game
 
-Status: built in the scratchpad, September 2026. The penny shove (`play.html?g=pay`), and Cast (`?g=fish`), Rafts (`?g=herd`), Rabbit crossing (`?g=jump`), Row to the jetty (`?g=straight`) and Shunting yard (`?g=shunt`), built after it to the sharper bar, are played on the Games tab, each with `&v=` for the level. The see-saw (`?g=weigh`) and cut the cake (`?g=share`) were built with it and taken off the Games tab's list after the owner played them, for the reason under "The sharper bar"; they still open by their addresses and their activities' links, and their mechanics are being turned into interactive lesson items. The games are `.scratchpad/src/play/seesaw.ts`, `cake.ts`, `shove.ts` and `cast.ts`, the drawings they added are in `.scratchpad/src/art/gamepieces.ts` and `counter.ts`, the engine gained `engine/motion/lever.ts`, `cuts.ts` and `slide.ts`, and the tests are in `.scratchpad/test/games.test.ts`. What the engine and the page gained is in [engine.md](engine.md), under "One direction, drawn full-bleed".
+Status: built in the scratchpad, September 2026. The penny shove (`play.html?g=pay`), and Cast (`?g=fish`), Rafts (`?g=herd`), Rabbit crossing (`?g=jump`), Row to the jetty (`?g=straight`) and Shunting yard (`?g=shunt`), built after it to the sharper bar, are played on the Games tab, each with `&v=` for the level. The see-saw (`?g=weigh`) and cut the cake (`?g=share`) were built with it and taken off the Games tab's list after the owner played them, for the reason under "The sharper bar"; they still open by their addresses and their activities' links, and their mechanics are being turned into interactive lesson items. The games are `.scratchpad/src/play/seesaw.ts`, `cake.ts`, `shove.ts` and `cast.ts`, the drawings they added are in `.scratchpad/src/art/gamepieces.ts` and `counter.ts`, the engine gained `engine/motion/lever.ts`, `cuts.ts` and `slide.ts`, and the tests are in `.scratchpad/test/games.test.ts`. What the engine and the page gained is in [engine.md](engine.md), under "One direction, and a field that fills the room".
 
 ## The owner's verdict
 
@@ -1173,6 +1543,12 @@ We played the slingshot until both levels were won, at both sizes, with a mouse 
 The verb is direct and physical. One press on the ball and one pull back hold both the angle and the strength, and letting go is the whole decision. The goal can be read before anything is read: stars stand on towers, and a star on the grass is down. What happens has weight. Rods tip and roll, stars fall a different way each time, and the result is never quite the one aimed for, so a near miss is visible and interesting rather than a wrong answer. Control is one finger, and the arrow keys and space do the same. A try costs nothing: when everything has settled the next ball is in the sling, and the dots of the last two flights stay on the paper, so the next shot is a correction of the last one. And the maths sits inside the aim at the second level, where the angle and the pull are written on the arc as it is pulled.
 
 Playing it also shows what it does not have. Its maths is thin, its field is a card of 640 by 350 pixels on a 1024 by 768 tablet with a pad of arrows beside it, and a long line of monospace text explains the keys. The direction below keeps the six things and fixes those three.
+
+Its fourth level, "The stone wall" (27 September 2026), puts a wall of ten stone blocks welded where
+they touch in front of two stars. The wall stands on its own, a soft throw knocks a join or two
+loose, and a hard straight throw breaks it apart so the blocks fly into the stars. Each of its three
+certified layouts is won by two throws on the keyboard's steps, held to the same aiming slack and
+waits as the other levels. The rules version for "sling" is now `-wall-1`.
 
 ## Why the earlier rounds fell short
 
@@ -1200,13 +1576,13 @@ The finish happens in the world, and it is a different moment in each game: the 
 
 Scenes are drawn from the shelf in side view on the squared paper, with two or three drawings at the edges, a far and a near line of grass, and the things a child moves at least two squares across. The palette is the shelf's, with a wash only where the shelf already has one. Sound is the named cues: lift when something is picked up, bump when it lands, nope when a share is judged unfair, back when a thing goes home, and win at the finish.
 
-A game joins the frame by setting `bleed` on its declaration in `.scratchpad/src/play/game.ts`. The page then fits the field to the room, grows the view to show more of the world round what the game asked for, and keeps the camera inside the world. The slingshot joined the frame the same way, with sky laid over each level's play, more on the level shown zoomed out, so a tall window shows sky above the same towers rather than blank page.
+Every action game is in the frame now, with nothing to set: the page fits the field to the room, grows the view to show more of the world round what the game asked for, and keeps the camera inside the world, as [engine.md](engine.md) describes under "One direction, and a field that fills the room". The slingshot joined the frame the same way, with sky laid over each level's play, more on the level shown zoomed out, so a tall window shows sky above the same towers rather than blank page.
 
 ## The verdicts
 
 | Game | What the child does before the rebuild | Verdict | Redesign |
 |---|---|---|---|
-| Slingshot (`sling`) | pulls a ball back and lets go at stars on towers | the bar | keep, and move into the full-bleed frame |
+| Slingshot (`sling`) | pulls a ball back and lets go at stars on towers | the bar | keep, and move into the frame that fills the room |
 | The road (`road`) | holds go and brake, changes lane round boxes, stops on a number | the right verb, with lanes and boxes that add nothing, drawn as a diagram from above | Park on the number: hold to drive and lift to stop, on a street in side view |
 | Bead string (`snake`) | steers a bee to scattered numbers in order | a steering chore with no aim in it | replaced by Frog hops, on multiples and factors |
 | Sheepdog (`herd`) | holds a finger for the dog to run to, and waits for sheep | a scene that reads well and an indirect, slow verb | replaced by Rafts, on counting and equal groups |
@@ -1353,6 +1729,8 @@ The art pass drew the river in `.scratchpad/src/art/rowing.ts`. The boat is a `r
 
 ## Shunt the carriages (`shunt`), rebuilt as Shunting yard
 
+Superseded by "Shunting yard, rebuilt as a hump yard" at the end of this document. Kept for the reasoning behind the lift and the pit, which the owner found hard to read.
+
 Rebuilt at the owner's asking, who could not work out how to play the old yard and saw that trains could make a good-looking game, and played at `play.html?g=shunt`. One straight line in side view with a stop at each end, the engine at the left end of a train of numbered carriages, and in the middle a lift over a pit with a lever beside it. Dragging anywhere drives the engine at the finger's speed, and it pushes what it meets and pulls what is hooked to it: carriages that meet under three and a half squares a second hook on with a clank, and one hit faster is knocked away and rolls, slowing, until it stops or bumps a stop and comes back a little. A tap on a hook unhooks. The lever works the lift: a carriage standing alone on it goes down into the pit onto any already there, and with the lift clear the top one comes back up, so the pit is the mechanic's siding, last down and first up, and the puzzle is the same one, which carriage to put down and when to bring it back. The lift refuses, with a ring and one plain sentence, whenever the result would leave the mechanic's graph: the engine on it, a carriage partly over it, a full pit, or carriages standing on both sides so the one on the lift would not be at an end of the train. The engine never needs to run round, because pushing the train across the lift puts its other end on the lift. Left and right drive on the keys, creeping first and winding up while held, space works the lift and down unhooks.
 
 | Level | Grade | The train | The pit |
@@ -1443,3 +1821,48 @@ The frog hops brief gave its verb, a hop pulled back and let go onto stones alon
 ## Shut the box (`shut`): Shake and throw
 
 The mechanic, its odds gate and its two-dice levels stay, since the box is a real game of chance and choice. Only the throw is rebuilt: the dice rattle in a cup while it is held and tumble onto the felt when it is let go, through faces that sit side by side on a real die, landing on the faces the seeded throw chose, and a tile is swiped down to shut it. There is no skill in the hand, so it is not held to the sharper bar, and it is the last brief to build. Size: medium.
+
+## Spell the picture (`spell`), rebuilt as the Sound train
+
+"Push the sounds of the picture's word down the line, in order, gently enough to couple on behind the engine."
+
+The picture is the question, as it was: the word is never written until it is spelled, and the text form names it. The engine waits at the left end of a side-on line with the picture above it and the sound boxes beside the picture, and the shed at the top right holds one wagon for each tile, each carrying its sound on a big card, in an order that gives nothing away. The child picks a wagon (a tap on it in the shed, or left and right), and it swings onto the line at the right end. A pull back from the wagon, or up and down on the keys, sets how hard it is pushed, and letting go (or space) pushes it. The rail model in `engine/motion/rail.ts` decides the rest: a wagon that reaches the train at no more than the coupling speed hooks on with a clank, pitched a step higher for each wagon so the train climbs a scale as it grows, and fills the next sound box; one that arrives faster knocks the train and rolls back; one that stops short waits for a nudge from where it stands. Uncouple (Backspace, the Uncouple button, or a tap on the last coupling) lets the last wagon go and rolls it back, so a wrong sound is changed rather than lost. When the wagons spell the word the engine whistles and pulls the train away to the left.
+
+Levels are places, each a line with its own banks from `Bank` in the rail model: level ground, a hump that a weak push rolls back from, a dip that a wagon can come to rest in and has to be pushed out of, a hump and a dip together, and a ramp up to an engine waiting on higher ground. The dots show where the push will take the wagon, all of the way on the first two levels, half and then a third on the next two, and none on the last. The words are the spelling activity's, with more from the shelf's pictures: bus, ant and sun; star, ball and tree; clock, pond and snail; train and bird, where "ai" and "ay" or "ir" and "ur" are both on offer; and snail, pond and bird again for the ramp. `plays` sends each version of the activity to the level whose authored word it is.
+
+Held by: every word of every level is accepted by the `spell` mechanic, so the sounds, the tiles and the one way to spell the word are the ones the prover checked; the solver in `school/games/train-challenges.ts` wins every word of every level from the start by picking each wagon with the keys and finding a push that couples it, nudging when a push falls short, and its recorded pads replay to the same win (the replay witness, and the certificate the generator kit keeps for each variation); a hard push knocks and never couples; the state is plain data. The first push of a level couples for about half a square of pull, and a push that falls short costs only a nudge, so a child can get there by degrees. Drawings: `soundwagon` and `railbank`, both new, the `railway` with a new `bank` setting for a line on raised ground, and the shelf's `loco`, `coupling`, `bufferstop`, `soundboxes`, `firs` and `cloud`. The rules version is `sound-train-1`. Size: large, built.
+
+## The number machine, Find the rule rebuilt (26 September 2026)
+
+"Roll a ball into a numbered pocket, and fill the orders with what the machine makes of it."
+
+Find the rule was a quiz with a machine drawn round it: feed a number from a tray, read what came out, and name the rule from a row of cards. The number machine keeps the rule and moves the mathematics into the targets. A ball waits at the left end of a track with numbered pockets along it. The child pulls it back and lets go, or sets how hard with the left and right arrows and presses space, and it rolls: friction slows it, and it drops into the first pocket it is slow enough to fall into. That number goes up the pipe into the machine, and a ball with the answer rolls out towards the order at the front of the line. If it is the number the order asks for, it drops into the order's cup; if not, it bounces back, and the pair is written in the in and out table all the same. Three orders fill a level. To make 11 with a machine that adds 6, the child has to work out what the machine does and then what goes in to make 11, which is the inverse the old activity only asked for in words.
+
+A wrong ball costs a roll and nothing else, and the table is the record of what has been found out. The rule is shown on the machine's panel, and the machine lights up, once every order is filled.
+
+Levels are places. The first two have a dotted path that shows where the ball will stop while it is pulled back. The third has a hump after the 4: a slow ball rolls back off it, and the pockets past it need a harder roll. The fourth has a stone over the 1, so the one number that gives a rule away at once cannot be fed. The fifth has two machines one after the other, the second showing that it takes 2 away, so the child works out the first from the whole. The sixth has a long track with a hump and a stone and no dotted path.
+
+The track is a model of its own in `school/games/rule.ts`: a ball on a line, slowed by friction, pushed back or on by a hump's slope, and caught by a pocket when it is slower than a set speed over it. `predict` runs the same steps from a pull, so the dotted path is exactly where the ball goes. Each level has three or four layouts with a different rule of the same kind (`rule-challenges.ts`), and a layout is kept only when every order is made by exactly one open pocket and some pull drops a ball into it. The tests fill every level and layout by pulling and by the keys, check the dotted path against the roll for pulls across the whole range, and keep a recorded set of pulls as the replay witness.
+
+## Pocket rally: slow for the bends (26 September 2026)
+
+Take the corner asked a child to plan a speed before a corner, a turn at a time, on a grid. Pocket rally's fourth level asks the same thing of a car that is driven. The course is two straights and two tight bends, and each bend has a sign beside the road before it with the speed to take it at, in squares a second; the car's own speed is written beside it as it drives. A car over a bend's speed skids wide onto the grass, and a lap only counts when every bend was taken at its speed or slower, so the child brakes before the bend rather than in it. Each of the three layouts has a different radius and different signs. The tests drive every layout by pointer and by the keys, braking for each sign, and check that a lap driven flat out does not count.
+
+## Charlie's bridge: the pulley lift (26 September 2026)
+
+The far bank of the eighth level is six squares above the near one, and a lift stands at the water's edge, hung over a wheel against a basket on the near bank. The planks on the grass are sacks, each with its weight written on it, and the child drags them into the basket. Charlie weighs 20 kg. When she steps onto the lift it is let go: with less than 20 kg in the basket it stays down, with exactly 20 it hangs still, and with more it rises at a speed set by how much more, since the floor and the basket are damped. With up to four kilograms over, it reaches the top gently and Charlie walks off to the picnic; with more, it bangs into the top and she rides it back down, and a sack can be taken out. A sack added while she waits on the lift sends it up. The lift is the pulley and slider joints from `bodies.ts`; the sacks are not bodies, and their weight pulls on the basket.
+
+## Shunting yard, rebuilt as a hump yard (27 September 2026)
+
+"Set the points, then push each wagon over the hump, gently enough to couple on in its siding."
+
+The owner played the lift-and-pit yard and said its mechanics did not make sense and it did not look good: the pit, the lift and the lever over it had no reason a child could see, and the pieces did not read as one idea. We looked at the real shunting puzzles (Inglenook sidings, the Timesaver, the sorting yards of wooden railway sets) and at how a real hump yard works, and chose the hump yard, because every part of it explains itself in the picture: the wagons wait in a line behind the engine at the top of a hump, the points at its foot send each one into a siding, and the siding's board says what that siding wants. It is also the only one of those puzzles where the hand sets an amount by degrees and physics decides the rest, which is what the games the owner liked have in common. The Inglenook's ordering puzzle survives inside it, since a siding fills from its buffer stop and a wagon sent back joins the end of the waiting line, so the old activity's three orders are three of its levels.
+
+The child taps a siding's board (or presses up and down) to set the points; the route the points are set for is drawn whole with an arrow along it, and the others faint. A pull back from the front wagon, or left and right on the keys, sets the push, and letting go (or space) pushes it down the hump. The rail model in `engine/motion/rail.ts` decides the rest, one line per siding with its buffer stop as a fixed vehicle: a wagon that meets the siding's last wagon, or the buffer stop, at no more than the coupling speed hooks on with a clank pitched a step higher for each wagon; one that arrives faster knocks and rolls back; one that stops short waits to be pushed again from where it stands. Send back (Backspace, the button, or a tap on a siding's last wagon) returns a wagon to the end of the waiting line at no cost, so every mistake is undone by a move that is also part of the puzzle. When the boards are all met the engine pulls the empty line away.
+
+The maths is in the boards. The first two levels and the last ask for wagons adding up to a number (5 and 4; two pairs that make ten; 10, 7 and 5 over three sidings), and the board shows the sum so far on a line under its target. The middle three are the shunt activity's versions, `plays` maps them to it, and ask for siding A in the order 1, 2, 3 (or 1 to 4) from its buffer stop with B as a spare siding of the version's size. Levels are places: the hump grows from 1 to 1.4 squares, the spare sidings are short, and siding C of the last level climbs a bank, so a push that couples in A rolls back from C. The dots show the whole push on the first two levels, less on the next three and none on the last. Pushes that couple span 6 to 8 steps of the keys (about one and a half squares a second of push), a softer one stops short, and a harder one knocks.
+
+The world is wider and taller than the framed yard, with the meadow under the sidings down to its foot, the yard's rail out to its right edge, faint hills on the horizon and clouds through the sky, so a wide or tall room never shows the world's edge; the view is sixty squares across, so a phone at six pixels a square holds it without scrolling.
+
+Held by `school/games/__tests__/yard.test.ts`: a gentle push couples, a hard one knocks and a soft one stops short; the points hold while a wagon rolls; a siding fills from its buffer stop, refuses when full, and sends its last wagon back to the end of the line; the solver in `school/games/yard-challenges.ts` plans the moves on the sidings as a puzzle and then plays every push through the real yard, and wins every variation of every level by the keys and by a finger; its recorded pads replay through the tape to the same yard, with a checkpoint for each board met; pressing at random rarely makes up an order level; every drawing is on the shelf and the ground reaches every edge of the world. `tools/e2e/shunting-yard.e2e.ts` makes up a level by the keys and sets the points and pushes by a finger. Drawings: `sidingboard`, new; `carriage`, `loco`, `coupling`, `bufferstop`, `railway`, `railbank`, `meadow`, `peaks`, `firs` and `cloud` from the shelf. The `liftpit`, `yardlever` and `orderboard` drawings went with the old yard. The rules version is `yard-2`.
+

@@ -37,20 +37,35 @@ export const GAME_CHALLENGE_VERSIONS = {
 
 /** Mechanics revisions invalidate saved arrangements only for the affected games. */
 export const gameRulesVersion = (game: string): string =>
-    [
-        "jump",
-        "road",
-        "cargo-workshop",
-        "marble-workshop",
-        "shunt",
-        "weigh",
-        "share",
-        "snake",
-    ].includes(game)
-        ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
-        : ["pay", "straight", "fish"].includes(game)
-          ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
-          : GAME_CHALLENGE_VERSIONS.rules;
+    game === "pour"
+        ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
+        : game === "sling"
+          ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
+          : game === "rule"
+            ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-1`
+            : game === "straight"
+              ? `${GAME_CHALLENGE_VERSIONS.rules}-river-2`
+              : game === "fish"
+                ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-2`
+                : game === "spell"
+                  ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-1`
+                  : game === "shunt"
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-2`
+                    : game === "clear"
+                      ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-2`
+                      : game === "snake"
+                        ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-1`
+                        : game === "blocks"
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-crane-1`
+                          : game === "marble-workshop"
+                            ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
+                            : ["bridge", "herd", "cargo-workshop"].includes(game)
+                              ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
+                              : ["jump", "road", "weigh", "share"].includes(game)
+                                ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+                                : ["pay", "wardrobe"].includes(game)
+                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                  : GAME_CHALLENGE_VERSIONS.rules;
 
 export type GameValue =
     null | boolean | number | string | GameValue[] | { [key: string]: GameValue };
@@ -433,15 +448,15 @@ export type Draft = Envelope extends infer E
 
 type Check = (v: Record<string, unknown>) => string | null;
 
-const str = (v: unknown): boolean => typeof v === "string";
-const num = (v: unknown): boolean => typeof v === "number" && Number.isFinite(v);
-const int = (v: unknown): boolean => num(v) && Number.isInteger(v);
+const str = (v: unknown): v is string => typeof v === "string";
+const num = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
+const int = (v: unknown): v is number => num(v) && Number.isInteger(v);
 const bool = (v: unknown): boolean => typeof v === "boolean";
 const obj = (v: unknown): v is Record<string, unknown> =>
     !!v && typeof v === "object" && !Array.isArray(v);
 const strs = (v: unknown): boolean => Array.isArray(v) && v.every(str);
 const one = <T extends string>(v: unknown, of: readonly T[]): boolean =>
-    str(v) && (of as readonly string[]).includes(v as string);
+    str(v) && (of as readonly string[]).includes(v);
 /** The one timestamp format: ISO 8601 in UTC to the millisecond, as `Date.prototype.toISOString` writes it. */
 const INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 // `Date.parse` first, because `toISOString` throws on a time that is not one, such as hour 25.
@@ -456,15 +471,14 @@ const day = (v: unknown): boolean =>
 /** Own keys only, so a name every object has, such as `constructor`, is not a key of the table. */
 const keyOf = <K extends string>(table: Record<K, unknown>, k: unknown): k is K =>
     typeof k === "string" && Object.hasOwn(table, k);
-const nums = (v: unknown): boolean => Array.isArray(v) && v.every(num);
+const nums = (v: unknown): v is number[] => Array.isArray(v) && v.every(num);
 const uuid = (v: unknown): boolean =>
-    str(v) && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v as string);
+    str(v) && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 
 const BRUSHES = ["pencil", "crayon", "marker", "water", "blend", "eraser"] as const;
 const MIRRORS = ["none", "two", "four", "six"] as const;
-const paint = (v: unknown): boolean =>
-    Array.isArray(v) &&
-    v.every((p) => obj(p) && str(p.pigment) && int(p.parts) && (p.parts as number) > 0);
+const paint = (v: unknown): v is unknown[] =>
+    Array.isArray(v) && v.every((p) => obj(p) && str(p.pigment) && int(p.parts) && p.parts > 0);
 
 /** A painting's marks, each by its kind; a stroke of paint needs a paint, and an eraser has none. */
 function mark(m: unknown): string | null {
@@ -475,37 +489,30 @@ function mark(m: unknown): string | null {
         case "stroke":
             return one(m.brush, BRUSHES) &&
                 paint(m.paint) &&
-                (m.brush === "eraser" ||
-                    m.brush === "blend" ||
-                    (m.paint as unknown[]).length > 0) &&
+                (m.brush === "eraser" || m.brush === "blend" || m.paint.length > 0) &&
                 num(m.size) &&
-                (m.size as number) > 0 &&
+                m.size > 0 &&
                 nums(m.points) &&
-                (m.points as number[]).length % 3 === 0
+                m.points.length % 3 === 0
                 ? null
                 : "a stroke needs a brush, a paint unless it blends or erases, a size and x, y, pressure triples";
         case "fill":
-            return paint(m.paint) && (m.paint as unknown[]).length > 0 && num(m.x) && num(m.y)
+            return paint(m.paint) && m.paint.length > 0 && num(m.x) && num(m.y)
                 ? null
                 : "a fill needs a paint and the point it was poured at";
         case "stamp":
             return str(m.stamp) &&
                 paint(m.paint) &&
-                (m.paint as unknown[]).length > 0 &&
+                m.paint.length > 0 &&
                 num(m.x) &&
                 num(m.y) &&
                 num(m.size) &&
-                (m.size as number) > 0 &&
+                m.size > 0 &&
                 bool(m.flip)
                 ? null
                 : "a stamp needs a block, a paint, a point, a size and whether it is flipped";
         case "stencil":
-            return str(m.shape) &&
-                num(m.x) &&
-                num(m.y) &&
-                num(m.size) &&
-                (m.size as number) > 0 &&
-                bool(m.hole)
+            return str(m.shape) && num(m.x) && num(m.y) && num(m.size) && m.size > 0 && bool(m.hole)
                 ? null
                 : "a stencil needs a shape, a point, a size and whether it is a hole or the shape";
         default:
@@ -554,7 +561,7 @@ const GIVEN: Record<AnswerKind, Check> = {
     painting: (g) => {
         if (!one(g.paper, ["squared", "plain"] as const))
             return "given.paper must be squared or plain";
-        if (!int(g.w) || !int(g.h) || (g.w as number) < 1 || (g.h as number) < 1)
+        if (!int(g.w) || !int(g.h) || g.w < 1 || g.h < 1)
             return "given.w and given.h must be whole squares";
         if (!Array.isArray(g.marks)) return "given.marks must be a list of marks";
         for (const m of g.marks) {
@@ -909,7 +916,7 @@ const EVENT: Record<EventKind, Check> = {
 };
 
 /** Every event kind, from the one place they are declared. */
-export const EVENT_KINDS = Object.keys(EVENT) as EventKind[];
+export const EVENT_KINDS = Object.keys(EVENT).filter((k): k is EventKind => keyOf(EVENT, k));
 
 function gameJson(value: unknown, depth = 0, budget = { left: 4096 }): boolean {
     if (--budget.left < 0 || depth > 12) return false;
@@ -993,7 +1000,7 @@ function problemOf(v: unknown): string | null {
     if (!(v.kid_id === null || uuid(v.kid_id))) return "kid_id must be a uuid or null";
     if (!(v.actor === null || uuid(v.actor))) return "actor must be a user id or null";
     if (!uuid(v.device)) return "device must be a uuid";
-    if (!int(v.seq) || (v.seq as number) < 0) return "seq must be a whole number, zero or more";
+    if (!int(v.seq) || v.seq < 0) return "seq must be a whole number, zero or more";
     if (!instant(v.at)) return "at must be an instant in the one format, 2026-09-14T09:12:00.000Z";
     const kind = v.kind;
     if (!keyOf(EVENT, kind)) return `kind "${String(kind)}" is not an event kind`;

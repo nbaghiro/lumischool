@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { emptyLine, groupsOf, insert, remove, step, unhook, type Line, type Rules } from "../rail";
+import {
+    emptyLine,
+    gradeAt,
+    groupsOf,
+    heightAt,
+    insert,
+    remove,
+    step,
+    unhook,
+    type Line,
+    type Rules,
+} from "../rail";
 import { seeded } from "../spawn";
 
 const DT = 1 / 60;
@@ -194,4 +205,45 @@ test("whatever is driven, nothing passes anything or leaves the line, and the sa
     };
     for (const seed of [1, 2, 3]) assert.equal(play(seed), play(seed));
     assert.notEqual(play(1), play(2));
+});
+
+test("the height and grade of a bank agree, and a ramp stays up behind it", () => {
+    const banks = [
+        { shape: "hump" as const, from: 10, to: 18, rise: 2 },
+        { shape: "ramp" as const, from: 30, to: 40, rise: 3 },
+    ];
+    assert.equal(heightAt(banks, 5), 3);
+    assert.ok(Math.abs(heightAt(banks, 14) - 5) < 1e-9);
+    assert.equal(heightAt(banks, 45), 0);
+    for (const x of [11, 13.5, 16, 31, 35, 39]) {
+        const slope = (heightAt(banks, x + 1e-4) - heightAt(banks, x - 1e-4)) / 2e-4;
+        assert.ok(Math.abs(slope - gradeAt(banks, x)) < 1e-4, `grade at ${x}`);
+    }
+});
+
+test("a carriage rolls down a slope, climbs a hump only fast enough, and rests in a dip", () => {
+    const banks = [{ shape: "hump" as const, from: 20, to: 30, rise: 2 }];
+    const hilly: Rules = { ...RULES, banks, gravity: 6 };
+    const slow = lineOf(car("a", 10, 5, 1));
+    run(slow, 10, hilly);
+    assert.ok((slow.vehicles[0]?.x ?? 0) < 25, "a slow carriage comes back off the hump");
+    const fast = lineOf(car("a", 10, 9, 1));
+    run(fast, 10, hilly);
+    assert.ok((fast.vehicles[0]?.x ?? 0) > 30, "a fast one goes over");
+    const dip: Rules = {
+        ...RULES,
+        banks: [{ shape: "hump", from: 20, to: 30, rise: -2 }],
+        gravity: 6,
+    };
+    const rolling = lineOf(car("a", 22, 0, 1));
+    run(rolling, 20, dip);
+    assert.ok(Math.abs((rolling.vehicles[0]?.x ?? 0) - 25) < 0.6, "it settles at the bottom");
+    const gentle: Rules = {
+        ...RULES,
+        banks: [{ shape: "ramp", from: 20, to: 60, rise: 1 }],
+        gravity: 1,
+    };
+    const held = lineOf(car("a", 40, 0, 2));
+    run(held, 5, gentle);
+    assert.equal(held.vehicles[0]?.x, 40, "rolling holds it on a gentle slope");
 });

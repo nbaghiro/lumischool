@@ -368,6 +368,14 @@ export function step(s: PlaneState, pad: Pad): Happening[] {
     return out;
 }
 
+/** The place is a backdrop: spread out and faded, so the poles, hoops and numbers are what the eye finds. */
+const quiet = (r: Row): Row => ({
+    ...r,
+    every: r.every * 2,
+    gaps: Math.max(r.gaps ?? 0, 0.35),
+    alpha: (r.alpha ?? 1) * 0.5,
+});
+
 /** The rows each place is made of, far to near: what is on the skyline, what stands nearer, and what passes in front. */
 const LOOKS: Record<Look, { rows: Row[]; ground: "grass" | "sea" }> = {
     meadow: {
@@ -547,9 +555,10 @@ export function frame(s: PlaneState, rest = false): Frame {
                 key: "cloud",
                 depth: 0.15,
                 base: 5,
-                every: 11,
+                every: 20,
                 stray: 3,
                 z: 1,
+                alpha: 0.5,
                 drift: 0.3,
                 things: [
                     { art: "cloud", size: 5, often: 2, params: { puffs: 4 } },
@@ -561,7 +570,7 @@ export function frame(s: PlaneState, rest = false): Frame {
             t,
         ),
     );
-    for (const r of look.rows) sprites.push(...row(r, eye, 7 + s.level));
+    for (const r of look.rows) sprites.push(...row(quiet(r), eye, 7 + s.level));
     if (look.ground === "sea")
         sprites.push(
             ...lengths(
@@ -689,27 +698,6 @@ export function frame(s: PlaneState, rest = false): Frame {
         z: 40,
         seed: 4,
     });
-    // Grass and flowers in front, passing quicker than the world.
-    if (look.ground === "grass")
-        sprites.push(
-            ...row(
-                {
-                    key: "near",
-                    depth: 1.45,
-                    base: VIEW.h + 0.4,
-                    every: 5,
-                    stray: 2,
-                    gaps: 0.3,
-                    z: 90,
-                    things: [
-                        { art: "flowers", size: 2.6, often: 2, params: { count: 1, petals: 5 } },
-                        { art: "flowers", size: 3, often: 1, params: { count: 2, petals: 6 } },
-                    ],
-                },
-                eye,
-                13,
-            ),
-        );
     const filled = s.done.filter(Boolean).length;
     sprites.push({
         key: "progress",

@@ -1,3 +1,5 @@
+import type { Pt } from "./geometry";
+
 export interface Piece {
     id: string;
     x: number;
@@ -122,6 +124,47 @@ export function restore(w: Workshop, value: unknown): boolean {
     w.past = [];
     w.future = [];
     return true;
+}
+
+/**
+ * A point on a piece where another piece may meet it, in squares from the piece's middle before it
+ * is turned: a corner, the end of a plank, a hook.
+ */
+export type Anchor = Pt;
+
+/** Where a piece's anchors are in the world, placed at `at` and turned by `angle`. */
+export const anchorsAt = (anchors: readonly Anchor[], at: Pt, angle = 0): Pt[] => {
+    const c = Math.cos(angle),
+        s = Math.sin(angle);
+    return anchors.map((a) => ({ x: at.x + a.x * c - a.y * s, y: at.y + a.x * s + a.y * c }));
+};
+
+/**
+ * The shortest move that brings one of a held piece's anchors onto one of the anchors around it, when
+ * it is no further than `reach`, or null: a block let go a hair from its neighbour meets it. `axis`
+ * keeps the move to one direction, for a piece that falls into place the other way.
+ */
+export function snap(
+    held: readonly Pt[],
+    around: readonly Pt[],
+    reach: number,
+    axis?: "x" | "y",
+): Pt | null {
+    let best: Pt | null = null,
+        least = reach;
+    for (const h of held)
+        for (const a of around) {
+            const move = {
+                x: axis === "y" ? 0 : a.x - h.x,
+                y: axis === "x" ? 0 : a.y - h.y,
+            };
+            const d = Math.hypot(move.x, move.y);
+            if (d < least || (best === null && d <= least)) {
+                least = d;
+                best = move;
+            }
+        }
+    return best;
 }
 
 export interface Objective {

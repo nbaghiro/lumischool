@@ -62,6 +62,20 @@ export const knock = (t: Tilt, mass: number, at: number, speed: number, per: num
     spin: t.spin + per * mass * at * speed,
 });
 
+/**
+ * Whether a plank resting on supports that reach from `lo` to `hi` along it stays put under its loads
+ * (their `at` measured along the same line), or tips over the edge the loads' middle has passed: -1
+ * over `lo`, 1 over `hi`, and 0 when it rests. Exactly on an edge is resting, so a balance a child
+ * makes exactly holds. Nothing on it at all rests.
+ */
+export function tips(loads: Load[], lo: number, hi: number): -1 | 0 | 1 {
+    const mass = loads.reduce((m, l) => m + l.mass, 0);
+    if (mass <= 0) return 0;
+    if (turning(loads.map((l) => ({ mass: l.mass, at: l.at - lo }))) < -1e-9) return -1;
+    if (turning(loads.map((l) => ({ mass: l.mass, at: l.at - hi }))) > 1e-9) return 1;
+    return 0;
+}
+
 /** Where a point `along` the plank from the pivot and `below` its line is when the plank has turned by `angle`. */
 export function onPlank(pivot: Pt, angle: number, along: number, below = 0): Pt {
     const c = Math.cos(angle),

@@ -1,14 +1,14 @@
 import { ROAD_LEVELS, startRoadLevel, type RoadLevel } from "./road";
-import { ROW_LEVELS, startRowLevel, type RowLevel } from "./row";
+import { RIVER_LEVELS, startRiver, type RiverLevel } from "./row";
 import { PLANE_LEVELS, startPlaneLevel, type PlaneLevel } from "./plane";
 
 export type ActionKind = "road" | "row" | "plane";
 export type ActionConfiguration =
     | { kind: "road"; phase: number; level: RoadLevel }
-    | { kind: "row"; phase: number; level: RowLevel }
+    | { kind: "row"; phase: number; level: RiverLevel }
     | { kind: "plane"; phase: number; level: Omit<PlaneLevel, "words"> };
 export const ACTION_CHALLENGE_COUNT = 3;
-const PHASES = { road: 2, row: 6, plane: 4 };
+const PHASES = { road: 2, row: RIVER_LEVELS.length, plane: 4 };
 
 /** A finite, replay-tested catalogue; selection never runs a physics search in the app. */
 export function actionChallenge(
@@ -35,21 +35,31 @@ export function actionChallenge(
         };
     }
     if (kind === "row") {
-        const base = ROW_LEVELS[safePhase] ?? ROW_LEVELS[0];
-        const target = base.target + (index - 1) * (base.end === "jetty" ? base.every * 2 : 2);
-        const title = `The ${base.end} at ${target} metres`;
+        // another stretch of the same river: the gates' sides mirrored or turned about, the bends shifted, the rocks moved across
+        const base = RIVER_LEVELS[safePhase] ?? RIVER_LEVELS[0];
+        const flip = index === 1 ? -1 : 1;
         return {
             kind,
             phase: safePhase,
             level: {
                 ...base,
                 grades: [...base.grades],
-                target,
-                metres: base.end === "jetty" ? target : base.metres,
-                title,
-                goal: `Row to the ${base.end} at ${target} metres${base.current ? " against the current" : ""}.`,
-                prompt: `Stop gently at the ${base.end} on ${target}.`,
-                done: `Tied up at the ${base.end} on ${target} metres.`,
+                bends: base.bends.map(([amp, wave, phase]) => [amp, wave, phase + index * 1.3]),
+                narrows: base.narrows.map((n) => ({ ...n })),
+                rocks: base.rocks.map((r) => ({ ...r, off: r.off * flip })),
+                logs: base.logs.map((g) => ({ ...g, phase: g.phase + index * 0.7 })),
+                count: [...base.count],
+                decoys: [...base.decoys],
+                sides: base.sides.map((side, i) =>
+                    index === 2
+                        ? (base.sides[base.sides.length - 1 - i] ?? side)
+                        : flip === 1
+                          ? side
+                          : side === 1
+                            ? -1
+                            : 1,
+                ),
+                line: { ...base.line },
             },
         };
     }
@@ -70,6 +80,9 @@ export function actionChallenge(
     };
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 function sameShape(value: unknown, expected: unknown): boolean {
     if (expected === null || typeof expected !== "object") return value === expected;
     if (Array.isArray(expected))
@@ -78,12 +91,11 @@ function sameShape(value: unknown, expected: unknown): boolean {
             value.length === expected.length &&
             expected.every((item, index) => sameShape(value[index], item))
         );
-    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
-    const actual = value as Record<string, unknown>,
-        entries = Object.entries(expected);
+    if (!isRecord(value)) return false;
+    const entries = Object.entries(expected);
     return (
-        Object.keys(actual).length === entries.length &&
-        entries.every(([key, item]) => sameShape(actual[key], item))
+        Object.keys(value).length === entries.length &&
+        entries.every(([key, item]) => sameShape(value[key], item))
     );
 }
 
@@ -108,8 +120,7 @@ export function openActionConfiguration(configuration: ActionConfiguration) {
     if (!isActionConfiguration(configuration)) throw new Error("Unverified game arrangement");
     if (configuration.kind === "road")
         return startRoadLevel(configuration.level, configuration.phase);
-    if (configuration.kind === "row")
-        return startRowLevel(configuration.level, configuration.phase);
+    if (configuration.kind === "row") return startRiver(configuration.level, configuration.phase);
     return startPlaneLevel(
         {
             ...configuration.level,

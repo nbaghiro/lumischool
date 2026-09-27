@@ -2,7 +2,7 @@
 // asks for, and the contract each mechanic hands an author or a generator.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ACTIVITIES, MECHANICS, RULE_VERSIONS, ruleRound } from "../activities";
+import { ACTIVITIES, MECHANICS } from "../activities";
 import type { Round } from "../games";
 import { prove } from "../prove";
 
@@ -25,19 +25,6 @@ test("every version of every activity keeps the promise", () => {
     }
 });
 
-test("every version the rule activity's parameters allow keeps it too, not only the three listed", () => {
-    for (let v = 0; v < RULE_VERSIONS; v++) {
-        const r = ruleRound(v);
-        const p = prove(r);
-        assert.ok(p.ok, report(r, p));
-        assert.equal(
-            p.deadEnds,
-            0,
-            "a fed number cannot be taken back, so there may be no dead ends",
-        );
-    }
-});
-
 test("each activity declares a paper companion, because activities do not print", () => {
     for (const a of ACTIVITIES) {
         assert.match(a.paper, /^[a-z][a-z0-9.-]*$/, `${a.id} paper "${a.paper}"`);
@@ -45,21 +32,20 @@ test("each activity declares a paper companion, because activities do not print"
     }
 });
 
-test("the ten activities are nine kinds of play, and every mechanic is in the list the gate walks", () => {
+test("the eight activities are eight kinds of play, and every mechanic is in the list the gate walks", () => {
     const kinds = [...new Set(ACTIVITIES.map((a) => a.kind))];
-    assert.equal(ACTIVITIES.length, 10, "the games page lists ten");
-    // One mechanic carries two activities, because a track one lane deep and a circuit are the same
-    // rules and two different things to have learned. The rest carry one each.
-    assert.equal(kinds.length, 9);
+    assert.equal(ACTIVITIES.length, 8);
+    assert.equal(kinds.length, 8);
     assert.deepEqual(
         kinds.sort(),
         MECHANICS.map((m) => m.id).sort(),
         "a mechanic the gate never sees",
     );
-    // Both families of the promise are exercised, and only one activity is in the spent one, which
-    // is a result worth failing on if it changes: the luck clause rests on that activity alone.
-    const spent = ACTIVITIES.filter((a) => !a.round(0).reversible).map((a) => a.id);
-    assert.deepEqual(spent, ["rule.which-machine"]);
+    // every activity left can be taken back a move at a time, so the promise rests on patience
+    assert.deepEqual(
+        ACTIVITIES.filter((a) => !a.round(0).reversible).map((a) => a.id),
+        [],
+    );
 });
 
 test("a mechanic's contract names its pieces, its settings and the drawings it puts on the board", () => {

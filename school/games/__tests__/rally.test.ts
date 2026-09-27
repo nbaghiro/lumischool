@@ -3,7 +3,7 @@ import { it } from "node:test";
 import { emptyPad } from "../../../engine/motion/pad";
 import { headingError } from "../../../engine/motion/vehicle";
 import { isRallyConfiguration, openRallyConfiguration, rallyChallenge } from "../rally-challenges";
-import { rallyGame, recoverRally, stepRally } from "../rally";
+import { rallyGame, recoverRally, speedOf, stepRally, type RallyState } from "../rally";
 
 for (let phase = 0; phase < 3; phase++)
     for (let variant = 0; variant < 3; variant++) {
@@ -88,4 +88,59 @@ it("holding behind the car backs out of grass without awarding checkpoints", () 
     assert.ok(s.car.x < 31 && s.car.vx < 0);
     assert.equal(s.recoveries, 0);
     assert.equal(s.passed, 0);
+});
+
+/** Drives a signed course, braking to under each sign's speed before its bend when `careful`. */
+function driveBends(s: RallyState, input: "pointer" | "keyboard", careful: boolean): void {
+    const n = s.course.points.length;
+    for (let tick = 0; tick < 60 * 90 && !s.won; tick++) {
+        const target = s.course.points[(s.next + 3) % n];
+        assert.ok(target);
+        const ahead = (s.course.signs ?? []).filter((b) => {
+            const d = (b.from - s.next + n) % n;
+            return d <= 7 || bendAtIndex((s.next - 1 + n) % n, b);
+        });
+        const want = careful && ahead.length ? Math.min(...ahead.map((b) => b.limit)) - 0.6 : 99;
+        const speed = speedOf(s.car);
+        const pad = emptyPad();
+        const error = headingError(
+            Math.atan2(target.y - s.car.y, target.x - s.car.x) - s.car.angle,
+        );
+        if (input === "pointer") {
+            // a finger held close to the car brakes it, and one further ahead drives it on
+            const near = speed > want + 0.2 ? 0.8 : 3;
+            const a = Math.atan2(target.y - s.car.y, target.x - s.car.x);
+            pad.touch = { x: s.car.x + Math.cos(a) * near, y: s.car.y + Math.sin(a) * near };
+        } else {
+            pad.go = speed < want;
+            pad.brake = speed > want + 0.2;
+            pad.holding = Math.abs(error) < 0.08 ? [] : [error > 0 ? "right" : "left"];
+        }
+        stepRally(s, pad);
+    }
+}
+
+const bendAtIndex = (i: number, b: { from: number; to: number }): boolean =>
+    b.from <= b.to ? i >= b.from && i <= b.to : i >= b.from || i <= b.to;
+
+for (let variant = 0; variant < 3; variant++)
+    for (const input of ["pointer", "keyboard"] as const)
+        it(`slow for the bends, variation ${variant}: ${input} braking for each sign finishes the lap`, () => {
+            const s = openRallyConfiguration(rallyChallenge(variant, 3));
+            driveBends(s, input, true);
+            assert.ok(s.won, rallyGame.say(s));
+            assert.ok(!s.fast?.some(Boolean));
+        });
+
+it("a lap driven flat out through the signed bends does not count", () => {
+    const s = openRallyConfiguration(rallyChallenge(0, 3));
+    const n = s.course.points.length;
+    for (let tick = 0; tick < 60 * 30 && !s.won; tick++) {
+        const target = s.course.points[(s.next + 3) % n];
+        assert.ok(target);
+        stepRally(s, { ...emptyPad(), touch: target });
+    }
+    assert.equal(s.fast?.[0], true, "the first bend was taken too fast");
+    assert.equal(s.laps, 0);
+    assert.ok(!s.won);
 });

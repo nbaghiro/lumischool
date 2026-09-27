@@ -156,6 +156,67 @@ The apps' own drawings. The icon set (ten built, about twenty-two needed), a set
 
 Seasons and times of day. Settings on the tree, the ground and the sky, so a world in winter or at dusk is the same world with different settings, and a lesson can ask which season a picture shows.
 
+## Clothes and Charlie (26 September 2026)
+
+The figure kit in `engine/parts/people/figure.ts` now dresses a person as well as shaping them. A top
+is white or one of the five markers, with long sleeves, short sleeves or none (a small frill at the
+shoulder), and may carry a bear, a star, a heart or a flower on its front. Below it a person wears
+trousers, a dress, a skirt or shorts, in grey, white or a marker, plain, striped, spotted or in rainbow
+stripes, with legs in leggings or bare, and shoes, bare feet or yellow wellies. Hair gained a fringe,
+a ponytail and bunches, and poses gained a balance with the arms out and a jump. Every setting is on
+`person` as well, and a person with none of them set is drawn as before.
+
+A rainbow is the one pattern that uses all five markers on one thing, where a thing otherwise carries
+at most two. It is decoration and not a category a question tells apart, and on paper it prints as
+the lines between its bands with the card under them, so it never becomes five hatches.
+
+Charlie (`engine/parts/people/charlie.ts`) is the first named character on the shelf: a small girl
+with long fair hair and a fringe, first drawn from a doll in a white sleeveless top with a bear on it
+and a rainbow skirt. Her look is fixed and her clothes, pose, mood and the way she faces are
+settings, so a game, a lesson or a world can dress her for itself. Each pose that is itself a
+movement is drawn inside a part that moves it: she hops when she cheers or jumps, wobbles when she
+balances and bobs as she walks, and her loose hair and her skirt swing a little behind her. Her
+description names what is seen and never the feeling, and drops what is on her feet, then the words that say
+she is a girl, then the print on her top, when it would run past thirty words.
+
+## The Pup family (26 September 2026)
+
+The Pup family (`engine/parts/animals/pupfamily.ts`) is a family of four dogs who stand on their hind
+legs, drawn as one drawing with the member as a setting: Rufus the dad, a tan dog with long grey floppy
+ears; Maple the mum, curly and yellow; Pip, the older pup, a white terrier with pointed grey ears and a
+patch over one eye; and Dot, the youngest, white with black spots and short black floppy ears. They are
+our own characters, asked for as a family of cartoon dogs and deliberately unlike any family on
+television in their breeds, colours and names. Each stands, waves, sits, walks, jumps or cheers, with
+five faces told by the mouth; their eyes blink and their tails wag, a wave waves, a cheer or a jump
+hops and a walk bobs, each drawn inside a part of its own. The feet anchor stays on the floor in every
+pose, so a scene stands them on a line. The wooden toy block they build with is `woodblock` on the
+home shelf.
+
+## The wolf (27 September 2026)
+
+The wolf (`engine/parts/animals/wolf.ts`) is a grey wolf on his hind legs with pointed ears, a long
+snout and a big bushy tail, drawn for the pups' building game after the wolf of the three little pigs.
+He stands with a sly grin, breathes in with his cheeks puffed and his eyes shut, blows with a round
+mouth and three lines of breath, or walks; his eyes blink and his tail sways. `dir` turns him to face
+and blow either way.
+
+## The sound train's pieces (26 September 2026)
+
+`soundwagon` (letters) is a flat wooden wagon a carriage's length, standing on the yard's rail, that
+carries one sound of up to three letters on a big card; the sound train pushes it along and couples it
+on. `railbank` (travel) is a stretch of line that leaves the level, over a hump, down into a dip or up a
+ramp, with its rise and length as settings; the shape is `bankHeight` in `engine/motion/rail.ts`, so the
+drawing and the rolling agree. The `railway` gained a `bank` setting, the squares of grassy earth under
+it, for a line on raised ground beside a ramp; at nought it is drawn as before.
+
+## The hump yard's board (27 September 2026)
+
+`sidingboard` (travel) is the sign at the end of a siding, on one short post beside the buffer stop:
+the siding's letter in a yellow ring, what the siding wants (a number its wagons must add up to, the
+order they must stand in, or the word spare), and on a line under it what the siding holds so far, with
+a tick once it is made up. The shunting yard's old lift, pit, lever and order board (`liftpit`,
+`yardlever`, `orderboard`) were deleted with the yard they served.
+
 ## The style guide
 
 Roughness. Use the ruler level for anything counted or measured and for any part under about two squares, which includes faces, hands and eyes. Use the calm level (roughness 0.6, bowing 0.8, one stroke to a line with its corners kept, as the lantern is drawn) for figures, the kit's objects and the icons, where the icons turn it down further to 0.45. Use the pencil level for scenery bigger than about four squares, where its double line reads as a pencil rather than as fur. Keep the doodle level for marks a teacher's pen makes. A line that has to close, such as an outline drawn with one stroke, keeps its vertices (`preserveVertices`), or it opens at every corner.

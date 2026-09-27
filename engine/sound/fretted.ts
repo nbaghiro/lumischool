@@ -47,9 +47,7 @@ export const TUNINGS: Record<TuningName, Tuning> = {
 };
 
 export const tuningOf = (name: string | undefined): Tuning =>
-    TUNINGS[
-        (TUNING_NAMES as readonly string[]).includes(name ?? "") ? (name as TuningName) : "uke"
-    ];
+    TUNINGS[TUNING_NAMES.find((t) => t === name) ?? "uke"];
 
 export type Finger = 1 | 2 | 3 | 4;
 export const FINGERS: Finger[] = [1, 2, 3, 4];
@@ -166,7 +164,7 @@ export function readShape(tuning: TuningName, name: string, shape: string, finge
         name,
         tuning,
         frets: f.map((c) => (c === "x" || c === "X" ? null : Number(c))),
-        fingers: g.map((c) => (/^[1-4]$/.test(c) ? (Number(c) as Finger) : null)),
+        fingers: g.map((c) => FINGERS.find((f) => String(f) === c) ?? null),
     };
 }
 

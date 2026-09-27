@@ -3,7 +3,8 @@ import { U } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { COINS, coin, type Coin } from "../props";
 
-const COIN_NAMES = Object.keys(COINS) as Coin[];
+const isCoin = (s: string): s is Coin => s in COINS;
+const COIN_NAMES = Object.keys(COINS).filter(isCoin);
 
 export const purse = defineDrawing({
     id: "purse",

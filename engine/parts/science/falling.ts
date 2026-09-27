@@ -16,8 +16,8 @@ export const FALL_SPEEDS = {
     feather: 1,
 } as const;
 type Thing = keyof typeof FALL_SPEEDS;
-const THINGS = Object.keys(FALL_SPEEDS) as Thing[];
 const isThing = (s: string): s is Thing => s in FALL_SPEEDS;
+const THINGS = Object.keys(FALL_SPEEDS).filter(isThing);
 
 const NAMES: Record<Thing, { label: string; words: string }> = {
     stone: { label: "stone", words: "a stone" },

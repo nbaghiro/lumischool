@@ -1,10 +1,9 @@
 import { step as stepRafts, FRONT } from "../rafts";
-import { step as stepCast, back as returnFish, start as startCast } from "../cast";
 import { step as stepShove, pileAt } from "../shove";
 import type { Piece } from "../pay";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emptyPad, DIRS, type Dir } from "../../../engine/motion/pad";
+import { emptyPad } from "../../../engine/motion/pad";
 import {
     remainingChallenge,
     openRemainingConfiguration,
@@ -13,49 +12,11 @@ import {
 } from "../remaining-challenges";
 import { step as stepCake, cakeX, cutsNeeded } from "../cake";
 import { step as stepSeesaw, seesawGame, PIVOT, GAP, type SeesawLevel } from "../seesaw";
-import { step as stepSnake, type SnakeState } from "../snake";
-
-function towards(s: SnakeState): Dir | null {
-    const want = s.cards.find((c) => c.n === s.count + s.L.by);
-    if (!want) return null;
-    const key = (x: number, y: number) => y * s.L.cols + x;
-    const blocked = new Set(s.body.slice(0, -1).map((c) => key(c.x, c.y)));
-    const from = new Map<number, [number, Dir]>();
-    const q: [number, number][] = [[s.body[0].x, s.body[0].y]];
-    const seen = new Set([key(s.body[0].x, s.body[0].y)]);
-    while (q.length) {
-        const [x, y] = q.shift() ?? [0, 0];
-        if (x === want.x && y === want.y) break;
-        for (const d of Object.keys(DIRS) as Dir[]) {
-            const nx = x + DIRS[d].x,
-                ny = y + DIRS[d].y,
-                k = key(nx, ny);
-            if (
-                nx < 0 ||
-                ny < 0 ||
-                nx >= s.L.cols ||
-                ny >= s.L.rows ||
-                seen.has(k) ||
-                blocked.has(k)
-            )
-                continue;
-            seen.add(k);
-            from.set(k, [key(x, y), d]);
-            q.push([nx, ny]);
-        }
-    }
-    let k = key(want.x, want.y),
-        first: Dir | null = null;
-    for (let hop = from.get(k); hop; hop = from.get(k)) {
-        first = hop[1];
-        k = hop[0];
-    }
-    return first;
-}
+import { pilot } from "./firefly-pilot";
 
 test("remaining certified families store distinct reproducible configurations and reject unchecked changes", () => {
-    for (const kind of ["cake", "seesaw", "snake", "shove", "cast", "rafts"] as const)
-        for (let phase = 0; phase < (kind === "snake" ? 2 : 6); phase++) {
+    for (const kind of ["cake", "seesaw", "snake", "shove", "rafts"] as const)
+        for (let phase = 0; phase < 6; phase++) {
             const seen = new Set<string>();
             for (let seed = 0; seed < REMAINING_CHALLENGE_COUNT; seed++) {
                 const config = remainingChallenge(seed, kind, phase);
@@ -135,16 +96,13 @@ test("every generated see-saw has a complete balance through pointer bag placeme
         }
 });
 
-test("every stored bead-string layout can be completed using the shared directional controls", () => {
-    for (let phase = 0; phase < 2; phase++)
+test("every stored firefly layout is flown to the end by a held finger", () => {
+    for (let phase = 0; phase < 6; phase++)
         for (let seed = 0; seed < 3; seed++) {
             const s = openRemainingConfiguration(remainingChallenge(seed, "snake", phase));
-            assert.ok("cards" in s);
-            for (let tick = 0; !s.won && tick < 18000; tick++) {
-                const direction = s.tick === s.every - 1 || s.stopped ? towards(s) : null;
-                stepSnake(s, { ...emptyPad(), pressed: direction ? [direction] : [] });
-            }
-            assert.ok(s.won, `snake ${phase}/${seed}`);
+            assert.ok("layout" in s);
+            pilot(s, "pointer");
+            assert.ok(s.won, `firefly ${phase}/${seed}: ${s.next} caught, ${s.beads} beads`);
         }
 });
 
@@ -339,39 +297,6 @@ test("every penny-shove target is reached through complete pointer shoves, with 
     }
 });
 
-test("every authored and generated fishing challenge reaches its full target through cast, reel and return controls", () => {
-    for (let phase = 0; phase < 6; phase++)
-        for (let seed = -1; seed < 3; seed++) {
-            const s =
-                seed < 0
-                    ? startCast(phase)
-                    : openRemainingConfiguration(remainingChallenge(seed, "cast", phase));
-            assert.ok("fish" in s);
-            const possible = (values: number[], count: number, target: number): boolean => {
-                if (!count) return Math.abs(target) < 0.0001;
-                return values.some((v, i) => possible(values.slice(i + 1), count - 1, target - v));
-            };
-            for (let tick = 0; !s.won && tick < 60000; tick++) {
-                if (s.phase === "rest" && !s.home && !s.flights.length) {
-                    const sum = s.pan.reduce(
-                        (n, i) => n + (s.L.kinds[s.fish[i]?.kind ?? 0]?.value ?? 0),
-                        0,
-                    );
-                    const available = s.fish
-                        .filter((f) => f.at === "sea")
-                        .map((f) => s.L.kinds[f.kind]?.value ?? 0);
-                    if (!possible(available, s.L.holds - s.pan.length, s.L.target - sum))
-                        returnFish(s);
-                }
-                const tapped =
-                    !s.home && !s.flights.length && (s.phase === "rest" || s.phase === "bed");
-                stepCast(s, { ...emptyPad(), tapped, go: s.phase === "reel" });
-            }
-            assert.ok(s.won, `fish ${phase}/${seed}`);
-            assert.equal(s.pan.length, s.L.holds);
-        }
-});
-
 const RAFT_WITNESSES: { phase: number; seed: number; shots: [number, number][] }[] = [
     {
         phase: 0,
@@ -388,11 +313,11 @@ const RAFT_WITNESSES: { phase: number; seed: number; shots: [number, number][] }
         phase: 0,
         seed: 1,
         shots: [
-            [35, 2.25],
-            [35, 2.625],
             [35, 3],
-            [35, 2.25],
-            [35, 2.375],
+            [35, 3],
+            [35, 3],
+            [35, 3],
+            [35, 3],
         ],
     },
     {
@@ -410,16 +335,16 @@ const RAFT_WITNESSES: { phase: number; seed: number; shots: [number, number][] }
         phase: 1,
         seed: 0,
         shots: [
-            [35, 3.375],
-            [35, 3.625],
-            [35, 3.75],
-            [35, 2],
-            [35, 2],
-            [35, 2],
-            [35, 2],
-            [35, 2],
-            [35, 2],
-            [35, 2],
+            [45, 1.375],
+            [25, 1.875],
+            [25, 2.125],
+            [35, 2.125],
+            [40, 2.25],
+            [25, 2.75],
+            [35, 2.625],
+            [50, 3.375],
+            [55, 3.5],
+            [25, 4.125],
         ],
     },
     {
@@ -476,122 +401,122 @@ const RAFT_WITNESSES: { phase: number; seed: number; shots: [number, number][] }
         phase: 2,
         seed: 1,
         shots: [
-            [35, 3.625],
-            [35, 3.875],
-            [35, 3.625],
-            [35, 4],
-            [35, 2.625],
-            [35, 2.75],
-            [35, 2.75],
-            [35, 2.75],
-            [35, 2],
-            [35, 2],
-            [35, 2.5],
-            [35, 2.125],
+            [35, 2.25],
+            [35, 1.875],
+            [45, 2.125],
+            [45, 2.25],
+            [35, 3],
+            [35, 3],
+            [35, 3],
+            [45, 3],
+            [45, 3.625],
+            [45, 3.625],
+            [45, 3.875],
+            [45, 3.625],
         ],
     },
     {
         phase: 2,
         seed: 2,
         shots: [
-            [35, 3.75],
+            [35, 1.625],
+            [35, 1.875],
+            [45, 2],
+            [35, 2.25],
+            [40, 2.875],
+            [40, 3],
+            [40, 3.125],
+            [40, 3.25],
+            [30, 4],
+            [45, 3.75],
             [35, 4],
-            [35, 3.75],
-            [35, 3.75],
-            [35, 2.75],
-            [35, 2.75],
-            [35, 2.75],
-            [35, 2.75],
-            [35, 2],
-            [35, 2.125],
-            [35, 2],
-            [35, 2],
+            [40, 4],
         ],
     },
     {
         phase: 3,
         seed: 0,
         shots: [
-            [35, 3.125],
-            [35, 3.375],
-            [35, 3.25],
-            [35, 3.25],
-            [35, 2.25],
-            [35, 2.25],
-            [35, 2.375],
-            [35, 2.375],
-            [35, 2],
-            [35, 2.25],
-            [35, 2.125],
-            [35, 2],
+            [30, 2.125],
+            [35, 1.625],
+            [30, 2.125],
+            [30, 2.125],
+            [30, 3],
+            [35, 2.625],
+            [30, 3],
+            [30, 3],
+            [40, 3.25],
+            [40, 3.25],
+            [45, 3.25],
+            [40, 3.25],
         ],
     },
     {
         phase: 3,
         seed: 1,
         shots: [
-            [35, 3.25],
-            [35, 3.375],
-            [35, 3.25],
-            [35, 3.25],
-            [35, 2.375],
-            [35, 2.375],
-            [35, 2.375],
-            [35, 2.375],
-            [35, 2],
-            [35, 2.25],
-            [35, 2.375],
-            [35, 2],
+            [35, 2.125],
+            [45, 1.75],
+            [30, 2.25],
+            [30, 2.25],
+            [30, 3],
+            [30, 2.875],
+            [35, 3],
+            [35, 3],
+            [45, 3.25],
+            [45, 3.25],
+            [45, 3.25],
+            [45, 3.25],
         ],
     },
     {
         phase: 3,
         seed: 2,
         shots: [
-            [35, 3.25],
-            [35, 3.25],
-            [35, 3.375],
-            [35, 3.375],
-            [35, 2.375],
-            [35, 2.75],
-            [35, 2.875],
-            [35, 2.5],
-            [35, 2],
-            [35, 2.25],
-            [35, 2.375],
-            [35, 2],
-        ],
-    },
-    {
-        phase: 4,
-        seed: 0,
-        shots: [
-            [35, 3.875],
-            [35, 3.875],
-            [35, 2.875],
-            [35, 2.875],
-            [35, 2.875],
-            [35, 2],
             [35, 2.125],
-            [35, 2],
-            [35, 2],
-            [35, 2],
-        ],
-    },
-    {
-        phase: 4,
-        seed: 1,
-        shots: [
-            [35, 3.875],
-            [35, 4],
-            [35, 2.875],
+            [35, 1.875],
+            [40, 2.125],
+            [30, 2.25],
+            [35, 3],
             [35, 2.875],
             [35, 3],
+            [35, 3],
+            [40, 3.375],
+            [40, 3.375],
+            [35, 3.5],
+            [40, 3.375],
+        ],
+    },
+    {
+        phase: 4,
+        seed: 0,
+        shots: [
+            [35, 3.875],
+            [35, 3.875],
+            [35, 2.875],
+            [35, 2.875],
+            [35, 2.875],
             [35, 2],
             [35, 2.125],
             [35, 2],
             [35, 2],
             [35, 2],
+        ],
+    },
+    {
+        phase: 4,
+        seed: 1,
+        shots: [
+            [40, 1.5],
+            [40, 1.75],
+            [35, 2],
+            [45, 2.125],
+            [35, 2.375],
+            [45, 3],
+            [40, 3.125],
+            [40, 3.25],
+            [30, 4.125],
+            [35, 4],
         ],
     },
     {
@@ -614,48 +539,48 @@ const RAFT_WITNESSES: { phase: number; seed: number; shots: [number, number][] }
         phase: 5,
         seed: 0,
         shots: [
-            [35, 3.5],
-            [35, 3.875],
-            [35, 3.625],
-            [35, 3.625],
-            [35, 3.625],
-            [35, 3.625],
-            [35, 2.5],
-            [35, 2.875],
-            [35, 2.875],
-            [35, 2.875],
-            [35, 2.625],
-            [35, 2.625],
-            [35, 2],
-            [35, 2],
-            [65, 2],
-            [35, 2.875],
-            [35, 2],
-            [35, 2],
+            [30, 1.5],
+            [30, 1.625],
+            [45, 1.75],
+            [30, 2.125],
+            [35, 2.25],
+            [35, 2.375],
+            [30, 2.875],
+            [40, 2.875],
+            [45, 3],
+            [40, 3.125],
+            [40, 3.25],
+            [35, 3.375],
+            [30, 3.875],
+            [30, 4],
+            [45, 3.75],
+            [35, 4],
+            [40, 4],
+            [45, 4],
         ],
     },
     {
         phase: 5,
         seed: 1,
         shots: [
-            [35, 3.625],
-            [35, 3.875],
-            [35, 4],
-            [35, 3.625],
-            [35, 3.625],
-            [35, 3.625],
-            [35, 2.625],
-            [35, 3],
-            [35, 2.625],
-            [35, 2.625],
-            [35, 2.625],
-            [35, 2.625],
-            [35, 2],
+            [45, 1.375],
+            [25, 1.875],
+            [25, 2.125],
             [35, 2.125],
-            [35, 2],
-            [35, 2],
-            [35, 2],
-            [35, 2],
+            [40, 2.25],
+            [40, 2.375],
+            [50, 2.75],
+            [25, 3.25],
+            [45, 3],
+            [30, 3.375],
+            [30, 3.5],
+            [55, 3.375],
+            [50, 3.625],
+            [45, 3.75],
+            [25, 4.375],
+            [25, 4.5],
+            [35, 4.125],
+            [30, 4.375],
         ],
     },
     {

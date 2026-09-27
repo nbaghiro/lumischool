@@ -8,6 +8,8 @@ test("every generated rabbit target has recoverable stones and wins through keyb
     for (let phase = 0; phase < HOP_LEVELS.length; phase++) {
         const pool = rabbitConfigurations(phase);
         assert.ok(pool.length >= 2, `phase ${phase}: ${pool.length}`);
+        // a level with logs is crossed by riding them, which rabbit.test.ts holds for every layout
+        if (HOP_LEVELS[phase]?.logs) continue;
         for (const L of pool)
             for (const input of ["keyboard", "pointer"]) {
                 const s = openRabbitConfiguration(L, phase);

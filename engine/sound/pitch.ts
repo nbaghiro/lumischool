@@ -37,7 +37,8 @@ const pc = (n: Note): number => ((n % 12) + 12) % 12;
 
 export const octaveOf = (n: Note): number => Math.floor(n / 12) - 1;
 export const isBlack = (n: Note): boolean => BLACK[pc(n)] ?? false;
-export const letterOf = (n: Note): Letter => (SHARP_NAMES[pc(n)] ?? "C").charAt(0) as Letter;
+export const letterOf = (n: Note): Letter =>
+    LETTERS.find((l) => l === (SHARP_NAMES[pc(n)] ?? "C").charAt(0)) ?? "C";
 
 /** The name a person reads: "F#4", "Bb3", "C4". */
 export const noteName = (n: Note, style: "sharp" | "flat" = "sharp"): string =>
@@ -78,7 +79,8 @@ const NAME = /^([A-Ga-g])(#{1,2}|s{1,2}|b{1,2}|f{1,2}|sharp|flat|♯|♭)?(-?\d{
 export function readNote(s: string): Note | null {
     const m = NAME.exec(s.trim());
     if (!m) return null;
-    const letter = (m[1] ?? "").toUpperCase() as Letter;
+    const letter = LETTERS.find((l) => l === (m[1] ?? "").toUpperCase());
+    if (!letter) return null;
     const acc = (m[2] ?? "").toLowerCase();
     const shift =
         acc === ""

@@ -40,6 +40,8 @@ async function rabbitPull(
 test("every rabbit level has a route of hops to the apple, several hops long, and the stones that never sink join every stone to it", async () => {
     const R = await import("../rabbit");
     for (const [level, L] of R.HOP_LEVELS.entries()) {
+        // a level with logs is crossed by riding them, which the test on logs below holds
+        if (L.logs) continue;
         const first = L.stones.indexOf(L.start),
             sinks = (i: number) => L.sinking.includes(L.stones[i] ?? NaN);
         assert.ok(
@@ -254,7 +256,14 @@ test("the same pulls give the same crossing", async () => {
     };
     const a = await play();
     assert.equal(a, await play());
-    assert.ok((JSON.parse(a) as { hops: number }).hops >= 3);
+    const played: unknown = JSON.parse(a);
+    assert.ok(
+        typeof played === "object" &&
+            played !== null &&
+            "hops" in played &&
+            typeof played.hops === "number" &&
+            played.hops >= 3,
+    );
 });
 
 test("under reduced motion a hop is worked out to rest, a dip and its swim back included", async () => {
@@ -418,4 +427,114 @@ test("held arrow aiming starts smoothly and ignores arrows while airborne", asyn
     p.pressed = ["right"];
     R.step(s, p);
     assert.equal(s.aim, null);
+});
+
+/**
+ * Crosses a level with logs as a child would: from where the rabbit sits, a hop straight to the
+ * carrot when it is in reach, and otherwise the hop, in whole key steps, that lands on a log and
+ * gets furthest towards the carrot, tried on a copy first; and waiting while no hop lands on one.
+ */
+async function rideAcross(s: import("../rabbit").HopState, input: "keyboard" | "pointer") {
+    const R = await import("../rabbit");
+    const L = s.L,
+        pad = emptyPad(),
+        by = R.keyStepOf(L);
+    const unitsAt = (x: number) => L.from + (x - R.xOf(L, L.from)) / R.perOf(L);
+    const hop = async (d: number) => {
+        if (input === "keyboard") {
+            const n = Math.round(Math.abs(d) / by);
+            for (let p = 0; p < n; p++) {
+                pad.pressed = [d < 0 ? "left" : "right"];
+                R.step(s, pad);
+                spent(pad);
+            }
+            pad.tapped = true;
+            R.step(s, pad);
+            spent(pad);
+        } else {
+            const grab = { x: s.at.x, y: s.at.y - 1.2 };
+            pad.touch = grab;
+            R.step(s, pad);
+            spent(pad);
+            pad.touch = { x: grab.x - (d / L.most) * R.HOP.pull.value, y: grab.y };
+            R.step(s, pad);
+            spent(pad);
+            pad.lifted = pad.touch;
+            pad.touch = null;
+            R.step(s, pad);
+            spent(pad);
+        }
+        await rabbitRest(s);
+    };
+    // a hop tried on a copy first, as the keys or a pull would make it
+    const tryHop = (d: number) => {
+        const copy = structuredClone(s);
+        // it rides the log for as many steps as the keys or the pull take before it leaves
+        const wait = input === "keyboard" ? Math.round(Math.abs(d) / by) : 2;
+        for (let t = 0; t < wait; t++) R.step(copy, emptyPad());
+        R.hopBy(copy, d);
+        for (let t = 0; t < 600 && copy.phase === "hop"; t++) R.step(copy, emptyPad());
+        return copy;
+    };
+    for (let tries = 0; tries < 600 && !s.won; tries++) {
+        const here = unitsAt(s.at.x),
+            to = Math.round((L.target - here) / by) * by;
+        if (Math.abs(to) <= L.most && tryHop(to).won) {
+            await hop(to);
+            continue;
+        }
+        let best: number | null = null,
+            gain = 0;
+        // a pull or an aim shorter than the shortest hop launches nothing
+        const least = (L.most * R.HOP.minPull.value) / R.HOP.pull.value;
+        for (let d = -L.most; d <= L.most + 1e-9; d += by) {
+            if (Math.abs(d) < least) continue;
+            const copy = tryHop(d);
+            const got = Math.abs(L.target - here) - Math.abs(L.target - unitsAt(copy.at.x));
+            if (copy.phase === "sit" && copy.log >= 0 && got > gain + 1e-6) {
+                best = d;
+                gain = got;
+            }
+        }
+        if (best === null) {
+            for (let t = 0; t < 6; t++) {
+                R.step(s, pad);
+                spent(pad);
+            }
+            continue;
+        }
+        await hop(best);
+    }
+}
+
+test("a level with logs is crossed by riding them, with the keys and with a pull, in every layout", async () => {
+    const R = await import("../rabbit");
+    const C = await import("../rabbit-challenges");
+    for (const [level, L] of R.HOP_LEVELS.entries()) {
+        if (!L.logs) continue;
+        for (const config of C.rabbitConfigurations(level))
+            for (const input of ["keyboard", "pointer"] as const) {
+                const s = C.openRabbitConfiguration(config, level);
+                await rideAcross(s, input);
+                assert.ok(s.won, `${L.title}, ${input}: ${R.say(s)}`);
+                assert.equal(s.dips, 0, `${L.title}, ${input}: never wet`);
+            }
+    }
+});
+
+test("a rabbit on a log goes where the log goes, and one that misses it swims back", async () => {
+    const R = await import("../rabbit");
+    const level = R.HOP_LEVELS.findIndex((L) => L.logs);
+    const s = R.start(level);
+    await rideAcross(s, "pointer");
+    assert.ok(s.won);
+    const miss = R.start(level);
+    // a hop out into the stream while the log is far away lands in the water
+    for (let t = 0; t < 60 * 4.5; t++) R.step(miss, emptyPad());
+    R.hopBy(miss, miss.L.most);
+    await rabbitRest(miss);
+    assert.equal(miss.dips, 1);
+    assert.equal(miss.log, -1);
+    assert.equal(miss.phase, "sit", "and it swam back to the stone it hopped from");
+    assert.equal(miss.L.stones[miss.stone], miss.L.start);
 });

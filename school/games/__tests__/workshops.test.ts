@@ -6,22 +6,16 @@ import {
     startWorkshop,
     stepWorkshop,
     workshopCommand,
-    MARBLE_LEVELS,
     CARGO_LEVELS,
     cargoGame,
 } from "../workshops";
 
 type Input = string | Partial<Pad>;
-function replay(
-    kind: "cargo" | "marble",
-    level: number,
-    inputs: ReplayAction<Input>[],
-    limit = 2400,
-) {
+function replay(level: number, inputs: ReplayAction<Input>[], limit = 7200) {
     const pad = emptyPad();
     return verifyReplay(
         {
-            start: () => startWorkshop(kind, level),
+            start: () => startWorkshop(level),
             input: (s, input: Input) => {
                 if (typeof input === "string") workshopCommand(s, input);
                 else Object.assign(pad, input);
@@ -37,53 +31,11 @@ function replay(
     );
 }
 
-// Positions on the half-square controls; rotations counted from each authored starting angle.
-const MARBLE_ROUTES = [
-    [{ x: 3.5, y: 6.5, turns: 3 }],
-    [
-        { x: 6.5, y: 5.5, turns: 1 },
-        { x: 15, y: 12, turns: 4 },
-    ],
-    [
-        { x: 6.5, y: 6.5, turns: 1 },
-        { x: 13.5, y: 10, turns: 5 },
-        { x: 22, y: 17, turns: 3 },
-    ],
-    [
-        { x: 4, y: 5, turns: 0 },
-        { x: 13, y: 11.5, turns: 5 },
-        { x: 22, y: 13, turns: -1 },
-    ],
-];
-
-test("every marble challenge has a winning replay using only the player's commands", () => {
-    assert.equal(MARBLE_ROUTES.length, MARBLE_LEVELS.length);
-    for (const [level, routes] of MARBLE_ROUTES.entries()) {
-        const inputs: ReplayAction<Input>[] = [];
-        const add = (input: Input) => inputs.push({ tick: inputs.length, input });
-        for (const [i, route] of routes.entries()) {
-            const p = MARBLE_LEVELS[level]?.pieces[i];
-            assert.ok(p);
-            for (let n = 0; n < Math.abs(route.x - p.x) * 2; n++)
-                add({ pressed: [route.x < p.x ? "left" : "right"] });
-            for (let n = 0; n < Math.abs(route.y - p.y) * 2; n++)
-                add({ pressed: [route.y < p.y ? "up" : "down"] });
-            for (let n = 0; n < Math.abs(route.turns); n++) add(route.turns < 0 ? "left" : "right");
-            add("next");
-        }
-        add("test");
-        const result = replay("marble", level, inputs);
-        assert.ok(result.won, MARBLE_LEVELS[level]?.title);
-        assert.ok(result.state.goals.done.includes("caught"));
-        if (result.state.definition.gate) assert.ok(result.state.goals.done.includes("gate"));
-    }
-});
-
 const CARGO_ROUTES = [
     [28, 32],
     [26, 29, 32],
     [24, 27, 30, 33],
-    [22.5, 24.5, 26.5, 29.5, 34.5],
+    [22.5, 24.8, 27.3, 30.5, 33.2],
 ];
 test("every cargo challenge can be loaded, balanced and delivered through the player's hook", () => {
     assert.equal(CARGO_ROUTES.length, CARGO_LEVELS.length);
@@ -97,22 +49,19 @@ test("every cargo challenge can be loaded, balanced and delivered through the pl
             inputs.push({ tick: tick++, input: { touch: { x: p.x, y: 8 } } });
             inputs.push({ tick: tick++, input: { touch: { x, y: 8 } } });
             inputs.push({ tick: tick++, input: { touch: { x, y: 18 } } });
-            tick += 60;
+            // the trolley runs over, lowers the crate and lets it stop swinging
+            tick += 360;
             inputs.push({ tick: tick++, input: { touch: { x, y: 18 }, tapped: true } });
             inputs.push({ tick: tick++, input: { touch: null } });
             tick += 150;
         }
         inputs.push({ tick: tick + 180, input: "test" });
-        assert.ok(replay("cargo", level, inputs).won, CARGO_LEVELS[level]?.title);
+        assert.ok(replay(level, inputs).won, CARGO_LEVELS[level]?.title);
     }
 });
 
-test("an unedited failed marble run is not certified as solvable", () => {
-    assert.equal(replay("marble", 1, [{ tick: 0, input: "test" }], 1200).won, false);
-});
-
 test("cargo can be dragged aboard and delivered with the shared primary action", () => {
-    const s = startWorkshop("cargo", 0),
+    const s = startWorkshop(0),
         pad = emptyPad();
     const tick = () => {
         stepWorkshop(s, pad);
@@ -129,13 +78,13 @@ test("cargo can be dragged aboard and delivered with the shared primary action",
         tick();
         assert.equal(s.held, p.id);
         pad.touch = { x, y: 20 };
-        for (let n = 0; n < 60; n++) tick();
+        for (let n = 0; n < 360; n++) tick();
         pad.touch = null;
         pad.lifted = { x, y: 20 };
         tick();
         assert.equal(s.held, null);
         assert.equal(s.dragging, null);
-        for (let n = 0; n < 180; n++) tick();
+        for (let n = 0; n < 240; n++) tick();
     }
     assert.match(s.text, /Ready to sail/);
     pad.tapped = true;
@@ -144,7 +93,7 @@ test("cargo can be dragged aboard and delivered with the shared primary action",
 });
 
 test("cancelling a cargo drag keeps the crate held and available to keyboard controls", () => {
-    const s = startWorkshop("cargo", 0),
+    const s = startWorkshop(0),
         pad = emptyPad();
     const p = s.definition.pieces[0];
     assert.ok(p);
@@ -161,3 +110,51 @@ test("cancelling a cargo drag keeps the crate held and available to keyboard con
     stepWorkshop(s, pad);
     assert.equal(s.held, null);
 });
+
+test("the barge lists towards a heavy crate at one end, and a crate dropped in the harbour splashes and comes back", () => {
+    const s = startWorkshop(3),
+        pad = emptyPad();
+    const tick = (n = 1) => {
+        for (let i = 0; i < n; i++) {
+            stepWorkshop(s, pad);
+            spent(pad);
+        }
+    };
+    tick(120);
+    const heavy = s.objects.get("e");
+    assert.ok(heavy);
+    const at = s.world.where(heavy);
+    pad.touch = { x: at.x, y: at.y };
+    tick();
+    pad.touch = { x: 37, y: 20 };
+    tick(360);
+    pad.touch = null;
+    pad.lifted = { x: 37, y: 20 };
+    tick(240);
+    assert.ok(s.world.where(s.barge).angle > 0.02, `lists by ${s.world.where(s.barge).angle}`);
+    assert.match(workshopFrameText(s), /More weight on the right/);
+
+    const light = s.objects.get("a");
+    assert.ok(light);
+    const from = s.world.where(light);
+    pad.touch = { x: from.x, y: from.y };
+    tick();
+    pad.touch = { x: 19.5, y: 20 };
+    tick(300);
+    pad.touch = null;
+    pad.lifted = { x: 19.5, y: 20 };
+    let splashed = false;
+    for (let i = 0; i < 180; i++) {
+        tick();
+        splashed ||= s.ripples.length > 0;
+    }
+    assert.ok(splashed, "it broke the surface");
+    assert.match(s.text, /brought that crate back/);
+    assert.ok(Math.abs(s.world.where(light).x - (s.definition.pieces[0]?.x ?? 0)) < 0.5);
+});
+
+const workshopFrameText = (s: ReturnType<typeof startWorkshop>): string =>
+    cargoGame
+        .frame(s)
+        .marks.flatMap((m) => (m.kind === "word" ? [m.text] : []))
+        .join(" ");

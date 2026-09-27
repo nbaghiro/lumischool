@@ -1,4 +1,5 @@
 import type { ActionGame } from "./game";
+import { stepAim, type AimSpec } from "../../engine/motion/aim";
 import type { Pt, Rect } from "../../engine/motion/geometry";
 import type { Frame, Sprite, Mark } from "../../engine/motion/scene";
 import {
@@ -91,7 +92,18 @@ export function golfWorld(s: GolfState): RollingWorld {
         cup: { ...s.course.cup, r: 0.6, maxSpeed: 3.2 },
     };
 }
-const clampPower = (power: number) => Math.max(0.2, Math.min(8, power));
+/** A putt: from a tap to sixteen squares a second, turned all the way round. */
+const PUTT: AimSpec = {
+    min: 0.4,
+    max: 16,
+    per: 2,
+    dead: 0.15,
+    lo: -Infinity,
+    hi: Infinity,
+    turn: 1.5,
+    ramp: 4.2,
+    turns: "across",
+};
 export function golfFrame(s: GolfState): Frame {
     const sprites: Sprite[] = [
         { key: "garden-tree", art: "tree", x: 1.4, y: 5, size: 2.3, still: true, z: 1 },
@@ -167,6 +179,7 @@ export const golfGame: ActionGame<GolfState> = {
     id: "golf",
     title: "Garden mini-golf",
     group: "action",
+    seen: "above",
     levels: GOLF_LEVELS,
     rate: 60,
     hint: "Pull back from the ball and let go. Arrow keys turn the aim and change the power; space or Enter putts. Walls bounce; sand slows.",
@@ -180,19 +193,13 @@ export const golfGame: ActionGame<GolfState> = {
         if (s.ball.sunk) return [];
         let launched = false;
         if (!s.moving) {
-            const directions = new Set([...pad.holding, ...pad.pressed]);
-            if (directions.has("left")) s.angle -= 0.025;
-            if (directions.has("right")) s.angle += 0.025;
-            if (directions.has("up")) s.power = clampPower(s.power + 0.035);
-            if (directions.has("down")) s.power = clampPower(s.power - 0.035);
-            const pull = pad.released ?? pad.pull;
-            if (pull && Math.hypot(pull.x, pull.y) > 0.08) {
-                s.angle = Math.atan2(-pull.y, -pull.x);
-                s.power = clampPower(Math.hypot(pull.x, pull.y));
-            }
-            if (pad.tapped || (pad.released && Math.hypot(pad.released.x, pad.released.y) > 0.15)) {
-                const speed = s.power * 2;
-                launchRolling(s.ball, Math.cos(s.angle) * speed, Math.sin(s.angle) * speed, 16);
+            // the state keeps a putt's power as half its speed, as it always has
+            const a = { angle: s.angle, power: s.power * 2, pulling: false };
+            const v = stepAim(a, pad, PUTT, 1 / 60);
+            s.angle = a.angle;
+            s.power = a.power / 2;
+            if (v) {
+                launchRolling(s.ball, v.x, v.y, 16);
                 s.shots++;
                 launched = true;
                 s.moving = true;

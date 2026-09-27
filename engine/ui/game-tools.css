@@ -1,0 +1,135 @@
+/* Beside the field rather than over it, so the inspector's ink stays in sight; narrow enough for a
+   phone held sideways. */
+.game-tools {
+    position: fixed;
+    top: 72px;
+    right: 12px;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(340px, calc(100vw - 24px));
+    max-height: calc(100vh - 96px);
+    overflow: auto;
+    padding: 10px 12px 14px;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 35%, var(--card));
+    border-radius: 10px;
+    background: var(--card);
+    box-shadow: 0 10px 24px -16px #00000052;
+    font: 400 14px / 1.35 var(--f-read);
+    color: var(--ink);
+}
+.game-tools button,
+.tools-file {
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 35%, var(--card));
+    border-radius: 999px;
+    background: var(--card);
+    font: 600 14px / 1 var(--f-read);
+    color: var(--ink);
+    cursor: pointer;
+}
+.game-tools button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+.game-tools button:focus-visible,
+.game-tools input:focus-visible,
+.game-tools textarea:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 3px;
+}
+.tools-tabs,
+.tools-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.tools-tabs button[aria-selected="true"] {
+    border-color: var(--pen);
+    background: color-mix(in srgb, var(--pen) 10%, var(--card));
+    color: var(--pen);
+    box-shadow: inset 0 0 0 1px var(--pen);
+}
+.tools-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.tools-body h3 {
+    margin: 6px 0 0;
+    font: 500 12px / 1 var(--f-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+}
+.tools-note {
+    margin: 0;
+    color: var(--ink-soft);
+}
+.tools-problem {
+    margin: 0;
+    font-weight: 700;
+}
+.tools-rows {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 12px;
+    margin: 0;
+}
+.tools-rows dt {
+    color: var(--ink-soft);
+}
+.tools-rows dd {
+    margin: 0;
+    font: 500 13px / 1.35 var(--f-mono);
+    overflow-wrap: anywhere;
+}
+.tools-events {
+    margin: 0;
+    padding-left: 18px;
+    font: 500 13px / 1.4 var(--f-mono);
+}
+.tools-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+}
+.tools-check input {
+    width: 22px;
+    height: 22px;
+}
+.tools-knob {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.tools-knob output {
+    font: 500 13px / 1 var(--f-mono);
+    color: var(--pen);
+}
+.tools-knob small {
+    color: var(--ink-soft);
+}
+.tools-knob input,
+.tools-scrub {
+    width: 100%;
+    min-height: 44px;
+}
+.tools-tape {
+    width: 100%;
+    font: 500 12px / 1.3 var(--f-mono);
+}
+.tools-file {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.tools-file input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}

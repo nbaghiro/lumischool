@@ -4,6 +4,7 @@ import type { GameAttempt } from "../../engine/answer";
 import { GAMES } from "../../school/games/catalogue";
 import { challengeFor } from "../../school/games/challenges";
 import { signInAs, test } from "./steps";
+import { playTrain } from "./train-hands";
 
 const record = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null && !Array.isArray(value);
@@ -86,18 +87,19 @@ test("parent games stay unassigned and report-free while recovering already-owne
     const first = await player.getAttribute("data-challenge");
     await expect(page.locator(".game-menu")).not.toBeVisible();
     const finish = async () => {
-        for (const sound of ["b", "u", "s"])
-            await page
-                .locator('[data-game="tray"]')
-                .getByRole("button", {
-                    name: `Put "${sound}" in the next box`,
-                    exact: true,
-                })
-                .click();
+        await expect(player).toHaveAttribute("data-game-ready", "true");
+        await playTrain(page, 0, "keys");
         await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
-        await expect(page.locator(".game-finished")).toContainText("That is how it is spelled.");
+        await expect(page.locator(".game-finished")).toContainText("bus");
         await expect(page.locator(".game-finished .game-cover svg")).toBeVisible();
-        await expect(page.locator(".game-toolbar [data-game=aside]")).toHaveCount(0);
+        // a finished round's result and what to do next sit in the middle of the top bar
+        await expect(page.locator(".game-toolbar [data-game=aside]")).toHaveCount(1);
+        await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
+        await expect(
+            page
+                .locator(".game-toolbar")
+                .getByRole("button", { name: "Play another", exact: true }),
+        ).toBeVisible();
         await expect(
             page.getByRole("button", { name: "Try the next phase", exact: true }),
         ).toHaveCount(0);

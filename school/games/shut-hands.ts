@@ -1,19 +1,26 @@
 // Shut the box, bound to hands.
 //
 // The mechanic in shut.ts is the whole game; this file is how it is played with a hand. Before a
-// throw the dice are thrown: a die picked up and let go over the felt, flicked at it, or tapped,
-// throws them all, and they tumble from where the hand let go to where they land, each die rolling
-// over its edges through faces a real die shows beside each other. After a throw a die is dragged
+// throw the dice are thrown: a die flicked at the felt goes the way and as hard as the hand sent it,
+// and both dice fly, knock off the box's walls and each other, and tumble to rest, rolling over their
+// edges through faces a real die shows beside each other. A die let go without a flick, a tap and the
+// keys throw them from where they lie. What the dice show is the mechanic's fair throw, decided before
+// they move: the tumble is bent towards where they land and how they lie, so no two throws look alike
+// and the odds are the ones `odds` in shut.ts proves. After a throw a die is dragged
 // onto a number: onto its own number it shuts it, and onto a bigger one it waits there until the
 // other dice put with it make the number. Holding a die rings the numbers it can make. A drop that
 // makes nothing is refused in a sentence, and a waiting die dragged back to the felt comes off.
 //
 // Every release resolves to a move the mechanic listed, found by the position it leads to, and a
 // test checks both ways that the hand and the tray are the same moves. See .docs/games.md.
+import { aimAt, aimOfPull, launchOf, type AimSpec } from "../../engine/motion/aim";
+import { score, type Beat } from "../../engine/motion/beat";
 import { atLeast, type Pt, type Rect } from "../../engine/motion/geometry";
-import type { Choice, Ctx, Handle, Session } from "./hands";
+import { seeded } from "../../engine/motion/spawn";
+import { tumble } from "../../engine/motion/tumble";
+import type { Choice, Ctx, Handle, Release, Session } from "./hands";
 import type { Target } from "./pieces";
-import type { Part } from "../../engine/motion/scene";
+import type { Part, Scene } from "../../engine/motion/scene";
 import type { Spring } from "../../engine/motion/spring";
 import { easeBack, timeline } from "../../engine/motion/timeline";
 import type { TurnGame, TurnLevel } from "./game";
@@ -119,11 +126,196 @@ export function landing(
     };
 }
 
+/**
+ * A throw from a flick: as fast as the hand was going, between a gentle roll and a hard throw, in
+ * squares a second. A hand let go slower than `dead` was not a flick, and the dice are thrown for it.
+ */
+export const THROW: AimSpec = {
+    min: 6,
+    max: 22,
+    per: 1,
+    dead: 3,
+    lo: -Infinity,
+    hi: Infinity,
+    turn: 0,
+    ramp: 0,
+    turns: "across",
+};
+
+/** A throw at least this fast shakes the box. */
+const HARD = 15;
+
+/** The launch a throw has: the flick's, or, with none, one from where the dice lie towards the far end of the felt. */
+export function throwFrom(hand: Release | null, start: Pt, tray: Rect, seed: number): Pt {
+    if (hand && Math.hypot(hand.v.x, hand.v.y) >= THROW.dead)
+        return launchOf(aimOfPull({ x: -hand.v.x, y: -hand.v.y }, THROW));
+    const rnd = seeded(seed * 7919 + 3);
+    const aim = {
+        x: tray.x + tray.w * (0.2 + rnd() * 0.25) - start.x,
+        y: tray.y + tray.h * (0.25 + rnd() * 0.5) - start.y,
+    };
+    return launchOf(aimAt(Math.atan2(aim.y, aim.x), 11 + rnd() * 4));
+}
+
+const partOf = (scene: Scene, key: string): Part | undefined =>
+    scene.parts.find((p) => p.key === key);
+const num = (v: unknown, d = 0): number => (typeof v === "number" ? v : d);
+
 /** Tumbling: the roll rocks a little past its face and back, the slide overshoots a little and settles. */
 const ROLL: Spring = { hz: 1.35, zeta: 0.55 };
 const SLIDE: Spring = { hz: 2.1, zeta: 0.62 };
 /** A number going down on its hinge lands with a small bounce. */
 const FLIP: Spring = { hz: 2.6, zeta: 0.42 };
+
+/** A move that is not a throw: whatever moved glides to its place and a number goes down on its hinge. */
+function settleBeat(was: Scene, now: Scene, hand: Release | null): Beat {
+    const sc = score();
+    for (const p of now.parts) {
+        const key = p.key,
+            q = key ? partOf(was, key) : undefined;
+        if (!key || !q) continue;
+        const held = hand?.key === key ? hand : null;
+        const a = held ? held.at : (q.at ?? { x: 0, y: 0 }),
+            b = p.at ?? { x: 0, y: 0 };
+        if (Math.hypot(a.x - b.x, a.y - b.y) > 1e-6)
+            sc.glide(key, 0, a, b, SLIDE, held ? held.v : undefined);
+        if (held && Math.abs(held.angle - (p.angle ?? 0)) > 1e-6)
+            sc.track(key, "angle", 0, held.angle, p.angle ?? 0, { spring: SLIDE, v0: 0 });
+        for (const [k, v] of Object.entries(p.params)) {
+            const u = q.params[k];
+            if (typeof v === "number" && typeof u === "number" && Math.abs(u - v) > 1e-6)
+                sc.track(key, `param:${k}`, 0, u, v, {
+                    spring: k === "down" ? FLIP : ROLL,
+                    v0: 0,
+                });
+        }
+        if (key.startsWith("tile:") && num(p.params.down) === 1 && num(q.params.down) < 1)
+            sc.cue(0.25, "place");
+    }
+    if (sc.beat().length === 0) sc.cue(0.05, "place");
+    return sc.beat();
+}
+
+/** How long a die takes to come from where it lay to where the throw starts it on the felt. */
+const LIFT = 0.08;
+
+/**
+ * A throw: both dice fly the way the hand sent them, knock off the walls and each other, and tumble
+ * to rest where the mechanic's throw has them, showing its faces. It starts where each die lay, or
+ * where the hand let one go, and ends exactly on the scene after the throw.
+ */
+function throwBeat(
+    was: Scene,
+    now: Scene,
+    hand: Release | null,
+    seed: number,
+    tray: Rect,
+    count: number,
+): Beat {
+    const sc = score();
+    const keys = Array.from({ length: count }, (_, i) => `die:${i}`);
+    const start = keys.map((key) => {
+        const q = partOf(was, key);
+        const at = hand?.key === key ? hand.at : (q?.at ?? { x: tray.x, y: tray.y });
+        return { x: at.x + DIE.half, y: at.y + DIE.half };
+    });
+    const end = keys.map((key) => {
+        const at = partOf(now, key)?.at ?? { x: tray.x, y: tray.y };
+        return { x: at.x + DIE.half, y: at.y + DIE.half };
+    });
+    const turnWas = keys.map((key) => num(partOf(was, key)?.params.turn)),
+        turnNow = keys.map((key) => num(partOf(now, key)?.params.turn));
+    const held = hand ? keys.indexOf(hand.key) : -1;
+    const v = throwFrom(
+        hand,
+        start[Math.max(0, held)] ?? start[0] ?? end[0] ?? { x: 0, y: 0 },
+        tray,
+        seed,
+    );
+    const { frames, hits } = tumble({
+        tray,
+        from: start,
+        to: end,
+        // one whole turn more than they need, so each is seen to spin
+        turnTo: turnNow.map(
+            (d, i) => ((d - (turnWas[i] ?? 0)) * Math.PI) / 180 + 2 * Math.PI * (i ? -1 : 1),
+        ),
+        v,
+        seed,
+        size: DIE.half * 2 * 0.9,
+    });
+    const first = frames[0],
+        last = frames[frames.length - 1];
+    keys.forEach((key, i) => {
+        const a = start[i] ?? { x: 0, y: 0 },
+            f0 = first?.at[i] ?? a;
+        // from where it lay onto the felt, then along the tumble two steps at a time
+        sc.track(key, "x", 0, a.x - DIE.half, f0.x - DIE.half, { ease: "out" }, LIFT);
+        sc.track(key, "y", 0, a.y - DIE.half, f0.y - DIE.half, { ease: "out" }, LIFT);
+        if (hand?.key === key && Math.abs(hand.angle) > 1e-6)
+            sc.track(key, "angle", 0, hand.angle, 0, { ease: "out" }, LIFT);
+        for (let k = 0; k + 2 < frames.length; k += 2) {
+            const p = frames[k],
+                q = frames[Math.min(k + 2, frames.length - 1)];
+            if (!p || !q) continue;
+            const at = LIFT + p.t,
+                dur = q.t - p.t;
+            const pa = p.at[i] ?? a,
+                qa = q.at[i] ?? a;
+            sc.track(key, "x", at, pa.x - DIE.half, qa.x - DIE.half, { ease: "linear" }, dur);
+            sc.track(key, "y", at, pa.y - DIE.half, qa.y - DIE.half, { ease: "linear" }, dur);
+            const deg = (r: number) => (turnWas[i] ?? 0) + (r * 180) / Math.PI;
+            sc.track(
+                key,
+                "param:turn",
+                at,
+                deg(p.angle[i] ?? 0),
+                deg(q.angle[i] ?? 0),
+                { ease: "linear" },
+                dur,
+            );
+        }
+        // the last stretch lands exactly on the scene after, whatever the two-step sampling left over
+        const lastAt = LIFT + (frames[Math.max(0, frames.length - 3)]?.t ?? 0),
+            before = frames[Math.max(0, frames.length - 3)];
+        const pa = before?.at[i] ?? a,
+            b = end[i] ?? a;
+        const span = Math.max(1 / 60, LIFT + (last?.t ?? 0) - lastAt);
+        sc.track(key, "x", lastAt, pa.x - DIE.half, b.x - DIE.half, { ease: "linear" }, span);
+        sc.track(key, "y", lastAt, pa.y - DIE.half, b.y - DIE.half, { ease: "linear" }, span);
+        sc.track(
+            key,
+            "param:turn",
+            lastAt,
+            (turnWas[i] ?? 0) + ((before?.angle[i] ?? 0) * 180) / Math.PI,
+            turnNow[i] ?? 0,
+            { ease: "linear" },
+            span,
+        );
+        // it rocks over an edge as it leaves, shows the new face mid-roll, and rolls to rest on it
+        const rolls = 6 + i * 2 + (seed % 3);
+        sc.set(key, 0, { face: partOf(was, key)?.params.face ?? 1 });
+        sc.track(key, "param:roll", 0, 0, 0.4, { ease: "linear" }, LIFT);
+        sc.set(key, LIFT, { face: partOf(now, key)?.params.face ?? 1 });
+        sc.track(key, "param:roll", LIFT, -rolls, 0, { ease: "out" }, LIFT + (last?.t ?? 0) - LIFT);
+    });
+    let heard = -1;
+    for (const h of hits) {
+        if (h.t - heard < 0.07) continue;
+        heard = h.t;
+        sc.cue(LIFT + h.t, "bump");
+        if (h.speed > 6) sc.burst(LIFT + h.t, "dust", h.at.x, h.at.y, 2);
+    }
+    // a hard throw jolts the box
+    if (Math.hypot(v.x, v.y) >= HARD && partOf(now, "box")) {
+        const jolt = hits[0]?.t ?? 0.2;
+        sc.track("box", "angle", LIFT + jolt, 0, 0.012, { ease: "out" }, 0.05);
+        sc.track("box", "angle", LIFT + jolt + 0.05, 0.012, 0, { spring: FLIP, v0: 0 });
+    }
+    sc.cue(0, "lift");
+    sc.cue(LIFT + (last?.t ?? 0), "place");
+    return sc.beat();
+}
 
 const TITLES = [
     "Up to 6",
@@ -166,8 +358,6 @@ export const shutGame: TurnGame = {
     ),
     open(_round: Round, ctx: Ctx): Session<Position> {
         const dice = DICE;
-        let held = -1;
-        let drawn = -1;
 
         const hinge = (n: number): Pt | null => ctx.stage.anchor("box", `hinge(${n})`);
         const tray = (): Rect | null => {
@@ -195,8 +385,11 @@ export const shutGame: TurnGame = {
         return {
             morph: { roll: ROLL, turn: ROLL, down: FLIP },
             glide: SLIDE,
-            prefer(key) {
-                held = Number(key.split(":")[1] ?? -1);
+            beat(from, to, { was, now, hand, seed }): Beat {
+                const t = tray() ?? { x: 1.5, y: 4.8, w: 10, h: 7 };
+                return readBox(to).thrown > readBox(from).thrown
+                    ? throwBeat(was, now, hand, seed, t, Math.max(dice, readBox(to).dice.length))
+                    : settleBeat(was, now, hand);
             },
             parts(pos) {
                 const b = readBox(pos);
@@ -207,7 +400,10 @@ export const shutGame: TurnGame = {
                     params: { count: b.count, shut: [], dice: [], on: [], thrown: 0, bare: true },
                     z: 1,
                 };
-                ctx.stage.show({ parts: [box] }, { keep: true });
+                // the box is shown first so its anchors can be read; once they can, showing it again
+                // would cut short a throw that is still tumbling, so it is shown only while they cannot
+                if (!ctx.stage.anchor("box", `hinge(${b.count})`))
+                    ctx.stage.show({ parts: [box] }, { keep: true });
                 const t = tray() ?? { x: 1.5, y: 4.8, w: 10, h: 7 };
                 const parts: Part[] = [box];
                 for (let n = 1; n <= b.count; n++) {
@@ -226,10 +422,6 @@ export const shutGame: TurnGame = {
                         z: 10,
                     });
                 }
-                // A new throw: each die is put where the hand let go, or where it lay, a few quarter turns
-                // before its face, and spun back, so the scene below rolls it onto its face as it slides.
-                const fresh = b.thrown > drawn && drawn >= 0;
-                const from = held >= 0 ? ctx.stage.at(`die:${held}`) : null;
                 for (let i = 0; i < Math.max(dice, b.dice.length); i++) {
                     const rest = restOf(b, i, t);
                     const turn = b.on[i]
@@ -238,29 +430,6 @@ export const shutGame: TurnGame = {
                           ? landing(t, b.dice.length, b.thrown, i).turn
                           : 0;
                     const key = `die:${i}`;
-                    if (fresh) {
-                        const start = from
-                            ? { x: from.x + i * 0.5, y: from.y - i * 0.35 }
-                            : ctx.stage.at(key);
-                        ctx.stage.show(
-                            {
-                                parts: [
-                                    {
-                                        art: "die",
-                                        key,
-                                        params: {
-                                            face: faceOf(b, i),
-                                            roll: -(7 + i * 3 + (b.thrown % 3)),
-                                            turn: turn - 200 - i * 70,
-                                        },
-                                        z: 30 + i,
-                                    },
-                                ],
-                            },
-                            { keep: true },
-                        );
-                        if (start) ctx.stage.place(key, start);
-                    }
                     parts.push({
                         art: "die",
                         key,
@@ -269,8 +438,6 @@ export const shutGame: TurnGame = {
                         z: 30 + i,
                     });
                 }
-                drawn = b.thrown;
-                held = -1;
                 return { parts };
             },
             after(pos) {

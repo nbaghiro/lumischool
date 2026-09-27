@@ -17,13 +17,17 @@ export interface Cam {
 export const fitZoom = (view: Size, world: Size): number =>
     Math.min(1, view.w / world.w, view.h / world.h);
 
-/** A centre moved just far enough that the view stays inside the world; across a world narrower than the view, the middle. */
-export function keepInside(c: Pt, view: Size, world: Size, zoom = 1): Pt {
+/** A centre moved just far enough that the view stays inside the world; across a world narrower than the view, the middle, or down one shorter than it with `foot`, the world stood on the view's foot. */
+export function keepInside(c: Pt, view: Size, world: Size, zoom = 1, foot = false): Pt {
     const hw = view.w / zoom / 2,
         hh = view.h / zoom / 2;
-    const pin = (v: number, half: number, size: number): number =>
-        size <= half * 2 ? size / 2 : Math.max(half, Math.min(size - half, v));
-    return { x: pin(c.x, hw, world.w), y: pin(c.y, hh, world.h) };
+    const pin = (v: number, half: number, size: number, low: boolean): number =>
+        size <= half * 2
+            ? low
+                ? size - half
+                : size / 2
+            : Math.max(half, Math.min(size - half, v));
+    return { x: pin(c.x, hw, world.w, false), y: pin(c.y, hh, world.h, foot) };
 }
 
 /** Where to look for a thing moving at `v`: `ahead` seconds in front of it, but never more than `most` squares. */

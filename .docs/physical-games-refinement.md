@@ -69,9 +69,9 @@ and backing water, and alternate fast/gentle/paused reeling through each fish we
 
 ## Second pass: fifteen games
 
-The shared `engine/motion/suspension.ts` helper follows a support with a bounded, damped spring.
-Harbour cargo uses it for a hanging crate. It accepts positions and time rather than crane, game,
-or DOM objects. Existing `Hands` sessions, legal move sequences, surface marks, aim projection,
+Harbour cargo's crane hangs its hook, and any crate it holds, on a rope joint from a trolley on its
+jib (`engine/motion/bodies.ts`), and damps a held crate's swing against the trolley so it settles
+within a second or so. Existing `Hands` sessions, legal move sequences, surface marks, aim projection,
 springs and fixed-step action input continue to provide the other shared building blocks.
 
 These refinements deliberately vary in size. Games with sound underlying physics keep it;
@@ -85,7 +85,7 @@ new scoring systems or learning targets are introduced.
 | 3 | Paper plane | The drawn nose eases into climbs and dives, with a shorter trail. | Existing lift, gravity, flight speed and hoop-crossing calculations. |
 | 4 | Rafts | A landing marker supplements the short aiming arc; a settled raft holding its requested count receives a small ring. | Existing buoyancy, sheep collisions, tipping, balance and counting. The marker projects to water height; moving rafts still affect the actual landing. |
 | 5 | Bead string | Holding a point on the paper steers towards it; buffered legal turns remain; an edge stop marks the head so recovery is clear. | Grid movement, counting sequence and prohibition on reversing through the body. |
-| 6 | Harbour cargo | Carried crates lag and settle gently beneath the hook; the suspension line shows the connection and a nearby pickup is marked. | Crate weight, collisions, boat balance, release and delivery checks. |
+| 6 | Harbour cargo | Carried crates hang on the crane's rope, are lifted clear before the trolley moves and lowered once they hang still, and a nearby pickup is marked; the barge floats and lists towards the heavier side. | Crate weight, collisions, boat balance, release and delivery checks. |
 | 7 | Marble workshop | Drag a ramp's middle to move, or its end to rotate; live preview commits as one undoable edit. A short-lived last path helps adjustment, and a stuck marble returns to building. | Quantized construction controls, marble physics, required ramps, gate and tray goals. |
 | 8 | Shunting yard | Acceleration and changes of direction build over time instead of instantly changing speed; the engine coupling is marked when stationary. | Track collisions, coupling, lift restrictions and required carriage order. |
 | 9 | See-saw | Heavier bags follow the hand more slowly; a placement guide connects a held bag to its beam position. | Actual weight-distance torque, plank response and settled balance. |
@@ -104,7 +104,7 @@ attempt recording remain consistent. The ordinary move tray remains available fo
 
 Regression coverage includes introductory versus later rabbit edge landings, brake-before-reverse,
 one-edit ramp rotation and undo, cut-once/cancelled knife gestures, pointer turns, sound removal and
-reordering, and bounded suspension settling. Workshop winning witnesses wait for their carried
+reordering, and a crane's load settling on its rope. Workshop winning witnesses wait for their carried
 loads before release and still solve the authored and generated configurations.
 
 The school suite checks all game models and the generated challenge pools. Browser coverage opens

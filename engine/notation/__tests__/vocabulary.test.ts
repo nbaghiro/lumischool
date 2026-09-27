@@ -10,7 +10,7 @@ import { content } from "./helpers";
 
 /** The drawings the four moves brought in, from .scratchpad/leftover/parts-move/briefs/. */
 const MOVED = {
-    C7: "crane fulcrum pegboard rocket arcade.ground arcade.puff arcade.road arcade.sling tap catchscale fx.drop fish hoop meadow scalepole sea sheep sheeppen fx.sparkle tackle die shutbox shuttile cakeknife longcake seesawplank shoveboard seesawprops raft joindots dig goalposts grandstand longjump medalrow podium racecar racecircuit racetrack scoreboard target teamgrid bufferstop coupling liftpit orderboard railway yardlever current mooringbuoy riverpost rowboat carrot reeds steppingstone swimmingrabbit",
+    C7: "crane fulcrum pegboard rocket arcade.ground arcade.puff arcade.road arcade.sling tap catchscale fx.drop fish hoop meadow scalepole sea sheep sheeppen fx.sparkle tackle die shutbox shuttile cakeknife longcake seesawplank shoveboard seesawprops raft joindots dig goalposts grandstand longjump medalrow podium racecar racecircuit racetrack scoreboard target teamgrid bufferstop coupling railway current mooringbuoy riverpost rowboat carrot reeds steppingstone swimmingrabbit",
     C8: "bakingtray chocolate eggbox pile spoons mixingbowl pizza recipe worktop oven callout divider pinned steps stickers choice pattern",
     D2: "arttools collage colourwheel dots layers linewalk lines mirrorpick mixingtray oneline paintbox paintpots paintsheet palette printrow radial rubbing stamps stencil stilllife sunprint tilerepeat tintladder tonescale",
     D3: "atombox beaker beforeafter cabbage candle condense crystalstring cylinder dish dropper fizz flame flask fossilsteps funnel heatcurve icemelt magnifier materials mixture molecule nails particles rocks safety sieve soiljar squash testtubes watercycle",
@@ -24,7 +24,7 @@ test("the four art moves landed every id they were briefed with, and each is a s
             else if (id.includes(".")) continue;
             else if (!REGISTRY[id]?.scene) missing.push(`${move}: ${id} is not a scene type`);
         }
-    assert.equal(Object.values(MOVED).flatMap((ids) => ids.split(" ")).length, 127);
+    assert.equal(Object.values(MOVED).flatMap((ids) => ids.split(" ")).length, 124);
     assert.deepEqual(missing, []);
 });
 

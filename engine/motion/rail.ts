@@ -6,7 +6,8 @@
 // a hard push sends a carriage rolling on. An end of the line, or a gap in it, stops a group and
 // bounces it back, and nothing is ever pushed through one: a group pinned against a stop holds
 // whatever pushes it. The driven vehicle's group goes at the speed it is driven, and is stopped only
-// by a stop. Squares and seconds.
+// by a stop. Where the line climbs over a bank, gravity pulls a loose group down the slope, and a
+// slope gentler than its rolling cannot start it. Squares and seconds.
 
 export interface Vehicle {
     id: string;
@@ -40,6 +41,56 @@ export interface Rules {
     give: number;
     /** The share of its speed a group bounces back off an end or a gap with. */
     rebound: number;
+    /** Where the line climbs and falls. Left out, it is level all the way. */
+    banks?: Bank[];
+    /** Squares a second each second a vehicle gains on a slope as steep as it is long. */
+    gravity?: number;
+}
+
+/**
+ * A stretch where the line leaves the level, as smooth as a cosine so nothing jolts. A hump climbs
+ * `rise` squares and comes down again, and a dip is a hump with a rise under nought. A ramp stands
+ * `rise` squares higher at `from` than at `to`, and stays there on the far side.
+ */
+export interface Bank {
+    shape: "hump" | "ramp";
+    from: number;
+    to: number;
+    rise: number;
+}
+
+/** How high one bank lifts the line at `t`, from nought at its start to one at its end. */
+export function bankHeight(shape: Bank["shape"], rise: number, t: number): number {
+    const u = Math.max(0, Math.min(1, t));
+    return shape === "hump"
+        ? (rise * (1 - Math.cos(2 * Math.PI * u))) / 2
+        : (rise * (1 + Math.cos(Math.PI * u))) / 2;
+}
+
+/** How high the line is at `x`, in squares above the level. */
+export function heightAt(banks: readonly Bank[], x: number): number {
+    let h = 0;
+    for (const b of banks) {
+        if (b.shape === "ramp" && x < b.from) h += b.rise;
+        else if (x >= b.from && x <= b.to)
+            h += bankHeight(b.shape, b.rise, (x - b.from) / (b.to - b.from));
+    }
+    return h;
+}
+
+/** How steeply the line climbs at `x`: squares up for each square along. */
+export function gradeAt(banks: readonly Bank[], x: number): number {
+    let g = 0;
+    for (const b of banks) {
+        if (x <= b.from || x >= b.to) continue;
+        const run = b.to - b.from,
+            u = (x - b.from) / run;
+        g +=
+            b.shape === "hump"
+                ? ((b.rise * Math.PI) / run) * Math.sin(2 * Math.PI * u)
+                : ((-b.rise * Math.PI) / (2 * run)) * Math.sin(Math.PI * u);
+    }
+    return g;
 }
 
 export type RailEvent =
@@ -174,7 +225,15 @@ export function step(line: Line, dt: number, rules: Rules, driven: string | null
     for (const g of groupsOf(line)) {
         let v = speedOf(line, g, driven);
         if (!holds(line, g, driven)) {
-            const slows = Math.max(...line.vehicles.slice(g[0], g[1] + 1).map((x) => x.slows));
+            const run = line.vehicles.slice(g[0], g[1] + 1);
+            const slows = Math.max(...run.map((x) => x.slows));
+            if (rules.banks?.length && rules.gravity) {
+                const banks = rules.banks,
+                    mass = run.reduce((m, x) => m + x.mass, 0);
+                const grade = run.reduce((a, x) => a + x.mass * gradeAt(banks, x.x), 0) / mass;
+                v -= rules.gravity * grade * dt;
+            }
+            // Slowing never turns a group round, so a slope gentler than its rolling holds it still.
             v = Math.sign(v) * Math.max(0, Math.abs(v) - slows * dt);
         }
         setGroup(line, g, v, v * dt);

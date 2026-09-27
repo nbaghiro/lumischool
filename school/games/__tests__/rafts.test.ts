@@ -278,3 +278,30 @@ test("a raft carries one layer: sheep laid on the backs of a full row are on the
         );
     }
 });
+
+test("the river is drawn as the rafts float on it, a sheep in the river rings it, and the flock mills while the front sheep waits", async () => {
+    const R = await loadRafts();
+    const s = R.start(0);
+    for (let i = 0; i < 120; i++) R.step(s, emptyPad());
+    const f = R.raftsGame.frame(s);
+    assert.equal(f.water?.length, 1);
+    assert.equal(f.time, s.steps / 60);
+    const front = s.sheep.find((x) => x.id === s.flock[0]);
+    assert.ok(front && Math.hypot(front.at.x - R.FRONT.x, front.at.y - R.FRONT.y) < 1e-6);
+    const before = s.sheep.filter((x) => x.on === "bank" && x !== front).map((x) => ({ ...x.at }));
+    for (let i = 0; i < 90; i++) R.step(s, emptyPad());
+    const after = s.sheep.filter((x) => x.on === "bank" && x !== front).map((x) => x.at);
+    assert.ok(
+        after.some(
+            (p, k) => Math.hypot(p.x - (before[k]?.x ?? 0), p.y - (before[k]?.y ?? 0)) > 0.05,
+        ),
+        "the flock mills",
+    );
+    raftsJump(R, s, 1.2, 45);
+    let rang = false;
+    for (let i = 0; i < 90; i++) {
+        R.step(s, emptyPad());
+        rang ||= (R.raftsGame.frame(s).water?.[0]?.ripples?.length ?? 0) > 0;
+    }
+    assert.ok(rang, "a sheep short of the raft rang the river");
+});

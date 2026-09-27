@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { HAIR_COLOURS, MARKERS } from "../../../paper";
+import { HAIR_COLOURS } from "../../../paper";
 import { drawn, partsIn } from "../../__tests__/check";
 import { MOODS } from "../../speech";
-import { AGES, AIDS, HAIRS, HEARING, POSES, WEAR } from "../figure";
+import { AGES, AIDS, CLOTH, HAIRS, HEARING, POSES, WEAR } from "../figure";
 import { person } from "../person";
 
 const clean = (s: string, where: string): void => {
@@ -39,7 +39,7 @@ test("every look is one of the declared settings, so a lesson can choose it by n
     assert.deepEqual(of("aid"), AIDS);
     assert.deepEqual(of("hearing"), HEARING);
     assert.deepEqual(of("wear"), WEAR);
-    assert.deepEqual(of("top"), MARKERS);
+    assert.deepEqual(of("top"), CLOTH);
     assert.deepEqual(of("mood"), MOODS);
 });
 

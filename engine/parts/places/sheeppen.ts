@@ -92,7 +92,8 @@ export const sheepPen = defineDrawing<SheepPenParams>({
         const inset = PEN.narrow * U,
             bl = xl + inset,
             br = xr - inset,
-            [r1, r2] = PEN.rail.map((r) => r * U) as [number, number];
+            r1 = PEN.rail[0] * U,
+            r2 = PEN.rail[1] * U;
         const wood = pen.fill("tang", "hachure", {
             hachureGap: 4,
             fillWeight: 0.8,

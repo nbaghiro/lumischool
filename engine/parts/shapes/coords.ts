@@ -103,7 +103,7 @@ export const coordGrid = defineDrawing({
         if (p.join && p.points.length > 1) {
             pen.polygon(
                 g,
-                p.points.map((q) => [X(q.x), Y(q.y)] as Pt),
+                p.points.map((q): Pt => [X(q.x), Y(q.y)]),
                 "ruler",
                 pen.fill("mint", "hachure", { hachureGap: 7 }),
                 { strokeWidth: 2 },

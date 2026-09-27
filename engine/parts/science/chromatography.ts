@@ -50,8 +50,8 @@ export const INKS = {
     { dot: Marker | "ink"; bands: readonly (readonly [Marker, number])[] }
 >;
 type Ink = keyof typeof INKS;
-const INK_NAMES = Object.keys(INKS) as Ink[];
 const isInk = (s: string): s is Ink => s in INKS;
+const INK_NAMES = Object.keys(INKS).filter(isInk);
 
 /** One centimetre up the strip. The picture is smaller than the real strip. */
 const CM = 1.1 * U;
