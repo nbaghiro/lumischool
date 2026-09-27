@@ -559,10 +559,13 @@ export function mapScene(o: {
     // an element lifted out of a box keeps its place through a twin of each box it was in, whose
     // attributes follow the original's
     const twins = new Map<Element, HTMLElement>();
-    const copy = (from: Element, to: Element): void => {
+    const copy = (from: Element, to: HTMLElement): void => {
         for (const a of Array.from(to.attributes))
             if (!from.hasAttribute(a.name)) to.removeAttribute(a.name);
-        for (const a of Array.from(from.attributes)) to.setAttribute(a.name, a.value);
+        // the pages' CSP refuses a style attribute written as markup (server/static.ts); cssText is the CSSOM
+        for (const a of Array.from(from.attributes))
+            if (a.name === "style") to.style.cssText = a.value;
+            else to.setAttribute(a.name, a.value);
     };
     const twinOf = (el: Element): HTMLElement => {
         if (el === o.hidden) return o.overlay;
