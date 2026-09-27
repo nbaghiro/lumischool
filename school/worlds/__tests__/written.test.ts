@@ -125,7 +125,7 @@ test("where a lesson stands: the world of the term it falls in, and nothing for 
     assert.equal(whereIs(CORPUS, "no-such-lesson"), null);
 });
 
-test("a world read as written: every day of the year on the roll with nothing done and no today, its sheets closed and numbered, no trail yet, and nothing lit", () => {
+test("a world read as written: every day of the year on the roll with nothing done and no today, its sheets closed and numbered, and nothing lit", () => {
     const year = CORPUS.year(1, "Rosie");
     const written = daysWritten(year);
     assert.equal(written.length, 9);
@@ -169,7 +169,6 @@ test("a world read as written: every day of the year on the roll with nothing do
         v.days.map((d) => d.label),
         v.days.map((_, i) => `Day ${i + 1}`),
     );
-    assert.equal(v.trail, null, "the trail draws a record's days, not the plan's");
     assert.ok(v.standings.every((s) => !s.lit && !s.inked && !s.on && !s.says));
     assert.ok(
         v.layout.scenery.every((s, i) => s.kind !== "secret" || v.standings[i]?.hide === true),

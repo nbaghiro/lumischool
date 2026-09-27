@@ -98,13 +98,8 @@ export function World(props: {
     lookBack?: (lessons: readonly string[]) => void;
     /** Hold at the illustrated entrance until the actual destination sheets are measured. */
     waiting?: boolean;
-    /**
-     * The way out of the roll, which is the place the world is seen as (engine/ui/place.tsx): pulling
-     * back past the sheets hands over, and so does Escape. The roll pulls back and hands the page the
-     * box the place should pick the movement up in, with the day the camera was on, so going out is
-     * one movement; the box is null when it cut, under reduced motion.
-     */
-    onOut?: (at: DOMRect | null, day: string | null) => void;
+    /** Return directly to the overworld; null means an immediate reduced-motion transition. */
+    onOut?: (at: DOMRect | null) => void;
     /**
      * Where the place stood on the map the child came in from, so the world opens there and grows to
      * its horizon. Whatever a page draws for a world, a roll or a layout of its own, picks the dive
@@ -118,7 +113,7 @@ export function World(props: {
      * The top of the day without.
      */
     land?: { lesson: string; y: number };
-    /** The day the roll opens at, when the place hands it over there rather than the map at today. */
+    /** The day the reader explicitly opens instead of the default destination. */
     open?: string;
     /** The day whose doings play as the roll is painted: the landmark it lit, the creature it brought, its moment. */
     play?: string;
@@ -247,19 +242,7 @@ export function World(props: {
         }).start();
     }
 
-    /** The row the camera is on: the day a child reading the roll is at, for the place to open there. */
-    function dayAt(v: CanvasView): string | null {
-        let found: string | null = null;
-        for (const row of layout().rows)
-            if (row.flag.y - layout().o.band <= v.cam.y) found = row.day.id;
-        return found;
-    }
-
-    /**
-     * The way out of the roll: it pulls back and fades, and the page is handed the box in the middle
-     * of it and the day it was on, for the place to open that day's paper in, so the two views are one
-     * movement. The box's height is only a hint: the place fits the day's own paper to the width.
-     */
+    /** Pull back into the overworld, handing its transition the departing viewport box. */
     function out(): void {
         const v = view,
             go = props.onOut,
@@ -270,11 +253,10 @@ export function World(props: {
             setPageForm(false);
         }
         if (quiet || !h) {
-            go(null, dayAt(v));
+            go(null);
             return;
         }
         busy = true;
-        const day = dayAt(v);
         const from = { ...v.cam },
             to = { ...from, z: from.z * 0.5 };
         const tl = timeline([
@@ -286,7 +268,7 @@ export function World(props: {
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
                 if (view !== v) {
-                    go(null, day);
+                    go(null);
                     return false;
                 }
                 const t = Math.min(time, tl.length);
@@ -302,7 +284,6 @@ export function World(props: {
                         w,
                         w * 0.62,
                     ),
-                    day,
                 );
                 return false;
             },
@@ -501,7 +482,7 @@ export function World(props: {
     function onSettle(cam: Camera): void {
         setMoving(false);
         if (busy) return;
-        // pulled back past the sheets: the place the world is seen as takes over where the camera is
+        // pulled back past the sheets: return directly to the overworld
         if (props.onOut && arrived && !view?.readingPage && cam.z < FAR_AT) {
             out();
             return;

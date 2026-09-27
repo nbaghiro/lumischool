@@ -62,7 +62,6 @@ export function writtenView(v: WorldView): WorldView {
             const kind = v.layout.scenery[i]?.kind;
             return kind === "reach" ? { lit: false } : kind === "secret" ? { hide: true } : s;
         }),
-        trail: null,
     };
 }
 

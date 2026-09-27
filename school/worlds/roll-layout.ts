@@ -125,7 +125,7 @@ export function layoutRoll(input: RollInput, o: RollOptions = WIDE): RollLayout 
             }
             last = { x: lx, y: bottom };
             // scenery: something to pass on the far side and someone beside the path, spread down the row
-            const far = -side as -1 | 1;
+            const far = side === 1 ? -1 : 1;
             // A drawing that belongs to this day's lesson stands first, level with the top of the sheet,
             // where a child starting the day sees it; the rest of the far margin follows below it.
             const reach = input.reach?.(day, world);
@@ -240,12 +240,12 @@ export function layoutRoll(input: RollInput, o: RollOptions = WIDE): RollLayout 
             if (third) {
                 const ss = input.size(story.secret),
                     sk = Math.min(0.8, 150 / Math.max(1, ss.w), 130 / Math.max(1, ss.h)),
-                    far = -third.side;
+                    far = third.side === 1 ? -1 : 1;
                 const sx = far > 0 ? x1 - 50 - ss.w * sk : x0 + 50;
                 scenery.push({
                     art: story.secret,
                     kind: "secret",
-                    side: far as -1 | 1,
+                    side: far,
                     row: rows.indexOf(third),
                     k: sk,
                     at: { x: sx, y: third.rect.y + 30 },

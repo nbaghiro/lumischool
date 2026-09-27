@@ -1,7 +1,4 @@
-// The way back out of the roll (world.tsx) and of the place (place.tsx), for a child who has not
-// found that pulling back is the way out (.docs/journal.md, "Nothing is laid over a world"). It is
-// never on screen while the paper moves, so it is not in the way of a child pulling the camera
-// about; the keyboard and a reader reach it on focus as before.
+// The lesson roll's way back to the overworld, visible on interaction or keyboard focus.
 
 import "./wayout.css";
 import { createEffect, createSignal, on, onCleanup, onMount, Show, type JSX } from "solid-js";

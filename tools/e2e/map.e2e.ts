@@ -119,7 +119,8 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     // A tap chooses a place without adding a floating name chip.
     await map.locator('.ow-node[aria-label*="harbour" i]').first().dispatchEvent("click");
     await expect(map.locator('.ow-node[tabindex="0"][aria-label*="harbour" i]')).toHaveCount(1);
-    await expect(map.locator('.ow-place[data-world="harbour"] .j-art svg').first()).toBeVisible();
+    // the drawing is painted for the GPU (map-scene.ts), which lays none of it out
+    await expect(map.locator('.ow-place[data-world="harbour"] .j-art svg').first()).toBeAttached();
     await expect(map.locator(".ow-where")).toHaveCount(0);
     // a drag pans, and the wheel zooms
     const box = await map.boundingBox();
@@ -374,15 +375,13 @@ for (const motion of ["no-preference", "reduce"] as const) {
         await map.getByRole("button", { name: "Near me", exact: true }).click();
         await cameraSettled(map);
         const zoom = () =>
-            map
-                .locator(".world")
-                .evaluate((el) => Number((el as HTMLElement).style.getPropertyValue("--mz")));
+            map.locator(".world").evaluate((el) => Number(el.style.getPropertyValue("--mz")));
         const nearZoom = await zoom();
         await map
             .getByRole("button", { name: "Fly the paper plane (P)" })
             .click({ timeout: 10000 });
         const host = page.locator(".ow-host[data-fly]");
-        await expect(host.locator(".ow-plane-body svg")).toBeVisible();
+        await expect(host.locator(".ow-plane-body svg")).toBeAttached();
         await expect.poll(async () => (await zoom()) / nearZoom).toBeCloseTo(1, 2);
         await host.dispatchEvent("wheel", { deltaY: 8, deltaX: 2 });
         await page.waitForTimeout(150);
@@ -598,7 +597,7 @@ test("closing a sample world during loading leaves no late sheets or errors", as
         release();
         await expect(look).toHaveCount(0);
         await page.waitForTimeout(500);
-        await expect(page.locator(".rd-measure, .rd-status, .rd-read")).toHaveCount(0);
+        await expect(page.locator(".rd-measure, .page-waiting, .rd-read")).toHaveCount(0);
         expect(errors).toEqual([]);
     } finally {
         release();
@@ -676,7 +675,7 @@ test("neighbour lesson failures stay local and retry without replacing the lande
     expect(await sheet.evaluate((el) => el.isConnected && el.classList.contains("rd-read"))).toBe(
         true,
     );
-    await expect(look.locator(".rd-status")).toHaveCount(0);
+    await expect(look.locator(".page-waiting")).toHaveCount(0);
     const retry = error.getByRole("button", { name: "Try again" });
     failing = false;
     await retry.dispatchEvent("click");

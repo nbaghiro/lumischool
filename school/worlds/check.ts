@@ -196,8 +196,6 @@ export function problems(w: World | Applied): string[] {
         if (!w.offers.creatures.includes(id))
             out.push(`${w.id}: "${id}" lives in the world but is not one it offers`);
     }
-    if (w.stamp !== undefined && !w.offers.creatures.includes(w.stamp))
-        out.push(`${w.id}: its stamp carries "${w.stamp}", which is not a creature it offers`);
     for (const id of w.offers.landmarks) has(id, "landmark", `${w.id} offers`, out);
     for (const id of w.offers.creatures) has(id, "creature", `${w.id} offers`, out);
     for (const g of w.offers.grounds)

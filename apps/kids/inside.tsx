@@ -30,7 +30,7 @@ import type { SceneDrawer } from "../../engine/ui/scene";
 import type { MapView, WorldView } from "../../engine/space";
 import { nearPaper, landingRow } from "../../engine/ui/paper";
 import { mayPrepare } from "../../engine/ui/reading-source";
-import { PaperStatus } from "../../engine/ui/paper-status";
+import { Waiting } from "../../engine/ui/waiting";
 import type { Kid } from "../../server/db/schema";
 import type { Sheets } from "./lesson";
 import { Loading } from "./loading";
@@ -48,7 +48,6 @@ export interface InsideScreen {
     /** The place on the map the child went in at, so they come back out to it. */
     from: number;
     box?: DOMRect;
-    day?: string;
 }
 
 export function Inside(props: {
@@ -173,7 +172,6 @@ export function Inside(props: {
         const v = view();
         if (!v) return [];
         const row = landingRow(v, {
-            day: props.screen.day,
             lesson: land()?.lesson,
             term: v.arrival?.term,
         });
@@ -216,11 +214,13 @@ export function Inside(props: {
                     </button>
                 </nav>
             </Show>
-            <PaperStatus
-                waiting={waitingForEntry()}
-                failed={failedEntry()}
-                retry={() => lookBack(nearby)}
-            />
+            <Show when={waitingForEntry()}>
+                <Waiting
+                    title={failedEntry() ? "The lessons could not load" : "Opening your lessons"}
+                    pending={!failedEntry()}
+                    retry={failedEntry() ? () => lookBack(nearby) : undefined}
+                />
+            </Show>
             <Show when={view()} fallback={<Loading />}>
                 {(drawn) => (
                     <World
@@ -239,7 +239,6 @@ export function Inside(props: {
                         play={props.c.record.today}
                         class={`kid-map-world${waitingForEntry() ? " rd-loading" : ""}`}
                         title={`${props.kid.name}'s year`}
-                        open={browsing() ? undefined : props.screen.day}
                         onOut={(box) => props.out(box)}
                     />
                 )}

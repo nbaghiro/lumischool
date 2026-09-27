@@ -52,6 +52,8 @@ export interface Snapshot {
     sample: boolean;
     /** The zoom it was drawn at, as the map units across a box that its aims give. */
     across: number;
+    /** The camera's zoom as it was drawn, which a live map standing in for it sizes its words for. */
+    zoom: number;
     /** What the image shows, in the map's units. */
     world: Area;
     /**
@@ -131,13 +133,19 @@ export function aimCamera(
     return { x: cx, y: cy, z };
 }
 
+/** The camera grown `k` times about the aimed point, as `stillFor` grows a still, so the point stays put. */
+export function grown(c: Camera, aimed: Aimed, aim: MapAim, k: number): Camera {
+    const p = { x: aimed.x + (aim.nudge?.x ?? 0), y: aimed.y + (aim.nudge?.y ?? 0) };
+    return { x: p.x - (p.x - c.x) / k, y: p.y - (p.y - c.y) / k, z: c.z * k };
+}
+
 /**
  * Of the snapshots made at this aim's zoom and place, the one that needs the least growth to cover the
  * box, and where it goes: placed where the live map draws, and grown about the aimed point until it
  * covers the whole box. A picture placed exactly can stop short of a box's edge (a wide, short window
  * leaves a strip of bare paper at the side), and a little of it cropped at the edges reads better than
- * that; the live map fades in over it at its own zoom. Null when none was made for the aim, or none
- * covers without growing more than nine times.
+ * that; the live map opens at the same growth (`k`) so the two agree as it fades in. Null when none was
+ * made for the aim, or none covers without growing more than nine times.
  */
 export function stillFor(
     snapshots: readonly Snapshot[],
@@ -145,7 +153,7 @@ export function stillFor(
     box: Box,
     band: Box | null,
     keepOff: readonly Box[],
-): { snapshot: Snapshot; at: Box } | null {
+): { snapshot: Snapshot; at: Box; k: number } | null {
     let best: { snapshot: Snapshot; at: Box; k: number } | null = null;
     for (const snapshot of snapshots) {
         const at = snapshot.across === aim.across && placeStill(snapshot, aim, box, band, keepOff);

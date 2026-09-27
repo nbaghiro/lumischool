@@ -455,7 +455,7 @@ expansion. Routine tile sizes and measured tuning stay within this approved expe
   explicit deep links retain their requested destination. A single shared resolver supplies
   preparation and camera entry, avoiding separate competing definitions.
 - **4C. Refine readiness.** The target's coherent lesson gates entry; siblings do not gate it.
-  Extend `PaperStatus` and card state to distinguish destination preparation, target failure and
+  Extend the lesson loader (`Waiting` in `engine/ui/waiting.tsx`, since `PaperStatus` was folded into it) and card state to distinguish destination preparation, target failure and
   sibling retry. Once entry finishes or the person interrupts it, later completion cannot replay
   navigation. Maintain stable dimensions and actual lesson titles in unfinished sibling cards.
 - **4D. Bound bodies and papers.** Extend `nearPaper/preparedPaper` with coordinator admission,

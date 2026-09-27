@@ -23,10 +23,9 @@ import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Overworld } from "../../engine/ui/overworld";
 import { readingShelf } from "../../engine/ui/reading-source";
-import { useLook, Waiting } from "../../engine/ui/page";
-import { Postcard } from "../../engine/ui/postcard";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 import { go, search } from "../../engine/ui/router";
-import { Say } from "../../engine/ui/say";
 import type { Failure } from "../../engine/ui/wire";
 import { signInFor } from "./routes";
 import {
@@ -96,12 +95,12 @@ export function GrownMap(): JSX.Element {
             <Switch>
                 <Match when={failed()}>
                     {(f) => (
-                        <Postcard note kicker="The map" title="The map did not load">
-                            <Say
-                                text={failureText(f(), local)}
-                                action={{ label: "Try again", run: () => void refetch() }}
-                            />
-                        </Postcard>
+                        <Waiting
+                            title="The map did not load"
+                            pending={false}
+                            detail={failureText(f(), local)}
+                            retry={() => void refetch()}
+                        />
                     )}
                 </Match>
                 <Match when={loaded()}>

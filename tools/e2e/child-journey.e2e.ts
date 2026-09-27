@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import type { KidRecord } from "../../server/api";
+import { readKidRecord } from "../../engine/ui/wire";
 import { nowIn } from "../../school/family/now";
 import { childsMap, openChildrensView, signInAs, test } from "./steps";
 
@@ -11,7 +11,8 @@ test("a child can browse the grade journey without fetching closed lessons or ch
     let current: string[] = [];
     await page.route(/\/api\/kid\/[^/]+\/record$/, async (route) => {
         const response = await route.fetch();
-        const received = (await response.json()) as KidRecord;
+        const received = readKidRecord(await response.json());
+        if (!received) throw new Error("the record did not read");
         // Anchor the fixture to its maths day instead of the machine's weekday.
         const maths = received.plan
             .flatMap((track) => track.days)

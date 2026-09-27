@@ -6,7 +6,7 @@ import type { Progress } from "../record/record";
 import { journey, type Place as Walked } from "./rewards";
 import { NARROW, WIDE } from "./roll";
 import { layoutRoll } from "./roll-layout";
-import { reachesFor, standingOf, trailViewOf, rollViewOf, type Journal } from "./view";
+import { reachesFor, standingOf, rollViewOf, type Journal } from "./view";
 
 export interface WorldIn {
     journal: Journal;
@@ -108,19 +108,6 @@ export function worldViewOf(o: WorldIn): WorldView {
         : o.arriveAt !== undefined
           ? { term: o.arriveAt, says: worldOf(worldAt(o.arriveAt)).arrive }
           : null;
-    const trail = j.bare
-        ? null
-        : trailViewOf({
-              journal: j,
-              term,
-              world: worldOf(worldAt(term)),
-              place: placeOfTerm(term),
-              corpus: o.corpus,
-              topics: o.topics,
-              size: o.size,
-              narrow: o.narrow,
-              grown: o.grown,
-          });
     return rollViewOf({
         layout,
         worlds,
@@ -131,7 +118,6 @@ export function worldViewOf(o: WorldIn): WorldView {
         standings,
         open,
         arrival,
-        trail,
         card: j.bare
             ? { label: "Still to come", says: "The lessons here are still being written." }
             : shownDays.length
@@ -195,7 +181,6 @@ export function journeyViewOf(
         next: null,
         open: world.id,
         arrival: { term: 1, says: world.arrive },
-        trail: null,
         card: days.length
             ? undefined
             : {

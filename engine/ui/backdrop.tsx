@@ -14,6 +14,7 @@ import { idle, onDemand, still } from "./art";
 import type { Overworld } from "./overworld";
 import {
     aimCamera,
+    grown,
     OPENING,
     stillFor,
     type Aimed,
@@ -38,6 +39,14 @@ export interface Ground {
 
 /** How long the live map takes to come in over the snapshot, in milliseconds, as backdrop.css has it. */
 const FADE = 450;
+/** How long the page's framing is followed after it last changed, while late cards settle, in ms. */
+const QUIET = 1000;
+
+/** Resolves when nothing moves `el`, waiting again when a glide is taken over by a newer one, which cancels it. */
+async function rested(el: Element | null | undefined): Promise<void> {
+    for (let moving = el?.getAnimations() ?? []; moving.length; moving = el?.getAnimations() ?? [])
+        await Promise.allSettled(moving.map((a) => a.finished));
+}
 
 const boxOf = (x: Element | DOMRect): Box => (x instanceof Element ? x.getBoundingClientRect() : x);
 
@@ -84,6 +93,8 @@ export function MapBackdrop(props: {
     const [drawn, setDrawn] = createSignal(false);
     const [live, setLive] = createSignal<Ground | null>(null);
     const [picture, setPicture] = createSignal<{ src: string; at: Box } | null>(null);
+    /** The zoom the chosen snapshot was drawn at, which the live map sizes its words for. */
+    const [words, setWords] = createSignal<number | undefined>(undefined);
     /** The box, the band and what stands over the map, as they are now. */
     const framed = (): [Box, Box | null, Box[]] | null => {
         if (!box) return null;
@@ -94,26 +105,60 @@ export function MapBackdrop(props: {
             (props.keepOff?.() ?? []).map(boxOf),
         ];
     };
+    /** How much the still was grown for the aim it was framed for, which the live map keeps until it flies to another. */
+    let growth: { aim: string; k: number } | null = null;
     /** Puts the snapshot where the live map would draw for the aim and the box as they are now, grown to cover the box. */
     const frame = (): void => {
         const f = framed();
         const still = f && stillFor(props.stills, aim, ...f);
         setPicture(still && { src: still.snapshot.src, at: still.at });
+        if (still) setWords(still.snapshot.zoom);
+        growth = still && { aim: JSON.stringify(aim), k: still.k };
     };
-    /** The live map's camera for the aim, by the same arithmetic the snapshot is placed by. */
+    /** The live map's camera for the aim, by the same arithmetic the snapshot is placed and grown by. */
     const camera = (aimed: Aimed, at: MapAim): Camera => {
         const f = framed() ?? [{ left: 0, top: 0, width: 1, height: 1 }, null, []];
-        return aimCamera(aimed, at, ...f);
+        const c = aimCamera(aimed, at, ...f);
+        return grown(c, aimed, at, growth?.aim === JSON.stringify(at) ? growth.k : 1);
     };
+    // the still and the live map both follow the page as its cards come and move: the still glides there,
+    // and the live map is put there at once until it is shown, so it opens exactly where the still is,
+    // and glides there after; the following rests once the framing has held for a moment, and wakes
+    // when the page changes size or the aim changes
+    const [reframe, setReframe] = createSignal<{ key: string; glide: boolean }>();
+    let following = 0,
+        framedAs = "",
+        changedAt = 0;
+    const follow = (): void => {
+        following = 0;
+        if (disposed) return;
+        const key = JSON.stringify([framed(), aim]);
+        if (key !== framedAs) {
+            framedAs = key;
+            changedAt = performance.now();
+            if (!drawn()) frame();
+            setReframe({ key, glide: drawn() });
+        }
+        if (performance.now() - changedAt < QUIET) following = requestAnimationFrame(follow);
+    };
+    const wake = (): void => {
+        changedAt = performance.now();
+        if (!following && !disposed) following = requestAnimationFrame(follow);
+    };
+    onCleanup(() => cancelAnimationFrame(following));
     onMount(() => {
         frame();
+        wake();
         if (!box) return;
         // Decorative maps keep their snapshot on phones to avoid a second, large SVG scene.
         snapshotOnly = matchMedia("(max-width: 700px)").matches && picture() !== null;
         const watch = new ResizeObserver(() => {
             if (picture()) frame();
+            wake();
         });
         watch.observe(box);
+        // the page's cards arriving or growing change the page's height before they move the framing
+        watch.observe(document.body);
         onCleanup(() => watch.disconnect());
         if (snapshotOnly) return;
         onCleanup(
@@ -124,6 +169,7 @@ export function MapBackdrop(props: {
                     frame();
                     setDrawn(false);
                     setLive(null);
+                    wake();
                     return;
                 }
                 void onDemand(props.ground)
@@ -141,6 +187,7 @@ export function MapBackdrop(props: {
             (next) => {
                 aim = next;
                 if (!drawn()) frame();
+                wake();
             },
             { defer: true },
         ),
@@ -179,19 +226,25 @@ export function MapBackdrop(props: {
                         view={g().view}
                         aim={props.aim}
                         aimCamera={camera}
+                        wordsAt={words()}
+                        reframe={reframe()}
                         hud={false}
                         steps
                         life={{ keepOff: () => props.keepOff?.() ?? [] }}
                         title="The map"
                         onDrawn={() => {
-                            setDrawn(true);
-                            announce();
-                            setTimeout(
-                                () => {
-                                    if (!disposed && drawn()) setPicture(null);
-                                },
-                                still() ? 0 : FADE + 100,
-                            );
+                            // the live map fades in once the still has glided to where it opens
+                            void rested(box?.querySelector(".backdrop-still")).then(() => {
+                                if (disposed) return;
+                                setDrawn(true);
+                                announce();
+                                setTimeout(
+                                    () => {
+                                        if (!disposed && drawn()) setPicture(null);
+                                    },
+                                    still() ? 0 : FADE + 100,
+                                );
+                            });
                         }}
                     />
                 )}

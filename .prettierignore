@@ -15,3 +15,6 @@ content/
 
 # The documents are wrapped by hand at 100 columns, and reformatting their tables churns every diff.
 *.md
+
+# Content-addressed generated imagery; formatting would change its immutable identity.
+public/assets/map-tiles/

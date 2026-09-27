@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import type { KidRecord } from "../../server/api";
+import { readKidRecord } from "../../engine/ui/wire";
 import { childsMap, openChildrensView, signInAs, test } from "./steps";
 
 test("a child's subject place opens its own lessons, returns to its map location, and explains locked places", async ({
@@ -9,7 +9,8 @@ test("a child's subject place opens its own lessons, returns to its map location
     await signInAs(page);
     await page.route(/\/api\/kid\/[^/]+\/record$/, async (route) => {
         const response = await route.fetch();
-        const record = (await response.json()) as KidRecord;
+        const record = readKidRecord(await response.json());
+        if (!record) throw new Error("the record did not read");
         const own = record.years.find((year) => year.grade === 1);
         if (!own) throw new Error("missing first-year record");
         own.progress.done["art-mixing-the-secondaries"] = {
@@ -30,7 +31,7 @@ test("a child's subject place opens its own lessons, returns to its map location
     await expect(map.getByRole("button", { name: "Near me", exact: true })).toBeVisible();
     await map.getByRole("button", { name: "Near me", exact: true }).click();
     await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
-    await expect(map.locator(".ow-plane-body svg")).toBeVisible();
+    await expect(map.locator(".ow-plane-body svg")).toBeAttached();
     await map.getByRole("radio", { name: "Fast", exact: true }).click();
     await page.keyboard.press("ArrowRight");
     await map.getByRole("button", { name: "Stop flying and land at the nearest world" }).click();

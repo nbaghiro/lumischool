@@ -1,5 +1,5 @@
-/* The map of the worlds on a page (overworld.tsx): the squared paper and the world layer the canvas
-   view puts in the host, and the few things over it: where the guide is, the buttons, and the card
+/* The map of the worlds on a page (overworld.tsx): the GPU's canvas, which draws the squared paper
+   and the map, and the world layer the canvas view puts in the host, and the few things over it: where the guide is, the buttons, and the card
    for a world whose way is not open yet, and then what the map's painter (map.ts) draws under .ow,
     the class the map's world layer takes: the places and their pencil, the waves, the guide's rest,
     the stamps and notes, and the drawings that travel the country.
@@ -15,13 +15,6 @@
 .ow-host.grabbing {
     cursor: grabbing;
 }
-.ow-host > canvas.paper {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
 .ow-host > .world {
     position: absolute;
     left: 0;
@@ -30,6 +23,18 @@
     height: 0;
     transform-origin: 0 0;
 }
+/* the painted map is read by the GPU (map-scene.ts), never laid out, so no layer of it is ever made */
+.ow-host > .ow-source {
+    display: none;
+}
+.ow-host > canvas.map-gl {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.ow-host .ow-over,
 .ow-host .j-layer {
     position: absolute;
     left: 0;
@@ -245,8 +250,8 @@
     pointer-events: none;
 }
 
-/* the sea's waves drift a little, downwind, as the harbour's water does, on transform, since a tile is
-   an svg and an svg's translate animates on the main thread */
+/* the sea's waves drift a little, downwind, as the harbour's water does; the GPU plays the drift from
+   these keyframes (map-scene.ts), so it is written as a transform */
 .ow .ow-waves {
     animation: ow-drift 11s ease-in-out infinite alternate;
 }
@@ -258,15 +263,9 @@
         transform: translateX(22px);
     }
 }
-:root.mo-hidden .ow .ow-waves {
-    animation-play-state: paused;
-}
-/* on the Worlds tab a tile's waves drift only while the tile is on screen (.mo-off, map.ts), rest
-   where the drift would be under a pixel, and stand still where the map is still. Off screen, far out
-   and under a hidden map they have no animation at all rather than a paused one, since a paused
-   animation still keeps a layer of its own for every tile, and the frame's work grows with the layers */
+/* the waves rest where the drift would be under a pixel, under a hidden map and where the map is
+   still, since the GPU draws again on every frame something moves */
 .j-map.off .ow .ow-waves,
-.ow .ow-waves.mo-off,
 .ow.ow-calm .ow-waves {
     animation: none;
 }
@@ -278,9 +277,9 @@
 .j-map.ow-still .ow .ow-waves {
     animation: none;
 }
-/* the country's small life (life.ts) moves by transforms whose keyframes write every value out, so the
-   compositor plays them and nothing is painted again; a part that turns, such as a windmill's sails,
-   is lifted into a layer of its own. It rests with the map, and a family's still world holds it still */
+/* the country's small life (life.ts) moves by transforms whose keyframes write every value out, which
+   the GPU plays (map-scene.ts); a part that turns, such as a windmill's sails, is lifted into an svg of
+   its own. It rests with the map, and a family's still world holds it still */
 .ow .ow-life {
     pointer-events: none;
 }
@@ -312,7 +311,6 @@
     }
 }
 .j-map.off .ow :is(.ow-go, .ow-bob, .ow-turn),
-:root.mo-hidden .ow :is(.ow-go, .ow-bob, .ow-turn),
 .ow.ow-calm :is(.ow-go, .ow-bob, .ow-turn) {
     animation-play-state: paused !important;
 }
@@ -493,8 +491,8 @@
 .ow .ow-key {
     transition: opacity 0.35s;
 }
-.world[data-sea="1"] .ow-title,
-.world[data-sea="1"] .ow-key {
+.ow[data-sea="1"] .ow-title,
+.ow[data-sea="1"] .ow-key {
     opacity: 0;
 }
 .ow .ow-title > svg {
@@ -515,10 +513,6 @@
     top: 0;
     width: 0;
     height: 0;
-}
-.mo-off .ow-turn,
-.ow-go.mo-off .ow-bob {
-    animation-play-state: paused !important;
 }
 
 /* A world or a place on the map: its stamp, a grown-up's note, the guide's token and who walks behind it. */
@@ -570,7 +564,7 @@
 .m-gnote span:first-child {
     font-weight: 700;
 }
-.world[data-far="1"] .m-gnote {
+.ow[data-far="1"] .m-gnote {
     visibility: hidden;
 }
 .m-node.focus {

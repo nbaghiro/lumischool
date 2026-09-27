@@ -3,6 +3,7 @@ import { test } from "node:test";
 import {
     aimCamera,
     aimKey,
+    grown,
     OPENING,
     placeStill,
     stillFor,
@@ -19,6 +20,7 @@ const snapshot = (over: Partial<Snapshot> = {}): Snapshot => ({
     src: "test.webp",
     sample: false,
     across: 14400,
+    zoom: 0.1,
     world: { x: 0, y: 0, w: 14400, h: 9000 },
     aims: {
         [aimKey({ place: "harbour" })]: HARBOUR,
@@ -175,6 +177,20 @@ test("a still that stops short of its box grows about the aimed point until it c
     assert.ok(near(shown.left, 0), "grown by no more than covering takes");
     assert.ok(shown.top <= 0 && shown.left + shown.width >= box.width - 1e-9);
     assert.ok(shown.top + shown.height >= box.height - 1e-9);
+});
+
+test("a live map opened at a still's growth draws the snapshot's world exactly where the still stands", () => {
+    const box = { left: 0, top: 0, width: 1920, height: 900 };
+    const aim = { ...MIDDLE, across: 19200, nudge: { x: 300, y: -100 } };
+    const short = snapshot({ across: 19200, world: { x: -1400, y: -500, w: 20000, h: 10000 } });
+    const still = stillFor([short], aim, box, null, []);
+    assert.ok(still && still.k > 1);
+    const c = grown(aimCamera(HARBOUR, aim, box, null, []), HARBOUR, aim, still.k);
+    const { world } = short;
+    assert.ok(near((world.x - c.x) * c.z + box.width / 2, still.at.left));
+    assert.ok(near((world.y - c.y) * c.z + box.height / 2, still.at.top));
+    assert.ok(near(world.w * c.z, still.at.width));
+    assert.ok(near(world.h * c.z, still.at.height));
 });
 
 test("the live map's camera and the still picture agree: under both, the aimed point stands at the same pixel, clear of the same card", () => {

@@ -26,10 +26,8 @@ import {
     type Scenery,
     type SheetView,
     type Standing,
-    type StopView,
     type Stretch,
     type StretchView,
-    type TrailView,
     type WorldLimits,
     type WorldPicture,
     type WorldView,
@@ -58,7 +56,6 @@ import {
 } from "./rewards";
 import { daysOf, greetAt, nameBox, skyPlaces, termsIn } from "./roll";
 import { edgeOf, landOf, reachOf as reachedOf, terrainOf } from "./terrain";
-import { dayInWords, layoutTrail, slotsOf, type Slot } from "./trail";
 import type { Applied, Site, World, WorldChoice } from "./types";
 import {
     everyYear,
@@ -1068,136 +1065,6 @@ export function countryViewOf(o: {
     return view;
 }
 
-export interface TrailIn {
-    journal: Journal;
-    term: number;
-    /** The world the term is in, with the family's changes. */
-    world: Applied;
-    /** What the record makes of that world on the map: its moment, and who walks with the guide. */
-    place: Walked | undefined;
-    corpus: Corpus;
-    topics: (lesson: string) => string[];
-    size: (art: string) => { w: number; h: number };
-    narrow: boolean;
-    /** A grown-up's trail is drawn whole, with a note under what the record did. */
-    grown: boolean;
-}
-
-/**
- * A term as a place, which a page draws when the child steps back from the roll: a stop for every day
- * of the term, what the record has left of each drawing beside the trail, and each stop's label in the
- * words a child reads it in. A day still to come says nothing of its lesson, and neither does what
- * stands beside it, until it is today. Null for a term with no day on it yet.
- */
-export function trailViewOf(o: TrailIn): TrailView | null {
-    const { journal: j, world: w, place } = o;
-    const slots = slotsOf(j.year, o.term, j.days, j.next);
-    if (!slots.length) return null;
-    const reachOf = reachesFor(() => w, o.topics);
-    const reachAt = (slot: Slot): { art: string; says: string } | null => {
-        const day: Day | null =
-            slot.day ??
-            (slot.state === "next"
-                ? {
-                      id: slot.key,
-                      n: 0,
-                      term: o.term,
-                      lessons: slot.lessons,
-                      state: "today",
-                      date: "",
-                  }
-                : null);
-        return day ? reachOf(day, w.id) : null;
-    };
-    const layout = layoutTrail({
-        term: o.term,
-        slots,
-        world: {
-            id: w.id,
-            name: w.name,
-            ground: w.ground,
-            gate: w.horizon.gate,
-            moment: w.chapter.moment.art,
-            secret: w.chapter.secret.art,
-            landmarks: w.landmarks,
-            creatures: w.creatures,
-        },
-        wide: !o.narrow,
-        size: o.size,
-        reach: reachAt,
-        whole: o.grown,
-    });
-    const today = j.live?.today ?? j.today?.date ?? "";
-    const stamp = w.stamp ?? w.creatures[0] ?? null;
-    const title = (id: string): string => o.corpus.lesson(id)?.title ?? id;
-    const sheetOf = (id: string, state: SheetView["state"]): SheetView => ({
-        lesson: id,
-        title: title(id),
-        state,
-        on: j.progress.done[id]?.on ?? null,
-    });
-    const stops: StopView[] = layout.stops.map((s, i) => {
-        const slot = slots[i],
-            reached = s.state === "done" || s.state === "today";
-        return {
-            hook: reached && slot ? (reachAt(slot)?.says ?? null) : null,
-            names: reached ? s.lessons.map(title).join(" and ") : "",
-            // within the week a child's own words, and past it the day the sheet is stamped with
-            when:
-                s.state === "today"
-                    ? "Today"
-                    : s.state === "done" && s.date
-                      ? dayInWords(s.date, today) || longDate(s.date)
-                      : "",
-            stamp: s.state === "done" ? stamp : null,
-            sheets: reached
-                ? s.lessons.map((id) => sheetOf(id, s.state === "today" ? "today" : "done"))
-                : [],
-        };
-    });
-    const standings: Standing[] = layout.land.scenery.map((s, i) => {
-        const stop = layout.stops[layout.beside[i] ?? -1];
-        if (s.kind === "reach") {
-            if (stop?.state === "done" && stop.date) return { lit: true, on: stop.date };
-            return stop?.state === "next" ? { lit: false, says: "" } : { lit: false };
-        }
-        if (s.kind === "moment") return momentOf(w, place, o.grown);
-        if (s.kind === "secret") {
-            if (stop?.state !== "done" || !stop.date) return { hide: true };
-            return {
-                says: w.chapter.secret.says,
-                note: o.grown ? `A secret, there since ${shortDate(stop.date)}.` : undefined,
-            };
-        }
-        return {};
-    });
-    const stretch = layout.land.stretches[0];
-    if (!stretch) return null;
-    // the name and what hangs in the sky stay within the place, which is narrower than the land washed
-    const B = layout.land.bounds;
-    const within: RollLayout = { ...layout.land, x0: B.x, x1: B.x + B.w };
-    const picture = pictureOf(w);
-    const now = layout.stops.findIndex((s) => s.state === "today");
-    const lastDone = layout.stops.map((s) => s.state).lastIndexOf("done");
-    return {
-        term: o.term,
-        world: w.id,
-        layout,
-        stops,
-        standings,
-        sky: {
-            label: nameBox(within, stretch, w.name),
-            greet: greetAt({ ...stretch, start: layout.start }),
-            says: w.arrive,
-            sky: skyIn(picture, w, within, stretch, o.size),
-        },
-        label: j.termLabel(o.term),
-        guide: now >= 0 ? now : lastDone,
-        followers: (place?.followers ?? []).map((f) => ({ art: f.art, on: f.on })),
-        moment: place?.state === "done" ? place.moment : null,
-    };
-}
-
 /** What hangs in a stretch's sky: its own drawings, and a kite in a breezy world that could fly one and has none beside its path. */
 function skyIn(
     p: WorldPicture,
@@ -1235,8 +1102,6 @@ export interface RollIn {
     standings?: Standing[];
     open: string;
     arrival: WorldView["arrival"];
-    /** The term the view opens on as a place, for a page that draws one. */
-    trail?: TrailView | null;
     /** What the card says on a roll with no days on it, where its stretches carry one. */
     card?: { label: string; says: string };
     limits: WorldLimits;
@@ -1263,20 +1128,11 @@ export function rollViewOf(o: RollIn): WorldView {
             ...(o.card ? { card: o.card } : {}),
         };
     });
-    const trail = o.trail ?? null;
     const art = artOf([
         ...Object.values(pictures).flatMap(drawnIn),
         ...stretches.flatMap((s) => s.sky.map((x) => x.art)),
         ...layout.scenery.map((s) => s.art),
         ...o.days.flatMap((d) => d.followers),
-        ...(trail
-            ? [
-                  ...trail.layout.land.scenery.map((s) => s.art),
-                  ...trail.sky.sky.map((x) => x.art),
-                  ...trail.stops.flatMap((s) => (s.stamp ? [s.stamp] : [])),
-                  ...trail.followers.map((f) => f.art),
-              ]
-            : []),
     ]);
     return {
         pictures,
@@ -1287,7 +1143,6 @@ export function rollViewOf(o: RollIn): WorldView {
         standings: o.standings ?? layout.scenery.map(() => ({})),
         arrival: o.arrival,
         stretches,
-        trail,
         art,
         limits: o.limits,
     };

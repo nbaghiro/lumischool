@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { childsMap, openChildrensView, signInAs, test } from "./steps";
-import type { KidRecord } from "../../server/api";
+import { readKidRecord } from "../../engine/ui/wire";
 
 test("page reading keeps the same lesson nodes and scrolls natively", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -43,7 +43,8 @@ test("a child keeps an unfinished answer when changing reading format", async ({
     await signInAs(page);
     await page.route(/\/api\/kid\/[^/]+\/record$/, async (route) => {
         const response = await route.fetch();
-        const record = (await response.json()) as KidRecord;
+        const record = readKidRecord(await response.json());
+        if (!record) throw new Error("the record did not read");
         const day = record.plan
             .flatMap((track) => track.days)
             .find((day) => day.lesson === "g1-counting-to-twenty");

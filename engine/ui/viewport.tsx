@@ -17,12 +17,38 @@ export function whenNear(el: Element, then: () => void, margin = "100% 0px"): ()
     return () => io.disconnect();
 }
 
-/** A reversible scene lifetime with a small prewarm margin, paused while the tab is hidden. */
+/** Whether a modal dialog that does not hold `el` is open over the page, which hides `el` as surely as scrolling it away. */
+const covered = (el: Element): boolean =>
+    Array.from(document.querySelectorAll("dialog[open]")).some(
+        (d) => d.matches(":modal") && !d.contains(el),
+    );
+
+/** Everyone waiting to hear that a dialog opened or closed, with one observer between them. */
+const coverWatchers = new Set<() => void>();
+let coverWatch: MutationObserver | null = null;
+function onCover(then: () => void): () => void {
+    coverWatchers.add(then);
+    coverWatch ??= new MutationObserver(() => {
+        for (const w of coverWatchers) w();
+    });
+    if (coverWatchers.size === 1)
+        coverWatch.observe(document.body, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["open"],
+        });
+    return () => {
+        coverWatchers.delete(then);
+        if (!coverWatchers.size) coverWatch?.disconnect();
+    };
+}
+
+/** A reversible scene lifetime with a small prewarm margin, paused while the tab is hidden or a modal dialog covers it. */
 export function whileNear(el: Element, change: (near: boolean) => void): () => void {
     let near = false;
     let active: boolean | undefined;
     const update = (): void => {
-        const next = near && !document.hidden;
+        const next = near && !document.hidden && !covered(el);
         if (next === active) return;
         active = next;
         change(next);
@@ -36,9 +62,11 @@ export function whileNear(el: Element, change: (near: boolean) => void): () => v
     );
     io.observe(el);
     document.addEventListener("visibilitychange", update);
+    const uncover = onCover(update);
     return () => {
         io.disconnect();
         document.removeEventListener("visibilitychange", update);
+        uncover();
     };
 }
 

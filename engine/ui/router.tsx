@@ -19,11 +19,15 @@ export const path = now;
 /** The address's query, `?kid=…`, which a screen reads to open what it names. */
 export const search = query;
 
-/** Moves to a path in this app, with its query and fragment, without a page load. */
-export function go(to: string, o: { replace?: boolean } = {}): void {
+/**
+ * Moves to a path in this app, with its query and fragment, without a page load. `state` marks the
+ * entry for the screen that made it, such as the entry a preview pushed over the catalogue it opened
+ * from, so that screen can tell its own entry from one a reader arrived on.
+ */
+export function go(to: string, o: { replace?: boolean; state?: unknown } = {}): void {
     const from = location.pathname;
-    if (o.replace) history.replaceState(null, "", to);
-    else history.pushState(null, "", to);
+    if (o.replace) history.replaceState(o.state ?? null, "", to);
+    else history.pushState(o.state ?? null, "", to);
     setNow(location.pathname);
     setQuery(location.search);
     // a new screen opens at its top; a change of state on the same screen, such as the calendar's

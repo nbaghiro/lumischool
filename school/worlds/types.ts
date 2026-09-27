@@ -69,11 +69,6 @@ export interface World extends Omit<WorldPicture, "motion"> {
     arrive: string;
     /** The landmarks and creatures that reach into lessons, checked in order for each day. */
     reaches: Reach[];
-    /**
-     * The creature in the ring of a finished day's stamp on the world's trail, one it offers; the first
-     * of its creatures where it names none.
-     */
-    stamp?: string;
     /** What a grown-up may choose from for this world. Anything outside these is refused. */
     offers: Offers;
     /** Drawings this world would like and does not have, so nobody mistakes the gap for a choice. */

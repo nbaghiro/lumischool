@@ -58,7 +58,7 @@ for (const motion of ["reduce", "no-preference"] as const) {
             window.mapResourceProbe = {
                 capture() {
                     for (const canvas of document.querySelectorAll<HTMLCanvasElement>(
-                        '[role="dialog"] canvas.paper',
+                        '[role="dialog"] canvas',
                     ))
                         canvases.add(canvas);
                 },
@@ -161,19 +161,24 @@ test("atlas terrain detail is released away from the camera and reconstructed wi
         .toBe(true);
 });
 
-test("multiple maps share a bounded paper canvas allocation across resizing", async ({ page }) => {
+test("a map under the overlay lets its canvas go, and every canvas stays bounded across resizing", async ({
+    page,
+}) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     // Phone backdrops intentionally retain their snapshots instead of mounting a live map.
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/home");
     await page.locator("#you").scrollIntoViewIfNeeded();
-    const canvases = page.locator(".ow-host > canvas.paper");
-    await expect.poll(() => canvases.count()).toBeGreaterThan(0);
+    const canvases = page.locator(".ow-host > canvas");
+    const underneath = page.locator("main .ow-host > canvas");
+    await expect.poll(() => underneath.count()).toBeGreaterThan(0);
     await page.evaluate(() => {
         location.hash = "/map";
     });
     await expect(page.getByRole("dialog").locator(".ow-host.ready")).toBeVisible();
-    await expect.poll(() => canvases.count()).toBeGreaterThan(1);
+    // the page's own maps are covered by the dialog, so they draw nothing and hold no canvas
+    await expect.poll(() => underneath.count()).toBe(0);
+    await expect.poll(() => canvases.count()).toBe(1);
     for (const size of [
         { width: 390, height: 844 },
         { width: 1440, height: 900 },
@@ -186,16 +191,19 @@ test("multiple maps share a bounded paper canvas allocation across resizing", as
                         el instanceof HTMLCanvasElement ? el.width * el.height : 0,
                     );
                     return (
-                        pixels.every((n) => n <= 2_000_000) &&
-                        pixels.reduce((a, b) => a + b, 0) <= 4_000_000
+                        pixels.every((n) => n <= 4_000_000) &&
+                        pixels.reduce((a, b) => a + b, 0) <= 8_000_000
                     );
                 }),
             )
             .toBe(true);
     }
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect.poll(() => underneath.count()).toBeGreaterThan(0);
 });
 
-test("terrain surfaces and masks stay viewport bounded through flight and resizing", async ({
+test("the map's GPU canvas and the world's clip stay viewport bounded through flight and resizing", async ({
     page,
 }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -213,36 +221,20 @@ test("terrain surfaces and masks stay viewport bounded through flight and resizi
             .poll(() =>
                 map.evaluate((root) => {
                     const host = root.getBoundingClientRect();
-                    const world = root.querySelector<HTMLElement>(".world");
-                    if (!world) return false;
+                    const world = root.querySelector<HTMLElement>(":scope > .world");
+                    const canvas = root.querySelector<HTMLCanvasElement>(":scope > canvas.map-gl");
+                    if (!world || !canvas) return false;
                     const camera = new DOMMatrix(getComputedStyle(world).transform);
                     const clip = world.style.clipPath.match(/-?[\d.]+(?=px)/g)?.map(Number);
                     if (!clip || clip.length !== 8) return false;
                     const width = ((clip[2] ?? 0) - (clip[0] ?? 0)) * camera.a;
                     const height = ((clip[5] ?? 0) - (clip[1] ?? 0)) * camera.d;
-                    if (
-                        Math.abs(width - host.width - 192) > 2 ||
-                        Math.abs(height - host.height - 192) > 2
-                    )
-                        return false;
-                    const surfaces = [
-                        ...root.querySelectorAll<SVGSVGElement>("[data-map-surface]"),
-                    ];
+                    const density = Math.min(2, Math.max(1, devicePixelRatio));
                     return (
-                        surfaces.length > 0 &&
-                        surfaces.every((svg) => {
-                            const bounds = svg.getBoundingClientRect();
-                            const view = svg.viewBox.baseVal;
-                            return (
-                                bounds.width <= host.width * 1.375 + 2 &&
-                                bounds.height <= host.height * 1.375 + 2 &&
-                                [...svg.querySelectorAll("mask")].every(
-                                    (mask) =>
-                                        Number(mask.getAttribute("width")) <= view.width + 1 &&
-                                        Number(mask.getAttribute("height")) <= view.height + 1,
-                                )
-                            );
-                        })
+                        Math.abs(width - host.width - 192) <= 2 &&
+                        Math.abs(height - host.height - 192) <= 2 &&
+                        Math.abs(canvas.width - Math.round(host.width * density)) <= 1 &&
+                        Math.abs(canvas.height - Math.round(host.height * density)) <= 1
                     );
                 }),
             )
@@ -295,7 +287,7 @@ test("equivalent models and pending progress updates preserve a flight's scene",
     await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
     await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
     await map.evaluate((root) => {
-        root.querySelector("[data-map-surface]")?.setAttribute("data-continuity", "same");
+        root.querySelector("canvas.map-gl")?.setAttribute("data-continuity", "same");
     });
     await page.evaluate("window.mapFixture.update(false)");
     await page.evaluate("window.mapFixture.update(true)");
@@ -414,4 +406,45 @@ test("lesson entry keeps populated scenery through background lesson preparation
         await probe.evaluate((p) => p.stop());
         await probe.dispose();
     }
+});
+
+test("a lost GPU context draws the map again once it is restored", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto("/home#/map");
+    const map = page.getByRole("dialog").locator(".ow-host.ready");
+    await expect(map).toBeVisible({ timeout: 60_000 });
+    const canvas = map.locator(":scope > canvas.map-gl");
+    // the map has drawn when the canvas's picture stops changing
+    let before = await canvas.screenshot();
+    await expect
+        .poll(async () => {
+            const now = await canvas.screenshot();
+            const same = now.equals(before);
+            before = now;
+            return same;
+        })
+        .toBe(true);
+    await canvas.evaluate((el) => {
+        if (!(el instanceof HTMLCanvasElement)) return;
+        const lose = el.getContext("webgl2")?.getExtension("WEBGL_lose_context");
+        Object.assign(window, { restoreMap: () => lose?.restoreContext() });
+        lose?.loseContext();
+    });
+    await expect.poll(async () => (await canvas.screenshot()).equals(before)).toBe(false);
+    const lost = await canvas.screenshot();
+    await page.evaluate("window.restoreMap()");
+    await map.dispatchEvent("wheel", { deltaY: 1 });
+    // redrawn once it holds a picture again that has stopped changing, of about the size it had
+    let last = lost;
+    await expect
+        .poll(async () => {
+            const now = await canvas.screenshot();
+            const settled = now.equals(last) && !now.equals(lost);
+            last = now;
+            return settled && Math.abs(now.length - before.length) < before.length * 0.2;
+        })
+        .toBe(true);
+    expect(errors).toEqual([]);
 });

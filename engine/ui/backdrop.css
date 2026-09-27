@@ -31,6 +31,12 @@
     max-width: none;
     pointer-events: none;
     user-select: none;
+    /* a still framed again as the page's cards arrive glides there, as the live map would */
+    transition:
+        left 0.6s ease,
+        top 0.6s ease,
+        width 0.6s ease,
+        height 0.6s ease;
 }
 
 /* The live map is Overworld (overworld.tsx) filling the box, weightier than its own .ow-host, and
@@ -59,7 +65,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .backdrop > .backdrop-live {
+    .backdrop > .backdrop-live,
+    .backdrop > .backdrop-still {
         transition: none;
     }
 }

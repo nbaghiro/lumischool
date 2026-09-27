@@ -56,6 +56,8 @@ export interface Site {
      * `rescale()` makes them again once the camera has settled. Elsewhere it is 1.
      */
     zoom?: () => number;
+    /** Its drawings are drawn from a copy the page never lays out (map-scene.ts), which tells `see` what is seen. */
+    drawnElsewhere?: boolean;
 }
 
 export interface Playing {
@@ -85,6 +87,11 @@ export interface Group {
     stop(): void;
     /** Release immediately when the owning scene leaves the page. */
     dispose(): void;
+    /**
+     * For a site drawn elsewhere: which drawings came on screen or left it, with each one's share of the
+     * screen and its size in its own pixels, as its box lays it out.
+     */
+    see(changes: readonly [SVGSVGElement, { share: number; w: number; h: number } | null][]): void;
 }
 
 interface Part extends PartPlace {
@@ -198,7 +205,8 @@ function start(): void {
         (entries) => {
             const area = Math.max(1, innerWidth * innerHeight);
             for (const e of entries) {
-                const inst = stage.bySvg.get(e.target as SVGSVGElement);
+                if (!(e.target instanceof SVGSVGElement)) continue;
+                const inst = stage.bySvg.get(e.target);
                 if (!inst) continue;
                 const r = e.intersectionRect;
                 const cx = r.left + r.width / 2 - innerWidth / 2;
@@ -217,7 +225,8 @@ function start(): void {
     );
     stage.ro = new ResizeObserver((entries) => {
         for (const e of entries) {
-            const inst = stage.bySvg.get(e.target as SVGSVGElement);
+            if (!(e.target instanceof SVGSVGElement)) continue;
+            const inst = stage.bySvg.get(e.target);
             if (!inst) continue;
             measure(inst);
             rekey(inst);
@@ -867,8 +876,10 @@ class G implements Group {
         svg.setAttribute("data-anim", still ? "still" : "moves");
         stage.insts.add(inst);
         stage.bySvg.set(svg, inst);
-        stage.io?.observe(svg);
-        stage.ro?.observe(svg);
+        if (!this.site.drawnElsewhere) {
+            stage.io?.observe(svg);
+            stage.ro?.observe(svg);
+        }
         return handle(inst);
     }
 
@@ -901,6 +912,24 @@ class G implements Group {
         this.stopping = true;
         retargetAll();
         kick();
+    }
+
+    see(changes: readonly [SVGSVGElement, { share: number; w: number; h: number } | null][]): void {
+        for (const [svg, seen] of changes) {
+            const i = stage.bySvg.get(svg);
+            if (!i || i.group !== this) continue;
+            const was = i.seen;
+            i.seen = !!seen;
+            if (!seen) continue;
+            i.share = seen.share;
+            if (seen.w > 0 && seen.h > 0 && (i.w !== seen.w || i.h !== seen.h)) {
+                i.w = seen.w;
+                i.h = seen.h;
+                rekey(i);
+            }
+            if (!was) quietFor(i);
+        }
+        if (changes.length) budget();
     }
 
     dispose(): void {

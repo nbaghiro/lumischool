@@ -16,7 +16,7 @@ import {
     Show,
     type JSX,
 } from "solid-js";
-import type { MapView, Size } from "../../engine/space";
+import type { Size } from "../../engine/space";
 import { idle, onDemand } from "../../engine/ui/art";
 import { MapBackdrop, OPENING, type Ground } from "../../engine/ui/backdrop";
 import { atFrom, hashOf, type OverlayAt } from "../../engine/ui/hash";
@@ -502,58 +502,32 @@ function SampleRoll(props: { caption: string | undefined }): JSX.Element {
     );
 }
 
+/** Where the map is at a stop: a world of the first year, or every world at the last. */
+const focusAt = (i: number, n: number): number | "all" => (i < n - 1 ? i : "all");
+
 /**
- * The sample child's map at the stop the reader has scrolled to: the same map the children's view
- * draws, with the visitor's limits, which let them look everywhere and go nowhere yet. A thin band
- * across the middle of what the reader can see, below the map when the map is on top, picks the stop.
+ * The sample child's map as a grown-up sees it at the last stop, one map for every stop: a new stop
+ * walks the guide along the road to the next world, or pulls back to every world, rather than drawing
+ * another map. Drawn once its box comes near.
  */
-function JourneyMap(props: {
-    stops: HTMLElement[];
-    at: number;
-    chose: (stop: number) => void;
-}): JSX.Element {
+function JourneyMap(props: { focus: number | "all" }): JSX.Element {
     const [host, setHost] = createSignal<HTMLDivElement>();
     const [near, setNear] = createSignal(false);
-    const wide = matches("(min-width: 1081px)");
-    const [stops] = createResource(near, async (on) =>
-        on ? (await pictures()).stops() : undefined,
-    );
+    const [view] = createResource(near, async (on) => {
+        if (!on) return undefined;
+        return (await pictures()).journeyView();
+    });
     onMount(() => {
         const el = host();
-        if (!el) return;
-        onCleanup(whileNear(el, setNear));
+        if (el) onCleanup(whileNear(el, setNear));
     });
-    onMount(() => {
-        let watching: IntersectionObserver | null = null;
-        const watch = (): void => {
-            watching?.disconnect();
-            watching = new IntersectionObserver(
-                (seen) => {
-                    for (const e of seen) {
-                        const i = props.stops.findIndex((stop) => stop === e.target);
-                        if (e.isIntersecting && i >= 0) props.chose(i);
-                    }
-                },
-                { rootMargin: wide() ? "-46% 0px -46% 0px" : "-66% 0px -30% 0px" },
-            );
-            for (const stop of props.stops) watching.observe(stop);
-        };
-        watch();
-        const list = matchMedia("(min-width: 1081px)");
-        list.addEventListener("change", watch);
-        onCleanup(() => {
-            watching?.disconnect();
-            list.removeEventListener("change", watch);
-        });
-    });
-    const stop = (): { view: MapView; at: number | "all" } | undefined => stops()?.[props.at];
     return (
         <div ref={setHost} class="site-window paper">
-            <Show when={near() && stop()}>
-                {(st) => (
+            <Show when={near() && view()}>
+                {(v) => (
                     <Overworld
-                        view={st().view}
-                        focus={st().at}
+                        view={v()}
+                        focus={props.focus}
                         hud={false}
                         class="site-journey-world"
                         title="A sample child's map"
@@ -561,6 +535,92 @@ function JourneyMap(props: {
                 )}
             </Show>
         </div>
+    );
+}
+
+/**
+ * The stops of the first year and the whole run beside the map, which walks to whichever stop is in
+ * the middle of the window. On a narrower screen the map sits above a row of stops the reader swipes,
+ * so the page itself never stops scrolling, and the stop most in view picks the map's place.
+ */
+function Journey(props: { sample: Sample | undefined }): JSX.Element {
+    const [at, setAt] = createSignal(0);
+    const wide = matches("(min-width: 1081px)");
+    const stops: HTMLElement[] = [];
+    let row: HTMLDivElement | undefined;
+    onMount(() => {
+        let watching: IntersectionObserver | null = null;
+        const watch = (): void => {
+            watching?.disconnect();
+            watching = new IntersectionObserver(
+                (seen) => {
+                    for (const e of seen) {
+                        const i = stops.findIndex((stop) => stop === e.target);
+                        if (e.isIntersecting && i >= 0) setAt(i);
+                    }
+                },
+                wide()
+                    ? { rootMargin: "-46% 0px -46% 0px" }
+                    : { root: row ?? null, rootMargin: "0px -45% 0px -45%" },
+            );
+            for (const stop of stops) watching.observe(stop);
+        };
+        createEffect(() => {
+            // the stops are laid once the site's words have come
+            if (props.sample) queueMicrotask(watch);
+        });
+        const list = matchMedia("(min-width: 1081px)");
+        list.addEventListener("change", watch);
+        onCleanup(() => {
+            watching?.disconnect();
+            list.removeEventListener("change", watch);
+        });
+    });
+    return (
+        <section class="site-sec field" id="map">
+            <div class="site-wrap">
+                <Head
+                    num="02"
+                    kicker="The map"
+                    title="A new world each term"
+                    lead="Your child walks from one world to the next. Nothing on the way is locked."
+                />
+                <Show when={props.sample}>
+                    {(s) => (
+                        <div class="site-journey">
+                            <div
+                                class="site-steps"
+                                ref={(el) => {
+                                    row = el;
+                                }}
+                            >
+                                <For each={s().steps}>
+                                    {(step, i) => (
+                                        <article
+                                            ref={(el) => {
+                                                stops[i()] = el;
+                                            }}
+                                            class="site-step"
+                                            classList={{ on: at() === i() }}
+                                        >
+                                            <p class="kicker">{step.kicker}</p>
+                                            <h3>{step.title}</h3>
+                                            <For each={step.lines}>{(line) => <p>{line}</p>}</For>
+                                            <Show when={step.note}>
+                                                <p class="note">{step.note}</p>
+                                            </Show>
+                                        </article>
+                                    )}
+                                </For>
+                            </div>
+                            <div class="site-journey-map">
+                                <JourneyMap focus={focusAt(at(), s().steps.length)} />
+                            </div>
+                        </div>
+                    )}
+                </Show>
+            </div>
+        </section>
     );
 }
 
@@ -607,56 +667,6 @@ function MapPicture(props: {
                 )}
             </Show>
         </div>
-    );
-}
-
-function Journey(props: { sample: Sample | undefined }): JSX.Element {
-    const [at, setAt] = createSignal(0);
-    return (
-        <section class="site-sec field" id="map">
-            <div class="site-wrap">
-                <Head
-                    num="02"
-                    kicker="The map"
-                    title="A new world each term"
-                    lead="Your child walks from one world to the next. Nothing on the way is locked."
-                />
-                <Show when={props.sample}>
-                    {(s) => {
-                        const stops: HTMLElement[] = [];
-                        return (
-                            <div class="site-journey">
-                                <div class="site-steps">
-                                    <For each={s().steps}>
-                                        {(step, i) => (
-                                            <article
-                                                ref={(el) => {
-                                                    stops[i()] = el;
-                                                }}
-                                                class="site-step"
-                                                classList={{ on: at() === i() }}
-                                            >
-                                                <p class="kicker">{step.kicker}</p>
-                                                <h3>{step.title}</h3>
-                                                <For each={step.lines}>
-                                                    {(line) => <p>{line}</p>}
-                                                </For>
-                                                <Show when={step.note}>
-                                                    <p class="note">{step.note}</p>
-                                                </Show>
-                                            </article>
-                                        )}
-                                    </For>
-                                </div>
-                                <div class="site-journey-map">
-                                    <JourneyMap stops={stops} at={at()} chose={setAt} />
-                                </div>
-                            </div>
-                        );
-                    }}
-                </Show>
-            </div>
-        </section>
     );
 }
 

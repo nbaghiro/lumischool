@@ -61,7 +61,6 @@ test("journey projection preserves canonical IDs and cannot award annual moments
         ["2026-09-01", null, null],
     );
     assert.equal(view.stretches[0]?.caption, "Grade 1 journey");
-    assert.equal(view.trail, null);
     assert.equal(view.next, null);
     assert.ok(
         view.layout.scenery.every((piece) => piece.kind !== "moment" && piece.kind !== "secret"),

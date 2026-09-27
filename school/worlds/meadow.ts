@@ -24,7 +24,6 @@ export const meadow: World = {
     },
     landmarks: ["stile", "pond", "flowers", "sheep", "hedge", "wheelbarrow"],
     creatures: ["rabbit", "hedgehog", "hen", "minibeasts"],
-    stamp: "hen",
     weather: "clear",
     seasons: ["summer", "autumn"],
     guide: "firefly",

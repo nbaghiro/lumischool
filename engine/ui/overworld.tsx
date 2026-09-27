@@ -56,6 +56,34 @@ const lower = (s: string): string => s.charAt(0).toLowerCase() + s.slice(1);
 
 const ARROWS: readonly Arrow[] = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 
+interface Pending {
+    piece: MapPainted["pieces"][number];
+    done: boolean;
+    release?: () => void;
+}
+
+/**
+ * The map a page last drew, kept off the page when the page leaves it for a world, so coming back to
+ * the same view takes it up again already painted and drawn rather than painting it anew.
+ */
+let parked: {
+    key: string;
+    painted: MapPainted;
+    source: HTMLElement;
+    overlay: HTMLElement;
+    pending: Pending[];
+    expiry: ReturnType<typeof setTimeout>;
+} | null = null;
+/** How long a parked map is kept for a page that does not come back to it. */
+const KEPT = 10 * 60_000;
+
+const unpark = (): void => {
+    if (!parked) return;
+    clearTimeout(parked.expiry);
+    parked.painted.stop();
+    parked = null;
+};
+
 /**
  * The camera bounds the limits allow: what the map knows of the country, or all of it. A child's
  * map is the whole sea, so its bounds are the layout's. */
@@ -124,6 +152,17 @@ export function Overworld(props: {
      */
     aim?: MapAim;
     aimCamera?: (aimed: AimedAt, aim: MapAim) => Camera;
+    /**
+     * The zoom the words on the map are sized for rather than the camera's: a backdrop gives its
+     * snapshot's, so the words grow with the map as the still's do, whatever the width of its box.
+     */
+    wordsAt?: number;
+    /**
+     * The page's framing of the aim, measured again as its cards come and move (backdrop.tsx): a new
+     * one puts the camera where `aimCamera` now says, at once while the map is not yet shown and with
+     * a short glide once it is.
+     */
+    reframe?: { key: string; glide: boolean };
     /** Without the hud there is nothing to press or read: no buttons, no words, and nothing takes the pointer or the keyboard. */
     hud?: boolean;
     /** Paint the first frame in short tasks with a pause between each, while a snapshot stands in for the map. */
@@ -141,11 +180,13 @@ export function Overworld(props: {
     let loadingFlight = false;
     let view: CanvasView | undefined;
     let painted: MapPainted | undefined;
-    let pending: {
-        piece: MapPainted["pieces"][number];
-        done: boolean;
-        release?: () => void;
-    }[] = [];
+    /** Where the painted map is kept for the GPU, off the page's layout. */
+    let source: HTMLElement | undefined;
+    let pending: Pending[] = [];
+    let overlay: HTMLElement | undefined;
+    /** What the map was painted from, which a parked map must match to be taken up again. */
+    let paintKey = "";
+    let listening: AbortController | undefined;
     let brush = 0;
     /**
      * A movement is under way, or the map has gone into a place and is done: it stays busy from then
@@ -154,6 +195,7 @@ export function Overworld(props: {
      */
     let busy = false;
     let drawn = false;
+    let settling = false;
     /** The pull-back out of a world runs once, on the first map this page draws, and never on a redraw. */
     let rose = false;
     let riders: { rebuild(): void } | null = null;
@@ -313,7 +355,15 @@ export function Overworld(props: {
                 if (performance.now() >= deadline) break;
             }
             if (todo.some((p) => !p.done)) brush = sceneWork.schedule(step);
-            else if (!drawn && painted) firstFrame(painted);
+            else if (!drawn && painted && !settling) {
+                // the snapshot under the map stays until the canvas holds everything it stands in for
+                const p = painted;
+                settling = true;
+                void p.settled().then(() => {
+                    settling = false;
+                    if (painted === p && !drawn) firstFrame(p);
+                });
+            }
         };
         brush = sceneWork.schedule(step);
     }
@@ -441,20 +491,23 @@ export function Overworld(props: {
         moved(cam);
         setAt(cam.z <= everything(view).z * 1.4 ? "all" : "frame");
         // Inherited variables invalidate every drawing; panning must not rewrite them each frame.
-        const z = Math.round(cam.z * 10000) / 10000;
+        const z = Math.round((props.wordsAt ?? cam.z) * 10000) / 10000;
         if (z !== styledZoom && z > 0) {
             styledZoom = z;
-            const s = view.world.style;
-            s.setProperty("--mz", String(z));
-            s.setProperty("--miz", String(1 / z));
-            s.setProperty("--iz", String(1 / z));
-            s.setProperty("--mgrow", clamp(0.2 / z, 1, 3.4).toFixed(3));
-            view.world.dataset.far = z < 0.12 ? "1" : "";
-            // drawn back from the land toward the sea, where its banner and key are too small to read
-            // (overworld.css): more than three tenths out from the zoom the land fills the window at
-            view.world.dataset.sea = z < frame(view).z * 0.7 ? "1" : "";
-            // the waves drift 22 units either way, which is less than a pixel this far out, so they rest there
-            view.world.classList.toggle("ow-calm", z * 22 < 1);
+            const sea = z < frame(view).z * 0.7;
+            for (const w of source ? [view.world, source] : [view.world]) {
+                const s = w.style;
+                s.setProperty("--mz", String(z));
+                s.setProperty("--miz", String(1 / z));
+                s.setProperty("--iz", String(1 / z));
+                s.setProperty("--mgrow", clamp(0.2 / z, 1, 3.4).toFixed(3));
+                w.dataset.far = z < 0.12 ? "1" : "";
+                // drawn back from the land toward the sea, where its banner and key are too small to read
+                // (overworld.css): more than three tenths out from the zoom the land fills the window at
+                w.dataset.sea = sea ? "1" : "";
+                // the waves drift 22 units either way, which is less than a pixel this far out, so they rest there
+                w.classList.toggle("ow-calm", z * 22 < 1);
+            }
         }
         paintNear();
     }
@@ -518,6 +571,7 @@ export function Overworld(props: {
             host?.removeAttribute("data-travel");
             arrived(to, said);
             then?.();
+            if (later !== undefined && !busy) goFocus(later);
         };
         if (run.length === 0) {
             const end = along(way, forward ? 1 : 0);
@@ -676,7 +730,8 @@ export function Overworld(props: {
         mapEvent(0, "flight-start");
         flying = start({
             view: v,
-            layer: v.world,
+            layer: source ?? v.world,
+            over: v.world,
             hud: h,
             host: h,
             t: readTokens(h),
@@ -736,6 +791,29 @@ export function Overworld(props: {
             h: b.h - 2 * (hy + gy),
         };
     };
+
+    /** A focus the page gave while the guide was walking, taken up when the walk ends so the map ends where the page is. */
+    let later: typeof props.focus;
+    function goFocus(f: typeof props.focus): void {
+        const v = view;
+        if (!v || !ready()) return;
+        later = undefined;
+        if (busy) {
+            later = f;
+            return;
+        }
+        if (f === "all") showAll();
+        else if (f === "overview") v.flyTo(overview(v));
+        else if (typeof f === "number") {
+            const back = at() === "all";
+            setAt("frame");
+            if (f === focus()) {
+                // back from every world to where the guide stands
+                if (back) v.flyTo(frame(v));
+            } else if (Math.abs(f - focus()) === 1) travel(f);
+            else travelTo(f);
+        }
+    }
 
     function showAll(): void {
         const v = view;
@@ -817,7 +895,7 @@ export function Overworld(props: {
                 const revision = requested;
                 const next = props.view;
                 const key = JSON.stringify(next);
-                if (key !== model && !(await drawNow(v, next, revision))) {
+                if (key !== model && !(await drawNow(v, next, revision, key))) {
                     if (flying || loadingFlight || disposed) break;
                     continue;
                 }
@@ -832,23 +910,43 @@ export function Overworld(props: {
         }
     }
 
-    async function drawNow(v: CanvasView, next: MapView, revision: number): Promise<boolean> {
+    async function drawNow(
+        v: CanvasView,
+        next: MapView,
+        revision: number,
+        viewKey: string,
+    ): Promise<boolean> {
         const { paintMapView } = await mapPainter();
         if (!host || disposed || v !== view || revision !== requested) return false;
-        const replacement = document.createElement("div");
-        replacement.className = "world";
-        const p = await paintMapView({
-            host,
-            world: replacement,
-            view: next,
-            still: quiet,
-            pause: props.steps ? () => new Promise((done) => setTimeout(done, 0)) : undefined,
-            play: props.play,
-            riders: props.life,
-            zoom: () => v.cam.z,
-        });
+        const key = `${viewKey}|${props.play ?? ""}|${quiet}|${!!props.life}|${!!props.steps}`;
+        const kept = parked?.key === key ? parked : null;
+        if (kept) {
+            clearTimeout(kept.expiry);
+            parked = null;
+        } else unpark();
+        const replacement = kept?.source ?? document.createElement("div");
+        replacement.className = "ow ow-source";
+        const layer = kept?.overlay ?? document.createElement("div");
+        layer.className = "ow-over";
+        host.append(replacement);
+        const p =
+            kept?.painted ??
+            (await paintMapView({
+                host,
+                world: replacement,
+                overlay: layer,
+                under: v.world,
+                view: next,
+                still: quiet,
+                pause: props.steps ? () => new Promise((done) => setTimeout(done, 0)) : undefined,
+                play: props.play,
+                riders: props.life,
+                zoom: () => v.cam.z,
+            }));
+        if (kept) p.unpark(host, v.world);
         if (disposed || v !== view || revision !== requested || flying || loadingFlight) {
             p.stop();
+            replacement.remove();
             return false;
         }
         const replacing = !!painted;
@@ -859,50 +957,67 @@ export function Overworld(props: {
         riders = null;
         drawn = false;
         mapEvent(0, "model-swap", revision);
-        v.world.replaceChildren(...replacement.childNodes);
+        source?.remove();
+        source = replacement;
+        overlay = layer;
+        paintKey = key;
+        v.world.replaceChildren(layer);
         v.world.classList.add("ow");
         painted = p;
         styledZoom = NaN;
-        pending = (mapVariant === "terrain" ? [] : p.pieces).map((piece) => ({
-            piece,
-            done: false,
-        }));
+        pending =
+            kept?.pending ??
+            (mapVariant === "terrain" ? [] : p.pieces).map((piece) => ({
+                piece,
+                done: false,
+            }));
         p.frame(v.cam, v.vp);
+        listening?.abort();
+        listening = new AbortController();
+        const signal = listening.signal;
         p.nodes.forEach((b, i) => {
             if (!b) return;
             b.classList.add("ow-node");
-            b.addEventListener("click", () => {
-                setCard(null);
-                if (busy || flying || loadingFlight) return;
-                if (!place(i)?.open) {
-                    if (locked(i, "tap")) return;
-                    setCard(place(i) ?? null);
-                    say(`The way to ${lower(nameOf(props.view, i))} opens as you learn.`);
-                    return;
-                }
-                const camera = nearPlace(v, i);
-                const n = nodeAt(props.view.layout, i);
-                if (!camera || !n) return;
-                if (focus() === i && chosen() && v.cam.z >= camera.z * 0.9) {
-                    goIn(i);
-                    return;
-                }
-                // A map click frames its destination directly; keyboard travel follows the ways.
-                setAt("frame");
-                v.flyTo(camera, 1100);
-                p.place(n.stand, 1);
-                arrived(i);
-            });
+            b.addEventListener(
+                "click",
+                () => {
+                    setCard(null);
+                    if (busy || flying || loadingFlight) return;
+                    if (!place(i)?.open) {
+                        if (locked(i, "tap")) return;
+                        setCard(place(i) ?? null);
+                        say(`The way to ${lower(nameOf(props.view, i))} opens as you learn.`);
+                        return;
+                    }
+                    const camera = nearPlace(v, i);
+                    const n = nodeAt(props.view.layout, i);
+                    if (!camera || !n) return;
+                    if (focus() === i && chosen() && v.cam.z >= camera.z * 0.9) {
+                        goIn(i);
+                        return;
+                    }
+                    // A map click frames its destination directly; keyboard travel follows the ways.
+                    setAt("frame");
+                    v.flyTo(camera, 1100);
+                    p.place(n.stand, 1);
+                    arrived(i);
+                },
+                { signal },
+            );
             for (const [event, how] of [
                 ["focus", "focus"],
                 ["pointerenter", "hover"],
             ] as const)
-                b.addEventListener(event, () => {
-                    locked(i, how);
-                    if (mayEnter(i)) props.onApproach?.(i);
-                });
-            b.addEventListener("blur", () => unlocked(i, "focus"));
-            b.addEventListener("pointerleave", () => unlocked(i, "hover"));
+                b.addEventListener(
+                    event,
+                    () => {
+                        locked(i, how);
+                        if (mayEnter(i)) props.onApproach?.(i);
+                    },
+                    { signal },
+                );
+            b.addEventListener("blur", () => unlocked(i, "focus"), { signal });
+            b.addEventListener("pointerleave", () => unlocked(i, "hover"), { signal });
         });
         const first = replacing
             ? focus()
@@ -929,7 +1044,7 @@ export function Overworld(props: {
         if (host) host.style.opacity = back ? "0" : "1";
         if (back) rise(v, back, rest);
         // a backdrop shows the map as it stands; the colour washes out only as a child's own map opens
-        if (!props.aim) p.wash();
+        if (!props.aim && !kept) p.wash();
         setReady(true);
         return true;
     }
@@ -938,6 +1053,8 @@ export function Overworld(props: {
         const { CanvasView } = await mapPainter();
         if (!host || disposed) return;
         const v = new CanvasView(host, {
+            // the squared paper is drawn by the map's GPU, under the terrain
+            paper: false,
             bounds: (camera) => fenced(camera),
             frame: (cam) => onFrame(cam),
             key: (e) => onKey(e),
@@ -970,7 +1087,7 @@ export function Overworld(props: {
                 tellView();
             },
         });
-        // Retain the bounded terrain surface, not a second layer spanning the whole atlas.
+        // the world holds only words and buttons over the canvas, which a layer of its own would not help
         v.world.style.willChange = "auto";
         view = v;
         // a page that scrolls past the map leaves it the wheel, and so does a backdrop, which nothing reaches
@@ -1004,17 +1121,21 @@ export function Overworld(props: {
     );
     createEffect(
         on(
-            () => props.focus,
-            (f) => {
+            () => props.reframe,
+            (r) => {
                 const v = view;
-                if (!v || !ready()) return;
-                if (f === "all") showAll();
-                else if (f === "overview") v.flyTo(overview(v));
-                else if (typeof f === "number") {
-                    if (Math.abs(f - focus()) === 1) travel(f);
-                    else travelTo(f);
-                }
+                const c = v && r && props.aim && ready() ? aimed(props.aim) : null;
+                if (!v || !c || !r) return;
+                if (r.glide) v.flyTo(c, 600);
+                else v.set(c);
             },
+            { defer: true },
+        ),
+    );
+    createEffect(
+        on(
+            () => props.focus,
+            (f) => goFocus(f),
             { defer: true },
         ),
     );
@@ -1022,9 +1143,27 @@ export function Overworld(props: {
         disposed = true;
         sceneWork.cancel(brush);
         flying?.stop();
-        for (const p of pending) p.release?.();
+        listening?.abort();
+        if (painted && source && overlay) {
+            // a page going into a world comes back to this map, so it waits drawn rather than going
+            unpark();
+            painted.park();
+            source.remove();
+            overlay.remove();
+            parked = {
+                key: paintKey,
+                painted,
+                source,
+                overlay,
+                pending,
+                expiry: setTimeout(unpark, KEPT),
+            };
+        } else {
+            for (const p of pending) p.release?.();
+            painted?.stop();
+            source?.remove();
+        }
         pending = [];
-        painted?.stop();
         view?.dispose();
         // a settle or a frame still on its way finds no map to move
         view = undefined;

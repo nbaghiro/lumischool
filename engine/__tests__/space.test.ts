@@ -6,13 +6,10 @@ import {
     flight,
     gridLines,
     intersects,
-    keepIn,
     panBy,
     paperLayers,
     pinch,
-    pointerTo,
     readWheel,
-    stopNear,
     cameraBetween,
     cameraOn,
     toScreen,
@@ -23,7 +20,6 @@ import {
     type Camera,
     type Pt,
     type Size,
-    type Stop,
 } from "../space";
 
 const vp: Size = { w: 1200, h: 800 };
@@ -140,54 +136,6 @@ test("clamping holds the zoom in range and keeps some content on screen", () => 
         const over = Math.min(seen.x + seen.w, bounds.x + bounds.w) - Math.max(seen.x, bounds.x);
         assert.ok(over >= 80 - 1e-9, `at least 80 px of content: ${over}`);
     }
-});
-
-test("a camera kept in a place covers the screen with it, and holds to its middle where it is smaller", () => {
-    const place = { x: -400, y: 0, w: 800, h: 1200 };
-    const small = { w: 600, h: 500 };
-    const kept = keepIn(place, small, { x: 3000, y: -3000, z: 1 });
-    assert.deepEqual(kept, { x: 140, y: 210, z: 1 }, "40 px of slack past the place's corner");
-    assert.deepEqual(keepIn(place, small, { x: 20, y: 600, z: 1 }), { x: 20, y: 600, z: 1 });
-    const far = keepIn(place, small, { x: 900, y: 900, z: 0.2 });
-    assert.deepEqual(
-        far,
-        { x: 0, y: 600, z: 0.2 },
-        "a place smaller than the screen sits in its middle",
-    );
-});
-
-test("a point off the screen is pointed at from inside its edge, and one on it is not", () => {
-    const small = { w: 600, h: 500 };
-    const c = { x: 0, y: 500, z: 1 };
-    assert.equal(pointerTo(c, small, { x: 10, y: 480 }), null);
-    for (const target of [
-        { x: 380, y: 1080 },
-        { x: -2000, y: 400 },
-        { x: 0, y: -9000 },
-    ]) {
-        const p = pointerTo(c, small, target);
-        assert.ok(p, "off screen");
-        assert.ok(p.x >= 44 - 1e-9 && p.x <= small.w - 44 + 1e-9, `x ${p.x}`);
-        assert.ok(p.y >= 44 - 1e-9 && p.y <= small.h - 44 + 1e-9, `y ${p.y}`);
-        const s = toScreen(c, small, target);
-        near(Math.atan2(s.y - 250, s.x - 300), p.angle, 1e-9, "the angle points at it");
-    }
-});
-
-test("the stop nearest a point is found within reach, and a day not drawn yet is never it", () => {
-    const stop = (key: string, x: number, state: Stop["state"]): Stop => ({
-        key,
-        state,
-        lessons: [],
-        date: null,
-        at: { x, y: 0 },
-        s: x,
-        paper: { x, y: -400, w: 400, h: 300 },
-    });
-    const stops = [stop("a", 0, "done"), stop("b", 1000, "today"), stop("c", 2000, "ahead")];
-    assert.equal(stopNear(stops, { x: 900, y: 50 }, 500)?.key, "b");
-    assert.equal(stopNear(stops, { x: 1990, y: 0 }, 500), null, "the day ahead is passed over");
-    assert.equal(stopNear(stops, { x: 500, y: 3000 }, 500), null, "nothing within reach");
 });
 
 test("a flight lands on its camera, and a long trip zooms out on the way", () => {

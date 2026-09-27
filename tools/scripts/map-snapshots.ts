@@ -18,7 +18,6 @@ import {
     aimKey,
     OPENING,
     PHONE_OPENING,
-    placeStill,
     stillFor,
     type Aimed,
     type Area,
@@ -36,7 +35,8 @@ const QUALITY = 0.64;
 const MIDDLE = { x: 0.5, y: 0.5 };
 /** Where a tablet's screens put the aimed point on a wide page (aimAt in engine/ui/page.tsx). */
 const CENTERED = { x: 0.75, y: 0.55 };
-const WIDE = { across: OPENING.wide.across, width: 1440, scale: 1, budget: 200_000 };
+// twice the pixels, as a laptop's screen has them, so the still is as sharp as the map that follows it
+const WIDE = { across: OPENING.wide.across, width: 1440, scale: 2, budget: 480_000 };
 const NARROW = { across: OPENING.narrow.across, width: 390, scale: 2, budget: 80_000 };
 
 export interface Framing {
@@ -248,6 +248,8 @@ if (host) render(() => createComponent(MapBackdrop, { class: "snap", aim, sample
         root: dir,
         logLevel: "error",
         plugins: [solid()],
+        // the terrain's tiles, which the map draws from
+        publicDir: join(ROOT, "public"),
         build: { outDir: dist, emptyOutDir: true },
     });
     // the sample child's journey as the site's build writes it (tools/first-view.ts), beside the page
@@ -261,10 +263,10 @@ export interface Drawn {
     webp: Buffer;
 }
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
 const numbers = (v: unknown, keys: readonly string[]): boolean =>
-    typeof v === "object" &&
-    v !== null &&
-    keys.every((k) => typeof (v as Record<string, unknown>)[k] === "number");
+    isRecord(v) && keys.every((k) => typeof v[k] === "number");
 const isPt = (v: unknown): v is Pt => numbers(v, ["x", "y"]);
 const isArea = (v: unknown): v is Area => numbers(v, ["x", "y", "w", "h"]);
 
@@ -376,6 +378,7 @@ export async function photograph(browser: Browser, dist: string, f: Framing): Pr
             snapshot: {
                 sample: f.sample,
                 across: f.across,
+                zoom: Math.round(read.z * 1e6) / 1e6,
                 world: round(world),
                 aims: {
                     [aimKey(f.aim)]: {
@@ -500,7 +503,7 @@ import type { Snapshot } from "../snapshot";
 
 /** ${sample ? "The sample child's map at the site's opening" : "The country with nobody on it, behind a page's cards"}, as the pages frame it. */
 export const ${name.toUpperCase()}: readonly Snapshot[] = [
-${mine.map(({ file, snapshot: s }) => `{ src: new URL(${JSON.stringify(`./${file}.webp`)}, import.meta.url).href, sample: ${s.sample}, across: ${s.across}, world: ${JSON.stringify(s.world)}, aims: ${JSON.stringify(s.aims)} },`).join("\n")}
+${mine.map(({ file, snapshot: s }) => `{ src: new URL(${JSON.stringify(`./${file}.webp`)}, import.meta.url).href, sample: ${s.sample}, across: ${s.across}, zoom: ${s.zoom}, world: ${JSON.stringify(s.world)}, aims: ${JSON.stringify(s.aims)} },`).join("\n")}
 ];
 `;
             writeFileSync(
@@ -626,9 +629,8 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                 const aim = phoneOpening
                     ? PHONE_OPENING
                     : { ...f.aim, at: f.ats[0], across: f.across };
-                const placed = snapshotOnly
-                    ? stillFor([snapshot], aim, at.box, null, at.over)?.at
-                    : placeStill(snapshot, aim, at.box, null, at.over);
+                // the live map opens at the growth the page shows the still at (backdrop.tsx)
+                const placed = stillFor([snapshot], aim, at.box, null, at.over)?.at;
                 if (!placed) {
                     throw new Error(`${f.file}: the snapshot does not stand in for ${aimKey(aim)}`);
                 }

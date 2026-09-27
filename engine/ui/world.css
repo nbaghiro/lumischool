@@ -723,12 +723,6 @@
     }
 }
 
-.mo-off .mo-smoke,
-:root.mo-hidden .mo-smoke,
-:root.mo-hidden .j-water {
-    animation-play-state: paused !important;
-}
-
 @media (prefers-reduced-motion: reduce) {
     .mo-smoke,
     .j-water,

@@ -46,6 +46,8 @@ export interface ViewHooks {
     resized?(vp: Size): void;
     /** Manual zoom can stay closer than a scripted entrance or departure. */
     zoomLimits?(vp: Size): Limits;
+    /** False for a page that draws the paper itself, as the map's GPU does. */
+    paper?: boolean;
 }
 
 const motion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -154,11 +156,12 @@ export class CanvasView {
         this.world = document.createElement("div");
         this.world.className = "world";
         this.world.style.willChange = "transform";
-        host.prepend(this.paper, this.world);
+        if (hooks.paper === false) host.prepend(this.world);
+        else host.prepend(this.paper, this.world);
         this.colors();
         this.resizing = new ResizeObserver(() => this.measure());
         this.resizing.observe(host);
-        CanvasView.surfaces.add(this);
+        if (hooks.paper !== false) CanvasView.surfaces.add(this);
         this.measure();
         const options = { signal: this.events.signal };
         host.addEventListener("pointerdown", this.down, options);

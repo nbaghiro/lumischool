@@ -173,7 +173,7 @@ test("the whole run lays out once, every world on land or at sea as it should be
         ArrowUp: "ArrowDown",
         ArrowDown: "ArrowUp",
     };
-    const arrows = Object.keys(opposite) as Arrow[];
+    const arrows: readonly Arrow[] = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
     for (let i = 0; i + 1 < map.nodes.length; i++) {
         const on = arrows.find((k) => neighbour(map, i, k) === i + 1);
         assert.ok(on, `no arrow goes on from ${map.nodes[i]?.world}`);
@@ -1242,7 +1242,6 @@ test("a child's subject place keeps its own year's lessons, earned work and plan
         assert.equal(view.open, "painters-hut");
         assert.ok(view.layout.stretches.every((s) => s.world === "painters-hut"));
         assert.ok(view.days.flatMap((d) => d.sheets).every((s) => s.lesson.startsWith("art-1-")));
-        assert.ok(view.trail, "the subject roll also has its own place view");
     }
 });
 

@@ -45,6 +45,8 @@ export interface FlyOptions {
     view: CanvasView;
     /** The flight's own layer in the map's world, over the guide's. */
     layer: HTMLElement;
+    /** Where the plane, its shadow, its trail and what it spots go, over the map's words. */
+    over: HTMLElement;
     /** Where its controls go, over the map. */
     hud: HTMLElement;
     host: Element;
@@ -146,8 +148,10 @@ export function fly(o: FlyOptions): Flying {
     let parked = 0;
     let landingNode: number | null = null;
 
-    const L = div("ow-fly");
+    const L = div("ow-fly"),
+        top = div("ow-fly");
     o.layer.append(L);
+    o.over.append(top);
     const scenery: { el: HTMLElement | SVGSVGElement; rect: Rect; shown: boolean }[] = [];
     const pen = new Pen(el("svg", {}), { seed: 9, t, paper: false, roughness: 1 });
     const place = (
@@ -288,8 +292,8 @@ export function fly(o: FlyOptions): Flying {
         craft.append(body);
     }
     craft.append(rider);
-    if (shadow) L.append(shadow);
-    L.append(craft);
+    if (shadow) top.append(shadow);
+    top.append(craft);
     const trail: HTMLElement[] = [];
     let lastDot: Pt = { x: plane.x, y: plane.y };
 
@@ -495,7 +499,9 @@ export function fly(o: FlyOptions): Flying {
                 if (!on) return;
                 if (plane.phase === "down" && landingNode !== null) {
                     parked += lp.step;
-                    L.style.opacity = String(Math.max(0, 1 - Math.max(0, parked - 0.25) / 0.3));
+                    L.style.opacity = top.style.opacity = String(
+                        Math.max(0, 1 - Math.max(0, parked - 0.25) / 0.3),
+                    );
                     if (parked >= 0.55) land(landingNode);
                 } else if (landing) {
                     landStep(plane, landing, lp.step);
@@ -542,7 +548,7 @@ export function fly(o: FlyOptions): Flying {
         const label = div("ow-spotname");
         label.textContent = s.name;
         Object.assign(label.style, { left: `${s.at.x}px`, top: `${s.at.y - 80}px` });
-        L.append(ring, label);
+        top.append(ring, label);
         tell(`${s.name}, down there.`, true);
     }
 
@@ -587,7 +593,7 @@ export function fly(o: FlyOptions): Flying {
         if (Math.hypot(plane.x - lastDot.x, plane.y - lastDot.y) > 110 && plane.phase === "air") {
             const d = div("ow-dot");
             d.style.transform = `translate(${plane.x}px, ${plane.y}px)`;
-            L.insertBefore(d, L.firstChild);
+            top.insertBefore(d, top.firstChild);
             trail.push(d);
             if (trail.length > 70) trail.shift()?.remove();
             lastDot = { x: plane.x, y: plane.y };
@@ -669,7 +675,7 @@ export function fly(o: FlyOptions): Flying {
             return;
         }
         landingNode = i;
-        L.style.animation = "none";
+        L.style.animation = top.style.animation = "none";
         hud.focus({ preventScroll: true });
         for (const b of [stopBtn, left, right, ...notchBtns]) b.disabled = true;
     }
@@ -701,6 +707,7 @@ export function fly(o: FlyOptions): Flying {
         on = false;
         tk.stop();
         L.remove();
+        top.remove();
         hud.remove();
         words.remove();
         touch.remove();

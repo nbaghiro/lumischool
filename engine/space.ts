@@ -165,46 +165,6 @@ export function clampCamera(c: Camera, bounds: Rect, vp: Size, limits: Limits, k
     };
 }
 
-/**
- * The camera moved so a place covers the screen, give or take `slack` screen pixels at an edge, and
- * held to the place's middle along a side where the place is smaller than the screen. `clampCamera`
- * lets a hand drag on until 80 pixels are left, which is kind to a hand; this is where the camera
- * comes back to when the hand lets go, and where every move a page makes itself is aimed.
- */
-export function keepIn(place: Rect, vp: Size, c: Camera, slack = 40): Camera {
-    const axis = (v: number, from: number, len: number, view: number): number => {
-        const half = view / (2 * c.z),
-            s = slack / c.z;
-        const lo = from + half - s,
-            hi = from + len - half + s;
-        return lo <= hi ? clamp(v, lo, hi) : from + len / 2;
-    };
-    return { x: axis(c.x, place.x, place.w, vp.w), y: axis(c.y, place.y, place.h, vp.h), z: c.z };
-}
-
-/**
- * Where to point from the edge of the screen at a world point off it, in screen pixels: `pad` in from
- * the edge on the line from the middle to the point, and the angle to it. Null while it is on screen.
- */
-export function pointerTo(
-    c: Camera,
-    vp: Size,
-    target: Pt,
-    pad = 44,
-): (Pt & { angle: number }) | null {
-    const s = toScreen(c, vp, target);
-    if (s.x > pad && s.x < vp.w - pad && s.y > pad && s.y < vp.h - pad) return null;
-    const cx = vp.w / 2,
-        cy = vp.h / 2,
-        dx = s.x - cx,
-        dy = s.y - cy;
-    const k = Math.min(
-        dx === 0 ? Infinity : (cx - pad) / Math.abs(dx),
-        dy === 0 ? Infinity : (cy - pad) / Math.abs(dy),
-    );
-    return { x: cx + dx * k, y: cy + dy * k, angle: Math.atan2(dy, dx) };
-}
-
 /** The CSS transform that places a world-unit layer, with transform-origin 0 0, under this camera. */
 export function cssTransform(c: Camera, vp: Size): string {
     return `translate(${vp.w / 2 - c.x * c.z}px, ${vp.h / 2 - c.y * c.z}px) scale(${c.z})`;
@@ -1533,77 +1493,6 @@ export interface Sample {
 export const TILE = 1400;
 
 /**
- * How a day stands on its world's trail: done, today, the next day, which is closed, or a day further
- * on, which a child's trail does not draw yet.
- */
-export type StopState = "done" | "today" | "next" | "ahead";
-
-/** A day of a term as a stop on its world's trail, placed by its number in the term and never by its sheets. */
-export interface Stop {
-    /** The day's id on the roll, so a stop and its row are one day; a day not reached yet is named by what it will hold. */
-    key: string;
-    state: StopState;
-    /** A day still to come holds none until it is today, and the next day holds the lesson the roll closes for it. */
-    lessons: string[];
-    /** The day it was done or is planned for; null for a day still to come. */
-    date: string | null;
-    at: Pt;
-    /** How far along the trail. */
-    s: number;
-    /**
-     * The box the day's paper fills, above the trail and clear of the run above: its postcard stands
-     * in it until the paper arrives, and the paper is drawn into the same box, so nothing moves when
-     * it lands. The day's number decides it and the height of its sheets never does.
-     */
-    paper: Rect;
-}
-
-/**
- * A world's term laid out as a place (.docs/journal.md, "A world as a place"): a trail through the
- * world's own land with a stop for each day of the term, laid out once for the whole term, so a stop,
- * a landmark and the moment stay where they are however tall a sheet grows and however many days are
- * done. school/worlds/trail.ts lays it out.
- */
-export interface TrailLayout {
-    /**
-     * The place as the painters read a world: one stretch of a roll with no column, whose path is the
-     * trail as far as it is drawn and whose scenery is what stands in the place. Its bounds are the
-     * place, which the camera is kept in.
-     */
-    land: RollLayout;
-    stops: Stop[];
-    /** One per scenery of the land: the stop a drawing stands beside, or -1 for the place's own. */
-    beside: number[];
-    /** The whole trail, from where it starts under the horizon to the moment at its end, a stride apart. */
-    samples: Sample[];
-    start: Pt;
-    end: Pt;
-    /** Along the trail: its whole length, as far as the child has walked, and as far as it is drawn. */
-    length: number;
-    walked: number;
-    drawn: number;
-    /** How far down the place its land is drawn before it fades to paper, past the next day. */
-    known: number;
-    /** Between two stops along the trail. */
-    step: number;
-}
-
-/** The stop nearest a point within `by`, leaving out the days a child's trail does not draw. */
-export function stopNear(stops: readonly Stop[], p: Pt, by: number): Stop | null {
-    let best: Stop | null = null,
-        d = by;
-    for (const s of stops) {
-        if (s.state === "ahead") continue;
-        const e = Math.hypot(s.at.x - p.x, s.at.y - p.y);
-        if (e < d) {
-            d = e;
-            best = s;
-        }
-    }
-    return best;
-}
-
-/**
  * A place on the map as a page draws it. Its state is what the record says of it: finished, where the
  * child is, begun and left for later, the next world along (in pencil on a child's map), behind the
  * child with nothing done in it (a world of a year before the one they began in, in pencil too), or
@@ -1893,54 +1782,6 @@ export interface StretchView {
     card?: { label: string; says: string };
 }
 
-/** What a stop says a step out, in the words a child reads it in. */
-export interface StopView {
-    /**
-     * The question the day is about, in the world's own words, which leads: the line of what stands
-     * beside it. Null where the world has no line for the day's lessons, and for a day still to come.
-     */
-    hook: string | null;
-    /** The day's lessons by name, small under the question; empty for a day still to come, which keeps its lesson back. */
-    names: string;
-    /**
-     * The day within the week as a child says it (Today, Yesterday, Last Thursday), and past the week
-     * the day the sheet itself is stamped with; empty for a day still to come.
-     */
-    when: string;
-    /** The drawing in the ring of a finished day's stamp, the world's own creature; null on a day not finished. */
-    stamp: string | null;
-    /**
-     * The day's own sheets, which a page draws into the stop's paper box as it comes near, the way the
-     * roll draws them. A day still to come has none, since it names no lesson until it is today.
-     */
-    sheets: SheetView[];
-}
-
-/**
- * A world's term as a place, which a page draws when the child steps back from the roll: the trail
- * with a stop for each day, the guide at today, what stands beside the trail and how the record has
- * left each drawing, and the moment waiting at the trail's end.
- */
-export interface TrailView {
-    term: number;
-    world: string;
-    layout: TrailLayout;
-    /** One per stop of the layout. */
-    stops: StopView[];
-    /** One per scenery of the layout's land. */
-    standings: Standing[];
-    /** What the place's sky holds: the world's name, the guide's greeting at the start and the drawings up in it. */
-    sky: StretchView;
-    /** What is written above the world's name on its sky. */
-    label: string;
-    /** The stop the guide stands at: today's, or the last one done; -1 before the first day, at the start. */
-    guide: number;
-    /** The creatures walking behind the guide, with the day each joined. */
-    followers: { art: string; on: string }[];
-    /** The day the world's moment happened, when the term's last lesson was finished; null while it waits. */
-    moment: string | null;
-}
-
 /**
  * A year's roll as a page draws it, one stretch per term in that term's world: the worlds' pictures,
  * the roll laid out, the days on it and how the record has left each drawing beside the path.
@@ -1962,7 +1803,5 @@ export interface WorldView {
     arrival: { term: number; says: string } | null;
     /** One per stretch of the layout. */
     stretches: StretchView[];
-    /** The term the view opens on as a place; null where that term has no day on it yet. */
-    trail: TrailView | null;
     limits: WorldLimits;
 }

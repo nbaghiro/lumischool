@@ -20,7 +20,7 @@ import {
 } from "solid-js";
 import type { Measured } from "./lesson";
 import { nearPaper } from "./paper";
-import { PaperStatus } from "./paper-status";
+import { Waiting } from "./waiting";
 import { entryLessons } from "./reading-source";
 import { matches, Near } from "./viewport";
 import { World } from "./world";
@@ -267,11 +267,13 @@ export function Reading(props: {
                     </For>
                 </nav>
             </Show>
-            <PaperStatus
-                waiting={waiting()}
-                failed={failed()}
-                retry={() => paper.lookBack(wanted())}
-            />
+            <Show when={waiting()}>
+                <Waiting
+                    title={failed() ? "The lessons could not load" : "Opening your lessons"}
+                    pending={!failed()}
+                    retry={failed() ? () => paper.lookBack(wanted()) : undefined}
+                />
+            </Show>
         </>
     );
 }

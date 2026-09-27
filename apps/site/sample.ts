@@ -219,16 +219,20 @@ export async function drawSample(host: HTMLElement, p: SamplePicture): Promise<v
     await DRAW[p.is](s, host, "at" in p ? p.at : 0);
 }
 
-/** The sample child's map at each stop of the site's journey. */
-export async function stops(): Promise<ReturnType<typeof stopViews>> {
+/** The sample child's map at the last stop of the site's journey, with every world on it, which the map section walks through. */
+export async function journeyView(): Promise<MapView | undefined> {
     const s = await schoolOf();
     const motionless = still();
-    return stopViews(s.child, {
-        worldOf: motionless ? s.stillOf : s.worldOf,
-        size: s.size,
-        still: motionless,
-        declared: s.declared,
-    });
+    const [last] = stopViews(
+        { ...s.child, stops: s.child.stops.slice(-1) },
+        {
+            worldOf: motionless ? s.stillOf : s.worldOf,
+            size: s.size,
+            still: motionless,
+            declared: s.declared,
+        },
+    );
+    return last?.view;
 }
 
 /**

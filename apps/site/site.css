@@ -548,6 +548,10 @@ figure.site-fig figcaption {
 .site-journey-world {
     height: 100%;
 }
+/* a grown-up's notes under a world are too small to read at this size */
+.site-journey-world .ow-gnote {
+    display: none;
+}
 
 .site-cards {
     display: grid;
@@ -589,10 +593,10 @@ figure.site-fig figcaption {
 .site-pic-map {
     height: 100%;
 }
-.site-pic .ow-name,
-.site-pic .ow-year,
-.site-pic .ow-title,
-.site-pic .m-node {
+.site-pic .ow .ow-name,
+.site-pic .ow .ow-year,
+.site-pic .ow .ow-title,
+.site-pic .ow .m-node {
     display: none;
 }
 .site-card .state {
@@ -737,7 +741,7 @@ figure.site-fig figcaption {
     .site-lessons {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    /* The map goes above the stops and stays there as they scroll under it. */
+    /* The map goes above a row of stops the reader swipes, so the page itself never stops scrolling. */
     .site-journey {
         display: flex;
         flex-direction: column;
@@ -745,19 +749,35 @@ figure.site-fig figcaption {
         gap: 0;
     }
     .site-journey-map {
+        position: static;
         order: -1;
-        z-index: 3;
-        top: var(--bar-h);
-        height: clamp(260px, 44vh, 420px);
-        margin-inline: calc(-1 * var(--gut));
-        padding: 0 var(--gut) 10px;
-        background: var(--field);
+        height: clamp(260px, 62vw, 460px);
+        margin-bottom: 12px;
     }
     .site-steps {
-        padding-bottom: 0;
+        flex-direction: row;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        margin-inline: calc(-1 * var(--gut));
+        padding: 4px var(--gut) 8px;
+        scroll-padding-inline: var(--gut);
+        scrollbar-width: none;
     }
     .site-step {
-        min-height: 50vh;
+        flex: 0 0 min(84%, 440px);
+        min-height: 0;
+        scroll-snap-align: start;
+        padding: 16px 18px;
+        border: 1.5px solid var(--rule-firm);
+        border-radius: 12px;
+        background: var(--card);
+    }
+    .site-step::before {
+        display: none;
+    }
+    .site-step.on {
+        border-color: var(--ink);
     }
 }
 @media (max-width: 760px) {

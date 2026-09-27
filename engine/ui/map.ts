@@ -2,7 +2,8 @@
 // Only the washes, the coast and the labels are made when the map is built; everything else is a
 // piece painted as the camera comes near it. The drawings that travel the country on a page's
 // backdrop (the train over the strait, the ship out of the bay, the balloon on the map's own wind)
-// are placed here too, each round written out once as transform keyframes for the compositor.
+// are placed here too, each round written out once as transform keyframes. None of it is laid out on
+// the page: the GPU draws it (map-scene.ts), and the words and buttons are moved over the canvas.
 import "./overworld.css";
 import type { Drawable, Options } from "roughjs/bin/core";
 import type { Fill } from "../ink/pen";
@@ -63,7 +64,9 @@ import { animate, type Group, type Playing } from "./animate";
 import { motionOf as playsOf } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { bloom, motionOf, play } from "./player";
-import { mapSurface } from "./map-surfaces";
+import { mapScene } from "./map-scene";
+import { glDensity } from "./gl";
+import { landscapeZoom } from "./map-tiles";
 import { readTokens } from "./read-tokens";
 import { artSize, guideOf, placeArt, releaseScenery, type Piece } from "./scenery";
 import { el, render, SvgPen as Pen } from "./svg";
@@ -110,16 +113,23 @@ export interface TerrainOptions {
     still?: boolean;
     /** The group what stands in the country plays its declared idle on; none where the map is still. */
     idle?: Group | null;
+    /**
+     * The layer is a copy the GPU draws from (map-scene.ts) and the page never lays out: the land comes
+     * from its tiles, so its svg is left out, and nothing watches what is on screen.
+     */
+    drawnElsewhere?: boolean;
+    /** For the tile export: the landscape all in colour or all in pencil, which the page's masks choose between. */
+    marks?: "colour" | "pencil";
 }
 
 export interface TerrainPainted {
-    frame(camera: Camera, size: Size): void;
     /** The detail painted as the camera comes near, each with the zoom below which it waits. */
     pieces: (Piece & { minZ: number })[];
+    /** The landscape's marks and waves a tile at a time, which the tile export bakes into the terrain. */
+    landscape: Piece[];
     /** Redraw how far the child has come, for the colour washing over newly reached land. */
     setReach(r: MapReach): void;
     release(elements: readonly Element[]): void;
-    stop(): void;
 }
 
 const ASK =
@@ -139,7 +149,7 @@ const PEAK_WEIGHT: Record<PeakRole, number> = { outline: 5.2, ridge: 3.4, snow: 
 /** A ring's points with its first repeated at the end, to draw it round. */
 const closed = (ring: Pt[]): Pt[] => (ring.length ? [...ring, at(ring, 0)] : ring);
 
-/** Frames as a CSS keyframes rule with every value written out, so the compositor plays it without the page. */
+/** Frames as a CSS keyframes rule with every value written out, which the GPU plays (map-scene.ts). */
 export function keyframesCss(name: string, frames: readonly LifeFrame[]): string {
     return `@keyframes ${name}{${frames.map((q) => `${(q.at * 100).toFixed(3)}%{transform:translate(${px(q.x)}px,${px(q.y)}px) rotate(${q.r.toFixed(4)}rad) scaleX(${q.flip});opacity:${q.o}}`).join("")}}`;
 }
@@ -362,7 +372,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
     let R = view.reach;
     o.layer.closest(".world")?.classList.add("ow");
     const p = pad(B, 4127, t, "m-land ow-land");
-    o.layer.append(p.svg);
+    if (!o.drawnElsewhere) o.layer.append(p.svg);
     const defs = el("defs", {}, p.svg);
     const rings = T.lands;
     const isSea = (q: Pt) => wet(T, q);
@@ -603,18 +613,21 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
 
     // washed and inked, inside the reach
     const colour = el("g", { mask: "url(#m-reach)", class: "ow-colour" }, inner);
-    el("path", { d: landD, fill: t[LAND], opacity: String(cap * TERRAIN_WASH.land) }, colour);
+    // grouped so the tile export can take the land's wash apart from the patches the reach decides
+    const landWash = el("g", { class: "ow-land-wash" }, colour);
+    const patches = el("g", { class: "ow-patches" }, colour);
+    el("path", { d: landD, fill: t[LAND], opacity: String(cap * TERRAIN_WASH.land) }, landWash);
     for (const pt of T.patches)
         el(
             "path",
             { d: polyD(pt.outline), fill: t[pt.marker], opacity: String(cap * TERRAIN_WASH.patch) },
-            colour,
+            patches,
         );
     for (const isle of T.isles)
         el(
             "path",
             { d: polyD(isle.outline), fill: t.glow, opacity: String(cap * TERRAIN_WASH.isle) },
-            colour,
+            patches,
         );
     for (const lake of T.lakes)
         el(
@@ -668,7 +681,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         below(a);
         return a;
     };
-    /** A part of a drawing lifted into an svg of its own over the rest and turned there, so the compositor turns it and nothing is painted again. */
+    /** A part of a drawing lifted into an svg of its own and turned there, so the GPU turns its texture alone. */
     const turn = (box: HTMLElement, t: { part: string; rev: number }) => {
         const svg = box.querySelector("svg"),
             g = svg?.querySelector(`g[data-part="${t.part}"]`),
@@ -698,10 +711,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             paint: () => {
                 if (f.on !== "sea" && !knownAt(f.at)) return [];
                 const a = feature(f.art, f.at, f.k, f.flip);
-                if (a && turning && !o.still && reached(R, f.at)) {
-                    turn(a, turning);
-                    pause?.watch(a);
-                }
+                if (a && turning && !o.still && reached(R, f.at)) turn(a, turning);
                 return a ? [a] : [];
             },
         });
@@ -731,8 +741,6 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         sheet ??= lifeLayer.appendChild(document.createElement("style"));
         sheet.append(css());
     };
-    const watching = o.layer.closest<HTMLElement>(".j-map, .w-map, .ow-host");
-    const pause = watching ? offscreen(watching) : null;
     const live = (s: MapLife) => {
         // one element carries the whole thing, its shadow and whatever follows it, so a traveller is one layer
         const f = o.still ? null : s.round,
@@ -749,7 +757,6 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         if (f)
             go.style.animation = `${name} ${period}s linear ${(-(s.phase * period + elapsed) % period).toFixed(2)}s infinite`;
         lifeLayer.append(go);
-        pause?.watch(go);
         if (s.shade && f) {
             const shade = document.createElement("div"),
                 w = s.size * 1.1;
@@ -854,6 +861,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         q.x >= r.x && q.x < r.x + r.w && q.y >= r.y && q.y < r.y + r.h;
     const clear = (q: Pt, by = 110) => !keepOut.some((b) => within(b, q)) && !nearRoad(q, by);
     const TILE = 2600;
+    const landscape: Piece[] = [];
     for (let ty = B.y; ty < B.y + B.h; ty += TILE)
         for (let tx = B.x; tx < B.x + B.w; tx += TILE) {
             const rect = {
@@ -862,11 +870,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
                 w: Math.min(TILE, B.x + B.w - tx),
                 h: Math.min(TILE, B.y + B.h - ty),
             };
-            pieces.push({
-                rect,
-                minZ: 0,
-                paint: () => tile(rect),
-            });
+            landscape.push({ rect, paint: () => tile(rect) });
         }
     // a range's marks are worked out once and shared by every tile they fall in
     const rangeSeen = new Map<(typeof land.peaks)[number], PeakMarks>();
@@ -886,7 +890,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         const colourInk = new Ink(ink.pen),
             pencilInk = new Ink(grey.pen);
         const rnd = rand(seed);
-        const coloured = (q: Pt) => reached(R, q, 0.8);
+        const coloured = (q: Pt) => (o.marks ? o.marks === "colour" : reached(R, q, 0.8));
         // inked inside the reach, pencil where the map knows the land, and nothing at all past that
         const pick = (q: Pt): Ink | null =>
             coloured(q) ? colourInk : knownAt(q) ? pencilInk : null;
@@ -1031,7 +1035,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         if (!colourInk.empty) {
             colourInk.flush(ink.svg);
         }
-        // the waves are a layer of their own, so their drift is moved by the compositor rather than repainted
+        // the waves are an svg of their own, so their drift moves their texture rather than drawing it again
         if (!waves.empty) {
             waves.flush(sea.svg);
             below(sea.svg);
@@ -1149,18 +1153,16 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
             });
         }
     }
-    const surface = mapSurface(p.svg, B);
     return {
-        frame: surface.frame,
-        pieces,
+        // on the page the tiles hold the landscape until the camera is closer than they can draw it
+        pieces: o.drawnElsewhere
+            ? [...pieces, ...landscape.map((p) => ({ ...p, minZ: landscapeZoom(glDensity()) }))]
+            : pieces,
+        landscape,
         setReach,
         release(elements) {
-            for (const element of elements) {
-                pause?.unwatch(element);
-                element.remove();
-            }
+            for (const element of elements) element.remove();
         },
-        stop: () => pause?.stop(),
     };
 }
 
@@ -1455,7 +1457,7 @@ export function paintMap(o: MapOptions): Places {
     };
 
     // what the last day of work did inks itself in as the map opens, every time it opens
-    const host = o.layers.nodes.closest(".j-map");
+    const host = o.layers.nodes.closest<HTMLElement>(".j-map");
     let watching: MutationObserver | undefined;
     let stopBalloon: (() => void) | undefined;
     let celebration: ReturnType<typeof setTimeout> | undefined;
@@ -1473,7 +1475,7 @@ export function paintMap(o: MapOptions): Places {
             on = now;
         });
         watching.observe(host, { attributes: true, attributeFilter: ["class"] });
-        stopBalloon = balloonOnce(o, host as HTMLElement);
+        stopBalloon = balloonOnce(o, host);
     }
     return {
         pieces: pieces.map((piece) => {
@@ -2664,31 +2666,6 @@ interface Pose {
  * screen, and everything while the tab is hidden, the way the player rests the drawings' idles: the
  * map paints only what is near the camera, and this pauses what has been painted and scrolled away.
  */
-function offscreen(root: HTMLElement): {
-    watch(el: Element): void;
-    unwatch(el: Element): void;
-    stop(): void;
-} {
-    const io = new IntersectionObserver(
-        (entries) => {
-            for (const e of entries) e.target.classList.toggle("mo-off", !e.isIntersecting);
-        },
-        { root, rootMargin: "120px" },
-    );
-    const visibility = () =>
-        document.documentElement.classList.toggle("mo-hidden", document.hidden);
-    visibility();
-    document.addEventListener("visibilitychange", visibility);
-    return {
-        watch: (el) => io.observe(el),
-        unwatch: (el) => io.unobserve(el),
-        stop() {
-            io.disconnect();
-            document.removeEventListener("visibilitychange", visibility);
-        },
-    };
-}
-
 /** The wind over the country: from the west, stronger over the sea, turning a little from place to place, in world units a second. */
 export function windAt(t: Terrain, p: Pt): Pt {
     const k = wet(t, p) ? 1.25 : 1;
@@ -3131,7 +3108,7 @@ export function life(v: MapWindow, o: LifeOptions): Living {
 }
 
 /**
- * Runs the map's life: each traveller's round as keyframes on the compositor, from the page's own
+ * Runs the map's life: each traveller's round as keyframes, from the page's own
  * clock, so a life built again after a resize carries on from where it was. The drawings' own idles
  * (the lighthouse's light, the lit lanterns, the heron, the kites) go through the shared animation
  * module, which rests them at the same times and does nothing under reduced motion. A new size builds
@@ -3301,10 +3278,15 @@ export interface MapPainted {
     wash(): void;
     /** The first frame is all there: the day's doings play 450 ms on, when the map was painted with a day. */
     shown(): void;
+    /** Once the GPU has drawn everything the camera sees, at the sharpness it wants. */
+    settled(): Promise<void>;
     /** Start the drawings that travel the country for the camera the page holds, with `rebuild` for after the camera has moved on its own; nothing rides a map painted without `riders`. */
     life(cam: () => Camera): { rebuild(): void };
     /** The camera has settled at a new zoom: what moves is sized for it again. */
     rescale(): void;
+    /** Off the page while a world is open, keeping what is drawn; `unpark` puts it in a page's host again. */
+    park(): void;
+    unpark(host: HTMLElement, under: Element): void;
     stop(): void;
 }
 
@@ -3322,7 +3304,12 @@ const rectOf = (x: Element | DOMRect): DOMRect =>
  */
 export async function paintMapView(o: {
     host: HTMLElement;
+    /** Where the painters put the map, which the page never lays out; the GPU draws it (map-scene.ts). */
     world: HTMLElement;
+    /** What the page shows over the canvas: the words, the buttons and CSS's own shapes. */
+    overlay: HTMLElement;
+    /** What the canvas goes under. */
+    under: Element;
     view: MapView;
     still: boolean;
     pause?: () => Promise<void>;
@@ -3331,10 +3318,13 @@ export async function paintMapView(o: {
     /** Screen pixels per world pixel, from the camera, for the size rule on what moves. */
     zoom?: () => number;
 }): Promise<MapPainted> {
-    const { host, world, still, view } = o;
+    const { world, still, view } = o;
+    let host = o.host;
     // one group for everything on the map that idles as its drawing declares: it settles half a
     // minute after the map is left alone and a pointer over it wakes it, and it knows the camera's zoom
-    const idle = still ? null : animate({ intensity: "calm", settle: 30, most: 30, zoom: o.zoom });
+    const idle = still
+        ? null
+        : animate({ intensity: "calm", settle: 30, most: 30, zoom: o.zoom, drawnElsewhere: true });
     const L = {
         terrain: layer("j-layer m-terrain"),
         ground: layer("j-layer m-ground"),
@@ -3348,14 +3338,35 @@ export async function paintMapView(o: {
     world.append(...Object.values(L));
     L.art.after(lifeLayer);
     const t = readTokens(host);
-    const land = paintTerrain({ layer: L.terrain, host, t, view, still, idle });
+    const scene = mapScene({
+        host,
+        under: o.under,
+        hidden: world,
+        overlay: o.overlay,
+        view,
+        tokens: t,
+        see: idle ? (changes) => idle.see(changes) : undefined,
+        still,
+    });
+    // the painters read the page's colours from the map's own container, which goes with the map into
+    // whichever page takes it up again, where the host it was first painted in may have left the page
+    const land = paintTerrain({
+        layer: L.terrain,
+        host: world,
+        t,
+        view,
+        still,
+        idle,
+        drawnElsewhere: true,
+    });
     await o.pause?.();
-    const painted = paintMap({ layers: L, host, t, view, still, play: o.play, idle });
-    let washing = 0;
+    const painted = paintMap({ layers: L, host: world, t, view, still, play: o.play, idle });
+    let washing = 0,
+        played = false;
     let watching: IntersectionObserver | null = null;
     let living: ReturnType<typeof runLife> | undefined;
     return {
-        frame: (camera, size) => land.frame(camera, size),
+        frame: (camera, size) => scene.frame(camera, size),
         nodes: painted.nodes.map((b): HTMLButtonElement | null => (b.hidden ? null : b)),
         token: painted.token,
         pieces: [
@@ -3386,8 +3397,12 @@ export async function paintMapView(o: {
         ride: (kind) => painted.ride(kind),
         wash() {
             const f = view.reach.frontier;
+            const setReach = (reach: MapReach) => {
+                land.setReach(reach);
+                scene.setReach(reach);
+            };
             if (still || !f || f.to <= f.from) {
-                land.setReach(view.reach);
+                setReach(view.reach);
                 return;
             }
             const s: Spring = { hz: 0.9, zeta: 1 },
@@ -3396,16 +3411,19 @@ export async function paintMapView(o: {
             const step = (now: number) => {
                 const time = Math.max(0, (now - t0) / 1000 - 0.25),
                     u = springAt(s, 0, 1, 0, time).x;
-                land.setReach(reachAt(view.reach, f.from + (f.to - f.from) * Math.min(1, u)));
+                setReach(reachAt(view.reach, f.from + (f.to - f.from) * Math.min(1, u)));
                 if (time < end) washing = requestAnimationFrame(step);
-                else land.setReach(view.reach);
+                else setReach(view.reach);
             };
-            land.setReach(reachAt(view.reach, f.from));
+            setReach(reachAt(view.reach, f.from));
             washing = requestAnimationFrame(step);
         },
         shown() {
-            if (o.play) painted.shown();
+            // a map taken back from being parked has played its day already
+            if (o.play && !played) painted.shown();
+            played = true;
         },
+        settled: () => scene.settled(),
         life(cam) {
             living?.stop();
             watching?.disconnect();
@@ -3451,10 +3469,29 @@ export async function paintMapView(o: {
         rescale() {
             idle?.rescale();
         },
+        park() {
+            // a colour still washing out is put where it would have come to
+            if (washing) {
+                cancelAnimationFrame(washing);
+                washing = 0;
+                land.setReach(view.reach);
+                scene.setReach(view.reach);
+            }
+            watching?.disconnect();
+            watching = null;
+            living?.stop();
+            living = undefined;
+            host.classList.remove("w-off");
+            scene.park();
+        },
+        unpark(next, under) {
+            host = next;
+            scene.unpark(next, under);
+        },
         stop() {
             cancelAnimationFrame(washing);
-            land.stop();
             painted.stop();
+            scene.stop();
             watching?.disconnect();
             living?.stop();
             idle?.dispose();
