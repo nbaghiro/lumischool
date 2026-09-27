@@ -20,7 +20,8 @@ import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Choice, Field } from "../../engine/ui/fields";
 import { Button, PinInput } from "../../engine/ui/form";
-import { useLook, Waiting } from "../../engine/ui/page";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 import { Corner, Postcard } from "../../engine/ui/postcard";
 import { go } from "../../engine/ui/router";
 import { focusOnceShown, Say } from "../../engine/ui/say";
@@ -97,12 +98,12 @@ export function Account(): JSX.Element {
             <Switch>
                 <Match when={failed()}>
                     {(f) => (
-                        <Postcard note kicker="Your account" title="Your account did not load">
-                            <Say
-                                text={failureText(f(), local)}
-                                action={{ label: "Try again", run: () => void refetch() }}
-                            />
-                        </Postcard>
+                        <Waiting
+                            title="Your account did not load"
+                            pending={false}
+                            detail={failureText(f(), local)}
+                            retry={() => void refetch()}
+                        />
                     )}
                 </Match>
                 <Match when={signed()}>

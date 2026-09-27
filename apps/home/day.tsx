@@ -26,8 +26,8 @@ import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { LessonSheet } from "../../engine/ui/lesson";
-import { useLook, Waiting } from "../../engine/ui/page";
-import { Postcard } from "../../engine/ui/postcard";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 import { go } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { matches } from "../../engine/ui/viewport";
@@ -113,12 +113,12 @@ export function PrintDay(): JSX.Element {
         <Show when={loaded.latest} fallback={<Waiting title="Opening the day" />}>
             <Show when={failed()}>
                 {(f) => (
-                    <Postcard note kicker="For grown-ups" title="The day did not load">
-                        <Say
-                            text={failureText(f(), local)}
-                            action={{ label: "Try again", run: () => void refetch() }}
-                        />
-                    </Postcard>
+                    <Waiting
+                        title="The day did not load"
+                        pending={false}
+                        detail={failureText(f(), local)}
+                        retry={() => void refetch()}
+                    />
                 )}
             </Show>
             <Show when={got()}>{(l) => <Day loaded={l()} />}</Show>

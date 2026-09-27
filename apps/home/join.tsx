@@ -5,6 +5,7 @@ import { Button } from "../../engine/ui/form";
 import { CodeInput, Field, Check } from "../../engine/ui/fields";
 import { failureText } from "../../engine/ui/failure";
 import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 
 export function Join(): JSX.Element {
     const readToken = () => new URLSearchParams(location.hash.slice(1)).get("t") ?? "";
@@ -98,7 +99,7 @@ export function Join(): JSX.Element {
     return (
         <Show
             when={data.latest !== undefined}
-            fallback={<Postcard kicker="An invitation" title="Opening your invitation" />}
+            fallback={<Waiting title="Opening your invitation" />}
         >
             <Show
                 when={view()}

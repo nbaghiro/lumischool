@@ -27,9 +27,9 @@ import { COUNTRY } from "./snapshots/country";
 import { onThisComputer } from "./device";
 import { failureText } from "./failure";
 import { rowsOf } from "./keep-clear";
-import { Button } from "./form";
+import { Waiting } from "./waiting";
 import { Mark } from "./mark";
-import { Postcard, type Place } from "./postcard";
+import type { Place } from "./postcard";
 import { path } from "./router";
 import { Announcer, Say } from "./say";
 import type { Failure } from "./wire";
@@ -219,26 +219,22 @@ export function Page(props: {
 
 /**
  * What a screen shows when its code did not load or failed as it drew, such as a request dropped while
- * the network or the server changed under it: a way to load the page again rather than a blank page.
- * On a developer's computer it also says what went wrong.
+ * the network or the server changed under it. On a developer's computer it also says what went wrong.
  */
 function Failed(props: { error: unknown }): JSX.Element {
     return (
-        <Postcard
-            note
-            kicker="lumischool"
+        <Waiting
             title="This page did not load"
-            lead="Something stopped this page from loading. Loading it again usually puts it right."
-        >
-            <Show when={onThisComputer(location.hostname)}>
-                <Say
-                    text={props.error instanceof Error ? props.error.message : String(props.error)}
-                />
-            </Show>
-            <div class="acts">
-                <Button onClick={() => location.reload()}>Load the page again</Button>
-            </div>
-        </Postcard>
+            pending={false}
+            detail={
+                onThisComputer(location.hostname)
+                    ? props.error instanceof Error
+                        ? props.error.message
+                        : String(props.error)
+                    : undefined
+            }
+            retry={() => location.reload()}
+        />
     );
 }
 
@@ -343,40 +339,6 @@ function GateTab(props: { open: () => void }): JSX.Element {
         >
             <span>Grown-ups</span>
         </button>
-    );
-}
-
-/**
- * What a screen shows while it loads: nothing for a moment, since most loads are quicker than that,
- * and then a note that says what is being fetched.
- */
-export function Waiting(props: {
-    title: string;
-    retry?: () => void;
-    pending?: boolean;
-}): JSX.Element {
-    const [shown, setShown] = createSignal(false);
-    const timer = setTimeout(() => setShown(true), 400);
-    onCleanup(() => clearTimeout(timer));
-    return (
-        <Show when={shown()}>
-            <output class="page-waiting" aria-live="polite">
-                <span class="page-waiting-label">
-                    <Show when={props.pending !== false}>
-                        <span class="page-waiting-spinner" aria-hidden="true" />
-                    </Show>
-                    <span>
-                        {props.title}
-                        {props.pending !== false ? "…" : ""}
-                    </span>
-                    <Show when={props.retry}>
-                        <Button second onClick={() => props.retry?.()}>
-                            Try again
-                        </Button>
-                    </Show>
-                </span>
-            </output>
-        </Show>
     );
 }
 

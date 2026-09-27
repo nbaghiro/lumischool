@@ -15,10 +15,9 @@ import {
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
-import { useLook, Waiting } from "../../engine/ui/page";
-import { Postcard } from "../../engine/ui/postcard";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 import { go, search } from "../../engine/ui/router";
-import { Say } from "../../engine/ui/say";
 import type { Failure } from "../../engine/ui/wire";
 import type { FamilyView, Me } from "../../server/api";
 import { added, familyChanged, knowFamily, openAdd } from "./bar";
@@ -117,12 +116,12 @@ export function Family(): JSX.Element {
             <Switch>
                 <Match when={failed()}>
                     {(f) => (
-                        <Postcard note kicker="For grown-ups" title="Your family did not load">
-                            <Say
-                                text={failureText(f(), local)}
-                                action={{ label: "Try again", run: () => void refetch() }}
-                            />
-                        </Postcard>
+                        <Waiting
+                            title="Your family did not load"
+                            pending={false}
+                            detail={failureText(f(), local)}
+                            retry={() => void refetch()}
+                        />
                     )}
                 </Match>
                 <Match when={signed()}>

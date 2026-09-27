@@ -5,7 +5,8 @@
 import { createEffect, createResource, For, Show, type JSX } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { Button } from "../../engine/ui/form";
-import { useLook, Waiting } from "../../engine/ui/page";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 import { Postcard } from "../../engine/ui/postcard";
 import type { Outbox as Box } from "../../server/api";
 

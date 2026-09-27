@@ -174,9 +174,9 @@ export async function signInHere(page: Page): Promise<void> {
     await expect(page.getByRole("link", { name: "Open Rosie's view" })).toBeVisible();
 }
 
-/** The card a grown-ups' screen shows when its code did not load or failed as it drew. */
+/** What a grown-ups' screen shows over the map when its code did not load or failed as it drew. */
 export const errorCard = (page: Page): Locator =>
-    page.getByRole("heading", { name: "This page did not load" });
+    page.getByRole("status").filter({ hasText: "This page did not load" });
 
 /**
  * Waits for a screen, and fails as soon as the page shows its error card instead, rather than

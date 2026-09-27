@@ -373,17 +373,22 @@ scratchpad's top bar, so they are not in `PAGES` and the page test does not requ
 Explore is the grown-ups' catalogue of every lesson in the family's pack, at `/explore`, reached from
 the grown-ups' bar on every screen. A grown-up
 narrows it by grade, by subject and by the words of a lesson's title or goal, and the address keeps
-what it was narrowed to, so the way back from a lesson returns to the same list. Each lesson opens
-at `/explore/<lesson>` on the sheet a child would have, with the answers filled in and, for a piece a
-grown-up reads, what to look for. It can be read at any level the lesson declares. The level is named
-on the grown-up's card and never on the sheet, since a child who sees the word easier reads it as a
-verdict. Reading records nothing, and printing prints the sheet alone, with or without the answers.
-Print on a child's card on the home is the one way in that records: it writes `sheet-printed` for
-that child with the sheet's questions, so what comes back can be marked, and opens the lesson here,
-which prints the child's sheet without the answers.
+what it was narrowed to, so the way back from a lesson returns to the same list. A lesson opens at
+`/explore/<lesson>` as a preview over the catalogue rather than a page of its own: the world the
+lesson is met in, on the child's own canvas with the page switcher beside it, and the sheet as a
+child has it with nothing filled in. The address is a path, so it is shared, bookmarked and opened in
+a tab of its own as before, and the back button closes the preview and leaves the reader on the
+catalogue, whether they came by a tile or by the address. It can be read at any level the lesson
+declares. The level is chosen over the stage and never said on the sheet, since a child who sees the
+word easier reads it as a verdict. Reading records nothing. Printing prints the sheet alone, from a
+sheet laid out for the paper rather than from the stage, with the answers and the notes for grown-ups
+when the box over the stage is ticked. Print on a child's card on the home is the one way in that
+records: it writes `sheet-printed` for that child with the sheet's questions, so what comes back can
+be marked, and opens the lesson here, which prints the child's sheet without the answers.
 
-It is `apps/home/explore.tsx`, with the filtering and the order in `apps/home/catalogue.ts`, the
-sheet in `engine/ui/lesson.tsx` read with `{ sheets: "look", key }`, and the pack read through
+It is `apps/home/explore.tsx`, with the filtering and the order in `apps/home/catalogue.ts`, the look
+in `engine/ui/overlay.tsx` from the views `apps/home/school.ts` builds, the sheet in
+`engine/ui/lesson.tsx` read with `{ sheets: "look", key }`, and the pack read through
 `engine/ui/api.ts` (`pack`, `packLesson` and `packScene`). `tools/e2e/explore.e2e.ts` checks it.
 
 ## The calendar and the plan
@@ -395,10 +400,10 @@ illustrations, subject markers, shared editing cards and real family log. The sc
 an independent sample.
 
 The week opens first, with a child filter, date navigation and a selected day's detail beside it.
-On phones the days stack and the detail follows them. The month also selects days for editing;
-the year retains term dates, attendance and world choices. Subjects & pace shows each child's
-subject progress and routine. Find lessons searches the real catalogue by grade and subject,
-with previews and additions to a chosen child and day.
+On phones the days stack and the detail follows them. The month also selects days for editing.
+Subjects & pace shows each child's subject progress, routine, world choices and, where a subject
+runs past the end of the current term, the catch-up line. Term dates and school days each open
+from one place, the header, and the catalogue is the Explore tab rather than a view of its own.
 
 Week cells grow with their lessons, including uneven schedules across several children; the page
 scrolls normally instead of clipping cards or adding a scroll area inside each day. Month labels
@@ -409,8 +414,8 @@ Parents can add multiple sessions without replacing existing lessons, including 
 another grade or a subject outside the usual routine. Each placed session has its own identity,
 date, duration, note and order. Moving a sticker adds it to the destination without swapping away
 another session. Move / edit also offers practice, removal and For later. The day detail can
-reorder unfinished sessions, copy a day, or move the week's unfinished sessions forward. Completed
-or started work stays in the record and cannot be moved or removed. One completed sitting cannot
+reorder unfinished sessions. A week that went wrong moves every planned day on by whole weeks,
+from the day card. Completed or started work stays in the record and cannot be moved or removed. One completed sitting cannot
 complete two copies of the same lesson on a day.
 
 A routine chooses weekdays, one to three sessions per chosen day, and an effective date. An empty
@@ -446,23 +451,44 @@ place, and the bar is there throughout. Where the grown-up is goes in the addres
 `/map?world=<id>`, `/map?lesson=<id>`), so back and a shared link both work.
 
 The same map and roll open over a page as a look, in a dialog with the address after the `#`, focus
-held inside and given back on close, and nothing recorded. Explore's lesson page has "See it as a
-child sees it", which opens the lesson at the level the card has chosen, in its world, with nothing
-filled in, and "Open on the map", which goes to the screen with the camera on that sheet; the site's
-opening has "See the map", which opens the sample child's map with every world open. The calendar's
-lesson card and the journal are still to come as callers, as is a child's own map on the grown-ups'
-screen, which the view already allows.
+held inside and given back on close, and nothing recorded. In Explore the look is the lesson preview
+itself: a tile opens the lesson at its own address, `/explore/<id>`, as a look over the catalogue,
+in its world and with nothing filled in, at the level the tools over the stage have chosen, and the
+back button closes it and leaves the reader on the catalogue they narrowed. The site's opening has
+"See the map", which opens the sample child's map with every world open. The calendar's lesson card
+and the journal are still to come as callers, as is a child's own map on the grown-ups' screen, which
+the view already allows.
 
 It is `apps/home/map.tsx` with `apps/home/school.ts` building the views from the pack
 (`school/worlds/written.ts` for the school as written, which lays a written year out as done for the
 roll's geometry and takes back what done would mean), `engine/ui/reading.tsx` for a world's roll
 with its sheets drawn as they come near, `engine/ui/overlay.tsx` with `hash.ts` for the look over a
 page, and `engine/ui/paper.ts` for the paper near the camera. `tools/e2e/map.e2e.ts` checks the
-screen, the lesson page's look and the site's. Two things this work changed underneath: a map that is
+screen and the site's look, and `tools/e2e/explore.e2e.ts` the preview over the catalogue. Two things this work changed underneath: a map that is
 a screen, the child's and the grown-up's alike, takes the cover floor and the fence that keep the sea
 at every edge of any window, and a stopped canvas view no longer fires the settle it was waiting on,
 which had the map going in again after every way out. The world's trail as a place is not drawn for
 a written year yet, so the grown-up's way in is map to roll and back.
+
+## Loading and failure
+
+A screen that is still loading, or that could not load, shows no card of its own. The map stays the
+ground under the bar, and one label sits in the middle of it: the shared `Waiting` in
+`engine/ui/waiting.tsx`, with a spinner in the pen blue while it waits. A load shows nothing for its
+first 400 ms, since most loads finish sooner, and then says what is being opened ("Opening the
+map…"). A failure shows at once, without the spinner, as what did not load ("The map did not load"),
+the reason from `failureText` in a line under it when there is one, and a Try again button. The
+grown-ups' screens (the map, Home's day, Explore, the calendar, Account, the family, the outbox and
+an invitation), the children's view (`apps/kids/loading.tsx`), the lessons a world's roll is still
+opening, and the page's own fallback when a screen fails as it draws all use it.
+
+This holds for a whole screen. A part of a screen that failed while the rest loaded keeps its message
+in place, since the page around it is still worth reading: a child's week or worlds on Home, the
+lesson on the marking card, the family's members and the children's sign-in on Account, one sheet on
+the roll, a painting gallery's pictures, and the map or a world that could not finish drawing its
+canvas. An empty state that is an answer rather than a load, such as "There is no such lesson" or an
+invitation that is no longer available, stays a postcard, since it has something to say and
+somewhere to go next.
 
 ## Where it is now
 

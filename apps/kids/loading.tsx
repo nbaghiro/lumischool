@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, type JSX } from "solid-js";
-import { Waiting } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 
 /** The shared map loader, with recovery when a request fails or takes too long. */
 export function Loading(props: {
