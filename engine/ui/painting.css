@@ -648,12 +648,45 @@
         padding: 0 22px;
         font-weight: 700;
     }
+    .painting-header #clear,
+    .painting-header #fresh {
+        padding: 0 12px;
+        color: var(--ink);
+    }
+    .painting-header #clear:hover,
+    .painting-header #fresh:hover {
+        background: var(--grid);
+    }
+    /* the sheet's own width holds the header, so the second word goes when the room is narrow */
+    @media (max-width: 700px) {
+        .painting-header .wide-only {
+            display: none;
+        }
+    }
     .paper-area {
         position: relative;
         min-height: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .paper-taped {
+        position: relative;
+        flex: none;
+    }
+    /* #paper is positioned too and comes later, so the tape needs lifting to lie over its corners */
+    .paper-taped > .postcard-tape {
+        z-index: 1;
+    }
+    /* on a phone the sheet runs nearly to the screen's edge, so the tape keeps inside it */
+    @media (max-width: 700px) {
+        .paper-taped > .postcard-tape {
+            left: -4px;
+        }
+        .paper-taped > .postcard-tape.r {
+            left: auto;
+            right: -4px;
+        }
     }
     #paper {
         flex: none;
@@ -1377,8 +1410,8 @@
         font-size: 16px;
     }
     @media (min-width: 1001px) {
-        body[data-activity="trace"] #paper,
-        body[data-activity="follow"] #paper {
+        body[data-activity="trace"] .paper-taped,
+        body[data-activity="follow"] .paper-taped {
             margin-left: 215px;
         }
     }
@@ -1416,8 +1449,8 @@
         .guide-toggle {
             grid-column: 2;
         }
-        body[data-activity="trace"] #paper,
-        body[data-activity="follow"] #paper {
+        body[data-activity="trace"] .paper-taped,
+        body[data-activity="follow"] .paper-taped {
             margin-top: 108px;
         }
     }
@@ -1680,4 +1713,280 @@
     color: var(--pen);
     padding-inline: 12px;
     font-size: 14px;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Four directions being tried at /painting?v1 to ?v4, each a different idea of what the page is.
+   The paper, the tools, the colours, the four actions, the gallery and the save path are the same
+   code in all of them and in the page itself, which is `now` and is not touched by any of this. */
+
+/* 1. The paint box: the materials have a lid. Shut, the box is a handle and the sheet has the rest
+   of the window; opened, the whole tray is there. */
+.painting-room[data-layout="box"] .materials-dock {
+    width: min(100%, var(--painting-view-width, 100%));
+    margin: 6px auto 0;
+    padding: 0 12px 6px;
+    border-radius: 14px;
+}
+.painting-room[data-layout="box"] #box-lid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    border: 0;
+    background: none;
+    font: 700 16px / 1 var(--f-hand);
+    color: var(--ink);
+}
+.painting-room[data-layout="box"] .box-grip {
+    width: 52px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--grid);
+}
+.painting-room[data-layout="box"]:not([data-open]) .tool-line,
+.painting-room[data-layout="box"]:not([data-open]) .colour-line {
+    display: none;
+}
+
+/* 2. Under the hand: nothing stands between the paper and the hand. The materials wait where the
+   hand last left the paper and go while a stroke is drawn (painting-hand.ts). */
+.painting-room[data-layout="hand"] #workspace {
+    position: relative;
+    grid-template-rows: 44px minmax(0, 1fr);
+}
+.painting-room[data-layout="hand"] .materials-dock {
+    position: absolute;
+    right: 20px;
+    bottom: 24px;
+    z-index: 2;
+    width: 208px;
+    margin: 0;
+    padding: 8px 10px 10px;
+    border: 0;
+    border-radius: 14px;
+    background: #fffffff2;
+    box-shadow:
+        0 2px 4px #0000001f,
+        0 18px 34px -18px #00000059;
+}
+.painting-room[data-layout="hand"] .materials-dock[data-away] {
+    visibility: hidden;
+}
+.painting-room[data-layout="hand"] .tool-line,
+.painting-room[data-layout="hand"] .colour-line {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    min-height: 0;
+}
+.painting-room[data-layout="hand"] #basics,
+.painting-room[data-layout="hand"] #colours {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+}
+/* the pen's name is its label, so the object alone is enough in a card this small */
+.painting-room[data-layout="hand"] .material-tool {
+    width: 44px;
+    height: 44px;
+    font-size: 0;
+    gap: 0;
+}
+.painting-room[data-layout="hand"] .materials-button,
+.painting-room[data-layout="hand"] #sizes {
+    flex: 1 1 100%;
+    justify-content: center;
+}
+.painting-room[data-layout="hand"] .dock-divider {
+    display: none;
+}
+
+/* 3. The pages: the sheet is one page among the pictures already made, which lie beside it and are
+   opened by touching them rather than by opening a panel. */
+.painting-room[data-layout="pages"] .paper-area {
+    gap: 14px;
+}
+.painting-room[data-layout="pages"] .pages-rail {
+    align-self: stretch;
+    flex: none;
+    width: 116px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px;
+    overflow-y: auto;
+}
+.painting-room[data-layout="pages"] .pages-rail .kicker {
+    margin: 0 0 2px;
+}
+.painting-room[data-layout="pages"] .pages-rail-now {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 62px;
+    border: 1.5px solid var(--pen);
+    border-radius: 6px;
+    background: var(--card);
+    font: 600 12px / 1.2 var(--f-read);
+    color: var(--pen);
+}
+.painting-room[data-layout="pages"] .pages-card {
+    flex: none;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+}
+.painting-room[data-layout="pages"] .pages-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
+    background: #fdfdf6;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px var(--grid);
+}
+.painting-room[data-layout="pages"] .pages-card:hover img,
+.painting-room[data-layout="pages"] .pages-card:focus-visible img {
+    outline: 2px solid var(--pen);
+    outline-offset: 2px;
+}
+
+/* 4. The table: the materials are objects lying on the desk either side of the paper, picked up
+   rather than pressed, in the room the sheet's own shape leaves at its sides. */
+/* both objects lie on the same side, so the hand that is painting reaches them without crossing
+   the picture */
+.painting-room[data-layout="table"] #workspace {
+    position: relative;
+    padding: 0 136px 12px 24px;
+    grid-template-rows: 44px minmax(0, 1fr);
+}
+/* the dock is no box of its own here: the objects lie on the desk, so they are placed against the
+   room itself */
+.painting-room[data-layout="table"] .materials-dock {
+    display: contents;
+}
+.painting-room[data-layout="table"] .tool-line,
+.painting-room[data-layout="table"] .colour-line {
+    position: absolute;
+    width: 112px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    min-height: 0;
+    padding: 10px 8px 12px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow:
+        0 1px 2px #26334916,
+        0 14px 26px -16px #26334955;
+    pointer-events: auto;
+}
+.painting-room[data-layout="table"] .tool-line {
+    right: 10px;
+    top: 72px;
+    rotate: -2.5deg;
+}
+/* the pen is the object, and its name is its label */
+.painting-room[data-layout="table"] .material-tool {
+    width: 46px;
+    height: 46px;
+    font-size: 0;
+    gap: 0;
+}
+.painting-room[data-layout="table"] .colour-line {
+    right: 10px;
+    bottom: 40px;
+    border-top: 0;
+    padding-top: 10px;
+    rotate: 2deg;
+}
+.painting-room[data-layout="table"] #basics,
+.painting-room[data-layout="table"] #colours {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+}
+.painting-room[data-layout="table"] .dock-divider {
+    display: none;
+}
+
+/* A phone is its own shape: there is no room beside the sheet, so the objects lie under it, the
+   pages run along under it, and the box and the hand keep their own idea. */
+@media (max-width: 760px) {
+    /* a phone has no room beside the sheet for the materials to wait in, so they wait under it and
+       still go while a stroke is drawn, which is the whole of the idea */
+    .painting-room[data-layout="hand"] #workspace {
+        grid-template-rows: 50px minmax(0, 1fr) auto;
+    }
+    .painting-room[data-layout="hand"] .materials-dock {
+        position: static;
+        width: 100%;
+        padding: 5px 7px;
+        background: #fff;
+    }
+    .painting-room[data-layout="hand"] .tool-line,
+    .painting-room[data-layout="hand"] .colour-line,
+    .painting-room[data-layout="hand"] #basics,
+    .painting-room[data-layout="hand"] #colours,
+    .painting-room[data-layout="table"] #basics,
+    .painting-room[data-layout="table"] #colours {
+        flex: 0 1 auto;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+    .painting-room[data-layout="pages"] .paper-area {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .painting-room[data-layout="pages"] .pages-rail {
+        align-self: stretch;
+        flex-direction: row;
+        width: 100%;
+        height: 72px;
+        padding: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .painting-room[data-layout="pages"] .pages-rail .kicker {
+        display: none;
+    }
+    .painting-room[data-layout="pages"] .pages-rail-now {
+        flex: none;
+        width: 96px;
+    }
+    .painting-room[data-layout="pages"] .pages-card {
+        width: 96px;
+    }
+    .painting-room[data-layout="table"] #workspace {
+        padding: 0 8px 10px;
+        grid-template-rows: 50px minmax(0, 1fr) auto;
+    }
+    .painting-room[data-layout="table"] .materials-dock {
+        position: static;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        pointer-events: auto;
+    }
+    .painting-room[data-layout="table"] .materials-dock {
+        display: block;
+    }
+    .painting-room[data-layout="table"] .tool-line,
+    .painting-room[data-layout="table"] .colour-line {
+        position: static;
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 4px 6px 6px;
+        rotate: none;
+    }
 }

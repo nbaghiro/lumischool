@@ -15,43 +15,33 @@
     padding: 12px;
     border-radius: 12px;
 }
-.painting-gallery-note {
-    margin: 12px 0 28px;
+.painting-gallery-doing {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+}
+.painting-gallery-start {
+    min-height: 44px;
+    padding: 0 18px;
+    background: var(--pen);
+    color: white;
+    font-weight: 700;
+    border: 0;
+    border-radius: 10px;
 }
 .painting-gallery-grid {
-    gap: 24px;
+    gap: 8px;
 }
-.painting-gallery-card,
-.painting-new,
-.painting-recovery {
+/* The pictures are the gallery: no card round them, only enough gap to part one from the next. */
+.painting-item {
     position: relative;
     min-width: 0;
-    background: white;
-    border: 1px solid #dbe2ea;
-    border-radius: 12px;
-    box-shadow: 3px 4px 0 #dbe2ea;
-}
-.painting-new,
-.painting-recovery {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    min-height: 210px;
-}
-.painting-new > span {
-    font-size: 64px;
-    color: #304acb;
-    font-weight: 400;
 }
 .painting-picture {
+    display: block;
     width: 100%;
-    padding: 16px;
-    display: grid;
-    gap: 6px;
+    padding: 0;
     border: 0;
-    text-align: left;
     background: none;
 }
 .painting-picture img {
@@ -59,20 +49,17 @@
     width: 100%;
     aspect-ratio: 3 / 2;
     object-fit: contain;
-    background: #fafafa;
-    margin-bottom: 10px;
+    background: var(--paper, #fafafa);
 }
-.painting-picture strong {
-    padding-right: 32px;
-}
-.painting-picture small {
-    color: #626877;
-    font-weight: normal;
+.painting-picture:hover img,
+.painting-picture:focus-visible img {
+    outline: 2px solid var(--pen);
+    outline-offset: 2px;
 }
 .painting-picture-menu {
     position: absolute;
-    right: 8px;
-    bottom: 14px;
+    right: 0;
+    bottom: 0;
 }
 .painting-picture-menu summary {
     display: grid;
@@ -81,6 +68,9 @@
     width: 44px;
     height: 44px;
     list-style: none;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--paper, white) 86%, transparent);
+    border-radius: 10px;
 }
 .painting-picture-menu summary::-webkit-details-marker {
     display: none;
@@ -106,6 +96,10 @@
 }
 .painting-picture-menu button:hover {
     background: #edf3f8;
+}
+.painting-gallery-empty {
+    margin: 20px 0 8px;
+    color: var(--ink-soft);
 }
 .painting-gallery-notice {
     background: white;
@@ -151,16 +145,7 @@
         gap: 12px;
     }
     .painting-gallery-grid {
-        gap: 12px;
-    }
-    .painting-picture {
-        padding: 10px;
-    }
-    .painting-picture strong {
-        font-size: 16px;
-    }
-    .painting-picture small {
-        font-size: 11px;
+        gap: 6px;
     }
 }
 .painting-gallery.postcard {
@@ -185,10 +170,6 @@
     grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr));
     padding: 4px 4px 12px;
 }
-.painting-gallery-grid > * {
-    flex: 0 0 210px;
-    scroll-snap-align: start;
-}
 .painting-picture-menu > div {
     bottom: 44px;
 }
@@ -200,8 +181,7 @@
         flex-direction: row;
         align-items: center;
     }
-    .painting-gallery-heading .eyebrow,
-    .painting-gallery-note {
+    .painting-gallery-heading .eyebrow {
         display: none;
     }
     .painting-gallery-heading h1 {

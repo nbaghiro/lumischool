@@ -2,13 +2,28 @@ import { createResource, Match, Switch, type JSX } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { parentPaintingGateway } from "../../engine/ui/painting-repository";
 import { PaintingGallery } from "../../engine/ui/painting-gallery";
+import type { PaintingLayout } from "../../engine/ui/painting";
 import { useLook } from "../../engine/ui/page";
 import { isParent } from "../../school/family/access";
-import { Link } from "../../engine/ui/router";
+import { Link, search } from "../../engine/ui/router";
 import { signInFor } from "./routes";
+
+/** The four arrangements being tried, at `/painting?v1` to `?v4`; plain `/painting` is the page as
+ *  it stands. */
+const LAYOUTS: Record<string, PaintingLayout> = {
+    v1: "box",
+    v2: "hand",
+    v3: "pages",
+    v4: "table",
+};
 
 export function Painting(): JSX.Element {
     const look = useLook();
+    const layout = (): PaintingLayout => {
+        const asked = new URLSearchParams(search());
+        for (const [key, name] of Object.entries(LAYOUTS)) if (asked.has(key)) return name;
+        return "now";
+    };
     look({ wide: true, stage: true, stageBackdrop: true, place: "meadow" });
     const [me] = createResource(() => api.me({ ask: true }));
     const [family] = createResource(() => api.familyRows({ ask: true }));
@@ -30,6 +45,7 @@ export function Painting(): JSX.Element {
                         );
                     return (
                         <PaintingGallery
+                            layout={layout()}
                             gateway={parentPaintingGateway}
                             storageKey={`lumischool.painting.v1.${parent.family.id}.${parent.user.id}`}
                             identityKey={`${parent.family.id}.${parent.user.id}`}

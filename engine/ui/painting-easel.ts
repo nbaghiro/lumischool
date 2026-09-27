@@ -63,22 +63,21 @@ export interface EaselState {
 
 const obj = (v: unknown): v is Record<string, unknown> =>
     !!v && typeof v === "object" && !Array.isArray(v);
-const parts = (v: unknown): PaintPart[] | null =>
-    Array.isArray(v) &&
-    v.every(
-        (p) =>
-            obj(p) &&
-            typeof p.pigment === "string" &&
-            isPigment(p.pigment) &&
-            typeof p.parts === "number" &&
-            p.parts > 0 &&
-            p.parts < 100,
-    )
-        ? v.map((p) => ({
-              pigment: String((p as Record<string, unknown>).pigment),
-              parts: Number((p as Record<string, unknown>).parts),
-          }))
+const part = (p: unknown): PaintPart | null =>
+    obj(p) &&
+    typeof p.pigment === "string" &&
+    isPigment(p.pigment) &&
+    typeof p.parts === "number" &&
+    p.parts > 0 &&
+    p.parts < 100
+        ? { pigment: p.pigment, parts: p.parts }
         : null;
+const parts = (v: unknown): PaintPart[] | null => {
+    if (!Array.isArray(v)) return null;
+    const list: unknown[] = v;
+    const read = list.flatMap((p) => part(p) ?? []);
+    return read.length === list.length ? read : null;
+};
 
 /** A stored easel read back without trusting it: anything that does not look right is left at its start. */
 export function readState(v: unknown): EaselState | null {
@@ -445,14 +444,14 @@ export function mountEasel(o: EaselOptions): Easel {
         step = was?.step ?? 1,
         mirror: Mirror = o.mirror ?? was?.mirror ?? "none";
     let paint: PaintPart[] =
-        was?.paint.filter((p) => pots.includes(p.pigment as Pigment)).length ===
-            was?.paint.length && was?.paint.length
+        was?.paint.filter((p) => pots.some((q) => q === p.pigment)).length === was?.paint.length &&
+        was?.paint.length
             ? was.paint
             : [{ pigment: pots.includes("blue") ? "blue" : (pots[0] ?? "blue"), parts: 1 }];
     /** Whether the brush holds paint just taken from a pan, which a tap on a well adds to that well. */
     let fromPan = was?.fromPan ?? true;
     const wells: PaintPart[][] = was
-        ? was.wells.map((x) => x.filter((p) => pots.includes(p.pigment as Pigment)))
+        ? was.wells.map((x) => x.filter((p) => pots.some((q) => q === p.pigment)))
         : [[], [], []];
     let well = -1,
         stamp = was && stampList.includes(was.stamp) ? was.stamp : (stampList[0] ?? "leaf"),
@@ -496,18 +495,18 @@ export function mountEasel(o: EaselOptions): Easel {
 
     const paintHex = (): string =>
         mix(
-            paint
-                .filter((p) => isPigment(p.pigment))
-                .map((p) => ({ pigment: p.pigment as Pigment, parts: p.parts })),
+            paint.flatMap((p) =>
+                isPigment(p.pigment) ? [{ pigment: p.pigment, parts: p.parts }] : [],
+            ),
         );
     const recipe = (): string =>
         paint.map((p) => (p.parts > 1 ? `${p.pigment} ${p.parts}` : p.pigment)).join("+");
     const words = (p: PaintPart[]): string =>
         p.length
             ? recipeText(
-                  p
-                      .filter((x) => isPigment(x.pigment))
-                      .map((x) => ({ pigment: x.pigment as Pigment, parts: x.parts })),
+                  p.flatMap((x) =>
+                      isPigment(x.pigment) ? [{ pigment: x.pigment, parts: x.parts }] : [],
+                  ),
               )
             : "nothing";
 
@@ -1405,7 +1404,7 @@ export function mountEasel(o: EaselOptions): Easel {
         host.addEventListener("keydown", keys);
     // arrow keys walk along the toolbar, one tab stop for the whole row
     toolbar.addEventListener("keydown", (e) => {
-        const i = toolButtons.indexOf(document.activeElement as HTMLButtonElement);
+        const i = toolButtons.findIndex((b) => b === document.activeElement);
         if (i < 0) return;
         const d =
             e.key === "ArrowRight" || e.key === "ArrowDown"

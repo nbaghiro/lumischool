@@ -4,7 +4,7 @@ import { isPicture } from "../painting";
 import type { ArtworkSummary } from "../../server/api";
 import { Select } from "./select";
 import { Dialog, CloseX } from "./dialog";
-import { PaintingWorkspace } from "./painting";
+import { PaintingWorkspace, type PaintingLayout } from "./painting";
 import { IDEAS } from "./painting-ideas";
 import { downloadPicture, pictureThumbnail, renderPicture } from "./painting-preview";
 import {
@@ -15,10 +15,15 @@ import {
 } from "./painting-repository";
 import "./painting-gallery.css";
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 export function PaintingGallery(props: {
     gateway: PaintingGateway;
     storageKey: string;
     identityKey: string;
+    /** Which arrangement the easel is laid out in; the gallery itself is the same in every one. */
+    layout?: PaintingLayout;
     children: readonly { id: string; name: string }[];
 }): JSX.Element {
     const [child, setChild] = createSignal("");
@@ -158,9 +163,7 @@ export function PaintingGallery(props: {
         const read = (key: string): Record<string, unknown> => {
             try {
                 const value: unknown = JSON.parse(localStorage.getItem(key) ?? "null");
-                return value && typeof value === "object" && !Array.isArray(value)
-                    ? (value as Record<string, unknown>)
-                    : {};
+                return isRecord(value) ? value : {};
             } catch {
                 return {};
             }
@@ -265,26 +268,31 @@ export function PaintingGallery(props: {
                                 <p class="eyebrow">A little room to make</p>
                                 <h1>{ownerName() ? `${ownerName()}’s pictures` : "My pictures"}</h1>
                             </div>
-                            <label>
-                                Whose pictures
-                                <Select
-                                    value={child()}
-                                    disabled={busy()}
-                                    onChange={(event) => {
-                                        setChild(event.currentTarget.value);
-                                        setMessage("");
-                                    }}
+                            <div class="painting-gallery-doing">
+                                <label>
+                                    Whose pictures
+                                    <Select
+                                        value={child()}
+                                        disabled={busy()}
+                                        onChange={(event) => {
+                                            setChild(event.currentTarget.value);
+                                            setMessage("");
+                                        }}
+                                    >
+                                        <option value="">My paintings</option>
+                                        <For each={props.children}>
+                                            {(kid) => <option value={kid.id}>{kid.name}</option>}
+                                        </For>
+                                    </Select>
+                                </label>
+                                <button
+                                    class="painting-gallery-start"
+                                    onClick={() => openEditor(fresh(), 0)}
                                 >
-                                    <option value="">My paintings</option>
-                                    <For each={props.children}>
-                                        {(kid) => <option value={kid.id}>{kid.name}</option>}
-                                    </For>
-                                </Select>
-                            </label>
+                                    New painting
+                                </button>
+                            </div>
                         </header>
-                        <p class="painting-gallery-note">
-                            A fresh idea, or a picture to come back to.
-                        </p>
                         <Show when={message()}>
                             <output class="painting-gallery-notice">{message()}</output>
                         </Show>
@@ -297,17 +305,19 @@ export function PaintingGallery(props: {
                                 <button onClick={() => void refetch()}>Try again</button>
                             </p>
                         </Show>
+                        <Show when={!gallery.loading && visible() && !visible()?.artworks.length}>
+                            <p class="painting-gallery-empty">
+                                No pictures here yet. Start a new painting and it will appear.
+                            </p>
+                        </Show>
                         <div class="painting-gallery-grid">
-                            <button class="painting-new" onClick={() => openEditor(fresh(), 0)}>
-                                <span aria-hidden="true">＋</span>
-                                <strong>New painting</strong>
-                            </button>
                             <For each={visible()?.artworks}>
                                 {(artwork) => (
-                                    <article class="painting-gallery-card">
+                                    <div class="painting-item">
                                         <button
                                             class="painting-picture"
                                             disabled={busy()}
+                                            title={artwork.title}
                                             onClick={() => void open(artwork)}
                                         >
                                             <img
@@ -315,14 +325,6 @@ export function PaintingGallery(props: {
                                                 alt={artwork.title}
                                                 loading="lazy"
                                             />
-                                            <strong>{artwork.title}</strong>
-                                            <small>
-                                                Edited{" "}
-                                                {new Date(artwork.updated_at).toLocaleDateString(
-                                                    undefined,
-                                                    { month: "short", day: "numeric" },
-                                                )}
-                                            </small>
                                         </button>
                                         <details class="painting-picture-menu">
                                             <summary aria-label={`Options for ${artwork.title}`}>
@@ -392,7 +394,7 @@ export function PaintingGallery(props: {
                                                 </button>
                                             </div>
                                         </details>
-                                    </article>
+                                    </div>
                                 )}
                             </For>
                         </div>
@@ -433,6 +435,9 @@ export function PaintingGallery(props: {
             <Show when={editor()} keyed>
                 {(item) => (
                     <PaintingWorkspace
+                        layout={props.layout ?? "now"}
+                        pictures={visible()?.artworks.slice(0, 8)}
+                        onOpenPicture={(artwork) => void open(artwork)}
                         storageKey={props.storageKey}
                         document={item.document}
                         repository={makePaintingRepository(
@@ -447,6 +452,7 @@ export function PaintingGallery(props: {
                             setShelf(true);
                             void refetch();
                         }}
+                        onNew={() => openEditor(fresh(), 0, undefined, item.kid_id)}
                     />
                 )}
             </Show>

@@ -1,15 +1,23 @@
 import { paintingAutosave, type PaintingRepository } from "./painting-save";
 import { pictureThumbnail, compositePicture } from "./painting-preview";
-import { paintingValue, type Picture } from "../painting";
+import { paintingValue, hasPictureWork, type Picture } from "../painting";
 import { IDEAS, ideaOf, pictureSvg } from "./painting-ideas";
 import { mix, isPigment, type Pigment } from "../pigment";
 import type { Mirror, PaintPart } from "../answer";
 import { glyph, mountEasel, readState, type EaselState, type Tool } from "./painting-easel";
+import { materialsUnderHand } from "./painting-hand";
+import type { PaintingLayout } from "./painting";
 
 export function mountPainting(
     root: HTMLElement,
     key: string,
-    options: { document: Picture; repository: PaintingRepository; onBack: () => void },
+    options: {
+        document: Picture;
+        repository: PaintingRepository;
+        layout: PaintingLayout;
+        onBack: () => void;
+        onNew: () => void;
+    },
 ): () => void {
     const $ = (id: string): HTMLElement => {
         const node = root.querySelector<HTMLElement>(`#${id}`);
@@ -421,6 +429,52 @@ export function mountPainting(
         });
     }
     $("gallery").addEventListener("click", gallery);
+    const dock = root.querySelector<HTMLElement>(".materials-dock");
+    if (options.layout === "hand" && dock) materialsUnderHand($("paper-area"), dock);
+    const lid = root.querySelector<HTMLElement>("#box-lid");
+    lid?.addEventListener("click", () => {
+        const open = root.dataset.open === undefined;
+        if (open) root.dataset.open = "";
+        else delete root.dataset.open;
+        lid.setAttribute("aria-expanded", String(open));
+        lid.lastChild?.replaceWith(open ? "Close the box" : "Paint box");
+        fit();
+    });
+    // Clearing goes through `change`, so the dock's Undo puts the whole sheet back in one press.
+    $("clear").addEventListener("click", () => {
+        if (!current.painting.marks.length && !Object.keys(current.fills).length) {
+            say("The sheet is already empty.");
+            return;
+        }
+        change(() => {
+            current.fills = {};
+            restoring = true;
+            easel.load({ ...current.painting, marks: [] });
+            restoring = false;
+        });
+        say("The sheet is empty. Undo puts it back.");
+    });
+    // A fresh sheet takes the easel away from the picture on it, unlike Gallery, which leaves it
+    // behind the panel, so the picture goes to the gallery first and there is nothing to put back.
+    $("fresh").addEventListener("click", async () => {
+        save();
+        if (!hasPictureWork(current)) {
+            options.onNew();
+            return;
+        }
+        const fresh = $("fresh");
+        const before = autosave.commits();
+        fresh.toggleAttribute("disabled", true);
+        try {
+            await autosave.flush();
+            if (autosave.saved() || autosave.commits() > before) {
+                say("Picture saved to your gallery. Here is a fresh sheet.");
+                options.onNew();
+            } else say("This picture is not saved yet. Try Save, then start a new painting.");
+        } finally {
+            fresh.removeAttribute("disabled");
+        }
+    });
     $("done").addEventListener("click", async () => {
         save();
         const before = autosave.commits();
