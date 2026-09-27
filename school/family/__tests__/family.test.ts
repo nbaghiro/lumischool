@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { check, type Envelope } from "../../../engine/answer";
-import { isSchoolDay, weekdayOf, type Sitting } from "../../record/record";
+import { isSchoolDay, weekdayOf, type Sitting } from "../../record";
 import { defaultTracks } from "../../tracks";
 import type { YearLesson } from "../../year";
 import { familyName, gradeName, shortDate, spanText } from "../names";

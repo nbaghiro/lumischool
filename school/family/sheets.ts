@@ -16,7 +16,7 @@ import {
     type Mode,
     type Printed,
     type Sitting,
-} from "../record/record";
+} from "../record";
 import type { YearLesson } from "../year";
 
 /** One sheet that came back, which is one sitting and whatever was answered or marked on it. */

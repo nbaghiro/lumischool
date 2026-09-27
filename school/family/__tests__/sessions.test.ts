@@ -5,7 +5,7 @@ import { check, type Envelope, type PlanOp, type SessionOp } from "../../../engi
 import { cellsFor, childRecord, trackDays, type PlanInput } from "../family";
 import { foldCalendar } from "../calendar";
 import { nowIn } from "../now";
-import type { Sitting } from "../../record/record";
+import type { Sitting } from "../../record";
 import type { YearLesson } from "../../year";
 const today = "2026-09-23",
     kid = randomUUID(),

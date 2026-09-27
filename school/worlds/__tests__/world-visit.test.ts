@@ -2,7 +2,7 @@ import { worldViewOf } from "../reading";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { LessonFacts } from "../../../engine/pack";
-import type { Progress } from "../../record/record";
+import type { Progress } from "../../record";
 import { apply, defaultChoice } from "../choice";
 import { corpusFrom, topicsIn } from "../lessons";
 import type { Applied } from "../types";

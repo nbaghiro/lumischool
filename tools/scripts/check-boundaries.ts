@@ -288,8 +288,7 @@ function refusal(
 /**
  * Problems in the table itself: a name that is not a module, a file of a module that is not there, or
  * a reach that breaks an app's phases. A named file is checked against the tree because a reach that
- * names a file nobody has written says nothing and withholds nothing: `record/read` sat in three
- * reaches and `record/household` in two apps' rows for as long as neither file existed.
+ * names a file nobody has written says nothing and withholds nothing.
  */
 function tableProblems(table: Table, root: string, files: boolean): string[] {
     const problems: string[] = [];
@@ -457,7 +456,7 @@ const CLEAN: Readonly<Record<string, string>> = {
         "export type Seen = [Event, Member];",
     ].join("\n"),
     "school/family/privacy.ts": 'export const NOTICE = "draft";\n',
-    "school/record/household.ts": "export const folder = 1;\n",
+    "school/family/household.ts": "export const folder = 1;\n",
     "server/db/schema.ts": [
         'import { pgTable } from "drizzle-orm/pg-core";',
         'import type { Event } from "../../engine/answer";',
@@ -480,7 +479,7 @@ const CLEAN: Readonly<Record<string, string>> = {
     "apps/home/family.ts": [
         'import * as api from "../../engine/ui/api";',
         'import { NOTICE } from "../../school/family/privacy";',
-        'import { folder } from "../../school/record/household";',
+        'import { folder } from "../../school/family/household";',
         'import type { Me } from "../../server/api";',
         'import type { Kid } from "../../server/db/schema";',
         "export const seen = [api, NOTICE, folder];",
@@ -608,18 +607,17 @@ const PLANTED: readonly { rule: string; file: string; body: string; table?: Tabl
         body: 'import { parse } from "../../engine/notation/notation";\nexport const p = parse;\n',
     },
     {
-        // the household fold is the file this rule is for and it is not written yet, so the rule is
-        // held with the table that will name it on the day it is
+        // no app names a file of its own yet, so the rule is held with a table that names one
         rule: "an app imports a file another app holds",
         file: "apps/kids/planted.ts",
-        body: 'import { folder } from "../../school/record/household";\nexport const f = folder;\n',
+        body: 'import { folder } from "../../school/family/household";\nexport const f = folder;\n',
         table: {
             ...TABLE,
             apps: {
                 ...APPS,
                 home: {
                     phases: ["run", "data"],
-                    plus: ["record/household"],
+                    plus: ["family/household"],
                     packages: ["solid-js"],
                 },
             },
@@ -788,12 +786,12 @@ function selftest(): number {
                 year: {
                     at: "school/year",
                     phase: "run",
-                    reach: ["pack", "answer", "record/read"],
+                    reach: ["pack", "answer", "family/read"],
                     packages: [],
                 },
             },
         },
-        "boundaries.ts: year reaches record/read",
+        "boundaries.ts: year reaches family/read",
         true,
     );
     return failures;

@@ -337,7 +337,7 @@ waterfalls and retained memory. Keep first-map paint separate from all-content r
 | Year ordering and prerequisites | `school/year.ts` |
 | World catalogue and customization | `school/worlds/worlds.ts`, individual world declarations, `types.ts`, `choice.ts`, `check.ts` |
 | Historical family choices | `school/family/chosen.ts`, `apps/home/worlds.ts` |
-| Progress and visual rewards | `school/record/record.ts`, `school/worlds/rewards.ts` |
+| Progress and visual rewards | `school/record.ts`, `school/worlds/rewards.ts` |
 | Map/roll/place models | `school/worlds/view.ts`, `written.ts`, `overworld.ts`, `terrain.ts`, `roll.ts`, `trail.ts` |
 | Art dependencies and loading | `school/worlds/art.ts`, `engine/parts/catalog.ts`, `engine/ui/drawings.ts` |
 | Kid orchestration | `apps/kids/child.tsx`, `views.ts`, `inside.tsx`, `lesson.tsx` |

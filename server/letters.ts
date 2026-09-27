@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { weeklyLetter, validWeek, weekEnding, type WeeklyLetter } from "../school/family/letter";
-import { dayIn } from "../school/record/record";
+import { dayIn } from "../school/record";
 import { consented, type Adult } from "./auth";
 import { withFamily } from "./db/client";
 import { familyRow, kidsOf, log } from "./db/events";

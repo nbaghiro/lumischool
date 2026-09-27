@@ -1,5 +1,5 @@
 import type { Envelope } from "../../engine/answer";
-import { addDays, dayIn, fold, mondayOf } from "../record/record";
+import { addDays, dayIn, fold, mondayOf } from "../record";
 import type { YearLesson } from "../year";
 import { childRecord } from "./family";
 

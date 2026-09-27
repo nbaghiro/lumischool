@@ -7,7 +7,7 @@
 // shows them says so.
 
 import { sectionLabel, type Level, type PackLesson } from "../../engine/pack";
-import type { Sitting } from "../record/record";
+import type { Sitting } from "../record";
 
 export type Attention = "with-you" | "read-aloud" | "alone";
 

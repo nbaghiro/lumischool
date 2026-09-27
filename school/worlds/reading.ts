@@ -2,7 +2,7 @@ import type { Day, DayView, SheetView, Standing, WorldLimits, WorldView } from "
 import type { Applied, WorldChoice } from "./types";
 import type { Corpus } from "./lessons";
 import type { Journey } from "./journeys";
-import type { Progress } from "../record/record";
+import type { Progress } from "../record";
 import { journey, type Place as Walked } from "./rewards";
 import { NARROW, WIDE } from "./roll";
 import { layoutRoll } from "./roll-layout";

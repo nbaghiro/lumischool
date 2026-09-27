@@ -775,7 +775,7 @@ Specified rather than made, since they sit in modules this work does not own.
 
 Added 15 September 2026, from the list:
 
-- `school/assistant/` at the root, which `boundaries.ts` already declares with reach to `pack`, `record/record`, `record/read` and `answer`: the envelope, the router, the gate's client, the log's rows, and the routes under `/api/assist/*` that only an adult session with the authoring capability reaches. `record/read` does not exist yet either.
+- `school/assistant/` at the root, which `boundaries.ts` already declares with reach to `pack`, `record`, `answer`, `teaching`, `tutoring` and `adaptive`: the envelope, the router, the gate's client, the log's rows, and the routes under `/api/assist/*` that only an adult session with the authoring capability reaches. `record/read` does not exist yet either.
 - One assembler for every prose flow, with the grounding check as one function over P12, P13, P18, P20 and P21, and `check:prompt` over the assembler's field list.
 - `check:copy` and `check:voice` at the root, since neither exists there today; the scratchpad's copy check does not cover the root's strings.
 - The audit's hint warning, that a rung's filled-in text contains the answer, without which nothing gates a rung that gives the answer away.

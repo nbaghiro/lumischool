@@ -1,4 +1,4 @@
-import type { Envelope, Given, QuestionRef } from "../../engine/answer";
+import type { Envelope, Given, QuestionRef } from "../engine/answer";
 
 const MS = 864e5;
 

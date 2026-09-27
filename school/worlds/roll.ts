@@ -32,7 +32,7 @@ import {
 import { U } from "../../engine/paper";
 import { artById } from "./art";
 import { pathOrder, type Year } from "../year";
-import type { Progress } from "../record/record";
+import type { Progress } from "../record";
 
 export const SQ = 20;
 

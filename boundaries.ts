@@ -31,10 +31,6 @@ export interface App {
     packages: readonly string[];
 }
 
-// `worlds`, `family` and `assistant` name the file of `record` they read, `record/record`, so a
-// file of `record` they do not name is out of their reach whatever an app imports. `record/read`
-// was named here and never written, and `record/household` was named by two apps and never written,
-// so both are out of the table until the files land; a reach may not name what is not there.
 export const MODULES: Record<string, Module> = {
     "teaching-content": {
         at: "content/curriculum/teaching",
@@ -181,13 +177,13 @@ export const MODULES: Record<string, Module> = {
     worlds: {
         at: "school/worlds",
         phase: "run",
-        reach: ["parts", "paper", "motion", "space", "pack", "year", "record/record", "answer"],
+        reach: ["parts", "paper", "motion", "space", "pack", "year", "record", "answer"],
         packages: [],
     },
     year: {
         at: "school/year",
         phase: "run",
-        reach: ["pack", "answer", "record/record"],
+        reach: ["pack", "answer", "record"],
         packages: [],
     },
     tracks: { at: "school/tracks", phase: "run", reach: ["year"], packages: [] },
@@ -196,13 +192,13 @@ export const MODULES: Record<string, Module> = {
     family: {
         at: "school/family",
         phase: "run",
-        reach: ["pack", "year", "tracks", "record/record", "answer"],
+        reach: ["pack", "year", "tracks", "record", "answer"],
         packages: [],
     },
     assistant: {
         at: "school/assistant",
         phase: "server",
-        reach: ["pack", "record/record", "answer", "teaching", "tutoring", "adaptive"],
+        reach: ["pack", "record", "answer", "teaching", "tutoring", "adaptive"],
         packages: [],
     },
     db: {

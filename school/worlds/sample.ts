@@ -11,7 +11,7 @@
 
 import type { Declared } from "../../engine/motion/world";
 import { hash, rand, type Day, type GroundKind, type MapView } from "../../engine/space";
-import type { Progress, Result } from "../record/record";
+import type { Progress, Result } from "../record";
 import { onPath, type LessonDef, type Year } from "../year";
 import { artById } from "./art";
 import { corpusFrom, topicsIn, type Corpus } from "./lessons";

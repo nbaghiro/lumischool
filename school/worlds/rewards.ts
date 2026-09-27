@@ -8,7 +8,7 @@
 // day that made each one. The refusals this keeps are in .docs/story.md: no streaks, no counts to
 // fill, nothing timed, nothing chosen for the child by an algorithm, nothing that is taken back.
 import { at } from "../../engine/space";
-import type { Progress } from "../record/record";
+import type { Progress } from "../record";
 import { pathOrder, type Year } from "../year";
 import { standingAt, termOf } from "./roll";
 import type { Reach, World } from "./types";
@@ -16,7 +16,7 @@ import { hostedLessons, type Side } from "./worlds";
 
 /**
  * What a family's plan says about tracks: each `track` op of `plan-changed`, in the order it was
- * written, with the day it was written on (school/record/record.ts reads them off the log). A plan that has
+ * written, with the day it was written on (school/record.ts reads them off the log). A plan that has
  * never named a track has every track on, which is also what the sample child has.
  */
 export type TrackPlan = { track: string; on: boolean; day: string }[];

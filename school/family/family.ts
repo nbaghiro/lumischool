@@ -13,7 +13,7 @@ import {
     weekdayOf,
     type Progress,
     type Sitting,
-} from "../record/record";
+} from "../record";
 import { defaultTracks, TRACK_TURN } from "../tracks";
 import { progressIn, yearOf, type YearLesson } from "../year";
 import { chosenWorlds, type ChosenWorlds } from "./chosen";

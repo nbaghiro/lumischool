@@ -3,7 +3,7 @@
 // "The refusals, kept").
 
 import type { Envelope, WorldTweak } from "../../engine/answer";
-import { dayIn } from "../record/record";
+import { dayIn } from "../record";
 import { yearOf, type YearLesson } from "../year";
 
 /** A child's worlds as their family chose them, read against the work done in each term. */

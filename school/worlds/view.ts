@@ -3,7 +3,7 @@
 // canvas, the page and the poster read one answer. The sample child's made-up record (sample.ts) and
 // the worlds to come, which are the scratchpad's, come in as inputs.
 import type { Year } from "../year";
-import type { Progress } from "../record/record";
+import type { Progress } from "../record";
 import type { Declared } from "../../engine/motion/world";
 import {
     clamp,

@@ -17,7 +17,7 @@ import {
     type MapView,
     type WorldLimits,
 } from "../../../engine/space";
-import type { Progress } from "../../record/record";
+import type { Progress } from "../../record";
 import { apply, defaultChoice } from "../choice";
 import { corpusFrom, topicsIn } from "../lessons";
 import { layoutMap, ownLand } from "../overworld";

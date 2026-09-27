@@ -1,5 +1,5 @@
 import type { LessonFacts } from "../engine/pack";
-import { mastery, progressOf, type Attempt, type Progress, type Sitting } from "./record/record";
+import { mastery, progressOf, type Attempt, type Progress, type Sitting } from "./record";
 
 export type Format = "teach" | "puzzles" | "worked" | "review";
 export type Marker = "sky" | "mint" | "berry" | "tang" | "glow";

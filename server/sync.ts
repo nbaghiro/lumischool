@@ -8,7 +8,7 @@ import { check, type Envelope, type EventKind } from "../engine/answer";
 import { mayRead, mayWrite, reach, reaches, type Caller } from "../school/family/access";
 import { childRecord } from "../school/family/family";
 import { childWeek } from "../school/family/sheets";
-import { addDays, dayIn } from "../school/record/record";
+import { addDays, dayIn } from "../school/record";
 import type {
     FamilyView,
     GrownRecord,

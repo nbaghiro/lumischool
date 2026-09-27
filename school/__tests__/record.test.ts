@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { check, type Envelope, type QuestionRef } from "../../../engine/answer";
+import { check, type Envelope, type QuestionRef } from "../../engine/answer";
 import {
     addDays,
     dayIn,

@@ -116,7 +116,8 @@ lumischool/
 │  ├─ games/                       games, prove, and one file per mechanic
 │  ├─ worlds/                      worlds, one file per world, terrain, overworld, roll, trail, rewards
 │  ├─ year.ts                      tracks, units, the path, prerequisites
-│  ├─ record/                      record; read and household are planned and not written
+│  ├─ record.ts                    the fold of a kid's log into sittings, attempts and progress, and
+│  │                               the days they fall on
 │  ├─ family/                      family, access, privacy, calendar, morning, sheets, letter, login,
 │  │                               names, now, chosen
 │  ├─ assistant/                   server only: envelope, the one shape a model may receive, and what
@@ -202,16 +203,16 @@ ui                  teaching, games, paper, ink, parts, scene, sound, motion, sp
 space               paper, ink, parts
 lessons             pack, answer, scene, ink, expr, arrange, teaching
 games               parts, scene, answer, motion, numbers
-worlds              parts, paper, motion, space, pack, year, record/record, answer
-year                pack, answer, record/record
+worlds              parts, paper, motion, space, pack, year, record, answer
+year                pack, answer, record
 tracks              year
 voice               nothing
 record              answer, numbers
-family              pack, year, tracks, record/record, answer
+family              pack, year, tracks, record, answer
 tutoring            teaching, tutoring-materials
 tutoring-materials  teaching, teaching-content
 adaptive            teaching, voice, pack
-assistant           pack, record/record, answer, teaching, tutoring, adaptive
+assistant           pack, record, answer, teaching, tutoring, adaptive
 teaching-content    nothing (data)
 db                  answer, painting, teaching
 server              db, answer, painting, family, record, year, pack, assistant, teaching, tutoring,
@@ -229,19 +230,17 @@ apps/*              by phase, in the table below
 
 - `db`, `server` and `assistant` have the phase `server`, which no app contains, so "never `server/`" follows
   from the phases (decided 13 September 2026).
-- `worlds`, `family` and `assistant` name the file of `record` they read, `record.ts`, so a file of
-  `record` they do not name reaches only the apps that name it, whatever the child's app imports.
-  `read.ts` and `household.ts` are planned and not written, and a reach or an app's row may not name a
-  file that is not there, so both are out of the table until the files land (17 September 2026):
-  `record/read` went from three reaches and `record/household` from the `home` row, and
-  each comes back in the change that writes its file. `check-boundaries` fails on a named file that is
-  missing, which is what let the two sit in the table unwritten.
+- `record` is one file, `school/record.ts`. The readings (`read`) and the household folder
+  (`household`) are planned and not written; when the first of them is written, `record` becomes a
+  directory, and `worlds`, `family` and `assistant` name the file they read, `record/record`, so a
+  file they do not name stays out of their reach. A reach or an app's row may not name a file that is
+  not there, and `check-boundaries` fails on one.
 - Two files may be imported with `import type` from outside the reach, since a type import is erased
   at build: the row types in `server/db/schema.ts` by any module, and the API's shapes in
   `server/api.ts` by the apps and by `engine/ui/`, whose `api.ts` is the one client for the API.
   `import { type X }` stays an import under `verbatimModuleSyntax`, so it does not count.
 - A file an app's row adds is withheld from the apps that do not add it. No app adds one today;
-  `school/record/household.ts` will be the first, for `home`, once it is written.
+  the household folder will be the first, for `home`, once it is written.
 - A suite in a drawer's own `__tests__/` belongs to the module it is named after, so
   `engine/__tests__/space.test.ts` has the reach of `space`.
 - Each module's and app's row names the packages its files may import, such as `solid-js` for
@@ -263,8 +262,8 @@ apps/*              by phase, in the table below
 | The one way in, and the lookups before a family is known | `server/db/client.ts` |
 | The row types, `Family`, `Kid`, `Event` and the rest | `server/db/schema.ts`, inferred from the tables, and importable as types from anywhere |
 | The event and answer types | `engine/answer.ts` |
-| Progress and the current lesson per track, worked out from events | `school/record/record.ts` |
-| The journal's rewards, worked out from the same events | `school/worlds/rewards.ts`, reading through `school/record/` |
+| Progress and the current lesson per track, worked out from events | `school/record.ts` |
+| The journal's rewards, worked out from the same events | `school/worlds/rewards.ts`, reading through `school/record.ts` |
 | Who may do what | `school/family/access.ts` |
 | Sign-in and the key flows | `server/auth.ts` |
 | Sync | `server/sync.ts`, our own: uploads of appended events through `withFamily`, and what a device downloads |
@@ -1033,7 +1032,7 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    gestures and native page scrolling without replacing lesson DOM. Its Back control and Escape
    use the existing rectangle transition to return to the selected overworld location.
 6. The lesson side: `scene.ts`, `pack.ts`, `engine/notation/`, `school/lessons.ts`, `school/year.ts`
-   and `school/record/`, which the site's lesson and the apps' journals need. `engine/pack.ts` came
+   and `school/record.ts`, which the site's lesson and the apps' journals need. `engine/pack.ts` came
    forward for the child's view (14 September 2026), with the concrete scene's shapes in
    `engine/scene.ts`, which is why `pack` reaches `scene`; `tools/pack.ts` builds a pack through
    `.scratchpad/scripts/pack-work.ts` until `engine/notation/` moves in. `school/lessons.ts`
@@ -1041,11 +1040,11 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    rules at the level a sitting began with, runs the tries and the hint ladder, and writes what a
    sitting records, and the scratchpad's lesson page checks through it. The fold of a kid's log came
    forward too: sittings, attempts, printed sheets, marks and the days they fall on are in
-   `school/record/record.ts`, since `record` may not reach `family`, and the plan with a kid's tracks
+   `school/record.ts`, since `record` may not reach `family`, and the plan with a kid's tracks
    and planned days is in `school/family/family.ts`. `school/year.ts` followed (15 September 2026):
    a year read off a pack's lesson facts, its path and side paths, prerequisites, states and
    summaries, and a kid's progress through it, with the progress record and `mastery` in
-   `school/record/record.ts`, which `year` reaches. `src/space/journey.ts`, `years.ts` and `grade1.ts`
+   `school/record.ts`, which `year` reaches. `src/space/journey.ts`, `years.ts` and `grade1.ts`
    are gone, and the `Sketch` stand-in pictures with them. `src/space/layout.ts` stayed with
    `journey.html`, since it was that page's geometry rather than the year, and was deleted with it,
    and `src/space/progress.ts` stays as the sample child's made-up record until `record/fixtures/`
@@ -2135,7 +2134,7 @@ The recommended shape, in the order `boundaries.ts` declares.
 | `games/` | run | no | Activities: the mechanic contract, one file per kind of play, and the prover that searches a position graph rather than enumerating a cross product |
 | `year.ts` | run | no | The year: units, tracks, the path, prerequisites and side paths, the skill graph, mastery from evidence, and the review scheduler |
 | `tracks.ts` | run | no | The tracks a family turns on, and each subject's title, what it covers and its marker. It is apart from `year.ts` because the grown-ups' app reads the table and a child's map reads the year, and one module for both puts the table in a child's first screens |
-| `record/` | run | no | What happened and what it says: the event log with its ordering and duplicate rules, the fold into a view, the readings over that view with the published thresholds, and the household folder with the writer that fills it |
+| `record.ts` | run | no | What happened and what it says: the event log with its ordering and duplicate rules, the fold into a view, the readings over that view with the published thresholds, and the household folder with the writer that fills it |
 | `family/` | run | no | The parent's side: the morning order, the decision at the end of a lesson, what to print this week, the records some families have to keep, and the list of what we do not collect that is shown to parents |
 | `assistant/` | run | no | The router that decides what a request may be, the envelope that is the only path from evidence to a model, and the AI log. The gate itself is in `notation/` |
 | `space.ts` | run | no | The infinite canvas as maths: camera, zoom, level of detail, spatial layout. Nothing about lessons, and no DOM |
@@ -2278,7 +2277,7 @@ decided layout each module sits in its drawer: `paper`, `numbers`, `expr`, `answ
 | `src/play/types.ts` | `games/games.ts`, as the mechanic contract |
 | `src/play/weigh.ts`, `jump.ts`, `rule.ts`, `race.ts`, `pay.ts`, `share.ts`, `shunt.ts`, `spell.ts`, `pour.ts` | `games/`, one file each, unchanged |
 | `src/play/prove.ts` | `games/prove.ts` |
-| `src/play/log.ts` | `record/record.ts`, as the move log's contribution to the event union |
+| `src/play/log.ts` | `record.ts`, as the move log's contribution to the event union |
 | `src/play/activities.ts` | `curriculum/`, as notation rather than as TypeScript data |
 | `src/family/evidence.ts`, `progress.ts`, `tracks.ts` | merge into `record/read.ts`, which removes the one declared exception the first round allowed |
 | `src/family/plan.ts`, `days.ts`, `morning.ts`, `decide.ts`, `records.ts`, `settings.ts`, `index.ts` | merge into `family/family.ts` |
@@ -2299,7 +2298,7 @@ decided layout each module sits in its drawer: `paper`, `numbers`, `expr`, `answ
 | `src/pages/world.ts`, `world-canvas.ts`, `world-page.ts`, `world-poster.ts`, `world-to-come.ts`, `world-try.ts`, `world-links.ts` | deleted with the Worlds tab, once `Overworld` and `World` in `ui/` hold what they prototyped: the dive, the map in words, the day's events, the poster, the page form and the puzzles |
 | `src/pages/site-w-map.ts`, `site-w-world.ts` | the backdrops draw through `Overworld` (16 September 2026); the two stay for the Auth, Backdrops, Worlds and Map-art tabs and Site Try, which draw their map windows and rolls with them, and go with those tabs |
 | `src/pages/site-w-sections.ts`, `site-sample.ts` | the site's sample child, moved to `worlds/sample.ts`, `tools/site-sample.ts` and `apps/site/` (22 September 2026); `site-w-sections.ts` and Site W went with it, `site-sample.ts` stays as Site Try's slicing script's reader of the root's sample child, and the sample child's map behind the Grown-ups tab is `sample-backdrop.ts` |
-| `src/space/journey.ts` | splits: the year and the path into `year.ts`, the `Sketch` union deleted in favour of a one-node scene, the progress record into `record/record.ts` |
+| `src/space/journey.ts` | splits: the year and the path into `year.ts`, the `Sketch` union deleted in favour of a one-node scene, the progress record into `record.ts` |
 | `src/space/years.ts`, `grade1.ts`, `progress.ts`, `layout.ts` | `year.ts`, reading the year from `pack.ts` rather than from a page's glob; `layout.ts` was the year map's geometry and was deleted with it (17 September 2026) |
 | `src/space/journey-map.ts`, `map-art.ts`, `lesson-place.ts`, `year-list.ts`, `year-shelf.ts`, `pages.ts`, `src/pages/journey.ts`, `journey.html` | deleted (17 September 2026): the map of worlds replaced the year map, as the map plan's decision 10 records |
 | `src/ai/types.ts`, `router.ts`, `materials.ts`, `child.ts`, `parent.ts`, `log.ts` | merge into `assistant/assistant.ts` |

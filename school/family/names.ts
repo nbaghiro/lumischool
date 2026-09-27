@@ -2,7 +2,7 @@
 // because the child's app names a family too, and the plan and the record in family.ts are a second
 // concept that the child's screens would otherwise carry (tools/__tests__/first-view.test.ts).
 
-import { weekdayOf } from "../record/record";
+import { weekdayOf } from "../record";
 
 /**
  * A family's name as a heading says it, or with `inSentence` as the middle of a sentence says it. The

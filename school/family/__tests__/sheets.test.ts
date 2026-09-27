@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { check, type Envelope, type QuestionRef } from "../../../engine/answer";
 import type { PackLesson, PackQuestion } from "../../../engine/pack";
-import { fold, type Attempt, type Printed, type Sitting } from "../../record/record";
+import { fold, type Attempt, type Printed, type Sitting } from "../../record";
 import {
     cameBackRight,
     childWeek,
