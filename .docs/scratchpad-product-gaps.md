@@ -52,7 +52,7 @@ tool separately in a map popup, a Games tab and a lesson would create three inco
 | ID | Capability | Useful parts to retain | Recommended disposition |
 |---|---|---|---|
 | A1 | Make your own question/lesson | Start from a picture, existing lesson, blank page or prompt; edit visual parameters and wording; verifier findings and repairs; try/print; drafts and proposed assignment | Strong potential parent feature, but starts as a maintained internal authoring tool. Prototype mixes local/sample flows with old content APIs; do not claim its save/give path is production-ready |
-| A2 | Art shelf and notation workbench | Search drawings by subject/usage, inspect settings/takes/anchors/animation, inspect lesson/world use; edit notation and see validation/rendering | Preserve as internal studio/tools. Runtime catalogue and compiler already exist; the missing part is the workbench |
+| A2 | Art shelf and notation workbench | Search drawings by subject/usage, inspect settings/takes/anchors/animation, inspect lesson/world use; edit notation and see validation/rendering | Preserve as internal tools. Runtime catalogue and compiler already exist; the missing part is the workbench |
 | A3 | Draw / asset authoring | Pressure strokes, pencil/marker/highlighter, named anchors, export into the existing stroke-asset format | Keep internally if still the chosen art workflow. This is an asset authoring pad, distinct from a child's painting app |
 | A4 | Difficulty review | Easier/as-written/harder side by side; compare measures; flag close levels; 74 owner review notes | Preserve review data and a maintained review tool. Existing lesson level selection and baseline generation are not equivalent |
 | A5 | Adult assistant proposal flows | More-practice/custom-content proposals with verification, goal-to-plan suggestions and evidence-backed records | Optional product exploration. Scripted chooser/writer calls demonstrate the workflow; they are not a finished conversational assistant. Weekly letters and authored child help already cover part of the value |
@@ -127,7 +127,7 @@ Paths relative to repository root:
    and no assumed progress/reward writes. Their actual app persistence policy still needs deciding.
 5. **Choose annotation and poster scope:** daily-sheet ink and printable map are useful independent
    slices; annotation needs a durable anchor/save contract before shipping.
-6. **Choose internal tooling and any parent authoring offer:** do not make studio infrastructure a
+6. **Choose internal tooling and any parent authoring offer:** do not make authoring infrastructure a
    prerequisite for the creative child experiences unless their authoring needs it.
 7. **Retire alternatives only after preserving unique material.** No deletion is authorized by this
    inventory. Update the decision ledger when the owner chooses what to keep.

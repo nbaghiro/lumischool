@@ -508,21 +508,19 @@ for the reason tracks.md records.
 
 1. Record the `answered` event for real when the kids app records anything, with `tries`, and show a
    parent the runs before a right answer as the evidence of trying again.
-2. A studio form for build tasks in `make.html`: pick a maze, a tray and a goal, and let the prover
-   say whether it can be done before the parent saves.
-3. A free play page where a child builds anything in a maze, a stage, a dance or a tune with no task,
+2. A free play page where a child builds anything in a maze, a stage, a dance or a tune with no task,
    and can save it and show it, which is the making the research argues for and the lessons only
    start.
-4. Let a child draw their own character for the stage with the drawing pad, which ScratchJr's usage
+3. Let a child draw their own character for the stage with the drawing pad, which ScratchJr's usage
    suggests matters more than anything else about the stage.
-5. Parameters on a child's own block, `define hop n`, if grade four lessons show children are ready.
+4. Parameters on a child's own block, `define hop n`, if grade four lessons show children are ready.
    The grade four lesson A block with a number (17 September 2026) teaches the idea on paper, with
    `define square size` in program listings and the turtle drawing only the square to aim for, since
    the interpreter does not read a `define` with a number yet. A listing is drawn line by line and
    never run, so it prints as written. The grade one lesson A pattern that never ends wrote `repeat
    for ever` and a lamp's `light red` the same way until the two blocks landed on 17 September 2026;
    the interpreter now reads both, so its programs run and are watched.
-6. Done for the interpreter (`engine/coding.ts`, 16 September 2026); the runner and editor still go into
+5. Done for the interpreter (`engine/coding.ts`, 16 September 2026); the runner and editor still go into
    `engine/ui/` with the rest of the scratchpad's interactive layer.
 
 ## Open questions

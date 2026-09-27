@@ -34,7 +34,7 @@ are proposals for discussion, not approved implementation requirements.
 | G1 | Playable game sessions and selection | Audited in [games-migration.md](games-migration.md): 17 games, 83 levels, root rules already moved; player, sound, entry points and recording remain. Proposed library of 15 listed games, with See-saw and Cut the cake kept for lessons. Product decisions pending. |
 | A1 | Shelf browser, settings/animation inspection and notation editor | Pending. Recommend maintained internal authoring tools. These need not be family-facing features. |
 | A2 | Draw/stroke/anchor editor | Pending. Review whether this remains the chosen art-authoring workflow; preserve authored strokes either way. |
-| A3 | Make: visual question editing, repairs, try/print, save and give | Pending. Decide parent-facing authoring versus internal-only tooling before building a studio surface. |
+| A3 | Make: visual question editing, repairs, try/print, save and give | Pending. Decide parent-facing authoring versus internal-only tooling before building an authoring surface. |
 | L1 | Three-level comparison and sampling | Pending. Recommend internal review tooling using the root baseline. Preserve the 74 owner review notes independently. |
 | H1 | Assistant material selection and proposal workflows | Pending. Review workflows individually. Scripted prototype responses are not a production assistant. Keep existing authored child guidance distinct. |
 | W1 | Working ink/highlighter attached to a day's sheet | Pending. Decide usefulness, persistence and print behavior. |
@@ -70,7 +70,7 @@ decisions. Record the owner's answer here rather than treating recommendations a
 4. Implement approved music, painting and games as separate complete flows. Each must have a real
    entry point, usable controls, appropriate answer/save behavior, accessibility and verification.
    Specify exact routes and module ownership after the product choices are made.
-5. Implement approved authoring tools. Add studio routing and boundary declarations if required;
+5. Implement approved authoring tools. Add their routing and boundary declarations if required;
    keep notation/compiler code out of child bundles. Migrate retained review data and checks.
 6. Implement approved world, family and assistant extras in independently reviewable slices.
 7. Move unique test/tool guarantees alongside each owning feature. Delete superseded prototype

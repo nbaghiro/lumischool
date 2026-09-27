@@ -26,7 +26,6 @@ Git history. A future clean checkout requires adding the intended root files, se
 | `apps/site/` | Public Solid app. `/` when signed out, `/home` for everyone. Uses build-generated site data, a visitor pack and the sample child from `school/worlds/sample.ts`. |
 | `apps/home/` | Grown-up Solid app: family dashboard, sign-in, onboarding, Explore and lesson previews, map, calendar, plan, printing/marking, account and local outbox. `routes.ts` declares the screens; `main.tsx` loads them. |
 | `apps/kids/` | Child selection/session, country map, a world's place, lesson roll and grown-up exit. `child.tsx` coordinates the view; `inside.tsx` loads the place/roll and past sheets; `lesson.tsx` manages lesson sittings and queued events. |
-| `apps/studio/` | Planned only. No directory, entry point or route. `boundaries.ts` reserves an app row, but no `school/studio` module row exists. |
 | `engine/` | Reusable machinery: paper, rational numbers/expressions, events/answers, scenes, packs, geometry, ink, drawings, movement, sound theory/judging, coding interpreter, pigment mixing, arrangements and notation. |
 | `engine/parts/` | Root catalogue and drawing families, imported art readers, settings, descriptions, motion and shelf metadata. The scratchpad's remaining catalogue adapts this root catalogue. |
 | `engine/notation/` | Author-time parsing, vocabulary, instantiation, verification, subject checkers and compilation. The child app consumes compiled packs rather than loading this module. |
@@ -53,11 +52,11 @@ separate product/deployment work in the existing plan; scratchpad deletion does 
 
 | Capability | What is already in the root | What remains in the scratchpad | Retirement disposition |
 |---|---|---|---|
-| Games | `school/games/`: catalogue, mechanics, rule/action models, bindings, proof and logs; `engine/motion/`; `engine/ui/stage.ts` | `pages/play.ts`, `play-turn.ts`, `play-action.ts`, `play-inventory.ts`: actual game selection/session UI, device input, action loop coordination, gamepad handling, reduced-motion stepping and review controls | Build the child's game screen with the existing model. Move useful browser controllers into `engine/ui`; keep developer inventory in studio. Mechanics alone do not give the app playable games. |
+| Games | `school/games/`: catalogue, mechanics, rule/action models, bindings, proof and logs; `engine/motion/`; `engine/ui/stage.ts` | `pages/play.ts`, `play-turn.ts`, `play-action.ts`, `play-inventory.ts`: actual game selection/session UI, device input, action loop coordination, gamepad handling, reduced-motion stepping and review controls | Build the child's game screen with the existing model. Move useful browser controllers into `engine/ui`; keep developer inventory in local review tooling. Mechanics alone do not give the app playable games. |
 | Music | Pitch, scales, key mappings, beats, fretted geometry, voice data and pure performance judge in `engine/sound/`; music drawings and notation checkers | 25 files in `src/sound/`; `music-home.ts`, `music-play.ts`, `music-song.ts`, `music-strings.ts`, `music-glock.ts`, `music-echo.ts`, `music-keep.ts`, `music-compose.ts` and supporting pages | Preserve synthesis, sound switch, playable instruments, transport, song arrangement/library, guided playing, rhythm echo, beat keeping and composition. Add real app surfaces and lesson integration. `music.html` currently enters through `music-home.ts`, not the older `music.ts` showcase. |
 | Painting | `engine/pigment.ts`, painting drawings, notation checks and painting event shapes | `paint/surface.ts`, `easel.ts`, `lesson.ts`, `look.ts`, `pages/paint.ts`: brushes, fill, texture/replay, stamps, mirrors, tools, wall/storage, lesson mounting and grown-up response UI | Move the easel and renderer, connect to real sheets and records, preserve model tests. The real sheet currently says to paint on paper; accepting a painting event shape is not a working digital painting flow. |
-| Authoring | Notation/compiler/verifier, catalogue and content APIs | `make.ts`, `make-draft.ts`, `make-check.ts`, `part-form.ts`, `finder.ts`, `lang.ts`, `draw.ts`, `shelf*.ts`: visual question editing, findings/fixes, trial/print, save/give, notation editor, art browsing and stroke/anchor authoring | Build `apps/studio` and its product logic. Add its actual build entry/routing and module boundary before moving screens. Keep parsing/verification out of home and kids bundles. |
-| Levels review | Level model, measurement, verification, medium baseline and generator in root notation/tests/tools; Explore can select a level | `pages/levels.ts` and `levels-owner.json`: three-level comparison, review sampling, gap warnings and **74 owner notes** | Preserve the notes and rebuild the review surface in studio. The page still globs the deleted `.scratchpad/test/levels-baseline.json`, so its `KNOWN` set silently becomes empty. Repoint the review to the root baseline as part of migration. |
+| Authoring | Notation/compiler/verifier, catalogue and content APIs | `make.ts`, `make-draft.ts`, `make-check.ts`, `part-form.ts`, `finder.ts`, `lang.ts`, `draw.ts`, `shelf*.ts`: visual question editing, findings/fixes, trial/print, save/give, notation editor, art browsing and stroke/anchor authoring | Decide whether these stay as internal authoring tools and where they would run ([retirement-plan.md](retirement-plan.md), A3). Keep parsing/verification out of home and kids bundles. |
+| Levels review | Level model, measurement, verification, medium baseline and generator in root notation/tests/tools; Explore can select a level | `pages/levels.ts` and `levels-owner.json`: three-level comparison, review sampling, gap warnings and **74 owner notes** | Preserve the notes and rebuild the review surface as local review tooling. The page still globs the deleted `.scratchpad/test/levels-baseline.json`, so its `KNOWN` set silently becomes empty. Repoint the review to the root baseline as part of migration. |
 | Assistant | Root authored tutor/guidance and local voice UI; `school/assistant/envelope.ts`; `server/gemini.ts` | Nine `src/ai/` files and `pages/assistant.ts`: material selection, closed request routing/validation, privacy envelopes, traces, generation/repair gate, plan/record proposal checks and scripted scenarios | Choose which workflows to ship, then port the needed policy and checks. The prototype's model and Make-from-a-sentence flow are scripted stand-ins, not evidence of a working production AI assistant. Do not overwrite the real tutor with the older demo policy. |
 | Coding interactions | Interpreter, drawings/checkers, `engine/ui/program.tsx` and `blocks.ts`; real `coding.builds` block editing, stepped playback and checking | `coding/lesson.ts`, `runner.ts`, `editor.ts`: broader scene activation, prediction taps, runnable authored examples, sound for tune/dance/stage, interactive lamps/cards/cups/sort networks | Compare interaction types, not just interpreter files. Retire duplicate editor behavior; port the additional controls if retained. The root sheet's `programOn` path is for build tasks, not all prototype coding scenes. |
 | World extras | World definitions, geography, rewards, map/place/roll, ambient motion, snapshots, sample child and plane game model | `world/working.ts` (ink attached to a day's sheet), `fly.ts` (player-controlled map plane), `spot.ts` (spot the difference), `squares.ts` (map treasure hunt), `world-poster.ts` and prototype canvas/page UI | Decide separately for each. The root's decorative paper plane is not the prototype's controllable flight. Static geometry/art having moved does not preserve these interactions. Preserve poster print behavior if it remains a product requirement. |
@@ -75,7 +74,7 @@ features still run correctly after the recent moves.
 
 | Pages | Disposition |
 |---|---|
-| `index.html`, `lang.html`, `draw.html`, `make.html`, `levels.html` | Missing studio/developer surfaces; preserve the distinct workflows and review data. |
+| `index.html`, `lang.html`, `draw.html`, `make.html`, `levels.html` | Missing developer and authoring surfaces; preserve the distinct workflows and review data. |
 | `play.html`, `music.html`, `paint.html` | Missing playable app surfaces and browser controllers. |
 | `assistant.html` | Scripted assistant laboratory; port selected policies/workflows, not a claim of production service parity. |
 | `lessons.html` | Root Explore and child sheets replace the core reader, but this page still hosts music, painting and broader coding interactions and print checks. Delete after those are migrated or retired. |
@@ -157,8 +156,9 @@ After the prototype API consumers have gone:
 
 1. Preserve unique review notes, song data, selected proposals and any browser-local work.
    Establish a durable version-control/archive baseline before relying on deletion being recoverable.
-2. Build the studio entry and port the shelf, levels review, notation and Make workflows, with
-   drawing-pad support if it is still the chosen art-authoring tool. Move their unique tests.
+2. Decide which authoring and review workflows (the shelf, levels review, notation and Make) are
+   kept as internal tools, port those with drawing-pad support if it is still the chosen
+   art-authoring tool, and move their unique tests.
 3. Finish the music and painting vertical slices, including UI, lesson answers/replay, storage and
    grown-up review. Compare the extra coding interactions alongside the sound move.
 4. Build the Games screen on the existing root mechanics. Decide the map mini-games, flight,
@@ -168,7 +168,7 @@ After the prototype API consumers have gone:
 6. Port the retained print/art/privacy/visual checks to real routes/modules. Remove old page
    renderers/adapters only after their last retained consumer moves.
 7. Remove compatibility configuration and stale instructions. In a copy with no scratchpad,
-   require the full root check plus real-app E2E for auth, teaching, print/mark, studio and the
+   require the full root check plus real-app E2E for auth, teaching, print/mark and the
    newly migrated interactive flows. Resolve the existing database guard failure first.
 8. Delete `.scratchpad/` once every row above is migrated, archived or deliberately retired.
    Search root source/config/scripts for path imports, file reads, URLs and subprocess calls again.

@@ -20,13 +20,18 @@ every surface is in `.scratchpad/`, and the product is being built at the root i
 ## The shape
 
 ```
-apps/      kids · home · studio · site           screens and entry points, no logic of their own
-engine/    paper · numbers · expr · answer · scene · pack · space · ink · parts · sound · motion · notation · ui
-school/    lessons · games · worlds · year · record · family · assistant · studio
-server/    http · auth · sync · email · db
+apps/      kids · home · site                    screens and entry points, no logic of their own
+engine/    paper · numbers · expr · answer · scene · pack · space · arrange · coding · pigment
+           painting · teaching · ink · parts · sound · motion · notation · ui
+school/    lessons · games · worlds · year · tracks · record · family · voice · adaptive
+           tutoring · tutoring-materials · assistant
+server/    one module (http, auth, sync, pack, email and letters, tutoring, painting) · db
 content/   curriculum · art                      data, read through one loader each
 tools/     scripts · e2e
 ```
+
+`boundaries.ts` holds every module's row, and [.docs/structure.md](.docs/structure.md) says what each
+one holds.
 
 - A module named after the machine goes in `engine/`; one named after something a family would
   recognise goes in `school/`. There is no `src/`, and nothing else sits at the root but the design
@@ -34,7 +39,7 @@ tools/     scripts · e2e
 - A module is one file until it holds a second concept, and then it is a directory of files. There
   are no `index.ts` barrels: import the file that holds the thing.
 - Only `engine/ui/` touches the page. Only `server/` imports `server/db/`. The apps never import
-  `server/`, and only the studio imports `engine/notation/`.
+  `server/` or `engine/notation/`, which runs only in the tools that compile the curriculum.
 - `boundaries.ts` declares who may import whom, and its check fails the build; `tools/scripts/check-db.ts`
   already enforces the database's part.
 - Imports across drawers are relative for now (`../../engine/answer`); aliases are still to come.
@@ -121,9 +126,11 @@ tracked or not, including files the lint skips. It looks for:
   value and handle the missing case, or restructure so it cannot be missing
 - an unused binding is named `_name` rather than silenced
 
-A plain `as` is for widening, or for a DOM element the page itself put there; narrowing data is a
-checker's job. If an escape hatch is genuinely right, add the file to `ALLOW` in the guard with the
-reason, so the exception is reviewed.
+A plain `as` is only for widening; narrowing is a checker's job, and a DOM element is narrowed with
+`instanceof` or a typed query such as `closest<HTMLElement>()`. The lint's `no-unsafe-type-assertion`
+fails any `as` that narrows, including one from `any`, such as `JSON.parse(text) as Row`. If an escape
+hatch is genuinely right, add the file to `ALLOW` in the guard, or for that rule to an override in
+`.oxlintrc.json`, with the reason, so the exception is reviewed.
 
 Every shape is declared once, and the database is where most of them start.
 

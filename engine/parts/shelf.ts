@@ -1,6 +1,6 @@
 // Where each drawing is found and what a parent searches for it by: the shelves in the order the
-// studio shows them, the ideas a drawing can show, and each moved drawing's placement. Only the
-// studio and search load this file; a page that draws a drawing never does.
+// shelf shows them, the ideas a drawing can show, and each moved drawing's placement. Only the shelf
+// page and its search load this file; a page that draws a drawing never does.
 
 /** The shelves, in the order the page shows them. `band` is the heading a run of shelves sits under. */
 export const SHELVES = [
@@ -602,6 +602,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     wordscale: { on: "letters", also: [], shows: ["words"], words: "shades of meaning" },
     wordsort: { on: "letters", also: [], shows: ["words"], words: "columns sort" },
     wordtrain: { on: "letters", also: [], shows: ["words"], words: "" },
+    soundwagon: {
+        on: "letters",
+        also: ["travel"],
+        shows: ["letters"],
+        words: "game wagon train sound phonics",
+    },
     writingframe: { on: "writing", also: [], shows: ["writing"], words: "plan boxes" },
     writinglines: { on: "writing", also: [], shows: ["writing"], words: "" },
     bands: {
@@ -736,6 +742,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: [],
         shows: ["science", "length"],
         words: "slope roll ball marble track cup push energy height steeper",
+    },
+    marblerun: {
+        on: "science",
+        also: ["counting", "sport"],
+        shows: ["counting", "adding", "sharing"],
+        words: "game marble run ramp chute hopper cup funnel bouncer see-saw peg build machine",
     },
     "workshop-piece": {
         on: "science",
@@ -1148,6 +1160,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: [],
         words: "game ball number numbered pool lottery bingo",
     },
+    glowbead: {
+        on: "counting",
+        also: ["sport"],
+        shows: ["counting", "times"],
+        words: "game bead glow firefly trail string count step",
+    },
     numberbond: { on: "counting", also: [], shows: ["bonds", "adding"], words: "" },
     numberline: {
         on: "counting",
@@ -1168,6 +1186,18 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     placevalue: { on: "place", also: [], shows: ["place", "counting"], words: "rods cubes" },
     pricetag: { on: "money", also: [], shows: ["money"], words: "" },
     purse: { on: "money", also: [], shows: ["money", "counting"], words: "" },
+    stallcounter: {
+        on: "money",
+        also: ["places"],
+        shows: ["money"],
+        words: "market stall counter awning shop",
+    },
+    coindish: {
+        on: "money",
+        also: [],
+        shows: ["money", "counting"],
+        words: "dish bowl coins tray penny pitch",
+    },
     pvchart: { on: "place", also: [], shows: ["place"], words: "" },
     ratio: { on: "fractions", also: [], shows: ["decimals", "times"], words: "" },
     receipt: { on: "money", also: [], shows: ["money", "adding"], words: "" },
@@ -1569,6 +1599,18 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["counting", "sharing", "reading"],
         words: "person people child children kid grown-up adult parent grandparent family friend boy girl wheelchair crutches walking stick glasses hearing aid implant headscarf skin hair wave point hold sit",
     },
+    charlie: {
+        on: "people",
+        also: ["stories", "sport"],
+        shows: ["reading", "counting"],
+        words: "charlie girl child character doll fringe blonde skirt rainbow stripes spots shorts dress wellies bare feet bear top wave balance jump cheer walk game",
+    },
+    garment: {
+        on: "people",
+        also: ["home", "money"],
+        shows: ["money", "patterns", "colour"],
+        words: "clothes clothing top t-shirt jumper vest dress skirt shorts trousers shoes wellies boots hanger wardrobe dressing up",
+    },
     umbrellas: {
         on: "people",
         also: ["outdoors"],
@@ -1632,6 +1674,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["nature"],
         words: "goat mountain goat horns beard shaggy white coat rock ledge cliff climbing hooves",
     },
+    pony: {
+        on: "animals",
+        also: ["sport"],
+        shows: [],
+        words: "pony horse unicorn horn mane tail canter gallop jump leap land show jumping",
+    },
     owlflying: {
         on: "animals",
         also: [],
@@ -1643,6 +1691,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: ["outdoors"],
         shows: ["nature"],
         words: "robin redbreast bird garden fence post window sill winter",
+    },
+    frog: {
+        on: "animals",
+        also: ["science", "sport"],
+        shows: ["nature"],
+        words: "game frog tongue snap pond leap jump amphibian",
     },
     starlings: {
         on: "animals",
@@ -1910,6 +1964,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["patterns", "counting"],
         words: "washing line clothes pegs garden",
     },
+    clothesrail: {
+        on: "home",
+        also: ["money"],
+        shows: ["money", "counting"],
+        words: "clothes rail rack hangers wardrobe shop dressing up shoe shelf",
+    },
     comic: { on: "stories", also: [], shows: ["reading"], words: "strip panels" },
     cottage: { on: "places", also: [], shows: ["counting"], words: "house windows" },
     dog: { on: "animals", also: [], shows: ["reading"], words: "pet puppy ball" },
@@ -1919,6 +1979,18 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: [],
         shows: ["patterns"],
         words: "art paint painting palette colours mix picture",
+    },
+    pupfamily: {
+        on: "animals",
+        also: ["people", "stories"],
+        shows: ["reading", "counting"],
+        words: "dog dogs puppy pup family rufus maple pip dot dad mum wave cheer jump sit walk tail character game",
+    },
+    wolf: {
+        on: "animals",
+        also: ["stories"],
+        shows: ["reading"],
+        words: "wolf huff puff blow wind three little pigs house tail character game",
     },
     flowers: { on: "outdoors", also: [], shows: ["counting", "times"], words: "petals garden" },
     gardengate: {
@@ -2030,6 +2102,18 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: ["outdoors"],
         shows: ["counting", "time"],
         words: "garden play swing pendulum",
+    },
+    picnicrug: {
+        on: "home",
+        also: ["food", "outdoors"],
+        shows: [],
+        words: "picnic rug blanket checked grass game",
+    },
+    woodblock: {
+        on: "home",
+        also: ["shapes", "sport"],
+        shows: ["shape", "counting", "length"],
+        words: "block blocks wooden toy cube brick plank build building house stack tower game",
     },
     temple: {
         on: "places",
@@ -2308,6 +2392,18 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     },
     "arcade.sling": { on: "sport", also: [], shows: [], words: "game sling catapult launch" },
     hoop: { on: "sport", also: [], shows: [], words: "game hoop ring fly through" },
+    jumpstand: {
+        on: "sport",
+        also: [],
+        shows: [],
+        words: "show jumping fence upright post cups pole stand",
+    },
+    jumppole: {
+        on: "sport",
+        also: [],
+        shows: [],
+        words: "show jumping pole rail striped fence knocked down",
+    },
     tackle: {
         on: "sport",
         also: [],
@@ -2370,6 +2466,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: [],
         words: "rally driving car circuit track steering",
     },
+    rivergate: {
+        on: "sport",
+        also: ["travel", "counting"],
+        shows: ["counting", "ordering"],
+        words: "game gate buoy slalom river number count floats",
+    },
     racecar: { on: "sport", also: ["travel"], shows: [], words: "car speed" },
     racecircuit: { on: "sport", also: [], shows: ["position"], words: "track" },
     racetrack: { on: "sport", also: [], shows: ["length"], words: "running race lanes metres" },
@@ -2405,17 +2507,11 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["ordering"],
         words: "game railway rails sleepers track line ballast yard train",
     },
-    liftpit: {
+    railbank: {
         on: "travel",
-        also: ["sport", "science"],
+        also: ["sport"],
         shows: ["ordering"],
-        words: "game lift pit platform cable wheel gantry yard siding stack",
-    },
-    yardlever: {
-        on: "travel",
-        also: ["sport", "science"],
-        shows: ["ordering"],
-        words: "game lever points handle yard switch",
+        words: "game railway hill hump dip ramp bank slope track line",
     },
     coupling: {
         on: "travel",
@@ -2429,17 +2525,23 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["ordering"],
         words: "game buffer stop railway end line",
     },
-    orderboard: {
+    sidingboard: {
         on: "travel",
         also: ["sport"],
-        shows: ["ordering"],
-        words: "game board sign order train carriages numbers make up",
+        shows: ["ordering", "adding"],
+        words: "game board sign siding yard letter number total order spare",
     },
     rowboat: {
         on: "travel",
         also: ["sport"],
         shows: ["length"],
         words: "game rowing boat oar rower river row jetty",
+    },
+    canoe: {
+        on: "travel",
+        also: ["sport", "people"],
+        shows: [],
+        words: "game canoe paddle boat river from above child charlie",
     },
     mooringbuoy: {
         on: "travel",
@@ -2483,6 +2585,42 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: ["sport"],
         shows: ["counting", "adding", "ordering"],
         words: "game stepping stone stream number line hop rabbit sink",
+    },
+    plank: {
+        on: "outdoors",
+        also: ["measuring", "sport"],
+        shows: ["length", "adding"],
+        words: "game plank board wood bridge stream length measure lay across",
+    },
+    sack: {
+        on: "outdoors",
+        also: ["measuring"],
+        shows: ["weight", "adding"],
+        words: "sack bag load weight kilograms heavy counterweight lift pulley basket",
+    },
+    riverreach: {
+        on: "outdoors",
+        also: ["sport"],
+        shows: [],
+        words: "game river stream banks water rapids bend from above canoe",
+    },
+    boulder: {
+        on: "outdoors",
+        also: ["sport"],
+        shows: [],
+        words: "game boulder rock stone river from above",
+    },
+    pondweed: {
+        on: "outdoors",
+        also: ["sport"],
+        shows: ["nature"],
+        words: "game pondweed weed water pond lake sea underwater fronds fishing snag",
+    },
+    nettle: {
+        on: "outdoors",
+        also: ["science", "sport"],
+        shows: ["nature"],
+        words: "game nettle nettles sting plant leaves weed meadow hazard",
     },
     crane: {
         on: "science",

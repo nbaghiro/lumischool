@@ -60,7 +60,7 @@ object/interaction layer, then add mechanics only when a real game demonstrates 
 
 ```mermaid
 flowchart TD
-    H[Child app, parent preview, studio] --> R[Shared session host]
+    H[Child app, parent preview] --> R[Shared session host]
     R --> C[Input commands and session clock]
     C --> T[Turn rules and prover]
     C --> S[Simulation and reusable objects]

@@ -1,10 +1,10 @@
-// The vocabulary. Each node type declares what it takes; the checker, the studio's forms, the
-// renderer and the verifier all read these declarations. The hand-written entries are the nodes that
-// need a shape no inference can guess (a balance's pans, a number line's jumps, a choice's options);
-// every other drawing on the shelf is read off the catalogue, with its settings and their defaults,
-// so adding a drawing makes it writable in a scene with no second declaration to keep in step. The
-// catalogue is loaded once, here, when the notation loads: the notation runs in Node scripts and in
-// the studio, never on a child's page.
+// The vocabulary. Each node type declares what it takes; the checker, the renderer and the verifier
+// all read these declarations. The hand-written entries are the nodes that need a shape no
+// inference can guess (a balance's pans, a number line's jumps, a choice's options); every other
+// drawing on the shelf is read off the catalogue, with its settings and their defaults, so adding a
+// drawing makes it writable in a scene with no second declaration to keep in step. The catalogue is
+// loaded once, here, when the notation loads: the notation runs in Node scripts, never on a child's
+// page.
 import { LEVELS } from "../pack";
 import { CATALOG } from "../parts/catalog";
 import { isInstrument, type Drawing } from "../parts/drawing";

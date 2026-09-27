@@ -58,7 +58,7 @@ We should keep one rule while we expand: a subject is only in when its questions
 
 An author or a model writes the notation, runs it through the checker and the verifier, and repairs it from errors that carry a line and a column. The verifier is the gate, not a review queue, so the cost of a wrong question is caught in seconds rather than in a child's week.
 
-This is why the notation stays the source of truth and why the studio, when it exists, edits the same text through forms. A parent who wants to change one number in a question is editing the same file a model wrote, and both go through the same gate. See [notation.md](notation.md) and [notation-vs-json.md](notation-vs-json.md).
+This is why the notation stays the source of truth. A parent who wants to change one number in a question is editing the same file a model wrote, and both go through the same gate. See [notation.md](notation.md) and [notation-vs-json.md](notation-vs-json.md).
 
 ## Paper is an output, not an afterthought
 
@@ -89,10 +89,9 @@ Undecided, and deliberately left so. The likely shape is a family subscription w
 These describe what "done" means rather than when.
 
 1. One year of maths for one grade, complete, verified, printable, with the map and the grown-ups sheet. A family could actually use it for a year.
-2. The studio, so content is written without the repository, and so a parent can change a question.
-3. A second grade and a second subject, to prove the core is general rather than shaped around one year of maths.
-4. Accounts, sync and evidence, so a child's work follows them and a parent's week is assembled from what actually happened.
-5. Tutors.
+2. A second grade and a second subject, to prove the core is general rather than shaped around one year of maths.
+3. Accounts, sync and evidence, so a child's work follows them and a parent's week is assembled from what actually happened.
+4. Tutors.
 
 ## Risks
 

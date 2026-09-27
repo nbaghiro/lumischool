@@ -161,7 +161,7 @@ bound.
 Identity has two candidate forms and the choice has consequences in both directions. A human name
 (`bonds.make-ten`, `g1-making-ten`) is what an author writes, what a lesson file references, what a
 reviewer reads and what 55 call sites in 24 files already use. A content address (the hash of the
-canonical text, which [notation.md](notation.md) already stores beside studio-authored content) is
+canonical text, which [notation.md](notation.md) already stores beside authored content) is
 what makes a reference to a past question exact. These are not exclusive: a name can be the
 reference and a digest can be the identity of a particular revision of it, which is the shape every
 option below adopts in some form.
@@ -515,7 +515,7 @@ function fold(log: Envelope[]): View;    // pure, deterministic, order is (devic
 
 | Area | How it lands |
 |---|---|
-| Content | Catalogue content is the pack on the device, keyed by human name, with a `pack` digest recorded on every sitting so an attempt can be resolved against the content that produced it. Family content is a `content-authored` event carrying the notation text and its canonical hash, which is the form [notation.md](notation.md) already specifies for studio content. A `track` document is a pack entry and membership is the lesson's `subject`. Turning a track off or changing its pace is a `plan-changed` event, so it sits with the rest of the plan overlay and is reversible by replaying without it. A child's current lesson per track is folded, never stored, which is what [tracks.md](tracks.md) needs when `Progress.current` becomes one per track. |
+| Content | Catalogue content is the pack on the device, keyed by human name, with a `pack` digest recorded on every sitting so an attempt can be resolved against the content that produced it. Family content is a `content-authored` event carrying the notation text and its canonical hash, which is the form [notation.md](notation.md) already specifies for authored content. A `track` document is a pack entry and membership is the lesson's `subject`. Turning a track off or changing its pace is a `plan-changed` event, so it sits with the rest of the plan overlay and is reversible by replaying without it. A child's current lesson per track is folded, never stored, which is what [tracks.md](tracks.md) needs when `Progress.current` becomes one per track. |
 | Play state | `Given` is a tagged union. This is the area the option exists for: the performance, the drawing and the move log are tags, not tables. Timing is a union too, so paper cannot accidentally carry a time. |
 | Progress | Derived by folding, every time, with the arithmetic above saying that is affordable. Nothing can disagree with the events. Thresholds stay one object and changing them changes every reading at once, which is what we want while none of them is measured. |
 | Family | Weaker than Option A. Household, adults, children and tutor scope are themselves events, and scope has to be enforced on the read path rather than by the store, because the log is a file the device can read. A tutor's window becomes "which events may this reader fold", which is real work and is honest. |
@@ -804,7 +804,7 @@ a way we have not measured on a tablet.
 
 And the argument that should decide it, from [notation-vs-json.md](notation-vs-json.md) itself: "The
 decision would change if content stopped being hand-written and reviewed. If every item came out of a
-studio GUI and nobody opened a file, the text surface would be earning much less." Evidence is
+generator and nobody opened a file, the text surface would be earning much less." Evidence is
 exactly that case. It is machine-written, nobody reviews it, the diffs are appends, and the prose and
 comment advantages that pay for the notation in content do not pay here. The one place they do pay is
 the parent's own comment on a day, which is a real feature and is not worth the storage format on its
@@ -1028,7 +1028,7 @@ a network contradicts that, and bolting a queue onto Options A, C or E is Option
 model. This argument selects B or D.
 
 The third argument is the roadmap. [product.md](product.md)'s milestones put accounts, sync and
-evidence fourth, after a complete year for one grade, the studio, and a second grade and subject.
+evidence third, after a complete year for one grade and a second grade and subject.
 A server-authoritative model has to be built before the thing it serves, and the two options that
 can ship an evidence store before any service exists are B and D. The parent's side in
 `src/family/` is already pure functions over `Attempt[]` and `Sitting[]`, which is what a fold

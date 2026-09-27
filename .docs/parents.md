@@ -110,7 +110,9 @@ is not the same page again; it is the same items re-seeded, which we can do beca
 declares its parameter ranges. "Park it" moves the lesson later in the year and does not leave a
 mark. The parent's choice is recorded as an override and the override sticks, which the product
 document already requires of the scheduler. Needs per-skill evidence and the ability to write a plan
-override. Looks like three plain buttons and a sentence, not a score.
+override, and a writer for the `park` op: the calendar reads that op for families that used the old
+lesson card, but nothing writes one today. Looks like three plain buttons and a sentence, not a
+score.
 
 We have not measured the thresholds this recommendation would use, so the first version should
 recommend "stay" only on the pattern we are most confident about, which is the same feedback rule
@@ -227,15 +229,15 @@ content and it has to be proved: the answer must evaluate, the drawing must fit,
 their containers, and no feedback rule may also fire on the correct answer. Those are the verifier's
 existing checks and there is no weaker version of them we are willing to ship.
 
-**Layer four, write a question or a year.** A form generated from the vocabulary, the same way the
-studio will generate one, producing notation text that goes through the same checker and verifier a
-model's output goes through. The parent sees errors with a line and a column, or more likely sees
-them rewritten as sentences, and a question that fails is saved as a draft that cannot be printed.
+**Layer four, write a question or a year.** A form generated from the vocabulary, producing notation
+text that goes through the same checker and verifier a model's output goes through. The parent sees
+errors with a line and a column, or more likely sees them rewritten as sentences, and a question
+that fails is saved as a draft that cannot be printed.
 
 Where the verifier sits is the open decision behind layers three and four. The structure document
 gives `apps/home` the run time and data phases only, so the parser, checker and verifier may not be
-in the parent's bundle, for the same reason they are not in a child's. The options are a studio
-build the parent is sent to, which is honest but makes authoring feel like a different product, or
+in the parent's bundle, for the same reason they are not in a child's. The options are a separate
+authoring build the parent is sent to, which is honest but makes authoring feel like a different product, or
 the verifier as a service that the home app posts notation to and gets a report back from. We prefer
 the service, because it is also what content compiles through and because it keeps one gate rather
 than two. It needs `services/jobs` and a request budget, since verifying an item means evaluating
@@ -490,7 +492,7 @@ child cannot do without.
 
 ## Open decisions
 
-- Whether the verifier runs as a service or the parent is sent to the studio build for layers three
+- Whether the verifier runs as a service or the parent is sent to a separate authoring build for layers three
   and four. We prefer the service and have not costed it.
 - Whether evidence is its own feature or lives inside `play`. The structure document already lists
   this as open, and the parent's side is the reason it will not stay inside `play`: the roll-ups are

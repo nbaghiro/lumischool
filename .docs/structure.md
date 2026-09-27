@@ -41,8 +41,8 @@ guard in `tools/scripts/check-db.ts` already enforces the database's part of it,
 - A module is a single file until it holds more than one concept, and then it is a directory of
   files. A file is as long as its concept is. A module never changes drawer when a second app starts
   using it.
-- A module has one phase: it runs in an app, it runs only while authoring, or it is data. `server/`
-  and `server/db/` have a fourth, `server`, which no app contains.
+- A module has one phase: it runs in an app, it runs only while authoring, or it is data. `server/`,
+  `server/db/` and `school/assistant/` have a fourth, `server`, which no app contains.
 - Only `engine/ui/` touches the page.
 - Only `server/` imports `server/db/`, no app contains `server/` or `engine/notation/`, and any module
   may `import type` the row types from `server/db/schema.ts`, since a type import is erased at build.
@@ -63,9 +63,10 @@ lumischool/
 ├─ .docs/                          the design documents
 ├─ apps/                           what people open: SolidJS screens and entry points, no logic of
 │  │                               their own, all on one origin
-│  ├─ kids/                        the children's view at /kids: journal, lesson, game, music
-│  ├─ home/                        the grown-ups' app: sign in, journal, week, mark, letter, records
-│  ├─ studio/                      authoring at /studio: the shelf, the editor, the drawing pad, the forms
+│  ├─ kids/                        the children's view at /kids: the map and its worlds, a lesson,
+│  │                               the tutor's help
+│  ├─ home/                        the grown-ups' app: sign in, Home, Explore, the map, Painting,
+│  │                               Games, the calendar, marking, letters and the account
 │  └─ site/                        the marketing site, prerendered, at / for a visitor signed out and
 │                                  at /home for everyone
 ├─ engine/                         the machine, named after what it is
@@ -77,11 +78,17 @@ lumischool/
 │  ├─ pack.ts                      the compiled content format and its reader
 │  ├─ space.ts                     camera and zoom for the map and the journal
 │  ├─ arrange.ts                   a part the child arranges: its boards, measures and layouts (built)
+│  ├─ coding.ts                    the program model and its one interpreter, which the coding
+│  │                               drawings, the notation and the checkers share
+│  ├─ pigment.ts                   paint that mixes like paint, band by band (Kubelka-Munk)
+│  ├─ painting.ts                  the painting format and its tables, shared by the Painting tab,
+│  │                               the painting drawings and the verifier
+│  ├─ teaching.ts                  a tutor's moves on one question and the help they make up
 │  ├─ ink/                         surface, pen, draw, sheet
 │  ├─ parts/                       a folder per family with a file per drawing, guide/ among them,
 │  │                               drawing.ts, catalog.ts, shelf.ts, lettering.ts, imported/, and
 │  │                               brand.ts, the logo, which started parts/ early
-│  ├─ sound/                       pitch, beat, judge
+│  ├─ sound/                       pitch, scale, beat, keys, voices, fretted, judge
 │  ├─ motion/                      spring, timeline, loop, gesture, geometry, trace, flight, camera,
 │  │                               spawn, tune, steer, glide, burst, drop, flow, sway, plane (the
 │  │                               map's paper plane), world (what a world plays), and the animation
@@ -100,29 +107,51 @@ lumischool/
 ├─ school/                         the product, named after what a family would recognise
 │  ├─ lessons.ts                   the lesson a child sits: the questions asked, each try checked
 │  ├─ voice.ts                     the rules on what the world's guide may say, as a check over a line
+│  ├─ tracks.ts                    the tracks a family turns on, and each subject's title and marker
+│  ├─ tutoring.ts                  a prepared teaching session: the next step after a turn, and
+│  │                               whether a tutor's proposed line is accepted
+│  ├─ tutoring-materials.ts        the prepared teaching bundles, read from content/curriculum/teaching/
+│  ├─ adaptive.ts                  the adaptive tutor's ground on one question: what it may ring, say
+│  │                               and check, and the fallback to the question's own hints
 │  ├─ games/                       games, prove, and one file per mechanic
 │  ├─ worlds/                      worlds, one file per world, terrain, overworld, roll, trail, rewards
 │  ├─ year.ts                      tracks, units, the path, prerequisites
 │  ├─ record/                      record; read and household are planned and not written
-│  ├─ family/                      family, access (built), privacy
-│  ├─ assistant/                   assistant, envelope
-│  ├─ studio.ts                    authoring logic: forms from the vocabulary, previews, the repair loop
+│  ├─ family/                      family, access, privacy, calendar, morning, sheets, letter, login,
+│  │                               names, now, chosen
+│  ├─ assistant/                   server only: envelope, the one shape a model may receive, and what
+│  │                               the tutor and the adaptive tutor are given
 │  └─ __tests__/                   the suites for school's single-file modules
-├─ server/                         the back end
+├─ server/                         the back end, one module with the phase `server`
 │  ├─ http.ts                      the one origin's paths and the routes            (first slice)
 │  ├─ api.ts                       the API's shapes, types only, for the pages to import as types
 │  ├─ auth.ts                      codes, passkeys, sessions, children's views, the PIN (first slice)
 │  ├─ sync.ts                      our own: the drafts a page appends, and what a page reads back
 │  ├─ pack.ts                      the pack the family's lessons are served from    (built)
+│  ├─ pages.ts  static.ts          which app answers a page, and the built apps in production
 │  ├─ email.ts                     Resend HTML/text transport; opted-in weekly letters
+│  ├─ letters.ts  mail-design.ts  mail-job.ts  mail-previews.ts
+│  │                               the weekly letters: their evidence, design, delivery and previews
+│  ├─ painting.ts                  a family's saved paintings
+│  ├─ tutoring.ts  tutoring-cleanup.ts
+│  │                               prepared teaching sessions, and their daily clean-up
+│  ├─ adaptive.ts  adaptive-help.ts
+│  │                               one turn of the adaptive tutor, and its help stored in a session
+│  ├─ gemini.ts  gemini-tutoring.ts
+│  │                               the model calls; the key stays in the server
+│  ├─ check-auth-emails.ts         a read-only audit of sign-in addresses, counts only
 │  └─ db/                          the database module                                (built)
-│     ├─ schema.ts  scope.ts  client.ts  events.ts  keys.ts  content.ts
+│     ├─ schema.ts  scope.ts  client.ts  events.ts  keys.ts  content.ts  members.ts  kid-login.ts
+│     ├─ mail.ts  paintings.ts  tutoring.ts
 │     ├─ migrations/               the generated SQL, the apply path, the local role setup
 │     └─ __tests__/                the suites and their shared test database
 ├─ content/                        data, read through one loader each, never imported by path
-│  ├─ curriculum/                  every lesson and question as notation
+│  ├─ curriculum/                  every lesson and question as notation, and teaching/, the
+│  │                               prepared teaching bundles as JSON
 │  └─ art/                         the hand-drawn svg, excalidraw and stroke files
 ├─ tools/
+│  ├─ pack.ts                      `npm run pack`: compiles the curriculum and writes the packs
+│  ├─ site-sample.ts               the site's sample child and day at build, for first-view.ts
 │  ├─ brand.ts                     the Vite plugin that makes the logo's files for the apps (built)
 │  ├─ first-view.ts                the Vite plugin that makes the site's opening data and preloads
 │  │                               what each app's first view needs (built)
@@ -137,10 +166,12 @@ lumischool/
 └─ CLAUDE.md  README.md
 ```
 
-That is the same 21 modules as before: thirteen in `engine/`, since `space` counts as machinery, and
-eight in `school/`, with `server/` and its database beside them. `studio.ts` is author time, like
-`engine/notation/`, and holds logic rather than screens, so it stays a module and `apps/studio/` only
-shows it.
+That is 32 modules: eighteen in `engine/`, since `space` counts as machinery, twelve in `school/`, and
+`server/` with its database beside them. The prepared teaching bundles in
+`content/curriculum/teaching/` are a data module of their own, `teaching-content`, so that only
+`tutoring-materials` reads them. The first 21 grew by `coding`, `pigment`, `painting` and `teaching`
+in `engine/`, and `tracks`, `tutoring`, `tutoring-materials` and `adaptive` in `school/`, each split
+out when a second concept arrived.
 
 ### Who may import what
 
@@ -148,73 +179,81 @@ The reach lives in `boundaries.ts` as data, keyed by module name; the drawer a m
 not change what it may reach.
 
 ```
-paper        nothing
-numbers      nothing
-expr         numbers
-answer       nothing
-scene        paper, expr, parts
-pack         answer, expr, scene
-ink          paper, parts, scene
-parts        paper, ink/surface, ink/pen, numbers, sound/pitch, sound/keys, sound/voices, sound/beat, sound/fretted, motion/animation, coding, pigment
-sound        numbers
-coding       nothing
-pigment      nothing
-motion       nothing
-arrange      answer, expr, motion/lever, motion/cuts
-notation     parts, games, expr, numbers, scene, ink, sound, answer, pack, arrange, paper, coding, pigment
-ui           paper, ink, parts, scene, sound, motion, space, answer, pack, arrange, coding
-space        paper, ink, parts
-lessons      pack, answer, scene, ink, expr, arrange
-games        parts, scene, answer, motion, numbers
-worlds       parts, paper, motion, space, pack, year, record/record, record/read, answer
-year         pack, answer, record/record
-record       answer, numbers
-family       pack, year, tracks, record/record, record/read, answer
-assistant    pack, record/record, record/read, answer
-db           answer
-server       db, answer, family, record, year, pack
-apps/*       by phase, in the table below
+paper               nothing
+numbers             nothing
+expr                numbers
+answer              nothing
+scene               paper, expr, parts
+pack                answer, expr, scene
+ink                 paper, parts, scene
+parts               paper, ink/surface, ink/pen, numbers, sound/pitch, sound/scale, sound/beat,
+                    sound/fretted, sound/keys, sound/voices, motion/animation, coding, pigment
+sound               numbers
+coding              nothing
+pigment             nothing
+painting            answer, pigment
+teaching            nothing
+motion              nothing
+arrange             answer, expr, motion/lever, motion/cuts
+notation            parts, games, expr, numbers, scene, ink, sound, answer, pack, painting, arrange,
+                    paper, coding, pigment
+ui                  teaching, games, paper, ink, parts, scene, sound, motion, space, answer, pack,
+                    painting, arrange, coding, pigment, numbers
+space               paper, ink, parts
+lessons             pack, answer, scene, ink, expr, arrange, teaching
+games               parts, scene, answer, motion, numbers
+worlds              parts, paper, motion, space, pack, year, record/record, answer
+year                pack, answer, record/record
+tracks              year
+voice               nothing
+record              answer, numbers
+family              pack, year, tracks, record/record, answer
+tutoring            teaching, tutoring-materials
+tutoring-materials  teaching, teaching-content
+adaptive            teaching, voice, pack
+assistant           pack, record/record, answer, teaching, tutoring, adaptive
+teaching-content    nothing (data)
+db                  answer, painting, teaching
+server              db, answer, painting, family, record, year, pack, assistant, teaching, tutoring,
+                    tutoring-materials, adaptive, lessons
+apps/*              by phase, in the table below
 ```
 
 | App | May import |
 |---|---|
 | `kids` | run time modules and `engine/ui/`; never `engine/notation/`, never `server/` |
-| `home` | the same, plus `school/record/household.ts` |
-| `studio` | everything above, including `engine/notation/`; never `server/` |
+| `home` | the same |
 | `site` | run time modules and `engine/ui/`, prerendered |
 
 `boundaries.ts` also holds what the two lists above leave implicit, and its check enforces it:
 
-- `db` and `server` have the phase `server`, which no app contains, so "never `server/`" follows
+- `db`, `server` and `assistant` have the phase `server`, which no app contains, so "never `server/`" follows
   from the phases (decided 13 September 2026).
 - `worlds`, `family` and `assistant` name the file of `record` they read, `record.ts`, so a file of
   `record` they do not name reaches only the apps that name it, whatever the child's app imports.
   `read.ts` and `household.ts` are planned and not written, and a reach or an app's row may not name a
   file that is not there, so both are out of the table until the files land (17 September 2026):
-  `record/read` went from three reaches and `record/household` from the `home` and `studio` rows, and
+  `record/read` went from three reaches and `record/household` from the `home` row, and
   each comes back in the change that writes its file. `check-boundaries` fails on a named file that is
   missing, which is what let the two sit in the table unwritten.
 - Two files may be imported with `import type` from outside the reach, since a type import is erased
   at build: the row types in `server/db/schema.ts` by any module, and the API's shapes in
   `server/api.ts` by the apps and by `engine/ui/`, whose `api.ts` is the one client for the API.
   `import { type X }` stays an import under `verbatimModuleSyntax`, so it does not count.
-- A file an app's row adds, such as `school/record/household.ts` for `home` and `studio`, is withheld
-  from the apps that do not add it.
+- A file an app's row adds is withheld from the apps that do not add it. No app adds one today;
+  `school/record/household.ts` will be the first, for `home`, once it is written.
 - A suite in a drawer's own `__tests__/` belongs to the module it is named after, so
   `engine/__tests__/space.test.ts` has the reach of `space`.
 - Each module's and app's row names the packages its files may import, such as `solid-js` for
   `engine/ui/` and the apps, `roughjs` for `ink`, and `drizzle-orm` and `postgres` for `db`. A suite
   may also import Node's builtins, since it runs only in Node. `parts` names none, so a drawing
   reaches rough.js and perfect-freehand only through `ink/pen`, and the guides' inked strokes, which
-  call perfect-freehand themselves in the scratchpad, draw through the pen when they move. The reach
-  of `parts` above names `sound/beat`, `sound/fretted` and `motion/animation` for step 3, and
-  `boundaries.ts` gains each with the move that first needs it.
+  call perfect-freehand themselves in the scratchpad, draw through the pen when they move.
 - `import.meta.glob` imports what it matches, and `new URL("...", import.meta.url)` imports the file
   it names in any file Vite bundles. A server's, a suite's or a tool's file runs in Node and reads such
   a file when it runs, so there it is not an import.
 - Nothing imports an app, another app included, and nothing at the root imports from `.scratchpad/`
   except the apps and `engine/ui/` through the seam `scratchpad:art`.
-- `studio.ts` has no row yet, so the check refuses its files until one is agreed.
 
 ### Where the data model lives
 
@@ -302,7 +341,9 @@ also imports), so its reach or its materials need a decision before it moves.
 None of them touches the page, since the recogniser is fed samples and the ticker is given its clock
 and its frame scheduler by the caller, so nothing went to `engine/ui/` with them. The scratchpad
 imports them from the root, and the rest of `src/engine/` stays there until it moves. `stage.ts`
-goes to `ui/stage.ts`, as the one file there that touches the page. `scene.ts` and `cues.ts` go to
+went to `ui/stage.ts`, as the one file there that touched the page, and was deleted in September
+2026 when the GPU's views (`game-view.ts`, `scene-view.ts`, and `still-view.ts` for a browser
+without WebGL2) became the only renderers for the games ([game-engine.md](game-engine.md), P3). `scene.ts` and `cues.ts` go to
 `motion/`: the stage draws the scene and `ui` may not import `games`, and the scene names its cues.
 `pad.ts` has moved there, since the map's flight reads it, and the scratchpad's `src/engine/pad.ts`,
 which was a verbatim copy of it until 15 September 2026, re-exports it for the games until step 8
@@ -499,7 +540,7 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    a drawing holds still and the setting names that hold a reading beside it. `parts/catalog.ts`
    holds the ordered ids and a loader for each, and imports nothing but the contract's types.
    `parts/shelf.ts` holds the shelves, the ideas and each moved drawing's grouping, and only the
-   studio and search load it. The catalogue and the grouping stay empty until the first drawings
+   shelf page and its search load it. The catalogue and the grouping stay empty until the first drawings
    move. The suites in `parts/__tests__/` check every drawing that arrives: the catalogue, the bar
    (which lists the 59 drawings below it with their reasons), the shelf and the contract's motion
    rules. `src/engine/animation.ts` moved unchanged to `motion/animation.ts`, with the module's own
@@ -801,7 +842,7 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    (`engine/ui/drawings.ts`) reads it alone with no fallback, and the scratchpad's lists and
    adapters (`src/art/moved.ts`, `animation.ts`, `animation-moved.ts`, `shelf-groups.ts`,
    `src/world/shelf.ts` and `scripts/world-shelf.mjs`) are deleted; `src/art/catalog.ts` derives its
-   shelf from the root's catalogue and placements until the shelf page moves to `apps/studio`, and
+   shelf from the root's catalogue and placements while the shelf page stays in the scratchpad, and
    `src/art/animate.ts` plays `motionOf`. The SVG `part` went with its last user, but the SVG
    `Visual`, `defineVisual` and `pen.rc` stay in `ui/svg.ts` and `ink/pen.ts`: `engine/ui/scene.ts`
    declares its row of props with `defineVisual`, and `engine/ui/map.ts` and `scenery.ts` still take
@@ -959,28 +1000,9 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    screen (the map keeps one for its travellers) and the map's five second wake, which is the
    group's settle policy now. [animation.md](animation.md) has the steps and
    [motion.md](motion.md) the rules.
-   The world as a place followed (19 September 2026), once the owner chose form C of the
-   scratchpad's `world-map.html`: zoomed out, a world's term is a trail through its land with a stop
-   for each day, which hands over to the roll close in. The model is `school/worlds/trail.ts`: the
-   term's days, the next one closed and the rest kept back (`slotsOf`, reading `dayGroups` in
-   `roll.ts`, which `daysOf` groups by too), the trail laid out once for the whole term with each
-   stop placed by the day's number and never by a sheet's height (`layoutTrail`), and a day said as
-   a child says it (`dayInWords`). The shapes are in `engine/space.ts` beside the roll's (`Stop`,
-   `TrailLayout`, whose `land` is the place as a stretch of a roll with no column, so the painters
-   draw it as they draw a stretch, and `StopView` and `TrailView`), with `TILE`, which the painter's
-   tiles and the trail's runs share, and the camera's queries a page makes over a place (`keepIn`,
-   `pointerTo`, `stopNear`). `worldViewOf` gives a view the term it opens on as `trail`, built by
-   `trailViewOf` in `view.ts`, and a world may name the creature in its finished days' stamp
-   (`stamp`, the meadow's hen; the first of its creatures otherwise). The place is drawn by
-   `engine/ui/place.tsx` with `place.css`, loaded the first time a child steps back from the roll, as
-   the roll's own component is: it paints the world round the trail with the roll's painter
-   (`paintStretch` and `sceneryPieces` over the trail's `land`) and draws the trail's own on top, the
-   plates, each day's paper with the postcard that stands in it until the paper lands, the stamp, the
-   marker for the day still to come and the guide's token. The whole prototype is gone from the
-   scratchpad with it: `world-map*.ts`, its stylesheet, its page and its build entry.
-   The model imports the year a roll lays out, a lesson's facts as the pack's index holds them, and
-   the geometry of points and rectangles, so the `worlds` entry in `boundaries.ts` has `year`,
-   `pack` and `space` in its reach, beside what it had before the model moved.
+   World navigation now opens the lesson roll directly and returns directly to the overworld.
+   The intermediate day-stop map and its exclusive model/rendering code were removed on
+   25 September 2026. Canonical progress, rewards and world artwork remain shared.
 5. The apps drawn on those modules. The Solid foundation, the components `apps/home` and
    `apps/kids` share in `engine/ui/`, routes loaded when they are opened, one entry per app, the
    sign-in screens and `tools/e2e/` with the journey (sign up, add a child, open the child's view,
@@ -1007,20 +1029,9 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    in the site's data, since a `MapView` is about 1.1 MB as JSON against the data's budget of 25,000
    bytes. The site draws on the moved modules since 22 September 2026, and `engine/ui/shelf.d.ts`,
    `engine/ui/seam.ts`, the alias and `.scratchpad/src/bridge/` are gone.
-   The place and the gestures that move between the views followed (19 September 2026). A child's
-   view now has three screens rather than two, held by `apps/kids/child.tsx`: the map, the place a
-   world is seen as (`engine/ui/place.tsx`) and the roll (`engine/ui/world.tsx`). Each hands the next
-   a rectangle, so going in and coming out is one movement, as the map's dive already was, and every
-   handover is a cut under reduced motion. Nothing is laid over any of them: the buttons that went
-   are Go in and the map's zoom pair, and the roll's The map, Today and its zoom pair. Tapping a
-   world on the map, or pinching into it, goes in; pulling back out of the roll reaches the place,
-   and out of the place the map; Enter goes in, Escape comes out one step at a time, the plus and
-   minus keys zoom (`engine/ui/view.ts`, which now gives its host the keyboard), and a hidden button
-   in the roll and in the place, shown when it takes the focus, is the way out for a reader. A
-   finished day's paper on the place is the day's own sheet, drawn through the same door the roll
-   asks through (`lookBack`, and `pastSheet` in `apps/kids/lesson.tsx`): each view names every day
-   near the camera, and the page keeps those drawn and lets the rest go, holding each sheet's
-   measured height for ever so the roll never lays out again under the child.
+   The child app has two screens: the overworld and the lesson roll. The roll supports canvas
+   gestures and native page scrolling without replacing lesson DOM. Its Back control and Escape
+   use the existing rectangle transition to return to the selected overworld location.
 6. The lesson side: `scene.ts`, `pack.ts`, `engine/notation/`, `school/lessons.ts`, `school/year.ts`
    and `school/record/`, which the site's lesson and the apps' journals need. `engine/pack.ts` came
    forward for the child's view (14 September 2026), with the concrete scene's shapes in
@@ -1087,9 +1098,9 @@ Each move deletes what it moved from the scratchpad in the same change, and land
    22 September 2026, when the sample child moved to `school/worlds/sample.ts` and the site's data
    and visitor pack are written at build (above). What is left is prerendering it, and the Node
    server serving the built apps on the same paths in production.
-8. `sound/`, `assistant/` and `studio`, after which `.scratchpad/` is deleted. `games/` moved on
+8. `sound/` and `assistant/`, after which `.scratchpad/` is deleted. `games/` moved on
    22 September 2026: its model, mechanics, bindings, prover and record are in `school/games/`, and
-   the stage and field are `engine/ui/stage.ts`. The Games tab remains a scratchpad prototype until
+   the games draw through `engine/ui/game-view.ts` and `scene-view.ts`. The Games tab remains a scratchpad prototype until
    the children's game screen is built.
 
 ## The constraints
@@ -1135,7 +1146,7 @@ tree: the same size formula is written twice, at `src/art/structures.ts:221` and
 `src/lang/layout.ts`, and fixed boxes are written twice as well. The clause this rule has gained is
 that it now covers mechanics as well as parts: [activities.md](activities.md) asks that a mechanic's
 settings come from the mechanic's own declaration "the way a part's settings come from the part's
-declaration, so the checker, the studio's forms, the prover and a generator all read one source".
+declaration, so the checker, the prover and a generator all read one source".
 
 Drawings target a surface, not a document. A draw function receives a surface and emits strokes onto
 it. The browser passes an SVG surface, a test passes a recorder, and the server passes a PDF surface.
@@ -1445,8 +1456,6 @@ lumischool/
 │  ├─ family.ts              ~700   the morning order, the decision, the week's print pack, the records
 │  ├─ record.ts              ~350   the event log, the ordering rule, the fold into a view
 │  └─ read.ts                ~630   the readings, the published thresholds, the gap ledger, household
-├─ studio/
-│  └─ studio.ts              ~300   forms from the vocabulary, previews, the repair loop
 ├─ assistant/
 │  ├─ assistant.ts           ~680   the router, the materials, the two pipelines, the AI log
 │  └─ envelope.ts            ~106   the only path from evidence to a model
@@ -1621,7 +1630,6 @@ lumischool/
 ├─ assistant/
 │  ├─ assistant.ts           ~680   the router, the materials, the two pipelines, the AI log
 │  └─ envelope.ts            ~106   the only path from evidence to a model
-├─ studio.ts                 ~300   forms from the vocabulary, previews, the repair loop. author time
 ├─ space.ts                  ~600   camera, level of detail, spatial layout, minimap. no DOM
 │
 ├─ curriculum/  art/                data, read through one loader, never imported by path
@@ -1663,7 +1671,6 @@ year         pack, answer
 record       answer, numbers
 family       pack, year, record
 assistant    pack, record, answer
-studio       notation, ui, parts, games
 space        paper, ink, parts
 apps/*       by phase: see the app table
 ```
@@ -1723,14 +1730,13 @@ uniform tree will not like it.
 
 Six files from text to drawing, against three under the first option. The split between
 `notation/notation.ts` and `notation/vocabulary.ts` is the one that costs a step, and it is there
-because the vocabulary has two readers: the check and the studio's forms.
+because the vocabulary has readers other than the check: the renderer and the verifier.
 
 Two modules that a domain reading would merge. `record/` and `family/` are the parent's side split by
 whether the code is mechanical or editorial, which is a technical distinction inside a domain area, and
 somebody will ask why they are not one module.
 
-Naming. Nineteen root names have to be distinct and obvious, and `studio.ts` the authoring logic beside
-`apps/studio` the app is a collision this shape survives only because apps are behind a leaf directory.
+Naming. Every root name has to be distinct and obvious.
 
 ### What it costs to adopt now
 
@@ -2092,7 +2098,7 @@ file, and the reading path drops from ten files to seven before anything else mo
 
 ### What can wait
 
-The apps. `apps/kids`, `apps/home`, `apps/studio` and `apps/site` are the shape of the split rather
+The apps. `apps/kids`, `apps/home` and `apps/site` are the shape of the split rather
 than the split itself, and the scratchpad's fourteen pages can stay a flat set of entry points until
 there is a reason to cap one of them. The reason will be `check:privacy`'s second half, which
 [sound.md](sound.md) records as needing "the app split that does not exist in the scratchpad".
@@ -2132,7 +2138,6 @@ The recommended shape, in the order `boundaries.ts` declares.
 | `record/` | run | no | What happened and what it says: the event log with its ordering and duplicate rules, the fold into a view, the readings over that view with the published thresholds, and the household folder with the writer that fills it |
 | `family/` | run | no | The parent's side: the morning order, the decision at the end of a lesson, what to print this week, the records some families have to keep, and the list of what we do not collect that is shown to parents |
 | `assistant/` | run | no | The router that decides what a request may be, the envelope that is the only path from evidence to a model, and the AI log. The gate itself is in `notation/` |
-| `studio.ts` | author | no | Authoring logic: forms generated from the vocabulary, previews, and the repair loop that hands errors back to an author or a model |
 | `space.ts` | run | no | The infinite canvas as maths: camera, zoom, level of detail, spatial layout. Nothing about lessons, and no DOM |
 
 ### The apps
@@ -2143,15 +2148,15 @@ Four builds from one tree, each its own Vite entry, each capped by the phase fie
 |---|---|---|---|
 | kids | the child | run, data | no third-party code, no outside hosts, no author time code, no model. Checked by `check:privacy` and `check:runtime` |
 | home | parents and tutors | run, data | posts notation to the verifier service rather than containing it |
-| studio | authors | run, author, data | the notation editor, the art shelf, the drawing pad |
 | site | the public | run, data | prerendered; the pack it shows is built, not parsed. Until steps 6 and 7, it is neither: the seam parses the corpus in the browser |
 
 Printing is not a build. It is a target: `ink/` paginates, the home app prints, and a job renders the
 same sheets to PDF through a PDF surface.
 
-The shared game player lives in `engine/ui/games.tsx`, with browser adapters in `game-turn.ts` and
-`game-action.ts`. Its declared boundary permits reading `school/games` contracts and catalogue;
-game rules never import the player. App wrappers choose the surrounding page presentation through
+The shared game player lives in `engine/ui/games.tsx`, with the runtime for both kinds of game in
+`game-play.ts`, drawn through `game-view.ts` and, for a turn game's board, `scene-view.ts`. Its
+declared boundary permits reading `school/games` contracts and catalogue; game rules never import
+the player. App wrappers choose the surrounding page presentation through
 the player's `onPlaying` callback. Turn games retain a paper workspace and action games use a
 focused stage. See [games-migration.md](games-migration.md) for the current migration scope.
 
@@ -2176,7 +2181,7 @@ table says which:
 |---|---|---|
 | `check:parts` | to write, with move 0.2 of step 3 | Every drawing is declared once, in one file named by its id in its family's folder, with its settings and their ranges, its takes, a box, a draw function, a description and a test, and appears in `parts/catalog.ts` exactly once. Its description is 15 to 30 words with no em-dash or exclamation mark, and a drawing below the bar is listed with its reason. Extended three ways since the first round: a mechanic's settings come from the mechanic's own declaration, a part declaring `keys()` returns an anchor for every key it offers, and a part that can be sorted or divided declares the attribute. The instrument clause already has a test, in `test/sound.test.ts` under "every key the keyboard offers has an anchor drawn for it" |
 | `check:dom` | to write | Only `ui/` touches the DOM or imports a UI framework. One module, so this is a check on a name rather than on a symbol table |
-| `check:runtime` | to write | No app that declares only run time phases imports an author time module, which is `notation/` and `studio.ts` |
+| `check:runtime` | to write | No app that declares only run time phases imports an author time module, which is `notation/` |
 | `check:content` | partly, in `npm test` | Every notation file parses, is in canonical form and passes verification |
 | `check:pack` | to write | The pack an app ships was compiled from the content in the tree, and its version matches the reader |
 | `check:art` | built, `scripts/check-art.mjs`, and `tools/scripts/__tests__/art.test.ts` | Hand-drawn assets follow the conventions the importers rely on, and `parts/imported/files.ts` holds every file in `content/art/` as it is now |
@@ -2244,7 +2249,7 @@ decided layout each module sits in its drawer: `paper`, `numbers`, `expr`, `answ
 | `src/styles/*.css`, `fonts.ts` | `ui/palette.css` for the tokens, and the per-page sheets to the app that owns the page |
 | `src/art/*.ts` | `parts/<family>/<id>.ts`, one drawing per file, named by its id, in the folder of the shelf it is found on, rewritten onto the surface as it moves; the lettering in `paperkit.ts` to `parts/lettering.ts`, with the props, marks and speech helpers most drawings share |
 | `src/art/music.ts` | splits into one file per drawing in `parts/music/`, as every file of drawings does |
-| `src/art/catalog.ts`, `shelf-groups.ts` | `parts/catalog.ts`, the ordered ids with a loader for each; `parts/shelf.ts`, the grouping and the search words, which only the studio and search load; and the shelf page in `apps/studio`. Since E1 (22 September 2026) `shelf-groups.ts` is gone and `src/art/catalog.ts` names no drawing, deriving the scratchpad's shelf from the root's catalogue until the shelf page moves |
+| `src/art/catalog.ts`, `shelf-groups.ts` | `parts/catalog.ts`, the ordered ids with a loader for each; `parts/shelf.ts`, the grouping and the search words, which only the shelf page and its search load; the shelf page itself has no destination yet ([retirement-plan.md](retirement-plan.md)). Since E1 (22 September 2026) `shelf-groups.ts` is gone and `src/art/catalog.ts` names no drawing, deriving the scratchpad's shelf from the root's catalogue until the shelf page moves |
 | `src/art/guides/` | `parts/guide/`, one file per design, with the shared kit beside them |
 | `src/art/animation.ts` | each drawing's declaration into its own `motion`, and the families' defaults into `parts/drawing.ts` beside the contract (done; the file went with E1 on 22 September 2026) |
 | `src/engine/animation.ts` | `motion/animation.ts`, unchanged |
@@ -2269,7 +2274,7 @@ decided layout each module sits in its drawer: `paper`, `numbers`, `expr`, `answ
 | `src/sound/web.ts`, `switch.ts`, `instrument.ts`, `render.ts` | merge into `ui/sound.ts`, because they touch the DOM and the audio hardware |
 | `src/sound/piano.ts` | disappears: its one call becomes the instrument fields on the two parts |
 | `src/sound/guide.ts`, `lesson.ts` | `lessons/lessons.ts`, because they are the music strand's lesson policy rather than sound |
-| `src/sound/inventory.ts`, `src/play/inventory.ts` | `apps/studio`, because they are lists a page shows |
+| `src/sound/inventory.ts`, `src/play/inventory.ts` | no destination yet, since the page that shows them is not moving ([retirement-plan.md](retirement-plan.md)) |
 | `src/play/types.ts` | `games/games.ts`, as the mechanic contract |
 | `src/play/weigh.ts`, `jump.ts`, `rule.ts`, `race.ts`, `pay.ts`, `share.ts`, `shunt.ts`, `spell.ts`, `pour.ts` | `games/`, one file each, unchanged |
 | `src/play/prove.ts` | `games/prove.ts` |
@@ -2312,8 +2317,7 @@ Leaving out the five rows step 3 added and the ten step 4 added, that is 98 file
 and those 18 are where the file rule does its work. Order of moves, so the tree is never broken for long: `boundaries.ts` and its guard first, then
 the technical modules bottom up, since they have the fewest dependencies and the most dependents; then
 `notation/`, which needs only the parts and mechanic indexes; then `curriculum/`, which is data; then
-the domain modules; then the apps one at a time, starting with studio, because it is the one we use
-while building the rest.
+the domain modules; then the apps one at a time.
 
 ## What the data model decision closes
 

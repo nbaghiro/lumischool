@@ -12,7 +12,7 @@ interpreter, drawings, checkers and compiled scenes already live at root.
 
 The work is a browser interaction migration. Keep all implemented coding extras, including
 prediction, Run/Step/Reset, stage events, algorithm toys, build dragging and sound. Do not expand
-this task into a new free-play app, custom character editor, coding studio forms or a larger
+this task into a new free-play app, custom character editor, coding authoring forms or a larger
 programming language. Those are separate proposals in `coding.md`.
 
 ## Measured scope

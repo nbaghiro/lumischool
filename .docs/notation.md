@@ -4,7 +4,7 @@ Status: accepted direction, prototyped in `scratchpad/` (September 2026).
 
 ## Summary
 
-Every piece of lumischool content is written in one text notation: practice items, the scenes inside them, reusable scene components, and lessons. The text is the source of truth. It is what we store, review, diff, version and hand to authors and to AI. Code reads it into a typed tree in memory, and every other form (the rendered lesson, the printed sheet, the studio's forms) is derived from that tree on demand. JSON is not a stored or exchanged format.
+Every piece of lumischool content is written in one text notation: practice items, the scenes inside them, reusable scene components, and lessons. The text is the source of truth. It is what we store, review, diff, version and hand to authors and to AI. Code reads it into a typed tree in memory, and every other form (the rendered lesson, the printed sheet) is derived from that tree on demand. JSON is not a stored or exchanged format.
 
 The notation separates a small, fixed syntax from a vocabulary that grows. The syntax only knows about nodes, values, children and comments. What a node means, which values and settings it takes and which children it allows all come from a type registry. Adding a new visual, activity, lesson section or checker is a registry entry, never a parser change, which is what lets the platform extend to new subjects and formats without touching its core.
 
@@ -12,15 +12,14 @@ The notation separates a small, fixed syntax from a vocabulary that grows. The s
 
 We considered keeping a JSON document as the canonical form and treating the text as an authoring view over it. We rejected that because the text is what people read, review and reason about, and a format nobody reads should not be the one we trust.
 
-Our frontend and backend are both TypeScript, so one parser serves the child app, the studio and the server, and they can exchange the text itself. JSON only comes back if an outside consumer needs it, and then it is produced from the tree on demand.
+Our frontend and backend are both TypeScript, so one parser serves the apps, the tools and the server, and they can exchange the text itself. JSON only comes back if an outside consumer needs it, and then it is produced from the tree on demand.
 
 The concerns that pointed towards JSON are handled as follows:
 
 - AI writes the notation and receives the parser's and checker's errors, with line and column, until the file passes. This is the loop LlamaTrade's agent uses with its strategy language. The `content/` folder serves as the example set.
-- The studio edits the typed tree and saves it through the canonical formatter, so a change made in a form is a small diff in the text.
 - Live tutor sessions sync what happens inside a scene (answers, marks, ink), not the scene definition, so the text never changes during a session.
 - Replays refer to an item by the hash of its canonical text, plus node ids and anchor names.
-- For content written in the studio rather than in the repository, we store the text with that hash, plus fields recomputed from it on each write for querying (skills, visual types, parameter ranges).
+- For content written outside the repository, such as a parent's own question, we store the text with that hash, plus fields recomputed from it on each write for querying (skills, visual types, parameter ranges).
 
 ## Requirements
 
@@ -33,7 +32,7 @@ We tested each option against the content we actually write: parametric scenes, 
 5. Answer blanks can sit inside text or an equation, as WeBWorK's PGML allows with `[_]{$answer}`.
 6. Feedback can branch, as in STACK's potential response trees and Numbas's marking notes, rather than being one flat list of mistakes.
 7. Scenes can be defined once and reused with parameters.
-8. There is one canonical layout, so a studio edit is a small, stable diff and comments survive.
+8. There is one canonical layout, so an edit is a small, stable diff and comments survive.
 9. AI can write it reliably and repair it from precise errors.
 10. The parser and tooling stay small, and nothing in a file can execute code.
 
@@ -46,7 +45,7 @@ We tested each option against the content we actually write: parametric scenes, 
 | Prose | partly | poor | yes, text blocks | yes | partly | partly |
 | Infix maths | yes | no | yes | partly | yes | no |
 | One node per line, stable diffs | yes | partly | yes | partly | partly | partly |
-| Canonical formatting from the studio | yes | yes | yes | no | yes | no |
+| Canonical formatting | yes | yes | yes | no | yes | no |
 | Familiar to AI | partly | yes | yes | yes | yes | yes |
 | Parser cost | small | smallest | small | large | medium | none |
 
@@ -77,7 +76,7 @@ value  := number            12, 0.35, -3
 
 ### Vocabulary
 
-The registry declares every node type. A declaration says whether the first value is an id, which positional values and flags the type takes, its settings and the kind of each, which children it allows, and for scene nodes their anchors, box and capacity. The checker, the studio's forms, the renderer and the verifier all read the same declarations.
+The registry declares every node type. A declaration says whether the first value is an id, which positional values and flags the type takes, its settings and the kind of each, which children it allows, and for scene nodes their anchors, box and capacity. The checker, the renderer and the verifier all read the same declarations.
 
 The prototype registers these types:
 
@@ -94,7 +93,6 @@ Answers that an expression cannot state are checked by TypeScript functions regi
 text ─parse→ syntax tree (generic, lossless: types, values, settings, children, comments, positions)
      ─check against the registry→ typed documents (item, lesson, component)
      ─instantiate with parameters→ concrete scenes → layout → draw, grade, print
-studio edits the typed tree → syntax tree → formatter → text (the text is what is stored)
 ```
 
 The formatter, the syntax checks and the syntax tree view are generic, so they work unchanged for types added later.
@@ -313,8 +311,6 @@ In the prototype this caught mistakes in our own examples. A scene was 30 square
 ## Costs and risks
 
 A notation of our own has no ecosystem. We write and maintain the parser, the formatter, the editor highlighting and later a language server ourselves. The generic syntax keeps these small, since none of them know about individual node types.
-
-Some teachers may prefer forms to text. The studio's forms, generated from the registry, would then be their main surface, and the text serves reviewers, diffs, experienced authors and AI.
 
 Changing a node type's settings changes what existing files mean. Because the syntax tree is generic, such a change can ship with a migration that rewrites affected files mechanically, and the hash of the canonical text tells us which content changed.
 

@@ -1,3 +1,11 @@
+# Current implementation decision · 25 September 2026
+
+The approved [tutoring implementation plan](tutoring-implementation-plan.md) supersedes the earlier
+"no model-written text" and authoring-only constraints **only for explicitly enabled tutoring**.
+Reviewed teaching is always available. Enabled sessions can ask the server for a grounded explanation;
+Gemini cannot grade work, award progress, select arbitrary activities or contact a child directly.
+Child rollout remains disabled by default. The historical exploration below is preserved for context.
+
 # AI
 
 ## Decided
@@ -17,7 +25,7 @@ Status: proposed design, September 2026, prototyped in `scratchpad/assistant.htm
 
 It sits on two documents written alongside it. [parents.md](parents.md) owns the parent's side, and this document adds the AI flows to the authoring layers and the ranks it sets out rather than proposing a second parent product. [activities.md](activities.md) owns what a mini game is: the declaration, the mechanics, the win conditions and the exact wording of the promise a game makes. This document owns the surfaces over both: how a parent asks, what the model is given, what happens when the gate rejects what it wrote, and what a child can choose.
 
-Extended on 15 September 2026 with a survey of every product surface: the workflows a parent, a child or an author could get from a model or an agent are listed in "The child's workflows", "The parent's workflows" and "The studio's workflows", each with where it runs, what leaves the device, what it costs and whether it works offline, as "Where a model runs, and what leaves" defines them; "What exists, what is decided, and what is new" sets the list against this document and the code; the safety properties gain seven more; "What we will not build" and "Core changes this needs" gain the entries the walk found; "Order of work" sorts the list into a first release for parents and one for children; and "Decisions for the owner" lists what the list cannot proceed without. Everything added that day is marked with the date, and nothing decided before it is reopened.
+Extended on 15 September 2026 with a survey of every product surface: the workflows a parent or a child could get from a model or an agent are listed in "The child's workflows" and "The parent's workflows", each with where it runs, what leaves the device, what it costs and whether it works offline, as "Where a model runs, and what leaves" defines them; "What exists, what is decided, and what is new" sets the list against this document and the code; the safety properties gain seven more; "What we will not build" and "Core changes this needs" gain the entries the walk found; "Order of work" sorts the list into a first release for parents and one for children; and "Decisions for the owner" lists what the list cannot proceed without. Everything added that day is marked with the date, and nothing decided before it is reopened.
 
 ## Summary
 
@@ -167,7 +175,7 @@ Where it runs. There are four values. None: deterministic code over the pack or 
 
 What leaves, and whose it is. Five classes. Class 0: nothing leaves the device and no model is involved. Class 1: the child's evidence goes to our own server and nowhere else, which is the ordinary path and involves no model. Class 2: a prompt reaches a model through our server, and it carries only what "What the model sees" allows: a grade, a skill state, item ids, numbers, canonical notation, the vocabulary, and a parent's request with the family's known child names taken out. No child's personal information is in it, which is the sentence the consent notice and the direct notice make, and [auth.md](auth.md) puts to the lawyer as question 2 whether a provider that receives this is support for our internal operations or a third party. Class 3: a prompt would carry something that is, or may be, a child's personal information under the amended rule's combining clause: a sentence a child typed, a drawing, a photograph of a paper sheet, a recording. Sending that to a provider is disclosure, disclosure ends our use of the email-plus consent method, which 312.5(b)(2)(viii) allows only to an operator who does not disclose, and it would need separate verifiable consent as well. Under the decision already taken, that a flow which needs more than class 2 does not ship, a class 3 workflow can run on our own model or not at all, and each one below says which. Class 4: a prompt carries a parent's own words about the product and nothing about any child, which is handled as class 2 with fewer fields.
 
-Consent, by class. Classes 0 and 1 are covered by the consent a parent gives when adding the child, whose notice already says that a children's view records the child's answers, the drawings and marks a question asks for and the hints they open, and sends them to us and to nobody else ([auth.md](auth.md), "What the parent consents to"). Class 2 needs nothing further from the parent, because no child's personal information is in the prompt; what it needs from us is the direct notice naming the provider and the purpose, the line at the point of use, and the written assurances 312.8(c) asks of a service provider, and it rests on the lawyer's answer to question 2. Class 3 on a provider's model would be disclosure, which needs separate verifiable consent under 312.5(a)(2) and takes away the email-plus method, so it is not offered; class 3 on our own model is not disclosure, but it is a material change to the notice, which asks every parent to consent again before anything a child produced is read by anything but a person. Class 4 is a parent's own data and touches no child's consent. Under the UK code, every flow that explains a child's evidence to a parent (P12, P13, P18) is monitoring in the ICO's sense, which is why the sign to the child is decision 10 below and question 13 on the lawyer's list; profiling stays off by default because no model's reading of a child changes what the child sees without a parent's confirmation, which property 16 states; and data minimisation is the envelope's field list, in code rather than in a policy.
+Consent, by class. Classes 0 and 1 are covered by the consent a parent gives when adding the child, whose notice already says that a children's view records the child's answers, the drawings and marks a question asks for and the hints they open, and sends them to us and to nobody else ([auth.md](auth.md), "What the parent consents to"). Class 2 needs nothing further from the parent, because no child's personal information is in the prompt; what it needs from us is the direct notice naming the provider and the purpose, the line at the point of use, and the written assurances 312.8(c) asks of a service provider, and it rests on the lawyer's answer to question 2. Class 3 on a provider's model would be disclosure, which needs separate verifiable consent under 312.5(a)(2) and takes away the email-plus method, so it is not offered; class 3 on our own model is not disclosure, but it is a material change to the notice, which asks every parent to consent again before anything a child produced is read by anything but a person. Class 4 is a parent's own data and touches no child's consent. Under the UK code, every flow that explains a child's evidence to a parent (P12, P13, P18) is monitoring in the ICO's sense, which is why the sign to the child is decision 9 below and question 13 on the lawyer's list; profiling stays off by default because no model's reading of a child changes what the child sees without a parent's confirmation, which property 16 states; and data minimisation is the envelope's field list, in code rather than in a policy.
 
 Cost and waiting. C0: nothing. C1: one short call, a few seconds, prose or a small structured answer. C2: one call and the gate, tens of seconds, which is what widening a range or checking a plan takes. C3: the repair loop, up to five calls and the gate each time, a minute or more, which may finish after the parent has left the page and tell them when it has. C4: a job over the corpus or a prover search, minutes to hours, never while a person waits. The per-family budget and the visible cap in "Cost, latency and no network" apply to C1 to C3; C4 is our cost.
 
@@ -179,7 +187,7 @@ One consequence of class 3 decides several entries at once, so it is stated here
 
 ## The workflows, listed
 
-Added 15 September 2026. The sections above describe the child's surface and the parent's flows as they were designed in the first pass. This section introduces three lists, the child's, which follows it, and the parent's and the studio's, which follow "The parent's surfaces" below, and between them they hold every workflow in which a model or an agent could do something for a parent, a child, or an author, walked against every surface the product has in September 2026: the site and its lesson preview, sign-in and adding a child, the family page, the grown-ups' pages and their prototypes (the journal, marking, Explore, changing the plan, the calendar), the child's map, worlds and lesson, the games, music, paint and the drawing pad, the notation and Make your own, the Levels page, the printed packs, the records and the export, and the Assistant tab as it stands. Most of the parent's entries restate flows this document already had, in the same form as the new ones so that the two can be read against each other; the child's entries are shorter than the parent's, because the decisions at the top of this document leave a child's surface with no model in it, and each entry has to say so rather than quietly relax it.
+Added 15 September 2026. The sections above describe the child's surface and the parent's flows as they were designed in the first pass. This section introduces two lists, the child's, which follows it, and the parent's, which follows "The parent's surfaces" below, and between them they hold every workflow in which a model or an agent could do something for a parent or a child, walked against every surface the product has in September 2026: the site and its lesson preview, sign-in and adding a child, the family page, the grown-ups' pages and their prototypes (the journal, marking, Explore, changing the plan, the calendar), the child's map, worlds and lesson, the games, music, paint and the drawing pad, the notation and Make your own, the Levels page, the printed packs, the records and the export, and the Assistant tab as it stands. Most of the parent's entries restate flows this document already had, in the same form as the new ones so that the two can be read against each other; the child's entries are shorter than the parent's, because the decisions at the top of this document leave a child's surface with no model in it, and each entry has to say so rather than quietly relax it.
 
 Every entry is written the same way. It says what the person is trying to do and where in the product they are standing, what the model or the agent does, what it reads and what it may write, what the person sees and has to confirm, and what it must never do. It then carries five marks, defined in "Where a model runs, and what leaves" above: where it runs, what leaves the device and whether any of it is a child's, what it costs and how long the person waits, whether it works with the network off, and its status against this document and the code. The marks are compressed on purpose, so that a reader can scan a group and see, for instance, that nothing on the child's side needs a network and that nothing on the parent's side involves a child's name.
 
@@ -229,9 +237,9 @@ Marks: none; refused.
 
 #### K7. A hint in other words
 
-Refused at the child's screen, met at the author's desk. A child who did not understand the first rung gets the second, which is an author's rephrasing, and the audit's rule that a ladder asks rather than tells makes the rungs different in kind and not only in words. A model paraphrasing a hint in the moment would be free model text, and the items carry ninety-three hints today with no item carrying two, so the shortage is content: S1 writes the ladders, the verifier proves each rung does not contain the answer once that warning exists, and an author reads them.
+Refused at the child's screen, met at the author's desk. A child who did not understand the first rung gets the second, which is an author's rephrasing, and the audit's rule that a ladder asks rather than tells makes the rungs different in kind and not only in words. A model paraphrasing a hint in the moment would be free model text, and the items carry ninety-three hints today with no item carrying two, so the shortage is content: an author writes the ladders, and the verifier proves each rung does not contain the answer once that warning exists.
 
-Marks: none at the child's screen; refused there, decided as S1.
+Marks: none at the child's screen; refused there.
 
 #### K8. Reading aloud
 
@@ -267,7 +275,7 @@ Marks: none; leaves class 0; C0; works offline; decided and new.
 
 #### K13. What a place is, and what happens next
 
-No model, and a little content. A child taps a landmark and the guide says that landmark's authored line, or the drawing's `describe()` sentence for a screen reader, which never gives an answer away. What happens next is already on the roll as the closed sheet under today with its title, and the next world's horizon drawn faint with a sign on the path. The content work is the `describe()` sentence on every drawing that stands in a world, which [shelf.md](shelf.md) plans and S13 drafts. A model at the child's screen would add a sentence a person did not write, so it does not.
+No model, and a little content. A child taps a landmark and the guide says that landmark's authored line, or the drawing's `describe()` sentence for a screen reader, which never gives an answer away. What happens next is already on the roll as the closed sheet under today with its title, and the next world's horizon drawn faint with a sign on the path. The content work is the `describe()` sentence on every drawing that stands in a world, which [shelf.md](shelf.md) plans. A model at the child's screen would add a sentence a person did not write, so it does not.
 
 Marks: none; leaves class 0; C0; works offline; decided in the shelf's plan.
 
@@ -421,7 +429,7 @@ Marks: none; leaves class 0; C0; works offline; built in the prototype.
 
 #### P6. Explaining a method before the lesson
 
-New. A parent about to teach the regrouping lesson wants to know how to explain it before the child sits down, and the lesson's own `look` section and grown-ups note are written for that and may not be enough. From the lesson card on the grown-ups' page, the parent asks in their own words, and the model answers in prose for an adult, reading only the lesson's canonical notation, its grown-ups note, and the skill's authored words for the table, so that the method it describes is the one the lesson teaches and not one it prefers. It writes nothing into the product: the answer is shown once, kept only as long as "Privacy, logging and the amended rule" and decision 13 allow, and never becomes content or reaches a child. The parent confirms nothing, because nothing changes. What it must never do is describe the child, since the evidence is not in its envelope for this flow, or teach a method the lesson does not, which the prompt forbids and which we cannot check mechanically, so the answer says which lesson it is drawn from and the parent has the sheet beside it. The same entry covers a parent asking why the answer to question four is twelve: the grown-ups sheet has the answer and the hints, and the model walks the working from the notation.
+New. A parent about to teach the regrouping lesson wants to know how to explain it before the child sits down, and the lesson's own `look` section and grown-ups note are written for that and may not be enough. From the lesson card on the grown-ups' page, the parent asks in their own words, and the model answers in prose for an adult, reading only the lesson's canonical notation, its grown-ups note, and the skill's authored words for the table, so that the method it describes is the one the lesson teaches and not one it prefers. It writes nothing into the product: the answer is shown once, kept only as long as "Privacy, logging and the amended rule" and decision 11 allow, and never becomes content or reaches a child. The parent confirms nothing, because nothing changes. What it must never do is describe the child, since the evidence is not in its envelope for this flow, or teach a method the lesson does not, which the prompt forbids and which we cannot check mechanically, so the answer says which lesson it is drawn from and the parent has the sheet beside it. The same entry covers a parent asking why the answer to question four is twelve: the grown-ups sheet has the answer and the hints, and the model walks the working from the notation.
 
 Marks: runs on a frontier model through our server; leaves class 2 with no evidence fields, the lesson's notation and the question; C1; network needed, with the grown-ups note standing in; new.
 
@@ -453,7 +461,7 @@ Marks: none; leaves class 0 for the portfolio photograph, class 3 for the pre-fi
 
 #### P11. The words to say at the table
 
-No model at the table. When a child is stuck, the card gives the matched rule's sentence, the earlier lesson that teaches the step underneath, a re-seeded practice at the easier end, two sentences of what to say with one thing to do with an object, and permission to park the lesson ([parents.md](parents.md)). The words and the object are content an author writes per skill, and "How this fits the parent's side" already says a model may draft that for an author and never for a parent in the moment. That drafting is S4 below. At the table the card reads authored content and the evidence, and it works with the network off.
+No model at the table. When a child is stuck, the card gives the matched rule's sentence, the earlier lesson that teaches the step underneath, a re-seeded practice at the easier end, two sentences of what to say with one thing to do with an object, and permission to park the lesson ([parents.md](parents.md)). The words and the object are content an author writes per skill, and "How this fits the parent's side" already says a model may draft that for an author and never for a parent in the moment. At the table the card reads authored content and the evidence, and it works with the network off.
 
 Marks: none; leaves class 0; C0; works offline; decided.
 
@@ -575,124 +583,24 @@ No model. Inside the ranges an item declares, and for a role mapped to another d
 
 Marks: none; leaves class 0; C0; works offline; built in the prototype.
 
-## The studio's workflows
-
-Added 15 September 2026. Sixteen entries for the author's desk and for the jobs the product runs over its own corpus. The ground is different again: no family is involved, so no entry below carries a child's data and every prompt is in class 2 with the evidence fields empty, or the job reads nothing but content. The gate is the same Workspace the editor, the tests and the build use, and the second half of every gate is an author's read, since "The gate passes something badly taught" is the failure this document names as the real one. Several of these are agents in the sense above: a loop over the corpus that drafts, gates and queues, where the author sees a queue and not a conversation.
-
-#### S1. Hint ladders and feedback rules for the items we have
-
-Restates the second item of the order of work, and it is still first. A job walks every item with fewer than three rungs or no recognised mistake, gives the model the item's canonical notation, its variants and the skill's authored words, and asks for the missing rungs and `when` rules with their lines and anchors. The verifier proves each rule cannot fire on a correct answer, the audit's warning that a filled-in hint contains the answer refuses a rung that gives it away once that warning exists, and `check:voice` refuses first person and relational vocabulary. What survives lands in a review queue where an author reads the sentence, since a rule that is provable can still be badly put. The grade-one pilot did this by hand for forty-two items; the job does the rest.
-
-Marks: runs on a frontier model through our server, as a job; leaves class 2 with no evidence, content only; C4; the desk is online; decided, prototyped in the gate and not as a job.
-
-#### S2. Levels and variants
-
-New. Every lesson is to carry a way in, a core and a stretch ([audit.md](audit.md)), and after the raise the corpus has 1,711 question slots with reasoning and non-routine questions at twenty-two per cent. A job reads a lesson, its items and the difficulty measure, and drafts what is missing: wider ranges for a way in, a stretch item over the same parts and frames with a two or three rung ladder, or a `try` that does not repeat the practice item. The verifier gates each item, the difficulty measure labels it, and the Levels page shows the three levels drawn for an author to read before any is compiled into the pack. The measure is a label and not a gate, which is decision 11: an item the measure calls a stretch still needs an author to agree.
-
-Marks: runs on a frontier model through our server, as a job; leaves class 2 content only; C4; new.
-
-#### S3. Checking a lesson against a standard
-
-New, and a report rather than content. An author asks which objectives of the Common Core, the England curriculum or Singapore's a lesson covers, or which the track claims and no lesson exercises. The model reads the lesson's notation, its items' skills, and the standard's text as we hold it, and writes a table with a sentence per claim. Nothing it writes becomes content, and the audit's own tables are the check on it, since a model matching skill ids to objective codes can be wrong in a way the author will see at once and a parent would not.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; new.
-
-#### S4. Descriptions, notes and the words for the table
-
-New as a flow, present as a sentence before. For a lesson: the `goal`, the `grown-ups` note with the struggling case in mind, and the `remember` line. For a skill: the two sentences a parent says at the table and the one thing to do with an object, which [parents.md](parents.md) makes an author's content and which the stuck card reads. For a by-eye item: the `look-for` sentence and the two to five things to tick ([art.md](art.md), [writing.md](writing.md)). For the piano: the practice chart's wording. The model drafts, `check:copy` and `check:voice` run over the strings, and an author reads. It must never draft a line the guide says to a child in the moment without the author reading it, and it never drafts the consent notice, which is a lawyer's.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; new.
-
-#### S5. Translating a lesson
-
-New. [notation.md](notation.md) leaves open how translations are stored, and the flow does not need that settled to be specified. The model translates the strings of a lesson and its items (`title`, `ask`, `say`, `hint`, `goal`, `grown-ups`) and nothing else; the checker proves every placeholder, role and anchor reference survived; the verifier re-runs, since a longer sentence can no longer fit its scene; the print check re-runs; and a native-speaking author reads every line, because the register for a five-year-old does not survive a machine. Plural forms come from the roles' nouns, which the template language already handles for translation.
-
-Marks: runs on a frontier model through our server, as a job per lesson; leaves class 2 content only; C4; new.
-
-#### S6. A request for a drawing
-
-New, and it is the only entry about art. No model draws. What a model can write is the brief for a drawing the shelf lacks: which lesson ideas from the pairings in [gaps.md](gaps.md) and the ranked list in [audit.md](audit.md) it would unlock, the size in squares, the anchors, the settings and their ranges, the subjects it would carry, and the bar in [shelf.md](shelf.md) it has to clear. The brief is a ticket for the person who draws. It must never ask for a photograph of anything, never for a person drawn other than by the kit, and never for a drawing whose only use is one family's request, which is answered with the shelf.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; new.
-
-#### S7. The repair loop
-
-Exists, unchanged: generate, parse, check, verify or prove, feed the errors back with their line and column, at most five times, and nothing partial exists as a state. The prototype's `generate` in `gate.ts` is the loop, and the scripted writer's first attempt at "harder bonds" fails it on purpose.
-
-Marks: as the flow it serves; C3; exists.
-
-#### S8. A lesson for a slot in the curriculum
-
-New for the author, decided for the parent as P14. The forty lessons beyond maths and the tracks' scope and sequence are slots with a description and a grade, and the shelf's unused drawings are the palette. A job drafts a lesson per slot from the drawings that exist, in the lesson's format, gates it, and queues it with the difficulty measure and the print check's page count. An author reads the prose and the teaching, and the same job can be run against a track's open slots in one evening. It must never invent a drawing, and a slot no drawing serves produces S6 instead of a lesson.
-
-Marks: runs on a frontier model through our server, as a job; leaves class 2 content only; C3 per lesson; new.
-
-#### S9. Sentence frames per skill
-
-Decided as a core change, and a drafting flow. A skill needs a small set of authored sentence frames so that generated practice has authored words; the model drafts candidates from the items the skill already has, and an author keeps the ones that read well at the grade. Once frames exist, every generated question is new numbers in old words, which is the limit this document chose.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; decided.
-
-#### S10. A game for a mechanic
-
-Restates the author's half of "A mini game": the same declaration, the same prover, and a play-through by a person before it is content for everyone. An author can also ask for the versions of an activity that the prover found hardest, which is a read of the prover's report and no model.
-
-Marks: as P16; decided.
-
-#### S11. A world's identity and its lines
-
-New. [worlds-next.md](worlds-next.md) ranks candidate worlds on six criteria and gives each an identity table (light, weather, ground, way, horizon, landmark, creatures, guide, moment, rare sight), and [story.md](story.md) holds every line to eight words in the second person about the place. A model can draft a candidate's table and its lines against those rules, and the uniqueness test in `test/world.test.ts` refuses a world that shares a ground, a path, a light, a gate, a moment or a rare sight with another. An author reads it, and the person who draws builds it. It must never draft a line in the first person, never a line about the child, and never a world that borrows a real culture, which the sixth criterion scores.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; new.
-
-#### S12. Reviewing a family's content for the catalogue
-
-New, and minor. Whether a family's own question or game ever reaches the catalogue is open. If it does, the reviewer is a person, and what a model can do is summarise what the item asks, which skill it claims, how its versions differ and what the verifier held, so that the reviewer reads one paragraph before the notation. The family's request text is not in the summary, since it may name their child.
-
-Marks: runs on a frontier model through our server; leaves class 2, the item's notation only; C1; new, behind the open question.
-
-#### S13. Motion and description for a new drawing
-
-New, and minor. A new drawing declares its small movement from a closed vocabulary ([animation.md](animation.md)) and its `describe()` sentence for a screen reader, which never gives an answer away. A model drafts both from the drawing's settings and the tests hold them: the reading rule refuses motion on anything read, and the description is read by an author.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; new.
-
-#### S14. The tests that prove a generated thing
-
-Restated as one list, since every entry above names some of them. A generated question or lesson is proved by parse, check and the verifier, which build every variant or a seeded sample of four hundred, evaluate every answer, fit every scene, fill every container and refuse a rule that fires on a correct answer; by the print check, which holds a lesson to as many pages as it lays out sheets; and by the two guards over strings, `check:copy` for the em-dash and `check:voice` for the guide's persona. A generated hint is proved by the warning that its filled-in text does not contain the answer, once that warning exists. A generated activity is proved by the prover's five clauses and then by a person's play-through. A generated plan is proved by `checkPlan`. A generated record or explanation is proved by the grounding check, which extracts every numeral and finds it in a computed fact, and by the forbidden-word list. A generated translation is proved by the checker over its placeholders and by the verifier and print check re-run. A generated world is proved by the uniqueness test and the eight-word rule. The prompt itself is proved by `audit` in `envelope.ts`, which finds any withheld field or known name. What none of them proves is whether the thing is well taught, kind, or the right thing for today, and every surface that shows a verdict says so.
-
-Marks: none; these run on nothing but our own code; exists in part, with `check:copy`, `check:voice` and the hint warning still to write at the root.
-
-#### S15. Reading the audit
-
-New, and minor. The corpus numbers are computed by scripts; what a model adds is the ranked reading of them, in the shape [audit.md](audit.md) already has, for an author to argue with. Nothing it writes is content.
-
-Marks: runs on a frontier model through our server; leaves class 2 content only; C1; new.
-
-#### S16. The unmatched answers, across families
-
-New, and it needs a decision. P8 handles one family's unmatched answer at that family's desk. Across families, the same wrong number on the same item is the strongest evidence we could have that a rule is missing, and a job that collected, per item, the unmatched numbers with their counts and nothing else, drafted rules for the most common, verified them and queued them for an author, would improve the catalogue for everyone. "What the model sees" forbids any other family's data in a prompt, and this job's prompt would hold no family's data, only an item id and a list of numbers with counts; whether that is cross-family data in the sense the rule means is decision 6. If it is, the job runs over our own test families and the pilot's items and no further.
-
-Marks: runs on a frontier model through our server, as a job; leaves class 2, an item id and numbers with counts; C4; new, behind a decision.
-
 ## What exists, what is decided, and what is new
 
-Added 15 September 2026. The list above has sixty-three entries: twenty-eight for the parent, nineteen for the child and sixteen for the studio. Counted by where they run:
+Added 15 September 2026. The list above has forty-seven entries: twenty-eight for the parent and nineteen for the child. Counted by where they run:
 
-| | Parent | Child | Studio | All |
-|---|---|---|---|---|
-| A frontier model through our server | 20 | 0 | 15 | 35 |
-| Our own model | 0 in the first release; P9 and P10 if ever | 0 | 0 | 0 |
-| The device's own voice or recogniser, no language model | 1 (P7) | 3 (K8, K16, K18) | 0 | 4 |
-| No model: deterministic code, or refused | 7 | 16 | 1 | 24 |
+| | Parent | Child | All |
+|---|---|---|---|
+| A frontier model through our server | 20 | 0 | 20 |
+| Our own model | 0 in the first release; P9 and P10 if ever | 0 | 0 |
+| The device's own voice or recogniser, no language model | 1 (P7) | 3 (K8, K16, K18) | 4 |
+| No model: deterministic code, or refused | 7 | 16 | 23 |
 
 Five of the parent's entries (P2, P3, P13, P15 and P22) have a deterministic half and a model's half, and the table counts each by its model's half. The child's column is the point of the table: nineteen entries and no language model in any of them, which is what the decision at the top of this document means in practice.
 
 What exists. The child's four actions, the wrong-answer path, the router with its closed set, the envelope with its allowed and withheld fields, the gate over the real Workspace with its three verdicts, the repair loop with its cap of five, the log, the plan check and the record check with digit-level grounding, all in `.scratchpad/src/ai/` with tests over the whole corpus, and a page that runs them with a scripted writer that says it is scripted. At the root, the wrong-answer path and the hint policy are built into the lesson (`school/lessons.ts`), the pack carries hint ladders, feedback rules and three levels, and `boundaries.ts` declares `school/assistant` with its reach, but the directory does not exist and no model is called anywhere; `.env.example` has no key for one. The guards that exist at the root are `check:kids-build`, which refuses any adult route in the children's chunks, `check:boundaries`, `check:db` and `check:suppressions`. Three guards this document names, `check:prompt`, `check:voice` and the extension of `check:privacy`, do not exist, and neither does `check:copy` at the root.
 
-What is decided and unbuilt. Hint ladders and rules at author time (S1); extra practice outside the ranges (P15); the plan from a goal (P1); records drafting (P20); custom lessons (P14); new items from parts and frames (P27 and S9); generated games with the child's builder after them (P16, K11); the extra set (K10); the speech conditions (K18); reading aloud (P7, K8); tier two, behind a switch, with evidence first. The surfaces several of these need are also unbuilt at the root: the grown-ups' app today is the family page, sign-in and adding a child with consent, and the week, the journal, marking, the records and the export are named on that page as coming.
+What is decided and unbuilt. Extra practice outside the ranges (P15); the plan from a goal (P1); records drafting (P20); custom lessons (P14); new items from parts and frames (P27); generated games with the child's builder after them (P16, K11); the extra set (K10); the speech conditions (K18); reading aloud (P7, K8); tier two, behind a switch, with evidence first. The surfaces several of these need are also unbuilt at the root: the grown-ups' app today is the family page, sign-in and adding a child with consent, and the week, the journal, marking, the records and the export are named on that page as coming.
 
-What is new. On the parent's side: catching up by asking (P3), explaining a method (P6), the follow-up on the decision card (P13), a story for a world (P17), the handover page's paragraph (P18), the export's cover (P21), onboarding with a placement sheet first (P22), the calendar by asking (P23), a tutor's questions (P24), asking about the product (P25), and a setting by asking (P26); and the choice of a level as a setting without a model (P2). On the child's side: a sentence read back and a spelling from the list (K16), and the stroke-by-stroke drawing guide (K14), neither of which is AI. In the studio: levels and variants (S2), the standards check (S3), notes and the words for the table (S4), translation (S5), drawing briefs (S6), lessons for slots (S8), a world's identity (S11), the catalogue review summary (S12), motion and description (S13), reading the audit (S15), and the unmatched answers across families (S16).
+What is new. On the parent's side: catching up by asking (P3), explaining a method (P6), the follow-up on the decision card (P13), a story for a world (P17), the handover page's paragraph (P18), the export's cover (P21), onboarding with a placement sheet first (P22), the calendar by asking (P23), a tutor's questions (P24), asking about the product (P25), and a setting by asking (P26); and the choice of a level as a setting without a model (P2). On the child's side: a sentence read back and a spelling from the list (K16), and the stroke-by-stroke drawing guide (K14), neither of which is AI.
 
 What the walk changed in the design, in three sentences. The property "every word a child reads was written by a person" is, on the parent's side, "written or read and accepted by a person in the child's family", which [authoring.md](authoring.md) already assumes for the sentence start and this document now says in one place (decision 1). The privacy classes make one rule out of several: a child's typed sentence, drawing, photographed sheet or voice reaches a provider's model in no flow, and reaches our own only after a decision. And the deterministic prose on the parent's pages (the one sentence, the letter, the decision card's reason, the morning's order) stays deterministic, with the model answering the follow-up rather than writing the first sentence, because a template is truthful for free and a sentence is not.
 
@@ -761,15 +669,14 @@ Each of these is a property of the system rather than a rule someone follows, an
 12. A generated activity cannot set its own pass mark. Enforced by the thresholds coming from the mechanic and by the gate rejecting a declaration that loosens them. Needs the open question in [activities.md](activities.md) about where the caps live to settle on the mechanic.
 13. No generated art. Every drawing in anything a model writes is a part from the index, because the vocabulary is assembled from that index and a name that is not a part fails the check. Already true, and it is what keeps a generated game looking like the product.
 
-Added 15 September 2026: the list of workflows keeps the thirteen properties above and adds seven, each stated the same way, as a property with a way to enforce it and a way to test it.
+Added 15 September 2026: the list of workflows keeps the thirteen properties above and adds six, each stated the same way, as a property with a way to enforce it and a way to test it.
 
 14. A child's own production never reaches a provider's model. A typed sentence, a stroke, a painting, a photograph of a sheet and a recording are class 3, and no workflow sends them to a third party; a workflow that reads them runs on a model we host or does not exist. Enforced by the envelope's field list, which has no field for any of them, and by `check:prompt` once it exists. Tested by `audit` over a record that holds every answer kind, asserting that `drawing`, `painting`, `performance`, `program` and `word` answers never enter an envelope.
 15. Words a child reads that a model drafted were read and accepted by a person in the child's family, and the page says who made them. Enforced by provenance in the pack and by the acceptance being the only path from a draft to a `content-verified` event with no errors. Tested by asserting that a draft with no acceptance is never in a pack a child's view is served.
 16. A model changes nothing about a child's day without a person's confirmation recorded as an event. A plan operation, a setting, a level or a track proposed by a model is applied only when a parent confirms it, and the event carries the parent as actor. Enforced by the routes: no route a model's output reaches appends a `plan-changed` event on its own. Tested by the route table, sending a model's proposal to every route and asserting no event is written.
 17. Every number in prose a model wrote for a parent is a number the record computed. Enforced by the grounding check, which is one function over every prose-writing flow (P12, P13, P18, P20, P21). Tested by the record check's existing tests, extended to each flow's facts.
 18. The deterministic sentence on a parent's page is never replaced by a model's. The one thing to look at, the decision card's reason, the letter and the morning's order are templates over the record, and a model answers a follow-up beside them. Enforced by those pages not calling the assistant for their first sentence. Tested by rendering each page with the assistant unavailable and asserting the sentence is unchanged.
-19. A job over the corpus reads content and no family's evidence, with one named exception (S16) that carries an item id and numbers with counts and no family id, behind decision 6. Enforced by jobs building their prompts from the content table with `family_id` null. Tested by asserting a job's envelope has empty evidence fields.
-20. A voice on a child's device reads authored text only. Enforced by the narration reading the pack's strings and the fixed lines and nothing else. Tested over the corpus the way property 2 is tested: every string handed to the voice is one of the item's authored strings or a fixed line.
+19. A voice on a child's device reads authored text only. Enforced by the narration reading the pack's strings and the fixed lines and nothing else. Tested over the corpus the way property 2 is tested: every string handed to the voice is one of the item's authored strings or a fixed line.
 
 ## Privacy, logging and the amended rule
 
@@ -871,7 +778,7 @@ Added 15 September 2026, from the list:
 - `school/assistant/` at the root, which `boundaries.ts` already declares with reach to `pack`, `record/record`, `record/read` and `answer`: the envelope, the router, the gate's client, the log's rows, and the routes under `/api/assist/*` that only an adult session with the authoring capability reaches. `record/read` does not exist yet either.
 - One assembler for every prose flow, with the grounding check as one function over P12, P13, P18, P20 and P21, and `check:prompt` over the assembler's field list.
 - `check:copy` and `check:voice` at the root, since neither exists there today; the scratchpad's copy check does not cover the root's strings.
-- The audit's hint warning, that a rung's filled-in text contains the answer, without which S1 has no gate for a rung that gives the answer away.
+- The audit's hint warning, that a rung's filled-in text contains the answer, without which nothing gates a rung that gives the answer away.
 - A `draws` slot on a mechanic and `handles(position)` as declared data, which [games.md](games.md) and [engine.md](engine.md) ask for and without which a generated game cannot choose its board or be dragged.
 - The records screen and the export, named as coming on the family page, which P20 and P21 write into.
 - A per-track placement sheet, which is content and not code: a handful of proved items across the grade bands per track, for P22.
@@ -911,16 +818,13 @@ P16, P17, P24 and P26 wait: games on the activity core, the world story on decis
 
 The first release for children has no model in it, and it is mostly content:
 
-1. S1, the hint ladders and rules over the whole corpus, since the child's surface is only as good as the shelf it chooses from.
-2. The four actions and the wrong-answer path at the root over the pack, which the root's lesson already half does.
-3. K8, reading aloud with the device's voice over authored text.
-4. K10, the extra set, with its cap wired.
-5. K16's read-back and word list, and K14's stroke replay, neither of which is AI.
-6. The `describe()` sentences for the map's places (K13, S13).
+1. The four actions and the wrong-answer path at the root over the pack, which the root's lesson already half does.
+2. K8, reading aloud with the device's voice over authored text.
+3. K10, the extra set, with its cap wired.
+4. K16's read-back and word list, and K14's stroke replay, neither of which is AI.
+5. The `describe()` sentences for the map's places (K13).
 
 K11, the builder, waits on the activity core, and K18, speech, is not in it, for the reasons in "Speech, if we ever add it". From the core this release needs the ordered `hint` with one rung shown at a time, the hint warning in the verifier, `check:voice`, `narrate` wired to the device's voice, the extra draws in the pack read by the lesson, and nothing else, which is the sentence we should say to a family.
-
-In the studio, S1, S2 and S4 come first, because they raise the corpus the two releases stand on, and S5, S6, S8 and S11 follow as jobs an author runs when a track or a world is being built. S3, S12, S15 and S16 are last, and S16 is behind a decision.
 
 ## Decisions for the owner
 
@@ -931,14 +835,12 @@ Added 15 September 2026. Each is a sentence to answer, with our recommendation a
 3. May a child's typed sentence, drawing or painting ever be read by a model? We recommend not by a provider's model in any flow, which the privacy classes make a rule, and not by our own model in either first release; the grown-up is the marker, and the P9 variant is revisited when we host a model and have measured how often a `look-for` reading agrees with a parent's.
 4. Does the photographed sheet stay refused, or does a pre-filled mark column the parent confirms mark by mark become allowed on our own model? We recommend it stays refused for the first release, that the portfolio photograph is built without any reading, and that the pre-fill is measured against a hundred real sheets before it is argued about again.
 5. May a tutor ask the explain flows (P12, P18) about their one child, charged to the family and logged with the tutor as actor, given that tutors cannot generate? We recommend yes for those two and nothing else, since a tutor who cannot ask why a mistake keeps happening is a tutor with the sheets and no help, and the reach is already computed per request.
-6. Is a job that reads, per item, the unmatched numbers with counts across every family, and no family id, cross-family data in the sense "What the model sees" forbids? We recommend treating it as corpus data and allowing it, because nothing in it can identify a family or a child, and writing that reading into the rule so that it is not widened by analogy later.
-7. Is the deterministic prose on the parent's pages kept deterministic, with the model answering follow-ups only? We recommend yes, and property 18 says it as a rule.
-8. Is the per-family monthly budget a number in the subscription with a visible cap, or metered? We recommend included with a cap that refuses rather than degrades, and no number until a month of a real family's use has been measured; the cap is what makes cost runaway a refusal rather than a bill.
-9. Is the placement at onboarding a printed sheet first and a conversation second? We recommend the sheet first, because it is content, it works on paper, and its marks are evidence in the same store as everything else.
-10. Does the child-facing sign that a grown-up can see their pages come back, given that the parent's side now includes model-written explanations of a child's evidence? This is question 13 on the lawyer's list, and we recommend answering it before P12 ships, since an explanation of a child's mistakes is closer to the code's sense of monitoring than a chart is.
-11. Is the difficulty measure a gate for a generated level or a label on it? We recommend a label, with an author's read as the gate, until the measure has been checked against enough authored items to be trusted.
-12. Does `narrate` use the browser's own voice, or a voice from a service? We recommend the browser's voice for both first releases, because a service is a host, and the choice is [sound.md](sound.md)'s to make with the second-language strand.
-13. Are prompts and responses for parent flows kept thirty days for debugging, as "Privacy, logging and the amended rule" says, or not kept at all once the gate has answered? We recommend thirty days for the flows that write content, so that a bad question can be traced to the request that made it, and no retention for P6, P25 and P26, which write nothing.
+6. Is the deterministic prose on the parent's pages kept deterministic, with the model answering follow-ups only? We recommend yes, and property 18 says it as a rule.
+7. Is the per-family monthly budget a number in the subscription with a visible cap, or metered? We recommend included with a cap that refuses rather than degrades, and no number until a month of a real family's use has been measured; the cap is what makes cost runaway a refusal rather than a bill.
+8. Is the placement at onboarding a printed sheet first and a conversation second? We recommend the sheet first, because it is content, it works on paper, and its marks are evidence in the same store as everything else.
+9. Does the child-facing sign that a grown-up can see their pages come back, given that the parent's side now includes model-written explanations of a child's evidence? This is question 13 on the lawyer's list, and we recommend answering it before P12 ships, since an explanation of a child's mistakes is closer to the code's sense of monitoring than a chart is.
+10. Does `narrate` use the browser's own voice, or a voice from a service? We recommend the browser's voice for both first releases, because a service is a host, and the choice is [sound.md](sound.md)'s to make with the second-language strand.
+11. Are prompts and responses for parent flows kept thirty days for debugging, as "Privacy, logging and the amended rule" says, or not kept at all once the gate has answered? We recommend thirty days for the flows that write content, so that a bad question can be traced to the request that made it, and no retention for P6, P25 and P26, which write nothing.
 
 ## Open questions
 

@@ -156,13 +156,7 @@ and this diff in JSON:
 
 Both are readable. The notation diff is shorter and has no trailing-comma noise, and a reviewer who knows the vocabulary can read it without knowing the file. This is a small advantage repeated on every review.
 
-### Flow 5: the studio saves an edit made in a form
-
-A studio edits the typed tree, not the text, so on save it has to write a file back. In the notation this goes through `format()`, which produces one canonical layout (two-space indents, single spaces, canonical values) and keeps comments and blank-line grouping. Two tests hold that guarantee: every content file is already in canonical form, and formatting is idempotent. The result is that a change made in a form is a small diff rather than a reflow of the whole file.
-
-In JSON the equivalent is `JSON.stringify` with a pinned key order and indent, which is easier to write but drops comments unless we move to JSONC and keep a comment-preserving reader. Neither is hard. The notation needs the formatter, JSON needs the discipline.
-
-### Flow 6: adding a new visual to the vocabulary
+### Flow 5: adding a new visual to the vocabulary
 
 This is the flow that decides the question, because it is the expensive one and it is identical in both worlds. Adding `placevalue` (tens and ones rods) in September touched five places:
 
@@ -174,7 +168,7 @@ This is the flow that decides the question, because it is the expensive one and 
 
 Under JSON, steps 1, 3, 4 and 5 are unchanged and step 2 becomes a schema entry instead of a registry entry. The cost is the same. What makes this flow expensive is that the visual's size is now written twice, identically, at `src/art/structures.ts:221` and `src/lang/layout.ts:53`, and fixed boxes are written twice as well (`structures.ts:61` and `registry.ts:142`). Imported art has the same problem by design: `assets.ts` computes a box from the file text for the verifier, and the importers in `core/` compute it again while drawing, with a comment asking the two to agree. There is also a fourth vocabulary in `src/space/journey.ts`, the `Sketch` union, which redescribes ten of the same visuals so the map can draw stand-ins for unwritten lessons.
 
-### Flow 7: storing and serving content
+### Flow 6: storing and serving content
 
 The notation string is what we store, with fields recomputed from it on each write for querying (skills, visual types, parameter ranges), and a hash of the canonical text to refer to an item from a replay. In memory the typed tree is authoritative, and any JSON we produce is derived for an outside consumer.
 
@@ -184,7 +178,7 @@ With JSON as the source, the stored blob is the JSON and the derived fields are 
 
 We should be fair about the three things we give up by not using it.
 
-Editor tooling comes free. A JSON Schema gives autocomplete, hover documentation and inline validation in VS Code with no work from us, while the notation needs a grammar file for highlighting and a language server for anything more. We can generate a JSON Schema from the registry for the studio's forms, but that does not help someone editing files by hand.
+Editor tooling comes free. A JSON Schema gives autocomplete, hover documentation and inline validation in VS Code with no work from us, while the notation needs a grammar file for highlighting and a language server for anything more.
 
 Every language has a parser. If a partner, an export pipeline or a future service in another language needs to read content, JSON is readable everywhere, and the notation needs our parser or a port of it. This is a real constraint if we ever run content through non-TypeScript tooling.
 
@@ -200,7 +194,7 @@ This remains reversible at roughly a day of work, as described above, if either 
 
 The notation is not overkill for this system. It costs 309 lines plus 77 lines of tests, it has held its main promise (36 node types and no grammar change to add any of them), and it fits content that is mostly prose and pictures rather than deeply nested data. JSON would remove a parser we have already written and paid for, and would add escaping, a position-mapping layer and about 40% more text in the files we read most often.
 
-The decision would change if content stopped being hand-written and reviewed. If every item came out of a studio GUI and nobody opened a file, the text surface would be earning much less, and JSON plus a schema would be the simpler choice.
+The decision would change if content stopped being hand-written and reviewed. If every item came out of a generator and nobody opened a file, the text surface would be earning much less, and JSON plus a schema would be the simpler choice.
 
 ## What to fix instead
 

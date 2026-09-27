@@ -4,8 +4,7 @@ Status: proposed, September 2026, prototyped in `scratchpad/make.html` ("Make yo
 scratchpad's top bar). This is the design for a parent making their own question, written against
 the four authoring layers in [parents.md](parents.md), the line [ai.md](ai.md) draws around what a
 model may do, the notation in [notation.md](notation.md), and the `content` row and events in
-[data-model.md](data-model.md) and [db.md](db.md). It is where `apps/studio` in
-[structure.md](structure.md) ("authoring, for us and later for parents") starts to take a shape.
+[data-model.md](data-model.md) and [db.md](db.md).
 
 ## Summary
 
@@ -294,7 +293,7 @@ is checked, and those parts are changed in the drawer.
 Added 15 September 2026. Every lesson in the catalog has three levels, easy, medium and hard, and
 the page in this design has no control for them yet: a parent's question is as written, which is
 medium. This section is for the lessons we write ourselves, in the notation of
-[notation.md](notation.md)'s Levels section, and for the studio when levels reach it.
+[notation.md](notation.md)'s Levels section.
 
 A lesson is written at medium first and finished there: the goal, the sections, the seeds, the
 grown-ups note. The two other levels are then written into the same file without changing what it

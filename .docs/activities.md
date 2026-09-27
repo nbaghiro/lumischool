@@ -42,7 +42,7 @@ What we give up is that an activity needing a mechanic we do not have cannot be 
 
 Two halves, and the split matters because only the first half is ever shown to an author or a model.
 
-The first half is the contract, and it is data. It says which drawings the mechanic puts on the board, what slots an activity fills and which pieces each slot accepts, how many pieces a slot takes, and what settings it has with the kind and range of each. The checker reads it to reject a bad fill, the studio generates a form from it, and a generator is given it as the description of what it may write. In the prototype it looks like this, for `weigh`:
+The first half is the contract, and it is data. It says which drawings the mechanic puts on the board, what slots an activity fills and which pieces each slot accepts, how many pieces a slot takes, and what settings it has with the kind and range of each. The checker reads it to reject a bad fill, and a generator is given it as the description of what it may write. In the prototype it looks like this, for `weigh`:
 
 ```
 mechanic weigh {
@@ -76,7 +76,7 @@ The second half is the code, and nobody outside the kernel sees it: a position t
 
 ## What an activity declares
 
-One file, and all of it data. This is the form a model writes, a studio form edits and a reviewer reads:
+One file, and all of it data. This is the form a model writes and a reviewer reads:
 
 ```
 activity weigh.exchange v=1 kind=weigh skills=[equivalence] grade=2 {
@@ -99,7 +99,7 @@ Eight things are in there and none of them needs a change to the syntax.
 
 `answer` and `check` do not appear. An activity has no answer, and that is exactly where the current core stops.
 
-Only one registry change has any weight: a mechanic's settings have to come from the mechanic's own declaration, the way a part's settings come from the part's declaration, so the checker, the studio's forms, the prover and a generator all read one source. That is the same discipline `check:parts` already guards for drawings.
+Only one registry change has any weight: a mechanic's settings have to come from the mechanic's own declaration, the way a part's settings come from the part's declaration, so the checker, the prover and a generator all read one source. That is the same discipline `check:parts` already guards for drawings.
 
 One small piece of wording is unsettled. `patience=2.5` reads as an exact value and means "at least". Writing `patience>=2.5` would read correctly and needs a comparison in the value grammar; `patience-min=2.5` needs nothing at all and is uglier. We should probably take the ugly one.
 
@@ -276,7 +276,7 @@ The work on generating and editing activities owns how a parent asks, what the m
 
 The activity declaration, in the section "What an activity declares". That is the only artefact a generator produces. It produces no code and no drawings.
 
-The mechanic contract, in the section "What a mechanic declares". That is what a generator is given, per mechanic, as the description of what it may write. It is data on the mechanic, so the prompt is built from the same source the checker and the studio's forms read, and it cannot drift from them.
+The mechanic contract, in the section "What a mechanic declares". That is what a generator is given, per mechanic, as the description of what it may write. It is data on the mechanic, so the prompt is built from the same source the checker reads, and it cannot drift from it.
 
 The palette, in the section "The art catalogue is the palette and the boundary". A slot's list of accepted part ids is the closed set a generator chooses from, and the catalogue's one-line description and box size for each is what it should be shown alongside the id.
 
