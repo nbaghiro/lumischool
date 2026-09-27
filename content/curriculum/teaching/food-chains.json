@@ -1,0 +1,380 @@
+{
+    "schema": 1,
+    "id": "food-chains",
+    "version": "1",
+    "title": "Follow the food",
+    "skill": "nature.food-chains",
+    "lessonIds": [
+        "nature-food-chains"
+    ],
+    "first": "notice",
+    "frames": [
+        {
+            "id": "notice",
+            "phase": "notice",
+            "caption": "Seaweed, a crab and a gull belong to this food chain. Follow the food as it passes along.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": -1
+            },
+            "question": null,
+            "next": "direction",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Seaweed, a crab and a gull belong to this food chain. Follow the food as it passes along."
+            ]
+        },
+        {
+            "id": "direction",
+            "phase": "together",
+            "caption": "The crab eats the seaweed. The arrow points towards the eater.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 0
+            },
+            "question": {
+                "prompt": "Where should the arrow from the seaweed point?",
+                "choices": [
+                    "Crab",
+                    "Gull",
+                    "Back to seaweed"
+                ],
+                "correct": "Crab"
+            },
+            "next": "model",
+            "alternative": "direction-other",
+            "bridge": "bridge",
+            "facts": [
+                "The crab eats the seaweed. The arrow points towards the eater."
+            ]
+        },
+        {
+            "id": "direction-other",
+            "phase": "together",
+            "caption": "Say \u201cis eaten by\u201d as you follow the arrow. Seaweed is eaten by\u2026",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 1
+            },
+            "question": {
+                "prompt": "Who eats the seaweed in this chain?",
+                "choices": [
+                    "Crab",
+                    "Gull",
+                    "Seaweed"
+                ],
+                "correct": "Crab"
+            },
+            "next": "model",
+            "alternative": "direction",
+            "bridge": "bridge",
+            "facts": [
+                "Say \u201cis eaten by\u201d as you follow the arrow. Seaweed is eaten by\u2026"
+            ]
+        },
+        {
+            "id": "bridge",
+            "phase": "model",
+            "caption": "An arrow in a food chain means \u201cis eaten by\u201d. It points from the food to the eater.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 0
+            },
+            "question": null,
+            "next": "bridge-check",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "An arrow in a food chain means \u201cis eaten by\u201d. It points from the food to the eater."
+            ]
+        },
+        {
+            "id": "bridge-check",
+            "phase": "together",
+            "caption": "Start with the food, then find the eater.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 1
+            },
+            "question": {
+                "prompt": "The crab eats the seaweed. Which is the food?",
+                "choices": [
+                    "Seaweed",
+                    "Crab"
+                ],
+                "correct": "Seaweed"
+            },
+            "next": "model",
+            "alternative": "bridge",
+            "bridge": null,
+            "facts": [
+                "Start with the food, then find the eater."
+            ]
+        },
+        {
+            "id": "model",
+            "phase": "model",
+            "caption": "Seaweed is eaten by the crab. The crab is eaten by the gull. Each arrow points to the next eater.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 1
+            },
+            "question": null,
+            "next": "together",
+            "alternative": "model-other",
+            "bridge": null,
+            "facts": [
+                "Seaweed is eaten by the crab. The crab is eaten by the gull. Each arrow points to the next eater."
+            ]
+        },
+        {
+            "id": "model-other",
+            "phase": "model",
+            "caption": "Imagine the food passing along: from seaweed to crab, then from crab to gull.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 2
+            },
+            "question": null,
+            "next": "together",
+            "alternative": "model",
+            "bridge": null,
+            "facts": [
+                "Imagine the food passing along: from seaweed to crab, then from crab to gull."
+            ]
+        },
+        {
+            "id": "together",
+            "phase": "together",
+            "caption": "Fill in the middle of this chain.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 1
+            },
+            "question": {
+                "prompt": "Seaweed \u2192 ? \u2192 Gull",
+                "choices": [
+                    "Crab",
+                    "Rock",
+                    "Another gull"
+                ],
+                "correct": "Crab"
+            },
+            "next": "transfer-1",
+            "alternative": "model",
+            "bridge": "bridge",
+            "facts": [
+                "Fill in the middle of this chain."
+            ]
+        },
+        {
+            "id": "transfer-1",
+            "phase": "independent",
+            "caption": "Follow the next arrow yourself.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": -1
+            },
+            "question": {
+                "prompt": "Which way should the next arrow point?",
+                "choices": [
+                    "Crab \u2192 Gull",
+                    "Gull \u2192 Crab"
+                ],
+                "correct": "Crab \u2192 Gull"
+            },
+            "next": "transfer-2",
+            "alternative": "arrow-help",
+            "bridge": "bridge",
+            "facts": [
+                "Follow the next arrow yourself."
+            ]
+        },
+        {
+            "id": "arrow-help",
+            "phase": "model",
+            "caption": "The gull eats the crab. The arrow points from crab to gull.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 2
+            },
+            "question": null,
+            "next": "transfer-1",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "The gull eats the crab. The arrow points from crab to gull."
+            ]
+        },
+        {
+            "id": "transfer-2",
+            "phase": "independent",
+            "caption": "Imagine there are fewer crabs in this chain.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": -1
+            },
+            "question": {
+                "prompt": "Which eater would have less food from this chain?",
+                "choices": [
+                    "Gull",
+                    "Seaweed"
+                ],
+                "correct": "Gull"
+            },
+            "next": "transfer-3",
+            "alternative": "less-help",
+            "bridge": "bridge",
+            "facts": [
+                "Imagine there are fewer crabs in this chain."
+            ]
+        },
+        {
+            "id": "less-help",
+            "phase": "model",
+            "caption": "The gull eats crabs. Fewer crabs would leave the gull with less of this food.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 2
+            },
+            "question": null,
+            "next": "transfer-2",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "The gull eats crabs. Fewer crabs would leave the gull with less of this food."
+            ]
+        },
+        {
+            "id": "transfer-3",
+            "phase": "independent",
+            "caption": "Think about what the crabs eat.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": -1
+            },
+            "question": {
+                "prompt": "With fewer crabs eating it, what might happen to the seaweed?",
+                "choices": [
+                    "More seaweed could grow",
+                    "The seaweed would fly away"
+                ],
+                "correct": "More seaweed could grow"
+            },
+            "next": "recap",
+            "alternative": "plant-help",
+            "bridge": "bridge",
+            "facts": [
+                "Think about what the crabs eat."
+            ]
+        },
+        {
+            "id": "plant-help",
+            "phase": "model",
+            "caption": "Crabs eat seaweed. With fewer crabs, less seaweed may be eaten, so more could grow.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": 0
+            },
+            "question": null,
+            "next": "transfer-3",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Crabs eat seaweed. With fewer crabs, less seaweed may be eaten, so more could grow."
+            ]
+        },
+        {
+            "id": "recap",
+            "phase": "recap",
+            "caption": "Read each arrow as \u201cis eaten by\u201d. Follow the chain from food to eater.",
+            "visual": {
+                "kind": "chain",
+                "names": [
+                    "Seaweed",
+                    "Crab",
+                    "Gull"
+                ],
+                "highlight": -1
+            },
+            "question": null,
+            "next": null,
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Read each arrow as \u201cis eaten by\u201d. Follow the chain from food to eater."
+            ]
+        }
+    ]
+}

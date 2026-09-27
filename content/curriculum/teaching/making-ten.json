@@ -1,0 +1,358 @@
+{
+  "schema": 1,
+  "id": "making-ten",
+  "version": "1",
+  "title": "A little bridge to ten",
+  "skill": "addition.cross-ten",
+  "lessonIds": [
+    "g1-making-ten",
+    "g1-adding-to-twenty"
+  ],
+  "first": "notice",
+  "frames": [
+    {
+      "id": "notice",
+      "phase": "notice",
+      "caption": "Eight counters are waiting. Five more are joining them. Let’s make a ten first.",
+      "visual": {
+        "kind": "counters",
+        "first": 8,
+        "extra": 5,
+        "numberLine": false
+      },
+      "question": null,
+      "next": "fill",
+      "alternative": null,
+      "bridge": null,
+      "facts": [
+        "Eight counters are waiting. Five more are joining them. Let’s make a ten first."
+      ]
+    },
+    {
+      "id": "fill",
+      "phase": "together",
+      "caption": "Find the empty spaces in the ten frame.",
+      "visual": {
+        "kind": "counters",
+        "first": 8,
+        "extra": 5,
+        "numberLine": false
+      },
+      "question": {
+        "prompt": "How many more counters will make ten?",
+        "choices": [
+          "1",
+          "2",
+          "3"
+        ],
+        "correct": "2"
+      },
+      "next": "model",
+      "alternative": "line-fill",
+      "bridge": "bridge",
+      "facts": [
+        "8 plus 2 is 10. The frame has 2 empty spaces."
+      ]
+    },
+    {
+      "id": "line-fill",
+      "phase": "together",
+      "caption": "Start at eight. How many steps take you to ten?",
+      "visual": {
+        "kind": "counters",
+        "first": 8,
+        "extra": 5,
+        "numberLine": true
+      },
+      "question": {
+        "prompt": "How many steps to ten?",
+        "choices": [
+          "1",
+          "2",
+          "3"
+        ],
+        "correct": "2"
+      },
+      "next": "model",
+      "alternative": "fill",
+      "bridge": "bridge",
+      "facts": [
+        "8 plus 2 is 10."
+      ]
+    },
+    {
+      "id": "bridge",
+      "phase": "model",
+      "caption": "A full frame holds ten. Eight spaces are filled, so two spaces are still empty.",
+      "visual": {
+        "kind": "counters",
+        "first": 8,
+        "extra": 0,
+        "numberLine": false
+      },
+      "question": null,
+      "next": "bridge-check",
+      "alternative": "line-bridge",
+      "bridge": null,
+      "facts": [
+        "A ten frame has 10 spaces. 8 filled spaces leave 2 empty spaces."
+      ]
+    },
+    {
+      "id": "line-bridge",
+      "phase": "model",
+      "caption": "Count forward: eight, nine, ten. That is two steps.",
+      "visual": {
+        "kind": "counters",
+        "first": 8,
+        "extra": 0,
+        "numberLine": true
+      },
+      "question": null,
+      "next": "bridge-check",
+      "alternative": "bridge",
+      "bridge": null,
+      "facts": [
+        "8 plus 2 is 10."
+      ]
+    },
+    {
+      "id": "bridge-check",
+      "phase": "together",
+      "caption": "Two spaces are waiting for counters.",
+      "visual": {
+        "kind": "counters",
+        "first": 8,
+        "extra": 2,
+        "numberLine": false
+      },
+      "question": {
+        "prompt": "What will eight and two make?",
+        "choices": [
+          "9",
+          "10",
+          "11"
+        ],
+        "correct": "10"
+      },
+      "next": "model",
+      "alternative": "bridge",
+      "bridge": null,
+      "facts": [
+        "8 plus 2 is 10."
+      ]
+    },
+    {
+      "id": "model",
+      "phase": "model",
+      "caption": "Two of the five counters fill the frame. Now there are ten, with three left outside.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 3,
+        "numberLine": false
+      },
+      "question": null,
+      "next": "together",
+      "alternative": "line-model",
+      "bridge": null,
+      "facts": [
+        "8 plus 5 is 13. 5 splits into 2 and 3. 10 plus 3 is 13."
+      ]
+    },
+    {
+      "id": "line-model",
+      "phase": "model",
+      "caption": "Jump from eight to ten, then three more. The two jumps use all five counters.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 3,
+        "numberLine": true
+      },
+      "question": null,
+      "next": "together",
+      "alternative": "model",
+      "bridge": null,
+      "facts": [
+        "8 plus 2 is 10. 10 plus 3 is 13. 8 plus 5 is 13."
+      ]
+    },
+    {
+      "id": "together",
+      "phase": "together",
+      "caption": "A full ten and three more. Put those groups together.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 3,
+        "numberLine": false
+      },
+      "question": {
+        "prompt": "Ten and three make…",
+        "choices": [
+          "12",
+          "13",
+          "14"
+        ],
+        "correct": "13"
+      },
+      "next": "transfer-1",
+      "alternative": "model",
+      "bridge": "bridge",
+      "facts": [
+        "10 plus 3 is 13."
+      ]
+    },
+    {
+      "id": "transfer-1",
+      "phase": "independent",
+      "caption": "Try this one yourself: nine plus four.",
+      "visual": {
+        "kind": "counters",
+        "first": 9,
+        "extra": 4,
+        "numberLine": false
+      },
+      "question": {
+        "prompt": "What is 9 + 4?",
+        "choices": [
+          "12",
+          "13",
+          "14"
+        ],
+        "correct": "13"
+      },
+      "next": "transfer-2",
+      "alternative": "transfer-help",
+      "bridge": "bridge",
+      "facts": [
+        "9 plus 4 is 13. 9 needs 1 to make 10. 3 remain."
+      ]
+    },
+    {
+      "id": "transfer-help",
+      "phase": "model",
+      "caption": "Use one counter to fill the frame. Three remain. Add them to the full ten.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 3,
+        "numberLine": false
+      },
+      "question": null,
+      "next": "transfer-1",
+      "alternative": null,
+      "bridge": null,
+      "facts": [
+        "9 plus 4 is 13. 10 plus 3 is 13."
+      ]
+    },
+    {
+      "id": "transfer-2",
+      "phase": "independent",
+      "caption": "Here is a different sum: seven plus five.",
+      "visual": {
+        "kind": "counters",
+        "first": 7,
+        "extra": 5,
+        "numberLine": false
+      },
+      "question": {
+        "prompt": "What is 7 + 5?",
+        "choices": [
+          "11",
+          "12",
+          "13"
+        ],
+        "correct": "12"
+      },
+      "next": "transfer-3",
+      "alternative": "transfer-2-help",
+      "bridge": "bridge",
+      "facts": [
+        "7 plus 5 is 12. 7 needs 3 to make 10. 2 remain."
+      ]
+    },
+    {
+      "id": "transfer-2-help",
+      "phase": "model",
+      "caption": "Three counters fill the frame. Two are left outside.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 2,
+        "numberLine": false
+      },
+      "question": null,
+      "next": "transfer-2",
+      "alternative": null,
+      "bridge": null,
+      "facts": [
+        "7 plus 5 is 12. 10 plus 2 is 12."
+      ]
+    },
+    {
+      "id": "transfer-3",
+      "phase": "independent",
+      "caption": "One last sum to try: six plus seven.",
+      "visual": {
+        "kind": "counters",
+        "first": 6,
+        "extra": 7,
+        "numberLine": false
+      },
+      "question": {
+        "prompt": "What is 6 + 7?",
+        "choices": [
+          "12",
+          "13",
+          "14"
+        ],
+        "correct": "13"
+      },
+      "next": "recap",
+      "alternative": "transfer-3-help",
+      "bridge": "bridge",
+      "facts": [
+        "6 plus 7 is 13. 6 needs 4 to make 10. 3 remain."
+      ]
+    },
+    {
+      "id": "transfer-3-help",
+      "phase": "model",
+      "caption": "Four counters fill the frame. Three are left. A full ten and three make thirteen.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 3,
+        "numberLine": false
+      },
+      "question": null,
+      "next": "transfer-3",
+      "alternative": null,
+      "bridge": null,
+      "facts": [
+        "6 plus 7 is 13. 10 plus 3 is 13."
+      ]
+    },
+    {
+      "id": "recap",
+      "phase": "recap",
+      "caption": "Make ten first, then add what is left. You can use this with your next sum.",
+      "visual": {
+        "kind": "counters",
+        "first": 10,
+        "extra": 3,
+        "numberLine": false
+      },
+      "question": null,
+      "next": null,
+      "alternative": null,
+      "bridge": null,
+      "facts": [
+        "Make ten first, then add what is left. You can use this with your next sum."
+      ]
+    }
+  ]
+}

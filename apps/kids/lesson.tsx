@@ -1,3 +1,5 @@
+import { createSignal } from "solid-js";
+import { LessonTeaching } from "./tutoring";
 // Today's lessons on a child's roll: each lesson from the family's pack set on a sheet by
 // engine/ui/lesson.tsx and measured before the roll is laid out round it, and answered through
 // school/lessons.ts, which checks each try and says what the sitting records. The first
@@ -159,6 +161,7 @@ function sheetFor(
     resume: Resume | null,
     guide: string,
     onFinished: (lesson: string) => void,
+    tutor?: () => (() => void) | null,
 ): { state: SheetState; acts: SheetActs } {
     const asked = new Map(askedIn(lesson, level).map((a) => [a.question.n, a]));
     const turns = new Map<number, Turn>(resume?.turns ?? []);
@@ -203,6 +206,12 @@ function sheetFor(
         const easier = easierOf(lesson, level, a);
         return {
             guide,
+            tutor: tutor?.()
+                ? () => {
+                      sitting.asked(a, "easier", "teaching");
+                      tutor?.()?.();
+                  }
+                : undefined,
             voice: help.voice,
             point: pointOf(a.question),
             easier: easier && {
@@ -346,6 +355,7 @@ export function todaysSheets(o: {
             if (built.has(lesson.id)) continue;
             // one sheet's state and actions, made outside the JSX: a prop's expression is read
             // again on every access, and a second one would be a second sitting
+            const [openTutor, setOpenTutor] = createSignal<(() => void) | null>(null);
             const { state, acts } = sheetFor(
                 o.kid,
                 lesson,
@@ -354,11 +364,21 @@ export function todaysSheets(o: {
                 resumes.get(lesson.id) ?? null,
                 o.guide,
                 o.onFinished,
+                openTutor,
             );
             let el: HTMLElement | undefined;
             const dispose = render(
                 () => (
                     <LessonSheet
+                        teaching={
+                            <LessonTeaching
+                                kid={o.kid}
+                                lesson={lesson.id}
+                                guide={o.guide}
+                                reference={lesson.teaching}
+                                onReady={(open) => setOpenTutor(() => open)}
+                            />
+                        }
                         lesson={lesson}
                         level={SHEET_LEVEL}
                         strip={{ label: "Today", date: longDay(o.date) }}

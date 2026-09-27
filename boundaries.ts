@@ -34,10 +34,33 @@ export interface App {
 // `worlds`, `family` and `assistant` name the file of `record` they read, `record/record`, so a
 // file of `record` they do not name is out of their reach whatever an app imports. `record/read`
 // was named here and never written, and `record/household` was named by two apps and never written,
-// so both are out of the table until the files land; a reach may not name what is not there. TODO:
-// studio (school/studio.ts, author time) gets its row when it moves; until then the check refuses
-// its files.
+// so both are out of the table until the files land; a reach may not name what is not there.
 export const MODULES: Record<string, Module> = {
+    "teaching-content": {
+        at: "content/curriculum/teaching",
+        phase: "data",
+        reach: [],
+        packages: [],
+    },
+    teaching: { at: "engine/teaching", phase: "run", reach: [], packages: [] },
+    tutoring: {
+        at: "school/tutoring",
+        phase: "run",
+        reach: ["teaching", "tutoring-materials"],
+        packages: [],
+    },
+    adaptive: {
+        at: "school/adaptive",
+        phase: "run",
+        reach: ["teaching", "voice", "pack"],
+        packages: [],
+    },
+    "tutoring-materials": {
+        at: "school/tutoring-materials",
+        phase: "run",
+        reach: ["teaching", "teaching-content"],
+        packages: [],
+    },
     paper: { at: "engine/paper", phase: "run", reach: [], packages: [] },
     numbers: { at: "engine/numbers", phase: "run", reach: [], packages: [] },
     expr: { at: "engine/expr", phase: "run", reach: ["numbers"], packages: [] },
@@ -65,6 +88,7 @@ export const MODULES: Record<string, Module> = {
             "sound/keys",
             "sound/voices",
             "motion/animation",
+            "motion/rail",
             "coding",
             "pigment",
         ],
@@ -84,7 +108,8 @@ export const MODULES: Record<string, Module> = {
         reach: ["answer", "expr", "motion/lever", "motion/cuts"],
         packages: [],
     },
-    sound: { at: "engine/sound", phase: "run", reach: ["numbers"], packages: [] },
+    // a kit is keyed by the cues a game asks for, which live with the games' motion
+    sound: { at: "engine/sound", phase: "run", reach: ["numbers", "motion/cues"], packages: [] },
     // planck belongs to `bodies.ts` alone (.docs/structure.md), and it is the only file of `motion`
     // that imports it. This table names packages per module rather than per file, so the row cannot
     // say that; keeping the physics library behind `bodies.ts` is a rule a reader holds, not a check.
@@ -114,6 +139,7 @@ export const MODULES: Record<string, Module> = {
         at: "engine/ui",
         phase: "run",
         reach: [
+            "teaching",
             "games",
             "paper",
             "ink",
@@ -143,13 +169,13 @@ export const MODULES: Record<string, Module> = {
     lessons: {
         at: "school/lessons",
         phase: "run",
-        reach: ["pack", "answer", "scene", "ink", "expr", "arrange"],
+        reach: ["pack", "answer", "scene", "ink", "expr", "arrange", "teaching"],
         packages: [],
     },
     games: {
         at: "school/games",
         phase: "run",
-        reach: ["parts", "scene", "answer", "motion", "numbers"],
+        reach: ["parts", "scene", "answer", "motion", "numbers", "sound/kit"],
         packages: [],
     },
     worlds: {
@@ -176,13 +202,13 @@ export const MODULES: Record<string, Module> = {
     assistant: {
         at: "school/assistant",
         phase: "server",
-        reach: ["pack", "record/record", "answer"],
+        reach: ["pack", "record/record", "answer", "teaching", "tutoring", "adaptive"],
         packages: [],
     },
     db: {
         at: "server/db",
         phase: "server",
-        reach: ["answer", "painting"],
+        reach: ["answer", "painting", "teaching"],
         packages: [
             "drizzle-orm",
             "postgres",
@@ -195,7 +221,21 @@ export const MODULES: Record<string, Module> = {
     server: {
         at: "server",
         phase: "server",
-        reach: ["db", "answer", "painting", "family", "record", "year", "pack", "assistant"],
+        reach: [
+            "db",
+            "answer",
+            "painting",
+            "family",
+            "record",
+            "year",
+            "pack",
+            "assistant",
+            "teaching",
+            "tutoring",
+            "tutoring-materials",
+            "adaptive",
+            "lessons",
+        ],
         packages: [
             "node:crypto",
             "node:fs",
@@ -211,11 +251,6 @@ export const MODULES: Record<string, Module> = {
 export const APPS: Record<string, App> = {
     kids: { phases: ["run", "data"], plus: [], packages: ["solid-js"] },
     home: { phases: ["run", "data"], plus: [], packages: ["solid-js"] },
-    studio: {
-        phases: ["run", "author", "data"],
-        plus: [],
-        packages: ["solid-js"],
-    },
     site: { phases: ["run", "data"], plus: [], packages: ["solid-js"] },
 };
 

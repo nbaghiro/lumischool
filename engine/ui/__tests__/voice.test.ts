@@ -2,13 +2,18 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { makeVoice, RATE, type Synth, type Utter } from "../voice";
 
+/** A line the fake can end, since the browser's end handler takes an event a test has no way to make. */
+interface Heard extends Utter {
+    onend: (() => unknown) | null;
+}
+
 /** A synthesiser that records what it was asked to say, and ends a line when told to. */
-function fake(): { synth: Synth; said: Utter[]; cancels: number; end: () => void } {
-    const said: Utter[] = [];
+function fake(): { synth: Synth<Heard>; said: Heard[]; cancels: number; end: () => void } {
+    const said: Heard[] = [];
     const s = {
         cancels: 0,
         synth: {
-            speak: (u: Utter) => {
+            speak: (u: Heard) => {
                 said.push(u);
             },
             cancel: () => {
@@ -16,12 +21,12 @@ function fake(): { synth: Synth; said: Utter[]; cancels: number; end: () => void
             },
         },
         said,
-        end: () => said.at(-1)?.onend?.(undefined as never),
+        end: () => said.at(-1)?.onend?.(),
     };
     return s;
 }
 
-const utter = (text: string): Utter => ({ text, rate: 1, onend: null, onerror: null });
+const utter = (text: string): Heard => ({ text, rate: 1, onend: null, onerror: null });
 
 describe("the device's voice", () => {
     it("reads nothing until the page has been touched, and then reads the line at a child's pace", () => {

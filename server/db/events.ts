@@ -15,6 +15,11 @@ import {
 import type { FamilyTx } from "./client";
 import {
     content,
+    tutoringSessions,
+    tutoringTurns,
+    tutoringUsage,
+    type TutoringSession,
+    type TutoringTurn,
     artworks,
     paintingSaves,
     type PaintingReceipt,
@@ -392,6 +397,9 @@ export async function visibleKids(
 }
 
 export interface Export {
+    tutoring_sessions: TutoringSession[];
+    tutoring_turns: Omit<TutoringTurn, "request_hash">[];
+    tutoring_usage: (typeof tutoringUsage.$inferSelect)[];
     paintings: Artwork[];
     painting_history: Omit<PaintingReceipt, "request_hash">[];
     family: Family;
@@ -433,6 +441,17 @@ export async function exportFamily(tx: FamilyTx, id: string): Promise<Export | n
 
     return {
         family,
+        tutoring_sessions: await tx
+            .select()
+            .from(tutoringSessions)
+            .where(eq(tutoringSessions.family_id, id)),
+        tutoring_turns: (
+            await tx.select().from(tutoringTurns).where(eq(tutoringTurns.family_id, id))
+        ).map(({ request_hash: _hash, ...turn }) => turn),
+        tutoring_usage: await tx
+            .select()
+            .from(tutoringUsage)
+            .where(eq(tutoringUsage.family_id, id)),
         painting_history: (
             await tx.select().from(paintingSaves).where(eq(paintingSaves.family_id, id))
         ).map(({ request_hash: _hash, ...saved }) => saved),

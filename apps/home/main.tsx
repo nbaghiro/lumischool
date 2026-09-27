@@ -17,12 +17,12 @@ const Family = lazy(() => import("./family").then((m) => ({ default: m.Family })
 const Outbox = lazy(() => import("./outbox").then((m) => ({ default: m.Outbox })));
 const Missing = lazy(() => import("./missing").then((m) => ({ default: m.Missing })));
 const Explore = lazy(() => import("./explore").then((m) => ({ default: m.Explore })));
-const ExploreLesson = lazy(() => import("./explore").then((m) => ({ default: m.ExploreLesson })));
 const GrownMap = lazy(() => import("./map").then((m) => ({ default: m.GrownMap })));
 const Calendar = lazy(() => import("./calendar-planner").then((m) => ({ default: m.Calendar })));
 const PrintDay = lazy(() => import("./day").then((m) => ({ default: m.PrintDay })));
 const Join = lazy(() => import("./join").then((m) => ({ default: m.Join })));
 const Account = lazy(() => import("./account").then((m) => ({ default: m.Account })));
+const Tutoring = lazy(() => import("./tutoring").then((m) => ({ default: m.Tutoring })));
 const Painting = lazy(() => import("./painting").then((m) => ({ default: m.Painting })));
 const Games = lazy(() => import("./games").then((m) => ({ default: m.Games })));
 const GrownBar = lazy(() => import("./bar").then((m) => ({ default: m.GrownBar })));
@@ -37,7 +37,6 @@ const SCREENS: Record<Screen, Component> = {
     start: () => <SignIn start />,
     outbox: Outbox,
     explore: Explore,
-    lesson: ExploreLesson,
     map: GrownMap,
     calendar: Calendar,
     print: PrintDay,
@@ -45,6 +44,7 @@ const SCREENS: Record<Screen, Component> = {
     account: Account,
     games: Games,
     painting: Painting,
+    tutoring: Tutoring,
     missing: Missing,
 };
 
@@ -55,7 +55,6 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
     start: SignIn.preload,
     outbox: Outbox.preload,
     explore: Explore.preload,
-    lesson: ExploreLesson.preload,
     map: GrownMap.preload,
     calendar: Calendar.preload,
     print: PrintDay.preload,
@@ -63,6 +62,7 @@ const LOAD: Record<Screen, () => Promise<unknown>> = {
     account: Account.preload,
     games: Games.preload,
     painting: Painting.preload,
+    tutoring: Tutoring.preload,
     missing: Missing.preload,
 };
 
@@ -74,7 +74,6 @@ const CARRIES: Record<Screen, boolean> = {
     start: false,
     outbox: false,
     explore: true,
-    lesson: true,
     map: true,
     calendar: true,
     print: true,
@@ -82,6 +81,7 @@ const CARRIES: Record<Screen, boolean> = {
     account: true,
     games: true,
     painting: true,
+    tutoring: true,
     missing: true,
 };
 

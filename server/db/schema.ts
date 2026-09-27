@@ -20,6 +20,7 @@ import {
     uniqueIndex,
     uuid,
 } from "drizzle-orm/pg-core";
+import type { AdaptiveHelp, TeachingPreferences, TeachingState } from "../../engine/teaching";
 import type { Picture } from "../../engine/painting";
 import type { AnyEventData, ContentKind, EventKind } from "../../engine/answer";
 
@@ -379,22 +380,11 @@ export const paintingSaves = pgTable(
 
 export type PaintingReceipt = typeof paintingSaves.$inferSelect;
 
-export const schema = {
-    artworks,
-    paintingSaves,
-    families,
-    users,
-    kids,
-    members,
-    keys,
-    events,
-    content,
-    mailPreferences,
-    mailDeliveries,
-};
-
 /** The table names, in an order a truncate can use. */
 export const TABLES = [
+    "tutoring_turns",
+    "tutoring_sessions",
+    "tutoring_usage",
     "painting_saves",
     "artworks",
     "mail_deliveries",
@@ -437,3 +427,87 @@ export interface PaintingLoaded {
 export interface PaintingSaved extends PaintingLoaded {
     conflict: boolean;
 }
+
+export const tutoringSessions = pgTable(
+    "tutoring_sessions",
+    {
+        id: uuid("id").primaryKey(),
+        family_id: uuid("family_id")
+            .notNull()
+            .references(() => families.id, { onDelete: "cascade" }),
+        user_id: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+        kid_id: uuid("kid_id"),
+        lesson_id: text("lesson_id"),
+        content_hash: text("content_hash").notNull(),
+        preferences: jsonb("preferences").$type<TeachingPreferences>().notNull(),
+        state: jsonb("state").$type<TeachingState | AdaptiveHelp>().notNull(),
+        revision: integer("revision").notNull().default(0),
+        created_at: text("created_at").notNull(),
+        expires_at: text("expires_at").notNull(),
+    },
+    (t) => [
+        unique("tutoring_sessions_family_id_id_key").on(t.family_id, t.id),
+        foreignKey({
+            columns: [t.family_id, t.kid_id],
+            foreignColumns: [kids.family_id, kids.id],
+        }).onDelete("cascade"),
+        check("tutoring_session_actor", sql`(${t.user_id} is null) <> (${t.kid_id} is null)`),
+    ],
+).enableRLS();
+export type TutoringSession = typeof tutoringSessions.$inferSelect;
+export const tutoringTurns = pgTable(
+    "tutoring_turns",
+    {
+        id: uuid("id").primaryKey(),
+        family_id: uuid("family_id")
+            .notNull()
+            .references(() => families.id, { onDelete: "cascade" }),
+        session_id: uuid("session_id").notNull(),
+        request_hash: text("request_hash").notNull(),
+        status: text("status").notNull(),
+        expected_revision: integer("expected_revision").notNull(),
+        result: jsonb("result").$type<TeachingState | AdaptiveHelp>(),
+        model: text("model"),
+        prompt_version: text("prompt_version").notNull(),
+        input_tokens: integer("input_tokens").notNull().default(0),
+        output_tokens: integer("output_tokens").notNull().default(0),
+        latency_ms: integer("latency_ms").notNull().default(0),
+        created_at: text("created_at").notNull(),
+    },
+    (t) => [
+        foreignKey({
+            columns: [t.family_id, t.session_id],
+            foreignColumns: [tutoringSessions.family_id, tutoringSessions.id],
+        }).onDelete("cascade"),
+        index("tutoring_turns_session_idx").on(t.session_id),
+    ],
+).enableRLS();
+export type TutoringTurn = typeof tutoringTurns.$inferSelect;
+export const tutoringUsage = pgTable("tutoring_usage", {
+    id: text("id").primaryKey(),
+    family_id: uuid("family_id")
+        .notNull()
+        .references(() => families.id, { onDelete: "cascade" }),
+    period: text("period").notNull(),
+    calls: integer("calls").notNull().default(0),
+    input_tokens: integer("input_tokens").notNull().default(0),
+    output_tokens: integer("output_tokens").notNull().default(0),
+    audio_chars: integer("audio_chars").notNull().default(0),
+}).enableRLS();
+
+export const schema = {
+    tutoringSessions,
+    tutoringTurns,
+    tutoringUsage,
+    artworks,
+    paintingSaves,
+    families,
+    users,
+    kids,
+    members,
+    keys,
+    events,
+    content,
+    mailPreferences,
+    mailDeliveries,
+};

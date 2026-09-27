@@ -96,6 +96,7 @@ export interface SheetState {
  * is already pinned for the grown-up.
  */
 export interface Help {
+    tutor?: () => void;
     guide: string;
     voice: boolean;
     point: string | null;
@@ -357,6 +358,7 @@ const FIRST =
     "input:not(:disabled), .ls-pick:not(:disabled), .ar-piece:not(:disabled), .pg-block:not(:disabled), .ls-go:not(:disabled)";
 
 export function LessonSheet(props: {
+    teaching?: JSX.Element;
     lesson: PackLesson;
     level: Level;
     /** The corner: "Today" and the day, or what the page calls the sheet. */
@@ -461,6 +463,7 @@ export function LessonSheet(props: {
                 <h2 class="hand">{props.lesson.title}</h2>
                 <Show when={props.lesson.goal}>{(goal) => <p class="ls-goal">{goal()}</p>}</Show>
                 <Show when={props.note}>{(note) => <p class="ls-note ls-looked">{note()}</p>}</Show>
+                {props.teaching}
             </header>
             <For each={sections()}>
                 {(section) => (
@@ -1144,6 +1147,11 @@ function GuideOrHint(props: {
     );
 }
 
+const drawable = (
+    scene: Scene | null | undefined,
+    draw: SceneDrawer | null,
+): { scene: Scene; draw: SceneDrawer } | undefined => (scene && draw ? { scene, draw } : undefined);
+
 /** The guide's card under a strip, with the easier thing drawn under it and the pin's word. */
 function GuideUnder(props: {
     guide: ReturnType<typeof guideOn>;
@@ -1156,34 +1164,43 @@ function GuideUnder(props: {
         <>
             <Show when={props.guide.open() && props.guide.help()}>
                 {(h) => (
-                    <GuideCard
-                        id={h().guide}
-                        lines={props.guide.lines()}
-                        asks={props.guide.asks()}
-                        voice={h().voice}
-                        pose={props.guide.pose()}
-                        onAsk={props.guide.ask}
-                        onClose={() => {
-                            props.guide.close();
-                            props.focus()?.focus({ preventScroll: true });
-                        }}
-                    />
+                    <>
+                        <GuideCard
+                            id={h().guide}
+                            lines={props.guide.lines()}
+                            asks={props.guide.asks()}
+                            voice={h().voice}
+                            pose={props.guide.pose()}
+                            onAsk={props.guide.ask}
+                            onClose={() => {
+                                props.guide.close();
+                                props.focus()?.focus({ preventScroll: true });
+                            }}
+                        />
+                        <Show when={h().tutor}>
+                            {(open) => (
+                                <button class="teaching-link" onClick={() => open()()}>
+                                    Help me understand
+                                </button>
+                            )}
+                        </Show>
+                    </>
                 )}
             </Show>
             <Show when={props.guide.easier()}>
                 {(e) => (
                     <figure class="ls-easier">
                         <Show
-                            when={e().question.scene && props.draw}
+                            when={drawable(e().question.scene, props.draw)}
                             fallback={<p class="ls-ask">{e().question.ask}</p>}
                         >
-                            {(_) => (
+                            {(tile) => (
                                 <SceneTile
-                                    scene={e().question.scene as Scene}
+                                    scene={tile().scene}
                                     point={null}
                                     key={e().kind === "worked" ? e().question.answers : null}
                                     here={[]}
-                                    draw={props.draw as SceneDrawer}
+                                    draw={tile().draw}
                                 />
                             )}
                         </Show>
@@ -1373,7 +1390,8 @@ function Strip(props: {
      * paper is the box a child writes in. A box a scene draws round something else, a column sum's
      * grid or an equation with a blank in it, is not one of these, and its answer keeps the row.
      */
-    const onScene = (k: string): boolean => !!props.acts && !!boxes()[k];
+    const sceneBox = (k: string): Box | undefined => (props.acts ? boxes()[k] : undefined);
+    const onScene = (k: string): boolean => !!sceneBox(k);
     const choiceOnScene = (k: string): boolean => !!props.acts && !!choices()[k]?.length;
     const letterCount = (k: string): number =>
         props.scene?.nodes.some((node) => node.id === k && node.type === "word-input")
@@ -1405,52 +1423,53 @@ function Strip(props: {
     const slots = (): { box: Box; child: JSX.Element }[] =>
         done()
             ? []
-            : keys.flatMap((k) =>
-                  choiceOnScene(k)
-                      ? (choices()[k] ?? []).map((choice) => {
-                            const option = props.state
-                                .options(props.q.n, k)
-                                .find((candidate) => candidate.value === choice.value);
-                            return {
-                                box: choice.box,
+            : keys.flatMap((k) => {
+                  if (choiceOnScene(k))
+                      return (choices()[k] ?? []).map((choice) => {
+                          const option = props.state
+                              .options(props.q.n, k)
+                              .find((candidate) => candidate.value === choice.value);
+                          return {
+                              box: choice.box,
+                              child: (
+                                  <button
+                                      type="button"
+                                      class="ls-inbox-pick"
+                                      aria-label={`${label(k)}: ${option?.label ?? choice.value}`}
+                                      aria-pressed={typed()[k] === choice.value}
+                                      onClick={() => put(k, choice.value)}
+                                  />
+                              ),
+                          };
+                      });
+                  const box = sceneBox(k);
+                  return box
+                      ? [
+                            {
+                                box,
                                 child: (
-                                    <button
-                                        type="button"
-                                        class="ls-inbox-pick"
-                                        aria-label={`${label(k)}: ${option?.label ?? choice.value}`}
-                                        aria-pressed={typed()[k] === choice.value}
-                                        onClick={() => put(k, choice.value)}
-                                    />
+                                    <span
+                                        class="ls-inbox-in"
+                                        classList={{ taken: taken(), ready: props.current }}
+                                    >
+                                        {letterCount(k) > 0 ? (
+                                            <LetterInputs
+                                                count={letterCount(k)}
+                                                value={typed()[k] ?? ""}
+                                                label={label(k)}
+                                                current={props.current}
+                                                put={(value) => put(k, value)}
+                                                check={check}
+                                            />
+                                        ) : (
+                                            answerIn(k)
+                                        )}
+                                    </span>
                                 ),
-                            };
-                        })
-                      : onScene(k)
-                        ? [
-                              {
-                                  box: boxes()[k] as Box,
-                                  child: (
-                                      <span
-                                          class="ls-inbox-in"
-                                          classList={{ taken: taken(), ready: props.current }}
-                                      >
-                                          {letterCount(k) > 0 ? (
-                                              <LetterInputs
-                                                  count={letterCount(k)}
-                                                  value={typed()[k] ?? ""}
-                                                  label={label(k)}
-                                                  current={props.current}
-                                                  put={(value) => put(k, value)}
-                                                  check={check}
-                                              />
-                                          ) : (
-                                              answerIn(k)
-                                          )}
-                                      </span>
-                                  ),
-                              },
-                          ]
-                        : [],
-              );
+                            },
+                        ]
+                      : [];
+              });
     return (
         <>
             <Show when={props.scene} fallback={<p class="ls-ask">{props.q.ask}</p>}>

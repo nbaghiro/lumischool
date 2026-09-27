@@ -8,13 +8,13 @@ export type Screen =
     | "start"
     | "outbox"
     | "explore"
-    | "lesson"
     | "map"
     | "calendar"
     | "print"
     | "join"
     | "account"
     | "games"
+    | "tutoring"
     | "painting"
     | "missing";
 
@@ -32,6 +32,7 @@ const PATHS: Readonly<Record<string, Screen>> = {
     "/account": "account",
     "/games": "games",
     "/painting": "painting",
+    "/tutoring": "tutoring",
 };
 
 /** A lesson in Explore: `/explore/` and the lesson's id. */
@@ -49,12 +50,13 @@ export function lessonIn(path: string): string | null {
 }
 
 /**
- * The screen a path shows. A trailing slash names the same screen. The outbox is a screen only on a
- * developer's computer (`local`), and anywhere else there is no page at its path.
+ * The screen a path shows. A trailing slash names the same screen. A lesson is Explore with its
+ * preview open over it, so `/explore/<id>` is the same screen as `/explore`. The outbox is a screen
+ * only on a developer's computer (`local`), and anywhere else there is no page at its path.
  */
 export function screenOf(path: string, o: { local: boolean }): Screen {
     const p = path.length > 1 ? path.replace(/\/+$/, "") || "/" : path;
-    const screen = PATHS[p] ?? (lessonIn(p) === null ? "missing" : "lesson");
+    const screen = PATHS[p] ?? (lessonIn(p) === null ? "missing" : "explore");
     return screen === "outbox" && !o.local ? "missing" : screen;
 }
 

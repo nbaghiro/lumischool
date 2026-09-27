@@ -11,19 +11,20 @@ export type GeminiConfigResult = GeminiConfig | { problem: string };
 export function geminiConfigFrom(
     env: Readonly<Record<string, string | undefined>>,
 ): GeminiConfigResult {
-    const key = env.GEMINI_API_KEY;
+    const key = env.GEMINI_API_KEY || env.GOOGLE_API_KEY;
     if (!key) return { problem: "GEMINI_API_KEY is required for Gemini authoring" };
-    return { key, model: env.GEMINI_MODEL || "gemini-2.5-flash" };
+    return { key, model: env.GEMINI_AUTHOR_MODEL || env.GEMINI_MODEL || "gemini-2.5-flash" };
 }
 
 const instruction =
     "Revise only the supplied Lumischool notation. Return JSON with a single string field, source. " +
     "Do not add prose outside that JSON. The result remains untrusted and must pass the notation verifier and human review.";
 
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
 const objectOf = (value: unknown): Record<string, unknown> | null =>
-    typeof value === "object" && value !== null && !Array.isArray(value)
-        ? (value as Record<string, unknown>)
-        : null;
+    isRecord(value) ? value : null;
 
 /** Calls Gemini for a closed authoring request. Its response cannot become content without later gates. */
 export async function improveWithGemini(
@@ -32,10 +33,10 @@ export async function improveWithGemini(
     fetcher: typeof fetch = fetch,
 ): Promise<{ source: string } | { problem: string }> {
     const response = await fetcher(
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:generateContent?key=${encodeURIComponent(config.key)}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(config.model)}:generateContent`,
         {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers: { "content-type": "application/json", "x-goog-api-key": config.key },
             body: JSON.stringify({
                 system_instruction: { parts: [{ text: instruction }] },
                 contents: [{ role: "user", parts: [{ text: JSON.stringify(envelope) }] }],

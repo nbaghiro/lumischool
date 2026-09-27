@@ -1,3 +1,4 @@
+import { teachingForLesson } from "../school/tutoring-materials";
 // The packs a page reads its lessons from (engine/pack.ts). The curriculum is compiled once, by the
 // notation engine (engine/notation/), and read back through the pack's own checker; each pack is then
 // written from those lessons, the family's whole and a visitor's through a filter.
@@ -128,8 +129,20 @@ export function packOf(
     const scenes = new Map<string, string>();
     const facts: LessonFacts[] = [];
     for (const lesson of lessons) {
-        const kept = keep(lesson);
-        if (!kept) continue;
+        const original = keep(lesson);
+        if (!original) continue;
+        const material = teachingForLesson(original.id);
+        const kept: PackLesson = material
+            ? {
+                  ...original,
+                  teaching: {
+                      schema: 1,
+                      material: material.id,
+                      version: material.version,
+                      hash: sha256(JSON.stringify(material)),
+                  },
+              }
+            : original;
         const text = JSON.stringify(kept);
         const file = `lessons/${kept.id}-${sha256(text).slice(0, 10)}.json`;
         files.set(file, text);

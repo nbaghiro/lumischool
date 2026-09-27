@@ -22,7 +22,7 @@ export interface Voice {
     /** Whether this device can read aloud at all. */
     available(): boolean;
     /** Reads a line, ending any line still being read. False when it may not: no voice, or nothing touched yet. */
-    speak(text: string): boolean;
+    speak(text: string, rate?: number): boolean;
     stop(): void;
     speaking(): boolean;
     /** Hears when reading starts and stops. */
@@ -52,12 +52,12 @@ export function makeVoice<U extends Utter>(o: {
     };
     return {
         available: () => o.synth() !== null,
-        speak: (text) => {
+        speak: (text, rate = RATE) => {
             const s = o.synth();
             if (!s || !touched || !text.trim()) return false;
             s.cancel();
             const u = o.utter(text);
-            u.rate = RATE;
+            u.rate = Math.max(0.5, Math.min(1.2, rate));
             u.onend = () => set(false);
             u.onerror = () => set(false);
             set(true);

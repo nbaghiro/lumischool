@@ -9,6 +9,9 @@ interface TableScope {
 }
 
 export const SCOPE = {
+    tutoring_sessions: { family: "family_id" },
+    tutoring_turns: { family: "family_id" },
+    tutoring_usage: { family: "family_id" },
     artworks: { family: "family_id" },
     painting_saves: { family: "family_id" },
     mail_preferences: { family: "family_id" },

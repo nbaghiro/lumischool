@@ -90,6 +90,8 @@ export interface SceneOptions {
     arranged?: Record<string, { places: Arrangement; checked: boolean }>;
     /** A pen loop round this anchor, which is where a feedback rule points. */
     point?: string;
+    /** A pen loop round everything these anchors reach, which is where the tutor points. */
+    ring?: readonly string[];
 }
 
 /**
@@ -902,6 +904,21 @@ export function renderLaidOut(host: Element, scene: Scene, o: SceneOptions): SVG
     if (o.point) {
         const at = area(o.point);
         if (at) loop(over, at.x + at.w / 2, at.y + at.h / 2, at.w + 10, at.h + 8);
+    }
+    // Where the tutor points: one loop round every anchor it named, so a row rings its own beads.
+    if (o.ring?.length) {
+        const boxed = o.ring.flatMap((ref) => {
+            const at = area(ref);
+            return at ? [at] : [];
+        });
+        const first = boxed[0];
+        if (first) {
+            const x0 = Math.min(...boxed.map((b) => b.x));
+            const y0 = Math.min(...boxed.map((b) => b.y));
+            const x1 = Math.max(...boxed.map((b) => b.x + b.w));
+            const y1 = Math.max(...boxed.map((b) => b.y + b.h));
+            loop(over, (x0 + x1) / 2, (y0 + y1) / 2, x1 - x0 + 10, y1 - y0 + 8);
+        }
     }
     return svg;
 

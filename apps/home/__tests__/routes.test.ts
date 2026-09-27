@@ -17,11 +17,11 @@ describe("the grown-ups' app's screens", () => {
         assert.equal(screenOf("//", here), "family");
     });
 
-    it("shows Explore, and a lesson in it by its id", () => {
+    it("shows Explore, and a lesson in it as Explore with the preview open", () => {
         assert.equal(screenOf("/explore", here), "explore");
         assert.equal(screenOf("/explore/", here), "explore");
-        assert.equal(screenOf("/explore/g1-making-ten", here), "lesson");
-        assert.equal(screenOf("/explore/g1-making-ten/", here), "lesson");
+        assert.equal(screenOf("/explore/g1-making-ten", here), "explore");
+        assert.equal(screenOf("/explore/g1-making-ten/", here), "explore");
         assert.equal(screenOf("/explore/g1/more", here), "missing");
         assert.equal(lessonIn("/explore/g1-making-ten"), "g1-making-ten");
         assert.equal(lessonIn("/explore/a%20b"), "a b");

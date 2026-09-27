@@ -1,3 +1,4 @@
+import { TEACHING_MATERIALS } from "../../school/tutoring-materials";
 // Fails when a line the world's guide can say breaks the rules on its voice (.docs/ai.md, "The
 // guide"): no first person about itself, no name of its own beyond "the firefly", no relational
 // vocabulary, no exclamation mark and no em-dash. The lines are the guide's fixed lines and the
@@ -22,6 +23,9 @@ interface Said {
 /** Every line the guide can say, with where it comes from. */
 export function everyLine(): Said[] {
     const said: Said[] = [];
+    for (const m of TEACHING_MATERIALS)
+        for (const f of m.frames)
+            said.push({ where: `teaching.${m.id}.${f.id}`, line: f.caption, words: true });
     for (const [k, line] of Object.entries(LINES))
         said.push({ where: `LINES.${k}`, line, words: true });
     for (const [k, line] of Object.entries(ASK_WORDS))

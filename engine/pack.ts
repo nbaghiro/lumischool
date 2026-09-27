@@ -79,6 +79,8 @@ export interface PackLevel {
 }
 
 export interface PackLesson {
+    /** Reviewed teaching bundle; optional so older packs remain readable. */
+    teaching?: { schema: 1; material: string; version: string; hash: string };
     pack: typeof PACK;
     id: string;
     /** The notation file it was compiled from, under content/curriculum/, whose name orders a unit's lessons. */
@@ -426,6 +428,18 @@ function lessonProblem(v: unknown): string | null {
     if (!isPlain(v)) return "a lesson must be an object";
     if (v.pack !== PACK) return `a lesson of pack format ${String(v.pack)} is not format ${PACK}`;
     if (!isLessonShaped(v)) return LESSON_FIELDS;
+    if (
+        v.teaching !== undefined &&
+        !(
+            isPlain(v.teaching) &&
+            v.teaching.schema === 1 &&
+            isText(v.teaching.material) &&
+            isText(v.teaching.version) &&
+            isText(v.teaching.hash) &&
+            /^[a-f0-9]{64}$/.test(v.teaching.hash)
+        )
+    )
+        return "invalid teaching reference";
     return levelsProblem(v.levels, levelProblem);
 }
 

@@ -1,3 +1,13 @@
+import {
+    startTutor,
+    loadTutor,
+    materialTutor,
+    turnTutor,
+    audioTutor,
+    tutorCapabilities,
+    tutorPreferences,
+} from "./tutoring";
+import { helpAvailable, loadHelp, startHelpOn, turnHelp, type LessonReader } from "./adaptive-help";
 import { isIP } from "node:net";
 // The API server (.docs/api.md). The whole app is one function from a web `Request` to a `Response`,
 // which the tests call in process, and `serve` puts it on Node's own http module. Every route is
@@ -89,6 +99,7 @@ import {
     saveAuthored,
 } from "./sync";
 import { loadPack, watchPack, type Pack } from "./pack";
+import { readLesson } from "../engine/pack";
 import { staticFrom } from "./static";
 import { emailPreferences, changeLetters, unsubscribeRequest, webhookRequest } from "./letters";
 import { listPaintings, loadPainting, savePainting, deletePainting } from "./painting";
@@ -294,6 +305,18 @@ const problem = (status: number, error: ErrorCode, extra: Omit<Problem, "error">
  * `private` keeps it in that browser alone, since the path was answered under a session.
  */
 /** A file of the pack, kept by the browser for a year: its path carries the pack's digest, and a pack never changes. */
+/** The family and person a tutor's help belongs to, which the session row is scoped by. */
+const helpActor = (adult: Adult) => ({ family: adult.family, user: adult.user, kid: null });
+/** Reads a lesson of the pack for the tutor's ground, by the id the help names. */
+const lessonReader =
+    (pack: Pack | null): LessonReader =>
+    (lessonId: string) => {
+        const facts = pack?.index.lessons.find((l) => l.id === lessonId);
+        const text = facts ? pack?.file(facts.file) : null;
+        if (!text) return null;
+        const read = readLesson(JSON.parse(text) as unknown);
+        return read.ok ? read.lesson : null;
+    };
 function packedFile(text: string): Response {
     const headers = new Headers();
     for (const [k, v] of Object.entries(BASE_HEADERS)) headers.set(k, v);
@@ -565,6 +588,150 @@ function routes(config: Config): Route[] {
                 const response = await parentIn(c, out);
                 return json(200, { me: out.me }, response.headers);
             },
+        },
+        {
+            method: "POST",
+            path: "/api/tutoring/preferences",
+            who: "adult",
+            run: async (c, adult) => json(200, await tutorPreferences(adult, c.body)),
+        },
+        {
+            method: "GET",
+            path: "/api/kid/:kid/tutoring",
+            who: "kid",
+            run: async (c, kid) => json(200, await tutorCapabilities(kid, c.params.kid)),
+        },
+        {
+            method: "GET",
+            path: "/api/kid/:kid/tutoring/material/:material",
+            who: "kid",
+            run: async (c, kid) =>
+                json(200, await materialTutor(kid, c.params.material ?? "", c.params.kid)),
+        },
+        {
+            method: "POST",
+            path: "/api/kid/:kid/tutoring/start",
+            who: "kid",
+            run: async (c, kid) => json(200, await startTutor(kid, c.body, c.params.kid)),
+        },
+        {
+            method: "GET",
+            path: "/api/kid/:kid/tutoring/:id",
+            who: "kid",
+            run: async (c, kid) => json(200, await loadTutor(kid, c.params.id ?? "", c.params.kid)),
+        },
+        {
+            method: "POST",
+            path: "/api/kid/:kid/tutoring/:id/turn",
+            who: "kid",
+            run: async (c, kid) =>
+                json(200, await turnTutor(kid, c.params.id ?? "", c.body, c.params.kid)),
+        },
+        {
+            method: "POST",
+            path: "/api/kid/:kid/tutoring/:id/audio",
+            who: "kid",
+            run: async (c, kid) => {
+                const audio = await audioTutor(
+                    kid,
+                    c.params.id ?? "",
+                    field(c.body, "revision"),
+                    c.params.kid,
+                );
+                return audio
+                    ? new Response(audio, {
+                          headers: {
+                              "content-type": "audio/wav",
+                              "cache-control": "private, no-store",
+                          },
+                      })
+                    : new Response(null, { status: 204 });
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/tutoring/:id/audio",
+            who: "adult",
+            run: async (c, adult) => {
+                const audio = await audioTutor(adult, c.params.id ?? "", field(c.body, "revision"));
+                return audio
+                    ? new Response(audio, {
+                          headers: {
+                              "content-type": "audio/wav",
+                              "cache-control": "private, no-store",
+                          },
+                      })
+                    : new Response(null, { status: 204 });
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/tutoring/help/start",
+            who: "adult",
+            run: async (c, adult) =>
+                json(200, await startHelpOn(helpActor(adult), lessonReader(config.pack), c.body)),
+        },
+        {
+            method: "GET",
+            path: "/api/tutoring/help/:id",
+            who: "adult",
+            run: async (c, adult) => json(200, await loadHelp(helpActor(adult), c.params.id ?? "")),
+        },
+        {
+            method: "POST",
+            path: "/api/tutoring/help/:id/turn",
+            who: "adult",
+            run: async (c, adult) =>
+                json(
+                    200,
+                    await turnHelp(
+                        helpActor(adult),
+                        lessonReader(config.pack),
+                        c.params.id ?? "",
+                        c.body,
+                    ),
+                ),
+        },
+        {
+            method: "GET",
+            path: "/api/tutoring/help",
+            who: "adult",
+            run: (c) =>
+                Promise.resolve(
+                    json(
+                        200,
+                        helpAvailable(
+                            lessonReader(config.pack),
+                            c.url.searchParams.get("lesson") ?? "",
+                            Number(c.url.searchParams.get("n") ?? "0"),
+                            c.url.searchParams.get("variant") ?? "",
+                        ),
+                    ),
+                ),
+        },
+        {
+            method: "GET",
+            path: "/api/tutoring/material/:material",
+            who: "adult",
+            run: async (c, adult) => json(200, await materialTutor(adult, c.params.material ?? "")),
+        },
+        {
+            method: "POST",
+            path: "/api/tutoring/start",
+            who: "adult",
+            run: async (c, adult) => json(200, await startTutor(adult, c.body)),
+        },
+        {
+            method: "GET",
+            path: "/api/tutoring/:id",
+            who: "adult",
+            run: async (c, adult) => json(200, await loadTutor(adult, c.params.id ?? "")),
+        },
+        {
+            method: "POST",
+            path: "/api/tutoring/:id/turn",
+            who: "adult",
+            run: async (c, adult) => json(200, await turnTutor(adult, c.params.id ?? "", c.body)),
         },
         {
             method: "GET",

@@ -1,0 +1,307 @@
+{
+    "schema": 1,
+    "id": "reading-clues",
+    "version": "1",
+    "title": "The words leave clues",
+    "skill": "reading.comprehension",
+    "lessonIds": [
+        "reading-finding-the-answer",
+        "reading-read-the-clues"
+    ],
+    "first": "notice",
+    "frames": [
+        {
+            "id": "notice",
+            "phase": "notice",
+            "caption": "Read this little story, or listen while the words are read aloud.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": ""
+            },
+            "question": null,
+            "next": "word",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Read this little story, or listen while the words are read aloud."
+            ]
+        },
+        {
+            "id": "word",
+            "phase": "together",
+            "caption": "Look at the word \u201chid\u201d. Think about what the crab did.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "hid"
+            },
+            "question": {
+                "prompt": "What does \u201chid\u201d mean here?",
+                "choices": [
+                    "Stayed out of sight",
+                    "Flew away",
+                    "Made a noise"
+                ],
+                "correct": "Stayed out of sight"
+            },
+            "next": "model",
+            "alternative": "word-other",
+            "bridge": "bridge",
+            "facts": [
+                "Look at the word \u201chid\u201d. Think about what the crab did."
+            ]
+        },
+        {
+            "id": "word-other",
+            "phase": "together",
+            "caption": "A rock can cover something. What was the crab doing beneath it?",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "under a rock"
+            },
+            "question": {
+                "prompt": "What does \u201chid\u201d mean here?",
+                "choices": [
+                    "Stayed out of sight",
+                    "Flew away",
+                    "Made a noise"
+                ],
+                "correct": "Stayed out of sight"
+            },
+            "next": "model",
+            "alternative": "word",
+            "bridge": "bridge",
+            "facts": [
+                "A rock can cover something. What was the crab doing beneath it?"
+            ]
+        },
+        {
+            "id": "bridge",
+            "phase": "model",
+            "caption": "Read these words together: the crab hid. \u201cHid\u201d means it stayed where it could not easily be seen.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "The crab hid"
+            },
+            "question": null,
+            "next": "bridge-check",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Read these words together: the crab hid. \u201cHid\u201d means it stayed where it could not easily be seen."
+            ]
+        },
+        {
+            "id": "bridge-check",
+            "phase": "together",
+            "caption": "Find the animal that hid.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "crab"
+            },
+            "question": {
+                "prompt": "Who hid under the rock?",
+                "choices": [
+                    "The crab",
+                    "The gull"
+                ],
+                "correct": "The crab"
+            },
+            "next": "model",
+            "alternative": "bridge",
+            "bridge": null,
+            "facts": [
+                "Find the animal that hid."
+            ]
+        },
+        {
+            "id": "model",
+            "phase": "model",
+            "caption": "The story says where the crab was hiding. We can point to those words to support an answer.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "under a rock"
+            },
+            "question": null,
+            "next": "together",
+            "alternative": "model-other",
+            "bridge": null,
+            "facts": [
+                "The story says where the crab was hiding. We can point to those words to support an answer."
+            ]
+        },
+        {
+            "id": "model-other",
+            "phase": "model",
+            "caption": "Picture the crab beneath the rock. The words tell us exactly where it hid.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "under a rock"
+            },
+            "question": null,
+            "next": "together",
+            "alternative": "model",
+            "bridge": null,
+            "facts": [
+                "Picture the crab beneath the rock. The words tell us exactly where it hid."
+            ]
+        },
+        {
+            "id": "together",
+            "phase": "together",
+            "caption": "Use the story to answer.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "under a rock"
+            },
+            "question": {
+                "prompt": "Where did the crab hide?",
+                "choices": [
+                    "Under a rock",
+                    "In a tree",
+                    "Above the gull"
+                ],
+                "correct": "Under a rock"
+            },
+            "next": "transfer-1",
+            "alternative": "model",
+            "bridge": "bridge",
+            "facts": [
+                "Use the story to answer."
+            ]
+        },
+        {
+            "id": "transfer-1",
+            "phase": "independent",
+            "caption": "Find another detail for yourself.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": ""
+            },
+            "question": {
+                "prompt": "Which animal flew above?",
+                "choices": [
+                    "The crab",
+                    "The gull",
+                    "A fish"
+                ],
+                "correct": "The gull"
+            },
+            "next": "transfer-2",
+            "alternative": "read-again",
+            "bridge": "bridge",
+            "facts": [
+                "Find another detail for yourself."
+            ]
+        },
+        {
+            "id": "read-again",
+            "phase": "model",
+            "caption": "Read the middle sentence again: a gull flew above.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "A gull flew above"
+            },
+            "question": null,
+            "next": "transfer-1",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Read the middle sentence again: a gull flew above."
+            ]
+        },
+        {
+            "id": "transfer-2",
+            "phase": "independent",
+            "caption": "Think about the order of the story.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": ""
+            },
+            "question": {
+                "prompt": "What happened before the crab came out?",
+                "choices": [
+                    "The gull left",
+                    "The rock flew",
+                    "The crab flew"
+                ],
+                "correct": "The gull left"
+            },
+            "next": "transfer-3",
+            "alternative": "order-help",
+            "bridge": "bridge",
+            "facts": [
+                "Think about the order of the story."
+            ]
+        },
+        {
+            "id": "order-help",
+            "phase": "model",
+            "caption": "The last sentence starts with \u201cWhen the gull left\u201d. Then the crab came out.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": "When the gull left"
+            },
+            "question": null,
+            "next": "transfer-2",
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "The last sentence starts with \u201cWhen the gull left\u201d. Then the crab came out."
+            ]
+        },
+        {
+            "id": "transfer-3",
+            "phase": "independent",
+            "caption": "Choose the sentence that matches the story.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": ""
+            },
+            "question": {
+                "prompt": "Which sentence is supported by the story?",
+                "choices": [
+                    "The crab came out after the gull left",
+                    "The gull hid under the rock",
+                    "The crab stayed hidden forever"
+                ],
+                "correct": "The crab came out after the gull left"
+            },
+            "next": "recap",
+            "alternative": "order-help",
+            "bridge": "bridge",
+            "facts": [
+                "Choose the sentence that matches the story."
+            ]
+        },
+        {
+            "id": "recap",
+            "phase": "recap",
+            "caption": "Look back at the words. They help you check an answer about a story.",
+            "visual": {
+                "kind": "passage",
+                "text": "The crab hid under a rock. A gull flew above. When the gull left, the crab came out.",
+                "focus": ""
+            },
+            "question": null,
+            "next": null,
+            "alternative": null,
+            "bridge": null,
+            "facts": [
+                "Look back at the words. They help you check an answer about a story."
+            ]
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 # Interactive teaching and Gemini tutoring implementation plan
 
-Status: ready for approval, 25 September 2026. Planning only; no runtime changes or API calls made.
+Status: approved; implementation in progress on main, 25 September 2026. See [QA notes](tutoring-qa.md) for current verification and remaining live-provider checks.
 Companion: [experience exploration](tutoring-experience-exploration.md).
 
 Approval of this plan authorizes implementation and adult QA through phases 0–6 below. Phase 7 is the
@@ -324,6 +324,57 @@ A later supervised pilot measures independent transfer on fresh tasks, delayed r
 adult help and time spent waiting. No unsupervised experiment or automated scoring of the child's
 emotional state. Manual QA scripts include entering from the map, returning to the same answer,
 changing tutor, interrupted speech, reconnecting, stale tabs and reloading mid-help.
+
+## 8a. Phase 1 revised: what the board shows at one moment
+
+Phase 1, revised 25 September 2026. The first board showed a frame's every field at once: the visual
+with its own instruction, the caption with another, and the question with a third, while the controls
+sat outside the card, above and below it, over the map. The owner opened it on 25 September and could
+not tell what the screen was asking, and the counters offered for moving were drawn as different
+objects from the counters already in the frame. The revision keeps the material and the runtime as
+they are and changes what the board does with them. A frame is now a moment with at most two beats:
+where it has something to move, the manipulative is live and the caption is the only instruction; the
+check follows, the manipulative rests, and the caption becomes the question with the choices as the
+one action. Every control lives inside the card, the way out sits in its corner as it does on a
+sheet, and what a child rarely wants sits behind one quiet line. The board owns the screen rather
+than floating on the map. A step marker says how far along the lesson is.
+
+The beats are computed from the frame rather than declared, so no bundle changes. A counters frame
+with counters to move needs as many touches as there are empty spaces in the ten; a passage needs one
+sentence chosen; a chain needs one card chosen. A frame with nothing to move opens on its check, and
+a frame with no question has a single Continue. The child is never held there: "I am ready" ends the
+doing beat from any honest state of the manipulative, half done or untouched, because the check is
+where the teaching happens and a wrong count is a thing to talk about rather than a door to lock.
+Counters beyond what the step needs wait after a gap, dimmed and not yet tappable, so the five in
+eight plus five do not have to be explained away in a sentence.
+
+The tray's counters are the shelf's own `array` drawing at the size the ten frame draws its counters,
+so a counter that moves is visibly the same object arriving in the frame. The step marker counts the
+bundle's spine, the first frame and what follows it, which leaves alternatives and bridges off the
+count: a child who takes another way is still on step three of eight. All three bundles have a spine
+of eight, so the marker is a line of words rather than a row of dots, and the board keeps one shape
+between lessons.
+
+Rejected along the way, each with the objection that set it aside. Leaving the manipulative live
+under the question, which is what the first board did: tapping then looks like answering. Keeping
+both on screen with the question greyed until the touching is done: the question is still read, so
+the child is still asked two things, and grey text is harder to read for the child who most needs it.
+Drawing the board as a dialog over the sheet on the parent's side as well as the child's: a dialog is
+for a thing you dismiss, and a lesson is a place you stay. Auto-advancing to the check the moment the
+count comes right: it takes the question away from a child who is still arranging, and it rewards
+speed. A row of dots for the step marker: at eight steps it reads as decoration, and it changes shape
+between bundles. Keeping the way out inside the quiet menu: that buries leaving under asking for
+help, and the corner is where the rest of the app puts it. Drawing the tray's counters in CSS to save
+a drawing: it would put two hands on one page.
+
+What a person should see, which is also what the QA guide asks them to check. On a step that invites
+a touch, one instruction in the guide's line, a manipulative that answers a finger, and one primary
+control, with "I am ready" always available. On the check that follows, the same picture at rest, the
+question in the guide's line, and the choices as the only thing to press. The title, the step marker
+and the way out along the card's top; the primary action, and under it one quiet line, along its
+foot; nothing outside the card at all. The same counters in the tray as in the frame, the ones a step
+does not need yet waiting after a gap. On the child's side the board opens in a dialog whose corner
+close is the one way out, and the worksheet underneath keeps every answer already typed.
 
 ## 9. Execution phases and acceptance gates
 

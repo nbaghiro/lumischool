@@ -59,6 +59,46 @@ const question = (variant: string, n = 1): Record<string, unknown> => ({
     explain: null,
 });
 
+const medium = (questions = [question("a=4")]) => ({
+    hash: "medium-hash",
+    grownUps: [],
+    sections: [
+        {
+            type: "do",
+            stars: null,
+            blocks: [
+                { k: "say", text: "Count on." },
+                {
+                    k: "ask",
+                    how: "practice",
+                    item: {
+                        id: "add.on",
+                        hash: "i",
+                        title: null,
+                        skills: ["add.count-on"],
+                        check: null,
+                    },
+                    questions,
+                    again: [[question("a=5")], [question("a=3")]],
+                },
+                {
+                    k: "ask",
+                    how: "worked",
+                    item: {
+                        id: "add.worked",
+                        hash: "w",
+                        title: "Worked",
+                        skills: ["add.count-on", "add.bonds"],
+                        check: null,
+                    },
+                    questions: [question("a=1", 0)],
+                    again: [],
+                },
+            ],
+        },
+    ],
+});
+
 const lesson = (over: Record<string, unknown> = {}): Record<string, unknown> => ({
     pack: 1,
     id: "g1-adding",
@@ -70,47 +110,7 @@ const lesson = (over: Record<string, unknown> = {}): Record<string, unknown> => 
     subject: "maths",
     format: "teach",
     art: ["text"],
-    levels: {
-        medium: {
-            hash: "medium-hash",
-            grownUps: [],
-            sections: [
-                {
-                    type: "do",
-                    stars: null,
-                    blocks: [
-                        { k: "say", text: "Count on." },
-                        {
-                            k: "ask",
-                            how: "practice",
-                            item: {
-                                id: "add.on",
-                                hash: "i",
-                                title: null,
-                                skills: ["add.count-on"],
-                                check: null,
-                            },
-                            questions: [question("a=4")],
-                            again: [[question("a=5")], [question("a=3")]],
-                        },
-                        {
-                            k: "ask",
-                            how: "worked",
-                            item: {
-                                id: "add.worked",
-                                hash: "w",
-                                title: "Worked",
-                                skills: ["add.count-on", "add.bonds"],
-                                check: null,
-                            },
-                            questions: [question("a=1", 0)],
-                            again: [],
-                        },
-                    ],
-                },
-            ],
-        },
-    },
+    levels: { medium: medium() },
     ...over,
 });
 
@@ -127,23 +127,24 @@ test("a lesson's file reads back as the lesson it holds", () => {
 });
 
 test("a reader skips fields it does not know, so a preview or a new field of a level can be added", () => {
-    const medium = (lesson().levels as { medium: Record<string, unknown> }).medium;
     const l = lesson({
         preview: { questions: 2 },
-        levels: { medium: { ...medium, levelNote: "later" }, harder: { anything: true } },
+        levels: { medium: { ...medium(), levelNote: "later" }, harder: { anything: true } },
     });
     assert.ok(readLesson(l).ok);
 });
 
 test("easy and hard are read like medium when a lesson declares them, and a broken one is refused", () => {
-    const medium = (lesson().levels as { medium: Record<string, unknown> }).medium;
-    const levelled = read(lesson({ levels: { medium, easy: { ...medium, hash: "easy-hash" } } }));
+    const level = medium();
+    const levelled = read(
+        lesson({ levels: { medium: level, easy: { ...level, hash: "easy-hash" } } }),
+    );
     assert.equal(levelled.levels.easy?.hash, "easy-hash");
     assert.deepEqual(Object.keys(factsOf(levelled, "lessons/x.json", null).levels), [
         "easy",
         "medium",
     ]);
-    const broken = readLesson(lesson({ levels: { medium, hard: { hash: "h" } } }));
+    const broken = readLesson(lesson({ levels: { medium: level, hard: { hash: "h" } } }));
     assert.ok(!broken.ok && /levels\.hard/.test(broken.problem));
 });
 
@@ -155,29 +156,19 @@ test("a lesson of another format, or without medium, is refused with the reason"
 });
 
 test("a question whose rule is not an expression is refused, and says where", () => {
-    const bad = lesson();
-    const medium = (bad.levels as { medium: { sections: { blocks: Record<string, unknown>[] }[] } })
-        .medium;
-    const ask = medium.sections[0]?.blocks[1];
-    assert.ok(ask);
-    ask.questions = [
+    const bad = medium([
         {
             ...question("a=4"),
             feedback: [{ when: { t: "bin", op: "**" }, say: [], point: null, children: [] }],
         },
-    ];
-    const r = readLesson(bad);
+    ]);
+    const r = readLesson(lesson({ levels: { medium: bad } }));
     assert.ok(!r.ok);
     assert.match(r.problem, /questions\[0\]: feedback\[0\]: when: "\*\*" is not an operator/);
 });
 
 test("a scene with a part placed nowhere a place can be is refused", () => {
-    const bad = lesson();
-    const medium = (bad.levels as { medium: { sections: { blocks: Record<string, unknown>[] }[] } })
-        .medium;
-    const ask = medium.sections[0]?.blocks[1];
-    assert.ok(ask);
-    ask.questions = [
+    const bad = medium([
         {
             ...question("a=4"),
             scene: {
@@ -185,8 +176,8 @@ test("a scene with a part placed nowhere a place can be is refused", () => {
                 nodes: [{ type: "text", id: "ask", v: {}, place: { rel: "beside" } }],
             },
         },
-    ];
-    const r = readLesson(bad);
+    ]);
+    const r = readLesson(lesson({ levels: { medium: bad } }));
     assert.ok(!r.ok && /"beside" is not a kind of place/.test(r.problem));
 });
 
@@ -214,19 +205,19 @@ test("a lesson's first drawing is its first scene block, or else its first quest
         scene,
         "the question's scene, since the lesson has no scene block",
     );
-    const medium = (lesson().levels as { medium: { sections: { blocks: unknown[] }[] } }).medium;
+    const level = medium();
     const other = { ...scene, size: [6, 2] };
     const withBlock = read(
         lesson({
             levels: {
                 medium: {
-                    ...medium,
+                    ...level,
                     sections: [
                         {
-                            ...medium.sections[0],
+                            ...level.sections[0],
                             blocks: [
                                 { k: "scene", scene: other },
-                                ...(medium.sections[0]?.blocks ?? []),
+                                ...(level.sections[0]?.blocks ?? []),
                             ],
                         },
                     ],
