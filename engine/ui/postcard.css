@@ -49,7 +49,7 @@
 .postcard-addr {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--stack, 10px);
     min-width: 0;
 }
 .postcard-msg {

@@ -107,6 +107,8 @@ export function Postcard(props: {
     address?: JSX.Element;
     links?: JSX.Element;
     note?: boolean;
+    /** A note is untaped unless it stands on the map as a card of its own, such as a tab's heading. */
+    taped?: boolean;
     wide?: boolean;
     under?: boolean;
     reply?: boolean;
@@ -132,7 +134,7 @@ export function Postcard(props: {
             aria-hidden={props.under ? true : undefined}
             inert={props.under}
         >
-            <Show when={!props.note}>
+            <Show when={!props.note || props.taped}>
                 <span class="postcard-tape" aria-hidden="true" />
                 <span class="postcard-tape r" aria-hidden="true" />
             </Show>
