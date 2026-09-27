@@ -14,39 +14,41 @@ import {
     type JSX,
 } from "solid-js";
 import type { Draft, PlanOp, SessionOp, Weekday } from "../../engine/answer";
+import { CalendarTwo } from "./calendar-two";
+import { draft, editable, label, marker, minutes, slots, type Slot } from "./plan-ops";
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
 import { Dialog } from "../../engine/ui/dialog";
 import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
-import { useLook, Waiting } from "../../engine/ui/page";
+import { useLook } from "../../engine/ui/page";
+import { Waiting } from "../../engine/ui/waiting";
 import { Postcard } from "../../engine/ui/postcard";
 import { go, Link, search } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { Near } from "../../engine/ui/viewport";
 import { isParent } from "../../school/family/access";
 import {
+    catchUp,
     monthGrid,
     offOn,
     putBack,
+    termOn,
     weekdayNumber,
-    type CalCell,
 } from "../../school/family/calendar";
 import {
     laneOf,
     movesOf,
     pickWeekdays,
     sessionChanges,
-    sessionKey,
     trackDays,
     turnOf,
 } from "../../school/family/family";
 import { addDays, mondayOf } from "../../school/record/record";
-import { subjectFacts } from "../../school/tracks";
 import type { Kid } from "../../server/db/schema";
 import { familyChanged, openAdd } from "./bar";
-import { Changes, Year } from "./calendar";
+import { Changes } from "./calendar";
 import {
     Card,
     DayCard,
@@ -56,6 +58,7 @@ import {
     Seg,
     TermsCard,
     titleOf,
+    WEEK,
     WEEKDAY_NAMES,
     writing,
 } from "./cards";
@@ -63,54 +66,7 @@ import { dayLong, dayMark, plural } from "./grown";
 import { readFamilyLog, type Loaded } from "./log";
 import { Worlds } from "./plan";
 
-type View = "week" | "month" | "year" | "subjects" | "lessons";
-interface Slot {
-    kid: Kid;
-    cell: CalCell;
-    op: SessionOp;
-}
-const editable = (c: CalCell): boolean => !["done", "late", "part"].includes(c.state);
-const minutes = (subject: string): number =>
-    subject === "maths" ? 25 : subject === "art" ? 30 : 20;
-const label = (track: string): string => subjectFacts(track).title;
-const marker = (track: string): string => `var(--${subjectFacts(track).marker})`;
-const draft = (kid: string, op: PlanOp): Draft => ({
-    id: api.newId(),
-    kid_id: kid,
-    kind: "plan-changed",
-    at: api.nowAt(),
-    data: { op },
-});
-function slots(l: Loaded, kid: Kid, day: string): Slot[] {
-    const counts = new Map<string, number>();
-    return (l.cal.kids.get(kid.id)?.cells.get(day) ?? [])
-        .flatMap((cell): Slot[] => {
-            if (!cell.lesson) return [];
-            const slot = counts.get(cell.track) ?? 0;
-            if (!cell.session) counts.set(cell.track, slot + 1);
-            const id = sessionKey(cell.track, cell, slot);
-            return [
-                {
-                    kid,
-                    cell,
-                    op: {
-                        op: "session",
-                        id,
-                        track: cell.track,
-                        source: cell.session ? (cell.source ?? null) : id,
-                        onDay: cell.on,
-                        lesson: cell.lesson,
-                        kind: cell.kind === "off" ? "lesson" : cell.kind,
-                        minutes: cell.plannedMinutes ?? minutes(cell.track),
-                        order: cell.order ?? slot,
-                        note: cell.session ? (cell.note ?? "") : "",
-                        removed: false,
-                    },
-                },
-            ];
-        })
-        .sort((a, b) => a.op.order - b.op.order);
-}
+type View = "week" | "month" | "subjects";
 function Tape(): JSX.Element {
     return (
         <>
@@ -119,6 +75,8 @@ function Tape(): JSX.Element {
         </>
     );
 }
+const isWeekday = (n: number): n is Weekday => WEEK.some((d) => d === n);
+
 function Field(props: { label: string; children: JSX.Element }): JSX.Element {
     return (
         <label class="cp-field field">
@@ -128,28 +86,26 @@ function Field(props: { label: string; children: JSX.Element }): JSX.Element {
     );
 }
 function Days(props: {
-    value: readonly number[];
-    allowed?: readonly number[];
+    value: readonly Weekday[];
+    allowed?: readonly Weekday[];
     change: (days: Weekday[]) => void;
 }): JSX.Element {
     return (
         <div class="cp-days">
-            <For each={WEEKDAY_NAMES}>
-                {(name, i) => {
-                    const n = () => (i() + 1) as Weekday;
+            <For each={WEEK}>
+                {(d) => {
+                    const name = WEEKDAY_NAMES[d - 1] ?? "";
                     return (
                         <label>
                             <input
                                 type="checkbox"
-                                checked={props.value.includes(n())}
-                                disabled={props.allowed && !props.allowed.includes(n())}
+                                checked={props.value.includes(d)}
+                                disabled={props.allowed && !props.allowed.includes(d)}
                                 onChange={(e) =>
                                     props.change(
                                         e.currentTarget.checked
-                                            ? [...(props.value as Weekday[]), n()].sort(
-                                                  (a, b) => a - b,
-                                              )
-                                            : (props.value.filter((d) => d !== n()) as Weekday[]),
+                                            ? [...props.value, d].sort((a, b) => a - b)
+                                            : props.value.filter((x) => x !== d),
                                     )
                                 }
                             />
@@ -162,7 +118,17 @@ function Days(props: {
     );
 }
 
+/** `/calendar?v2` draws the workspace; without it, the calendar this page has always been. */
 export function Calendar(): JSX.Element {
+    const two = (): boolean => new URLSearchParams(search()).has("v2");
+    return (
+        <Show when={two()} fallback={<CalendarOne />}>
+            <CalendarTwo />
+        </Show>
+    );
+}
+
+function CalendarOne(): JSX.Element {
     const look = useLook();
     createEffect(() => look({ place: "meadow", wide: true }));
     const [loaded, { refetch }] = createResource(readFamilyLog);
@@ -176,11 +142,6 @@ export function Calendar(): JSX.Element {
         if (!value) throw new Error("The calendar has not loaded yet.");
         return value;
     };
-    const firstKid = (): Kid => {
-        const kid = kids()[0];
-        if (!kid) throw new Error("Choose a child before planning a lesson.");
-        return kid;
-    };
     const [card, setCard] = createSignal<JSX.Element>();
     const [busy, setBusy] = createSignal(false),
         [error, setError] = createSignal(""),
@@ -191,7 +152,7 @@ export function Calendar(): JSX.Element {
     const query = () => new URLSearchParams(search());
     const view = (): View => {
         const v = query().get("view");
-        return v === "month" || v === "year" || v === "subjects" || v === "lessons" ? v : "week";
+        return v === "month" || v === "subjects" ? v : "week";
     };
     const who = (): string =>
         got()?.view.kids.some((k) => k.id === query().get("who"))
@@ -679,9 +640,6 @@ export function Calendar(): JSX.Element {
                     >
                         Day off / family activity
                     </button>
-                    <button type="button" class="link" onClick={() => open(<Bulk />)}>
-                        Copy day / move week
-                    </button>
                 </Show>
             </aside>
         );
@@ -978,9 +936,10 @@ export function Calendar(): JSX.Element {
         const normal = k.tracks.find((t) => t.track === props.track)?.perWeek ?? 0;
         const initial =
             props.pace === undefined
-                ? (latest?.weekdays ?? pickWeekdays(k.schoolDays, normal, turnOf(props.track)))
-                : pickWeekdays(k.schoolDays, props.pace, turnOf(props.track));
-        const [days, setDays] = createSignal<Weekday[]>(initial as Weekday[]),
+                ? (latest?.weekdays ??
+                  pickWeekdays(k.schoolDays, normal, turnOf(props.track)).filter(isWeekday))
+                : pickWeekdays(k.schoolDays, props.pace, turnOf(props.track)).filter(isWeekday);
+        const [days, setDays] = createSignal<Weekday[]>(initial),
             [count, setCount] = createSignal(latest?.sessions ?? 1),
             [from, setFrom] = createSignal(day() < l.cal.today ? l.cal.today : day());
         const op = (): PlanOp => ({
@@ -1123,6 +1082,22 @@ export function Calendar(): JSX.Element {
                                                 )
                                                 .map((s) => s.lesson),
                                         );
+                                    // how the term is going for this subject, which used to be the year view's line
+                                    const behind = () => {
+                                        const l = loadedNow(),
+                                            k = l.cal.kids.get(kid.id),
+                                            term = termOn(l.cal, l.cal.today);
+                                        if (!k || !term || term.from > l.cal.today) return null;
+                                        const up = catchUp(
+                                            l.cal,
+                                            k,
+                                            term,
+                                            track,
+                                            lane(),
+                                            pace() || 0,
+                                        );
+                                        return up.over ? up : null;
+                                    };
                                     return (
                                         <section class="gp-subj" style={{ "--m": marker(track) }}>
                                             <div class="gp-subj-top">
@@ -1172,6 +1147,17 @@ export function Calendar(): JSX.Element {
                                                 {lane().length} done ·{" "}
                                                 {pace() * (rule()?.sessions ?? 1)} sessions a week
                                             </p>
+                                            <Show when={behind()}>
+                                                {(up) => (
+                                                    <p class="gc-catch">
+                                                        {`The plan runs ${plural(up().over, "day")} past the term's end. ${
+                                                            up().perWeek
+                                                                ? `${plural(up().perWeek ?? 0, "day")} a week would fit the rest in by then.`
+                                                                : "Every school day is already used."
+                                                        }`}
+                                                    </p>
+                                                )}
+                                            </Show>
                                             <Show when={parent()}>
                                                 <button
                                                     type="button"
@@ -1292,83 +1278,6 @@ export function Calendar(): JSX.Element {
             </Card>
         );
     }
-    function Bulk(): JSX.Element {
-        const [mode, setMode] = createSignal("copy"),
-            [date, setDate] = createSignal(addDays(day(), 7));
-        const eligible = () =>
-            mode() === "copy"
-                ? onDay().filter((s) => editable(s.cell))
-                : kids()
-                      .flatMap((k) =>
-                          Array.from({ length: 7 }, (_, i) => addDays(mondayOf(day()), i)).flatMap(
-                              (d) => slots(loadedNow(), k, d),
-                          ),
-                      )
-                      .filter((s) => editable(s.cell) && s.cell.on >= loadedNow().cal.today);
-        return (
-            <Card kicker="The calendar" title="Make room in the week" onClose={close}>
-                <Field label="Change">
-                    <Select value={mode()} onChange={(e) => setMode(e.currentTarget.value)}>
-                        <option value="copy">Copy this day’s unfinished lessons</option>
-                        <option value="move">Move this week forward one week</option>
-                    </Select>
-                </Field>
-                <Show when={mode() === "copy"}>
-                    <Field label="Copy to">
-                        <input
-                            type="date"
-                            value={date()}
-                            onInput={(e) => setDate(e.currentTarget.value)}
-                        />
-                    </Field>
-                </Show>
-                <div class="cp-impact">
-                    <p>
-                        {plural(eligible().length, "session")} for{" "}
-                        {who() === "all" ? "everyone" : kids()[0]?.name}. Completed work stays in
-                        the record. Destination lessons remain in place.
-                    </p>
-                </div>
-                <Button
-                    busy={busy()}
-                    onClick={() => {
-                        const all = eligible();
-                        const problem = all
-                            .map((s) =>
-                                checkDate(
-                                    s.kid.id,
-                                    mode() === "copy" ? date() : addDays(s.cell.on, 7),
-                                ),
-                            )
-                            .find(Boolean);
-                        if (problem) {
-                            setError(problem);
-                            return;
-                        }
-                        if (!all.length) {
-                            setError("There are no unfinished sessions to change.");
-                            return;
-                        }
-                        void save(
-                            all.map((s) =>
-                                draft(s.kid.id, {
-                                    ...s.op,
-                                    id: mode() === "copy" ? api.newId() : s.op.id,
-                                    source: mode() === "copy" ? null : s.op.source,
-                                    onDay: mode() === "copy" ? date() : addDays(s.cell.on, 7),
-                                }),
-                            ),
-                            mode() === "copy"
-                                ? "Copied the day’s sessions."
-                                : "Moved the week’s unfinished sessions forward.",
-                        );
-                    }}
-                >
-                    Apply this change
-                </Button>
-            </Card>
-        );
-    }
     const advance = (n: number): void => {
         if (view() === "month") {
             const d = new Date(`${day().slice(0, 7)}-01T12:00:00Z`);
@@ -1381,12 +1290,11 @@ export function Calendar(): JSX.Element {
             <Show
                 when={got()}
                 fallback={
-                    <Postcard note kicker="The calendar" title="The calendar did not load">
-                        <Say
-                            text="We could not open your plan."
-                            action={{ label: "Try again", run: () => void refetch() }}
-                        />
-                    </Postcard>
+                    <Waiting
+                        title="The calendar did not load"
+                        pending={false}
+                        retry={() => void refetch()}
+                    />
                 }
             >
                 {(l) => (
@@ -1487,10 +1395,7 @@ export function Calendar(): JSX.Element {
                                 </Postcard>
                             }
                         >
-                            <div
-                                class="cp-layout"
-                                classList={{ full: view() === "year" || view() === "subjects" }}
-                            >
+                            <div class="cp-layout" classList={{ full: view() === "subjects" }}>
                                 <section class="gc-sheet cp-main">
                                     <Tape />
                                     <Seg
@@ -1499,9 +1404,7 @@ export function Calendar(): JSX.Element {
                                         options={[
                                             { value: "week", label: "The week" },
                                             { value: "month", label: "The month" },
-                                            { value: "year", label: "The year" },
                                             { value: "subjects", label: "Subjects & pace" },
-                                            { value: "lessons", label: "Find lessons" },
                                         ]}
                                         onChange={(v) => move({ view: v })}
                                     />
@@ -1564,41 +1467,6 @@ export function Calendar(): JSX.Element {
                                     <Show when={view() === "subjects"}>
                                         <Subjects />
                                     </Show>
-                                    <Show when={view() === "lessons"}>
-                                        <Library
-                                            grade={kids()[0]?.grade ?? 1}
-                                            choose={(id) =>
-                                                open(
-                                                    <AddLessons
-                                                        on={day()}
-                                                        kid={firstKid().id}
-                                                        picked={id}
-                                                    />,
-                                                )
-                                            }
-                                        />
-                                    </Show>
-                                    <Show when={view() === "year"}>
-                                        <Year
-                                            loaded={l()}
-                                            kids={kids()}
-                                            onWeek={(at, who) => move({ view: "week", at, who })}
-                                            onCard={open}
-                                            onWrite={write}
-                                        />
-                                        <For each={kids()}>
-                                            {(kid) => (
-                                                <Show when={parent()}>
-                                                    <Worlds
-                                                        loaded={l()}
-                                                        kid={kid}
-                                                        onCard={open}
-                                                        onWrite={write}
-                                                    />
-                                                </Show>
-                                            )}
-                                        </For>
-                                    </Show>
                                     <footer class="gc-foot">
                                         <p class="note">
                                             Lessons you place stay put when the routine changes.
@@ -1613,7 +1481,7 @@ export function Calendar(): JSX.Element {
                                         </button>
                                     </footer>
                                 </section>
-                                <Show when={view() !== "year" && view() !== "subjects"}>
+                                <Show when={view() !== "subjects"}>
                                     <Detail />
                                 </Show>
                             </div>

@@ -47,6 +47,8 @@ export const WEEKDAY_NAMES = [
     "Sunday",
 ] as const;
 
+export const WEEK: readonly Weekday[] = [1, 2, 3, 4, 5, 6, 7];
+
 export const writing = (): acts.Writing => ({ newId: api.newId, at: api.nowAt() });
 
 /** A lesson's first drawing into a host, as its sticker and its card both draw it. */
@@ -362,9 +364,9 @@ export function SchoolDaysCard(props: {
             onClose={props.onClose}
         >
             <div class="gc-days">
-                <For each={WEEKDAY_NAMES}>
-                    {(name, i) => {
-                        const d = (i() + 1) as Weekday;
+                <For each={WEEK}>
+                    {(d) => {
+                        const name = WEEKDAY_NAMES[d - 1] ?? "";
                         return (
                             <button
                                 type="button"

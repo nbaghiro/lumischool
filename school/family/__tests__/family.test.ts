@@ -223,6 +223,16 @@ describe("the plan worked out from the log", () => {
         );
     });
 
+    it("keeps reading a pace a family set under the old plan screen, which nothing writes any more", () => {
+        const log = [planned("2026-08-29", { op: "track", track: "maths", on: true, perWeek: 2 })];
+        const plan = planOf(log, { id: KID, grade: 1 }, TZ, "2026-08-31");
+        assert.equal(
+            plan.get("maths")?.perWeek,
+            2,
+            "the fold reads track for a family that used it, though no control writes one now",
+        );
+    });
+
     it("starts from the grade's default, which a family's own op wins over track by track", () => {
         const log = [
             planned("2026-08-29", { op: "track", track: "maths", on: true, perWeek: 5 }),

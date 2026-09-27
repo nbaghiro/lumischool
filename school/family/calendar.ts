@@ -343,38 +343,6 @@ const change = (w: Writing, kid: string | null, op: PlanOp): Draft => ({
 /** A refusal a grown-up reads, or the drafts a change appends. */
 export type Made = { refused: string } | { drafts: Draft[] };
 
-export const moveDay = (
-    w: Writing,
-    kid: string,
-    track: string,
-    from: string,
-    to: string,
-): Draft[] => [change(w, kid, { op: "move", track, from, to })];
-
-export const parkLesson = (
-    w: Writing,
-    kid: string,
-    lesson: string,
-    from: string,
-    gapWeeks: number,
-): Draft[] => [change(w, kid, { op: "park", lesson, from, gapWeeks })];
-
-export const doAgain = (
-    w: Writing,
-    kid: string,
-    lesson: string,
-    onDay: string,
-    kind: "again" | "practice",
-): Draft[] => [
-    change(w, kid, {
-        op: "set-day",
-        onDay,
-        kind,
-        lesson,
-        note: kind === "again" ? "Same lesson, new numbers" : "Practice sheet, asked for",
-    }),
-];
-
 export const daysOff = (
     w: Writing,
     kid: string | null,
