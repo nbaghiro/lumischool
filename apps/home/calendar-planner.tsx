@@ -1,7 +1,8 @@
-// The merged family calendar: routine and dated placements over the same saved family log.
-import { Select } from "../../engine/ui/select";
+// The calendar as the place a child's curriculum is designed: four views over the family's log, with
+// the lessons not yet placed on a shelf beside the week. A lesson is placed, moved and taken out by
+// dragging or by the keyboard, and both go through the same `place`, so the two paths cannot drift.
+
 import "./calendar.css";
-import "./plan.css";
 import "./calendar-planner.css";
 import {
     createEffect,
@@ -10,12 +11,11 @@ import {
     createSignal,
     For,
     on,
+    onCleanup,
     Show,
     type JSX,
 } from "solid-js";
-import type { Draft, PlanOp, SessionOp, Weekday } from "../../engine/answer";
-import { CalendarTwo } from "./calendar-two";
-import { draft, editable, label, marker, minutes, slots, type Slot } from "./plan-ops";
+import type { Draft, PlanOp, SessionOp } from "../../engine/answer";
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
 import { Dialog } from "../../engine/ui/dialog";
@@ -23,11 +23,10 @@ import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
 import { useLook } from "../../engine/ui/page";
-import { Waiting } from "../../engine/ui/waiting";
-import { Postcard } from "../../engine/ui/postcard";
-import { go, Link, search } from "../../engine/ui/router";
-import { Say } from "../../engine/ui/say";
+import { go, search } from "../../engine/ui/router";
+import { announce, Say } from "../../engine/ui/say";
 import { Near } from "../../engine/ui/viewport";
+import { Waiting } from "../../engine/ui/waiting";
 import { isParent } from "../../school/family/access";
 import {
     catchUp,
@@ -36,99 +35,72 @@ import {
     putBack,
     termOn,
     weekdayNumber,
+    type Term,
 } from "../../school/family/calendar";
-import {
-    laneOf,
-    movesOf,
-    pickWeekdays,
-    sessionChanges,
-    trackDays,
-    turnOf,
-} from "../../school/family/family";
-import { addDays, mondayOf } from "../../school/record/record";
+import { laneOf, movesOf, sessionChanges } from "../../school/family/family";
+import { addDays, mondayOf } from "../../school/record";
+import { TRACK_IDS } from "../../school/tracks";
 import type { Kid } from "../../server/db/schema";
 import { familyChanged, openAdd } from "./bar";
-import { Changes } from "./calendar";
 import {
     Card,
     DayCard,
     drawFirst,
     factsOf,
     SchoolDaysCard,
-    Seg,
     TermsCard,
     titleOf,
-    WEEK,
     WEEKDAY_NAMES,
     writing,
 } from "./cards";
 import { dayLong, dayMark, plural } from "./grown";
 import { readFamilyLog, type Loaded } from "./log";
-import { Worlds } from "./plan";
+import { draft, editable, label, marker, minutes, slots, type Slot } from "./plan-ops";
 
-type View = "week" | "month" | "subjects";
-function Tape(): JSX.Element {
-    return (
-        <>
-            <span class="postcard-tape" aria-hidden="true" />
-            <span class="postcard-tape r" aria-hidden="true" />
-        </>
-    );
-}
-const isWeekday = (n: number): n is Weekday => WEEK.some((d) => d === n);
+/** The subjects in the order the curriculum names them, with anything unnamed after them. */
+const trackRank = (track: string): number => {
+    const at = (TRACK_IDS as readonly string[]).indexOf(track);
+    return at < 0 ? TRACK_IDS.length : at;
+};
 
-function Field(props: { label: string; children: JSX.Element }): JSX.Element {
-    return (
-        <label class="cp-field field">
-            <span>{props.label}</span>
-            {props.children}
-        </label>
-    );
-}
-function Days(props: {
-    value: readonly Weekday[];
-    allowed?: readonly Weekday[];
-    change: (days: Weekday[]) => void;
-}): JSX.Element {
-    return (
-        <div class="cp-days">
-            <For each={WEEK}>
-                {(d) => {
-                    const name = WEEKDAY_NAMES[d - 1] ?? "";
-                    return (
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={props.value.includes(d)}
-                                disabled={props.allowed && !props.allowed.includes(d)}
-                                onChange={(e) =>
-                                    props.change(
-                                        e.currentTarget.checked
-                                            ? [...props.value, d].sort((a, b) => a - b)
-                                            : props.value.filter((x) => x !== d),
-                                    )
-                                }
-                            />
-                            {name.slice(0, 3)}
-                        </label>
-                    );
-                }}
-            </For>
-        </div>
-    );
+/** The value `who` carries in the address when the calendar is showing the whole family. */
+const EVERYONE = "everyone";
+
+type View = "day" | "week" | "month" | "term";
+const VIEWS: { value: View; label: string }[] = [
+    { value: "day", label: "Day" },
+    { value: "week", label: "Week" },
+    { value: "month", label: "Month" },
+    { value: "term", label: "Term" },
+];
+
+/** A lesson on the shelf: one of this child's lessons with no day, or a session set aside. */
+interface Shelved {
+    lesson: string;
+    track: string;
+    /** The session already written for it, when a parent set it aside rather than never placing it. */
+    op?: SessionOp;
 }
 
-/** `/calendar?v2` draws the workspace; without it, the calendar this page has always been. */
+/** What a hand or the keyboard is carrying, and where it came from. */
+type Carried = { kind: "slot"; slot: Slot } | { kind: "shelf"; item: Shelved; kid: Kid };
+
+const carriedLesson = (c: Carried): string =>
+    c.kind === "slot" ? c.slot.op.lesson : c.item.lesson;
+const carriedKid = (c: Carried): Kid => (c.kind === "slot" ? c.slot.kid : c.kid);
+
+/**
+ * The same object while its value has not stirred, so a re-read after a change updates the rows it
+ * touched instead of tearing every day and every shelf row down and drawing their pictures again.
+ */
+function steady<T>(kept: Map<string, T>, key: string, value: T): T {
+    const was = kept.get(key);
+    if (was !== undefined && JSON.stringify(was) === JSON.stringify(value)) return was;
+    kept.set(key, value);
+    return value;
+}
+
 export function Calendar(): JSX.Element {
-    const two = (): boolean => new URLSearchParams(search()).has("v2");
-    return (
-        <Show when={two()} fallback={<CalendarOne />}>
-            <CalendarTwo />
-        </Show>
-    );
-}
-
-function CalendarOne(): JSX.Element {
     const look = useLook();
     createEffect(() => look({ place: "meadow", wide: true }));
     const [loaded, { refetch }] = createResource(readFamilyLog);
@@ -137,42 +109,61 @@ function CalendarOne(): JSX.Element {
         const l = loaded.latest;
         return l && !("error" in l) ? l : undefined;
     };
-    const loadedNow = (): Loaded => {
+    const now = (): Loaded => {
         const value = got();
         if (!value) throw new Error("The calendar has not loaded yet.");
         return value;
     };
     const [card, setCard] = createSignal<JSX.Element>();
     const [busy, setBusy] = createSignal(false),
-        [error, setError] = createSignal(""),
-        [said, setSaid] = createSignal("");
-    const [weekends, setWeekends] = createSignal(false);
-    const [last, setLast] = createSignal<Draft[]>([]),
-        [redo, setRedo] = createSignal<Draft[]>([]);
-    const query = () => new URLSearchParams(search());
-    const view = (): View => {
-        const v = query().get("view");
-        return v === "month" || v === "subjects" ? v : "week";
+        [error, setError] = createSignal("");
+    const [last, setLast] = createSignal<Draft[]>([]);
+    const [carried, setCarried] = createSignal<Carried | null>(null);
+    const query = (): URLSearchParams => new URLSearchParams(search());
+    const view = (): View => VIEWS.find((x) => x.value === query().get("view"))?.value ?? "week";
+    const keptKids = new Map<string, Kid>(),
+        keptSlots = new Map<string, Slot>(),
+        keptItems = new Map<string, Shelved>(),
+        keptGroups = new Map<string, { track: string; items: Shelved[] }>();
+    const kids = (): Kid[] => (got()?.view.kids ?? []).map((k) => steady(keptKids, k.id, k));
+    /** One child's lessons on one day, each the same object while that lesson has not changed. */
+    const lessonsOn = (who: Kid, d: string): Slot[] =>
+        slots(now(), who, d).map((s) => steady(keptSlots, `${who.id}|${d}|${s.op.id}`, s));
+    /** This child's shelf, each row and each group the same object while nothing in it changed. */
+    const shelfOf = (who: Kid): { track: string; items: Shelved[] }[] =>
+        shelf(who).map((g) =>
+            steady(keptGroups, `${who.id}|${g.track}`, {
+                track: g.track,
+                items: g.items.map((i) => steady(keptItems, `${who.id}|${i.lesson}`, i)),
+            }),
+        );
+    /** The chips choose the whole family or one child; a family of several opens on everyone. */
+    const whose = (): string => {
+        const asked = query().get("who");
+        if (asked === EVERYONE) return EVERYONE;
+        const one = kids().find((k) => k.id === asked);
+        return one ? one.id : kids().length > 1 ? EVERYONE : (kids()[0]?.id ?? "");
     };
-    const who = (): string =>
-        got()?.view.kids.some((k) => k.id === query().get("who"))
-            ? (query().get("who") ?? "all")
-            : "all";
+    /** The one child in view, or undefined when the calendar is showing everyone. */
+    const kid = (): Kid | undefined => kids().find((k) => k.id === whose());
     const day = (): string => {
         const raw = query().get("at");
-        const value = raw && /^\d{4}-\d{2}$/.test(raw) ? `${raw}-01` : raw;
-        return value && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value))
-            ? value
-            : (got()?.cal.today ?? "");
+        if (raw && /^\d{4}-\d{2}-\d{2}$/.test(raw) && !Number.isNaN(Date.parse(raw))) return raw;
+        const today = got()?.cal.today ?? "";
+        // On a Saturday or a Sunday the week worth planning is the one ahead, not the one ending.
+        return today && weekdayNumber(today) > 5 ? addDays(mondayOf(today), 7) : today;
     };
-    const kids = (): Kid[] =>
-        got()?.view.kids.filter((k) => who() === "all" || k.id === who()) ?? [];
-    const parent = (): boolean => !!got() && isParent(loadedNow().me.members);
+    const parent = (): boolean => !!got() && isParent(now().me.members);
+    /** Whose lessons every view draws: one child, or all of them when everyone is chosen. */
+    const shown = (): Kid[] => {
+        const one = kid();
+        return one ? [one] : kids();
+    };
     const move = (next: { view?: View; at?: string; who?: string }): void => {
         const q = new URLSearchParams({
             view: next.view ?? view(),
             at: next.at ?? day(),
-            who: next.who ?? who(),
+            who: next.who ?? whose(),
         });
         go(`/calendar?${q}`);
     };
@@ -186,12 +177,7 @@ function CalendarOne(): JSX.Element {
         setError("");
         setCard(content);
     };
-    const save = async (
-        drafts: Draft[],
-        line: string,
-        shut = true,
-        remember = true,
-    ): Promise<boolean> => {
+    const save = async (drafts: Draft[], line: string, shut = true): Promise<boolean> => {
         if (busy() || !parent() || !drafts.length) return false;
         setBusy(true);
         setError("");
@@ -205,11 +191,9 @@ function CalendarOne(): JSX.Element {
                 );
                 return false;
             }
-            if (remember) {
-                setLast(drafts);
-                setRedo([]);
-            }
-            setSaid(line);
+            setLast(drafts);
+            // what changed is visible on the day itself, so the line is said to a screen reader only
+            announce(line);
             if (shut) setCard(undefined);
             await refetch();
             return true;
@@ -221,250 +205,300 @@ function CalendarOne(): JSX.Element {
         }
     };
     const write = async (drafts: Draft[], line: string): Promise<void> => {
-        // The day editor also applies to individually placed sessions: keep them in For later.
-        const parked = new Map<string, Draft>();
-        for (const d of drafts)
-            if (d.kind === "plan-changed" && d.data.op.op === "days-off") {
-                const span = d.data.op;
-                for (const kid of loadedNow().view.kids.filter(
-                    (k) => !d.kid_id || k.id === d.kid_id,
-                )) {
-                    for (const op of sessionChanges(
-                        movesOf(loadedNow().events, kid.id, loadedNow().me.family.time_zone),
-                    )) {
-                        if (
-                            !op.removed &&
-                            op.onDay &&
-                            op.onDay >= span.from &&
-                            op.onDay <= span.to
-                        ) {
-                            const cell = slots(loadedNow(), kid, op.onDay).find(
-                                (s) => s.op.id === op.id,
-                            );
-                            if (cell && editable(cell.cell))
-                                parked.set(
-                                    `${kid.id}:${op.id}`,
-                                    draft(kid.id, { ...op, onDay: null }),
-                                );
-                        }
-                    }
-                }
-            }
-        await save(
-            [...drafts, ...parked.values()],
-            parked.size ? `${line} Individually placed sessions are in For later.` : line,
-        );
+        await save(drafts, line);
     };
     const undo = async (): Promise<void> => {
         const old = last();
-        if (
-            await save(
-                putBack(
-                    writing(),
-                    old.map((d) => ({ id: d.id, kid: d.kid_id })),
-                ),
-                "Put the last change back.",
-                true,
-                false,
-            )
-        ) {
-            setLast([]);
-            setRedo(old);
-        }
+        if (!old.length) return;
+        const back = putBack(
+            writing(),
+            old.map((d) => ({ id: d.id, kid: d.kid_id })),
+        );
+        if (await save(back, "Put the last change back.")) setLast([]);
     };
-    const reapply = async (): Promise<void> => {
-        const again = redo().map((d) => ({ ...d, id: api.newId(), at: api.nowAt() }));
-        if (await save(again, "Restored the change.", true, false)) {
-            setLast(again);
-            setRedo([]);
-        }
-    };
-    const onDay = (d = day()): Slot[] =>
-        got() ? kids().flatMap((k) => slots(loadedNow(), k, d)) : [];
-    const selectDay = (d: string): void => {
-        move({ at: d });
-        if (matchMedia("(max-width:1100px)").matches)
-            requestAnimationFrame(() =>
-                document.getElementById("cp-day")?.scrollIntoView({ block: "start" }),
-            );
-    };
-    const checkDate = (kid: string, date: string): string =>
-        !date || date < loadedNow().cal.today
-            ? "Choose today or a later day. Completed work stays in the record."
-            : offOn(loadedNow().cal.off, kid, date)
-              ? "This day is marked off. Choose another day, or undo its day off first."
+    const onDay = (d = day(), who = shown()): Slot[] =>
+        got() ? who.flatMap((k) => lessonsOn(k, d)) : [];
+    const checkDate = (who: string, date: string): string =>
+        !date || date < now().cal.today
+            ? "Choose today or a later day. Finished work stays in the record."
+            : offOn(now().cal.off, who, date)
+              ? "This day is marked off. Choose another day, or take the day off back first."
               : "";
-    const place = async (s: Slot, date: string | null): Promise<void> => {
-        if (!editable(s.cell)) {
+
+    /** Placing, moving and taking out, which the mouse and the keyboard both come through. */
+    const place = async (c: Carried, date: string | null): Promise<void> => {
+        const who = carriedKid(c);
+        if (c.kind === "slot" && !editable(c.slot.cell)) {
             setError("Finished or started work stays in the record.");
             return;
         }
-        const problem = date ? checkDate(s.kid.id, date) : "";
+        const problem = date ? checkDate(who.id, date) : "";
         if (problem) {
             setError(problem);
             return;
         }
-        await save(
-            [draft(s.kid.id, { ...s.op, onDay: date, order: 1000 + onDay(date ?? day()).length })],
-            date
-                ? `Moved ${titleOf(loadedNow(), s.op.lesson)} to ${dayMark(date)}.`
-                : "Set the session aside for later.",
+        const title = titleOf(now(), carriedLesson(c));
+        const order = 1000 + onDay(date ?? day(), [who]).length;
+        if (c.kind === "slot")
+            await save(
+                [draft(who.id, { ...c.slot.op, onDay: date, order })],
+                date
+                    ? `Moved ${title} to ${dayMark(date)}.`
+                    : `Took ${title} out of ${who.name}'s plan.`,
+            );
+        else if (date) {
+            const facts = factsOf(now(), c.item.lesson);
+            const op: SessionOp = c.item.op
+                ? { ...c.item.op, onDay: date, order, removed: false }
+                : {
+                      op: "session",
+                      id: api.newId(),
+                      source: null,
+                      track: c.item.track,
+                      lesson: c.item.lesson,
+                      onDay: date,
+                      kind: "lesson",
+                      minutes: minutes(facts?.subject ?? c.item.track),
+                      order,
+                      note: "",
+                      removed: false,
+                  };
+            await save([draft(who.id, op)], `Put ${title} on ${dayMark(date)}.`);
+        }
+        setCarried(null);
+    };
+    const pickUp = (c: Carried): void => {
+        setError("");
+        setCarried(c);
+        announce(
+            `${titleOf(now(), carriedLesson(c))} is in your hand. Choose a day, or press Escape to put it down.`,
         );
     };
-    let dragging: Slot | undefined;
-    const drop = (event: DragEvent, date: string, kid?: string): void => {
-        event.preventDefault();
-        const from = dragging;
-        dragging = undefined;
-        if (from && (!kid || from.kid.id === kid)) void place(from, date);
+    const putDown = (): void => {
+        if (carried()) setCarried(null);
     };
+    // Escape puts a carried lesson down wherever the keyboard is: Safari gives a clicked button no
+    // focus, so a handler on the control that picked the lesson up would never hear the key.
+    createEffect(() => {
+        if (!carried()) return;
+        const key = (e: KeyboardEvent): void => {
+            if (e.key === "Escape") putDown();
+        };
+        addEventListener("keydown", key);
+        onCleanup(() => removeEventListener("keydown", key));
+    });
+    /** A day takes what is carried when it is this child's and not already gone. */
+    const canDrop = (d: string, who?: Kid): boolean => {
+        const c = carried();
+        return (
+            !!c &&
+            d >= now().cal.today &&
+            (!who || carriedKid(c).id === who.id) &&
+            !offOn(now().cal.off, carriedKid(c).id, d)
+        );
+    };
+    const drop = (d: string, who?: Kid): void => {
+        const c = carried();
+        if (c && canDrop(d, who)) void place(c, d);
+    };
+
+    /** This child's lessons with no day: never placed, or set aside by a parent. */
+    const shelf = (who: Kid): { track: string; items: Shelved[] }[] => {
+        const l = now();
+        const moves = movesOf(l.events, who.id, l.me.family.time_zone);
+        const set = sessionChanges(moves).filter((s) => !s.onDay && !s.removed);
+        const planned = new Set<string>();
+        for (const [, cells] of l.cal.kids.get(who.id)?.cells ?? [])
+            for (const c of cells) if (c.lesson) planned.add(c.lesson);
+        const finished = new Set(
+            l.sittings.filter((s) => s.child === who.id && s.finished).map((s) => s.lesson),
+        );
+        const tracks = [...new Set(l.pack.index.lessons.map((x) => x.subject))].sort(
+            (a, b) => trackRank(a) - trackRank(b),
+        );
+        return tracks
+            .map((track) => {
+                const lane = laneOf(l.pack.index.lessons, track, who.grade);
+                const aside = set
+                    .filter((s) => s.track === track)
+                    .map((op): Shelved => ({ lesson: op.lesson, track, op }));
+                const free = lane
+                    .filter(
+                        (id) =>
+                            !planned.has(id) &&
+                            !finished.has(id) &&
+                            !aside.some((a) => a.lesson === id),
+                    )
+                    .map((id): Shelved => ({ lesson: id, track }));
+                return { track, items: [...aside, ...free] };
+            })
+            .filter((g) => g.items.length);
+    };
+
     const openLesson = (s: Slot): void => open(<EditSession slot={s} />);
-    const openAddLesson = (d = day(), kid = kids()[0]?.id): void => {
-        if (kid) open(<AddLessons on={d} kid={kid} />);
-    };
-    const openRoutine = (kid: Kid, track: string, pace?: number): void =>
-        open(<Routine kid={kid} track={track} pace={pace} />);
-    function Sticker(props: { slot: Slot }): JSX.Element {
-        const s = () => props.slot;
+    /** School days belong to a child, so showing everyone asks whose before it opens the card. */
+    const openDays = (one: Kid | undefined): void =>
+        open(
+            one ? (
+                <SchoolDaysCard loaded={now()} kid={one} onClose={close} onWrite={write} />
+            ) : (
+                <WhoseDays />
+            ),
+        );
+    const openDayCard = (d: string, who: Kid | null): void =>
+        open(<DayCard loaded={now()} on={d} kid={who} onClose={close} onWrite={write} />);
+
+    function Sticker(props: { slot: Slot; compact?: boolean }): JSX.Element {
+        const s = (): Slot => props.slot;
+        const held = (): boolean => {
+            const c = carried();
+            return c?.kind === "slot" && c.slot.op.id === s().op.id;
+        };
+        const movable = (): boolean => parent() && editable(s().cell);
         return (
             <div
-                class={`gc-sticker ${s().cell.state}`}
-                draggable={parent() && editable(s().cell)}
-                onDragStart={(e) => {
-                    dragging = s();
-                    e.dataTransfer?.setData("text/plain", s().op.id);
-                }}
-                onDragEnd={() => {
-                    dragging = undefined;
-                }}
+                class={`gc-sticker cal-sticker ${s().cell.state}`}
+                classList={{ held: held(), compact: props.compact }}
             >
                 <button
                     type="button"
                     class="gc-sticker-in"
                     style={{ "--m": marker(s().op.track) }}
+                    draggable={movable()}
+                    onDragStart={(e) => {
+                        setCarried({ kind: "slot", slot: s() });
+                        e.dataTransfer?.setData("text/plain", s().op.id);
+                    }}
+                    onDragEnd={() => setCarried(null)}
+                    aria-label={`${titleOf(now(), s().op.lesson)}, ${label(s().op.track)}, ${stateWord(s())}`}
                     onClick={() => openLesson(s())}
                 >
                     <span class="gc-tape" aria-hidden="true" />
                     <Near
                         class="gc-pic on-paper"
-                        draw={(host) =>
-                            drawFirst(loadedNow(), factsOf(loadedNow(), s().op.lesson), host)
-                        }
+                        draw={(host) => drawFirst(now(), factsOf(now(), s().op.lesson), host)}
                     />
-                    <span class="gc-sticker-title">{titleOf(loadedNow(), s().op.lesson)}</span>
-                    <span class="gc-sticker-sub">
-                        {label(s().op.track)} · {s().op.minutes} min planned
-                    </span>
-                    <span class="gc-tag">
-                        {s().cell.state === "done"
-                            ? "✓ Done"
-                            : s().cell.state === "late"
-                              ? "Done later"
-                              : s().cell.state === "part"
-                                ? "In progress"
-                                : s().cell.session
-                                  ? "Placed by you"
-                                  : s().cell.state === "missed"
-                                    ? "Not done"
-                                    : "Planned"}
-                    </span>
+                    <span class="gc-sticker-title">{titleOf(now(), s().op.lesson)}</span>
+                    <span class="cal-mark" aria-hidden="true" data-state={s().cell.state} />
                 </button>
+                <Show when={movable()}>
+                    <button
+                        type="button"
+                        class="cal-lift"
+                        draggable={movable()}
+                        onDragStart={(e) => {
+                            setCarried({ kind: "slot", slot: s() });
+                            e.dataTransfer?.setData("text/plain", s().op.id);
+                        }}
+                        onDragEnd={() => setCarried(null)}
+                        aria-pressed={held()}
+                        aria-label={
+                            held()
+                                ? `Put ${titleOf(now(), s().op.lesson)} down`
+                                : `Pick up ${titleOf(now(), s().op.lesson)} to move it`
+                        }
+                        onClick={() => (held() ? putDown() : pickUp({ kind: "slot", slot: s() }))}
+                    >
+                        <span aria-hidden="true">{held() ? "in hand" : "move"}</span>
+                    </button>
+                </Show>
             </div>
         );
     }
+
+    const stateWord = (s: Slot): string =>
+        s.cell.state === "done"
+            ? "done"
+            : s.cell.state === "late"
+              ? "done later"
+              : s.cell.state === "part"
+                ? "begun, not finished"
+                : s.cell.state === "missed"
+                  ? "not done"
+                  : "planned";
+
+    function DayCell(props: { on: string; who: Kid; compact?: boolean }): JSX.Element {
+        const list = (): Slot[] => lessonsOn(props.who, props.on);
+        const off = () => offOn(now().cal.off, props.who.id, props.on);
+        const taking = (): boolean => canDrop(props.on, props.who);
+        return (
+            <div
+                class="gc-cell cal-cell"
+                data-kid={props.who.id}
+                classList={{ off: !!off(), taking: taking() }}
+                onDragOver={(e) => {
+                    if (taking()) e.preventDefault();
+                }}
+                onDrop={(e) => {
+                    e.preventDefault();
+                    drop(props.on, props.who);
+                }}
+            >
+                <Show when={shown().length > 1}>
+                    <h3 class="cal-who">{props.who.name}</h3>
+                </Show>
+                <Show when={off()}>
+                    <p class="cal-off">{off()?.note || "A day away from lessons"}</p>
+                </Show>
+                <For each={list()}>{(s) => <Sticker slot={s} compact={props.compact} />}</For>
+                <Show when={taking()}>
+                    <button
+                        type="button"
+                        class="cal-drop"
+                        onClick={() => drop(props.on, props.who)}
+                    >
+                        Put it here
+                    </button>
+                </Show>
+                <Show when={!taking() && parent() && props.on >= now().cal.today && !off()}>
+                    <button
+                        type="button"
+                        class="cal-add"
+                        aria-label={`Add a lesson for ${props.who.name} on ${dayLong(props.on)}`}
+                        onClick={() => {
+                            move({ view: "day", at: props.on, who: props.who.id });
+                        }}
+                    >
+                        Add
+                    </button>
+                </Show>
+            </div>
+        );
+    }
+
     function Week(): JSX.Element {
-        const days = () =>
+        const days = (): string[] =>
             Array.from({ length: 7 }, (_, i) => addDays(mondayOf(day()), i)).filter(
                 (d) =>
-                    weekends() ||
                     weekdayNumber(d) <= 5 ||
                     onDay(d).length ||
-                    kids().some((k) =>
-                        loadedNow().cal.kids.get(k.id)?.schoolDays.includes(weekdayNumber(d)),
+                    shown().some((k) =>
+                        now().cal.kids.get(k.id)?.schoolDays.includes(weekdayNumber(d)),
                     ),
             );
         return (
-            <div
-                class="cp-week"
-                style={{ "--days": String(days().length), "--kids": String(kids().length) }}
-            >
+            <div class="cal-week" style={{ "--days": String(days().length) }}>
                 <For each={days()}>
                     {(d) => (
                         <section
-                            class="cp-day"
+                            class="cal-day"
                             classList={{
-                                selected: d === day(),
-                                today: d === loadedNow().cal.today,
+                                past: d < now().cal.today,
+                                today: d === now().cal.today,
                             }}
                             data-date={d}
                         >
                             <button
-                                class="gc-dayhead"
                                 type="button"
-                                aria-pressed={d === day()}
-                                aria-label={`Select ${dayLong(d)}`}
-                                onClick={() => selectDay(d)}
+                                class="cal-dayhead"
+                                aria-label={`Open ${dayLong(d)}`}
+                                onClick={() => move({ view: "day", at: d })}
                             >
-                                <span class="gc-date">
-                                    <b>{Number(d.slice(8))}</b>
-                                    <span>{WEEKDAY_NAMES[weekdayNumber(d) - 1]?.slice(0, 3)}</span>
-                                </span>
-                                <Show when={d === loadedNow().cal.today}>
-                                    <span class="gc-todayword">today</span>
-                                </Show>
+                                <b>{WEEKDAY_NAMES[weekdayNumber(d) - 1]?.slice(0, 3)}</b>
+                                <span>{dayMark(d)}</span>
                             </button>
-                            <For each={kids()}>
-                                {(kid) => {
-                                    const list = () => slots(loadedNow(), kid, d);
-                                    const off = () => offOn(loadedNow().cal.off, kid.id, d);
-                                    return (
-                                        <div
-                                            class="gc-cell cp-cell"
-                                            classList={{ off: !!off() }}
-                                            onDragOver={(e) => {
-                                                if (
-                                                    dragging?.kid.id === kid.id &&
-                                                    d >= loadedNow().cal.today
-                                                )
-                                                    e.preventDefault();
-                                            }}
-                                            onDrop={(e) => drop(e, d, kid.id)}
-                                        >
-                                            <Show when={kids().length > 1}>
-                                                <h3>{kid.name}</h3>
-                                            </Show>
-                                            <p class="cp-load">
-                                                {plural(list().length, "session")} ·{" "}
-                                                {list().reduce((n, s) => n + s.op.minutes, 0)} min
-                                                planned
-                                            </p>
-                                            <Show when={off()}>
-                                                <p class="note">{off()?.note || "Day off"}</p>
-                                            </Show>
-                                            <For each={list()}>{(s) => <Sticker slot={s} />}</For>
-                                            <Show when={!list().length}>
-                                                <p class="cp-empty">
-                                                    {d < loadedNow().cal.today
-                                                        ? "Nothing recorded"
-                                                        : off()
-                                                          ? "A day away from lessons"
-                                                          : "Nothing planned"}
-                                                </p>
-                                            </Show>
-                                            <Show when={parent() && d >= loadedNow().cal.today}>
-                                                <button
-                                                    type="button"
-                                                    class="gc-more"
-                                                    aria-label={`Add a lesson for ${kid.name} on ${dayLong(d)}`}
-                                                    disabled={!!off()}
-                                                    onClick={() => openAddLesson(d, kid.id)}
-                                                >
-                                                    +
-                                                </button>
-                                            </Show>
-                                        </div>
-                                    );
-                                }}
+                            <For each={shown()}>
+                                {(k) => <DayCell on={d} who={k} compact={shown().length > 1} />}
                             </For>
                         </section>
                     )}
@@ -472,187 +506,518 @@ function CalendarOne(): JSX.Element {
             </div>
         );
     }
-    function Month(): JSX.Element {
+
+    function Shelf(): JSX.Element {
+        const carrying = (): boolean => carried()?.kind === "slot";
+        const total = (): number =>
+            shown().reduce((n, k) => n + shelfOf(k).reduce((m, g) => m + g.items.length, 0), 0);
         return (
-            <div class="gc-month">
-                <For each={WEEKDAY_NAMES}>
-                    {(name) => <div class="gc-month-name">{name.slice(0, 3)}</div>}
-                </For>
-                <For each={monthGrid(day().slice(0, 7))}>
-                    {(d) => (
-                        <div
-                            class="gc-month-day cp-month-day"
-                            classList={{
-                                selected: d === day(),
-                                weekend: weekdayNumber(d) > 5,
-                                out: d.slice(0, 7) !== day().slice(0, 7),
-                            }}
-                            onDragOver={(e) => {
-                                if (dragging) e.preventDefault();
-                            }}
-                            onDrop={(e) => drop(e, d)}
-                        >
-                            <button
-                                type="button"
-                                class="gc-month-in"
-                                aria-label={`Open ${dayLong(d)}`}
-                                onClick={() => selectDay(d)}
-                            >
-                                <b class="gc-month-date">{Number(d.slice(8))}</b>
-                                <Show when={d === loadedNow().cal.today}>
-                                    <span class="gc-todayword">today</span>
-                                </Show>
-                                <For each={kids()}>
-                                    {(kid) => (
-                                        <span class="gc-strips">
-                                            <Show when={kids().length > 1}>
-                                                <span class="gc-strips-name">{kid.name}</span>
-                                            </Show>
-                                            <For each={slots(loadedNow(), kid, d)}>
-                                                {(s) => (
-                                                    <span
-                                                        class={`gc-strip ${s.cell.state}`}
-                                                        style={{ "--m": marker(s.op.track) }}
-                                                        title={`${titleOf(loadedNow(), s.op.lesson)} · ${s.cell.state}`}
+            <aside class="cal-shelf" aria-labelledby="cal-shelf-title">
+                <h2 id="cal-shelf-title" class="cal-shelf-title">
+                    {kid()?.name ?? "Everyone"}
+                    <span>{plural(total(), "lesson")} to place</span>
+                </h2>
+                <Show when={carrying()}>
+                    <button
+                        type="button"
+                        class="cal-drop"
+                        onClick={() => {
+                            const c = carried();
+                            if (c?.kind === "slot") void place(c, null);
+                        }}
+                    >
+                        Take it out of the plan
+                    </button>
+                </Show>
+                <div
+                    class="cal-shelf-in"
+                    classList={{ taking: carrying() }}
+                    onDragOver={(e) => {
+                        if (carrying()) e.preventDefault();
+                    }}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        const c = carried();
+                        if (c?.kind === "slot") void place(c, null);
+                    }}
+                >
+                    <For each={shown()}>{(k) => <ShelfFor who={k} />}</For>
+                </div>
+            </aside>
+        );
+    }
+
+    /** One child's part of the shelf: what is not placed, and the control that starts them again. */
+    function ShelfFor(props: { who: Kid }): JSX.Element {
+        const groups = (): { track: string; items: Shelved[] }[] => shelfOf(props.who);
+        /** The subjects the shelf holds, and each subject's rows, so placing one leaves the rest. */
+        const tracks = (): string[] => groups().map((g) => g.track);
+        const itemsIn = (track: string): Shelved[] =>
+            groups().find((g) => g.track === track)?.items ?? [];
+        const settled = (): string[] => {
+            const here = new Set(groups().map((g) => g.track));
+            return [...new Set(now().pack.index.lessons.map((x) => x.subject))]
+                .filter(
+                    (s) =>
+                        !here.has(s) &&
+                        laneOf(now().pack.index.lessons, s, props.who.grade).length > 0,
+                )
+                .sort((a, b) => trackRank(a) - trackRank(b))
+                .map(label);
+        };
+        return (
+            <section class="cal-shelf-kid" data-kid={props.who.id}>
+                <Show when={shown().length > 1}>
+                    <h3 class="cal-shelf-name">
+                        <Portrait kid={props.who} kids={now().view.kids} />
+                        {props.who.name}
+                        <span class="cal-shelf-count">
+                            {plural(
+                                groups().reduce((n, g) => n + g.items.length, 0),
+                                "lesson",
+                            )}
+                        </span>
+                    </h3>
+                </Show>
+                <Show when={settled().length}>
+                    <p class="cal-settled">
+                        Nothing left to place in{" "}
+                        {new Intl.ListFormat("en-GB", { type: "conjunction" }).format(settled())}.
+                    </p>
+                </Show>
+                <For each={tracks()}>
+                    {(track) => (
+                        <section class="cal-shelf-group" style={{ "--m": marker(track) }}>
+                            <h4>{label(track)}</h4>
+                            <ul>
+                                <For each={itemsIn(track).slice(0, 12)}>
+                                    {(item) => {
+                                        const held = (): boolean => {
+                                            const c = carried();
+                                            return (
+                                                c?.kind === "shelf" &&
+                                                c.item.lesson === item.lesson &&
+                                                c.kid.id === props.who.id
+                                            );
+                                        };
+                                        return (
+                                            <li classList={{ held: held(), aside: !!item.op }}>
+                                                <button
+                                                    type="button"
+                                                    data-lesson={item.lesson}
+                                                    data-track={item.track}
+                                                    draggable={parent()}
+                                                    onDragStart={(e) => {
+                                                        setCarried({
+                                                            kind: "shelf",
+                                                            item,
+                                                            kid: props.who,
+                                                        });
+                                                        e.dataTransfer?.setData(
+                                                            "text/plain",
+                                                            item.lesson,
+                                                        );
+                                                    }}
+                                                    onDragEnd={() => setCarried(null)}
+                                                    aria-pressed={held()}
+                                                    aria-label={
+                                                        held()
+                                                            ? `Put ${titleOf(now(), item.lesson)} down`
+                                                            : `Pick up ${titleOf(now(), item.lesson)} to place it for ${props.who.name}`
+                                                    }
+                                                    disabled={!parent()}
+                                                    onClick={() => {
+                                                        if (held()) putDown();
+                                                        else
+                                                            pickUp({
+                                                                kind: "shelf",
+                                                                item,
+                                                                kid: props.who,
+                                                            });
+                                                    }}
+                                                >
+                                                    <Near
+                                                        class="gc-pic cal-rowpic on-paper"
+                                                        draw={(host) =>
+                                                            drawFirst(
+                                                                now(),
+                                                                factsOf(now(), item.lesson),
+                                                                host,
+                                                            )
+                                                        }
                                                     />
-                                                )}
-                                            </For>
-                                        </span>
-                                    )}
+                                                    <span class="cal-rowtitle">
+                                                        {titleOf(now(), item.lesson)}
+                                                    </span>
+                                                    <Show when={item.op}>
+                                                        <span class="cal-aside">set aside</span>
+                                                    </Show>
+                                                </button>
+                                            </li>
+                                        );
+                                    }}
                                 </For>
-                                <Show when={onDay(d).length}>
-                                    <span class="cp-load">
-                                        {plural(onDay(d).length, "session")}
-                                    </span>
+                                <Show when={itemsIn(track).length > 12}>
+                                    <li class="cal-shelf-more">
+                                        {plural(itemsIn(track).length - 12, "more lesson")}
+                                    </li>
                                 </Show>
-                                <Show
-                                    when={kids().some((k) => offOn(loadedNow().cal.off, k.id, d))}
-                                >
-                                    <span class="gc-month-note">Day off</span>
-                                </Show>
-                            </button>
-                        </div>
+                            </ul>
+                        </section>
                     )}
+                </For>
+                <Show when={!groups().length}>
+                    <p class="note">Every lesson of this grade is on the calendar.</p>
+                </Show>
+                <Show when={parent()}>
+                    <button
+                        type="button"
+                        class="cal-again"
+                        onClick={() => open(<StartAgain kid={props.who} />)}
+                    >
+                        Start {props.who.name}'s plan again
+                    </button>
+                </Show>
+            </section>
+        );
+    }
+
+    function Day(): JSX.Element {
+        const before = (): string => addDays(day(), -1);
+        const past = (): Slot[] => onDay(before());
+        return (
+            <div class="cal-dayview">
+                <div class="cal-agendas">
+                    <For each={shown()}>{(k) => <Agenda who={k} />}</For>
+                </div>
+                <section class="cal-yesterday">
+                    <p class="kicker">The day before</p>
+                    <h3 class="gc-title">{dayLong(before())}</h3>
+                    <ol class="cal-list">
+                        <For each={past()}>
+                            {(s) => (
+                                <li>
+                                    <p class="cal-when">
+                                        <Show when={shown().length > 1}>{s.kid.name} · </Show>
+                                        {stateWord(s)}
+                                    </p>
+                                    <span class="cal-what">{titleOf(now(), s.op.lesson)}</span>
+                                    <p class="note">{label(s.op.track)}</p>
+                                </li>
+                            )}
+                        </For>
+                    </ol>
+                    <Show when={!past().length}>
+                        <p class="cal-empty">Nothing on that day.</p>
+                    </Show>
+                </section>
+            </div>
+        );
+    }
+
+    /** One child's day, as the evening before reads it and as it prints. */
+    function Agenda(props: { who: Kid }): JSX.Element {
+        const list = (): Slot[] => lessonsOn(props.who, day());
+        return (
+            <section class="cal-agenda" data-kid={props.who.id}>
+                <header>
+                    <p class="kicker">
+                        {props.who.name} · {WEEKDAY_NAMES[weekdayNumber(day()) - 1]}
+                    </p>
+                    <p class="note">
+                        {plural(list().length, "lesson")} ·{" "}
+                        {list().reduce((n, s) => n + s.op.minutes, 0)} minutes planned
+                    </p>
+                </header>
+                <ol class="cal-list">
+                    <For each={list()}>
+                        {(s, i) => (
+                            <li>
+                                <Near
+                                    class="gc-pic cal-pic on-paper"
+                                    draw={(host) =>
+                                        drawFirst(now(), factsOf(now(), s.op.lesson), host)
+                                    }
+                                />
+                                <div class="cal-item">
+                                    <p class="cal-when">
+                                        {i() === 0 ? "First" : "Then"} · {s.op.minutes} min
+                                        <Show when={day() < now().cal.today}>
+                                            {" "}
+                                            · {stateWord(s)}
+                                        </Show>
+                                    </p>
+                                    <button
+                                        type="button"
+                                        class="cal-what"
+                                        onClick={() => openLesson(s)}
+                                    >
+                                        {titleOf(now(), s.op.lesson)}
+                                    </button>
+                                    <p class="note">
+                                        {label(s.op.track)}
+                                        {s.op.note ? ` · ${s.op.note}` : ""}
+                                    </p>
+                                </div>
+                            </li>
+                        )}
+                    </For>
+                </ol>
+                <Show when={!list().length}>
+                    <p class="cal-empty">
+                        {day() < now().cal.today
+                            ? "Nothing was recorded on this day."
+                            : "An open day. Put a lesson here from the shelf."}
+                    </p>
+                </Show>
+                <Show when={parent() && day() >= now().cal.today}>
+                    <div class="acts">
+                        <button
+                            type="button"
+                            class="link"
+                            onClick={() => openDayCard(day(), props.who)}
+                        >
+                            A day off or a family day
+                        </button>
+                    </div>
+                </Show>
+            </section>
+        );
+    }
+
+    function Month(): JSX.Element {
+        const grid = (): string[] => monthGrid(day().slice(0, 7));
+        /** The weeks of the grid, so each row can say how that week went. */
+        const weeks = (): string[][] => {
+            const all = grid();
+            return Array.from({ length: Math.ceil(all.length / 7) }, (_, i) =>
+                all.slice(i * 7, i * 7 + 7),
+            );
+        };
+        const done = (s: Slot): boolean => s.cell.state === "done" || s.cell.state === "late";
+        return (
+            <div class="cal-month">
+                <div class="cal-month-row cal-month-names">
+                    <For each={WEEKDAY_NAMES}>
+                        {(name) => <div class="cal-month-name">{name.slice(0, 3)}</div>}
+                    </For>
+                    <div class="cal-month-name">Week</div>
+                </div>
+                <For each={weeks()}>
+                    {(week) => {
+                        const all = (): Slot[] => week.flatMap((d) => onDay(d));
+                        return (
+                            <div class="cal-month-row">
+                                <For each={week}>{(d) => <MonthDay on={d} />}</For>
+                                <div class="cal-month-sum">
+                                    <Show
+                                        when={all().length}
+                                        fallback={<span class="cal-month-quiet">no lessons</span>}
+                                    >
+                                        <b>{all().filter(done).length}</b>
+                                        <span>of {all().length} done</span>
+                                    </Show>
+                                </div>
+                            </div>
+                        );
+                    }}
                 </For>
             </div>
         );
     }
-    function Detail(): JSX.Element {
+
+    /** A day of the month: a mark a lesson, grouped by child, with the day's own state on it. */
+    function MonthDay(props: { on: string }): JSX.Element {
+        const d = (): string => props.on;
+        const off = (who: Kid) => offOn(now().cal.off, who.id, d());
+        const everyOff = (): boolean => shown().length > 0 && shown().every((k) => !!off(k));
+        const holiday = (): string =>
+            shown()
+                .map((k) => off(k)?.note)
+                .find((note) => !!note) ?? "";
+        const lessons = (): { who: Kid; list: Slot[] }[] =>
+            shown()
+                .map((k) => ({ who: k, list: lessonsOn(k, d()) }))
+                .filter((row) => row.list.length);
+        const count = (): number => lessons().reduce((n, row) => n + row.list.length, 0);
+        const taking = (): boolean => shown().some((k) => canDrop(d(), k));
+        const target = (): Kid | undefined => shown().find((k) => canDrop(d(), k));
         return (
-            <aside id="cp-day" class="cp-detail">
-                <Tape />
-                <p class="kicker">The day in detail</p>
-                <h2 class="gc-title">{dayLong(day())}</h2>
-                <p class="note">
-                    {who() === "all" ? "Everyone" : kids()[0]?.name} ·{" "}
-                    {onDay().reduce((n, s) => n + s.op.minutes, 0)} minutes planned
-                </p>
-                <For each={onDay()}>
-                    {(s, index) => (
-                        <div class="cp-agenda">
-                            <span class="gp-subj-name" style={{ "--m": marker(s.op.track) }}>
-                                {label(s.op.track)}
+            <div
+                class="cal-month-day"
+                classList={{
+                    out: d().slice(0, 7) !== day().slice(0, 7),
+                    today: d() === now().cal.today,
+                    past: d() < now().cal.today,
+                    off: everyOff(),
+                    taking: taking(),
+                }}
+                data-date={d()}
+                onDragOver={(e) => {
+                    if (taking()) e.preventDefault();
+                }}
+                onDrop={(e) => {
+                    e.preventDefault();
+                    const k = target();
+                    if (k) drop(d(), k);
+                }}
+            >
+                <button
+                    type="button"
+                    class="cal-month-in"
+                    aria-label={`${dayLong(d())}, ${plural(count(), "lesson")}`}
+                    onClick={() => {
+                        const k = target();
+                        if (carried() && k) drop(d(), k);
+                        else move({ view: "day", at: d() });
+                    }}
+                >
+                    <b>{Number(d().slice(8))}</b>
+                    <Show when={everyOff()}>
+                        <span class="cal-month-off">{holiday() || "A day away"}</span>
+                    </Show>
+                    <For each={lessons()}>
+                        {(row) => (
+                            <span class="cal-month-kid">
+                                <Show when={shown().length > 1}>
+                                    <Portrait kid={row.who} kids={now().view.kids} />
+                                </Show>
+                                <span class="cal-month-marks">
+                                    <For each={row.list}>
+                                        {(s) => (
+                                            <i
+                                                class={`cal-mark ${s.cell.state}`}
+                                                data-state={s.cell.state}
+                                                style={{ "--m": marker(s.op.track) }}
+                                            />
+                                        )}
+                                    </For>
+                                </span>
                             </span>
-                            <button
-                                type="button"
-                                class="cp-agenda-title"
-                                onClick={() => openLesson(s)}
-                            >
-                                {titleOf(loadedNow(), s.op.lesson)}
-                            </button>
-                            <p class="note">
-                                {s.kid.name} · {s.op.minutes} min · {s.cell.state}
-                            </p>
-                            <Show when={s.op.note}>
-                                <p class="cp-note">{s.op.note}</p>
-                            </Show>
-                            <Show when={parent() && editable(s.cell)}>
-                                <div class="acts">
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        onClick={() => openLesson(s)}
-                                    >
-                                        Move / edit
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        disabled={busy()}
-                                        onClick={() => void place(s, null)}
-                                    >
-                                        For later
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        disabled={busy() || index() === 0}
-                                        onClick={() => {
-                                            const previous = onDay()
-                                                .slice(0, index())
-                                                .reverse()
-                                                .find(
-                                                    (x) =>
-                                                        x.kid.id === s.kid.id && editable(x.cell),
-                                                );
-                                            if (previous)
-                                                void save(
-                                                    [
-                                                        draft(s.kid.id, {
-                                                            ...s.op,
-                                                            order: previous.op.order - 1,
-                                                        }),
-                                                    ],
-                                                    "Changed the lesson order.",
-                                                );
-                                        }}
-                                    >
-                                        Earlier
-                                    </button>
-                                </div>
-                            </Show>
-                        </div>
-                    )}
-                </For>
-                <Show when={!onDay().length}>
-                    <p class="cp-empty">
-                        {day() < loadedNow().cal.today
-                            ? "Nothing recorded on this day."
-                            : "An open day. Add a lesson or leave room for something else."}
-                    </p>
-                </Show>
-                <Show when={parent() && day() >= loadedNow().cal.today}>
-                    <Button onClick={() => openAddLesson()}>Add a lesson</Button>
-                    <button
-                        type="button"
-                        class="link"
-                        onClick={() =>
-                            open(
-                                <DayCard
-                                    loaded={loadedNow()}
-                                    on={day()}
-                                    kid={who() === "all" ? null : (kids()[0] ?? null)}
-                                    onClose={close}
-                                    onWrite={write}
-                                />,
-                            )
-                        }
-                    >
-                        Day off / family activity
-                    </button>
-                </Show>
-            </aside>
+                        )}
+                    </For>
+                </button>
+            </div>
         );
     }
+
+    function TermView(): JSX.Element {
+        const term = (): Term | undefined => termOn(now().cal, day()) ?? now().cal.terms[0];
+        const weeksOf = (t: Term): string[] => {
+            const out: string[] = [];
+            for (let d = mondayOf(t.from); d <= t.to; d = addDays(d, 7)) out.push(d);
+            return out;
+        };
+        return (
+            <Show when={term()} fallback={<p class="note">This year has no terms set yet.</p>}>
+                {(t) => (
+                    <div class="cal-term">
+                        <p class="kicker">
+                            Term {t().n} · {dayMark(t().from)} to {dayMark(t().to)}
+                        </p>
+                        <h3 class="gc-title">{plural(weeksOf(t()).length, "week")}</h3>
+                        <For each={shown()}>
+                            {(k) => <TermFor who={k} term={t()} weeks={weeksOf(t())} />}
+                        </For>
+                    </div>
+                )}
+            </Show>
+        );
+    }
+
+    /** One child's term: a ribbon a subject over the term's weeks, and where a subject runs past it. */
+    function TermFor(props: { who: Kid; term: Term; weeks: string[] }): JSX.Element {
+        const waiting = createMemo(
+            () => new Map(shelfOf(props.who).map((g) => [g.track, g.items.length])),
+        );
+        const tracks = (): string[] =>
+            [...new Set(now().pack.index.lessons.map((x) => x.subject))]
+                .filter((s) => laneOf(now().pack.index.lessons, s, props.who.grade).length)
+                .sort((a, b) => trackRank(a) - trackRank(b));
+        /** How many of this subject's sessions fall in each week of the term. */
+        const counts = (track: string): number[] =>
+            props.weeks.map((monday) =>
+                Array.from({ length: 7 }, (_, i) => addDays(monday, i)).reduce(
+                    (n, d) =>
+                        n + lessonsOn(props.who, d).filter((s) => s.op.track === track).length,
+                    0,
+                ),
+            );
+        const behind = (track: string) => {
+            const kc = now().cal.kids.get(props.who.id);
+            if (!kc) return null;
+            const lane = laneOf(now().pack.index.lessons, track, props.who.grade);
+            const perWeek = kc.tracks.find((x) => x.track === track)?.perWeek ?? 0;
+            const up = catchUp(now().cal, kc, props.term, track, lane, perWeek);
+            return up.over ? up : null;
+        };
+        return (
+            <section class="cal-term-kid" data-kid={props.who.id}>
+                <Show when={shown().length > 1}>
+                    <h4 class="cal-shelf-name">
+                        <Portrait kid={props.who} kids={now().view.kids} />
+                        {props.who.name}
+                    </h4>
+                </Show>
+                <div class="cal-ribbons">
+                    <For each={tracks()}>
+                        {(track) => (
+                            <>
+                                <b class="cal-ribbon-name">{label(track)}</b>
+                                <div class="cal-weeks" style={{ "--m": marker(track) }}>
+                                    <span class="sr">
+                                        {`${label(track)}, ${plural(
+                                            counts(track).reduce((a, b) => a + b, 0),
+                                            "session",
+                                        )} this term`}
+                                    </span>
+                                    <For each={counts(track)}>
+                                        {(n, i) => (
+                                            <i
+                                                classList={{
+                                                    full: n >= 3,
+                                                    some: n > 0 && n < 3,
+                                                }}
+                                                title={`Week of ${dayMark(props.weeks[i()] ?? props.term.from)}: ${plural(n, "session")}`}
+                                            />
+                                        )}
+                                    </For>
+                                </div>
+                                <Show when={!counts(track).some((n) => n > 0)}>
+                                    <p class="cal-over quiet">
+                                        {`Nothing planned this term. ${plural(
+                                            waiting().get(track) ?? 0,
+                                            "lesson",
+                                        )} on the shelf.`}
+                                    </p>
+                                </Show>
+                                <Show when={behind(track)}>
+                                    {(up) => (
+                                        <p class="cal-over">
+                                            {`${label(track)} runs ${plural(up().over, "day")} past the end of term. ${
+                                                up().perWeek
+                                                    ? `${plural(up().perWeek ?? 0, "day")} a week would fit the rest in by then.`
+                                                    : "Every school day is already used."
+                                            }`}
+                                        </p>
+                                    )}
+                                </Show>
+                            </>
+                        )}
+                    </For>
+                </div>
+            </section>
+        );
+    }
+
     function EditSession(props: { slot: Slot }): JSX.Element {
         const s = props.slot;
         const [date, setDate] = createSignal(
-                s.cell.on < loadedNow().cal.today ? loadedNow().cal.today : s.cell.on,
+                s.cell.on < now().cal.today ? now().cal.today : s.cell.on,
             ),
             [duration, setDuration] = createSignal(s.op.minutes),
-            [note, setNote] = createSignal(s.op.note),
-            [remove, setRemove] = createSignal(false);
-        const submit = async (repeat = false): Promise<void> => {
+            [note, setNote] = createSignal(s.op.note);
+        const submit = async (): Promise<void> => {
             const problem = checkDate(s.kid.id, date());
             if (problem) {
                 setError(problem);
@@ -663,628 +1028,171 @@ function CalendarOne(): JSX.Element {
                 return;
             }
             await save(
-                [
-                    draft(s.kid.id, {
-                        ...s.op,
-                        id: repeat ? api.newId() : s.op.id,
-                        source: repeat ? null : s.op.source,
-                        onDay: date(),
-                        kind: repeat ? "practice" : s.op.kind,
-                        minutes: duration(),
-                        note: note(),
-                    }),
-                ],
-                repeat ? "Added another practice session." : "Updated the session.",
+                [draft(s.kid.id, { ...s.op, onDay: date(), minutes: duration(), note: note() })],
+                `Updated ${titleOf(now(), s.op.lesson)}.`,
             );
         };
         return (
             <Card
                 kicker={`${s.kid.name} · ${label(s.op.track)}`}
-                title={titleOf(loadedNow(), s.op.lesson)}
+                title={titleOf(now(), s.op.lesson)}
                 onClose={close}
             >
                 <p class="note">
                     {editable(s.cell)
-                        ? "Move this session without replacing another lesson."
-                        : "Work already started stays in the record. You can add another practice session."}
+                        ? "Move it to another day, or change how long it is planned for."
+                        : "Work already begun stays in the record."}
                 </p>
-                <div class="cp-fields">
-                    <Field label="Date">
-                        <input
-                            type="date"
-                            value={date()}
-                            min={loadedNow().cal.today}
-                            onInput={(e) => setDate(e.currentTarget.value)}
-                        />
-                    </Field>
-                    <Field label="Minutes planned">
-                        <input
-                            type="number"
-                            value={duration()}
-                            min="5"
-                            max="240"
-                            onInput={(e) => setDuration(e.currentTarget.valueAsNumber)}
-                        />
-                    </Field>
-                </div>
-                <Field label="Parent note">
-                    <textarea
-                        value={note()}
-                        maxlength="2000"
-                        onInput={(e) => setNote(e.currentTarget.value)}
-                    />
-                </Field>
-                <Show when={parent()}>
-                    <div class="acts">
-                        <Show when={editable(s.cell)}>
-                            <Button busy={busy()} onClick={() => void submit()}>
-                                Save changes
-                            </Button>
-                        </Show>
-                        <Button second busy={busy()} onClick={() => void submit(true)}>
-                            Add practice
-                        </Button>
+                <Show when={parent() && editable(s.cell)}>
+                    <div class="cal-fields">
+                        <label class="field">
+                            <span>Day</span>
+                            <input
+                                type="date"
+                                value={date()}
+                                min={now().cal.today}
+                                onInput={(e) => setDate(e.currentTarget.value)}
+                            />
+                        </label>
+                        <label class="field">
+                            <span>Minutes planned</span>
+                            <input
+                                type="number"
+                                value={duration()}
+                                min="5"
+                                max="240"
+                                onInput={(e) => setDuration(e.currentTarget.valueAsNumber)}
+                            />
+                        </label>
                     </div>
-                    <Show when={editable(s.cell)}>
-                        <div class="acts">
-                            <button
-                                type="button"
-                                class="link"
-                                disabled={busy()}
-                                onClick={() => void place(s, null)}
-                            >
-                                Set aside for later
-                            </button>
-                            <button type="button" class="link" onClick={() => setRemove(true)}>
-                                Remove session
-                            </button>
-                        </div>
-                        <Show when={remove()}>
-                            <div class="cp-impact">
-                                <p>
-                                    Remove this session from the plan? The lesson and completed work
-                                    remain available.
-                                </p>
-                                <Button
-                                    busy={busy()}
-                                    onClick={() =>
-                                        void save(
-                                            [draft(s.kid.id, { ...s.op, removed: true })],
-                                            "Removed the session from the plan.",
-                                        )
-                                    }
-                                >
-                                    Remove this session
-                                </Button>
-                            </div>
-                        </Show>
-                    </Show>
+                    <label class="field">
+                        <span>A note for yourself</span>
+                        <textarea
+                            value={note()}
+                            maxlength="2000"
+                            onInput={(e) => setNote(e.currentTarget.value)}
+                        />
+                    </label>
+                    <div class="acts">
+                        <Button busy={busy()} onClick={() => void submit()}>
+                            Keep this
+                        </Button>
+                        <button
+                            type="button"
+                            class="link"
+                            disabled={busy()}
+                            onClick={() => void place({ kind: "slot", slot: s }, null)}
+                        >
+                            Take it out
+                        </button>
+                    </div>
                 </Show>
-                <Link href={`/explore/${encodeURIComponent(s.op.lesson)}`}>Open the lesson</Link>
             </Card>
         );
     }
-    function Library(props: { choose: (id: string) => void; grade: number }): JSX.Element {
-        const [find, setFind] = createSignal(""),
-            [grade, setGrade] = createSignal(String(props.grade)),
-            [subject, setSubject] = createSignal("all");
-        createEffect(() => setGrade(String(props.grade)));
-        const found = () =>
-            loadedNow().pack.index.lessons.filter(
-                (l) =>
-                    (grade() === "all" || l.grade === Number(grade())) &&
-                    (subject() === "all" || l.subject === subject()) &&
-                    `${l.title} ${label(l.subject)}`.toLowerCase().includes(find().toLowerCase()),
-            );
+
+    function WhoseDays(): JSX.Element {
         return (
-            <>
-                <div class="cp-filters">
-                    <Field label="Find a lesson">
-                        <input
-                            type="search"
-                            value={find()}
-                            placeholder="Search lessons"
-                            onInput={(e) => setFind(e.currentTarget.value)}
-                        />
-                    </Field>
-                    <Field label="Grade">
-                        <Select value={grade()} onChange={(e) => setGrade(e.currentTarget.value)}>
-                            <option value="all">All grades</option>
-                            <For
-                                each={[
-                                    ...new Set(loadedNow().pack.index.lessons.map((l) => l.grade)),
-                                ].sort((a, b) => a - b)}
-                            >
-                                {(g) => <option value={g}>Grade {g}</option>}
-                            </For>
-                        </Select>
-                    </Field>
-                    <Field label="Subject">
-                        <Select
-                            value={subject()}
-                            onChange={(e) => setSubject(e.currentTarget.value)}
-                        >
-                            <option value="all">All subjects</option>
-                            <For
-                                each={[
-                                    ...new Set(
-                                        loadedNow().pack.index.lessons.map((l) => l.subject),
-                                    ),
-                                ]}
-                            >
-                                {(s) => <option value={s}>{label(s)}</option>}
-                            </For>
-                        </Select>
-                    </Field>
-                </div>
-                <p class="note">{plural(found().length, "lesson")}</p>
-                <div class="cp-library">
-                    <For each={found()}>
-                        {(l) => (
-                            <article class="cp-library-row">
-                                <Near
-                                    class="gc-pic on-paper"
-                                    draw={(host) => drawFirst(loadedNow(), l, host)}
-                                />
-                                <div>
-                                    <h3>{l.title}</h3>
-                                    <p class="note">
-                                        {label(l.subject)} · Grade {l.grade} · Unit {l.unit}
-                                    </p>
-                                </div>
-                                <a
-                                    href={`/explore/${encodeURIComponent(l.id)}`}
-                                    target="_blank"
-                                    rel="noopener"
-                                >
-                                    Preview
-                                </a>
-                                <Show when={parent()}>
-                                    <Button second busy={busy()} onClick={() => props.choose(l.id)}>
-                                        Add
-                                    </Button>
-                                </Show>
-                            </article>
+            <Card kicker="School days" title="Whose school days?" onClose={close}>
+                <div class="cal-whose">
+                    <For each={kids()}>
+                        {(k) => (
+                            <button type="button" class="cal-whochip" onClick={() => openDays(k)}>
+                                <Portrait kid={k} kids={now().view.kids} />
+                                {k.name}
+                            </button>
                         )}
                     </For>
-                    <Show when={!found().length}>
-                        <p class="note">No lessons match. Try another subject, grade or search.</p>
-                    </Show>
                 </div>
-            </>
+            </Card>
         );
     }
-    function AddLessons(props: { on: string; kid: string; picked?: string }): JSX.Element {
-        const [kid, setKid] = createSignal(props.kid),
-            [date, setDate] = createSignal(
-                props.on < loadedNow().cal.today ? loadedNow().cal.today : props.on,
+
+    function StartAgain(props: { kid: Kid }): JSX.Element {
+        const from = (): string => addDays(now().cal.today, 1);
+        const drafts = (): Draft[] => {
+            const l = now();
+            const tracks = [...new Set(l.pack.index.lessons.map((x) => x.subject))].filter(
+                (s) => laneOf(l.pack.index.lessons, s, props.kid.grade).length,
             );
-        const add = async (id: string): Promise<void> => {
-            const problem = checkDate(kid(), date());
-            if (problem) {
-                setError(problem);
-                return;
-            }
-            const lesson = factsOf(loadedNow(), id);
-            if (!lesson) return;
-            const op: SessionOp = {
-                op: "session",
-                id: api.newId(),
-                source: null,
-                track: lesson.subject,
-                lesson: id,
-                onDay: date(),
-                kind: "lesson",
-                minutes: minutes(lesson.subject),
-                order: 1000,
-                note: "",
-                removed: false,
-            };
-            await save([draft(kid(), op)], "");
+            const pauses = tracks.map((track) =>
+                draft(props.kid.id, {
+                    op: "routine",
+                    track,
+                    from: from(),
+                    weekdays: [],
+                    sessions: 1,
+                } satisfies PlanOp),
+            );
+            const placed = sessionChanges(
+                movesOf(l.events, props.kid.id, l.me.family.time_zone),
+            ).filter((s) => !s.removed && s.onDay && s.onDay >= from());
+            return [
+                ...pauses,
+                ...placed.map((op) => draft(props.kid.id, { ...op, removed: true })),
+            ];
         };
         return (
             <Card
-                kicker="The calendar"
-                title="Add to the day"
-                lead="Choose a lesson to add to the day."
+                kicker={props.kid.name}
+                title={`Start ${props.kid.name}'s plan again`}
                 onClose={close}
             >
-                <div class="cp-fields">
-                    <Field label="Child">
-                        <Select value={kid()} onChange={(e) => setKid(e.currentTarget.value)}>
-                            <For each={loadedNow().view.kids}>
-                                {(k) => <option value={k.id}>{k.name}</option>}
-                            </For>
-                        </Select>
-                    </Field>
-                    <Field label="Lesson date">
-                        <input
-                            type="date"
-                            value={date()}
-                            min={loadedNow().cal.today}
-                            onInput={(e) => setDate(e.currentTarget.value)}
-                        />
-                    </Field>
-                </div>
-                <Show
-                    when={props.picked}
-                    fallback={
-                        <Library
-                            grade={loadedNow().view.kids.find((k) => k.id === kid())?.grade ?? 1}
-                            choose={(id) => void add(id)}
-                        />
-                    }
-                >
-                    <h3>{titleOf(loadedNow(), props.picked)}</h3>
-                    <Button busy={busy()} onClick={() => void add(props.picked ?? "")}>
-                        Add this lesson
-                    </Button>
-                </Show>
-                <Button second disabled={busy()} onClick={close}>
-                    Cancel
-                </Button>
-            </Card>
-        );
-    }
-    function Routine(props: { kid: Kid; track: string; pace?: number }): JSX.Element {
-        const l = loadedNow(),
-            k = l.cal.kids.get(props.kid.id);
-        if (!k) throw new Error("This child’s calendar has not loaded.");
-        const latest = movesOf(l.events, props.kid.id, l.me.family.time_zone)
-            .flatMap((m) => (m.op.op === "routine" && m.op.track === props.track ? [m.op] : []))
-            .at(-1);
-        const normal = k.tracks.find((t) => t.track === props.track)?.perWeek ?? 0;
-        const initial =
-            props.pace === undefined
-                ? (latest?.weekdays ??
-                  pickWeekdays(k.schoolDays, normal, turnOf(props.track)).filter(isWeekday))
-                : pickWeekdays(k.schoolDays, props.pace, turnOf(props.track)).filter(isWeekday);
-        const [days, setDays] = createSignal<Weekday[]>(initial),
-            [count, setCount] = createSignal(latest?.sessions ?? 1),
-            [from, setFrom] = createSignal(day() < l.cal.today ? l.cal.today : day());
-        const op = (): PlanOp => ({
-            op: "routine",
-            track: props.track,
-            from: from(),
-            weekdays: days().filter((d) => k.schoolDays.includes(d)),
-            sessions: count(),
-        });
-        const preview = createMemo(() => {
-            const moves = movesOf(l.events, props.kid.id, l.me.family.time_zone);
-            const lane = laneOf(l.pack.index.lessons, props.track, props.kid.grade);
-            const after = trackDays({
-                track: props.track,
-                lessons: lane,
-                perWeek: normal,
-                start: k.start,
-                today: l.cal.today,
-                until: addDays(l.cal.today, 90),
-                moves: [...moves, { on: l.cal.today, op: op() }],
-                sittings: l.sittings.filter(
-                    (s) => s.child === props.kid.id && lane.includes(s.lesson),
-                ),
-            });
-            return after.filter((d) => d.on >= from()).length;
-        });
-        return (
-            <Card
-                kicker={`${props.kid.name} · ${label(props.track)}`}
-                title="Shape the usual week"
-                onClose={close}
-            >
-                <h3>Which days?</h3>
-                <Days value={days()} allowed={k.schoolDays} change={setDays} />
-                <div class="cp-fields">
-                    <Field label="Sessions on each chosen day">
-                        <input
-                            type="number"
-                            min="1"
-                            max="3"
-                            value={count()}
-                            onInput={(e) => setCount(e.currentTarget.valueAsNumber)}
-                        />
-                    </Field>
-                    <Field label="Starting from">
-                        <input
-                            type="date"
-                            min={l.cal.today}
-                            value={from()}
-                            onInput={(e) => setFrom(e.currentTarget.value)}
-                        />
-                    </Field>
-                </div>
-                <div class="cp-impact">
-                    <h3>What will change</h3>
-                    <p>
-                        {days().length
-                            ? `${days().length * count()} sessions a week.`
-                            : "This subject will be paused."}{" "}
-                        {preview()} sessions projected in the next 90 days from this date. Lessons
-                        you placed yourself and finished work stay where they are.
-                    </p>
-                </div>
-                <Button
-                    busy={busy()}
-                    onClick={() => {
-                        if (
-                            !from() ||
-                            from() < l.cal.today ||
-                            days().some((d) => !k.schoolDays.includes(d)) ||
-                            !Number.isInteger(count()) ||
-                            count() < 1 ||
-                            count() > 3
-                        ) {
-                            setError("Choose today or later, and 1 to 3 sessions per day.");
-                            return;
+                <p>
+                    This clears what is planned from tomorrow and leaves the shelf full, so you can
+                    build the weeks yourself. Finished work stays in {props.kid.name}'s record, and
+                    you can put this back.
+                </p>
+                <div class="acts">
+                    <Button
+                        busy={busy()}
+                        onClick={() =>
+                            void save(
+                                drafts(),
+                                `Cleared ${props.kid.name}'s plan from ${dayMark(from())}.`,
+                            )
                         }
-                        void save(
-                            [draft(props.kid.id, op())],
-                            `Changed ${props.kid.name}’s ${label(props.track).toLowerCase()} routine.`,
-                        );
-                    }}
-                >
-                    Apply routine
-                </Button>
+                    >
+                        Clear the plan ahead
+                    </Button>
+                    <Button second disabled={busy()} onClick={close}>
+                        Keep it as it is
+                    </Button>
+                </div>
             </Card>
         );
     }
-    function Subjects(): JSX.Element {
-        return (
-            <div class="cp-subjects">
-                <For each={kids()}>
-                    {(kid) => (
-                        <section class="gp-sheet">
-                            <header class="gp-who">
-                                <div>
-                                    <h2 class="gp-name">{kid.name}</h2>
-                                    <p class="note">Grade {kid.grade}</p>
-                                </div>
-                                <Portrait kid={kid} kids={loadedNow().view.kids} />
-                            </header>
-                            <For
-                                each={[
-                                    ...new Set(
-                                        loadedNow().pack.index.lessons.map((l) => l.subject),
-                                    ),
-                                ].filter(
-                                    (s) =>
-                                        laneOf(loadedNow().pack.index.lessons, s, kid.grade).length,
-                                )}
-                            >
-                                {(track) => {
-                                    const rule = () =>
-                                        movesOf(
-                                            loadedNow().events,
-                                            kid.id,
-                                            loadedNow().me.family.time_zone,
-                                        )
-                                            .flatMap((m) =>
-                                                m.op.op === "routine" &&
-                                                m.op.track === track &&
-                                                m.op.from <= loadedNow().cal.today
-                                                    ? [m.op]
-                                                    : [],
-                                            )
-                                            .at(-1);
-                                    const pace = () =>
-                                        rule()?.weekdays.length ??
-                                        loadedNow()
-                                            .cal.kids.get(kid.id)
-                                            ?.tracks.find((t) => t.track === track)?.perWeek ??
-                                        0;
-                                    const lane = () =>
-                                        laneOf(loadedNow().pack.index.lessons, track, kid.grade);
-                                    const done = () =>
-                                        new Set(
-                                            loadedNow()
-                                                .sittings.filter(
-                                                    (s) => s.child === kid.id && s.finished,
-                                                )
-                                                .map((s) => s.lesson),
-                                        );
-                                    // how the term is going for this subject, which used to be the year view's line
-                                    const behind = () => {
-                                        const l = loadedNow(),
-                                            k = l.cal.kids.get(kid.id),
-                                            term = termOn(l.cal, l.cal.today);
-                                        if (!k || !term || term.from > l.cal.today) return null;
-                                        const up = catchUp(
-                                            l.cal,
-                                            k,
-                                            term,
-                                            track,
-                                            lane(),
-                                            pace() || 0,
-                                        );
-                                        return up.over ? up : null;
-                                    };
-                                    return (
-                                        <section class="gp-subj" style={{ "--m": marker(track) }}>
-                                            <div class="gp-subj-top">
-                                                <h3 class="gp-subj-name">{label(track)}</h3>
-                                                <fieldset class="gp-scale">
-                                                    <legend class="sr">
-                                                        {label(track)}, days a week
-                                                    </legend>
-                                                    <For
-                                                        each={Array.from(
-                                                            {
-                                                                length:
-                                                                    (loadedNow().cal.kids.get(
-                                                                        kid.id,
-                                                                    )?.schoolDays.length ?? 5) + 1,
-                                                            },
-                                                            (_, i) => i,
-                                                        )}
-                                                    >
-                                                        {(n) => (
-                                                            <button
-                                                                type="button"
-                                                                aria-pressed={pace() === n}
-                                                                disabled={!parent()}
-                                                                aria-label={`${kid.name}, ${label(track)}, ${n} days a week`}
-                                                                onClick={() =>
-                                                                    openRoutine(kid, track, n)
-                                                                }
-                                                            >
-                                                                {n || "Off"}
-                                                            </button>
-                                                        )}
-                                                    </For>
-                                                </fieldset>
-                                            </div>
-                                            <p class="gp-fact">
-                                                <span class="gp-rail" aria-hidden="true">
-                                                    <For each={lane()}>
-                                                        {(id) => (
-                                                            <i
-                                                                classList={{ done: done().has(id) }}
-                                                            />
-                                                        )}
-                                                    </For>
-                                                </span>
-                                                {lane().filter((id) => done().has(id)).length} of{" "}
-                                                {lane().length} done ·{" "}
-                                                {pace() * (rule()?.sessions ?? 1)} sessions a week
-                                            </p>
-                                            <Show when={behind()}>
-                                                {(up) => (
-                                                    <p class="gc-catch">
-                                                        {`The plan runs ${plural(up().over, "day")} past the term's end. ${
-                                                            up().perWeek
-                                                                ? `${plural(up().perWeek ?? 0, "day")} a week would fit the rest in by then.`
-                                                                : "Every school day is already used."
-                                                        }`}
-                                                    </p>
-                                                )}
-                                            </Show>
-                                            <Show when={parent()}>
-                                                <button
-                                                    type="button"
-                                                    class="link"
-                                                    onClick={() => openRoutine(kid, track)}
-                                                >
-                                                    Choose days & sessions
-                                                </button>
-                                            </Show>
-                                        </section>
-                                    );
-                                }}
-                            </For>
-                            <Show when={parent()}>
-                                <Worlds
-                                    loaded={loadedNow()}
-                                    kid={kid}
-                                    onWrite={write}
-                                    onCard={open}
-                                />
-                            </Show>
-                        </section>
-                    )}
-                </For>
-            </div>
-        );
-    }
-    function Later(): JSX.Element {
-        const parked = () =>
-            kids().flatMap((k) =>
-                sessionChanges(movesOf(loadedNow().events, k.id, loadedNow().me.family.time_zone))
-                    .filter((s) => !s.onDay && !s.removed)
-                    .map((op) => ({ kid: k, op })),
-            );
-        return (
-            <Card kicker="The calendar" title="For later" onClose={close}>
-                <p class="note">Choose a date to bring a session back to the plan.</p>
-                <For each={parked()}>
-                    {(s) => (
-                        <div class="cp-later">
-                            <h3>{titleOf(loadedNow(), s.op.lesson)}</h3>
-                            <p>{s.kid.name}</p>
-                            <Button
-                                second
-                                onClick={() =>
-                                    openLesson({
-                                        ...s,
-                                        cell: {
-                                            on: day(),
-                                            weekday: "",
-                                            kind: s.op.kind,
-                                            lesson: s.op.lesson,
-                                            state: "planned",
-                                            minutes: 0,
-                                            track: s.op.track,
-                                        },
-                                    })
-                                }
-                            >
-                                Choose a date
-                            </Button>
-                        </div>
-                    )}
-                </For>
-                <Show when={!parked().length}>
-                    <p class="note">Nothing set aside for now.</p>
-                </Show>
-            </Card>
-        );
-    }
-    function School(): JSX.Element {
-        return (
-            <Card kicker="The calendar" title="School days & breaks" onClose={close}>
-                <For each={kids()}>
-                    {(kid) => (
-                        <div class="cp-later">
-                            <h3>{kid.name}</h3>
-                            <p class="note">
-                                {loadedNow()
-                                    .cal.kids.get(kid.id)
-                                    ?.schoolDays.map((d) => WEEKDAY_NAMES[d - 1])
-                                    .join(", ")}
-                            </p>
-                            <Button
-                                second
-                                onClick={() =>
-                                    open(
-                                        <SchoolDaysCard
-                                            loaded={loadedNow()}
-                                            kid={kid}
-                                            onClose={close}
-                                            onWrite={write}
-                                        />,
-                                    )
-                                }
-                            >
-                                Change {kid.name}’s days
-                            </Button>
-                        </div>
-                    )}
-                </For>
-                <Button
-                    second
-                    onClick={() =>
-                        open(
-                            <DayCard
-                                loaded={loadedNow()}
-                                on={day()}
-                                kid={null}
-                                onClose={close}
-                                onWrite={write}
-                            />,
-                        )
-                    }
-                >
-                    Plan a break or family day
-                </Button>
-            </Card>
-        );
-    }
-    const advance = (n: number): void => {
+
+    const step = (n: number): void => {
         if (view() === "month") {
             const d = new Date(`${day().slice(0, 7)}-01T12:00:00Z`);
             d.setUTCMonth(d.getUTCMonth() + n);
             move({ at: d.toISOString().slice(0, 10) });
+        } else if (view() === "day") move({ at: addDays(day(), n) });
+        else if (view() === "term") {
+            const terms = now().cal.terms;
+            const at = terms.findIndex((t) => t.from <= day() && day() <= t.to);
+            const next = terms[Math.min(terms.length - 1, Math.max(0, (at < 0 ? 0 : at) + n))];
+            if (next) move({ at: next.from });
         } else move({ at: addDays(day(), n * 7) });
     };
+    /** What today holds for whoever is chosen, and what the page is for. */
+    const todayLine = (): string => {
+        const today = now().cal.today;
+        return `${plural(onDay(today).length, "lesson")} today, ${dayMark(today)}. Plan the days and shape the weeks ahead.`;
+    };
+    const heading = (): string => {
+        if (view() === "day") return dayLong(day());
+        if (view() === "month")
+            return new Date(`${day()}T12:00:00Z`).toLocaleDateString("en-GB", {
+                month: "long",
+                year: "numeric",
+                timeZone: "UTC",
+            });
+        if (view() === "term") return `Term ${termOn(now().cal, day())?.n ?? 1}`;
+        return `Week of ${dayMark(mondayOf(day()))}`;
+    };
+
     return (
         <Show when={loaded.latest} fallback={<Waiting title="Opening the calendar" />}>
             <Show
@@ -1298,201 +1206,162 @@ function CalendarOne(): JSX.Element {
                 }
             >
                 {(l) => (
-                    <div class="gc cp">
-                        <Postcard
-                            wide
-                            kicker="Your family’s learning plan"
-                            title="The calendar"
-                            lead={`${plural(onDay().length, "session")} on ${dayMark(day())}. Plan the days and shape the weeks ahead.`}
-                        >
-                            <Seg
-                                legend="Whose plan"
-                                value={who()}
-                                options={[
-                                    ...(l().view.kids.length > 1
-                                        ? [{ value: "all", label: "Everyone" }]
-                                        : []),
-                                    ...l().view.kids.map((k) => ({ value: k.id, label: k.name })),
-                                ]}
-                                onChange={(id) => move({ who: id })}
-                            />
-                            <Show when={parent() && kids().length}>
-                                <div class="acts">
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        onClick={() => open(<School />)}
-                                    >
-                                        School days & breaks
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        onClick={() =>
-                                            open(
-                                                <TermsCard
-                                                    loaded={l()}
-                                                    onClose={close}
-                                                    onWrite={write}
-                                                />,
-                                            )
-                                        }
-                                    >
-                                        Term dates
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="link"
-                                        onClick={() => open(<Later />)}
-                                    >
-                                        For later
-                                    </button>
-                                </div>
-                            </Show>
-                        </Postcard>
-                        <Show when={said()}>
-                            <div class="cp-said">
-                                <Say
-                                    tone="success"
-                                    text={said()}
-                                    dismissible
-                                    onDismiss={() => setSaid("")}
-                                    action={
-                                        last().length
-                                            ? {
-                                                  label: "Put it back",
-                                                  run: () => {
-                                                      if (!busy()) void undo();
-                                                  },
-                                              }
-                                            : redo().length
-                                              ? {
-                                                    label: "Redo",
-                                                    run: () => {
-                                                        if (!busy()) void reapply();
-                                                    },
-                                                }
-                                              : undefined
-                                    }
-                                />
-                            </div>
-                        </Show>
-                        <Show when={error() && !card()}>
-                            <Say text={error()} />
-                        </Show>
+                    <div class="gc cal" classList={{ carrying: !!carried() }}>
                         <Show
                             when={kids().length}
                             fallback={
-                                <Postcard
-                                    note
-                                    kicker="The calendar"
-                                    title="Room for their first week"
-                                    lead="Add a child to choose subjects and plan their lessons."
-                                >
+                                <section class="cal-card cal-plain">
+                                    <h2 class="gc-title">Room for their first week</h2>
+                                    <p class="note">
+                                        Add a child to choose subjects and plan their lessons.
+                                    </p>
                                     <Show when={parent()}>
                                         <Button onClick={openAdd}>Add a child</Button>
                                     </Show>
-                                </Postcard>
+                                </section>
                             }
                         >
-                            <div class="cp-layout" classList={{ full: view() === "subjects" }}>
-                                <section class="gc-sheet cp-main">
-                                    <Tape />
-                                    <Seg
-                                        legend="Which view"
-                                        value={view()}
-                                        options={[
-                                            { value: "week", label: "The week" },
-                                            { value: "month", label: "The month" },
-                                            { value: "subjects", label: "Subjects & pace" },
-                                        ]}
-                                        onChange={(v) => move({ view: v })}
-                                    />
-                                    <Show when={view() === "week" || view() === "month"}>
-                                        <header class="gc-head">
-                                            <h2 class="gc-title">
-                                                {view() === "month"
-                                                    ? new Date(
-                                                          `${day()}T12:00:00Z`,
-                                                      ).toLocaleDateString("en-GB", {
-                                                          month: "long",
-                                                          year: "numeric",
-                                                          timeZone: "UTC",
-                                                      })
-                                                    : `${dayMark(mondayOf(day()))} – ${dayMark(addDays(mondayOf(day()), 6))}`}
-                                            </h2>
-                                            <div class="acts">
-                                                <Button second onClick={() => advance(-1)}>
-                                                    Previous
-                                                </Button>
-                                                <Button
-                                                    second
-                                                    onClick={() => move({ at: l().cal.today })}
+                            <header class="cal-card cal-head">
+                                <div class="cal-headline">
+                                    <p class="kicker">Your family's learning plan</p>
+                                    <h1 class="cal-name">Calendar</h1>
+                                    <p class="note">{todayLine()}</p>
+                                </div>
+                                <p class="kicker cal-chips">
+                                    <Show when={kids().length > 1} fallback={kid()?.name}>
+                                        <button
+                                            type="button"
+                                            class="cal-whochip plain"
+                                            aria-pressed={whose() === EVERYONE}
+                                            onClick={() => move({ who: EVERYONE })}
+                                        >
+                                            Everyone
+                                        </button>
+                                        <For each={kids()}>
+                                            {(k) => (
+                                                <button
+                                                    type="button"
+                                                    class="cal-whochip"
+                                                    aria-pressed={k.id === kid()?.id}
+                                                    onClick={() => move({ who: k.id })}
                                                 >
-                                                    Today
-                                                </Button>
-                                                <Button second onClick={() => advance(1)}>
-                                                    Next
-                                                </Button>
-                                                <input
-                                                    type="date"
-                                                    aria-label="Jump to a date"
-                                                    value={day()}
-                                                    onChange={(e) => {
-                                                        if (e.currentTarget.value)
-                                                            move({ at: e.currentTarget.value });
-                                                    }}
-                                                />
-                                            </div>
-                                            <Show when={view() === "week"}>
-                                                <label class="cp-check">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={weekends()}
-                                                        onChange={(e) =>
-                                                            setWeekends(e.currentTarget.checked)
-                                                        }
-                                                    />
-                                                    Show weekends
-                                                </label>
-                                            </Show>
-                                        </header>
+                                                    <Portrait kid={k} kids={l().view.kids} />
+                                                    {k.name}
+                                                </button>
+                                            )}
+                                        </For>
                                     </Show>
-                                    <Show when={view() === "week"}>
-                                        <Week />
-                                    </Show>
-                                    <Show when={view() === "month"}>
-                                        <Month />
-                                    </Show>
-                                    <Show when={view() === "subjects"}>
-                                        <Subjects />
-                                    </Show>
-                                    <footer class="gc-foot">
-                                        <p class="note">
-                                            Lessons you place stay put when the routine changes.
-                                            Finished work stays in the record.
-                                        </p>
+                                </p>
+                                <fieldset class="cal-views">
+                                    <legend class="sr">Which view</legend>
+                                    <For each={VIEWS}>
+                                        {(v) => (
+                                            <button
+                                                type="button"
+                                                aria-pressed={view() === v.value}
+                                                onClick={() => move({ view: v.value })}
+                                            >
+                                                {v.label}
+                                            </button>
+                                        )}
+                                    </For>
+                                </fieldset>
+                                <div class="cal-quiet">
+                                    <Show when={last().length && !carried()}>
                                         <button
                                             type="button"
                                             class="link"
-                                            onClick={() => window.print()}
+                                            onClick={() => {
+                                                if (!busy()) void undo();
+                                            }}
                                         >
-                                            Print this view
+                                            Put it back
                                         </button>
-                                    </footer>
+                                    </Show>
+                                    <Show when={parent()}>
+                                        <button
+                                            type="button"
+                                            class="link"
+                                            onClick={() => openDays(kid())}
+                                        >
+                                            School days
+                                        </button>
+                                    </Show>
+                                    <Show when={parent()}>
+                                        <button
+                                            type="button"
+                                            class="link"
+                                            onClick={() =>
+                                                open(
+                                                    <TermsCard
+                                                        loaded={l()}
+                                                        onClose={close}
+                                                        onWrite={write}
+                                                    />,
+                                                )
+                                            }
+                                        >
+                                            Term dates
+                                        </button>
+                                    </Show>
+                                </div>
+                            </header>
+                            <Show when={error() && !card()}>
+                                <div class="cal-said">
+                                    <Say text={error()} />
+                                </div>
+                            </Show>
+                            <div class="cal-body" classList={{ withshelf: view() === "week" }}>
+                                <section class="cal-main">
+                                    <div class="cal-mainhead">
+                                        <h2 class="gc-title">{heading()}</h2>
+                                        <div class="cal-steps">
+                                            <button
+                                                type="button"
+                                                aria-label="Go back"
+                                                onClick={() => step(-1)}
+                                            >
+                                                ‹
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => move({ at: l().cal.today })}
+                                            >
+                                                Today
+                                            </button>
+                                            <button
+                                                type="button"
+                                                aria-label="Go forward"
+                                                onClick={() => step(1)}
+                                            >
+                                                ›
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="cal-view">
+                                        <Show when={view() === "day"}>
+                                            <Day />
+                                        </Show>
+                                        <Show when={view() === "week"}>
+                                            <Week />
+                                        </Show>
+                                        <Show when={view() === "month"}>
+                                            <Month />
+                                        </Show>
+                                        <Show when={view() === "term"}>
+                                            <TermView />
+                                        </Show>
+                                    </div>
                                 </section>
-                                <Show when={view() !== "subjects"}>
-                                    <Detail />
+                                <Show when={view() === "week"}>
+                                    <Shelf />
                                 </Show>
-                            </div>
-                            <div class="gc-sheet cp-history">
-                                <Changes loaded={l()} onWrite={write} />
                             </div>
                         </Show>
                         <Show when={card()}>
                             {(c) => (
                                 <Dialog two onClose={close}>
-                                    <div class="cp-editor">
+                                    <div class="cal-editor">
                                         <Show when={error()}>
                                             <Say text={error()} />
                                         </Show>

@@ -1,20 +1,5 @@
-.gc {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(20px, 3vw, 40px);
-}
-.gc > .postcard {
-    align-self: center;
-    width: min(100%, 760px);
-    min-height: 0;
-}
-.gc > .postcard.one.wide {
-    padding-top: 20px;
-    padding-bottom: 18px;
-}
-.gc > .postcard .postcard-msg {
-    gap: 6px;
-}
+/* The furniture the calendar's cards and stickers share; the screen's own layout is in
+   calendar-planner.css, and `.gc` is what print scopes by. */
 .gc-seg legend {
     width: 100%;
     padding: 0 0 4px;
@@ -29,18 +14,6 @@
     padding: 0 14px;
     font-size: 15px;
 }
-.gc-sheet {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: clamp(16px, 2vw, 28px);
-    background: var(--card);
-    border-radius: 6px;
-    box-shadow:
-        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
-        0 22px 40px -28px color-mix(in srgb, var(--ink) 50%, transparent);
-}
 .gc-head {
     display: flex;
     flex-wrap: wrap;
@@ -53,46 +26,6 @@
     font-variation-settings:
         "INFM" 70,
         "BNCE" 20;
-}
-.gc-dayhead {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    min-height: 56px;
-    padding: 6px 10px;
-    color: var(--ink);
-    text-align: left;
-    background: none;
-    border: 0;
-    border-radius: 10px;
-    cursor: pointer;
-}
-.gc-dayhead:hover {
-    background: color-mix(in srgb, var(--glow) 20%, transparent);
-}
-.gc-date {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-.gc-date b {
-    font: 700 28px / 1 var(--f-hand);
-    font-variation-settings: "INFM" 100;
-}
-.gc-date span {
-    font: 500 10.5px / 1.2 var(--f-mono);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-}
-.gc-dayhead.today .gc-date b {
-    padding: 0 6px;
-    background: linear-gradient(transparent 56%, var(--glow) 56%, var(--glow) 92%, transparent 92%);
-}
-.gc-todayword {
-    font: 600 13px var(--f-hand);
-    color: var(--pen);
 }
 .gc-cell {
     position: relative;
@@ -168,10 +101,6 @@
 .gc-sticker-title {
     font: 700 12.5px / 1.2 var(--f-read);
 }
-.gc-sticker-sub {
-    font: 400 11.5px / 1.25 var(--f-read);
-    color: var(--ink-soft);
-}
 .gc-sticker.missed .gc-sticker-in {
     background: transparent;
     box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 18%, transparent);
@@ -185,186 +114,10 @@
         0 0 0 1px color-mix(in srgb, var(--ok) 40%, transparent),
         0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
 }
-.gc-tag {
-    font: 600 13px / 1.3 var(--f-hand);
-    color: var(--pen);
-}
-.gc-tag.off {
-    color: var(--ink-soft);
-}
-.gc-more {
-    position: absolute;
-    left: 8px;
-    bottom: 4px;
-    width: 44px;
-    height: 44px;
-    font: 700 20px / 1 var(--f-read);
-    color: var(--ink-soft);
-    background: none;
-    border: 1.5px dashed var(--grid);
-    border-radius: 8px;
-    cursor: pointer;
-}
-.gc-more:hover {
-    color: var(--pen);
-    border-color: var(--pen);
-}
-.gc-foot {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 14px 24px;
-    padding-top: 12px;
-    border-top: 1.5px dashed var(--grid);
-}
-.gc-month {
-    --sq: 20px;
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background-color: var(--paper);
-    background-image:
-        linear-gradient(var(--grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: var(--sq) var(--sq);
-    border: 1px solid var(--grid);
-    border-radius: 2px;
-}
-.gc-month-name {
-    padding: 6px 8px 2px;
-    font: 500 10.5px / 1.2 var(--f-mono);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-}
-.gc-month-day {
-    position: relative;
-    border-top: 1.5px solid color-mix(in srgb, var(--ink) 22%, var(--grid));
-    border-left: 1.5px solid color-mix(in srgb, var(--ink) 22%, var(--grid));
-}
-.gc-month-day:nth-child(7n + 1) {
-    border-left: 0;
-}
-.gc-month-day.weekend,
-.gc-month-day.rest {
-    background: color-mix(in srgb, var(--ink) 4%, transparent);
-}
-.gc-month-day.off {
-    background-image: repeating-linear-gradient(
-        45deg,
-        color-mix(in srgb, var(--ink) 6%, transparent) 0 6px,
-        transparent 6px 12px
-    );
-}
-.gc-month-day.out .gc-month-in {
-    opacity: 0.45;
-}
-.gc-month-day.before .gc-month-in {
-    opacity: 0.3;
-}
-.gc-month-in {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    min-height: 92px;
-    padding: 6px 7px 8px;
-    color: var(--ink);
-    text-align: left;
-    background: none;
-    border: 0;
-    cursor: pointer;
-}
-.gc-month-in:hover,
-.gc-month-in:focus-visible {
-    background: color-mix(in srgb, var(--sky) 20%, transparent);
-}
-.gc-month-date {
-    font: 700 17px / 1 var(--f-hand);
-}
-.gc-month-note {
-    align-self: flex-start;
-    padding: 1px 8px 2px;
-    font: 600 12px / 1.3 var(--f-hand);
-    color: var(--glow-ink);
-    background: color-mix(in srgb, var(--glow) 70%, transparent);
-    mix-blend-mode: multiply;
-    rotate: -2deg;
-}
-.gc-strips {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
-}
-.gc-strips-name {
-    margin-right: 1px;
-    font: 700 11px / 1 var(--f-read);
-    color: var(--ink-soft);
-}
-.gc-strip {
-    --tape: color-mix(in srgb, var(--m, var(--sky)) 72%, transparent);
-    --edge: color-mix(in srgb, var(--m, var(--sky)) 70%, var(--ink));
-    display: block;
-    width: 26px;
-    height: 9px;
-    border: 1.5px solid var(--edge);
-    border-radius: 1px;
-    background: var(--tape);
-    rotate: -2deg;
-}
-.gc-strip.planned {
-    background: transparent;
-}
-.gc-strip.part {
-    background: linear-gradient(90deg, var(--tape) 50%, transparent 50%);
-}
-.gc-strip.missed {
-    background: repeating-linear-gradient(45deg, var(--edge) 0 1.5px, transparent 1.5px 4.5px);
-    border-color: color-mix(in srgb, var(--edge) 55%, transparent);
-}
-.gc-catch {
-    color: var(--pen) !important;
-}
-.gc-log {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: min(100%, 76ch);
-    margin-inline: auto;
-}
-.gc-log-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 14px;
-}
-.gc-log-list li {
-    display: flex;
-    gap: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--rule);
-}
-.gc-log-when {
-    flex: none;
-    width: 6em;
-    font: 500 12.5px var(--f-mono);
-    color: var(--ink-soft);
-}
 
 @media (max-width: 900px) {
     .gc-cell {
         min-height: 0;
-    }
-    .gc-month-in {
-        min-height: 68px;
     }
 }
 @media print {
@@ -375,34 +128,8 @@
         max-width: none;
         padding: 0;
     }
-    .gc > :not(.gc-sheet),
+    /* What a printed day keeps is the calendar's own; the screen says what it hides. */
     .gc-tools {
         display: none;
-    }
-    .gc-sheet {
-        rotate: 0deg;
-        box-shadow: none;
-    }
-    .gc-month,
-    .gc-month-day,
-    .gc-strip,
-    .gc-month-note {
-        print-color-adjust: exact;
-    }
-    .gc-strip {
-        --tape: #6b6b6b;
-        --edge: #222;
-    }
-    .gc-month-note {
-        color: #222;
-        background: #e6e6e6;
-        mix-blend-mode: normal;
-    }
-    .gc-month-day.weekend,
-    .gc-month-day.rest {
-        background: #f2f2f2;
-    }
-    .gc-month-day.off {
-        background-image: repeating-linear-gradient(45deg, #c4c4c4 0 4px, transparent 4px 10px);
     }
 }

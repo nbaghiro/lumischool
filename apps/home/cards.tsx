@@ -16,7 +16,6 @@ import * as acts from "../../school/family/calendar";
 
 import { gradeName } from "../../school/family/names";
 
-import { subjectFacts } from "../../school/tracks";
 import type { Kid } from "../../server/db/schema";
 import { dayLong, dayShort, names, plural } from "./grown";
 import type { Loaded } from "./log";
@@ -27,15 +26,13 @@ const drawer = (of: readonly Scene[]): Promise<SceneDrawer> =>
 
 export type Write = (drafts: Draft[], line: string) => Promise<void>;
 
-export const calOf = (l: Loaded, kid: Kid): KidCalendar | undefined => l.cal.kids.get(kid.id);
+const calOf = (l: Loaded, kid: Kid): KidCalendar | undefined => l.cal.kids.get(kid.id);
 
 export const titleOf = (l: Loaded, lesson: string | undefined): string =>
     l.pack.index.lessons.find((x) => x.id === lesson)?.title ?? lesson ?? "";
 
 export const factsOf = (l: Loaded, lesson: string | undefined): LessonFacts | undefined =>
     l.pack.index.lessons.find((x) => x.id === lesson);
-
-export const trackTitle = (track: string): string => subjectFacts(track).title;
 
 export const WEEKDAY_NAMES = [
     "Monday",
@@ -47,9 +44,12 @@ export const WEEKDAY_NAMES = [
     "Sunday",
 ] as const;
 
-export const WEEK: readonly Weekday[] = [1, 2, 3, 4, 5, 6, 7];
+const WEEK: readonly Weekday[] = [1, 2, 3, 4, 5, 6, 7];
 
 export const writing = (): acts.Writing => ({ newId: api.newId, at: api.nowAt() });
+
+/** Each drawing is built once a page: the same lesson is on a sticker, in a day and on the shelf. */
+const drawn = new Map<string, SVGElement>();
 
 /** A lesson's first drawing into a host, as its sticker and its card both draw it. */
 export async function drawFirst(
@@ -59,12 +59,18 @@ export async function drawFirst(
 ): Promise<void> {
     const first = facts?.first;
     if (!first) return;
+    const had = drawn.get(first);
+    if (had) {
+        host.replaceChildren(had.cloneNode(true));
+        return;
+    }
     const scene = await api.packScene(loaded.pack.pack, first);
     if ("error" in scene) return;
     const svg = (await drawer([scene.scene]))(host, scene.scene, { seed: 5 });
     svg.removeAttribute("width");
     svg.removeAttribute("height");
-    host.replaceChildren(svg);
+    drawn.set(first, svg);
+    host.replaceChildren(svg.cloneNode(true));
 }
 
 export function Seg<V extends string>(props: {

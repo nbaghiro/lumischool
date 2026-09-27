@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { check, type Envelope, type PlanOp } from "../../../engine/answer";
-import type { Sitting } from "../../record/record";
+import type { Sitting } from "../../record";
 import type { YearLesson } from "../../year";
 import {
     catchUp,

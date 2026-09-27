@@ -4,15 +4,7 @@
 // each. Nothing here is stored, and nothing here draws (.docs/parents.md, "Shift the plan").
 
 import type { Draft, Envelope, PlanOp, Weekday } from "../../engine/answer";
-import {
-    addDays,
-    dayIn,
-    dayOf,
-    weekdayOf,
-    WEEKDAYS,
-    type AddedDay,
-    type Sitting,
-} from "../record/record";
+import { addDays, dayIn, dayOf, weekdayOf, WEEKDAYS, type AddedDay, type Sitting } from "../record";
 import type { YearLesson } from "../year";
 import {
     alive,
