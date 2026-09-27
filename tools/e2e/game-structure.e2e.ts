@@ -41,19 +41,20 @@ test("the wheel, or a trackpad's pinch, zooms the building site", async ({ page 
     const field = page.locator(".field-gl");
     const box = await field.boundingBox();
     if (!box) throw new Error("Missing the field");
-    const before = await middle(page, "block:0");
+    // the crane stands still, where a hanging block swings and changes its outline
+    const before = await middle(page, "crane");
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.keyboard.down("Control");
     await page.mouse.wheel(0, -60);
     await page.keyboard.up("Control");
     await expect
-        .poll(async () => (await middle(page, "block:0")).w / before.w, { timeout: 5_000 })
+        .poll(async () => (await middle(page, "crane")).w / before.w, { timeout: 5_000 })
         .toBeGreaterThan(1.5);
     await page.keyboard.press("-");
     await page.keyboard.press("-");
     await page.keyboard.press("-");
     await expect
-        .poll(async () => (await middle(page, "block:0")).w / before.w, { timeout: 5_000 })
+        .poll(async () => (await middle(page, "crane")).w / before.w, { timeout: 5_000 })
         .toBeLessThan(1.05);
 });
 

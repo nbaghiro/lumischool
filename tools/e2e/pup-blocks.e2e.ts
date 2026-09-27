@@ -16,6 +16,8 @@ async function camera(page: Page) {
             y: box.y + box.height / 2 + (y - cy) * sq,
         }),
         toWorld: (px: number) => cx + (px - box.x - box.width / 2) / sq,
+        /** A height in the sky over the site, inside the field whatever size it is drawn at. */
+        sky: cy - 3,
         sq,
     };
 }
@@ -51,40 +53,48 @@ test("A home for the pups: a finger drives the crane, and Dot's room stands to t
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     const plan = planFor(blocksGame.start(0).L);
     for (const [i, d] of plan.entries()) {
-        const at = (await camera(page)).toPage(d.x, 3);
+        const cam = await camera(page);
+        const at = cam.toPage(d.x, cam.sky);
         await page.mouse.move(at.x, at.y);
         await page.mouse.down();
-        await steadyOver(page, `block:${i}`, d.x, 0.15);
+        await steadyOver(page, `block:${i}`, d.x, 0.08);
         await page.mouse.up();
         await page.waitForTimeout(1_000);
     }
-    await expect(page.getByRole("button", { name: "Play again", exact: true })).toBeVisible({
+    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
         timeout: 30_000,
     });
     await page.screenshot({ path: `/tmp/pup-blocks-${info.project.name}.png` });
 });
 
-test("A home for the pups is built with the keys alone", async ({ page }) => {
+test("A home for the pups is built with the keys alone", async ({ page }, info) => {
+    test.skip(
+        info.project.name.startsWith("phone"),
+        "a phone draws a square too small to read the crane to a tenth of one, and has no keys",
+    );
     await page.goto("/games?g=blocks&v=0&probe=1");
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     const plan = planFor(blocksGame.start(0).L);
     for (const [i, d] of plan.entries()) {
         const key = `block:${i}`;
         await expect(page.locator(`[data-key="${key}"]`)).toBeVisible({ timeout: 5_000 });
-        for (let tries = 0; tries < 12; tries++) {
+        // long holds to cross the site, then taps too short for the crane to get going, to line it up
+        for (let tries = 0; tries < 40; tries++) {
+            await steadyOver(page, key, d.x, 99);
             const gap = d.x - (await hangingAt(page, key));
-            if (Math.abs(gap) < 0.2) break;
+            if (Math.abs(gap) < 0.15) break;
             const arrow = gap > 0 ? "ArrowRight" : "ArrowLeft";
             await page.keyboard.down(arrow);
-            await page.waitForTimeout(Math.min(900, Math.abs(gap) * 200));
+            await page.waitForTimeout(
+                Math.abs(gap) > 0.6 ? Math.min(900, Math.abs(gap) * 200) : 20,
+            );
             await page.keyboard.up(arrow);
-            await steadyOver(page, key, d.x, 99);
         }
         await steadyOver(page, key, d.x, 0.25);
         await page.keyboard.press(" ");
         await page.waitForTimeout(1_000);
     }
-    await expect(page.getByRole("button", { name: "Play again", exact: true })).toBeVisible({
+    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
         timeout: 30_000,
     });
 });

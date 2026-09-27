@@ -114,11 +114,11 @@ const SHAPES: Record<PonyPose, Shape> = {
         legs: [
             [40, -30],
             [26, -40],
-            [24, 14],
-            [16, 8],
+            [32, 18],
+            [22, 12],
         ],
         tilt: -10,
-        sink: 3,
+        sink: 0,
         tail: 18,
     },
     leap: {
@@ -145,12 +145,12 @@ const SHAPES: Record<PonyPose, Shape> = {
     },
     land: {
         legs: [
-            [26, 14],
-            [14, 4],
+            [34, 22],
+            [22, 12],
             [-48, -70],
             [-58, -80],
         ],
-        tilt: 14,
+        tilt: 10,
         sink: 0,
         tail: 42,
     },
@@ -158,11 +158,11 @@ const SHAPES: Record<PonyPose, Shape> = {
         legs: [
             [36, 30],
             [28, 22],
-            [26, 20],
-            [18, 12],
+            [32, 24],
+            [24, 16],
         ],
         tilt: -12,
-        sink: 3,
+        sink: 0,
         tail: 12,
     },
 };
@@ -343,7 +343,7 @@ export const pony = defineDrawing<PonyParams>({
         if (p.horn) {
             head.pen.polygon(
                 head.g,
-                [at(92, 8), at(103, -6), at(97, 10)],
+                [at(92, 8), at(101, 0), at(97, 10)],
                 "pencil",
                 pen.fill("glow"),
                 calm(c, 1.3),

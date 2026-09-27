@@ -44,7 +44,9 @@ test("clear round: a finger held on the field gathers, and lifted it leaps", asy
     expect(errors).toEqual([]);
 });
 
-test("clear round: the stride keys choose the stride the prints are counted at", async ({ page }) => {
+test("clear round: the stride keys choose the stride the prints are counted at", async ({
+    page,
+}) => {
     const errors: string[] = [];
     await open(page, 1, errors);
     const reads = page.locator('[data-game="reads"]');

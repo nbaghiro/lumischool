@@ -209,7 +209,7 @@ main gate, and add a performance fixture that fails when main-thread time a fram
 | Down the river | P1 | Rapids whose speed shows in the water (P4) |
 | Firefly trail | P1 | Lights and glow, and a pond (P4) |
 | Rabbit crossing | P1 | Water and splashes; chained hops with a jump buffer (P5) |
-| Clear round | P1 | A smoother gait from part animation (P5) |
+| Clear round | P1 | Rebuilt as a show jumping round: a gather held by degrees, a thrown leap over poles that fall, a canter from the runner and the actor, and a new pony on the shelf (27 September 2026, see games.md) |
 | Shunting yard | P1 | Rebuilt as a hump yard: points, pushes by degree and sidings with boards (27 September 2026, see games.md) |
 | See-saw, Cut the cake | P1 | Parity only; they stay off the list |
 | Measure it out | P1 | Real liquid in the jugs (P6) |

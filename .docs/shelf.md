@@ -217,6 +217,18 @@ order they must stand in, or the word spare), and on a line under it what the si
 a tick once it is made up. The shunting yard's old lift, pit, lever and order board (`liftpit`,
 `yardlever`, `orderboard`) were deleted with the yard they served.
 
+## The pony (27 September 2026)
+
+The pony (`engine/parts/animals/pony.ts`) replaces the unicorn, which was drawn in one heavy outline
+and read as rough at a game's size. It is drawn the way the Pup family is, with round-ended legs, an
+oval barrel and a few firm lines, seen from the side in nine poses: standing, three beats of the
+canter, the gather before a jump, the push off, the air with the legs folded, the landing and a sudden
+stop with the forelegs braced. The coat is chestnut, palomino, grey, pink or blue, and `horn` makes it a
+unicorn. Every pose keeps the same box and the feet anchor on the floor, so a game moves the whole box
+along its own arc, and the eyes blink, the tail swishes and the head nods on a page. The show jumping
+upright, `jumpstand`, gained a red or white flag on top, and the water tray was deleted, since Clear
+round now draws its water jump as water.
+
 ## The style guide
 
 Roughness. Use the ruler level for anything counted or measured and for any part under about two squares, which includes faces, hands and eyes. Use the calm level (roughness 0.6, bowing 0.8, one stroke to a line with its corners kept, as the lantern is drawn) for figures, the kit's objects and the icons, where the icons turn it down further to 0.45. Use the pencil level for scenery bigger than about four squares, where its double line reads as a pencil rather than as fur. Keep the doodle level for marks a teacher's pen makes. A line that has to close, such as an outline drawn with one stroke, keeps its vertices (`preserveVertices`), or it opens at every corner.

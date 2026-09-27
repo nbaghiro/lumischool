@@ -1,13 +1,6 @@
-// Clear round: a pony and a show jumping course, where counting strides is how a fence is met.
-//
-// The pony canters on its own, one hoof print every half a second, and the prints ahead are drawn on
-// the grass. Left and right choose the stride, two, three or four squares, from the next hoof fall
-// on, which is also how fast it goes. Holding Jump, or a finger on the field, gathers the pony by
-// degrees; letting go asks for the leap, and the pony takes off from its next hoof print. The leap is
-// a thrown arc, as high as the gather was long and as long as the stride was fast, and the poles are
-// bodies resting in their cups: a hoof that catches one knocks it, and one that falls out is a fault.
-// A pony ridden into a fence without being asked stops, circles and comes again, which costs nothing.
-// See .docs/games.md.
+// Clear round: a pony canters a show jumping course, the child chooses its stride and holds a gather
+// for each fence, and letting go leaps it from its next hoof print. The poles are bodies in their cups
+// and fall when a hoof goes through them. See .docs/games.md.
 import {
     actor,
     actorSprites,
@@ -740,10 +733,15 @@ function numbersOf(course: ClearCourse): string[] {
     let n = 0;
     course.fences.forEach((f, i) => {
         const before = course.fences[i - 1];
-        const double =
-            before && before.kind !== "water" && f.at - (before.at + before.spread) <= 10;
         const after = course.fences[i + 1];
-        const opens = after && f.kind !== "water" && after.at - (f.at + f.spread) <= 10;
+        const close = (a: Fence | undefined, b: Fence | undefined) =>
+            !!a &&
+            !!b &&
+            a.kind !== "water" &&
+            b.kind !== "water" &&
+            b.at - (a.at + a.spread) <= 10;
+        const double = close(before, f),
+            opens = close(f, after);
         if (double) out.push(`${n}b`);
         else {
             n++;

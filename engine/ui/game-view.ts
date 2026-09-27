@@ -276,7 +276,9 @@ export class GameView implements FieldView {
     ): void {
         // the square is the largest that shows the whole authored view, and the field then fills the room
         const sq = Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
-        const shown = { w: Math.max(view.w, room.w / sq), h: Math.max(view.h, room.h / sq) };
+        // less than a pixel of room to spare is no room: a caller may pass the view's own size and a little over
+        const grown = (r: number, v: number): number => (r - v * sq < 1 ? v : r / sq);
+        const shown = { w: grown(room.w, view.w), h: grown(room.h, view.h) };
         this.view = { ...shown };
         this.authored = { ...view };
         this.seen = seen;
@@ -389,8 +391,13 @@ export class GameView implements FieldView {
         const tokens = this.tokens;
         const still = this.o.still();
         const zoom = f.camera.zoom ?? 1;
-        // a world smaller than the field is centred in it, or stood on its foot when the scene is side-on
-        const camera = keepInside(f.camera, this.view, this.size, zoom, this.seen === "side");
+        // the camera stays inside the world; across a world smaller than the field the game's own framing
+        // holds, and down one a side-on scene stands on the field's foot
+        const kept = keepInside(f.camera, this.view, this.size, zoom, this.seen === "side");
+        const camera = {
+            x: this.size.w * zoom <= this.view.w ? f.camera.x : kept.x,
+            y: this.size.h * zoom <= this.view.h && this.seen === "above" ? f.camera.y : kept.y,
+        };
         this.cam = { x: camera.x, y: camera.y, zoom };
         let sx = 0,
             sy = 0;

@@ -368,6 +368,49 @@ with drags alone through a paddler in `river-pilot.ts` that uses only the Pad, c
 rhythm, the gates' carry back, the rocks, the docking and reduced motion, and show random paddling
 winning none of sixty runs; `tools/e2e/down-the-river.e2e.ts` paddles in the app.
 
+## Clear round, rebuilt as a show jumping round (27 September 2026)
+
+The owner found Clear round stiff and not playful: a unicorn stepped along in beats on an empty field,
+changing its stride by a whole square at each press, and a tap asked for a leap that always looked the
+same. It is rebuilt (`school/games/clear.ts`, the id `clear` kept) around what real show jumping asks
+of a rider, which is meeting each fence on a good stride and giving the horse the jump it needs. We
+looked at show jumping itself, at horse riding games for children, and at runners with timed jumps
+such as Alto and Canabalt. From the runners we took the continuous run and a jump whose strength is
+held rather than tapped; from show jumping, the stride as the thing a rider changes and the poles that
+fall.
+
+A pony canters on its own at one hoof print every half a second, drawn from the new `pony` on the
+shelf through the actor in `engine/motion/actor.ts`, with three canter poses a stride, a gather before
+the leap, a squash on landing and a stop that slides. Left and right choose the stride, two, three or
+four squares, which starts at the next hoof fall and is also how fast the pony goes. Holding Jump, or
+a finger anywhere on the field, gathers the pony by degrees over nine tenths of a second; letting go
+asks for the leap, and the pony takes off from its next hoof print. The leap is a thrown arc: its
+height comes from the gather and its length from the stride, and a faster pony jumps flatter, so a
+long stride buys length with height. The poles are bodies resting in cups: a hoof that brushes one
+rattles it, and one that goes through it throws it out of its cups, which is a fault. A pony ridden
+into a fence without a leap asked stops short, canters back and comes again, at no cost, and every
+clean fence is a checkpoint, so Back to the checkpoint returns the pony to just past the last one.
+
+The mathematics is in counting the strides. The hoof prints ahead are drawn on the grass and the take
+off band before the next fence is shaded, and the question at every line is which stride puts a print
+in the band and which print to let go on. The first level has one stride and three low fences, with the
+prints numbered and the leap's arc drawn from the next print; the second asks for the stride to be
+chosen; the third brings a spread, which needs a longer leap, and a double with one stride between,
+where there is only time to gather half way; the fourth has a water jump five squares across, which
+only a long stride and a big gather carry, and writes the squares from each fence to the next on the
+grass; and the fifth draws only the next two prints, with no band and no arc. The course is dressed as a show ground, with stands full of
+people, bunting, numbered fences with a red and a white flag, and a scoreboard of fences and faults.
+
+`clear-challenges.ts` searches the hoof falls for a clear round, choosing a stride at each fall or a
+leap with a gather there was time to hold, and a course is shipped only once one is found; every level
+has three layouts, with a fence or two moved a square. The rules version for `clear` is now
+`show-jumping-2`. The tests in `school/games/__tests__/clear.test.ts` ride every layout clean through
+the game itself with a rider in `clear-rider.ts` that uses only the Pad, replay a round from its tape,
+check that past the first level some layout cannot be ridden at one stride, and cover a knocked pole, a
+stop, a hoof in the water, the stride keys, the gather and reduced motion, where each press rides one
+stride. `tools/e2e/clear-round.e2e.ts` leaps the pony with the keys and with a held pointer, and
+changes the stride.
+
 ## Shared sizing (24 September 2026)
 
 The tabletop stage uses the full available row; it no longer has a 1,100px desktop cap.

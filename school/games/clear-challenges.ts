@@ -55,7 +55,16 @@ interface Node {
  * next, or canters on at any stride, so long as the next fall is short of where it would stop. The
  * search is breadth first, so the ride found is one with the fewest hoof falls.
  */
-export function ridePlan(course: ClearCourse): Fall[] | null {
+export function ridePlan(course: ClearCourse): readonly Fall[] | null {
+    const known = configurationKey(course);
+    if (!PLANS.has(known)) PLANS.set(known, search(course));
+    return PLANS.get(known) ?? null;
+}
+
+/** Rides already found, by course, since a course is asked about again for every seed that lays it out. */
+const PLANS = new Map<string, readonly Fall[] | null>();
+
+function search(course: ClearCourse): Fall[] | null {
     const key = (n: Node) =>
         `${n.fence}:${Math.round(n.at * 1000)}:${n.stride}:${Math.min(n.grass, 3)}`;
     const first: Node = { fence: 0, at: course.start, stride: course.stride, grass: 0 };

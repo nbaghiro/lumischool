@@ -17,6 +17,7 @@ import {
     LEAST,
     RATE,
     startClear,
+    stepClear,
     type ClearState,
 } from "../clear";
 import { clearChallenge, isClearConfiguration, ridePlan, type Fall } from "../clear-challenges";
@@ -27,7 +28,7 @@ const LAYOUTS = CLEAR_LEVELS.flatMap((_, phase) =>
     [0, 1, 2].map((variant) => ({ phase, variant })),
 );
 
-function planFor(phase: number, variant: number): Fall[] {
+function planFor(phase: number, variant: number): readonly Fall[] {
     const plan = ridePlan(clearCourse(phase, variant));
     assert.ok(plan, `level ${phase} layout ${variant} has a clear ride`);
     return plan;
@@ -71,7 +72,7 @@ test("a round replays from its tape, and a checkpoint follows every clean fence"
         t = tape();
     assert.ok(ride(s, planFor(phase, variant), t));
     const again = replay(
-        { start: () => startClear(clearCourse(phase, variant), phase), step: clearGame.step },
+        { start: () => startClear(clearCourse(phase, variant), phase), step: stepClear },
         t,
     );
     assert.equal(again.steps, s.steps);

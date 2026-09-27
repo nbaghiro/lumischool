@@ -16,6 +16,7 @@ import type { Frame, Happening, Mark, Sprite, Water } from "../../engine/motion/
 import { arrive, blend, separate } from "../../engine/motion/steer";
 import { surfaceAt } from "../../engine/motion/surface";
 import type { ActionGame, ActionLevel, Levels } from "./game";
+import { BEYOND, ground } from "./scenery";
 
 /** A raft on the river: where its middle is tied, how long it is in whole squares, and the number on its flag. */
 interface RaftAt {
@@ -1134,26 +1135,12 @@ export function frame(s: RaftsState, _rest = false): Frame {
             z: 1,
             still: true,
         },
-        {
-            key: "ground:near",
-            art: "arcade.ground",
-            params: { w: RIVER.x0 },
-            seed: 61,
-            x: RIVER.x0 / 2,
-            y: RIVER.bank + 1.1,
-            z: 2,
-            still: true,
-        },
-        {
-            key: "ground:far",
-            art: "arcade.ground",
-            params: { w: W.w - RIVER.x1 },
-            seed: 62,
-            x: (RIVER.x1 + W.w) / 2,
-            y: RIVER.bank + 1.1,
-            z: 2,
-            still: true,
-        },
+    );
+    // the banks run on past the world's ends over the river, which runs under them, so a field wider
+    // than the world shows water under the grass rather than bare paper
+    sprites.push(
+        ...ground("ground:near", -BEYOND, RIVER.x0, RIVER.bank, 3.5, 61),
+        ...ground("ground:far", RIVER.x1, W.w + BEYOND, RIVER.bank, 3.5, 62),
     );
     const c = counts(s);
     for (const [i, r] of s.rafts.entries()) {
@@ -1273,7 +1260,7 @@ export function frame(s: RaftsState, _rest = false): Frame {
         view: { ...RIVER.view },
         world: { ...W },
         time: clockOf(s),
-        water: [riverOf(s)],
+        water: [{ ...riverOf(s), x: -BEYOND, w: W.w + 2 * BEYOND }],
     };
 }
 
