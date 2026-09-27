@@ -15,7 +15,13 @@
 .ow-host.grabbing {
     cursor: grabbing;
 }
-.ow-host > .world {
+.ow-host > .view-frame,
+.wd-host > .view-frame {
+    position: absolute;
+    inset: 0;
+    overflow: clip;
+}
+.ow-host > .view-frame > .world {
     position: absolute;
     left: 0;
     top: 0;

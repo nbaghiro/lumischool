@@ -43,10 +43,11 @@ import type { MapView } from "../space";
 
 export interface FlyOptions {
     view: CanvasView;
-    /** The flight's own layer in the map's world, over the guide's. */
+    /**
+     * The flight's own layer in the map's world, over the guide's; the plane, its shadow, its trail and
+     * what it spots are appended after it, so they are drawn over everything else on the map.
+     */
     layer: HTMLElement;
-    /** Where the plane, its shadow, its trail and what it spots go, over the map's words. */
-    over: HTMLElement;
     /** Where its controls go, over the map. */
     hud: HTMLElement;
     host: Element;
@@ -150,8 +151,9 @@ export function fly(o: FlyOptions): Flying {
 
     const L = div("ow-fly"),
         top = div("ow-fly");
-    o.layer.append(L);
-    o.over.append(top);
+    // never in the page's own scaled world: WebKit gives an animated element there a layer the size of
+    // the unscaled world, which is what killed the map on phones (.docs/overworld-gpu.md)
+    o.layer.append(L, top);
     const scenery: { el: HTMLElement | SVGSVGElement; rect: Rect; shown: boolean }[] = [];
     const pen = new Pen(el("svg", {}), { seed: 9, t, paper: false, roughness: 1 });
     const place = (

@@ -29,6 +29,9 @@ import {
 import { mapDiagnostic } from "./map-diagnostics";
 import { readTokens } from "./read-tokens";
 
+/** The zoom from which the world keeps a layer of its own, at a scale WebKit tiles it sensibly. */
+const LAYERED = 0.5;
+
 export interface ViewHooks {
     /** Everything worth looking at: what "show it all" fits, and what the camera is kept in reach of. */
     bounds(camera: Camera): Rect;
@@ -80,6 +83,12 @@ export class CanvasView {
     }
     private readonly diagnostic = mapDiagnostic();
     readonly world: HTMLDivElement;
+    /**
+     * The screen-sized box the world moves in. WebKit gives a layer the size of what it holds as if
+     * it were unscaled, so over a canvas the world drawn back to a map's zoom was a layer of hundreds
+     * of megabytes on a phone; the frame is the layer instead, and the world is painted into it.
+     */
+    readonly frame: HTMLDivElement;
     readonly paper: HTMLCanvasElement;
     cam: Camera = { x: 0, y: 0, z: 1 };
     vp: Size = { w: 1, h: 1 };
@@ -153,11 +162,13 @@ export class CanvasView {
         // the canvas takes the keyboard itself, so the keys that move it reach it wherever the view
         // is opened, without a control on the page to tab to first
         if (!host.hasAttribute("tabindex")) host.tabIndex = 0;
+        this.frame = document.createElement("div");
+        this.frame.className = "view-frame";
         this.world = document.createElement("div");
         this.world.className = "world";
-        this.world.style.willChange = "transform";
-        if (hooks.paper === false) host.prepend(this.world);
-        else host.prepend(this.paper, this.world);
+        this.frame.append(this.world);
+        if (hooks.paper === false) host.prepend(this.frame);
+        else host.prepend(this.paper, this.frame);
         this.colors();
         this.resizing = new ResizeObserver(() => this.measure());
         this.resizing.observe(host);
@@ -420,9 +431,11 @@ export class CanvasView {
         // Clip locally as well as at the host's viewport, including any retained painted layers.
         const ink = visibleRect(this.cam, { w: this.vp.w + 192, h: this.vp.h + 192 });
         this.world.style.clipPath = `polygon(${ink.x}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y + ink.h}px, ${ink.x}px ${ink.y + ink.h}px)`;
-        this.world.style.transform = this.readingPage
-            ? `translateY(${this.host.scrollTop}px) ${cssTransform(this.cam, this.vp)}`
-            : cssTransform(this.cam, this.vp);
+        this.frame.style.transform = this.readingPage ? `translateY(${this.host.scrollTop}px)` : "";
+        this.world.style.transform = cssTransform(this.cam, this.vp);
+        // near a scale of one WebKit tiles the world's own layer, so it moves without being painted;
+        // drawn further back that layer would be sized as if unscaled, so the frame paints it instead
+        this.world.style.willChange = this.cam.z >= LAYERED ? "transform" : "auto";
         this.drawPaper();
     }
 

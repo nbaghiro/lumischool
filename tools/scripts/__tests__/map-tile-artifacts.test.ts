@@ -1,5 +1,13 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+    existsSync,
+    mkdtempSync,
+    mkdirSync,
+    readdirSync,
+    readFileSync,
+    rmSync,
+    writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -11,7 +19,7 @@ import {
     type TileRecipe,
 } from "../map-tile-artifacts";
 
-test("tile identity covers pixels and source drift, and publication retains older versions", () => {
+test("tile identity covers pixels and source drift, and publication keeps only the version it published", () => {
     const root = mkdtempSync(join(tmpdir(), "map-artifact-test-"));
     try {
         const stage = join(root, "staging");
@@ -37,18 +45,19 @@ test("tile identity covers pixels and source drift, and publication retains olde
         assert.equal(first, tileArtifactVersion(stage, recipe, build));
         assert.equal(first, publishMapTiles(root, stage, recipe, build));
         const image = "0/0-0-sea.png";
-        const original = readFileSync(join(root, "public/assets/map-tiles", first, image), "utf8");
         writeFileSync(join(stage, image), "different encoded pixels");
         const second = publishMapTiles(root, stage, recipe, build);
         assert.notEqual(second, first);
+        assert.equal(existsSync(join(root, "public/assets/map-tiles", first)), false);
+        assert.deepEqual(readdirSync(join(root, "public/assets/map-tiles")), [second]);
         writeFileSync(join(root, "public/assets/map-tiles", second, image), "corrupted");
         assert.throws(
             () => publishMapTiles(root, stage, recipe, build),
             /Immutable tile collision/,
         );
         assert.equal(
-            readFileSync(join(root, "public/assets/map-tiles", first, image), "utf8"),
-            original,
+            readFileSync(join(root, "public/assets/map-tiles", second, image), "utf8"),
+            "corrupted",
         );
         writeFileSync(join(root, "source.ts"), "second recipe");
         const sourceHash = tileSourceHash(root, ["source.ts"]);

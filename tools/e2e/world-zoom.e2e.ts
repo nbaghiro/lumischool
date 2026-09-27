@@ -36,7 +36,7 @@ test("background dragging pans without selecting lesson text", async ({ page }) 
     const box = await host.boundingBox();
     const heading = await title.boundingBox();
     if (!box || !heading) throw new Error("The lesson is missing");
-    const world = host.locator(":scope > .world");
+    const world = host.locator(":scope > .view-frame > .world");
     const before = await world.evaluate((el) => el.getAttribute("style"));
     const start = { x: box.x + 12, y: heading.y + heading.height / 2 };
     expect(
@@ -70,7 +70,7 @@ test("lesson worlds keep manual zoom near two sheets", async ({ page }) => {
     await expect(dialog.locator(".wd-sheets .ls-sheet").first()).toBeVisible();
     const scale = () =>
         host
-            .locator(":scope > .world")
+            .locator(":scope > .view-frame > .world")
             .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
     const floor = async () =>
         Math.min(1.2, Math.max(0.5, (await host.evaluate((el) => el.clientHeight)) / 1400));

@@ -731,7 +731,6 @@ export function Overworld(props: {
         flying = start({
             view: v,
             layer: source ?? v.world,
-            over: v.world,
             hud: h,
             host: h,
             t: readTokens(h),
@@ -935,7 +934,7 @@ export function Overworld(props: {
                 host,
                 world: replacement,
                 overlay: layer,
-                under: v.world,
+                under: v.frame,
                 view: next,
                 still: quiet,
                 pause: props.steps ? () => new Promise((done) => setTimeout(done, 0)) : undefined,
@@ -943,7 +942,7 @@ export function Overworld(props: {
                 riders: props.life,
                 zoom: () => v.cam.z,
             }));
-        if (kept) p.unpark(host, v.world);
+        if (kept) p.unpark(host, v.frame);
         if (disposed || v !== view || revision !== requested || flying || loadingFlight) {
             p.stop();
             replacement.remove();

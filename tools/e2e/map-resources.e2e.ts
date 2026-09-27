@@ -221,7 +221,7 @@ test("the map's GPU canvas and the world's clip stay viewport bounded through fl
             .poll(() =>
                 map.evaluate((root) => {
                     const host = root.getBoundingClientRect();
-                    const world = root.querySelector<HTMLElement>(":scope > .world");
+                    const world = root.querySelector<HTMLElement>(":scope > .view-frame > .world");
                     const canvas = root.querySelector<HTMLCanvasElement>(":scope > canvas.map-gl");
                     if (!world || !canvas) return false;
                     const camera = new DOMMatrix(getComputedStyle(world).transform);

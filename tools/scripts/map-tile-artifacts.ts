@@ -6,6 +6,7 @@ import {
     existsSync,
     mkdirSync,
     mkdtempSync,
+    readdirSync,
     readFileSync,
     renameSync,
     rmSync,
@@ -128,6 +129,7 @@ export function publishMapTiles(
             throw new Error(`Incomplete tile publication: ${version}`);
     }
     writeManifest(root, manifest);
+    keepOnly(root, version);
     return version;
 }
 
@@ -179,6 +181,7 @@ export function publishCompactMapTiles(
                 throw new Error(`Immutable tile collision: ${version}`);
         } else renameSync(temporary, target);
         writeManifest(root, manifest);
+        keepOnly(root, version);
         process.stdout.write(
             `compact tiles: ${files.size} unique files, ${index.descriptors.length} descriptors, ${JSON.stringify(index).length} index bytes\n`,
         );
@@ -186,6 +189,16 @@ export function publishCompactMapTiles(
     } finally {
         rmSync(temporary, { recursive: true, force: true });
     }
+}
+
+/**
+ * Removes every published version but `version`, so one tile set is kept and tracked in git and
+ * production serves only it; a page still holding an older manifest loads the new one when reloaded.
+ */
+function keepOnly(root: string, version: string): void {
+    const folder = join(root, "public/assets/map-tiles");
+    for (const entry of readdirSync(folder))
+        if (entry !== version) rmSync(join(folder, entry), { recursive: true, force: true });
 }
 
 function writeManifest(root: string, manifest: object): void {
