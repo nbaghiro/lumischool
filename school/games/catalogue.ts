@@ -1,9 +1,9 @@
 import { rallyGame } from "./rally";
 import { golfGame } from "./golf";
 import { clearGame } from "./clear";
-import { bridgeGame } from "./bridge";
-import { blocksGame } from "./blocks";
-import { wardrobeGame } from "./wardrobe";
+import { swingsGame } from "./swings";
+import { fetchGame } from "./fetch";
+import { lemonadeGame } from "./lemonade";
 // Every game, in the order the Games tab shows them, grouped by how each one plays. The hands-on
 // games are played by moving things on a board, with a tray that is the keyboard path and the one a
 // screen reader reads, and every level of them is gated by the prover; the action games are played
@@ -54,9 +54,9 @@ export const GAMES: Game[] = [
     planeGame,
     golfGame,
     rallyGame,
-    bridgeGame,
-    blocksGame,
-    wardrobeGame,
+    swingsGame,
+    fetchGame,
+    lemonadeGame,
     clearGame,
 ];
 

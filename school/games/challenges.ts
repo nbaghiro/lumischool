@@ -2,10 +2,10 @@ import { rallyChallenge, isRallyConfiguration, openRallyConfiguration } from "./
 import { golfChallenge, isGolfConfiguration, openGolfConfiguration } from "./golf-challenges";
 import { fishChallenge, isFishConfiguration, openFishConfiguration } from "./fish-challenges";
 import {
-    bridgeChallenge,
-    isBridgeConfiguration,
-    openBridgeConfiguration,
-} from "./bridge-challenges";
+    isSwingsConfiguration,
+    openSwingsConfiguration,
+    swingsChallenge,
+} from "./swings-challenges";
 import { clearChallenge, isClearConfiguration, openClearConfiguration } from "./clear-challenges";
 import {
     actionKind,
@@ -56,14 +56,15 @@ import type { ActionGame, Game, TurnGame } from "./game";
 import type { Round } from "./games";
 import { certified, type Variation } from "../../engine/motion/generator";
 import { isPourConfiguration, openPourConfiguration, pourChallenge } from "./pour-challenges";
+import { fetchChallenge, isFetchConfiguration, openFetchConfiguration } from "./fetch-challenges";
+import { FETCH_LEVELS } from "./fetch";
 import {
-    blocksCertified,
-    blocksChallenge,
-    isBlocksConfiguration,
-    openBlocksConfiguration,
-    vary,
-} from "./blocks-challenges";
-import { BLOCKS_LEVELS } from "./blocks";
+    isStandConfiguration,
+    openStandConfiguration,
+    standCertified,
+    standChallenge,
+} from "./lemonade-challenges";
+import { STAND_LEVELS } from "./lemonade";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -175,15 +176,17 @@ const clear = family({
 
 const bridge = family({
     variation: {
-        method: "plank-search-and-walk-replay",
-        generate: bridgeChallenge,
-        read: (value, phase) =>
-            isBridgeConfiguration(value) && value.phase === phase ? value : null,
+        method: "hold-search-and-swing-replay",
+        generate: swingsChallenge,
+        read: typed(isSwingsConfiguration),
     },
     store: (v) => ({ phase: v.phase, variant: v.variant, level: serializable(v.level) }),
-    rating: (_v, phase) => ({ reasoning: phase + 1, motor: 1 }),
+    rating: (_v, phase) => ({ reasoning: phase + 1, motor: 3 }),
     open: (game, v, phase) =>
-        started(game, () => openBridgeConfiguration(v), phase, { goal: v.level.goal }),
+        started(game, () => openSwingsConfiguration(v), phase, {
+            title: v.level.title,
+            goal: v.level.goal,
+        }),
 });
 
 const fish = family({
@@ -384,24 +387,40 @@ const remaining = (kind: NonNullable<ReturnType<typeof remainingKind>>) =>
                 : null,
     });
 
+// the pups' fetch keeps the id its building game had, so its challenges are filed under "blocks"
 const blocks = family({
     variation: {
-        method: "crane-plan-and-physics-replay",
-        generate: blocksChallenge,
-        read: (value, phase) => (isBlocksConfiguration(value, phase) ? value : null),
-        solve: (c) => blocksCertified(c),
+        method: "throw-search-and-physics-replay",
+        generate: fetchChallenge,
+        read: typed(isFetchConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 2 ? 1 : phase < 4 ? 2 : 3,
+        motor: (FETCH_LEVELS[phase]?.preview ?? 0) >= 1 ? 1 : 2,
+    }),
+    open: (game, c, phase) => started(game, () => openFetchConfiguration(c), phase),
+});
+
+// the lemonade stand keeps the id of the market stall it replaced, so its challenges are filed under "wardrobe"
+const wardrobe = family({
+    variation: {
+        method: "serve-plan-and-controls-replay",
+        generate: standChallenge,
+        read: (value, phase) => (isStandConfiguration(value, phase) ? value : null),
+        solve: (c) => standCertified(c),
     },
     store: (c) => ({ phase: c.phase, n: c.n }),
     rating: (_c, phase) => ({
-        reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3,
-        motor: (BLOCKS_LEVELS[phase]?.guide ?? "none") === "ghost" ? 1 : 2,
+        reasoning: phase < 2 ? 1 : phase < 4 ? 2 : 3,
+        motor: phase < 3 ? 1 : 2,
     }),
     open: (game, c, phase) => {
-        const L = BLOCKS_LEVELS[phase];
+        const L = STAND_LEVELS[phase];
         return L
-            ? started(game, () => openBlocksConfiguration(c), phase, {
+            ? started(game, () => openStandConfiguration(c), phase, {
                   title: L.title,
-                  goal: vary(L, c.n).goal,
+                  goal: L.goal,
               })
             : null;
     },
@@ -411,6 +430,7 @@ const blocks = family({
 const VARIATIONS: Partial<Record<string, Variations>> = {
     rally,
     blocks,
+    wardrobe,
     clear,
     bridge,
     fish,

@@ -200,8 +200,8 @@ main gate, and add a performance fixture that fails when main-thread time a fram
 | Pocket rally | P1 | A camera that follows on bigger tracks; a new level on choosing a speed before a corner, taken from Take the corner (P5) |
 | Paper plane | P1 | Clouds to fly through, gusts |
 | Garden mini-golf | P1 | Ponds as hazards and moving obstacles |
-| Charlie's bridge | P1 | Ropes and pulleys, planks that bend under Charlie (P4) |
-| A home for the pups | P1 | Zoomed in on the build; roofs, arches and doors; the family walks in (P4); rebuilt around a swinging crane and the wolf's huff, with variations |
+| Charlie's bridge, now Charlie's rope swings | P1 | Ropes and pulleys, planks that bend under Charlie (P4); then replaced under the same id by rope swings: a pendulum pumped by holding, a flight let go and a rope caught in the air (27 September 2026, see games.md) |
+| A home for the pups, now Fetch with the pups | P1 | Zoomed in on the build; roofs, arches and doors; the family walks in (P4); rebuilt around a swinging crane and the wolf's huff; then replaced under the same id by Fetch with the pups: a thrown ball, frisbee or stick, planck deciding where it goes, and each pup reaching what only it can (see games.md) |
 | Marble workshop | P1 | Hundreds of marbles, a splitter and a bucket gate (P4); water runs later (P6) |
 | Harbour cargo | P1 | A crane on a real rope and a boat that lists with its load (P4) |
 | Rafts | P1 | Real floating and flocking sheep (P4) |
@@ -213,7 +213,7 @@ main gate, and add a performance fixture that fails when main-thread time a fram
 | Shunting yard | P1 | Rebuilt as a hump yard: points, pushes by degree and sidings with boards (27 September 2026, see games.md) |
 | See-saw, Cut the cake | P1 | Parity only; they stay off the list |
 | Measure it out | P1 | Real liquid in the jugs (P6) |
-| Market stall | P1 | Sparkles; parity |
+| Market stall | P1 | Rebuilt as Charlie's lemonade stand: a jug tipped by degrees pouring real liquid, cups and coins slid along the counter, change into a dish and gusts of wind (27 September 2026, see games.md) |
 | Shut the box | P2 | A throw with the keys by aim |
 | Spell the picture | P2 | Rebuilt as a sound train in P5 |
 | Find the rule | P2 | Rebuilt as a physical number machine in P5 |
@@ -489,10 +489,10 @@ generator kit, and multi-touch and intentions.
   of families keyed by game, each with its generator, the stored shape, the ratings and how the game is
   opened, in place of two long chains of cases. The stored shapes are unchanged, so no saved challenge
   changes its identity.
-- The Pad carries `intents`, turns and zooms from two fingers on the glass (`engine/motion/touches.ts`),
-  and from the wheel, a trackpad's pinch and the plus and minus keys. A game that reads them says
-  `intents: true`. In the pups' blocks two fingers turn the hanging block onto its side as Turn does,
-  and a pinch zooms the site while building, about the site rather than the hand.
+- The Pad carries `intents`, a zoom from two fingers on the glass (`engine/motion/touches.ts`), the
+  wheel, a trackpad's pinch and the plus and minus keys. A game that reads them says `intents: true`;
+  Fetch with the pups zooms its park with them. Two fingers turning was a turn intent while the pups'
+  crane turned a hanging block with it, and went with that game, since nothing else turned.
 - Not done: a gamepad for every control beyond the arrows, go and brake that it already reaches.
 
 Done for sound, and Spell the picture rebuilt as the sound train.

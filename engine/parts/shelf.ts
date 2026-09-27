@@ -1710,6 +1710,36 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["counting", "nature"],
         words: "hedge hawthorn hedgerow bush berries haws field edge gate gap meadow",
     },
+    parkhill: {
+        on: "outdoors",
+        also: [],
+        shows: [],
+        words: "hill mound slope grass snow park roll climb game",
+    },
+    parkbench: {
+        on: "outdoors",
+        also: ["places"],
+        shows: [],
+        words: "bench seat park wooden sit game",
+    },
+    parkbush: {
+        on: "outdoors",
+        also: [],
+        shows: ["nature"],
+        words: "bush shrub leaves berries park garden game",
+    },
+    parkslide: {
+        on: "outdoors",
+        also: ["places"],
+        shows: [],
+        words: "slide playground ladder platform chute park play game",
+    },
+    parkfence: {
+        on: "outdoors",
+        also: [],
+        shows: [],
+        words: "fence picket boards rails hole gap garden park game",
+    },
     log: {
         on: "outdoors",
         also: [],
@@ -1984,7 +2014,7 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         on: "animals",
         also: ["people", "stories"],
         shows: ["reading", "counting"],
-        words: "dog dogs puppy pup family rufus maple pip dot dad mum wave cheer jump sit walk tail character game",
+        words: "dog dogs puppy pup family rufus maple pip dot dad mum wave cheer jump sit walk run leap swim carry shake fetch tail character game",
     },
     wolf: {
         on: "animals",
@@ -2077,6 +2107,24 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: ["measuring"],
         shows: ["weight"],
         words: "flour sugar ingredient scoop",
+    },
+    lemonadestand: {
+        on: "food",
+        also: ["money"],
+        shows: ["money", "capacity"],
+        words: "game lemonade stand stall booth awning counter shop sell",
+    },
+    lemoncup: {
+        on: "food",
+        also: ["measuring"],
+        shows: ["capacity", "halves"],
+        words: "game cup glass tumbler lemonade drink millilitres half quarter scale",
+    },
+    pitcher: {
+        on: "food",
+        also: ["home"],
+        shows: ["capacity"],
+        words: "game jug pitcher glass lemonade drink pour lemon",
     },
     worktop: {
         on: "food",
@@ -2443,6 +2491,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         words: "golf putter ball flag putting garden",
     },
     golfcup: { on: "sport", also: [], shows: [], words: "golf hole cup flag target" },
+    fetchtoy: {
+        on: "sport",
+        also: ["animals"],
+        shows: [],
+        words: "ball tennis frisbee stick throw fetch dog park toy game",
+    },
     slingbeam: {
         on: "sport",
         also: [],
@@ -2597,6 +2651,24 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: ["measuring"],
         shows: ["weight", "adding"],
         words: "sack bag load weight kilograms heavy counterweight lift pulley basket",
+    },
+    swingrope: {
+        on: "outdoors",
+        also: ["sport"],
+        shows: ["counting"],
+        words: "game rope swing knot tag number stream cross charlie pendulum",
+    },
+    swingbranch: {
+        on: "outdoors",
+        also: ["sport"],
+        shows: [],
+        words: "game branch tree bough ropes swing stream bark leaves",
+    },
+    streambank: {
+        on: "outdoors",
+        also: [],
+        shows: [],
+        words: "bank stream river edge ravine cliff ground earth grass slope",
     },
     riverreach: {
         on: "outdoors",

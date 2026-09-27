@@ -24,62 +24,60 @@ won try again. Down the river is the first to use checkpoints: each gate of the 
 and Back to the checkpoint beside the undo button puts the canoe just past the last of them, so a
 missed number further on costs only the stretch since that gate. Its gates and the number on the line
 are one goal in order, which the progress bar counts. Watch it again, beside Play another, plays a won
-try from the start with the hands it was played with; it is left out under reduced motion. In A home
-for the pups two fingers turn a held block in the same fifteen-degree steps as the turn keys, and a
-pinch, the wheel or the plus and minus keys zoom in on the building site while building.
+try from the start with the hands it was played with; it is left out under reduced motion. In Fetch
+with the pups a pinch, the wheel or the plus and minus keys zoom the park in and out.
 
-## A home for the pups (26 September 2026, rebuilt 27 September 2026)
+## Fetch with the pups (27 September 2026)
 
-A home for the pups (`school/games/blocks.ts`, `?g=blocks`) is a building game for the Pup family, an
-original family of four dogs on the art shelf (see [shelf.md](shelf.md)). Each level is a job one of
-the pups asks for on a pinned note: a room 2 squares wide for Dot's bed, three rooms in a row, a
-lookout exactly 6 squares tall on a flag, a room 4 squares wide from exactly 10 blocks, a room under a
-pointed roof 4 squares to its tip, a room with an area of 6 squares on a windy hilltop, a room 3 squares
-wide with its floor 2 squares above a pond, a room with a door and a roof 5 and a half squares high, and
-a garden wall exactly 7 and a half squares long.
+Fetch with the pups (`school/games/fetch.ts`, `?g=blocks`) replaced A home for the pups, the Pup
+family's building game, after the owner found both of its versions (blocks nudged into place with
+nine buttons, then blocks dropped from a swinging crane and tested by the wolf) boring. It keeps the
+id `blocks`, so the links and the stored challenges filed under it still open the pups' game. We
+looked at what makes fetch fun with a real dog (the throw, the chase, the catch and the dog trotting
+back proud of itself) and at the throwing games the owner likes, Slingshot and Garden mini-golf, and
+built the park around them.
 
-The first version had the child drag blocks from a pile, nudge them with nine buttons and press Test
-the house. The owner found it a chore rather than play, so the game was rebuilt around a crane, after
-the crane drops of Tower Bloxx, the build-then-test of Bad Piggies and the wolf of the three little
-pigs. A crane stands over the building site with a block hanging from its hook. The child holds a
-finger over the site and the crane follows it, or drives it with the left and right arrows, and lets
-go (or presses Drop) to drop the block. The block swings on its rope as the crane starts and stops,
-and it falls as it swings, so a hasty drop lands wide and a patient one lands under the hook; a block
-dropped while it hangs still, a hair from a neighbour, meets that neighbour's side. The rope winds in
-over whatever is under the hook, so a block always falls a short way. A tap on a block in the pile, or
-the up and down arrows, hangs a different block; Turn (or B, or two fingers) hangs a block on its side,
-which a roof or an arch cannot do. The early levels draw where the block would land, the middle ones
-only a line straight down, and the last ones nothing, so the aim comes to rest in the child's eye.
+A ball, a frisbee or a stick lies on the picnic rug. The child pulls it back and lets go, or aims with
+up and down, sets the strength with left and right and presses space; B (Swap) changes what is thrown
+where a level offers more than one thing. planck decides the rest: a ball bounces and rolls and slows
+on the grass, stops dead in snow and slides on ice; a frisbee glides on its speed across and sinks as
+it slows, and the wind carries it furthest; a stick tumbles and stays where it lands. Things bounce
+off trees, the fence and the slide, catch in bushes, and float in the pond. The Pup family races
+after it, each as it can: Pip sits at the front of the rug and is the fastest, but is slow to stop and
+runs past before he turns back; Dot is small enough for the hole in the tall fence; Rufus is the only
+one who swims; Maple jumps highest, over the low fence and up onto the slide's platform. The others
+stop on the bank or at the fence and bark. A pup jumps for a thing passing over its head, so a low
+frisbee is often caught in the air. Whoever gets it carries it back to the rug, and a pup that swam
+shakes itself dry.
 
-We chose the crane over a flick with a strength because the swing gives the hand something to judge
-by degrees on every block, whatever its size, and because waiting for a swing to die away is itself a
-way to aim that a young child finds on their own. A flick would have made a tall stack a matter of luck.
+The mathematics is on the path, which is marked in metres from the rug's edge. Each level asks for
+three throws in turn, as the note says: land it on a number (judged where it first comes down, marked
+with a cross), land it a number of metres past where a pup sits, make it stop by a number (the pups
+stay until it has stopped, which is the hill's lesson: a ball rolls back down and a stick stays), or
+throw it where only one pup can fetch it. A number counts within a metre, or within half a metre on
+the snowy park, whose first ask is a half. The dotted line of the throw is shown while aiming on the
+early levels and shrinks to nothing by the last. The six places are the open meadow, the pond, the
+hill, the playground with its slide and tall fence, a windy day with a bench and a low fence, and the
+snowy park with a frozen pond. Each throw met is a checkpoint and moves the level's goal on; a throw
+that misses costs nothing, and one nobody can reach comes back to the rug by itself.
 
-When the house matches the note and has stood still for a moment, the wolf walks up, breathes in with
-his cheeks puffed, and blows: a gust from `engine/motion/gust.ts` pushes every block by its height.
-A house whose blocks move or turn past a small limit has fallen, is put back exactly as it was built
-from the design kept in `engine/motion/construction.ts`, and the wolf does not come again until the
-house has changed. Thin walls fall on the windy hilltop and thick ones stand. A house that stands is
-moved into: the wolf walks off, and each pup walks, as a runner from `engine/motion/walker.ts` drawn
-by `engine/motion/actor.ts`, into the room or up onto a floor on stilts, and the family cheers. The
-measuring is `engine/motion/room.ts`, and after each block settles the note says what it found ("The
-room is 3 squares wide. Dot wants 2 squares."). The back arrow takes back the last block dropped.
-
-The world is 72 squares by nearly 27, twice as wide as the view, with hills, clouds and trees along
-it and ground hatched down to its bottom edge, so no edge of the world shows at any size the page
-grows the view to. Blocks sound as wood, lower the bigger they are and louder the harder they land;
-a rocking block creaks (the `creak` cue in `engine/motion/cues.ts`); the wolf's breath is the wind hum.
-
-The levels have variations (`school/games/blocks-challenges.ts`), each the number on the note: a width,
-a count of rooms or blocks, a height, an area or a length. The solver certifies each by driving the
-crane with a finger, block by block, until the house stands and the family moves in, and the pads it
-pressed replay to the same win, which is the game's replay witness. `school/games/__tests__/blocks.test.ts`
-builds every level and variation, builds two by the keys alone, shows a swinging drop landing wide and
-a still one landing under the hook, thin walls falling and coming back, the wolf waiting for a change,
-and random drops doing the job at most one time in five; `tools/e2e/pup-blocks.e2e.ts` builds Dot's
-room in the app by mouse and by keys.
+A throw always starts from the same place, since the pups are put back on their seats before the
+next, so each ask can be tried on its own. The variations (`school/games/fetch-challenges.ts`) move a
+level's numbers along the path, and the solver certifies each one by searching the keyboard's aims
+for a throw that does each ask, playing it through the real park, and then replaying the whole plan
+from the start, which is the game's replay witness. `school/games/__tests__/fetch.test.ts` wins every
+variation of every level by the keys, and shows a number judged where the throw lands and a stop only
+once it has stopped, a ball rolling off the hill where a stick stays, only Rufus swimming for a thing
+in the pond, Dot and Maple reaching where only they can, a frisbee gliding further than a ball and
+further still in the wind, and random throws finishing a level rarely. `tools/e2e/pup-fetch.e2e.ts`
+throws by the keys and by pulling, and swaps the ball for the stick. The sounds are a whoosh for a
+throw, a bounce, each pup's bark at its own pitch, the pond's splash, and the pups panting while they
+run, a new `pant` hum.
 
 ## Charlie's bridge (26 September 2026)
+
+Replaced on 27 September 2026 by Charlie's rope swings under the same id; see "Charlie's rope
+swings" below. This section and the pulley lift's are kept as the record of the plank game.
 
 Charlie's bridge (`school/games/bridge.ts`, `?g=bridge`) is the first game built around Charlie, the
 named character on the art shelf. Charlie and her dog want to reach a picnic on the far bank of a
@@ -157,7 +155,10 @@ however the jug is turned, leans when the jug is carried and swings back, and ri
 lands, with a splash. Under reduced motion the stream still falls and the surface stands level and
 still. The rules version for "pour" is now `-liquid-1`.
 
-## Charlie's market stall (26 September 2026)
+## Charlie's market stall (26 September 2026, replaced by the lemonade stand)
+
+This game was replaced on 27 September 2026 by Charlie's lemonade stand under the same id; see "Charlie's
+lemonade stand (27 September 2026)" below. The section is kept for the reasoning behind it.
 
 Charlie's market stall (`school/games/wardrobe.ts`, `?g=wardrobe`) replaces the turn game that was
 first built under this id, a dress-up puzzle played from a tray. Charlie shops at a clothes stall.
@@ -191,6 +192,70 @@ on it. The drawings added for it are `stallcounter` and `coindish`, beside `garm
 `charlie`, `person`, `dog`, `prop.coins`, `purse`, `pricetag` and `receipt`.
 `tools/e2e/charlie-wardrobe.e2e.ts` plays a level in the app by hand and dresses and throws with the
 keys.
+
+## Charlie's lemonade stand (27 September 2026)
+
+Charlie's lemonade stand (`school/games/lemonade.ts`, `?g=wardrobe`) replaces the market stall, which
+the owner found extremely boring: dressing had no aim, and paying was a pitch whose only question was
+which coins. The id stays `wardrobe`, so links and stored progress still reach it. Customers stand
+behind a long plank counter that runs on from Charlie's booth, each with an order in a speech bubble,
+and Charlie serves them in three moves that each go by degrees.
+
+She pours. The glass jug turns on a pin at the top of a post, and a hand drawn down it, or the down
+arrow held, tips it: a gentle tilt dribbles and a steep one gushes (`pourRate` in
+`engine/motion/vessel.ts`), and the lemonade falls from the spout as drops of the particle liquid in
+`engine/motion/liquid.ts`, each carrying its share. The cup's level is what has landed in it, so a
+pour is stopped by eye against the marks, allowing for what is still falling, and a cup filled past
+its top spills. A press of the down arrow brings the jug straight to its lip, so the keys pour at once
+and reduced motion pours a little at every press. The cup is marked in halves, in quarters or in
+millilitres, and an order counts within six hundredths of a cup (eight on the halves level).
+
+She slides. The full cup is pulled back and let go, or its push set with the left and right arrows
+and sent with the big button, and it slides along the counter against its friction. The push is
+measured as the distance it carries on a still counter, so an arrow press moves it half a square and
+the guide on the early levels (a dotted path and a ring where it will stop) is the push itself. Too
+soft, and the cup stops short and is pushed on from where it stands; too hard, and it goes off the end
+and a fresh cup comes; stopped at a customer who asked for a different amount, it slides back with its
+drink in it, to be topped up or tipped out with Backspace. Nothing is ever lost but time.
+
+She gives change. A customer who has their drink pays, their coins hopping back along the counter to
+Charlie's dish, and if they paid more than the price they set their own dish on the counter and ask
+for their change. The change is rolled to them a coin at a time: a coin is chosen from Charlie's dish
+by a tap or with C, pulled back or pushed with the arrows like a cup, and rolls face on along the
+counter; the dish's rims catch a coin that reaches it, one that stops short or runs past comes back,
+and one too many is taken back with Backspace or a tap on the dish. The customer thanks her when the
+dish holds exactly their change, and walks away, and the next customer walks up to the free place.
+
+Waiting customers' smiles fade slowly and never make them leave. The mathematics is in the orders
+(halves and quarters of a cup, then millilitres on the cup's scale), in the price of one or two cups,
+and in the change, never in the push. The six levels are a sunny park with two customers and halves,
+quarters of a cup, change from a quarter with the cups in millilitres, a windy day whose gusts turn
+about every eight seconds and push a sliding cup or coin (`engine/motion/gust.ts`, shown on a
+windsock), a counter 66 squares long with the change from a dollar, and a busy fair with four
+customers, a double order and wind. The fill line on the cup goes after the fourth level, and the
+guide for a push after the fifth.
+
+The whole stand is in view wherever the room allows: the frame's view is the world, which is the
+counter and a little more, so the far customers on the long counter can be read while pouring, and on
+a narrow phone the camera follows a cup or a coin along the counter. Ground runs past both ends. The
+first customers are already waiting when a level opens, since the player runs only after the child's
+first input. Charlie and the customers move by their poses through `engine/motion/actor.ts` (Charlie
+holds when she pours, points when she pushes, waves at a new customer and cheers at a thank you), a
+thanked customer is an event with a checkpoint and the level's goal counts them, the stand has its own
+sounds (glass, a slide, the chink of coins and a thank-you chime) and hums the pour and the wind.
+
+The variations (`school/games/lemonade-challenges.ts`) give each level five more sets of orders from
+the level's amounts, in another order, with other customers, and where there is change another handful
+to pay with. The solver serves a stand from the keys as a child would: it holds the jug tipped until a
+pour let go then would settle on the order, and finds each push by trying it on a copy first. Its keys
+replay to the same stand, which is the game's replay witness, and every variation is certified by it.
+`school/games/__tests__/lemonade.test.ts` serves every level and variation this way, serves a customer
+by hand, checks the short, long and wrong pushes, the change with a coin too many, that random pressing
+serves at most one customer in five, that reduced motion settles, and the frame, the words and the
+tuning table. `tools/e2e/lemonade-stand.e2e.ts` serves the first level from the keys under reduced
+motion, and pours and slides with the mouse. The drawings added for it are `lemonadestand`, `pitcher`
+and `lemoncup`; the market stall's drawings stay on the shelf. The rules version for `wardrobe` is now
+`-lemonade-1`.
 
 ## Penny shove, the slingshot and the stall on the shared aim (26 September 2026)
 
@@ -498,9 +563,9 @@ This section lists what is built, and it is kept up to date; the rest of the doc
 | Rafts (`herd`) | action | none | 1 five on the raft, grade 1; 2 seven and three, 1 to 2; 3 the same on each, 2 to 3; 4 four to a raft, 3 to 4; 5 five, three and two, 1 to 2; 6 sixes from twenty, 3 to 4 (see "Sheepdog, rebuilt as Rafts") |
 | Gone fishing (`fish`) | action | none | 1 two that make ten, grade 1; 2 three that make twenty, 1 to 2; 3 one kilogram, 2 to 3; 4 two and a half kilograms, 3 to 4; 5 three that make fifty, 2 to 3; 6 a kilogram and a half, 3 to 4 (see "Gone fishing, rebuilt (26 September 2026)") |
 | Paper plane (`plane`) | action | none | 1 up to ten, grade 1; 2 tens to a hundred, grade 2; 3 halves, quarters and eighths, grade 3; 4 tenths, grade 4 |
-| Charlie's bridge (`bridge`) | action | none | 1 one stone, grade 1; 2 two stones, 1 to 2; 3 a wider stream, 2; 4 stones with no numbers, 2 to 3; 5 centimetres, 3; 6 tenths of a metre, 4; 7 a rope bridge, 2 to 3; 8 the pulley lift, 3 to 4 (see "Charlie's bridge (26 September 2026)") |
-| A home for the pups (`blocks`) | action | varied numbers on each note | 1 a bed for Dot, grade 1; 2 three rooms in a row, 1 to 2; 3 Pip's lookout, 1 to 2; 4 ten blocks by the river, 2; 5 a pointed roof, 2 to 3; 6 windy hilltop, 2 to 3; 7 over the pond, 3; 8 a door for the family, 3 to 4; 9 a garden wall in halves, 4 (see "A home for the pups") |
-| Charlie's market stall (`wardrobe`) | action | none | 1 pennies and nickels, grade 1; 2 dimes as well, 1 to 2; 3 up to fifty cents, 2; 4 up to a dollar, 2 to 3; 5 dollars and cents, 3; 6 the dish on the move, 4 (see "Charlie's market stall (26 September 2026)") |
+| Charlie's rope swings (`bridge`) | action | none | 1 over the stream, grade 1; 2 land on 4, 1; 3 stones in twos, 1 to 2; 4 rope to rope, 2; 5 the ravine, in metres, 2 to 3; 6 up to the tree house, 2 to 3; 7 a windy day, 2 to 4; 8 three jumps to 12, 3 to 4 (see "Charlie's rope swings (27 September 2026)") |
+| Fetch with the pups (`blocks`) | action | each level's numbers moved along the path | 1 the open meadow, grades 1 to 2; 2 across the pond, 1 to 2; 3 up the hill, 2 to 3; 4 the playground, 2 to 3; 5 a windy day, 3 to 4; 6 the snowy park, 3 to 4 (see "Fetch with the pups") |
+| Charlie's lemonade stand (`wardrobe`) | action | none | 1 a sunny park, halves, grade 1; 2 quarters of a cup, 1 to 2; 3 change, please, 2; 4 a windy day, 2 to 3; 5 the long counter, 3; 6 the busy fair, 3 to 4 (see "Charlie's lemonade stand (27 September 2026)") |
 
 The race activity that is left, Stop on the line, is played by Down the river. Take the corner was retired in September 2026, and its idea, choosing a speed before a corner, became Pocket rally's fourth level; an old `?g=race` address opens Pocket rally. Find the rule's activity was retired with its turn game, since the number machine carries the same idea as an action game. The yard adds two levels of its own in the same way. A test checks that every version of every activity is a level of some game, so none was dropped when the tabs became one.
 
@@ -1893,6 +1958,8 @@ Take the corner asked a child to plan a speed before a corner, a turn at a time,
 
 ## Charlie's bridge: the pulley lift (26 September 2026)
 
+Replaced with the rest of the plank game by Charlie's rope swings (27 September 2026).
+
 The far bank of the eighth level is six squares above the near one, and a lift stands at the water's edge, hung over a wheel against a basket on the near bank. The planks on the grass are sacks, each with its weight written on it, and the child drags them into the basket. Charlie weighs 20 kg. When she steps onto the lift it is let go: with less than 20 kg in the basket it stays down, with exactly 20 it hangs still, and with more it rises at a speed set by how much more, since the floor and the basket are damped. With up to four kilograms over, it reaches the top gently and Charlie walks off to the picnic; with more, it bangs into the top and she rides it back down, and a sack can be taken out. A sack added while she waits on the lift sends it up. The lift is the pulley and slider joints from `bodies.ts`; the sacks are not bodies, and their weight pulls on the basket.
 
 ## Shunting yard, rebuilt as a hump yard (27 September 2026)
@@ -1908,4 +1975,58 @@ The maths is in the boards. The first two levels and the last ask for wagons add
 The world is wider and taller than the framed yard, with the meadow under the sidings down to its foot, the yard's rail out to its right edge, faint hills on the horizon and clouds through the sky, so a wide or tall room never shows the world's edge; the view is sixty squares across, so a phone at six pixels a square holds it without scrolling.
 
 Held by `school/games/__tests__/yard.test.ts`: a gentle push couples, a hard one knocks and a soft one stops short; the points hold while a wagon rolls; a siding fills from its buffer stop, refuses when full, and sends its last wagon back to the end of the line; the solver in `school/games/yard-challenges.ts` plans the moves on the sidings as a puzzle and then plays every push through the real yard, and wins every variation of every level by the keys and by a finger; its recorded pads replay through the tape to the same yard, with a checkpoint for each board met; pressing at random rarely makes up an order level; every drawing is on the shelf and the ground reaches every edge of the world. `tools/e2e/shunting-yard.e2e.ts` makes up a level by the keys and sets the points and pushes by a finger. Drawings: `sidingboard`, new; `carriage`, `loco`, `coupling`, `bufferstop`, `railway`, `railbank`, `meadow`, `peaks`, `firs` and `cloud` from the shelf. The `liftpit`, `yardlever` and `orderboard` drawings went with the old yard. The rules version is `yard-2`.
+
+## Charlie's rope swings (27 September 2026)
+
+"Hold to swing higher. Let go to fly."
+
+The owner found Charlie's bridge extremely boring: laying planks and pressing Go is a puzzle with a
+walk at the end, and nothing the hand does is judged by degrees. We looked at rope swings over water,
+the kind a child has swung on, and at the swinging in platform games, and chose a swing that is
+pumped and let go, because it is the one mechanic in which how long the child holds and when the
+child lets go both matter, and physics decides where Charlie comes down. The game keeps the id
+`bridge`, so a stored challenge or a link still opens it, and it lives in `school/games/swings.ts`.
+
+Charlie stands on the near bank holding a rope tied to a branch over the stream. Holding Swing, or a
+finger anywhere on the field, swings her off and pumps: every moment held adds a push along the way
+she is going, so the swing rises by degrees up to a little short of level with the branch. Letting go
+flies her from the rope on the arc the swing gave her, and she lands where it comes down: on a
+stepping stone, on the far bank, in the tree house, or in the water. Holding again in the air
+reaches for a rope, and she catches the first one her hands pass. A tap does not end a swing it
+starts, since letting go counts only after a third of a second on the rope. A splash costs nothing:
+she climbs out where she last stood, which is a checkpoint.
+
+The mathematics is in where she lands. The stream has a number line along it, and a stone the level
+does not ask for wobbles and tips her in, so "Land on 4" is reading the line and choosing how hard to
+swing, and "Stones in twos" is counting in twos from stone to stone. On "Rope to rope" the ropes carry
+tags with where they hang and the ones the level does not ask for are loosely tied and slip; the
+ravine asks for the ropes at 4 m and 6 m with no tags, read off a tape across the gap; the tree house
+asks for the ropes that count in threes before a swing high enough to reach it. "A windy day" pushes
+her as she flies, and the windsock on the far bank shows how hard. "Three jumps to 12" writes each
+landing as a sum along the top ("4 + 4 = 8") and counts the far bank only when it is the third jump,
+with ropes that swing on their own and are taken by holding up the hands as one comes past. The
+dotted arc of the flight she would take shows on the first levels, only while holding in the middle
+ones, and not at all on the last.
+
+The swing is `engine/motion/swing.ts`: a pendulum pumped along its way, a flight under gravity and
+wind, and a catch that keeps the part of the flight's speed that goes round the new rope. The ropes
+nobody holds swing back to hanging, or on and on if they sway. Charlie is the actor over her poses,
+with a new `hang` pose (both arms up, as she holds a rope), turned with the rope while she swings. The
+shelf has three new drawings for it: `swingrope`, a twisted rope with a knot and a tag;
+`swingbranch`, the bough the ropes are tied to; and `streambank`, a bank that slopes into the water
+or a cliff that drops to it, which runs to the foot of the world so no edge shows. The plank and sack
+drawings stay on the shelf. The rope creaks at each end of a big swing, she whooshes as she lets go,
+a catch knocks, a splash splashes, and the water and the wind hum under it.
+
+`swings-challenges.ts` lays each level out three ways and ships a layout only when `crossing` has
+found a way over it by stepping copies of the game with holds a hand could make: from standing each
+length of hold in turn, and in the air a press as she nears a rope the level wants, then each length
+of pump. Held by `school/games/__tests__/swings.test.ts`: every level and layout is crossed by the
+holds found for it; a crossing replays from its tape to the same state, with a checkpoint at each
+steady stone; holding longer swings higher and a tap does not let go; a stone the level does not ask
+for tips her in and she is back where she last stood; a rope is caught only by a hand held out for it
+and a loose one slips; jumps add up and the wrong number of them starts again; every stone she can
+stand on has a rope she can reach; random presses and let-goes win at most one try in five on any
+level that asks for something; and the frame draws only the shelf's drawings, with banks and water to
+every edge. `tools/e2e/charlie-swings.e2e.ts` swings her across in the app.
 

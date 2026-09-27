@@ -18,13 +18,18 @@ test("every member, pose and mood is described in fifteen to thirty words that n
 });
 
 test("a pose that is a movement is drawn inside its part, and every member wags a tail and blinks", () => {
-    const whole: Record<string, string> = { jump: "hop", cheer: "hop", walk: "step" };
+    const whole: Record<string, string> = {
+        jump: "hop",
+        cheer: "hop",
+        walk: "step",
+        shake: "shiver",
+    };
     for (const member of PUPS)
         for (const pose of PUP_POSES) {
             const parts = partsIn(
                 drawn(pupFamily, { member, pose, mood: "happy", dir: 1 }, { paper: false }).marks,
             );
-            for (const name of ["hop", "step"])
+            for (const name of ["hop", "step", "shiver"])
                 assert.equal(parts.includes(name), whole[pose] === name, `${member} ${pose}`);
             assert.equal(parts.includes("wave"), pose === "wave", `${member} ${pose}`);
             assert.ok(parts.includes("tail") && parts.includes("eyes"), `${member} ${pose}`);

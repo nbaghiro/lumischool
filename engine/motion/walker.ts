@@ -249,7 +249,9 @@ export function stepRunner(r: Runner, i: Intent, c: Course, m: Moves, dt: number
     }
     r.vx = toward(r.vx, i.run * m.speed, (grounded(r) ? m.accel : m.airAccel) * dt);
     const nx = r.x + r.vx * dt;
-    if (c.solid?.(nx + r.facing * 0.2, r.y - m.step - 0.05)) {
+    // a wall is met on the side it is moving to, which is not the way it faces while it turns
+    const ahead = r.vx > 0 ? 1 : r.vx < 0 ? -1 : r.facing;
+    if (c.solid?.(nx + ahead * 0.2, r.y - m.step - 0.05)) {
         if (Math.abs(r.vx) > 0.5) out.push("bumped");
         r.vx = 0;
     } else r.x = nx;

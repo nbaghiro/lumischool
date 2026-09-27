@@ -162,9 +162,8 @@ function intents(v: unknown): Intent[] | null {
             !Number.isFinite(i.by)
         )
             return null;
-        if (i.kind === "turn") out.push({ kind: "turn", by: i.by });
-        else if (i.kind === "zoom") out.push({ kind: "zoom", by: i.by });
-        else return null;
+        if (i.kind !== "zoom") return null;
+        out.push({ kind: "zoom", by: i.by });
     }
     return out;
 }

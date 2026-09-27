@@ -29,10 +29,11 @@
     }
     /* the page's title is a note card on the map, centred over the games, as the other pages' titles
        are; wider and shorter than a note, so the games start high on the page */
+    /* The grid cards' tape stands 16px above them, so this leaves the same 38px under the card as the page leaves above it. */
     .game-heading {
         display: flex;
         justify-content: center;
-        padding: 0 8px 20px;
+        padding: 0 8px 54px;
     }
     .game-heading .postcard.note {
         width: min(100%, 640px);
@@ -88,6 +89,10 @@
     }
     /* On a phone each label sits over its chips, so Any and the four grades keep to one line. */
     @media (max-width: 520px) {
+        /* the page leaves 24px above the card on a phone */
+        .game-heading {
+            padding-bottom: 40px;
+        }
         .game-filters .filter-chips legend {
             float: none;
             width: 100%;

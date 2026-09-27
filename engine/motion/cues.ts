@@ -1,7 +1,7 @@
 // How a game asks for a sound without reaching into audio.
 //
 // A game names a cue, and nothing else: a piece was lifted, a piece was placed, a piece went home,
-// a push met a buffer, a stack creaked, a car ran out of road, the beam came level, a plane went through its hoop, a
+// a push met a buffer, a rope creaked, a car ran out of road, the beam came level, a plane went through its hoop, a
 // fish met the water, the round was won. The page maps each cue to a note on the sound core's
 // sounder, which is off until a visitor asks and silent on paper and in a test. `motion` reaches no
 // other module, so the games' model and view can be tested in a plain node run, and a cue with

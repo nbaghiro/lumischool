@@ -128,9 +128,9 @@ export function admit(
 export const panOf = (x: number, camera: number, width: number): number =>
     clamp(((x - camera) / Math.max(1, width)) * 2 * 0.8, -1, 1);
 
-/** A sound that goes on while something does: water running, wind, an engine. */
+/** A sound that goes on while something does: water running, wind, an engine, a dog panting. */
 export interface Hum {
-    kind: "water" | "wind" | "engine";
+    kind: "water" | "wind" | "engine" | "pant";
     /** From nought, silent, to one. */
     level: number;
     /** A multiple of its own pitch, for an engine working harder. */
@@ -142,6 +142,8 @@ export const HUMS: Record<Hum["kind"], { wave: Wave; hz: number; gain: number; s
     water: { wave: "noise", hz: 700, gain: 0.18, sway: 0.4 },
     wind: { wave: "noise", hz: 350, gain: 0.16, sway: 0.15 },
     engine: { wave: "sawtooth", hz: 55, gain: 0.08, sway: 6 },
+    // breathy and quick, about three pants a second
+    pant: { wave: "noise", hz: 1400, gain: 0.1, sway: 3 },
 };
 
 /** A pitch a whole number of semitones up from one, for a cue that climbs with a count. */

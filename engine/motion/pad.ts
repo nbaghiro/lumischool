@@ -51,11 +51,8 @@ export interface Pad {
     intents?: Intent[];
 }
 
-/**
- * A meaning read from the hands rather than a device's state: two fingers turning, by radians
- * clockwise, or pinching, by the factor the view should grow by.
- */
-export type Intent = { kind: "turn"; by: number } | { kind: "zoom"; by: number };
+/** A meaning read from the hands rather than a device's state: two fingers pinching, by the factor the view should grow by. */
+export type Intent = { kind: "zoom"; by: number };
 
 export const emptyPad = (): Pad => ({
     held: null,

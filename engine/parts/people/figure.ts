@@ -49,6 +49,7 @@ export const POSES = [
     "run",
     "balance",
     "jump",
+    "hang",
 ] as const;
 export type Pose = (typeof POSES)[number];
 export const AGES = ["child", "grownup", "older"] as const;
@@ -1600,7 +1601,7 @@ export function figure<G>(
         arms[near] = "hold";
         arms[far] = "hold";
     }
-    if (pose === "cheer" || pose === "jump") {
+    if (pose === "cheer" || pose === "jump" || pose === "hang") {
         arms[near] = "up";
         arms[far] = "up";
     }

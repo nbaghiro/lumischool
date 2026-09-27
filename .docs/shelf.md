@@ -179,6 +179,22 @@ balances and bobs as she walks, and her loose hair and her skirt swing a little 
 description names what is seen and never the feeling, and drops what is on her feet, then the words that say
 she is a girl, then the print on her top, when it would run past thirty words.
 
+Charlie gained a `hang` pose on 27 September 2026 for her rope swings: both arms straight up, as she
+holds a rope, with no movement of its own, since the game swings her. It is a pose of the figure kit,
+so any person can hang too.
+
+## Rope swings (27 September 2026)
+
+Three drawings on the outdoors shelf carry Charlie's rope swings. `swingrope` is a thick twisted rope
+with a loop at the top and a fat knot near its frayed end, as long as a setting says, with a small
+white tag that can carry a number. `swingbranch` is the bough the ropes hang from, thick where it
+leaves the trunk and thin at the tip, with its underside level so every rope is tied at the same
+height. `streambank` is the ground at the edge of water, seen from the side: grass along the top,
+earth with pebbles below, and a bank that slopes a square out into the water or, for a ravine, a
+rocky cliff that drops straight. It is filled with paper under its hatching, so the water it stands in
+does not show through, and it is as deep as a scene needs, so a game can run it to the foot of its
+world. The bridge's plank and sack stay on the shelf though no game uses them now.
+
 ## The Pup family (26 September 2026)
 
 The Pup family (`engine/parts/animals/pupfamily.ts`) is a family of four dogs who stand on their hind
@@ -186,9 +202,12 @@ legs, drawn as one drawing with the member as a setting: Rufus the dad, a tan do
 ears; Maple the mum, curly and yellow; Pip, the older pup, a white terrier with pointed grey ears and a
 patch over one eye; and Dot, the youngest, white with black spots and short black floppy ears. They are
 our own characters, asked for as a family of cartoon dogs and deliberately unlike any family on
-television in their breeds, colours and names. Each stands, waves, sits, walks, jumps or cheers, with
-five faces told by the mouth; their eyes blink and their tails wag, a wave waves, a cheer or a jump
-hops and a walk bobs, each drawn inside a part of its own. The feet anchor stays on the floor in every
+television in their breeds, colours and names. Each stands, waves, sits, walks, jumps or cheers, and
+for Fetch with the pups also runs flat out, leaps with its legs stretched behind, paddles, carries a
+thing home in its paws or shakes off water in a spray of drops, with five faces told by the mouth;
+their eyes blink and their tails wag, a wave waves, a cheer or a jump hops, a walk bobs and a shake
+shivers, each drawn inside a part of its own. A run, a leap, a paddle and a carry face the way `dir`
+says. The feet anchor stays on the floor in every
 pose, so a scene stands them on a line. The wooden toy block they build with is `woodblock` on the
 home shelf.
 
@@ -198,7 +217,19 @@ The wolf (`engine/parts/animals/wolf.ts`) is a grey wolf on his hind legs with p
 snout and a big bushy tail, drawn for the pups' building game after the wolf of the three little pigs.
 He stands with a sly grin, breathes in with his cheeks puffed and his eyes shut, blows with a round
 mouth and three lines of breath, or walks; his eyes blink and his tail sways. `dir` turns him to face
-and blow either way.
+and blow either way. He and `woodblock` stay on the shelf now that the pups' game is Fetch with the
+pups, which uses neither.
+
+## The pups' park (27 September 2026)
+
+Fetch with the pups is played in a park drawn from the shelf. `fetchtoy` (sport) is the thing thrown:
+a yellow tennis ball with its seams, a blue frisbee seen edge on, or a forked stick. On the outdoors
+shelf, `parkhill` is a smooth grassy or snowy mound whose slope is `hillAt` in its file, so the game's
+ground and the drawing agree; `parkslide` is a ladder, a railed platform and a pink chute, its shape
+given by `slideShape`; `parkbench` is a slatted bench with its seat at `BENCH_SEAT`; `parkbush` is a
+round leafy bush with a few berries; and `parkfence` is a picket fence, low or tall, which can have two
+boards broken short at the bottom to leave a hole `FENCE_HOLE` of its height. `arcade.ground` takes
+`snow` for a snowy strip.
 
 ## The sound train's pieces (26 September 2026)
 
@@ -228,6 +259,18 @@ unicorn. Every pose keeps the same box and the feet anchor on the floor, so a ga
 along its own arc, and the eyes blink, the tail swishes and the head nods on a page. The show jumping
 upright, `jumpstand`, gained a red or white flag on top, and the water tray was deleted, since Clear
 round now draws its water jump as water.
+
+## The lemonade stand (27 September 2026)
+
+`lemonadestand` (food) is a stand seen from the front: a wooden booth under a striped awning with its
+name on a board above, a lemon and its price painted on the front, and a long plank counter running on
+from it on trestles, as long as a setting says; `STAND_ROOF` says how high the board stands over the
+counter, so a game can put someone under the awning. `pitcher` (food) is a tall glass jug with its
+spout to the right, its handle to the left and a slice of lemon on the rim, and `lemoncup` (food) a
+straight-sided tumbler marked in halves, in quarters or in millilitres. Both are drawn empty, and
+`PITCHER` and `LEMONCUP` say where their insides are, so a game draws the drink inside and pours it.
+The market stall's drawings (`stallcounter`, `coindish`, `garment`, `clothesrail`) stay on the shelf;
+the lemonade stand still uses `coindish` for the dishes on its counter.
 
 ## The style guide
 

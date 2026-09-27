@@ -469,10 +469,10 @@ What remains in the pieces built: the window has not been measured on children; 
 The games have their own small kit, apart from the instruments: `engine/sound/kit.ts` declares each of
 a game's cues as a few layers of tone or filtered noise on an envelope, voiced louder for a harder hit,
 higher for a count that climbs, and panned by where it happened, with a limit on voices and hums for
-water, wind and an engine. It follows this document's rules: synthesis only, off until the Sound switch
+water, wind, an engine and a dog panting. It follows this document's rules: synthesis only, off until the Sound switch
 is on, and every cue drawn as well as heard. [game-engine.md](game-engine.md) has the detail under P5. The
 cues are the ones in `engine/motion/cues.ts`; `creak`, a slow low rasp, was added for a stack of blocks
-rocking before it goes, and the pups' blocks voice it with their wooden kit.
+rocking before it goes, and a rope straining now voices it, in Charlie's swings.
 
 ## Open questions
 

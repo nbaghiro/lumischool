@@ -1,7 +1,8 @@
 // The Pup family: four dogs who stand on their hind legs, one drawing with the member as a setting.
 // Rufus the dad is a tan dog with long floppy ears, Maple the mum a curly yellow one, Pip the older pup
 // a white terrier with a patch over one eye, and Dot the youngest a white pup with black spots. Each
-// pose that is a movement has a part of its own: a hop for a cheer or a jump, a step for a walk.
+// pose that is a movement has a part of its own: a hop for a cheer or a jump, a step for a walk, a
+// shiver for a shake. A run, a leap, a swim and a carry face the way `dir` says.
 import { part, plain, type Ctx, type RawAnchors } from "../../ink/surface";
 import { U } from "../../paper";
 import { defineDrawing } from "../drawing";
@@ -17,7 +18,19 @@ const FIRM = { disableMultiStroke: true, preserveVertices: true } as const;
 
 export const PUPS = ["rufus", "maple", "pip", "dot"] as const;
 export type Pup = (typeof PUPS)[number];
-export const PUP_POSES = ["stand", "wave", "sit", "walk", "jump", "cheer"] as const;
+export const PUP_POSES = [
+    "stand",
+    "wave",
+    "sit",
+    "walk",
+    "jump",
+    "cheer",
+    "run",
+    "leap",
+    "swim",
+    "carry",
+    "shake",
+] as const;
 type PupPose = (typeof PUP_POSES)[number];
 const MOODS = ["happy", "excited", "surprised", "worried", "sad"] as const;
 type PupMood = (typeof MOODS)[number];
@@ -71,7 +84,9 @@ export const PUP_FACTS: Record<
 const grownUp = (m: Pup) => m === "rufus" || m === "maple";
 const boxOf = (p: PupParams) => ({
     w: 4,
-    h: (grownUp(pick(PUPS, p.member, "rufus")) ? 6 : 5) + (p.pose === "jump" ? 1 : 0),
+    h:
+        (grownUp(pick(PUPS, p.member, "rufus")) ? 6 : 5) +
+        (p.pose === "jump" || p.pose === "leap" ? 1 : 0),
 });
 
 /** A thick line with round ends, for an arm, a leg or a tail. */
@@ -105,7 +120,7 @@ export const pupFamily = defineDrawing<PupParams>({
     family: "animals",
     title: "The Pup family",
     group: "Characters",
-    about: "A family of four dogs who stand on their hind legs: Rufus the dad, a tan dog with long floppy ears; Maple the mum, curly and yellow; Pip, a white terrier pup with a patch over one eye; and Dot, the youngest, white with black spots. Each member stands, waves, sits, walks, jumps or cheers, and their tails wag.",
+    about: "A family of four dogs who stand on their hind legs: Rufus the dad, a tan dog with long floppy ears; Maple the mum, curly and yellow; Pip, a white terrier pup with a patch over one eye; and Dot, the youngest, white with black spots. Each member stands, waves, sits, walks, jumps, cheers, runs, leaps, swims, carries a thing or shakes off water, and their tails wag.",
     params: { member: "rufus", pose: "wave", mood: "happy", dir: 1 },
     settings: {
         member: { kind: "one of", of: PUPS },
@@ -126,6 +141,20 @@ export const pupFamily = defineDrawing<PupParams>({
             label: "Rufus standing",
             params: { member: "rufus", pose: "stand", mood: "worried", dir: -1 },
         },
+        { label: "Pip running", params: { member: "pip", pose: "run", mood: "excited", dir: 1 } },
+        {
+            label: "Maple leaping",
+            params: { member: "maple", pose: "leap", mood: "excited", dir: 1 },
+        },
+        {
+            label: "Rufus swimming",
+            params: { member: "rufus", pose: "swim", mood: "happy", dir: 1 },
+        },
+        { label: "Dot carrying", params: { member: "dot", pose: "carry", mood: "happy", dir: -1 } },
+        {
+            label: "Rufus shaking",
+            params: { member: "rufus", pose: "shake", mood: "surprised", dir: 1 },
+        },
     ],
     box: boxOf,
     draw: (c, p): RawAnchors => {
@@ -143,9 +172,11 @@ export const pupFamily = defineDrawing<PupParams>({
                 ? part(c, "hop", [cx, floor])
                 : pose === "walk"
                   ? part(c, "step", [cx, floor])
-                  : c;
+                  : pose === "shake"
+                    ? part(c, "shiver", [cx, floor])
+                    : c;
         const { pen, g } = whole;
-        const lift = pose === "jump" ? 16 : 0,
+        const lift = pose === "jump" || pose === "leap" ? 16 : 0,
             sit = pose === "sit" ? 12 : 0;
         const base = floor - lift;
         const P = (dx: number, dy: number): [number, number] => [cx + dx * k, base + dy * k];
@@ -200,6 +231,29 @@ export const pupFamily = defineDrawing<PupParams>({
                 pen.path(g, capsule(P(d * 8, -26), P(d * 12, -14), 5), "pencil", coat, line);
                 pen.path(g, capsule(P(d * 12, -14), P(d * 9, -4), 5), "pencil", coat, line);
                 foot(...P(d * 9, -3));
+            }
+        } else if (pose === "run" || pose === "carry") {
+            // one leg reaching ahead and one kicked up behind, mid-stride
+            pen.path(g, capsule(P(s * 7, -26), P(s * 19, -7), 5), "pencil", coat, line);
+            pen.path(g, capsule(P(-s * 7, -26), P(-s * 18, -16), 5), "pencil", coat, line);
+            foot(...P(s * 21, -5));
+            foot(...P(-s * 21, -14));
+        } else if (pose === "leap" || pose === "swim") {
+            // both legs stretched out behind, as a dog does in the air or paddling
+            for (const d of [0, 1]) {
+                pen.path(
+                    g,
+                    capsule(P(-s * (4 + d * 6), -26), P(-s * (20 + d * 4), -18 + d * 8), 5),
+                    "pencil",
+                    coat,
+                    line,
+                );
+                foot(...P(-s * (23 + d * 4), -17 + d * 8));
+            }
+        } else if (pose === "shake") {
+            for (const d of [-1, 1]) {
+                pen.path(g, capsule(P(d * 9, -26), P(d * 15, -6), 5), "pencil", coat, line);
+                foot(...P(d * 16, -4));
             }
         } else {
             for (const d of [-1, 1]) {
@@ -340,7 +394,10 @@ export const pupFamily = defineDrawing<PupParams>({
             }
 
         // arms, drawn over the head so a wave shows: the near one waves, both go up for a cheer or a jump
-        const arm = (d: number, key: "rest" | "up" | "wave" | "lap") => {
+        const arm = (
+            d: number,
+            key: "rest" | "up" | "wave" | "lap" | "reach" | "back" | "hold" | "paddle" | "out",
+        ) => {
             const S = P(d * 14, shoulderY),
                 E =
                     key === "up"
@@ -349,7 +406,17 @@ export const pupFamily = defineDrawing<PupParams>({
                           ? P(d * 26, shoulderY - 22)
                           : key === "lap"
                             ? P(d * 10, shoulderY + 22)
-                            : P(d * 20, shoulderY + 20);
+                            : key === "reach"
+                              ? P(s * 30, shoulderY - 6 + (d === s ? 0 : 8))
+                              : key === "back"
+                                ? P(-s * 24, shoulderY + 14)
+                                : key === "hold"
+                                  ? P(s * 16 + d * 5, shoulderY + 10)
+                                  : key === "paddle"
+                                    ? P(s * (d === s ? 30 : 20), shoulderY + (d === s ? 14 : 22))
+                                    : key === "out"
+                                      ? P(d * 26, shoulderY + 4)
+                                      : P(d * 20, shoulderY + 20);
             const moving = key === "wave" ? part(whole, "wave", S, { dir: d }) : whole;
             moving.pen.path(moving.g, capsule(S, E, 4.5 * k), "pencil", coat, calm(c, 1.5));
             moving.pen.circle(moving.g, E[0], E[1], 11 * k, "ruler", m === "rufus" ? pale : coat, {
@@ -366,12 +433,38 @@ export const pupFamily = defineDrawing<PupParams>({
                       ? "wave"
                       : pose === "sit"
                         ? "lap"
-                        : "rest",
+                        : pose === "run"
+                          ? d === s
+                              ? "reach"
+                              : "back"
+                          : pose === "leap"
+                            ? "reach"
+                            : pose === "carry"
+                              ? "hold"
+                              : pose === "swim"
+                                ? "paddle"
+                                : pose === "shake"
+                                  ? "out"
+                                  : "rest",
             );
+        // the drops a shake throws off, in the water's own blue
+        if (pose === "shake")
+            for (const [dx, dy] of [
+                [-26, -74],
+                [28, -68],
+                [-31, -44],
+                [32, -38],
+                [-28, -14],
+                [30, -10],
+            ] as const)
+                whole.pen.ellipse(whole.g, ...P(dx, dy), 5 * k, 8 * k, "ruler", pen.fill("sky"), {
+                    strokeWidth: 1,
+                    ...FIRM,
+                });
 
         const top = H(0, m === "pip" ? -32 : -24),
             nose = H(s * 22, 0),
-            hand = P(s * 24, shoulderY - 20);
+            hand = pose === "carry" ? P(s * 16, shoulderY + 10) : P(s * 24, shoulderY - 20);
         return {
             head: [top[0], top[1], "up"],
             face: [nose[0], nose[1], s > 0 ? "right" : "left"],
@@ -391,6 +484,11 @@ export const pupFamily = defineDrawing<PupParams>({
             walk: "walking",
             jump: "jumping",
             cheer: "with both arms up",
+            run: "running flat out",
+            leap: "leaping forwards",
+            swim: "paddling along",
+            carry: "carrying something home",
+            shake: "shaking off water",
         };
         const face: Record<PupMood, string> = {
             happy: "",
@@ -409,6 +507,7 @@ export const pupFamily = defineDrawing<PupParams>({
             wave: { is: "wiggle", deg: 10, period: 3.8, cycles: 3 },
             hop: { is: "hop", lift: 7, squash: 0.08, period: 2.6 },
             step: { is: "bob", lift: 2.2, arc: 0, deg: 0, period: 1.4 },
+            shiver: { is: "wiggle", deg: 6, period: 1.2, cycles: 6 },
         },
     },
 });

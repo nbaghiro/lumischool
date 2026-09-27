@@ -231,6 +231,7 @@ const POSE_WORD: Record<Pose, string> = {
     run: "running",
     balance: "balancing with both arms out",
     jump: "jumping with both arms up",
+    hang: "hanging by both hands from above",
 };
 /** The face as a sighted reader sees it, by its brows and mouth and never by the feeling's name. */
 const FACE_WORD: Record<Mood, string> = {

@@ -56,16 +56,20 @@ export const gameRulesVersion = (game: string): string =>
                       : game === "snake"
                         ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-1`
                         : game === "blocks"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-crane-1`
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-1`
                           : game === "marble-workshop"
                             ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
-                            : ["bridge", "herd", "cargo-workshop"].includes(game)
-                              ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
-                              : ["jump", "road", "weigh", "share"].includes(game)
-                                ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
-                                : ["pay", "wardrobe"].includes(game)
-                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
-                                  : GAME_CHALLENGE_VERSIONS.rules;
+                            : game === "bridge"
+                              ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-1`
+                              : ["herd", "cargo-workshop"].includes(game)
+                                ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
+                                : ["jump", "road", "weigh", "share"].includes(game)
+                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+                                  : game === "wardrobe"
+                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-1`
+                                    : game === "pay"
+                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                      : GAME_CHALLENGE_VERSIONS.rules;
 
 export type GameValue =
     null | boolean | number | string | GameValue[] | { [key: string]: GameValue };
