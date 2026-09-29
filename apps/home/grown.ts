@@ -7,6 +7,7 @@ import type { DayKind } from "../../school/family/family";
 import {
     dayItems,
     schoolWeek,
+    waits,
     type DayItemState,
     type SheetBack,
 } from "../../school/family/sheets";
@@ -85,6 +86,8 @@ export interface Planned {
     title: string;
     marker: Marker;
     kind: DayKind;
+    /** A book lesson's day: the sitting it reads. */
+    part?: number;
 }
 
 type Facts = (id: string) => LessonFacts | undefined;
@@ -98,7 +101,16 @@ export function plannedOn(r: GrownRecord, on: string, facts: Facts): Planned[] {
             const lesson = d?.lesson ? facts(d.lesson) : undefined;
             if (!d || !lesson) return [];
             const s = subjectFacts(p.track);
-            return [{ lesson, track: p.track, title: s.title, marker: s.marker, kind: d.kind }];
+            return [
+                {
+                    lesson,
+                    track: p.track,
+                    title: s.title,
+                    marker: s.marker,
+                    kind: d.kind,
+                    ...(d.part === undefined ? {} : { part: d.part }),
+                },
+            ];
         });
 }
 
@@ -157,9 +169,25 @@ export function weekOf(r: GrownRecord, facts: Facts): WeekDay[] {
     });
 }
 
-/** Paper that came back and waits to be marked, oldest first. */
-export const waitingIn = (r: GrownRecord): SheetBack[] =>
-    r.back.filter((s) => s.mode === "paper" && !s.marked);
+/** Paper that came back unmarked, and screen work with pieces waiting for a response, oldest first. */
+export const waitingIn = (r: GrownRecord): SheetBack[] => r.back.filter(waits);
+
+/** What waits for a grown-up, counted as a family says it: sheets of paper, and pieces done on screen. */
+export const waitingCount = (sheets: readonly SheetBack[]): { paper: number; pieces: number } => ({
+    paper: sheets.filter((s) => s.mode === "paper" && !s.marked).length,
+    pieces: sheets.reduce((n, s) => n + s.pieces.length, 0),
+});
+
+/** The waiting part of a line: "2 sheets came back on paper and wait to be marked", and the pieces. */
+export function waitingSays(w: { paper: number; pieces: number }): string {
+    const paper = w.paper
+        ? `${plural(w.paper, "sheet")} came back on paper and ${w.paper === 1 ? "waits" : "wait"} to be marked`
+        : "";
+    const pieces = w.pieces
+        ? `${plural(w.pieces, "piece")} handed in on screen ${w.pieces === 1 ? "waits" : "wait"} for your response`
+        : "";
+    return [paper, pieces].filter(Boolean).join(", and ");
+}
 
 /**
  * The paper a family prints on: Letter in the Americas, where the family's time zone says they are,
@@ -169,7 +197,12 @@ export const paperFor = (timeZone: string): "A4" | "Letter" =>
     timeZone.startsWith("America/") ? "Letter" : "A4";
 
 /** The hello card's line: today's lessons for everyone, and what waits to be marked. */
-export function helloLine(kids: readonly string[], lessons: number, waiting: number): string {
+export function helloLine(
+    kids: readonly string[],
+    lessons: number,
+    waiting: number,
+    pieces = 0,
+): string {
     const today = !kids.length
         ? "No children yet. Add the first one, then open their view on the device they use."
         : lessons
@@ -177,8 +210,8 @@ export function helloLine(kids: readonly string[], lessons: number, waiting: num
           : `Nothing is planned today for ${names(kids)}.`;
     if (!kids.length) return today;
     return `${today} ${
-        waiting
-            ? `${plural(waiting, "sheet")} came back on paper and ${waiting === 1 ? "waits" : "wait"} to be marked.`
+        waiting || pieces
+            ? `${waitingSays({ paper: waiting, pieces })}.`
             : "Nothing is waiting to be marked."
     }`;
 }

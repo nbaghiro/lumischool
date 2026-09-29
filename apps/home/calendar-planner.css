@@ -26,27 +26,6 @@
     gap: 14px;
     align-items: start;
 }
-/* The head is narrow and centred, as Home's hello card is: as wide as the chips and the four
-   views need on one row, and no wider. */
-.cal-head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    gap: 12px 20px;
-    width: min(100%, 760px);
-}
-.cal-headline {
-    display: flex;
-    flex-direction: column;
-    gap: var(--stack);
-}
-.cal-name {
-    margin: 0;
-    font: 700 26px / 1.05 var(--f-hand);
-}
-.cal-headline .note {
-    margin: 0;
-}
 /* Everyone is a word, not the children's faces again; the chip keeps their height all the same. */
 .cal-whochip.plain {
     padding-left: 14px;
@@ -159,10 +138,10 @@
 /* The week and the shelf stand on one card: two cards side by side left a strip of the map showing
    between them down the whole page, which read as a crack rather than as the space between cards. */
 .cal-body {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
-    align-items: start;
     background: var(--card);
     border-radius: 5px;
     box-shadow:
@@ -329,6 +308,7 @@
     opacity: 0;
 }
 .cal-sticker:hover .cal-lift,
+.cal-row:hover .cal-lift,
 .cal-lift:focus-visible,
 .cal-lift[aria-pressed="true"] {
     opacity: 1;
@@ -364,7 +344,10 @@
 }
 
 /* The shelf: what this child has not been given a day for. */
-/* The shelf is a narrow card, so its sides stay tighter than the wide cards' clamp. */
+/* The shelf is a narrow card, so its sides stay tighter than the wide cards' clamp. It fills the
+   card's column, so the week and the shelf end on one line, and the window caps it (24 for the 12
+   above and below) so a week taller than the window leaves it room to slide down beside it. A
+   sticky box cannot leave its grid area, so it still comes to rest on the week's last line. */
 .cal-shelf {
     padding: var(--card-pad-top) var(--card-pad) var(--card-pad-bottom) 0;
     position: sticky;
@@ -372,6 +355,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    min-height: 0;
+    max-height: calc(100svh - 24px);
 }
 .cal-settled {
     margin: 0;
@@ -389,13 +374,16 @@
     font: 400 12px var(--f-read);
     color: var(--ink-soft);
 }
-/* The list is taller than the window, so it scrolls and says so: an overlay bar that only shows
-   while it moves left the row it cut at the boundary reading as a row outside the card. */
+/* The list takes what the shelf has left rather than a height of its own, which is what lets the
+   column end where the week does. It holds more than fits, so it scrolls and says so: an overlay
+   bar that only shows while it moves left the row it cut at the boundary reading as a row outside
+   the card. */
 .cal-shelf-in {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 62vh;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-gutter: stable;
@@ -410,11 +398,14 @@
     padding-top: 12px;
     border-top: 1.5px dashed var(--grid);
 }
-.cal-shelf-name {
+/* 14, as the subjects below are parted, so the name does not sit on the line under it. Named
+   through the section it is in, since `.page h3` in page.css zeroes a bare class's margin. */
+.cal-shelf-kid .cal-shelf-name,
+.cal-term-kid .cal-shelf-name {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin: 0 0 8px;
+    margin: 0 0 14px;
     font: 700 16px/1.1 var(--f-hand);
 }
 .cal-shelf-name .kid-portrait {
@@ -434,6 +425,11 @@
 }
 .cal-rowtitle {
     min-width: 0;
+}
+/* A subject stands away from the child's name, from the settled line and from the subject above it,
+   whose last row would otherwise sit against this heading. */
+.cal-shelf-group {
+    margin-top: 14px;
 }
 .cal-shelf-group h4 {
     margin: 0 0 5px;
@@ -486,6 +482,7 @@
     color: var(--ink-soft);
 }
 .cal-again {
+    margin-top: 14px;
     min-height: 44px;
     padding: 8px 12px;
     font: 600 13px var(--f-read);
@@ -499,68 +496,113 @@
     border-color: var(--ink);
 }
 
-/* The day: what the evening before looks like, and what prints. */
-.cal-dayview {
+/* The day: a lane a child beside the same shelf the week has, and the day's own order inside it. */
+.cal-daylanes {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.7fr);
-    gap: 20px;
+    grid-template-columns: repeat(var(--lanes, 1), minmax(0, 1fr));
+    gap: 14px;
     align-items: start;
 }
-/* The day is read at arm's length and printed, so its column keeps a sheet's measure. */
-.cal-agendas {
+.cal-lane {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: var(--stack);
+    min-width: 0;
+    padding: 10px 12px 12px;
+    border: 1.5px solid var(--grid);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+.cal-lane.taking {
+    background: color-mix(in srgb, var(--pen) 8%, transparent);
+    outline: 2px dashed var(--pen);
+    outline-offset: -2px;
+}
+.cal-lane.off {
+    background: repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--ink) 5%, transparent) 0 6px,
+        transparent 6px 12px
+    );
+}
+/* The head is one row, so the morning's start clock can join it without moving the name. */
+.cal-lanehead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px dashed var(--grid);
+}
+.cal-lanehead .kid-portrait {
+    width: 30px;
+    height: 30px;
+    flex: none;
+}
+.cal-lanewho {
     min-width: 0;
 }
-.cal-agenda {
-    max-width: 640px;
+.cal-lanewho h3 {
+    margin: 0;
+    font: 700 17px/1.1 var(--f-hand);
 }
-.cal-agenda + .cal-agenda {
-    padding-top: 20px;
-    border-top: 1.5px dashed var(--grid);
+.cal-lanewho .note {
+    margin: 2px 0 0;
+    font: 400 12px var(--f-read);
 }
-.cal-agenda header {
-    margin-bottom: 10px;
-}
-.cal-list {
+.cal-rows {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    gap: 8px;
 }
-.cal-list li {
+/* A row is the lesson: its drawing, its name, and the grip that takes it out of the order. The
+   subject's colour is the stripe the shelf's own rows carry, so a row keeps its subject across. */
+.cal-row {
+    position: relative;
     display: flex;
-    gap: 12px;
     align-items: center;
-    padding: 10px 12px;
+    gap: 9px;
+    padding: 8px 48px 8px 8px;
     border: 1.5px solid var(--ink);
+    border-left-width: 5px;
+    border-left-color: var(--m, var(--sky));
     border-radius: 6px;
     background: var(--card);
 }
-.cal-item {
-    min-width: 0;
-}
-.cal-list .cal-pic {
-    flex: none;
-    width: 112px;
-    height: 84px;
-}
-.cal-yesterday .cal-list li {
-    border-color: var(--rule-firm);
-    background: transparent;
-}
-.cal-when {
-    margin: 0 0 2px;
-    font: 500 10.5px var(--f-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+.cal-row[data-state="done"] .cal-rowname,
+.cal-row[data-state="late"] .cal-rowname,
+.cal-row[data-state="missed"] .cal-rowname {
     color: var(--ink-soft);
 }
-.cal-what {
+.cal-row.held {
+    box-shadow: 0 0 0 2px var(--pen);
+}
+/* Where the drop would land, drawn in the row's own margin so no row moves under the hand. */
+.cal-row.above::before,
+.cal-row.below::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--pen);
+}
+.cal-row.above::before {
+    top: -6px;
+}
+.cal-row.below::after {
+    bottom: -6px;
+}
+.cal-lane .cal-rowpic {
+    width: 50px;
+    height: 38px;
+}
+.cal-rowtext {
+    min-width: 0;
+}
+.cal-rowname {
     display: block;
+    min-height: 44px;
     padding: 0;
     font: 700 16px/1.2 var(--f-hand);
     color: var(--ink);
@@ -569,11 +611,24 @@
     text-align: left;
     cursor: pointer;
 }
-button.cal-what:hover {
+button.cal-rowname:hover {
     color: var(--pen);
 }
+/* The subject, the minutes and, on a day gone by, how it went; the attention word joins this line. */
+.cal-rowfacts {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0;
+    font: 400 12.5px/1.3 var(--f-read);
+    color: var(--ink-soft);
+}
+.cal-gap {
+    width: 100%;
+}
 .cal-empty {
-    margin: 10px 0 0;
+    margin: 4px 0 0;
     font: 400 13px var(--f-read);
     color: var(--ink-soft);
 }
@@ -684,6 +739,15 @@ button.cal-what:hover {
 }
 
 /* The term: a ribbon of weeks a subject. */
+.cal-term > .kicker {
+    margin: 0;
+}
+.cal-term > .gc-title {
+    margin: 4px 0 0;
+}
+.cal-term > .cal-term-kid:first-of-type {
+    margin-top: 20px;
+}
 .cal-term-kid + .cal-term-kid {
     margin-top: 20px;
     padding-top: 18px;
@@ -694,7 +758,7 @@ button.cal-what:hover {
     grid-template-columns: 120px minmax(0, 1fr);
     gap: 8px 12px;
     align-items: center;
-    margin-top: 14px;
+    margin-top: 18px;
 }
 .cal-ribbon-name {
     font: 600 13.5px var(--f-read);
@@ -745,8 +809,32 @@ button.cal-what:hover {
     border: 0;
 }
 
+/* The plan's own fields in the look's band (lesson-look.css). The note is one line deep here rather
+   than a card's box, so the band stays shallow enough to leave the sheet under it in view. */
+.cal-plan-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.cal-plan-fields textarea {
+    width: 100%;
+    height: 44px;
+    min-height: 44px;
+    resize: vertical;
+}
+.look-plan .note {
+    margin: 0;
+}
+.look-plan .acts {
+    margin: 0;
+}
+
 /* Carrying a lesson: the days that can take it are the only thing that looks live. */
-.cal.carrying .cal-sticker:not(.held) .gc-sticker-in {
+.cal.carrying .cal-sticker:not(.held) .gc-sticker-in,
+.cal.carrying .cal-lane:not(.taking) .cal-row {
     opacity: 0.72;
 }
 
@@ -754,14 +842,13 @@ button.cal-what:hover {
     .cal-body.withshelf {
         grid-template-columns: minmax(0, 1fr);
     }
-    /* Stacked under the week inside the same card, the shelf takes the card's own padding again. */
+    /* Stacked under the week inside the same card, the shelf takes the card's own padding again.
+       There is no column left to end level with, so the cap comes off and the whole list stands on
+       the page: an inner scroller here takes the page's own scroll from a finger over the shelf. */
     .cal-shelf {
         position: static;
         max-height: none;
         padding: 0 var(--card-pad) var(--card-pad-bottom);
-    }
-    .cal-dayview {
-        grid-template-columns: minmax(0, 1fr);
     }
 }
 @media (max-width: 700px) {
@@ -797,15 +884,13 @@ button.cal-what:hover {
     .cal-month-in {
         min-height: 58px;
     }
-    .cal-shelf-in {
-        max-height: none;
-    }
-    .cal-head {
+    /* On a phone the lanes stack, one child under the next, each as wide as the card. */
+    .cal-daylanes {
         grid-template-columns: minmax(0, 1fr);
     }
-    .cal-list .cal-pic {
-        width: 62px;
-        height: 48px;
+    .cal-lane .cal-rowpic {
+        width: 46px;
+        height: 34px;
     }
 }
 
@@ -815,9 +900,9 @@ button.cal-what:hover {
     }
 }
 
-/* What the evening's print is: the child's day, without the chooser, the shelf or yesterday. */
+/* What the evening's print is: the child's day, without the chooser, the shelf or the controls. */
 @media print {
-    .cal-head,
+    .page-head,
     .cal-views,
     .cal-steps,
     .cal-shelf,
@@ -826,10 +911,11 @@ button.cal-what:hover {
     .cal-add,
     .cal-drop,
     .cal-chips,
-    .cal-yesterday {
+    .cal-body > .postcard-tape {
         display: none;
     }
-    .cal-dayview {
+    /* One lane under the next, so a day of three children prints down one sheet. */
+    .cal-daylanes {
         grid-template-columns: minmax(0, 1fr);
     }
     /* A printed day is the calendar's card alone, in one column. */

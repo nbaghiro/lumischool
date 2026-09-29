@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { ChosenWorlds } from "../../../school/family/chosen";
 import { termsFor } from "../../../school/worlds/choice";
-import { yearOf } from "../../../school/worlds/worlds";
+import { DEFAULT_YEARS, yearOf } from "../../../school/worlds/worlds";
 import { choiceFor } from "../worlds";
 
 const NONE: ChosenWorlds = { terms: {}, tweaks: {}, begun: {}, kept: [] };
@@ -20,7 +20,7 @@ const rosie = { id: "kid", name: "Rosie", grade: 1 };
 describe("a child's worlds as the grown-ups' pages read them", () => {
     it("reads a family that never chose as every year in its own worlds", () => {
         const choice = choiceFor(rosie, read());
-        for (const grade of [1, 2, 3, 4])
+        for (const grade of Object.keys(DEFAULT_YEARS).map(Number))
             assert.deepEqual(termsFor(choice, grade), yearOf(grade), `grade ${grade}`);
     });
 

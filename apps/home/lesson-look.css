@@ -1,0 +1,143 @@
+/* One lesson's sheet in a lifted dialog (engine/ui/dialog.css), over the still picture of the world
+   it is met in, which covers the dialog and stays put while the sheet scrolls over it. The dialog is
+   wide enough on a desk for the world to show either side of an 820 px sheet, and the scroller
+   carries its own row, so the row stays in reach down a long sheet. */
+.dialog:has(> .look) {
+    width: min(1280px, 100vw);
+}
+.look {
+    position: relative;
+    height: calc(100svh - 40px);
+    overflow: hidden;
+    background-color: #fff;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: var(--sq) var(--sq);
+    border-radius: 14px;
+    box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.look-scroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    outline: none;
+}
+.look-top {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "words tools close";
+    align-items: center;
+    gap: 8px 16px;
+    min-height: 64px;
+    padding: 8px 10px 8px 20px;
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    border-bottom: 1px solid var(--rule);
+}
+.look-words {
+    grid-area: words;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    margin: 0;
+    line-height: 1.15;
+}
+.look-words b {
+    overflow: hidden;
+    font: 700 19px / 1.2 var(--f-hand);
+    font-variation-settings: "INFM" 70;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.look-tools {
+    grid-area: tools;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.look-close {
+    grid-area: close;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font: 400 28px / 1 var(--f-read);
+    color: var(--ink-soft);
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.look-close:hover,
+.look-close:focus-visible {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+/* What the page that opened the look may change about this lesson. It is a band under the row
+   rather than a second card, so one dialog holds both the sheet and the plan, and it scrolls away
+   with the sheet, since a parent reading down the page is no longer editing. */
+.look-plan {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 20px 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--rule);
+}
+/* the picture's transform, which covers the box, is set as it is drawn (lesson-look.tsx) */
+.look-world {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.look-paper {
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px 48px;
+}
+.look-paper .ls-sheet {
+    box-shadow:
+        0 0 0 1px rgba(43, 47, 55, 0.16),
+        0 2px 0 rgba(43, 47, 55, 0.05),
+        0 34px 60px -34px rgba(27, 37, 64, 0.55);
+}
+.look-note {
+    margin: 0;
+    padding: 24px;
+    background: var(--card);
+    border-radius: 8px;
+}
+
+@media (max-width: 700px) {
+    .look {
+        height: calc(100dvh - 24px);
+        border-radius: 10px;
+    }
+    /* on a phone the sheet takes the width, so the world shows in a band over it */
+    .look-paper {
+        padding: 150px 0 32px;
+    }
+    /* a plan band already covers the world, so the sheet under it starts where the band ends */
+    .look-scroll:has(> .look-plan) .look-paper {
+        padding-top: 32px;
+    }
+    .look-top {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "words close"
+            "tools tools";
+        padding: 8px 6px 10px 14px;
+    }
+    .look-plan {
+        padding: 14px 14px 18px;
+    }
+}

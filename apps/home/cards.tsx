@@ -7,7 +7,7 @@ import type { LessonFacts } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
 import { CloseX } from "../../engine/ui/dialog";
-import { Button } from "../../engine/ui/form";
+import { Button, Check } from "../../engine/ui/form";
 import { Postcard } from "../../engine/ui/postcard";
 
 import { Say } from "../../engine/ui/say";
@@ -46,7 +46,7 @@ export const WEEKDAY_NAMES = [
 
 const WEEK: readonly Weekday[] = [1, 2, 3, 4, 5, 6, 7];
 
-export const writing = (): acts.Writing => ({ newId: api.newId, at: api.nowAt() });
+const writing = (): acts.Writing => ({ newId: api.newId, at: api.nowAt() });
 
 /** Each drawing is built once a page: the same lesson is on a sticker, in a day and on the shelf. */
 const drawn = new Map<string, SVGElement>();
@@ -273,14 +273,11 @@ export function DayCard(props: {
                         </For>
                     </Select>
                 </div>
-                <label class="gc-check">
-                    <input
-                        type="checkbox"
-                        checked={counts()}
-                        onChange={(e) => setCounts(e.currentTarget.checked)}
-                    />
-                    <span>Count it as teaching in the records</span>
-                </label>
+                <Check
+                    label="Count it as teaching in the records"
+                    checked={counts()}
+                    onChange={setCounts}
+                />
                 <div class="acts">
                     <Button
                         onClick={() =>

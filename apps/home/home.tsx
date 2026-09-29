@@ -60,7 +60,9 @@ import {
     placeName,
     plannedOn,
     plural,
+    waitingCount,
     waitingIn,
+    waitingSays,
     weekdayShort,
     weekOf,
     type Planned,
@@ -73,6 +75,9 @@ const Marking = lazy(() => import("./mark").then((m) => ({ default: m.Marking })
 
 /** A child's roll, with the worlds and their painter, loaded the first time a journal opens. */
 const Journal = lazy(() => import("./journal").then((m) => ({ default: m.Journal })));
+
+/** A child's grade and the move to the next, with the worlds that say which grades are offered. */
+const MoveGrade = lazy(() => import("./grade").then((m) => ({ default: m.MoveGrade })));
 
 /** Which journals are open, kept on this device only. */
 const OPEN_KEY = "lumischool.grownups.journals.v1";
@@ -293,6 +298,8 @@ export function GrownHome(props: {
         setMarked("");
         setWalk(waitingFor(props.view.kids));
     };
+    const counts = (): { paper: number; pieces: number } =>
+        waitingCount((loaded() ?? []).flatMap(waitingIn));
     const waiting = (): number => (loaded() ?? []).reduce((n, r) => n + waitingIn(r).length, 0);
     const lessonsToday = (): number =>
         (loaded() ?? []).reduce(
@@ -305,13 +312,14 @@ export function GrownHome(props: {
         return helloLine(
             props.view.kids.map((k) => k.name),
             lessonsToday(),
-            waiting(),
+            counts().paper,
+            counts().pieces,
         );
     };
     return (
         <div class="gh">
             <Postcard
-                wide
+                head
                 focus={!props.said}
                 kicker={
                     <>
@@ -322,27 +330,6 @@ export function GrownHome(props: {
                 }
                 title={props.me.user.name ? `Hello, ${props.me.user.name}` : "Hello"}
                 lead={line()}
-                links={
-                    <div class="acts">
-                        <Show when={parent() && waiting()}>
-                            {(n) => (
-                                <Button onClick={markAll}>
-                                    {n() === 1 ? "Mark it" : "Mark them"}
-                                </Button>
-                            )}
-                        </Show>
-                        <Show when={lessonsToday() > 1}>
-                            <Button second onClick={toMorning}>
-                                The morning&apos;s order
-                            </Button>
-                        </Show>
-                        <Show when={parent()}>
-                            <Button second onClick={props.onAdd}>
-                                {props.view.kids.length ? "Add another child" : "Add a child"}
-                            </Button>
-                        </Show>
-                    </div>
-                }
             >
                 <Show when={props.said}>
                     <Say tone="success" focus text={props.said} />
@@ -353,6 +340,23 @@ export function GrownHome(props: {
                 <Show when={bad(pack.latest)}>
                     {(f) => <Say text={`The lessons did not load. ${failureText(f(), local)}`} />}
                 </Show>
+                <div class="acts">
+                    <Show when={parent() && waiting()}>
+                        {(n) => (
+                            <Button onClick={markAll}>{n() === 1 ? "Mark it" : "Mark them"}</Button>
+                        )}
+                    </Show>
+                    <Show when={lessonsToday() > 1}>
+                        <Button second onClick={toMorning}>
+                            The morning&apos;s order
+                        </Button>
+                    </Show>
+                    <Show when={parent()}>
+                        <Button second onClick={props.onAdd}>
+                            {props.view.kids.length ? "Add another child" : "Add a child"}
+                        </Button>
+                    </Show>
+                </div>
             </Postcard>
             <Show when={props.view.kids.length}>
                 <section class="gh-kids-part" aria-labelledby="gh-children">
@@ -798,6 +802,17 @@ function KidCard(props: {
                                 )}
                             </Show>
                         </Sec>
+                        <Show when={props.parent && props.pack}>
+                            {(pack) => (
+                                <Sec title="Grade">
+                                    <MoveGrade
+                                        kid={props.kid}
+                                        record={r()}
+                                        lessons={pack().index.lessons}
+                                    />
+                                </Sec>
+                            )}
+                        </Show>
                     </>
                 )}
             </Show>
@@ -1054,9 +1069,7 @@ function CameBack(props: {
             }
         >
             <p>
-                {`${plural(waiting().length, "sheet")} came back on paper and ${
-                    waiting().length === 1 ? "waits" : "wait"
-                } to be marked, the oldest from ${dayShort(waiting()[0]?.on ?? props.record.today)}.`}
+                {`${waitingSays(waitingCount(waiting()))}, the oldest from ${dayShort(waiting()[0]?.on ?? props.record.today)}.`}
             </p>
             <Show when={props.parent}>
                 <div class="acts">

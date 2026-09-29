@@ -114,6 +114,8 @@ export function Inside(props: {
             });
         },
         drawn: () => setDrew((n) => n + 1),
+        // a past sheet is the child's own, as they left it, at the width it is read at
+        scope: () => `${props.c.pack.pack}|${props.kid.id}|${props.narrow}`,
     });
     onCleanup(() => paper.forget());
     const annualView = createMemo<WorldView | null>((prev) => {

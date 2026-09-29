@@ -1,8 +1,10 @@
 // The grown-ups' Explore: every lesson in the family's pack, found by grade, subject and the words of
-// its title. A lesson opens as a child meets it, in its own world on the world's own paper, over the
-// catalogue rather than on a page of its own: `/explore/<id>` is this screen with that preview open,
-// so the address is still shareable and the way back is the way a parent came. The level a sheet is
-// read at is said over the stage and never on the sheet, and the printed sheet is the grown-up's,
+// its title. A lesson opens in the shared look (lesson-look.tsx), which the calendar opens too: a
+// child's sheet alone, on squared paper in a dialog over the catalogue, rather than on a page of its
+// own or on its world's roll, so there is no map or other lesson to wander into. `/explore/<id>` is
+// this screen with that preview open, so the address is still shareable and the way back is the way a
+// parent came. What Explore puts in the look's tools is its own: the level a sheet is
+// read at, said over the stage and never on the sheet, and the print, which is the grown-up's sheet
 // with the answers and the notes when they ask for them. Nothing here records anything.
 
 import "./explore.css";
@@ -10,50 +12,52 @@ import type { SceneDrawer } from "../../engine/ui/scene";
 import {
     createEffect,
     createMemo,
-    createResource,
     createSignal,
     For,
-    lazy,
     on,
     onCleanup,
     onMount,
     Show,
     type JSX,
 } from "solid-js";
-import type { LessonFacts, Level, PackLesson } from "../../engine/pack";
+import type { LessonFacts, Level } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
-import { still } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
-import { Check } from "../../engine/ui/fields";
-import { Button } from "../../engine/ui/form";
-import { atFrom, hashNow, hashOf, type OverlayAt } from "../../engine/ui/hash";
+import { Button, Check, Search } from "../../engine/ui/form";
 import { LessonSheet } from "../../engine/ui/lesson";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
 import { Postcard } from "../../engine/ui/postcard";
-import { go, Link, path, search, useReady } from "../../engine/ui/router";
+import { go, Link, path, useReady } from "../../engine/ui/router";
 import { after, createHeld, type Maybe } from "../../engine/ui/held";
+import type { Source } from "../../engine/ui/paged";
+import { createPaged, ListEnd, readOnLastFocus } from "../../engine/ui/paged-list";
 import { matches, Near } from "../../engine/ui/viewport";
 import type { Failure } from "../../engine/ui/wire";
+import {
+    filtersFrom,
+    found,
+    searchOf,
+    shelfPage,
+    type Filters,
+    type Shelf,
+} from "../../school/catalogue";
 import { gradeName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
 import type { PackView } from "../../server/api";
 import {
-    filtersFrom,
-    found,
     foundLine,
     LEVEL_WORDS,
     lessonPath,
     levelFrom,
-    levelsOf,
-    searchOf,
+    searchedLine,
+    shelfCount,
     shelvesOf,
     subjectsOf,
-    EVERYTHING,
-    type Filters,
 } from "./catalogue";
+import { LessonLook, sheetWidth, type LessonPaper } from "./lesson-look";
 import { lessonIn, signInFor } from "./routes";
 import * as shared from "./shared";
 
@@ -65,6 +69,7 @@ const FORMAT_WORDS: Record<string, string> = {
     worked: "Worked examples",
     puzzles: "Puzzles",
     review: "Review",
+    book: "A whole book",
 };
 
 /** The family's pack, shared with every screen; a session that has ended goes to sign in and back. */
@@ -88,9 +93,6 @@ const drawer = (of: readonly Scene[]): Promise<SceneDrawer> =>
 /** Where the catalogue was last narrowed to, so a lesson's way back returns there. */
 let lastSearch = "";
 
-// the overlay, the worlds and the map come with the first look a grown-up takes, not with the page
-const Overlay = lazy(() => import("../../engine/ui/overlay").then((m) => ({ default: m.Overlay })));
-
 /** The entry a look pushed, so closing it goes back over that entry rather than past the catalogue. */
 const LOOK = { look: true };
 const pushedLook = (): boolean => {
@@ -98,10 +100,9 @@ const pushedLook = (): boolean => {
     return typeof st === "object" && st !== null && "look" in st;
 };
 
-/** The look's own code and the school it reads, started when a parent's hand is on a tile. */
-const warmSchool = (pack: PackView): void => {
-    void import("../../engine/ui/overlay").catch(() => undefined);
-    void import("./school").then((m) => m.schoolOnce(pack, still())).catch(() => undefined);
+/** The drawer's own code, started when a parent's hand is on a tile, before the tap that opens it. */
+const warmDrawer = (): void => {
+    void import("../../engine/ui/scene").catch(() => undefined);
 };
 
 // wide like every other grown-ups' screen, so the bar and the cards keep their width and the map
@@ -181,18 +182,31 @@ export function Explore(): JSX.Element {
 }
 
 /**
- * Every lesson is laid out once, and narrowing hides what does not match, so a picture drawn stays
- * drawn while the grown-up types.
+ * Each shelf, a grade's lessons in one subject, is its own paged list over the index already loaded,
+ * and every shelf starts again when the filters change. The counts are worked out over the whole
+ * index, so a search finds across every grade, a folded one and a shelf not yet read included.
  */
 function Catalogue(props: { pack: PackView }): JSX.Element {
+    // every grade with lessons, including one not yet offered, so a grown-up can look ahead
     const lessons = props.pack.index.lessons;
+    const grades = [...new Set(lessons.map((l) => l.grade))].sort((a, b) => a - b);
     const subjects = subjectsOf(lessons);
-    const shelves = shelvesOf(found(lessons, EVERYTHING), subjects);
-    const [filters, setFilters] = createSignal<Filters>(filtersFrom(location.search, subjects));
+    const shelves = shelvesOf(lessons, subjects);
+    const [filters, setFilters] = createSignal<Filters>(
+        filtersFrom(location.search, subjects, grades),
+    );
     const [words, setWords] = createSignal(filters().words);
-    const shown = createMemo(() => new Set(found(lessons, filters()).map((l) => l.id)));
-    const count = (ls: readonly LessonFacts[]): number =>
-        ls.reduce((n, l) => n + (shown().has(l.id) ? 1 : 0), 0);
+    const matched = createMemo(() => found(lessons, filters()));
+    /** How many lessons match on each shelf, keyed `grade subject`, and in each grade, keyed `grade`. */
+    const counts = createMemo(() => {
+        const n = new Map<string, number>();
+        for (const l of matched())
+            for (const k of [`${l.grade}`, `${l.grade} ${l.subject}`])
+                n.set(k, (n.get(k) ?? 0) + 1);
+        return n;
+    });
+    const count = (grade: number, subject?: string): number =>
+        counts().get(subject === undefined ? `${grade}` : `${grade} ${subject}`) ?? 0;
     const narrow = matches("(max-width: 700px)");
     // a grade a parent has closed; narrowing reopens one that has matches, so nothing is hidden by a
     // filter and a fold at once
@@ -202,8 +216,7 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
         setFilters(next);
         setClosed((was) => {
             const open = new Set(was);
-            for (const shelf of shelves)
-                if (count(shelf.subjects.flatMap((s) => s.lessons))) open.delete(shelf.grade);
+            for (const shelf of shelves) if (count(shelf.grade)) open.delete(shelf.grade);
             return open;
         });
         lastSearch = searchOf(next);
@@ -214,29 +227,27 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     const typed = (v: string): void => {
         setWords(v);
         clearTimeout(typing);
-        typing = window.setTimeout(() => change({ words: v }), 180);
+        typing = window.setTimeout(() => change({ words: v }), 250);
+    };
+    const widen = (f: Partial<Filters>): void => {
+        clearTimeout(typing);
+        if (f.words !== undefined) setWords(f.words);
+        change(f);
     };
     lastSearch = searchOf(filters());
 
     // The preview over the catalogue: `/explore/<id>` is a lesson, kept as a path so it can be
-    // shared, bookmarked and opened in a tab of its own, and a parent who wanders from it into the
-    // worlds moves after the `#` (engine/ui/hash.ts) over the catalogue's own address.
+    // shared, bookmarked and opened in a tab of its own.
     const asked = (): string | null => lessonIn(path());
     const lessonOf = (id: string | null): LessonFacts | null =>
         id === null ? null : (lessons.find((l) => l.id === id) ?? null);
-    const at = (): OverlayAt | null => {
-        const wandered = atFrom(hashNow(search));
-        if (wandered) return wandered;
-        const f = lessonOf(asked());
-        return f ? { world: null, lesson: f.id } : null;
-    };
-    /** The lesson the preview opened at, whether the address names it alone or on its world's roll. */
-    const previewed = (): LessonFacts | null => lessonOf(at()?.lesson ?? null);
+    /** The lesson the preview is open at, or null while there is none. */
+    const previewed = (): LessonFacts | null => lessonOf(asked());
     /** An address naming a lesson this pack has not got, which the catalogue says over itself. */
     const noSuch = (): boolean => asked() !== null && lessonOf(asked()) === null;
     const declared = (): Level[] => {
         const f = previewed();
-        return f ? levelsOf(f) : ["medium"];
+        return f ? f.levels : ["medium"];
     };
     const [level, setLevel] = createSignal<Level>(levelFrom(location.search, declared()));
     // a shared address carries the level it was read at, so each lesson opens at its own
@@ -249,26 +260,21 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
             { defer: true },
         ),
     );
-    /** Where the preview looks, in the address: a lesson at its own path, the worlds after the `#`. */
-    const look = (to: OverlayAt | null): void => {
-        const here = `/explore${lastSearch}`;
-        if (to === null) {
+    /** Opens the preview at a lesson, or closes it (null), through the address. */
+    const look = (lesson: string | null): void => {
+        if (lesson === null) {
             // going back over the entry the look pushed leaves the catalogue where it was read
             if (pushedLook()) history.back();
-            else go(here, { replace: true });
+            else go(`/explore${lastSearch}`, { replace: true });
             return;
         }
-        const address =
-            !to.world && to.lesson ? lessonPath(to.lesson, level()) : `${here}${hashOf(to)}`;
-        // one entry for the whole look, so back closes it from wherever a parent has wandered to
-        go(address, { replace: pushedLook(), state: LOOK });
+        go(lessonPath(lesson, level()), { replace: pushedLook(), state: LOOK });
     };
     const choose = (l: Level): void => {
         if (l === level()) return;
         setLevel(l);
-        const here = at();
-        if (here && !here.world && here.lesson)
-            go(lessonPath(here.lesson, l), { replace: true, state: LOOK });
+        const f = previewed();
+        if (f) go(lessonPath(f.id, l), { replace: true, state: LOOK });
     };
     // an address opened straight at a lesson puts the catalogue under it, so back closes the preview
     // instead of leaving the app
@@ -283,19 +289,10 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     // (home.tsx), so that address comes with the answers off and prints itself once
     const asChild = new URLSearchParams(location.search).has("print");
     const [key, setKey] = createSignal(!asChild);
-    const [wanted, setWanted] = createSignal(asChild);
+    const [squared, setSquared] = createSignal(true);
     const [printing, setPrinting] = createSignal(asChild);
-    /** The lesson's own file and drawings, read when a print is in prospect rather than with the look. */
-    const [paper] = createResource(
-        () => (wanted() ? previewed() : null),
-        async (f): Promise<{ lesson: PackLesson; draw: SceneDrawer } | null> => {
-            const read = await api.packLesson(props.pack.pack, f.file);
-            if ("error" in read) return null;
-            const m = await import("../../engine/ui/scene");
-            return { lesson: read, draw: await m.scenes(m.scenesIn(read)) };
-        },
-    );
-    const width = (): number => (narrow() ? Math.min(innerWidth - 32, 480) : 820);
+    /** What the look read the sheet from, which a print takes, so both draw the same sheet once. */
+    const [paper, setPaper] = createSignal<LessonPaper | null>(null);
     let dropped = false;
     /** Prints the sheet the frame after its drawings are on the page. */
     const printNow = (): void => {
@@ -308,7 +305,6 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     };
     /** Asks for a print: the layer goes up and prints itself, or prints again if it is already up. */
     const printSheet = (): void => {
-        setWanted(true);
         if (printing()) printNow();
         else setPrinting(true);
     };
@@ -328,45 +324,41 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
         document.title = titleWas;
     });
 
-    /** What the preview puts beside Close: the level the sheets are written at, and the print. */
+    /** What the preview puts beside Close: the level the sheet is read at, and the print behind one control. */
     const Tools = (): JSX.Element => (
-        <Show when={previewed()}>
-            {/* on a phone the tools fold behind one control, as the catalogue's own filter does, so
-                the sheet keeps the screen; a hand on them reads the file a print will want */}
-            <details
-                class="explore-tools"
-                open={!narrow()}
-                onPointerEnter={() => setWanted(true)}
-                onFocusIn={() => setWanted(true)}
-            >
-                <summary>Level and print</summary>
-                <div class="explore-tools-of">
-                    <Show when={declared().length > 1}>
-                        <Seg
-                            legend="The level"
-                            quiet
-                            name="level"
-                            options={declared().map((l) => ({ value: l, label: LEVEL_WORDS[l] }))}
-                            value={level()}
-                            onChange={choose}
-                        />
-                    </Show>
+        <>
+            <Show when={declared().length > 1}>
+                <Seg
+                    legend="The level"
+                    quiet
+                    name="level"
+                    options={declared().map((l) => ({ value: l, label: LEVEL_WORDS[l] }))}
+                    value={level()}
+                    onChange={choose}
+                />
+            </Show>
+            <details class="explore-print-menu">
+                <summary>Print</summary>
+                <div class="explore-print-menu-of">
+                    <Check
+                        label="Print on squared paper"
+                        checked={squared()}
+                        onChange={setSquared}
+                    />
                     <Check
                         label="Print the answers and the notes for grown-ups"
                         checked={key()}
                         onChange={setKey}
                     />
-                    <Button second onClick={printSheet}>
-                        Print this sheet
-                    </Button>
-                    <p class="note explore-tools-note">
+                    <p class="note">
                         {key()
                             ? "It prints with the answers and the notes, for you."
                             : "It prints as a child's sheet, with nothing filled in."}
                     </p>
+                    <Button onClick={printSheet}>Print this sheet</Button>
                 </div>
             </details>
-        </Show>
+        </>
     );
 
     return (
@@ -379,10 +371,7 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                     </p>
                 </Postcard>
             </Show>
-            <div class="explore-row">
-                <span class="postcard-tape" aria-hidden="true" />
-                <span class="postcard-tape r" aria-hidden="true" />
-                <h1>Every lesson</h1>
+            <Postcard head focus={false} kicker="The lessons as written" title="Every lesson">
                 {/* one set of chips: open beside the name at a desk, behind Filter on a phone */}
                 <details class="explore-row-filter" open={!narrow()}>
                     <summary>Filter</summary>
@@ -398,26 +387,39 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                         onChange={(subject) => change({ subject })}
                     />
                 </details>
-                <div class="explore-find">
-                    <label class="field explore-search">
-                        <span class="field-label">Search the titles</span>
-                        <input
-                            type="search"
-                            autocomplete="off"
-                            placeholder="making ten, magnets, a story"
-                            value={words()}
-                            onInput={(e) => typed(e.currentTarget.value)}
-                        />
-                    </label>
-                    <p class="explore-said" aria-live="polite">
-                        {foundLine(shown().size, lessons.length)}
-                    </p>
-                </div>
-            </div>
+                <Search
+                    label="Search the titles"
+                    placeholder="making ten, magnets, a story"
+                    value={words()}
+                    onInput={typed}
+                    found={foundLine(matched().length, lessons.length)}
+                />
+            </Postcard>
+            <Show when={!matched().length}>
+                <Postcard note kicker="Explore" title="Nothing found">
+                    <p class="note">{searchedLine(filters())}</p>
+                    <div class="explore-widen">
+                        <Show when={filters().words.trim()}>
+                            <Button second onClick={() => widen({ words: "" })}>
+                                Clear the search
+                            </Button>
+                        </Show>
+                        <Show when={filters().subject !== null}>
+                            <Button second onClick={() => widen({ subject: null })}>
+                                Every subject
+                            </Button>
+                        </Show>
+                        <Show when={filters().grade !== null}>
+                            <Button second onClick={() => widen({ grade: null })}>
+                                Every grade
+                            </Button>
+                        </Show>
+                    </div>
+                </Postcard>
+            </Show>
             <For each={shelves}>
                 {(shelf) => {
-                    const lessonsHere = (): number =>
-                        count(shelf.subjects.flatMap((s) => s.lessons));
+                    const lessonsHere = (): number => count(shelf.grade);
                     const open = (): boolean => !closed().has(shelf.grade);
                     const toggle = (): void => {
                         setClosed((was) => {
@@ -450,34 +452,15 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                             <Show when={open()}>
                                 <For each={shelf.subjects}>
                                     {(s) => (
-                                        <div
-                                            class="explore-subject"
-                                            hidden={!count(s.lessons)}
-                                            style={{
-                                                "--m": `var(--${subjectFacts(s.subject).marker})`,
-                                            }}
-                                        >
-                                            <h3>{subjectFacts(s.subject).title}</h3>
-                                            <ul class="explore-tiles">
-                                                <For each={s.lessons}>
-                                                    {(l) => (
-                                                        <li hidden={!shown().has(l.id)}>
-                                                            <Tile
-                                                                lesson={l}
-                                                                digest={props.pack.pack}
-                                                                warm={() => warmSchool(props.pack)}
-                                                                open={() =>
-                                                                    look({
-                                                                        world: null,
-                                                                        lesson: l.id,
-                                                                    })
-                                                                }
-                                                            />
-                                                        </li>
-                                                    )}
-                                                </For>
-                                            </ul>
-                                        </div>
+                                        <ShelfList
+                                            lessons={lessons}
+                                            shelf={{ grade: shelf.grade, subject: s.subject }}
+                                            filters={filters}
+                                            matches={count(shelf.grade, s.subject)}
+                                            of={s.lessons.length}
+                                            digest={props.pack.pack}
+                                            open={look}
+                                        />
                                     )}
                                 </For>
                             </Show>
@@ -489,30 +472,31 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
             <p class="explore-foot">
                 <Link href="/tutoring">Try the teaching preview</Link>
             </p>
-            {/* the look is read as a plain value rather than through Show's accessor, which throws
-                once the look has gone while the overlay is still being taken down */}
-            <Show when={at() !== null}>
-                <Overlay
-                    at={at()}
-                    kicker="As a child sees it"
-                    heading={previewed()?.title}
-                    level={level()}
-                    tools={<Tools />}
-                    source={() =>
-                        import("./school").then(async (m) =>
-                            m.overlayOf(await m.schoolOnce(props.pack, still()), {
-                                level: level(),
-                            }),
-                        )
-                    }
-                    go={look}
-                />
+            <Show when={previewed()} keyed>
+                {(f) => (
+                    <LessonLook
+                        title={f.title}
+                        kicker="As a child sees it"
+                        facts={f}
+                        pack={props.pack.pack}
+                        lessons={props.pack.index.lessons}
+                        level={level()}
+                        tools={<Tools />}
+                        onPaper={setPaper}
+                        onClose={() => look(null)}
+                    />
+                )}
             </Show>
             {/* what a print takes: the lesson's own sheet, at the level and with or without the
                 answers, off the screen until the printer has it, so nothing else goes on the paper */}
             <Show when={printing() && paper()}>
                 {(sheet) => (
-                    <div class="explore-print" data-level={level()} aria-hidden="true">
+                    <div
+                        class="explore-print"
+                        classList={{ "ls-squared": squared() }}
+                        data-level={level()}
+                        aria-hidden="true"
+                    >
                         <LessonSheet
                             lesson={sheet().lesson}
                             level={level()}
@@ -520,7 +504,7 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                                 label: subjectFacts(sheet().lesson.subject).title,
                                 date: null,
                             }}
-                            width={width()}
+                            width={sheetWidth(narrow())}
                             narrow={narrow()}
                             limits={{ sheets: "look", key: key() }}
                             draw={sheet().draw}
@@ -529,6 +513,67 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                     </div>
                 )}
             </Show>
+        </div>
+    );
+}
+
+/** How many tiles a shelf reads at a time: two rows at a desk, three on a phone. */
+const PAGE = 6;
+
+/**
+ * One shelf, a grade's lessons in one subject, read a page at a time from the index already loaded as
+ * the parent scrolls, with nothing to press. Its first page waits until the shelf comes near, so a
+ * shelf far down the catalogue costs nothing.
+ */
+function ShelfList(props: {
+    lessons: readonly LessonFacts[];
+    shelf: Shelf;
+    filters: () => Filters;
+    /** How many of the shelf's lessons the filters let through, and how many it holds. */
+    matches: number;
+    of: number;
+    digest: string;
+    open: (lesson: string) => void;
+}): JSX.Element {
+    const title = subjectFacts(props.shelf.subject).title;
+    const source: Source<LessonFacts, Filters> = (f, after, limit) => {
+        const page = shelfPage(props.lessons, props.shelf, f, after, limit);
+        return Promise.resolve("problem" in page ? { error: "bad-request", status: 400 } : page);
+    };
+    const paged = createPaged(source, props.filters, { limit: PAGE, lazy: true });
+    return (
+        <div
+            class="explore-subject"
+            hidden={!props.matches}
+            style={{ "--m": `var(--${subjectFacts(props.shelf.subject).marker})` }}
+        >
+            <h3>
+                {title}
+                <span class="explore-subject-count">
+                    {shelfCount(props.matches, props.of, !!props.filters().words.trim())}
+                </span>
+            </h3>
+            <ul class="explore-tiles" onFocusIn={readOnLastFocus(paged)}>
+                <For each={paged.state().items}>
+                    {(l) => (
+                        <li>
+                            <Tile
+                                lesson={l}
+                                digest={props.digest}
+                                warm={warmDrawer}
+                                open={() => props.open(l.id)}
+                            />
+                        </li>
+                    )}
+                </For>
+            </ul>
+            <ListEnd
+                paged={paged}
+                arrived={(n) =>
+                    `${plural(n, "more lesson")} in ${gradeName(props.shelf.grade)} ${title}`
+                }
+                local={local}
+            />
         </div>
     );
 }

@@ -23,7 +23,7 @@ import {
     type SheetActs,
     type SheetState,
 } from "../../engine/ui/lesson";
-import { type Left, type Level, type PackLesson } from "../../engine/pack";
+import { partsOf, type Left, type Level, type PackBook, type PackLesson } from "../../engine/pack";
 import {
     answered,
     askedIn,
@@ -42,6 +42,7 @@ import {
     leftOf,
     levelIn,
     LINES,
+    partToRead,
     pinned,
     pointOf,
     SHEET_LEVEL,
@@ -89,6 +90,39 @@ export async function resumesFor(
     return out;
 }
 
+/** A book lesson's sitting to read today, and the book's text, or null when it could not be read. */
+interface Reading {
+    part: number;
+    book: PackBook | null;
+}
+
+/**
+ * For each book lesson of the lessons, the sitting to read and the book's text: the sitting begun and
+ * not ended, else the first not finished, read off that lesson's own events. A lesson read in one
+ * sitting has none.
+ */
+export async function readingsFor(
+    c: Loaded,
+    lessons: readonly PackLesson[],
+): Promise<Map<string, Reading>> {
+    const out = new Map<string, Reading>();
+    await Promise.all(
+        lessons
+            .filter((lesson) => partsOf(lesson) > 1)
+            .map(async (lesson) => {
+                const [st, book] = await Promise.all([
+                    client.state(c.kid.id, lesson.id),
+                    lesson.book ? client.book(c.kid.id, c.pack.pack, lesson.book.file) : null,
+                ]);
+                out.set(lesson.id, {
+                    part: ("error" in st ? null : partToRead(lesson, st.events)) ?? 1,
+                    book: book && !("error" in book) ? book : null,
+                });
+            }),
+    );
+    return out;
+}
+
 /**
  * One sitting of one lesson: begun with the first answer or hint, ended when the child says so. One
  * picked up again keeps its id and records no second beginning, and its minutes count from this page.
@@ -99,13 +133,23 @@ class Sitting {
     private readonly lesson: PackLesson;
     private readonly level: Level;
     private readonly pack: string;
+    /** A book lesson's sitting it reads. */
+    private readonly part: number | undefined;
     private beganAt: number;
     private over = false;
-    constructor(kid: Kid, lesson: PackLesson, level: Level, pack: string, resume: string | null) {
+    constructor(
+        kid: Kid,
+        lesson: PackLesson,
+        level: Level,
+        pack: string,
+        resume: string | null,
+        part: number | undefined,
+    ) {
         this.kid = kid;
         this.lesson = lesson;
         this.level = level;
         this.pack = pack;
+        this.part = part;
         this.id = resume ?? crypto.randomUUID();
         this.beganAt = resume ? Date.now() : 0;
     }
@@ -115,7 +159,7 @@ class Sitting {
             : [
                   {
                       kind: "sitting-began" as const,
-                      data: began(this.id, this.lesson, this.level, this.pack),
+                      data: began(this.id, this.lesson, this.level, this.pack, this.part),
                   },
                   ...doings,
               ];
@@ -159,15 +203,16 @@ function sheetFor(
     level: Level,
     pack: string,
     resume: Resume | null,
+    part: number | undefined,
     guide: string,
     onFinished: (lesson: string) => void,
     tutor?: () => (() => void) | null,
 ): { state: SheetState; acts: SheetActs } {
-    const asked = new Map(askedIn(lesson, level).map((a) => [a.question.n, a]));
+    const asked = new Map(askedIn(lesson, level, 0, part).map((a) => [a.question.n, a]));
     const turns = new Map<number, Turn>(resume?.turns ?? []);
     const policy = policyOf(kid);
     const help = helpOf(kid);
-    const sitting = new Sitting(kid, lesson, level, pack, resume?.sitting ?? null);
+    const sitting = new Sitting(kid, lesson, level, pack, resume?.sitting ?? null, part);
     const turnOf = (n: number): Turn => turns.get(n) ?? FRESH;
     // what the sheet reads, kept until the turn it was read from is replaced, since a turn is never
     // changed in place and the sheet asks for the same question many times while it draws
@@ -224,7 +269,7 @@ function sheetFor(
     const acts: SheetActs = {
         typed: (n, typed, timing) => {
             const a = asked.get(n);
-            const checked = a && checkTyped(a.question, typed);
+            const checked = a && checkTyped(a.question, typed, a.item.check);
             const next = a && checked && tried(turnOf(n), a.question, checked, "typed");
             return a && checked && next ? took(a, next, checked, timing) : null;
         },
@@ -320,8 +365,15 @@ export interface Sheets {
     height(lesson: string): number | null;
     /** How far down a sheet picked up again its first question still to do is, in the roll's units, or null. */
     landing(lesson: string): number | null;
-    /** Draws the sheets of any of these lessons not drawn yet, picking up a sitting where the record has one. */
-    draw(lessons: readonly PackLesson[], resumes: ReadonlyMap<string, Resume>): void;
+    /**
+     * Draws the sheets of any of these lessons not drawn yet, picking up a sitting where the record has
+     * one, and a book lesson at the sitting it reads today.
+     */
+    draw(
+        lessons: readonly PackLesson[],
+        resumes: ReadonlyMap<string, Resume>,
+        readings: ReadonlyMap<string, Reading>,
+    ): void;
     dispose(): void;
 }
 
@@ -347,7 +399,11 @@ export function todaysSheets(o: {
         string,
         { el: HTMLElement; height: number; landing: number | null; dispose: () => void }
     >();
-    const draw = (lessons: readonly PackLesson[], resumes: ReadonlyMap<string, Resume>): void => {
+    const draw = (
+        lessons: readonly PackLesson[],
+        resumes: ReadonlyMap<string, Resume>,
+        readings: ReadonlyMap<string, Reading>,
+    ): void => {
         const layer = document.createElement("div");
         layer.className = "ls-measure";
         o.measureIn.append(layer);
@@ -356,12 +412,14 @@ export function todaysSheets(o: {
             // one sheet's state and actions, made outside the JSX: a prop's expression is read
             // again on every access, and a second one would be a second sitting
             const [openTutor, setOpenTutor] = createSignal<(() => void) | null>(null);
+            const reading = readings.get(lesson.id);
             const { state, acts } = sheetFor(
                 o.kid,
                 lesson,
                 SHEET_LEVEL,
                 o.pack,
                 resumes.get(lesson.id) ?? null,
+                reading?.part,
                 o.guide,
                 o.onFinished,
                 openTutor,
@@ -386,6 +444,8 @@ export function todaysSheets(o: {
                         narrow={o.narrow}
                         limits={{ sheets: "open", state, acts, child: o.kid.name }}
                         draw={o.draw}
+                        part={reading?.part}
+                        book={reading ? reading.book : undefined}
                         ref={(node) => {
                             el = node;
                         }}

@@ -1,6 +1,8 @@
 // The calendar as the place a child's curriculum is designed: four views over the family's log, with
 // the lessons not yet placed on a shelf beside the week. A lesson is placed, moved and taken out by
 // dragging or by the keyboard, and both go through the same `place`, so the two paths cannot drift.
+// A lesson's name opens the same look Explore opens (lesson-look.tsx), with that lesson's place in
+// the plan under the row, so the sheet a child will have and the day it falls on are one card.
 
 import "./calendar.css";
 import "./calendar-planner.css";
@@ -10,6 +12,7 @@ import {
     createResource,
     createSignal,
     For,
+    lazy,
     on,
     onCleanup,
     Show,
@@ -23,6 +26,7 @@ import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
 import { useLook } from "../../engine/ui/page";
+import { Postcard } from "../../engine/ui/postcard";
 import { go, search } from "../../engine/ui/router";
 import { announce, Say } from "../../engine/ui/say";
 import { Near } from "../../engine/ui/viewport";
@@ -32,7 +36,6 @@ import {
     catchUp,
     monthGrid,
     offOn,
-    putBack,
     termOn,
     weekdayNumber,
     type Term,
@@ -51,11 +54,19 @@ import {
     TermsCard,
     titleOf,
     WEEKDAY_NAMES,
-    writing,
 } from "./cards";
 import { dayLong, dayMark, plural } from "./grown";
 import { readFamilyLog, type Loaded } from "./log";
 import { draft, editable, label, marker, minutes, slots, type Slot } from "./plan-ops";
+
+// The look carries the lesson sheet and the reader that builds it, which the four views never need,
+// so it is a chunk of its own that a lesson's name asks for rather than part of the calendar's.
+const LessonLook = lazy(() => import("./lesson-look").then((m) => ({ default: m.LessonLook })));
+
+/** The look's own code, started while a hand is on a lesson, before the tap that opens it. */
+const warmLook = (): void => {
+    void import("./lesson-look").catch(() => undefined);
+};
 
 /** The subjects in the order the curriculum names them, with anything unnamed after them. */
 const trackRank = (track: string): number => {
@@ -115,10 +126,12 @@ export function Calendar(): JSX.Element {
         return value;
     };
     const [card, setCard] = createSignal<JSX.Element>();
+    /** The lesson whose look is open, which is the one place the plan's own fields are shown. */
+    const [looking, setLooking] = createSignal<Slot | null>(null);
     const [busy, setBusy] = createSignal(false),
         [error, setError] = createSignal("");
-    const [last, setLast] = createSignal<Draft[]>([]);
     const [carried, setCarried] = createSignal<Carried | null>(null);
+    const [dragging, setDragging] = createSignal(false);
     const query = (): URLSearchParams => new URLSearchParams(search());
     const view = (): View => VIEWS.find((x) => x.value === query().get("view"))?.value ?? "week";
     const keptKids = new Map<string, Kid>(),
@@ -170,6 +183,7 @@ export function Calendar(): JSX.Element {
     const close = (): void => {
         if (!busy()) {
             setCard(undefined);
+            setLooking(null);
             setError("");
         }
     };
@@ -191,10 +205,12 @@ export function Calendar(): JSX.Element {
                 );
                 return false;
             }
-            setLast(drafts);
             // what changed is visible on the day itself, so the line is said to a screen reader only
             announce(line);
-            if (shut) setCard(undefined);
+            if (shut) {
+                setCard(undefined);
+                setLooking(null);
+            }
             await refetch();
             return true;
         } catch {
@@ -207,15 +223,6 @@ export function Calendar(): JSX.Element {
     const write = async (drafts: Draft[], line: string): Promise<void> => {
         await save(drafts, line);
     };
-    const undo = async (): Promise<void> => {
-        const old = last();
-        if (!old.length) return;
-        const back = putBack(
-            writing(),
-            old.map((d) => ({ id: d.id, kid: d.kid_id })),
-        );
-        if (await save(back, "Put the last change back.")) setLast([]);
-    };
     const onDay = (d = day(), who = shown()): Slot[] =>
         got() ? who.flatMap((k) => lessonsOn(k, d)) : [];
     const checkDate = (who: string, date: string): string =>
@@ -225,58 +232,127 @@ export function Calendar(): JSX.Element {
               ? "This day is marked off. Choose another day, or take the day off back first."
               : "";
 
+    /**
+     * A day's lessons are spaced by ten from a thousand, so a lesson dropped between two others has
+     * a whole number to take and rewriting a day never runs out of room (`engine/answer.ts` holds an
+     * order to a million).
+     */
+    const ORDER = { first: 1000, apart: 10 };
+    /** Where a lesson appended to a day belongs, which is past whatever that day already holds. */
+    const nextOrder = (date: string, who: Kid): number => {
+        const orders = onDay(date, [who]).map((s) => s.op.order);
+        return orders.length ? Math.max(...orders) + ORDER.apart : ORDER.first;
+    };
+    /** The session a carried lesson is written as: the one it already had, or a new one. */
+    const opFor = (c: Carried, date: string | null, order: number): SessionOp => {
+        if (c.kind === "slot") return { ...c.slot.op, onDay: date, order };
+        if (c.item.op) return { ...c.item.op, onDay: date, order, removed: false };
+        const facts = factsOf(now(), c.item.lesson);
+        return {
+            op: "session",
+            id: api.newId(),
+            source: null,
+            track: c.item.track,
+            lesson: c.item.lesson,
+            onDay: date,
+            kind: "lesson",
+            minutes: minutes(facts?.subject ?? c.item.track),
+            order,
+            note: "",
+            removed: false,
+        };
+    };
+    /** What stops a lesson being put down: work already begun, a past day, or a day marked off. */
+    const refusal = (c: Carried, date: string | null): string => {
+        if (c.kind === "slot" && !editable(c.slot.cell))
+            return "Finished or started work stays in the record.";
+        return date ? checkDate(carriedKid(c).id, date) : "";
+    };
+
+    /**
+     * What is in hand, and whether a hand is holding it: a drag's own gaps are drawn as a line the
+     * rows do not move for, and the keyboard's as a button between them, so the two never mix.
+     */
+    const hold = (c: Carried | null, byHand = false): void => {
+        setDragging(!!c && byHand);
+        setCarried(c);
+    };
+
     /** Placing, moving and taking out, which the mouse and the keyboard both come through. */
     const place = async (c: Carried, date: string | null): Promise<void> => {
         const who = carriedKid(c);
-        if (c.kind === "slot" && !editable(c.slot.cell)) {
-            setError("Finished or started work stays in the record.");
-            return;
-        }
-        const problem = date ? checkDate(who.id, date) : "";
+        const problem = refusal(c, date);
         if (problem) {
             setError(problem);
             return;
         }
         const title = titleOf(now(), carriedLesson(c));
-        const order = 1000 + onDay(date ?? day(), [who]).length;
-        if (c.kind === "slot")
+        if (date)
             await save(
-                [draft(who.id, { ...c.slot.op, onDay: date, order })],
-                date
+                [draft(who.id, opFor(c, date, nextOrder(date, who)))],
+                c.kind === "slot"
                     ? `Moved ${title} to ${dayMark(date)}.`
-                    : `Took ${title} out of ${who.name}'s plan.`,
+                    : `Put ${title} on ${dayMark(date)}.`,
             );
-        else if (date) {
-            const facts = factsOf(now(), c.item.lesson);
-            const op: SessionOp = c.item.op
-                ? { ...c.item.op, onDay: date, order, removed: false }
-                : {
-                      op: "session",
-                      id: api.newId(),
-                      source: null,
-                      track: c.item.track,
-                      lesson: c.item.lesson,
-                      onDay: date,
-                      kind: "lesson",
-                      minutes: minutes(facts?.subject ?? c.item.track),
-                      order,
-                      note: "",
-                      removed: false,
-                  };
-            await save([draft(who.id, op)], `Put ${title} on ${dayMark(date)}.`);
+        else if (c.kind === "slot")
+            await save(
+                [draft(who.id, { ...c.slot.op, onDay: null })],
+                `Took ${title} out of ${who.name}'s plan.`,
+            );
+        hold(null);
+    };
+    /**
+     * Putting a lesson at one place in a child's day, which is the day view's own move. The whole
+     * day is rewritten as one batch, since a day read from a routine has no order of its own to
+     * slide between and a rewrite leaves every lesson with a number ten apart from its neighbours.
+     */
+    const placeAt = async (c: Carried, date: string, who: Kid, gap: number): Promise<void> => {
+        const problem = refusal(c, date);
+        if (problem) {
+            setError(problem);
+            return;
         }
-        setCarried(null);
+        const list = onDay(date, [who]);
+        const from = c.kind === "slot" ? list.findIndex((s) => s.op.id === c.slot.op.id) : -1;
+        if (from >= 0 && (gap === from || gap === from + 1)) {
+            hold(null);
+            return;
+        }
+        const rest = list
+            .filter((_, i) => i !== from)
+            .map((s) => ({ op: s.op, fixed: !editable(s.cell) }));
+        const at = Math.min(from >= 0 && gap > from ? gap - 1 : gap, rest.length);
+        rest.splice(at, 0, { op: opFor(c, date, ORDER.first), fixed: false });
+        const title = titleOf(now(), carriedLesson(c));
+        await save(
+            // Work already begun keeps the order it has, so the batch leaves its session alone.
+            rest.flatMap(({ op, fixed }, i) =>
+                fixed
+                    ? []
+                    : [draft(who.id, { ...op, onDay: date, order: ORDER.first + i * ORDER.apart })],
+            ),
+            from >= 0
+                ? `Moved ${title} to number ${at + 1} in ${who.name}'s day.`
+                : `Put ${title} on ${dayMark(date)}, number ${at + 1} in ${who.name}'s day.`,
+        );
+        hold(null);
     };
     const pickUp = (c: Carried): void => {
         setError("");
-        setCarried(c);
+        hold(c);
         announce(
-            `${titleOf(now(), carriedLesson(c))} is in your hand. Choose a day, or press Escape to put it down.`,
+            `${titleOf(now(), carriedLesson(c))} is in your hand. Choose where to put it, or go back or forward a day and put it there. Press Escape to put it down.`,
         );
     };
     const putDown = (): void => {
-        if (carried()) setCarried(null);
+        if (carried()) hold(null);
     };
+    /** A hand's own hold, which the keyboard's carry does not have: a lane's gaps open only for it. */
+    const takeUp = (e: DragEvent, c: Carried, id: string): void => {
+        hold(c, true);
+        e.dataTransfer?.setData("text/plain", id);
+    };
+    const letGo = (): void => hold(null);
     // Escape puts a carried lesson down wherever the keyboard is: Safari gives a clicked button no
     // focus, so a handler on the control that picked the lesson up would never hear the key.
     createEffect(() => {
@@ -335,7 +411,11 @@ export function Calendar(): JSX.Element {
             .filter((g) => g.items.length);
     };
 
-    const openLesson = (s: Slot): void => open(<EditSession slot={s} />);
+    /** A lesson's name opens the look: its sheet as a child meets it, with its place in the plan. */
+    const openLesson = (s: Slot): void => {
+        setError("");
+        setLooking(s);
+    };
     /** School days belong to a child, so showing everyone asks whose before it opens the card. */
     const openDays = (one: Kid | undefined): void =>
         open(
@@ -348,12 +428,41 @@ export function Calendar(): JSX.Element {
     const openDayCard = (d: string, who: Kid | null): void =>
         open(<DayCard loaded={now()} on={d} kid={who} onClose={close} onWrite={write} />);
 
+    /** Whether this lesson is the one in hand, which both the week and the day ask of a slot. */
+    const inHand = (s: Slot): boolean => {
+        const c = carried();
+        return c?.kind === "slot" && c.slot.op.id === s.op.id;
+    };
+
+    /** The grip a lesson is taken hold of by, which drags as well as it taps: on a sticker, on a row. */
+    function Lift(props: { slot: Slot }): JSX.Element {
+        const s = (): Slot => props.slot;
+        const held = (): boolean => inHand(s());
+        return (
+            <Show when={parent() && editable(s().cell)}>
+                <button
+                    type="button"
+                    class="cal-lift"
+                    draggable
+                    onDragStart={(e) => takeUp(e, { kind: "slot", slot: s() }, s().op.id)}
+                    onDragEnd={letGo}
+                    aria-pressed={held()}
+                    aria-label={
+                        held()
+                            ? `Put ${titleOf(now(), s().op.lesson)} down`
+                            : `Pick up ${titleOf(now(), s().op.lesson)} to move it`
+                    }
+                    onClick={() => (held() ? putDown() : pickUp({ kind: "slot", slot: s() }))}
+                >
+                    <span aria-hidden="true">{held() ? "in hand" : "move"}</span>
+                </button>
+            </Show>
+        );
+    }
+
     function Sticker(props: { slot: Slot; compact?: boolean }): JSX.Element {
         const s = (): Slot => props.slot;
-        const held = (): boolean => {
-            const c = carried();
-            return c?.kind === "slot" && c.slot.op.id === s().op.id;
-        };
+        const held = (): boolean => inHand(s());
         const movable = (): boolean => parent() && editable(s().cell);
         return (
             <div
@@ -365,12 +474,11 @@ export function Calendar(): JSX.Element {
                     class="gc-sticker-in"
                     style={{ "--m": marker(s().op.track) }}
                     draggable={movable()}
-                    onDragStart={(e) => {
-                        setCarried({ kind: "slot", slot: s() });
-                        e.dataTransfer?.setData("text/plain", s().op.id);
-                    }}
-                    onDragEnd={() => setCarried(null)}
+                    onDragStart={(e) => takeUp(e, { kind: "slot", slot: s() }, s().op.id)}
+                    onDragEnd={letGo}
                     aria-label={`${titleOf(now(), s().op.lesson)}, ${label(s().op.track)}, ${stateWord(s())}`}
+                    onPointerEnter={warmLook}
+                    onFocus={warmLook}
                     onClick={() => openLesson(s())}
                 >
                     <span class="gc-tape" aria-hidden="true" />
@@ -381,27 +489,7 @@ export function Calendar(): JSX.Element {
                     <span class="gc-sticker-title">{titleOf(now(), s().op.lesson)}</span>
                     <span class="cal-mark" aria-hidden="true" data-state={s().cell.state} />
                 </button>
-                <Show when={movable()}>
-                    <button
-                        type="button"
-                        class="cal-lift"
-                        draggable={movable()}
-                        onDragStart={(e) => {
-                            setCarried({ kind: "slot", slot: s() });
-                            e.dataTransfer?.setData("text/plain", s().op.id);
-                        }}
-                        onDragEnd={() => setCarried(null)}
-                        aria-pressed={held()}
-                        aria-label={
-                            held()
-                                ? `Put ${titleOf(now(), s().op.lesson)} down`
-                                : `Pick up ${titleOf(now(), s().op.lesson)} to move it`
-                        }
-                        onClick={() => (held() ? putDown() : pickUp({ kind: "slot", slot: s() }))}
-                    >
-                        <span aria-hidden="true">{held() ? "in hand" : "move"}</span>
-                    </button>
-                </Show>
+                <Lift slot={s()} />
             </div>
         );
     }
@@ -607,18 +695,14 @@ export function Calendar(): JSX.Element {
                                                     data-lesson={item.lesson}
                                                     data-track={item.track}
                                                     draggable={parent()}
-                                                    onDragStart={(e) => {
-                                                        setCarried({
-                                                            kind: "shelf",
-                                                            item,
-                                                            kid: props.who,
-                                                        });
-                                                        e.dataTransfer?.setData(
-                                                            "text/plain",
+                                                    onDragStart={(e) =>
+                                                        takeUp(
+                                                            e,
+                                                            { kind: "shelf", item, kid: props.who },
                                                             item.lesson,
-                                                        );
-                                                    }}
-                                                    onDragEnd={() => setCarried(null)}
+                                                        )
+                                                    }
+                                                    onDragEnd={letGo}
                                                     aria-pressed={held()}
                                                     aria-label={
                                                         held()
@@ -667,7 +751,11 @@ export function Calendar(): JSX.Element {
                     )}
                 </For>
                 <Show when={!groups().length}>
-                    <p class="note">Every lesson of this grade is on the calendar.</p>
+                    <p class="note">
+                        {now().pack.index.lessons.some((x) => x.grade === props.who.grade)
+                            ? "Every lesson of this grade is on the calendar."
+                            : "Every lesson planned for them is on the calendar."}
+                    </p>
                 </Show>
                 <Show when={parent()}>
                     <button
@@ -682,88 +770,142 @@ export function Calendar(): JSX.Element {
         );
     }
 
+    /** The day, one lane a child, which is the week's workspace one day wide. */
     function Day(): JSX.Element {
-        const before = (): string => addDays(day(), -1);
-        const past = (): Slot[] => onDay(before());
         return (
-            <div class="cal-dayview">
-                <div class="cal-agendas">
-                    <For each={shown()}>{(k) => <Agenda who={k} />}</For>
-                </div>
-                <section class="cal-yesterday">
-                    <p class="kicker">The day before</p>
-                    <h3 class="gc-title">{dayLong(before())}</h3>
-                    <ol class="cal-list">
-                        <For each={past()}>
-                            {(s) => (
-                                <li>
-                                    <p class="cal-when">
-                                        <Show when={shown().length > 1}>{s.kid.name} · </Show>
-                                        {stateWord(s)}
-                                    </p>
-                                    <span class="cal-what">{titleOf(now(), s.op.lesson)}</span>
-                                    <p class="note">{label(s.op.track)}</p>
-                                </li>
-                            )}
-                        </For>
-                    </ol>
-                    <Show when={!past().length}>
-                        <p class="cal-empty">Nothing on that day.</p>
-                    </Show>
-                </section>
+            <div class="cal-daylanes" style={{ "--lanes": String(shown().length) }}>
+                <For each={shown()}>{(k) => <Lane who={k} />}</For>
             </div>
         );
     }
 
-    /** One child's day, as the evening before reads it and as it prints. */
-    function Agenda(props: { who: Kid }): JSX.Element {
+    /** One child's day: their lessons in their order, and where a lesson is put down. */
+    function Lane(props: { who: Kid }): JSX.Element {
         const list = (): Slot[] => lessonsOn(props.who, day());
+        const off = () => offOn(now().cal.off, props.who.id, day());
+        const taking = (): boolean => canDrop(day(), props.who);
+        const [gap, setGap] = createSignal<number | null>(null);
+        /** Which gap between rows a pointer is over: the half of the row it is in. */
+        const gapUnder = (host: HTMLElement, y: number): number => {
+            const rows = [...host.querySelectorAll<HTMLElement>(".cal-row")];
+            for (const [i, row] of rows.entries()) {
+                const box = row.getBoundingClientRect();
+                if (y < box.top + box.height / 2) return i;
+            }
+            return rows.length;
+        };
+        const put = (at: number): void => {
+            const c = carried();
+            if (c && taking()) void placeAt(c, day(), props.who, at);
+        };
+
+        /** Where the lesson in hand would go, by the keyboard, between one row and the next. */
+        function Gap(props2: { at: number }): JSX.Element {
+            const named = (): string => {
+                const c = carried();
+                return c ? titleOf(now(), carriedLesson(c)) : "";
+            };
+            return (
+                <Show when={taking() && !dragging()}>
+                    <button
+                        type="button"
+                        class="cal-drop cal-gap"
+                        aria-label={`Put ${named()} here, number ${props2.at + 1} in ${props.who.name}'s day`}
+                        onClick={() => put(props2.at)}
+                    >
+                        Put it here
+                    </button>
+                </Show>
+            );
+        }
+
+        function Row(props2: { slot: Slot; at: number }): JSX.Element {
+            const s = (): Slot => props2.slot;
+            const line = (n: number): boolean => dragging() && taking() && gap() === n;
+            return (
+                <div
+                    class="cal-row"
+                    data-lesson={s().op.lesson}
+                    data-state={s().cell.state}
+                    style={{ "--m": marker(s().op.track) }}
+                    classList={{
+                        held: inHand(s()),
+                        above: line(props2.at),
+                        below: props2.at === list().length - 1 && line(list().length),
+                    }}
+                >
+                    <Near
+                        class="gc-pic cal-rowpic on-paper"
+                        draw={(host) => drawFirst(now(), factsOf(now(), s().op.lesson), host)}
+                    />
+                    <div class="cal-rowtext">
+                        <button
+                            type="button"
+                            class="cal-rowname"
+                            onPointerEnter={warmLook}
+                            onFocus={warmLook}
+                            onClick={() => openLesson(s())}
+                        >
+                            {titleOf(now(), s().op.lesson)}
+                        </button>
+                        <p class="cal-rowfacts">
+                            <span class="cal-mark" aria-hidden="true" data-state={s().cell.state} />
+                            {label(s().op.track)} · {s().op.minutes} min
+                            <Show when={day() < now().cal.today}> · {stateWord(s())}</Show>
+                            {s().op.note ? ` · ${s().op.note}` : ""}
+                        </p>
+                    </div>
+                    <Lift slot={s()} />
+                </div>
+            );
+        }
+
         return (
-            <section class="cal-agenda" data-kid={props.who.id}>
-                <header>
-                    <p class="kicker">
-                        {props.who.name} · {WEEKDAY_NAMES[weekdayNumber(day()) - 1]}
-                    </p>
-                    <p class="note">
-                        {plural(list().length, "lesson")} ·{" "}
-                        {list().reduce((n, s) => n + s.op.minutes, 0)} minutes planned
-                    </p>
+            <section
+                class="cal-lane"
+                data-kid={props.who.id}
+                classList={{ off: !!off(), taking: taking() }}
+                onDragOver={(e) => {
+                    if (!taking()) return;
+                    e.preventDefault();
+                    setGap(gapUnder(e.currentTarget, e.clientY));
+                }}
+                onDragLeave={(e) => {
+                    const to = e.relatedTarget;
+                    if (!(to instanceof Node) || !e.currentTarget.contains(to)) setGap(null);
+                }}
+                onDrop={(e) => {
+                    e.preventDefault();
+                    const at = gap();
+                    setGap(null);
+                    put(at ?? list().length);
+                }}
+            >
+                <header class="cal-lanehead">
+                    <Portrait kid={props.who} kids={now().view.kids} />
+                    <div class="cal-lanewho">
+                        <h3>{props.who.name}</h3>
+                        <p class="note">
+                            {plural(list().length, "lesson")} ·{" "}
+                            {list().reduce((n, s) => n + s.op.minutes, 0)} minutes planned
+                        </p>
+                    </div>
                 </header>
-                <ol class="cal-list">
+                <Show when={off()}>
+                    <p class="cal-off">{off()?.note || "A day away from lessons"}</p>
+                </Show>
+                <div class="cal-rows">
                     <For each={list()}>
                         {(s, i) => (
-                            <li>
-                                <Near
-                                    class="gc-pic cal-pic on-paper"
-                                    draw={(host) =>
-                                        drawFirst(now(), factsOf(now(), s.op.lesson), host)
-                                    }
-                                />
-                                <div class="cal-item">
-                                    <p class="cal-when">
-                                        {i() === 0 ? "First" : "Then"} · {s.op.minutes} min
-                                        <Show when={day() < now().cal.today}>
-                                            {" "}
-                                            · {stateWord(s)}
-                                        </Show>
-                                    </p>
-                                    <button
-                                        type="button"
-                                        class="cal-what"
-                                        onClick={() => openLesson(s)}
-                                    >
-                                        {titleOf(now(), s.op.lesson)}
-                                    </button>
-                                    <p class="note">
-                                        {label(s.op.track)}
-                                        {s.op.note ? ` · ${s.op.note}` : ""}
-                                    </p>
-                                </div>
-                            </li>
+                            <>
+                                <Gap at={i()} />
+                                <Row slot={s} at={i()} />
+                            </>
                         )}
                     </For>
-                </ol>
-                <Show when={!list().length}>
+                    <Gap at={list().length} />
+                </div>
+                <Show when={!list().length && !off()}>
                     <p class="cal-empty">
                         {day() < now().cal.today
                             ? "Nothing was recorded on this day."
@@ -1010,7 +1152,12 @@ export function Calendar(): JSX.Element {
         );
     }
 
-    function EditSession(props: { slot: Slot }): JSX.Element {
+    /**
+     * A lesson's place in the plan, in the band under the look's top row: the day it is on, how long
+     * it is planned for, a note, and the way out of the plan. Work already begun is in the record, so
+     * it is shown with nothing to change.
+     */
+    function PlanStrip(props: { slot: Slot }): JSX.Element {
         const s = props.slot;
         const [date, setDate] = createSignal(
                 s.cell.on < now().cal.today ? now().cal.today : s.cell.on,
@@ -1033,61 +1180,61 @@ export function Calendar(): JSX.Element {
             );
         };
         return (
-            <Card
-                kicker={`${s.kid.name} · ${label(s.op.track)}`}
-                title={titleOf(now(), s.op.lesson)}
-                onClose={close}
-            >
+            <>
                 <p class="note">
                     {editable(s.cell)
-                        ? "Move it to another day, or change how long it is planned for."
+                        ? "Move it to another day, change how long it is planned for, or take it out of the plan."
                         : "Work already begun stays in the record."}
                 </p>
-                <Show when={parent() && editable(s.cell)}>
-                    <div class="cal-fields">
-                        <label class="field">
-                            <span>Day</span>
-                            <input
-                                type="date"
-                                value={date()}
-                                min={now().cal.today}
-                                onInput={(e) => setDate(e.currentTarget.value)}
-                            />
-                        </label>
-                        <label class="field">
-                            <span>Minutes planned</span>
-                            <input
-                                type="number"
-                                value={duration()}
-                                min="5"
-                                max="240"
-                                onInput={(e) => setDuration(e.currentTarget.valueAsNumber)}
-                            />
-                        </label>
-                    </div>
-                    <label class="field">
-                        <span>A note for yourself</span>
-                        <textarea
-                            value={note()}
-                            maxlength="2000"
-                            onInput={(e) => setNote(e.currentTarget.value)}
-                        />
-                    </label>
-                    <div class="acts">
-                        <Button busy={busy()} onClick={() => void submit()}>
-                            Keep this
-                        </Button>
-                        <button
-                            type="button"
-                            class="link"
-                            disabled={busy()}
-                            onClick={() => void place({ kind: "slot", slot: s }, null)}
-                        >
-                            Take it out
-                        </button>
-                    </div>
+                <Show when={error()}>
+                    <Say text={error()} />
                 </Show>
-            </Card>
+                <Show when={parent() && editable(s.cell)}>
+                    <fieldset class="cal-plan-fields" disabled={busy()}>
+                        <div class="cal-fields">
+                            <label class="field">
+                                <span>Day</span>
+                                <input
+                                    type="date"
+                                    value={date()}
+                                    min={now().cal.today}
+                                    onInput={(e) => setDate(e.currentTarget.value)}
+                                />
+                            </label>
+                            <label class="field">
+                                <span>Minutes planned</span>
+                                <input
+                                    type="number"
+                                    value={duration()}
+                                    min="5"
+                                    max="240"
+                                    onInput={(e) => setDuration(e.currentTarget.valueAsNumber)}
+                                />
+                            </label>
+                        </div>
+                        <label class="field">
+                            <span>A note for yourself</span>
+                            <textarea
+                                value={note()}
+                                maxlength="2000"
+                                onInput={(e) => setNote(e.currentTarget.value)}
+                            />
+                        </label>
+                        <div class="acts">
+                            <Button busy={busy()} onClick={() => void submit()}>
+                                Keep this
+                            </Button>
+                            <Button
+                                second
+                                disabled={busy()}
+                                onClick={() => void place({ kind: "slot", slot: s }, null)}
+                            >
+                                Take it out of the plan
+                            </Button>
+                        </div>
+                    </fieldset>
+                </Show>
+            </>
         );
     }
 
@@ -1139,9 +1286,11 @@ export function Calendar(): JSX.Element {
                 onClose={close}
             >
                 <p>
-                    This clears what is planned from tomorrow and leaves the shelf full, so you can
-                    build the weeks yourself. Finished work stays in {props.kid.name}'s record, and
-                    you can put this back.
+                    This clears what is planned from tomorrow and puts those lessons back on the
+                    shelf, so you can build the weeks yourself. Finished work stays in{" "}
+                    {props.kid.name}'s record. From tomorrow the subjects stop filling days on their
+                    own, and the calendar has no way to start them again, so every lesson ahead is
+                    one you place.
                 </p>
                 <div class="acts">
                     <Button
@@ -1221,13 +1370,14 @@ export function Calendar(): JSX.Element {
                                 </section>
                             }
                         >
-                            <header class="cal-card cal-head">
-                                <div class="cal-headline">
-                                    <p class="kicker">Your family's learning plan</p>
-                                    <h1 class="cal-name">Calendar</h1>
-                                    <p class="note">{todayLine()}</p>
-                                </div>
-                                <p class="kicker cal-chips">
+                            <Postcard
+                                head
+                                focus={false}
+                                kicker="Your family's learning plan"
+                                title="Calendar"
+                                lead={todayLine()}
+                            >
+                                <p class="kicker cal-chips beside">
                                     <Show when={kids().length > 1} fallback={kid()?.name}>
                                         <button
                                             type="button"
@@ -1252,66 +1402,62 @@ export function Calendar(): JSX.Element {
                                         </For>
                                     </Show>
                                 </p>
-                                <fieldset class="cal-views">
-                                    <legend class="sr">Which view</legend>
-                                    <For each={VIEWS}>
-                                        {(v) => (
+                                <div class="acts">
+                                    <fieldset class="cal-views">
+                                        <legend class="sr">Which view</legend>
+                                        <For each={VIEWS}>
+                                            {(v) => (
+                                                <button
+                                                    type="button"
+                                                    aria-pressed={view() === v.value}
+                                                    onClick={() => move({ view: v.value })}
+                                                >
+                                                    {v.label}
+                                                </button>
+                                            )}
+                                        </For>
+                                    </fieldset>
+                                    <div class="cal-quiet">
+                                        <Show when={parent()}>
                                             <button
                                                 type="button"
-                                                aria-pressed={view() === v.value}
-                                                onClick={() => move({ view: v.value })}
+                                                class="link"
+                                                onClick={() => openDays(kid())}
                                             >
-                                                {v.label}
+                                                School days
                                             </button>
-                                        )}
-                                    </For>
-                                </fieldset>
-                                <div class="cal-quiet">
-                                    <Show when={last().length && !carried()}>
-                                        <button
-                                            type="button"
-                                            class="link"
-                                            onClick={() => {
-                                                if (!busy()) void undo();
-                                            }}
-                                        >
-                                            Put it back
-                                        </button>
-                                    </Show>
-                                    <Show when={parent()}>
-                                        <button
-                                            type="button"
-                                            class="link"
-                                            onClick={() => openDays(kid())}
-                                        >
-                                            School days
-                                        </button>
-                                    </Show>
-                                    <Show when={parent()}>
-                                        <button
-                                            type="button"
-                                            class="link"
-                                            onClick={() =>
-                                                open(
-                                                    <TermsCard
-                                                        loaded={l()}
-                                                        onClose={close}
-                                                        onWrite={write}
-                                                    />,
-                                                )
-                                            }
-                                        >
-                                            Term dates
-                                        </button>
-                                    </Show>
+                                        </Show>
+                                        <Show when={parent()}>
+                                            <button
+                                                type="button"
+                                                class="link"
+                                                onClick={() =>
+                                                    open(
+                                                        <TermsCard
+                                                            loaded={l()}
+                                                            onClose={close}
+                                                            onWrite={write}
+                                                        />,
+                                                    )
+                                                }
+                                            >
+                                                Term dates
+                                            </button>
+                                        </Show>
+                                    </div>
                                 </div>
-                            </header>
-                            <Show when={error() && !card()}>
+                            </Postcard>
+                            <Show when={error() && !card() && !looking()}>
                                 <div class="cal-said">
                                     <Say text={error()} />
                                 </div>
                             </Show>
-                            <div class="cal-body" classList={{ withshelf: view() === "week" }}>
+                            <div
+                                class="cal-body"
+                                classList={{ withshelf: view() === "week" || view() === "day" }}
+                            >
+                                <span class="postcard-tape" aria-hidden="true" />
+                                <span class="postcard-tape r" aria-hidden="true" />
                                 <section class="cal-main">
                                     <div class="cal-mainhead">
                                         <h2 class="gc-title">{heading()}</h2>
@@ -1353,7 +1499,7 @@ export function Calendar(): JSX.Element {
                                         </Show>
                                     </div>
                                 </section>
-                                <Show when={view() === "week"}>
+                                <Show when={view() === "week" || view() === "day"}>
                                     <Shelf />
                                 </Show>
                             </div>
@@ -1368,6 +1514,20 @@ export function Calendar(): JSX.Element {
                                         <fieldset disabled={busy()}>{c()}</fieldset>
                                     </div>
                                 </Dialog>
+                            )}
+                        </Show>
+                        <Show when={looking()} keyed>
+                            {(s) => (
+                                <LessonLook
+                                    title={titleOf(now(), s.op.lesson)}
+                                    kicker={`${s.kid.name} · ${label(s.op.track)}`}
+                                    facts={factsOf(now(), s.op.lesson) ?? null}
+                                    pack={l().pack.pack}
+                                    lessons={l().pack.index.lessons}
+                                    level="medium"
+                                    plan={<PlanStrip slot={s} />}
+                                    onClose={close}
+                                />
                             )}
                         </Show>
                     </div>

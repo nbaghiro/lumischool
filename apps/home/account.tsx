@@ -177,6 +177,7 @@ function You(props: { seen: Seen; onRefetch: () => void }): JSX.Element {
     };
     return (
         <Postcard
+            head
             kicker="Your account"
             title={me().user.name?.trim() || me().user.email}
             corner={<Corner place="harbour" seed={903} />}

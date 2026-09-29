@@ -3,7 +3,9 @@
 // of the sheet as it was printed. A tap marks a question wrong, and a tap on one of the lines its
 // author wrote for a mistake marks it wrong and says which; everything left is right, so a sheet with
 // nothing wrong is one tap on Done. The marks are `marked` events, and a walk from the hello card
-// goes through every waiting sheet, oldest first, one after another.
+// goes through every waiting sheet, oldest first, one after another. Pieces handed in on screen for a
+// grown-up to read wait in the same walk; they are never right or wrong, so their column has only
+// the notice list, and Done writes one `responded` event for each piece.
 
 import type { SceneDrawer } from "../../engine/ui/scene";
 import {
@@ -29,6 +31,7 @@ import type { Failure } from "../../engine/ui/wire";
 import {
     cameBackRight,
     marksOf,
+    respondedOf,
     sheetSays,
     toMark,
     type SheetBack,
@@ -80,7 +83,7 @@ export function Marking(props: {
             props.walk.length > 1
                 ? ` · ${at() + 1} of ${plural(props.walk.length, "sheet")} to mark`
                 : "";
-        return `${w.kid.name} · ${w.read ? "" : "came back "}${dayLong(w.sheet.on)}${count}`;
+        return `${w.kid.name} · ${w.read ? "" : w.sheet.mode === "paper" ? "came back " : "handed in "}${dayLong(w.sheet.on)}${count}`;
     };
     let box: HTMLDivElement | undefined;
     let back: HTMLButtonElement | undefined;
@@ -209,7 +212,10 @@ function OneSheet(props: {
                             {(d) => (
                                 <LessonSheet
                                     lesson={l()}
-                                    level={levelOf(l(), s.questions[0]?.lessonHash)}
+                                    level={levelOf(
+                                        l(),
+                                        (s.questions[0] ?? s.pieces[0]?.q)?.lessonHash,
+                                    )}
                                     strip={{ label: "For grown-ups", date: dayLong(s.on) }}
                                     width={narrow() ? Math.min(innerWidth - 32, 560) : 760}
                                     narrow={narrow()}
@@ -250,18 +256,27 @@ function Column(props: {
 }): JSX.Element {
     const s = props.walk.sheet;
     const kid = props.walk.kid;
+    const screen = s.mode === "screen";
     // a sheet printed elsewhere is marked against the lesson as it is written
     const printed = s.sheet;
     const sheetId = printed ?? api.newId();
     const questions = createMemo(() =>
-        s.questions.length
-            ? s.questions
-            : askedIn(props.lesson, "medium")
-                  .filter((a) => a.way !== "worked")
-                  .map((a) => a.ref),
+        screen
+            ? s.pieces.map((p) => p.q)
+            : s.questions.length
+              ? s.questions
+              : askedIn(props.lesson, "medium")
+                    .filter((a) => a.way !== "worked")
+                    .map((a) => a.ref),
     );
     const items = createMemo(() => toMark(props.lesson, questions()));
     const [wrong, setWrong] = createSignal<ReadonlyMap<number, string | null>>(new Map());
+    // the points of a piece's notice list the grown-up saw, by question
+    const [ticked, setTicked] = createSignal<ReadonlyMap<number, readonly string[]>>(new Map());
+    const tick = (n: number, point: string, on: boolean): void => {
+        const had = ticked().get(n) ?? [];
+        setTicked(new Map(ticked()).set(n, on ? [...had, point] : had.filter((p) => p !== point)));
+    };
     const [busy, setBusy] = createSignal(false);
     const [failed, setFailed] = createSignal("");
     const flip = (n: number, rule: string | null, on: boolean): void => {
@@ -279,18 +294,39 @@ function Column(props: {
         if (busy()) return;
         setBusy(true);
         setFailed("");
-        const drafts = marksOf({
-            kid: kid.id,
-            sheet: sheetId,
-            items: items(),
-            wrong: wrong(),
-            at: api.nowAt(),
-            newId: api.newId,
-        });
+        const at = api.nowAt();
+        const drafts = [
+            ...(screen
+                ? []
+                : marksOf({
+                      kid: kid.id,
+                      sheet: sheetId,
+                      items: items(),
+                      wrong: wrong(),
+                      at,
+                      newId: api.newId,
+                  })),
+            ...respondedOf({
+                kid: kid.id,
+                on: screen ? { pieces: s.pieces } : { sheet: sheetId },
+                items: items(),
+                ticked: ticked(),
+                at,
+                newId: api.newId,
+            }),
+        ];
         const r = await api.append(drafts);
         setBusy(false);
         if ("error" in r) {
-            setFailed(`The marks were not kept, so nothing is saved yet. ${failureText(r, local)}`);
+            setFailed(
+                `${screen ? "What you saw was" : "The marks were"} not kept, so nothing is saved yet. ${failureText(r, local)}`,
+            );
+            return;
+        }
+        if (screen) {
+            props.onDone(
+                `${plural(items().length, "piece")} of ${props.lesson.title} ${items().length === 1 ? "has" : "have"} your response for ${kid.name}.`,
+            );
             return;
         }
         const right = cameBackRight({
@@ -307,18 +343,30 @@ function Column(props: {
     return (
         <aside class="gm-card" aria-labelledby={id}>
             <span class="postcard-tape" aria-hidden="true" />
-            <p class="kicker">{`Marking · ${subjectFacts(props.lesson.subject).title}`}</p>
+            <p class="kicker">
+                {`${screen ? "Responding" : "Marking"} · ${subjectFacts(props.lesson.subject).title}`}
+            </p>
             <h2 id={id} class="gm-title">
                 {props.lesson.title}
             </h2>
             <Show when={props.said}>
                 <Say tone="info" text={props.said} />
             </Show>
-            <p class="note">
-                Tap what was wrong. Everything you leave is right, so a sheet with nothing wrong is
-                one tap on Done.
-            </p>
-            <Show when={!printed}>
+            <Show
+                when={!screen}
+                fallback={
+                    <p class="note">
+                        These were handed in on the screen for you to read, look at or listen to
+                        with them. They are never right or wrong: tick what you saw, then Done.
+                    </p>
+                }
+            >
+                <p class="note">
+                    Tap what was wrong. Everything you leave is right, so a sheet with nothing wrong
+                    is one tap on Done.
+                </p>
+            </Show>
+            <Show when={!printed && !screen}>
                 <p class="note">
                     This sheet was not printed from here, so it is marked against the lesson as it
                     is written.
@@ -332,23 +380,49 @@ function Column(props: {
                         return (
                             <li classList={{ wrong: isWrong() }}>
                                 <div class="gm-q">
-                                    <button
-                                        type="button"
-                                        class="gm-box"
-                                        aria-pressed={isWrong()}
-                                        aria-label={`Question ${n} was wrong`}
-                                        onClick={() => flip(n, null, !isWrong())}
-                                    >
-                                        <span aria-hidden="true">{isWrong() ? "✕" : ""}</span>
-                                    </button>
+                                    <Show when={!screen}>
+                                        <button
+                                            type="button"
+                                            class="gm-box"
+                                            aria-pressed={isWrong()}
+                                            aria-label={`Question ${n} was wrong`}
+                                            onClick={() => flip(n, null, !isWrong())}
+                                        >
+                                            <span aria-hidden="true">{isWrong() ? "✕" : ""}</span>
+                                        </button>
+                                    </Show>
                                     <p>
                                         <b>{`${n}.`}</b>{" "}
-                                        {item.answer
-                                            ? `The answer is ${item.answer}.`
-                                            : "You are the marker here."}
+                                        {screen
+                                            ? item.ref.ask
+                                            : item.answer
+                                              ? `The answer is ${item.answer}.`
+                                              : "You are the marker here."}
                                     </p>
                                 </div>
-                                <Show when={item.rules.length}>
+                                <Show when={item.notice.length}>
+                                    <fieldset class="gm-notice">
+                                        <legend>What you saw or heard</legend>
+                                        <For each={item.notice}>
+                                            {(point) => (
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={
+                                                            ticked().get(n)?.includes(point) ??
+                                                            false
+                                                        }
+                                                        onChange={(e) =>
+                                                            tick(n, point, e.currentTarget.checked)
+                                                        }
+                                                    />{" "}
+                                                    {point}
+                                                </label>
+                                            )}
+                                        </For>
+                                    </fieldset>
+                                </Show>
+                                <Show when={!screen && item.rules.length}>
                                     <div class="gm-rules">
                                         <For each={item.rules.slice(0, 3)}>
                                             {(rule) => (
@@ -371,9 +445,11 @@ function Column(props: {
                     }}
                 </For>
             </ol>
-            <p class="gm-tally" aria-live="polite">
-                {tally()}
-            </p>
+            <Show when={!screen}>
+                <p class="gm-tally" aria-live="polite">
+                    {tally()}
+                </p>
+            </Show>
             <Show when={failed()}>
                 <Say text={failed()} />
             </Show>

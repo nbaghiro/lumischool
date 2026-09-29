@@ -33,7 +33,7 @@ import { pastSheet } from "../../engine/ui/lesson";
 import { go } from "../../engine/ui/router";
 import { Near } from "../../engine/ui/viewport";
 import { World } from "../../engine/ui/world";
-import { cameBackRight, sheetSays, type SheetBack } from "../../school/family/sheets";
+import { cameBackRight, sheetSays, waits, type SheetBack } from "../../school/family/sheets";
 import { leftIn } from "../../school/lessons";
 import { subjectFacts } from "../../school/tracks";
 import type { GrownRecord, PackView } from "../../server/api";
@@ -210,7 +210,7 @@ export function Journal(props: {
                 ? props.record.back.find((b) => b.lesson === s.lesson && b.on === s.on)
                 : undefined;
         const sheet = paper.get(s.lesson);
-        const key = `${s.state}|${s.on ?? ""}|${back ? `${back.marked}${back.asked}` : ""}`;
+        const key = `${s.state}|${s.on ?? ""}|${back ? `${back.marked}${back.asked}${back.pieces.length}` : ""}`;
         const had = made.get(s.lesson);
         if (had?.key === key) return had.el;
         const lesson = props.facts(s.lesson);
@@ -280,7 +280,7 @@ export function Journal(props: {
                     >
                         {(b) => (
                             <Show
-                                when={props.parent && b().mode === "paper" && !b().marked}
+                                when={props.parent && waits(b())}
                                 fallback={
                                     <button
                                         type="button"
@@ -295,10 +295,10 @@ export function Journal(props: {
                                 <button
                                     type="button"
                                     class="btn gj-act"
-                                    aria-label={`Mark ${s.title}`}
+                                    aria-label={`${b().mode === "paper" ? "Mark" : "Respond to"} ${s.title}`}
                                     onClick={() => props.onMark(b())}
                                 >
-                                    Mark it
+                                    {b().mode === "paper" ? "Mark it" : "Respond to it"}
                                 </button>
                             </Show>
                         )}

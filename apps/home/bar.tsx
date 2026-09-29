@@ -9,6 +9,7 @@
 import "./bar.css";
 import {
     createEffect,
+    createResource,
     createSignal,
     createUniqueId,
     For,
@@ -23,7 +24,8 @@ import { Drawing } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { Dialog, CloseX } from "../../engine/ui/dialog";
 import { failureText } from "../../engine/ui/failure";
-import { Check, Field, SelectField } from "../../engine/ui/fields";
+import { Field, SelectField } from "../../engine/ui/fields";
+import { Check } from "../../engine/ui/form";
 import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
 import { SignOut } from "../../engine/ui/page";
@@ -32,7 +34,7 @@ import { go, Link, path } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { isParent } from "../../school/family/access";
 import { familyName, gradeName } from "../../school/family/names";
-import { GRADES, KID_FIELDS, NOTICE, NOTICE_VERSION } from "../../school/family/privacy";
+import { KID_FIELDS, NOTICE, NOTICE_VERSION } from "../../school/family/privacy";
 import { GROWNUPS, type GrownupKind } from "../../engine/parts/apps/grownup";
 import type { FamilyView, Me } from "../../server/api";
 import { kidHref } from "./routes";
@@ -233,7 +235,16 @@ export function AddKidDialog(): JSX.Element {
 /** Flow 4 on one card: the notice on the message side, the form on the address side. */
 function AddKid(props: { me: Me; onDone: (added: string) => void }): JSX.Element {
     const [name, setName] = createSignal("");
-    const [grade, setGrade] = createSignal(String(GRADES[0] ?? 1));
+    // the worlds come with the form rather than with the bar, which every screen loads
+    const [grades] = createResource(async (): Promise<number[]> => {
+        const [pack, { offeredGrades }] = await Promise.all([
+            shared.pack.read(),
+            import("../../school/worlds/worlds"),
+        ]);
+        return "error" in pack ? [] : offeredGrades(pack.index.lessons);
+    });
+    const [picked, setGrade] = createSignal<string | null>(null);
+    const grade = (): string => picked() ?? String(grades()?.[0] ?? "");
     const [agreed, setAgreed] = createSignal(false);
     const [wrong, setWrong] = createSignal("");
     const [said, setSaid] = createSignal<{ text: string; reload: boolean } | null>(null);
@@ -296,7 +307,10 @@ function AddKid(props: { me: Me; onDone: (added: string) => void }): JSX.Element
                         hint={KID_FIELDS.grade}
                         name="grade"
                         value={grade()}
-                        options={GRADES.map((g) => ({ value: String(g), label: gradeName(g) }))}
+                        options={(grades() ?? []).map((g) => ({
+                            value: String(g),
+                            label: gradeName(g),
+                        }))}
                         onChange={setGrade}
                     />
                     <Check

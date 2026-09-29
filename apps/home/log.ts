@@ -58,7 +58,7 @@ export function readFamilyLog(): Maybe<Loaded | Failure | null> {
             const today = dayIn(new Date().toISOString(), me.family.time_zone);
             const printedSince = addDays(today, -PRINTED_BACK);
             const asked = both(
-                shared.events(undefined, { kinds: ["plan-changed"] }).read(),
+                shared.events(undefined, { kinds: ["plan-changed", "moved-up"] }).read(),
                 both(
                     shared
                         .events(undefined, {

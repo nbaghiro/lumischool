@@ -2,7 +2,8 @@ import { onMount, onCleanup, createResource, createSignal, Show, type JSX } from
 import * as api from "../../engine/ui/api";
 import { Postcard } from "../../engine/ui/postcard";
 import { Button } from "../../engine/ui/form";
-import { CodeInput, Field, Check } from "../../engine/ui/fields";
+import { CodeInput, Field } from "../../engine/ui/fields";
+import { Check } from "../../engine/ui/form";
 import { failureText } from "../../engine/ui/failure";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";

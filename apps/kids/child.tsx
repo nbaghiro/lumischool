@@ -226,9 +226,10 @@ export function ChildMap(props: {
                 today ? fetchLessons(c, today.lessons) : Promise.resolve([]),
             ]);
             // the lessons' own drawings come before their sheets are drawn, as the worlds' do before the map
-            const [draw, resumes] = await Promise.all([
+            const [draw, resumes, readings] = await Promise.all([
                 scene.scenes(read.flatMap(scene.scenesIn)),
                 mod.resumesFor(c, read),
+                mod.readingsFor(c, read),
             ]);
             if (!current || current.narrow !== isNarrow) {
                 letGo();
@@ -247,7 +248,7 @@ export function ChildMap(props: {
                     }),
                 };
             }
-            current.sheets.draw(read, resumes);
+            current.sheets.draw(read, resumes, readings);
             return { for: c, sheets: current.sheets };
         },
     );

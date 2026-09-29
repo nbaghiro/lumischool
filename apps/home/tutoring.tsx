@@ -13,9 +13,10 @@ import { askedIn } from "../../school/lessons";
 import type { PackQuestion } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import { Select } from "../../engine/ui/select";
-import { Button } from "../../engine/ui/form";
+import { Button, Check } from "../../engine/ui/form";
 import { call } from "../../engine/ui/wire";
 import { useLook } from "../../engine/ui/page";
+import { Postcard } from "../../engine/ui/postcard";
 import * as api from "../../engine/ui/api";
 import { createHeld } from "../../engine/ui/held";
 import * as shared from "./shared";
@@ -198,7 +199,13 @@ function Preview(props: { identity: string }): JSX.Element {
     };
     return (
         <main class="teaching-preview">
-            <h1>A little help, together</h1>
+            <Postcard
+                head
+                focus={false}
+                kicker="The teaching preview"
+                title="A little help, together"
+                lead="Try a lesson the way a child meets it, with the tutor beside them."
+            />
             <details class="teaching-settings" open={!run()}>
                 <summary>{run() ? "Change lesson or tutor" : "Choose a lesson and tutor"}</summary>
                 <div class="teaching-settings-fields">
@@ -283,14 +290,11 @@ function Preview(props: { identity: string }): JSX.Element {
                             <option value="gemini">Tutor voice</option>
                         </Select>
                     </label>
-                    <label>
-                        <span>Adaptive help</span>
-                        <input
-                            type="checkbox"
-                            checked={preferences().adaptive}
-                            onChange={(e) => preference("adaptive", e.currentTarget.checked)}
-                        />
-                    </label>
+                    <Check
+                        label="Adaptive help"
+                        checked={preferences().adaptive}
+                        onChange={(on) => preference("adaptive", on)}
+                    />
                     <Button onClick={startRun}>Start a fresh lesson</Button>
                 </div>
                 <div class="teaching-settings-fields">

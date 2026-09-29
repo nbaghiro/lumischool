@@ -1,8 +1,7 @@
 import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 // The worlds as a grown-up looks at them with nobody's record (.docs/parent-app.md, "The map, for
 // grown-ups"): the school as written from the family's pack, a world's roll of every lesson it holds,
-// and a lesson's sheet as written. The map screen (map.tsx) and the overlay the catalogue opens
-// (engine/ui/overlay.tsx) both read it, and neither records anything.
+// and a lesson's sheet as written. The map screen (map.tsx) reads it, and records nothing.
 
 import { reads } from "../../engine/ui/reads";
 import type { Declared } from "../../engine/motion/world";
@@ -14,8 +13,8 @@ import * as api from "../../engine/ui/api";
 import type { Maybe } from "../../engine/ui/held";
 import { declaredOf, loadDrawings } from "../../engine/ui/drawings";
 import type { Measured } from "../../engine/ui/lesson";
-import type { OverlaySource } from "../../engine/ui/overlay";
 import type { ReadingSource } from "../../engine/ui/reading";
+import { gradeName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
 import { refsOf, sizeOn } from "../../school/worlds/art";
 import { apply, readChoice } from "../../school/worlds/choice";
@@ -162,7 +161,7 @@ export function worldWritten(
 }
 
 /** The world a lesson is met in, for opening a lesson where a child sees it. */
-export const worldOfLesson = (s: School, lesson: string): string | null =>
+const worldOfLesson = (s: School, lesson: string): string | null =>
     whereIs(s.corpus, lesson)?.world ?? null;
 
 /** A lesson's file from the pack, kept once read, so paper that comes near again is not fetched twice. */
@@ -260,6 +259,7 @@ export function readingOf(
                         grown: true,
                         limits: GROWN_WORLD,
                     }),
+                scope: `${s.pack.pack}|look|${o.level}|${o.key}`,
                 sheet: (lesson, r) => sheetWritten(s, lesson, { ...o, ...r }),
                 card: (id) => ({
                     label: subjectFacts(s.corpus.lesson(id)?.subject ?? "maths").title,
@@ -271,7 +271,7 @@ export function readingOf(
         site?.kind === "choice"
             ? site.terms
                   .filter((t) => s.corpus.grades.includes(t.grade))
-                  .map((t) => ({ value: t.grade, label: `Year ${t.grade}, term ${t.term}` }))
+                  .map((t) => ({ value: t.grade, label: `${gradeName(t.grade)}, term ${t.term}` }))
             : [];
     const grade = variants.some((v) => v.value === o.grade) ? o.grade : variants[0]?.value;
     return {
@@ -280,6 +280,7 @@ export function readingOf(
         alternate: "Grade journeys",
         neighbours: neighboursWritten(s.corpus, world, grade),
         world: (r) => worldWritten(s, world, { ...r, grade }),
+        scope: `${s.pack.pack}|look|${o.level}|${o.key}`,
         sheet: (lesson, r) => sheetWritten(s, lesson, { ...o, ...r }),
         card(lesson) {
             const f = s.pack.index.lessons.find((l) => l.id === lesson);
@@ -289,17 +290,5 @@ export function readingOf(
                 ...(f?.first ? { picture: pictureOf(s, f) } : {}),
             };
         },
-    };
-}
-
-/** The school as the overlay looks at it (engine/ui/overlay.tsx): a lesson as a child sees it, at a level, with nothing filled in. */
-export function overlayOf(s: School, o: { level: Level }): OverlaySource {
-    return {
-        map: () => s.map,
-        // the level the overlay asks for is the reader's own, and `o.level` the one the look opened at
-        reading: (world, visit) =>
-            readingOf(s, world, { ...visit, level: visit?.level ?? o.level, key: false }),
-        nameOf: (world) => s.worldOf(world).name,
-        whereIs: (lesson) => worldOfLesson(s, lesson),
     };
 }

@@ -32,7 +32,6 @@
     align-items: center;
     gap: 14px;
     padding-right: 0;
-    font-size: clamp(24px, 2.2vw, 30px);
 }
 .gc-card-body {
     display: flex;
@@ -57,18 +56,6 @@
 }
 .gc-row input[type="text"] {
     flex: 1 1 14em;
-}
-.gc-check {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 44px;
-    font-size: 14.5px;
-}
-.gc-check input {
-    width: 20px;
-    height: 20px;
-    accent-color: var(--pen);
 }
 .gc-days {
     display: flex;

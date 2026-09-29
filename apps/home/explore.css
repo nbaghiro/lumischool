@@ -1,6 +1,7 @@
 /* The grown-ups' Explore: the catalogue as a book of grades on cards over the map, each lesson a small
-   sheet with its first drawing, and the lesson a parent opens read in a preview over it, whose tools
-   sit beside Close in the overlay's own row (engine/ui/overlay.css) and whose print is the sheet alone. */
+   sheet with its first drawing, and the lesson a parent opens read in the shared look over it
+   (lesson-look.css), whose tools are Explore's own: the level beside Close, and the print, which is
+   the sheet alone. */
 
 .explore {
     display: flex;
@@ -8,13 +9,6 @@
     gap: 30px;
     width: min(100%, 1180px);
     margin-inline: auto;
-}
-/* The search on one row: its label before the field, the count beside it. */
-.explore-find {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px 16px;
 }
 .explore-seg {
     display: flex;
@@ -63,82 +57,15 @@
     outline: 2px dashed var(--pen);
     outline-offset: 3px;
 }
-.explore-search {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    max-width: 420px;
-}
-/* The label reads as one line: broken in two it looks like a fault rather than a label. */
-.explore-search .field-label {
-    flex: none;
-    white-space: nowrap;
-}
-.explore-search input {
-    flex: 1 1 200px;
-    min-width: 0;
-}
-.explore-search input {
-    min-height: 44px;
-    font: 600 18px / 1.2 var(--f-hand);
-}
-.explore-said {
-    margin: 0;
-    font: 700 15px / 1.3 var(--f-read);
-    color: var(--ink);
-}
-
-/* The head is a row: the page's name and the subjects on one line, the search and its count on the
-   next, with the grade carried by the sections' own headings. */
-/* Narrower than the shelves and centred, as the first card is on the other grown-ups' pages; wider
-   than their 700 only by what ten subject chips need. */
-.explore-row {
-    position: relative;
-    align-self: center;
-    width: min(100%, 700px);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 14px;
-    /* a postcard's padding (postcard.css), so the first card sits as the other tabs' first cards do */
-    padding: 30px 32px 26px;
-    background: var(--card);
-    border-radius: 5px;
-    box-shadow:
-        0 1px 2px color-mix(in srgb, var(--ink) 14%, transparent),
-        0 16px 30px -24px color-mix(in srgb, var(--ink) 40%, transparent);
-}
-.explore-row h1 {
-    margin: 0;
-    font: 700 26px / 1 var(--f-hand);
-}
-/* The search opens the second line, with its count beside it as part of the same group. */
-.explore-row .explore-find {
-    flex-basis: 100%;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 6px 18px;
-}
-.explore-row .explore-search {
-    flex: 0 1 640px;
-    max-width: none;
-}
-.explore-row .explore-search input {
-    flex: 1 1 420px;
-}
-.explore-row .explore-said {
-    white-space: nowrap;
-}
-/* At a desk the chips stand open beside the name, so the control itself is out of the way. */
+/* At a desk the chips stand open under the name, so the control itself is out of the way. */
 .explore-row-filter summary {
     display: none;
 }
-/* The chips sit closer here than on a card, so ten of them keep to one line at a desk. */
-.explore-row .explore-seg {
+/* The chips sit closer in the head than on a card, so ten of them keep to one line at a desk. */
+.page-head .explore-seg {
     gap: 6px;
 }
-.explore-row .explore-seg-option span {
+.page-head .explore-seg-option span {
     padding: 0 11px;
 }
 @media (max-width: 700px) {
@@ -180,9 +107,13 @@
 }
 
 .explore-grade[hidden],
-.explore-subject[hidden],
-.explore-tiles > li[hidden] {
+.explore-subject[hidden] {
     display: none;
+}
+.explore-widen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 .explore-grade {
     position: relative;
@@ -307,35 +238,75 @@
     color: var(--ink-soft);
 }
 
-/* The preview's tools, in the overlay's own row (engine/ui/overlay.css): the level, the answers and
-   the print, with what the print will be under them. */
-.explore-tools {
-    max-width: 100%;
+/* What Explore puts beside Close in the look's own row (lesson-look.css): the level the sheet is
+   read at, and the print behind one control. */
+.look-tools .explore-seg {
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 2px;
+    background: color-mix(in srgb, var(--ink) 5%, var(--card));
+    border-radius: 999px;
 }
-.explore-tools > summary {
+.look-tools .explore-seg-option span {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    background: transparent;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+.look-tools .explore-seg-option input:checked + span {
+    background: var(--card);
+    color: var(--pen);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.explore-print-menu {
+    position: relative;
+}
+.explore-print-menu > summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 30%, var(--card));
+    border-radius: 999px;
+    font: 600 15px / 1 var(--f-read);
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+}
+.explore-print-menu > summary::-webkit-details-marker {
     display: none;
 }
-.explore-tools-of {
+.explore-print-menu[open] > summary {
+    border-color: var(--pen);
+    color: var(--pen);
+}
+.explore-print-menu-of {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 3;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 280px;
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--ink) 45%, transparent);
 }
-.explore-tools .explore-seg {
+.explore-print-menu-of .note {
     margin: 0;
-}
-/* the label reads as words rather than a line across the row, and the row stays two lines deep */
-.explore-tools .check {
-    max-width: 22ch;
-}
-.explore-tools-note {
-    flex-basis: 100%;
-    margin: 0;
-    text-align: right;
 }
 
 @media (max-width: 700px) {
+    .explore-print-menu-of {
+        width: min(280px, calc(100vw - 48px));
+    }
     .explore {
         gap: 22px;
     }
@@ -345,57 +316,6 @@
     }
     .explore-grade-name {
         font-size: 26px;
-    }
-    /* On a phone the search stays and the subjects fold behind one control. */
-    .explore-row {
-        gap: 8px 12px;
-        padding: 24px 20px 20px;
-    }
-    .explore-row h1 {
-        font-size: 22px;
-    }
-    /* The label above the field rather than beside it, so the field itself keeps the width. */
-    .explore-row .explore-find {
-        flex-wrap: wrap;
-        gap: 4px 12px;
-    }
-    .explore-row .explore-search {
-        flex: 1 1 100%;
-        flex-wrap: wrap;
-        max-width: none;
-    }
-    .explore-row .explore-search .field-label {
-        flex-basis: 100%;
-    }
-}
-
-@media (max-width: 700px) {
-    .explore-tools > summary {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 0 16px;
-        border: 1.5px solid color-mix(in srgb, var(--ink) 35%, var(--card));
-        border-radius: 999px;
-        font: 600 15px / 1 var(--f-read);
-        color: var(--ink);
-        cursor: pointer;
-    }
-    .explore-tools[open] > summary {
-        border-color: var(--pen);
-        color: var(--pen);
-    }
-    /* opened, the tools take a line of their own under Close rather than pushing it off the row */
-    .explore-tools[open] {
-        order: 1;
-        flex-basis: 100%;
-    }
-    .explore-tools[open] .explore-tools-of {
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-    .explore-tools-note {
-        text-align: left;
     }
 }
 
@@ -431,10 +351,6 @@
         width: 100%;
         max-width: none;
     }
-    /* the preview is in the top layer, which prints over the page, so it goes with the rest of it */
-    dialog.ov[open] {
-        display: none;
-    }
     .explore:has(.explore-print) > :not(.explore-print) {
         display: none;
     }
@@ -443,19 +359,8 @@
         width: 100%;
         max-width: none;
     }
-    .explore-print .ls-sheet {
-        width: 100% !important;
-        box-shadow: none;
-        rotate: none;
-    }
-    /* a drawing kept short enough to share a page with what is above it, and never split */
-    .explore-print :is(.scene-tile, .ls-q) {
-        break-inside: avoid;
-    }
-    .explore-print .scene-tile svg {
-        width: auto;
-        max-width: 100%;
-        height: auto;
-        max-height: 14cm;
-    }
+}
+.explore-subject-count {
+    color: var(--ink-soft);
+    font: 400 14px / 1.2 var(--f-read);
 }

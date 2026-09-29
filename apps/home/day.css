@@ -99,19 +99,4 @@
     .gd-sheet:first-child {
         break-before: auto;
     }
-    .gd-sheets .ls-sheet {
-        width: 100% !important;
-        box-shadow: none;
-        rotate: none;
-    }
-    /* a drawing kept short enough to share a page with what is above it, and never split */
-    .gd-sheets :is(.scene-tile, .ls-q) {
-        break-inside: avoid;
-    }
-    .gd-sheets .scene-tile svg {
-        width: auto;
-        max-width: 100%;
-        height: auto;
-        max-height: 14cm;
-    }
 }

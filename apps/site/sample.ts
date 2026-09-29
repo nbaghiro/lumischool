@@ -397,6 +397,7 @@ export function reading(
                         grown: false,
                         limits: siteWorld(2),
                     }),
+                scope: "look|medium|false",
                 sheet: (lesson, o) => sheetOf(s, lesson, o),
                 card: (lesson) => ({
                     label: subjectFacts(s.child.subjectOf(lesson)).title,
@@ -422,6 +423,7 @@ export function reading(
                 grown: false,
                 limits: siteWorld(2),
             }),
+        scope: "look|medium|false",
         sheet: (lesson, o) => sheetOf(s, lesson, o),
         card: (lesson) => ({ label: subjectFacts(s.child.subjectOf(lesson)).title, note: "" }),
     };

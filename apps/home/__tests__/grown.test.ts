@@ -28,7 +28,7 @@ const fact = (id: string, subject: string, over: Partial<LessonFacts> = {}): Les
     format: "teach",
     art: [],
     file: `lessons/${id}.json`,
-    levels: { medium: { hash: "h" } },
+    levels: ["medium"],
     first: null,
     skills: [],
     ...over,
@@ -52,6 +52,7 @@ const sheet = (over: Partial<SheetBack>): SheetBack => ({
     marked: true,
     sheet: null,
     questions: [],
+    pieces: [],
     ...over,
 });
 
@@ -192,6 +193,10 @@ describe("what the grown-ups' home says about a child", () => {
         assert.equal(
             helloLine(["Rosie", "Leo"], 0, 0),
             "Nothing is planned today for Rosie and Leo. Nothing is waiting to be marked.",
+        );
+        assert.equal(
+            helloLine(["Rosie"], 0, 1, 2),
+            "Nothing is planned today for Rosie. 1 sheet came back on paper and waits to be marked, and 2 pieces handed in on screen wait for your response.",
         );
         assert.match(helloLine([], 0, 0), /^No children yet\./);
     });

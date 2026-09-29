@@ -172,7 +172,7 @@ function Opening(props: { sample: Sample | undefined }): JSX.Element {
                 <div class="site-sheet" ref={setSheet}>
                     <span class="site-tape" aria-hidden="true" />
                     <span class="site-tape r" aria-hidden="true" />
-                    <p class="kicker">{props.sample?.eyebrow ?? "Ages 5 to 10"}</p>
+                    <p class="kicker">{props.sample?.eyebrow ?? "Ages 5 to 12"}</p>
                     <h1>School at home, one world at a time</h1>
                     <p class="lead">
                         Each term your child moves on to a new world. Every question is checked
@@ -196,9 +196,7 @@ function Opening(props: { sample: Sample | undefined }): JSX.Element {
                             See the map
                         </a>
                     </p>
-                    <p class="under">
-                        In development. This page collects nothing, and there is no price yet.
-                    </p>
+                    <p class="under">This page collects nothing.</p>
                 </div>
             </div>
             <p class="site-wrap site-cap note">{props.sample?.caption}</p>
@@ -746,6 +744,12 @@ function Subjects(props: { sample: Sample | undefined }): JSX.Element {
                 <Show when={subjects()?.rest}>
                     <p class="note site-rest">{subjects()?.rest}</p>
                 </Show>
+                <p class="note site-rest">
+                    lumischool teaches maths, reading and writing, science, coding, art and music.
+                    We are writing history and social studies next. We do not teach physical
+                    education, a foreign language or moral education, so a family will need to cover
+                    those elsewhere.
+                </p>
             </div>
         </section>
     );
@@ -822,9 +826,7 @@ export function Page(): JSX.Element {
             </main>
             <footer class="site-wrap site-foot">
                 <Mark href="/home" />
-                <p class="note">
-                    lumischool.ai · lessons for families teaching at home. In development.
-                </p>
+                <p class="note">lumischool.ai · lessons for families teaching at home.</p>
             </footer>
             <Show when={looking() !== null}>
                 <Overlay

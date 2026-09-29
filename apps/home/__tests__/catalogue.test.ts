@@ -1,15 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { LessonFacts } from "../../../engine/pack";
+import { EVERYTHING, found } from "../../../school/catalogue";
 import {
-    EVERYTHING,
-    filtersFrom,
-    found,
     foundLine,
     lessonPath,
     levelFrom,
-    levelsOf,
-    searchOf,
+    searchedLine,
+    shelfCount,
     shelvesOf,
     subjectsOf,
 } from "../catalogue";
@@ -17,11 +15,7 @@ import {
 const lesson = (
     id: string,
     o: { grade: number; unit: number; subject: string; title?: string; goal?: string },
-    levels: LessonFacts["levels"] = {
-        easy: { hash: "e" },
-        medium: { hash: "m" },
-        hard: { hash: "h" },
-    },
+    levels: LessonFacts["levels"] = ["easy", "medium", "hard"],
 ): LessonFacts => ({
     id,
     source: `lessons/${id}.lumi`,
@@ -49,42 +43,13 @@ const LESSONS = [
         goal: "Two numbers that make ten.",
     }),
     lesson("m1-count", { grade: 1, unit: 1, subject: "maths", title: "Counting on" }),
-    lesson(
-        "a3-print",
-        { grade: 3, unit: 1, subject: "art", title: "A print" },
-        { medium: { hash: "m" } },
-    ),
+    lesson("a3-print", { grade: 3, unit: 1, subject: "art", title: "A print" }, ["medium"]),
     lesson("w1-sentence", { grade: 1, unit: 3, subject: "writing", title: "A sentence" }),
 ];
 
 describe("the grown-ups' Explore", () => {
     it("names the subjects in the tracks' order, with a subject that is not a track after them", () => {
         assert.deepEqual(subjectsOf(LESSONS), ["maths", "writing", "art"]);
-    });
-
-    it("reads the filters from an address, keeping only a grade and a subject it has, and writes them back", () => {
-        const subjects = subjectsOf(LESSONS);
-        const f = filtersFrom("?grade=1&subject=maths&q=%20ten%20", subjects);
-        assert.deepEqual(f, { grade: 1, subject: "maths", words: "ten" });
-        assert.equal(searchOf(f), "?grade=1&subject=maths&q=ten");
-        assert.deepEqual(filtersFrom("?grade=7&subject=cooking", subjects), EVERYTHING);
-        assert.equal(searchOf(EVERYTHING), "");
-    });
-
-    it("finds lessons by grade, subject and every word of the title or goal, in the order a subject is taken", () => {
-        assert.deepEqual(
-            found(LESSONS, EVERYTHING).map((l) => l.id),
-            ["m1-count", "w1-letters", "m1-ten", "w1-sentence", "m2-bonds", "a3-print"],
-        );
-        assert.deepEqual(
-            found(LESSONS, { grade: 1, subject: "maths", words: "" }).map((l) => l.id),
-            ["m1-count", "m1-ten"],
-        );
-        assert.deepEqual(
-            found(LESSONS, { ...EVERYTHING, words: "TWO   numbers" }).map((l) => l.id),
-            ["m1-ten"],
-        );
-        assert.deepEqual(found(LESSONS, { ...EVERYTHING, words: "ten bonds" }), []);
     });
 
     it("sets the lessons out by grade and then by subject, leaving out what holds none", () => {
@@ -108,21 +73,32 @@ describe("the grown-ups' Explore", () => {
         );
     });
 
-    it("says how many lessons it found, and what to do when none", () => {
+    it("says how many lessons it found, how many a shelf holds, and what was looked for when none", () => {
         assert.equal(foundLine(314, 314), "All 314 lessons");
-        assert.equal(foundLine(1, 314), "1 lesson matches");
-        assert.equal(foundLine(12, 314), "12 lessons match");
-        assert.match(foundLine(0, 314), /^No lesson matches\./);
+        assert.equal(foundLine(1, 314), "1 lesson found");
+        assert.equal(foundLine(112, 314), "112 lessons found");
+        assert.equal(foundLine(0, 314), "No lesson found");
+        assert.equal(shelfCount(7, 31, true), "7 of 31 match");
+        assert.equal(shelfCount(31, 31, false), "31 lessons");
+        assert.equal(shelfCount(1, 1, false), "1 lesson");
+        assert.equal(
+            searchedLine({ grade: 2, subject: "writing", words: " magnets " }),
+            "No lesson matches \u201cmagnets\u201d in Grade 2 \u00b7 Writing.",
+        );
+        assert.equal(
+            searchedLine({ ...EVERYTHING, words: "volcano" }),
+            "No lesson matches \u201cvolcano\u201d.",
+        );
     });
 
     it("reads a lesson at a level it declares, and as written otherwise", () => {
         const [three, one] = [LESSONS[0], LESSONS[4]];
         assert.ok(three && one);
-        assert.deepEqual(levelsOf(three), ["easy", "medium", "hard"]);
-        assert.deepEqual(levelsOf(one), ["medium"]);
-        assert.equal(levelFrom("?level=hard", levelsOf(three)), "hard");
-        assert.equal(levelFrom("?level=hard", levelsOf(one)), "medium");
-        assert.equal(levelFrom("?level=extreme", levelsOf(three)), "medium");
+        assert.deepEqual(three.levels, ["easy", "medium", "hard"]);
+        assert.deepEqual(one.levels, ["medium"]);
+        assert.equal(levelFrom("?level=hard", three.levels), "hard");
+        assert.equal(levelFrom("?level=hard", one.levels), "medium");
+        assert.equal(levelFrom("?level=extreme", three.levels), "medium");
         assert.equal(lessonPath("m1-ten"), "/explore/m1-ten");
         assert.equal(lessonPath("m1-ten", "easy"), "/explore/m1-ten?level=easy");
     });

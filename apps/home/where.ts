@@ -9,6 +9,7 @@ import { corpusFrom, topicsIn } from "../../school/worlds/lessons";
 import { journey } from "../../school/worlds/rewards";
 import type { Applied } from "../../school/worlds/types";
 import { pictureFor } from "../../school/worlds/view";
+import { whereIs } from "../../school/worlds/written";
 import { worldById } from "../../school/worlds/worlds";
 import type { GrownRecord } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
@@ -42,6 +43,12 @@ export async function paintWorld(world: Applied, host: HTMLElement, wide: number
     el.style.transform = `scale(${width / painter.PICTURE.w})`;
     el.style.transformOrigin = "0 0";
     host.replaceChildren(el);
+}
+
+/** The world a lesson is met in, as written and with no family's tweaks, or null for a lesson in none. */
+export function worldOfLesson(lessons: readonly LessonFacts[], lesson: string): Applied | null {
+    const at = whereIs(corpusFrom(lessons, new Date().toISOString().slice(0, 10)), lesson);
+    return at ? apply(worldById(at.world), undefined, true).world : null;
 }
 
 /** How many frames the box may take to come back before the picture is drawn at its default width. */

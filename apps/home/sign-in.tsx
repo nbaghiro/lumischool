@@ -21,7 +21,8 @@ import {
 } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { failureText } from "../../engine/ui/failure";
-import { Check, CodeInput, Field, TextButton, TimeZone } from "../../engine/ui/fields";
+import { CodeInput, Field, TextButton, TimeZone } from "../../engine/ui/fields";
+import { Check } from "../../engine/ui/form";
 import { Button, PinInput, detectedZone } from "../../engine/ui/form";
 import { useLook } from "../../engine/ui/page";
 import { Addressed, Corner, Postcard, Ps, To, type Place } from "../../engine/ui/postcard";

@@ -68,6 +68,8 @@ interface Sheet {
     kid: Kid;
     facts: LessonFacts;
     lesson: PackLesson;
+    /** A book lesson's sitting for the day, which prints alone. */
+    part?: number;
 }
 
 async function load(): Promise<Loaded | Failure | null> {
@@ -137,9 +139,14 @@ function Day(props: { loaded: Loaded }): JSX.Element {
     const recordOf = (kid: Kid): GrownRecord | undefined =>
         l().records.find((r) => r.kid.id === kid.id);
     /** What the plan has for a child on a day, in the tracks' order. */
-    const forKid = (kid: Kid, on: string): LessonFacts[] => {
+    const forKid = (kid: Kid, on: string): { facts: LessonFacts; part?: number }[] => {
         const r = recordOf(kid);
-        return r ? plannedOn(r, on, factsOf).map((p) => p.lesson) : [];
+        return r
+            ? plannedOn(r, on, factsOf).map((p) => ({
+                  facts: p.lesson,
+                  ...(p.part === undefined ? {} : { part: p.part }),
+              }))
+            : [];
     };
     /** The days worth offering: today and the days ahead the plan has anything on. */
     const days = createMemo(() => {
@@ -162,7 +169,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
     };
     /** Every sheet the chosen children need on the chosen day, in the children's own order. */
     const wanted = createMemo(() =>
-        chosen().flatMap((kid) => forKid(kid, on()).map((f) => ({ kid, facts: f }))),
+        chosen().flatMap((kid) => forKid(kid, on()).map((f) => ({ kid, ...f }))),
     );
     const [sheets] = createResource(
         () => ({ pack: l().pack.pack, want: wanted() }),
@@ -174,7 +181,13 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                 const w = want[i];
                 if (!w) return;
                 if ("error" in lesson) failure ??= lesson;
-                else out.push({ kid: w.kid, facts: w.facts, lesson });
+                else
+                    out.push({
+                        kid: w.kid,
+                        facts: w.facts,
+                        lesson,
+                        ...(w.part === undefined ? {} : { part: w.part }),
+                    });
             });
             return { sheets: out, failure };
         },
@@ -203,7 +216,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
         if (busy() || !ready().length) return;
         setBusy(true);
         setSaid("");
-        const drafts: Draft[] = ready().map(({ kid, lesson }) => ({
+        const drafts: Draft[] = ready().map(({ kid, lesson, part }) => ({
             id: api.newId(),
             kid_id: kid.id,
             kind: "sheet-printed",
@@ -214,7 +227,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                 lessonHash: levelIn(lesson, LEVEL).hash,
                 pack: l().pack.pack,
                 paper: paperFor(zone()),
-                questions: askedIn(lesson, LEVEL)
+                questions: askedIn(lesson, LEVEL, 0, part)
                     .filter((a) => a.way !== "worked")
                     .map((a) => a.ref),
                 grownUps: false,
@@ -321,6 +334,7 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                                         narrow={narrow()}
                                         limits={{ sheets: "look", key: key() }}
                                         draw={d()}
+                                        part={s.part}
                                     />
                                 )}
                             </Show>
