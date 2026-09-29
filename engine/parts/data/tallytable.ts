@@ -22,23 +22,32 @@ interface Row {
     count: number;
 }
 
+/** The rows as drawn: `counts` and `labels` where a question gives them, or else the drawing's own `rows`. */
+const rowsOf = (p: { rows: Row[]; labels: string[]; counts: number[] }): Row[] =>
+    p.counts.length ? p.counts.map((count, i) => ({ label: p.labels[i] ?? "", count })) : p.rows;
+
 export const tallyTable = defineDrawing({
     id: "tallytable",
     family: "data",
     title: "Frequency table",
     group: "Structures",
-    about: "The table a survey is written into: what it was, the tally as it was counted, and the number. Two columns say the same thing, so one of them can be left blank for the child to fill in.",
+    about: "The table a survey is written into: what it was, the tally as it was counted, and the number. Two columns say the same thing, so one of them can be left blank for the child to fill in. A question gives its rows as `labels` and `counts`, which may hold parameters; without `counts` the table draws its own rows.",
     params: {
         rows: [
             { label: "Red", count: 7 },
             { label: "Blue", count: 12 },
             { label: "Green", count: 4 },
         ] as Row[],
+        labels: [] as string[],
+        counts: [] as number[],
         numbers: true,
         heading: "Colour",
     },
     settings: {
         rows: { kind: "fixed" },
+        labels: { kind: "words", most: 8 },
+        // three fives and some over is as long a tally as the column holds
+        counts: { kind: "numbers", min: 0, max: 15, most: 8 },
         numbers: { kind: "flag" },
         heading: { kind: "text", most: 10 },
     },
@@ -51,6 +60,8 @@ export const tallyTable = defineDrawing({
                     { label: "Blue", count: 12 },
                     { label: "Green", count: 4 },
                 ],
+                labels: [],
+                counts: [],
                 numbers: true,
                 heading: "Colour",
             },
@@ -62,6 +73,8 @@ export const tallyTable = defineDrawing({
                     { label: "Cat", count: 9 },
                     { label: "Dog", count: 6 },
                 ],
+                labels: [],
+                counts: [],
                 numbers: false,
                 heading: "Pet",
             },
@@ -75,19 +88,22 @@ export const tallyTable = defineDrawing({
                     { label: "Car", count: 15 },
                     { label: "Bike", count: 3 },
                 ],
+                labels: [],
+                counts: [],
                 numbers: true,
                 heading: "How",
             },
         },
     ],
-    box: (p) => ({ w: 20, h: p.rows.length * 2 + 5 }),
+    box: (p) => ({ w: 20, h: rowsOf(p).length * 2 + 5 }),
     draw: (c, p) => {
         const { pen, g } = c,
             x0 = U / 2,
             cols = [5, 9, 4],
             top = U,
             rh = 2 * U,
-            a: RawAnchors = {};
+            a: RawAnchors = {},
+            rows = rowsOf(p);
         const at = (k: number) => x0 + cols.slice(0, k).reduce((s, n) => s + n, 0) * U;
         [p.heading, "Tally", "Number"].forEach((s, k) => {
             pen.rect(
@@ -103,7 +119,7 @@ export const tallyTable = defineDrawing({
             sayOn(c, at(k) + ((cols[k] ?? 0) * U) / 2, top + 1.3 * U, s, 16);
             a[`col(${k})`] = [at(k) + ((cols[k] ?? 0) * U) / 2, top, "up"];
         });
-        p.rows.forEach((row, r) => {
+        rows.forEach((row, r) => {
             const y = top + (r + 1) * rh;
             cols.forEach((n, k) =>
                 pen.rect(g, at(k), y, n * U, rh, "ruler", null, { strokeWidth: 1.3 }),
@@ -114,15 +130,15 @@ export const tallyTable = defineDrawing({
             a[`row(${r})`] = [at(0), y + U, "left"];
             a[`count(${r})`] = [at(2) + ((cols[2] ?? 0) * U) / 2, y, "up"];
         });
-        pen.rect(g, x0, top, 18 * U, (p.rows.length + 1) * rh, "ruler", null, { strokeWidth: 2.4 });
-        const ty = top + (p.rows.length + 1) * rh;
+        pen.rect(g, x0, top, 18 * U, (rows.length + 1) * rh, "ruler", null, { strokeWidth: 2.4 });
+        const ty = top + (rows.length + 1) * rh;
         say(c, at(1) - 14, ty + 26, "Total", 15, "end");
         if (p.numbers)
             num(
                 c,
                 at(2) + ((cols[2] ?? 0) * U) / 2,
                 ty + 28,
-                p.rows.reduce((s, r) => s + r.count, 0),
+                rows.reduce((s, r) => s + r.count, 0),
                 17,
             );
         a.total = [at(2) + ((cols[2] ?? 0) * U) / 2, ty + 10, "down"];

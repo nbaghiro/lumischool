@@ -4,29 +4,39 @@ import { U } from "../../paper";
 import { defineDrawing, STILL } from "../drawing";
 import { cap, soft } from "../lettering";
 import { highlight, loop } from "../marks";
-import { lineOf, type Line } from "../../coding";
+import { lineOf, textOf, type Line } from "../../coding";
 import { code, KIND_FILL, kindOfLine, arrowIcon, bug } from "./listing";
 
 /** How far in a line of a listing is written, in squares, for its depth. */
 const STEP_IN = 1.6;
+/** How far in a line of text is written for its depth: two spaces of the mono face, a square. */
+const TEXT_IN = 1;
 
-const progWidth = (lines: Line[], title: string): number =>
+const progWidth = (lines: Line[], title: string, text: boolean): number =>
     Math.max(
         12,
         Math.ceil(
             Math.max(
                 title.length * 0.42 + 3,
-                ...lines.map((l) => 4 + l.depth * STEP_IN + l.text.length * 0.5),
+                ...lines.map((l) =>
+                    text
+                        ? 3.6 + l.depth * TEXT_IN + l.text.length * 0.5
+                        : 4 + l.depth * STEP_IN + l.text.length * 0.5,
+                ),
             ) + 1.5,
         ),
     );
+
+/** The lines a listing draws: as written, or as the program's text when it is printed as text. */
+const linesOf = (code: readonly string[], text: boolean): Line[] =>
+    (text ? textOf(code) : code).map((t, i) => lineOf(t, i + 1));
 
 export const program = defineDrawing({
     id: "program",
     family: "coding",
     title: "A program",
     group: "Structures",
-    about: "A program written out as numbered lines, the way a child reads it aloud, with the lines a repeat or an if holds set further in and bracketed. A coloured chip at the start of each line says what kind of block it is, so the listing and the blocks read as the same program. `run` points at the line running now, `wrong` marks the line with the bug, `blank` leaves a line empty to write in, and `mark` loops a line in the teacher's pen.",
+    about: "A program written out as numbered lines, the way a child reads it aloud, with the lines a repeat or an if holds set further in and bracketed. A coloured chip at the start of each line says what kind of block it is, so the listing and the blocks read as the same program. With `text` the same program is printed as text, the way it reads typed rather than built: plain lines in the mono face, set in two spaces a level with a faint guide down each level and no chips or brackets, so a child moving from blocks to text sees the words of each block and the nesting carried by the spaces alone. `run` points at the line running now, `wrong` marks the line with the bug, `blank` leaves a line empty to write in, and `mark` loops a line in the teacher's pen. `sense` gives the world the program runs in its sensors, one a line: `temp starts 15 changes -1 heater 2` is a number that falls by 1 a minute and rises by 2 more while the heater is switched on, and `daylight reads 9 7 5 3` one that follows its readings; each `wait` is a minute, so a program that reads the sensor and switches the heater controls the room it reads.",
     params: {
         code: ["repeat 4", "  forward 3", "  turn right"],
         title: "",
@@ -34,14 +44,18 @@ export const program = defineDrawing({
         run: 0,
         wrong: 0,
         blank: 0,
+        text: false,
+        sense: [] as string[],
     },
     settings: {
-        code: { kind: "words", most: 12 },
+        code: { kind: "words", most: 14 },
         title: { kind: "text", most: 30 },
         mark: { kind: "whole", min: 0, max: 12 },
         run: { kind: "whole", min: 0, max: 12 },
         wrong: { kind: "whole", min: 0, max: 12 },
         blank: { kind: "whole", min: 0, max: 12 },
+        text: { kind: "flag" },
+        sense: { kind: "words", most: 3 },
     },
     takes: [
         {
@@ -53,6 +67,8 @@ export const program = defineDrawing({
                 run: 0,
                 wrong: 0,
                 blank: 0,
+                text: false,
+                sense: [],
             },
         },
         {
@@ -64,6 +80,8 @@ export const program = defineDrawing({
                 run: 2,
                 wrong: 0,
                 blank: 0,
+                text: false,
+                sense: [],
             },
         },
         {
@@ -75,6 +93,8 @@ export const program = defineDrawing({
                 run: 0,
                 wrong: 0,
                 blank: 0,
+                text: false,
+                sense: [],
             },
         },
         {
@@ -86,6 +106,8 @@ export const program = defineDrawing({
                 run: 0,
                 wrong: 3,
                 blank: 0,
+                text: false,
+                sense: [],
             },
         },
         {
@@ -97,18 +119,62 @@ export const program = defineDrawing({
                 run: 0,
                 wrong: 0,
                 blank: 0,
+                text: false,
+                sense: [],
+            },
+        },
+        {
+            label: "A heater that watches the room",
+            params: {
+                code: [
+                    "repeat 20",
+                    "  if temp is less than 18",
+                    "    switch heater on",
+                    "  if temp is more than 21",
+                    "    switch heater off",
+                    "  wait 1",
+                ],
+                title: "thermostat",
+                mark: 0,
+                run: 0,
+                wrong: 0,
+                blank: 0,
+                text: false,
+                sense: ["temp starts 15 changes -1 heater 2"],
+            },
+        },
+        {
+            label: "The same program as text",
+            params: {
+                code: [
+                    "set t to 80",
+                    "repeat 3",
+                    "  if t is more than 40",
+                    "    take 20 from t",
+                    "say done",
+                ],
+                title: "cooling",
+                mark: 0,
+                run: 3,
+                wrong: 0,
+                blank: 0,
+                text: true,
+                sense: [],
             },
         },
     ],
     box: (p) => {
-        const lines = p.code.map((t, i) => lineOf(t, i + 1));
-        return { w: progWidth(lines, p.title) + 2, h: lines.length * 2 + (p.title ? 3 : 1) + 1 };
+        const lines = linesOf(p.code, p.text);
+        return {
+            w: progWidth(lines, p.title, p.text) + 2,
+            h: lines.length * 2 + (p.title ? 3 : 1) + 1,
+        };
     },
     draw: (c, p) => {
         const { pen, g } = c,
             a: RawAnchors = {};
-        const lines = p.code.map((t, i) => lineOf(t, i + 1));
-        const w = progWidth(lines, p.title),
+        const lines = linesOf(p.code, p.text);
+        const w = progWidth(lines, p.title, p.text),
             h = lines.length * 2 + (p.title ? 3 : 1) + 1;
         pen.path(
             g,
@@ -127,9 +193,28 @@ export const program = defineDrawing({
             top = 3.1 * U;
         }
         const rowY = (i: number) => top + i * 2 * U;
-        const textX = (l: Line) => (4 + l.depth * STEP_IN) * U;
+        const textX = (l: Line) => (p.text ? 3.6 + l.depth * TEXT_IN : 4 + l.depth * STEP_IN) * U;
+        if (p.text) {
+            // text has no chips: a rule between the numbers and the lines, and a faint guide down
+            // each level a line is set in, which is all that shows what a repeat or an if holds
+            pen.line(g, 2.75 * U, top + 0.2 * U, 2.75 * U, rowY(lines.length) - 0.2 * U, "ruler", {
+                strokeWidth: 1.1,
+                stroke: c.t["ink-soft"],
+            });
+            lines.forEach((l, i) => {
+                for (let d = 0; d < l.depth; d++) {
+                    const gx = (3.75 + d * TEXT_IN) * U;
+                    pen.line(g, gx, rowY(i) + 0.2 * U, gx, rowY(i) + 1.8 * U, "ruler", {
+                        strokeWidth: 1,
+                        strokeLineDash: [3, 4],
+                        stroke: c.t["ink-soft"],
+                    });
+                }
+            });
+        }
         // brackets down the side of what a repeat, an if or a define holds
         lines.forEach((l, i) => {
+            if (p.text) return;
             const k = kindOfLine(l.text);
             if (!(k === "control" || k === "else" || /^(define|to)\b/i.test(l.text))) return;
             let j = i + 1;
@@ -175,7 +260,7 @@ export const program = defineDrawing({
                     { strokeWidth: 1.5, strokeLineDash: [6, 5], stroke: c.t["ink-soft"] },
                 );
             } else {
-                if (k !== "blank")
+                if (k !== "blank" && !p.text)
                     pen.rect(
                         g,
                         2.6 * U,
@@ -206,7 +291,9 @@ export const program = defineDrawing({
         a.listing = [((w + 2) * U) / 2, 0.4 * U, "up"];
         return a;
     },
-    describe: () =>
-        "A program written out as numbered lines down a card, a coloured chip at the start of each line for the kind of block it is.",
+    describe: (p) =>
+        p.text
+            ? "A program printed as text down a card, numbered lines in a typewriter face, set in by spaces where one block holds another."
+            : "A program written out as numbered lines down a card, a coloured chip at the start of each line for the kind of block it is.",
     motion: { still: STILL.text },
 });

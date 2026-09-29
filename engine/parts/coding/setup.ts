@@ -1,6 +1,6 @@
 // What a coding item runs: the program, the world and the event a drawing's settings name, built the
 // same way for the drawing, the checker and the runner, so the three cannot disagree.
-import { DIRS, world, type Dir, type World } from "../../coding";
+import { DIRS, senseOf, world, type Dir, type World } from "../../coding";
 import { mazeOf } from "./maze";
 import { printerOf } from "./pixels";
 import { turtleOf } from "./turtle";
@@ -13,6 +13,8 @@ export interface Setup {
     event: "flag" | "tap";
     vars: Record<string, number>;
     target: string[];
+    /** What in the drawing's settings could not be read, such as a sensor written wrongly. */
+    problems: string[];
 }
 
 /** A setting written as text, or a number written out; anything else is the fallback. */
@@ -41,17 +43,35 @@ export const RUNS: Record<string, string> = {
     stage: "code",
     pixels: "code",
     variable: "code",
+    listbox: "code",
     tracetable: "code",
     dance: "code",
     tune: "code",
     fork: "cond",
+    flowchart: "code",
     program: "code",
     blocks: "code",
 };
 
 export function setupOf(type: string, p: Record<string, unknown>): Setup | null {
+    const got = setupFrom(type, p);
+    if (!got) return null;
+    // a drawing that declares sensors runs its program in a world they read
+    const { sense, problems } = senseOf(strs(p.sense));
+    got.world.sense = sense;
+    got.problems.push(...problems);
+    return got;
+}
+
+function setupFrom(type: string, p: Record<string, unknown>): Setup | null {
     const one = world({ cols: 1, rows: 1 });
-    const base = { type, event: "flag" as const, vars: {}, target: [] as string[] };
+    const base = {
+        type,
+        event: "flag" as const,
+        vars: {},
+        target: [] as string[],
+        problems: [] as string[],
+    };
     switch (type) {
         case "maze":
             return {
@@ -135,8 +155,10 @@ export function setupOf(type: string, p: Record<string, unknown>): Setup | null 
         // A listing on its own runs on open ground, far from any edge, so moves and names can be
         // counted without a grid drawn beside it.
         case "variable":
+        case "listbox":
         case "program":
         case "blocks":
+        case "flowchart":
             return {
                 ...base,
                 code: strs(p.code),

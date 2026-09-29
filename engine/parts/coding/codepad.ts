@@ -80,15 +80,19 @@ export function linesFromKey(s: string): { text: string; depth: number }[] {
         if (word.trim()) out.push({ text: word.trim(), depth });
         word = "";
     };
-    for (const ch of s) {
+    const chars = Array.from(s);
+    for (const [i, ch] of chars.entries()) {
         if (ch === "(") {
             flush();
             depth++;
         } else if (ch === ")") {
             flush();
             depth = Math.max(0, depth - 1);
-        } else if (ch === ",") flush();
-        else word += ch;
+        } else if (ch === ",") {
+            // a block never starts with a number, so a comma before one is inside a list's numbers
+            if (/^\s*-?\d/.test(chars.slice(i + 1, i + 4).join(""))) word += ch;
+            else flush();
+        } else word += ch;
     }
     flush();
     return out;

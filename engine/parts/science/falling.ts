@@ -5,10 +5,12 @@ import { penned, soft } from "../lettering";
 
 /**
  * How many squares each thing falls in one of the drawing's moments, as a model rather than a
- * measurement: the order is the one a child's test finds, the fastest first, and no two are the same.
+ * measurement: the order is the one a child's test finds, the fastest first. Only the stone and the
+ * hammer are the same, since the air barely slows either.
  */
 export const FALL_SPEEDS = {
     stone: 5.5,
+    hammer: 5.5,
     crumpled: 4.2,
     leaf: 3.2,
     flat: 2.4,
@@ -21,6 +23,7 @@ const THINGS = Object.keys(FALL_SPEEDS).filter(isThing);
 
 const NAMES: Record<Thing, { label: string; words: string }> = {
     stone: { label: "stone", words: "a stone" },
+    hammer: { label: "hammer", words: "a hammer" },
     crumpled: { label: "paper ball", words: "a crumpled sheet of paper" },
     leaf: { label: "leaf", words: "a leaf" },
     flat: { label: "flat paper", words: "a flat sheet of paper" },
@@ -33,15 +36,36 @@ const GROUND = 14.6 * U;
 /** The furthest a thing's middle can fall before it lies on the ground. */
 const DROP = GROUND - 1.05 * U - TOP;
 
+/** How far everything falls in one moment where there is no air to push back, so nothing is slowed. */
+const AIRLESS = 3;
+
 /** How far a thing has fallen after `time` moments, in user units, stopping at the ground. */
-const fallen = (thing: Thing, time: number): number =>
-    Math.min(DROP, FALL_SPEEDS[thing] * Math.max(0, Math.round(time)) * U);
+const fallen = (thing: Thing, time: number, air: number): number =>
+    Math.min(DROP, (air > 0 ? FALL_SPEEDS[thing] : AIRLESS) * Math.max(0, Math.round(time)) * U);
 
 /** A thing's own size: a square and a third, so each reads at question size. */
 const S = 1.3 * U;
 
 function drawThing<G>(c: Ctx<G>, thing: Thing, x: number, y: number): void {
     const { pen, g } = c;
+    if (thing === "hammer") {
+        pen.rect(g, x - 0.12 * S, y - 0.2 * S, 0.24 * S, 1.1 * S, "ruler", pen.fill("tang"), {
+            strokeWidth: 1.4,
+        });
+        pen.rect(
+            g,
+            x - 0.7 * S,
+            y - 0.6 * S,
+            1.4 * S,
+            0.45 * S,
+            "ruler",
+            pen.fill("ink-soft", "hachure", { hachureGap: 3 }),
+            {
+                strokeWidth: 1.7,
+            },
+        );
+        return;
+    }
     if (thing === "stone") {
         pen.path(
             g,
@@ -131,30 +155,41 @@ export const falling = defineDrawing({
     family: "science",
     title: "Falling things",
     group: "Structures",
-    about: "Two to four things let go together from a branch, one in each column, with a dashed line at the height they started from. At `time` 0 they all hang level under the branch; at 1 and 2 each has fallen by its own fixed speed, so the air's push shows as how far each has come. From fastest to slowest the order is the stone, the crumpled paper ball, the leaf, the flat sheet of paper, the parachute and the feather, and at 2 the stone lies on the ground. Streaks above the stone and the paper ball are the only other sign of speed. With `show` at 0 they wait at the top over a question mark, and `names` writes each thing's name under its column.",
-    params: { things: ["stone", "feather"], time: 1, show: 1, names: 1 },
+    about: "Two to four things let go together from a branch, one in each column, with a dashed line at the height they started from. At `time` 0 they all hang level under the branch; at 1 and 2 each has fallen by its own fixed speed, so the air's push shows as how far each has come. From fastest to slowest the order is the stone, the crumpled paper ball, the leaf, the flat sheet of paper, the parachute and the feather, and at 2 the stone lies on the ground. Streaks above the stone and the paper ball are the only other sign of speed. With `air` at 0 they are let go from a hand on the moon, where there is no air to push back, so a hammer and a feather, or anything else, fall together and land together. With `show` at 0 they wait at the top over a question mark, and `names` writes each thing's name under its column.",
+    params: { things: ["stone", "feather"], time: 1, show: 1, names: 1, air: 1 },
     settings: {
         things: { kind: "words", most: 4, of: THINGS },
         time: { kind: "whole", min: 0, max: 2 },
         show: { kind: "whole", min: 0, max: 1 },
         names: { kind: "whole", min: 0, max: 1 },
+        air: { kind: "whole", min: 0, max: 1 },
     },
     takes: [
         {
             label: "A stone and a feather",
-            params: { things: ["stone", "feather"], time: 1, show: 1, names: 1 },
+            params: { things: ["stone", "feather"], time: 1, show: 1, names: 1, air: 1 },
         },
         {
             label: "Four things, later",
-            params: { things: ["leaf", "stone", "parachute", "flat"], time: 2, show: 1, names: 1 },
+            params: {
+                things: ["leaf", "stone", "parachute", "flat"],
+                time: 2,
+                show: 1,
+                names: 1,
+                air: 1,
+            },
         },
         {
             label: "Flat or crumpled, let go",
-            params: { things: ["flat", "crumpled"], time: 0, show: 1, names: 1 },
+            params: { things: ["flat", "crumpled"], time: 0, show: 1, names: 1, air: 1 },
         },
         {
             label: "Which lands first?",
-            params: { things: ["feather", "crumpled", "leaf"], time: 1, show: 0, names: 0 },
+            params: { things: ["feather", "crumpled", "leaf"], time: 1, show: 0, names: 0, air: 1 },
+        },
+        {
+            label: "A hammer and a feather on the moon",
+            params: { things: ["hammer", "feather"], time: 1, show: 1, names: 1, air: 0 },
         },
     ],
     box: (p) => ({ w: Math.max(1, Math.min(4, p.things.length)) * 5 + 2, h: 17 }),
@@ -164,22 +199,54 @@ export const falling = defineDrawing({
             list = p.things.slice(0, 4).filter(isThing),
             n = Math.max(1, list.length),
             w = (n * 5 + 2) * U,
-            time = p.show > 0 ? p.time : 0;
+            time = p.show > 0 ? p.time : 0,
+            air = p.air > 0;
+        if (!air) {
+            // on the moon: an astronaut's gloved hand at the top, and grey dust below with a crater's rim
+            pen.path(
+                g,
+                `M0 ${0.9 * U}H${w - 1.6 * U}q${0.9 * U} 0 ${0.9 * U} ${0.6 * U}t${-0.9 * U} ${0.6 * U}H0`,
+                "pencil",
+                pen.fill("card"),
+                { strokeWidth: 2 },
+            );
+            pen.polygon(
+                g,
+                [
+                    [0, GROUND],
+                    [w, GROUND],
+                    [w, GROUND + 0.6 * U],
+                    [0, GROUND + 0.6 * U],
+                ],
+                "pencil",
+                pen.fill("ink-soft", "hachure", { hachureGap: 6, fillWeight: 0.6 }),
+                { stroke: "none" },
+            );
+            pen.path(
+                g,
+                `M${0.55 * w} ${GROUND}q${0.4 * U} ${-0.5 * U} ${0.9 * U} 0q${0.8 * U} ${0.35 * U} ${1.6 * U} 0q${0.5 * U} ${-0.5 * U} ${0.9 * U} 0`,
+                "pencil",
+                null,
+                { strokeWidth: 1.4 },
+            );
+        }
         // the branch they were let go from, reaching in from the left
-        pen.path(
-            g,
-            `M0 ${1.2 * U}C${0.3 * w} ${1.5 * U} ${0.6 * w} ${1.7 * U} ${w - 0.6 * U} ${1.9 * U}`,
-            "pencil",
-            null,
-            { strokeWidth: 5, stroke: c.t.ink },
-        );
-        pen.path(
-            g,
-            `M${0.35 * w} ${1.55 * U}c${0.4 * U} ${-0.9 * U} ${1.2 * U} ${-0.9 * U} ${1.3 * U} ${-0.6 * U}c${-0.3 * U} ${0.5 * U} ${-0.8 * U} ${0.7 * U} ${-1.3 * U} ${0.6 * U}Z`,
-            "pencil",
-            pen.fill("mint"),
-            { strokeWidth: 1.2 },
-        );
+        if (air)
+            pen.path(
+                g,
+                `M0 ${1.2 * U}C${0.3 * w} ${1.5 * U} ${0.6 * w} ${1.7 * U} ${w - 0.6 * U} ${1.9 * U}`,
+                "pencil",
+                null,
+                { strokeWidth: 5, stroke: c.t.ink },
+            );
+        if (air)
+            pen.path(
+                g,
+                `M${0.35 * w} ${1.55 * U}c${0.4 * U} ${-0.9 * U} ${1.2 * U} ${-0.9 * U} ${1.3 * U} ${-0.6 * U}c${-0.3 * U} ${0.5 * U} ${-0.8 * U} ${0.7 * U} ${-1.3 * U} ${0.6 * U}Z`,
+                "pencil",
+                pen.fill("mint"),
+                { strokeWidth: 1.2 },
+            );
         pen.line(g, 0.4 * U, TOP, w - 0.4 * U, TOP, "ruler", {
             strokeWidth: 1,
             stroke: c.t["ink-soft"],
@@ -188,9 +255,9 @@ export const falling = defineDrawing({
         pen.line(g, 0, GROUND, w, GROUND, "pencil", { strokeWidth: 2.2 });
         list.forEach((thing, i) => {
             const x = (1 + 2.5 + i * 5) * U,
-                d = fallen(thing, time),
+                d = fallen(thing, time, p.air),
                 y = TOP + d;
-            if (FALL_SPEEDS[thing] >= 4 && d > 1.5 * U) {
+            if ((!air || FALL_SPEEDS[thing] >= 4) && d > 1.5 * U) {
                 for (const dx of [-0.4 * U, 0.4 * U])
                     pen.line(
                         g,
@@ -222,7 +289,9 @@ export const falling = defineDrawing({
             .map((t) => NAMES[t].words);
         const last = words.pop();
         const list = words.length ? `${words.join(", ")} and ${last}` : (last ?? "nothing");
-        return `Things let go together from a branch above the ground, one in each column: ${list}.`;
+        return p.air > 0
+            ? `Things let go together from a branch above the ground, one in each column: ${list}.`
+            : `Things let go together from a hand on the moon, where there is no air, one in each column: ${list}.`;
     },
     reads: true,
 });

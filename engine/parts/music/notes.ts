@@ -2,9 +2,12 @@ import { letter, type Ctx, type RawAnchors } from "../../ink/surface";
 import { U } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { say } from "../lettering";
-import { isBlack, letterOf, noteOf, readNote, whiteIndex, type Note } from "../../sound/pitch";
+import { LETTERS, noteOf, readNote, whiteIndex, type Letter } from "../../sound/pitch";
 import { headOf } from "../../sound/beat";
-import { SPACE, names, trebleClef, bassClef, sharpSign } from "./clefs";
+import { SPACE, names, trebleClef, bassClef, sharpSign, flatSign, naturalSign } from "./clefs";
+
+const KEYS = ["C", "G", "D", "A", "E", "B", "F", "Bf", "Ef", "Af", "Df"] as const;
+type Key = (typeof KEYS)[number];
 
 export interface StaffParams {
     clef: "treble" | "bass";
@@ -17,7 +20,61 @@ export interface StaffParams {
     lit: string[];
     /** Beats in a bar, which draws the time signature and a bar line after each bar. 0 for neither. */
     meter: number;
+    /** The key signature, named by its major key: C has none, G to B are one to five sharps, F to Df one to five flats. */
+    key: Key;
+    /** The time signature's lower number is 8, so meter counts quavers and six-eight holds three crotchets' worth. */
+    quavers: boolean;
+    /** Chord symbols written above the notes they start on, as a lead sheet has them; _ where none starts. */
+    chords: string[];
+    /** Space each note by how long it lasts, three squares a crotchet, so two staves line up beat by beat. */
+    spaced: boolean;
 }
+
+/**
+ * The order sharps and flats are written in a key signature, and the note each sits on in the treble
+ * staff; the bass writes the same letters two octaves lower.
+ */
+const SHARPS = ["F5", "C5", "G5", "D5", "A4", "E5", "B4"];
+const FLATS = ["B4", "E5", "A4", "D5", "G4", "C5", "F4"];
+const SIGNATURE: Record<Key, number> = {
+    C: 0,
+    G: 1,
+    D: 2,
+    A: 3,
+    E: 4,
+    B: 5,
+    F: -1,
+    Bf: -2,
+    Ef: -3,
+    Af: -4,
+    Df: -5,
+};
+const signatureOf = (key: Key | undefined): string[] => {
+    const n = SIGNATURE[key ?? "C"];
+    return n >= 0 ? SHARPS.slice(0, n) : FLATS.slice(0, -n);
+};
+/** The alteration a key signature gives a letter, +1 for a sharp and -1 for a flat. */
+const keyAlters = (key: Key | undefined, l: Letter): number =>
+    signatureOf(key).some((s) => s.startsWith(l)) ? Math.sign(SIGNATURE[key ?? "C"]) : 0;
+const signatureWidth = (key: Key | undefined): number => {
+    const n = Math.abs(SIGNATURE[key ?? "C"]);
+    return n === 0 ? 0 : Math.ceil(n * 0.9) + 1;
+};
+
+/**
+ * A note as it is written rather than as it sounds: the line or space it sits on, counted as
+ * whiteIndex counts, and its sharp or flat. Bf4 sits on B's line with a flat, where the same key read
+ * as a number would sit on A's.
+ */
+function spelled(name: string): { line: number; letter: Letter; alter: number } | null {
+    const m = /^([A-G])(s|f|#|b)?(-?\d)$/.exec(name.trim());
+    const l = LETTERS.find((x) => x === m?.[1]);
+    if (!m || !l) return null;
+    const alter = m[2] === "s" || m[2] === "#" ? 1 : m[2] === "f" || m[2] === "b" ? -1 : 0;
+    return { line: Number(m[3]) * 7 + LETTERS.indexOf(l), letter: l, alter };
+}
+
+const chordText = (s: string): string => s.replace(/^([A-G])s/, "$1#").replace(/^([A-G])f/, "$1b");
 
 /** The staff's five lines sit at these squares from the top of the box. */
 const TOP_LINE = 3;
@@ -27,13 +84,19 @@ const BOTTOM_LINE = 7;
 /** The note the bottom line carries, which is what a clef is. */
 const clefBase: Record<StaffParams["clef"], string> = { treble: "E4", bass: "G2" };
 
-export const staffWidth = (notes: readonly string[], meter = 0): number =>
-    5 + Math.max(1, notes.length) * 3 + (meter > 0 ? 2 : 0);
+const lengthOf = (p: Pick<StaffParams, "notes" | "values">): number =>
+    p.notes.reduce((t, _, i) => t + (p.values?.[i] ?? 1), 0);
 
-/** Where a note head sits, in user units, counted in half spaces from the bottom line. */
-export function staffY(note: Note, clef: StaffParams["clef"]): number {
+const staffWidth = (p: StaffParams): number =>
+    5 +
+    (p.spaced ? Math.max(1, Math.ceil(lengthOf(p) * 3)) : Math.max(1, p.notes.length) * 3) +
+    (p.meter > 0 ? 2 : 0) +
+    signatureWidth(p.key);
+
+/** Where a written line or space sits, in user units, counted in half spaces from the bottom line. */
+function staffY(line: number, clef: StaffParams["clef"]): number {
     const base = whiteIndex(noteOf(clefBase[clef]));
-    return (BOTTOM_LINE - (whiteIndex(note) - base) * 0.5) * SPACE;
+    return (BOTTOM_LINE - (line - base) * 0.5) * SPACE;
 }
 
 /**
@@ -97,6 +160,10 @@ export const staffNotes = defineDrawing<StaffParams>({
         letters: false,
         lit: [],
         meter: 0,
+        key: "C",
+        quavers: false,
+        chords: [],
+        spaced: false,
     },
     settings: {
         clef: { kind: "one of", of: ["treble", "bass"] },
@@ -105,6 +172,10 @@ export const staffNotes = defineDrawing<StaffParams>({
         letters: { kind: "flag" },
         lit: { kind: "words", most: 12 },
         meter: { kind: "whole", min: 0, max: 6 },
+        key: { kind: "one of", of: KEYS },
+        quavers: { kind: "flag" },
+        chords: { kind: "words", most: 12 },
+        spaced: { kind: "flag" },
     },
     takes: [
         {
@@ -116,6 +187,10 @@ export const staffNotes = defineDrawing<StaffParams>({
                 letters: true,
                 lit: [],
                 meter: 0,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
             },
         },
         {
@@ -127,6 +202,10 @@ export const staffNotes = defineDrawing<StaffParams>({
                 letters: true,
                 lit: [],
                 meter: 0,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
             },
         },
         {
@@ -138,6 +217,10 @@ export const staffNotes = defineDrawing<StaffParams>({
                 letters: false,
                 lit: ["Fs4"],
                 meter: 0,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
             },
         },
         {
@@ -149,6 +232,10 @@ export const staffNotes = defineDrawing<StaffParams>({
                 letters: true,
                 lit: [],
                 meter: 0,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
             },
         },
         {
@@ -160,6 +247,10 @@ export const staffNotes = defineDrawing<StaffParams>({
                 letters: false,
                 lit: [],
                 meter: 3,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
             },
         },
         {
@@ -171,15 +262,81 @@ export const staffNotes = defineDrawing<StaffParams>({
                 letters: false,
                 lit: [],
                 meter: 4,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
+            },
+        },
+        {
+            label: "Two sharps in the key",
+            params: {
+                clef: "treble" as const,
+                notes: ["D4", "Fs4", "A4", "Cs5", "D5"],
+                values: [],
+                letters: true,
+                lit: [],
+                meter: 0,
+                key: "D" as const,
+                quavers: false,
+                chords: [],
+                spaced: false,
+            },
+        },
+        {
+            label: "Six-eight, with a flat",
+            params: {
+                clef: "treble" as const,
+                notes: ["F4", "A4", "Bf4", "C5", "A4", "F4"],
+                values: [1.5, 1, 0.5, 1.5, 1, 0.5],
+                letters: false,
+                lit: [],
+                meter: 6,
+                key: "F" as const,
+                quavers: true,
+                chords: [],
+                spaced: false,
+            },
+        },
+        {
+            label: "A lead sheet line",
+            params: {
+                clef: "treble" as const,
+                notes: ["G4", "G4", "G4", "A4", "B4", "A4"],
+                values: [1, 1, 1, 1, 2, 2],
+                letters: false,
+                lit: [],
+                meter: 4,
+                key: "C" as const,
+                quavers: false,
+                chords: ["C", "_", "_", "_", "G7", "_"],
+                spaced: false,
+            },
+        },
+        {
+            label: "The left hand, spaced by length",
+            params: {
+                clef: "bass" as const,
+                notes: ["C3", "G2", "C3"],
+                values: [4, 2, 2],
+                letters: false,
+                lit: [],
+                meter: 4,
+                key: "C" as const,
+                quavers: false,
+                chords: [],
+                spaced: true,
             },
         },
     ],
-    box: (p) => ({ w: staffWidth(p.notes, p.meter ?? 0), h: 11 }),
+    box: (p) => ({ w: staffWidth(p), h: 11 }),
     draw: (c, p) => {
         const { pen, g } = c;
         const meter = Math.max(0, Math.round(p.meter || 0));
-        const w = staffWidth(p.notes, meter);
-        const shift = meter > 0 ? 2 : 0;
+        const bar = p.quavers ? meter / 2 : meter;
+        const w = staffWidth(p);
+        const sig = signatureWidth(p.key);
+        const shift = (meter > 0 ? 2 : 0) + sig;
         const a: RawAnchors = {};
         const lit = new Set(names(p.lit ?? []));
 
@@ -192,14 +349,24 @@ export const staffNotes = defineDrawing<StaffParams>({
 
         if (p.clef === "treble") trebleClef(c, 2.1 * U, 6 * SPACE);
         else bassClef(c, 2.1 * U, 4 * SPACE);
+        const low = p.clef === "treble" ? 0 : 14;
+        signatureOf(p.key).forEach((name, i) => {
+            const at = spelled(name);
+            if (!at) return;
+            const x = (4.2 + i * 0.9) * U;
+            const y = staffY(at.line - low, p.clef);
+            if (SIGNATURE[p.key ?? "C"] > 0) sharpSign(c, x, y);
+            else flatSign(c, x, y);
+        });
         if (meter > 0) {
-            // The time signature: how many beats, over the 4 that says a beat is a crotchet.
+            // The time signature: how many beats, over the 4 that counts crotchets or the 8 that
+            // counts quavers.
             for (const [digit, y] of [
                 [String(meter), 5 * SPACE - 3],
-                [String(4), 7 * SPACE - 3],
+                [p.quavers ? "8" : "4", 7 * SPACE - 3],
             ] as const) {
                 letter(c, {
-                    x: 4.6 * U,
+                    x: (4.6 + sig) * U,
                     y,
                     s: digit,
                     face: "read",
@@ -214,19 +381,23 @@ export const staffNotes = defineDrawing<StaffParams>({
         let counted = 0;
         const barAt: number[] = [];
         (p.notes ?? []).forEach((name, i) => {
-            const x = (4.6 + shift + i * 3) * U;
+            const x = (4.6 + shift + (p.spaced ? counted : i) * 3) * U;
             const beats = p.values?.[i] ?? 1;
             counted += beats;
-            if (meter > 0 && Math.abs(counted % meter) < 1e-9 && i < p.notes.length - 1)
-                barAt.push(x + 1.5 * U);
+            if (meter > 0 && Math.abs(counted % bar) < 1e-9 && i < p.notes.length - 1)
+                barAt.push(p.spaced ? (3.1 + shift + counted * 3) * U : x + 1.5 * U);
+            const chord = p.chords?.[i] ?? "_";
+            if (chord !== "_" && chord !== "")
+                say(c, x - 0.9 * U, 1.7 * U, chordText(chord), 17, "start", c.t.ink);
             if (name === "rest") {
                 restMark(c, x, beats);
                 a[`note(${i})`] = [x, 2.2 * SPACE, "up"];
                 return;
             }
             const n = readNote(name);
-            if (n === null) return;
-            const y = staffY(n, p.clef);
+            const at = spelled(name);
+            if (n === null || !at) return;
+            const y = staffY(at.line, p.clef);
             const { open, flags } = headOf(beats);
 
             // Ledger lines: a short line through the head for anything off the staff, which is how
@@ -238,7 +409,10 @@ export const staffNotes = defineDrawing<StaffParams>({
                 pen.line(g, x - 1.25 * U, ly, x + 1.25 * U, ly, "ruler", { strokeWidth: 1.4 });
             }
 
-            if (isBlack(n)) sharpSign(c, x - 1.25 * U, y);
+            if (at.alter !== keyAlters(p.key, at.letter)) {
+                const sign = at.alter > 0 ? sharpSign : at.alter < 0 ? flatSign : naturalSign;
+                sign(c, x - 1.25 * U, y);
+            }
             pen.ellipse(
                 g,
                 x,
@@ -296,7 +470,7 @@ export const staffNotes = defineDrawing<StaffParams>({
                     c,
                     x,
                     10.4 * U,
-                    letterOf(n) + (isBlack(n) ? "#" : ""),
+                    at.letter + (at.alter > 0 ? "#" : at.alter < 0 ? "b" : ""),
                     17,
                     "middle",
                     c.t["ink-soft"],
@@ -322,6 +496,6 @@ export const staffNotes = defineDrawing<StaffParams>({
         return a;
     },
     describe: (p) =>
-        `A five line staff with a ${p.clef} clef and notes on it, each a head on its line or space${p.letters ? " with its letter written under it" : ""}.`,
+        `A five line staff with a ${p.clef} clef${signatureWidth(p.key) ? ", a key signature" : ""} and notes on it, each a head on its line or space${p.letters ? " with its letter written under it" : p.chords?.some((x) => x !== "_") ? ", chords named above" : ""}.`,
     reads: true,
 });

@@ -23,9 +23,35 @@ export function cellPlates<G>(c: Ctx<G>, x: number, y: number, n: number): void 
     }
 }
 
-/** A switch on an upright run: a hinge at y0, a contact at y1 and the blade, which swings out when open. */
-export function switchUp<G>(c: Ctx<G>, x: number, y0: number, y1: number, closed: boolean): void {
+/**
+ * A switch on an upright run: a hinge at y0, a contact at y1 and the blade, which swings out when open.
+ * As a `lever` it is the standard symbol: two open contacts, and a closed blade that rests across the
+ * far contact at a slant, so it never reads as plain wire.
+ */
+export function switchUp<G>(
+    c: Ctx<G>,
+    x: number,
+    y0: number,
+    y1: number,
+    closed: boolean,
+    lever = false,
+): void {
     const { pen, g } = c;
+    if (lever) {
+        for (const y of [y0, y1])
+            pen.circle(
+                g,
+                x,
+                y,
+                9,
+                "ruler",
+                { fill: c.t.card, fillStyle: "solid" },
+                { strokeWidth: 1.6 },
+            );
+        if (closed) pen.line(g, x, y0, x + 0.3 * U, y1 + 0.3 * U, "ruler", { strokeWidth: 2.8 });
+        else pen.line(g, x, y0, x + 1.6 * U, y1 - 0.2 * U, "ruler", { strokeWidth: 2.8 });
+        return;
+    }
     pen.circle(g, x, y0, 8, "ruler", { fill: c.t.ink, fillStyle: "solid" }, { strokeWidth: 0.8 });
     pen.circle(g, x, y1, 8, "ruler", { fill: c.t.ink, fillStyle: "solid" }, { strokeWidth: 0.8 });
     if (closed) pen.line(g, x, y0, x, y1, "ruler", { strokeWidth: 2.8 });

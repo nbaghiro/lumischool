@@ -19,6 +19,8 @@ interface TuneGridParams {
     labels: (typeof LABELS)[number];
     down: string[];
     lit: string[];
+    /** Rows whose notes belong to a scale, from 0 at the lowest: their letters are ringed. */
+    mark: number[];
 }
 
 const COL = 3;
@@ -74,7 +76,9 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
     about:
         "Squared paper a tune is written on by tapping: a row for each bar of the glockenspiel, high at the " +
         "top, and a column for each beat with a bar line after every bar. A note written is a head with its " +
-        "letter on it, so the tune can be read without hearing it and printed as it was written.",
+        "letter on it, so the tune can be read without hearing it and printed as it was written. `mark` " +
+        "rings the letters of the rows (0 the lowest) that belong to a scale, such as the pentatonic C, D, E, G " +
+        "and A, and leaves the grid as it was when empty.",
     voice: "glock",
     params: {
         notes: ["C5", "D5", "E5", "G5", "A5", "C6"],
@@ -85,6 +89,7 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
         labels: "letters",
         down: [],
         lit: [],
+        mark: [],
     },
     settings: {
         notes: { kind: "words", most: 8 },
@@ -95,6 +100,7 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
         labels: { kind: "one of", of: LABELS },
         down: { kind: "words", most: 8 },
         lit: { kind: "words", most: 8 },
+        mark: { kind: "numbers", min: 0, max: 7, most: 8 },
     },
     takes: [
         {
@@ -108,6 +114,7 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
                 labels: "letters" as const,
                 down: [],
                 lit: [],
+                mark: [],
             },
         },
         {
@@ -121,6 +128,7 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
                 labels: "letters" as const,
                 down: [],
                 lit: [],
+                mark: [],
             },
         },
         {
@@ -134,6 +142,21 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
                 labels: "solfa" as const,
                 down: [],
                 lit: [],
+                mark: [],
+            },
+        },
+        {
+            label: "Eight notes, the pentatonic ones ringed",
+            params: {
+                notes: ["C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"],
+                columns: 8,
+                meter: 4,
+                tune: [],
+                now: -1,
+                labels: "letters" as const,
+                down: [],
+                lit: [],
+                mark: [0, 1, 2, 4, 5, 7],
             },
         },
     ],
@@ -281,11 +304,21 @@ export const tuneGrid = defineInstrument<TuneGridParams>({
                 a[`cell(${id})`] = [cx, r.y, "up"];
             });
         }
+        // drawn last, so a grid with nothing marked draws exactly as before the setting was added
+        for (const row of new Set(p.mark.map(Math.round))) {
+            if (row < 0 || row >= s.rows.length) continue;
+            const y = s.cell(0, row).y + (ROW * U) / 2;
+            pen.circle(g, 1.2 * U, y, 1.75 * U, "ruler", null, {
+                strokeWidth: 1.8,
+                stroke: c.t.pen,
+            });
+            a[`mark(${row})`] = [0.3 * U, y, "left"];
+        }
         a.grid = [(LEFT * U + right) / 2, 0, "up"];
         a.under = [(LEFT * U + right) / 2, s.box.h * U, "down"];
         return a;
     },
     describe: (p) =>
-        `Squared paper for a tune, a row for each of ${p.notes.length} notes with its letter at the left and a column for each of ${p.columns} beats, barred.`,
+        `Squared paper for a tune, a row for each of ${p.notes.length} notes with its letter at the left${p.mark.length ? ", some letters ringed," : ""} and a column for each of ${p.columns} beats, barred.`,
     motion: { still: STILL.input },
 });

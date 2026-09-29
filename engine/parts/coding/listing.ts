@@ -68,11 +68,14 @@ export function kindOfLine(text: string): Kind {
         ].includes(w)
     )
         return "sound";
-    if (["repeat", "if", "until"].includes(w)) return "control";
+    if (["repeat", "for", "if", "until"].includes(w)) return "control";
     if (["otherwise", "else"].includes(w)) return "else";
-    if (w === "when") return "event";
+    if (w === "when" || w === "broadcast") return "event";
+    // a switch is an output, as the lamp's light is
+    if (w === "switch") return "sound";
     if (["define", "to"].includes(w)) return "proc";
-    if (["set", "add", "take", "change", "double", "subtract"].includes(w)) return "vars";
+    if (["set", "add", "take", "change", "double", "subtract", "replace"].includes(w))
+        return "vars";
     return "proc";
 }
 
@@ -234,6 +237,13 @@ export function blockIcon<G>(c: Ctx<G>, x: number, y: number, line: string) {
         }
         return turnIcon(c, x, y, "around");
     }
+    // a repeat through a list: the list's cells, one under another, with the loop's arrow beside them
+    if (w === "for") {
+        for (const dy of [-8, -2.5, 3])
+            pen.rect(g, x - 9, y + dy, 8, 5.5, "ruler", pen.fill("card"), { strokeWidth: 1.3 });
+        arrowIcon(c, x + 5, y, 270, 13, 1.6);
+        return;
+    }
     if (w === "if") {
         pen.polygon(
             g,
@@ -335,6 +345,13 @@ export function blockIcon<G>(c: Ctx<G>, x: number, y: number, line: string) {
     }
     if (["clap", "jump", "spin", "wave", "stamp", "hop", "bow", "rest", "wait"].includes(w))
         return danceIcon(c, x, y, w);
+    // a list kept under a name: three cells in a row under the name's tag
+    if (w === "replace" || (w === "set" && ws[3] === "list")) {
+        for (const dx of [-9, -3, 3])
+            pen.rect(g, x + dx, y - 3, 6, 8, "ruler", pen.fill("card"), { strokeWidth: 1.3 });
+        pen.line(g, x - 9, y - 7, x - 1, y - 7, "ruler", { strokeWidth: 1.6 });
+        return;
+    }
     if (["set", "add", "take", "change", "double", "subtract"].includes(w)) {
         pen.rect(g, x - 8, y - 6, 16, 13, "ruler", pen.fill("card"), { strokeWidth: 1.6 });
         pen.line(g, x - 8, y - 2, x + 8, y - 2, "ruler", { strokeWidth: 1.2 });
@@ -446,7 +463,13 @@ export function oval<G>(c: Ctx<G>, x: number, y: number, s: string, size = 15): 
     return w;
 }
 
-export const tokens = (line: string): string[] => line.trim().split(/\s+/).filter(Boolean);
+/** A block's words, with the comma after a list's number left off, since each number has its own oval. */
+export const tokens = (line: string): string[] =>
+    line
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((t) => (/^-?\d+,$/.test(t) ? t.slice(0, -1) : t));
 
 /** How wide a letter of the reading face runs at weight 600, as a share of its size. */
 export const WORD_W = 0.6;

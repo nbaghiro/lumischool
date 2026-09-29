@@ -5,6 +5,7 @@ import {
     type Imported,
     type Mark,
     type RawAnchors,
+    type Region,
     type Turn,
 } from "../../ink/surface";
 import { PALETTE, PRINT } from "../../paper";
@@ -215,32 +216,100 @@ function boundsOf(mark: Mark): [number, number][] {
     }
 }
 
-/** How far the ink reaches, in user units. */
-export function reachOf(marks: readonly Mark[]): {
-    x0: number;
-    y0: number;
-    x1: number;
-    y1: number;
-} {
-    let x0 = Infinity;
-    let y0 = Infinity;
-    let x1 = -Infinity;
-    let y1 = -Infinity;
-    for (const { mark, within } of everyMark(marks)) {
-        const m = within
-            .flatMap((o) => o.turn ?? [])
-            .reduce((acc, t) => times(acc, matrixOf(t)), IDENTITY);
-        for (const [px, py] of boundsOf(mark)) {
-            const x = m[0] * px + m[2] * py + m[4];
-            const y = m[1] * px + m[3] * py + m[5];
-            x0 = Math.min(x0, x);
-            y0 = Math.min(y0, y);
-            x1 = Math.max(x1, x);
-            y1 = Math.max(y1, y);
+type Reach = { x0: number; y0: number; x1: number; y1: number };
+
+const NOWHERE: Reach = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+
+const union = (a: Reach, b: Reach): Reach => ({
+    x0: Math.min(a.x0, b.x0),
+    y0: Math.min(a.y0, b.y0),
+    x1: Math.max(a.x1, b.x1),
+    y1: Math.max(a.y1, b.y1),
+});
+
+const reachThrough = (m: Matrix, points: readonly (readonly [number, number])[]): Reach =>
+    points.reduce<Reach>((r, [px, py]) => {
+        const x = m[0] * px + m[2] * py + m[4];
+        const y = m[1] * px + m[3] * py + m[5];
+        return union(r, { x0: x, y0: y, x1: x, y1: y });
+    }, NOWHERE);
+
+/**
+ * The points that bound a clip's region. An arc of radius r lies within 2r of both its ends, so
+ * each arc adds the box both ends' 2r squares share, which never cuts off ink the clip keeps.
+ */
+function regionBounds(r: Region): [number, number][] {
+    const corners = (x0: number, y0: number, x1: number, y1: number): [number, number][] => [
+        [x0, y0],
+        [x1, y0],
+        [x0, y1],
+        [x1, y1],
+    ];
+    if (r.kind === "rect") return corners(r.x, r.y, r.x + r.w, r.y + r.h);
+    if (r.kind === "polygon") return r.points.map(([x, y]) => [x, y]);
+    const out = pointsOf(r.d);
+    const tokens = r.d.match(/[A-Za-z]|-?(?:\d+\.?\d*|\.\d+)(?:e-?\d+)?/g) ?? [];
+    let x = 0;
+    let y = 0;
+    let command = "M";
+    for (let i = 0; i < tokens.length;) {
+        const token = tokens[i] ?? "";
+        if (/^[A-Za-z]$/.test(token)) {
+            command = token.toUpperCase();
+            i += 1;
+            continue;
+        }
+        const n = ARGS[command] ?? 2;
+        const args = tokens.slice(i, i + n).map(Number);
+        i += n;
+        if (command === "A") {
+            const reach = 2 * Math.max(Math.abs(args[0] ?? 0), Math.abs(args[1] ?? 0));
+            const ex = args[5] ?? x;
+            const ey = args[6] ?? y;
+            out.push(
+                ...corners(
+                    Math.max(x, ex) - reach,
+                    Math.max(y, ey) - reach,
+                    Math.min(x, ex) + reach,
+                    Math.min(y, ey) + reach,
+                ),
+            );
+            x = ex;
+            y = ey;
+        } else if (command === "H") x = args[0] ?? x;
+        else if (command === "V") y = args[0] ?? y;
+        else {
+            x = args[n - 2] ?? x;
+            y = args[n - 1] ?? y;
         }
     }
-    return { x0, y0, x1, y1 };
+    return out;
 }
+
+function reachIn(marks: readonly Mark[], m: Matrix): Reach {
+    let r = NOWHERE;
+    for (const mark of marks) {
+        if (mark.kind === "group") {
+            const inner = (mark.o.turn ?? []).reduce((acc, t) => times(acc, matrixOf(t)), m);
+            r = union(r, reachIn(mark.marks, inner));
+        } else if (mark.kind === "clip") {
+            // ink under a clip reaches only as far as the clip lets it
+            const inner = reachIn(mark.marks, m);
+            const kept = reachThrough(m, regionBounds(mark.region));
+            if (inner.x0 > inner.x1) continue;
+            r = union(r, {
+                x0: Math.max(inner.x0, kept.x0),
+                y0: Math.max(inner.y0, kept.y0),
+                x1: Math.min(inner.x1, kept.x1),
+                y1: Math.min(inner.y1, kept.y1),
+            });
+        } else r = union(r, reachThrough(m, boundsOf(mark)));
+    }
+    return r;
+}
+
+/** How far the ink reaches, in user units. */
+export const reachOf = (marks: readonly Mark[]): Reach => reachIn(marks, IDENTITY);
 
 /** Every colour the marks put on the page, a pattern's own colours included and its reference not. */
 export const coloursIn = (marks: readonly Mark[]): Set<string> =>

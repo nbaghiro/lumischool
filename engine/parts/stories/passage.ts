@@ -35,8 +35,8 @@ export const passage = defineDrawing({
         numbers: true,
     },
     settings: {
-        title: { kind: "text", most: 30 },
-        text: { kind: "text", most: 400 },
+        title: { kind: "text", most: 40 },
+        text: { kind: "text", most: 1000 },
         width: { kind: "whole", min: 12, max: 40 },
         numbers: { kind: "flag" },
     },

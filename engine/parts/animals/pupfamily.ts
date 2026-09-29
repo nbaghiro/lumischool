@@ -34,6 +34,9 @@ export const PUP_POSES = [
 type PupPose = (typeof PUP_POSES)[number];
 const MOODS = ["happy", "excited", "surprised", "worried", "sad"] as const;
 type PupMood = (typeof MOODS)[number];
+/** What a pup wears for a rescue job: a fire helmet, a flying cap with goggles, a hard hat or a life vest. */
+export const PUP_GEAR = ["none", "helmet", "cap", "hardhat", "vest"] as const;
+type PupGear = (typeof PUP_GEAR)[number];
 
 export interface PupParams {
     member: Pup;
@@ -41,6 +44,7 @@ export interface PupParams {
     mood: PupMood;
     /** Which way a wave and the tail go: 1 to the right, -1 to the left. */
     dir: number;
+    gear: PupGear;
 }
 
 const pick = <T extends string>(list: readonly T[], v: string, fallback: T): T =>
@@ -120,40 +124,75 @@ export const pupFamily = defineDrawing<PupParams>({
     family: "animals",
     title: "The Pup family",
     group: "Characters",
-    about: "A family of four dogs who stand on their hind legs: Rufus the dad, a tan dog with long floppy ears; Maple the mum, curly and yellow; Pip, a white terrier pup with a patch over one eye; and Dot, the youngest, white with black spots. Each member stands, waves, sits, walks, jumps, cheers, runs, leaps, swims, carries a thing or shakes off water, and their tails wag.",
-    params: { member: "rufus", pose: "wave", mood: "happy", dir: 1 },
+    about: "A family of four dogs who stand on their hind legs: Rufus the dad, a tan dog with long floppy ears; Maple the mum, curly and yellow; Pip, a white terrier pup with a patch over one eye; and Dot, the youngest, white with black spots. Each member stands, waves, sits, walks, jumps, cheers, runs, leaps, swims, carries a thing or shakes off water, and their tails wag. For a rescue each can wear a fire helmet, a flying cap, a hard hat or a life vest.",
+    params: { member: "rufus", pose: "wave", mood: "happy", dir: 1, gear: "none" },
     settings: {
         member: { kind: "one of", of: PUPS },
         pose: { kind: "one of", of: PUP_POSES },
         mood: { kind: "one of", of: MOODS },
         dir: { kind: "whole", min: -1, max: 1 },
+        gear: { kind: "one of", of: PUP_GEAR },
     },
     takes: [
-        { label: "Rufus waving", params: { member: "rufus", pose: "wave", mood: "happy", dir: 1 } },
+        {
+            label: "Rufus waving",
+            params: { member: "rufus", pose: "wave", mood: "happy", dir: 1, gear: "none" },
+        },
         {
             label: "Maple cheering",
-            params: { member: "maple", pose: "cheer", mood: "excited", dir: 1 },
+            params: { member: "maple", pose: "cheer", mood: "excited", dir: 1, gear: "none" },
         },
-        { label: "Pip walking", params: { member: "pip", pose: "walk", mood: "happy", dir: -1 } },
-        { label: "Dot jumping", params: { member: "dot", pose: "jump", mood: "excited", dir: 1 } },
-        { label: "Dot sitting", params: { member: "dot", pose: "sit", mood: "surprised", dir: 1 } },
+        {
+            label: "Pip walking",
+            params: { member: "pip", pose: "walk", mood: "happy", dir: -1, gear: "none" },
+        },
+        {
+            label: "Dot jumping",
+            params: { member: "dot", pose: "jump", mood: "excited", dir: 1, gear: "none" },
+        },
+        {
+            label: "Dot sitting",
+            params: { member: "dot", pose: "sit", mood: "surprised", dir: 1, gear: "none" },
+        },
         {
             label: "Rufus standing",
-            params: { member: "rufus", pose: "stand", mood: "worried", dir: -1 },
+            params: { member: "rufus", pose: "stand", mood: "worried", dir: -1, gear: "none" },
         },
-        { label: "Pip running", params: { member: "pip", pose: "run", mood: "excited", dir: 1 } },
+        {
+            label: "Pip running",
+            params: { member: "pip", pose: "run", mood: "excited", dir: 1, gear: "none" },
+        },
         {
             label: "Maple leaping",
-            params: { member: "maple", pose: "leap", mood: "excited", dir: 1 },
+            params: { member: "maple", pose: "leap", mood: "excited", dir: 1, gear: "none" },
         },
         {
             label: "Rufus swimming",
-            params: { member: "rufus", pose: "swim", mood: "happy", dir: 1 },
+            params: { member: "rufus", pose: "swim", mood: "happy", dir: 1, gear: "none" },
         },
-        { label: "Dot carrying", params: { member: "dot", pose: "carry", mood: "happy", dir: -1 } },
+        {
+            label: "Dot carrying",
+            params: { member: "dot", pose: "carry", mood: "happy", dir: -1, gear: "none" },
+        },
+        {
+            label: "Rufus in a fire helmet",
+            params: { member: "rufus", pose: "carry", mood: "happy", dir: 1, gear: "helmet" },
+        },
+        {
+            label: "Maple in a flying cap",
+            params: { member: "maple", pose: "wave", mood: "happy", dir: 1, gear: "cap" },
+        },
+        {
+            label: "Pip in a hard hat",
+            params: { member: "pip", pose: "stand", mood: "happy", dir: 1, gear: "hardhat" },
+        },
+        {
+            label: "Dot in a life vest",
+            params: { member: "dot", pose: "cheer", mood: "excited", dir: 1, gear: "vest" },
+        },
         {
             label: "Rufus shaking",
-            params: { member: "rufus", pose: "shake", mood: "surprised", dir: 1 },
+            params: { member: "rufus", pose: "shake", mood: "surprised", dir: 1, gear: "none" },
         },
     ],
     box: boxOf,
@@ -161,6 +200,7 @@ export const pupFamily = defineDrawing<PupParams>({
         const m = pick(PUPS, p.member, "rufus"),
             pose = pick(PUP_POSES, p.pose, "stand"),
             mood = pick(MOODS, p.mood, "happy"),
+            gear = pick(PUP_GEAR, p.gear, "none"),
             f = PUP_FACTS[m],
             k = f.k,
             box = boxOf(p),
@@ -286,6 +326,22 @@ export const pupFamily = defineDrawing<PupParams>({
                     ...FIRM,
                 });
         spots([P(-10, bodyY - 8), P(9, bodyY + 10), P(-6, bodyY + 14), P(12, bodyY - 12)], 2.6);
+        // a life vest over the chest, with two white straps
+        if (gear === "vest") {
+            pen.path(
+                g,
+                `M${P(-16, bodyY - 16).join(" ")}Q${P(0, bodyY - 22).join(" ")} ${P(16, bodyY - 16).join(" ")}L${P(15, bodyY + 12).join(" ")}Q${P(0, bodyY + 18).join(" ")} ${P(-15, bodyY + 12).join(" ")}Z`,
+                "pencil",
+                pen.fill("tang"),
+                calm(c, 1.5),
+            );
+            for (const dy of [-6, 5])
+                pen.line(g, ...P(-15, bodyY + dy), ...P(15, bodyY + dy), "ruler", {
+                    strokeWidth: 2.2,
+                    stroke: c.t.card,
+                    ...FIRM,
+                });
+        }
 
         const shoulderY = bodyY - 14;
 
@@ -393,6 +449,29 @@ export const pupFamily = defineDrawing<PupParams>({
                 });
             }
 
+        // the hat a job wears, sitting on the crown
+        if (gear === "helmet" || gear === "hardhat" || gear === "cap") {
+            const fill = pen.fill(
+                gear === "helmet" ? "berry" : gear === "hardhat" ? "glow" : "sky",
+            );
+            pen.path(
+                g,
+                `M${H(-21, -10).join(" ")}Q${H(-20, -34).join(" ")} ${H(0, -34).join(" ")}Q${H(20, -34).join(" ")} ${H(21, -10).join(" ")}Z`,
+                "pencil",
+                fill,
+                calm(c, 1.5),
+            );
+            if (gear === "cap")
+                for (const d of [-1, 1])
+                    pen.circle(g, ...H(d * 8, -18), 11 * k, "ruler", pen.fill("card"), {
+                        strokeWidth: 1,
+                        ...FIRM,
+                    });
+            else pen.line(g, ...H(-27, -10), ...H(27, -10), "ruler", { strokeWidth: 2.4, ...FIRM });
+            if (gear === "hardhat")
+                pen.line(g, ...H(0, -33), ...H(0, -12), "ruler", { strokeWidth: 1.2, ...FIRM });
+        }
+
         // arms, drawn over the head so a wave shows: the near one waves, both go up for a cheer or a jump
         const arm = (
             d: number,
@@ -476,7 +555,8 @@ export const pupFamily = defineDrawing<PupParams>({
         const m = pick(PUPS, p.member, "rufus"),
             f = PUP_FACTS[m],
             pose = pick(PUP_POSES, p.pose, "stand"),
-            mood = pick(MOODS, p.mood, "happy");
+            mood = pick(MOODS, p.mood, "happy"),
+            gear = pick(PUP_GEAR, p.gear, "none");
         const doing: Record<PupPose, string> = {
             stand: "standing",
             wave: "waving",
@@ -497,7 +577,15 @@ export const pupFamily = defineDrawing<PupParams>({
             worried: " Its mouth is wavy.",
             sad: " Its mouth turns down.",
         };
-        return `${f.name} ${f.role}, ${f.words}, ${doing[pose]}.${face[mood]}`;
+        const wears: Record<PupGear, string> = {
+            none: "",
+            helmet: " in a red fire helmet",
+            cap: " in a blue flying cap",
+            hardhat: " in a yellow hard hat",
+            vest: " in an orange life vest",
+        };
+        // gear takes the place of the mouth's words, so a description stays within thirty
+        return `${f.name} ${f.role}, ${f.words}, ${doing[pose]}${wears[gear]}.${gear === "none" ? face[mood] : ""}`;
     },
     motion: {
         body: { is: "idle" },

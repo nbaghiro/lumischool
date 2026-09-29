@@ -97,3 +97,44 @@ export function sharpSign<G>(c: Ctx<G>, x: number, y: number): void {
             { strokeWidth: 1.7 },
         );
 }
+
+/** A flat, as a hand writes one: a tall upright and a round belly at its foot, sitting on the note's line. */
+export function flatSign<G>(c: Ctx<G>, x: number, y: number): void {
+    const s = SPACE;
+    c.pen.line(c.g, x - 0.25 * s, y - 1.9 * s, x - 0.25 * s, y + 0.5 * s, "pencil", {
+        strokeWidth: 1.5,
+    });
+    c.pen.curve(
+        c.g,
+        [
+            [x - 0.25 * s, y - 0.15 * s],
+            [x + 0.2 * s, y - 0.5 * s],
+            [x + 0.55 * s, y - 0.3 * s],
+            [x + 0.35 * s, y + 0.15 * s],
+            [x - 0.25 * s, y + 0.5 * s],
+        ],
+        "pencil",
+        { strokeWidth: 1.7 },
+    );
+}
+
+/** A natural, which cancels a sharp or a flat: two offset uprights joined by two rising strokes. */
+export function naturalSign<G>(c: Ctx<G>, x: number, y: number): void {
+    const s = SPACE;
+    c.pen.line(c.g, x - 0.25 * s, y - 0.95 * s, x - 0.25 * s, y + 0.4 * s, "pencil", {
+        strokeWidth: 1.5,
+    });
+    c.pen.line(c.g, x + 0.25 * s, y - 0.4 * s, x + 0.25 * s, y + 0.95 * s, "pencil", {
+        strokeWidth: 1.5,
+    });
+    for (const dy of [-0.3, 0.3])
+        c.pen.line(
+            c.g,
+            x - 0.25 * s,
+            y + dy * s + 0.12 * s,
+            x + 0.25 * s,
+            y + dy * s - 0.12 * s,
+            "pencil",
+            { strokeWidth: 1.7 },
+        );
+}

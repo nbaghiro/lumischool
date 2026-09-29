@@ -148,9 +148,6 @@ const REACHES: Readonly<Record<string, string>> = {
         "Its box is sized for the words Well done, so a longer word's label runs past the box's right edge.",
     choice: "The loop round the chosen card reaches a few units past the box's top and bottom.",
     construction: "The perpendicular bisector's arcs reach a few units below the box's floor.",
-    coords: "With four quadrants, the axis labels at the left run a few units past the box's edge.",
-    plotpoint:
-        "With four quadrants, the axis labels at the left run a few units past the box's edge.",
     circuit: "The rays of the lit bulb on the top run reach a few units above the box's top.",
     globe: "The sun's edge at the left runs a few units past the box's edge, as it was drawn.",
     planets: "The sun's edge at the left runs a few units past the box's edge, as it was drawn.",
@@ -163,8 +160,6 @@ const REACHES: Readonly<Record<string, string>> = {
     blocks: "The ring round the block running now reaches a few units past the box's left edge.",
     sortcards: "The ring round the pair being compared dips a few units below the box's floor.",
     drum: "The tips of the two sticks resting on top reach a few units below the box's floor.",
-    fretboard:
-        "The neck's art is drawn to its full length and clipped at the box, so the pegs and the body reach past its edges under the clip.",
     hand: "The tip of the thumb, and the number over it, rise a few units past the box's top.",
     "strokes.hedgehog":
         "The pen strokes of its spines and its feet run a few units below the box's floor, as it was drawn.",

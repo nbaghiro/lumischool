@@ -13,8 +13,8 @@ export const compareSigns = defineDrawing({
     about: "Two numbers with a box between them for the sign, or the sign already written in. The sign is drawn as two strokes at a size nothing else on the page uses, because which way it points is the answer.",
     params: { left: "34", right: "43", sign: "?" },
     settings: {
-        left: { kind: "text", most: 6 },
-        right: { kind: "text", most: 6 },
+        left: { kind: "text", most: 10 },
+        right: { kind: "text", most: 10 },
         sign: { kind: "one of", of: ["?", "<", ">", "="] },
     },
     takes: [

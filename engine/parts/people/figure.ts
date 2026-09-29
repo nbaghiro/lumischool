@@ -1541,10 +1541,22 @@ function strideLegs<G>(
     }
 }
 
+/** Where a figure's body was drawn, for what is worn over it. */
+export interface Torso {
+    x: number;
+    shoulderY: number;
+    hipY: number;
+    hemY: number;
+    headX: number;
+    headY: number;
+    base: number;
+}
+
 /**
  * A person standing, sitting on a stool or in a wheelchair, walking or running, whose anchors say
  * where the hands went. `raised` lifts the near hand round a handle that the drawing placing the
- * person draws itself.
+ * person draws itself. `over` draws what is worn over the clothes (a coat, a pinafore), above the
+ * body and legs and under the arms and head.
  */
 export function figure<G>(
     c: Ctx<G>,
@@ -1554,6 +1566,7 @@ export function figure<G>(
     pose: Pose,
     holding: string,
     raised = false,
+    over?: (at: Torso) => void,
 ): RawAnchors {
     const { pen, g } = c,
         b = look.b,
@@ -1747,6 +1760,7 @@ export function figure<G>(
         if (look.wear === "shorts" && !seated) shorts(c, bx, hipY, base, b, look);
     }
     printOn(c, look, bx + lean * 0.6, shoulderY + (hipY - shoulderY) * 0.38, r * 0.42);
+    over?.({ x: bx + lean * 0.6, shoulderY, hipY, hemY, headX: hx, headY, base });
     if (pose === "sit" && !chair) seatedLegs(c, x, base, hipY, b, look);
     if (chair) chair.front();
     if (racer) {

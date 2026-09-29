@@ -479,6 +479,11 @@ export const LIQUIDS: Record<string, { name: string; ph: number; look: Marker | 
     water: { name: "water", ph: 7, look: "sky" },
     bakingsoda: { name: "baking soda", ph: 8.3, look: "card" },
     washingsoda: { name: "washing soda", ph: 11.4, look: "card" },
+    orange: { name: "orange juice", ph: 3.5, look: "tang" },
+    rain: { name: "rain water", ph: 5.6, look: "sky" },
+    seawater: { name: "sea water", ph: 8.1, look: "sky" },
+    magnesia: { name: "milk of magnesia", ph: 10.5, look: "card" },
+    limewater: { name: "limewater", ph: 12.4, look: "card" },
 };
 
 /** How rusty a nail in each jar is after that many days, from 0 to 1: water and air rust it, salt speeds it, and no air, no water or a coat of paint stops it. */
@@ -582,3 +587,108 @@ export const SAFETY: Record<string, { name: string; keeps: string }> = {
     glove: { name: "oven glove", keeps: "hands" },
     tray: { name: "tray", keeps: "table" },
 };
+
+export type ElementKind = "metal" | "non-metal" | "metalloid";
+
+/**
+ * The first twenty elements by atomic number, with the column each takes in the short table of eight
+ * (hydrogen at the left, helium above neon) and its state at 20 °C, from the RSC periodic table.
+ * Boron and silicon are metalloids, so no question asks whether they are metals.
+ */
+export const ELEMENTS: {
+    n: number;
+    symbol: string;
+    name: string;
+    kind: ElementKind;
+    state: "solid" | "liquid" | "gas";
+    col: number;
+}[] = [
+    { n: 1, symbol: "H", name: "hydrogen", kind: "non-metal", state: "gas", col: 0 },
+    { n: 2, symbol: "He", name: "helium", kind: "non-metal", state: "gas", col: 7 },
+    { n: 3, symbol: "Li", name: "lithium", kind: "metal", state: "solid", col: 0 },
+    { n: 4, symbol: "Be", name: "beryllium", kind: "metal", state: "solid", col: 1 },
+    { n: 5, symbol: "B", name: "boron", kind: "metalloid", state: "solid", col: 2 },
+    { n: 6, symbol: "C", name: "carbon", kind: "non-metal", state: "solid", col: 3 },
+    { n: 7, symbol: "N", name: "nitrogen", kind: "non-metal", state: "gas", col: 4 },
+    { n: 8, symbol: "O", name: "oxygen", kind: "non-metal", state: "gas", col: 5 },
+    { n: 9, symbol: "F", name: "fluorine", kind: "non-metal", state: "gas", col: 6 },
+    { n: 10, symbol: "Ne", name: "neon", kind: "non-metal", state: "gas", col: 7 },
+    { n: 11, symbol: "Na", name: "sodium", kind: "metal", state: "solid", col: 0 },
+    { n: 12, symbol: "Mg", name: "magnesium", kind: "metal", state: "solid", col: 1 },
+    { n: 13, symbol: "Al", name: "aluminium", kind: "metal", state: "solid", col: 2 },
+    { n: 14, symbol: "Si", name: "silicon", kind: "metalloid", state: "solid", col: 3 },
+    { n: 15, symbol: "P", name: "phosphorus", kind: "non-metal", state: "solid", col: 4 },
+    { n: 16, symbol: "S", name: "sulfur", kind: "non-metal", state: "solid", col: 5 },
+    { n: 17, symbol: "Cl", name: "chlorine", kind: "non-metal", state: "gas", col: 6 },
+    { n: 18, symbol: "Ar", name: "argon", kind: "non-metal", state: "gas", col: 7 },
+    { n: 19, symbol: "K", name: "potassium", kind: "metal", state: "solid", col: 0 },
+    { n: 20, symbol: "Ca", name: "calcium", kind: "metal", state: "solid", col: 1 },
+];
+
+/** The row of the table an element sits in: 1 for hydrogen and helium, then eight to a row. */
+export const rowOf = (n: number): number => (n <= 2 ? 1 : n <= 10 ? 2 : n <= 18 ? 3 : 4);
+/** The last atomic number a table of so many rows draws. */
+export const lastOf = (rows: number): number =>
+    [2, 10, 18, 20][Math.max(1, Math.min(4, rows)) - 1] ?? 18;
+
+/** The places a rock's material passes through in the rock cycle, as `rockcycle` names them. */
+export const ROCK_STAGES = [
+    { key: "igneous", name: "igneous rock" },
+    { key: "sediment", name: "sediment" },
+    { key: "sedimentary", name: "sedimentary rock" },
+    { key: "metamorphic", name: "metamorphic rock" },
+    { key: "magma", name: "magma" },
+] as const;
+
+/**
+ * The arrows of the rock cycle, numbered as `rockcycle` draws them: the loop first, then heat and
+ * pressure taking igneous rock straight to metamorphic, metamorphic rock worn straight to sediment,
+ * and sedimentary rock worn back into sediment. A new arrow takes the next number, since lessons
+ * ask for arrows by number. Stages are indexes into `ROCK_STAGES`.
+ */
+export const ROCK_CYCLE: { from: number; to: number; process: string }[] = [
+    { from: 0, to: 1, process: "weathering and erosion" },
+    { from: 1, to: 2, process: "pressing and cementing" },
+    { from: 2, to: 3, process: "heat and pressure" },
+    { from: 3, to: 4, process: "melting" },
+    { from: 4, to: 0, process: "cooling" },
+    { from: 0, to: 3, process: "heat and pressure" },
+    { from: 3, to: 1, process: "weathering and erosion" },
+    { from: 2, to: 1, process: "weathering and erosion" },
+];
+
+/** The fewest arrows from one stage to another along the arrows drawn (numbered from 1), or null. */
+export function stepsAlong(arrows: readonly number[], from: number, to: number): number | null {
+    const seen = new Map<number, number>([[from, 0]]);
+    const queue = [from];
+    for (let head = 0; head < queue.length; head++) {
+        const at = queue[head] ?? from;
+        const d = seen.get(at) ?? 0;
+        if (at === to) return d;
+        for (const k of arrows) {
+            const a = ROCK_CYCLE[k - 1];
+            if (a && a.from === at && !seen.has(a.to)) {
+                seen.set(a.to, d + 1);
+                queue.push(a.to);
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * A strip of metal in a tube of dilute hydrochloric or sulfuric acid, by the number `testtubes` names
+ * it by (0 is none), with how many hydrogen bubbles the drawing shows on it: magnesium fizzes hard,
+ * zinc steadily, iron slowly, and copper, below hydrogen in the reactivity series, not at all.
+ */
+export const METALS_IN_ACID: readonly { name: string; bubbles: number }[] = [
+    { name: "none", bubbles: 0 },
+    { name: "magnesium", bubbles: 10 },
+    { name: "zinc", bubbles: 6 },
+    { name: "iron", bubbles: 3 },
+    { name: "copper", bubbles: 0 },
+];
+
+/** The hydrogen bubbles on a metal strip, in acid (`acid` 1) or in water, where none of these fizz. */
+export const hydrogenBubbles = (metal: number, acid: number): number =>
+    Math.round(acid) === 1 ? (METALS_IN_ACID[Math.round(metal)]?.bubbles ?? 0) : 0;

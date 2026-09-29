@@ -1,7 +1,18 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mix, nameOf, parseRecipe } from "../../../pigment";
-import { CHANGES, INDICATOR, LIQUIDS, bandOf, iceLeft, kindOfBand, rustOf } from "../substances";
+import {
+    CHANGES,
+    ELEMENTS,
+    INDICATOR,
+    LIQUIDS,
+    bandOf,
+    iceLeft,
+    kindOfBand,
+    lastOf,
+    rowOf,
+    rustOf,
+} from "../substances";
 
 test("the indicator says acid for red, alkali for green, and only 'not an acid' for blue", () => {
     const kind = (liq: string): "acid" | "alkali" | null =>
@@ -55,4 +66,19 @@ test("the changes that can be undone are the five a child can reverse at home", 
     for (const c of Object.values(CHANGES)) {
         assert.equal(c.makes, !c.undo, "here a new material and not undoing go together");
     }
+});
+
+test("the elements run from 1 to 20 in the columns of the short table, eight to a full row", () => {
+    assert.deepEqual(
+        ELEMENTS.map((e) => e.n),
+        Array.from({ length: 20 }, (_, i) => i + 1),
+    );
+    for (const e of ELEMENTS.filter((x) => x.n >= 3 && x.n <= 18))
+        assert.equal(e.col, (e.n - 3) % 8, `${e.symbol} sits in column ${e.col}`);
+    assert.deepEqual(
+        ELEMENTS.filter((e) => e.n <= 18 && e.kind === "metal").map((e) => e.symbol),
+        ["Li", "Be", "Na", "Mg", "Al"],
+    );
+    assert.equal(rowOf(11), 3);
+    assert.equal(lastOf(2), 10);
 });

@@ -23,7 +23,7 @@ export const fork = defineDrawing({
         ask: { kind: "text", most: 40 },
         yes: { kind: "text", most: 20 },
         no: { kind: "text", most: 20 },
-        cond: { kind: "text", most: 30 },
+        cond: { kind: "text", most: 60 },
         n: { kind: "whole", min: 0, max: 100 },
         lit: { kind: "flag" },
     },

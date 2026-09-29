@@ -16,7 +16,7 @@ export const listPad = defineDrawing({
     about: "A spiral notepad with a title and one thing to a line, each with a box to tick. A list is the first thing a child writes for a reason (what to pack, what to buy), and it is the thing a sentence with commas is made from. An empty entry is a line to write on; `count` shows only the first so many.",
     params: { title: "To pack", items: ["hat", "", ""], count: 0, width: 12, ticks: true },
     settings: {
-        title: { kind: "text", most: 20 },
+        title: { kind: "text", most: 24 },
         items: { kind: "words", most: 8 },
         count: { kind: "whole", min: 0, max: 8 },
         width: { kind: "whole", min: 8, max: 20 },

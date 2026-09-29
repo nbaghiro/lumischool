@@ -11,6 +11,21 @@ export interface Plot {
     label: string;
 }
 
+/**
+ * Where a coordinate lands on the grid, in user units: one unit is two squares, from the axes the grid
+ * draws. The origin sits on whole squares, so every unit line of the plot is a line of the page.
+ */
+export function plane(
+    max: number,
+    quadrants: number,
+): { X: (v: number) => number; Y: (v: number) => number } {
+    const four = quadrants === 4,
+        s = 2 * U,
+        ox = (four ? max * 2 + 1 : 2) * U,
+        oy = (max * 2 + 2) * U;
+    return { X: (v) => ox + v * s, Y: (v) => oy - v * s };
+}
+
 export const coordGrid = defineDrawing({
     id: "coords",
     family: "shapes",
@@ -72,12 +87,8 @@ export const coordGrid = defineDrawing({
     draw: (c, p) => {
         const { pen, g } = c,
             four = p.quadrants === 4,
-            lo = four ? -p.max : 0,
-            s = 2 * U;
-        const ox = (four ? p.max * 2 : 2.5) * U,
-            oy = ((four ? p.max * 2 : p.max * 2) + 1.5) * U;
-        const X = (v: number) => ox + v * s,
-            Y = (v: number) => oy - v * s,
+            lo = four ? -p.max : 0;
+        const { X, Y } = plane(p.max, p.quadrants),
             a: RawAnchors = {};
         for (let v = lo; v <= p.max; v++) {
             pen.line(g, X(v), Y(p.max), X(v), Y(lo), "ruler", {

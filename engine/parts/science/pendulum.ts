@@ -12,18 +12,23 @@ export const pendulum = defineDrawing({
     family: "science",
     title: "Pendulum",
     group: "Structures",
-    about: "A weight on a string hanging from a bar, drawn at its length and swinging between two dashed places. How long the string is sets how fast it swings, and the weight on the end does not: a shorter pendulum swings to and fro more times in ten seconds, and a heavier bob on the same string keeps exactly the same time. Length is in squares, each one ten centimetres.",
-    params: { length: 5, mass: 50, swing: 1, tag: "" },
+    about: "A weight on a string hanging from a bar, drawn at its length and swinging between two dashed places. How long the string is sets how fast it swings, and the weight on the end does not: a shorter pendulum swings to and fro more times in ten seconds, and a heavier bob on the same string keeps exactly the same time. Length is in squares, each one ten centimetres. With `angle` set, the dashed places stand that many degrees either side and the angle it was let go from is written by the arc, which does not change the swing's time either.",
+    params: { length: 5, mass: 50, swing: 1, tag: "", angle: 0 },
     settings: {
         length: { kind: "whole", min: 2, max: 8 },
         mass: { kind: "whole", min: 10, max: 500 },
         swing: { kind: "whole", min: 0, max: 1 },
         tag: { kind: "text", most: 2 },
+        angle: { kind: "whole", min: 0, max: 30 },
     },
     takes: [
-        { label: "Fifty centimetres", params: { length: 5, mass: 50, swing: 1, tag: "" } },
-        { label: "Long and heavy", params: { length: 8, mass: 200, swing: 1, tag: "" } },
-        { label: "Short, at rest", params: { length: 2, mass: 50, swing: 0, tag: "" } },
+        {
+            label: "Fifty centimetres",
+            params: { length: 5, mass: 50, swing: 1, tag: "", angle: 0 },
+        },
+        { label: "Long and heavy", params: { length: 8, mass: 200, swing: 1, tag: "", angle: 0 } },
+        { label: "Short, at rest", params: { length: 2, mass: 50, swing: 0, tag: "", angle: 0 } },
+        { label: "Let go at 30°", params: { length: 6, mass: 100, swing: 1, tag: "", angle: 30 } },
     ],
     box: () => ({ w: 12, h: 12 }),
     draw: (c, p) => {
@@ -54,7 +59,8 @@ export const pendulum = defineDrawing({
             { strokeWidth: 0.8 },
         );
         const L = len * U,
-            swing = 0.42;
+            angle = Math.max(0, Math.min(30, Math.round(p.angle))),
+            swing = angle > 0 ? (angle * Math.PI) / 180 : 0.42;
         if (p.swing > 0) {
             pen.arc(g, px, py, 2 * L, 2 * L, Math.PI / 2 - swing, Math.PI / 2 + swing, "pencil", {
                 strokeWidth: 1.3,
@@ -74,6 +80,16 @@ export const pendulum = defineDrawing({
                     stroke: c.t["ink-soft"],
                     strokeLineDash: [4, 4],
                 });
+            }
+            if (angle > 0) {
+                const ar = Math.min(2 * U, L * 0.5),
+                    lx = px + ar * Math.sin(swing / 2) + 0.35 * U,
+                    ly = py + ar * Math.cos(swing / 2) + 0.1 * U;
+                pen.arc(g, px, py, 2 * ar, 2 * ar, Math.PI / 2 - swing, Math.PI / 2, "pencil", {
+                    strokeWidth: 1.2,
+                });
+                patch(c, lx + 16, ly - 5, 34, 16);
+                num(c, lx, ly, `${angle}°`, 12, "start");
             }
         }
         pen.line(g, px, py, px, py + L - r, "ruler", { strokeWidth: 1.8 });

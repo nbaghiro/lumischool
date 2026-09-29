@@ -3,7 +3,7 @@ import { roundedRect } from "../../ink/pen";
 import { U } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { cap, num, say } from "../lettering";
-import { DIRS, parse, run, world, type Dir } from "../../coding";
+import { DIRS, parse, run, senseOf, world, type Dir } from "../../coding";
 
 function traceRows(p: {
     code: readonly string[];
@@ -14,10 +14,17 @@ function traceRows(p: {
     face: Dir;
     show: string;
     name: string;
+    sense: readonly string[];
 }): { line: number; what: string }[] {
     const r = run(
         parse(p.code),
-        world({ cols: p.cols, rows: p.rows, start: { col: p.col, row: p.row }, face: p.face }),
+        world({
+            cols: p.cols,
+            rows: p.rows,
+            start: { col: p.col, row: p.row },
+            face: p.face,
+            sense: senseOf(p.sense).sense,
+        }),
     );
     return r.frames
         .filter((f) => f.kind !== "bump")
@@ -40,6 +47,7 @@ interface TraceTableParams {
     filled: number;
     show: string;
     name: string;
+    sense: string[];
 }
 
 export const traceTable = defineDrawing<TraceTableParams>({
@@ -47,7 +55,7 @@ export const traceTable = defineDrawing<TraceTableParams>({
     family: "coding",
     title: "A trace table",
     group: "Structures",
-    about: "A table a program is traced into, one row for each step it takes: the step, the line that ran, and where the robot stands after it or what a name holds. The rows are filled by running `code`, and `filled` says how many to write in, so the rest are empty for a child to complete with a pencil and the key fills them all.",
+    about: "A table a program is traced into, one row for each step it takes: the step, the line that ran, and where the robot stands after it or what a name holds. The rows are filled by running `code`, and `filled` says how many to write in, so the rest are empty for a child to complete with a pencil and the key fills them all. With `sense` the program runs in a world whose sensors it reads (see the program drawing), and a value column named after a sensor shows what it read at each step.",
     params: {
         code: ["right 2", "down 1", "right 1"],
         cols: 6,
@@ -58,6 +66,7 @@ export const traceTable = defineDrawing<TraceTableParams>({
         filled: 1,
         show: "square",
         name: "n",
+        sense: [],
     },
     settings: {
         code: { kind: "words", most: 8 },
@@ -69,6 +78,7 @@ export const traceTable = defineDrawing<TraceTableParams>({
         filled: { kind: "whole", min: 0, max: 12 },
         show: { kind: "one of", of: ["square", "value"] },
         name: { kind: "text", most: 8 },
+        sense: { kind: "words", most: 3 },
     },
     takes: [
         {
@@ -83,6 +93,7 @@ export const traceTable = defineDrawing<TraceTableParams>({
                 filled: 1,
                 show: "square",
                 name: "n",
+                sense: [],
             },
         },
         {
@@ -97,6 +108,7 @@ export const traceTable = defineDrawing<TraceTableParams>({
                 filled: -1,
                 show: "value",
                 name: "n",
+                sense: [],
             },
         },
     ],

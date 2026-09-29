@@ -12,7 +12,7 @@ export const caption = defineDrawing({
     group: "Inputs",
     about: "A strip of paper taped under a picture, with the caption written on it or a line to write one. Placed under any drawing in a scene, it turns a picture into something that has been written about.",
     params: { text: "", width: 14 },
-    settings: { text: { kind: "text", most: 60 }, width: { kind: "whole", min: 8, max: 30 } },
+    settings: { text: { kind: "text", most: 72 }, width: { kind: "whole", min: 8, max: 30 } },
     takes: [
         { label: "Empty", params: { text: "", width: 14 } },
         { label: "Written", params: { text: "The boat is in the harbour.", width: 17 } },

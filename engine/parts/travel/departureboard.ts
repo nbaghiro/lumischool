@@ -13,6 +13,27 @@ interface Departure {
 /** The mono face runs wider than the reading face, so anything patched under it needs the room. */
 const monoW = (s: string, size: number): number => wide(s, size) * 1.25 + 10;
 
+const HEAD = ["to", "time", "platform"];
+
+/**
+ * The board's rows: `trains` when a question sets them, each written "York, 11:02, 1" (where to, the
+ * time and the platform), and otherwise the rows the drawing was given.
+ */
+function rowsOf(p: { rows: readonly Departure[]; trains: readonly string[] }): Departure[] {
+    if (!p.trains.length) return [...p.rows];
+    return p.trains.map((t) => {
+        const [to = "", at = "", platform = ""] = t.split(",").map((x) => x.trim());
+        return { to, at, platform };
+    });
+}
+
+/** How many squares wider the destination column has to be than it is drawn, for its longest name. */
+function wider(rows: readonly Departure[], head: string, plats: boolean): number {
+    const room = (plats ? 10.4 : 5.6) * U;
+    const need = Math.max(monoW(head, 11), ...rows.map((r) => monoW(r.to, 16))) + 0.4 * U;
+    return Math.max(0, Math.ceil((need - room) / U));
+}
+
 /** One cell of the board, in the mono face. A marked row is a fill, so its text is patched first. */
 function cell<G>(c: Ctx<G>, x: number, y: number, s: string, align: Align, marked: boolean): void {
     const size = 16,
@@ -26,7 +47,7 @@ export const departureBoard = defineDrawing({
     family: "travel",
     title: "Departure board",
     group: "Structures",
-    about: "A station board with a heading row and one train to a row, two squares tall and columns lined up, so a time or a platform can be read off it. One row can be lit up as the one being asked about. With `platforms` at 0 the platform column is left off and the board is half as wide, which is the board a station puts on its platform and the one that fits a margin.",
+    about: 'A station board with a heading row and one train to a row, two squares tall and columns lined up, so a time or a platform can be read off it. One row can be lit up as the one being asked about. With `platforms` at 0 the platform column is left off and the board is half as wide, which is the board a station puts on its platform and the one that fits a margin. A question sets its own rows with `trains`, one a row written as where to, the time and the platform with commas between ("York, 11:02, 1"), and `head` renames the columns, such as a boat\'s letter and the time it leaves; the first column widens for a long name.',
     params: {
         rows: [
             { to: "Leeds", at: "10:45", platform: "3" },
@@ -36,11 +57,15 @@ export const departureBoard = defineDrawing({
         ] as Departure[],
         mark: 1,
         platforms: 1,
+        trains: [] as string[],
+        head: [] as string[],
     },
     settings: {
         rows: { kind: "fixed" },
         mark: { kind: "whole", min: -1, max: 8 },
         platforms: { kind: "whole", min: 0, max: 1 },
+        trains: { kind: "words", most: 8 },
+        head: { kind: "words", most: 3 },
     },
     takes: [
         {
@@ -54,6 +79,8 @@ export const departureBoard = defineDrawing({
                 ],
                 mark: 1,
                 platforms: 1,
+                trains: [],
+                head: [],
             },
         },
         {
@@ -65,6 +92,8 @@ export const departureBoard = defineDrawing({
                 ],
                 mark: -1,
                 platforms: 1,
+                trains: [],
+                head: [],
             },
         },
         {
@@ -76,36 +105,48 @@ export const departureBoard = defineDrawing({
                 ],
                 mark: 0,
                 platforms: 0,
+                trains: [],
+                head: [],
             },
         },
     ],
-    box: (p) => ({ w: p.platforms > 0 ? 22 : 13, h: p.rows.length * 2 + 4 }),
+    box: (p) => {
+        const rows = rowsOf(p),
+            plats = p.platforms > 0;
+        return {
+            w: (plats ? 22 : 13) + wider(rows, p.head[0] ?? HEAD[0] ?? "", plats),
+            h: rows.length * 2 + 4,
+        };
+    },
     draw: (c, p) => {
         const { pen, g } = c,
+            rows = rowsOf(p),
             plats = p.platforms > 0,
+            [toHead = "", timeHead = "", platHead = ""] = HEAD.map((h, i) => p.head[i] ?? h),
+            more = wider(rows, toHead, plats) * U,
             x = U,
-            w = (plats ? 20 : 11) * U,
+            w = (plats ? 20 : 11) * U + more,
             top = U,
             head = 2 * U;
-        const H = head + p.rows.length * 2 * U,
+        const H = head + rows.length * 2 * U,
             a: RawAnchors = { board: [x + w / 2, top, "up"] };
-        const time = (plats ? 14.4 : 8.6) * U,
-            plat = 18.6 * U;
+        const time = (plats ? 14.4 : 8.6) * U + more,
+            plat = 18.6 * U + more;
         pen.path(g, roundedRect(x, top, w, H, 10), "ruler", pen.fill("card"), { strokeWidth: 2.6 });
         pen.path(g, roundedRect(x + 8, top + 8, w - 16, H - 16, 6), "ruler", null, {
             strokeWidth: 0.9,
             stroke: c.t["ink-soft"],
         });
-        cap(c, x + 0.8 * U, top + 1.25 * U, "to", 11, "start");
-        cap(c, time, top + 1.25 * U, "time", 11);
-        if (plats) cap(c, plat, top + 1.25 * U, "platform", 11);
+        cap(c, x + 0.8 * U, top + 1.25 * U, toHead, 11, "start");
+        cap(c, time, top + 1.25 * U, timeHead, 11);
+        if (plats) cap(c, plat, top + 1.25 * U, platHead, 11);
         pen.line(g, x + 8, top + head, x + w - 8, top + head, "ruler", { strokeWidth: 1.8 });
         for (const dx of plats ? [11.2, 15.4] : [6.4])
-            pen.line(g, x + dx * U, top + head, x + dx * U, top + H - 9, "ruler", {
+            pen.line(g, x + dx * U + more, top + head, x + dx * U + more, top + H - 9, "ruler", {
                 strokeWidth: 1,
                 stroke: c.t["ink-soft"],
             });
-        p.rows.forEach((r, i) => {
+        rows.forEach((r, i) => {
             const y = top + head + i * 2 * U,
                 marked = i === p.mark;
             if (marked)

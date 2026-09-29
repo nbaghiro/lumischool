@@ -21,8 +21,9 @@ export const turtleOf = (p: {
         pen: true,
     });
 
-export function turtleShape<G>(c: Ctx<G>, x: number, y: number, face: Dir) {
-    const t = turnedCtx(c, x, y, ANGLE[face]),
+/** The turtle seen from above, its head along `face`, or along `angle` in degrees when it has one. */
+export function turtleShape<G>(c: Ctx<G>, x: number, y: number, face: Dir, angle?: number) {
+    const t = turnedCtx(c, x, y, angle ?? ANGLE[face]),
         { pen, g } = t;
     for (const [dx, dy] of [
         [-6, -10],
@@ -57,7 +58,7 @@ export const turtle = defineDrawing<TurtleParams>({
     family: "coding",
     title: "Turtle on a grid",
     group: "Structures",
-    about: "A turtle with a pen on squared paper, and the line its program draws, from a start ring to wherever the moves end. The line is drawn by the same interpreter the checker and the runner use, so it cannot disagree with the program beside it. The turtle can move by arrows or by forward and turn, lift its pen, change colour and repeat. `target` draws a faint dashed shape the program is meant to draw, which is what a debugging question compares against.",
+    about: "A turtle with a pen on squared paper, and the line its program draws, from a start ring to wherever the moves end. The line is drawn by the same interpreter the checker and the runner use, so it cannot disagree with the program beside it. The turtle can move by arrows or by forward and turn, turn by any number of degrees to draw shapes other than squares, lift its pen, change colour and repeat. `target` draws a faint dashed shape the program is meant to draw, which is what a debugging question compares against.",
     params: {
         cols: 10,
         rows: 8,
@@ -129,6 +130,21 @@ export const turtle = defineDrawing<TurtleParams>({
             },
         },
         {
+            label: "A hexagon, turning 60 each corner",
+            params: {
+                cols: 10,
+                rows: 8,
+                col: 4,
+                row: 7,
+                face: "right",
+                moves: ["repeat 6", "  forward 3", "  turn left 60"],
+                upto: -1,
+                show: true,
+                mark: true,
+                target: [],
+            },
+        },
+        {
             label: "Short of its target",
             params: {
                 cols: 8,
@@ -184,7 +200,7 @@ export const turtle = defineDrawing<TurtleParams>({
         }
         const [ex, ey] = L.at(part.state.col, part.state.row);
         if (p.mark) {
-            turtleShape(c, ex, ey, part.state.face);
+            turtleShape(c, ex, ey, part.state.face, part.state.angle);
             a.turtle = [ex, ey - 1.4 * U, "up"];
         }
         a.end = [ex, ey, "up"];

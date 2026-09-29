@@ -1,20 +1,21 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { drawn, partsIn } from "../../__tests__/check";
-import { PUPS, PUP_POSES, pupFamily } from "../pupfamily";
+import { PUPS, PUP_GEAR, PUP_POSES, pupFamily } from "../pupfamily";
 
 const MOODS = ["happy", "excited", "surprised", "worried", "sad"] as const;
 
-test("every member, pose and mood is described in fifteen to thirty words that never name the feeling", () => {
+test("every member, pose, mood and gear is described in fifteen to thirty words that never name the feeling", () => {
     for (const member of PUPS)
         for (const pose of PUP_POSES)
-            for (const mood of MOODS) {
-                const d = pupFamily.describe({ member, pose, mood, dir: 1 }) ?? "";
-                const n = d.split(/\s+/).length;
-                assert.ok(n >= 15 && n <= 30, `${n} words: ${d}`);
-                assert.ok(!/[—!]/.test(d), d);
-                assert.ok(!new RegExp(`\\b${mood}\\b`, "i").test(d), d);
-            }
+            for (const mood of MOODS)
+                for (const gear of PUP_GEAR) {
+                    const d = pupFamily.describe({ member, pose, mood, dir: 1, gear }) ?? "";
+                    const n = d.split(/\s+/).length;
+                    assert.ok(n >= 15 && n <= 30, `${n} words: ${d}`);
+                    assert.ok(!/[—!]/.test(d), d);
+                    assert.ok(!new RegExp(`\\b${mood}\\b`, "i").test(d), d);
+                }
 });
 
 test("a pose that is a movement is drawn inside its part, and every member wags a tail and blinks", () => {
@@ -27,7 +28,11 @@ test("a pose that is a movement is drawn inside its part, and every member wags 
     for (const member of PUPS)
         for (const pose of PUP_POSES) {
             const parts = partsIn(
-                drawn(pupFamily, { member, pose, mood: "happy", dir: 1 }, { paper: false }).marks,
+                drawn(
+                    pupFamily,
+                    { member, pose, mood: "happy", dir: 1, gear: "none" },
+                    { paper: false },
+                ).marks,
             );
             for (const name of ["hop", "step", "shiver"])
                 assert.equal(parts.includes(name), whole[pose] === name, `${member} ${pose}`);
@@ -38,10 +43,10 @@ test("a pose that is a movement is drawn inside its part, and every member wags 
 
 test("the feet stay on the floor's anchor in every pose, so a scene stands a pup on a line", () => {
     for (const member of PUPS) {
-        const box = pupFamily.box({ member, pose: "jump", mood: "happy", dir: 1 });
+        const box = pupFamily.box({ member, pose: "jump", mood: "happy", dir: 1, gear: "none" });
         const a = drawn(
             pupFamily,
-            { member, pose: "jump", mood: "happy", dir: 1 },
+            { member, pose: "jump", mood: "happy", dir: 1, gear: "none" },
             { paper: false },
         ).anchors;
         assert.equal(a.feet?.[1], box.h * 20 - 4);

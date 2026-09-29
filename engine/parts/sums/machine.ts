@@ -12,7 +12,7 @@ export const machine = defineDrawing({
     about: "A number goes in, a rule is applied, a number comes out. Either end can be the blank, which is what turns one drawing into both a forward question and an inverse one.",
     params: { rule: "× 3", input: "4", output: "" },
     settings: {
-        rule: { kind: "text", most: 6 },
+        rule: { kind: "text", most: 8 },
         input: { kind: "text", most: 4 },
         output: { kind: "text", most: 4 },
     },

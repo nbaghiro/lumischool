@@ -11,7 +11,7 @@ export const balanceEquation = defineDrawing({
     group: "Structures",
     about: "A beam with an expression written on each pan, level because the two sides are equal. Taking the same thing off both sides is a move a child can see here before they can write it.",
     params: { left: "3 + ?", right: "10" },
-    settings: { left: { kind: "text", most: 8 }, right: { kind: "text", most: 8 } },
+    settings: { left: { kind: "text", most: 10 }, right: { kind: "text", most: 10 } },
     takes: [
         { label: "Three and something make ten", params: { left: "3 + ?", right: "10" } },
         { label: "Both sides written", params: { left: "2 \u00d7 6", right: "12" } },
@@ -59,7 +59,7 @@ export const balanceEquation = defineDrawing({
                 pen.fill("card"),
                 { strokeWidth: 2 },
             );
-            const size = text.length > 5 ? 20 : 24;
+            const size = text.length > 8 ? 17 : text.length > 5 ? 20 : 24;
             say(c, x, beam + 2.8 * U, text, size);
             a[name] = [x, beam + 1.4 * U, "up"];
         });

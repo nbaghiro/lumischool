@@ -20,7 +20,7 @@ export const fixBot = defineDrawing({
     about: "A small robot showing a sentence on its screen. Broken, it has a crossed eye and a spark, and the sentence has one thing wrong with it; mended, it smiles. A child fixes the robot's sentence rather than their own, which makes the first editing job a game and takes the sting out of finding a mistake. `ring` loops one word, for a worked example.",
     params: { says: "the cat sat on the mat", width: 20, fixed: 0, ring: -1 },
     settings: {
-        says: { kind: "text", most: 60 },
+        says: { kind: "text", most: 80 },
         width: { kind: "whole", min: 10, max: 30 },
         fixed: { kind: "whole", min: 0, max: 1 },
         ring: { kind: "whole", min: -1, max: 11 },

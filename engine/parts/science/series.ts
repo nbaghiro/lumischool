@@ -78,8 +78,18 @@ export const series = defineDrawing({
     family: "science",
     title: "Series circuit",
     group: "Structures",
-    about: "One loop of wire with cells, bulbs, a buzzer, a motor and a switch in it, one after another. Whether it works is worked out from what is in the loop: there has to be a cell, the switch has to be closed and no wire can be loose. How bright each bulb is follows the cells shared among the parts, so a second cell makes a bulb brighter and a second bulb makes both dimmer, and a brighter bulb is drawn with more rays and longer ones. With `show` at 0 the bulbs wait under a question mark, for a prediction.",
-    params: { cells: 1, bulbs: 1, buzzer: 0, motor: 0, closed: 1, loose: 0, show: 1, tag: "" },
+    about: "One loop of wire with cells, bulbs, a buzzer, a motor and a switch in it, one after another. Whether it works is worked out from what is in the loop: there has to be a cell, the switch has to be closed and no wire can be loose. How bright each bulb is follows the cells shared among the parts, so a second cell makes a bulb brighter and a second bulb makes both dimmer, and a brighter bulb is drawn with more rays and longer ones. With `show` at 0 the bulbs wait under a question mark, for a prediction. With `symbols` at 1 the same loop is drawn as a circuit diagram: a bulb is a circle with a cross in it, a buzzer a dome, a motor a circle with an M, and nothing glows, since a diagram shows what is in the loop and not what it does.",
+    params: {
+        cells: 1,
+        bulbs: 1,
+        buzzer: 0,
+        motor: 0,
+        closed: 1,
+        loose: 0,
+        show: 1,
+        tag: "",
+        symbols: 0,
+    },
     settings: {
         cells: { kind: "whole", min: 0, max: 4 },
         bulbs: { kind: "whole", min: 0, max: 3 },
@@ -89,6 +99,7 @@ export const series = defineDrawing({
         loose: { kind: "whole", min: 0, max: 1 },
         show: { kind: "whole", min: 0, max: 1 },
         tag: { kind: "text", most: 2 },
+        symbols: { kind: "whole", min: 0, max: 1 },
     },
     takes: [
         {
@@ -102,6 +113,7 @@ export const series = defineDrawing({
                 loose: 0,
                 show: 1,
                 tag: "",
+                symbols: 0,
             },
         },
         {
@@ -115,6 +127,7 @@ export const series = defineDrawing({
                 loose: 0,
                 show: 1,
                 tag: "",
+                symbols: 0,
             },
         },
         {
@@ -128,6 +141,7 @@ export const series = defineDrawing({
                 loose: 0,
                 show: 1,
                 tag: "",
+                symbols: 0,
             },
         },
         {
@@ -141,6 +155,7 @@ export const series = defineDrawing({
                 loose: 1,
                 show: 1,
                 tag: "",
+                symbols: 0,
             },
         },
         {
@@ -154,6 +169,7 @@ export const series = defineDrawing({
                 loose: 0,
                 show: 1,
                 tag: "",
+                symbols: 0,
             },
         },
         {
@@ -167,6 +183,21 @@ export const series = defineDrawing({
                 loose: 0,
                 show: 0,
                 tag: "A",
+                symbols: 0,
+            },
+        },
+        {
+            label: "The same loop in symbols",
+            params: {
+                cells: 2,
+                bulbs: 2,
+                buzzer: 1,
+                motor: 1,
+                closed: 0,
+                loose: 0,
+                show: 1,
+                tag: "",
+                symbols: 1,
             },
         },
     ],
@@ -179,6 +210,7 @@ export const series = defineDrawing({
             a: RawAnchors = {},
             l = loopOf(p),
             show = p.show > 0,
+            sym = p.symbols > 0,
             works = loopWorks(l),
             look = glowLook(loopGlow(l));
         const L = (l.motor ? 3.5 : 1.5) * U,
@@ -196,7 +228,7 @@ export const series = defineDrawing({
             ...(l.buzzer ? ["buzzer"] : []),
         ];
         const xs = parts.map((_, i) => mid + (i - (parts.length - 1) / 2) * partStep(l, show) * U);
-        const half = (k: string) => (k === "bulb" ? 1.2 * U : 0.9 * U);
+        const half = (k: string) => (sym ? 0.75 * U : k === "bulb" ? 1.2 * U : 0.9 * U);
         let from = L;
         parts.forEach((k, i) => {
             wire(from, T, (xs[i] ?? 0) - half(k), T);
@@ -205,6 +237,29 @@ export const series = defineDrawing({
         wire(from, T, R, T);
         parts.forEach((k, i) => {
             const x = xs[i] ?? 0;
+            if (sym) {
+                const r = 0.75 * U;
+                if (k === "bulb") {
+                    pen.circle(g, x, T, 2 * r, "ruler", pen.fill("card"), { strokeWidth: 2 });
+                    const d = r * 0.7;
+                    pen.line(g, x - d, T - d, x + d, T + d, "ruler", { strokeWidth: 1.8 });
+                    pen.line(g, x - d, T + d, x + d, T - d, "ruler", { strokeWidth: 1.8 });
+                    a[`bulb(${i})`] = [x, T - 1.6 * U, "up"];
+                } else {
+                    pen.path(
+                        g,
+                        `M${x - r} ${T}A${r} ${r} 0 0 1 ${x + r} ${T}Z`,
+                        "ruler",
+                        pen.fill("card"),
+                        {
+                            strokeWidth: 2,
+                        },
+                    );
+                    a.buzzer = [x, T - 1.2 * U, "up"];
+                }
+                if (!show) penned(c, x, T - 1.3 * U, "?", 22);
+                return;
+            }
             if (k === "bulb") {
                 const lit = show && works;
                 // a dim bulb is a thinner glow: sparser hatching on screen and sparser dots on paper
@@ -252,14 +307,17 @@ export const series = defineDrawing({
         if (l.motor) {
             wire(L, T, L, my - 1.1 * U);
             wire(L, my + 1.1 * U, L, B);
-            pen.circle(g, L, my, 2.2 * U, "ruler", pen.fill("mint"), { strokeWidth: 2 });
+            pen.circle(g, L, my, 2.2 * U, "ruler", pen.fill(sym ? "card" : "mint"), {
+                strokeWidth: 2,
+            });
             patch(c, L, my, 18, 18);
             num(c, L, my + 6, "M", 16);
-            pen.line(g, L - 1.1 * U, my, L - 2 * U, my, "ruler", { strokeWidth: 2.4 });
-            pen.ellipse(g, L - 2.15 * U, my, 0.55 * U, 2.8 * U, "ruler", pen.fill("tang"), {
-                strokeWidth: 1.6,
-            });
-            if (show && works)
+            if (!sym) pen.line(g, L - 1.1 * U, my, L - 2 * U, my, "ruler", { strokeWidth: 2.4 });
+            if (!sym)
+                pen.ellipse(g, L - 2.15 * U, my, 0.55 * U, 2.8 * U, "ruler", pen.fill("tang"), {
+                    strokeWidth: 1.6,
+                });
+            if (show && works && !sym)
                 pen.arrow(
                     g,
                     [L - 2.9 * U, my - 1.5 * U],
@@ -274,7 +332,7 @@ export const series = defineDrawing({
             y1 = my + 0.9 * U;
         wire(R, T, R, y0);
         wire(R, y1, R, B);
-        switchUp(c, R, y0, y1, l.closed);
+        switchUp(c, R, y0, y1, l.closed, true);
         soft(c, R - 0.4 * U, my + 6, l.closed ? "closed" : "open", 13, "end");
         a.switch = [R, my, "right"];
         // the bottom run, with the cells; a loose wire ends in a clip lifted off the first cell
@@ -323,6 +381,6 @@ export const series = defineDrawing({
         return a;
     },
     describe: (p) =>
-        `One loop of wire with cells, bulbs${p.buzzer > 0 ? ", a buzzer" : ""}${p.motor > 0 ? ", a motor" : ""} and a switch in it one after another, the wires drawn from part to part.`,
+        `${p.symbols > 0 ? "A circuit diagram of o" : "O"}ne loop of wire with cells, bulbs${p.buzzer > 0 ? ", a buzzer" : ""}${p.motor > 0 ? ", a motor" : ""} and a switch in it one after another, the wires drawn from part to part.`,
     reads: true,
 });

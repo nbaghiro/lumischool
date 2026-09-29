@@ -18,6 +18,21 @@ export const PHASES = [
     "crescent",
 ] as const;
 
+/**
+ * The same eight shapes by the names astronomers and older children's books give them, where the
+ * half moons are the first and last quarter, a quarter and three quarters of the way round.
+ */
+export const PHASE_NAMES = [
+    "new moon",
+    "waxing crescent",
+    "first quarter",
+    "waxing gibbous",
+    "full moon",
+    "waning gibbous",
+    "last quarter",
+    "waning crescent",
+] as const;
+
 /** How much of the moon is lit on a day of the month (0 new, 1 full), and whether that is growing. */
 export function moonOn(day: number): {
     lit: number;
@@ -77,7 +92,7 @@ export const moonphases = defineDrawing({
     family: "science",
     title: "A month of moons",
     group: "Structures",
-    about: "The moon night after night, one box for each chosen day of the month counted from a new moon, each drawn as it really looks that night: a thin crescent lit on the right, growing to a half and a full moon, then shrinking and lit on the left. The lit part is worked out from the day, so the shapes are true to the calendar, and one box can be left empty for a child to work out.",
+    about: "The moon night after night, one box for each chosen day of the month counted from a new moon, each drawn as it really looks that night: a thin crescent lit on the right, growing to a half and a full moon, then shrinking and lit on the left. Each shape has a child's word (crescent, half moon, gibbous) and an astronomer's name (waxing crescent, first quarter, waxing gibbous, and waning gibbous, last quarter and waning crescent as it shrinks), and a question can ask for either. The lit part is worked out from the day, so the shapes are true to the calendar, and one box can be left empty for a child to work out.",
     params: { from: 0, step: 4, count: 8, blank: -1, days: 1 },
     settings: {
         from: { kind: "whole", min: 0, max: 29 },

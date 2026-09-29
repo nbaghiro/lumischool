@@ -1,5 +1,5 @@
 import { type RawAnchors } from "../../ink/surface";
-import { U, type Marker } from "../../paper";
+import { MARKERS, U, type Marker } from "../../paper";
 import { defineDrawing } from "../drawing";
 import { say, sector } from "../lettering";
 
@@ -9,21 +9,45 @@ interface Slice {
     color: Marker;
 }
 
+/** The slices as drawn: `values` with their `labels` and `colors` where a question gives them, or else the drawing's own `slices`. */
+const slicesOf = (p: {
+    slices: Slice[];
+    labels: string[];
+    values: number[];
+    colors: Marker[];
+}): Slice[] =>
+    p.values.length
+        ? p.values.map((value, i) => ({
+              label: p.labels[i] ?? "",
+              value,
+              color: MARKERS.find((m) => m === p.colors[i]) ?? MARKERS[i % MARKERS.length] ?? "sky",
+          }))
+        : p.slices;
+
 export const pieChart = defineDrawing({
     id: "pie",
     family: "fractions",
     title: "Pie chart",
     group: "Structures",
-    about: "Slices in proportion, each one labelled outside the circle with its share. Halves, quarters and thirds are the sizes a child can name by eye, which is what makes a pie readable before it is measured.",
+    about: "Slices in proportion, each one labelled outside the circle with its share. Halves, quarters and thirds are the sizes a child can name by eye, which is what makes a pie readable before it is measured. A question gives its slices as `values`, with `labels` and `colors`, which may hold parameters; without `values` the chart draws its own slices.",
     params: {
         slices: [
             { label: "Walk", value: 1, color: "sky" },
             { label: "Bus", value: 2, color: "mint" },
             { label: "Car", value: 1, color: "tang" },
         ] as Slice[],
+        labels: [] as string[],
+        values: [] as number[],
+        colors: [] as Marker[],
         show: "share",
     },
-    settings: { slices: { kind: "fixed" }, show: { kind: "one of", of: ["share", "percent"] } },
+    settings: {
+        slices: { kind: "fixed" },
+        labels: { kind: "words", most: 6 },
+        values: { kind: "numbers", min: 0, max: 100, most: 6 },
+        colors: { kind: "words", of: MARKERS, most: 6 },
+        show: { kind: "one of", of: ["share", "percent"] },
+    },
     takes: [
         {
             label: "How we get to school",
@@ -33,6 +57,9 @@ export const pieChart = defineDrawing({
                     { label: "Bus", value: 2, color: "mint" },
                     { label: "Car", value: 1, color: "tang" },
                 ],
+                labels: [],
+                values: [],
+                colors: [],
                 show: "share",
             },
         },
@@ -43,6 +70,9 @@ export const pieChart = defineDrawing({
                     { label: "Yes", value: 3, color: "mint" },
                     { label: "No", value: 1, color: "berry" },
                 ],
+                labels: [],
+                values: [],
+                colors: [],
                 show: "percent",
             },
         },
@@ -55,6 +85,9 @@ export const pieChart = defineDrawing({
                     { label: "Green", value: 2, color: "mint" },
                     { label: "Other", value: 1, color: "glow" },
                 ],
+                labels: [],
+                values: [],
+                colors: [],
                 show: "share",
             },
         },
@@ -66,9 +99,10 @@ export const pieChart = defineDrawing({
             cy = 6.4 * U,
             R = 4.4 * U,
             a: RawAnchors = {};
-        const total = p.slices.reduce((s, q) => s + q.value, 0) || 1;
+        const slices = slicesOf(p);
+        const total = slices.reduce((s, q) => s + q.value, 0) || 1;
         let from = 0;
-        p.slices.forEach((s, i) => {
+        slices.forEach((s, i) => {
             const span = (s.value / total) * Math.PI * 2,
                 mid = from + span / 2;
             pen.path(

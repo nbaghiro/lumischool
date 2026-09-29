@@ -13,7 +13,7 @@ export const writingLines = defineDrawing({
     settings: {
         lines: { kind: "whole", min: 1, max: 8 },
         width: { kind: "whole", min: 8, max: 34 },
-        prompt: { kind: "text", most: 30 },
+        prompt: { kind: "text", most: 80 },
     },
     takes: [
         { label: "Three lines", params: { lines: 3, width: 20, prompt: "" } },

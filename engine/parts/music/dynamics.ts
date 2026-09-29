@@ -4,7 +4,7 @@ import { defineDrawing } from "../drawing";
 import { say } from "../lettering";
 
 interface DynamicsParams {
-    /** The marks in order: pp, p, mp, mf, f, ff, and cresc and dim for the two hairpins. */
+    /** The marks in order: pp, p, mp, mf, f, ff, sfz, fp, and cresc and dim for the two hairpins. */
     marks: string[];
     /** Write what each one means under it. */
     words: boolean;
@@ -19,6 +19,8 @@ export const DYNAMIC_WORDS: Record<string, string> = {
     mf: "quite loud",
     f: "loud",
     ff: "very loud",
+    sfz: "sudden push",
+    fp: "sudden drop",
     cresc: "getting louder",
     dim: "getting softer",
 };
@@ -33,7 +35,7 @@ export const dynamics = defineDrawing<DynamicsParams>({
     about:
         "The marks that say how loud to play, written the way music prints them: p for soft and f for " +
         'loud, with m for "quite" in front, and the two hairpins that open for getting louder and close ' +
-        "for getting softer. What each means can be written under it.",
+        "for getting softer. The two sudden marks, sfz for one note given a push and fp for loud then soft at once, are letters like the rest. What each means can be written under it.",
     params: { marks: ["p", "mf", "f"], words: true, ring: -1 },
     settings: {
         marks: { kind: "words", most: 6 },

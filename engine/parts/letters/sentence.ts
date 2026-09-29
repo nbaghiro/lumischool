@@ -21,7 +21,7 @@ export const sentenceStrip = defineDrawing({
     settings: {
         before: { kind: "text", most: 40 },
         blank: { kind: "whole", min: 1, max: 12 },
-        after: { kind: "text", most: 20 },
+        after: { kind: "text", most: 40 },
         answer: { kind: "text", most: 12 },
         size: { kind: "whole", min: 12, max: 28 },
     },
