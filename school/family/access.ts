@@ -41,6 +41,8 @@ export const ACCESS: Record<EventKind, Access> = {
     "content-authored": PARENT_ONLY,
     "content-verified": SERVER,
     "day-added": PARENT_ONLY,
+    // written by the move-up route with the kid's row; the plan every view folds reads it
+    "moved-up": { write: [], kid: true, tutor: true },
     "signed-in": SERVER,
     "signed-out": SERVER,
     "session-changed": SERVER,

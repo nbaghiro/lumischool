@@ -34,28 +34,54 @@ export type Track = (typeof TRACK_IDS)[number];
  * a lesson gets three planned days until a family's own record says otherwise, so a track of twelve
  * lessons at one day a week reaches its last in week 36 and one of nine reaches its last in week 27.
  * Art is not a track and is never planned. Grades 3 and 4 carry one and two more subjects because
- * their lessons are shorter, not because their tracks are longer.
+ * their lessons are shorter, not because their tracks are longer. Grades 5 and 6 add music at one
+ * day a week and hold 36 lessons a term, so their longer tracks run faster: physics (16 and 15
+ * lessons) and grade 6's chemistry (15) at two days a week, since at one they would end in weeks 48
+ * and 45. Grade 5's chemistry (13) ends in week 39 at one. Their eleven and twelve days a week put
+ * three on some days, which `pickWeekdays` spreads so no day holds more than its share rounded up.
  */
 export const DEFAULT_TRACKS: Readonly<Record<number, Readonly<Partial<Record<Track, number>>>>> = {
     1: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1 },
     2: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1 },
     3: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1, coding: 1 },
     4: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1, coding: 1, chemistry: 1 },
+    5: {
+        maths: 2,
+        reading: 2,
+        writing: 1,
+        physics: 2,
+        nature: 1,
+        coding: 1,
+        chemistry: 1,
+        music: 1,
+    },
+    6: {
+        maths: 2,
+        reading: 2,
+        writing: 1,
+        physics: 2,
+        nature: 1,
+        coding: 1,
+        chemistry: 2,
+        music: 1,
+    },
 };
 
+const TOP = Math.max(...Object.keys(DEFAULT_TRACKS).map(Number));
+
 /**
- * The default for a grade, with a grade outside the four the corpus covers reading the nearest one,
- * since a child of any grade needs a plan and `laneOf` gives them the whole of each track.
+ * The default for a grade, with a grade outside the table reading the nearest one, since a child of
+ * any grade needs a plan and `laneOf` gives them the nearest grade's lessons of each track.
  */
 export const defaultTracks = (grade: number): Readonly<Partial<Record<Track, number>>> =>
-    DEFAULT_TRACKS[Math.min(4, Math.max(1, Math.round(grade)))] ?? {};
+    DEFAULT_TRACKS[Math.min(TOP, Math.max(1, Math.round(grade)))] ?? {};
 
 /**
  * How far along a child's school week each subject leans, which `pickWeekdays` in family/family.ts
  * turns its days by. Without it every track at one day a week falls on the same Wednesday, and the
  * default above would give a child one five-subject day and four empty ones. The numbers are chosen
  * so that the subjects the default turns on land on different days: no day of any grade's default
- * holds more than two, and none is empty. Eight tracks do not fit five days, so a family that puts
+ * holds more than its share rounded up (two to grade 4, three at 5 and 6), and none is empty. Eight tracks do not fit five days, so a family that puts
  * every track on at one day a week still has some sharing a day, and that is theirs to arrange.
  */
 export const TRACK_TURN: Readonly<Record<Track, number>> = {

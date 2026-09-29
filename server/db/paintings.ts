@@ -1,52 +1,68 @@
 import { createHash, randomUUID } from "node:crypto";
-import { and, desc, eq, isNull, lt, or, inArray, getTableColumns } from "drizzle-orm";
+import { and, count, desc, eq, isNull, inArray, getTableColumns, sql, type SQL } from "drizzle-orm";
+import type { Key, Page } from "../../engine/page";
 import type { ArtworkSummary, PaintingSave, PaintingSaved } from "./schema";
 import type { FamilyTx } from "./client";
+import { pageOf, type Order } from "./page";
 import { artworks, families, paintingSaves, type Artwork } from "./schema";
 
 export function summary(row: Artwork): ArtworkSummary {
     const { document: _document, family_id: _family, deleted_at: _deleted, ...out } = row;
     return out;
 }
+const {
+    document: _document,
+    family_id: _family,
+    deleted_at: _deleted,
+    ...wallColumns
+} = getTableColumns(artworks);
+
+/** The wall's order: the newest change first, and the id among pictures changed at the same moment. */
+const WALL: Order<ArtworkSummary> = {
+    columns: [artworks.updated_at, artworks.id],
+    direction: "desc",
+    keyOf: (a) => [a.updated_at, a.id],
+};
+
+/** The search over titles: every word the start of a word in the title, as `artworks_title_idx` reads it. */
+function titleMatch(words: readonly string[]): SQL | undefined {
+    if (!words.length) return undefined;
+    const query = words.map((w) => `${w}:*`).join(" & ");
+    return sql`to_tsvector('simple', ${artworks.title}) @@ to_tsquery('simple', ${query})`;
+}
+
+/**
+ * A page of one gallery, a child's or the caller's own, newest first. `words` are letters and digits
+ * only, which the route has already made them, so none of them is an operator of a text search.
+ */
 export async function paintingList(
     tx: FamilyTx,
     family: string,
     user: string,
     kid: string | null,
-    before?: { at: string; id: string },
-): Promise<{ artworks: ArtworkSummary[]; next: string | null }> {
-    const {
-        document: _document,
-        family_id: _family,
-        deleted_at: _deleted,
-        ...columns
-    } = getTableColumns(artworks);
-    const rows = await tx
-        .select(columns)
-        .from(artworks)
-        .where(
-            and(
-                eq(artworks.family_id, family),
-                isNull(artworks.deleted_at),
-                kid === null
-                    ? and(isNull(artworks.kid_id), eq(artworks.owner_user_id, user))
-                    : eq(artworks.kid_id, kid),
-                before
-                    ? or(
-                          lt(artworks.updated_at, before.at),
-                          and(eq(artworks.updated_at, before.at), lt(artworks.id, before.id)),
-                      )
-                    : undefined,
-            ),
-        )
-        .orderBy(desc(artworks.updated_at), desc(artworks.id))
-        .limit(25);
-    const page = rows.slice(0, 24);
-    const last = page.at(-1);
-    return {
-        artworks: page,
-        next: rows.length > 24 && last ? `${last.updated_at}|${last.id}` : null,
-    };
+    at: { after: Key | null; limit: number; query: string; words: readonly string[] },
+): Promise<Page<ArtworkSummary>> {
+    const whose = and(
+        eq(artworks.family_id, family),
+        isNull(artworks.deleted_at),
+        kid === null
+            ? and(isNull(artworks.kid_id), eq(artworks.owner_user_id, user))
+            : eq(artworks.kid_id, kid),
+    );
+    return pageOf(
+        tx,
+        WALL,
+        { ...at, match: titleMatch(at.words) },
+        (t, cut) =>
+            t
+                .select(wallColumns)
+                .from(artworks)
+                .where(and(whose, cut.where))
+                .orderBy(...cut.orderBy)
+                .limit(cut.limit),
+        async (t, match) =>
+            (await t.select({ n: count() }).from(artworks).where(and(whose, match)))[0]?.n ?? 0,
+    );
 }
 export async function paintingRow(tx: FamilyTx, id: string): Promise<Artwork | null> {
     return (await tx.select().from(artworks).where(eq(artworks.id, id)))[0] ?? null;

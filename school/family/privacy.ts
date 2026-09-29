@@ -21,6 +21,3 @@ export const KID_FIELDS = {
     name: "What your family calls them. A nickname is fine.",
     grade: "The grade their year is drawn for.",
 } as const;
-
-/** The grades there are lessons for. */
-export const GRADES: readonly number[] = [1, 2, 3, 4];

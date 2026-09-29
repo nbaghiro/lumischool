@@ -67,8 +67,9 @@ describe("private editable paintings", { skip: reason ?? false }, () => {
         );
         assert.equal((await b.call("GET", `/api/paintings/${first.document.id}`)).status, 404);
         assert.deepEqual((await b.call("GET", "/api/paintings")).body, {
-            artworks: [],
+            items: [],
             next: null,
+            total: 0,
         });
         assert.equal(
             (
@@ -155,12 +156,14 @@ describe("private editable paintings", { skip: reason ?? false }, () => {
         const first = { ...input(), scope: { kid_id: kid } };
         assert.equal((await a.call("POST", "/api/paintings/save", { body: first })).status, 200);
         assert.deepEqual((await a.call("GET", `/api/paintings?kid_id=${other}`)).body, {
-            artworks: [],
+            items: [],
             next: null,
+            total: 0,
         });
         assert.deepEqual((await a.call("GET", "/api/paintings")).body, {
-            artworks: [],
+            items: [],
             next: null,
+            total: 0,
         });
         await withFamily({ family: who.family, user: who.user }, (tx) => deleteKid(tx, kid));
         assert.equal((await a.call("GET", `/api/paintings/${first.document.id}`)).status, 404);
@@ -213,25 +216,40 @@ describe("private editable paintings", { skip: reason ?? false }, () => {
         if (
             !body ||
             typeof body !== "object" ||
-            !("artworks" in body) ||
-            !Array.isArray(body.artworks) ||
+            !("items" in body) ||
+            !Array.isArray(body.items) ||
             !("next" in body) ||
             typeof body.next !== "string"
         )
             throw new Error("Missing gallery page");
-        assert.equal(body.artworks.length, 24);
-        assert.equal(JSON.stringify(body.artworks).includes('"document"'), false);
-        const next = await a.call("GET", `/api/paintings?before=${encodeURIComponent(body.next)}`);
+        assert.equal(body.items.length, 24);
+        assert.equal(JSON.stringify(body.items).includes('"document"'), false);
+        const cursor = encodeURIComponent(body.next);
+        const next = await a.call("GET", `/api/paintings?after=${cursor}`);
         const second = next.body;
         if (
             !second ||
             typeof second !== "object" ||
-            !("artworks" in second) ||
-            !Array.isArray(second.artworks) ||
+            !("items" in second) ||
+            !Array.isArray(second.items) ||
             !("next" in second)
         )
             throw new Error("Missing next page");
-        assert.equal(second.artworks.length, 1);
+        assert.equal(second.items.length, 1);
+        // a cursor is bound to the search it was made for, and the page size to what the wall allows
+        for (const refused of [
+            `/api/paintings?after=${cursor}&q=sky`,
+            `/api/paintings?after=${cursor}&kid_id=${randomUUID()}`,
+            "/api/paintings?after=not-a-cursor",
+            `/api/paintings?q=${"a".repeat(101)}`,
+        ])
+            assert.equal((await a.call("GET", refused)).status, 400, refused);
+        const small = await a.call("GET", "/api/paintings?limit=5&q=my%20s");
+        assert.ok(small.body && typeof small.body === "object" && "items" in small.body);
+        assert.ok(Array.isArray(small.body.items) && small.body.items.length === 5);
+        assert.ok("total" in small.body && small.body.total === 25);
+        const none = await a.call("GET", "/api/paintings?q=volcano");
+        assert.deepEqual(none.body, { items: [], next: null, total: 0 });
         assert.equal(second.next, null);
     });
 });

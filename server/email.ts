@@ -9,12 +9,16 @@ export type Transport = (
 ) => Promise<void | string>;
 
 const sent: Sent[] = [];
-const KEPT = 20;
+/**
+ * Twenty was not enough: several agents running sign-in flows against one dev server push a code off
+ * the end before the test that asked for it reads it, which fails as "no code for <address>".
+ */
+const KEPT = 200;
 
 /**
  * Prints the email, framed so the code is easy to find among the server's other lines, and keeps the
- * last twenty in memory for the local outbox, since a code printed by a server in the background is
- * otherwise out of reach.
+ * last few hundred in memory for the local outbox, since a code printed by a server in the
+ * background is otherwise out of reach.
  */
 export const consoleTransport: Transport = async (email) => {
     const rule = "-".repeat(72);

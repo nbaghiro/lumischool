@@ -10,11 +10,9 @@ export const TEACHING_MATERIALS: readonly TeachingMaterial[] = [ten, reading, fo
 });
 export const teachingMaterial = (id: string): TeachingMaterial | null =>
     TEACHING_MATERIALS.find((m) => m.id === id) ?? null;
-export function teachingForLesson(
-    id: string,
-    skills: readonly string[] = [],
-): TeachingMaterial | null {
-    return (
-        TEACHING_MATERIALS.find((m) => m.lessonIds.includes(id) || skills.includes(m.skill)) ?? null
-    );
-}
+/**
+ * The material written for a lesson, by the lesson ids it names. It is not matched by skill, since a
+ * skill recurs in later grades that the material's frames were not written for.
+ */
+export const teachingForLesson = (id: string): TeachingMaterial | null =>
+    TEACHING_MATERIALS.find((m) => m.lessonIds.includes(id)) ?? null;

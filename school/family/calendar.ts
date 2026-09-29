@@ -9,15 +9,14 @@ import type { YearLesson } from "../year";
 import {
     alive,
     cellsFor,
-    laneOf,
+    lanesOf,
     movesOf,
-    planOf,
-    startOf,
-    trackDays,
-    scheduledTracks,
+    schoolYears,
     sessionChanges,
+    startOf,
     type Cell,
     type PlannedDay,
+    type SchoolYear,
 } from "./family";
 
 export interface Term {
@@ -56,8 +55,9 @@ export interface CalCell extends Cell {
 
 export interface KidCalendar {
     id: string;
-    /** The first day of this child's school year. */
+    /** The first day of this child's current school year. */
     start: string;
+    years: SchoolYear[];
     schoolDays: Weekday[];
     tracks: { track: string; perWeek: number; since: string; own: boolean }[];
     /** Each track's planned days, by track. */
@@ -66,9 +66,17 @@ export interface KidCalendar {
     cells: Map<string, CalCell[]>;
 }
 
+/** A school year of the family's, begun by the first child's record or by a child's move. */
+export interface FamilyYear {
+    from: string;
+    terms: Term[];
+}
+
 export interface Calendar {
     today: string;
+    /** The terms of the school year today is in. */
     terms: Term[];
+    years: FamilyYear[];
     off: OffSpan[];
     added: (AddedDay & { kid: string; id: string; at: string })[];
     printed: { kid: string; on: string; lesson: string; grownUps: boolean }[];
@@ -127,8 +135,7 @@ export function foldCalendar(input: FoldIn): Calendar {
             : [],
     );
     const off: OffSpan[] = [];
-    let terms: Term[] | null = null;
-    for (const c of changes) {
+    for (const c of changes)
         if (c.op.op === "days-off")
             off.push({
                 id: c.id,
@@ -138,9 +145,6 @@ export function foldCalendar(input: FoldIn): Calendar {
                 kid: c.kid,
                 on: c.on,
             });
-        if (c.op.op === "terms")
-            terms = [...c.op.terms].map((t) => ({ ...t })).sort((a, b) => a.n - b.n);
-    }
     off.sort((a, b) => a.from.localeCompare(b.from));
     const added = live.flatMap((e) =>
         e.kind === "day-added" && e.kid_id
@@ -168,11 +172,12 @@ export function foldCalendar(input: FoldIn): Calendar {
     for (const kid of input.kids) {
         const moves = movesOf(input.events, kid.id, input.timeZone);
         const mine = input.sittings.filter((s) => s.child === kid.id);
-        const start =
+        const first =
             startOf(input.events, kid.id, input.timeZone) ??
             mine.map((s) => s.on).sort()[0] ??
             input.today;
-        if (start < earliest) earliest = start;
+        if (first < earliest) earliest = first;
+        const schooled = schoolYears(input.events, kid, first);
         const schoolDays = [...moves]
             .filter((m) => m.op.op === "school-days")
             .map((m) => (m.op.op === "school-days" ? m.op.weekdays : SCHOOL_WEEK))
@@ -180,56 +185,81 @@ export function foldCalendar(input: FoldIn): Calendar {
         const lanes = new Map<string, PlannedDay[]>();
         const tracks: KidCalendar["tracks"] = [];
         const cells = new Map<string, CalCell[]>();
-        for (const [track, on] of scheduledTracks(
-            planOf(input.events, kid, input.timeZone, start),
-            moves,
-        )) {
-            const lane = laneOf(input.lessons, track, kid.grade);
+        for (const lane of lanesOf({
+            events: input.events,
+            kid,
+            lessons: input.lessons,
+            sittings: mine,
+            timeZone: input.timeZone,
+            first,
+            today: input.today,
+            until: input.until,
+        })) {
+            const { track, on } = lane;
             // a subject with nothing written for this child has nothing to plan, default or not
-            if (!lane.length && !sessionChanges(moves).some((s) => s.track === track)) continue;
-            const inLane = new Set([
-                ...lane,
-                ...sessionChanges(moves)
-                    .filter((s) => s.track === track)
-                    .map((s) => s.lesson),
-            ]);
-            const days = trackDays({
-                track,
-                lessons: lane,
-                perWeek: on.on ? on.perWeek : 0,
-                start,
-                today: input.today,
-                until: input.until,
-                moves,
-                sittings: mine.filter((s) => inLane.has(s.lesson)),
-            });
-            lanes.set(track, days);
+            if (!lane.lessons.length && !sessionChanges(moves).some((s) => s.track === track))
+                continue;
+            lanes.set(track, lane.days);
             tracks.push({ track, perWeek: on.perWeek, since: on.since, own: on.own });
-            for (const c of cellsFor(
-                days,
-                mine.filter((s) => inLane.has(s.lesson)),
-                input.today,
-            ))
+            for (const c of cellsFor(lane.days, lane.sittings, input.today))
                 cells.set(c.on, [...(cells.get(c.on) ?? []), { ...c, track }]);
         }
         kids.set(kid.id, {
             id: kid.id,
-            start,
+            start: schooled[schooled.length - 1]?.from ?? first,
+            years: schooled,
             schoolDays: schoolDays ?? SCHOOL_WEEK,
             tracks,
             lanes,
             cells,
         });
     }
+    const years = familyYears(
+        [earliest, ...[...kids.values()].flatMap((k) => k.years.slice(1).map((y) => y.from))],
+        changes,
+    );
     return {
         today: input.today,
-        terms: terms ?? defaultTerms(earliest),
+        terms: (years.filter((y) => y.from <= input.today).at(-1) ?? years[0])?.terms ?? [],
+        years,
         off,
         added,
         printed,
         kids,
         changes,
     };
+}
+
+/**
+ * The family's school years from the days they begin: each year's terms are the last the family set
+ * while it was the year, or the three it starts with, and end before the next year begins.
+ */
+function familyYears(starts: readonly string[], changes: readonly Change[]): FamilyYear[] {
+    const from = [...new Set(starts)].sort();
+    return from.map((on, i) => {
+        const next = from[i + 1];
+        const set = changes
+            .filter(
+                (c) =>
+                    c.op.op === "terms" &&
+                    (i === 0 || c.on >= on) &&
+                    (next === undefined || c.on < next),
+            )
+            .at(-1);
+        const terms =
+            set?.op.op === "terms"
+                ? [...set.op.terms].map((t) => ({ ...t })).sort((a, b) => a.n - b.n)
+                : defaultTerms(on);
+        return {
+            from: on,
+            terms:
+                next === undefined
+                    ? terms
+                    : terms
+                          .filter((t) => t.from < next)
+                          .map((t) => ({ ...t, to: t.to < next ? t.to : addDays(next, -1) })),
+        };
+    });
 }
 
 /** The family's or a child's day off covering a day, if any. */
@@ -250,7 +280,7 @@ export function dayState(
 }
 
 export const termOn = (cal: Calendar, on: string): Term | null =>
-    cal.terms.find((t) => on >= t.from && on <= t.to) ?? null;
+    cal.years.flatMap((y) => y.terms).find((t) => on >= t.from && on <= t.to) ?? null;
 
 /** A child's school days between two days inclusive, counting no weekend and no day off. */
 export function schoolDaysBetween(
@@ -413,53 +443,4 @@ export function setTerms(w: Writing, terms: Term[]): Made {
             return { refused: `Term ${now.n} starts before term ${before.n} ends.` };
     }
     return { drafts: [change(w, null, { op: "terms", terms })] };
-}
-
-/** A change put back: one undo per event it was written as, so a family day goes back whole. */
-export const putBack = (
-    w: Writing,
-    events: readonly { id: string; kid: string | null }[],
-): Draft[] => events.map((e) => change(w, e.kid, { op: "undo", of: e.id }));
-
-/** What a change did, in the words a grown-up reads under the calendar. */
-export function saidOf(
-    c: Change,
-    names: {
-        kid: (id: string | null) => string;
-        lesson: (id: string) => string;
-        track: (id: string) => string;
-        day: (iso: string) => string;
-    },
-): string {
-    const who = names.kid(c.kid);
-    switch (c.op.op) {
-        case "session":
-            return `${who}: ${names.lesson(c.op.lesson)} ${c.op.removed ? "removed from the plan" : c.op.onDay ? `planned for ${names.day(c.op.onDay)}` : "set aside for later"}.`;
-        case "routine":
-            return `${who}: ${names.track(c.op.track)}, ${c.op.weekdays.length * c.op.sessions} sessions a week from ${names.day(c.op.from)}.`;
-        case "days-off":
-            return c.op.from === c.op.to
-                ? `A day off for ${who} on ${names.day(c.op.from)}: ${c.op.note}.`
-                : `Days off for ${who}, ${names.day(c.op.from)} to ${names.day(c.op.to)}: ${c.op.note}.`;
-        case "school-days":
-            return `${who} works on ${c.op.weekdays.map((d) => WEEKDAYS[d % 7]).join(", ")}.`;
-        case "terms":
-            return `The terms: ${c.op.terms
-                .map((t) => `term ${t.n} from ${names.day(t.from)} to ${names.day(t.to)}`)
-                .join(", ")}.`;
-        case "move":
-            return `${who}: ${names.track(c.op.track)} moved from ${names.day(c.op.from)} to ${names.day(c.op.to)}.`;
-        case "shift":
-            return `${who}: everything from ${names.day(c.op.from)} moved on ${c.op.weeks} ${c.op.weeks === 1 ? "week" : "weeks"}.`;
-        case "park":
-            return `${who}: ${names.lesson(c.op.lesson)} parked from ${names.day(c.op.from)} for ${c.op.gapWeeks} ${c.op.gapWeeks === 1 ? "week" : "weeks"}.`;
-        case "set-day":
-            return c.op.kind === "off"
-                ? `${who}: no lesson on ${names.day(c.op.onDay)}.`
-                : `${who}: ${names.lesson(c.op.lesson ?? "")} on ${names.day(c.op.onDay)}, ${c.op.kind === "again" ? "again with new numbers" : "as a practice sheet"}.`;
-        case "track":
-            return `${who}: ${names.track(c.op.track)} ${c.op.on ? `${c.op.perWeek} ${c.op.perWeek === 1 ? "day" : "days"} a week` : "off"}.`;
-        case "undo":
-            return "A change put back.";
-    }
 }

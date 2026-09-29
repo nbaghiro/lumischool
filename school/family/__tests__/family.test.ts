@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { check, type Envelope } from "../../../engine/answer";
 import { isSchoolDay, weekdayOf, type Sitting } from "../../record";
-import { defaultTracks } from "../../tracks";
+import { DEFAULT_TRACKS, defaultTracks } from "../../tracks";
 import type { YearLesson } from "../../year";
 import { familyName, gradeName, shortDate, spanText } from "../names";
 import { nowIn } from "../now";
@@ -417,14 +417,15 @@ describe("the plan worked out from the log", () => {
         assert.deepEqual(pickWeekdays(week, 5, 3), week, "every day is every day, turned or not");
         assert.deepEqual(pickWeekdays([1, 3, 6], 1, 1), [6]);
         assert.equal(turnOf("art"), 0, "a subject that is not a track takes no turn");
-        for (const grade of [1, 2, 3, 4]) {
+        for (const grade of Object.keys(DEFAULT_TRACKS).map(Number)) {
             const load = new Map<number, number>();
             for (const [track, perWeek] of Object.entries(defaultTracks(grade)))
                 for (const day of pickWeekdays(week, perWeek ?? 0, turnOf(track)))
                     load.set(day, (load.get(day) ?? 0) + 1);
             const days = week.map((d) => load.get(d) ?? 0);
+            const share = Math.ceil(days.reduce((a, b) => a + b, 0) / week.length);
             assert.ok(
-                days.every((n) => n >= 1 && n <= 2),
+                days.every((n) => n >= 1 && n <= share),
                 `grade ${grade}'s default spreads over the week rather than piling onto one day: ${days.join()}`,
             );
         }
@@ -680,10 +681,15 @@ describe("a child's record, as their view reads it", () => {
             }
     });
 
-    it("reads a track's lane at the kid's grade, or the whole track when nothing is written there", () => {
+    it("reads a track's lane at the kid's grade, or at the nearest grade below with lessons in it", () => {
         assert.deepEqual(laneOf(LESSONS, "maths", 1), ["g1-a", "g1-b", "g1-c"]);
         assert.deepEqual(laneOf(LESSONS, "reading", 1), ["read-1"]);
-        assert.deepEqual(laneOf(LESSONS, "reading", 3), ["read-1", "read-2"], "the whole track");
+        assert.deepEqual(
+            laneOf(LESSONS, "reading", 3),
+            ["read-2"],
+            "grade 2's, not the whole track",
+        );
+        assert.deepEqual(laneOf(LESSONS, "reading", 0), [], "never a grade above");
         assert.deepEqual(laneOf(LESSONS, "physics", 1), []);
     });
 

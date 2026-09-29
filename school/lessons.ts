@@ -18,7 +18,10 @@ import {
     type Value,
 } from "../engine/expr";
 import {
+    DICTATION,
     LEVELS,
+    markWords,
+    partsOf,
     pieceOf,
     type Left,
     type Level,
@@ -83,6 +86,8 @@ function wayOf(how: Asked["how"], item: PackItem, q: PackQuestion): Way {
     const check = item.check;
     if (pieceOf(item)) return "grown-up";
     if (check?.name === BUILDS) return "program";
+    // a dictation's sentence is long, and it is typed all the same
+    if (check?.name === DICTATION) return "typed";
     const keys = Object.keys(q.answers);
     const long = (k: string): boolean => {
         const a = q.answers[k] ?? "";
@@ -94,11 +99,14 @@ function wayOf(how: Asked["how"], item: PackItem, q: PackQuestion): Way {
 
 /**
  * A lesson's questions at a level, in the order its page asks them. Draw 0 is the page as the lesson
- * names it; draw 1 or 2 is another day's, with each practice block picked again.
+ * names it; draw 1 or 2 is another day's, with each practice block picked again. A book lesson's
+ * `part` asks only that sitting's questions.
  */
-export function askedIn(lesson: PackLesson, level: Level, draw = 0): Asked[] {
+export function askedIn(lesson: PackLesson, level: Level, draw = 0, part?: number): Asked[] {
     const at = levelIn(lesson, level);
-    return at.sections.flatMap((section) =>
+    const sittings = at.sections.filter((s) => s.type === "sitting");
+    const one = part === undefined ? undefined : sittings[part - 1];
+    return (one ? [one] : at.sections).flatMap((section) =>
         section.blocks.flatMap((block) => {
             if (block.k !== "ask") return [];
             const again = draw > 0 ? block.again[draw - 1] : undefined;
@@ -185,8 +193,10 @@ function filledIn(line: string, env: Env): string {
             switch (p.k) {
                 case "text":
                     return p.v;
-                case "expr":
-                    return showValue(evaluate(p.e, env));
+                case "expr": {
+                    const v = evaluate(p.e, env);
+                    return v.k === "str" ? filledIn(v.v, env) : showValue(v);
+                }
                 case "blank":
                 case "noun":
                     return null;
@@ -210,17 +220,51 @@ function judged(q: PackQuestion, env: Env, right: boolean, given: Given): Checke
     };
 }
 
+/** A list of words as a line reads them: "a", "a and b", "a, b and c". */
+const listed = (words: readonly string[]): string =>
+    words.length < 2
+        ? (words[0] ?? "")
+        : `${words.slice(0, -1).join(", ")} and ${words.at(-1) ?? ""}`;
+
+/**
+ * A dictation typed, marked word by word against its sentence (`markWords`): the words misspelt, as
+ * the child wrote them, are what the child reads and what the answer's rule records, with a word left
+ * out or one too many said as such.
+ */
+function checkDictation(q: PackQuestion, typed: string): Checked {
+    const m = markWords(q.answers.answer ?? "", typed);
+    const misspelt = m.words.flatMap((w) => (!w.right && w.wrote !== null ? [w.wrote] : []));
+    const missing = m.words.filter((w) => w.wrote === null).length;
+    const said = [
+        misspelt.length ? `Check the spelling of ${listed(misspelt)}.` : "",
+        missing ? `${missing === 1 ? "A word is" : `${missing} words are`} missing.` : "",
+        m.extra.length ? `Leave out ${listed(m.extra)}.` : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
+    return {
+        right: m.right,
+        given: { k: "word", text: typed },
+        rule: null,
+        said: m.right ? null : said,
+        point: null,
+    };
+}
+
 /**
  * A typed answer, by the answer's name: right when every box says the answer or, for a picked answer,
- * its label, whatever the case, the spacing or a thousands comma. Null while a box is empty.
+ * its label, whatever the case, the spacing or a thousands comma. A dictation (`check` is the item's
+ * checker) is marked word by word instead. Null while a box is empty.
  */
 export function checkTyped(
     q: PackQuestion,
     typed: Readonly<Record<string, string>>,
+    check: PackItem["check"] = null,
 ): Checked | null {
     const keys = Object.keys(q.answers);
     const got = keys.map((k) => typed[k]?.trim() ?? "");
     if (!keys.length || got.some((t) => !t)) return null;
+    if (check?.name === DICTATION) return checkDictation(q, got[0] ?? "");
     const right = keys.every((k, i) => {
         const g = plain(got[i] ?? "");
         const label = q.labels?.[k];
@@ -298,12 +342,15 @@ export type Line =
  */
 export type Help = "no-hint" | "no-easier" | "handoff" | "today" | "read" | "pinned";
 
-type Handed = "handed-in" | "handed-in-painting";
+type Handed = "handed-in" | "handed-in-painting" | "handed-in-heard";
 
 /** What a child reads once they have handed a piece in. */
 export const HANDED: Record<Piece, Handed> = {
     writing: "handed-in",
     painting: "handed-in-painting",
+    made: "handed-in-painting",
+    spoken: "handed-in-heard",
+    sung: "handed-in-heard",
 };
 
 export const LINES: Record<Line, string> = {
@@ -316,6 +363,7 @@ export const LINES: Record<Line, string> = {
     "shown-program": "A program that works is in the slots now. It will come back another day.",
     "handed-in": "A grown-up will read it.",
     "handed-in-painting": "A grown-up will look at it.",
+    "handed-in-heard": "A grown-up will listen to it.",
     "no-hint": "That is every clue this question has. Leave it for your grown-up.",
     "no-easier": "There is no easier one for this. Leave it for your grown-up.",
     handoff: "Leave this one. Your grown-up will see it on their page.",
@@ -527,13 +575,46 @@ export const began = (
     lesson: PackLesson,
     level: Level,
     pack: string,
+    part?: number,
 ): EventData["sitting-began"] => ({
     sitting,
     lesson: lesson.id,
     lessonHash: levelIn(lesson, level).hash,
     pack,
     mode: "screen",
+    ...(part === undefined ? {} : { part }),
 });
+
+/**
+ * The sitting of a book lesson to read next, from that lesson's own events: the one a sitting begun
+ * and not ended is reading, else the first with no finished sitting, else the last, to read again.
+ * A lesson read in one sitting has none.
+ */
+export function partToRead(lesson: PackLesson, events: readonly Envelope[]): number | null {
+    const parts = partsOf(lesson);
+    if (parts < 2) return null;
+    const began = new Map(
+        events.flatMap((e) =>
+            e.kind === "sitting-began" && e.data.lesson === lesson.id
+                ? [[e.data.sitting, e.data.part ?? 1] as const]
+                : [],
+        ),
+    );
+    const ended = new Map(
+        events.flatMap((e) =>
+            e.kind === "sitting-ended" && began.has(e.data.sitting)
+                ? [[e.data.sitting, e.data.finished] as const]
+                : [],
+        ),
+    );
+    const open = [...began].filter(([sitting]) => !ended.has(sitting)).at(-1);
+    if (open) return Math.min(parts, open[1]);
+    const read = new Set(
+        [...began].flatMap(([sitting, part]) => (ended.get(sitting) ? [part] : [])),
+    );
+    for (let part = 1; part <= parts; part++) if (!read.has(part)) return part;
+    return parts;
+}
 
 export const answered = (
     sitting: string,

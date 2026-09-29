@@ -5,7 +5,14 @@
 // child's log runs to megabytes (.docs/api.md).
 
 import type { Draft, Envelope, QuestionRef } from "../../engine/answer";
-import type { PackLesson, PackLevel, PackQuestion, PackRule } from "../../engine/pack";
+import {
+    noticeOf,
+    type PackItem,
+    type PackLesson,
+    type PackLevel,
+    type PackQuestion,
+    type PackRule,
+} from "../../engine/pack";
 import {
     addDays,
     dayOf,
@@ -14,6 +21,7 @@ import {
     sheetFor,
     type Attempt,
     type Mode,
+    type Piece,
     type Printed,
     type Sitting,
 } from "../record";
@@ -46,6 +54,8 @@ export interface SheetBack {
     sheet: string | null;
     /** For a paper sheet still to mark, its questions as they were printed; empty otherwise. */
     questions: QuestionRef[];
+    /** Pieces of this sitting handed in on screen that wait for a grown-up's response. */
+    pieces: Pick<Piece, "answer" | "q">[];
 }
 
 /**
@@ -59,6 +69,7 @@ export function sheetsBack(
     from?: string,
     to?: string,
     printed: readonly Printed[] = [],
+    pieces: readonly Piece[] = [],
 ): SheetBack[] {
     const inside = (on: string): boolean =>
         (!from || dayOf(on) >= dayOf(from)) && (!to || dayOf(on) <= dayOf(to));
@@ -90,6 +101,15 @@ export function sheetsBack(
                 marked,
                 sheet: paper?.sheet ?? null,
                 questions: paper && !marked ? paper.questions : [],
+                pieces:
+                    s.mode === "screen"
+                        ? pieces
+                              .filter(
+                                  (p) =>
+                                      p.child === child && p.lesson === s.lesson && p.on === s.on,
+                              )
+                              .map((p) => ({ answer: p.answer, q: p.q }))
+                        : [],
             };
         });
 }
@@ -103,18 +123,24 @@ export const cameBackRight = (s: SheetBack): boolean =>
     s.finished && s.marked && s.asked > 0 && s.right === s.asked;
 
 /**
- * Paper sheets that came back and have not been marked, oldest first, since the oldest is the
- * evidence about to stop being useful.
+ * Whether a sheet waits for a grown-up: paper that came back unmarked, or a sitting on screen with a
+ * piece handed in that nobody has responded to.
+ */
+export const waits = (s: SheetBack): boolean =>
+    (s.mode === "paper" && !s.marked) || s.pieces.length > 0;
+
+/**
+ * Sheets that wait for a grown-up, oldest first, since the oldest is the evidence about to stop
+ * being useful.
  */
 export const waitingToMark = (
     child: string,
     sittings: readonly Sitting[],
     attempts: readonly Attempt[],
     printed: readonly Printed[] = [],
+    pieces: readonly Piece[] = [],
 ): SheetBack[] =>
-    sheetsBack(child, sittings, attempts, undefined, undefined, printed).filter(
-        (s) => s.mode === "paper" && !s.marked,
-    );
+    sheetsBack(child, sittings, attempts, undefined, undefined, printed, pieces).filter(waits);
 
 /** The five school days of the week a day falls in, Monday first. */
 export const schoolWeek = (on: string): string[] => {
@@ -218,7 +244,7 @@ export function lookOf(attempts: readonly Attempt[], child: string, today: strin
 export interface ChildWeek {
     /** The Monday of last week, from which `back` holds every sheet. */
     from: string;
-    /** Every sheet from `from` to today, and every paper sheet still waiting to be marked, oldest first. */
+    /** Every sheet from `from` to today, and every sheet still waiting for a grown-up, oldest first. */
     back: SheetBack[];
     look: Look | null;
 }
@@ -234,10 +260,10 @@ export function childWeek(
     const subjectOf = new Map(lessons.map((l) => [l.id, l.subject]));
     const f = fold(events, timeZone, (id) => subjectOf.get(id) ?? "maths");
     const from = weekShift(today, -1);
-    const all = sheetsBack(kid, f.sittings, f.attempts, undefined, today, f.printed);
+    const all = sheetsBack(kid, f.sittings, f.attempts, undefined, today, f.printed, f.pieces);
     return {
         from,
-        back: all.filter((s) => dayOf(s.on) >= dayOf(from) || (s.mode === "paper" && !s.marked)),
+        back: all.filter((s) => dayOf(s.on) >= dayOf(from) || waits(s)),
         look: lookOf(f.attempts, kid, today),
     };
 }
@@ -249,6 +275,8 @@ export interface ToMark {
     answer: string;
     /** The lines the author wrote for this question's mistakes, each a one-tap diagnosis. */
     rules: string[];
+    /** For a piece a grown-up looks at or listens to, the points of its notice list to tick; none otherwise. */
+    notice: string[];
 }
 
 const levelOf = (lesson: PackLesson, hash: string): PackLevel =>
@@ -261,7 +289,10 @@ const linesOf = (rules: readonly PackRule[]): string[] =>
         ...linesOf(r.children),
     ]);
 
-function questionFor(lesson: PackLesson, ref: QuestionRef): PackQuestion | null {
+function questionFor(
+    lesson: PackLesson,
+    ref: QuestionRef,
+): { item: PackItem; question: PackQuestion } | null {
     for (const section of levelOf(lesson, ref.lessonHash).sections)
         for (const block of section.blocks) {
             if (block.k !== "ask" || block.item.id !== ref.item) continue;
@@ -269,7 +300,7 @@ function questionFor(lesson: PackLesson, ref: QuestionRef): PackQuestion | null 
             const q =
                 all.find((x) => x.variant === ref.variant && x.n === ref.n) ??
                 all.find((x) => x.variant === ref.variant);
-            if (q) return q;
+            if (q) return { item: block.item, question: q };
         }
     return null;
 }
@@ -283,17 +314,62 @@ export function toMark(lesson: PackLesson, questions: readonly QuestionRef[]): T
     return questions
         .filter((ref) => ref.n > 0)
         .map((ref) => {
-            const q = questionFor(lesson, ref);
+            const found = questionFor(lesson, ref);
+            const q = found?.question;
             return {
                 ref,
                 answer: q
-                    ? Object.entries(q.answers)
-                          .map(([k, v]) => q.labels?.[k] ?? v)
-                          .join(", ")
+                    ? [
+                          Object.entries(q.answers)
+                              .map(([k, v]) => q.labels?.[k] ?? v)
+                              .join(", "),
+                          ...(q.explain ? [q.explain] : []),
+                      ].join(". ")
                     : "",
                 rules: q ? [...new Set(linesOf(q.feedback))].filter(Boolean) : [],
+                notice: found ? noticeOf(found.item) : [],
             };
         });
+}
+
+/**
+ * A grown-up's responses to the pieces of a sheet: for each, the points of its notice list they
+ * ticked, which may be none, as a `responded` event (.docs/writing.md, "The notice list"). It is
+ * never right or wrong. On paper it names the sheet and is written beside the marks, for the pieces
+ * with a notice list; on screen it names the answer each piece was handed in as, and is the only
+ * thing written, for every piece, since the response is what takes a piece off the waiting list.
+ */
+export function respondedOf(o: {
+    kid: string;
+    on: { sheet: string } | { pieces: SheetBack["pieces"] };
+    items: readonly ToMark[];
+    ticked: ReadonlyMap<number, readonly string[]>;
+    at: string;
+    newId: () => string;
+}): Draft[] {
+    const on = o.on;
+    const answerOf = (n: number): string | null =>
+        "pieces" in on ? (on.pieces.find((p) => p.q.n === n)?.answer ?? null) : null;
+    return o.items.flatMap((item): Draft[] => {
+        const answer = answerOf(item.ref.n);
+        const sheet = "sheet" in on ? on.sheet : null;
+        if (sheet === null ? answer === null : item.notice.length === 0) return [];
+        return [
+            {
+                id: o.newId(),
+                kid_id: o.kid,
+                kind: "responded",
+                at: o.at,
+                data: {
+                    q: item.ref,
+                    answer,
+                    sheet,
+                    noticed: item.notice.filter((p) => o.ticked.get(item.ref.n)?.includes(p)),
+                    note: null,
+                },
+            },
+        ];
+    });
 }
 
 /**

@@ -348,7 +348,12 @@ export const artworks = pgTable(
         }).onDelete("cascade"),
         check("artworks_owner", sql`(${t.kid_id} is null) <> (${t.owner_user_id} is null)`),
         check("artworks_revision", sql`${t.revision} > 0`),
-        index("artworks_gallery_idx").on(t.family_id, t.kid_id, t.owner_user_id, t.updated_at),
+        // the wall's order, newest first, over live pictures (paintingList in server/db/paintings.ts)
+        index("artworks_wall_idx")
+            .on(t.family_id, t.kid_id, t.owner_user_id, t.updated_at, t.id)
+            .where(sql`${t.deleted_at} is null`),
+        // the words of a title as the wall's search reads them: whole words, no stemming, any language
+        index("artworks_title_idx").using("gin", sql`to_tsvector('simple', ${t.title})`),
     ],
 ).enableRLS();
 export type Artwork = typeof artworks.$inferSelect;

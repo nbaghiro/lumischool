@@ -95,6 +95,27 @@ export interface Sitting {
     /** A grown-up sat with the child. The parent says so; it is never inferred. */
     withGrownUp: boolean;
     subject: string;
+    /** The sitting of a book lesson it read, from 1; absent for a lesson read in one sitting. */
+    part?: number;
+}
+
+/**
+ * The sitting that finished a lesson read in `parts` sittings: the first finished sitting of a lesson
+ * read in one, and for a book, the last of its parts to be first finished, or null while any part has
+ * no finished sitting. A sitting that names no part counts as the first.
+ */
+export function finishing(sittings: readonly Sitting[], parts: number): Sitting | null {
+    const firstOf = (part: number): Sitting | undefined =>
+        sittings
+            .filter((s) => s.finished && (parts === 1 || (s.part ?? 1) === part))
+            .sort((a, b) => dayOf(a.on) - dayOf(b.on))[0];
+    let last: Sitting | null = null;
+    for (let part = 1; part <= Math.max(1, parts); part++) {
+        const first = firstOf(part);
+        if (!first) return null;
+        if (!last || dayOf(first.on) >= dayOf(last.on)) last = first;
+    }
+    return last;
 }
 
 /** A day of teaching a grown-up added by hand, such as a museum trip the product never saw. */
@@ -115,11 +136,26 @@ export interface Printed {
     questions: QuestionRef[];
 }
 
+/**
+ * A piece handed in on screen for a grown-up to read (writing, a recitation, a painting), which is
+ * neither right nor wrong and waits until a `responded` event names its answer.
+ */
+export interface Piece {
+    /** The id of the `answered` event, which the grown-up's response names. */
+    answer: string;
+    child: string;
+    lesson: string;
+    on: string;
+    q: QuestionRef;
+}
+
 export interface Folded {
     attempts: Attempt[];
     sittings: Sitting[];
     printed: Printed[];
     added: AddedDay[];
+    /** Pieces handed in on screen that no grown-up has responded to yet. */
+    pieces: Piece[];
 }
 
 type Of<K extends Envelope["kind"]> = Extract<Envelope, { kind: K }>;
@@ -184,6 +220,7 @@ export function fold(
                 finished: end?.data.finished ?? false,
                 withGrownUp: end?.data.withGrownUp ?? false,
                 subject: subjectOf(b.data.lesson),
+                ...(b.data.part === undefined ? {} : { part: b.data.part }),
             },
         });
     }
@@ -204,11 +241,26 @@ export function fold(
     );
 
     const attempts: Attempt[] = [];
+    const pieces: Piece[] = [];
     const answered = new Map<string, Of<"answered">>();
     for (const e of ordered.filter(is("answered")))
         answered.set(`${e.kid_id}|${e.data.sitting}|${e.data.q.n}`, e);
+    const responded = new Set(
+        ordered.flatMap((e) => (e.kind === "responded" && e.data.answer ? [e.data.answer] : [])),
+    );
     for (const e of answered.values()) {
-        if (!e.kid_id || e.data.right === null) continue;
+        if (!e.kid_id) continue;
+        if (e.data.right === null) {
+            if (e.data.timing.k === "screen" && !responded.has(e.id))
+                pieces.push({
+                    answer: e.id,
+                    child: e.kid_id,
+                    lesson: e.data.q.lesson,
+                    on: dayIn(e.at, timeZone),
+                    q: e.data.q,
+                });
+            continue;
+        }
         const t = e.data.timing;
         attempts.push({
             child: e.kid_id,
@@ -278,7 +330,7 @@ export function fold(
         minutes: e.data.minutes,
         note: e.data.note,
     }));
-    return { attempts, sittings: began.map((b) => b.sitting), printed, added };
+    return { attempts, sittings: began.map((b) => b.sitting), printed, added, pieces };
 }
 
 /** The printed sheet a paper sitting was worked from: the latest of its lesson printed on or before that day. */
@@ -327,8 +379,10 @@ export const MASTERY_LABEL: Record<Mastery, string> = {
 
 /**
  * A kid's progress through a year's lessons, from their sittings: a lesson is done once a sitting of
- * it has finished, and the one they are on is the first lesson on the path that is not. A sheet nobody
- * has marked yet counts as done without a share, so nothing is invented.
+ * it has finished, or a book lesson once each of its sittings has (`parts`, by lesson, for a lesson
+ * read in more than one), and the one they are on is the first lesson on the path that is not. A
+ * book counts as one lesson. A sheet nobody has marked yet counts as done without a share, so nothing
+ * is invented.
  */
 export function progressOf(
     lessons: readonly string[],
@@ -338,13 +392,12 @@ export function progressOf(
     sittings: readonly Sitting[],
     start: string,
     today: string,
+    parts: ReadonlyMap<string, number> = new Map(),
 ): Progress {
     const done: Record<string, Result> = {};
     for (const id of lessons) {
         const sits = sittings.filter((s) => s.child === kid && s.lesson === id && s.on <= today);
-        const finished = sits
-            .filter((s) => s.finished)
-            .sort((a, b) => dayOf(a.on) - dayOf(b.on))[0];
+        const finished = finishing(sits, parts.get(id) ?? 1);
         if (!finished) continue;
         const mine = attempts.filter((a) => a.child === kid && a.lesson === id);
         const right = mine.length

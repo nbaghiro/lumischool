@@ -229,3 +229,31 @@ test("every grade the lessons cover is a year of its own", () => {
         ],
     );
 });
+
+test("a strand lesson hangs off a maths lesson of the term its own unit names, spread along that term in order", () => {
+    const maths = [1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap((u) =>
+        ["a", "b"].map((k) => lesson(`m${u}${k}`, 6, u, "maths", `lessons/g6-${u}${k}.lumi`)),
+    );
+    const chem = [1, 2, 5, 6, 8].map((u) =>
+        lesson(`chem-${u}`, 6, u, "chemistry", `lessons/chem-${u}.lumi`),
+    );
+    const loose: YearLesson = {
+        ...lesson("read-loose", 6, 1, "reading", "lessons/read.lumi"),
+        unit: null,
+    };
+    const y = yearOf([...maths, ...chem, loose], 6, "Rosie", "2026-08-31");
+    const term = (unit: number | undefined) => Math.ceil((unit ?? 0) / 3);
+    for (const c of chem) {
+        const def = y.lessons.find((l) => l.id === c.id);
+        assert.equal(term(def?.unit), term(c.unit ?? 0), `${c.id} lands in its own term`);
+    }
+    assert.deepEqual(
+        chem.map((c) => y.lessons.find((l) => l.id === c.id)?.branch),
+        ["m2a", "m3b", "m5a", "m6b", "m9a"],
+    );
+    assert.equal(
+        y.lessons.find((l) => l.id === "read-loose")?.branch,
+        "m6b",
+        "a lesson with no unit spreads along the whole path",
+    );
+});

@@ -1,3 +1,4 @@
+import { limitOf, queryHash, readCursor, type Key, type Page } from "../engine/page";
 import { isStoredPicture } from "../engine/painting";
 import type { PaintingSave, PaintingSaved, PaintingLoaded, ArtworkSummary } from "./api";
 import { consented, type Adult } from "./auth";
@@ -5,9 +6,8 @@ import { withFamily } from "./db/client";
 import * as store from "./db/paintings";
 import { Refused } from "./sync";
 
-const uuid = (v: unknown): v is string =>
-    typeof v === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const uuid = (v: unknown): v is string => typeof v === "string" && UUID.test(v);
 const object = (v: unknown): v is Record<string, unknown> =>
     !!v && typeof v === "object" && !Array.isArray(v);
 const bad = (): never => {
@@ -41,29 +41,43 @@ export function validPaintingSave(v: unknown): v is PaintingSave {
         /^data:image\/png;base64,iVBORw0KGgo[A-Za-z0-9+/]*={0,2}$/.test(v.thumbnail)
     );
 }
+/** The most pictures one page of a wall holds, and how many it holds when the page does not say. */
+const WALL_MOST = 48;
+const WALL_PAGE = 24;
+const WHEN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+
+/** The words of a wall's search, letters and digits only and at most eight, or null when it is not text. */
+function wallWords(q: unknown): string[] | null {
+    if (q === null || q === undefined) return [];
+    if (typeof q !== "string" || q.length > 100) return null;
+    return (q.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).slice(0, 8);
+}
+
 export async function listPaintings(
     adult: Adult,
     kid: unknown,
-    cursor: unknown = null,
-): Promise<{ artworks: ArtworkSummary[]; next: string | null }> {
+    asked: { q?: unknown; after?: unknown; limit?: unknown } = {},
+): Promise<Page<ArtworkSummary>> {
     parent(adult);
     if (kid !== null && !uuid(kid)) return bad();
-    let before: { at: string; id: string } | undefined;
-    if (cursor !== null) {
-        if (typeof cursor !== "string") return bad();
-        const [at, id, ...rest] = cursor.split("|");
-        if (
-            !at ||
-            !uuid(id) ||
-            rest.length ||
-            !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(at)
-        )
-            return bad();
-        before = { at, id };
+    const words = wallWords(asked.q);
+    if (words === null) return bad();
+    const query = queryHash({ list: "paintings", kid, words });
+    let after: Key | null = null;
+    if (asked.after !== null && asked.after !== undefined) {
+        const read = readCursor(asked.after, query, [WHEN, UUID]);
+        if ("problem" in read) return bad();
+        after = read.key;
     }
+    const limit = limitOf(asked.limit, WALL_MOST, WALL_PAGE);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         if (kid !== null && !(await consented(tx, adult.family.id)).has(kid)) return missing();
-        return store.paintingList(tx, adult.family.id, adult.user, kid, before);
+        return store.paintingList(tx, adult.family.id, adult.user, kid, {
+            after,
+            limit,
+            query,
+            words,
+        });
     });
 }
 export async function loadPainting(adult: Adult, id: unknown): Promise<PaintingLoaded> {

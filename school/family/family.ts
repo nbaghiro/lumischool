@@ -6,6 +6,7 @@ import {
     addDays,
     dayIn,
     dayOf,
+    finishing,
     fold,
     isSchoolDay,
     mondayOf,
@@ -41,6 +42,8 @@ export interface PlannedDay {
     lesson?: string;
     /** Why the day is what it is, in the parent's own words or in ours. */
     note?: string;
+    /** A book lesson's day: the sitting of the book it reads, from 1. */
+    part?: number;
 }
 
 export interface Plan {
@@ -344,34 +347,102 @@ function trackChanges(events: readonly Envelope[], kid: string, timeZone: string
     });
 }
 
+type MovedUp = Extract<Envelope, { kind: "moved-up" }>;
+
+/** One of a kid's school years: the grade they were in and the day it began. */
+export interface SchoolYear {
+    grade: number;
+    from: string;
+}
+
 /**
- * A kid's plan in the order it was made: their grade's default, as a change on the day their school
- * year begins, and then their own `track` ops. A family that has changed nothing follows
- * `DEFAULT_TRACKS`, and a parent turning a subject off or changing its pace writes an ordinary
- * `track` op that wins over the default for that track. Nothing here is stored.
+ * A kid's school years, oldest first: the first from `first`, the day their record begins, and one
+ * more from each `moved-up` event's day, where a later move on the same day replaces the earlier. The
+ * last year's grade is the one on the kid's row, which the move-up route writes with the event.
  */
-export function planChanges(
+export function schoolYears(
+    events: readonly Envelope[],
+    kid: { id: string; grade: number },
+    first: string,
+): SchoolYear[] {
+    const moves = events
+        .filter((e): e is MovedUp => e.kind === "moved-up" && e.kid_id === kid.id)
+        .sort(byTime);
+    const years: SchoolYear[] = [{ grade: moves[0]?.data.from ?? kid.grade, from: first }];
+    for (const m of moves) {
+        const last = years[years.length - 1];
+        if (!last || m.data.onDay > last.from) {
+            years.push({ grade: m.data.grade, from: m.data.onDay });
+            continue;
+        }
+        last.grade = m.data.grade;
+        // a move taken back on its own day leaves the year before as it was
+        if (years.length > 1 && years[years.length - 2]?.grade === last.grade) years.pop();
+    }
+    const current = years[years.length - 1];
+    if (current) current.grade = kid.grade;
+    return years;
+}
+
+/**
+ * Whether a kid may move from their grade to another: the grade next to theirs, up, or back for a
+ * move made too early, and a grade that is offered.
+ */
+export const mayMoveTo = (from: number, to: number, offered: readonly number[]): boolean =>
+    Math.abs(to - from) === 1 && offered.includes(to);
+
+/** The lesson that closes a grade's year, its maths review, whose finishing is when a move up is offered. */
+export const yearReviewOf = (lessons: readonly YearLesson[], grade: number): string | null =>
+    lessons
+        .filter((l) => l.grade === grade && l.subject === "maths" && l.format === "review")
+        .sort((a, b) => (b.unit ?? 0) - (a.unit ?? 0))[0]?.id ?? null;
+
+/** A year's default as changes on the day it begins, turning off what the year before had and it has not. */
+function defaultsOf(year: SchoolYear, before: SchoolYear | undefined): TrackChange[] {
+    const now = defaultTracks(year.grade);
+    const on = Object.entries(now).flatMap(([track, perWeek]) =>
+        perWeek === undefined ? [] : [{ track, on: true, perWeek, day: year.from, own: false }],
+    );
+    const off = Object.keys(before ? defaultTracks(before.grade) : {})
+        .filter((track) => !(track in now))
+        .map((track) => ({ track, on: false, perWeek: 0, day: year.from, own: false }));
+    return [...on, ...off];
+}
+
+/**
+ * A kid's plan in the order it was made: their first grade's default, as a change on the day their
+ * record begins, then their own `track` ops and each later year's default on the day it began, in
+ * the order of their days. A family that has changed nothing follows `DEFAULT_TRACKS`, and a parent
+ * turning a subject off or changing its pace writes an ordinary `track` op that wins over the default
+ * for that track until the next year's default. Nothing here is stored.
+ */
+function planChanges(
     events: readonly Envelope[],
     kid: { id: string; grade: number },
     timeZone: string,
-    from: string,
+    first: string,
 ): TrackChange[] {
-    const started = Object.entries(defaultTracks(kid.grade)).flatMap(([track, perWeek]) =>
-        perWeek === undefined ? [] : [{ track, on: true, perWeek, day: from, own: false }],
+    const years = schoolYears(events, kid, first);
+    const [start, ...later] = years.map((y, i) => defaultsOf(y, years[i - 1]));
+    // a stable sort, so a year's default comes before a change the family made on its first day
+    const rest = [...later.flat(), ...trackChanges(events, kid.id, timeZone)].sort((a, b) =>
+        a.day.localeCompare(b.day),
     );
-    return [...started, ...trackChanges(events, kid.id, timeZone)];
+    return [...(start ?? []), ...rest];
 }
 
-/** A kid's tracks, the latest entry of their plan for a track winning. */
+/** A kid's tracks, the latest entry of their plan for a track winning, or the latest before a day. */
 export function planOf(
     events: readonly Envelope[],
     kid: { id: string; grade: number },
     timeZone: string,
-    from: string,
+    first: string,
+    before?: string,
 ): Map<string, TrackOn> {
     const out = new Map<string, TrackOn>();
-    for (const c of planChanges(events, kid, timeZone, from))
-        out.set(c.track, { on: c.on, perWeek: c.perWeek, since: c.day, own: c.own });
+    for (const c of planChanges(events, kid, timeZone, first))
+        if (before === undefined || c.day < before)
+            out.set(c.track, { on: c.on, perWeek: c.perWeek, since: c.day, own: c.own });
     return out;
 }
 
@@ -467,7 +538,12 @@ export interface PlanInput {
     moves: { on: string; op: PlanOp }[];
     /** This kid's sittings in this track. */
     sittings: Sitting[];
+    /** A book lesson's sittings, by lesson: it takes a day for each, whatever the pace. */
+    parts?: ReadonlyMap<string, number>;
 }
+
+/** The note on a book lesson's day, which says which of its sittings the day reads. */
+export const sittingNote = (n: number, of: number): string => `Sitting ${n} of ${of}`;
 
 /**
  * One track's planned days for one kid. Each planned weekday works the track's current lesson, which
@@ -513,8 +589,19 @@ export function trackDays(p: PlanInput): PlannedDay[] {
     );
     const isParked = (lesson: string, d: string) =>
         parked.some((x) => x.lesson === lesson && d >= x.from && d < x.to);
+    const partsOf = (lesson: string): number => p.parts?.get(lesson) ?? 1;
+    /** The lessons finished before a day, a book once every one of its sittings is. */
+    const doneBy = (d: string, before: boolean): Set<string> =>
+        new Set(
+            p.lessons.filter((l) =>
+                finishing(
+                    p.sittings.filter((s) => s.lesson === l && (before ? s.on < d : s.on <= d)),
+                    partsOf(l),
+                ),
+            ),
+        );
     const currentOn = (d: string): string | null => {
-        const done = new Set(p.sittings.filter((s) => s.finished && s.on < d).map((s) => s.lesson));
+        const done = doneBy(d, true);
         return p.lessons.find((l) => !done.has(l) && !isParked(l, d)) ?? null;
     };
 
@@ -527,23 +614,24 @@ export function trackDays(p: PlanInput): PlannedDay[] {
         if (lesson) days.push({ on: d, kind: "lesson", lesson });
     }
 
-    // The pace: the middle of how many planned days each finished lesson took this kid.
+    // The pace: the middle of how many planned days each finished lesson took this kid. A book's days
+    // are its sittings, so it says nothing about the pace.
     const spans = new Map<string, number>();
     for (const d of days) spans.set(d.lesson ?? "", (spans.get(d.lesson ?? "") ?? 0) + 1);
     const finished = new Set(p.sittings.filter((s) => s.finished).map((s) => s.lesson));
     const took = [...spans]
-        .filter(([l]) => finished.has(l))
+        .filter(([l]) => finished.has(l) && partsOf(l) === 1)
         .map(([, n]) => n)
         .sort((a, b) => a - b);
     const pace = Math.max(1, Math.min(5, took[Math.floor(took.length / 2)] ?? 3));
 
-    const nowDone = new Set(
-        p.sittings.filter((s) => s.finished && s.on <= p.today).map((s) => s.lesson),
-    );
+    const nowDone = doneBy(p.today, false);
     const remaining = p.lessons.filter((l) => !nowDone.has(l));
-    const left = new Map(remaining.map((l) => [l, pace]));
+    // a book takes a day for each of its sittings, and any other lesson the pace this kid keeps
+    const daysFor = (l: string): number => (partsOf(l) > 1 ? partsOf(l) : pace);
+    const left = new Map(remaining.map((l) => [l, daysFor(l)]));
     const first = remaining[0];
-    if (first !== undefined) left.set(first, Math.max(1, pace - (spans.get(first) ?? 0)));
+    if (first !== undefined) left.set(first, Math.max(1, daysFor(first) - (spans.get(first) ?? 0)));
     for (const d of dates.filter((x) => x > p.today)) {
         if (!remaining.length) break;
         // a parked lesson waits its gap out and is picked up after it, with its full pace
@@ -585,7 +673,11 @@ export function trackDays(p: PlanInput): PlannedDay[] {
         if (d.note) return d;
         const n = (seen.get(d.lesson ?? "") ?? 0) + 1;
         seen.set(d.lesson ?? "", n);
-        const kind: DayKind = n === 1 ? "lesson" : n === 2 ? "again" : "practice";
+        const parts = partsOf(d.lesson ?? "");
+        if (parts > 1 && n <= parts)
+            return { ...d, kind: "lesson", note: sittingNote(n, parts), part: n };
+        const after = parts > 1 ? n - parts + 1 : n;
+        const kind: DayKind = after === 1 ? "lesson" : after === 2 ? "again" : "practice";
         const note = KIND_NOTE[kind];
         return { ...d, kind, ...(note ? { note } : {}) };
     });
@@ -666,7 +758,7 @@ function placedDays(projected: PlannedDay[], p: PlanInput): PlannedDay[] {
 }
 
 /** Includes manual-only subjects and paused tracks without turning their curriculum back on. */
-export function scheduledTracks(
+function scheduledTracks(
     plan: Map<string, TrackOn>,
     moves: PlanInput["moves"],
 ): Map<string, TrackOn> {
@@ -680,21 +772,82 @@ export function scheduledTracks(
 }
 
 /**
- * A track's lessons for a kid of a grade, in the track's order: grade, then unit, then file order. A
- * track with nothing written at the kid's grade is read along its whole length, as the short tracks
- * are.
+ * A track's lessons for a kid of a grade, in unit and then file order. A track with nothing written
+ * at the kid's grade reads the nearest grade below it that has some, never a grade above, and is
+ * empty when there is none.
  */
 export function laneOf(lessons: readonly YearLesson[], track: string, grade: number): string[] {
-    const own = lessons
-        .filter((l) => l.subject === track)
-        .sort(
-            (a, b) =>
-                a.grade - b.grade ||
-                (a.unit ?? 1) - (b.unit ?? 1) ||
-                a.source.localeCompare(b.source),
-        );
-    const mine = own.filter((l) => l.grade === grade);
-    return (mine.length ? mine : own).map((l) => l.id);
+    const own = lessons.filter((l) => l.subject === track && l.grade <= grade);
+    const nearest = Math.max(...own.map((l) => l.grade));
+    return own
+        .filter((l) => l.grade === nearest)
+        .sort((a, b) => (a.unit ?? 1) - (b.unit ?? 1) || a.source.localeCompare(b.source))
+        .map((l) => l.id);
+}
+
+/** One track of a kid's plan, laid out over every school year they have had. */
+export interface Lane {
+    track: string;
+    /** The track as the plan has it now. */
+    on: TrackOn;
+    /** The track's lessons at the kid's grade now. */
+    lessons: string[];
+    days: PlannedDay[];
+    /** The kid's sittings in any lesson a year of this track planned or a grown-up placed. */
+    sittings: Sitting[];
+}
+
+/**
+ * A kid's tracks, each laid out year by year: a year plans its own grade's lessons at the pace its
+ * plan had, from the day it began to the day before the next began, so a day planned before a move
+ * keeps the old grade's lesson and is never read against the new grade's.
+ */
+export function lanesOf(o: {
+    events: readonly Envelope[];
+    kid: { id: string; grade: number };
+    lessons: readonly YearLesson[];
+    /** This kid's sittings. */
+    sittings: readonly Sitting[];
+    timeZone: string;
+    /** The day the kid's record begins. */
+    first: string;
+    today: string;
+    until: string;
+}): Lane[] {
+    const years = schoolYears(o.events, o.kid, o.first);
+    const moves = movesOf(o.events, o.kid.id, o.timeZone);
+    const placed = sessionChanges(moves);
+    const plans = years.map((_, i) =>
+        planOf(o.events, o.kid, o.timeZone, o.first, years[i + 1]?.from),
+    );
+    const now = planOf(o.events, o.kid, o.timeZone, o.first);
+    const parts = new Map(
+        o.lessons.flatMap((l) => (l.parts === undefined ? [] : [[l.id, l.parts] as const])),
+    );
+    return [...scheduledTracks(now, moves)].map(([track, on]) => {
+        const own = placed.filter((s) => s.track === track).map((s) => s.lesson);
+        const lanes = years.map((y) => laneOf(o.lessons, track, y.grade));
+        const inLane = new Set([...lanes.flat(), ...own]);
+        const sittings = o.sittings.filter((s) => inLane.has(s.lesson));
+        const days = years.flatMap((y, i) => {
+            const next = years[i + 1]?.from;
+            const lane = lanes[i] ?? [];
+            const inYear = new Set([...lane, ...own]);
+            const pace = plans[i]?.get(track);
+            return trackDays({
+                track,
+                lessons: lane,
+                perWeek: pace?.on ? pace.perWeek : 0,
+                start: y.from,
+                today: o.today,
+                until: next !== undefined && next <= o.until ? addDays(next, -1) : o.until,
+                moves,
+                sittings: sittings.filter((s) => inYear.has(s.lesson)),
+                parts,
+            }).filter((d) => (i === 0 || d.on >= y.from) && (next === undefined || d.on < next));
+        });
+        return { track, on, lessons: lanes[lanes.length - 1] ?? [], days, sittings };
+    });
 }
 
 /** A screen sitting begun and not ended, which the view opens at its first unanswered question. */
@@ -710,7 +863,7 @@ export interface Unfinished {
 /** A child's record as their view reads it, worked out from their log and never stored. */
 export interface ChildRecord {
     today: string;
-    /** The first day of the kid's school year, or null before a track was turned on. */
+    /** The first day of the kid's current school year, or null before a track was turned on. */
     start: string | null;
     /** The plan in the order it was made, the grade's default first, as the worlds read the plan. */
     tracks: TrackChange[];
@@ -737,7 +890,12 @@ export function childRecord(
     const f = fold(events, timeZone, (id) => subjectOf.get(id) ?? "maths");
     const mine = f.sittings.filter((s) => s.child === kid.id);
     const start = startOf(events, kid.id, timeZone);
-    const from = start ?? mine.map((s) => s.on).sort()[0] ?? today;
+    const first = start ?? mine.map((s) => s.on).sort()[0] ?? today;
+    const schooled = schoolYears(events, kid, first);
+    const current = schooled[schooled.length - 1]?.from ?? first;
+    // a grade's weeks count from the year the kid was last in it, and any other from the year they are in
+    const began = (grade: number): string =>
+        schooled.filter((y) => y.grade === grade).at(-1)?.from ?? current;
 
     const finished = new Set(mine.filter((s) => s.finished).map((s) => s.lesson));
     const grades = new Set(
@@ -748,46 +906,28 @@ export function childRecord(
         .map((grade) => ({
             grade,
             progress: progressIn(
-                yearOf(lessons, grade, "", from),
+                yearOf(lessons, grade, "", began(grade)),
                 kid.id,
                 f.attempts,
                 mine,
-                from,
+                began(grade),
                 today,
             ),
         }));
 
-    const moves = movesOf(events, kid.id, timeZone);
-    const plan = [...scheduledTracks(planOf(events, kid, timeZone, from), moves)].flatMap(
-        ([track, on]) => {
-            const lane = laneOf(lessons, track, kid.grade);
-            const inLane = new Set([
-                ...lane,
-                ...sessionChanges(moves)
-                    .filter((s) => s.track === track)
-                    .map((s) => s.lesson),
-            ]);
-            return [
-                {
-                    track,
-                    days: plannedCells(
-                        trackDays({
-                            track,
-                            lessons: lane,
-                            perWeek: on.on ? on.perWeek : 0,
-                            start: from,
-                            today,
-                            until: addDays(today, PLANNED_AHEAD),
-                            moves,
-                            sittings: mine.filter((s) => inLane.has(s.lesson)),
-                        }),
-                        mine.filter((s) => inLane.has(s.lesson)),
-                        today,
-                    ),
-                },
-            ];
-        },
-    );
+    const plan = lanesOf({
+        events,
+        kid,
+        lessons,
+        sittings: mine,
+        timeZone,
+        first,
+        today,
+        until: addDays(today, PLANNED_AHEAD),
+    }).map((lane) => ({
+        track: lane.track,
+        days: plannedCells(lane.days, lane.sittings, today),
+    }));
 
     const ended = new Set(
         events.flatMap((e) => (e.kind === "sitting-ended" ? [e.data.sitting] : [])),
@@ -819,8 +959,8 @@ export function childRecord(
 
     return {
         today,
-        start,
-        tracks: planChanges(events, kid, timeZone, from),
+        start: start === null && schooled.length === 1 ? null : current,
+        tracks: planChanges(events, kid, timeZone, first),
         years,
         plan,
         unfinished,

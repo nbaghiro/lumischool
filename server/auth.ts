@@ -718,21 +718,17 @@ async function automaticUsername(tx: FamilyTx, childName: string): Promise<strin
 /**
  * Flow 4: a kid and the parent's consent to the current notice, in one transaction. The event is the
  * family's, with the kid's id and not their name, so it outlives the kid (auth.md, "What the parent
- * consents to"). No email goes yet: the console transport has no consent template to print.
+ * consents to"). No email goes yet: the console transport has no consent template to print. The grade
+ * is one of `offered`, the grades the pack served has worlds and lessons for.
  */
 export async function addKidWithConsent(
     adult: Adult,
     input: { name: string; grade: number; notice: string },
+    offered: readonly number[],
 ): Promise<Added> {
     if (!adult.parent) return { error: "not-allowed" };
     const name = input.name.trim();
-    if (
-        !name ||
-        name.length > 40 ||
-        !Number.isInteger(input.grade) ||
-        input.grade < 0 ||
-        input.grade > 8
-    )
+    if (!name || name.length > 40 || !offered.includes(input.grade))
         return { error: "bad-request" };
     if (input.notice !== CONSENT_NOTICE) return { error: "notice", notice: CONSENT_NOTICE };
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {

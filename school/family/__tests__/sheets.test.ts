@@ -9,6 +9,7 @@ import {
     dayItems,
     lookOf,
     marksOf,
+    respondedOf,
     schoolWeek,
     sheetSays,
     sheetsBack,
@@ -271,7 +272,7 @@ const question = (n: number, over: Partial<PackQuestion> = {}): PackQuestion => 
 });
 
 const lesson: PackLesson = {
-    pack: 1,
+    pack: 2,
     id: "l1",
     source: "g1/add.lesson",
     title: "Adding one",
@@ -443,5 +444,121 @@ describe("a child's week as a grown-up's page reads it", () => {
             ],
         );
         assert.equal(w.look, null);
+    });
+});
+
+describe("a piece handed in on screen", () => {
+    it("waits on the grown-up's page beside the paper until a response names it", () => {
+        const kid = "00000000-0000-4000-8000-00000000000a";
+        const base = {
+            family_id: "00000000-0000-4000-8000-0000000000f0",
+            kid_id: kid,
+            actor: "00000000-0000-4000-8000-0000000000a0",
+            device: "00000000-0000-4000-8000-0000000000d0",
+        };
+        const sitting = "s-write";
+        const piece = "00000000-0000-4000-8000-0000000000b2";
+        const events: Envelope[] = [
+            {
+                ...base,
+                id: "00000000-0000-4000-8000-0000000000b0",
+                seq: 0,
+                at: "2026-08-20T15:00:00.000Z",
+                kind: "sitting-began",
+                data: { sitting, lesson: "l1", lessonHash: "h-medium", pack: "p", mode: "screen" },
+            },
+            {
+                ...base,
+                id: "00000000-0000-4000-8000-0000000000b1",
+                seq: 1,
+                at: "2026-08-20T15:05:00.000Z",
+                kind: "answered",
+                data: {
+                    sitting,
+                    q: ref(2),
+                    given: { k: "number", text: "3" },
+                    timing: { k: "screen", toFirstInput: 900, toAnswer: 1200, leftPage: false },
+                    right: true,
+                    tries: 1,
+                    rule: null,
+                    hints: 0,
+                },
+            },
+            {
+                ...base,
+                id: piece,
+                seq: 2,
+                at: "2026-08-20T15:10:00.000Z",
+                kind: "answered",
+                data: {
+                    sitting,
+                    q: ref(3),
+                    given: { k: "unmarked" },
+                    timing: { k: "screen", toFirstInput: 900, toAnswer: 60000, leftPage: false },
+                    right: null,
+                    tries: 1,
+                    rule: null,
+                    hints: 0,
+                },
+            },
+        ];
+        const lessons = [
+            {
+                id: "l1",
+                source: "l1.lesson",
+                title: "l1",
+                goal: null,
+                grade: 1,
+                unit: 1,
+                subject: "writing",
+                format: "teach",
+            },
+        ];
+        const f = fold(events, "UTC", () => "writing");
+        assert.deepEqual(
+            f.pieces.map((p) => [p.answer, p.q.n]),
+            [[piece, 3]],
+        );
+        assert.equal(f.attempts.length, 1, "a piece is never counted right or wrong");
+        const w = childWeek(events, kid, lessons, "UTC", "2026-09-14");
+        const [back] = w.back;
+        assert.equal(w.back.length, 1, "an old screen sitting stays while a piece of it waits");
+        assert.ok(back);
+        assert.deepEqual(
+            back.pieces.map((p) => p.answer),
+            [piece],
+        );
+        assert.deepEqual(
+            waitingToMark(kid, f.sittings, f.attempts, f.printed, f.pieces).map((s) => s.lesson),
+            ["l1"],
+        );
+
+        let n = 0;
+        const drafts = respondedOf({
+            kid,
+            on: { pieces: back.pieces },
+            items: back.pieces.map((p) => ({ ref: p.q, answer: "", rules: [], notice: [] })),
+            ticked: new Map(),
+            at: "2026-09-14T09:00:00.000Z",
+            newId: () => `00000000-0000-4000-8000-00000000010${n++}`,
+        });
+        assert.equal(drafts.length, 1, "a piece with no notice list is still responded to");
+        const [draft] = drafts;
+        assert.ok(draft?.kind === "responded");
+        assert.equal(draft.data.answer, piece);
+        assert.equal(draft.data.sheet, null);
+        const read = check({
+            ...draft,
+            family_id: base.family_id,
+            actor: null,
+            device: base.device,
+            seq: 3,
+        });
+        assert.ok(read.ok, read.ok ? "" : read.problem);
+        if (!read.ok) return;
+        assert.deepEqual(
+            childWeek([...events, read.envelope], kid, lessons, "UTC", "2026-09-14").back,
+            [],
+        );
     });
 });

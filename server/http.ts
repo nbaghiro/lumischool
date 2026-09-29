@@ -93,13 +93,16 @@ import {
     kidRecord,
     kidState,
     kidView,
+    moveKid,
     packFile,
+    packOf,
     packView,
     Refused,
     saveAuthored,
 } from "./sync";
 import { loadPack, watchPack, type Pack } from "./pack";
 import { readLesson } from "../engine/pack";
+import { offeredGrades } from "../school/worlds/worlds";
 import { staticFrom } from "./static";
 import { emailPreferences, changeLetters, unsubscribeRequest, webhookRequest } from "./letters";
 import { listPaintings, loadPainting, savePainting, deletePainting } from "./painting";
@@ -740,11 +743,11 @@ function routes(config: Config): Route[] {
             run: async (c, adult) =>
                 json(
                     200,
-                    await listPaintings(
-                        adult,
-                        c.url.searchParams.get("kid_id"),
-                        c.url.searchParams.get("before"),
-                    ),
+                    await listPaintings(adult, c.url.searchParams.get("kid_id"), {
+                        q: c.url.searchParams.get("q"),
+                        after: c.url.searchParams.get("after"),
+                        limit: c.url.searchParams.get("limit"),
+                    }),
                 ),
         },
         {
@@ -964,16 +967,34 @@ function routes(config: Config): Route[] {
             who: "adult",
             run: async (c, adult) => {
                 const grade = field(c.body, "grade");
-                const out = await addKidWithConsent(adult, {
-                    name: textField(c.body, "name"),
-                    grade: typeof grade === "number" ? grade : -1,
-                    notice: textField(field(c.body, "consent"), "notice"),
-                });
+                const out = await addKidWithConsent(
+                    adult,
+                    {
+                        name: textField(c.body, "name"),
+                        grade: typeof grade === "number" ? grade : -1,
+                        notice: textField(field(c.body, "consent"), "notice"),
+                    },
+                    offeredGrades(packOf(config.pack).index.lessons),
+                );
                 if ("kid" in out) return json(200, out);
                 if (out.error === "notice")
                     return problem(409, "notice-changed", { notice: out.notice });
                 return problem(out.error === "not-allowed" ? 403 : 400, out.error);
             },
+        },
+        {
+            method: "POST",
+            path: "/api/kids/:kid/move-up",
+            who: "adult",
+            run: async (c, adult) =>
+                json(200, {
+                    kid: await moveKid(
+                        adult,
+                        c.params.kid ?? "",
+                        field(c.body, "grade"),
+                        offeredGrades(packOf(config.pack).index.lessons),
+                    ),
+                }),
         },
         {
             method: "GET",
@@ -1277,6 +1298,15 @@ function routes(config: Config): Route[] {
                     packFile(config.pack, c.params.digest ?? "", `scenes/${c.params.file ?? ""}`),
                 ),
         },
+        {
+            method: "GET",
+            path: "/api/pack/:digest/books/:file",
+            who: "adult",
+            run: async (c) =>
+                packedFile(
+                    packFile(config.pack, c.params.digest ?? "", `books/${c.params.file ?? ""}`),
+                ),
+        },
 
         {
             method: "GET",
@@ -1333,6 +1363,21 @@ function routes(config: Config): Route[] {
                         config.pack,
                         c.params.digest ?? "",
                         `scenes/${c.params.file ?? ""}`,
+                    ),
+                ),
+        },
+        {
+            method: "GET",
+            path: "/api/kid/:kid/pack/:digest/books/:file",
+            who: "kid",
+            run: async (c, kid) =>
+                packedFile(
+                    kidFile(
+                        kid,
+                        c.params.kid ?? "",
+                        config.pack,
+                        c.params.digest ?? "",
+                        `books/${c.params.file ?? ""}`,
                     ),
                 ),
         },

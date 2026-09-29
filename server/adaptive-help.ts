@@ -14,6 +14,7 @@ import {
     adaptiveContext,
 } from "../school/adaptive";
 import { askedIn } from "../school/lessons";
+import { ADAPTIVE_PROMPT_VERSION } from "../school/assistant/adaptive";
 import { adaptiveTurn } from "./adaptive";
 import { withFamily } from "./db/client";
 import * as store from "./db/tutoring";
@@ -181,7 +182,7 @@ export async function turnHelp(
                 status: "pending",
                 result: null,
                 expected_revision: help.revision,
-                prompt_version: "adaptive-1",
+                prompt_version: ADAPTIVE_PROMPT_VERSION,
                 created_at: new Date().toISOString(),
             });
         const live =

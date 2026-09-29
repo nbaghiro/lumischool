@@ -5,8 +5,34 @@ import { withFamily } from "../db/client";
 import { issue, bindToBrowser } from "../db/keys";
 import { app, configFrom, type Config } from "../http";
 import type { Email } from "../email";
+import type { Pack } from "../pack";
+import { PACK } from "../../engine/pack";
 
 export const ORIGIN = "http://localhost:5173";
+
+/** A lesson of each grade the run has worlds for, so the server offers those grades and serves nothing. */
+const PACKED: Pack = {
+    digest: "test",
+    index: {
+        pack: PACK,
+        lessons: [1, 2, 3, 4].map((grade) => ({
+            id: `g${grade}-test`,
+            source: `lessons/g${grade}-test.lumi`,
+            title: "A test lesson",
+            goal: null,
+            grade,
+            unit: 1,
+            subject: "maths",
+            format: "teach",
+            art: [],
+            file: `lessons/g${grade}-test-0000000000.json`,
+            levels: ["medium"],
+            first: null,
+            skills: [],
+        })),
+    },
+    file: () => null,
+};
 
 /** A local configuration whose email transport keeps what it would have printed. */
 export function local(): { config: Config; outbox: Email[] } {
@@ -16,6 +42,7 @@ export function local(): { config: Config; outbox: Email[] } {
     return {
         config: {
             ...base,
+            pack: PACKED,
             send: async (email) => {
                 outbox.push(email);
             },

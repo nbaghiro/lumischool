@@ -294,11 +294,17 @@ const beadWires: SkillGround = {
     },
 };
 
+/** The bead a bead string's arrow points at, read off the drawing, since items name their own value. */
+function markOf(q: PackQuestion): number | null {
+    const mark = (q.scene?.nodes ?? []).find((n) => n.type === "beadstring")?.v.mark;
+    return typeof mark === "number" && Number.isSafeInteger(mark) ? mark : null;
+}
+
 /** A string of beads with an arrow at one bead: the counting items that read a number line of beads. */
 const beadString: SkillGround = {
-    fits: (q) => nodeOf(q, "beadstring") !== null && wholeIn(q, "n") !== null,
+    fits: (q) => markOf(q) !== null,
     quantities(q) {
-        const n = wholeIn(q, "n") ?? 0;
+        const n = markOf(q) ?? 0;
         const asked = Object.values(q.answers)[0] ?? "";
         return [
             {
@@ -314,7 +320,7 @@ const beadString: SkillGround = {
     ringable(q) {
         const id = nodeOf(q, "beadstring");
         if (!id) return [];
-        const n = wholeIn(q, "n") ?? 0;
+        const n = markOf(q) ?? 0;
         return [
             { ref: id, what: "the whole bead string", spans: [id] },
             { ref: `${id}.cut`, what: "the arrow under the string", spans: [`${id}.cut`] },
@@ -375,24 +381,22 @@ const tenFrame: SkillGround = {
     },
 };
 
-/** Which ground a skill works from. A skill with none is taught by the guide, as it was. */
-const GROUND: Record<string, SkillGround> = {
-    "counting.to-twenty": beadWires,
-    "subtraction.compare": beadWires,
-    "addition.cross-ten": tenFrame,
+/**
+ * Which grounds a skill works from, first fit first. A skill with none is taught by the guide, as it
+ * was, so a drawing that turns up in an older grade's lesson under another skill grounds nothing.
+ */
+const GROUND: Record<string, readonly SkillGround[]> = {
+    "counting.to-twenty": [beadWires, beadString],
+    "subtraction.compare": [beadWires],
+    "addition.cross-ten": [tenFrame],
 };
 
 /** The ground for a question, by the skills its item declares, or null where no skill here fits it. */
 export function groundFor(skills: readonly string[], q: PackQuestion): SkillGround | null {
-    for (const skill of skills) {
-        const ground = GROUND[skill];
-        if (ground?.fits(q)) return ground;
-    }
-    // A bead string stands in every counting lesson, whatever skill the item names.
-    return beadString.fits(q) ? beadString : null;
+    for (const skill of skills)
+        for (const ground of GROUND[skill] ?? []) if (ground.fits(q)) return ground;
+    return null;
 }
-
-export const GROUND_SKILLS: readonly string[] = Object.keys(GROUND);
 
 export function adaptiveContext(o: {
     lessonId: string;

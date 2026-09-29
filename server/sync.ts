@@ -6,7 +6,7 @@
 import { randomUUID } from "node:crypto";
 import { check, type Envelope, type EventKind } from "../engine/answer";
 import { mayRead, mayWrite, reach, reaches, type Caller } from "../school/family/access";
-import { childRecord } from "../school/family/family";
+import { childRecord, mayMoveTo } from "../school/family/family";
 import { childWeek } from "../school/family/sheets";
 import { addDays, dayIn } from "../school/record";
 import type {
@@ -21,9 +21,19 @@ import type {
 import { consented, type Adult, type KidSession } from "./auth";
 import { withFamily, type FamilyTx } from "./db/client";
 import { contentByHash, contentNamed, factsOf, familyContent, saveContent } from "./db/content";
-import { appendAs, BadEnvelope, kidsOf, log, membersOf, peopleOf, person } from "./db/events";
+import {
+    appendAs,
+    BadEnvelope,
+    kidsOf,
+    log,
+    membersOf,
+    peopleOf,
+    person,
+    record,
+    setGrade,
+} from "./db/events";
 import { hasPin, type KidKey } from "./db/keys";
-import type { Content } from "./db/schema";
+import type { Content, Kid } from "./db/schema";
 import type { Pack } from "./pack";
 
 /** A request the caller may not make, answered with its status and a stable code (.docs/api.md). */
@@ -313,7 +323,7 @@ export const packView = (pack: Pack | null): PackView => {
 };
 
 /** A lesson's file from the pack named, as JSON text, or 404 for any other pack or file. */
-/** A file of the pack, a lesson's under `lessons/` or its first drawing's under `scenes/`, by the path the index names. */
+/** A file of the pack, a lesson's under `lessons/`, its first drawing's under `scenes/` or its book's under `books/`, by the path the index names. */
 export function packFile(pack: Pack | null, digest: string, path: string): string {
     const p = packOf(pack);
     const text = p.digest === digest ? p.file(path) : null;
@@ -360,6 +370,46 @@ export async function kidRecord(
             pack: p.digest,
             ...childRecord(events, row, p.index.lessons, kid.family.time_zone, today),
         };
+    });
+}
+
+/**
+ * A parent moves a kid to the grade next to theirs, up or back for a move made too early
+ * (.docs/api.md): the row and a `moved-up` event from today in one transaction, so the two agree.
+ */
+export async function moveKid(
+    adult: Adult,
+    kidId: string,
+    grade: unknown,
+    offered: readonly number[],
+): Promise<Kid> {
+    if (!adult.parent) throw new Refused(403, { error: "not-allowed" });
+    if (typeof grade !== "number" || !Number.isInteger(grade))
+        throw new Refused(400, { error: "bad-request", problem: "grade is a whole number" });
+    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        await kidIn(tx, adult, kidId);
+        const row = (await kidsOf(tx, adult.family.id)).find((k) => k.id === kidId);
+        if (!row) throw new Refused(404, { error: "not-found" });
+        if (!mayMoveTo(row.grade, grade, offered))
+            throw new Refused(400, {
+                error: "bad-request",
+                problem: "a kid moves to the grade next to theirs, and only to one that is offered",
+            });
+        const moved = await setGrade(tx, adult.family.id, kidId, { from: row.grade, to: grade });
+        if (!moved)
+            throw new Refused(409, {
+                error: "bad-request",
+                problem: "the grade changed meanwhile",
+            });
+        await record(tx, adult.family.id, [
+            {
+                kid_id: kidId,
+                kind: "moved-up",
+                data: { from: row.grade, grade, onDay: adult.today },
+                actor: adult.user,
+            },
+        ]);
+        return moved;
     });
 }
 

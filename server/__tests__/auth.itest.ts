@@ -769,6 +769,17 @@ describe("signing in", { skip: reason ?? false }, () => {
             [notice.status, notice.body],
             [409, { error: "notice-changed", notice: "2026-09-weekly" }],
         );
+        // the test pack has lessons for grades one to four, the grades the run has worlds for
+        for (const grade of [0, 5, 1.5])
+            assert.equal(
+                (
+                    await parent.call("POST", "/api/kids", {
+                        body: { name: "Maya", grade, consent: { notice: "2026-09-weekly" } },
+                    })
+                ).status,
+                400,
+                `grade ${grade} is not offered`,
+            );
 
         const [theo] = await db()
             .db.insert(kids)

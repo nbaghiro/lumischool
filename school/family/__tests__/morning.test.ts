@@ -133,7 +133,7 @@ describe("a lesson as the morning reads it", () => {
         },
     ];
     const packed: PackLesson = {
-        pack: 1,
+        pack: 2,
         id: "g1-a",
         source: "g1/a.lumi",
         title: "Taking away",

@@ -1,7 +1,7 @@
 import type { LessonFacts } from "../engine/pack";
 import { mastery, progressOf, type Attempt, type Progress, type Sitting } from "./record";
 
-export type Format = "teach" | "puzzles" | "worked" | "review";
+export type Format = "teach" | "puzzles" | "worked" | "review" | "book";
 export type Marker = "sky" | "mint" | "berry" | "tang" | "glow";
 
 /** `short` is the name written on the map, where there is room for a few words only. */
@@ -31,6 +31,8 @@ export interface LessonDef {
     aside?: string;
     /** Prerequisites besides the lesson before it on the path. */
     needs?: string[];
+    /** A book lesson's sittings, each a day; absent for a lesson read in one. */
+    parts?: number;
 }
 
 export interface Year {
@@ -47,11 +49,17 @@ export type State = "done" | "current" | "open" | "locked";
 /** What a year is read from: a lesson's facts, as the pack's index holds them. */
 export type YearLesson = Pick<
     LessonFacts,
-    "id" | "source" | "title" | "goal" | "grade" | "unit" | "subject" | "format"
+    "id" | "source" | "title" | "goal" | "grade" | "unit" | "subject" | "format" | "parts"
 >;
 
 const MARKERS: readonly Marker[] = ["sky", "mint", "berry", "tang", "glow"];
-const FORMATS: Record<Format, true> = { teach: true, puzzles: true, worked: true, review: true };
+const FORMATS: Record<Format, true> = {
+    teach: true,
+    puzzles: true,
+    worked: true,
+    review: true,
+    book: true,
+};
 const isFormat = (f: string): f is Format => Object.hasOwn(FORMATS, f);
 
 /** A lesson's place in its strand, which is what the map walks along; `of` is the strand's length. */
@@ -84,18 +92,43 @@ function placed(lessons: readonly YearLesson[], grade: number): Placed[] {
     return out;
 }
 
+/** The `step`th of `of` lessons sits as far along the path as it is through them, offset per strand
+ * so strands do not all leave from the same lessons. */
+const spread = (path: readonly Placed[], step: number, of: number, strand: number) =>
+    path[Math.min(path.length - 1, Math.floor(((step - 0.5) * path.length) / of) + (strand % 3))];
+
 /**
- * The maths lesson a strand lesson hangs off: as far through the year as the lesson is through its own
- * strand, so a strand spreads along the whole path, offset by a lesson or two per strand so strands
- * do not all leave from the same lessons.
+ * The maths lesson each strand lesson hangs off, among those of the term its own unit names, since a
+ * lesson is written for that term's world (.docs/tracks.md). A lesson with no unit spreads along the
+ * whole path.
  */
-const hostOf = (maths: readonly Placed[], p: Placed): Placed | undefined =>
-    maths[
-        Math.min(
-            maths.length - 1,
-            Math.floor(((p.step - 0.5) * maths.length) / p.of) + (p.strand % 3),
-        )
-    ];
+function hostsOf(
+    all: readonly Placed[],
+    maths: readonly Placed[],
+): Map<Placed, Placed | undefined> {
+    const units = [...new Set(maths.map((p) => unitNumber(p.lesson)))].sort((a, b) => a - b);
+    // three units to a term, as `termOf` in school/worlds/roll.ts counts them; a unit the path lacks
+    // joins the path unit before it
+    const termOf = (n: number) =>
+        Math.floor(Math.max(0, units.filter((u) => u <= n).length - 1) / 3);
+    const hosts = new Map<Placed, Placed | undefined>();
+    for (const p of all) {
+        if (p.subject === "maths") continue;
+        const unit = p.lesson.unit;
+        if (unit === null) {
+            hosts.set(p, spread(maths, p.step, p.of, p.strand));
+            continue;
+        }
+        const term = termOf(unit);
+        const path = maths.filter((q) => termOf(unitNumber(q.lesson)) === term);
+        const own = all.filter(
+            (q) =>
+                q.subject === p.subject && q.lesson.unit !== null && termOf(q.lesson.unit) === term,
+        );
+        hosts.set(p, spread(path, own.indexOf(p) + 1, own.length, p.strand));
+    }
+    return hosts;
+}
 
 /**
  * One grade as a year. Maths is the path, since it is the strand that is complete; every other strand
@@ -109,6 +142,7 @@ export function yearOf(
 ): Year {
     const all = placed(lessons, grade);
     const maths = all.filter((p) => p.subject === "maths");
+    const hosts = hostsOf(all, maths);
     const units: Unit[] = [...new Set(maths.map((p) => unitNumber(p.lesson)))]
         .sort((a, b) => a - b)
         .map((n) => {
@@ -130,7 +164,7 @@ export function yearOf(
         });
     const defs = all.map((p): LessonDef => {
         const l = p.lesson;
-        const host = p.subject === "maths" ? undefined : hostOf(maths, p);
+        const host = hosts.get(p);
         return {
             id: l.id,
             unit: host ? unitNumber(host.lesson) : unitNumber(l),
@@ -141,6 +175,7 @@ export function yearOf(
             real: true,
             subject: p.subject,
             ...(host ? { branch: host.lesson.id, aside: p.subject } : {}),
+            ...(l.parts === undefined ? {} : { parts: l.parts }),
         };
     });
     return { child, grade, title: `Grade ${grade}`, started, units, lessons: defs };
@@ -283,4 +318,5 @@ export const progressIn = (
         sittings,
         start,
         today,
+        new Map(y.lessons.flatMap((l) => (l.parts === undefined ? [] : [[l.id, l.parts]]))),
     );

@@ -41,13 +41,14 @@ export interface LessonShape {
 
 /** A lesson at a level as the morning reads it. */
 export function shapeOf(lesson: PackLesson, level: Level = "medium"): LessonShape {
-    let puzzles = 0;
+    // puzzles and a book's sittings are numbered, each kind from 1
+    const nth = new Map<string, number>();
     const sections: SectionShape[] = [];
     for (const s of (lesson.levels[level] ?? lesson.levels.medium).sections) {
-        if (s.type === "puzzle") puzzles += 1;
+        nth.set(s.type, (nth.get(s.type) ?? 0) + 1);
         sections.push({
             type: s.type,
-            label: sectionLabel(s.type, puzzles, s.stars),
+            label: sectionLabel(s.type, nth.get(s.type) ?? 1, s.stars),
             questions: s.blocks.reduce(
                 (n, b) => n + (b.k === "ask" ? b.questions.filter((q) => q.n > 0).length : 0),
                 0,

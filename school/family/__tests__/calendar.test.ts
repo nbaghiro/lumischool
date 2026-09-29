@@ -10,8 +10,6 @@ import {
     familyDay,
     foldCalendar,
     monthGrid,
-    putBack,
-    saidOf,
     setTerms,
     termOn,
     weekdayNumber,
@@ -203,27 +201,6 @@ describe("the family's calendar, folded from the log", () => {
         const off = drafts[0];
         assert.ok(off && off.kind === "plan-changed" && off.data.op.op === "days-off");
         assert.equal(off.data.op.note, "The museum");
-    });
-
-    it("puts a change back with one undo an event, and says what each change did", () => {
-        const shift = planned("2026-09-14", { op: "shift", from: "2026-09-21", weeks: 1 });
-        const cal = fold([start(), shift]);
-        const change = cal.changes.find((c) => c.op.op === "shift");
-        assert.ok(change);
-        const drafts = putBack({ newId: () => "u1", at: `${TODAY}T12:00:00.000Z` }, [
-            { id: change.id, kid: change.kid },
-        ]);
-        assert.equal(drafts.length, 1);
-        const first = drafts[0];
-        assert.ok(first && first.kind === "plan-changed" && first.data.op.op === "undo");
-        assert.equal(first.data.op.of, change.id);
-        const names = {
-            kid: (id: string | null): string => (id ? "Rosie" : "everyone"),
-            lesson: (id: string): string => id,
-            track: (id: string): string => id,
-            day: (iso: string): string => iso,
-        };
-        assert.equal(saidOf(change, names), "Rosie: everything from 2026-09-21 moved on 1 week.");
     });
 
     it("lays a month as whole weeks from Monday, and a week as five days or seven", () => {

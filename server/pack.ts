@@ -1,6 +1,6 @@
 // The pack the API serves a family's lessons from, read from the folder `npm run pack` wrote
 // (tools/pack.ts). A file is read once and kept, and only a file the index names is served, a
-// lesson's or its first drawing's, so a path is never a way past the folder.
+// lesson's, its first drawing's or a book lesson's text, so a path is never a way past the folder.
 
 import { existsSync, readFileSync, watch } from "node:fs";
 import { join } from "node:path";
@@ -10,7 +10,7 @@ export interface Pack {
     /** sha256 of the index's text, which names the pack and every request for its files. */
     digest: string;
     index: PackIndex;
-    /** A file the index names, a lesson's or its first drawing's, as JSON text, or null for any other path. */
+    /** A file the index names, a lesson's, its first drawing's or its book's, as JSON text, or null for any other path. */
     file(path: string): string | null;
 }
 
@@ -31,7 +31,11 @@ export function loadPack(dir: string): Pack | { problem: string } {
     const read = readIndex(raw);
     if (!read.ok) return { problem: `${indexFile}: ${read.problem}` };
     const files = new Set(
-        read.index.lessons.flatMap((l) => (l.first === null ? [l.file] : [l.file, l.first])),
+        read.index.lessons.flatMap((l) => [
+            l.file,
+            ...(l.first === null ? [] : [l.first]),
+            ...(l.book === undefined ? [] : [l.book]),
+        ]),
     );
     const texts = new Map<string, string>();
     return {

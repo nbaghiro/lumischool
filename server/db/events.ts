@@ -340,6 +340,21 @@ export async function addKid(
     return row;
 }
 
+/** Moves a kid's row from one grade to another, or answers null when the row is no longer at `from`. */
+export async function setGrade(
+    tx: FamilyTx,
+    family: string,
+    kid: string,
+    move: { from: number; to: number },
+): Promise<Kid | null> {
+    const [row] = await tx
+        .update(kids)
+        .set({ grade: move.to })
+        .where(and(eq(kids.family_id, family), eq(kids.id, kid), eq(kids.grade, move.from)))
+        .returning();
+    return row ?? null;
+}
+
 /** Writes a new login, or refreshes its name: run with `app.user` set to it, the only row a person may write. */
 export async function saveLogin(
     tx: FamilyTx,

@@ -64,13 +64,12 @@ const facts = (id: string, grade: number, unit: number, subject = "maths"): Year
 
 /**
  * Two years of nine units, one maths lesson a unit, so each term is three units; and three reading
- * lessons in the first year, which hang off the maths lessons of units 3, 6 and 9 (school/year.ts), so
- * one falls in each term.
+ * lessons in the first year, in units 1, 4 and 7, so one falls in each term (school/year.ts).
  */
 const LESSONS: YearLesson[] = [
     ...Array.from({ length: 9 }, (_, i) => facts(`g1-u${i + 1}`, 1, i + 1)),
     ...Array.from({ length: 9 }, (_, i) => facts(`g2-u${i + 1}`, 2, i + 1)),
-    ...[1, 2, 3].map((n) => facts(`read-${n}`, 1, 1, "reading")),
+    ...[1, 2, 3].map((n) => facts(`read-${n}`, 1, n * 3 - 2, "reading")),
 ];
 
 const OWN: Record<number, string[]> = {

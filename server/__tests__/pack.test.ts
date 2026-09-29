@@ -11,7 +11,7 @@ const sha256 = (text: string): string => createHash("sha256").update(text, "utf8
 /** A pack of no lessons written into `dir` under its own digest, made to differ by a lesson id, and named current. */
 function writePack(dir: string, salt: string): string {
     const index = JSON.stringify({
-        pack: 1,
+        pack: 2,
         lessons: [
             {
                 id: `l-${salt}`,
@@ -24,7 +24,7 @@ function writePack(dir: string, salt: string): string {
                 format: "teach",
                 art: [],
                 file: `lessons/l-${salt}-0000000000.json`,
-                levels: { medium: { hash: "0000000000" } },
+                levels: ["medium"],
                 first: null,
                 skills: [],
             },

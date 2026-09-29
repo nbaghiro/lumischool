@@ -98,7 +98,7 @@ const adding = question({
 });
 
 const lesson: PackLesson = {
-    pack: 1,
+    pack: 2,
     id: "g1-adding",
     source: "lessons/g1-04-adding.lumi",
     title: "Adding to twenty",
