@@ -105,9 +105,9 @@ export const termsIn = (year: Year): number => Math.max(1, Math.ceil(year.units.
  * The one lesson a child stands at on a day that holds several: the maths lesson when there is one,
  * since maths is the path and every other subject hangs off it, and otherwise the last of them in
  * the year's order. It was once the last of them whatever their subjects, which read as deliberate
- * and was not: an aside is spread along the whole path by `hostOf` in school/year.ts, so on any
- * weekday whose aside hung further along than the day's maths the child stood a term ahead on the
- * map, and their roll opened in that world. Which weekday that was depended on which day each
+ * and was not: an aside is spread along its term's maths lessons by `hostsOf` in school/year.ts, so
+ * on any weekday whose aside hung further along than the day's maths the child stood ahead of their
+ * work on the map. Which weekday that was depended on which day each
  * subject fell on, so a child's place moved with the timetable rather than with their work. */
 export function standingAt(year: Year, now: readonly string[]): string | undefined {
     const mine = pathOrder(year).filter((l) => now.includes(l.id));

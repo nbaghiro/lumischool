@@ -31,6 +31,17 @@
     height: 100%;
     pointer-events: none;
 }
+/* the roll's ground and drawings, which the GPU draws (map-scene.ts) and the page never lays out */
+.wd-host > .wd-source {
+    display: none;
+}
+.wd-host > canvas.map-gl {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
 .wd-host > .view-frame > .world {
     position: absolute;
     left: 0;
@@ -66,18 +77,6 @@
 }
 .wd-host .wd-sheets {
     z-index: 1;
-}
-/* The page's own layer over the day rows (world.tsx, the `over` slot). It travels with the roll, sits
-   above the sheets, and takes no pointer itself, so the paper behind it still drags; what the page
-   puts in it takes its own. */
-.wd-host .wd-over {
-    z-index: 2;
-}
-.wd-over > .wd-over-at {
-    pointer-events: none;
-}
-.wd-over-at > * {
-    pointer-events: auto;
 }
 /* Once the roll has settled round a sheet, the guides rest with the drawings the player settles: a
    guide's boil repaints its whole picture every frame, which a child reading does not need. */

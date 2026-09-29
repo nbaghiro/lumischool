@@ -25,8 +25,8 @@ test("a child's subject place opens its own lessons, returns to its map location
     await openChildrensView(page, ["Rosie"]);
     const map = childsMap(page, "Rosie");
     await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
-    await expect(map.locator(".ow-node")).toHaveCount(38);
-    await expect(map.locator(".ow-region")).toHaveCount(8);
+    await expect(map.locator(".ow-node")).toHaveCount(41);
+    await expect(map.locator(".ow-region")).toHaveCount(9);
     await map.getByRole("button", { name: "Every world", exact: true }).click();
     await expect(map.getByRole("button", { name: "Near me", exact: true })).toBeVisible();
     await map.getByRole("button", { name: "Near me", exact: true }).click();

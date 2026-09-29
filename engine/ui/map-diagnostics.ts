@@ -5,13 +5,34 @@ interface Entry {
     values: number[];
 }
 
-const options = new URLSearchParams(location.search);
+// off where there is no page, as in the unit tests that import the scene
+const options = new URLSearchParams(typeof location === "undefined" ? "" : location.search);
 const enabled = options.has("mapDebug");
 export const mapVariant = enabled ? options.get("mapLayer") : null;
 const entries: Entry[] = [];
 const scenes = new Set<number>();
 let serial = 0;
 let saveLater = (): void => {};
+
+const counts: Record<string, number> = {};
+const notes: Record<string, number> = {};
+
+/** Adds to a running total the page's diagnostics report, as `art-lost` and `art-late` do (map-scene.ts). */
+export function mapCount(event: string, n: number): void {
+    if (!enabled || !n) return;
+    counts[event] = (counts[event] ?? 0) + n;
+}
+
+/** Keeps the latest value of something the page's diagnostics report, as when the scene last fell quiet. */
+export function mapNote(name: string, value: number): void {
+    if (!enabled) return;
+    notes[name] = value;
+}
+
+/** Offers the suite a way to act on the map under `?mapDebug`, as `window[name]`; the last map to offer it has it. */
+export function mapHook(name: string, act: () => void): void {
+    if (enabled) Reflect.set(window, name, act);
+}
 
 export function mapEvent(scene: number, event: string, ...values: number[]): void {
     if (!enabled) return;
@@ -51,6 +72,8 @@ if (enabled)
                 variant: mapVariant,
                 scenes: scenes.size,
                 entries: [...entries],
+                counts: { ...counts },
+                notes: { ...notes },
             }));
             saveLater();
         })

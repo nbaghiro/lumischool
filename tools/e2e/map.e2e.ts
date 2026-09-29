@@ -1,9 +1,8 @@
-// The grown-ups' map (.docs/parent-app.md, "The map, for grown-ups") and the look a lesson page opens
-// over itself: the map of every world opens from the bar with every place open and nobody on it, pans
-// and zooms; a world of another year opens from it, its lessons read as written with the notes, and
-// the way back reaches the map and the home; a lesson in Explore opens as a child sees it over the
-// page and Escape, the back button and Close each return the grown-up to the lesson; and the site's
-// See the map opens the sample child's map over the page. Nothing any of it does is recorded.
+// The grown-ups' map (.docs/parent-app.md, "The map, for grown-ups") and the look the site opens over
+// itself: the map of every world opens from the bar with every place open and nobody on it, pans and
+// zooms; a world of another year opens from it, its lessons read as written with the notes, and the
+// way back reaches the map and the home; and the site's See the map opens the sample child's map over
+// the page. Nothing any of it does is recorded.
 
 import { expect, type Locator, type Page } from "@playwright/test";
 import { atScreen, signInAs, smallTargets, test } from "./steps";
@@ -96,9 +95,9 @@ test("the map opens from the bar for a signed-in grown-up, with every land drawn
     await expect(page).toHaveURL(/\/map$/);
     // Each world has one location, with geographic region names.
     const places = map.locator(".ow-node");
-    expect(await places.count()).toBe(38);
+    expect(await places.count()).toBe(41);
     await expect(map.locator('.ow-node[aria-disabled="true"]')).toHaveCount(0);
-    expect(await map.locator(".ow-region").count()).toBe(8);
+    expect(await map.locator(".ow-region").count()).toBe(9);
     // nobody stands on it: no guide, no "You are here", no place chosen, so no ring and no name
     await expect(map.locator(".ow-token")).toHaveCount(0);
     await expect(map.getByText("You are here")).toHaveCount(0);
@@ -207,7 +206,7 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
     const mountains = map.locator('.ow-node[aria-label*="mountains" i]').first();
     await expect(mountains).toHaveAttribute(
         "aria-label",
-        "The mountains. Grade journeys · 1, 2, 3, 4.",
+        "The mountains. Grade journeys · 1, 2, 3, 4, 5, 6.",
     );
     const entries = await page.evaluate(() => history.length);
     await goInto(page, mountains);
@@ -250,63 +249,6 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
         .getByRole("link", { name: "Home" })
         .click();
     await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
-});
-
-test("a lesson in Explore opens as a child sees it over the page, in its world, and Escape, the back button and Close each return to the lesson with focus on what opened it", async ({
-    page,
-}) => {
-    await signInAs(page);
-    await page.goto("/explore/g1-adding-to-twenty");
-    const title = page.getByRole("heading", { name: "Adding to twenty", level: 1 });
-    await atScreen(page, title);
-    const see = page.getByRole("link", { name: "See it as a child sees it" });
-    await expect(see).toBeVisible();
-    await expect(page.getByRole("link", { name: "Open on the map" })).toHaveAttribute(
-        "href",
-        "/map?lesson=g1-adding-to-twenty",
-    );
-    expect(
-        await smallTargets(page.getByRole("navigation", { name: /This lesson in the app/ })),
-    ).toEqual([]);
-    const opens = async (): Promise<Locator> => {
-        await see.focus();
-        await see.press("Enter");
-        const look = page.getByRole("dialog", { name: "As a child sees it" });
-        await expect(look).toBeVisible();
-        await look.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
-        await expect(page).toHaveURL(/#\/lesson\/g1-adding-to-twenty$/);
-        const roll = look.locator(".wd");
-        await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
-        // the lesson's own sheet, as a child has it: nothing filled in, no notes for grown-ups
-        const sheet = roll.locator(".rd-sheet.rd-read").first();
-        await expect(sheet).toBeVisible({ timeout: 30_000 });
-        await expect(sheet.locator(".ls-answer")).toHaveCount(0);
-        await expect(sheet.getByText("For grown-ups")).toHaveCount(0);
-        expect(await smallTargets(look.locator(".ov-top"))).toEqual([]);
-        return look;
-    };
-    // Escape from the roll goes out to the map, and Escape from the map closes the look
-    let look = await opens();
-    await look.locator(".wd-host").focus();
-    await page.keyboard.press("Escape");
-    await expect(look.locator(".ow-host.ready")).toBeVisible({ timeout: 60_000 });
-    await expect(page).toHaveURL(/#\/map$/);
-    await page.keyboard.press("Escape");
-    await expect(look).toBeHidden();
-    await expect(page).not.toHaveURL(/#/);
-    await expect(see).toBeFocused();
-    // the back button closes it, as one entry
-    look = await opens();
-    await page.goBack();
-    await expect(look).toBeHidden();
-    await expect(page).toHaveURL(/\/explore\/g1-adding-to-twenty$/);
-    await expect(title).toBeVisible();
-    // and so does Close
-    look = await opens();
-    await look.getByRole("button", { name: "Close" }).click();
-    await expect(look).toBeHidden();
-    await expect(see).toBeFocused();
-    await expect(title).toBeVisible();
 });
 
 test("See the map on the site opens the sample child's map over the page, a world opens with its lessons, and the address after the # brings it back", async ({

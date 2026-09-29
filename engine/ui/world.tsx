@@ -10,6 +10,7 @@ import { sceneWork } from "./scene-work";
 // (drawings.ts) and play through the root's player.
 
 import "./world.css";
+import { smallDevice } from "./device";
 import {
     batch,
     createEffect,
@@ -36,7 +37,6 @@ import {
     labelGrow,
     rollLevelOf,
     type Camera,
-    type DayView,
     type Rect,
     type RollLevel,
     type SheetView,
@@ -44,9 +44,13 @@ import {
 } from "../space";
 import { still } from "./art";
 import { announce } from "./say";
+import { hold, release } from "./handoff";
 import type { WorldPainted } from "./scenery";
 import { CanvasView } from "./view";
 import { worldPainter } from "./painters";
+import type { Scene } from "./map-scene";
+import type { Group } from "./animate";
+import { readTokens } from "./read-tokens";
 import { WayOut } from "./wayout";
 import { landingRow } from "./paper";
 
@@ -66,6 +70,45 @@ const STILL_FOR = 200;
 const ARRIVING = 1400;
 
 /** A day as a child reads it on a sheet's corner: "Monday, September 7". */
+/** A view's key, worked out once for each view, since a year's view is large and is asked for often. */
+const viewKeys = new WeakMap<WorldView, Map<string, string>>();
+const keyOf = (view: WorldView, play: string | undefined): string => {
+    let byPlay = viewKeys.get(view);
+    if (!byPlay) viewKeys.set(view, (byPlay = new Map<string, string>()));
+    const p = play ?? "";
+    let key = byPlay.get(p);
+    if (key === undefined) byPlay.set(p, (key = JSON.stringify([view, play])));
+    return key;
+};
+
+/** How long a roll's scene is kept for the next roll a page opens, before it is let go. */
+const SPARE_FOR = 10 * 60_000;
+/** The scene of the last roll a page closed, kept drawn for the next (map-smoothness-plan.md, phase 2). */
+let spare: { scene: Scene; expiry: ReturnType<typeof setTimeout> } | null = null;
+const takeSpare = (): Scene | null => {
+    const s = spare;
+    if (!s) return null;
+    clearTimeout(s.expiry);
+    spare = null;
+    return s.scene;
+};
+const keepSpare = (scene: Scene): void => {
+    // a phone holds one GPU context at a time, the map's, and draws a roll again from the kept pixels
+    if (smallDevice) {
+        scene.stop();
+        return;
+    }
+    scene.park();
+    takeSpare()?.stop();
+    spare = {
+        scene,
+        expiry: setTimeout(() => {
+            if (spare?.scene === scene) spare = null;
+            scene.stop();
+        }, SPARE_FOR),
+    };
+};
+
 const longDay = (iso: string): string =>
     new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
         weekday: "long",
@@ -80,13 +123,6 @@ export function World(props: {
     view: WorldView;
     /** The page's own sheet for a lesson, laid where the roll puts it; without one a sheet is a card with its title. */
     sheet?: (s: SheetView) => HTMLElement | null;
-    /**
-     * The page's own element over a day, laid in roll units above the sheets and travelling with them:
-     * called once for each day the roll draws, with that day and the whole row's rectangle, and null
-     * for a day the page has nothing for. The layer takes no pointer, so the paper behind it still
-     * drags; what the page puts in it does.
-     */
-    over?: (day: DayView, row: Rect) => HTMLElement | null;
     /** With it, today's sheet has an Open button. */
     onOpen?: (lesson: string) => void;
     /**
@@ -125,13 +161,26 @@ export function World(props: {
 }): JSX.Element {
     let host: HTMLElement | undefined;
     let sheets: HTMLDivElement | undefined;
-    let above: HTMLDivElement | undefined;
     let view: CanvasView | undefined;
     const [pageForm, setPageForm] = createSignal(false);
     let canvasZoom = 1;
+    /** A change of form asked for as the roll first draws, done once it has arrived. */
+    let formAsked = false;
+    /** What the child last worked in on a sheet, which a change of form keeps where it was on the screen. */
+    let reading: Element | null = null;
     function changeForm(): void {
         const v = view;
-        if (!v || busy || !arrived) return;
+        if (!v || busy) return;
+        if (!arrived) {
+            formAsked = !formAsked;
+            return;
+        }
+        const h = host,
+            kept = reading?.isConnected && h ? reading.getBoundingClientRect() : null,
+            box = h?.getBoundingClientRect();
+        // how far from the middle of the window it is, and where that is on the roll
+        const off = kept && box ? kept.top + kept.height / 2 - (box.top + v.vp.h / 2) : 0,
+            y = v.cam.y + off / v.cam.z;
         if (!pageForm()) {
             canvasZoom = v.cam.z;
             v.setPage(layout().o.sheet);
@@ -140,10 +189,35 @@ export function World(props: {
             v.setPage(null);
             setPageForm(false);
             v.set({ ...v.cam, z: canvasZoom });
-            v.present();
         }
+        if (kept) {
+            // at the new scale it may be further from the middle than the window reaches, so it is
+            // brought in to within a line of the edge
+            const reach = Math.max(0, v.vp.h / 2 - 80);
+            const on = Math.max(-reach, Math.min(reach, off));
+            v.set({ ...v.cam, y: y - on / v.cam.z });
+        }
+        v.present();
     }
+    function arrive(): void {
+        arrived = true;
+        if (!formAsked) return;
+        formAsked = false;
+        // after the camera the arrival sets, which follows it
+        requestAnimationFrame(changeForm);
+    }
+    const followFocus = (e: FocusEvent): void => {
+        if (e.target instanceof Element && e.target.closest("[data-lesson]")) reading = e.target;
+    };
     let painted: WorldPainted | undefined;
+    /**
+     * The GPU's picture of the roll's ground and drawings (map-scene.ts), drawn from `source`, which is
+     * never laid out; what it lifts out of it (words and CSS's own shapes) goes into `lifted`, a layer of
+     * the world under the sheets. It lasts as long as the roll, so a roll drawn again keeps its textures.
+     */
+    let scene: Scene | null = null;
+    let source: HTMLDivElement | undefined;
+    let lifted: HTMLDivElement | undefined;
     let pending: {
         piece: WorldPainted["pieces"][number];
         done: boolean;
@@ -159,6 +233,9 @@ export function World(props: {
     let level: RollLevel = "day";
     /** The way out is under way: nothing else moves the camera or hands over again. */
     let busy = false;
+    /** Whether the child is on the way back to the map, so the roll is held over it as it goes. */
+    let leaving = false;
+    let root: HTMLElement | undefined;
     const quiet = still() || !!props.preview;
     const [ready, setReady] = createSignal(false);
     const [paintedLayout, setPaintedLayout] = createSignal<WorldView["layout"]>();
@@ -224,7 +301,8 @@ export function World(props: {
     }
 
     /** Out of the place's box to the world's own horizon, as one movement with the map's dive. */
-    function grow(v: CanvasView, from: Camera, to: Camera): void {
+    /** The roll grows out of `from` to `to`, fading in unless the map it came from fades out over it. */
+    function grow(v: CanvasView, from: Camera, to: Camera, fade = true): void {
         const tl = timeline([
             { name: "in", from: 0, to: 1, at: 0, dur: 0.58, ease: easeInOut },
             { name: "fade", from: 0, to: 1, at: 0, dur: 0.24 },
@@ -236,7 +314,7 @@ export function World(props: {
                 if (view !== v) return false;
                 const t = Math.min(time, tl.length);
                 v.set(cameraBetween(from, to, valueAt(tl, "in", t)));
-                if (host) host.style.opacity = String(valueAt(tl, "fade", t));
+                if (host && fade) host.style.opacity = String(valueAt(tl, "fade", t));
                 return t < tl.length;
             },
         }).start();
@@ -253,16 +331,15 @@ export function World(props: {
             setPageForm(false);
         }
         if (quiet || !h) {
+            leaving = true;
             go(null);
             return;
         }
         busy = true;
+        leaving = true;
         const from = { ...v.cam },
             to = { ...from, z: from.z * 0.5 };
-        const tl = timeline([
-            { name: "out", from: 0, to: 1, at: 0, dur: 0.5, ease: easeInOut },
-            { name: "fade", from: 1, to: 0, at: 0.26, dur: 0.24 },
-        ]);
+        const tl = timeline([{ name: "out", from: 0, to: 1, at: 0, dur: 0.5, ease: easeInOut }]);
         ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
@@ -273,7 +350,6 @@ export function World(props: {
                 }
                 const t = Math.min(time, tl.length);
                 v.set(cameraBetween(from, to, valueAt(tl, "out", t)));
-                h.style.opacity = String(valueAt(tl, "fade", t));
                 if (t < tl.length) return true;
                 const r = h.getBoundingClientRect();
                 const w = Math.min(r.width * 0.42, r.height * 0.66);
@@ -340,7 +416,7 @@ export function World(props: {
         const v = view;
         if (!v || busy) return;
         setArrivalDue(false);
-        arrived = true;
+        arrive();
         const at = landing(props.view.arrival?.term);
         if (at) {
             const camera = readAt(v, at.y, at.own);
@@ -380,9 +456,16 @@ export function World(props: {
             const margin = Math.min(320, view.vp.h / 2),
                 seen = view.visible(margin),
                 keep = view.visible(margin * 2);
+            // where a flight down the roll is going is painted as it sets off, and nothing is let go of
+            // on the way (.docs/map-smoothness-plan.md, phase 3)
+            const to = view.heading;
+            const there = to
+                ? visibleRect(to, { w: view.vp.w + margin * 2, h: view.vp.h + margin * 2 })
+                : null;
             for (const p of pending) {
                 if (
                     p.release &&
+                    !to &&
                     (!intersects(p.piece.rect, keep) || (level === "far" && p.piece.detail))
                 ) {
                     p.release();
@@ -393,9 +476,15 @@ export function World(props: {
             const todo = pending.filter(
                 (p) =>
                     !p.done &&
-                    !(level === "far" && p.piece.detail) &&
-                    intersects(p.piece.rect, seen),
+                    ((!(level === "far" && p.piece.detail) && intersects(p.piece.rect, seen)) ||
+                        (!!there && intersects(p.piece.rect, there))),
             );
+            if (there)
+                todo.sort(
+                    (a, b) =>
+                        Number(intersects(b.piece.rect, there)) -
+                        Number(intersects(a.piece.rect, there)),
+                );
             for (const p of todo) {
                 p.done = true;
                 p.release = p.piece.paint() ?? undefined;
@@ -467,7 +556,13 @@ export function World(props: {
 
     function onFrame(cam: Camera): void {
         if (!view) return;
-        painted?.frame(cam, view.vp);
+        if (scene) {
+            // a page read by scrolling keeps the canvas in the window, as the view keeps its frame
+            scene.canvas.style.transform = view.readingPage
+                ? `translateY(${host?.scrollTop ?? 0}px)`
+                : "";
+            scene.frame(cam, view.vp, view.heading);
+        }
         setMoving(true);
         const lv = view.readingPage ? "day" : rollLevelOf(cam.z, level);
         if (lv !== level) {
@@ -522,7 +617,18 @@ export function World(props: {
         return false;
     }
 
+    /** The camera a roll comes to rest at as it opens: where its arrival lands, before any flight on to today. */
+    function opening(v: CanvasView): Camera {
+        const arrival = props.view.arrival;
+        const at0 = landing(arrival?.term);
+        if (props.open && at0 && !props.waiting) return readAt(v, at0.y, at0.own);
+        if ((arrival && !quiet) || props.waiting) return horizonCam(v, arrival?.term ?? 0);
+        return at0 ? readAt(v, at0.y, at0.own) : v.cam;
+    }
+
     let drawn = false;
+    /** What this visit has played of the day, kept across the roll's paintings (scenery.ts). */
+    const played = new Set<string>();
     /** A roll to be drawn again once the camera stops. */
     let waiting = false;
     /** The layout the roll was last drawn with, so one drawn again keeps the day under the camera. */
@@ -543,21 +649,57 @@ export function World(props: {
     /** Each draw's number: a roll drawn again while the painter's code is on its way paints once, not twice. */
     let drawing = 0;
     let model = "";
+    /** The model a roll is being prepared for, until it is shown or given up. */
+    let preparing = "";
     let cancelPreparation: (() => void) | undefined;
+    /** Whether the roll's first drawing is under way, which a newer view waits for rather than cancels. */
+    let firstDrawing = false;
+    /** A newer view came while the first drawing was under way, to be drawn once the roll has opened. */
+    let openedBehind = false;
     function retryDraw(v: CanvasView): void {
+        // a roll that keeps being given views as its sheets land would otherwise never open
+        if (firstDrawing) {
+            openedBehind = true;
+            return;
+        }
         cancelPreparation?.();
         setFailed(false);
         void draw(v).catch(() => {
+            // a first drawing that failed is over, so the button that asks again draws again
+            firstDrawing = false;
+            openedBehind = false;
             if (view === v) setFailed(true);
         });
     }
     async function draw(v: CanvasView): Promise<void> {
         const n = ++drawing;
-        // the painter's code comes with the first roll a page draws, not with the page
-        const { paintWorldView } = await worldPainter();
-        if (!host || v !== view || n !== drawing) return;
+        // the painter's and the renderer's code come with the first roll a page draws, not with the page
+        const [{ paintWorldView }, { mapScene }] = await Promise.all([
+            worldPainter(),
+            import("./map-scene"),
+        ]);
+        if (!host || !source || !lifted || v !== view || n !== drawing) return;
+        if (!scene) {
+            const kept = takeSpare();
+            const see: Group["see"] = (changes) => painted?.see?.(changes);
+            if (kept) {
+                kept.rebind(source, lifted, see);
+                kept.unpark(host, v.frame);
+                scene = kept;
+            } else
+                scene = mapScene({
+                    host,
+                    under: v.frame,
+                    hidden: source,
+                    overlay: lifted,
+                    tokens: readTokens(host),
+                    see,
+                    still: quiet,
+                    tiles: true,
+                });
+        }
         const next = props.view;
-        const key = JSON.stringify([next, props.play]);
+        const key = keyOf(next, props.play);
         if (model === key) {
             batch(() => {
                 setDisplayed(next);
@@ -567,10 +709,14 @@ export function World(props: {
             return;
         }
         const was = before;
+        preparing = key;
         const stage = document.createElement("div");
+        const staged = document.createElement("div");
         const replacement = paintWorldView({
             host,
             world: stage,
+            hidden: staged,
+            played,
             view: next,
             still: quiet,
             grown: next.limits.sheets === "look",
@@ -581,10 +727,21 @@ export function World(props: {
             piece,
             done: false,
         }));
-        if (drawn) {
+        // the first roll is drawn under the camera it opens at, before anything of it is shown, so it
+        // arrives whole rather than a piece at a time (.docs/map-smoothness-plan.md, phase 1)
+        if (!drawn) setDisplayed(next);
+        const first = drawn ? null : opening(v);
+        if (first) {
+            firstDrawing = true;
+            // it waits unseen, where it will open, so nothing of it shows at another place meanwhile
+            v.set(first);
+            if (host) host.style.opacity = "0";
+        }
+        {
             const complete = await new Promise<boolean>((resolve) => {
                 let work = 0;
                 const cancel = (): void => {
+                    if (preparing === key) preparing = "";
                     sceneWork.cancel(work);
                     for (const p of prepared) p.release?.();
                     replacement.stop();
@@ -593,16 +750,20 @@ export function World(props: {
                 };
                 cancelPreparation = cancel;
                 const step = (deadline: number): void => {
-                    if (view !== v || n !== drawing || props.view !== next) {
+                    if (
+                        view !== v ||
+                        n !== drawing ||
+                        (!first && !(props.view === next || keyOf(props.view, props.play) === key))
+                    ) {
                         cancel();
                         return;
                     }
-                    if (v.flying || v.movedAgo() < STILL_FOR) {
+                    if (!first && (v.flying || v.movedAgo() < STILL_FOR)) {
                         waiting = true;
                         cancel();
                         return;
                     }
-                    const cam = anchored(v, was, next.layout) ?? v.cam;
+                    const cam = first ?? anchored(v, was, next.layout) ?? v.cam;
                     const margin = Math.min(320, v.vp.h / 2);
                     const seen = visibleRect(cam, {
                         w: v.vp.w + margin * 2,
@@ -633,15 +794,41 @@ export function World(props: {
                 };
                 work = sceneWork.schedule(step);
             });
-            if (!complete) return;
+            if (!complete) {
+                firstDrawing = false;
+                return;
+            }
+            // the GPU draws the new pieces before they are shown, from a source beside the one on
+            // screen, under the camera the roll will have once the day under it is kept in place
+            if (scene) {
+                staged.className = "wd-source";
+                host.append(staged);
+                // a scene that has not been framed yet has no window to draw the staged source for
+                if (!drawn) scene.frame(v.cam, v.vp);
+                await scene.prepare(staged, first ?? anchored(v, was, next.layout) ?? v.cam);
+                if (
+                    view !== v ||
+                    n !== drawing ||
+                    (!first && !(props.view === next || keyOf(props.view, props.play) === key))
+                ) {
+                    firstDrawing = false;
+                    if (preparing === key) preparing = "";
+                    staged.remove();
+                    for (const p of prepared) p.release?.();
+                    replacement.stop();
+                    return;
+                }
+            }
         }
         // Keep the previous ink until the replacement's visible pieces can be presented together.
         sceneWork.cancel(brush);
         brush = 0;
         painted?.stop();
         for (const p of pending) p.release?.();
-        for (const c of Array.from(v.world.children)) if (c !== sheets && c !== above) c.remove();
+        for (const c of Array.from(v.world.children)) if (c !== sheets && c !== lifted) c.remove();
         v.world.append(...Array.from(stage.children));
+        source.replaceChildren(...Array.from(staged.children));
+        staged.remove();
         v.world.classList.add("j-world");
         painted = replacement;
         pending = prepared;
@@ -653,7 +840,8 @@ export function World(props: {
         v.present();
         before = next.layout;
         model = key;
-        painted.frame(v.cam, v.vp);
+        if (preparing === key) preparing = "";
+        scene.frame(v.cam, v.vp);
         flags = null;
         covers = [];
         zoomRead(v.cam, true);
@@ -661,6 +849,16 @@ export function World(props: {
         // a roll drawn again while it is open keeps the camera where the child has it, and arrives no second time
         const again = drawn;
         drawn = true;
+        // a view that came while the roll first drew is drawn now, as any view is once the camera rests
+        if (firstDrawing) {
+            firstDrawing = false;
+            if (openedBehind) {
+                openedBehind = false;
+                queueMicrotask(() => {
+                    if (view === v) retryDraw(v);
+                });
+            }
+        }
         // a view a child moves between takes the keyboard as it opens; one laid in a page does not
         if (!again && props.onOut) host.focus({ preventScroll: true });
         if (again) {
@@ -671,6 +869,9 @@ export function World(props: {
             setPaintedLayout(layout());
             return;
         }
+        // the map the child came from was held over the page until now, and fades out over the roll
+        const handed = release(true, "map");
+        if (host) host.style.opacity = "1";
         const at0 = landing(props.view.arrival?.term);
         // the place hands the roll a day and the box its paper ended in: the roll opens there and
         // grows out of it, which is the dive the map and the world already share
@@ -678,10 +879,10 @@ export function World(props: {
             const to = readAt(v, at0.y, at0.own);
             const box = props.from && !quiet ? cameraOnBox(v, at0.y, props.from) : null;
             v.set(box ?? to);
-            if (host) host.style.opacity = box ? "0" : "1";
-            arrived = true;
+            if (host) host.style.opacity = box && !handed ? "0" : "1";
+            arrive();
             paintNear();
-            if (box) grow(v, box, to);
+            if (box) grow(v, box, to, !handed);
             announce(at0.says);
             setReady(true);
             setPaintedLayout(layout());
@@ -694,18 +895,18 @@ export function World(props: {
             // coming in from the map: the world opens in the place's own box and grows out of it
             const came = props.from ? cameraIn(v, arrival.term, props.from) : null;
             v.set(came ?? open);
-            if (host) host.style.opacity = came ? "0" : "1";
+            if (host) host.style.opacity = came && !handed ? "0" : "1";
             paintNear();
             painted.assemble(arrival.term);
             announce(`${name(props.view.open)}. ${arrival.says}`);
-            if (came) grow(v, came, open);
+            if (came) grow(v, came, open, !handed);
             arriving = window.setTimeout(() => {
                 if (view !== v || busy) return;
                 // a child who has moved the paper themselves is not taken back, which is their own
                 // hand and nothing else: a move the roll made as the world put itself together, or a
                 // sheet asking to be seen, used to cancel the landing and leave the roll at the horizon
                 if (v.movedAgo() < ARRIVING) {
-                    arrived = true;
+                    arrive();
                     return;
                 }
                 setArrivalDue(true);
@@ -717,7 +918,7 @@ export function World(props: {
         } else {
             const at = landing(arrival?.term);
             if (at) v.set(readAt(v, at.y, at.own));
-            arrived = true;
+            arrive();
             paintNear();
             announce(
                 arrival
@@ -774,7 +975,10 @@ export function World(props: {
     onMount(() => {
         if (!host) return;
         sheets?.addEventListener(REVEAL, follow);
+        sheets?.addEventListener("focusin", followFocus);
         const v = new CanvasView(host, {
+            // the scene draws the paper's grid under the drawings
+            paper: false,
             bounds: () => layout().bounds,
             // Mouse drags begun on lesson text select text; space-drag still moves the canvas.
             claim: (e) =>
@@ -806,10 +1010,14 @@ export function World(props: {
         });
         view = v;
         v.world.dataset.level = "day";
-        // the sheets move with the camera, so their layer lives in the world the view moves, and the
-        // page's own layer over them lives there too, after them
+        source = document.createElement("div");
+        source.className = "wd-source";
+        host.append(source);
+        lifted = document.createElement("div");
+        lifted.className = "j-layer wd-lifted";
+        v.world.append(lifted);
+        // the sheets move with the camera, so their layer lives in the world the view moves
         if (sheets) v.world.append(sheets);
-        if (above) v.world.append(above);
         if (props.wheel === false) v.takesWheel = false;
         retryDraw(v);
     });
@@ -819,6 +1027,18 @@ export function World(props: {
             () => {
                 const v = view;
                 if (!v) return;
+                // a view the same as the one drawn draws nothing again, but is shown, since the paper it
+                // names may have landed; one the same as the one being drawn must not cancel it
+                const key = keyOf(props.view, props.play);
+                if (key === model) {
+                    batch(() => {
+                        setDisplayed(props.view);
+                        before = props.view.layout;
+                        setPaintedLayout(props.view.layout);
+                    });
+                    return;
+                }
+                if (key === preparing) return;
                 // nothing is swapped under a camera that is moving: the roll is drawn again once it stops
                 if (v.flying || v.movedAgo() < STILL_FOR) waiting = true;
                 else retryDraw(v);
@@ -827,25 +1047,32 @@ export function World(props: {
         ),
     );
     onCleanup(() => {
+        release(false, "map");
         cancelPreparation?.();
         sceneWork.cancel(brush);
         clearTimeout(arriving);
         clearTimeout(asking);
         clearTimeout(resting);
-        for (const p of pending) p.release?.();
-        pending = [];
-        painted?.stop();
         sheets?.removeEventListener(REVEAL, follow);
-        view?.dispose();
+        sheets?.removeEventListener("focusin", followFocus);
+        const held = pending,
+            was = painted,
+            s = scene,
+            v = view;
+        pending = [];
+        scene = null;
         view = undefined;
+        const gone = (): void => {
+            for (const p of held) p.release?.();
+            was?.stop();
+            // the next roll opened takes up this one's scene, and with it what it drew
+            if (s) keepSpare(s);
+            v?.dispose();
+        };
+        // a roll left for the map stays on the screen until the map has drawn where it opens
+        if (leaving && root) hold(root, "roll", gone);
+        else gone();
     });
-
-    const overs = (): { rect: Rect; el: HTMLElement }[] =>
-        layout().rows.flatMap((row, r) => {
-            const day = displayed().days[r];
-            const el = day ? (props.over?.(day, row.rect) ?? null) : null;
-            return el ? [{ rect: row.rect, el }] : [];
-        });
 
     const rows = createMemo(
         () =>
@@ -868,6 +1095,9 @@ export function World(props: {
 
     return (
         <section
+            ref={(el) => {
+                root = el;
+            }}
             class={`wd${props.class ? ` ${props.class}` : ""}${ready() ? " ready" : ""}`}
             aria-label={props.title}
         >
@@ -952,10 +1182,16 @@ export function World(props: {
                             const first = rows().get(key);
                             if (!first) return null;
                             const r = () => rows().get(key) ?? first;
+                            let shown: HTMLElement | null = null;
                             const own = (): HTMLElement | null => {
                                 const sheet = r().sheet;
                                 // Publish prepared content with its committed row, not on a cache notification.
-                                return untrack(() => props.sheet?.(sheet) ?? null);
+                                const next = untrack(() => props.sheet?.(sheet) ?? null);
+                                // today's is the lesson the child is working in, and keeps the sheet it
+                                // showed, with what they have written in it, when the page draws it again
+                                if (r().today && next && shown?.isConnected) return shown;
+                                shown = next;
+                                return next;
                             };
                             return (
                                 <Sheet
@@ -967,28 +1203,6 @@ export function World(props: {
                                 />
                             );
                         }}
-                    </For>
-                </div>
-                <div
-                    ref={(el) => {
-                        above = el;
-                    }}
-                    class="j-layer wd-over"
-                >
-                    <For each={overs()}>
-                        {(o) => (
-                            <div
-                                class="wd-over-at"
-                                style={{
-                                    left: `${o.rect.x}px`,
-                                    top: `${o.rect.y}px`,
-                                    width: `${o.rect.w}px`,
-                                    height: `${o.rect.h}px`,
-                                }}
-                            >
-                                {o.el}
-                            </div>
-                        )}
                     </For>
                 </div>
             </div>
@@ -1020,6 +1234,8 @@ function Sheet(props: {
     return (
         <Show
             when={props.own}
+            // keyed, so a sheet drawn again in place of the one shown takes its place
+            keyed
             fallback={
                 <article
                     class="j-sheet squared wd-sheet"
@@ -1054,8 +1270,7 @@ function Sheet(props: {
                 </article>
             }
         >
-            {(own) => {
-                const el = own();
+            {(el) => {
                 createEffect(() => {
                     el.style.left = `${props.rect.x}px`;
                     el.style.top = `${props.rect.y}px`;

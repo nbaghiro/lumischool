@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 import { journeyDefinitions, journeyFor, journeyProblems, JOURNEY_VERSION } from "../journeys";
 import type { Corpus, LessonFacts } from "../lessons";
-import { WORLDS } from "../worlds";
+import { offeredGrades, WORLDS } from "../worlds";
 
 // Check editorial ids against the source curriculum, not a second hand-maintained id fixture or
 // a local generated pack. The normal pack suite separately parses and compiles every full lesson.
@@ -20,16 +20,20 @@ for (const file of readdirSync(directory).filter((name) => name.endsWith(".lumi"
     facts.set(id, { id, grade, title: id, subject: "", art: [], skills: [] });
 }
 const corpus: Corpus = {
-    grades: [1, 2, 3, 4],
+    grades: offeredGrades([...facts.values()]),
     lesson: (id) => facts.get(id),
     year() {
         throw new Error("A journey lookup must not synthesize or read a learning year");
     },
 };
 
-test("version 1 covers every known world and supported grade with valid canonical membership", () => {
+test("version 1 covers every known world and offered grade with valid canonical membership", () => {
     assert.equal(JOURNEY_VERSION, 1);
-    assert.equal(journeyDefinitions.length, WORLDS.length * 4);
+    assert.ok(corpus.grades.length >= 4);
+    assert.equal(
+        journeyDefinitions.filter((j) => corpus.grades.includes(j.grade)).length,
+        WORLDS.length * corpus.grades.length,
+    );
     assert.deepEqual(journeyProblems(corpus), []);
     assert.equal(new Set(journeyDefinitions.map((j) => j.id)).size, journeyDefinitions.length);
     for (const world of WORLDS) {
@@ -58,7 +62,7 @@ test("history and language remain explicit gaps; fossil foundations are honestly
     assert.equal(journeyFor("fossil-cliffs", 4, corpus)?.status, "thin");
     assert.equal(journeyFor("fossil-cliffs", 2, corpus)?.status, "curated");
     assert.equal(journeyFor("meadow", 0, corpus), undefined);
-    assert.equal(journeyFor("meadow", 5, corpus), undefined);
+    assert.equal(journeyFor("meadow", 7, corpus), undefined);
     assert.equal(journeyFor("unknown", 1, corpus), undefined);
 });
 
@@ -68,7 +72,7 @@ test("published order and canonical ids stay stable without expanding from pack 
     const membership = journeyDefinitions.map(({ id, lessonIds }) => [id, lessonIds]);
     assert.equal(
         createHash("sha256").update(JSON.stringify(membership)).digest("hex"),
-        "c6aea7b7664bd5aea22aad9772de29a2b40aafdc5d45d4e2ccf61f8e392daa6c",
+        "97446f17dc24cd47b8ba5576fe001dfbad6587660a0dd90083579362e6aad0ea",
     );
     assert.deepEqual(journeyFor("home-garden", 1, corpus)?.lessonIds, [
         "nature-from-seed-to-flower",

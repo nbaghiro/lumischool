@@ -763,6 +763,36 @@ export const ART: ArtEntry[] = [
         up: 1,
         count: 2,
     }),
+    // the sixth year: the midnight sun, the waterfall gorge and the moon, and the launch pad on its land
+    shelf("ice-cliff", "Ice cliff", ["horizon", "landmark"], "icecliff", 1.2, {
+        height: 2,
+        floes: 2,
+    }),
+    shelf("research-hut", "Research hut", ["landmark", "horizon"], "hut", 1.2, { pictures: 0 }),
+    shelf("midnight-sun", "The sun that does not set", ["landmark", "sky"], "midnightsun", 1.2, {
+        suns: 5,
+        midnight: 1,
+    }),
+    shelf("waterfall", "Waterfall", ["horizon", "landmark"], "waterfall", 1.4, {
+        drops: 2,
+        rainbow: 1,
+    }),
+    shelf("water-wheel", "Water wheel", ["horizon", "landmark", "gate"], "waterwheel", 1.2, {
+        paddles: 8,
+        lit: 1,
+    }),
+    shelf("dipper", "Dipper", ["creature"], "dipper", 1, { under: 1, facing: 1 }, "bob"),
+    shelf("lander", "Lunar lander", ["horizon", "landmark", "gate"], "lander", 1.3, { rungs: 5 }),
+    shelf("crater", "Craters", ["horizon", "landmark"], "crater", 1.1, { count: 2 }),
+    shelf("earth", "The Earth from the moon", ["horizon", "sky", "landmark"], "earth", 1.3, {
+        up: 2,
+    }),
+    shelf("launch-pad", "Launch pad", ["horizon", "landmark", "gate"], "launchpad", 1.3, {
+        rocket: 1,
+        lights: 2,
+    }),
+    shelf("flag", "Flag", ["landmark"], "flag", 1.1, { stripes: 3 }),
+    shelf("footprints", "Footprints", ["landmark"], "footprints", 1, { count: 3 }),
     // the map's own small life between the worlds (life.ts)
     shelf("buoy", "Buoy", ["landmark"], "buoy", 1, { kind: "bell", bands: 2, light: 1, sea: 1 }),
     shelf("seaserpent", "Sea serpent in the margin", ["landmark"], "seaserpent", 1, {

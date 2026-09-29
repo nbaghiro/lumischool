@@ -29,14 +29,24 @@ export const starCliffs: World = {
     guide: "firefly",
     reaches: [
         {
-            art: "compass",
-            when: ["skill:angles", "skill:shapes.turns"],
-            says: "Turn to face north.",
+            art: "planets",
+            when: ["skill:place-value", "skill:physics.sky"],
+            says: "The planets are millions of kilometres away.",
         },
         {
-            art: "planets",
-            when: ["skill:place-value"],
-            says: "The planets are millions of miles away.",
+            art: "observatory",
+            when: ["skill:circles"],
+            says: "The dome is a circle. How far round?",
+        },
+        {
+            art: "observatory",
+            when: ["skill:data"],
+            says: "What percent of the dome is open?",
+        },
+        {
+            art: "lighthouse",
+            when: ["skill:number.lcm", "skill:number.hcf", "skill:number.multiples"],
+            says: "Two lights flash. When together again?",
         },
         {
             art: "telescope",
@@ -44,9 +54,54 @@ export const starCliffs: World = {
             says: "Starlight comes a long way.",
         },
         {
+            art: "compass",
+            when: [
+                "skill:angles.bearings",
+                "skill:angles.turns",
+                "skill:shapes.turns",
+                "skill:physics.magnets",
+            ],
+            says: "Turn to face north.",
+        },
+        {
             art: "signpost",
             when: ["skill:position.coordinates"],
             says: "Plot the stars on the grid.",
+        },
+        {
+            art: "observatory",
+            when: ["skill:art"],
+            says: "Paint the dome against the night sky.",
+        },
+        {
+            art: "planets",
+            when: ["skill:chemistry.elements", "skill:chemistry.gases"],
+            says: "Stars and planets are made of elements too.",
+        },
+        {
+            art: "observatory",
+            when: ["skill:chemistry.heating"],
+            says: "Frost melts off the dome as the sun comes up.",
+        },
+        {
+            art: "telescope",
+            when: ["skill:coding"],
+            says: "A program points the telescope at a star.",
+        },
+        {
+            art: "owl",
+            when: ["skill:music"],
+            says: "An owl calls two notes across the cliffs.",
+        },
+        {
+            art: "owl",
+            when: ["skill:nature"],
+            says: "Owls, foxes and hares come out at night.",
+        },
+        {
+            art: "observatory",
+            when: ["skill:reading", "skill:writing"],
+            says: "Each night's sightings go in the observatory's book.",
         },
     ],
     offers: {
@@ -97,5 +152,4 @@ export const starCliffs: World = {
         term: 2,
         land: { terrain: "sea-cliffs", near: ["canal-town", "walled-city"] },
     },
-    needs: "A fifth year of lessons, and for this term: very large numbers and distances, the planets in order, angles and bearings, light and shadow, and plotting points.",
 };

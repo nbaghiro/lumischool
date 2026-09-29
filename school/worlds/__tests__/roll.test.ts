@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { test } from "node:test";
+import { yearOf, type YearLesson } from "../../year";
+import { termsIn } from "../roll";
 import { layoutRoll, type RollInput } from "../roll-layout";
+import { DEFAULT_YEARS } from "../worlds";
 
 const input = (height: number): RollInput => ({
     days: ["earlier", "reading", "later"].map((id, i) => ({
@@ -53,4 +58,41 @@ test("path markings beside a later day retain their phase when earlier paper gro
             );
     };
     assert.deepEqual(local(after), local(before));
+});
+
+test("every grade of the run has exactly nine maths units in the corpus, so exactly three terms", () => {
+    const dir = join(import.meta.dirname, "../../../content/curriculum/lessons");
+    const lessons = readdirSync(dir)
+        .filter((f) => f.endsWith(".lumi"))
+        .flatMap((f): YearLesson[] => {
+            const header = /^\s*lesson\s+(\S+)\s+([^\n{]+)/m.exec(
+                readFileSync(join(dir, f), "utf8"),
+            );
+            const id = header?.[1];
+            const fields = new Map(
+                [...(header?.[2] ?? "").matchAll(/(\w+)=(\S+)/g)].map((m) => [m[1], m[2]]),
+            );
+            if (!id) return [];
+            return [
+                {
+                    id,
+                    source: `lessons/${f}`,
+                    title: id,
+                    goal: null,
+                    grade: Number(fields.get("grade") ?? 1),
+                    unit: Number(fields.get("unit") ?? 1),
+                    subject: fields.get("subject") ?? "maths",
+                    format: fields.get("format") ?? "teach",
+                },
+            ];
+        });
+    for (const [grade, worlds] of Object.entries(DEFAULT_YEARS)) {
+        const year = yearOf(lessons, Number(grade), "", "2026-08-31");
+        assert.deepEqual(
+            year.units.map((u) => u.n),
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            `grade ${grade}'s maths units`,
+        );
+        assert.equal(termsIn(year), worlds.length, `grade ${grade} has a world for every term`);
+    }
 });

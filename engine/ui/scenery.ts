@@ -31,8 +31,6 @@ import {
     TILE,
     washOf,
     type ArtRef,
-    type Camera,
-    type Size,
     type GroundKind,
     type PathKind,
     type Rect,
@@ -53,7 +51,6 @@ import { motionOf, type Drawing } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { designOf, guideIdle, renderGuide } from "./guide";
 import { applyPuff, bloom, PLACED, playMoment, walkIn } from "./player";
-import { mapSurface } from "./map-surfaces";
 import { readTokens } from "./read-tokens";
 import { el, render, SvgPen as Pen } from "./svg";
 
@@ -210,6 +207,8 @@ const HARD_GROUND: readonly GroundKind[] = [
     "granite",
     "cavern",
     "canal",
+    "iceshelf",
+    "regolith",
 ];
 
 /**
@@ -2634,7 +2633,173 @@ const GROUNDS: Record<GroundKind, Ground> = {
             }
         },
     },
+    iceshelf: {
+        eager: (c) => {
+            // the open sea beyond the shelf's edge, a band along the foot of the horizon
+            el(
+                "rect",
+                {
+                    x: c.X0,
+                    y: c.line - 10,
+                    width: c.X1 - c.X0,
+                    height: 70,
+                    fill: c.t.sky,
+                    opacity: String(Math.min(LIMITS.washCap * 1.5, c.wash * 1.8)),
+                },
+                c.washes,
+            );
+        },
+        horizon: (c, rnd) => {
+            for (let x = c.l.x0 - 200 + rnd() * 60; x < c.l.x1 + 200; x += 160 + rnd() * 80)
+                wave(c, x, c.line + 26, 0.6);
+            // the shelf's own edge, a low wall of ice with its face ticked down, and floes out on the water
+            const edge: [number, number][] = [];
+            for (let x = c.X0 + 200; x <= c.X1 - 200; x += 90)
+                edge.push([x, c.line + 60 + (rnd() - 0.5) * 8]);
+            c.p.pen.linear(c.texture, edge, "pencil", { stroke: c.ink, strokeWidth: 1.6 });
+            for (let x = c.l.x0 - 300; x < c.l.x1 + 300; x += 34 + rnd() * 30)
+                c.p.pen.line(c.texture, x, c.line + 62, x + 2, c.line + 78, "pencil", {
+                    stroke: c.ink,
+                    strokeWidth: 0.8,
+                    roughness: 0.4,
+                });
+            for (let x = c.l.x0 - 260 + rnd() * 200; x < c.l.x1 + 260; x += 420 + rnd() * 300)
+                c.p.pen.ellipse(
+                    c.texture,
+                    x,
+                    c.line + 18,
+                    40 + rnd() * 30,
+                    7,
+                    "pencil",
+                    c.p.pen.fill("card"),
+                    {
+                        stroke: c.ink,
+                        strokeWidth: 1,
+                    },
+                );
+        },
+        tile: (c, r, rnd) => {
+            for (let i = 0; i < perArea(r, 50000); i++) {
+                const at = c.spot(r, rnd, 240);
+                if (!at) continue;
+                const roll = rnd();
+                if (roll < 0.55) sastrugi(c, at.x, at.y, 0.8 + rnd() * 0.5);
+                else if (roll < 0.85) crack(c, at.x, at.y, rnd);
+                else
+                    c.p.pen.arc(
+                        c.texture,
+                        at.x,
+                        at.y,
+                        60 + rnd() * 40,
+                        16,
+                        Math.PI * 1.05,
+                        Math.PI * 1.95,
+                        "pencil",
+                        { stroke: c.ink, strokeWidth: 1 },
+                    );
+            }
+        },
+    },
+    gorge: {
+        eager: (c) => {
+            // the stream the fall feeds, running along the foot of the horizon
+            el(
+                "rect",
+                {
+                    x: c.X0,
+                    y: c.line + 24,
+                    width: c.X1 - c.X0,
+                    height: 70,
+                    fill: c.t.sky,
+                    opacity: String(Math.min(LIMITS.washCap * 1.5, c.wash * 1.8)),
+                },
+                c.washes,
+            );
+        },
+        horizon: (c, rnd) => {
+            for (const y of [c.line + 24, c.line + 94]) {
+                const bank: [number, number][] = [];
+                for (let x = c.X0 + 200; x <= c.X1 - 200; x += 120)
+                    bank.push([x, y + (rnd() - 0.5) * 10]);
+                c.p.pen.curve(c.texture, bank, "pencil", { stroke: c.ink, strokeWidth: 1.4 });
+            }
+            for (let x = c.l.x0 - 200 + rnd() * 60; x < c.l.x1 + 200; x += 150 + rnd() * 70)
+                wave(c, x, c.line + 62, 0.5);
+            for (let x = c.l.x0 - 300 + rnd() * 80; x < c.l.x1 + 300; x += 180 + rnd() * 120) {
+                if (rnd() < 0.5) fern(c, x, c.line + 130, 0.8 + rnd() * 0.4);
+                else boulder(c, x, c.line + 128, 26 + rnd() * 14);
+            }
+        },
+        tile: (c, r, rnd) => {
+            for (let i = 0; i < perArea(r, 44000); i++) {
+                const at = c.spot(r, rnd, 240);
+                if (!at) continue;
+                const roll = rnd();
+                if (roll < 0.4) fern(c, at.x, at.y, 0.7 + rnd() * 0.5);
+                else if (roll < 0.7) boulder(c, at.x, at.y, 22 + rnd() * 18);
+                else pebbles(c, at.x, at.y, rnd);
+            }
+        },
+    },
+    regolith: {
+        horizon: (c, rnd) => {
+            // the moon's near edge: low worn hills, with a crater's rim here and there
+            for (let x = c.l.x0 - 300 + rnd() * 80; x < c.l.x1 + 300; x += 260 + rnd() * 160) {
+                const w = 200 + rnd() * 160,
+                    h = 20 + rnd() * 26;
+                c.p.pen.path(
+                    c.texture,
+                    `M${x} ${c.line + 20}Q${x + w / 2} ${c.line + 20 - h * 2} ${x + w} ${c.line + 20}`,
+                    "pencil",
+                    null,
+                    { stroke: c.ink, strokeWidth: 1.4 },
+                );
+                if (rnd() < 0.4) moonCrater(c, x + w / 2, c.line + 60, 0.7 + rnd() * 0.4);
+            }
+        },
+        tile: (c, r, rnd) => {
+            for (let i = 0; i < perArea(r, 42000); i++) {
+                const at = c.spot(r, rnd, 240);
+                if (!at) continue;
+                const roll = rnd();
+                if (roll < 0.5) moonCrater(c, at.x, at.y, 0.6 + rnd() * 0.8);
+                else if (roll < 0.8) pebbles(c, at.x, at.y, rnd);
+                else rock(c, at.x, at.y, 0.5 + rnd() * 0.4);
+            }
+        },
+    },
 };
+
+/** Ridges the wind carves in hard snow: three long low curves, one behind another. */
+function sastrugi(c: Ctx, x: number, y: number, k: number): void {
+    for (let i = 0; i < 3; i++)
+        c.p.pen.curve(
+            c.texture,
+            [
+                [x - 60 * k + i * 10 * k, y + i * 9 * k],
+                [x - 10 * k + i * 10 * k, y - 8 * k + i * 9 * k],
+                [x + 50 * k + i * 10 * k, y + i * 9 * k],
+            ],
+            "pencil",
+            { stroke: c.ink, strokeWidth: 1.1 - i * 0.2, roughness: 0.5 },
+        );
+}
+
+/** A small crater in grey dust: a rim, the shadow inside the near wall, and the far wall in light. */
+function moonCrater(c: Ctx, x: number, y: number, k: number): void {
+    const g = el("g", {}, c.texture);
+    c.p.pen.ellipse(g, x, y, 70 * k, 22 * k, "pencil", c.p.pen.fill("card"), {
+        stroke: c.ink,
+        strokeWidth: 1.3,
+    });
+    c.p.pen.path(
+        g,
+        `M${x - 30 * k} ${y - 7 * k}Q${x} ${y - 13 * k} ${x + 30 * k} ${y - 7 * k}Q${x} ${y + 3 * k} ${x - 30 * k} ${y - 7 * k}Z`,
+        "pencil",
+        c.p.pen.fill("ink-soft", "hachure", { hachureGap: 3.5, fillWeight: 0.6 }),
+        { stroke: c.ink, strokeWidth: 0.8 },
+    );
+}
 
 function willowherb(c: Ctx, x: number, y: number): void {
     const g = el("g", {}, c.texture);
@@ -5647,16 +5812,119 @@ const PATHS: Record<PathKind, Path> = {
             }
         },
     },
+    stakes: {
+        tile: (c, at) => {
+            // the way over the ice is marked by tall stakes with a flag on each, and a sledge's runners between them
+            if (at.length > 1)
+                for (const side of [-1, 1])
+                    c.p.g.appendChild(
+                        c.p.pen.rc.curve(
+                            offset(at, side * 9),
+                            c.p.pen.opt("pencil", {
+                                stroke: c.ink,
+                                strokeWidth: 1,
+                                strokeLineDash: [30, 12],
+                                roughness: 0.5,
+                            }),
+                        ),
+                    );
+            for (const q of every(at, 200)) {
+                const sd = Math.floor(q.s / 200) % 2 ? 1 : -1,
+                    x = q.x + q.nx * 46 * sd,
+                    y = q.y + q.ny * 46 * sd;
+                c.p.pen.line(c.p.g, x, y, x, y - 70, "pencil", { stroke: c.ink, strokeWidth: 2 });
+                c.p.pen.polygon(
+                    c.p.g,
+                    [
+                        [x, y - 70],
+                        [x + 22, y - 63],
+                        [x, y - 56],
+                    ],
+                    "pencil",
+                    c.p.pen.fill("tang"),
+                    { stroke: c.ink, strokeWidth: 1 },
+                );
+            }
+        },
+    },
+    steps: {
+        under: (c, d) => band(c, d, "mint", 44, 0.22, "butt"),
+        tile: (c, at) => {
+            // stone steps cut beside the fall, with a rope rail on posts along one side
+            for (const q of every(at, 40)) {
+                const a = Math.atan2(q.ny, q.nx),
+                    hx = Math.cos(a),
+                    hy = Math.sin(a),
+                    tx = -hy,
+                    ty = hx;
+                const corner = (u: number, v: number): [number, number] => [
+                    q.x + hx * u + tx * v,
+                    q.y + hy * u + ty * v,
+                ];
+                c.p.pen.polygon(
+                    c.p.g,
+                    [corner(-22, -8), corner(22, -8), corner(22, 8), corner(-22, 8)],
+                    "pencil",
+                    c.p.pen.fill("ink-soft", "hachure", { hachureGap: 5, fillWeight: 0.5 }),
+                    { stroke: c.ink, strokeWidth: 1.2 },
+                );
+            }
+            if (at.length > 1)
+                c.p.g.appendChild(
+                    c.p.pen.rc.curve(
+                        offset(at, 38),
+                        c.p.pen.opt("pencil", {
+                            stroke: c.t.tang,
+                            strokeWidth: 2.2,
+                            roughness: 0.7,
+                        }),
+                    ),
+                );
+            for (const q of every(at, 180))
+                c.p.pen.line(
+                    c.p.g,
+                    q.x + q.nx * 38,
+                    q.y + q.ny * 38,
+                    q.x + q.nx * 38,
+                    q.y + q.ny * 38 - 26,
+                    "pencil",
+                    { stroke: c.ink, strokeWidth: 2.4 },
+                );
+        },
+    },
+    treads: {
+        tile: (c, at) => {
+            // a rover's two tracks in the dust, each tyre's tread a row of chevrons
+            rails(c, at, 20, c.ink, 1, "ruler");
+            for (const q of every(at, 18))
+                for (const sd of [-1, 1]) {
+                    const x = q.x + q.nx * 20 * sd,
+                        y = q.y + q.ny * 20 * sd;
+                    c.p.pen.linear(
+                        c.p.g,
+                        [
+                            [x - q.nx * 7 - q.ny * 4, y - q.ny * 7 + q.nx * 4],
+                            [x, y],
+                            [x + q.nx * 7 - q.ny * 4, y + q.ny * 7 + q.nx * 4],
+                        ],
+                        "pencil",
+                        { stroke: c.ink, strokeWidth: 0.9, roughness: 0.3 },
+                    );
+                }
+        },
+    },
 };
 
 /** The layers a flowing water's marks are shared among; world.css staggers them by a quarter of the flow each. */
 const CURRENTS = 4;
 
 export interface Painted {
-    frame?(camera: Camera, size: Size): void;
     els: Element[];
     pieces: Piece[];
 }
+
+/** How far a ground piece's marks may reach past its tile, in the roll's units, which its drawing holds. */
+const OVERHANG = 120;
 
 /**
  * A world's stretch. The washes and anything cheap are painted now; the horizon and each tile of
@@ -5704,68 +5972,93 @@ export function paintStretch(
     into.append(p.svg);
     const id = `${world.id}-${s.term}`;
     const defs = el("defs", {}, p.svg);
-    const fade = el(
-        "linearGradient",
-        { id: `fg-${id}`, gradientUnits: "userSpaceOnUse", x1: X0, y1: 0, x2: X1, y2: 0 },
-        defs,
-    );
-    for (const [o, a] of [
-        [0, 0],
-        [FADE, 1],
-        [1 - FADE, 1],
-        [1, 0],
-    ] as const)
-        el("stop", { offset: String(o), "stop-color": "#fff", "stop-opacity": String(a) }, fade);
-    const mask = el(
-        "mask",
-        {
-            id: `fm-${id}`,
+    /**
+     * The group washes are painted into, faded out at the world's sides and at the stretch's top and
+     * bottom, with the fades written into `into`'s own defs under ids ending `suffix`.
+     */
+    const fadeIn = Math.min(0.1 * area.h, 160),
+        fadeOut = Math.min(0.3 * area.h, 460);
+    /** How much of the washes shows at `y`, faded in under the stretch's top and out over its bottom. */
+    const shows = (y: number): number =>
+        Math.max(0, Math.min(1, (y - area.y) / fadeIn, (area.y + area.h - y) / fadeOut));
+    /**
+     * The group washes are painted into over `span` of the stretch, faded out at the world's sides and
+     * at the stretch's top and bottom, with the fades written into `into`'s own defs under ids ending
+     * `suffix`. The fades are worked out over the span alone, so a piece in the middle of a stretch is
+     * the same drawing however long the stretch grows as its sheets are measured.
+     */
+    const fadedIn = (
+        into: SVGSVGElement,
+        g: SVGGElement,
+        suffix: string,
+        span: { y: number; h: number } = area,
+    ): SVGGElement => {
+        const d = into === p.svg ? defs : el("defs", {}, into);
+        const fade = el(
+            "linearGradient",
+            { id: `fg-${suffix}`, gradientUnits: "userSpaceOnUse", x1: X0, y1: 0, x2: X1, y2: 0 },
+            d,
+        );
+        for (const [o, a] of [
+            [0, 0],
+            [FADE, 1],
+            [1 - FADE, 1],
+            [1, 0],
+        ] as const)
+            el(
+                "stop",
+                { offset: String(o), "stop-color": "#fff", "stop-opacity": String(a) },
+                fade,
+            );
+        const box = {
             maskUnits: "userSpaceOnUse",
             x: X0,
-            y: area.y,
+            y: span.y,
             width: area.w,
-            height: area.h,
-        },
-        defs,
-    );
-    el("rect", { x: X0, y: area.y, width: area.w, height: area.h, fill: `url(#fg-${id})` }, mask);
-    // and top and bottom, so one world's ground runs out into the next one's sky rather than stopping
-    // at a ruled line: leaving the meadow is walking out of it, not turning a page
-    const ends = el(
-        "linearGradient",
-        {
-            id: `fv-${id}`,
-            gradientUnits: "userSpaceOnUse",
-            x1: 0,
-            y1: area.y,
-            x2: 0,
-            y2: area.y + area.h,
-        },
-        defs,
-    );
-    const top = Math.min(0.1, 160 / area.h),
-        foot = Math.min(0.3, 460 / area.h);
-    for (const [o, a] of [
-        [0, 0],
-        [top, 1],
-        [1 - foot, 1],
-        [1, 0],
-    ] as const)
-        el("stop", { offset: String(o), "stop-color": "#fff", "stop-opacity": String(a) }, ends);
-    const vmask = el(
-        "mask",
-        {
-            id: `fvm-${id}`,
-            maskUnits: "userSpaceOnUse",
-            x: X0,
-            y: area.y,
-            width: area.w,
-            height: area.h,
-        },
-        defs,
-    );
-    el("rect", { x: X0, y: area.y, width: area.w, height: area.h, fill: `url(#fv-${id})` }, vmask);
-    const washes = el("g", { mask: `url(#fvm-${id})` }, el("g", { mask: `url(#fm-${id})` }, p.g));
+            height: span.h,
+        };
+        const mask = el("mask", { id: `fm-${suffix}`, ...box }, d);
+        el(
+            "rect",
+            { x: X0, y: span.y, width: area.w, height: span.h, fill: `url(#fg-${suffix})` },
+            mask,
+        );
+        // and top and bottom, so one world's ground runs out into the next one's sky rather than stopping
+        // at a ruled line: leaving the meadow is walking out of it, not turning a page
+        const ends = el(
+            "linearGradient",
+            {
+                id: `fv-${suffix}`,
+                gradientUnits: "userSpaceOnUse",
+                x1: 0,
+                y1: span.y,
+                x2: 0,
+                y2: span.y + span.h,
+            },
+            d,
+        );
+        const bends = [area.y + fadeIn, area.y + area.h - fadeOut].filter(
+            (y) => y > span.y && y < span.y + span.h,
+        );
+        for (const y of [span.y, ...bends, span.y + span.h])
+            el(
+                "stop",
+                {
+                    offset: String((y - span.y) / span.h),
+                    "stop-color": "#fff",
+                    "stop-opacity": String(shows(y)),
+                },
+                ends,
+            );
+        const vmask = el("mask", { id: `fvm-${suffix}`, ...box }, d);
+        el(
+            "rect",
+            { x: X0, y: span.y, width: area.w, height: span.h, fill: `url(#fv-${suffix})` },
+            vmask,
+        );
+        return el("g", { mask: `url(#fvm-${suffix})` }, el("g", { mask: `url(#fm-${suffix})` }, g));
+    };
+    const washes = fadedIn(p.svg, p.g, id);
     const strong = Math.min(LIMITS.washCap, wash * 1.3);
 
     // The sky, or the wall of a room: strongest at the top and gone by the horizon outdoors, one flat
@@ -5954,26 +6247,46 @@ export function paintStretch(
             });
         }
     }
+    // Each piece is a drawing of its own over the stretch's washes, so painting one or letting it go
+    // leaves every other drawing as it was drawn (.docs/map-smoothness-plan.md). Its washes, marks and
+    // way keep the order they have in the stretch's drawing, and its ids are its key's, so a piece
+    // painted again is the same drawing.
+    const base = { p, washes, texture };
     const owned = pieces.map((piece, index): Piece => {
         let added: Element[] = [];
         return {
             rect: piece.rect,
             paint() {
-                const parents = [into, p.svg, ...p.svg.querySelectorAll("g")];
-                const before = new Map(parents.map((parent) => [parent, new Set(parent.children)]));
+                const before = new Set(into.children);
                 c.origin = piece.origin ?? 0;
                 tileKey = piece.key ?? `${id}-piece-${index}`;
-                p.pen = new Pen(p.svg, {
-                    seed: hash(tileKey),
+                const own = pad(
+                    {
+                        x: X0,
+                        y: piece.rect.y - OVERHANG,
+                        w: X1 - X0,
+                        h: piece.rect.h + 2 * OVERHANG,
+                    },
+                    hash(tileKey),
                     t,
-                    paper: false,
-                    roughness: 1,
-                });
-                const elements = piece.paint();
-                added = parents.flatMap((parent) =>
-                    [...parent.children].filter((child) => !before.get(parent)?.has(child)),
+                    `j-ground${s.ahead ? " ahead" : ""}`,
                 );
-                return elements;
+                into.append(own.svg);
+                c.p = own;
+                c.washes = fadedIn(own.svg, own.g, tileKey, {
+                    y: piece.rect.y - OVERHANG,
+                    h: piece.rect.h + 2 * OVERHANG,
+                });
+                c.texture = el("g", { class: "tex" }, own.g);
+                try {
+                    const elements = piece.paint();
+                    added = [...into.children].filter((child) => !before.has(child));
+                    return elements;
+                } finally {
+                    c.p = base.p;
+                    c.washes = base.washes;
+                    c.texture = base.texture;
+                }
             },
             release() {
                 releaseScenery(added);
@@ -5981,7 +6294,7 @@ export function paintStretch(
             },
         };
     });
-    return { els: [], pieces: owned, frame: mapSurface(p.svg, area).frame };
+    return { els: [], pieces: owned };
 }
 
 /** The far row and the sky: the world's horizon drawings where its data puts them. */
@@ -6664,7 +6977,8 @@ const longDay = (iso: string): string =>
 
 /** A year's roll drawn from its view into a page's world layer (world.tsx), and what the page plays on it. */
 export interface WorldPainted {
-    frame(camera: Camera, size: Size): void;
+    /** Tells the world's idles which drawings are on screen, when a scene draws them (`hidden`). */
+    see?: Group["see"];
     pieces: { rect: Rect; detail?: boolean; paint(): (() => void) | void }[];
     /** A world putting itself together as the child arrives: what stands on a term's horizon rises into place. */
     assemble(term: number): void;
@@ -6692,7 +7006,18 @@ export function paintWorldView(o: {
     play?: string;
     /** Screen pixels per world pixel, from the camera, for the size rule on what moves. */
     zoom?: () => number;
+    /**
+     * Where the ground and the drawings beside the path go for the GPU to draw them (map-scene.ts): a
+     * source the page never lays out. The dates, the signs and the tape stay in `world`, over them.
+     */
+    hidden: HTMLElement;
+    /**
+     * What this visit to the roll has played of the day, which the page keeps across the roll's
+     * paintings, so painting it again as its sheets land does not play a moment a second time.
+     */
+    played?: Set<string>;
 }): WorldPainted {
+    const played = o.played ?? new Set<string>();
     const { view, host, world, still } = o;
     const L = {
         ground: layer("j-layer l-ground"),
@@ -6700,13 +7025,20 @@ export function paintWorldView(o: {
         flags: layer("j-layer l-flags"),
         over: layer("j-layer l-over"),
     };
-    world.append(...Object.values(L));
+    o.hidden.append(L.ground, L.art);
+    world.append(L.flags, L.over);
     world.classList.add("j-world");
     const t = readTokens(host);
     const pictureOf = (id: string) => view.pictures[id] ?? Object.values(view.pictures)[0];
     // every drawing placed plays its declared motion on the page's group, which knows the camera's zoom
     // for the size rule; the guides beside the sheets stand still (motion: false below)
-    const group = animate({ intensity: "calm", settle: 30, most: 24, zoom: o.zoom });
+    const group = animate({
+        intensity: "calm",
+        settle: 30,
+        most: 24,
+        zoom: o.zoom,
+        drawnElsewhere: true,
+    });
     const play = still ? null : group;
     const moments = new Set<ReturnType<typeof setTimeout>>();
     const l = view.layout;
@@ -6751,8 +7083,7 @@ export function paintWorldView(o: {
     };
     const todayRow = l.rows.find((r) => r.day.state === "today");
     const pieces: WorldPainted["pieces"] = [];
-    const surfaces: Painted[] = [];
-    const celebrated = new Set<Piece>();
+
     const momentInked = (term: number): boolean =>
         l.scenery.some(
             (s, k) =>
@@ -6776,15 +7107,16 @@ export function paintWorldView(o: {
             motion: false,
             play,
         });
-        surfaces.push(painted);
         painted.pieces.forEach((piece, k) =>
             pieces.push({
                 rect: piece.rect,
                 detail: k !== 0,
                 paint: () => {
                     const elements = piece.paint();
-                    place(elements, k === 0 ? s.term : undefined, s.ahead, !celebrated.has(piece));
-                    celebrated.add(piece);
+                    // what the day did plays once a visit, not again each time the roll is painted
+                    const said = `${o.play ?? ""}|${s.world}|${s.term}|${k}`;
+                    place(elements, k === 0 ? s.term : undefined, s.ahead, !played.has(said));
+                    played.add(said);
                     return () => {
                         releaseScenery(elements);
                         piece.release?.();
@@ -6863,26 +7195,52 @@ export function paintWorldView(o: {
             },
         });
     }
+    // a day's date and the tape on its sheets are on the page only while the camera is near the day,
+    // so a long roll holds only what is near; the dates keep the roll's order among themselves
+    const dates: (HTMLElement | undefined)[] = [];
     l.rows.forEach((row, r) => {
         const w = pictureOf(row.world);
         if (!w) return;
-        const f = layer(`j-date${row.day.state === "today" ? " today" : ""}`);
-        f.style.left = `${row.flag.x}px`;
-        f.style.top = `${row.flag.y}px`;
-        f.style.setProperty("--accent", `var(--${w.light.accent})`);
-        f.append(
-            span(
-                "d hand",
-                row.day.state === "today"
-                    ? "Today"
-                    : (view.days[r]?.label ?? longDay(view.days[r]?.date ?? row.day.date)),
-            ),
+        const reach = [{ x: row.flag.x, y: row.flag.y, w: 1, h: 1 }, ...row.sheets].reduce(
+            (a, b) => {
+                const x = Math.min(a.x, b.x),
+                    y = Math.min(a.y, b.y);
+                return {
+                    x,
+                    y,
+                    w: Math.max(a.x + a.w, b.x + b.w) - x,
+                    h: Math.max(a.y + a.h, b.y + b.h) - y,
+                };
+            },
         );
-        if (row.day.state === "today")
-            f.append(span("sub", longDay(view.days[r]?.date ?? row.day.date)));
-        L.flags.append(f);
-        for (const rect of row.sheets)
-            for (const x of tape(rect, `var(--${w.light.accent})`)) L.over.append(x);
+        pieces.push({
+            rect: { x: reach.x - 400, y: reach.y - 200, w: reach.w + 800, h: reach.h + 400 },
+            paint() {
+                const f = layer(`j-date${row.day.state === "today" ? " today" : ""}`);
+                f.style.left = `${row.flag.x}px`;
+                f.style.top = `${row.flag.y}px`;
+                f.style.setProperty("--accent", `var(--${w.light.accent})`);
+                f.append(
+                    span(
+                        "d hand",
+                        row.day.state === "today"
+                            ? "Today"
+                            : (view.days[r]?.label ?? longDay(view.days[r]?.date ?? row.day.date)),
+                    ),
+                );
+                if (row.day.state === "today")
+                    f.append(span("sub", longDay(view.days[r]?.date ?? row.day.date)));
+                dates[r] = f;
+                L.flags.insertBefore(f, dates.find((d, k) => k > r && d?.isConnected) ?? null);
+                const taped = row.sheets.flatMap((rect) => tape(rect, `var(--${w.light.accent})`));
+                L.over.append(...taped);
+                return () => {
+                    f.remove();
+                    dates[r] = undefined;
+                    for (const x of taped) x.remove();
+                };
+            },
+        });
     });
     const now = todayRow ? { row: todayRow, i: l.rows.indexOf(todayRow) } : null;
     const nowWorld = now ? pictureOf(now.row.world) : undefined;
@@ -6919,8 +7277,16 @@ export function paintWorldView(o: {
             a.style.transformOrigin = "0 0";
             g.append(a);
             // a creature that joined on the day being played walks up the path to the guide
-            if (o.play !== undefined && day?.date === o.play && day.joined?.includes(art))
+            const walked = `${o.play ?? ""}|joined|${art}`;
+            if (
+                o.play !== undefined &&
+                day?.date === o.play &&
+                day.joined?.includes(art) &&
+                !played.has(walked)
+            ) {
+                played.add(walked);
                 walkIn(a, { x: now.row.side > 0 ? -60 : 60, y: -420 }, still);
+            }
         });
         L.over.append(g);
     }
@@ -6935,9 +7301,7 @@ export function paintWorldView(o: {
     }
     let arriving: { stop(): void } | null = null;
     return {
-        frame(camera, size) {
-            for (const surface of surfaces) surface.frame?.(camera, size);
-        },
+        ...(play ? { see: (changes) => play.see(changes) } : {}),
         pieces,
         assemble(term) {
             if (still) return;

@@ -36,7 +36,7 @@ function factOf(id: string, grade: number, unit: number, subject: string): Lesso
         format: unit === 9 ? "puzzles" : "teach",
         art: unit % 2 ? ["coins"] : ["tree"],
         file: `lessons/${id}-0000000000.json`,
-        levels: { medium: { hash: "0000000000" } },
+        levels: ["medium"],
         first: null,
         skills: unit % 2 ? ["counting.in-twos"] : ["addition.making-ten"],
     };
@@ -127,7 +127,7 @@ test("the words read off the child, and the site's data reads back through its c
         String(YEAR.lessons.length + CORPUS.year(2, "").lessons.length),
     );
     assert.equal(words.facts[1]?.n, "40");
-    assert.equal(words.eyebrow, "Ages 5 to 10 · two subjects");
+    assert.equal(words.eyebrow, "Ages 5 to 12 · two subjects");
     assert.equal(words.day.versions, 3);
     assert.match(words.day.versionsCaption, /One question, 3 ways/);
     assert.equal(words.steps.length, c.stops.length);

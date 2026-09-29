@@ -37,6 +37,8 @@ export function tileCoverage(
     seen: Rect,
 ): TileRegion[] {
     const ready = new Set(available.map((c) => c.key));
+    // finest first, and never the root, which stands in for whatever is left at the end
+    const standIns = available.filter((c) => c.level > 0).sort((a, b) => b.level - a.level);
     const regions: TileRegion[] = [];
     for (const tile of wanted) {
         const rect = overlap(tile.rect, seen);
@@ -46,8 +48,8 @@ export function tileCoverage(
             continue;
         }
         let missing = [rect];
-        for (const previous of [...available].sort((a, b) => b.level - a.level)) {
-            if (previous.level === 0) continue;
+        for (const previous of standIns) {
+            if (!overlap(previous.rect, rect)) continue;
             const rest: Rect[] = [];
             for (const part of missing) {
                 const covered = overlap(part, previous.rect);

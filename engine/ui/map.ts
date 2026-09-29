@@ -64,7 +64,7 @@ import { animate, type Group, type Playing } from "./animate";
 import { motionOf as playsOf } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { bloom, motionOf, play } from "./player";
-import { mapScene } from "./map-scene";
+import { mapScene, type Scene } from "./map-scene";
 import { glDensity } from "./gl";
 import { landscapeZoom } from "./map-tiles";
 import { readTokens } from "./read-tokens";
@@ -1544,26 +1544,66 @@ function pressOn(st: HTMLElement): void {
     );
 }
 
-/** A way drawn along its length, as a pen would, the day it is first walked. */
+/** How many drawings a way is drawn in by: each a step further along, drawn once and faded between. */
+const DRAWN_IN = 12;
+
+/**
+ * A way drawn along its length, as a pen would, the day it is first walked. The GPU draws the map from
+ * its drawings as they were painted (map-scene.ts), so rather than one drawing changed every frame,
+ * which it would draw again every frame, the way's glow is twelve drawings each a step further along,
+ * laid under the way, which the scene draws once each and fades from one to the next; the way's own
+ * glow comes back once it is all drawn, which is the one time the way is drawn again.
+ */
 function drawIn(svg: SVGSVGElement): void {
     if (STILL) return;
     const lit = svg.querySelector<SVGPathElement>(".ow-lit-road");
-    if (!lit) return;
+    const parent = svg.parentElement;
+    if (!lit || !parent) return;
     const L = lit.getTotalLength();
-    lit.style.strokeDasharray = `${L}`;
+    if (!L) return;
+    const along = (to: number): string => {
+        const points: string[] = [];
+        for (let at = 0; at < to; at += 18) {
+            const q = lit.getPointAtLength(at);
+            points.push(`${q.x.toFixed(1)} ${q.y.toFixed(1)}`);
+        }
+        const end = lit.getPointAtLength(to);
+        points.push(`${end.x.toFixed(1)} ${end.y.toFixed(1)}`);
+        return `M${points.join("L")}`;
+    };
+    const steps = Array.from({ length: DRAWN_IN }, (_, k) => {
+        const step = el("svg", {});
+        for (const a of svg.attributes) if (a.name !== "class") step.setAttribute(a.name, a.value);
+        const glow = lit.cloneNode(false);
+        if (glow instanceof SVGPathElement) {
+            glow.removeAttribute("class");
+            glow.setAttribute("d", along((L * (k + 1)) / DRAWN_IN));
+            step.append(glow);
+        }
+        // nearly clear rather than clear, so the scene draws each before it is needed
+        step.style.opacity = "0.001";
+        parent.insertBefore(step, svg);
+        return step;
+    });
+    const was = lit.getAttribute("opacity") ?? "1";
+    lit.setAttribute("opacity", "0");
     play(
         timeline(
             [{ name: "d", from: 0, to: 1, at: 0, dur: 1.4, ease: easeInOut }],
             [{ at: 1.4, cue: "done" }],
         ),
         (t, run) => {
-            lit.style.strokeDashoffset = String(L * (1 - valueAt(run, "d", t)));
+            const f = valueAt(run, "d", t) * DRAWN_IN;
+            const k = Math.floor(f);
+            steps.forEach((step, i) => {
+                const o = i === k - 1 ? 1 : i === k ? f - k : 0.001;
+                step.style.opacity = String(o);
+            });
         },
         (cue) => {
-            if (cue === "done") {
-                lit.style.strokeDasharray = "";
-                lit.style.strokeDashoffset = "";
-            }
+            if (cue !== "done") return;
+            lit.setAttribute("opacity", was);
+            for (const step of steps) step.remove();
         },
     );
 }
@@ -2119,152 +2159,6 @@ function trail(c: Pt, at: { x: number; y: number }, t: Tokens): SVGSVGElement {
         );
     g.flush(p.svg);
     return p.svg;
-}
-
-/** A world to come on the map (src/world/future.ts): where it would stand, and whether it has been drawn yet. */
-export interface FuturePlace {
-    world?: WorldPicture;
-    name: string;
-    at: Pt;
-    note: string;
-    /** Drawn as it would be once walked, in colour with its moment happened, rather than as a proposal in pencil. */
-    walked?: boolean;
-}
-
-/**
- * The worlds to come, drawn onto the map as proposals (.docs/overworld.md): a world that has been
- * declared stands in pencil as its own place would, one that has not is a dashed ring, each is
- * circled in the teacher's pen with a note, and the land beyond the island is a second sheet of
- * paper taped to the edge of the first, with its coast in pencil.
- */
-export function paintFuture(o: {
-    layer: HTMLElement;
-    host: Element;
-    t: Tokens;
-    art: Record<string, ArtRef>;
-    places: FuturePlace[];
-    sheets: { rect: Rect; coast: Pt[] }[];
-}): void {
-    const { t } = o;
-    for (const sh of o.sheets) {
-        const r = sh.rect,
-            p = pad({ x: r.x - 300, y: r.y - 300, w: r.w + 600, h: r.h + 600 }, 17, t, "ow-sheet"),
-            g = new Ink(p.pen);
-        el(
-            "rect",
-            {
-                x: r.x,
-                y: r.y,
-                width: r.w,
-                height: r.h,
-                fill: t.card,
-                opacity: "0.55",
-                transform: `rotate(-0.8 ${r.x + r.w / 2} ${r.y + r.h / 2})`,
-            },
-            p.svg,
-        );
-        g.polygon(
-            [
-                [r.x, r.y],
-                [r.x + r.w, r.y + 40],
-                [r.x + r.w - 30, r.y + r.h],
-                [r.x - 20, r.y + r.h - 30],
-            ],
-            "pencil",
-            null,
-            { stroke: t["ink-soft"], strokeWidth: 4 },
-        );
-        for (const [x, y, a] of [
-            [r.x + r.w, r.y + 40, 30],
-            [r.x + r.w - 30, r.y + r.h, -28],
-            [r.x, r.y, -30],
-            [r.x - 20, r.y + r.h - 30, 25],
-        ] as const) {
-            el(
-                "rect",
-                {
-                    x: x - 260,
-                    y: y - 70,
-                    width: 520,
-                    height: 140,
-                    fill: t.glow,
-                    opacity: "0.55",
-                    transform: `rotate(${a} ${x} ${y})`,
-                },
-                p.svg,
-            );
-        }
-        if (sh.coast.length > 2)
-            g.curve(
-                sh.coast.map((q) => [q.x, q.y] as [number, number]),
-                "pencil",
-                { stroke: t["ink-soft"], strokeWidth: 5 },
-            );
-        for (let i = 0; i < 24; i++) {
-            const x = r.x + 300 + ((i * 1277) % (r.w - 600)),
-                y = r.y + 300 + ((i * 2311) % (r.h - 600));
-            g.curve(
-                [
-                    [x - 60, y],
-                    [x - 30, y - 20],
-                    [x, y],
-                    [x + 30, y - 20],
-                    [x + 60, y],
-                ],
-                "doodle",
-                { stroke: t["ink-soft"], strokeWidth: 4 },
-            );
-        }
-        g.flush(p.svg);
-        o.layer.append(p.svg);
-    }
-    const layers = {
-        ground: o.layer,
-        art: o.layer,
-        flags: o.layer,
-        token: o.layer,
-        nodes: o.layer,
-    };
-    for (const f of o.places) {
-        const box = { x: f.at.x - 750, y: f.at.y - 490, w: 1500, h: 980 };
-        const walked: Stood = f.walked
-            ? { state: "done", moment: "walked", lit: [] }
-            : { state: "ahead", moment: null, lit: [] };
-        if (f.world)
-            paintPlace(
-                { layers, host: o.host, t, still: true, art: o.art },
-                box,
-                f.world,
-                walked,
-                f.at,
-                "",
-                [],
-            );
-        if (f.walked) continue;
-        const p = pad(
-                { x: box.x - 500, y: box.y - 800, w: box.w + 1000, h: box.h + 1300 },
-                hash(f.name),
-                t,
-                "ow-proposal",
-            ),
-            g = new Ink(p.pen);
-        g.ellipse(f.at.x, f.at.y - 60, 1750, 1250, "pencil", null, {
-            stroke: t.pen,
-            strokeWidth: 6,
-            strokeLineDash: f.world ? undefined : [150, 110],
-            roughness: 1.6,
-        });
-        g.flush(p.svg);
-        o.layer.append(p.svg);
-        const name = document.createElement("div");
-        name.className = "ow-name ahead ow-future-name";
-        name.style.left = `${f.at.x}px`;
-        name.style.top = `${f.at.y + 470}px`;
-        name.innerHTML = `<span class="w"></span><span class="note"></span>`;
-        name.querySelector(".w")?.append(f.name);
-        name.querySelector(".note")?.append(f.note);
-        o.layer.append(name);
-    }
 }
 
 /**
@@ -3281,7 +3175,7 @@ export interface MapPiece {
 
 /** A map drawn from its view into a page's world layer (overworld.tsx), and what the page moves on it. */
 export interface MapPainted {
-    frame(camera: Camera, size: Size): void;
+    frame(camera: Camera, size: Size, ahead?: Camera | null): void;
     /** Each place's button, by the place's index; null for a place a child's map draws nothing of. */
     nodes: (HTMLButtonElement | null)[];
     /** The guide's token, which the page tags while the guide travels. */
@@ -3301,6 +3195,17 @@ export interface MapPainted {
     life(cam: () => Camera): { rebuild(): void };
     /** The camera has settled at a new zoom: what moves is sized for it again. */
     rescale(): void;
+    /**
+     * Draws what is in view of `camera` from this map's source, with the scene the map it replaces
+     * handed over, without showing it; `take` then shows it (.docs/map-smoothness-plan.md, phase 2).
+     */
+    prepare(camera: Camera): Promise<void>;
+    /** Takes over the scene handed to this map, drawing from its source from the next frame. */
+    take(): void;
+    /** The scene this map draws with, for the map painted to replace it. */
+    readonly scene: Scene;
+    /** Gives this map's scene to the map that replaces it, which has taken it; this map then stops without stopping it. */
+    handOver(): void;
     /** Off the page while a world is open, keeping what is drawn; `unpark` puts it in a page's host again. */
     park(): void;
     unpark(host: HTMLElement, under: Element): void;
@@ -3334,6 +3239,8 @@ export async function paintMapView(o: {
     riders?: { keepOff(): readonly (Element | DOMRect)[] };
     /** Screen pixels per world pixel, from the camera, for the size rule on what moves. */
     zoom?: () => number;
+    /** The scene of the map this one replaces, handed over so what the two share is not drawn again. */
+    scene?: Scene;
 }): Promise<MapPainted> {
     const { world, still, view } = o;
     let host = o.host;
@@ -3355,16 +3262,27 @@ export async function paintMapView(o: {
     world.append(...Object.values(L));
     L.art.after(lifeLayer);
     const t = readTokens(host);
-    const scene = mapScene({
-        host,
-        under: o.under,
-        hidden: world,
-        overlay: o.overlay,
-        view,
-        tokens: t,
-        see: idle ? (changes) => idle.see(changes) : undefined,
-        still,
-    });
+    const see: Group["see"] | undefined = idle ? (changes) => idle.see(changes) : undefined;
+    const scene =
+        o.scene ??
+        mapScene({
+            host,
+            under: o.under,
+            hidden: world,
+            overlay: o.overlay,
+            view,
+            tokens: t,
+            see,
+            still,
+            tiles: true,
+            // what overworld.tsx writes on its source as the zoom crosses a threshold (overworld.css)
+            flags: {
+                "data-sea": ".ow-title, .ow-key",
+                class: ".ow-waves, .mo-smoke, .ow-go, .ow-bob, .ow-turn",
+            },
+        });
+    // a map owns the scene it made, or one handed to it once it takes it, and stops only one it owns
+    let owns = !o.scene;
     // the painters read the page's colours from the map's own container, which goes with the map into
     // whichever page takes it up again, where the host it was first painted in may have left the page
     const land = paintTerrain({
@@ -3383,7 +3301,7 @@ export async function paintMapView(o: {
     let watching: IntersectionObserver | null = null;
     let living: ReturnType<typeof runLife> | undefined;
     return {
-        frame: (camera, size) => scene.frame(camera, size),
+        frame: (camera, size, ahead) => scene.frame(camera, size, ahead),
         nodes: painted.nodes.map((b): HTMLButtonElement | null => (b.hidden ? null : b)),
         token: painted.token,
         pieces: [
@@ -3441,6 +3359,15 @@ export async function paintMapView(o: {
             played = true;
         },
         settled: () => scene.settled(),
+        prepare: (camera) => scene.prepare(world, camera),
+        take() {
+            scene.rebind(world, o.overlay, see);
+            owns = true;
+        },
+        scene,
+        handOver() {
+            owns = false;
+        },
         life(cam) {
             living?.stop();
             watching?.disconnect();
@@ -3508,7 +3435,7 @@ export async function paintMapView(o: {
         stop() {
             cancelAnimationFrame(washing);
             painted.stop();
-            scene.stop();
+            if (owns) scene.stop();
             watching?.disconnect();
             living?.stop();
             idle?.dispose();

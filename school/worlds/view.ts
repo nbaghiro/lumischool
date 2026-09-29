@@ -90,18 +90,16 @@ export const emptyProgress = (): Progress => ({ done: {}, current: "", week: 1, 
 /** A made-up record for one year, for the child a page shows when nobody is signed in. */
 export type SampleRecord = (year: Year, at: { grade: number; when: When }) => Progress;
 
-/** Where a view is: the whole map, the child's own year, one world, the worlds to come, or a scene further off. */
-export type Place =
-    { kind: "map" } | { kind: "year" } | { kind: "world"; world: World } | { kind: "to-come" };
+/** Where a view is: the whole map, the child's own year, or one world. */
+export type Place = { kind: "map" } | { kind: "year" } | { kind: "world"; world: World };
 
 /**
- * A place from a link: "map", "year", "to-come", or a world's id or a word of its name
- * (`marsh`). Anything else is the child's own year.
+ * A place from a link: "map", "year", or a world's id or a word of its name (`marsh`). Anything
+ * else is the child's own year.
  */
 export function placeFrom(q: string): Place {
     const k = q.trim().toLowerCase();
     if (k === "map") return { kind: "map" };
-    if (k === "to-come") return { kind: "to-come" };
     if (!k || k === "year") return { kind: "year" };
     const world = findWorld(k);
     return world ? { kind: "world", world } : { kind: "year" };

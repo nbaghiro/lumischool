@@ -3,13 +3,17 @@
 // `subject:physics`). Nothing here reads the notation.
 import type { LessonFacts as PackFacts } from "../../engine/pack";
 import { yearOf, type Year } from "../year";
+import { offeredGrades } from "./worlds";
 
 /** A lesson as the worlds need it: what the pack's index says of it. */
 export type LessonFacts = Pick<PackFacts, "id" | "title" | "grade" | "subject" | "art" | "skills">;
 
 /** The curriculum as the worlds read it. */
 export interface Corpus {
-    /** Every grade that has lessons, lowest first. */
+    /**
+     * Every offered grade, lowest first: a grade whose lessons are landing before its worlds join the
+     * run has no year of its own to walk, and would borrow the year below's worlds.
+     */
     grades: readonly number[];
     /** A lesson's facts, or undefined for an id the curriculum does not have. */
     lesson(id: string): LessonFacts | undefined;
@@ -22,7 +26,7 @@ export function corpusFrom(lessons: readonly PackFacts[], started: string): Corp
     const byId = new Map(lessons.map((l) => [l.id, l]));
     const years = new Map<string, Year>();
     return {
-        grades: [...new Set(lessons.map((l) => l.grade))].sort((a, b) => a - b),
+        grades: offeredGrades(lessons),
         lesson: (id) => byId.get(id),
         year(grade, child) {
             const key = `${grade}|${child}`;

@@ -24,7 +24,7 @@ const lessonsOf = (grade: number): LessonFacts[] =>
         format: "teach",
         art: i % 2 ? ["tree"] : ["coins"],
         file: `lessons/g${grade}-l${i + 1}-0000000000.json`,
-        levels: { medium: { hash: "0000000000" } },
+        levels: ["medium"],
         first: null,
         skills: i % 2 ? ["addition.making-ten"] : ["counting.in-twos"],
     }));

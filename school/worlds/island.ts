@@ -1,7 +1,7 @@
-// The volcano island: the last world of the fourth year and of the map. The island the child has seen
-// across the water since the harbour, arrived at by boat: palm trees, a temple built in steps, a
-// parrot, a chest of coins and the volcano, under the palette's ember sky. The path is a line of
-// lanterns up to the lantern at the top, which is the end of the map. Picked from the term's lessons:
+// The volcano island: the last world of the fourth year. The island the child has seen across the
+// water since the harbour, arrived at by boat: palm trees, a temple built in steps, a parrot, a chest
+// of coins and the volcano, under the palette's ember sky. The path is a line of lanterns up to the
+// lantern at the top, from which the far shore and its canal town are seen. Picked from the term's lessons:
 // the temple is a number wall, the chest is found by its grid reference, the volcano is where rock
 // melts, and the parrot repeats things, which is where fact and opinion start.
 import type { World } from "./types";
@@ -19,6 +19,7 @@ export const volcanoIsland: World = {
         far: [
             { art: "palms", at: 0.1, k: 1.15, params: { count: 2, coconuts: 3 } },
             { art: "volcano", at: 0.5, k: 1.75 },
+            { art: "canal-bridge", at: 0.68, k: 0.5 },
             { art: "temple", at: 0.84, k: 1.3, params: { rows: 4 } },
         ],
         sky: [{ art: "moon", at: 0.93, down: 0.08 }],
@@ -113,7 +114,7 @@ export const volcanoIsland: World = {
         },
         {
             what: "A hammock between the palms",
-            why: "Somewhere to lie at the end of the whole map, which the lanterns lead to but the island does not offer yet.",
+            why: "Somewhere to lie at the end of the fourth year, looking out at the far shore, which the lanterns lead to but the island does not offer yet.",
         },
     ],
     map: {
@@ -133,17 +134,17 @@ export const volcanoIsland: World = {
         ],
         stamp: { x: -660, y: -420 },
         isle: true,
-        promise: true,
         ownLamp: true,
     },
     chapter: {
-        story: "The end of the map. The island has been on the horizon since the harbour in the first year, and the path is a line of lanterns up to one at the top that has not been lit yet.",
+        story: "The end of the first four years. The island has been on the horizon since the harbour in the first year, and the path is a line of lanterns up to one at the top that has not been lit yet, from which the far shore can be seen across the northern ocean, with a canal town on it.",
         moment: {
             art: "lantern",
             says: "The lantern at the top is lit.",
             params: { lit: 1, post: 1 },
         },
         secret: { art: "owl", says: "The owl from the woods, here too." },
+        glimpse: { world: "canal-town", art: "canal-bridge" },
         by: "sea",
         rare: { art: "owl-flying", way: "sky", from: "left" },
     },

@@ -429,7 +429,10 @@ export type GroundKind =
     | "machair"
     | "canopy"
     | "saltcrust"
-    | "sinter";
+    | "sinter"
+    | "iceshelf"
+    | "gorge"
+    | "regolith";
 
 /** How the way from one day to the next is drawn. */
 export type PathKind =
@@ -470,7 +473,10 @@ export type PathKind =
     | "fence"
     | "walkway"
     | "heaps"
-    | "planks";
+    | "planks"
+    | "stakes"
+    | "steps"
+    | "treads";
 
 /**
  * A deep sky, for the few worlds whose light is not daylight: a night, a dusk, a storm at sea, the
@@ -1322,34 +1328,6 @@ export const known = (r: MapReach, p: Pt, depth = 0.8) =>
 
 /** Whether a point is on the map's land: inside a coast, and not in a lake. */
 export const onLand = (t: Terrain, p: Pt): boolean => !wet(t, p);
-
-/**
- * What the map as a poster shows: the country the child has walked, and the start of the next world
- * at its edge, where the sheet's own fade takes it back to paper. The rest is not on it yet.
- */
-export function walkedCrop(map: Overworld, reach: MapReach): Rect {
-    const pts: Pt[] = [];
-    for (const c of reach.circles)
-        pts.push(
-            { x: c.x - c.r * 0.7, y: c.y - c.r * 0.7 },
-            { x: c.x + c.r * 0.7, y: c.y + c.r * 0.7 },
-        );
-    for (const ring of reach.whole) pts.push(...ring);
-    const last = map.nodes[reach.edge - 1],
-        next = map.nodes[reach.edge];
-    if (last && next && reach.edge > 0) {
-        const a = { x: last.box.x + last.box.w / 2, y: last.box.y + last.box.h / 2 },
-            b = { x: next.box.x + next.box.w / 2, y: next.box.y + next.box.h / 2 };
-        pts.push({ x: a.x + (b.x - a.x) * 0.9, y: a.y + (b.y - a.y) * 0.9 });
-    }
-    if (!pts.length) return map.bounds;
-    const B = map.bounds,
-        x0 = Math.max(B.x, Math.min(...pts.map((q) => q.x))),
-        y0 = Math.max(B.y, Math.min(...pts.map((q) => q.y)));
-    const x1 = Math.min(B.x + B.w, Math.max(...pts.map((q) => q.x))),
-        y1 = Math.min(B.y + B.h, Math.max(...pts.map((q) => q.y)));
-    return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
-}
 
 export interface RollOptions {
     /** Sheet width: 42 squares, the printed page, or 19 on a phone, where the lesson reflows. */

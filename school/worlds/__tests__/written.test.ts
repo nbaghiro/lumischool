@@ -39,7 +39,7 @@ function factOf(
         format: "teach",
         art: unit % 2 ? ["coins"] : ["tree"],
         file: `lessons/${id}-0000000000.json`,
-        levels: { medium: { hash: "0000000000" } },
+        levels: ["medium"],
         first: null,
         skills: unit % 2 ? ["counting.in-twos"] : ["addition.making-ten"],
     };
@@ -62,7 +62,7 @@ const size = () => ({ w: 400, h: 400 });
 test("the school as written, for a grown-up's own map: every world of every year and every place off the run, all open, the country in colour with nobody on it, and each note saying what the place holds", () => {
     const school = schoolViewOf({ corpus: CORPUS, size, still: true });
     const run = schoolRun();
-    const years = [1, 2, 3, 4].map((g) => CORPUS.year(g, ""));
+    const years = [...new Set(run.map((p) => p.grade))].map((g) => CORPUS.year(g, ""));
     assert.equal(school.places.length, run.length + elsewhere(run, years).length);
     assert.deepEqual(
         school.places.slice(0, run.length).map((p) => p.shown?.world),

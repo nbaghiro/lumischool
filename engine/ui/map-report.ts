@@ -12,12 +12,6 @@ export function mapReport(read: () => object): () => void {
         browser: navigator.userAgent,
         viewport: [innerWidth, innerHeight, devicePixelRatio],
         nodes: document.querySelectorAll(".world *").length,
-        surfacePixels: [...document.querySelectorAll<SVGSVGElement>("[data-map-surface]")].map(
-            (svg) => {
-                const r = svg.getBoundingClientRect();
-                return Math.round(r.width * r.height);
-            },
-        ),
         paperPixels: [...document.querySelectorAll<HTMLCanvasElement>("canvas.paper")].reduce(
             (sum, canvas) => sum + canvas.width * canvas.height,
             0,

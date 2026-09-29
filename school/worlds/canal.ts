@@ -1,7 +1,6 @@
 // The canal town: the first world of a fifth year, on the far shore seen from the lantern at the top
 // of the island. A straight canal with brick copings, narrowboats, a mill and a humped bridge, and a
-// lock that lifts the boats uphill a step at a time. Its lessons are not written yet, so it is walked
-// with an empty path until they are.
+// lock that lifts the boats uphill a step at a time.
 import type { World } from "./types";
 
 export const canalTown: World = {
@@ -31,24 +30,93 @@ export const canalTown: World = {
     reaches: [
         {
             art: "lock",
-            when: ["skill:capacity", "art:jug"],
+            when: ["skill:volume", "skill:capacity", "skill:physics.pressure", "art:jug"],
             says: "Fill the lock. How much water?",
         },
         {
-            art: "narrowboat",
-            when: ["skill:multiplication.scaling", "skill:fractions.equivalent"],
-            says: "Two pots for every window.",
+            art: "mill",
+            when: ["skill:decimals.by-ten"],
+            says: "Sacks of flour by tens, hundreds and thousands.",
         },
-        { art: "canal-bridge", when: ["skill:shapes"], says: "One arch, half a circle." },
         {
-            art: "market-stall",
-            when: ["skill:money.decimals"],
-            says: "Prices at the canal market.",
+            art: "narrowboat",
+            when: ["skill:physics.floating", "skill:physics.water-resistance"],
+            says: "A narrowboat floats low in the water.",
         },
         {
             art: "signpost",
-            when: ["skill:measure.metric", "skill:time.elapsed"],
-            says: "How far to the next lock?",
+            when: [
+                "skill:time.timetables",
+                "skill:time.elapsed",
+                "skill:rates.speed",
+                "skill:measure.metric",
+            ],
+            says: "How far to the next lock, and when?",
+        },
+        {
+            art: "market-stall",
+            when: [
+                "skill:money.decimals",
+                "skill:decimals.multiply",
+                "skill:decimals.divide",
+                "skill:rates.unit-price",
+            ],
+            says: "Prices at the canal market.",
+        },
+        {
+            art: "market-stall",
+            when: ["skill:solids"],
+            says: "Each crate for the market folds up from flat card.",
+        },
+        {
+            art: "canal-bridge",
+            when: ["skill:physics.heat"],
+            says: "A bridge grows a little longer on a hot day.",
+        },
+        {
+            art: "canal-bridge",
+            when: ["skill:art.perspective"],
+            says: "The bridge shrinks far down the canal.",
+        },
+        {
+            art: "canal-bridge",
+            when: ["skill:art"],
+            says: "Paint the humped bridge over the canal.",
+        },
+        {
+            art: "canal-bridge",
+            when: ["skill:music"],
+            says: "A tune echoes under the bridge.",
+        },
+        {
+            art: "lock",
+            when: ["skill:chemistry.rusting"],
+            says: "Rust creeps along the lock's iron gates.",
+        },
+        {
+            art: "lock",
+            when: ["skill:chemistry.mixtures", "skill:chemistry.separating"],
+            says: "What is mixed into the canal water?",
+        },
+        {
+            art: "mill",
+            when: ["skill:coding"],
+            says: "The mill keeps count of every sack.",
+        },
+        {
+            art: "heron",
+            when: ["skill:nature"],
+            says: "Look at what lives along the canal.",
+        },
+        {
+            art: "clock-tower",
+            when: ["skill:physics.motion"],
+            says: "Time it by the town clock.",
+        },
+        {
+            art: "narrowboat",
+            when: ["skill:reading", "skill:writing"],
+            says: "Each narrowboat has its name painted on.",
         },
     ],
     offers: {
@@ -109,5 +177,4 @@ export const canalTown: World = {
         term: 1,
         land: { terrain: "far-shore", near: ["volcano-island", "star-cliffs"] },
     },
-    needs: "A fifth year of lessons, and for this term: ratio and proportion, volume and capacity, decimals to thousandths, timetables, and reading a real map.",
 };

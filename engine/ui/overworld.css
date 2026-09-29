@@ -229,11 +229,6 @@
     filter: grayscale(1);
     opacity: 0.5;
 }
-/* past what a child's map has drawn, the one thing on the paper: the island's volcano, faint, smoking */
-.ow .ow-promise {
-    filter: grayscale(1);
-    opacity: 0.42;
-}
 .ow .ow-inked > svg {
     filter: drop-shadow(0 0 26px color-mix(in srgb, var(--glow) 90%, transparent));
 }

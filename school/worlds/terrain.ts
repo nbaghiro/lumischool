@@ -83,6 +83,9 @@ const PATCH: Record<GroundKind, PatchKind> = {
     canopy: "jungle",
     saltcrust: "snow",
     sinter: "heather",
+    iceshelf: "snow",
+    gorge: "woods",
+    regolith: "sand",
 };
 
 /**

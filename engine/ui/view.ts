@@ -98,6 +98,9 @@ export class CanvasView {
     takesWheel = true;
     private pageWidth: number | null = null;
     private pageSpace: HTMLDivElement | null = null;
+    /** The world's clip as last written, in world units, and the reading page's height. */
+    private clipped: Rect | null = null;
+    private spaceHeight = "";
     get readingPage(): boolean {
         return this.pageWidth !== null;
     }
@@ -116,6 +119,7 @@ export class CanvasView {
         this.host.classList.toggle("reading-page", width !== null);
         if (width !== null && !this.pageSpace) {
             this.pageSpace = document.createElement("div");
+            this.spaceHeight = "";
             this.pageSpace.className = "reading-page-space";
             this.pageSpace.setAttribute("aria-hidden", "true");
             this.host.append(this.pageSpace);
@@ -131,6 +135,10 @@ export class CanvasView {
         this.settleSoon();
     }
     private anim: { at(t: number): Camera; start: number; ms: number; to: Camera } | null = null;
+    /** Where the camera is flying to, while it flies. */
+    get heading(): Camera | null {
+        return this.anim?.to ?? null;
+    }
     private glide: { vx: number; vy: number; t: number } | null = null;
     private raf = 0;
     private disposed = false;
@@ -422,20 +430,42 @@ export class CanvasView {
         if (this.pageWidth !== null && this.pageSpace) {
             const z = Math.min(1, Math.max(0.1, (this.vp.w - 40) / this.pageWidth));
             const bounds = this.hooks.bounds(this.cam);
-            this.pageSpace.style.height = `${Math.max(this.vp.h, bounds.h * z)}px`;
+            const height = `${Math.max(this.vp.h, bounds.h * z)}px`;
+            if (height !== this.spaceHeight) {
+                this.spaceHeight = height;
+                this.pageSpace.style.height = height;
+            }
             this.cam = { x: 0, y: this.cam.y, z };
             this.host.scrollTop = Math.max(0, (this.cam.y - bounds.y) * z - this.vp.h / 2);
             this.cam.y = bounds.y + (this.host.scrollTop + this.vp.h / 2) / z;
             this.paper.style.transform = `translateY(${this.host.scrollTop}px)`;
         }
-        // Clip locally as well as at the host's viewport, including any retained painted layers.
-        const ink = visibleRect(this.cam, { w: this.vp.w + 192, h: this.vp.h + 192 });
-        this.world.style.clipPath = `polygon(${ink.x}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y + ink.h}px, ${ink.x}px ${ink.y + ink.h}px)`;
+        // Clip locally as well as at the host's viewport, including any retained painted layers; the
+        // clip reaches past the window and is written again only as the camera nears its edge or draws
+        // well in, since each write repaints the world
+        const need = visibleRect(this.cam, { w: this.vp.w + 64, h: this.vp.h + 64 });
+        const was = this.clipped;
+        if (
+            !was ||
+            was.w > need.w * 3 ||
+            need.x < was.x ||
+            need.y < was.y ||
+            need.x + need.w > was.x + was.w ||
+            need.y + need.h > was.y + was.h
+        ) {
+            const ink = visibleRect(this.cam, {
+                w: this.vp.w * 1.5 + 192,
+                h: this.vp.h * 1.5 + 192,
+            });
+            this.clipped = ink;
+            this.world.style.clipPath = `polygon(${ink.x}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y}px, ${ink.x + ink.w}px ${ink.y + ink.h}px, ${ink.x}px ${ink.y + ink.h}px)`;
+        }
         this.frame.style.transform = this.readingPage ? `translateY(${this.host.scrollTop}px)` : "";
         this.world.style.transform = cssTransform(this.cam, this.vp);
         // near a scale of one WebKit tiles the world's own layer, so it moves without being painted;
         // drawn further back that layer would be sized as if unscaled, so the frame paints it instead
-        this.world.style.willChange = this.cam.z >= LAYERED ? "transform" : "auto";
+        const layered = this.cam.z >= LAYERED ? "transform" : "auto";
+        if (this.world.style.willChange !== layered) this.world.style.willChange = layered;
         this.drawPaper();
     }
 

@@ -39,7 +39,7 @@ import {
     SITE_MAP,
     siteWorld,
 } from "../view";
-import { schoolRun, worldById, yearOf } from "../worlds";
+import { DEFAULT_YEARS, isWorld, schoolRun, siteOf, worldById, WORLDS, yearOf } from "../worlds";
 import { refsOf } from "../art";
 
 const STARTED = "2026-08-31";
@@ -63,7 +63,7 @@ function factOf(
         format: "teach",
         art: unit % 2 ? ["coins"] : ["tree"],
         file: `lessons/${id}-0000000000.json`,
-        levels: { medium: { hash: "0000000000" } },
+        levels: ["medium"],
         first: null,
         skills: unit % 2 ? ["counting.in-twos"] : ["addition.making-ten"],
     };
@@ -155,8 +155,8 @@ test("the record makes the map: one place the child is, a stamp and a moment onl
 test("the whole run lays out once, every world on land or at sea as it should be, and the arrow keys walk it", () => {
     const run = schoolRun();
     const map = layoutMap(run, (id) => worldOf(id).chapter.by);
-    assert.equal(map.nodes.length, 12);
-    assert.equal(map.roads.length, 11);
+    assert.equal(map.nodes.length, 18);
+    assert.equal(map.roads.length, 17);
     const terrain = terrainOf(map, worldOf);
     for (const n of map.nodes) {
         const c = { x: n.box.x + n.box.w / 2, y: n.box.y + n.box.h / 2 };
@@ -197,7 +197,43 @@ test("subject worlds have permanent, spacious sites across the shared regions", 
             `${id} stands on land`,
         );
     }
-    assert.equal(REGIONS.length, 8);
+    assert.equal(REGIONS.length, 9);
+});
+
+test("a world with a term of its own that is also in the run names the term the run puts it in", () => {
+    for (const w of WORLDS) {
+        if (w.site?.kind !== "term") continue;
+        for (const [grade, list] of Object.entries(DEFAULT_YEARS)) {
+            const i = list.indexOf(w.id);
+            if (i < 0) continue;
+            assert.deepEqual(
+                { grade: w.site.grade, term: w.site.term },
+                { grade: Number(grade), term: i + 1 },
+                `${w.id} stands in one term on the map and another in the run`,
+            );
+        }
+    }
+});
+
+test("every glimpse is of a later world, and the drawing it names stands on the horizon it is seen from", () => {
+    const order = (id: string): number | null => {
+        const s = siteOf(id);
+        return s?.kind === "term" ? s.grade * 10 + s.term : null;
+    };
+    for (const w of WORLDS) {
+        const g = w.chapter.glimpse;
+        if (!g) continue;
+        assert.ok(isWorld(g.world), `${w.id} glimpses a world there is not`);
+        const from = order(w.id),
+            to = order(g.world);
+        assert.ok(
+            from !== null && to !== null && to > from,
+            `${w.id} glimpses ${g.world}, not a later world`,
+        );
+        const drawn = [...w.horizon.far, ...(w.horizon.sky ?? [])].map((p) => p.art);
+        assert.ok(drawn.includes(g.art), `${w.id}: the ${g.art} it glimpses is not on its horizon`);
+    }
+    assert.equal(worldById("moon").chapter.glimpse, undefined, "the moon is the end of the map");
 });
 
 test("a child's map holds every world of every year: their own year's dimmed and closed until each opens, the next distinct, and another year's present and closed with no way in", () => {
@@ -503,7 +539,9 @@ test("a place a track brings a child to opens with its first lesson, wherever it
     // the painter's hut holds the art track, and the first year's hut has its way from a world of the
     // first year; the child stands in the first lesson of another term, in another world
     const corpus = corpusFrom(
-        [1, 2, 3, 4].flatMap((g) => lessonsOf(g)).concat(trackOf("art", 1)),
+        Object.keys(DEFAULT_YEARS)
+            .flatMap((g) => lessonsOf(Number(g)))
+            .concat(trackOf("art", 1)),
         STARTED,
     );
     const topics = topicsIn(corpus);
@@ -996,12 +1034,15 @@ test("a child stands where the plan says they are, whatever tracks it has on: ev
 });
 
 test("a day whose aside hangs further along the path than its maths leaves the child at the maths, on the map and on the roll alike", () => {
-    // six writing lessons hung along nine maths lessons: writing's fourth hangs off maths's seventh,
-    // in the third term, while the fourth maths lesson is in the second
-    const corpus = corpusFrom([...lessonsOf(1), ...trackOf("writing", 1)], STARTED);
+    // writing's fourth lesson is written for the third term, so it hangs off a maths lesson there,
+    // while the fourth maths lesson is in the second
+    const writing = trackOf("writing", 1).map((f) =>
+        f.id === "writing-1-4" ? { ...f, unit: 7 } : f,
+    );
+    const corpus = corpusFrom([...lessonsOf(1), ...writing], STARTED);
     const year = corpus.year(1, "Rosie");
     const host = year.lessons.find((l) => l.id === "writing-1-4")?.branch;
-    assert.equal(host, "g1-l7", "the fixture's aside hangs further along than the day's maths");
+    assert.equal(host, "g1-l9", "the fixture's aside hangs further along than the day's maths");
     const done: Progress["done"] = {};
     for (const id of ["g1-l1", "g1-l2", "g1-l3", "writing-1-1", "writing-1-2", "writing-1-3"])
         done[id] = { stars: 3, on: "2026-09-01", minutes: 10, right: 1 };

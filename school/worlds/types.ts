@@ -73,7 +73,7 @@ export interface World extends Omit<WorldPicture, "motion"> {
     offers: Offers;
     /** Drawings this world would like and does not have, so nobody mistakes the gap for a choice. */
     wants: Want[];
-    /** Where it stands, for a world outside the twelve of the run; the twelve stand where DEFAULT_YEARS puts them. */
+    /** Where it stands, for a world outside the run or a run world that also stands alone off it; the rest stand where DEFAULT_YEARS puts them. */
     site?: Site;
     /** For a world whose year has no lessons yet: what it waits for, in a sentence for a grown-up. */
     needs?: string;

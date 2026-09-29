@@ -1,4 +1,4 @@
-// Eight regions share one sea; lesson grades do not determine where a world stands.
+// Nine regions share one sea; lesson grades do not determine where a world stands.
 import type { Pt, Rect, WoodKind } from "../../engine/space";
 
 /** A land as control points round its coast, clockwise, which terrain.ts smooths and wobbles. */
@@ -6,9 +6,9 @@ export interface LandShape {
     id: string;
     coast: Pt[];
     /**
-     * The first grade whose run reaches it: the fifth year's far shore is drawn once a fifth year is
-     * on the map. A land is also drawn whenever a world of the run stands on it, so a land for worlds
-     * a family has not got yet can wait at a grade no run reaches.
+     * The grade whose land it is, where that grade is on the run. Every land is drawn for every child,
+     * whatever their grade, because the map's tiles are baked once from the whole country
+     * (`countryViewOf`) and every view must share their bounds, so a later year's land sets none.
      */
     from?: number;
     /** How far the coast wobbles either side of the smoothed line, in world units. */
@@ -27,6 +27,8 @@ export const LAND_AT: Record<number, Rect> = {
     2: { x: 5500, y: 2300, w: 12600, h: 8200 },
     3: { x: 3000, y: -10600, w: 12400, h: 8000 },
     4: { x: -16200, y: -10600, w: 10400, h: 8000 },
+    5: { x: -9000, y: -20200, w: 20000, h: 6900 },
+    6: { x: 12600, y: -24100, w: 15800, h: 6100 },
 };
 
 /** The island the fourth year sails out to, in the water north-east of its land. */
@@ -252,27 +254,30 @@ export const LANDS: LandShape[] = [
         ],
     },
     {
-        // the far shore, across the northern ocean: the fifth year's, on a second sheet
+        // the far shore, across the northern ocean: the fifth year's
         id: "far-shore",
         from: 0,
         wobble: 170,
         coast: [
-            p(-9000, -16800),
-            p(-6000, -17400),
-            p(-2000, -17000),
-            p(2000, -17600),
-            p(6000, -17200),
-            p(10000, -17600),
+            p(-9200, -17400),
+            p(-8400, -19000),
+            p(-6000, -19900),
+            p(-2600, -19500),
+            p(1000, -20300),
+            p(4400, -19700),
+            p(7600, -20100),
+            p(9800, -19000),
+            p(10600, -17600),
             p(11000, -15800),
             p(9200, -14400),
-            p(7000, -13900),
-            p(4500, -14200),
-            p(2600, -14300),
-            p(800, -13900),
-            p(-1400, -14100),
-            p(-3000, -13700),
-            p(-5000, -14000),
-            p(-7200, -14300),
+            p(7000, -13700),
+            p(4500, -13900),
+            p(2600, -13800),
+            p(800, -13300),
+            p(-1400, -13600),
+            p(-3000, -13300),
+            p(-5000, -13600),
+            p(-7200, -14000),
             p(-8800, -15200),
         ],
     },
@@ -353,6 +358,10 @@ export const SLOTS: Record<string, Pt> = {
     "5.1": p(-4200, -15300),
     "5.2": p(1300, -16100),
     "5.3": p(6500, -15400),
+    // the sixth year, north-east over the ocean: the midnight sun, the waterfall gorge, the launch pad
+    "6.1": p(15300, -19600),
+    "6.2": p(20200, -21800),
+    "6.3": p(25200, -22400),
 };
 
 /**
@@ -377,6 +386,9 @@ export const ALTS: Record<string, Pt> = {
     "5.1": p(-6600, -15500),
     "5.2": p(3900, -15000),
     "5.3": p(8900, -15600),
+    "6.1": p(17400, -21200),
+    "6.2": p(18800, -19000),
+    "6.3": p(24600, -19600),
 };
 
 /** Fixed sites keep a shared subject world in the same place for every family and grade. */
@@ -428,6 +440,31 @@ for (const id of [
     LANDS.push({ id, wobble: 80, coast: outline.map(([x = 0, y = 0]) => p(at.x + x, at.y + y)) });
 }
 
+// the sixth year's land, north-east over the northern ocean; pushed last, since each coast's wobble is
+// seeded by its place in the list
+LANDS.push({
+    id: "year-six",
+    wobble: 170,
+    coast: [
+        p(12600, -19600),
+        p(13400, -21800),
+        p(15200, -23400),
+        p(17800, -24000),
+        p(20600, -23600),
+        p(23200, -24200),
+        p(26000, -23700),
+        p(28000, -22600),
+        p(28600, -20800),
+        p(27600, -19200),
+        p(25600, -18200),
+        p(23000, -18500),
+        p(20600, -17900),
+        p(18200, -18400),
+        p(16000, -17900),
+        p(14000, -18300),
+    ],
+});
+
 export function spotsOn(
     _grade: number,
     places: readonly { id: string; terrain: string }[],
@@ -460,6 +497,10 @@ export const ROUTES: Record<string, Pt[]> = {
     "4.3>5.1": [p(-1500, -6400), p(-500, -9500), p(-300, -12200)],
     "5.1>5.2": [p(-2200, -15100), p(-400, -15500)],
     "5.2>5.3": [p(3000, -16000), p(4600, -15400)],
+    // the old city's harbour across the northern ocean to the ice shelf, and up into the hills
+    "5.3>6.1": [p(8800, -16100), p(11900, -16900), p(14300, -17500)],
+    "6.1>6.2": [p(17000, -20000), p(18600, -21000)],
+    "6.2>6.3": [p(22000, -22400), p(23600, -22600)],
 };
 
 /**
@@ -477,6 +518,8 @@ export const RIVERS: Pt[][] = [
     [p(10150, 5150), p(11300, 6400), p(12550, 7650), p(13950, 8800), p(15350, 10150)],
     [p(5100, -5800), p(6100, -7000), p(6450, -8350), p(7350, -9650)],
     [p(-11500, -8600), p(-10250, -7800), p(-9150, -6900), p(-7800, -6350), p(-6650, -6200)],
+    [p(-1300, -19700), p(-1700, -18400), p(-1100, -17000), p(-1600, -15300), p(-1300, -13500)],
+    [p(20900, -23700), p(21400, -22600), p(21100, -21000), p(21700, -19700), p(21300, -18200)],
 ];
 
 /** Lakes, each a middle and two radii; terrain.ts draws a wobbly outline round it. */
@@ -486,6 +529,8 @@ export const LAKES: { at: Pt; rx: number; ry: number }[] = [
     { at: p(-12450, 8450), rx: 950, ry: 520 },
     { at: p(10050, 5100), rx: 620, ry: 330 },
     { at: p(8450, -8900), rx: 700, ry: 380 },
+    { at: p(4800, -18300), rx: 750, ry: 380 },
+    { at: p(22600, -20300), rx: 600, ry: 300 },
 ];
 
 export const WOODS: { at: Pt; rx: number; ry: number; kind: WoodKind }[] = [
@@ -504,6 +549,11 @@ export const WOODS: { at: Pt; rx: number; ry: number; kind: WoodKind }[] = [
     { at: p(6100, -5800), rx: 620, ry: 300, kind: "trees" },
     { at: p(-11600, -7250), rx: 700, ry: 300, kind: "firs" },
     { at: p(-13600, -5400), rx: 560, ry: 280, kind: "firs" },
+    { at: p(-6900, -18400), rx: 900, ry: 380, kind: "firs" },
+    { at: p(3600, -19100), rx: 700, ry: 300, kind: "trees" },
+    { at: p(8800, -17800), rx: 600, ry: 280, kind: "trees" },
+    { at: p(14700, -22400), rx: 500, ry: 250, kind: "firs" },
+    { at: p(26600, -19400), rx: 600, ry: 280, kind: "firs" },
 ];
 
 /** Hills drawn side on, a row of brows from one point to another: each land's own. */
@@ -512,13 +562,16 @@ export const HILLS: { from: Pt; to: Pt; n: number }[] = [
     { from: p(13700, 4350), to: p(15700, 4750), n: 4 },
     { from: p(10200, -3950), to: p(12050, -3800), n: 4 },
     { from: p(-14200, -7000), to: p(-12750, -7400), n: 4 },
+    { from: p(6400, -19300), to: p(8400, -19000), n: 4 },
+    { from: p(16200, -23000), to: p(18200, -23300), n: 4 },
 ];
 
-/** Ranges of mountains, peaks with snow on them, through the middle of the fourth year's land. */
+/** Ranges of mountains, peaks with snow on them: through the middle of the fourth year's land, and above the sixth year's gorge. */
 export const PEAKS: { from: Pt; to: Pt; n: number }[] = [
     { from: p(-11100, -7950), to: p(-9450, -8300), n: 4 },
     { from: p(-10600, -6200), to: p(-9000, -6500), n: 4 },
     { from: p(-12350, -8850), to: p(-10900, -9250), n: 3 },
+    { from: p(21900, -23100), to: p(23500, -23300), n: 3 },
 ];
 
 /** Patchwork fields, each a corner, a size and a lean; terrain.ts cuts them into plots. */
@@ -528,6 +581,8 @@ export const FIELDS: { at: Pt; cols: number; rows: number }[] = [
     { at: p(12550, 8850), cols: 3, rows: 2 },
     { at: p(12300, -7100), cols: 2, rows: 2 },
     { at: p(-13900, -5000), cols: 2, rows: 1 },
+    { at: p(-4400, -18900), cols: 3, rows: 2 },
+    { at: p(5400, -17700), cols: 2, rows: 1 },
 ];
 
 /** Drawings from the shelf standing in the land and on the water. */
@@ -545,6 +600,17 @@ export const FEATURES: { art: string; at: Pt; k: number; flip?: boolean; on: "la
     { art: "gull-flying", at: p(4500, -5650), k: 0.6, on: "sea" },
     { art: "boat", at: p(-6750, -5700), k: 0.5, flip: true, on: "sea" },
     { art: "gull-flying", at: p(-4000, -3400), k: 0.5, flip: true, on: "sea" },
+    { art: "windmill", at: p(-4900, -17600), k: 1, on: "land" },
+    { art: "lighthouse", at: p(-8400, -15700), k: 0.6, on: "land" },
+    { art: "cottage", at: p(7400, -18300), k: 0.7, flip: true, on: "land" },
+    { art: "sheep", at: p(-2600, -17400), k: 0.5, on: "land" },
+    { art: "boat", at: p(-3000, -12700), k: 0.5, on: "sea" },
+    { art: "gull-flying", at: p(3000, -12900), k: 0.55, on: "sea" },
+    { art: "iceberg", at: p(12400, -17000), k: 0.7, on: "sea" },
+    { art: "iceberg", at: p(26800, -24900), k: 0.6, flip: true, on: "sea" },
+    { art: "tent", at: p(17000, -18700), k: 0.6, on: "land" },
+    { art: "weather-station", at: p(27400, -21600), k: 0.5, on: "land" },
+    { art: "gull-flying", at: p(13000, -24200), k: 0.5, flip: true, on: "sea" },
 ];
 
 /** Creatures a child can spot from the paper plane (flight.ts), where each lives. */
@@ -560,6 +626,14 @@ export const SIGHTS: { art: string; at: Pt; name: string; k: number; flip?: bool
     { art: "eagle", at: p(11050, -9100), name: "An eagle", k: 0.8 },
     { art: "crabs", at: p(5350, -5400), name: "Crabs", k: 0.6 },
     { art: "hares", at: p(-13600, -6050), name: "Hares", k: 0.7 },
+    { art: "heron", at: p(-900, -18000), name: "A heron", k: 0.8 },
+    { art: "eagle", at: p(7400, -19500), name: "An eagle", k: 0.8, flip: true },
+    { art: "rabbits", at: p(-5600, -17300), name: "Rabbits", k: 0.7 },
+    { art: "seal", at: p(10600, -14300), name: "A seal", k: 0.7, flip: true },
+    { art: "whale", at: p(11600, -19800), name: "A whale", k: 0.9 },
+    { art: "seal", at: p(13500, -17700), name: "A seal", k: 0.7 },
+    { art: "puffins", at: p(28900, -22000), name: "Puffins", k: 0.6 },
+    { art: "fox", at: p(15600, -21700), name: "A fox", k: 0.6 },
 ];
 
 /** Where each year's name is lettered for a grown-up, and at what angle in degrees. */
@@ -617,8 +691,15 @@ export const REGIONS: { id: string; name: string; line: string; at: Pt; angle: n
         id: "far-shore",
         name: "The far shore",
         line: "Canals, cities and distant stars",
-        at: p(1000, -18100),
+        at: p(1000, -19300),
         angle: 0,
+    },
+    {
+        id: "year-six",
+        name: "The far north",
+        line: "Ice, falling water and the way to the moon",
+        at: p(27000, -20300),
+        angle: -2,
     },
 ];
 
@@ -635,31 +716,34 @@ export const FURNITURE_ON: Record<number, typeof FURNITURE> = {
     2: { title: p(8050, 1750), key: p(17650, 9550), compass: p(17800, 2650) },
     3: { title: p(4500, -10850), key: p(16200, -3350), compass: p(16350, -9800) },
     4: { title: p(-13650, -11900), key: p(-8100, -1850), compass: p(-7200, -10850) },
+    5: { title: p(-7800, -20000), key: p(10600, -14200), compass: p(10000, -19900) },
+    6: { title: p(13600, -23600), key: p(28000, -18400), compass: p(27800, -23800) },
 };
 
 /**
  * Where each land's year ends: the jetty at its shore, just out past where the way to the next land's
  * first world meets the coast, where the ship waits for the sail. The fourth year's is off the island,
- * toward the far shore.
+ * toward the far shore, and the fifth's faces the sixth year's land; the sixth year sails nowhere.
  */
 export const SAILS: Record<number, Pt> = {
     1: p(-4150, 6950),
     2: p(15050, 2600),
     3: p(3100, -8450),
     4: p(-1650, -3300),
+    5: p(11400, -16600),
 };
 
 /**
- * The sheet for the school's four years: the four lands with the sea round them, and 2,000 of sea past
- * the outermost coasts, where each land keeps isles of its own rather than sharing the water between
- * the lands with the next year's.
+ * The sheet for the whole school: every year's land with the sea round it, and 2,000 of sea past the
+ * outermost coasts, where each land keeps isles of its own rather than sharing the water between the
+ * lands with the next year's. It is the same for every viewer, since the map's tiles are baked to it;
+ * a new land goes north, where the sheet is shorter than it is wide, so the tiles' levels keep their
+ * spans (tools/scripts/map-tiles.ts).
  */
-export const SHEET: Rect = { x: -32600, y: -20400, w: 66500, h: 44200 };
+export const SHEET: Rect = { x: -32600, y: -26400, w: 66500, h: 50200 };
 
 /** Extra sea fills wide screens and tall marketing panels at the atlas zoom. */
 export const SEA_SIDES = 24000;
-/** What a fifth year adds: the far shore, on a sheet taped along the top. */
-export const SHEET_FIVE: Rect = { x: -12000, y: -20400, w: 26000, h: 6000 };
 
 /**
  * How a world stands in a term: in the term's own place, which is where any world a family may put in

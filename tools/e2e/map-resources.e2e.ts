@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 import { signInAs, test } from "./steps";
 
 declare global {
@@ -230,9 +230,14 @@ test("the map's GPU canvas and the world's clip stay viewport bounded through fl
                     const width = ((clip[2] ?? 0) - (clip[0] ?? 0)) * camera.a;
                     const height = ((clip[5] ?? 0) - (clip[1] ?? 0)) * camera.d;
                     const density = Math.min(2, Math.max(1, devicePixelRatio));
+                    // the clip reaches past the window and is written again only as the camera nears
+                    // its edge or draws well in (view.ts), so it covers the window and is at most
+                    // three times what the window with its margin needs
                     return (
-                        Math.abs(width - host.width - 192) <= 2 &&
-                        Math.abs(height - host.height - 192) <= 2 &&
+                        width >= host.width &&
+                        height >= host.height &&
+                        width <= 3 * (host.width + 64) + 2 &&
+                        height <= 3 * (host.height + 64) + 2 &&
                         Math.abs(canvas.width - Math.round(host.width * density)) <= 1 &&
                         Math.abs(canvas.height - Math.round(host.height * density)) <= 1
                     );
@@ -288,6 +293,7 @@ test("equivalent models and pending progress updates preserve a flight's scene",
     await map.getByRole("button", { name: "Fly the paper plane (P)" }).click();
     await map.evaluate((root) => {
         root.querySelector("canvas.map-gl")?.setAttribute("data-continuity", "same");
+        root.querySelector(".ow-source")?.setAttribute("data-continuity", "same");
     });
     await page.evaluate("window.mapFixture.update(false)");
     await page.evaluate("window.mapFixture.update(true)");
@@ -296,11 +302,14 @@ test("equivalent models and pending progress updates preserve a flight's scene",
     await expect(
         map.getByRole("button", { name: "Stop flying and land at the nearest world", exact: true }),
     ).toBeVisible();
-    await expect(map.locator("[data-continuity=same]")).toHaveCount(1);
+    // the changed model waits for the landing: the flight keeps its source and its scene
+    await expect(map.locator("[data-continuity=same]")).toHaveCount(2);
     await map
         .getByRole("button", { name: "Stop flying and land at the nearest world", exact: true })
         .click();
-    await expect(map.locator("[data-continuity=same]")).toHaveCount(0);
+    // then the map is painted again into a new source, and keeps the scene it hands to it
+    await expect(map.locator(".ow-source[data-continuity=same]")).toHaveCount(0);
+    await expect(map.locator("canvas.map-gl[data-continuity=same]")).toHaveCount(1);
     await expect(map).toHaveClass(/ready/);
     await page.evaluate("window.mapFixture.dispose()");
     await expect(map).toHaveCount(0);
@@ -341,7 +350,8 @@ test("lesson entry keeps populated scenery through background lesson preparation
             const replaced = records.some(
                 (record) =>
                     record.target instanceof Element &&
-                    record.target.matches(".wd-host .world") &&
+                    // the art is in the world, or in the source the GPU draws it from (world.tsx)
+                    record.target.matches(".wd-host .world, .wd-host > .wd-source") &&
                     Array.from(record.removedNodes).some(
                         (node) => node instanceof Element && node.matches(".l-art"),
                     ),
@@ -408,15 +418,12 @@ test("lesson entry keeps populated scenery through background lesson preparation
     }
 });
 
-test("a lost GPU context draws the map again once it is restored", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    const errors: string[] = [];
-    page.on("pageerror", (error) => errors.push(error.message));
-    await page.goto("/home#/map");
-    const map = page.getByRole("dialog").locator(".ow-host.ready");
-    await expect(map).toBeVisible({ timeout: 60_000 });
-    const canvas = map.locator(":scope > canvas.map-gl");
-    // the map has drawn when the canvas's picture stops changing
+/**
+ * Loses the GPU context of the canvas under `host`, moves the camera while it is lost, and restores it: the
+ * canvas must come to rest on the moved view, which only a picture drawn again after the restore can show.
+ * A lost context is confirmed by the context itself, since WebKit keeps showing the last frame until then.
+ */
+async function loseAndRestore(page: Page, host: Locator, canvas: Locator): Promise<void> {
     let before = await canvas.screenshot();
     await expect
         .poll(async () => {
@@ -429,22 +436,52 @@ test("a lost GPU context draws the map again once it is restored", async ({ page
     await canvas.evaluate((el) => {
         if (!(el instanceof HTMLCanvasElement)) return;
         const lose = el.getContext("webgl2")?.getExtension("WEBGL_lose_context");
-        Object.assign(window, { restoreMap: () => lose?.restoreContext() });
+        Object.assign(window, { restoreGl: () => lose?.restoreContext() });
         lose?.loseContext();
     });
-    await expect.poll(async () => (await canvas.screenshot()).equals(before)).toBe(false);
-    const lost = await canvas.screenshot();
-    await page.evaluate("window.restoreMap()");
-    await map.dispatchEvent("wheel", { deltaY: 1 });
-    // redrawn once it holds a picture again that has stopped changing, of about the size it had
-    let last = lost;
+    await expect
+        .poll(() =>
+            canvas.evaluate(
+                (el) =>
+                    el instanceof HTMLCanvasElement && !!el.getContext("webgl2")?.isContextLost(),
+            ),
+        )
+        .toBe(true);
+    for (let i = 0; i < 6; i++) await host.dispatchEvent("wheel", { deltaX: 60, deltaY: 40 });
+    await page.evaluate("window.restoreGl()");
+    await host.dispatchEvent("wheel", { deltaY: 1 });
+    // drawn again once it holds a picture of the moved view that has stopped changing and is not bare
+    // paper, whose encoded size is a small share of any drawn view's
+    let last = before;
     await expect
         .poll(async () => {
             const now = await canvas.screenshot();
-            const settled = now.equals(last) && !now.equals(lost);
+            const settled = now.equals(last) && !now.equals(before);
             last = now;
-            return settled && Math.abs(now.length - before.length) < before.length * 0.2;
+            return settled && now.length > before.length * 0.3;
         })
         .toBe(true);
+}
+
+test("a lost GPU context draws the map again once it is restored", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto("/home#/map");
+    const map = page.getByRole("dialog").locator(".ow-host.ready");
+    await expect(map).toBeVisible({ timeout: 60_000 });
+    await loseAndRestore(page, map, map.locator(":scope > canvas.map-gl"));
+    expect(errors).toEqual([]);
+});
+
+test("a lost GPU context draws a world's roll again once it is restored", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto("/#/map/woods");
+    const roll = page.locator(".wd.ready").first();
+    await expect(roll).toBeVisible({ timeout: 60_000 });
+    // the roll's camera takes its wheel on its host, inside the roll
+    await loseAndRestore(page, roll.locator(".wd-host"), roll.locator(".wd-host > canvas.map-gl"));
     expect(errors).toEqual([]);
 });

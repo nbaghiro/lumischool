@@ -4,10 +4,11 @@
 //
 // A year has three worlds, one a term. A term is the stretch a family plans in and the stretch a
 // child can remember as a place ("when we were at the harbour"), and three is few enough that each
-// arrival is an event rather than a palette swap every fortnight. Twelve make the whole school's run,
-// four years of three, in the order the map joins them. The other eleven stand round that run: the
-// garden before it, a fifth year after it, two worlds a family can choose for a term, and five places
-// for the subjects the run gives no home to (.docs/overworld.md).
+// arrival is an event rather than a palette swap every fortnight. Fifteen make the whole school's run,
+// five years of three, in the order the map joins them. The rest stand round that run: the garden
+// before it, a sixth year after it, worlds a family can choose for a term, and places for the
+// subjects the run gives no home to (.docs/overworld.md).
+import type { LessonFacts } from "../../engine/pack";
 import type { LessonDef, Year } from "../year";
 import { bandstandPark } from "./park";
 import { canalTown } from "./canal";
@@ -48,8 +49,11 @@ import { windmillIsland } from "./windmill";
 import { treetops } from "./treetops";
 import { saltFlats } from "./saltflats";
 import { geyserValley } from "./geysers";
+import { midnightSun } from "./midnightsun";
+import { waterfallGorge } from "./gorge";
+import { moon } from "./moon";
 
-/** The twelve of the run, the eleven round it in the order .docs/overworld.md ranks them, then the places further off. */
+/** The worlds of the run's first four years, the eleven round them in the order .docs/overworld.md ranks them, then the places further off. */
 export const WORLDS: World[] = [
     meadow,
     harbour,
@@ -89,6 +93,9 @@ export const WORLDS: World[] = [
     postOffice,
     windmillIsland,
     clockworkIsland,
+    midnightSun,
+    waterfallGorge,
+    moon,
 ];
 
 /** A world by id, or the first world when the id is unknown (retired, or mistyped in a saved choice). */
@@ -125,7 +132,13 @@ export function findWorld(q: string): World | null {
  * reach into. The second year's kitchen comes in the term of fractions, sharing and equal groups; its
  * town in the term of money, grams and quarter past; the third year's laboratory in the term of
  * circuits, magnets and the flame; the fourth year's open sea in the term of angles, decimals and the
- * see-saw rule, and its island in the term of coordinates, number walls and melting points.
+ * see-saw rule, and its island in the term of coordinates, number walls and melting points; the fifth
+ * year's canal town in the term of volume, rates and the lock, and its old city in the term of letters
+ * for numbers, area and old books; the sixth year's midnight sun in the term of negative numbers,
+ * ratio and the ice that floats, its gorge in the term of speed, volume and the water wheel, and its
+ * moon in the term of circles, scale and probability. The fifth and sixth years' worlds keep their
+ * `site` as well, which is how a younger child's map shows the lands beyond as closed places across
+ * the sea.
  */
 const FIRST_YEAR = ["meadow", "harbour", "railway"];
 
@@ -134,7 +147,22 @@ export const DEFAULT_YEARS: Record<number, string[]> = {
     2: ["woods", "kitchen", "town"],
     3: ["night-sky", "sports-ground", "laboratory"],
     4: ["mountains", "open-sea", "volcano-island"],
+    5: ["canal-town", "star-cliffs", "walled-city"],
+    6: ["midnight-sun", "waterfall-gorge", "moon"],
 };
+
+/**
+ * The grades a family may give a child: each grade whose worlds are in the run and whose lessons are
+ * written, in order. A grade's lessons land while it is not offered, and adding its worlds to the run
+ * offers it, so this is the one switch that releases a grade (.docs/grades-5-6.md).
+ */
+export function offeredGrades(lessons: readonly Pick<LessonFacts, "grade">[]): number[] {
+    const written = new Set(lessons.map((l) => l.grade));
+    return Object.keys(DEFAULT_YEARS)
+        .map(Number)
+        .filter((g) => written.has(g))
+        .sort((a, b) => a - b);
+}
 
 /** The worlds of one grade's year. A grade with no year of its own borrows the nearest one below it. */
 export function yearOf(grade: number): string[] {
@@ -161,7 +189,7 @@ export function schoolRun(
 }
 
 /**
- * Where a world stands. The eleven round the run say so themselves; each of the twelve is the term
+ * Where a world stands. A world with a `site` says so itself; any other world of the run is the term
  * DEFAULT_YEARS puts it in, and the map places those by its own geography.
  */
 export function siteOf(id: string): Site | null {
@@ -177,8 +205,9 @@ export function siteOf(id: string): Site | null {
 }
 
 /**
- * The worlds of a year that is not one of the run's four: the kindergarten year the garden opens,
- * and the fifth year across the sea. Empty for a grade nobody has drawn.
+ * The worlds a year's own sites name, whether or not the year is in the run: the kindergarten year
+ * the garden opens, the fifth year across the sea, and the sixth beyond it. Empty for a grade nobody
+ * has drawn.
  */
 export function outsideYear(grade: number): string[] {
     const out: string[] = [];
@@ -197,7 +226,7 @@ export function choicesFor(grade: number, term: number): World[] {
 }
 
 /**
- * Whether a world may stand in a term of a family's year. Any of the twelve may, as the panel has
+ * Whether a world may stand in a term of a family's year. Any world of the run may, as the panel has
  * always allowed; a choice only in the terms it names; a track place and a world of another year
  * never, because a term is not where they are.
  */
@@ -207,20 +236,22 @@ export function mayStand(id: string, grade: number, term: number): boolean {
 }
 
 /**
- * Every lesson a track place holds, from every grade's year, in grade order and then the order a
- * child meets them. A lesson named by any place's `hosts.lessons` is that place's alone, so a place
- * that hosts a subject leaves out the lessons of it that another place names.
+ * Every lesson a track place holds, from every offered grade's year, in grade order and then the
+ * order a child meets them. A lesson named by any place's `hosts.lessons` is that place's alone, so a
+ * place that hosts a subject leaves out the lessons of it that another place names.
  */
 export function hostedLessons(w: World, years: Year[]): LessonDef[] {
     const s = w.site;
     if (s?.kind !== "track") return [];
+    const offered = offeredGrades(years);
     const named = new Set(s.hosts.lessons ?? []);
     const claimed = new Set(
         WORLDS.flatMap((x) =>
             x.id !== w.id && x.site?.kind === "track" ? (x.site.hosts.lessons ?? []) : [],
         ),
     );
-    return [...years]
+    return years
+        .filter((y) => offered.includes(y.grade))
         .sort((a, b) => a.grade - b.grade)
         .flatMap((y) =>
             y.lessons.filter(

@@ -576,7 +576,7 @@ export function wordsOf(c: SampleChild, from: FromNotation): Sample {
     const todayN = c.days.filter((d) => d.term === today?.term).length;
     const lessons = c.years.reduce((sum, y) => sum + y.lessons.length, 0);
     return {
-        eyebrow: `Ages 5 to 10 · ${spell(c.strands.length)} subjects`,
+        eyebrow: `Ages 5 to 12 · ${spell(c.strands.length)} subjects`,
         caption: here
             ? `A sample child's map, on their ${nth(todayN)} day ${inWorld(hereWorld)}. The colour shows where they have been.`
             : "A sample child's map.",

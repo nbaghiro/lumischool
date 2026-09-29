@@ -24,7 +24,6 @@ import {
     routeOf,
     SEA_SIDES,
     SHEET,
-    SHEET_FIVE,
     SLOTS,
     SPURS,
     sitesFor,
@@ -305,10 +304,8 @@ export function layoutMap(
             700,
         ),
     }));
-    // the country is the four lands and their sea; a fifth year adds its own sheet above them
-    const sheets = grades.some((g) => g >= 5) ? [SHEET, SHEET_FIVE] : [SHEET];
-    if (!grades.some((g) => g >= 5) && offRun.some((s) => s.stand.y < SHEET.y))
-        sheets.push(SHEET_FIVE);
+    // the country is every land and its sea, the same sheet for every viewer
+    const sheets = [SHEET];
     if (nodes.length) sheets.push(around([...nodes, ...offRun], 1400, 1800));
     const x0 = Math.min(...sheets.map((r) => r.x)),
         y0 = Math.min(...sheets.map((r) => r.y));

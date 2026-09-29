@@ -5,14 +5,6 @@
 import type { World } from "./types";
 import { PLACE_GROW, type Composition, type Spot } from "../../engine/space";
 
-/** What each year is, in a few words lettered under its name across its side of the country (story.md). */
-export const YEARS: Record<number, string> = {
-    1: "Setting out",
-    2: "Round the seasons",
-    3: "Looking further",
-    4: "Over the mountains and the sea",
-};
-
 /**
  * A world's place on the map: its own composition, or one laid out from its horizon, with the gate
  * at the front and the moment beside it, for a world nobody has composed yet.

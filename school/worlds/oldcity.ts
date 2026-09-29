@@ -16,6 +16,7 @@ export const walledCity: World = {
         far: [
             { art: "city-walls", at: 0.18, k: 0.95, params: { towers: 2, open: 0 } },
             { art: "library", at: 0.52, k: 1.1 },
+            { art: "ice-cliff", at: 0.7, k: 0.32, params: { height: 1, floes: 0 } },
             { art: "city-walls", at: 0.86, k: 0.9, params: { towers: 3, open: 0 } },
         ],
         sky: [{ art: "sun", at: 0.88, down: 0.1 }],
@@ -29,16 +30,64 @@ export const walledCity: World = {
     reaches: [
         {
             art: "temple",
-            when: ["skill:reasoning.number-walls", "skill:algebra"],
-            says: "Find the missing stone in the wall.",
+            when: ["skill:reasoning.number-walls", "skill:algebra", "skill:area"],
+            says: "Find the missing stone, and the floor's area.",
         },
-        { art: "clock-tower", when: ["skill:time"], says: "The city clock says quarter past." },
+        {
+            art: "chest",
+            when: ["skill:fractions"],
+            says: "A half and a third of the coins.",
+        },
+        {
+            art: "clock-tower",
+            when: ["skill:time"],
+            says: "How long between the city clock's bells?",
+        },
         {
             art: "market-stall",
-            when: ["skill:money.decimals", "skill:area"],
+            when: ["skill:money.decimals"],
             says: "Prices in the old market.",
         },
-        { art: "library", when: ["skill:reading"], says: "Every book has its place here." },
+        {
+            art: "library",
+            when: ["skill:reading", "skill:writing", "skill:coding"],
+            says: "Every book has its place here.",
+        },
+        {
+            art: "lantern",
+            when: ["skill:physics.circuits"],
+            says: "Close the switch and the lantern lights.",
+        },
+        {
+            art: "temple",
+            when: ["skill:chemistry.rocks", "skill:chemistry.materials"],
+            says: "Stone, brick and mortar hold the temple up.",
+        },
+        {
+            art: "clock-tower",
+            when: ["skill:art.proportion"],
+            says: "How many doors tall is the tower?",
+        },
+        {
+            art: "temple",
+            when: ["skill:art"],
+            says: "Patterns are carved round the temple door.",
+        },
+        {
+            art: "temple",
+            when: ["skill:chemistry.changes"],
+            says: "Wet mortar sets hard and cannot go back.",
+        },
+        {
+            art: "clock-tower",
+            when: ["skill:music"],
+            says: "The city's bells ring a tune each hour.",
+        },
+        {
+            art: "cat",
+            when: ["skill:nature"],
+            says: "The cat leaps up onto the city wall.",
+        },
     ],
     offers: {
         landmarks: ["temple", "market-stall", "clock-tower", "chest", "lantern", "library"],
@@ -76,13 +125,14 @@ export const walledCity: World = {
         stamp: { x: -640, y: -400 },
     },
     chapter: {
-        story: "The end of the far shore: a city inside walls, older than the canal town and the observatory, with a library at its heart that has been shut all term and holds the next map.",
+        story: "The end of the far shore: a city inside walls, older than the canal town and the observatory, with a library at its heart that has been shut all term and holds the next map, of the far north, whose ice cliff can be seen from the walls.",
         moment: {
             art: "library",
             says: "The library opens on a new map.",
             params: { columns: 6, open: 1 },
         },
         secret: { art: "cat", says: "A cat asleep in the library window." },
+        glimpse: { world: "midnight-sun", art: "ice-cliff" },
         by: "road",
         rare: { art: "balloon", way: "sky", from: "left" },
     },
@@ -92,5 +142,4 @@ export const walledCity: World = {
         term: 3,
         land: { terrain: "walled-hill", near: ["star-cliffs"] },
     },
-    needs: "A fifth year of lessons, and for this term: early algebra, the area and volume of buildings, reading longer texts, and the history of a city.",
 };
