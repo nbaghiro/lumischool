@@ -37,39 +37,45 @@ export const GAME_CHALLENGE_VERSIONS = {
 
 /** Mechanics revisions invalidate saved arrangements only for the affected games. */
 export const gameRulesVersion = (game: string): string =>
-    game === "pour"
-        ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
-        : game === "sling"
-          ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
-          : game === "rule"
-            ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-1`
-            : game === "straight"
-              ? `${GAME_CHALLENGE_VERSIONS.rules}-river-2`
-              : game === "fish"
-                ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-2`
-                : game === "spell"
-                  ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-1`
-                  : game === "shunt"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-2`
-                    : game === "clear"
-                      ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-2`
-                      : game === "snake"
-                        ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-1`
-                        : game === "blocks"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-1`
-                          : game === "marble-workshop"
-                            ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
-                            : game === "bridge"
-                              ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-1`
-                              : ["herd", "cargo-workshop"].includes(game)
-                                ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
-                                : ["jump", "road", "weigh", "share"].includes(game)
-                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
-                                  : game === "wardrobe"
-                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-1`
-                                    : game === "pay"
-                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
-                                      : GAME_CHALLENGE_VERSIONS.rules;
+    game === "rescue"
+        ? `${GAME_CHALLENGE_VERSIONS.rules}-rescue-1`
+        : game === "pool"
+          ? `${GAME_CHALLENGE_VERSIONS.rules}-pool-1`
+          : game === "pour"
+            ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
+            : game === "sling"
+              ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
+              : game === "rule"
+                ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-1`
+                : game === "straight"
+                  ? `${GAME_CHALLENGE_VERSIONS.rules}-river-2`
+                  : game === "fish"
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-2`
+                    : game === "spell"
+                      ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-1`
+                      : game === "shunt"
+                        ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-2`
+                        : game === "clear"
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-2`
+                          : game === "snake"
+                            ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-1`
+                            : game === "blocks"
+                              ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-1`
+                              : game === "marble-workshop"
+                                ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
+                                : game === "bridge"
+                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-1`
+                                  : game === "road"
+                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-road-2`
+                                    : ["herd", "cargo-workshop"].includes(game)
+                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
+                                      : ["jump", "weigh", "share"].includes(game)
+                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+                                        : game === "wardrobe"
+                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-1`
+                                          : game === "pay"
+                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                            : GAME_CHALLENGE_VERSIONS.rules;
 
 export type GameValue =
     null | boolean | number | string | GameValue[] | { [key: string]: GameValue };
@@ -293,6 +299,8 @@ export interface EventData {
         lessonHash: string;
         pack: string;
         mode: Mode;
+        /** A book lesson's sitting this one reads, from 1; absent for a lesson read in one sitting. */
+        part?: number;
     };
     "sitting-ended": { sitting: string; finished: boolean; minutes: number; withGrownUp: boolean };
     /** `right` is null until a grown-up marks it, the ordinary state for a drawing or a performance. */
@@ -356,6 +364,11 @@ export interface EventData {
     "content-verified": { hash: string; errors: number; played: boolean | null; verifier: string };
     /** A day of teaching a parent recorded that was not a lesson, for the records some states ask for. */
     "day-added": { onDay: string; subject: string; minutes: number; note: string };
+    /**
+     * A child moved to the grade next to theirs, up or back, from a day on, which begins a school year
+     * (`schoolYears` in school/family/family.ts). The server writes it with the kid's row.
+     */
+    "moved-up": { from: number; grade: number; onDay: string };
     // The record of access (.docs/auth.md). The server writes these, against the family with `kid_id`
     // null, so a kid's deletion never removes one; a kid is named by id and never by name.
     "signed-in": { method: SignInMethod; session: string; shared: boolean };
@@ -766,9 +779,10 @@ const EVENT: Record<EventKind, Check> = {
         str(e.lesson) &&
         str(e.lessonHash) &&
         str(e.pack) &&
-        one(e.mode, ["screen", "paper"] as const)
+        one(e.mode, ["screen", "paper"] as const) &&
+        (e.part === undefined || (int(e.part) && e.part >= 1))
             ? null
-            : "sitting-began needs a sitting, a lesson with its hash, a pack digest and a mode",
+            : "sitting-began needs a sitting, a lesson with its hash, a pack digest and a mode, and a part from 1 if it has one",
     "sitting-ended": (e) =>
         str(e.sitting) && bool(e.finished) && num(e.minutes) && bool(e.withGrownUp)
             ? null
@@ -870,6 +884,10 @@ const EVENT: Record<EventKind, Check> = {
         day(e.onDay) && str(e.subject) && num(e.minutes) && str(e.note)
             ? null
             : "day-added needs a day, a subject, minutes and a note",
+    "moved-up": (e) =>
+        int(e.from) && int(e.grade) && Math.abs(e.grade - e.from) === 1 && day(e.onDay)
+            ? null
+            : "moved-up needs the grade it moves from, a grade next to it and the day it takes effect",
     "signed-in": (e) =>
         one(e.method, ["email-code", "link", "passkey", "switch", "pin"] as const) &&
         uuid(e.session) &&
@@ -1019,6 +1037,7 @@ function problemOf(v: unknown): string | null {
         return "sessions and routines must name one child";
     if (kind === "game-attempted" && (v.kid_id === null || v.id !== v.data.id))
         return "game attempts name a child and use the attempt id as event id";
+    if (kind === "moved-up" && v.kid_id === null) return "a move names the child who moved";
     return EVENT[kind](v.data);
 }
 

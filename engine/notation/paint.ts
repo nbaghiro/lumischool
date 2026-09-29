@@ -1,7 +1,8 @@
 // The checkers that prove an art question for every variant, with the same mixing and the same
 // mirror the drawings and the brush use. `paint.mixes` works out what paints make and which option
-// names it; `paint.mirror` works out which half is the mirror; `art.by-eye` is the painting a
-// grown-up responds to. See .docs/art.md, "How art is marked".
+// names it; `paint.mirror` works out which half is the mirror. `art.by-eye`, the painting a grown-up
+// responds to, is declared with the other pieces a grown-up looks at, in verify.ts. See .docs/art.md,
+// "How art is marked".
 import { num, str, type Value } from "../expr";
 import { GEOMETRIC, inOneLine, mirrorOptions, mirrorsAmong, piecesIn } from "../parts/art/kit";
 import {
@@ -685,34 +686,6 @@ export const PAINT: Record<string, CodeChecker> = {
                 answers[name] = str(hit.value);
             }
             return { answers, problems };
-        },
-    },
-    "art.by-eye": {
-        doc: "A painting or a drawing that a grown-up responds to rather than marks. `look-for` says what a good attempt shows, in the art's own words; `notice` lists two to five short points the grown-up can tick when they see them, which is what a response records; `ask` is a question to start the talk. The sentence and the question print on the grown-ups' sheet.",
-        settings: ["look-for", "notice", "ask"],
-        solutions(settings) {
-            const look = (settings["look-for"] ?? "").trim();
-            const ask = (settings.ask ?? "").trim();
-            if (look.length < 20)
-                throw new Error("look-for= needs a sentence saying what a good attempt shows");
-            if (ask.length < 10 || !ask.endsWith("?"))
-                throw new Error("ask= needs a question for the grown-up to start with");
-            let points: unknown = null;
-            try {
-                points = JSON.parse(settings.notice ?? "null");
-            } catch {
-                points = null;
-            }
-            if (
-                !Array.isArray(points) ||
-                points.length < 2 ||
-                points.length > 5 ||
-                !points.every((x) => typeof x === "string" && x.length >= 6 && x.length <= 70)
-            )
-                throw new Error(
-                    'notice= needs two to five short points to tick, written as ["...", "..."]',
-                );
-            return [`${look} Ask: ${ask}`];
         },
     },
 };

@@ -167,6 +167,30 @@ const probe = (body: string): { issues: string[]; answers: Record<string, string
     };
 };
 
+test("a text quoted inside a placeholder is filled, and a brace left once filled is an error", () => {
+    const item = (ask: string, hint: string): string[] =>
+        probe(`  let a=1..2
+  scene 20x6 {
+    text ask "${ask}" at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+  answer (a)
+  hint "${hint}"
+`).issues.filter((m) => m.startsWith("error"));
+    assert.deepEqual(item('Write {if a > 1 then \\"{a} × \\" else \\"\\"}10.', "Count {a}."), []);
+    const left = item("Pick from { {1, 2} }.", '{if a > 1 then \\"}\\" else \\"one\\"}');
+    assert.ok(
+        left.some((m) =>
+            m.includes('ask text still shows a brace once filled: "Pick from {1, 2}."'),
+        ),
+        left.join(" | "),
+    );
+    assert.ok(
+        left.some((m) => m.includes('a hint still shows a brace once filled: "}" (a = 2)')),
+        left.join(" | "),
+    );
+});
+
 test("coding.runs works the answer out by running the program, and holds a stated answer to it", () => {
     const scene = `  let a=1..2
   scene 24x16 {
@@ -203,6 +227,28 @@ test("coding.runs refuses a debugging question whose bug could be on two lines",
         probe(scene(`["right 2", "up 3", "left 2", "down 3"]`)).issues.some((m) =>
             m.includes("no change to a single line"),
         ),
+    );
+});
+
+test("coding.runs asks a program that draws random numbers what could happen, never what did", () => {
+    const scene = (ask: string): string => `  scene 24x12 {
+    program p code=["set a to random 1 to 6", "set b to random 1 to 6", "set total to a + b"] at=canvas(1, 0)
+    choice pick options=[1, 7, 13] below=p gap=1
+    number-input most right-of=pick gap=1
+  }
+  check coding.runs of=p ${ask}
+`;
+    const could = probe(scene(`pick="could(value(total))" most="most(value(total))"`));
+    assert.deepEqual(could.issues, []);
+    assert.deepEqual(could.answers, [{ pick: "7", most: "12" }]);
+    // 1 and 13 both could not happen, so "which could not" has two answers
+    assert.ok(
+        probe(scene(`pick="never(value(total))"`)).issues.some((m) =>
+            m.includes("more than one answer"),
+        ),
+    );
+    assert.ok(
+        probe(scene(`most="value(total)"`)).issues.some((m) => m.includes("draws a random number")),
     );
 });
 
@@ -281,7 +327,7 @@ test("the verifier proves the colour questions with the paint box's own mixing",
 test("every art lesson is verified, and every painting it asks for says what a grown-up looks for", () => {
     const lessons = [...corpus.lessons.values()].filter((l) => l.subject === "art");
     assert.ok(lessons.length >= 12, `${lessons.length} art lessons`);
-    for (const g of [1, 2, 3, 4])
+    for (const g of new Set(lessons.map((l) => l.grade)))
         assert.ok(
             lessons.filter((l) => l.grade === g).length >= 3,
             `grade ${g} has three art lessons`,

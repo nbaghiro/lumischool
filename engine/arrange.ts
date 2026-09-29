@@ -1,12 +1,12 @@
 // An answer the child makes on the drawing rather than writes: where weights stand on a see-saw
-// plank, where the cuts go along a cake. A part that takes one lists every arrangement a child can
+// plank, where the cuts go along a cake, how tall the bars of a chart stand. A part that takes one lists every arrangement a child can
 // hand in and works out the measures an item's answer and feedback are written over, with the maths
 // of motion/lever.ts and motion/cuts.ts, so the verifier walks every arrangement of every variant and
 // a page judges the one the child made. The layouts say where each piece and place is drawn, in
 // squares of the part's box, which the drawing and the buttons over it share.
 
 import type { Given } from "./answer";
-import { evaluate, num, type Env, type Expr } from "./expr";
+import { evaluate, freeNames, num, type Env, type Expr } from "./expr";
 import { piecesOf, sizeOf } from "./motion/cuts";
 import { lean, turning, type Load } from "./motion/lever";
 
@@ -36,6 +36,12 @@ export interface Board {
     placing(a: Arrangement): string;
     /** What the drawing shows once it is let go. */
     after(a: Arrangement): string;
+    /**
+     * For a board whose pieces are each set on their own, as a chart's bars are: the measure each piece
+     * alone sets and the places it can take (nought for a piece left where it is), and the measures
+     * more than one piece sets. A proof too big to walk goes piece by piece over these (`prove`).
+     */
+    apart?: { pieces: { piece: string; measure: string; places: number[] }[]; joint: string[] };
 }
 
 export interface Part {
@@ -491,6 +497,118 @@ export function cutAreas(s: Cutting, L: CutLayout, a: Arrangement): Record<strin
     };
 }
 
+export interface Bars {
+    labels: string[];
+    /** Each bar's height before the child sets any; a bar at nought is the child's to set. */
+    values: number[];
+    /** The top of the scale, as the bar chart draws it (engine/parts/data/bargraph.ts). */
+    top: number;
+    /** The bars the child sets, by index. */
+    open: number[];
+    /** 1 where the bars stand side by side, as a histogram's do. */
+    touch: number;
+}
+
+/** The most bars a chart has, and so the most barN measures. */
+const MOST_BARS = 6;
+
+export function barsOf(v: Values): Bars | string {
+    if (v.set !== 1) return "set= is 1 for a chart whose bars the child sets";
+    const labels = Array.isArray(v.labels)
+        ? v.labels.map((x: unknown) =>
+              typeof x === "string"
+                  ? x
+                  : typeof x === "object" &&
+                      x !== null &&
+                      "label" in x &&
+                      typeof x.label === "string"
+                    ? x.label
+                    : "",
+          )
+        : [];
+    const values = wholes(v.values);
+    const max = v.max ?? 0;
+    if (!labels.length || labels.length > MOST_BARS)
+        return `labels= lists one to ${MOST_BARS} bars`;
+    if (!values || values.length !== labels.length || values.some((x) => x < 0 || x > 20))
+        return "values= gives each bar a whole number 0 to 20";
+    if (!isWhole(max) || max < 0 || max > 20) return "max= is the top of the scale, 0 to 20";
+    const open = values.flatMap((x, i) => (x === 0 ? [i] : []));
+    if (!open.length) return "a bar the child sets is drawn at nought, and none is";
+    const touch = v.touch === 1 ? 1 : 0;
+    return { labels, values, top: Math.max(max, ...values, 1), open, touch };
+}
+
+export const barPiece = (i: number): string => `bar(${i})`;
+export const barIndex = (piece: string): number | null => {
+    const m = /^bar\((\d+)\)$/.exec(piece);
+    return m ? Number(m[1]) : null;
+};
+/** Each bar's height with the child's arrangement on the chart: a bar the child has not moved stays at nought. */
+export const barHeights = (b: Bars, a: Arrangement): number[] =>
+    b.values.map((x, i) => a.find((p) => barIndex(p.piece) === i)?.at ?? x);
+
+export function barBoard(b: Bars): Board {
+    const heights = (a: Arrangement): number[] => barHeights(b, a);
+    const bars = (a: Arrangement, only: readonly number[]): string =>
+        listed(only.map((i) => `${b.labels[i] ?? ""} at ${heights(a)[i] ?? 0}`));
+    return {
+        count: (b.top + 1) ** b.open.length - 1,
+        arrangements() {
+            const out: Arrangement[] = [];
+            const walk = (k: number, chosen: Arrangement): void => {
+                const i = b.open[k];
+                if (i === undefined) {
+                    if (chosen.length) out.push(chosen);
+                    return;
+                }
+                for (let h = 0; h <= b.top; h++)
+                    walk(k + 1, h ? [...chosen, { piece: barPiece(i), at: h }] : chosen);
+            };
+            walk(0, []);
+            return out;
+        },
+        legal(a) {
+            if (!a.length) return "no bar has been set";
+            const at = a.map((p) => barIndex(p.piece));
+            if (at.some((i) => i === null || !b.open.includes(i)))
+                return "only a bar drawn at nought is set";
+            if (new Set(at).size !== at.length) return "a bar is set twice";
+            if (a.some((p) => !isWhole(p.at) || p.at < 1 || p.at > b.top))
+                return `a bar is set to a whole number 1 to ${b.top}`;
+            return null;
+        },
+        measure(a) {
+            const h = heights(a);
+            return {
+                ...Object.fromEntries(
+                    Array.from({ length: MOST_BARS }, (_, i) => [`bar${i + 1}`, num(h[i] ?? 0)]),
+                ),
+                total: num(sum(h)),
+            };
+        },
+        say: (a) =>
+            `The bars are ${bars(
+                a,
+                b.labels.map((_, i) => i),
+            )}.`,
+        placing: (a) => {
+            const set = a.flatMap((p) => barIndex(p.piece) ?? []);
+            return `${set.length === 1 ? "the bar" : "the bars"} for ${bars(a, set)}`;
+        },
+        after: (a) =>
+            `${listed(b.open.map((i) => `${b.labels[i] ?? ""} is ${heights(a)[i] ?? 0}`))}.`,
+        apart: {
+            pieces: b.open.map((i) => ({
+                piece: barPiece(i),
+                measure: `bar${i + 1}`,
+                places: Array.from({ length: b.top + 1 }, (_, h) => h),
+            })),
+            joint: ["total"],
+        },
+    };
+}
+
 export const ARRANGED: Record<string, Part> = {
     "balance-plank": {
         measures: {
@@ -521,6 +639,21 @@ export const ARRANGED: Record<string, Part> = {
         board: (v) => {
             const s = cuttingOf(v);
             return typeof s === "string" ? s : cutBoard(s);
+        },
+    },
+    bargraph: {
+        measures: {
+            ...Object.fromEntries(
+                Array.from({ length: MOST_BARS }, (_, i) => [
+                    `bar${i + 1}`,
+                    `the height of bar ${i + 1}, counted from the left, or nought where there is none`,
+                ]),
+            ),
+            total: "every bar's height added together",
+        },
+        board: (v) => {
+            const b = barsOf(v);
+            return typeof b === "string" ? b : barBoard(b);
         },
     },
 };
@@ -568,6 +701,8 @@ export function prove<R extends Ruled>(
         fired: new Set(),
         onRight: new Map(),
     };
+    if (board.count > MOST && board.apart)
+        return provePieces(board, board.apart, env, answer, rules);
     if (board.count > MOST) {
         out.problems.push(
             `the part can be arranged ${board.count} ways, more than the ${MOST} the verifier walks; give it fewer pieces, places or cuts`,
@@ -617,6 +752,139 @@ export function prove<R extends Ruled>(
             const [a, b] = [cost(x), cost(y)];
             return a[0] - b[0] || a[1] - b[1];
         })[0] ?? null;
+    return out;
+}
+
+const conjuncts = (e: Expr): Expr[] =>
+    e.t === "bin" && e.op === "and" ? [...conjuncts(e.l), ...conjuncts(e.r)] : [e];
+
+/**
+ * `prove` for a board too big to walk whose pieces are set each on their own. When the answer is
+ * conditions that each read at most one piece's measure, joined by and, and each feedback rule reads
+ * at most one, the right places of each piece are found on their own, and the counts, the key and the
+ * rules follow from them exactly: nothing is sampled. Anything else is refused as too big.
+ */
+function provePieces<R extends Ruled>(
+    board: Board,
+    apart: NonNullable<Board["apart"]>,
+    env: Env,
+    answer: Expr,
+    rules: readonly R[],
+): Proof<R> {
+    const out: Proof<R> = {
+        key: null,
+        right: 0,
+        tried: board.count,
+        spoken: 0,
+        problems: [],
+        fired: new Set(),
+        onRight: new Map(),
+    };
+    const { pieces, joint } = apart;
+    const envAt = (k: number, at: number): Env => {
+        const p = pieces[k];
+        return { ...env, ...board.measure(p && at ? [{ piece: p.piece, at }] : []) };
+    };
+    /** The piece a condition reads, null for none, or -1 for more than one. */
+    const reads = (e: Expr): number | null => {
+        const names = freeNames(e);
+        if (joint.some((n) => names.has(n))) return -1;
+        const ks = pieces.flatMap((p, k) => (names.has(p.measure) ? [k] : []));
+        return ks.length > 1 ? -1 : (ks[0] ?? null);
+    };
+    const whereTrue = (e: Expr): { k: number | null; at: Set<number> } | null => {
+        const k = reads(e);
+        if (k === -1) return null;
+        if (k === null) return { k, at: truth(e, envAt(0, 0)) ? new Set([0]) : new Set() };
+        return { k, at: new Set(pieces[k]?.places.filter((h) => truth(e, envAt(k, h)))) };
+    };
+    const tooBig = (what: string): Proof<R> => {
+        out.problems.push(
+            `the part can be arranged ${board.count} ways, more than the ${MOST} the verifier walks, and ${what} reads more than one piece at once, so it cannot be proved piece by piece`,
+        );
+        return out;
+    };
+    let always = true;
+    const right = pieces.map((p) => new Set(p.places));
+    try {
+        for (const c of conjuncts(answer)) {
+            const t = whereTrue(c);
+            if (!t) return tooBig("the answer");
+            if (t.k === null) always &&= t.at.size > 0;
+            else {
+                const now = right[t.k];
+                if (now) right[t.k] = new Set([...now].filter((h) => t.at.has(h)));
+            }
+        }
+        const product = (sets: readonly { size: number }[]): number =>
+            sets.reduce((n, x) => n * x.size, 1);
+        // the arrangement with nothing set is not one a child can hand in
+        const noneRight = always && right.every((r) => r.has(0));
+        out.right = always ? product(right) - (noneRight ? 1 : 0) : 0;
+        const arrangement = (at: readonly number[]): Arrangement =>
+            pieces.flatMap((p, k) => (at[k] ? [{ piece: p.piece, at: at[k] ?? 0 }] : []));
+        const nearest = (r: Set<number>): number =>
+            [...r].sort((x, y) => Math.abs(x) - Math.abs(y))[0] ?? 0;
+        let key = right.map(nearest);
+        if (out.right && key.every((h) => h === 0)) {
+            // the key moves the one piece that is right nearest nought without being there
+            const moves = right.flatMap((r, k) =>
+                [...r].filter((h) => h !== 0).map((h) => ({ k, h })),
+            );
+            const move = moves.sort((x, y) => Math.abs(x.h) - Math.abs(y.h))[0];
+            if (move) key = key.map((h, k) => (k === move.k ? move.h : h));
+        }
+        if (out.right) out.key = arrangement(key);
+        const wrong = out.tried - out.right;
+        // what each piece's rules speak to, and whether a rule true everywhere speaks to all of it
+        const spokenAt = pieces.map(() => new Set<number>());
+        let everywhere = false;
+        for (const r of flat(rules)) {
+            const t = whereTrue(r.when);
+            if (!t) return tooBig("a feedback rule");
+            if (t.k === null) {
+                if (!t.at.size) continue;
+                everywhere = true;
+                if (wrong) out.fired.add(r);
+                if (out.key) out.onRight.set(r, out.key);
+                continue;
+            }
+            const k = t.k;
+            const onRight = [...t.at].find((h) => right[k]?.has(h));
+            if (always && onRight !== undefined && out.right) {
+                const at = key.map((h, j) => (j === k ? onRight : h));
+                if (at.some((h) => h !== 0)) out.onRight.set(r, arrangement(at));
+            }
+            const wrongHere = [...t.at].some((h) => !right[k]?.has(h));
+            const wrongElsewhere = right.some(
+                (x, j) => j !== k && x.size < (pieces[j]?.places.length ?? 0),
+            );
+            if (t.at.size && (!always || wrongHere || wrongElsewhere)) out.fired.add(r);
+            for (const h of t.at) spokenAt[k]?.add(h);
+        }
+        if (everywhere) out.spoken = wrong;
+        else {
+            const quiet = pieces.map(
+                (p, k) => new Set(p.places.filter((h) => !spokenAt[k]?.has(h))),
+            );
+            const quietRight = quiet.map((q, k) => new Set([...q].filter((h) => right[k]?.has(h))));
+            const noneQuiet = quiet.every((q) => q.has(0));
+            const quietAll = product(quiet) - (noneQuiet ? 1 : 0);
+            const quietRights = always ? product(quietRight) - (noneQuiet && noneRight ? 1 : 0) : 0;
+            out.spoken = wrong - (quietAll - quietRights);
+        }
+    } catch (error) {
+        out.problems.push(error instanceof Error ? error.message : String(error));
+        return out;
+    }
+    if (!out.right)
+        out.problems.push(
+            "no arrangement a child can make is right, so the question cannot be answered",
+        );
+    else if (out.right > out.tried * LUCK)
+        out.problems.push(
+            `${out.right} of the ${out.tried} arrangements a child can make are right, more than one in four, so putting pieces anywhere answers it too often`,
+        );
     return out;
 }
 

@@ -130,7 +130,7 @@ export const panOf = (x: number, camera: number, width: number): number =>
 
 /** A sound that goes on while something does: water running, wind, an engine, a dog panting. */
 export interface Hum {
-    kind: "water" | "wind" | "engine" | "pant";
+    kind: "water" | "wind" | "engine" | "pant" | "roll" | "siren" | "rotor" | "rumble";
     /** From nought, silent, to one. */
     level: number;
     /** A multiple of its own pitch, for an engine working harder. */
@@ -144,6 +144,14 @@ export const HUMS: Record<Hum["kind"], { wave: Wave; hz: number; gain: number; s
     engine: { wave: "sawtooth", hz: 55, gain: 0.08, sway: 6 },
     // breathy and quick, about three pants a second
     pant: { wave: "noise", hz: 1400, gain: 0.1, sway: 3 },
+    // low and steady, the rumble of balls on cloth
+    roll: { wave: "noise", hz: 180, gain: 0.07, sway: 0.5 },
+    // a two-tone call swaying about once a second, kept quiet so it colours play rather than alarms
+    siren: { wave: "triangle", hz: 620, gain: 0.05, sway: 1.1 },
+    // the chop of a rotor, a low noise beating eight times a second
+    rotor: { wave: "noise", hz: 240, gain: 0.12, sway: 8 },
+    // a digger's diesel, lower and slower than a car's engine
+    rumble: { wave: "sawtooth", hz: 38, gain: 0.09, sway: 3 },
 };
 
 /** A pitch a whole number of semitones up from one, for a cue that climbs with a count. */

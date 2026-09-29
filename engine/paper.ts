@@ -14,6 +14,9 @@ export const PAGE_SIZES: Record<PageSize, { w: number; h: number }> = {
     Tabloid: { w: 279.4, h: 431.8 },
 };
 
+/** Chrome's default print margin on every side, which a sheet that sets no `@page` is printed with. */
+export const PRINT_MARGIN_MM = 10;
+
 /**
  * A lesson sheet's margins, in squares from its edges. Writing starts at column `left`, one square
  * past the margin rule on column 4, and nothing but the footer sits in the bottom `bottom` rows.

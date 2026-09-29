@@ -4,8 +4,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loaderOf } from "../../parts/catalog";
-import { parse, type Node } from "../notation";
-import { PARTS, REGISTRY, SCENE_TYPES } from "../vocabulary";
+import { parse, Workspace, type Node } from "../notation";
+import { partParams, PARTS, REGISTRY, SCENE_TYPES } from "../vocabulary";
 import { content } from "./helpers";
 
 /** The drawings the four moves brought in, from .scratchpad/leftover/parts-move/briefs/. */
@@ -56,4 +56,52 @@ test("every scene node the corpus writes is a type the vocabulary knows", () => 
     };
     for (const src of Object.values(content())) walk(parse(src).doc.nodes);
     assert.deepEqual([...used].filter((t) => !REGISTRY[t]).sort(), []);
+});
+
+test("a tally table's rows and a pie chart's slices are lists a question writes, with parameters in them", () => {
+    assert.deepEqual(
+        [PARTS.get("tallytable")?.kinds.counts, PARTS.get("tallytable")?.kinds.labels],
+        ["exprs", "values"],
+    );
+    assert.deepEqual(
+        [
+            PARTS.get("pie")?.kinds.values,
+            PARTS.get("pie")?.kinds.labels,
+            PARTS.get("pie")?.kinds.colors,
+        ],
+        ["exprs", "values", "values"],
+    );
+    const ws = new Workspace({
+        "items/probe.lumi": `item probe.tally v=1 {
+  title "Probe"
+  let a=2..9 b=2..9
+
+  scene 40x18 {
+    tallytable t labels=["Cats", "Dogs"] counts=[a, b] at=canvas(1, 1)
+    pie p labels=["Cats", "Dogs"] values=[a, b] colors=["sky", "mint"] right-of=t gap=1
+    number-input answer width=3 below=t gap=1
+  }
+
+  answer (a + b)
+}
+`,
+    });
+    assert.deepEqual(
+        [...ws.files.values()].flatMap((f) => f.issues.map((i) => i.message)),
+        [],
+    );
+    const params = partParams("tallytable", {
+        labels: [
+            { kind: "text", label: "Cats", value: "Cats" },
+            { kind: "text", label: "Dogs", value: "Dogs" },
+        ],
+        counts: [4, 7],
+    });
+    assert.deepEqual(
+        [params.labels, params.counts],
+        [
+            ["Cats", "Dogs"],
+            [4, 7],
+        ],
+    );
 });

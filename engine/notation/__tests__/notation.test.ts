@@ -143,7 +143,7 @@ test("values must have the kind the vocabulary asks for", () => {
         ],
     );
     assert.deepEqual(issues(`lesson x v=1 format=teech {\n}\n`), [
-        '1:21 lesson format: "teech" is not one of teach, puzzles, worked, review (did you mean "teach"?)',
+        '1:21 lesson format: "teech" is not one of teach, puzzles, worked, review, book (did you mean "teach"?)',
     ]);
     assert.deepEqual(issues(`lesson x v=1 {\n}\n`), ['1:1 "lesson" needs format=']);
 });

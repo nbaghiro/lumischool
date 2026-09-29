@@ -58,7 +58,8 @@ export function fillParts(
             const role = roles[p.e.name];
             if (role !== undefined && !env[p.e.name]) return noun(role, false);
         }
-        return showValue(evaluate(p.e, env));
+        const v = evaluate(p.e, env);
+        return v.k === "str" ? fill(pieces(v.v), env, roles, blank) : showValue(v);
     });
 }
 
@@ -346,12 +347,6 @@ const textW = (entries: string[]): number =>
 const orderWidth = (items: string[]): number => Math.max(10, textW(items) + 4);
 const matchWidth = (left: string[], right: string[]): number =>
     Math.max(7, textW(left) + 3) + Math.max(6, textW(right) + 3) + 2;
-const PLANT = { w: 9, h: 12 };
-const PARTS_BOX: Record<string, { w: number; h: number }> = {
-    plant: PLANT,
-    fish: { w: 13, h: 9 },
-    island: { w: 13, h: 10 },
-};
 
 export function sizeOf(c: Concrete): { w: number; h: number } {
     const v = c.v;
@@ -429,7 +424,7 @@ export function sizeOf(c: Concrete): { w: number; h: number } {
         case "bargraph": {
             const labels = opts("labels");
             const max = Math.max(n("max", 0), ...nums("values"), 1);
-            return { w: labels.length * 3 + 4, h: max + 4 };
+            return { w: labels.length * (n("touch", 0) === 1 ? 2 : 3) + 4, h: max + 4 };
         }
         case "bubble":
         case "note": {
@@ -476,13 +471,9 @@ export function sizeOf(c: Concrete): { w: number; h: number } {
                 h: rows * 2 + 1,
             };
         }
-        case "linegraph": {
-            const labels = opts("labels");
-            return {
-                w: labels.length * 3 + 4,
-                h: Math.max(n("max", 0), ...nums("values"), 1) + 4,
-            };
-        }
+        // sized by the drawing, with the max the page draws it with when a scene writes none
+        case "linegraph":
+            return partBox("linegraph", { max: 0, ...v }) ?? { w: 4, h: 2 };
         case "angle": {
             const arm = n("arm", 5);
             return { w: arm * 2 + 2, h: arm * 2 + 2 };
@@ -522,7 +513,7 @@ export function sizeOf(c: Concrete): { w: number; h: number } {
             return { w: matchWidth(left, right), h: Math.max(left.length, right.length) * 3 };
         }
         case "parts":
-            return PARTS_BOX[shown(v.of)] ?? PLANT;
+            return partBox("parts", v) ?? { w: 9, h: 12 };
         case "staff":
             return { w: len("notes") * 3 + 4, h: 5 };
         case "handwriting":

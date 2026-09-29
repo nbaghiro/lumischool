@@ -3,12 +3,18 @@ import { test } from "node:test";
 import {
     factsOf,
     firstSceneOf,
+    MOST_PAGES,
     paragraphs,
     pieceOf,
+    printedPages,
+    blocksOf,
+    laidOut,
+    stepsOf,
     readIndex,
     readLesson,
     readScene,
     sectionLabel,
+    sittingsOf,
     tagOf,
     type PackLesson,
 } from "../pack";
@@ -100,7 +106,7 @@ const medium = (questions = [question("a=4")]) => ({
 });
 
 const lesson = (over: Record<string, unknown> = {}): Record<string, unknown> => ({
-    pack: 1,
+    pack: 2,
     id: "g1-adding",
     source: "lessons/g1-04-adding.lumi",
     title: "Adding",
@@ -140,17 +146,14 @@ test("easy and hard are read like medium when a lesson declares them, and a brok
         lesson({ levels: { medium: level, easy: { ...level, hash: "easy-hash" } } }),
     );
     assert.equal(levelled.levels.easy?.hash, "easy-hash");
-    assert.deepEqual(Object.keys(factsOf(levelled, "lessons/x.json", null).levels), [
-        "easy",
-        "medium",
-    ]);
+    assert.deepEqual(factsOf(levelled, "lessons/x.json", null).levels, ["easy", "medium"]);
     const broken = readLesson(lesson({ levels: { medium: level, hard: { hash: "h" } } }));
     assert.ok(!broken.ok && /levels\.hard/.test(broken.problem));
 });
 
 test("a lesson of another format, or without medium, is refused with the reason", () => {
-    const other = readLesson(lesson({ pack: 2 }));
-    assert.ok(!other.ok && /format 2/.test(other.problem));
+    const other = readLesson(lesson({ pack: 3 }));
+    assert.ok(!other.ok && /format 3/.test(other.problem));
     const bare = readLesson(lesson({ levels: {} }));
     assert.ok(!bare.ok && /levels\.medium/.test(bare.problem));
 });
@@ -181,21 +184,22 @@ test("a scene with a part placed nowhere a place can be is refused", () => {
     assert.ok(!r.ok && /"beside" is not a kind of place/.test(r.problem));
 });
 
-test("a lesson's facts hold each level's hash, its first drawing's file and its skills, and nothing of its sections", () => {
+test("a lesson's facts hold the levels it declares, its first drawing's file and its skills, and nothing of its sections", () => {
     const facts = factsOf(
         read(lesson()),
         "lessons/g1-adding-0123456789.json",
         "scenes/g1-adding-abcdef0123.json",
     );
-    assert.deepEqual(facts.levels.medium, { hash: "medium-has" });
+    assert.deepEqual(facts.levels, ["medium"]);
     assert.equal(facts.first, "scenes/g1-adding-abcdef0123.json");
     assert.deepEqual(facts.skills, ["add.count-on", "add.bonds"]);
-    assert.ok(!("items" in facts) && !("sections" in facts.levels.medium));
-    const index = readIndex(JSON.parse(JSON.stringify({ pack: 1, lessons: [facts] })));
+    assert.ok(!("items" in facts) && !("sections" in facts));
+    const index = readIndex(JSON.parse(JSON.stringify({ pack: 2, lessons: [facts] })));
     assert.ok(index.ok);
-    assert.ok(readIndex({ pack: 1, lessons: [{ ...facts, first: null }] }).ok);
-    assert.ok(!readIndex({ pack: 1, lessons: [{ ...facts, levels: {} }] }).ok);
-    assert.ok(!readIndex({ pack: 1, lessons: [{ ...facts, first: 3 }] }).ok);
+    assert.ok(readIndex({ pack: 2, lessons: [{ ...facts, first: null }] }).ok);
+    assert.ok(!readIndex({ pack: 2, lessons: [{ ...facts, levels: [] }] }).ok);
+    assert.ok(!readIndex({ pack: 2, lessons: [{ ...facts, levels: ["medium", "extreme"] }] }).ok);
+    assert.ok(!readIndex({ pack: 2, lessons: [{ ...facts, first: 3 }] }).ok);
 });
 
 test("a lesson's first drawing is its first scene block, or else its first question's scene, as its own file", () => {
@@ -226,10 +230,10 @@ test("a lesson's first drawing is its first scene block, or else its first quest
         }),
     );
     assert.deepEqual(firstSceneOf(withBlock), other);
-    const file = readScene(JSON.parse(JSON.stringify({ pack: 1, lesson: l.id, scene: other })));
+    const file = readScene(JSON.parse(JSON.stringify({ pack: 2, lesson: l.id, scene: other })));
     assert.ok(file.ok && file.first.lesson === "g1-adding");
-    assert.ok(!readScene({ pack: 1, lesson: l.id, scene: { size: [1] } }).ok);
-    assert.ok(!readScene({ pack: 2, lesson: l.id, scene: other }).ok);
+    assert.ok(!readScene({ pack: 2, lesson: l.id, scene: { size: [1] } }).ok);
+    assert.ok(!readScene({ pack: 3, lesson: l.id, scene: other }).ok);
 });
 
 test("a block's text is set as paragraphs, with strong and emphasised runs", () => {
@@ -278,4 +282,162 @@ test("a piece a grown-up looks at is writing or a painting by the item's checker
     assert.equal(pieceOf(check("art.by-eye")), "painting");
     assert.equal(pieceOf(check("paint.mixes")), null);
     assert.equal(pieceOf({ check: null }), null);
+});
+
+/**
+ * A lesson whose sections hold `tall` questions each, or as many as `tall` says for each, drawn a
+ * whole 36 by 28 squares, each a page's half. An `example` section is a worked example.
+ */
+const drawnLesson = (types: readonly string[], tall: number | readonly number[]): PackLesson =>
+    read(
+        lesson({
+            levels: {
+                medium: {
+                    hash: "m",
+                    grownUps: [],
+                    sections: types.map((type, i) => ({
+                        type,
+                        stars: null,
+                        blocks: [
+                            {
+                                k: "ask",
+                                how: type === "example" ? "worked" : "practice",
+                                item: { id: "i", hash: "h", title: null, skills: [], check: null },
+                                questions: Array.from(
+                                    { length: typeof tall === "number" ? tall : (tall[i] ?? 1) },
+                                    (_, n) => ({
+                                        ...question(`a=${n}`, type === "example" ? 0 : n + 1),
+                                        scene: { ...scene, size: [36, 28] },
+                                    }),
+                                ),
+                                again: [],
+                            },
+                        ],
+                    })),
+                },
+            },
+        }),
+    );
+
+test("a printed sheet is estimated a page for every question too tall to share one", () => {
+    const one = drawnLesson(["do"], 1);
+    assert.equal(printedPages(one, one.levels.medium.sections), 1);
+    // 28 rows each and a row between: a second never fits under the first on a page of 55
+    const four = drawnLesson(["do"], 4);
+    assert.equal(printedPages(four, four.levels.medium.sections), 4);
+});
+
+const whole = (...sections: number[]) => sections.map((section) => ({ section, from: 0, to: 1 }));
+
+test("a lesson that fits in five pages prints as one sitting, in its order", () => {
+    const l = drawnLesson(["look", "do", "try", "remember"], 1);
+    assert.deepEqual(sittingsOf(l, l.levels.medium), [whole(0, 1, 2, 3)]);
+});
+
+test("a longer lesson splits at the section end that makes its sittings most even", () => {
+    const l = drawnLesson(["look", "do", "try", "remember"], [2, 1, 2, 1]);
+    assert.ok(printedPages(l, l.levels.medium.sections) > MOST_PAGES);
+    assert.deepEqual(sittingsOf(l, l.levels.medium), [
+        [
+            { section: 0, from: 0, to: 2 },
+            { section: 1, from: 0, to: 1 },
+        ],
+        [
+            { section: 2, from: 0, to: 2 },
+            { section: 3, from: 0, to: 1 },
+        ],
+    ]);
+});
+
+test("where it is as even, the tries print as a sitting of their own and the Remember closes the one before", () => {
+    const l = drawnLesson(["look", "look", "try", "try", "try", "remember"], 1);
+    assert.deepEqual(sittingsOf(l, l.levels.medium), [whole(0, 1, 5), whole(2, 3, 4)]);
+});
+
+test("a long review prints its puzzles as the second sitting", () => {
+    const l = drawnLesson(["warm-up", "exercises", "puzzle", "puzzle"], 2);
+    const two = (section: number) => ({ section, from: 0, to: 2 });
+    assert.deepEqual(sittingsOf(l, l.levels.medium), [
+        [two(0), two(1)],
+        [two(2), two(3)],
+    ]);
+});
+
+test("a long lesson of puzzles alone is split where its halves print most evenly", () => {
+    const l = drawnLesson(["puzzle", "puzzle", "puzzle", "puzzle", "puzzle", "puzzle"], 1);
+    assert.deepEqual(sittingsOf(l, l.levels.medium), [whole(0, 1, 2), whole(3, 4, 5)]);
+});
+
+test("a long section is cut between its questions into as many sittings as keep each to five pages", () => {
+    const eight = drawnLesson(["do"], 8);
+    assert.deepEqual(sittingsOf(eight, eight.levels.medium), [
+        [{ section: 0, from: 0, to: 4 }],
+        [{ section: 0, from: 4, to: 8 }],
+    ]);
+    const twelve = drawnLesson(["do"], 12);
+    const sittings = sittingsOf(twelve, twelve.levels.medium);
+    assert.deepEqual(sittings, [
+        [{ section: 0, from: 0, to: 4 }],
+        [{ section: 0, from: 4, to: 8 }],
+        [{ section: 0, from: 8, to: 12 }],
+    ]);
+    const sections = twelve.levels.medium.sections;
+    sittings.forEach((sitting, k) =>
+        assert.ok(
+            printedPages(
+                twelve,
+                sitting.map((s) => {
+                    const section = sections[s.section] ?? { type: "", stars: null, blocks: [] };
+                    return { ...section, blocks: blocksOf(section, s.from, s.to) };
+                }),
+                k === 0 ? "sheet" : "sitting",
+            ) <= MOST_PAGES,
+        ),
+    );
+});
+
+test("a sitting never ends between a worked example and the question after it", () => {
+    // three and three would cut after the example, so the split is two and four
+    const l = drawnLesson(["do", "example", "exercises"], [2, 1, 3]);
+    assert.deepEqual(sittingsOf(l, l.levels.medium), [
+        [{ section: 0, from: 0, to: 2 }],
+        [
+            { section: 1, from: 0, to: 1 },
+            { section: 2, from: 0, to: 3 },
+        ],
+    ]);
+});
+
+test("a question block cut across sittings prints only its own questions in each", () => {
+    const l = drawnLesson(["do"], 3);
+    const section = l.levels.medium.sections[0] ?? { type: "", stars: null, blocks: [] };
+    const asked = (from: number, to: number) =>
+        blocksOf(section, from, to).flatMap((b) =>
+            b.k === "ask" ? b.questions.map((q) => q.n) : [],
+        );
+    assert.deepEqual(asked(0, 1), [1]);
+    assert.deepEqual(asked(1, 3), [2, 3]);
+    assert.equal(stepsOf(section), 3);
+});
+
+test("the screen shows the sections whole and in order, and paper the sittings, each drawn once where they agree", () => {
+    const moved = drawnLesson(["look", "look", "try", "try", "try", "remember"], 1);
+    const laid = (l: PackLesson) =>
+        laidOut(l.levels.medium, sittingsOf(l, l.levels.medium)).map(
+            (x) => `${x.section}:${x.from}-${x.to} ${x.on}${x.starts ? ` ${x.starts}` : ""}`,
+        );
+    assert.deepEqual(laid(moved), [
+        "0:0-1 both",
+        "1:0-1 both",
+        "5:0-1 paper",
+        "2:0-1 both 2",
+        "3:0-1 both",
+        "4:0-1 both",
+        "5:0-1 screen",
+    ]);
+    assert.deepEqual(laid(drawnLesson(["do"], 8)), [
+        "0:0-4 paper",
+        "0:4-8 paper 2",
+        "0:0-8 screen",
+    ]);
 });

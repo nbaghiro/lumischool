@@ -23,8 +23,16 @@ import {
 } from "../expr";
 import { LEVELS, type Level } from "../pack";
 import { instantiate, layout } from "./instantiate";
-import { levelMeasure } from "./lessons";
-import { answersFor, meanDifficulty, verifyItem, type ItemReport, type Variant } from "./verify";
+import { levelMeasure, questions } from "./lessons";
+import {
+    answersFor,
+    BOOK_LINE,
+    checkSettingsAt,
+    meanDifficulty,
+    verifyItem,
+    type ItemReport,
+    type Variant,
+} from "./verify";
 import { FORMATS, REGISTRY, ROOTS, type Kind, type NodeSpec } from "./vocabulary";
 
 export interface Span {
@@ -1107,6 +1115,8 @@ export interface Section {
     stars?: number;
     blocks: TNode[];
     node: TNode;
+    /** A book's sitting: the chapters it reads. */
+    chapters?: number[];
 }
 export interface Lesson {
     kind: "lesson";
@@ -1124,6 +1134,8 @@ export interface Lesson {
     /** The level this lesson was resolved at, and the levels it declares; medium alone when it declares none. */
     level?: Level;
     levels?: Level[];
+    /** The volume a book lesson reads. */
+    book?: string;
 }
 export interface Define {
     kind: "define";
@@ -1132,7 +1144,28 @@ export interface Define {
     nodes: TNode[];
     node: TNode;
 }
-export type Document = Item | Lesson | Define;
+/** A chapter of a volume: its lines in paragraphs, numbered from 1 through the chapter. */
+interface Chapter {
+    n: number;
+    title: string;
+    paragraphs: string[][];
+    node: TNode;
+}
+/** A whole public-domain book, with the record of why it is free to use (.docs/reading.md, "Whole books"). */
+export interface Volume {
+    kind: "volume";
+    id: string;
+    version: number;
+    title?: string;
+    author?: string;
+    died?: number;
+    published?: number;
+    edition?: string;
+    basis?: string;
+    chapters: Chapter[];
+    node: TNode;
+}
+export type Document = Item | Lesson | Define | Volume;
 
 const text = (t: TNode | undefined): string | undefined =>
     t?.args.text?.k === "text" ? t.args.text.v : undefined;
@@ -1142,6 +1175,28 @@ const texts = (ts: TNode[]): string[] =>
         return v === undefined ? [] : [v];
     });
 const kids = (t: TNode, type: string): TNode[] => t.children.filter((c) => c.type === type);
+const numArg = (t: TNode | undefined, name: string): number | undefined =>
+    t?.args[name]?.k === "num" ? t.args[name].v : undefined;
+/** A chapter number as a sitting lists it, or NaN for one that is not a whole number. */
+function wholeOf(e: Expr | null): number {
+    try {
+        const n = e ? Number(showValue(evaluate(e, {}))) : Number.NaN;
+        return Number.isInteger(n) ? n : Number.NaN;
+    } catch {
+        return Number.NaN;
+    }
+}
+/** A chapter's text as paragraphs of lines: each written line is a line, and a blank line ends a paragraph. */
+const paragraphsOf = (text: string): string[][] =>
+    text
+        .split(/\n\s*\n/)
+        .map((p) =>
+            p
+                .split("\n")
+                .map((l) => l.trim())
+                .filter(Boolean),
+        )
+        .filter((p) => p.length > 0);
 /** The names an open node binds to expressions, as `let a=1..3` and `set total=10` do. */
 const bound = (nodes: TNode[]): { name: string; expr: Expr }[] =>
     nodes.flatMap((l) =>
@@ -1232,10 +1287,35 @@ export function build(t: TNode, level: Level = "medium"): Document | null {
                     stars: s.props.stars?.k === "num" ? s.props.stars.v : undefined,
                     blocks: s.children,
                     node: s,
+                    ...(s.props.chapters?.k === "exprs"
+                        ? { chapters: s.props.chapters.v.map(wholeOf) }
+                        : {}),
                 })),
             node: t,
             level,
             levels: t.props.levels?.k === "words" ? levelsIn(t.props.levels.v) : ["medium"],
+            ...(t.props.book?.k === "word" ? { book: t.props.book.v } : {}),
+        };
+    }
+    if (t.type === "volume") {
+        const author = kids(t, "author")[0];
+        return {
+            kind: "volume",
+            id: t.id ?? "",
+            version: t.props.v?.k === "num" ? t.props.v.v : 0,
+            title: text(kids(t, "title")[0]),
+            author: author?.args.name?.k === "text" ? author.args.name.v : undefined,
+            died: author?.props.died?.k === "num" ? author.props.died.v : undefined,
+            published: numArg(kids(t, "published")[0], "year"),
+            edition: text(kids(t, "edition")[0]),
+            basis: text(kids(t, "public-domain")[0]),
+            chapters: kids(t, "chapter").map((c) => ({
+                n: numArg(c, "n") ?? 0,
+                title: c.args.title?.k === "text" ? c.args.title.v : "",
+                paragraphs: c.args.text?.k === "text" ? paragraphsOf(c.args.text.v) : [],
+                node: c,
+            })),
+            node: t,
         };
     }
     if (t.type === "define")
@@ -1299,15 +1379,63 @@ function rises(
     return out;
 }
 
+/**
+ * A volume's record, which a book is used only with: its title, its author and the year they died,
+ * the year it was first published, the edition the text came from and why it is free to use, with
+ * the two rules held as of this year (life and seventy years; first published over ninety-five years
+ * ago, the United States' rule), and chapters numbered from 1 in order.
+ */
+function volumeIssues(v: Volume): Issue[] {
+    const out: Issue[] = [];
+    const add = (t: TNode, message: string): void => {
+        out.push({ level: "error", message, ...pos(t) });
+    };
+    const year = new Date().getUTCFullYear();
+    if (!v.title) add(v.node, "a volume needs its title");
+    if (!v.author || v.died === undefined)
+        add(v.node, 'a volume needs its author and the year they died: author "..." died=1932');
+    else if (v.died > year - 71)
+        add(
+            v.node,
+            `${v.author} died in ${v.died}, less than seventy full years ago, so the book is not free to use everywhere`,
+        );
+    if (v.published === undefined) add(v.node, "a volume needs the year it was first published");
+    else if (v.published > year - 96)
+        add(
+            v.node,
+            `first published in ${v.published}, less than ninety-five full years ago, so it is still in copyright in the United States`,
+        );
+    if ((v.edition ?? "").length < 10)
+        add(v.node, "a volume says which printed edition its text was taken from");
+    if ((v.basis ?? "").length < 20)
+        add(
+            v.node,
+            'a volume says in a sentence why it is in the public domain: public-domain "..."',
+        );
+    if (!v.chapters.length) add(v.node, "a volume needs its chapters");
+    v.chapters.forEach((c, i) => {
+        if (c.n !== i + 1)
+            add(c.node, `chapter ${c.n} is in place ${i + 1}; number the chapters from 1 in order`);
+        if (!c.paragraphs.length) add(c.node, `chapter ${c.n} has no text`);
+    });
+    return out;
+}
+
 /** A workspace's reports when it verifies on reading: each item is verified the first time its report is read. */
 class ReportsWhenRead extends Map<string, ItemReport> {
     private readonly items: Map<string, Item>;
     private readonly defines: Map<string, Define>;
+    private readonly volumes: Map<string, Volume>;
 
-    constructor(items: Map<string, Item>, defines: Map<string, Define>) {
+    constructor(
+        items: Map<string, Item>,
+        defines: Map<string, Define>,
+        volumes: Map<string, Volume>,
+    ) {
         super();
         this.items = items;
         this.defines = defines;
+        this.volumes = volumes;
     }
 
     override get(id: string): ItemReport | undefined {
@@ -1315,7 +1443,7 @@ class ReportsWhenRead extends Map<string, ItemReport> {
         if (had) return had;
         const item = this.items.get(id);
         if (!item) return undefined;
-        const report = verifyItem(item, this.defines);
+        const report = verifyItem(item, this.defines, this.volumes);
         super.set(id, report);
         return report;
     }
@@ -1326,6 +1454,7 @@ export class Workspace {
     readonly items = new Map<string, Item>();
     readonly lessons = new Map<string, Lesson>();
     readonly defines = new Map<string, Define>();
+    readonly volumes = new Map<string, Volume>();
     readonly reports: Map<string, ItemReport>;
     private readonly fileOf = new Map<string, string>();
     /** Items and lessons at easy and hard, keyed `kind:id@level`, for files with content at that level. */
@@ -1341,7 +1470,7 @@ export class Workspace {
     constructor(sources: Record<string, string>, o: { verify?: "all" | "when read" } = {}) {
         this.reports =
             o.verify === "when read"
-                ? new ReportsWhenRead(this.items, this.defines)
+                ? new ReportsWhenRead(this.items, this.defines, this.volumes)
                 : new Map<string, ItemReport>();
         for (const [path, src] of Object.entries(sources)) {
             const info: FileInfo = {
@@ -1375,7 +1504,13 @@ export class Workspace {
             if (!d) continue;
             info.document = d;
             const index: ReadonlyMap<string, Document> =
-                d.kind === "item" ? this.items : d.kind === "lesson" ? this.lessons : this.defines;
+                d.kind === "item"
+                    ? this.items
+                    : d.kind === "lesson"
+                      ? this.lessons
+                      : d.kind === "volume"
+                        ? this.volumes
+                        : this.defines;
             if (index.has(d.id)) {
                 info.issues.push({
                     level: "error",
@@ -1386,9 +1521,11 @@ export class Workspace {
             }
             if (d.kind === "item") this.items.set(d.id, d);
             else if (d.kind === "lesson") this.lessons.set(d.id, d);
+            else if (d.kind === "volume") this.volumes.set(d.id, d);
             else this.defines.set(d.id, d);
             this.fileOf.set(`${d.kind}:${d.id}`, path);
-            if (d.kind === "define") continue;
+            if (d.kind === "volume") info.issues.push(...volumeIssues(d));
+            if (d.kind === "define" || d.kind === "volume") continue;
             for (const level of checked.levels) {
                 if (level === "medium") continue;
                 const checkedAt = checkDoc(doc, { level });
@@ -1401,7 +1538,7 @@ export class Workspace {
         }
         if (o.verify === "when read") return;
         for (const item of this.items.values()) {
-            const report = verifyItem(item, this.defines);
+            const report = verifyItem(item, this.defines, this.volumes);
             this.reports.set(item.id, report);
             const info = this.file("item", item.id);
             info.issues.push(...report.issues);
@@ -1430,7 +1567,7 @@ export class Workspace {
     }
 
     /** The file an item, lesson or component was read from. It throws for an id the workspace does not hold. */
-    file(kind: "item" | "lesson" | "define", id: string): FileInfo {
+    file(kind: Document["kind"], id: string): FileInfo {
         const path = this.fileOf.get(`${kind}:${id}`);
         const info = path === undefined ? undefined : this.files.get(path);
         if (!info) throw new Error(`there is no ${kind} "${id}" in the workspace`);
@@ -1460,7 +1597,7 @@ export class Workspace {
         if (this.items.get(item.id) === item) return this.reports.get(item.id);
         const had = this.levelReports.get(item);
         if (had) return had;
-        const report = verifyItem(item, this.defines);
+        const report = verifyItem(item, this.defines, this.volumes);
         this.levelReports.set(item, report);
         return report;
     }
@@ -1470,7 +1607,7 @@ export class Workspace {
      * what it always was, and otherwise that level's resolved canonical text, so an edit to easy leaves
      * medium's hash alone.
      */
-    textAt(kind: "item" | "lesson", id: string, level: Level): string {
+    textAt(kind: "item" | "lesson" | "volume", id: string, level: Level): string {
         const info = this.file(kind, id);
         const levels = info.levels ?? ["medium"];
         if (!info.doc || levels.length < 2) return info.src;
@@ -1551,8 +1688,72 @@ export class Workspace {
         return out;
     }
 
+    /**
+     * A book lesson names a volume and reads every chapter of it once, in order, across its sittings,
+     * and a question that cites the book cites this volume and a chapter its sitting has read.
+     */
+    private bookIssues(lesson: Lesson): Issue[] {
+        const out: Issue[] = [];
+        const add = (t: TNode, message: string): void => {
+            out.push({ level: "error", message, ...pos(t) });
+        };
+        const sittings = lesson.sections.filter((s) => s.type === "sitting");
+        if (lesson.format !== "book") {
+            for (const s of sittings)
+                add(s.node, `a sitting belongs to a book lesson, and this one is ${lesson.format}`);
+            if (lesson.book) add(lesson.node, "book= is for a lesson with format=book");
+            return out;
+        }
+        if (!lesson.book) {
+            add(lesson.node, "a book lesson names the volume it reads with book=");
+            return out;
+        }
+        const volume = this.volumes.get(lesson.book);
+        if (!volume) {
+            add(
+                lesson.node,
+                `there is no volume "${lesson.book}"${near(lesson.book, [...this.volumes.keys()])}`,
+            );
+            return out;
+        }
+        for (const s of lesson.sections)
+            if (s.type !== "sitting")
+                add(s.node, `a book lesson is read in sittings, so "${s.type}" goes inside one`);
+        const all = volume.chapters.map((c) => c.n);
+        const read = sittings.flatMap((s) => s.chapters ?? []);
+        for (const s of sittings)
+            for (const n of s.chapters ?? [])
+                if (!all.includes(n))
+                    add(s.node, `${volume.id} has no chapter ${n}; it has 1 to ${all.length}`);
+        if (read.join() !== all.join())
+            add(
+                sittings[0]?.node ?? lesson.node,
+                `the sittings read chapters ${read.join(", ") || "none"}, and a book lesson reads each chapter once and in order, ${all.join(", ")}`,
+            );
+        const asked = questions(this, lesson);
+        for (const s of sittings) {
+            const last = Math.max(0, ...(s.chapters ?? []));
+            for (const b of s.blocks)
+                for (const q of asked.get(b) ?? []) {
+                    if (q.item.check?.name !== BOOK_LINE) continue;
+                    const cited = checkSettingsAt(q.item, q.variant.env);
+                    if (cited.book !== lesson.book)
+                        add(
+                            b,
+                            `${q.item.id} cites ${cited.book ?? "no volume"}, not ${lesson.book}`,
+                        );
+                    else if (Number(cited.chapter) > last)
+                        add(
+                            b,
+                            `${q.item.id} cites chapter ${cited.chapter}, which this sitting has not read yet`,
+                        );
+                }
+        }
+        return out;
+    }
+
     private verifyLesson(lesson: Lesson): Issue[] {
-        const issues: Issue[] = [];
+        const issues: Issue[] = this.bookIssues(lesson);
         const add = (level: Issue["level"], t: TNode, message: string): void => {
             issues.push({ level, message, ...pos(t) });
         };

@@ -62,9 +62,10 @@ export interface NodeSpec {
     picks?: true;
     /**
      * The child answers by arranging the drawing, and the answer is a condition over the measures the
-     * part declares in arrange.ts, proved over every arrangement.
+     * part declares in arrange.ts, proved over every arrangement. With `when`, only a node whose setting
+     * of that name is written as 1 is arranged, and it is then the answer's input as well.
      */
-    arranges?: true;
+    arranges?: true | { when: string };
     /** The shelf's drawings a node composes rather than being one itself, so a lesson using it counts as using them. */
     draws?: readonly string[];
     /** The node draws on top of another node instead of taking a box of its own. */
@@ -100,6 +101,8 @@ export interface Part {
     kinds: Record<string, Kind>;
     /** The words a setting accepts, where the drawing declared them. Such a setting reads as a pick. */
     choices: Record<string, readonly string[]>;
+    /** The most characters a text setting holds, where the drawing declared it. */
+    most: Record<string, number>;
 }
 
 const WORD = /^[A-Za-z_][\w-]*$/;
@@ -145,6 +148,7 @@ function kindOf(value: unknown, setting: unknown): Kind | null {
 function partOf(d: Drawing<unknown>): Part {
     const kinds: Record<string, Kind> = {};
     const choices: Record<string, readonly string[]> = {};
+    const most: Record<string, number> = {};
     const params = isPlain(d.params) ? d.params : {};
     const settings = isPlain(d.settings) ? d.settings : {};
     for (const [key, dflt] of Object.entries(params)) {
@@ -153,8 +157,9 @@ function partOf(d: Drawing<unknown>): Part {
         const kind = listed ? "pick" : kindOf(dflt, s);
         if (listed) choices[key] = listed;
         if (kind) kinds[key] = kind;
+        if (isPlain(s) && s.kind === "text" && typeof s.most === "number") most[key] = s.most;
     }
-    return { d, kinds, choices };
+    return { d, kinds, choices, most };
 }
 
 // Read as loaders of any drawing, since the catalogue's own type names each drawing's settings.
@@ -314,6 +319,7 @@ const SECTION_TYPES = [
     "exercises",
     "puzzle",
     "warm-up",
+    "sitting",
 ] as const;
 const BLOCKS = ["say", "scene", "practice", "show", "worked", "grown-ups", "level"] as const;
 /** A block may use its item at another level than the lesson's, as a worked example tied to its own numbers does. */
@@ -322,8 +328,9 @@ const AT_LEVEL: Record<string, Setting> = { level: { kind: "word", values: LEVEL
 export const FORMATS: Record<string, { label: string; sections: readonly string[] }> = {
     teach: { label: "Lesson", sections: ["look", "do", "story", "try", "remember"] },
     puzzles: { label: "Puzzle sheet", sections: ["puzzle"] },
-    worked: { label: "Worked example", sections: ["example", "exercises", "try"] },
+    worked: { label: "Worked example", sections: ["example", "exercises", "try", "remember"] },
     review: { label: "Review", sections: ["warm-up", "exercises", "puzzle"] },
+    book: { label: "Book", sections: ["sitting"] },
 };
 
 export const REGISTRY: Record<string, NodeSpec> = {
@@ -354,7 +361,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
         ],
     },
     lesson: {
-        doc: "A lesson in one of the formats: teach, puzzles, worked or review.",
+        doc: "A lesson in one of the formats: teach, puzzles, worked, review or book.",
         id: "dotted",
         props: {
             v: { kind: "num", required: true },
@@ -384,6 +391,8 @@ export const REGISTRY: Record<string, NodeSpec> = {
             },
             // The levels this lesson has; without it, medium alone, which is the lesson as written.
             levels: { kind: "words" },
+            // The volume a book lesson reads, by its id; its sittings name the chapters.
+            book: { kind: "word" },
         },
         children: ["title", "goal", ...SECTION_TYPES, "grown-ups", "level"],
     },
@@ -463,6 +472,42 @@ export const REGISTRY: Record<string, NodeSpec> = {
             } satisfies NodeSpec,
         ]),
     ),
+    sitting: {
+        doc: "One day's part of a book lesson: the chapters it reads, in order, and the questions on them.",
+        props: { chapters: { kind: "exprs", required: true } },
+        children: BLOCKS,
+    },
+    volume: {
+        doc: "A whole public-domain book a book lesson reads, with the record of why it is free to use and its chapters.",
+        id: "name",
+        props: { v: { kind: "num", required: true } },
+        children: ["title", "author", "published", "edition", "public-domain", "chapter"],
+    },
+    author: {
+        doc: "Who wrote the book, and the year they died.",
+        args: [{ name: "name", kind: "text" }],
+        props: { died: { kind: "num", required: true } },
+    },
+    published: {
+        doc: "The year the book was first published.",
+        args: [{ name: "year", kind: "num" }],
+    },
+    edition: {
+        doc: "The printed edition the text was taken from, and where it was found.",
+        args: [{ name: "text", kind: "text" }],
+    },
+    "public-domain": {
+        doc: "Why the book is free to use, in a sentence: the author's death, the first publication, and the rule they meet.",
+        args: [{ name: "text", kind: "text" }],
+    },
+    chapter: {
+        doc: "One chapter: its number, its title and its text. Each line of the text is a numbered line of the chapter, and a blank line starts a paragraph.",
+        args: [
+            { name: "n", kind: "num" },
+            { name: "title", kind: "text" },
+            { name: "text", kind: "text" },
+        ],
+    },
     practice: {
         doc: "Several variants of an item, picked by seed.",
         args: [{ name: "item", kind: "ref" }],
@@ -604,7 +649,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
         anchors: [],
     },
     "number-input": {
-        doc: "A box for a number.",
+        doc: "A box for a number, or given a width, for a line the child types, such as a dictation's sentence.",
         scene: true,
         id: "name",
         input: true,
@@ -777,17 +822,23 @@ export const REGISTRY: Record<string, NodeSpec> = {
         anchorsOf: (v) => indexed("row", length(v.labels)),
     },
     bargraph: {
-        doc: "A bar chart with a scale of one square per unit.",
+        doc: "A bar chart with a scale of one square per unit. `touch=1` stands the bars side by side as a histogram's classes. `set=1` makes the chart the answer: each bar drawn at nought is the child's to set, dragged or tapped to a height on the screen and shaded on paper, and the answer is a condition over bar1 to bar6 (each bar's height, from the left) and total. `set=2` draws the columns dashed to the top of the scale, to shade, without taking an answer.",
         scene: true,
         id: "name",
+        arranges: { when: "set" },
         props: {
             labels: { kind: "values", required: true },
             values: { kind: "exprs", required: true },
             max: { kind: "expr" },
             color: { kind: "word", values: MARKERS },
+            set: { kind: "expr" },
+            touch: { kind: "expr" },
             ...PLACE,
         },
-        anchorsOf: (v) => indexed("bar", length(v.labels)),
+        anchorsOf: (v) => [
+            ...indexed("bar", length(v.labels)),
+            ...(v.set === undefined ? [] : indexed("column", length(v.labels))),
+        ],
     },
     art: {
         doc: "A hand-drawn asset from the art folder, with the anchors the file declares.",
@@ -817,13 +868,16 @@ export const REGISTRY: Record<string, NodeSpec> = {
         },
     },
     linegraph: {
-        doc: "A line graph: one square per unit, the points joined in order.",
+        doc: "A line graph: the points joined in order, one square per unit unless `per` says what a square is worth, from `min` (0 unless set) to `max`, numbered every `step`.",
         scene: true,
         id: "name",
         props: {
             labels: { kind: "values", required: true },
             values: { kind: "exprs", required: true },
             max: { kind: "expr" },
+            min: { kind: "expr" },
+            per: { kind: "expr" },
+            step: { kind: "expr" },
             color: { kind: "word", values: MARKERS },
             ...PLACE,
         },
@@ -966,7 +1020,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
         scene: true,
         id: "name",
         props: {
-            of: { kind: "pick", values: ["plant", "fish", "island"], required: true },
+            of: { kind: "pick", values: choicesOf("parts", "of"), required: true },
             ...PLACE,
         },
         anchorsOf: () => indexed("part", 4),
@@ -1016,7 +1070,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
         ],
     },
     notes: {
-        doc: "A five line staff with pitched notes on it, one staff space to a square. `values` gives each note its length in beats and `lit` rings the ones to play.",
+        doc: "A five line staff with pitched notes on it, one staff space to a square. `values` gives each note its length in beats and `lit` rings the ones to play. `key` writes a key signature (G to B sharps, F to Df flats), `quavers` puts 8 under the meter, `chords` writes symbols above the notes they start on, and `spaced` spaces notes by length so two staves line up.",
         scene: true,
         id: "name",
         props: {
@@ -1026,6 +1080,10 @@ export const REGISTRY: Record<string, NodeSpec> = {
             letters: { kind: "word", values: BOOLS },
             lit: { kind: "words" },
             meter: { kind: "expr" },
+            key: { kind: "pick", values: choicesOf("notes", "key") },
+            quavers: { kind: "word", values: BOOLS },
+            chords: { kind: "words" },
+            spaced: { kind: "word", values: BOOLS },
             ...PLACE,
         },
         anchorsOf: (v) => [...indexed("note", length(v.notes)), "staff", "under"],
@@ -1261,7 +1319,7 @@ for (const [id, part] of PARTS) {
     SCENE_CHILDREN.push(id);
 }
 
-export const ROOTS = ["item", "lesson", "define"] as const;
+export const ROOTS = ["item", "lesson", "define", "volume"] as const;
 export const BOX_ANCHORS = [
     "top",
     "bottom",

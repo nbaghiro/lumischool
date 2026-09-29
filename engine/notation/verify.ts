@@ -4,7 +4,7 @@
 // for the correct answer, since it could not tell that mistake apart. The checkers written in code,
 // for answers an expression cannot state, are declared here with the contract they meet; each one
 // can also list its solutions, so the verifier can prove a puzzle is solvable before it ships. The
-// subjects' checkers are in chemistry.ts, coding.ts, paint.ts and physics.ts.
+// subjects' checkers are in chemistry.ts, coding.ts, nature.ts, paint.ts and physics.ts.
 import { ARRANGED, prove, type Arrangement } from "../arrange";
 import {
     checkNames,
@@ -12,13 +12,16 @@ import {
     evaluate,
     freeNames,
     members,
+    num,
     pieces,
     showValue,
+    str,
     uses,
     type Env,
     type Expr,
     type Value,
 } from "../expr";
+import { BY_EYE, DICTATION, linesHolding, linesOf, markWords, type Piece } from "../pack";
 import { shown } from "../scene";
 import { toleranceFor } from "../sound/beat";
 import { chordNames, chordNotes, chordOf, chordTitle, shapeProblems } from "../sound/fretted";
@@ -42,20 +45,37 @@ import {
     type Concrete,
     type SceneInstance,
 } from "./instantiate";
-import { printTerm, type Define, type Issue, type Item, type Rule, type TNode } from "./notation";
+import {
+    printTerm,
+    type Define,
+    type Issue,
+    type Item,
+    type Rule,
+    type TNode,
+    type Volume,
+} from "./notation";
+import { NATURE } from "./nature";
 import { PAINT } from "./paint";
 import { PHYSICS } from "./physics";
-import { BOX_ANCHORS, NOUNS, partParams, PLACE_KEYS } from "./vocabulary";
+import { BOX_ANCHORS, NOUNS, PARTS, partParams, PLACE_KEYS } from "./vocabulary";
+
+/** What a checker may read beyond its own settings: the corpus's volumes, for a question citing a book. */
+interface CheckContext {
+    volumes: ReadonlyMap<string, Volume>;
+}
 
 export interface CodeChecker {
     doc: string;
     settings: string[];
-    solutions(settings: Record<string, string>): string[];
+    /** `ctx` is what the corpus holds beside the item; a checker that reads none of it leaves it out. */
+    solutions(settings: Record<string, string>, ctx?: CheckContext): string[];
     /**
      * Things an author has to read that do not stop the item shipping. A checker that can tell an
      * answerable item from one that teaches what it claims to says the difference here.
      */
     warnings?(settings: Record<string, string>): string[];
+    /** The answer in words for the grown-ups' sheet, where a number alone would not say enough. */
+    explain?(settings: Record<string, string>, ctx?: CheckContext): string;
     /** The answers this checker works out itself, by name, which the item need not state. */
     provides?(settings: Record<string, string>): string[];
     /**
@@ -66,8 +86,18 @@ export interface CodeChecker {
     variant?(
         scene: SceneInstance,
         settings: Record<string, string>,
+        ctx?: CheckContext,
     ): { answers: Record<string, Value>; problems: string[] };
 }
+
+/** An answer the checker works out, or what stops it, as `variant` returns them. */
+const answerOr = (work: () => Value): { answers: Record<string, Value>; problems: string[] } => {
+    try {
+        return { answers: { answer: work() }, problems: [] };
+    } catch (e) {
+        return { answers: {}, problems: [said(e)] };
+    }
+};
 
 const said = (e: unknown): string => (e instanceof Error ? e.message : String(e));
 
@@ -148,9 +178,166 @@ const provedFor = (
     }
 };
 
+/** The checker of a question answered with a line of a book, cited by chapter. */
+export const BOOK_LINE = "book.line";
+
+/**
+ * The one line of a volume's chapter that holds the words, with its number, or an error that says
+ * why there is not exactly one: no such volume or chapter, too few words to find a line by, words that
+ * run across two lines, or words more than one line holds.
+ */
+function citation(
+    settings: Record<string, string>,
+    ctx: CheckContext | undefined,
+): { chapter: number; line: number; text: string } {
+    const id = settings.book ?? "";
+    const volume = ctx?.volumes.get(id);
+    if (!volume) throw new Error(`there is no volume "${id}"`);
+    const n = Number(settings.chapter);
+    const chapter = volume.chapters.find((c) => c.n === n);
+    if (!chapter)
+        throw new Error(
+            `${id} has no chapter ${settings.chapter}; it has 1 to ${volume.chapters.length}`,
+        );
+    const holds = (settings.holds ?? "").replace(/\s+/g, " ").trim();
+    if (holds.split(" ").length < 2)
+        throw new Error("holds= needs at least two words of the line, as the text writes them");
+    const lines = linesHolding(chapter.paragraphs, holds);
+    const [line, ...more] = lines;
+    if (line === undefined) {
+        const whole = linesOf(chapter.paragraphs).join(" ").replace(/\s+/g, " ");
+        throw new Error(
+            whole.includes(holds)
+                ? `"${holds}" runs across two lines of chapter ${n}; quote words from one line`
+                : `no line of chapter ${n} holds "${holds}"`,
+        );
+    }
+    if (more.length)
+        throw new Error(
+            `lines ${lines.join(" and ")} of chapter ${n} all hold "${holds}"; quote more of the line so that one holds it`,
+        );
+    return { chapter: n, line, text: linesOf(chapter.paragraphs)[line - 1] ?? "" };
+}
+
+/**
+ * A dictation's sentence, proved to mark word by word: three to forty words, each with letters, and
+ * the marking holds on the sentence itself, typed right, with each word misspelt and with each word
+ * left out, each mistake found at its own word and nowhere else.
+ */
+function provedDictation(text: string): string {
+    const sentence = text.replace(/\s+/g, " ").trim();
+    const words = sentence.split(" ").filter(Boolean);
+    if (words.length < 3 || words.length > 40)
+        throw new Error("text= needs a sentence of three to forty words to dictate");
+    const letters = (w: string): string => w.replace(/[^\p{L}]/gu, "");
+    const bad = words.filter((w) => !letters(w));
+    if (bad.length) throw new Error(`${bad.join(", ")} has no letters to spell`);
+    if (!markWords(sentence, sentence).right)
+        throw new Error("the sentence is not marked right when it is typed as it is written");
+    words.forEach((w, i) => {
+        const l = letters(w);
+        // a letter doubled is a misspelling of any word, however short
+        const wrong = w.replace(l, l + (l.at(-1) ?? ""));
+        const typed = words.map((x, j) => (j === i ? wrong : x)).join(" ");
+        const m = markWords(sentence, typed);
+        const flagged = m.words.flatMap((x, j) => (x.right ? [] : [j]));
+        if (m.right || flagged.join() !== String(i))
+            throw new Error(`"${wrong}" for "${w}" is not marked wrong at that word alone`);
+        const left = words.filter((_, j) => j !== i).join(" ");
+        const gone = markWords(sentence, left);
+        const missing = gone.words.flatMap((x, j) => (x.wrote === null ? [j] : []));
+        // with a word repeated, leaving out either copy is the same sentence, so the first is taken
+        const same = words.flatMap((x, j) => (x.toLowerCase() === w.toLowerCase() ? [j] : []));
+        if (gone.right || missing.length !== 1 || !same.includes(missing[0] ?? -1))
+            throw new Error(`leaving out "${w}" is not marked as that word left out`);
+    });
+    return sentence;
+}
+
+/** How a piece a grown-up looks at or listens to is written: what its checker needs beyond `look-for`. */
+interface ByEyeRule {
+    doc: string;
+    /** Whether the `notice` list is needed, or only checked when it is there. */
+    notice: "needed" | "optional";
+    /** Whether the `ask` question is needed, or only checked when it is there. */
+    ask: "needed" | "optional";
+}
+
+/** Each piece a grown-up looks at or listens to, and what its checker asks the author for. */
+const BY_EYE_RULES: Record<Piece, ByEyeRule> = {
+    writing: {
+        doc: "Writing a grown-up reads rather than the machine: a sentence, a letter, a book review, a report. `look-for` says what a good attempt looks like and prints where the answer would be; `notice`, when given, lists two to five points the grown-up ticks, which their response records.",
+        notice: "optional",
+        ask: "optional",
+    },
+    painting: {
+        doc: "A painting or a drawing that a grown-up responds to rather than marks. `look-for` says what a good attempt shows, in the art's own words; `notice` lists two to five short points the grown-up can tick when they see them, which a response records; `ask` is a question to start the talk. The sentence and the question print on the grown-ups' sheet.",
+        notice: "needed",
+        ask: "needed",
+    },
+    made: {
+        doc: "Something made away from the sheet that a grown-up looks at, such as a sculpture, a model or a piece of craft. `look-for` says what a good attempt shows; `notice` lists two to five points to tick; `ask` may give a question to start the talk.",
+        notice: "needed",
+        ask: "optional",
+    },
+    spoken: {
+        doc: "Something a child says aloud to a grown-up, such as a poem recited by heart. `look-for` says what a good attempt sounds like; `notice` lists two to five points the grown-up listens for and ticks. Nothing is recorded but the ticks.",
+        notice: "needed",
+        ask: "optional",
+    },
+    sung: {
+        doc: "A song a child sings to a grown-up, alone or in a round. `look-for` says what a good attempt sounds like; `notice` lists two to five points the grown-up listens for and ticks. Nothing is recorded but the ticks.",
+        notice: "needed",
+        ask: "optional",
+    },
+};
+
+/** The two to five points of a `notice` list, as `["...", "..."]`, or an error saying how to write them. */
+function noticeList(written: string): string[] {
+    let points: unknown = null;
+    try {
+        points = JSON.parse(written);
+    } catch {
+        points = null;
+    }
+    if (
+        !Array.isArray(points) ||
+        points.length < 2 ||
+        points.length > 5 ||
+        !points.every((x) => typeof x === "string" && x.length >= 6 && x.length <= 70)
+    )
+        throw new Error(
+            'notice= needs two to five short points to tick, written as ["...", "..."]',
+        );
+    return points.filter((x): x is string => typeof x === "string");
+}
+
+/** The checker of one piece a grown-up looks at or listens to: nothing is marked, and what the grown-up is given is proved to be there. */
+function byEye(rule: ByEyeRule): CodeChecker {
+    return {
+        doc: rule.doc,
+        settings: [
+            "look-for",
+            ...(rule.notice === "needed" ? ["notice"] : []),
+            ...(rule.ask === "needed" ? ["ask"] : []),
+        ],
+        solutions(settings) {
+            const look = (settings["look-for"] ?? "").trim();
+            const ask = (settings.ask ?? "").trim();
+            if (look.length < 20)
+                throw new Error("look-for= needs a sentence saying what a good attempt shows");
+            if (settings.ask !== undefined && (ask.length < 10 || !ask.endsWith("?")))
+                throw new Error("ask= needs a question for the grown-up to start with");
+            if (settings.notice !== undefined) noticeList(settings.notice);
+            return [ask ? `${look} Ask: ${ask}` : look];
+        },
+    };
+}
+
 export const CHECKERS: Record<string, CodeChecker> = {
     ...CHEMISTRY,
     ...CODING,
+    ...NATURE,
     ...PAINT,
     ...PHYSICS,
     "music.plays": {
@@ -267,14 +454,37 @@ export const CHECKERS: Record<string, CodeChecker> = {
             return [`${chordTitle(shape.name)}: ${notes.map((n) => noteName(n)).join(", ")}`];
         },
     },
-    "writing.by-eye": {
-        doc: "Nothing here is marked by the machine. The item says what a grown-up should look for, and that is what the answer sheet prints.",
-        settings: ["look-for"],
+    ...Object.fromEntries(
+        Object.entries(BY_EYE).map(([name, piece]) => [name, byEye(BY_EYE_RULES[piece])]),
+    ),
+    [BOOK_LINE]: {
+        doc: "A question answered with a line of a book lesson's volume. `book` names the volume, `chapter` the chapter, and `holds` words that exactly one line of that chapter holds, as the text writes them. The answer is that line's number, worked out and proved to be the only one, so an evidence question cannot ship with a key the text does not bear out.",
+        settings: ["book", "chapter", "holds"],
+        provides: () => ["answer"],
+        solutions(settings, ctx) {
+            if (templated(settings)) return [`the line that holds "${settings.holds}"`];
+            const c = citation(settings, ctx);
+            return [`chapter ${c.chapter}, line ${c.line}: ${c.text}`];
+        },
+        variant(_scene, settings, ctx) {
+            return answerOr(() => num(citation(settings, ctx).line));
+        },
+        // the line's own words, so a grown-up with another edition marks by the words
+        explain(settings, ctx) {
+            const c = citation(settings, ctx);
+            return `Line ${c.line} of chapter ${c.chapter}: "${c.text}"`;
+        },
+    },
+    [DICTATION]: {
+        doc: "A sentence played or read aloud, which the child types. `text` is the sentence, and the typed answer is marked word by word, the misspelt words shown. The checker proves the marking on the sentence itself: each word misspelt, and each word left out, is caught at that word and nowhere else.",
+        settings: ["text"],
+        provides: () => ["answer"],
         solutions(settings) {
-            const look = (settings["look-for"] ?? "").trim();
-            if (look.length < 20)
-                throw new Error("look-for= needs a sentence saying what a good attempt looks like");
-            return [look];
+            if (templated(settings)) return [`the sentence "${settings.text}"`];
+            return [provedDictation(settings.text ?? "")];
+        },
+        variant(_scene, settings) {
+            return answerOr(() => str(provedDictation(settings.text ?? "")));
         },
     },
     "matchsticks.one-move": {
@@ -347,6 +557,15 @@ const CAPACITY: Record<string, (p: Record<string, unknown>) => string | null> = 
         whole(p.count) && Number(p.count) <= 24
             ? null
             : "the jar holds 0 to 24 sweets, and more are drawn outside it",
+    // one line of 17-pixel lettering holds about two and a half characters a square
+    caption: (p) =>
+        String(p.text).length <= 2.5 * (Number(p.width) - 1)
+            ? null
+            : "the caption is longer than its strip's one line holds; widen the strip or shorten it",
+    writinglines: (p) =>
+        String(p.prompt).length <= 2.5 * (Number(p.width) - 1)
+            ? null
+            : "the prompt is longer than the lines are wide; widen them or shorten it",
     towers: (p) =>
         Array.isArray(p.heights) && p.heights.every(whole) && whole(p.level)
             ? null
@@ -445,7 +664,15 @@ export function variantsOf(item: Item, seed = 7): { envs: Env[]; total: number; 
 
 /** The parts a child arranges, by id. Their answer is a condition over an arrangement, not a value. */
 const arrangedIn = (item: Item): TNode[] =>
-    flatten(item.scene?.nodes ?? []).filter((n) => n.spec.arranges && n.id);
+    flatten(item.scene?.nodes ?? []).filter((n) => arranges(n) && n.id);
+
+/** Whether a node is a part the child arranges: always, or where the setting its spec names is written as 1. */
+function arranges(n: TNode): boolean {
+    const a = n.spec.arranges;
+    if (a === undefined || a === true) return a === true;
+    const v = n.props[a.when];
+    return (v?.k === "num" && v.v === 1) || (v?.k === "expr" && v.e.t === "num" && v.e.v === "1");
+}
 
 export function answersFor(item: Item, env: Env): Record<string, Value> {
     const out: Record<string, Value> = {};
@@ -454,7 +681,50 @@ export function answersFor(item: Item, env: Env): Record<string, Value> {
     return out;
 }
 
-export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport {
+/** An item's checker settings as written: a quoted string without its quotes, anything else as printed. */
+const writtenSettings = (item: Item): Record<string, string> =>
+    Object.fromEntries(
+        Object.entries(item.check?.settings ?? {}).map(([k, t]) => [
+            k,
+            t.k === "str" || t.k === "block" ? t.v : printTerm(t),
+        ]),
+    );
+
+/** What an item's checker says of one version's answer in words, or null for a checker that says nothing. */
+export function explainAt(
+    item: Item,
+    env: Env,
+    volumes: ReadonlyMap<string, Volume>,
+): string | null {
+    const checker = item.check ? CHECKERS[item.check.name] : undefined;
+    if (!checker?.explain) return null;
+    try {
+        return checker.explain(checkSettingsAt(item, env), { volumes });
+    } catch {
+        return null;
+    }
+}
+
+/** An item's checker settings as one version reads them, each `{name}` filled for that version. */
+export function checkSettingsAt(item: Item, env: Env): Record<string, string> {
+    return Object.fromEntries(
+        Object.entries(writtenSettings(item)).map(([k, v]) => {
+            if (!v.includes("{")) return [k, v];
+            try {
+                return [k, fill(pieces(v), env, item.roles)];
+            } catch {
+                return [k, v];
+            }
+        }),
+    );
+}
+
+export function verifyItem(
+    item: Item,
+    defines: Map<string, Define>,
+    volumes: ReadonlyMap<string, Volume> = new Map(),
+): ItemReport {
+    const ctx: CheckContext = { volumes };
     const issues: Issue[] = [];
     const add = (level: Issue["level"], t: TNode | undefined, message: string): void => {
         issues.push({ level, message, ...where(t) });
@@ -466,14 +736,7 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
     // A setting reaches a checker as the text it was written as, except that a quoted string arrives
     // without its quotes. Before this a list setting arrived empty, because a list term holds its
     // items rather than a value, so `notes=[C4, E4, G4]` was silently nothing.
-    const checkSettings: Record<string, string> = item.check
-        ? Object.fromEntries(
-              Object.entries(item.check.settings).map(([k, t]) => [
-                  k,
-                  t.k === "str" || t.k === "block" ? t.v : printTerm(t),
-              ]),
-          )
-        : {};
+    const checkSettings = writtenSettings(item);
     const checker = item.check ? CHECKERS[item.check.name] : undefined;
     // A checker may work some answers out itself, per variant; those names count as declared.
     const provided = checker?.provides?.(checkSettings) ?? [];
@@ -673,7 +936,7 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
                 );
             else {
                 try {
-                    solutions = c.solutions(settings);
+                    solutions = c.solutions(settings, ctx);
                 } catch (e) {
                     add("error", kid("check"), said(e));
                 }
@@ -717,6 +980,7 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
         g.at.push(label);
         grouped.set(k, g);
     };
+    const shownFirst = new Map<string, string>();
     const variants: Variant[] = [];
     let checkedRefs = false;
     const fired = new Set<Rule>();
@@ -782,7 +1046,7 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
                         v.includes("{") ? fill(pieces(v), env, item.roles) : v,
                     ]),
                 );
-                const got = checker.variant(inst, settings);
+                const got = checker.variant(inst, settings, ctx);
                 for (const p of got.problems) note("error", kid("check"), p, label);
                 for (const [k, v] of Object.entries(got.answers)) {
                     const was = correct[k];
@@ -875,8 +1139,19 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
                         !Number.isInteger(Number(c.v.count)))
                 )
                     note("error", c.node, "a ten frame shows 0 to 10 counters", label);
-                const bound = CAPACITY[c.type]?.(partParams(c.type, c.v));
+                const drawn = partParams(c.type, c.v);
+                const bound = CAPACITY[c.type]?.(drawn);
                 if (bound) note("error", c.node, `${c.id}: ${bound}`, label);
+                for (const [k, most] of Object.entries(PARTS.get(c.type)?.most ?? {})) {
+                    const text = drawn[k];
+                    if (typeof text === "string" && text.length > most)
+                        note(
+                            "error",
+                            c.node,
+                            `${c.id}: its ${k} is ${text.length} characters, and a ${c.type} holds at most ${most}`,
+                            label,
+                        );
+                }
                 if (c.type === "equation")
                     for (const b of textOf(c)?.blanks ?? []) {
                         const value = correct[b];
@@ -922,6 +1197,7 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
                 refs(inst, env);
             }
         }
+        braces(inst, ruleEnv, label);
         variants.push({
             values: Object.fromEntries(
                 Object.entries(named(env)).map(([k, v]) => [k, showValue(v)]),
@@ -934,6 +1210,42 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
             ...(Object.keys(labels).length ? { labels } : {}),
             ...(arrangedOut ? { arranged: arrangedOut } : {}),
         });
+    }
+    /**
+     * No text a child or a grown-up reads keeps a brace once it is filled, since a brace left over is a
+     * placeholder that was never read. A line that names the child's answer is filled with the right
+     * one here, and one that cannot be filled until the child answers is left to its own check.
+     */
+    function braces(inst: SceneInstance | null, env: Env, label: string): void {
+        const leftover = (t: TNode | undefined, where: string, text: string): void => {
+            if (!/[{}]/.test(text)) return;
+            // The first text that shows it names the fault, so one fault is one issue over its versions.
+            const key = `${t?.src.span.line}|${where}`;
+            const seen = shownFirst.get(key) ?? text;
+            shownFirst.set(key, seen);
+            note("error", t, `${where} still shows a brace once filled: "${seen}"`, label);
+        };
+        const filled = (t: TNode | undefined, where: string, s: string, must: boolean): void => {
+            try {
+                leftover(t, where, fill(pieces(s), env, item.roles));
+            } catch (e) {
+                if (must) note("error", t, `${where} cannot be filled: ${said(e)}`, label);
+            }
+        };
+        item.hints.forEach((h) => filled(kid("hint"), "a hint", h, true));
+        if (item.explain) filled(kid("answer"), "the answer's say line", item.explain, false);
+        const walkSays = (rs: Rule[]): void =>
+            rs.forEach((r) => {
+                r.say.forEach((s) => filled(r.node, "a feedback say line", s, false));
+                walkSays(r.children);
+            });
+        walkSays(item.feedback);
+        for (const c of inst?.nodes ?? []) {
+            for (const [k, v] of Object.entries(c.v))
+                if (typeof v === "object" && !Array.isArray(v))
+                    leftover(c.node, `${c.id} ${k}`, v.filled);
+            for (const o of optionsOf(c)) leftover(c.node, `an option of ${c.id}`, o.label);
+        }
     }
     /** A picked answer has to name exactly one of the options, and no two options may be the same. */
     function options(
@@ -1012,7 +1324,12 @@ export function verifyItem(item: Item, defines: Map<string, Define>): ItemReport
         };
         walkPoints(item.feedback);
         const inputs = [
-            ...inst.nodes.filter((c) => c.spec.input).map((c) => c.id),
+            ...inst.nodes
+                .filter((c) => {
+                    const a = c.spec.arranges;
+                    return c.spec.input || (typeof a === "object" && c.v[a.when] === 1);
+                })
+                .map((c) => c.id),
             // blanks inside a text template ({?more}), and blanks a node draws itself (blanks=[q, r])
             ...inst.nodes.flatMap((c) =>
                 Object.values(c.v).flatMap((v) =>

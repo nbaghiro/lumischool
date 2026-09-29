@@ -4,8 +4,10 @@
 import { pieces } from "../expr";
 import {
     PACK,
+    type BookFacts,
     type Level,
     type PackBlock,
+    type PackBook,
     type PackItem,
     type PackLesson,
     type PackLevel,
@@ -21,17 +23,21 @@ import {
     type Lesson,
     type Rule,
     type TNode,
+    type Volume,
     type Workspace,
 } from "./notation";
-import { pick, type Variant } from "./verify";
+import { explainAt, pick, type Variant } from "./verify";
 
 /** How many more draws of a practice block a lesson carries for another day. */
 export const AGAIN = 2;
 /** Draw d of a practice block is picked with its seed plus STEP times d, as the demo's worker picks it. */
 export const STEP = 101;
 
-/** The sha256 of a lesson's or an item's notation text at a level, which a sitting and an answer record. */
-type HashOf = (kind: "lesson" | "item", id: string, level: Level) => string;
+/**
+ * The sha256 of a lesson's or an item's notation text at a level, which a sitting and an answer record,
+ * or of a volume's, which names its file.
+ */
+type HashOf = (kind: "lesson" | "item" | "volume", id: string, level: Level) => string;
 
 export const keyOf = (v: Variant): string =>
     Object.entries(v.values)
@@ -91,7 +97,7 @@ function questionOf(ws: Workspace, item: Item, v: Variant, n: number): PackQuest
         feedback: item.feedback.map(rule),
         scene: item.scene ? sceneOf(instantiate(item.scene, v.env, item.roles, ws.defines)) : null,
         arranged: arranged && right ? { part: arranged.id, right, key: arranged.key } : null,
-        explain: item.explain ? said(item, v, item.explain) : null,
+        explain: item.explain ? said(item, v, item.explain) : explainAt(item, v.env, ws.volumes),
     };
 }
 
@@ -167,6 +173,7 @@ function levelOf(ws: Workspace, lesson: Lesson, level: Level, hashOf: HashOf): P
             type: s.type,
             stars: s.stars ?? null,
             blocks: s.blocks.flatMap(blockOf),
+            ...(s.chapters ? { chapters: s.chapters } : {}),
         })),
     };
 }
@@ -193,5 +200,39 @@ export function compileLesson(ws: Workspace, lesson: Lesson, hashOf: HashOf): Pa
         format: lesson.format,
         art: [...art].sort(),
         levels,
+        ...bookOf(ws, lesson, hashOf),
+    };
+}
+
+/** The file a volume's text is written to, named by its own hash so a new text is a new file. */
+export const volumeFile = (id: string, hash: string): string =>
+    `books/${id}-${hash.slice(0, 10)}.json`;
+
+function bookOf(ws: Workspace, lesson: Lesson, hashOf: HashOf): { book?: BookFacts } {
+    const v = lesson.book === undefined ? undefined : ws.volumes.get(lesson.book);
+    if (!v) return {};
+    return {
+        book: {
+            id: v.id,
+            title: v.title ?? v.id,
+            author: v.author ?? "",
+            published: v.published ?? 0,
+            file: volumeFile(v.id, hashOf("volume", v.id, "medium")),
+        },
+    };
+}
+
+/** A volume as the pack carries it, a file of its own that a sitting reads its chapters from. */
+export function compileVolume(v: Volume): PackBook {
+    return {
+        pack: PACK,
+        id: v.id,
+        title: v.title ?? v.id,
+        author: v.author ?? "",
+        published: v.published ?? 0,
+        died: v.died ?? 0,
+        edition: v.edition ?? "",
+        basis: v.basis ?? "",
+        chapters: v.chapters.map((c) => ({ n: c.n, title: c.title, paragraphs: c.paragraphs })),
     };
 }

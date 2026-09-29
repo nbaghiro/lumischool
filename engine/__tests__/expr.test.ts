@@ -157,6 +157,49 @@ test("text with placeholders splits into text, blanks, nouns and expressions", (
     });
 });
 
+test("a placeholder runs to the brace that closes it, past quoted text and sets", () => {
+    const e = (src: string) => ({ k: "expr", e: parseExpr(src), src });
+    const nested = 'if a > 1 then "{a} × " else ""';
+    assert.deepEqual(pieces(`Write {${nested}}10 to the power {n}.`), [
+        { k: "text", v: "Write " },
+        e(nested),
+        { k: "text", v: "10 to the power " },
+        e("n"),
+        { k: "text", v: "." },
+    ]);
+    assert.deepEqual(pieces('{pick(k, "a } b", "{c")} and {x}'), [
+        e('pick(k, "a } b", "{c")'),
+        { k: "text", v: " and " },
+        e("x"),
+    ]);
+    assert.deepEqual(pieces('{"say \\"{a}\\" twice"}'), [e('"say \\"{a}\\" twice"')]);
+    assert.deepEqual(pieces("{a in {1, 2}} is true"), [
+        e("a in {1, 2}"),
+        { k: "text", v: " is true" },
+    ]);
+    assert.deepEqual(uses(pieces(`{${nested}}{if b then "{c.many} and {d}" else "{?x}"}`)), {
+        names: ["a", "b", "d"],
+        roles: ["c"],
+        blanks: [],
+    });
+    for (const plain of ["", "no placeholders", "a } alone", "{a}", "{a}{b}", "x {a + 1} y"])
+        assert.equal(
+            pieces(plain)
+                .map((p) => (p.k === "text" ? p.v : p.k === "expr" ? `{${p.src}}` : "?"))
+                .join(""),
+            plain,
+        );
+    assert.throws(() => pieces("{a and more"), { message: "a { is not closed" });
+    assert.throws(() => pieces('{"a}'), { message: "a { is not closed" });
+});
+
+test("thousands shows a number with a comma between each three digits", () => {
+    assert.equal(run("thousands(4500000)"), "4,500,000");
+    assert.equal(run("thousands(999)"), "999");
+    assert.equal(run("thousands(-1234.5)"), "-1,234.5");
+    assert.equal(run("thousands(1000 + a)"), "1,003");
+});
+
 // A seeded generator, so the random trees are the same on every run.
 function rng(seed: number): () => number {
     let s = seed;

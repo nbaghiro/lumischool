@@ -13,6 +13,8 @@ const ITEMS = Object.fromEntries(
         "items/g1-level-the-plank.lumi",
         "items/physics-seesaw-place.lumi",
         "items/g2-fair-shares.lumi",
+        "items/g5-survey-missing-bar.lumi",
+        "items/g6-data-rock-bar-set.lumi",
     ].map((p) => [p, all[p] ?? ""]),
 );
 const ws = new Workspace(ITEMS);
@@ -26,7 +28,13 @@ const plank = (v: Record<string, number | number[]>): Plank => {
 
 test("the arranged items in the curriculum prove clean: always answerable, luck bounded, and no rule on a right arrangement", () => {
     assert.deepEqual(issues(ws), []);
-    for (const id of ["bonds.level-the-plank", "physics.seesaw-place", "fraction.fair-shares"]) {
+    for (const id of [
+        "bonds.level-the-plank",
+        "physics.seesaw-place",
+        "fraction.fair-shares",
+        "survey.missing-bar",
+        "data.rock-bar-set",
+    ]) {
         const r = ws.reports.get(id);
         assert.ok(r?.arranged, `${id} has no proof`);
         assert.ok(

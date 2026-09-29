@@ -2,6 +2,7 @@
 // and the measures a level is compared by. The run-time twins of tagOf and sectionLabel, over a pack
 // lesson, are in engine/pack.ts.
 import { evaluate, showValue } from "../expr";
+import { NUMBERED } from "../pack";
 import { isLevel, type Item, type Lesson, type TNode, type Workspace } from "./notation";
 import { difficultyOf, pick, type Variant } from "./verify";
 import { FORMATS, REGISTRY } from "./vocabulary";
@@ -36,10 +37,12 @@ const LABELS: Record<string, string> = {
     exercises: "Practice",
     puzzle: "Puzzle",
     "warm-up": "Warm-up",
+    sitting: "Sitting",
 };
 const stars = (n?: number): string => (n ? "★".repeat(n) + "☆".repeat(Math.max(0, 3 - n)) : "");
 export const sectionLabel = (type: string, i: number, n?: number): string =>
-    (type === "puzzle" ? `Puzzle ${i}` : (LABELS[type] ?? type)) + (n ? ` ${stars(n)}` : "");
+    (NUMBERED.has(type) ? `${LABELS[type] ?? type} ${i}` : (LABELS[type] ?? type)) +
+    (n ? ` ${stars(n)}` : "");
 
 /** Every question in the lesson, numbered in order; worked examples are not numbered. */
 export function questions(ws: Workspace, lesson: Lesson): Map<TNode, Question[]> {

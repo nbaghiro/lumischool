@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { parseExpr, showValue, type Env } from "../expr";
 import {
+    barBoard,
+    barHeights,
+    barsOf,
     cutAreas,
     cutBoard,
     cutLayout,
@@ -12,7 +15,10 @@ import {
     plankLayout,
     plankOf,
     plankStacks,
+    MOST,
     prove,
+    type Arrangement,
+    type Ruled,
 } from "../arrange";
 
 const shown = (env: Env): Record<string, string> =>
@@ -191,4 +197,102 @@ test("a proof walks every arrangement, and judging one gives the rule that speak
         prove(b, env, parseExpr("turning == 100"), rules).problems.join(" "),
         /no arrangement/,
     );
+});
+
+const bars = (v: Record<string, unknown>) => {
+    const b = barsOf({ set: 1, ...v });
+    if (typeof b === "string") throw new Error(b);
+    return b;
+};
+const labelled = (n: number): string[] => Array.from({ length: n }, (_, i) => `L${i + 1}`);
+
+test("a chart's bars at nought are the child's to set, and the answer reads each bar's height", () => {
+    assert.equal(
+        barsOf({ set: 0, labels: ["A"], values: [0] }),
+        "set= is 1 for a chart whose bars the child sets",
+    );
+    assert.equal(
+        barsOf({ set: 1, labels: ["A", "B"], values: [2, 3] }),
+        "a bar the child sets is drawn at nought, and none is",
+    );
+    const b = bars({ labels: ["Moon", "Mars"], values: [3, 0], max: 5 });
+    assert.deepEqual(b.open, [1]);
+    const board = barBoard(b);
+    // Mars at 1 to 5; the chart as drawn, with nothing set, is not an answer
+    assert.equal(board.count, 5);
+    assert.deepEqual(
+        board.arrangements().map((a) => a.map((x) => x.at)),
+        [[1], [2], [3], [4], [5]],
+    );
+    const mars = [{ piece: "bar(1)", at: 4 }];
+    assert.deepEqual(barHeights(b, mars), [3, 4]);
+    assert.deepEqual(shown(board.measure(mars)), {
+        bar1: "3",
+        bar2: "4",
+        bar3: "0",
+        bar4: "0",
+        bar5: "0",
+        bar6: "0",
+        total: "7",
+    });
+    assert.equal(board.legal([]), "no bar has been set");
+    assert.match(String(board.legal([{ piece: "bar(0)", at: 2 }])), /drawn at nought/);
+    assert.match(String(board.legal([{ piece: "bar(1)", at: 6 }])), /1 to 5/);
+    assert.equal(board.placing(mars), "the bar for Mars at 4");
+    const proof = prove(board, {}, parseExpr("bar2 == 4"), []);
+    assert.deepEqual(proof.problems, []);
+    assert.deepEqual(proof.key, mars);
+    assert.equal(proof.right, 1);
+});
+
+test("a chart too big to walk is proved bar by bar, with the same counts, key and rules as walking it", () => {
+    const b = bars({ labels: labelled(5), values: [0, 0, 0, 0, 0], max: 7 });
+    const board = barBoard(b);
+    assert.ok(board.count > MOST);
+    const answer = parseExpr("bar1 == 3 and bar2 >= 2 and bar5 != 7");
+    const rule = (when: string): Ruled & { name: string } => ({
+        when: parseExpr(when),
+        children: [],
+        name: when,
+    });
+    const rules = [rule("bar1 < 3"), rule("bar2 == 5"), rule("bar3 == 9")];
+    const proof = prove(board, {}, answer, rules);
+    // walked by hand for comparison
+    const truth = (e: ReturnType<typeof parseExpr>, a: Arrangement): boolean =>
+        judge(board, {}, e, [], a).right;
+    let right = 0;
+    let spoken = 0;
+    const fired = new Set<string>();
+    const onRight = new Set<string>();
+    for (const a of board.arrangements()) {
+        const ok = truth(answer, a);
+        const hits = rules.filter((r) => truth(r.when, a));
+        if (ok) {
+            right++;
+            hits.forEach((r) => onRight.add(r.name));
+        } else {
+            if (hits.length) spoken++;
+            hits.forEach((r) => fired.add(r.name));
+        }
+    }
+    assert.equal(proof.tried, board.count);
+    assert.equal(proof.right, right);
+    assert.equal(proof.spoken, spoken);
+    assert.deepEqual(new Set([...proof.fired].map((r) => r.name)), fired);
+    assert.deepEqual(new Set([...proof.onRight.keys()].map((r) => r.name)), onRight);
+    assert.deepEqual(proof.key, [
+        { piece: "bar(0)", at: 3 },
+        { piece: "bar(1)", at: 2 },
+    ]);
+    // the rule true for a right arrangement is the verifier's error to report
+    assert.deepEqual(proof.problems, []);
+});
+
+test("a chart too big to walk whose answer reads two bars at once is refused, not sampled", () => {
+    const board = barBoard(bars({ labels: labelled(5), values: [0, 0, 0, 0, 0], max: 7 }));
+    const proof = prove(board, {}, parseExpr("total == 12"), []);
+    assert.equal(proof.key, null);
+    assert.match(proof.problems[0] ?? "", /reads more than one piece/);
+    const pair = prove(board, {}, parseExpr("bar1 == bar2"), []);
+    assert.match(pair.problems[0] ?? "", /reads more than one piece/);
 });

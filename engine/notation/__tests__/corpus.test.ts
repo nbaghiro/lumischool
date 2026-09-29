@@ -109,6 +109,7 @@ test("a sampled item says what it actually checked, instead of claiming there ar
 
 test("every format is in use, and every block resolves to questions", () => {
     assert.deepEqual([...new Set([...ws.lessons.values()].map((l) => l.format))].sort(), [
+        "book",
         "puzzles",
         "review",
         "teach",
@@ -148,10 +149,19 @@ test("every format is in use, and every block resolves to questions", () => {
     assert.equal(worked.worked, true);
     assert.equal(worked.variant.answers.sum, "632");
     assert.equal(count("g1-year-review").length, 10);
-    // Fifteen lessons in each of the four grades, and the strands beyond maths alongside them.
+    // Fifteen lessons in each grade whose maths is written, since it lands as one batch, and the
+    // strands beyond maths alongside them.
     const maths = [...ws.lessons.values()].filter((l) => l.subject === "maths");
-    for (const grade of [1, 2, 3, 4])
-        assert.equal(maths.filter((l) => l.grade === grade).length, 15, `grade ${grade}`);
+    const grades = new Set(maths.map((l) => l.grade));
+    assert.ok(grades.size >= 4, `maths in ${grades.size} grades`);
+    // Grades five and six add the gap lessons of .docs/grades-5-6.md: five and six more.
+    const expected: Record<number, number> = { 5: 20, 6: 21 };
+    for (const grade of grades)
+        assert.equal(
+            maths.filter((l) => l.grade === grade).length,
+            expected[grade ?? 0] ?? 15,
+            `grade ${grade}`,
+        );
     assert.ok(
         [...ws.lessons.values()].some((l) => l.subject !== "maths"),
         "the other subjects are still here",

@@ -690,6 +690,15 @@ const FNS: Record<string, Fn> = {
     },
     plain: { takes: 1, run: (x) => ({ k: "num", v: R.withPlaces(x) }) },
     den: { takes: 1, run: (x) => ({ k: "num", v: R.rat(x.d) }) },
+    // Display: text, so it is for a placeholder and not for arithmetic.
+    thousands: {
+        takes: 1,
+        run: (x) => {
+            const [whole = "", rest] = R.showRat(x).split(/(?=[./])/);
+            const grouped = whole.replace(/\B(?=(\d{3})+$)/g, ",");
+            return { k: "str", v: rest === undefined ? grouped : grouped + rest };
+        },
+    },
 };
 // pick takes values of any kind, where FNS works on numbers, so it is handled beside them.
 const PICK = "pick";
@@ -960,13 +969,33 @@ export type Piece =
     | { k: "noun"; role: string; many: boolean }
     | { k: "expr"; e: Expr; src: string };
 
+/** Where the placeholder opened at `from` closes, skipping quoted text as the notation's parser does. */
+function closing(s: string, from: number): number {
+    let depth = 0;
+    let i = from;
+    while (i < s.length) {
+        const c = s.charAt(i);
+        if (c === '"') {
+            i++;
+            while (i < s.length && s.charAt(i) !== '"') i += s.charAt(i) === "\\" ? 2 : 1;
+        } else if (c === "{") depth++;
+        else if (c === "}" && --depth === 0) return i;
+        i++;
+    }
+    throw new LangError("a { is not closed");
+}
+
+/**
+ * A placeholder runs to the brace that closes it, and quoted text inside it is the expression's own,
+ * so `{if a > 1 then "{a} × " else ""}` is one expression; text it gives is filled in turn.
+ */
 export function pieces(s: string): Piece[] {
     const out: Piece[] = [];
     let last = 0;
-    for (const m of s.matchAll(/\{([^{}]*)\}/g)) {
-        const [whole, group = ""] = m;
-        if (m.index > last) out.push({ k: "text", v: s.slice(last, m.index) });
-        const inner = group.trim();
+    for (let open = s.indexOf("{"); open >= 0; open = s.indexOf("{", last)) {
+        const end = closing(s, open);
+        if (open > last) out.push({ k: "text", v: s.slice(last, open) });
+        const inner = s.slice(open + 1, end).trim();
         const blank = /^\?([A-Za-z_]\w*)$/.exec(inner)?.[1];
         const [, role, many] = /^([A-Za-z_]\w*)\.(many|one)$/.exec(inner) ?? [];
         if (blank !== undefined) out.push({ k: "blank", name: blank });
@@ -978,9 +1007,26 @@ export function pieces(s: string): Piece[] {
                 throw new LangError(`in {${inner}}: ${e instanceof Error ? e.message : String(e)}`);
             }
         }
-        last = m.index + whole.length;
+        last = end + 1;
     }
     if (last < s.length) out.push({ k: "text", v: s.slice(last) });
+    return out;
+}
+
+/** The quoted texts an expression can give, each filled in turn when it does. */
+function quoted(e: Expr, out: string[] = []): string[] {
+    switch (e.t) {
+        case "str":
+            out.push(e.v);
+            break;
+        case "call":
+            if (e.fn === PICK) e.args.slice(1).forEach((x) => quoted(x, out));
+            break;
+        case "if":
+            quoted(e.a, out);
+            quoted(e.b, out);
+            break;
+    }
     return out;
 }
 
@@ -990,7 +1036,14 @@ export function uses(ps: Piece[]): { names: string[]; roles: string[]; blanks: s
     const roles = new Set<string>();
     const blanks: string[] = [];
     for (const p of ps) {
-        if (p.k === "expr") freeNames(p.e).forEach((n) => names.add(n));
+        if (p.k === "expr") {
+            freeNames(p.e).forEach((n) => names.add(n));
+            for (const q of quoted(p.e)) {
+                const inner = uses(pieces(q));
+                inner.names.forEach((n) => names.add(n));
+                inner.roles.forEach((r) => roles.add(r));
+            }
+        }
         if (p.k === "noun") roles.add(p.role);
         if (p.k === "blank") blanks.push(p.name);
     }

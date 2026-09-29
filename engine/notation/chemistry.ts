@@ -5,9 +5,12 @@
 // agree with the checker, and one it does not state is taken from it. See .docs/chemistry.md,
 // "The checkers".
 import { num, str, type Value } from "../expr";
+import { airAfter, candleBurns } from "../parts/science/chamber";
+import { EARTH_LAYERS, layerAt, thicknessOf } from "../parts/science/earthinside";
 import {
     CHANGES,
     CYCLE,
+    ELEMENTS,
     FOSSIL_STEPS,
     LIQUIDS,
     MIXABLES,
@@ -15,15 +18,21 @@ import {
     OBJECTS,
     PROPERTIES,
     ROCKS,
+    ROCK_CYCLE,
+    ROCK_STAGES,
     RUST,
     SAFETY,
     SHAPES,
     atomsIn,
     bandOf,
+    hydrogenBubbles,
     iceLeft,
     kindOfBand,
+    lastOf,
     passes,
+    rowOf,
     rustOf,
+    stepsAlong,
     type Property,
 } from "../parts/science/substances";
 import type { Opt } from "../scene";
@@ -584,6 +593,65 @@ const saysOf = (liquid: string, arg: string): boolean | null => {
     return kind === null ? null : kind === arg;
 };
 
+/** What a liquid is on the pH scale itself: below 7 an acid, 7 neutral, above 7 an alkali. */
+const phKind = (ph: number): string => (ph < 7 ? "acid" : ph > 7 ? "alkali" : "neutral");
+const phOf = (p: Record<string, unknown>, arg: string): number | string => {
+    const key = words(p.liquids)[at(arg)];
+    const liq = key === undefined ? undefined : LIQUIDS[key];
+    return liq ? liq.ph : `there is no liquid ${arg}`;
+};
+
+/** The pH scale's asks, which read each pointer's pH rather than a colour's band. */
+const SCALE_ASKS: Record<string, Ask> = {
+    ph: (p, _c, _s, arg) => {
+        const ph = phOf(p, arg);
+        if (typeof ph === "string") return { problem: ph };
+        return Number.isInteger(ph)
+            ? { number: ph }
+            : { problem: `${arg} sits at pH ${ph}, between two marks, so its pH is not read off` };
+    },
+    kind: (p, _c, _s, arg) => {
+        const ph = phOf(p, arg);
+        return typeof ph === "string" ? { problem: ph } : { word: phKind(ph) };
+    },
+    only: (p, _c, _s, arg) =>
+        onlyOne(
+            words(p.liquids),
+            (k) => {
+                const liq = LIQUIDS[k];
+                return liq ? phKind(liq.ph) === arg.trim() : null;
+            },
+            `are ${arg}`,
+        ),
+    count: (p, _c, _s, arg) =>
+        countOf(
+            words(p.liquids),
+            (k) => {
+                const liq = LIQUIDS[k];
+                return liq ? phKind(liq.ph) === arg.trim() : null;
+            },
+            `are ${arg}`,
+        ),
+    strongest: (p, _c, _s, arg) => {
+        const list = words(p.liquids);
+        const kind = arg.trim();
+        const phs = list.map((k) => LIQUIDS[k]?.ph ?? 7).filter((ph) => phKind(ph) === kind);
+        if (!phs.length) return { problem: `none of the liquids is an ${kind}` };
+        const best = kind === "acid" ? Math.min(...phs) : Math.max(...phs);
+        return onlyOne(list, (k) => LIQUIDS[k]?.ph === best, `are the strongest ${kind}`);
+    },
+    nearest: (p) => {
+        const list = words(p.liquids);
+        const gap = list.map((k) => Math.abs((LIQUIDS[k]?.ph ?? 7) - 7));
+        const least = Math.min(...gap);
+        return onlyOne(
+            list.map((_, i) => String(i)),
+            (i) => gap[Number(i)] === least,
+            "are nearest to neutral",
+        );
+    },
+};
+
 const INDICATOR_ASKS: Record<string, Ask> = {
     colour: (p, _c, _s, arg) => {
         const key = words(p.liquids)[at(arg)];
@@ -750,6 +818,55 @@ const rockHas = (kind: string, prop: string): boolean | null => {
     return v === undefined ? null : v !== not;
 };
 
+/** The arrows a rock cycle drawing draws, by number. */
+const arrowsOf = (p: Record<string, unknown>): number[] =>
+    Array.isArray(p.arrows) ? [...new Set(p.arrows.map((k) => Math.round(Number(k))))] : [];
+const stageNamed = (s: string): number => ROCK_STAGES.findIndex((x) => x.key === s.trim());
+
+const CYCLE_ASKS: Record<string, Ask> = {
+    process: (p, _c, _s, arg) => {
+        const k = Number(arg);
+        const arrow = ROCK_CYCLE[k - 1];
+        return arrow && arrowsOf(p).includes(k)
+            ? { word: arrow.process }
+            : { problem: `arrow ${arg} is not drawn` };
+    },
+    missing: (p) => {
+        const k = Math.round(n(p.blank));
+        const arrow = ROCK_CYCLE[k - 1];
+        return arrow && arrowsOf(p).includes(k)
+            ? { word: arrow.process }
+            : { problem: "no drawn arrow is left blank in the key" };
+    },
+    hidden: (p) => {
+        const stage = ROCK_STAGES[Math.round(n(p.hide))];
+        return stage ? { word: stage.name } : { problem: "no box is hidden" };
+    },
+    to: (p, _c, _s, arg) => {
+        const k = Number(arg);
+        const stage = ROCK_STAGES[ROCK_CYCLE[k - 1]?.to ?? -1];
+        return stage && arrowsOf(p).includes(k)
+            ? { word: stage.name }
+            : { problem: `arrow ${arg} is not drawn` };
+    },
+    steps: (p, _c, _s, arg) => {
+        const [a = "", b = ""] = arg.trim().split(/\s+/);
+        const badged = arg.trim() === "";
+        const from = badged ? Math.round(n(p.start)) : stageNamed(a);
+        const to = badged ? Math.round(n(p.end)) : stageNamed(b);
+        if (badged && (!ROCK_STAGES[from] || !ROCK_STAGES[to]))
+            return {
+                problem: "steps with nothing named needs start and end badged on the drawing",
+            };
+        if (from < 0 || to < 0)
+            return {
+                problem: `steps(${arg}) names a stage the cycle does not have; it has ${ROCK_STAGES.map((x) => x.key).join(", ")}`,
+            };
+        const d = stepsAlong(arrowsOf(p), from, to);
+        return d === null ? { problem: `no drawn arrows lead from ${a} to ${b}` } : { number: d };
+    },
+};
+
 const ROCK_ASKS: Record<string, Ask> = {
     count: (p, c, _s, arg) =>
         c.type === "rocks"
@@ -867,6 +984,219 @@ const ATOM_ASKS: Record<string, Ask> = {
     },
 };
 
+/** The elements a table of so many rows draws. */
+const drawnElements = (p: Record<string, unknown>): typeof ELEMENTS =>
+    ELEMENTS.filter((e) => e.n <= lastOf(Math.round(n(p.rows))));
+
+/**
+ * The element an argument names in a drawn table: a number, a symbol, `blank` for the cell left with a
+ * question mark, or `mark` for the ringed one.
+ */
+function elementNamed(p: Record<string, unknown>, arg: string): (typeof ELEMENTS)[number] | string {
+    const a = arg.trim();
+    const drawn = drawnElements(p);
+    const hit =
+        a === "blank" || a === "mark"
+            ? drawn.find((e) => e.n === Math.round(n(p[a])))
+            : /^\d+$/.test(a)
+              ? drawn.find((e) => e.n === Number(a))
+              : drawn.find((e) => e.symbol.toLowerCase() === a.toLowerCase());
+    return hit ?? `the table as drawn has no element "${a}"`;
+}
+
+/** An ask about one element, or why it cannot be asked. */
+const oneElement =
+    (read: (e: (typeof ELEMENTS)[number]) => Got): Ask =>
+    (p, c, _s, arg) => {
+        if (c.type !== "periodic") return { problem: "this is asked of the periodic table" };
+        const e = elementNamed(p, arg);
+        return typeof e === "string" ? { problem: e } : read(e);
+    };
+
+const ELEMENT_ASKS: Record<string, Ask> = {
+    symbol: oneElement((e) => ({ word: e.symbol })),
+    name: oneElement((e) => ({ word: e.name })),
+    number: oneElement((e) => ({ number: e.n })),
+    row: oneElement((e) => ({ number: rowOf(e.n) })),
+    state: oneElement((e) => ({ word: e.state })),
+    kind: oneElement((e) =>
+        e.kind === "metalloid"
+            ? {
+                  problem: `${e.name} is a metalloid, neither plainly a metal nor a non-metal, so it is not asked`,
+              }
+            : { word: e.kind },
+    ),
+    count: (p, c, _s, arg) => {
+        if (c.type !== "periodic") return { problem: "count is asked of the periodic table" };
+        const [what = "", row] = arg.trim().split(/\s+/);
+        const pool = drawnElements(p).filter(
+            (e) =>
+                (row === undefined || rowOf(e.n) === Number(row)) && e.n !== Math.round(n(p.blank)),
+        );
+        if (row !== undefined && !/^[1-4]$/.test(row))
+            return { problem: `count(${arg}) names row "${row}", and the rows are 1 to 4` };
+        const known = ["metal", "not-metal", "non-metal", "solid", "liquid", "gas"];
+        if (!known.includes(what))
+            return {
+                problem: `count(${what}) is not something the table knows; it knows ${known.join(", ")}`,
+            };
+        // a metalloid is not a metal, but calling it a non-metal is a choice a question should not rest on
+        if (what === "non-metal" && pool.some((e) => e.kind === "metalloid"))
+            return {
+                problem:
+                    "the cells counted hold a metalloid, which is neither plainly a metal nor a non-metal",
+            };
+        return {
+            number: pool.filter((e) =>
+                what === "not-metal" ? e.kind !== "metal" : e.kind === what || e.state === what,
+            ).length,
+        };
+    },
+};
+
+/** The hydrogen bubbles on each tube's metal strip, from the table of metals in acid. */
+const tubeBubbles = (p: Record<string, unknown>): number[] => {
+    const metals = Array.isArray(p.metals) ? p.metals.map(Number) : [];
+    return metals.slice(0, 6).map((m) => hydrogenBubbles(m, n(p.acid)));
+};
+
+const TUBE_ASKS: Record<string, Ask> = {
+    bubbles: (p, c, _s, arg) => {
+        if (c.type !== "testtubes") return { problem: "bubbles is asked of test tubes" };
+        const b = tubeBubbles(p)[at(arg)];
+        return b === undefined
+            ? { problem: "name a tube with a metal strip by its letter, as bubbles(B)" }
+            : { number: b };
+    },
+    fizziest: (p, c) => {
+        if (c.type !== "testtubes") return { problem: "fizziest is asked of test tubes" };
+        const b = tubeBubbles(p);
+        const most = Math.max(...b);
+        const hits = b.flatMap((x, i) => (x === most ? [i] : []));
+        const [hit] = hits;
+        return hits.length === 1 && hit !== undefined && most > 0
+            ? { word: letter(hit) }
+            : {
+                  problem: `${most > 0 ? hits.length : "no"} tubes fizz most, so there is no single one`,
+              };
+    },
+    still: (p, c) =>
+        c.type === "testtubes"
+            ? { number: tubeBubbles(p).filter((b) => b === 0).length }
+            : { problem: "still is asked of test tubes" },
+};
+
+const sealedOf = (
+    p: Record<string, unknown>,
+): {
+    place: number;
+    plants: number;
+    candle: number;
+    people: number;
+    light: number;
+    hours: number;
+} => ({
+    place: n(p.place),
+    plants: n(p.plants),
+    candle: n(p.candle),
+    people: n(p.people),
+    light: n(p.light),
+    hours: n(p.hours),
+});
+
+const AIR_ASKS: Record<string, Ask> = {
+    oxygen: (p, c) =>
+        c.type === "chamber"
+            ? { number: airAfter(sealedOf(p)).o2 / 100 }
+            : { problem: "oxygen is asked of a sealed chamber" },
+    carbon: (p, c) => {
+        if (c.type !== "chamber") return { problem: "carbon is asked of a sealed chamber" };
+        const now = airAfter(sealedOf(p)).co2;
+        const start = airAfter({ ...sealedOf(p), hours: 0 }).co2;
+        return { word: now > start ? "up" : now < start ? "down" : "same" };
+    },
+    relights: (p, c) =>
+        c.type === "chamber"
+            ? { word: candleBurns(airAfter(sealedOf(p)).o2) ? "yes" : "no" }
+            : { problem: "relights is asked of a sealed chamber" },
+};
+
+/** A layer of the cliff named by its place from the top (1 the youngest), or by `ash`. */
+function strataLayer(p: Record<string, unknown>, arg: string): number | string {
+    const k = arg.trim() === "ash" ? Math.round(n(p.ash)) : Number(arg);
+    const layers = Math.max(3, Math.min(7, Math.round(n(p.layers))));
+    return Number.isInteger(k) && k >= 1 && k <= layers
+        ? k
+        : `name a layer by its place from the top, 1 to ${layers}, or as ash`;
+}
+
+const STRATA_ASKS: Record<string, Ask> = {
+    broken: (p, c) =>
+        c.type === "strata"
+            ? {
+                  number: Math.min(
+                      Math.round(n(p.fault)),
+                      Math.max(3, Math.min(7, Math.round(n(p.layers)))),
+                  ),
+              }
+            : { problem: "broken is asked of a cliff's layers" },
+    // a fault is younger than every layer it breaks and older than every layer lying across it
+    fault: (p, c, _s, arg) => {
+        if (c.type !== "strata") return { problem: "fault is asked of a cliff's layers" };
+        const layers = Math.max(3, Math.min(7, Math.round(n(p.layers))));
+        const cut = Math.round(n(p.fault));
+        if (cut < 1) return { problem: "this cliff has no fault" };
+        const k = strataLayer(p, arg);
+        if (typeof k === "string") return { problem: k };
+        return { word: layers - k + 1 <= cut ? "younger" : "older" };
+    },
+};
+
+const EARTH_ASKS: Record<string, Ask> = {
+    layer: (_p, c, _s, arg) => {
+        if (c.type !== "earthinside") return { problem: "layer is asked of the Earth inside" };
+        const km = Number(arg.replace(/,/g, ""));
+        const i = layerAt(km);
+        const l = EARTH_LAYERS[i];
+        if (!l || !Number.isFinite(km))
+            return { problem: "name a depth in kilometres, as layer(3000)" };
+        return EARTH_LAYERS.some((x) => Math.abs(x.to - km) < 50 || Math.abs(x.from - km) < 50)
+            ? { problem: `${km} km is within 50 km of where one layer meets the next` }
+            : { word: l.name };
+    },
+    thick: (_p, c, _s, arg) => {
+        if (c.type !== "earthinside") return { problem: "thick is asked of the Earth inside" };
+        const i = Number(arg) - 1;
+        return Number.isInteger(i) && i >= 1 && i <= 3
+            ? { number: thicknessOf(i) }
+            : {
+                  problem:
+                      "name the mantle, outer core or inner core by its place from 2 to 4, as thick(2); the crust's thickness varies",
+              };
+    },
+    depth: (p, c) => {
+        if (c.type !== "earthinside") return { problem: "depth is asked of the Earth inside" };
+        const l = EARTH_LAYERS[Math.round(n(p.ask)) - 1];
+        return l ? { number: l.to } : { problem: "no layer's depth is a question mark" };
+    },
+};
+
+/** Asks chosen by the kind of drawing `of` names, for a checker that reads drawings with different asks. */
+function bySort(table: Record<string, Record<string, Ask>>): Record<string, Ask> {
+    const names = new Set(Object.values(table).flatMap((t) => Object.keys(t)));
+    return Object.fromEntries(
+        [...names].map((name): [string, Ask] => [
+            name,
+            (p, c, scene, arg, vs, settings) => {
+                const ask = table[c.type]?.[name];
+                return ask
+                    ? ask(p, c, scene, arg, vs, settings)
+                    : { problem: `${name} is not asked of a ${c.type}` };
+            },
+        ]),
+    );
+}
+
 export const CHEMISTRY: Record<string, CodeChecker> = {
     "chem.materials": checker(
         "Works out a question about materials from the table the drawing is drawn from. Of a materials row: `count(prop)` is how many things have a property and `only(prop)` the letter of the one that does (hard, bendy, see-through, waterproof, absorbent, stretchy, floats, each also as not-...), `made(B)` what thing B is made of, `same(B)` the letter of the one other thing made of the same material, `odd` the letter of the one made of a material none of the others is, `kinds` how many different materials there are, `made-count(metal)` how many are made of one material, `fits(not-made-metal waterproof)` the letter of the one thing that meets every clue, `pairs(bendy)` how many pairs of things are both bendy, and `same-pairs` how many pairs share a material; a property the table leaves open for a thing cannot be asked. Of a squash drawing, `back` is whether the thing springs back (yes or no). Of the safety kit, `keeps(eyes)` is the letter of what keeps that safe.",
@@ -874,9 +1204,9 @@ export const CHEMISTRY: Record<string, CodeChecker> = {
         MATERIAL_ASKS,
     ),
     "chem.change": checker(
-        "Works out what a change does, from the table the drawing is drawn from. Of a before-and-after drawing, `undo` is whether it can be changed back, `new` whether it makes a new material (yes or no), and `back` how to change it back (cool it, warm it, or let the water dry up). Of a candle, `left` and `burnt` are centimetres. Of nails in jars, `most` is the letter of the rustiest, `rusty` how many have rusted and `rusts(B)` whether jar B's nail rusts. Of melting ice, `melted` is the minutes of the first picture with no ice left and `next` how many quarters of the cube the hidden saucer holds. With `vs` naming a second fizzing jar or flask, `more` is the one that made more gas, or same.",
-        ["beforeafter", "candle", "nails", "icemelt", "fizz", "flask"],
-        CHANGE_ASKS,
+        "Works out what a change does, from the table the drawing is drawn from. Of a before-and-after drawing, `undo` is whether it can be changed back, `new` whether it makes a new material (yes or no), and `back` how to change it back (cool it, warm it, or let the water dry up). Of a candle, `left` and `burnt` are centimetres. Of nails in jars, `most` is the letter of the rustiest, `rusty` how many have rusted and `rusts(B)` whether jar B's nail rusts. Of melting ice, `melted` is the minutes of the first picture with no ice left and `next` how many quarters of the cube the hidden saucer holds. With `vs` naming a second fizzing jar or flask, `more` is the one that made more gas, or same. Of test tubes with metal strips, `bubbles(B)` is how many hydrogen bubbles tube B shows (in acid ten on magnesium, six on zinc, three on iron and none on copper; in water none), `fizziest` the letter of the tube with the most, and `still` how many show none. Of a sealed chamber, `oxygen` is its oxygen in per cent after its hours, `carbon` whether its carbon dioxide has gone up, down or stayed the same, and `relights` whether a candle lit in it now would burn, which needs more than 16 per cent oxygen.",
+        ["beforeafter", "candle", "nails", "icemelt", "fizz", "flask", "testtubes", "chamber"],
+        { ...CHANGE_ASKS, ...TUBE_ASKS, ...AIR_ASKS },
     ),
     "chem.state": checker(
         "Works out what state something is in. Of a jar of particles, `state` is solid, liquid or gas, and with `vs` naming a jar of the same stuff in the same state, `hotter` is the one whose particles move faster. Of a thermometer (or with `temp=`), `water` is ice, water or steam, and `of(wax)` the state of anything in the table of melting and boiling points; nothing is asked less than five degrees from where it melts or boils. `table=` names a table in the scene whose rows are checked against the same melting points (or `of` names the table itself, with `temp=`), and `which(liquid)` is the one thing in that table in that state at the temperature. Of the water cycle, `stage` is the name of the blank stage. Of a heating curve, `flat` is the temperature where it stays flat, `flat-from` the minute it starts and `flat-for` how many minutes it lasts.",
@@ -884,9 +1214,9 @@ export const CHEMISTRY: Record<string, CodeChecker> = {
         STATE_ASKS,
     ),
     "chem.indicator": checker(
-        "Works out what red cabbage indicator shows, from each liquid's pH and the colour chart: `colour(B)` is the colour cup B turns, `acid(B)` whether that colour says acid (yes or no; blue says no), `kind(B)` acid or alkali (refusing blue, which covers 7 and 8), and `only(acid)`, `only(alkali)`, `count(acid)` and `count(alkali)` the letter of the one cup, or how many cups, whose colour says so.",
-        ["cabbage"],
-        INDICATOR_ASKS,
+        "Works out what red cabbage indicator shows, from each liquid's pH and the colour chart: `colour(B)` is the colour cup B turns, `acid(B)` whether that colour says acid (yes or no; blue says no), `kind(B)` acid or alkali (refusing blue, which covers 7 and 8), and `only(acid)`, `only(alkali)`, `count(acid)` and `count(alkali)` the letter of the one cup, or how many cups, whose colour says so. Of the pH scale, which reads each liquid's pH itself: `ph(B)` is B's pH where it sits on a whole number, `kind(B)` acid, neutral or alkali, `only(neutral)` and `count(acid)` as above, `strongest(acid)` or `strongest(alkali)` the letter furthest from 7 on that side, and `nearest` the letter nearest to 7.",
+        ["cabbage", "phscale"],
+        bySort({ cabbage: INDICATOR_ASKS, phscale: SCALE_ASKS }),
     ),
     "chem.separate": checker(
         'Works out how a mixture comes apart. Of a sieve, `stays` and `through` are what stays in it and what falls through, and `works` whether it separates the mixture at all. Of a mixture in water, `residue` is what filter paper would keep back. Of a sieve or a mixture, `get(sand)` binds the one option (sieve, filter, magnet or evaporate, in those words or as "use a magnet", "filter it", "evaporate the water") that gets that part out on its own, refusing a question where none or two do: a magnet pulls out what is magnetic, filter paper keeps back what has not dissolved, evaporating leaves every solid behind, and a sieve only works dry.',
@@ -894,9 +1224,21 @@ export const CHEMISTRY: Record<string, CodeChecker> = {
         SEPARATE_ASKS,
     ),
     "chem.rocks": checker(
-        "Works out questions about rocks, soil and fossils. Of a row of rocks, `count(prop)` and `only(prop)` count or pick the rocks that soak up water (soaks), fizz with vinegar (fizzes), float, or can be scratched with a fingernail (soft), each also as not-..., `fits(fizzes not-soaks)` the letter of the one rock that meets every clue, and `kind(B)` is igneous, sedimentary or metamorphic. Of the soil jar, `thickest` is the thickest layer. Of the fossil pictures, `step(1)` is the letter of the picture showing that step, and `missing` what the blank picture should show.",
-        ["rocks", "soiljar", "fossilsteps"],
-        ROCK_ASKS,
+        "Works out questions about rocks, soil and fossils. Of a row of rocks, `count(prop)` and `only(prop)` count or pick the rocks that soak up water (soaks), fizz with vinegar (fizzes), float, or can be scratched with a fingernail (soft), each also as not-..., `fits(fizzes not-soaks)` the letter of the one rock that meets every clue, and `kind(B)` is igneous, sedimentary or metamorphic. Of the soil jar, `thickest` is the thickest layer. Of the fossil pictures, `step(1)` is the letter of the picture showing that step, and `missing` what the blank picture should show. Of the rock cycle, `process(3)` is what happens along arrow 3, `missing` what the arrow left blank in the key stands for, `hidden` the name of the box shown as a question mark, `to(3)` the box arrow 3 leads to, and `steps(igneous sedimentary)` the fewest drawn arrows from one box to another (igneous, sediment, sedimentary, metamorphic, magma), or `steps` from the box badged S to the one badged E. Of a cliff's layers, `broken` is how many layers the fault breaks, and `fault(2)` or `fault(ash)` whether the fault is younger or older than that layer, counted from the top: a fault is younger than every layer it breaks and older than every layer lying unbroken across it. Of the Earth inside, `layer(3000)` names the layer at that depth in kilometres (refusing a depth within 50 km of a boundary), `thick(2)` is the thickness of the mantle (3 the outer core, 4 the inner core's radius), and `depth` how deep the layer with a question mark goes.",
+        ["rocks", "soiljar", "fossilsteps", "rockcycle", "strata", "earthinside"],
+        bySort({
+            rocks: ROCK_ASKS,
+            soiljar: ROCK_ASKS,
+            fossilsteps: ROCK_ASKS,
+            rockcycle: CYCLE_ASKS,
+            strata: STRATA_ASKS,
+            earthinside: EARTH_ASKS,
+        }),
+    ),
+    "chem.elements": checker(
+        "Reads the periodic table drawing and the table of elements it is drawn from. An element is named by its number, its symbol, `blank` (the cell with a question mark) or `mark` (the ringed cell): `symbol(11)`, `name(Na)`, `number(blank)`, `row(mark)`, `state(O)` (solid, liquid or gas at 20 °C) and `kind(Na)` (metal or non-metal; boron and silicon are metalloids and are refused). `count(metal)`, `count(not-metal)`, `count(gas)` or `count(metal 3)` count the drawn cells of that kind or state, in one row if a row is given, leaving out a blank cell; `count(non-metal)` over cells that hold a metalloid is refused.",
+        ["periodic"],
+        ELEMENT_ASKS,
     ),
     "chem.atoms": checker(
         "Counts what a model of molecules holds: `atoms` every atom, `atoms(H)` the atoms of one element, `molecules`, `elements` (kinds of atom) and `substances` (kinds of molecule); `pure` is pure or mixture, `element` is element or compound for one kind of molecule, and `name` its name.",
