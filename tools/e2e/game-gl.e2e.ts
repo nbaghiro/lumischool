@@ -21,7 +21,7 @@ test("games on the GPU: golf's first level at rest matches its golden frame", as
     test.skip(info.project.name !== "desktop", "one golden frame, on the desktop's Chrome");
     await atRest(page);
     await expect(page.locator(".field-gl canvas")).toHaveAttribute("aria-hidden", "true");
-    await expect(page.locator(".field")).toHaveScreenshot("golf-0-gl.png", golden);
+    await expect(page.locator(".game-field")).toHaveScreenshot("golf-0-gl.png", golden);
 });
 
 test("games on the GPU: twenty lost contexts leave the game as it was and drawing again", async ({
@@ -60,5 +60,5 @@ test("games on the GPU: twenty lost contexts leave the game as it was and drawin
     await page.waitForTimeout(600);
     expect(await ball.evaluate((d) => d.getAttribute("style"))).toBe(before);
     expect(await page.locator(".game-player").innerText()).toBe(said);
-    await expect(page.locator(".field")).toHaveScreenshot("golf-0-gl.png", golden);
+    await expect(page.locator(".game-field")).toHaveScreenshot("golf-0-gl.png", golden);
 });

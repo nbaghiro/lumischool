@@ -127,6 +127,8 @@ export interface RoadState {
     v: number;
     reverseWait: number;
     reversing: boolean;
+    /** Braked to a stop: the cruise waits for go, so a stop stays where the child made it. */
+    parked: boolean;
     vy: number;
     lane: number;
     boxes: Box[];
@@ -163,6 +165,7 @@ export function startRoadLevel(L: RoadLevel, level = 0): RoadState {
         v: 0,
         reverseWait: 0,
         reversing: false,
+        parked: false,
         vy: 0,
         lane: 1,
         boxes: L.boxes.map((b) => ({
@@ -189,6 +192,16 @@ export function startRoadLevel(L: RoadLevel, level = 0): RoadState {
 /** A value said the way a child would read it off the line: whole numbers, or halves on a line in twos. */
 const read = (L: RoadLevel, v: number) => (L.per >= 2 ? Math.round(v * 2) / 2 : Math.round(v));
 
+/** Squares a second squared the brake takes off: full above three squares a second, easing to a third of it, so the car rolls onto its mark rather than snapping to rest. */
+const brakeAt = (v: number) => 16 * Math.min(1, 0.35 + (0.65 * v) / 3);
+
+/** How far the car goes from speed `v` with the brake held, stepped as `step` steps it. */
+function brakingDistance(v: number): number {
+    let d = 0;
+    for (let u = Math.abs(v); u > 0; u = Math.max(0, u - brakeAt(u) * DT)) d += u * DT;
+    return d;
+}
+
 export function step(s: RoadState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     const L = s.L;
@@ -198,21 +211,31 @@ export function step(s: RoadState, pad: Pad): Happening[] {
         if (d === "down") s.lane = Math.min(ROAD.lanes - 1, s.lane + 1);
     }
     const braking = pad.brake || pad.holding.includes("left");
-    if (pad.go || pad.holding.includes("right")) s.reversing = false;
+    const going = pad.go || pad.holding.includes("right");
+    if (going) {
+        s.reversing = false;
+        s.parked = false;
+    }
+    // past the end of the line there is nothing to stop on, so the cruise lets the car coast to rest in the run-out
+    const pastEnd = valueAt(L, nose(s)) > L.to;
     const want =
         s.won || braking || s.reversing
             ? 0
-            : pad.go || pad.holding.includes("right")
+            : going
               ? L.top
-              : (L.cruise ?? 0);
+              : s.parked || pastEnd
+                ? 0
+                : (L.cruise ?? 0);
     s.reverseWait = braking && s.v <= 0 ? s.reverseWait + DT : 0;
     if (s.won) s.v = 0;
     else if (braking) {
         // braking hard throws dust from the back tyres, so a skid can be seen as well as felt
         if (s.v > 2 && s.steps % 6 === 0)
             out.push({ burst: { kind: "dust", x: s.x - CAR / 2, y: s.y, n: 2, dir: Math.PI } });
-        if (s.v > 0) s.v = Math.max(0, s.v - 16 * DT);
-        else if (s.reverseWait > 0.45) {
+        if (s.v > 0) {
+            s.v = Math.max(0, s.v - brakeAt(s.v) * DT);
+            if (s.v === 0) s.parked = true;
+        } else if (s.reverseWait > 0.45) {
             s.reversing = true;
             s.v = Math.max(-L.top * 0.3, s.v - L.accel * DT);
         }
@@ -236,6 +259,7 @@ export function step(s: RoadState, pad: Pad): Happening[] {
             s.bumps++;
         }
         s.v = 0;
+        s.parked = true;
     }
     for (const b of s.boxes) {
         if (!b.hit && Math.abs(b.x - s.x) < 1.7 && Math.abs(b.y - s.y) < 1.5) {
@@ -397,7 +421,7 @@ export function frame(s: RoadState, rest = false): Frame {
             z: 2,
         });
     }
-    const stopping = nose(s) + (Math.sign(s.v) * s.v * s.v) / 32;
+    const stopping = nose(s) + Math.sign(s.v) * brakingDistance(s.v);
     if (Math.abs(s.v) > 0.4 && !s.won) marks.push({ kind: "ring", x: stopping, y: s.y, r: 0.35 });
     const arrow = Math.round((s.v * 0.5) / CAR / 0.25) * 0.25;
     sprites.push({

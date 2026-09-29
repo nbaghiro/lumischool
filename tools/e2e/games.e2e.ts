@@ -131,14 +131,14 @@ test("rabbit mouse drag lands on a stone and leaves no old dots", async ({ page 
     await page.mouse.move(x - (((3 * 4.5) / 5.5) * box.width) / 2.6, y, { steps: 6 });
     await page.mouse.up();
     await expect(page.locator('[data-game="reads"]')).toContainText("on the stone at 3");
-    await expect(page.locator(".field .dot")).toHaveCount(0);
+    await expect(page.locator(".game-field .dot")).toHaveCount(0);
 });
 
 test("road supports mouse acceleration, braking and reverse directly on the field", async ({
     page,
 }) => {
     await page.goto("/games?g=road");
-    const field = page.locator(".field");
+    const field = page.locator(".game-field");
     await expect(field).toBeVisible();
     const box = await field.boundingBox();
     if (!box) throw new Error("Road has no bounds");
@@ -219,7 +219,7 @@ for (const game of ["road", "plane"]) {
                 await expect(sprite).not.toHaveAttribute("style", initial ?? "");
                 await page.keyboard.up(key);
             } else {
-                const field = await page.locator(".field").boundingBox();
+                const field = await page.locator(".game-field").boundingBox();
                 if (!field) throw new Error("Missing play field");
                 await page.mouse.move(field.x + field.width * 0.6, field.y + field.height * 0.4);
                 await page.mouse.down();
@@ -284,7 +284,7 @@ test("touch on the plane field is a deliberate first input", async ({ page }, in
     await page.goto("/games?g=plane");
     const player = page.locator(".game-player");
     await expect(player).toHaveAttribute("data-game-ready", "true");
-    const field = await page.locator(".field").boundingBox();
+    const field = await page.locator(".game-field").boundingBox();
     if (!field) throw new Error("Missing plane field");
     await page.touchscreen.tap(field.x + field.width / 2, field.y + field.height / 2);
     await expect(player).toHaveAttribute("data-game-ready", "false");
@@ -296,7 +296,7 @@ for (const game of ["sling&v=2", "plane", "rally"]) {
         // the GPU's view draws its grid under the world's camera and says where in its attributes
         await expect(page.locator(".field-gl[data-drawn]")).toBeVisible();
         const check = async () => {
-            const result = await page.locator(".field").evaluate((field) => {
+            const result = await page.locator(".game-field").evaluate((field) => {
                 const outer = field.getBoundingClientRect();
                 const canvas = field.querySelector(":scope > canvas");
                 if (!(canvas instanceof HTMLCanvasElement) || !(field instanceof HTMLElement))

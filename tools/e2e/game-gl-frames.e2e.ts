@@ -22,7 +22,7 @@ for (const id of GAMES.map((g) => g.id))
         await expect(page.locator(".field-gl[data-drawn]")).toBeVisible();
         // a look drawn soft while the camera settled is drawn sharp 200 ms after it rests
         await page.waitForTimeout(600);
-        await expect(page.locator(".field")).toHaveScreenshot(`${id}-0-gl.png`, golden);
+        await expect(page.locator(".game-field")).toHaveScreenshot(`${id}-0-gl.png`, golden);
     });
 
 const scene = { camera: { x: 15, y: 8 }, view: { w: 30, h: 16 }, world: { w: 30, h: 16 } };
@@ -134,7 +134,7 @@ for (const [name, { still, frame }] of Object.entries(EFFECTS))
         });
         await expect(page.locator(".effect[data-drawn]")).toBeAttached();
         await page.waitForTimeout(300);
-        await expect(page.locator(".effect .field")).toHaveScreenshot(
+        await expect(page.locator(".effect .game-field")).toHaveScreenshot(
             `effect-${name}-gl.png`,
             golden,
         );
@@ -186,5 +186,8 @@ test("games on the GPU: a pour in progress matches its golden frame", async ({ p
     await expect(page.locator(".pour[data-drawn]")).toBeAttached();
     expect(Number(await page.locator(".pour").getAttribute("data-drawn"))).toBeGreaterThan(10);
     await page.waitForTimeout(300);
-    await expect(page.locator(".pour .field")).toHaveScreenshot("pour-in-progress-gl.png", golden);
+    await expect(page.locator(".pour .game-field")).toHaveScreenshot(
+        "pour-in-progress-gl.png",
+        golden,
+    );
 });

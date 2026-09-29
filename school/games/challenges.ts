@@ -65,6 +65,15 @@ import {
     standChallenge,
 } from "./lemonade-challenges";
 import { STAND_LEVELS } from "./lemonade";
+import { isPoolConfiguration, openPoolConfiguration, poolChallenge } from "./pool-challenges";
+import { POOL_LEVELS } from "./pool";
+import {
+    isRescueConfiguration,
+    openRescueConfiguration,
+    rescueChallenge,
+    vary as varyRescue,
+} from "./rescue-challenges";
+import { RESCUE_LEVELS } from "./rescue";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -426,9 +435,47 @@ const wardrobe = family({
     },
 });
 
+const pool = family({
+    variation: {
+        method: "shot-search-and-physics-replay",
+        generate: poolChallenge,
+        read: typed(isPoolConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 2 ? 1 : phase < 5 ? 2 : 3,
+        motor: (POOL_LEVELS[phase]?.preview ?? 0) === 2 ? 1 : 2,
+    }),
+    open: (game, c, phase) => started(game, () => openPoolConfiguration(c), phase),
+});
+
+const rescue = family({
+    variation: {
+        method: "mission-driver-and-physics-replay",
+        generate: rescueChallenge,
+        read: typed(isRescueConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3,
+        motor: (RESCUE_LEVELS[phase]?.preview ?? 0) >= 1 ? 1 : 2,
+    }),
+    open: (game, c, phase) => {
+        const L = RESCUE_LEVELS[phase];
+        return L
+            ? started(game, () => openRescueConfiguration(c), phase, {
+                  title: L.title,
+                  goal: varyRescue(L, c.variant).goal,
+              })
+            : null;
+    },
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
     rally,
+    pool,
+    rescue,
     blocks,
     wardrobe,
     clear,

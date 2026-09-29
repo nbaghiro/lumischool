@@ -9,6 +9,7 @@ import {
     ROAD_LEVELS,
     start as startRace,
     step as stepRace,
+    worldWidth,
     type RoadState,
 } from "../road";
 
@@ -63,4 +64,24 @@ test("a box slows the car and costs nothing else", () => {
     assert.ok(after < before * 0.6, `${before} then ${after}`);
     assert.equal(s.bumps, 1);
     assert.ok(!s.won && s.stops === 0);
+});
+
+test("a car braked to a stop stays parked until go, and a car left cruising coasts to rest past the line", () => {
+    const s = startRace(0),
+        pad = emptyPad();
+    for (let n = 0; n < 60 && s.v < 5; n++) stepRace(s, pad);
+    pad.brake = true;
+    for (let n = 0; n < 120 && s.v > 0; n++) stepRace(s, pad);
+    pad.brake = false;
+    const at = s.x;
+    for (let n = 0; n < 120; n++) stepRace(s, pad);
+    assert.equal(s.x, at);
+    pad.go = true;
+    stepRace(s, pad);
+    spent(pad);
+    pad.go = false;
+    for (let n = 0; n < 60 * 30; n++) stepRace(s, pad);
+    assert.equal(s.v, 0);
+    assert.ok(s.x > placeOf(s.L, s.L.to));
+    assert.ok(s.x < worldWidth(s.L) - 2, "the car rests in the run-out, short of the road's end");
 });

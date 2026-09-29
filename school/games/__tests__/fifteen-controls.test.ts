@@ -9,7 +9,8 @@ test("road brake stops before reversing and release stops reversing", () => {
     const s = road(0);
     s.x = 15;
     s.v = 4;
-    for (let i = 0; i < 16; i++) drive(s, { ...emptyPad(), brake: true });
+    // the brake eases near rest, so from 4 squares a second it takes about 22 steps to stop
+    for (let i = 0; i < 30; i++) drive(s, { ...emptyPad(), brake: true });
     assert.equal(s.v, 0);
     const stopped = s.x;
     for (let i = 0; i < 90; i++) drive(s, { ...emptyPad(), brake: true });

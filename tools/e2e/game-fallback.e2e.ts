@@ -34,5 +34,5 @@ test("without WebGL2 an action game says it needs a newer browser", async ({ pag
     await withoutWebGl2(page);
     await page.goto("/games?g=golf");
     await expect(page.getByRole("alert")).toContainText("needs a newer browser");
-    await expect(page.locator(".board .field")).toHaveCount(0);
+    await expect(page.locator(".board .game-field")).toHaveCount(0);
 });
