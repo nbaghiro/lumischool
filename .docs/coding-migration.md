@@ -48,6 +48,31 @@ selects the world, or the first runnable non-listing node; otherwise the first a
 using root `valuesOf`, `RUNS` and `setupOf`, over every level and stored draw. Prototype
 key/print-mode exclusions are presentation policy, not separate item categories.
 
+## Status, 28 September 2026
+
+Slices 1, 2 and 4 have landed in a first form, and part of 5, across every grade rather than only
+grades one to four:
+
+- `sceneTarget` in `engine/ui/coding.ts` resolves questions and look scenes, including a readable
+  listing that is alone in its scene (469 appearances over every level, mostly grades five and six)
+  and links a listing to a world only when it is the same program. Over the compiled corpus it
+  resolves 1,350 run scenes, 149 toy scenes and 147 build scenes, counted over the three levels,
+  with no failure.
+- `engine/ui/code-runner.ts` is the one player. It redraws each touched drawing from the shelf a
+  frame at a time rather than moving sprites, as the build already did; `settingsAt` in `coding.ts`
+  says what each drawing shows at a frame. `engine/ui/code-controls.tsx` puts Run, Step and Start
+  again, or a toy's buttons, under `SceneTile` in `lesson.tsx`, for look scenes, typed questions and
+  read sheets. A `say` line is shown in the shelf's speech bubble.
+- Each Run draws fresh random numbers, handing the drawings the program with the drawn numbers written
+  in. A build is marked over every way it can run (`done` in `engine/coding.ts`), not on the one
+  draw shown.
+- `ProgramQuestion` plays through the same player, with a Step that records nothing, and its number
+  tools change any number on a block within limits read from what the number means.
+- Still to do: grid prediction and stage event buttons (slice 3), drag in the editor (slice 5),
+  sound (slice 6), gliding sprites and springs, and retiring the scratchpad's page (slice 7).
+  `tools/e2e/coding-run.e2e.ts` covers a grade one maze, the grade two lamps, a grade five list, a
+  grade five die and a grade six drawing in Explore; a build in a child's sheet has no browser test.
+
 ## What exists and what is missing
 
 The root `ProgramQuestion` in `engine/ui/program.tsx` handles only a `coding.builds` question routed
@@ -124,7 +149,7 @@ Names below are proposed new files, not files already present.
 |---|---|
 | `engine/ui/coding.ts` | Pure scene interaction resolver, node/listing selection, frame-to-drawing settings, playback lengths/caps and prediction geometry. Testable without DOM. |
 | `engine/ui/code-runner.ts` | Browser player over those descriptions; rendering, sprite/timeline lifecycle, Run/Step/Reset and explicit completed/cancelled result. |
-| `engine/ui/coding.tsx`, `coding.css` | Shared Solid controls/scene attachment, prediction, stage events and four algorithm toys. No marking policy. |
+| `engine/ui/code-controls.tsx`, `code-controls.css` | Shared Solid controls/scene attachment, prediction, stage events and four algorithm toys. No marking policy. Named apart from `coding.ts`, since an import names a module without its extension. |
 | `engine/ui/program.tsx`, `program.css` | Existing build UI, using the common runner, plus drawing-based drag interaction and non-submitting Step. |
 | `engine/ui/blocks.ts` | Existing edit model; add an atomic move-to-index/depth operation if needed for drops. Do not copy the prototype's second program model. |
 | `engine/ui/lesson.tsx` | Pass interaction permissions and check context through look scenes, worked examples, ordinary typed scenes and builds. Keep existing input/hint flow. |

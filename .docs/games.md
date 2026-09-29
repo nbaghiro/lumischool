@@ -257,6 +257,122 @@ motion, and pours and slides with the mouse. The drawings added for it are `lemo
 and `lemoncup`; the market stall's drawings stay on the shelf. The rules version for `wardrobe` is now
 `-lemonade-1`.
 
+## Pocket pool (27 September 2026)
+
+Pocket pool (`school/games/pool.ts`, `?g=pool`) is a new game, chosen by the owner as the next game in
+the shape of Garden mini-golf, the game they like most. A small table is seen from above with
+numbered balls on it and a white ball. The child pulls back from the white ball and lets go, or turns
+the aim with the left and right arrows, sets how hard with up and down, and strikes with space, using
+the same aim as the putt (`engine/motion/aim.ts`); the cue is drawn behind the ball and draws back as
+the shot is made harder. Once it is struck the table decides: the balls roll and slow on the cloth,
+knock each other as equal weights do, bank off the cushions and the bumpers, and drop into the
+pockets (`engine/motion/billiards.ts`). There is no spin, so a ball goes where its last knock sent
+it, which is what a child can learn to judge by eye.
+
+It plays like golf for the reasons golf works. The hand sets the aim and the strength by degrees,
+physics decides what happens after the release, and a try costs nothing. Each level is a place with
+its own obstacles, the dotted line helps early and goes later, and the maths is in the target rather
+than in a question. Pool adds what golf lacks: the ball that is struck is not the ball that scores,
+so every shot is judged twice, once for the white ball's line and once for where the struck ball goes,
+and a bank shot is the same angle game as a golf wall.
+
+The target is a sum. A ball potted is kept only when it fits: exactly 10, 10 in two shots, even balls
+only, 12 with exactly three balls, or the one ball that makes a running 7 into a multiple of 5. A
+shot that breaks the target (the white ball down, an odd ball on evens, a total past the target, too
+many balls) is taken back for free, with the balls put back where they stood and a sentence that
+says why, so the child tries that shot again. A rack that can no longer reach the target, or two
+shots that did not make it, is set out again, also for free. There is no score and nothing to lose.
+
+The eight levels:
+
+1. Pot ten: three balls, 3 and 7 make it.
+2. Ten in two shots: four balls, two pairs make 10, and after two shots the balls are set out again.
+3. Round the corner: an L-shaped table, 12 from 5 and 7, with bank shots into the far pockets.
+4. The bumpers: two round bumpers in the middle, pot 9.
+5. Evens only: the middle pockets carry a sign and turn odd balls away; make 10 from even balls.
+6. Soft cloth and a slope: a patch that slows a ball and a slope that pulls it, 12 with three balls.
+7. The spinner: a bar turning in the middle, and one ball that makes 7 a multiple of 5.
+8. The kitchen table: a fruit bowl in the way, on a kitchen floor, pot 15.
+
+The dotted line shows the white ball's path with its first bank and the ball it meets, and the way
+that ball will go, on the first two levels; only the way to what it meets first on levels three to
+five; and nothing on the last three, where the cue alone shows the aim. Each level has three layouts
+(`school/games/pool-challenges.ts`): as written, with the numbers moved round the spots, and turned
+upside down (or the numbers moved again on the L table). A solver plays each layout through the real
+table from the keys, trying the aims a player lines up and backing up a shot when a later one finds
+nothing, and every layout is won that way in the tests.
+
+Pocket pool has its own sounds: a tap for the cue, a clack pitched by how fast the balls met, a thud
+off a cushion, a rattle down a pocket, a short double click when a pocket turns a ball away, a chime
+for a ball kept, and a low rumble (the `roll` hum) while anything rolls. A ball kept emits a `pot`
+event and a checkpoint, and the win a `won` event.
+
+No activity in `school/games/activities.ts` asks for addition or number bonds yet, so Pocket pool does
+not declare `plays`; when one is written, its versions can open these levels.
+
+## Rescue pups (28 September 2026)
+
+Rescue pups (`school/games/rescue.ts`, `?g=rescue`) is a new game the owner asked for as a rescue team
+of pups. The team is our own Pup family from the shelf, each with a job, a vehicle and a piece of gear
+in our palette: Rufus drives the fire truck in a red helmet, Maple flies the rescue helicopter in a
+blue flying cap, Pip drives the digger in a yellow hard hat, and Dot crews the rescue boat in an orange
+life vest. Nothing in the game is taken from any television show: no names, no badges, no look-alike
+vehicles or buildings, and the rescue station is a low building with two garage doors and a bell.
+
+Each level is a call-out. The pup runs from the station to its vehicle and hops in, and then the child
+does one job, or two in a row on the last two levels. Every job is a real piece of physics that the
+hand sets by degrees and the world decides once it is let go:
+
+- Fire. A finger held on the field aims the hose there, further for more pressure, and the water
+  sprays while it is held; with the keys, up and down aim, left and right set the pressure, and space
+  sprays. The water is the particle liquid (`engine/motion/liquid.ts`), so it arcs, falls short when
+  the pressure is low and bends in the wind. Each fire shows the litres it needs, the tank shows the
+  litres left, and a fire nobody is spraying grows slowly. An empty tank fills again for free, with
+  the fires as they began.
+- Air. The helicopter follows a held finger across, and the finger's height sets how much rope is let
+  down; with the keys, left and right fly and up and down wind the rope. The load swings on the rope
+  as a weight does, slowed only by the air, so a fast move sets it swinging and a still hand lets it
+  settle. The hook takes hold only when it meets the lamb or the hiker slowly, and sets them down only
+  on the pad the call-out names. The rope carries a tick every metre, and each one waiting says how
+  many metres down they are.
+- Dig. A held finger is where the bucket goes, and lifting the finger scoops a rock or drops it; with
+  the keys, left and right drive, up and down raise and lower the arm, and space scoops or drops. A
+  dropped rock falls with the speed the bucket had, into the truck's bed or onto the road. The truck
+  takes away only a load of exactly its size, and a rock that would take it over is tipped back out,
+  so the road is cleared as whole loads: 2, 3 and 5 tonnes in loads of 5, or 14 tonnes in loads of 7.
+- Sea. A held finger aims the throw and lifting it lets the ring go, as the slingshot's pull does;
+  with the keys, up and down aim, left and right set the strength, and space throws. The ring flies on
+  its rope, which stops it at the rope's length, lands, and drifts with the river. A swimmer takes it
+  if it floats within reach, and holding then pulls them in against the current. A ring that misses is
+  pulled back in to throw again. The river carries its metres from the boat, and each swimmer says how
+  far out they are.
+
+The eight levels:
+
+1. Fire at the cottage: two window fires, a 20 litre tank.
+2. The lamb on the cliff: one lamb on a ledge, landed on pad 2.
+3. Rocks on the road: 2, 5 and 3 tonnes in loads of exactly 5.
+4. Swimmer in the river: one swimmer 6 metres out, 9 metres of rope.
+5. The barn and the wind: three fires on the barn with the wind blowing the water back.
+6. Two on the cliff: the lamb to pad 4 and the hiker, further down, to pad 6, past a ledge.
+7. Clear the road, then the fire: 14 tonnes in loads of 7, then three fires on the cottage.
+8. Rescue at the river: two swimmers in a fast river with wind, then the hiker to pad 9.
+
+The aids fade across the levels: the dotted arc of the water and the throw shows in full at first, half
+of it on levels five and six, a quarter on level seven and none on the last, and the rope's numbers
+and the drop line go the same way. Each part of a rescue done (a fire out, someone landed, a load
+taken, a swimmer aboard) is a checkpoint, and the last one is the win, when the whole team cheers.
+Each level has three layouts (`school/games/rescue-challenges.ts`) with other litres, ledges and pads,
+rubble or distances, and a driver plays each one through the real game from the keys, lining up the
+hose, the helicopter, the digger or the throw as a player would; every layout is won that way in the
+tests, and random play for as long as the driver took rarely wins.
+
+The sounds are the game's own: a bark at each pup's pitch as it boards and when a job is done, a thud
+for a rock, and the hums of the siren, the helicopter's rotor, the digger's diesel and running water
+(`siren`, `rotor` and `rumble` are new hums in `engine/sound/kit.ts`).
+
+No activity in `school/games/activities.ts` covers these jobs, so the game does not declare `plays`.
+
 ## Penny shove, the slingshot and the stall on the shared aim (26 September 2026)
 
 Penny shove now turns a pull into a shove through `engine/motion/aim.ts`, the aim control golf and
@@ -433,6 +549,10 @@ with drags alone through a paddler in `river-pilot.ts` that uses only the Pad, c
 rhythm, the gates' carry back, the rocks, the docking and reduced motion, and show random paddling
 winning none of sixty runs; `tools/e2e/down-the-river.e2e.ts` paddles in the app.
 
+## The road: how a stop ends (27 September 2026)
+
+The owner found the finish did not feel good: the brake took speed off at one rate right down to nothing, so the car snapped to rest, a cruising car set off again as soon as the brake was let go, and a car nobody stopped ran into the end of the road and halted dead. Three changes answer it. The brake eases at low speed, taking off a third of its full rate at a standstill, so the car rolls onto its mark, and the ring that shows where a full brake would stop it is worked out with the same braking. A car braked to rest is parked: the cruise waits for go, so a stop stays where the child made it, and a stop in the wrong place is corrected by driving on or holding the brake to reverse. Past the end of the line the cruise lets go, and the car coasts to rest in the run-out instead of meeting the end of the road; it reaches the end only if go is held all the way there. The rules version is `-road-2`.
+
 ## Clear round, rebuilt as a show jumping round (27 September 2026)
 
 The owner found Clear round stiff and not playful: a unicorn stepped along in beats on an empty field,
@@ -557,7 +677,7 @@ This section lists what is built, and it is kept up to date; the rest of the doc
 | Cut the cake (`share`) | action, off the list | none | 1 two, grades 1 to 2; 2 three, 2; 3 four, 2 to 3; 4 a quarter has gone, 3; 5 six, 3 to 4; 6 the same as Ann's, 4 |
 | Measure it out (`pour`) | action, tipped by hand (see "Measure it out, poured by hand") | `pour` | 1 500 and 300, measure 200, grades 2 to 3, 14 positions, 2 moves; 2 500 and 300, measure 100, 2 to 4, 14, 4; 3 5 and 3, measure 4, 3 to 4, 16, 6; 4 7 and 3, measure 5, 3 to 4, 20, 8; 5 900 and 400, measure 600, 3 to 4, 26, 8; 6 1 litre and 300, measure 100, grade 4, 24, 6 |
 | Firefly trail (`snake`) | action | none | 1 count in twos, grade 1; 2 fives by the nettles, 1 to 2; 3 tens over the pond, 2; 4 threes in the hedge maze, 2 to 3; 5 back in fours on the windy hill, 3; 6 sixes at midnight, 4 (see "Firefly trail, the bead string rebuilt") |
-| The road (`road`) | action | none | 1 stop on 20, grades 1 to 2; 2 stop on 70, grades 2 to 4 |
+| The road (`road`) | action | none | 1 stop on 20, grades 1 to 2; 2 stop on 70, grades 2 to 4 (see "The road: how a stop ends") |
 | Slingshot (`sling`) | action | none | 1 three stars, grades 1 to 2; 2 over the wall, grades 3 to 4 |
 | Shut the box (`shut`) | hands on, a drag | `shut` | two dice: 1 up to 6, grade 1; 2 up to 8, 1 to 2; 3 up to 9, add or times, 2 to 3; 4 up to 9, three ways, 3 to 4; 5 up to 10, three ways, grade 4 (see "Built since: shut the box") |
 | Rafts (`herd`) | action | none | 1 five on the raft, grade 1; 2 seven and three, 1 to 2; 3 the same on each, 2 to 3; 4 four to a raft, 3 to 4; 5 five, three and two, 1 to 2; 6 sixes from twenty, 3 to 4 (see "Sheepdog, rebuilt as Rafts") |
@@ -566,6 +686,8 @@ This section lists what is built, and it is kept up to date; the rest of the doc
 | Charlie's rope swings (`bridge`) | action | none | 1 over the stream, grade 1; 2 land on 4, 1; 3 stones in twos, 1 to 2; 4 rope to rope, 2; 5 the ravine, in metres, 2 to 3; 6 up to the tree house, 2 to 3; 7 a windy day, 2 to 4; 8 three jumps to 12, 3 to 4 (see "Charlie's rope swings (27 September 2026)") |
 | Fetch with the pups (`blocks`) | action | each level's numbers moved along the path | 1 the open meadow, grades 1 to 2; 2 across the pond, 1 to 2; 3 up the hill, 2 to 3; 4 the playground, 2 to 3; 5 a windy day, 3 to 4; 6 the snowy park, 3 to 4 (see "Fetch with the pups") |
 | Charlie's lemonade stand (`wardrobe`) | action | none | 1 a sunny park, halves, grade 1; 2 quarters of a cup, 1 to 2; 3 change, please, 2; 4 a windy day, 2 to 3; 5 the long counter, 3; 6 the busy fair, 3 to 4 (see "Charlie's lemonade stand (27 September 2026)") |
+| Pocket pool (`pool`) | action | none | 1 pot ten, grades 1 to 3; 2 ten in two shots, 1 to 3; 3 round the corner, 2 to 4; 4 the bumpers, 2 to 4; 5 evens only, 2 to 4; 6 soft cloth and a slope, 3 to 4; 7 the spinner, 3 to 4; 8 the kitchen table, 3 to 4 (see "Pocket pool (27 September 2026)") |
+| Rescue pups (`rescue`) | action | none | 1 fire at the cottage, grades 1 to 2; 2 the lamb on the cliff, 1 to 2; 3 rocks on the road, 1 to 3; 4 swimmer in the river, 1 to 3; 5 the barn and the wind, 2 to 4; 6 two on the cliff, 2 to 4; 7 clear the road, then the fire, 2 to 4; 8 rescue at the river, 3 to 4 (see "Rescue pups (28 September 2026)") |
 
 The race activity that is left, Stop on the line, is played by Down the river. Take the corner was retired in September 2026, and its idea, choosing a speed before a corner, became Pocket rally's fourth level; an old `?g=race` address opens Pocket rally. Find the rule's activity was retired with its turn game, since the number machine carries the same idea as an action game. The yard adds two levels of its own in the same way. A test checks that every version of every activity is a level of some game, so none was dropped when the tabs became one.
 

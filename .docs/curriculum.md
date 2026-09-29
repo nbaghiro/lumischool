@@ -1,6 +1,6 @@
 # Curriculum
 
-Status: agreed plan, September 2026. Sixty lessons, fifteen a grade, grades one to four. It replaces the content written while the engine was being built, which grew by whatever was being tested rather than by a curriculum. Every lesson here is chosen so its questions can be drawn from art that already exists on the shelf, and between them the sixty use all twenty-eight categories.
+Status: agreed plan, September 2026, for grades one to four; grades five and six follow in [grades-5-6.md](grades-5-6.md). Sixty lessons, fifteen a grade, grades one to four. It replaces the content written while the engine was being built, which grew by whatever was being tested rather than by a curriculum. Every lesson here is chosen so its questions can be drawn from art that already exists on the shelf, and between them the sixty use all twenty-eight categories.
 
 ## How the set is built
 
@@ -194,9 +194,9 @@ Three lessons moved and one was retired to make the subjects whole. The two scie
 the geography lesson became nature lessons (plants and animals, and reading a map), the logic
 lesson became a coding lesson in the sorting and searching unit with its always, sometimes or never
 items moved to the grade three maths puzzle sheet, and materials and forces was retired, since
-chemistry and physics already teach its three ideas with drawings. The kindergarten year, a fifth
-year and a history track stay outside the grid; they are decisions about the product's ages rather
-than about counts, and the garden, the old tower and the far shore keep their `needs` sentences.
+chemistry and physics already teach its three ideas with drawings. The kindergarten year and a
+history track stay outside the grid; they are decisions about the product's ages rather than about
+counts, and the garden and the old tower keep their `needs` sentences.
 
 Every lesson, new or old, is held to one standard of twelve lines, each scored 0, 1 or 2: one goal,
 a look scene, a story and a place, drawn questions, variety of shape, questions that build, a
@@ -210,3 +210,11 @@ shelf waits, and its slot is filled by the next brief in the subject's list; the
 lessons today are an ice cube in the wrapped cups, falling things, a rain gauge, a marble track, a
 string telephone, the Earth and the moon from above, a chromatography strip, a weave grid and the
 bar builder.
+
+## Grades five and six
+
+The fifth and sixth years take the same grid, 28 lessons a term and 84 a grade, which takes the
+corpus from 336 lessons to 504. What each grade teaches, the curricula it is measured against, the
+worlds each term stands in and the order the work lands in are in [grades-5-6.md](grades-5-6.md).
+Both are written and offered to families: grade five with the canal town, the observatory and the
+old city as its three terms, and grade six with the midnight sun, the waterfall gorge and the moon.

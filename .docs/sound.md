@@ -469,10 +469,40 @@ What remains in the pieces built: the window has not been measured on children; 
 The games have their own small kit, apart from the instruments: `engine/sound/kit.ts` declares each of
 a game's cues as a few layers of tone or filtered noise on an envelope, voiced louder for a harder hit,
 higher for a count that climbs, and panned by where it happened, with a limit on voices and hums for
-water, wind, an engine and a dog panting. It follows this document's rules: synthesis only, off until the Sound switch
+water, wind, an engine, a dog panting, balls rolling on cloth, and for Rescue pups a siren, a rotor's chop and a digger's rumble. It follows this document's rules: synthesis only, off until the Sound switch
 is on, and every cue drawn as well as heard. [game-engine.md](game-engine.md) has the detail under P5. The
 cues are the ones in `engine/motion/cues.ts`; `creak`, a slow low rasp, was added for a stack of blocks
 rocking before it goes, and a rope straining now voices it, in Charlie's swings.
+
+## Grades five and six: the listening, singing and five-note lessons
+
+Three music lessons were added on 29 September 2026 for the gaps in
+[grades-5-6.md](grades-5-6.md): `music-listening-to-water-music` (grade 5, unit 3),
+`music-singing-a-round` (grade 5, unit 8) and `music-five-note-tunes` (grade 6, unit 7). They keep
+the accessibility rule: no recording is played, a work's tune is played by the child from its score
+on the drawn keyboard, and every question is answered from a drawing, a listening map, a staff or a
+table. Singing is marked by a grown-up with `music.sung` and its notice list. The facts they use,
+and where each comes from:
+
+- Handel's Water Music was first played on 17 July 1717 on the Thames for George I, by about fifty
+  musicians on a barge, and repeated at least three times that night; the Alla Hornpipe is in the
+  suite in D major, HWV 349 (Wikipedia, "Water Music"). The hornpipe is in ternary form with its
+  opening A section played twice before B (Lumen Learning, "Music Appreciation", the chapter on the
+  Water Music), which is the map drawn as A A B A. The tune played is the first two bars as Richard
+  Robinson's tunebook writes it for one instrument in 3/2, on abcnotation.com, whose middle section
+  ends in B minor. The lesson draws no loudness or instruments on Handel's own map, since neither
+  source gives them.
+- Frère Jacques is first found in a French manuscript of about 1780 and is about a friar who should
+  be ringing the morning bells; it is sung as a round (Wikipedia, "Frère Jacques"). The lesson uses
+  it in C, as `music.texture-round` already does, with voices two bars apart.
+- Mo Li Hua is pentatonic and was first written in Western notation by John Barrow in 1793; its
+  opening, E E G A C C A G in C, is the score in the Wikipedia article on the song, and the notes of
+  the whole tune, C D E G A in C, are from the version in F on abcnotation.com (Jasmine Flower).
+  Sakura uses the in scale, E F A B C, and was printed in a collection of koto music in 1888
+  (Wikipedia, "Sakura Sakura"). Auld Lang Syne uses G A B D E in G, and The Birch Tree uses A B C D E
+  G in A minor, as the versions on abcnotation.com write them. The black keys make the major
+  pentatonic scale on F sharp, and the major pentatonic is the major scale's 1st, 2nd, 3rd, 5th and
+  6th notes (Wikipedia, "Pentatonic scale").
 
 ## Open questions
 

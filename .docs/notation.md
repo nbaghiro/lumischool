@@ -80,7 +80,7 @@ The registry declares every node type. A declaration says whether the first valu
 
 The prototype registers these types:
 
-- Files: `item`, `lesson`, `define`.
+- Files: `item`, `lesson`, `define`, and `volume`, a whole public-domain book (see "Books, pieces a grown-up looks at, and dictation" below).
 - Inside an item: `title`, `difficulty`, `let`, `where`, `roles`, `scene`, `answer`, `check`, `feedback`, `when`, `say`, `hint`, and `level`.
 - Scene nodes: `balance`, `tenframe`, `numberline`, `numberbond`, `barmodel`, `fraction`, `clock`, `matchsticks`, `props`, `text`, `equation`, `number-input`, `columns`, `guide`, `arrow`, `use`.
 - Inside a lesson: `goal`, `grown-ups`, the sections `look`, `do`, `story`, `try`, `remember`, `example`, `exercises`, `puzzle` and `warm-up`, the blocks `say`, `scene`, `practice`, `show` and `worked`, and `level`.
@@ -201,14 +201,15 @@ lesson making-ten v=1 format=teach grade=1 unit=2 {
 
 ## Lesson formats and outputs
 
-A lesson declares one of four formats, and the format decides which sections it usually has and how it is laid out:
+A lesson declares one of five formats, and the format decides which sections it usually has and how it is laid out:
 
 | Format | Sections | Used for |
 |---|---|---|
 | teach | look, do, story, try, remember | introducing a skill |
 | puzzles | puzzle (with stars) | thinking problems the child works alone |
-| worked | example, exercises, try | a worked example in the teacher's pen, then practice |
+| worked | example, exercises, try, remember | a worked example in the teacher's pen, then practice, and the rule in one line |
 | review | warm-up, exercises, puzzle | spaced review across earlier skills |
+| book | sitting | a whole book read over several days, one sitting a day |
 
 Each lesson renders in two outputs from the same file. On screen, sections are pages the child steps through, and an answer key can be switched on for grown-ups. In print, the lesson is laid out on 5 mm squared paper, one digit per square, question numbers in the margin, and paginated so a section heading never ends a page on its own. The goal, the notes for grown-ups, the answers, the hints and the solutions to code-checked puzzles go on a separate grown-ups sheet and never appear on the child's pages.
 
@@ -294,13 +295,74 @@ lesson g1-making-ten v=1 format=teach grade=1 unit=2 subject=maths levels=[easy,
 
 At easy the first practice block draws its one question from `n=6..9`, a worked bridge-ten example comes before the bridge-ten practice, the two frames are asked twice, the missing part is not asked, the balance is pinned at 6, 4 and 7 and the three cups at 9. At medium every level container and prefixed setting is gone and the lesson is the file as written. At hard the make-ten block is not there, the missing part is asked twice, the balance is pinned at 9, 7 and 8, and the three-star shows every pair for 13 instead of the cups. The lesson measures -0.29 at easy, -0.09 at medium and 0.30 at hard against its items as written (medium sits below 0 because its own seeds draw the plainer versions), and prints five, four and five child sheets.
 
+## Books, pieces a grown-up looks at, and dictation
+
+Added 28 September 2026, for the gap lessons of [grades-5-6.md](grades-5-6.md). Each is written once in the vocabulary and the checkers, and no lesson is a special case. A small sample of each is in `engine/notation/__tests__/samples.ts`; the real lessons are written later.
+
+### A whole book
+
+A book's text is a file of its own under `content/curriculum/books/`, read by the same loader as every other notation file. Its root is `volume` rather than `book`, since `book` is already a drawing on the shelf and a node type has one meaning:
+
+```
+volume wind-in-the-willows v=1 {
+  title "The Wind in the Willows"
+  author "Kenneth Grahame" died=1932
+  published 1908
+  edition "Methuen, London, 1908, the first edition, as transcribed by Project Gutenberg"
+  public-domain "Grahame died in 1932, more than seventy years ago, and the book was first published in 1908, more than ninety-five years ago."
+  chapter 1 "The River Bank" """
+    The Mole had been working very hard all the morning,
+    spring-cleaning his little home. First with brooms,
+    ...
+    """
+}
+```
+
+Each written line of a chapter is a numbered line of that chapter, counted from 1, and a blank line starts a paragraph. The verifier refuses a volume without its whole record (title, author and death year, first publication, the source edition and the sentence saying why it is free to use), a volume whose author died less than seventy full years ago or which was first published less than ninety-five full years ago, and chapters that are not numbered 1, 2, 3 in order.
+
+A book lesson has `format=book` and names its volume with `book=`. Its sections are `sitting`s, each naming the chapters it reads, and each holds that day's questions as any section does:
+
+```
+lesson g5-book-willows v=1 format=book grade=5 unit=1 subject=reading book=wind-in-the-willows {
+  title "The Wind in the Willows"
+  sitting chapters=[1, 2] {
+    show book.mole-tired k=0
+  }
+  sitting chapters=[3] {
+    ...
+  }
+}
+```
+
+The verifier holds that the sittings read every chapter once and in order, that nothing but sittings is in a book lesson, and that no other format has a sitting. A question answered with a line of the book uses the checker `book.line book=<volume> chapter=<n> holds="<words>"`. The checker finds the one line of that chapter that holds the words exactly and gives the answer as its number, so the key is proved against the text: words no line holds, words that run across two lines, and words that two lines hold are all refused. A citation inside a sitting may name only the lesson's own volume and a chapter read by the end of that sitting. Settings may name the item's parameters in braces, as other checkers' do, and are filled per version.
+
+The pack carries the volume as a file of its own, `books/<id>-<hash>.json`, read when a sitting is opened and never with the index, and the lesson carries only its questions, its sittings' chapters and a note of the book's title, author, year and file. The index gives a book lesson `parts`, its number of sittings, which the planner reads (see "Printing and the plan" in [reading.md](reading.md)).
+
+### Pieces a grown-up looks at or listens to
+
+A question the machine cannot prove is a piece the child makes and a grown-up responds to. Its checker is one of five, each declared once in `engine/pack.ts` (`BY_EYE`) with what the child makes, and each built from one rule in `engine/notation/verify.ts`:
+
+| Checker | The piece | Needs |
+|---|---|---|
+| `writing.by-eye` | writing: a sentence, a letter, a book review, a report | `look-for`; `notice` and `ask` are checked when written |
+| `art.by-eye` | a painting or a drawing | `look-for`, `notice`, `ask` |
+| `art.made` | something made away from the sheet: a sculpture, a model, craft | `look-for`, `notice`; `ask` when written |
+| `reading.recited` | something said by heart, such as a poem | `look-for`, `notice` |
+| `music.sung` | a song, alone or in a round | `look-for`, `notice` |
+
+`look-for` is a sentence saying what a good attempt shows. `notice` is the list a grown-up ticks, two to five short points written `["...", "..."]`. `ask` is a question to start the talk, which must end with a question mark. Every existing item keeps its behaviour: writing items without a list verify as before.
+
+### Dictation
+
+`check writing.dictation text="..."` is a sentence the child hears and types. The checker proves the sentence has three to forty words, each with letters, and that the marking works on it: typed as written it is right, each word misspelt is caught at that word and nowhere else, and each word left out is caught as that word left out. It gives the sentence as the answer, so the scene places a box for it (`number-input answer width=32`). The typed answer is marked word by word (`markWords` in `engine/pack.ts`), lined up by the fewest words changed, so a word missed marks only itself. Spelling is marked, and case and punctuation are not.
+
 ## Verification
 
 The verifier runs over every file on every change, and the build refuses content with errors.
 
 - Before any variant is built, it checks names and references: every expression reads only parameters it may read, every role in a list or template is declared, every placement and every `point` names a node and an anchor that exist, every blank and input has an answer and every answer has somewhere to go, and every item a lesson names exists.
 - It then builds every variant the parameters allow. When there are more than 10,000, it checks a seeded sample of 400 that meet the `where` lines instead.
-- For each variant the answer must evaluate to a number, a balance pan may hold at most six props, a ten frame shows 0 to 10 counters, and the scene must fit its size.
+- For each variant the answer must evaluate to a number, a balance pan may hold at most six props, a ten frame shows 0 to 10 counters, no text setting runs past the `most` its drawing declares (and a caption or a prompt past what its one line holds at its width), and the scene must fit its size.
 - A feedback rule that is also true for the correct answer is reported, since it cannot tell that mistake apart from a right answer.
 - A code checker must list at least one solution.
 - A lesson's `show` and `worked` settings must name a variant the item actually allows.

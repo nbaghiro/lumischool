@@ -74,6 +74,8 @@ lumischool/
 │  ├─ numbers.ts                   exact fractions and decimals
 │  ├─ expr.ts                      the small expression language inside the notation
 │  ├─ answer.ts                    the event and answer types, declared once          (built)
+│  ├─ page.ts                      a list read a page at a time: the page, its keyset cursor, and a
+│  │                               page of a sorted list in memory (.docs/pagination.md)
 │  ├─ scene.ts                     named parts on the grid, anchors resolved
 │  ├─ pack.ts                      the compiled content format and its reader
 │  ├─ space.ts                     camera and zoom for the map and the journal
@@ -102,12 +104,15 @@ lumischool/
 │  │                               what a child's screen presses and fields the grown-ups' own
 │  │                               controls, apart so the child's script never carries them; and
 │  │                               reading, overlay and hash draw a world as written and a look over
-│  │                               a page for the grown-ups' map (.docs/parent-app.md)
+│  │                               a page for the grown-ups' map (.docs/parent-app.md); paged and
+│  │                               paged-list read a list on a screen a page at a time as it scrolls
 │  └─ __tests__/                   the suites for engine's single-file modules
 ├─ school/                         the product, named after what a family would recognise
 │  ├─ lessons.ts                   the lesson a child sits: the questions asked, each try checked
 │  ├─ voice.ts                     the rules on what the world's guide may say, as a check over a line
 │  ├─ tracks.ts                    the tracks a family turns on, and each subject's title and marker
+│  ├─ catalogue.ts                 what narrows the catalogue of lessons, and a page of one shelf,
+│  │                               shared by Explore and any server route that cuts its pages
 │  ├─ tutoring.ts                  a prepared teaching session: the next step after a turn, and
 │  │                               whether a tutor's proposed line is accepted
 │  ├─ tutoring-materials.ts        the prepared teaching bundles, read from content/curriculum/teaching/
@@ -143,12 +148,13 @@ lumischool/
 │  ├─ check-auth-emails.ts         a read-only audit of sign-in addresses, counts only
 │  └─ db/                          the database module                                (built)
 │     ├─ schema.ts  scope.ts  client.ts  events.ts  keys.ts  content.ts  members.ts  kid-login.ts
-│     ├─ mail.ts  paintings.ts  tutoring.ts
+│     ├─ mail.ts  paintings.ts  tutoring.ts  page.ts (a query's page, cut by its key)
 │     ├─ migrations/               the generated SQL, the apply path, the local role setup
 │     └─ __tests__/                the suites and their shared test database
 ├─ content/                        data, read through one loader each, never imported by path
-│  ├─ curriculum/                  every lesson and question as notation, and teaching/, the
-│  │                               prepared teaching bundles as JSON
+│  ├─ curriculum/                  every lesson and question as notation, books/, the whole
+│  │                               public-domain books a book lesson reads (a `volume` each), and
+│  │                               teaching/, the prepared teaching bundles as JSON
 │  └─ art/                         the hand-drawn svg, excalidraw and stroke files
 ├─ tools/
 │  ├─ pack.ts                      `npm run pack`: compiles the curriculum and writes the packs
@@ -167,8 +173,8 @@ lumischool/
 └─ CLAUDE.md  README.md
 ```
 
-That is 32 modules: eighteen in `engine/`, since `space` counts as machinery, twelve in `school/`, and
-`server/` with its database beside them. The prepared teaching bundles in
+That is 34 modules: nineteen in `engine/`, since `space` counts as machinery, thirteen in `school/`,
+and `server/` with its database beside them. The prepared teaching bundles in
 `content/curriculum/teaching/` are a data module of their own, `teaching-content`, so that only
 `tutoring-materials` reads them. The first 21 grew by `coding`, `pigment`, `painting` and `teaching`
 in `engine/`, and `tracks`, `tutoring`, `tutoring-materials` and `adaptive` in `school/`, each split
@@ -184,8 +190,9 @@ paper               nothing
 numbers             nothing
 expr                numbers
 answer              nothing
+page                nothing
 scene               paper, expr, parts
-pack                answer, expr, scene
+pack                answer, expr, paper, scene
 ink                 paper, parts, scene
 parts               paper, ink/surface, ink/pen, numbers, sound/pitch, sound/scale, sound/beat,
                     sound/fretted, sound/keys, sound/voices, motion/animation, coding, pigment
@@ -199,7 +206,7 @@ arrange             answer, expr, motion/lever, motion/cuts
 notation            parts, games, expr, numbers, scene, ink, sound, answer, pack, painting, arrange,
                     paper, coding, pigment
 ui                  teaching, games, paper, ink, parts, scene, sound, motion, space, answer, pack,
-                    painting, arrange, coding, pigment, numbers
+                    painting, arrange, coding, pigment, numbers, page
 space               paper, ink, parts
 lessons             pack, answer, scene, ink, expr, arrange, teaching
 games               parts, scene, answer, motion, numbers
@@ -208,15 +215,16 @@ year                pack, answer, record
 tracks              year
 voice               nothing
 record              answer, numbers
+catalogue           pack, page
 family              pack, year, tracks, record, answer
 tutoring            teaching, tutoring-materials
 tutoring-materials  teaching, teaching-content
 adaptive            teaching, voice, pack
 assistant           pack, record, answer, teaching, tutoring, adaptive
 teaching-content    nothing (data)
-db                  answer, painting, teaching
+db                  answer, painting, teaching, page
 server              db, answer, painting, family, record, year, pack, assistant, teaching, tutoring,
-                    tutoring-materials, adaptive, lessons
+                    tutoring-materials, adaptive, lessons, worlds/worlds (for the grades offered), page
 apps/*              by phase, in the table below
 ```
 
@@ -2184,7 +2192,7 @@ table says which:
 | `check:content` | partly, in `npm test` | Every notation file parses, is in canonical form and passes verification |
 | `check:pack` | to write | The pack an app ships was compiled from the content in the tree, and its version matches the reader |
 | `check:art` | built, `scripts/check-art.mjs`, and `tools/scripts/__tests__/art.test.ts` | Hand-drawn assets follow the conventions the importers rely on, and `parts/imported/files.ts` holds every file in `content/art/` as it is now |
-| `check:print` | built, `scripts/check-print.mjs` | Printed pages neither overflow nor get silently scaled down. Two clauses to add: no scene exceeds the printable width, which [tracks.md](tracks.md) reports 31 of the 60 maths scenes currently break with nothing catching it, and an activity named inside a printed lesson section is a build error rather than a blank page |
+| `check:print` | built at the root, `tools/scripts/check-print.ts`, run by hand against `npm run dev`; the scratchpad's `scripts/check-print.mjs` goes with the scratchpad | Every level of a lesson prints, from the catalogue's own print, to at most five child pages and one over medium, with no blank page, no answer, hint or note for grown-ups on the child's copy, and every answer whole on the grown-ups' copy. Printed pages neither overflow nor get silently scaled down. Two clauses to add: no scene exceeds the printable width, which [tracks.md](tracks.md) reports 31 of the 60 maths scenes currently break with nothing catching it, and an activity named inside a printed lesson section is a build error rather than a blank page |
 | `check:privacy` | half built, `scripts/check-privacy.mjs` | The media half is built and wired into `npm run check`: it refuses the microphone and camera APIs in code but not in comments, in the child's build and the parent's. The outside-host half needs the app split and the script says so rather than pretending to cover both |
 | `check:prompt` | to write | The envelope is the only reader of the evidence store and its field list is one place |
 | `check:voice` | to write | Child-facing strings carry no first person and no relational vocabulary, the way `check:copy` rejects em-dashes |

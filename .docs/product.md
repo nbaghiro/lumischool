@@ -8,7 +8,7 @@ A family can teach a full year of maths without preparing anything. The child op
 
 ## Who it is for
 
-The first family is a parent teaching one or two children at home, roughly ages five to ten, who has decided to teach maths properly and does not want to assemble it from worksheets. They are not a maths teacher. They have a printer. They want to know that what the child did today was right, that it was the right thing to do today, and what to do next.
+The first family is a parent teaching one or two children at home, roughly ages five to twelve, who has decided to teach maths properly and does not want to assemble it from worksheets. They are not a maths teacher. They have a printer. They want to know that what the child did today was right, that it was the right thing to do today, and what to do next.
 
 The child is the second user, not the first. They should be able to open the page and work without being read to, which is a constraint on reading load rather than on mathematical content, and they should be able to do it with a pencil as happily as with a screen.
 

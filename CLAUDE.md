@@ -1,6 +1,6 @@
 # lumischool
 
-A homeschool platform for children aged 5 to 10 and the grown-ups who teach them. Lessons are
+A homeschool platform for children aged 5 to 12 and the grown-ups who teach them. Lessons are
 written in a small notation, checked for every value a question can take before a child sees them,
 and drawn in one hand-drawn style on 5 mm squared paper, on screen and in print. The prototype of
 every surface is in `.scratchpad/`, and the product is being built at the root in the shape that
@@ -173,7 +173,9 @@ Every shape is declared once, and the database is where most of them start.
 - Events are appended and never updated. Progress, rewards and plans are worked out from them and
   not stored.
 - Touch targets are at least 44 px, and everything that moves stops under `prefers-reduced-motion`.
-- Text a person reads, on screen, in email or in `.docs/`, has no em-dashes.
+- Text a person reads, on screen, in email or in `.docs/`, has no em-dashes. The one exception is a
+  public-domain text quoted whole, such as a book in `content/curriculum/books/`, which keeps its
+  author's punctuation as published.
 - Ports come from the 85xx block and are fixed. A new port gets its row in `.docs/local.md` in the
   same change that starts using it.
 

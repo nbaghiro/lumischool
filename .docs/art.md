@@ -794,6 +794,33 @@ that breaks the pattern at the crossing `wrongat`, `float` a row that lies over 
 is not woven in, and `blank` a row left as an empty strip to weave; 0 in any of the three means
 none. On paper the strips across are white and the strips down are hatched.
 
+## Grades five and six: folk patterns, sculpture and real works
+
+Three art lessons were added on 29 September 2026 for the gaps the audit of grades five and six
+found in all three countries it compared ([grades-5-6.md](grades-5-6.md)): design and folk craft,
+sculpture, and looking at real works. They are `art-37` (folk patterns and a design to a brief,
+grade 5, unit 8), `art-38` (sculpture in the round and in relief, grade 6, unit 3) and `art-39`
+(landscapes across nine centuries, grade 6, unit 4). Each keeps the principle above: most
+questions are proved from the drawing, and one piece, a printed border, a painting or a sculpture,
+is responded to. The sculpture is the first piece made away from the sheet, marked with `art.made`
+and its notice list. The facts they use, and where each comes from:
+
+- Khokhloma is painted wooden tableware from the Volga region, in red, black and gold, with
+  berries, leaves and flowers, first mentioned in 1659 (Wikipedia, "Khokhloma"). Gzhel pottery is
+  blue on white, from villages southeast of Moscow (Wikipedia, "Gzhel ceramics"). Chinese paper cuts
+  are mostly red, decorate windows and doors at festivals, are cut from paper folded first so the
+  design comes out symmetrical, and have been on UNESCO's list of intangible heritage since 2009
+  (Wikipedia, "Chinese paper cutting").
+- High relief projects more than half the figure's mass, low relief is shallow, and sunk relief is
+  cut into the surface; sunk relief is very common in ancient Egypt and works best in strong sun,
+  where its sharp edges throw shadows (Wikipedia, "Relief"). Michelangelo's David was carved from one
+  block of marble between 1501 and 1504, is 5.17 metres tall and is in the Galleria dell'Accademia in
+  Florence (Wikipedia, "David (Michelangelo)"). Ghiberti's gilded bronze Gates of Paradise, made for
+  the Florence Baptistery, have high-relief figures on low-relief backgrounds (Wikipedia, "Relief").
+- The five landscapes, their dates and where they hang are those written on the `studies` drawing's
+  cards in `engine/parts/art/studies.ts`, which the drawing's author checked; the lessons take
+  no other fact about them.
+
 ## The order to build the rest
 
 1. A tablet pass: measure the tool on an iPad and a low-cost Android tablet, move the fill to a

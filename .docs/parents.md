@@ -90,6 +90,13 @@ marker, and the item's feedback rules. Looks like the grown-ups sheet with a che
 screen, in the same ink as the printed one. Core: the evidence store, and this is the function that
 justifies building it first.
 
+A piece a child hands in on screen for a grown-up to read (writing, a recitation, a song, a photo of
+a sculpture) waits in the same walk as the paper, beside the sheets. It is never right or wrong, so
+its column has no box to tap: the grown-up ticks the points of the item's notice list they saw, and
+Done records a `responded` event naming the answer the piece was handed in as, the same event a
+piece on paper records against its sheet. Until then the piece counts as waiting on the hello card,
+in the child's card and in the weekly letter.
+
 **Read the sheet as it was done.** In the journal a past day is the child's own paper, drawn as they
 left it: the answers they typed or picked written in, the pieces they placed on a drawing where they
 placed them, the hints they opened, and a tick on each question that came back right, with nothing

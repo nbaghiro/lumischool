@@ -200,7 +200,7 @@ are here" marker and the roll's today (`now` in `school/worlds/rewards.ts`, 17 S
 unit. Units become a property of a track, and their titles come from the track rather than from a
 lesson.
 
-`hostOf` and the `branch` and `aside` fields exist to hang a strand off the maths path. They are
+`hostsOf` and the `branch` and `aside` fields exist to hang a strand off the maths path. They are
 replaced by a lane per track. A track lesson keeps a position in its track and loses its pretend
 attachment to a maths lesson.
 
@@ -378,6 +378,38 @@ number we tried:
 This needs a decision: either those moves are accepted, and each world's reaches are checked again
 against the terms the lessons land in (the reach test does that), or the year builder keeps a term's
 existing lessons where they are when a strand is added, which is a change to `src/space/years.ts`.
+
+Decided, 28 September 2026: the owner chose to fix this in the year builder. The moves above came
+from the old rule in `hostOf`, which placed each strand lesson by how far it was through its strand
+across the whole year and ignored the unit the lesson declares, so a lesson's term shifted whenever
+its strand grew or a strand was added. `hostsOf` in `school/year.ts` now hangs a strand lesson off a
+maths lesson of the term its own unit names (units one to three, four to six, seven to nine), with
+that term's lessons of the strand spread along the term's maths lessons in order and a small offset
+per strand, kept inside the term. A lesson with no unit keeps the old spread. Adding a strand now
+moves no lesson between terms, since each lesson's term comes from its own unit; it can only change
+which maths lesson in the term a lesson sits beside.
+
+Measured before the change, the lessons outside maths that landed in a term other than their unit's
+were 34 of 69 in grade one, 37 in grade two, 27 in grade three, 27 in grade four and 10 in each of
+grades five and six. All of them now land in their own term, and the grades one to four moved these
+many between worlds:
+
+- Grade 1: 14 from the harbour to the meadow, 8 from the railway to the meadow, 9 from the railway to
+  the harbour, and 3 from the harbour to the railway.
+- Grade 2: 17 from the kitchen to the woods, 3 from the town to the woods, and 17 from the town to
+  the kitchen.
+- Grade 3: 5 from the sports ground to the night sky, 13 from the laboratory to the sports ground, 7
+  from the night sky to the sports ground, and 2 from the laboratory to the night sky.
+- Grade 4: 7 from the open sea to the mountains, 12 from the volcano island to the open sea, 4 from
+  the mountains to the open sea, and 4 from the open sea to the volcano island.
+
+The units then written into the first four grades leaned early, so under the new rule their terms
+came out uneven: grade one held 49, 11 and 9 lessons a term outside maths (it was 27, 19 and 23),
+grade two 33, 23 and 13, grade three 23, 33 and 13, and grade four 21, 33 and 15, while grades five
+and six hold 23 a term. The `unit=` of every grade one to four lesson outside maths was then set to
+the unit of the maths lesson the old rule hung it from, so each stands in the term it already stood in,
+the moves listed above are undone and no family's map moved. `tools/__tests__/reaches.test.ts` holds every lesson to its own term and every run
+world of grades one to six to at least one landmark lit by a lesson of its own term.
 
 ### A kindergarten year, for the garden and the long grass
 
@@ -563,6 +595,82 @@ No food chain, puffin, gannet, butterfly, egg or chick is drawn, so the chains a
 arrows under the reef's creatures, the shore's creatures are the seal, the gull, the crab and the
 sea turtle, and the butterfly's cycle is written out. The rain gauge the grade three weather
 lesson needs is not drawn, so that brief waits and grade three stands at five.
+
+Facts in the grade five and six lessons that were checked after the audit of September 2026, with
+where they come from:
+
+- A river's mean velocity usually rises downstream, where the channel is deeper and smoother; the
+  hill stream only looks faster because it is steep and rough (the Bradshaw model), so nature-26
+  says the outside of a bend and a river in flood wear away the most, not that the river is fastest
+  in the hills. Floods and their warning come from Japan's grade five science, B(3)(ウ).
+- Squash plants have separate male and female flowers, and only a female flower can become a
+  squash, so the bag test in nature-27 names both.
+- Moths fly less on cold nights and bats hunt less with them; the moth-trap and bat-detector counts
+  in nature-28 are invented to show that pattern and are not a survey.
+- How far the wolves returned to Yellowstone caused the willows and beavers to return is still
+  argued over (National Park Service, "The big scientific debate: trophic cascades"; Hobbs and
+  others, Ecological Monographs, 2024), so nature-36 asks the child to reason inside that
+  explanation rather than state it as fact.
+- Peas pollinate themselves, so the seeds of one pea plant grow into near copies and their spread of
+  heights shows mostly where each grew; nature-37 measures sunflowers from one head pollinated from
+  many plants instead.
+- Water takes heat from a body many times faster than air at the same temperature; the often quoted
+  twenty-five times is the ratio of their conductivities, not a measured rate of loss, so nature-32
+  does not give a number.
+
+Four lessons were added on 29 September 2026 for the gaps the audit of grades five and six found
+(`.docs/grades-5-6.md`, "The gap lessons"), each on a drawing made for it:
+
+| # | Grade | Unit | Lesson | Format | Where | The art it leans on |
+|---|---|---|---|---|---|---|
+| 38 | 5 | 2 | What a seed needs to grow, as a fair test | teach | the canal town | seedtest, narrowboat, heron |
+| 39 | 5 | 6 | Cells under the microscope | teach | the observatory | microview, microscope, telescope, owl |
+| 40 | 5 | 8 | Sorting living things, down to the smallest | teach | the old city | venn, table, microview, clocktower, whale, fish, frog |
+| 41 | 6 | 8 | Leaves make food in sunlight | teach | the moon | leaftest, pondweed, tree, earth, moon, lander |
+
+Two checkers in `engine/notation/nature.ts` prove their questions from the drawing's own rule, so
+the picture and the key cannot disagree. `nature.cells` reads the microscope view: the field's width
+at the magnification drawn, the cells across it, a cell's length as the width over that count, the
+cells across at another magnification, and how many whole cells fit in a length. `nature.seeds` reads
+the seed test: how many seeds a dish sprouted, how many dishes sprouted, the one condition two dishes
+differ in, and the letter of a part of the split bean.
+
+The facts in these four lessons, and where they come from:
+
+- A seed germinates with water, air and a suitable temperature, and grows on the food stored in it,
+  which is starch (Japan's course of study, grade five, B(1)(ア)(イ) and 内容の取扱い(3)ア, quoted in the
+  audit). Cress and beans do not need light to sprout; some seeds do, such as the lettuce 'Grand
+  Rapids' (Borthwick and others, "A reversible photoreaction controlling seed germination", PNAS,
+  1952), which the grown-ups note mentions. Boiled water under oil keeps air from the seeds, the
+  school method for the air dish.
+- A school microscope's total magnification is the eyepiece's times the objective's, and its field of
+  view is the eyepiece's field number (18 mm for a × 10 eyepiece) divided by the objective's power,
+  which gives the widths the microscope view is drawn with (`FIELD_UM`). The cell sizes are the
+  drawing's typical values (`SPECIMENS`); the questions ask for a size worked out from the view, not
+  one to remember.
+- Living things sorted into broad groups, with microorganisms, follow England's year six programme
+  of study and China's grades five and six science, 5.2①. The five groups of animals with a backbone,
+  told by skin, breathing, eggs and milk, are the usual school grouping, and Russia's grade five
+  biology names classes among its taxa (quoted in the audit). Some pond algae, such as
+  Chlamydomonas, are single green cells that make their own food, which puts the fountain's green
+  water in the Venn's overlap.
+- Yeast is a single-celled fungus that gives off carbon dioxide as it feeds on sugar, and boiling
+  kills it; the balloon test is the school version. The mould days on the library's bread are
+  invented to show that damp and warmth speed mould, and are not a measurement.
+- Some bacteria in warm food can divide every 20 minutes (Escherichia coli in rich medium at 37 °C:
+  Sezonov, Joseleau-Petit and D'Ari, "Escherichia coli physiology in Luria-Bertani broth", Journal of
+  Bacteriology, 2007); the story uses that rate for a germ in warm food.
+- Starch forms in a leaf where sunlight falls on it (Japan, grade six, B(2)(ア)), iodine turns starch
+  blue-black, a plant kept in the dark uses up its starch first, and the white part of a variegated
+  leaf makes none, as in the Nuffield Foundation's Practical Biology experiments on testing leaves for
+  starch.
+- Van Helmont's willow grew from 5 pounds to 169 pounds 3 ounces in five years while its 200 pounds
+  of dried soil lost about 2 ounces (Ortus Medicinae, 1648); the lesson rounds these to 2 kg, 77 kg,
+  91 kg and less than 0.1 kg.
+- The pondweed bubble counts are invented to show that the rate falls as the lamp moves away, and are
+  not a measurement.
+- A day on the moon, from one sunrise to the next, lasts about 29.5 of our days, about half of it in
+  sunlight (NASA, "Moon: facts"); the lesson rounds it to 30 days, 15 of light and 15 of dark.
 
 ## Reading: the fifteen
 

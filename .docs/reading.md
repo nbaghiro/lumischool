@@ -334,6 +334,28 @@ we count as written layouts on purpose, the same way [gaps.md](gaps.md) counts a
 - Fact and opinion has the parrot say each sentence, as the island's parrot does in the journal.
 - Reading puzzles opens with the boats at the quay and a note to read against them.
 
+## Whole books
+
+Added 28 September 2026. Every passage in the track is written for its lesson, and that stays true of passages. A text that is itself the point of a lesson, a whole book, is a public-domain work quoted exactly, with its record, as [grades-5-6.md](grades-5-6.md) proposes for the six books of grades five and six. How a book and its lesson are written is in [notation.md](notation.md), "A whole book"; this section says how a family meets one.
+
+A book lesson is one lesson on the grid, read over several days. Each `sitting` names the chapters it reads and holds the questions on them. The questions are the ones the track already asks, pointed at the book: a part summed up in a sentence, the order of events, who said a line, a word's meaning from its sentence. A question that asks for the line an answer is on uses `book.line`, and its key is proved against the book's own text the way the grade three questions with line numbers are read off a passage's lines: the checker finds the one line of the chapter that holds the quoted words, and refuses a quote that is on no line, runs across two or is on more than one.
+
+The line numbers are those of our text, which the screen shows. On paper a family reads any printed edition, from a shop or a library, whose lines differ, so the grown-ups' sheet gives the words of the line with its number, and the grown-up marks by the words.
+
+### On the screen
+
+A child sees one sitting at a time, the one the plan gives the day: the sitting begun and not finished, or else the first not yet finished (`partToRead` in `school/lessons.ts`). Above its questions the chapters are shown as pages of the book, one page at a time, twenty numbered lines a page with the chapter's heading on its first page and a button for the page before and the next (`engine/ui/book.tsx`). The page keeps one height whatever it holds, so the sheet can be measured before the text arrives. The text is its own file of the pack and is fetched when the sitting opens. Each sitting's `sitting-began` event carries the sitting it read, as `part`.
+
+### Printing and the plan
+
+A book lesson prints one sitting at a time. On the child's card a sitting prints alone, and the whole lesson printed from the catalogue prints each sitting from a new page with its own heading, each held to the five child pages every sitting is held to (`sittingsOf` in `engine/pack.ts`, measured sitting by sitting in `check:print`). The book itself is not printed.
+
+The planner gives a book lesson one day for each of its sittings rather than the days the family's pace gives a lesson, and each day says which sitting it is ("Sitting 2 of 6"). A book is one lesson for progress: it is finished on the day the last of its sittings is first finished, and until then it is the lesson the child is on (`finishing` in `school/record.ts`). A book's days say nothing about the family's pace, so they are left out of it.
+
+### Recitation and reviews
+
+A poem learned by heart is said to a grown-up, and the item's checker is `reading.recited`, with a `look-for` sentence and a `notice` list of what to listen for. A book review at the end of a book is a piece of writing (`writing.by-eye`) with its own list. Both are marked the way [writing.md](writing.md), "The notice list", describes.
+
 ## The order to build the rest in
 
 1. Add the world reaches for the new drawings, one line each in `src/world/`: the kitchen's jug or

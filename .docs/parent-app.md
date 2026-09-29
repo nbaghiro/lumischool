@@ -373,21 +373,61 @@ scratchpad's top bar, so they are not in `PAGES` and the page test does not requ
 Explore is the grown-ups' catalogue of every lesson in the family's pack, at `/explore`, reached from
 the grown-ups' bar on every screen. A grown-up
 narrows it by grade, by subject and by the words of a lesson's title or goal, and the address keeps
-what it was narrowed to, so the way back from a lesson returns to the same list. A lesson opens at
-`/explore/<lesson>` as a preview over the catalogue rather than a page of its own: the world the
-lesson is met in, on the child's own canvas with the page switcher beside it, and the sheet as a
-child has it with nothing filled in. The address is a path, so it is shared, bookmarked and opened in
+what it was narrowed to, so the way back from a lesson returns to the same list. Each shelf, a grade's
+lessons in one subject, is read six tiles at a time as the grown-up scrolls or tabs through it, with
+nothing to press, and a shelf far down the page reads nothing until it comes near; the search still
+looks at every lesson, the counts say how many match, and a lesson's own address opens its preview
+whether or not its shelf has read that far ([pagination.md](pagination.md)). A lesson opens at
+`/explore/<lesson>` as a preview over the catalogue rather than a page of its own: a dialog holding
+that lesson's sheet alone, on squared paper, as a child has it with nothing filled in. It does not
+open the lesson's world or the map, since a grown-up looking at one lesson has no use for the lessons
+before and after it or for a way out to the worlds. The address is a path, so it is shared, bookmarked and opened in
 a tab of its own as before, and the back button closes the preview and leaves the reader on the
 catalogue, whether they came by a tile or by the address. It can be read at any level the lesson
 declares. The level is chosen over the stage and never said on the sheet, since a child who sees the
 word easier reads it as a verdict. Reading records nothing. Printing prints the sheet alone, from a
 sheet laid out for the paper rather than from the stage, with the answers and the notes for grown-ups
-when the box over the stage is ticked. Print on a child's card on the home is the one way in that
+when that box in the Print menu is ticked. It prints on 5 mm squared paper unless the grown-up turns
+that off in the same menu: the page is set to 55 rows inside its margins, so the squares line up with
+the writing on every page. A question never splits across pages, and its answer and hints stand beside
+its drawing when eight squares are free there, so a page is left short only where the next question is
+taller than what is left of it. The layout is the sheet's own print block in `engine/ui/lesson.css`,
+which the catalogue, a child's card and a printed day share: a drawing prints at its size in 5 mm
+squares, with the question's number in the one square before it, text sits one row to a line from
+grade three and two rows below it, a section's heading takes two rows and a gap is one row, and
+questions in one block that are narrow enough to stand side by side share a row.
+`engine/ui/__tests__/lesson.test.ts` holds that block to the paper's square and width. Most of a
+lesson's length is its drawings: a lesson of ten questions whose drawings are each half a page deep
+cannot print in five sheets at this size, whatever the spacing, so it prints in sittings, below,
+rather than on smaller squares. Print on a child's card on the home is the one way in that
 records: it writes `sheet-printed` for that child with the sheet's questions, so what comes back can
 be marked, and opens the lesson here, which prints the child's sheet without the answers.
 
-It is `apps/home/explore.tsx`, with the filtering and the order in `apps/home/catalogue.ts`, the look
-in `engine/ui/overlay.tsx` from the views `apps/home/school.ts` builds, the sheet in
+A lesson whose child's copy would run past five pages prints in as many sittings as keep each one to
+five pages, wherever it is printed from: Explore, a child's card and the printed day all draw the
+same sheet. A sitting ends where a section ends, or inside a long section between two questions,
+never inside a question and never between a worked example and the question after it. Of the ways to
+print a lesson in the fewest sittings, the sheet takes the one whose longest sitting is shortest,
+then the one with the fewest cuts inside a section, then, where that does as well, the one that puts
+the tries (or a review's puzzles) in sittings of their own with the Remember moved up to close the
+sitting before them, and last the one whose sittings are the most even. Each sitting starts a page
+with the lesson's tag, "Sitting 2 of 3" and so on, and its title; a section cut between two sittings
+has its heading again at the top of the second, and the grown-ups' copy splits in the same places.
+The screen shows the lesson whole and in its order, and only paper shows the sittings (`laidOut` in
+`engine/pack.ts`). Whether a lesson splits is worked out from the lesson rather than measured in the browser:
+`sittingsOf` in `engine/pack.ts` reads the print block above as arithmetic (a drawing at its size in
+squares and never more than 28 rows deep, text at about 94 characters to a line from grade three and
+67 below it, a question kept whole on a page) and splits a level whose child's copy comes to more than
+five pages, measuring each way of splitting it the same way. Chrome rounds a drawing's height to its own units, so a question that should end on a
+page's last row sometimes goes over, and the estimate counts a page as holding a little under 55
+rows to stay on the safe side. Measured sitting by sitting against Chrome's own page count for every
+level of grades one to six on 29 September, it was exact for 2,189 of 2,254 sittings and a page short
+for 26, most of them where a drawing held to 28 rows kept its full width in Chrome, which the estimate
+now does too; the full count after that change has not been made. A split lesson is still one lesson: the plan, the minutes the calendar gives it and
+the `sheet-printed` a card records are the same as before, and nothing counts sittings.
+
+It is `apps/home/explore.tsx`, with the filtering and the order in `apps/home/catalogue.ts`, the
+dialog in `engine/ui/dialog.tsx`, the sheet in
 `engine/ui/lesson.tsx` read with `{ sheets: "look", key }`, and the pack read through
 `engine/ui/api.ts` (`pack`, `packLesson` and `packScene`). `tools/e2e/explore.e2e.ts` checks it.
 
@@ -396,13 +436,23 @@ in `engine/ui/overlay.tsx` from the views `apps/home/school.ts` builds, the shee
 Calendar is the one parent page for day planning and subject routines. The separate Change
 the plan navigation entry and `/plan` route are removed, and `/calendar` now renders the workspace
 that was behind `?v2`: the day, the week, the month and the term, with the lessons not yet placed on
-a shelf beside the week. Subjects, school days and term dates are the shared cards the head opens
-rather than views of their own. The production page is `apps/home/calendar-planner.tsx`, using the
+a shelf beside both the day and the week. Subjects, school days and term dates are the shared
+cards the head opens rather than views of their own. The production page is `apps/home/calendar-planner.tsx`, using the
 app's postcards, lesson illustrations, subject markers, shared editing cards and real family log.
 The scratchpad remains an independent sample.
 
-The week opens first, with a child filter, date navigation and a selected day's detail beside it.
-On phones the days stack and the detail follows them. The month also selects days for editing.
+The week opens first, with a child filter and date navigation. The day is the same workspace one
+day wide: a lane a child beside the shelf, where a lesson is placed, ordered, moved to another day
+or taken out. On phones the week's days and the day's lanes both stack, with the shelf under
+them. The month also selects days for editing.
+
+A lesson's name, on a week's sticker or a day's row, opens the same look Explore opens
+(`apps/home/lesson-look.tsx`), the sheet as a child meets it over the still picture of the world it
+belongs to. Opened from the calendar the look also carries that lesson's place in the plan, its day,
+its planned minutes and its note, and the way to take it out, which is where the separate editing
+card used to live. Work already begun shows no fields, since it stays in the record. The calendar
+loads the look on demand, warmed when a pointer or the keyboard reaches a lesson, so the sheet and
+the lesson reader are never part of the calendar's own script.
 The term shows each child's subjects, how many of each a week the plan holds and, where a subject
 runs past the end of the current term, the catch-up line; the world choices that Subjects & pace
 also held have no screen now. Term dates and school days each open from one place, the header, and
@@ -431,14 +481,15 @@ fold stays and nothing writes a new choice.
 
 Changes append `plan-changed` events through the existing parent-authorized API. `session` is a
 snapshot of one placement, while `routine` changes the recurring projection from its effective
-date. Both are scoped to one child. Batch changes share a timestamp so the history can undo the
-whole action. Other edit confirmations offer undo and redo; the history remains available
-across reloads. Children consume the same fold, including additional subjects and practice.
+date. Both are scoped to one child. Batch changes share a timestamp, so one action is one entry in
+the log. A change is not undone from the calendar: a lesson is taken out of the plan from its own
+card or through the shelf, and clearing a plan is reversed by placing the lessons again. Children
+consume the same fold, including additional subjects and practice.
 
 The fold lives in `school/family/family.ts` and `school/family/calendar.ts`; `engine/answer.ts`
 validates the operations. `school/family/__tests__/sessions.test.ts` covers placements, routines,
 completion protection and child isolation. `tools/e2e/calendar.e2e.ts` checks saved additions,
-removal, undo, routine changes, the legacy route and responsive layouts against the real API.
+removal, routine changes, the legacy route and responsive layouts against the real API.
 
 ## The map, for grown-ups
 
@@ -455,11 +506,9 @@ place, and the bar is there throughout. Where the grown-up is goes in the addres
 `/map?world=<id>`, `/map?lesson=<id>`), so back and a shared link both work.
 
 The same map and roll open over a page as a look, in a dialog with the address after the `#`, focus
-held inside and given back on close, and nothing recorded. In Explore the look is the lesson preview
-itself: a tile opens the lesson at its own address, `/explore/<id>`, as a look over the catalogue,
-in its world and with nothing filled in, at the level the tools over the stage have chosen, and the
-back button closes it and leaves the reader on the catalogue they narrowed. The site's opening has
-"See the map", which opens the sample child's map with every world open. The calendar's lesson card
+held inside and given back on close, and nothing recorded. The site's opening has "See the map",
+which opens the sample child's map with every world open. Explore's lesson preview does not use it:
+it shows the lesson's sheet alone (see Explore above). The calendar's lesson card
 and the journal are still to come as callers, as is a child's own map on the grown-ups' screen, which
 the view already allows.
 
@@ -468,7 +517,7 @@ It is `apps/home/map.tsx` with `apps/home/school.ts` building the views from the
 roll's geometry and takes back what done would mean), `engine/ui/reading.tsx` for a world's roll
 with its sheets drawn as they come near, `engine/ui/overlay.tsx` with `hash.ts` for the look over a
 page, and `engine/ui/paper.ts` for the paper near the camera. `tools/e2e/map.e2e.ts` checks the
-screen and the site's look, and `tools/e2e/explore.e2e.ts` the preview over the catalogue. Two things this work changed underneath: a map that is
+screen and the site's look. Two things this work changed underneath: a map that is
 a screen, the child's and the grown-up's alike, takes the cover floor and the fence that keep the sea
 at every edge of any window, and a stopped canvas view no longer fires the settle it was waiting on,
 which had the map going in again after every way out. The world's trail as a place is not drawn for

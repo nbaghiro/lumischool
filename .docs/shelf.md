@@ -272,6 +272,37 @@ straight-sided tumbler marked in halves, in quarters or in millilitres. Both are
 The market stall's drawings (`stallcounter`, `coindish`, `garment`, `clothesrail`) stay on the shelf;
 the lemonade stand still uses `coindish` for the dishes on its counter.
 
+## Pocket pool (27 September 2026)
+
+`pooltable` (sport) is a small pool table seen from above: coloured cloth (mint, sky or berry) inside a
+wooden rail, with round dark pockets at the corners and halfway along the long sides. It is an oblong
+or an L with its top right cut away, and `tableOutline` and `tablePockets` in its file are the
+cushions and pockets the game plays on, so the drawing and the table cannot disagree. Dressed, it has
+a triangle of balls and a cue, which is the Games page's cover. `poolball` is a ball as big as its
+box, white for nought, a colour for one to eight and a colour band on white from nine, with its number
+in a white spot. `poolcue` lies pointing right with its tip at the end of its box (`POOLCUE`),
+`poolbumper` is a round rubber bumper, `pocketsign` is a small card with a word such as even,
+`poolpatch` is a patch of soft cloth or a slope marked with arrows downhill, and `poolspinner` is a
+bar on a round pivot that the game turns. On the home shelf, `fruitbowl` is a bowl of fruit seen from
+above and `floorboards` a room's floor, wooden boards or kitchen tiles, quiet enough that what stands
+on it reads first.
+
+## Rescue pups (28 September 2026)
+
+The Pup family gained a `gear` setting for a rescue: a red fire helmet, a blue flying cap with goggles,
+a yellow hard hat or an orange life vest, drawn over any pose, with `none` leaving every earlier pose as
+it was. The vehicles face right and are drawn from the side. `firetruck` is a small red fire engine
+with a flat deck at the back to stand on, a hose reel and a light bar; `rescuecopter` an orange
+helicopter with an open bubble canopy the pilot shows through and a winch under its body;
+`digger` a yellow digger on tracks with an open cab window, whose arm is `diggerarm`, drawn apart so the
+game can turn it at the pivot; `dumptruck` a green truck with a deep open bed; and `rescueboat` an
+orange boat with a railed deck and a blue cabin. The files export where the deck, the winch, the seat,
+the pivot and the bed are, so a game places a pup or a load on the drawing rather than on a guess.
+`lifering` is a ring with white bands, `helipad` a landing pad with a number or an H on its front,
+`blaze` a fire of two to four tongues of flame, `rubble` a lumpy grey rock seen from the side, and
+`rescuebase` (places) a low rescue station with a green roof, garage doors, a bell and a flag. None of
+them is drawn after any show's vehicles or buildings.
+
 ## The style guide
 
 Roughness. Use the ruler level for anything counted or measured and for any part under about two squares, which includes faces, hands and eyes. Use the calm level (roughness 0.6, bowing 0.8, one stroke to a line with its corners kept, as the lantern is drawn) for figures, the kit's objects and the icons, where the icons turn it down further to 0.45. Use the pencil level for scenery bigger than about four squares, where its double line reads as a pencil rather than as fur. Keep the doodle level for marks a teacher's pen makes. A line that has to close, such as an outline drawn with one stroke, keeps its vertices (`preserveVertices`), or it opens at every corner.

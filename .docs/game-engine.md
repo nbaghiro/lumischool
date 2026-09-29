@@ -200,6 +200,8 @@ main gate, and add a performance fixture that fails when main-thread time a fram
 | Pocket rally | P1 | A camera that follows on bigger tracks; a new level on choosing a speed before a corner, taken from Take the corner (P5) |
 | Paper plane | P1 | Clouds to fly through, gusts |
 | Garden mini-golf | P1 | Ponds as hazards and moving obstacles |
+| Pocket pool | new | A new game in the shape of mini-golf: numbered balls banked and knocked into pockets to make a sum, with an L table, bumpers, an even-only pocket, soft cloth, a slope, a spinner and a fruit bowl (27 September 2026, see games.md) |
+| Rescue pups | new | The Pup family as an original rescue team: a hose of particle water onto fires, a helicopter lowering a swinging rope, a digger loading exact tonnes into a truck and a life ring thrown from a boat, each set by degrees and decided by physics (28 September 2026, see games.md) |
 | Charlie's bridge, now Charlie's rope swings | P1 | Ropes and pulleys, planks that bend under Charlie (P4); then replaced under the same id by rope swings: a pendulum pumped by holding, a flight let go and a rope caught in the air (27 September 2026, see games.md) |
 | A home for the pups, now Fetch with the pups | P1 | Zoomed in on the build; roofs, arches and doors; the family walks in (P4); rebuilt around a swinging crane and the wolf's huff; then replaced under the same id by Fetch with the pups: a thrown ball, frisbee or stick, planck deciding where it goes, and each pup reaching what only it can (see games.md) |
 | Marble workshop | P1 | Hundreds of marbles, a splitter and a bucket gate (P4); water runs later (P6) |

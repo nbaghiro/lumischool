@@ -10,7 +10,7 @@ only enough about it to get it running.
 |---|---|---|---|
 | Postgres, the dev database and the test database | 8502 | `npm run db:up` at the repo root | Built |
 | The scratchpad (every prototype page) | 8508 | `npm run dev` in `.scratchpad/` | Built, moving from 5173 |
-| The print check's headless Chrome | 8509 | started by `npm run check:print` | Built, moving from 9354 |
+| The scratchpad print check's headless Chrome | 8509 | started by `npm run check:print` in `.scratchpad/`; the root's check lets Playwright start Chrome on no port | Built, moving from 9354 |
 | The API server | 8501 | `npm run dev:api` at the repo root, or `npm run dev` with the apps | Built, first slice ([api.md](api.md)) |
 | The dev server for every app, on one origin | 8500 | `npm run dev` at the repo root, which starts the API too | Built |
 | Redis | 8503 | not yet | Reserved, and not needed |
@@ -44,7 +44,8 @@ because a server that quietly moves to 5174 is a server that is now answering on
 | 8530 to 8560 | free again: the site lead's own dev server has been stopped, and the day section is looked at on 8500 like any other page |
 | 8561 | the art shelf's golden and A/B compares (`.scratchpad/scripts/golden.mjs` and `golden-ab.mjs`), each on a Vite server of its own |
 | 8562 | the scratchpad served for the art shelf's scoped print and signed-out checks, started after the files it checks |
-| 8563 to 8599 | free |
+| 8563 | the social studio's review page for a phone (`.scratchpad/social/phone.mjs`), behind an HTTPS quick tunnel so the phone can save posts to Photos |
+| 8564 to 8599 | free |
 
 Three rules keep the block honest. A port is a fixed number, set with `strictPort` or its equivalent,
 so a clash fails loudly. Every port can be overridden from the environment, so a second checkout can
@@ -98,6 +99,7 @@ All run at the repo root.
 | `npm run db:down` | Stops the container and keeps the volume |
 | `npm run db:generate`, `db:check` | Drizzle's migration generator and drift check |
 | `npm run check` | Type check, lint, format check, the suppression and database guards, the database, server and client tests, a production build of the three apps into a temporary directory that is removed after (`check:build`), and the check that the children's build names no grown-ups' route (`check:kids-build`) |
+| `npm run check:print` | Prints lessons in Google Chrome the way a grown-up prints one from the catalogue (`tools/scripts/check-print.ts`), against `npm run dev` on 8500, as a fresh family it removes afterwards. For every level it prints the child's copy and the grown-ups' copy on A4 with Chrome's default margins, counts the child's pages in each sitting of a lesson that prints in more than one (`sittingsOf` in `engine/pack.ts`), and fails a level with a sitting of more than five child pages, a longest sitting more than one child page over medium's longest, a blank page, an answer, hint or note for grown-ups on the child's copy, or an answer missing or cut off the grown-ups' copy. Its table gives each level's pages per sitting, and a line for each grade counts its lessons by the most sittings any of their levels prints in. With no arguments it prints every lesson of grades 5 and 6; `id` or `id:level` names lessons, and `--grades=4`, `--paper=Letter` and `--jobs=3` change the rest. It is not part of `npm run check`, since it needs a browser and the dev server, and it counts as a heavy check for the shared check lock |
 | `npm run lint` | oxlint with type information; any warning fails it |
 | `npm run format` | Prettier over all code and config (`format:check` only reports) |
 

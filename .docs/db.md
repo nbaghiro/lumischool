@@ -241,4 +241,9 @@ instead of replacing another device's work. Operation IDs replay the original re
 20 saved revisions per artwork. Older retries preserve work as a separate conflict copy.
 Deletion clears the document, title, thumbnail and receipt history, retaining only a tombstone to
 prevent a delayed device upload from resurrecting the deleted artwork.
-Gallery queries fetch only metadata and thumbnails, 24 per page with an updated-time/ID cursor.
+Gallery queries fetch only metadata and thumbnails, 24 per page by default, cut by `pageOf` in
+`server/db/page.ts` on the key `(updated_at, id)`, newest first ([pagination.md](pagination.md)).
+`0010_picture_wall_pages.sql` replaced `artworks_gallery_idx` with `artworks_wall_idx` on
+`(family_id, kid_id, owner_user_id, updated_at, id)` for live pictures only, so every page is an index
+range, and added `artworks_title_idx`, a GIN index on `to_tsvector('simple', title)` for the wall's
+search. Full-text search was chosen over trigram so the schema still needs no extension.

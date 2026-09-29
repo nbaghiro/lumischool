@@ -1,8 +1,8 @@
 # The world roll drawn by the GPU
 
-Status: planned on 26 September 2026. Phase 0 is done, and what it found changes the order of the rest (see
-"Phase 0: what we measured"). This document is the plan and its gates; what is built is recorded at its end
-as each phase lands.
+Status: planned on 26 September 2026 and revised on 27 September after the phone was measured (see "What the
+phone showed"). Phase 0 is done; the plan below is the order the work is done in. What is built is recorded at
+the end as each phase lands.
 
 The overworld has been drawn by the GPU since 26 September (`overworld-gpu.md`), and it is now smoother and
 cheaper than the DOM map it replaced. A world's roll (`engine/ui/world.tsx`) is still DOM and SVG. We said in
@@ -59,22 +59,50 @@ The handoff between surfaces follows the contract in `map-transition-continuity.
 release, owned in one place. The incoming scene is mounted hidden and waits for its first complete frame
 (`settled()`), then fades in over the outgoing one, which is parked rather than destroyed.
 
+## What the phone showed
+
+On 27 September the iPhone Air in Chrome crashed on the map, and we found the cause with the phone's own log
+and WebKit's layer tree (`LayerTree.layersForNode` through `ios_webkit_debug_proxy`). The map's scaled world
+held its words and buttons over the GPU's canvas, and animated shapes in it gave it a composited layer, which
+WebKit sized as if the world were unscaled: 230 to 316 MB, rebuilt on every repaint, until the page passed
+2 GB. The world now moves in a screen-sized frame (`CanvasView.frame` in `engine/ui/view.ts`) and nothing
+animated is lifted into it (`map-scene.ts`), and the map holds a steady 76 MB of layers; the phone measured
+473 MB after the page loaded against 930 before, with no pressure warning and no kill through two full runs
+of zooming, panning, flying and ten trips into worlds.
+
+The rolls were not the crash. Inside the meadow, the woods, the harbour, the mountains and the night sky their
+layers came to 122 to 142 MB, the roll zooms out only to half scale, and every return to the map dropped back
+to 76 MB. What is left inside a world is speed: arriving takes 1.4 to 1.6 s with the CPU slowed four times,
+zooming during the arrival runs at 18 to 33 ms a frame, and the idles cost up to 280 ms of the main thread a
+second.
+
 ## Phases and gates
 
-0. Baselines. Record every world's roll as it is: first visible frame, long tasks, idle cost, pan and zoom
-   p95, memory, and reference screenshots. Add a probe that records presented frames and fails on an
-   uncovered frame or a drawing that appears at once. Gate: the numbers are recorded here.
-1. The roll on the GPU. The scene renderer's options, the hidden source in `world.tsx`, the layers that stay
-   in the page, and staged redraws on `settled()`. Gate: the pixel comparison, the navigation numbers, and
-   repeated round trips with no growth in memory.
-2. Idle motion on the GPU. The world's group, its events, and the rule that at most four drawings move. Gate:
-   the idle-cost target in the woods and the marsh, and a still picture under reduced motion.
-3. The handoff. One owner for the grown-ups' map (`apps/home/map.tsx`), the sample overlay
-   (`engine/ui/overlay.tsx`) and the child's app. Gate: the frame probe over entry, return, Escape, Back and
-   Forward, rapid reversal, a cold cache and reduced motion, with no uncovered frame.
-4. The map's last slow frames. Find which places cost 33 to 59 ms to build and split them within the shared
-   4 ms paint allowance; if some still overrun, the pen that draws them records its strokes in the drawing
-   worker instead. Gate: no frame over 33 ms in the fly and zoom probe.
+0. Baselines, done: the desktop numbers below. Before phase 2 lands, the same probe runs on the phone through
+   the inspector, entering the meadow, the woods and the harbour: time to the roll being ready, every frame
+   gap for six seconds after, and the idle cost at arrival.
+1. The scene renderer. `mapScene` takes its terrain as an option, so a scene without terrain draws only its
+   grid, its drawings and the words it lifts, and counts as complete when its drawings are; the map passes
+   its terrain and does not change. Gate: the map's suites and its snapshots, and `npm run map:tiles`, since
+   `map-scene.ts` is one of the tiles' sources.
+2. The roll's scenery on the GPU. `paintWorldView` paints its ground and art layers into a hidden source the
+   scene draws on a canvas under the view's frame; its flags and over layers, the sheets and the page's own
+   layer stay in the world, in the order they have now. A drawing that sits over a sheet (the guide's
+   z-index is above the sheets') stays in the page unless it never overlaps one. `CanvasView` is given
+   `paper: false` and the renderer draws the grid. A roll drawn again keeps the old picture until the new one
+   has drawn what the camera sees (`settled()`). The world's group plays through the renderer
+   (`animate.ts` with `drawnElsewhere`). Gate: each world's roll against its SVG form by pixel comparison,
+   the arrival and the world's events (the horizon putting itself together, puffs, flows, blooms, a term's
+   moment) seen on screen, the navigation numbers, and repeated round trips with no growth.
+3. Arriving faster. A piece of scenery is cut until each paints within the shared 4 ms allowance
+   (`scene-work.ts`); the motion player starts what comes into view a few at a time rather than all in one
+   callback (`animate.ts`); the sheets are built nearest the camera first. Gate: no frame over 50 ms during
+   an arrival with the CPU slowed four times, and the roll ready in under 800 ms slowed.
+4. Smoke as sprites. The puffs a drawing declares (`applyPuff` in `engine/ui/player.ts`) are drawn by the
+   scene as sprites rather than as animated CSS shapes, which the map no longer lifts and so no longer shows.
+   Gate: the volcano's smoke is back on the map and on its roll, and the map's layers stay at their size.
+5. The handoff between the map and a world (`map-transition-continuity.md`), once both are drawn by the
+   same renderer. Gate: the frame probe over entry, return, Escape, Back and Forward and rapid reversal.
 
 ## Risks
 
@@ -141,3 +169,85 @@ still paint the same pieces with the same pen, and would not touch the motion pl
 the work that removes that script first, for the roll and the map together (phase 4, widened to the roll, and
 the motion player's start), then measure again, and move the roll to the GPU only for what the numbers still
 show, most likely the zoom's p95 when slowed. The handoff (phase 3) does not depend on any of it.
+
+## Why the first port was not faster
+
+The roll's scenery drawn by the scene renderer (phase 2 as first built) was no faster than the DOM roll with the
+CPU slowed four times, and panned worse. We measured both in the woods, idling after the arrival and then
+panning, panning back over the same ground, and zooming, with Chrome's own task times, a script profile, frame
+gaps and the bytes uploaded to the GPU.
+
+| Slowed four times, the woods | DOM roll | First port | Surfaces left whole |
+| --- | ---: | ---: | ---: |
+| Idle after arriving | 11 ms/s | 27 ms/s | |
+| Pan, main thread | 768 to 783 ms/s | 827 to 855 ms/s | 667 to 757 ms/s |
+| Pan, p95 frame | 9 ms | 33 ms | 17 ms |
+| Pan, uploaded | 0 | 234 to 247 MB | 100 to 129 MB |
+| Zoom, p95 frame | 25 ms | 26 to 33 ms | 9 ms |
+| Zoom, uploaded | 0 | 121 to 130 MB | 29 MB |
+
+Both rolls spend about the same time on the main thread; where it goes differs. The DOM roll's is the browser's
+own painting, most of it outside script. The first port's was script and uploads: a stretch's ground and washes
+are a few SVGs as tall as a term, and `mapSurface` reframes each to the camera as it moves, which changed the SVG
+on every frame, so the scene read it again (`sketchOf`, 370 ms a second) and drew and uploaded a 2048 px window
+of it again. Left whole when the scene draws them, the reframing and the reading stop, and zooming falls to a
+p95 of 9 ms against the DOM roll's 25.
+
+What remains is the window. A drawing larger than a texture is drawn as one window round the camera (`LARGEST`
+in `map-scene.ts`), and a pan past the window draws and uploads a new one, about 10 MB, over ground already seen.
+The browser cuts such a layer into fixed tiles, draws only the tiles coming into view, off the main thread, and
+keeps them. The GPU is not the slower renderer; the port drew the roll's few largest drawings the costly way.
+The map does not meet this, since its ground is a tile pyramid and its fills and strokes are drawn by the GPU
+itself.
+
+What makes the GPU roll faster than the DOM one, and keeps it so as worlds grow:
+
+- A large drawing drawn as fixed tiles at a scale, each an atlas cell, kept and reused, so a pan draws only the
+  tiles coming into view and a pan back draws none.
+- A wash, which is a rectangle under a gradient and two fades, drawn by the GPU as a shaded quad rather than as
+  pixels at all.
+- The scene kept as a retained list, walked again only when a drawing changes, so a frame touches only what
+  moves.
+
+With those, what a frame costs grows with what is on the screen, not with the length of the roll or the number
+of its drawings, which is what the DOM roll cannot do: its style, layout, painting and layer memory grow with
+every element added.
+
+## What was built
+
+On 27 September the roll's scenery moved to the scene renderer, and the renderer gained what the roll needed.
+
+- `world.tsx` gives its `CanvasView` no paper of its own, keeps a hidden source (`.wd-source`) the scene draws
+  from and a layer of lifted words under the sheets (`.wd-lifted`), and redraws a roll into a staged source it
+  swaps in whole. `paintWorldView` takes `hidden`, puts its ground and art there, leaves its dates and tape in
+  the world, plays the world's idles through the scene, and stops reframing its surfaces, which the scene
+  windows itself.
+- `mapScene` takes its terrain as an option and, with `tiles`, draws a drawing larger than 1,024 px on screen as
+  504 px tiles of a grid at a power-of-two scale, each an atlas cell, kept and reused. While the camera moves
+  it draws them at a quarter of their sharpness and keeps the tiles it has unless they are four times too soft
+  or twice too sharp; a tile not yet drawn is stood in for by the nearest coarser tile's share (up to four
+  scales down, one three scales down asked for first) or by the finer tiles it has, and never by both. A tile
+  behind the drawing's version, as a roll's ground is while the pieces near the camera are painted into it,
+  shows as it was until it is drawn again. The map and the roll both take tiles, and their pages hold 192 MB. Both draw again after
+  their GPU context is lost and restored (`map-resources.e2e.ts`, which moves the camera while the context is
+  lost, since WebKit keeps showing the last frame until something is drawn).
+- The workers keep the display lists they are given (64 each, the page keeping the same list in the same
+  order), leave out any path whose box falls outside the tile, and send no pixels for a tile with nothing in
+  it, which is most tiles of a long road.
+- `sketchOf` reads a gradient's stop opacity and its default units, and a group's `mask` by its alpha, so the
+  washes fade into the paper and the skies shade as the SVG does; the scene reads CSS `translate`, which a
+  world's arrival raises its drawings with.
+
+Measured in the woods with the CPU slowed four times, on battery (every frame capped at 33 ms): panning over
+ground the roll has drawn uploads nothing and costs 204 to 231 ms of the main thread a second against the DOM
+roll's 200; zooming costs 218 to 254 against 207 to 242. `tools/e2e/map-smoothness.e2e.ts` drives the
+map and a roll through every world and then one world, panning and zooming, flying, going into a world,
+moving round its roll and coming back, and fails if any drawing on the screen in one frame is missing in the
+next, as the scene counts them under `?mapDebug` (`art-lost`); none is. A drawing redrawn as it was, as a roll's
+scenery is when its record is read again, takes over the pixels of the one it replaces by its markup, and a
+flight's destination is drawn ahead at the sharpness it will want there (`CanvasView.heading`). What remains is
+a drawing new to the view arriving a few frames after it enters (`art-late`), most of it the place drawings
+that come into view at once as the camera draws back to every world.
+
+Not done: the washes as shaded quads, the scene as a retained list, arriving faster (phase 3), smoke as
+sprites (phase 4) and the handoff (phase 5). The phone has not been measured on this build.

@@ -341,17 +341,54 @@ judgement, and a written sentence or a formed letter is exactly that. When the i
 child's strokes are stored as our own `drawing` answer, shown to the family's grown-up, and never
 sent to a model or any other third party.
 
-Two small things would make the grown-up's marking more useful, and neither is built. The first is
-a short checklist per piece in place of one sentence (for a postcard: the order, the time words,
-the greeting and sign-off), with the unticked item recorded as the `rule` of the `marked` event, so
-the parent's page can say "the time words were missing twice" rather than only right or wrong. The
-art work has since decided the event, with this proposal in view: a grown-up's response to any piece
-marked by eye is a `responded` event carrying the points of the item's `notice` list they saw and a
-note, and `marked` stays right or wrong for a question answered on paper ([art.md](art.md), "A
-grown-up's view"). For writing that means giving `writing.by-eye` a `notice` list, which is not done. The
-second is a checker warning for a trap we met: a parameter whose name is also one of a setting's
+Two small things would make the grown-up's marking more useful. The first is a short checklist per
+piece in place of one sentence (for a postcard: the order, the time words, the greeting and
+sign-off), so the parent's page can say "the time words were missing twice" rather than only right
+or wrong. The art work decided the event with this proposal in view: a grown-up's response to any
+piece marked by eye is a `responded` event carrying the points of the item's `notice` list they saw
+and a note, and `marked` stays right or wrong for a question answered on paper ([art.md](art.md),
+"A grown-up's view"). That list is now built for every piece, as "The notice list" below describes.
+The second is a checker warning for a trap we met: a parameter whose name is also one of a setting's
 listed words is read as the word. The letter-family question named its parameter `x`, x is a
-letter, and every version drew an x until the parameter was renamed.
+letter, and every version drew an x until the parameter was renamed. The checker now refuses the
+clash.
+
+### The notice list
+
+Built 28 September 2026. A question the machine cannot prove lists what a grown-up should notice,
+and the grown-up ticks what they saw. The list is written on the item's checker as
+`notice=["...", "..."]`, two to five short points, beside the `look-for` sentence. Five checkers take
+it, one for each kind of piece a child makes for a grown-up (`BY_EYE` in `engine/pack.ts`):
+`writing.by-eye` for writing, including a book review and a report from several sources;
+`art.by-eye` for a painting; `art.made` for something made away from the sheet, such as a sculpture;
+`reading.recited` for a poem said by heart; and `music.sung` for singing. They are built from one
+rule in `engine/notation/verify.ts`, which is where the duplicate between writing and art went: both
+checked their own look-for sentence and art parsed its own list. `writing.by-eye` keeps the list
+optional, so the nineteen writing items that have only a look-for sentence verify and behave as
+before, and a list written on one is checked the same way as art's.
+
+On screen the child's sheet says what to do with the piece ("Say this one to a grown-up. They will
+listen.") and a button records it as handed in, an `answered` event with `given` `{ k: "unmarked" }`,
+as writing always did. The grown-ups' sheet prints the look-for sentence and the list with a box
+beside each point. When a grown-up marks a sheet that came back on paper, each piece with a list
+shows its points to tick (`apps/home/mark.tsx`), and Done appends a `responded` event for each such
+piece with the points ticked, beside the `marked` events (`respondedOf` in
+`school/family/sheets.ts`). The event is appended and never changed, goes to the server through the
+same `withFamily` path as every other event, and is written only by a grown-up
+(`school/family/access.ts`). A piece handed in on screen is not yet offered for a response from the
+grown-up's page, which reads only paper sheets as waiting to be marked; that is the next step.
+
+### A dictation
+
+Built 28 September 2026 for the spelling lesson of grade five. A dictation is an item with
+`check writing.dictation text="..."` and a wide box for the answer. The grown-up reads the sentence
+aloud from the grown-ups' sheet, where it prints as "Read aloud", and on screen a button plays it
+with the device's own voice where the device has one, so sound is never the only way to hear it
+([sound.md](sound.md)). The child types it and presses Check. The answer is marked word by word:
+the words misspelt are named in the line the child reads ("Check the spelling of ben. A word is
+missing."), which is also the `rule` the `answered` event records, so the grown-up sees them too.
+Case and punctuation are not marked. On paper the grown-up marks it as any sheet. The verifier proves
+the marking on each sentence before it ships (see [notation.md](notation.md), "Dictation").
 
 ## The journey map
 
@@ -379,8 +416,9 @@ those lengths.
    It is the same input a drawing lesson needs ([gaps.md](gaps.md), item 15), and it is what turns
    nineteen items from paper-only into screen and paper.
 2. A checklist per piece of writing in place of one look-for sentence, as a `notice` list whose
-   ticks are recorded in a `responded` event, so a parent sees which part of a piece was missing
-   over several weeks.
+   ticks are recorded in a `responded` event (built 28 September 2026, "The notice list" above).
+   What remains is writing the lists onto the nineteen existing pieces, and a parent's page that
+   shows which part of a piece was missing over several weeks.
 3. The rest of a year of writing in each grade: the café menu, the persuasive notice, a comic
    written whole, a description of a place, joins with their stroke drawn, and a letter family a
    lesson at grade one. None of these needs a new drawing except the joins.
@@ -395,7 +433,6 @@ those lengths.
 
 - Whether writing should grow to a full year of lessons in each grade, as reading plans to, and
   what two long tracks do to a family's week.
-- Whether a grown-up's mark for a piece of writing should be one tick or a short checklist.
 - Whether typing belongs in grade four. The practice guide includes typing and word processing,
   and we have no keyboard input for prose.
 - Unit six, writing for someone, is new. [tracks.md](tracks.md) still lists five units and the

@@ -275,7 +275,7 @@ an error in the item, which is how a question that could be argued never reaches
 | `physics.machine` | `lever`, `pulley`, `wheelaxle`, `gears` | whether a lever lifts, the push that balances it; the pull a pulley or a wheel needs, and the easier of two; which way a gear turns and how many times | a lever that balances when asked whether it lifts; a gear that is not there |
 | `physics.light` | `mirrors`, `periscope`, `seeing`, `beam`, `prism` | the goal a beam reaches and how many mirrors it turns at; whether a periscope or a seeing picture works, and which of two; how much light a sheet lets through; the missing colour | a maze whose beam misses every goal |
 | `physics.sound` | `bands`, `ricedrum` | the highest and the lowest band; the louder of two drums, or the same | bands of different thickness, or two of one length |
-| `physics.sky` | `moonphases`, `globe` | the moon's shape in a box, and whether it is growing; day or night for a child, and six hours later | a day too near the line between two shapes; sunrise and sunset themselves |
+| `physics.sky` | `moonphases`, `globe` | the moon's shape in a box in a child's words (`phase`) or by its astronomer's name, waxing crescent, first quarter, waxing gibbous, full moon, waning gibbous, last quarter, waning crescent (`name`), and whether it is growing; day or night for a child, and six hours later | a day too near the line between two shapes; sunrise and sunset themselves |
 | `physics.forces` | `parachute`, `boat`, `pendulum`, `turbine`, `wrapped` | whether a parachute speeds up, falls steadily or slows, and the slower of two; whether a boat sinks, how deep it sits and what it carries; the faster of two pendulums; how many lamps are lit; the warmest and coldest cup, a cup's reading, and, of cups that started with ice, the cup whose ice has melted most | a tie for the warmest cup, and a tie for the ice melted most |
 
 Sixty two items are proved by these checkers. The rest ask for readings, sums and comparisons the
@@ -385,6 +385,153 @@ A boat to load and a pendulum to tune would follow, but planck has no water, and
 period goes with the square root of its length, which the items deliberately do not ask; either
 would be a rule of our own drawn over the engine.
 
+## The fifth year
+
+Grade five's twelve lessons, physics-49 to physics-60, follow the Physics table in
+[grades-5-6.md](grades-5-6.md): the pendulum, floating and upthrust, water pressure and
+streamlining at the canal town; the solar system to scale, mass and weight, reflection and lenses at
+the observatory; the electromagnet, circuit diagrams, puzzles and a review in the old city. The
+numbers are real: seconds for ten swings, newtons on a force meter, kilonewtons on a lock gate,
+millions of kilometres to the planets, focuses in centimetres and 1.5 volts to a cell. A fair test
+runs through the pendulum, the sinking shapes and the electromagnet, and each of those lessons asks
+which of two set-ups is fair or which lump spoils a test.
+
+Two sets of numbers are the lessons' own rather than measurements, and the lessons say so to the
+grown-up. The sinking speeds in `droptube` (30, 20, 15 and 6 cm a second) keep the order of the
+shapes and make the sharing come out whole; a real 20 g lump of clay falls faster than this in
+water and a flat one tumbles, so the grown-ups' note suggests a tall jar of wallpaper paste or oil
+at home. The electromagnet's one clip for every ten turns on each cell is a tidy version of what a
+test gives: real clip counts rise with the turns and the cells but not in exact step, since the
+iron saturates and the cells' current does not grow in proportion, so the look calls it this
+coil's rule. The same lesson now teaches that turning the cell round swaps the poles, which Japan's
+fifth grade asks for alongside strength, and says that iron and steel, not iron alone, are made a
+magnet.
+
+Five drawings were added for these lessons, each drawn by a rule the checker also calls:
+
+| Drawing | File | Settings | What it shows, and the rule it is drawn by |
+|---|---|---|---|
+| `spouts` | science/spouts.ts | `depth`, `holes`, `wide`, `show`, `tag` | A tank on a stand with up to three lettered holes and a scale in centimetres from the surface; each jet lands where water leaving at the speed of a fall of its depth would land, and the stand is never lower than the water is deep, so a deeper hole always throws further and the tank's width makes no difference |
+| `droptube` | science/droptube.ts | `shapes`, `time`, `grams`, `show` | Tubes of water 60 cm deep with lumps of clay pressed into a pointed shape, a ball, a cube or a flat plate; each sinks at its own steady speed, 30, 20, 15 and 6 cm a second |
+| `mirrorangle` | science/mirrorangle.ts | `angle`, `targets`, `marks`, `show` | A torch's beam on a flat mirror with the upright line and lettered targets; the beam leaves at the angle it came in at |
+| `lens` | science/lens.ts | `mode`, `focus`, `objective`, `eyepiece`, `show`, `tag` | A lens bringing parallel light to its focus over a ruler, fatter for a nearer focus; or a telescope whose magnification is the big focus over the eyepiece's and whose tube is the two added |
+| `electromagnet` | science/electromagnet.ts | `turns`, `cells`, `core`, `closed`, `show`, `tag` | A coil round an iron nail, a wooden rod or an aluminium rod, holding one clip for every ten turns on each cell round iron and none otherwise |
+
+Two drawings gained a setting whose default leaves them as they were: `angle` on `pendulum` writes
+the angle it is let go from, and `symbols` on `series` draws the same loop as a circuit diagram.
+The checkers gained questions for them: `physics.forces` answers `furthest` and `further` for the
+tanks and `fastest`, `slowest`, `bottom(a)` and `sunk(a)` for the tubes, refusing lumps of
+different weights; `physics.light` answers `out` and `reaches` for the mirror, `focus` and
+`sharper` for a lens, and `magnify` and `tube` for a telescope; `physics.circuit` answers `holds`
+and `stronger` for the electromagnet. The open question below about displacement is answered for
+grade five, which meets the water a boat pushes aside with a measuring cylinder; grade four keeps
+the boat's rule of one square a block.
+
+## The sixth year
+
+Grade six's twelve lessons, physics-61 to physics-72, follow the Physics table in
+[grades-5-6.md](grades-5-6.md): the tilted Earth and the midnight sun, heat moving by conducting and
+by convection, pitch and loudness as the shape of a wave, and balanced and unbalanced forces on a
+sledge at the midnight sun; energy stores and transfers, a turbine, cells and wasting less, and
+turning forces at the waterfall gorge; falling on the moon, the moon's phases and eclipses, puzzles
+and a review on the moon. The numbers are real where a child can check them: the axis leans 23.5
+degrees, the moon pulls each kilogram with 1.6 N, people hear from about 20 to 20 000 hertz, and an
+AA cell stores about 10 000 joules.
+
+Joules come in at this grade. England's key stage 3 starts with energy stores and transfers, work
+done as force times distance and the idea that energy is never made or lost, so the energy lessons
+count in joules and "joules each second", with a weight of 10 N for each kilogram as the fifth year
+used; watts are named once and not asked for. Moments are in newton centimetres, since the lever's
+steps are measured in centimetres.
+
+Six drawings were added for these lessons, each drawn by a rule the checker also calls:
+
+| Drawing | File | Settings | What it shows, and the rule it is drawn by |
+|---|---|---|---|
+| `tilt` | science/tilt.ts | `places`, `season`, `tilt`, `circles`, `names` | The Earth side on, lit from the left, its axis leaning 23.5 degrees towards the sun in June and away in December, with lettered places on their circles of latitude drawn edge on; a place has the sun all day when its whole circle is on the lit side, and the noon sun stands 90 degrees less its distance from where the sun is overhead |
+| `heatflow` | science/heatflow.ts | `mode`, `rods`, `thick`, `minutes`, `heater`, `show` | Rods of seven materials in hot water with wax-stuck beads every 2 cm, dropping five, four, three, two or none in ten minutes from copper to glass, wood and plastic; or the research hut cut open with its heater low or high and three thermometers, the air turning round the whole room only when the heater is low |
+| `wave` | science/wave.ts | `waves`, `heights`, `across`, `letters`, `blank` | Sounds as waves on a squared screen that spans a set time; more waves is a higher note, taller waves a louder one, and the waves over the time are the hertz |
+| `sledgeforce` | science/sledgeforce.ts | `forward`, `back`, `weight`, `moving`, `show`, `names` | A sledge with its pulls forward and friction and air back drawn to scale in newtons; it speeds up, keeps a steady speed or slows down by the difference. On a still sledge `back` is the most friction can give, written at the top, and the friction arrow matches the pull up to that most (none without a pull), so a still sledge is never drawn with a bigger force back than forward; it starts to move once the pull is more than the most |
+| `energyflow` | science/energyflow.ts | `thing`, `from`, `to`, `input`, `useful`, `wasted`, `wastes`, `blank`, `unit` | A machine as a box with bands as wide as the energy they carry, in on the left, useful out to the right and wasted down below, adding up to the band in; one band can be left to work out |
+| `eclipse` | science/eclipse.ts | `moon`, `offset`, `show`, `names` | The sun, the Earth and the moon side on and not to scale; only a moon on the line through the sun and the Earth is eclipsed or eclipses, a new moon the sun and a full moon itself |
+
+`falling` gained `air`, whose default leaves it as it was: at 0 the things are let go on the moon,
+where they fall together, and it gained a hammer, which the air hardly slows. The checkers gained
+questions for them: `physics.sky` answers `sun`, `noon` and `midnight` for the tilted Earth,
+`eclipse`, and `shape` and `earth` for the moon and the Earth seen from each other on `orbit`;
+`physics.sound` answers `hertz`, `highest`, `lowest`, `loudest` and `quietest` for the screen;
+`physics.forces` answers `motion` and `net` for the sledge, `fallen` and `best` for the rods, and
+`reading`, `warmest` and `coldest` for the hut; and a new checker, `physics.energy`, answers
+`missing`, `wasted` and `efficiency` for the bands and refuses bands that do not add up.
+
+The energy bands keep sound small: a couple of joules a second out of hundreds, since a machine's
+sound is well under one per cent of what it is given, and nearly all the waste is heating. The
+lamps in physics-67 turn about 5 and about 40 of every 100 J into light, which are measured values
+rounded for the lesson, so an LED as bright needs about an eighth of the bulb's joules. The US
+Department of Energy's fact sheet on LED thermal management (2007,
+https://www1.eere.energy.gov/buildings/publications/pdfs/ssl/thermal_led_feb07_2.pdf) gives 8 per cent
+of a 60 W incandescent lamp's power as visible light and 15 to 25 per cent for the white LEDs of that
+year, with the department's plan to pass 50 per cent; a filament bulb's efficacy of about 16 lumens
+a watt against about 100 for a white LED puts the LED about six times ahead
+([Incandescent light bulb](https://en.wikipedia.org/wiki/Incandescent_light_bulb), Wikipedia), and
+we round today's lamps to about 5 and about 40 per cent. The moon's month is the phase cycle of 29.5 days in both physics-48 and
+physics-70; the orbit measured against the stars, 27.3 days, is not used.
+
+## The gap lessons
+
+Seven lessons, physics-73 to physics-79, close the gaps the grade five and six audit ranked in
+section 4, as [grades-5-6.md](grades-5-6.md), "The gap lessons: eight more a term", places them:
+things growing when heated (5.1, unit 3), the compass, the Earth's magnetism and the pole star (5.2,
+unit 4), light bending at a surface (5.2, unit 5), parallel circuits (5.3, unit 8), heat crossing
+empty space (6.1, unit 2), energy resources and the solar cell (6.1, unit 3), and a spring stretching
+in step with its load (6.2, unit 6). Each grown-ups note quotes the curriculum line it meets.
+
+The checkers gained questions for the new drawings, each worked out by the rule the drawing is drawn
+by: `physics.forces` answers `gap`, `passes` and `loosens` for `expansion`, `stretch`, `length` and
+`instep` for `spring` (refusing a load past the spring's limit), and `reading`, `warmest` and
+`coldest` for the cans in the sun on `heatflow`; `physics.light` answers `bent`, `turns` and `looks`
+for `refraction`; `physics.sky` answers `turned`, `place` and `pole` for `starmap`;
+`physics.circuit` answers `lit`, `on`, `draws` and `brighter` for `parallel`, comparing a parallel
+circuit's bulbs with a series loop's; and `physics.energy` answers `watts`, `off`, `square`, `more`
+and `gain` for `solarpanel`.
+
+The numbers these lessons rest on, with their sources. Steel grows by about 12 millionths of its
+length for each degree (11 to 13 by composition), brass by 19 and window glass by about 8.5, which
+the drawing rounds to 9 ([Thermal expansion](https://en.wikipedia.org/wiki/Thermal_expansion),
+Wikipedia, table at 20 °C); the joint closing at 55 °C, the 25.00 mm ball and 25.05 mm ring and the
+70 mm lid are the drawing's own, and the lesson calls them this bridge's and this jar's. Water's
+refractive index is 1.333 and window glass's about 1.52, taken as 1.33 and 1.5
+([Refractive index](https://en.wikipedia.org/wiki/Refractive_index), Wikipedia); the angle inside is
+Snell's law to the nearest degree, and a thing seen straight down through water looks raised to its
+depth over 1.33, worked out from the index. The sky turns 15 degrees an hour round the pole,
+anticlockwise looking north ([Diurnal motion](https://en.wikipedia.org/wiki/Diurnal_motion),
+Wikipedia); the pole star's height gives the latitude to within a degree, since Polaris was 0.66
+degrees from the pole in 2018, and Merak and Dubhe point to it
+([Polaris](https://en.wikipedia.org/wiki/Polaris), Wikipedia); the Earth's magnetic pole in the north
+is, as a magnet, a south pole, which is why a needle's north end is pulled to it
+([North magnetic pole](https://en.wikipedia.org/wiki/North_magnetic_pole), Wikipedia). An
+electromagnet's poles swap when the current is turned round, as Japan's 小5 A(3)(ア) states (quoted
+in the audit); we did not fetch a physics source for it. In a parallel circuit each branch has the
+cells' whole push and the branch currents add, with ideal cells; the hours the clock tower's cells
+last are the lesson's model. The Sun is about 150 million km away across nearly empty space (NASA,
+recalled); snow-covered sea ice reflects up to about 90 per cent of sunlight and open ocean about 6
+per cent (NSIDC, "Science of sea ice"); a vacuum flask's vacuum stops conducting and convection and
+its silvered walls cut radiation, and James Dewar made it in 1892
+([Vacuum flask](https://en.wikipedia.org/wiki/Vacuum_flask), Wikipedia); a survival blanket's
+aluminium-coated film reflects radiated heat back ([Space blanket](https://en.wikipedia.org/wiki/Space_blanket),
+Wikipedia). The cans' 6, 2 and 1 degrees in ten minutes are these cans' readings, the drawing's
+model, and the lesson says so. Solar, wind, water, geothermal and biomass energy are replenished by
+nature, and coal, oil and gas formed over millions of years from buried plants and animals and are
+limited to what can be extracted (US EIA, "Sources of energy" and "Renewable energy explained"); the
+best commercial solar modules turn about 24 per cent of sunlight into electricity, rated in sunlight
+of 1,000 W a square metre ([Solar panel](https://en.wikipedia.org/wiki/Solar_panel), Wikipedia), so
+the lessons' panels are round and a little low, and each panel's rated watts are the picture's own;
+at the hut, 80 degrees north on 21 June, the sun stands between 13.5 and 33.5 degrees up, from the
+23.5 degree tilt physics-61 uses. A spring stretches in proportion to the force up to its elastic
+limit, which is what a spring balance is built on ([Hooke's law](https://en.wikipedia.org/wiki/Hooke%27s_law),
+Wikipedia); each spring's rate and limit are the picture's own, and 100 g weighs about 1 N at 10 N a
+kilogram, as the fifth year used.
+
 ## The order to build the rest
 
 1. Sound that travels and fades, the string telephone half built on 18 September 2026 as
@@ -420,10 +567,6 @@ would be a rule of our own drawn over the engine.
 The boat's rule, one square deeper for each block, is stated in the question rather than derived
 from the water it pushes aside. It is right for grade two; whether grade four should meet
 displacement with the tank needs a decision.
-
-The moon's shapes are named new moon, crescent, half moon, gibbous and full moon, in a child's words.
-A grown-up may expect "first quarter" for the half moon; the grade one grown-ups' note says so, and
-the checker accepts only the words the drawing's table uses.
 
 Grade four now has nine lessons, more than the four a year that [tracks.md](tracks.md) argued for.
 The density of a track is the owner's decision, and the new lessons can be moved to a later year
