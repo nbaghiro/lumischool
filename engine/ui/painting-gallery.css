@@ -74,6 +74,8 @@
 /* The pictures are the gallery: no card round them, only enough gap to part one from the next. */
 .painting-gallery-grid {
     display: grid;
+    margin: 0;
+    list-style: none;
     grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr));
     gap: 8px;
     /* room for a picture's focus ring, which is drawn 2 px outside it */

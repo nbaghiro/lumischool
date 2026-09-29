@@ -14,7 +14,15 @@
 
 import "./lesson.css";
 import { choiceBoxes, inputBoxes, type SceneDrawer } from "./scene";
-import { codingTarget } from "./coding";
+import {
+    answeredWords,
+    asksWhatItDoes,
+    codingTarget,
+    PREDICT_FIRST,
+    sceneTarget,
+    type CodingTarget,
+} from "./coding";
+import { CodingControls } from "./code-controls";
 import {
     createEffect,
     createMemo,
@@ -29,17 +37,28 @@ import {
 } from "solid-js";
 import { render } from "solid-js/web";
 import type { ProgramLine, Timing, Way } from "../answer";
-import { ARRANGED, cuttingOf, plankOf, type Arrangement, type Board } from "../arrange";
-import { done as reaches, GOALS, parse, run, writeLines, type Goal } from "../coding";
+import { ARRANGED, barsOf, cuttingOf, plankOf, type Arrangement, type Board } from "../arrange";
+import { done, GOALS, parse, run, writeLines, type Goal } from "../coding";
 import { ArrangedQuestion, type Arranged, type ArrangedPart, type Arranging } from "./arrange";
 import { linesFromKey } from "../parts/coding/codepad";
 import { setupOf } from "../parts/coding/setup";
 import { ProgramQuestion, type Built, type Programming, type ProgramPad } from "./program";
+import { BookPages } from "./book";
 import {
+    chaptersLabel,
+    DICTATION,
+    noticeOf,
     paragraphs,
+    partsOf,
     pieceOf,
     sectionLabel,
+    sittingsOf,
+    laidOut,
+    blocksOf,
+    stepsOf,
+    type Laid,
     tagOf,
+    type PackBook,
     type Left,
     type Level,
     type PackBlock,
@@ -52,6 +71,7 @@ import { valuesOf, type Box, type Scene } from "../scene";
 import type { GuidePose } from "../parts/guide/design";
 import { nudges } from "./nudge";
 import { GuideButton, GuideCard, type GuideAsk, type GuideLine } from "./tutor";
+import { voice } from "./voice";
 
 /** How a question is answered on the sheet: typed or picked into the strip under it, arranged on its drawing, shown worked, written on paper for a grown-up, or in another way this sheet does not have. */
 export type SheetWay = "typed" | "arranged" | "program" | "worked" | "grown-up" | "other";
@@ -152,6 +172,7 @@ export type SheetLimits =
 const FINISH = (child: string): string =>
     `When you have done what you can, press finished, ${child}.`;
 const FINISHED = (child: string): string => `You have finished this page. Well done, ${child}.`;
+const SITTING = (n: number, of: number): string => `Sitting ${n} of ${of}`;
 /** How the sheet offers each way a question is answered; a way the sheet does not have is done with a grown-up. */
 const SHEET_WAY: Record<Way, SheetWay> = {
     worked: "worked",
@@ -215,7 +236,8 @@ export function sheetState(o: {
         const board = node && part ? part.board(node.v) : null;
         if (!node || typeof board !== "object" || board === null) return null;
         const plank = plankOf(node.v),
-            cutting = cuttingOf(node.v);
+            cutting = cuttingOf(node.v),
+            bars = node.type === "bargraph" ? barsOf(node.v) : null;
         const given = l.given;
         return {
             part: arranged.part,
@@ -223,6 +245,7 @@ export function sheetState(o: {
             board,
             plank: typeof plank === "string" ? null : plank,
             cutting: typeof cutting === "string" ? null : cutting,
+            bars: typeof bars === "string" ? null : bars,
             key: arranged.key,
             told: !l.done
                 ? null
@@ -258,7 +281,7 @@ export function sheetState(o: {
         return {
             pad,
             world: world.id,
-            runs: (lines) => reaches(writeLines([...lines]), setup.world, goal, target),
+            runs: (lines) => done(writeLines([...lines]), setup.world, goal, target),
             key,
             told: !l.done
                 ? null
@@ -287,6 +310,8 @@ export function sheetState(o: {
 }
 
 const OTHER_WAY = "Do this one with a grown-up.";
+/** Under a dictation: sound is the second way to hear it, and the grown-up's sheet is the first (.docs/sound.md). */
+const DICTATE = "Your grown-up reads the sentence to you from their sheet. Type it, then check it.";
 /** What the strip under a piece says and what its button says, by what the child makes. */
 const ON_PAPER: Record<Piece, { say: string; done: string }> = {
     writing: {
@@ -296,6 +321,18 @@ const ON_PAPER: Record<Piece, { say: string; done: string }> = {
     painting: {
         say: "Paint this one on paper. A grown-up will look at it.",
         done: "I have painted it",
+    },
+    made: {
+        say: "Make this one away from the screen. A grown-up will look at it.",
+        done: "I have made it",
+    },
+    spoken: {
+        say: "Say this one to a grown-up. They will listen.",
+        done: "I have said it",
+    },
+    sung: {
+        say: "Sing this one to a grown-up. They will listen.",
+        done: "I have sung it",
     },
 };
 
@@ -373,6 +410,10 @@ export function LessonSheet(props: {
     finished?: boolean;
     /** A line under the heading, for what a sheet looked back at cannot show. */
     note?: string;
+    /** A book lesson's sitting to show, from 1; the sheet then shows that sitting alone, on screen and on paper. */
+    part?: number;
+    /** A book lesson's text, whose chapters the sitting shows as pages to read on screen. */
+    book?: PackBook | null;
 }): JSX.Element {
     const [finished, setFinished] = createSignal(props.finished === true);
     const open = (): Extract<SheetLimits, { sheets: "open" }> | null =>
@@ -383,12 +424,54 @@ export function LessonSheet(props: {
     };
     const at = (): PackLesson["levels"]["medium"] =>
         props.lesson.levels[props.level] ?? props.lesson.levels.medium;
-    const sections = (): { label: string; blocks: PackBlock[] }[] => {
-        let puzzle = 0;
-        return at().sections.map((s) => ({
-            label: sectionLabel(s.type, s.type === "puzzle" ? ++puzzle : 0, s.stars),
-            blocks: s.blocks,
-        }));
+    const sections = (): { label: string; blocks: PackBlock[]; chapters: number[] }[] => {
+        const nth = new Map<string, number>();
+        return at().sections.map((s) => {
+            nth.set(s.type, (nth.get(s.type) ?? 0) + 1);
+            return {
+                label:
+                    sectionLabel(s.type, nth.get(s.type) ?? 1, s.stars) +
+                    (s.chapters?.length ? `: ${chaptersLabel(s.chapters)}` : ""),
+                blocks: s.blocks,
+                chapters: s.chapters ?? [],
+            };
+        });
+    };
+    /** The sections this sheet draws: every one, or a book's one sitting when a part is asked for. */
+    const shown = createMemo((): number[] => {
+        const all = at().sections.map((_, i) => i);
+        const part = props.part;
+        const one =
+            part === undefined
+                ? undefined
+                : all.filter((i) => at().sections[i]?.type === "sitting")[part - 1];
+        return one === undefined ? all : [one];
+    });
+    // A sheet to be read may be printed, and a long one prints in as many sittings as keep each to
+    // five pages (sittingsOf), a book in one for each of its own. The screen keeps the lesson whole
+    // and in its order, so a section a sitting moves or cuts is drawn twice, whole in its place for the
+    // screen and as the sittings take it for paper (laidOut).
+    const sittings = createMemo(() =>
+        props.limits.sheets === "look" && props.part === undefined
+            ? sittingsOf(props.lesson, at())
+            : [],
+    );
+    const laid = createMemo((): Laid[] =>
+        laidOut(
+            at(),
+            sittings().length
+                ? sittings()
+                : [
+                      shown().flatMap((i) => {
+                          const s = at().sections[i];
+                          return s ? [{ section: i, from: 0, to: stepsOf(s) }] : [];
+                      }),
+                  ],
+        ).filter((l) => l.on !== "screen" || shown().includes(l.section)),
+    );
+    const slice = (l: Laid): PackBlock[] => {
+        const s = at().sections[l.section];
+        return s ? blocksOf(s, l.from, l.to) : [];
     };
     const key = (): boolean => props.limits.sheets === "look" && props.limits.key;
     const [doneNs, setDoneNs] = createSignal<ReadonlySet<number>>(new Set());
@@ -398,8 +481,8 @@ export function LessonSheet(props: {
     const order = createMemo((): number[] => {
         const o = open();
         if (!o) return [];
-        return at().sections.flatMap((s) =>
-            s.blocks.flatMap((b) =>
+        return shown().flatMap((i) =>
+            (at().sections[i]?.blocks ?? []).flatMap((b) =>
                 b.k === "ask" && b.how !== "worked"
                     ? b.questions
                           .filter((q) => q.n > 0 && ON_SHEET.has(o.state.way(q.n)))
@@ -459,22 +542,65 @@ export function LessonSheet(props: {
                 <span class="date hand">{props.strip.date ?? ""}</span>
             </div>
             <header class="ls-head">
-                <span class="label">{tagOf(props.lesson)}</span>
+                <span class="label">
+                    {tagOf(props.lesson)}
+                    <Show when={props.part}>
+                        {(part) => ` · ${SITTING(part(), partsOf(props.lesson))}`}
+                    </Show>
+                    <Show when={sittings().length > 1}>
+                        <span class="ls-on-paper">{` · ${SITTING(1, sittings().length)}`}</span>
+                    </Show>
+                </span>
                 <h2 class="hand">{props.lesson.title}</h2>
                 <Show when={props.lesson.goal}>{(goal) => <p class="ls-goal">{goal()}</p>}</Show>
                 <Show when={props.note}>{(note) => <p class="ls-note ls-looked">{note()}</p>}</Show>
                 {props.teaching}
             </header>
-            <For each={sections()}>
-                {(section) => (
-                    <section class="ls-sec">
-                        <h3>{section.label}</h3>
-                        <For each={section.blocks}>
-                            {(block) => (
-                                <Block block={block} reading={reading()} draw={props.draw} />
+            <For each={laid()}>
+                {(at) => (
+                    <>
+                        <Show when={at.starts}>
+                            {(k) => (
+                                <header
+                                    class="ls-head ls-on-paper ls-sitting-next"
+                                    data-sitting={k()}
+                                    aria-hidden="true"
+                                >
+                                    <span class="label">
+                                        {`${tagOf(props.lesson)} · ${SITTING(k(), sittings().length)}`}
+                                    </span>
+                                    <h2 class="hand">{props.lesson.title}</h2>
+                                </header>
                             )}
-                        </For>
-                    </section>
+                        </Show>
+                        <section
+                            class="ls-sec"
+                            classList={{
+                                "ls-on-screen": at.on === "screen",
+                                "ls-on-paper": at.on === "paper",
+                            }}
+                            aria-hidden={at.on === "paper" ? "true" : undefined}
+                        >
+                            <h3>{sections()[at.section]?.label}</h3>
+                            <Show
+                                when={props.book !== undefined && sections()[at.section]?.chapters}
+                            >
+                                {(chapters) => (
+                                    <Show when={chapters().length}>
+                                        <BookPages
+                                            book={props.book ?? null}
+                                            chapters={chapters()}
+                                        />
+                                    </Show>
+                                )}
+                            </Show>
+                            <For each={slice(at)}>
+                                {(block) => (
+                                    <Block block={block} reading={reading()} draw={props.draw} />
+                                )}
+                            </For>
+                        </section>
+                    </>
                 )}
             </For>
             <Show when={key() && at().grownUps.length}>
@@ -545,7 +671,15 @@ function Block(props: { block: PackBlock; reading: Reading; draw: SceneDrawer })
             );
         case "scene":
             return (
-                <SceneTile scene={b.scene} point={null} key={null} here={[]} draw={props.draw} />
+                <SceneTile
+                    scene={b.scene}
+                    point={null}
+                    key={null}
+                    here={[]}
+                    coding={sceneTarget(b.scene)}
+                    reveal
+                    draw={props.draw}
+                />
             );
         case "ask":
             return (
@@ -559,7 +693,10 @@ function Block(props: { block: PackBlock; reading: Reading; draw: SceneDrawer })
                                         ? "worked"
                                         : (state()?.way(q.n) ?? "other")
                                 }
+                                item={b.item}
                                 lookFor={lookFor(b.item)}
+                                notice={noticeOf(b.item)}
+                                dictates={b.item.check?.name === DICTATION}
                                 piece={pieceOf(b.item)}
                                 n={q.n}
                                 state={state()}
@@ -589,7 +726,13 @@ function Question(props: {
     q: PackQuestion;
     way: SheetWay;
     /** What a grown-up looks for, for a piece they read, which a reader's key shows in place of an answer. */
+    /** The item the question was drawn from, whose check says which drawing a program plays in. */
+    item: PackItem;
     lookFor: string | null;
+    /** The points a grown-up ticks for a piece, which a reader's key lists under what to look for. */
+    notice: string[];
+    /** A dictation: its answer is the sentence a grown-up reads aloud, or the device plays. */
+    dictates: boolean;
     /** What the child makes for a grown-up, for a question handed in. */
     piece: Piece | null;
     n: number;
@@ -616,6 +759,12 @@ function Question(props: {
         active = Date.now();
     };
     const worked = (): boolean => props.way === "worked";
+    /** A program the question shows, played under its picture; a build is ProgramQuestion's. */
+    const coding = (): CodingTarget | null => codingTarget(props.q, props.item);
+    /** The question asks what its program does, so it is played only once answered. */
+    const asks = (): boolean => asksWhatItDoes(props.q, props.item, coding());
+    /** The sheet is read or the question is done, so a played drawing may fill in its answers. */
+    const reveal = (): boolean => worked() || !props.state || isDone();
     /** The question is typed or picked into, so Strip draws its picture and the strip under it. */
     const typedHere = (): boolean => props.way === "typed" && !!props.state;
     const key = (): Record<string, string> | null =>
@@ -754,6 +903,9 @@ function Question(props: {
                                     scene={scene()}
                                     point={ring() ?? told()?.point ?? null}
                                     key={key()}
+                                    coding={coding()}
+                                    held={asks() && !reveal()}
+                                    reveal={reveal()}
                                     here={[]}
                                     draw={props.draw}
                                 />
@@ -795,13 +947,35 @@ function Question(props: {
                         when={props.lookFor}
                         fallback={
                             <>
-                                <span class="label">Answer</span> {answerText(props.q)}
+                                <span class="label">
+                                    {props.dictates ? "Read aloud" : "Answer"}
+                                </span>{" "}
+                                {answerText(props.q)}
+                                <Show when={props.q.explain}>
+                                    {(words) => (
+                                        <>
+                                            <br />
+                                            {words()}
+                                        </>
+                                    )}
+                                </Show>
                             </>
                         }
                     >
                         {(look) => (
                             <>
                                 <span class="label">Look for</span> {look()}
+                                <For each={props.notice}>
+                                    {(point) => (
+                                        <>
+                                            <br />
+                                            <span class="ls-notice" aria-hidden="true">
+                                                {"☐ "}
+                                            </span>
+                                            {point}
+                                        </>
+                                    )}
+                                </For>
                             </>
                         )}
                     </Show>
@@ -819,6 +993,9 @@ function Question(props: {
                 {(state) => (
                     <Strip
                         q={props.q}
+                        coding={coding()}
+                        asks={asks()}
+                        dictates={props.dictates}
                         scene={props.q.scene ?? null}
                         state={state()}
                         acts={props.acts}
@@ -865,10 +1042,19 @@ function SceneTile(props: {
     here: string[];
     /** What a child writes in, laid over the exact box the scene drew for it. */
     slots?: readonly { box: Box; child: JSX.Element }[];
+    /** A program or a toy the scene holds, played under it; a build is drawn elsewhere. */
+    coding?: CodingTarget | null;
+    /** The question asks what the program does and is not answered yet, so it is not played. */
+    held?: boolean;
+    /** The child's answer in words, said beside what the program did when they run it to check. */
+    answered?: () => string;
+    /** The sheet is read, so a played drawing may fill in what a child would otherwise write. */
+    reveal?: boolean;
     draw: SceneDrawer;
 }): JSX.Element {
     let tile: HTMLDivElement | undefined;
     let drawn: SVGSVGElement | undefined;
+    const [times, setTimes] = createSignal(0);
     createEffect(
         on(
             () => [props.scene, props.point, props.key] as const,
@@ -881,6 +1067,7 @@ function SceneTile(props: {
                 if (drawn?.isConnected) drawn.replaceWith(svg);
                 else tile.prepend(svg);
                 drawn = svg;
+                setTimes((n) => n + 1);
             },
         ),
     );
@@ -919,26 +1106,50 @@ function SceneTile(props: {
             child: s.child,
         }));
     };
+    const played = (): CodingTarget | null => {
+        const c = props.coding;
+        return c && (c.mode === "toy" || (c.mode === "run" && c.setup)) ? c : null;
+    };
+    const playable = (): CodingTarget | null => (props.held ? null : played());
     return (
-        <div class="scene-tile on-paper">
-            <div
-                ref={(el) => {
-                    tile = el;
-                }}
-                class="ls-scene"
-            >
-                <For each={marks()}>
-                    {(m) => <span class="ls-here" style={m} aria-hidden="true" />}
-                </For>
-                <For each={written()}>
-                    {(w) => (
-                        <span class="ls-inbox" style={w.at}>
-                            {w.child}
-                        </span>
-                    )}
-                </For>
+        <>
+            <div class="scene-tile on-paper">
+                <div
+                    ref={(el) => {
+                        tile = el;
+                    }}
+                    class="ls-scene"
+                >
+                    <For each={marks()}>
+                        {(m) => <span class="ls-here" style={m} aria-hidden="true" />}
+                    </For>
+                    <For each={written()}>
+                        {(w) => (
+                            <span class="ls-inbox" style={w.at}>
+                                {w.child}
+                            </span>
+                        )}
+                    </For>
+                </div>
             </div>
-        </div>
+            <Show when={props.held && played()}>
+                <div class="cr">
+                    <p class="cr-said">{PREDICT_FIRST}</p>
+                </div>
+            </Show>
+            <Show when={playable()}>
+                {(c) => (
+                    <CodingControls
+                        scene={props.scene}
+                        target={c()}
+                        tile={() => tile}
+                        drawn={times}
+                        reveal={props.reveal ?? false}
+                        {...(props.answered ? { answered: props.answered } : {})}
+                    />
+                )}
+            </Show>
+        </>
     );
 }
 
@@ -1307,6 +1518,12 @@ function HandIn(props: {
  */
 function Strip(props: {
     q: PackQuestion;
+    /** A program the question shows, played under its picture. */
+    coding: CodingTarget | null;
+    /** The question asks what that program does, so it is played only once answered. */
+    asks: boolean;
+    /** A dictation, whose sentence the device can play and a grown-up can read from their sheet. */
+    dictates: boolean;
     /** The question's picture, or null where it asks in words alone. */
     scene: Scene | null;
     state: SheetState;
@@ -1480,6 +1697,21 @@ function Strip(props: {
                         key={props.sceneKey}
                         here={here()}
                         slots={slots()}
+                        coding={props.coding}
+                        held={props.asks && !done()}
+                        answered={() =>
+                            props.asks
+                                ? answeredWords(
+                                      props.q,
+                                      typed(),
+                                      (k, v) =>
+                                          props.state
+                                              .options(props.q.n, k)
+                                              .find((o) => o.value === v)?.label ?? v,
+                                  )
+                                : ""
+                        }
+                        reveal={done()}
                         draw={props.draw}
                     />
                 )}
@@ -1492,6 +1724,21 @@ function Strip(props: {
                     strip = el;
                 }}
             >
+                <Show when={props.dictates}>
+                    <div class="ls-row">
+                        <p class="ls-note">{DICTATE}</p>
+                        <Show when={voice().available()}>
+                            <button
+                                type="button"
+                                class="ls-hint"
+                                disabled={done()}
+                                onClick={() => voice().speak(props.q.answers.answer ?? "")}
+                            >
+                                Hear the sentence
+                            </button>
+                        </Show>
+                    </div>
+                </Show>
                 <div class="ls-row">
                     <For each={keys}>
                         {(k) => {

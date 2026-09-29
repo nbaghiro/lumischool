@@ -1,5 +1,5 @@
-// The paper near the camera: drawn once when near, let go of when not, its height kept, and paper that
-// lands late or after a forget let go of rather than kept.
+// The paper near the camera: drawn once when near, set aside and then let go of when not, its height
+// kept, and paper that lands late or after a forget let go of rather than kept.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { nearPaper, preparedPaper } from "../paper";
@@ -48,7 +48,7 @@ function drawer(): {
     };
 }
 
-test("paper is drawn once when near, kept while near, let go of when not, and its height stays known", async () => {
+test("paper is drawn once when near, kept while near, set aside and then let go of when not, and its height stays known", async () => {
     const d = drawer();
     let drawn = 0;
     const near = nearPaper({ draw: d.draw, drawn: () => drawn++ });
@@ -75,11 +75,19 @@ test("paper is drawn once when near, kept while near, let go of when not, and it
     const a = near.sheet("a");
     near.lookBack(["b"]);
     assert.equal(near.sheet("a"), null);
-    assert.equal(a?.gone, true, "paper no longer near is let go of");
+    assert.equal(a?.gone, false, "paper no longer near is set aside a while");
     assert.equal(near.height("a"), 700, "what it measured is kept");
     assert.equal(drawn, 4);
     near.lookBack(["b", "a"]);
-    assert.deepEqual(d.asked, ["a", "b", "a"], "paper that comes near again is drawn again");
+    assert.equal(near.sheet("a"), a, "paper set aside comes back as it was");
+    assert.deepEqual(d.asked, ["a", "b"], "and is not drawn again");
+    const others = ["c", "d", "e", "f", "g", "h", "i"];
+    near.lookBack(others);
+    for (const lesson of others) await d.land(lesson);
+    near.lookBack([]);
+    assert.equal(a?.gone, true, "past six sheets set aside, the one set aside longest ago goes");
+    near.lookBack(["a"]);
+    assert.deepEqual(d.asked.at(-1), "a", "paper let go of is drawn again when it comes near");
 });
 
 test("paper that lands once it is no longer near, or after a forget, is let go of; a draw that fails leaves nothing", async () => {
@@ -232,4 +240,22 @@ test("weighted preparation drops optional heavy sheets but always admits a foreg
     assert.equal(b.gone, true);
     assert.equal(required.gone, false);
     required.dispose();
+});
+
+test("trying again asks for every lesson that failed, near or not, with what is near", async () => {
+    const d = drawer();
+    const near = nearPaper({ draw: d.draw, drawn: () => undefined });
+    near.lookBack(["missing", "b"]);
+    await d.land("missing");
+    await d.land("b");
+    assert.equal(near.failed("missing"), true);
+    // the roll moves on from the lesson that failed, as it lays out round what did not come
+    near.lookBack(["b"]);
+    near.retry(["b"]);
+    assert.deepEqual(d.asked, ["missing", "b", "missing"]);
+    assert.equal(
+        near.failed("missing"),
+        false,
+        "a lesson asked for again no longer says it failed",
+    );
 });

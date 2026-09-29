@@ -66,12 +66,16 @@ export interface FlyOptions {
 export interface Flying {
     key(e: KeyboardEvent): boolean;
     stop(): void;
+    /** Where the camera will be in a moment and a half as the plane flies on, for what to draw first. */
+    ahead(): Camera;
 }
 
 /** How much larger than its drawing the plane flies, so it reads as the thing to watch among the worlds. */
 const PLANE = 2.5;
 /** The camera's spring: quick enough to keep the plane in view, slow enough that a turn does not jolt. */
 const FOLLOW: Spring = { hz: 0.7, zeta: 1 };
+/** How far ahead of the plane, in seconds of its flight, the map is drawn before the camera is there. */
+const AHEAD = 1.5;
 
 /** The field beside a world, under its name, running with the wind; on the water a ring of buoys. */
 function fieldOf(map: Overworld, i: number): Field {
@@ -279,7 +283,8 @@ export function fly(o: FlyOptions): Flying {
             params: { puffs: 3 + Math.floor(rc() * 3), rain: 0 },
         });
         if (c) L.append(c);
-        return { at, el: c, k: 2.6 + rc() * 1.8 };
+        c?.setAttribute("data-live", "");
+        return { at, el: c, k: 2.6 + rc() * 1.8, shown: true };
     });
     const shadow = placeArt(refOf("paperplane"), 0, 0, o.host, { seed: 3, cls: "ow-plane-shadow" });
     const craft = div("ow-plane");
@@ -294,6 +299,8 @@ export function fly(o: FlyOptions): Flying {
         craft.append(body);
     }
     craft.append(rider);
+    // moved by their inline transform every frame, which the scene reads as it stands (map-scene.ts)
+    for (const el of [craft, rider, shadow]) el?.setAttribute("data-live", "");
     if (shadow) top.append(shadow);
     top.append(craft);
     const trail: HTMLElement[] = [];
@@ -555,7 +562,8 @@ export function fly(o: FlyOptions): Flying {
     }
 
     let lastWords = 0,
-        lastNote = 0;
+        lastNote = 0,
+        checked = -1;
     const work: number[] = [];
     function note(): void {
         const now = performance.now();
@@ -607,7 +615,10 @@ export function fly(o: FlyOptions): Flying {
             c.at.y += w.y * 0.35 * dt;
             if (c.at.x > bounds.x + bounds.w + 1200) c.at.x = bounds.x - 1200;
             const near = intersects(seen, { x: c.at.x - 1200, y: c.at.y - 1200, w: 2400, h: 2400 });
-            c.el.style.display = near ? "" : "none";
+            if (near !== c.shown) {
+                c.el.style.display = near ? "" : "none";
+                c.shown = near;
+            }
             if (!near) continue;
             c.el.style.transform = `translate(${c.at.x}px, ${c.at.y}px) scale(${c.k})`;
             c.el.classList.toggle(
@@ -630,7 +641,10 @@ export function fly(o: FlyOptions): Flying {
         if (on) o.view.set(cam.c);
         zoomOut.disabled = zoom <= 0.4;
         zoomIn.disabled = zoom >= 1.4;
-        notchBtns.forEach((b, i) => b.setAttribute("aria-checked", String(i === plane.notch)));
+        if (checked !== plane.notch) {
+            checked = plane.notch;
+            notchBtns.forEach((b, i) => b.setAttribute("aria-checked", String(i === plane.notch)));
+        }
         const now = performance.now();
         if (now - lastWords > 7000 && plane.phase === "air") {
             lastWords = now;
@@ -664,11 +678,16 @@ export function fly(o: FlyOptions): Flying {
     const pads = { a: false, b: false };
 
     function nearest(): number {
-        return (
-            fields
-                .map((f) => ({ f, d: Math.hypot(f.at.x - plane.x, f.at.y - plane.y) }))
-                .sort((a, b) => a.d - b.d)[0]?.f.node ?? o.from
-        );
+        let best = o.from,
+            least = Infinity;
+        for (const f of fields) {
+            const d = Math.hypot(f.at.x - plane.x, f.at.y - plane.y);
+            if (d < least) {
+                least = d;
+                best = f.node;
+            }
+        }
+        return best;
     }
 
     function touchdown(i: number): void {
@@ -733,6 +752,11 @@ export function fly(o: FlyOptions): Flying {
     if (!o.still) tk.start();
 
     return {
+        ahead: () => ({
+            x: plane.x + plane.vx * AHEAD,
+            y: plane.y + plane.vy * AHEAD,
+            z: cam.c.z,
+        }),
         key(e: KeyboardEvent): boolean {
             if (e.key === "0" || e.key === "Home") {
                 if (e.type === "keydown") zoomBy(1 / zoom);

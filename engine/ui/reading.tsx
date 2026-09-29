@@ -35,6 +35,8 @@ export interface ReadingSource {
     variants?: readonly { value: number; label: string }[];
     variant?: number;
     neighbours?: readonly { world: string; label: string }[];
+    /** What a sheet's height depends on besides its lesson and the width, for the heights kept on the device (paper.ts). */
+    scope?: string;
     /** The roll, laid out round the heights the sheets measured; `CARD` stands in until one is drawn. */
     world(o: { narrow: boolean; height: (lesson: string) => number | null }): WorldView;
     /** A lesson's sheet, drawn and measured for the roll to lay, or null while it cannot be read. */
@@ -71,6 +73,7 @@ export function Reading(props: {
         draw: (lesson) =>
             props.source.sheet(lesson, { narrow: narrow(), measureIn: measure ?? document.body }),
         drawn: () => setDrew((n) => n + 1),
+        scope: () => `${props.source.scope ?? "roll"}|${narrow()}`,
     });
     onCleanup(() => paper.forget());
     const view = createMemo(() => {
@@ -162,7 +165,7 @@ export function Reading(props: {
                                 <button
                                     type="button"
                                     class="btn second"
-                                    onClick={() => paper.lookBack(wanted())}
+                                    onClick={() => paper.retry(wanted())}
                                 >
                                     Try again
                                 </button>

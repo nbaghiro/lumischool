@@ -274,19 +274,24 @@ span.teaching-counter {
     display: none;
 }
 .teaching-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
     max-width: 1060px;
     margin: 24px auto;
     padding: 0 20px;
 }
-.teaching-preview > h1 {
-    font-family: var(--f-hand);
-    margin-bottom: 10px;
+/* The page is a stage, so this is its only gutter; on a phone it is the page's own 16, so the head
+   is as wide here as on every other tab. */
+@media (max-width: 700px) {
+    .teaching-preview {
+        padding: 0 16px;
+    }
 }
 .teaching-settings {
     padding: 14px 18px;
     border-radius: 12px;
     background: var(--card);
-    margin-bottom: 18px;
 }
 .teaching-settings summary {
     cursor: pointer;

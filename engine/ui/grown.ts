@@ -52,6 +52,11 @@ function readSheet(v: unknown): Sheet | null {
         obj(m) && str(m.rule) && num(m.times) ? { rule: m.rule, times: m.times } : null,
     );
     const questions = list(v.questions, ref);
+    const pieces = list(v.pieces, (p) => {
+        if (!obj(p) || !str(p.answer)) return null;
+        const q = ref(p.q);
+        return q ? { answer: p.answer, q } : null;
+    });
     return str(v.child) &&
         str(v.lesson) &&
         str(v.subject) &&
@@ -65,7 +70,8 @@ function readSheet(v: unknown): Sheet | null {
         typeof v.marked === "boolean" &&
         strOrNull(v.sheet) &&
         mistakes &&
-        questions
+        questions &&
+        pieces
         ? {
               child: v.child,
               lesson: v.lesson,
@@ -81,6 +87,7 @@ function readSheet(v: unknown): Sheet | null {
               marked: v.marked,
               sheet: v.sheet,
               questions,
+              pieces,
           }
         : null;
 }

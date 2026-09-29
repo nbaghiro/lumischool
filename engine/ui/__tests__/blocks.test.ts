@@ -6,9 +6,11 @@ import {
     count,
     deepen,
     EMPTY,
+    figuresOf,
     move,
     placedFrom,
     remove,
+    setCount,
     slotWords,
     type Build,
     type Pad,
@@ -87,17 +89,69 @@ describe("a program built in a pad", () => {
         assert.equal(move({ ...b, chosen: 0 }, -1).build, null);
     });
 
-    it("changes a block's number from 1 to 20, and not a card's", () => {
-        let b = made((x) => add(x, PAD, 0, 0));
-        for (let i = 0; i < 25; i++) b = count(b, PAD, 1).build ?? b;
-        assert.deepEqual(lines(b), ["right 20"]);
-        b = count(b, PAD, -1).build ?? b;
-        assert.equal(count(b, PAD, 1).said, "right 20.");
+    it("changes a block's number within what it means, and not a card's", () => {
+        const pad: Pad = { ...PAD, most: 7 };
+        let b = made((x) => add(x, pad, 0, 0));
+        for (let i = 0; i < 25; i++) b = count(b, pad, 1).build ?? b;
+        assert.deepEqual(lines(b), ["right 7"], "a move goes no further than the world is long");
+        assert.equal(count(b, pad, 1).said, "right 7: 7 is the most it can be.");
         const noNumber = made((x) => add(x, PAD, 4, 0));
         assert.equal(count(noNumber, PAD, 1).said, "otherwise has no number to change.");
         const card = made((x) => add(x, CARDS, 0, 0));
         assert.equal(count(card, CARDS, 1).build, null);
         assert.equal(can(card, CARDS).count, false);
+    });
+
+    it("turns by any number of degrees less than a whole turn, and sets a name to any number", () => {
+        const pad: Pad = {
+            tray: ["turn left 90", "set big to 0", "repeat 2", "play E4 2"],
+            slots: 4,
+            once: false,
+        };
+        const turn = made((x) => add(x, pad, 0, 0));
+        assert.deepEqual(lines(setCount(turn, pad, 0, 72).build ?? EMPTY), ["turn left 72"]);
+        assert.deepEqual(lines(setCount(turn, pad, 0, 400).build ?? EMPTY), ["turn left 359"]);
+        const set = made((x) => add(x, pad, 1, 0));
+        assert.deepEqual(lines(count(set, pad, -1).build ?? EMPTY), ["set big to -1"]);
+        assert.deepEqual(lines(setCount(set, pad, 0, 33).build ?? EMPTY), ["set big to 33"]);
+        const loop = made((x) => add(x, pad, 2, 0));
+        assert.deepEqual(lines(setCount(loop, pad, 0, 36).build ?? EMPTY), ["repeat 36"]);
+        assert.deepEqual(
+            figuresOf("play E4 2", pad).map((f) => [f.value, f.what]),
+            [[2, "beats"]],
+            "the octave in a note is part of its name, not a number to change",
+        );
+    });
+
+    it("changes any number on a block, the later items of a list included", () => {
+        const pad: Pad = {
+            tray: ["set cargo to list 4, 7, 2", "replace item 2 of cargo with 9"],
+            slots: 2,
+            once: false,
+        };
+        const list = made((x) => add(x, pad, 0, 0));
+        assert.deepEqual(
+            figuresOf("set cargo to list 4, 7, 2", pad).map((f) => f.value),
+            [4, 7, 2],
+        );
+        assert.deepEqual(lines(count(list, pad, 1, 2).build ?? EMPTY), [
+            "set cargo to list 4, 7, 3",
+        ]);
+        assert.deepEqual(lines(setCount(list, pad, 1, 33).build ?? EMPTY), [
+            "set cargo to list 4, 33, 2",
+        ]);
+        const replace = made((x) => add(x, pad, 1, 0));
+        const [place, value] = figuresOf("replace item 2 of cargo with 9", pad);
+        assert.equal(place?.what, "place in the list");
+        assert.equal(place?.lo, 1);
+        assert.equal(value?.what, "number");
+        assert.deepEqual(lines(count(replace, pad, -1, 0).build ?? EMPTY), [
+            "replace item 1 of cargo with 9",
+        ]);
+        assert.equal(
+            count(replace, pad, 1, 5).said,
+            "replace item 2 of cargo with 9 has no number to change.",
+        );
     });
 
     it("takes a card once, and fills no more slots than the pad has", () => {

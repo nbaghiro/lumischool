@@ -144,23 +144,15 @@ test("cancellation during header reading cannot start another image decode", asy
     }
     const response = new Response();
     response.blob = async () => new DelayedHeader();
-    let created = 0,
-        decoded = 0;
+    let decoded = 0;
     const load = tileImageLoader({
-        image: () => ({
-            src: "",
-            removeAttribute() {},
-            decode: async () => {
-                decoded++;
-            },
-        }),
         fetch: async () => response,
-        createObjectURL: () => {
-            created++;
-            return "blob:cancelled";
+        decode: async () => {
+            decoded++;
+            return "pixels";
         },
-        revokeObjectURL() {
-            assert.fail("No object URL should have been created");
+        discard() {
+            assert.fail("Nothing should have been decoded");
         },
     });
     const controller = new AbortController();
@@ -169,33 +161,24 @@ test("cancellation during header reading cannot start another image decode", asy
     controller.abort();
     header.resolve(pngHeader());
     await assert.rejects(pending, { name: "AbortError" });
-    assert.equal(created, 0);
     assert.equal(decoded, 0);
 });
 
-test("cancelled stuck decoding releases owned handles and cache reservation before its late rejection", async () => {
-    const decoding = deferred<void>();
+test("cancelled stuck decoding releases the cache reservation, and what it decodes late is discarded", async () => {
+    const decoding = deferred<string>();
     const started = deferred<void>();
-    const revoked: string[] = [];
-    const image = {
-        src: "",
-        removeAttribute() {
-            this.src = "";
-        },
-        decode() {
-            started.resolve(undefined);
-            return decoding.promise;
-        },
-    };
+    const discarded: string[] = [];
     const cache = tileCache({
         budget: 260 * 260 * 4,
         concurrency: 1,
         load: tileImageLoader({
-            image: () => image,
             fetch: async () => new Response(new Blob([pngHeader()])),
-            createObjectURL: () => "blob:tile",
-            revokeObjectURL: (url) => {
-                revoked.push(url);
+            decode: () => {
+                started.resolve(undefined);
+                return decoding.promise;
+            },
+            discard: (pixels) => {
+                discarded.push(pixels);
             },
         }),
         dispose() {
@@ -208,8 +191,6 @@ test("cancelled stuck decoding releases owned handles and cache reservation befo
     lease.release();
     await assert.rejects(lease.ready, { name: "AbortError" });
     await new Promise((resolve) => setImmediate(resolve));
-    assert.equal(image.src, "");
-    assert.deepEqual(revoked, ["blob:tile"]);
     assert.deepEqual(cache.stats(), {
         bytes: 0,
         budget: 270400,
@@ -217,8 +198,8 @@ test("cancelled stuck decoding releases owned handles and cache reservation befo
         loading: 0,
         queued: 0,
     });
-    // Browser completion is still handled even though our loading reservation is already released.
-    decoding.reject(new Error("Late browser decode cancellation"));
+    // the worker still answers, and nothing holds what it answers with
+    decoding.resolve("late pixels");
     await new Promise((resolve) => setImmediate(resolve));
-    assert.deepEqual(revoked, ["blob:tile"]);
+    assert.deepEqual(discarded, ["late pixels"]);
 });

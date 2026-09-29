@@ -137,63 +137,54 @@ export function tileCache<T>(o: {
     };
 }
 
-interface DecodedTileImage {
-    src: string;
-    removeAttribute(name: string): void;
-    decode(): Promise<void>;
-}
+/** A tile's pixels as the GPU takes them quickest: a bitmap, or on WebKit its bytes (tiles.worker.ts). */
+export type TilePixels = ImageBitmap | ImageData;
 
-/** Browser decoding is not reliably settled by clearing src; settle our owned wait explicitly. */
-function decodeUntilAborted(image: DecodedTileImage, signal: AbortSignal): Promise<void> {
+/**
+ * Settles with `decoding`, or rejects as `signal` aborts; what a decode left running produces after
+ * that is handed to `discard`, since nothing will hold it.
+ */
+function untilAborted<T>(
+    decoding: Promise<T>,
+    signal: AbortSignal,
+    discard: (value: T) => void,
+): Promise<T> {
     return new Promise((resolve, reject) => {
         let settled = false;
-        const finish = (error?: unknown) => {
+        const aborted = () => {
             if (settled) return;
             settled = true;
-            signal.removeEventListener("abort", aborted);
-            if (error !== undefined) reject(error);
-            else resolve();
+            reject(signal.reason ?? new DOMException("Tile released", "AbortError"));
         };
-        const aborted = () =>
-            finish(signal.reason ?? new DOMException("Tile released", "AbortError"));
         signal.addEventListener("abort", aborted, { once: true });
-        if (signal.aborted) {
-            aborted();
-            return;
-        }
-        try {
-            // Both handlers remain attached if the browser completes a cancelled decode later.
-            void image.decode().then(
-                () => finish(),
-                (error: unknown) => finish(error),
-            );
-        } catch (error) {
-            finish(error);
-        }
+        if (signal.aborted) aborted();
+        decoding.then(
+            (value) => {
+                signal.removeEventListener("abort", aborted);
+                if (settled) discard(value);
+                else {
+                    settled = true;
+                    resolve(value);
+                }
+            },
+            (error: unknown) => {
+                signal.removeEventListener("abort", aborted);
+                if (settled) return;
+                settled = true;
+                reject(error);
+            },
+        );
     });
 }
 
-export function tileImageLoader<T extends DecodedTileImage>(io: {
-    image(): T;
+export function tileImageLoader<T>(io: {
     fetch(url: string, options: RequestInit): Promise<Response>;
-    createObjectURL(blob: Blob): string;
-    revokeObjectURL(url: string): void;
+    decode(blob: Blob): Promise<T>;
+    discard(value: T): void;
 }) {
     return async (url: string, signal: AbortSignal, budget: number): Promise<T> => {
         const controller = new AbortController();
-        let source: string | undefined;
-        const image = io.image();
-        const clean = () => {
-            image.removeAttribute("src");
-            if (source !== undefined) {
-                io.revokeObjectURL(source);
-                source = undefined;
-            }
-        };
-        const abort = () => {
-            clean();
-            controller.abort();
-        };
+        const abort = () => controller.abort();
         const timeout = setTimeout(abort, 20_000);
         signal.addEventListener("abort", abort, { once: true });
         try {
@@ -216,14 +207,7 @@ export function tileImageLoader<T extends DecodedTileImage>(io: {
                 header.getUint32(16) * header.getUint32(20) * 4 > budget
             )
                 throw new Error("Map image exceeds its declared allocation");
-            source = io.createObjectURL(blob);
-            image.src = source;
-            await decodeUntilAborted(image, controller.signal);
-            controller.signal.throwIfAborted();
-            return image;
-        } catch (error) {
-            clean();
-            throw error;
+            return await untilAborted(io.decode(blob), controller.signal, (v) => io.discard(v));
         } finally {
             clearTimeout(timeout);
             signal.removeEventListener("abort", abort);
@@ -231,17 +215,57 @@ export function tileImageLoader<T extends DecodedTileImage>(io: {
     };
 }
 
-export const tileImages = tileCache<HTMLImageElement>({
+const release = (pixels: TilePixels): void => {
+    if (pixels instanceof ImageBitmap) pixels.close();
+};
+
+type Asked = Map<number, { resolve(p: TilePixels): void; reject(e: unknown): void }>;
+/** The worker the tiles are decoded in, started with the first tile. */
+let decoder: { worker: Worker; waiting: Asked } | null = null;
+let serial = 0;
+function decode(blob: Blob): Promise<TilePixels> {
+    if (!decoder) {
+        const worker = new Worker(new URL("./tiles.worker.ts", import.meta.url), {
+            type: "module",
+        });
+        const waiting: Asked = new Map();
+        worker.onmessage = (e: MessageEvent<unknown>) => {
+            const data = e.data;
+            if (typeof data !== "object" || data === null || !("id" in data)) return;
+            const id = typeof data.id === "number" ? data.id : -1;
+            const asked = waiting.get(id);
+            if (!asked) return;
+            waiting.delete(id);
+            const w = "w" in data ? data.w : null,
+                h = "h" in data ? data.h : null,
+                bitmap = "bitmap" in data ? data.bitmap : null,
+                pixels = "pixels" in data ? data.pixels : null;
+            if (bitmap instanceof ImageBitmap) asked.resolve(bitmap);
+            else if (
+                pixels instanceof ArrayBuffer &&
+                typeof w === "number" &&
+                typeof h === "number"
+            )
+                asked.resolve(new ImageData(new Uint8ClampedArray(pixels), w, h));
+            else asked.reject(new Error("Map tile could not be decoded"));
+        };
+        decoder = { worker, waiting };
+    }
+    const id = ++serial;
+    const { worker, waiting } = decoder;
+    return new Promise((resolve, reject) => {
+        waiting.set(id, { resolve, reject });
+        worker.postMessage({ id, blob });
+    });
+}
+
+export const tileImages = tileCache<TilePixels>({
     budget: 24 * 1024 * 1024,
     concurrency: 4,
     load: tileImageLoader({
-        image: () => new Image(),
         fetch: (url, options) => fetch(url, options),
-        createObjectURL: (blob) => URL.createObjectURL(blob),
-        revokeObjectURL: (url) => URL.revokeObjectURL(url),
+        decode,
+        discard: release,
     }),
-    dispose(image) {
-        URL.revokeObjectURL(image.src);
-        image.removeAttribute("src");
-    },
+    dispose: release,
 });

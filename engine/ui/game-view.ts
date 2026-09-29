@@ -227,7 +227,7 @@ export class GameView implements FieldView {
     constructor(o: GameViewOptions) {
         this.o = o;
         this.el = document.createElement("div");
-        this.el.className = "field field-gl";
+        this.el.className = "game-field field-gl";
         this.canvas = document.createElement("canvas");
         this.canvas.setAttribute("aria-hidden", "true");
         Object.assign(this.canvas.style, {

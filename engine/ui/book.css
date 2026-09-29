@@ -1,0 +1,54 @@
+/* A book's pages on a sitting's sheet (book.tsx). A page is the twenty lines book.tsx puts on it and a
+   heading, forty pixels a line as the sheet's own prose is, so it sits on the squares and keeps one
+   height whatever the page holds. */
+
+.bk {
+    margin: 8px 0 24px;
+    padding: 0 40px;
+}
+.ls-sheet.narrow .bk {
+    padding: 0 20px;
+}
+.bk-page {
+    height: calc(21 * 40px);
+    overflow: hidden;
+    padding: 0 16px;
+    background: var(--card);
+    border: 2px solid var(--ink-soft);
+    border-radius: 12px;
+}
+.bk-title {
+    margin: 0;
+    font: 700 21px / 40px var(--f-hand);
+    color: var(--ink);
+}
+.bk-lines {
+    margin: 0;
+    padding-left: 44px;
+    font: 400 17px / 40px var(--f-read);
+    color: var(--ink);
+}
+.bk-lines li::marker {
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+.bk-starts {
+    text-indent: 1.5em;
+}
+.bk-turn {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+}
+.bk-where {
+    font: 400 15px / 1.4 var(--f-read);
+    color: var(--ink-soft);
+}
+.bk-none {
+    margin: 0;
+    font: 400 17px / 40px var(--f-read);
+    color: var(--ink-soft);
+}

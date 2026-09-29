@@ -35,6 +35,9 @@ body {
     /* The space between one card on a page and the next, which `.page-cards` sets and a screen
        laying out its own cards reads. */
     --card-gap: 30px;
+    /* The width of every tab's first card (postcard.css, `.page-head`). The calendar's head needs it
+       for the child chooser to stand beside the title rather than wrap under it. */
+    --head-w: 760px;
     /* the site's bar, which the map under it starts below; apps/site/site.css has the same */
     --bar-h: 62px;
     --t-small: 14px;

@@ -1,9 +1,33 @@
 // The controls a child's screen presses, the same in both apps (fields.tsx has the grown-ups' own,
-// apart so the child's script never carries them): buttons, the parent PIN in four boxes, and the
-// browser's own time zone, which the postcards read.
+// apart so the child's script never carries them): buttons, the tick, the parent PIN in four boxes,
+// and the browser's own time zone, which the postcards read.
 
 import "./form.css";
-import { createSignal, For, type JSX } from "solid-js";
+import { createSignal, For, Show, type JSX } from "solid-js";
+
+/**
+ * A tick with its words, the one checkbox every screen uses: the browser's own box stays in the page
+ * for the keyboard and a screen reader, under a box drawn in the app's pen (form.css).
+ */
+export function Check(props: {
+    label: JSX.Element;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    name?: string;
+}): JSX.Element {
+    return (
+        <label class="check">
+            <input
+                type="checkbox"
+                name={props.name}
+                checked={props.checked}
+                onChange={(e) => props.onChange(e.currentTarget.checked)}
+            />
+            <span class="check-box" aria-hidden="true" />
+            <span>{props.label}</span>
+        </label>
+    );
+}
 
 /**
  * A button, the sheet's main one unless `second`. While `busy` it stays where it is, and in the tab
@@ -35,6 +59,38 @@ export function Button(props: {
         >
             {props.children}
         </button>
+    );
+}
+
+/**
+ * The search a tab's head carries: the name of the field on its left, the field, and beside it what
+ * the page found, which the page words itself. Explore and Games both use this one control.
+ */
+export function Search(props: {
+    label: string;
+    placeholder?: string;
+    value: string;
+    onInput: (words: string) => void;
+    found?: string;
+}): JSX.Element {
+    return (
+        <div class="search">
+            <label class="field search-field">
+                <span class="field-label">{props.label}</span>
+                <input
+                    type="search"
+                    autocomplete="off"
+                    placeholder={props.placeholder}
+                    value={props.value}
+                    onInput={(e) => props.onInput(e.currentTarget.value)}
+                />
+            </label>
+            <Show when={props.found}>
+                <p class="search-found" aria-live="polite">
+                    {props.found}
+                </p>
+            </Show>
+        </div>
     );
 }
 

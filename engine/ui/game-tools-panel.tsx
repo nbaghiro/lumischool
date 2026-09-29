@@ -1,4 +1,5 @@
 import "./game-tools.css";
+import { Check } from "./form";
 import { createSignal, For, onCleanup, Show, type JSX } from "solid-js";
 import { render } from "solid-js/web";
 import { resetKnobs, turn, turned } from "../motion/tune";
@@ -148,17 +149,14 @@ function Panel(props: { probe: () => Probe | null; open: readonly Tool[] }): JSX
                         <>
                             <Show when={tab() === "inspect"}>
                                 <section class="tools-body">
-                                    <label class="tools-check">
-                                        <input
-                                            type="checkbox"
-                                            checked={ink()}
-                                            onChange={(e) => {
-                                                setInk(e.currentTarget.checked);
-                                                paint();
-                                            }}
-                                        />
-                                        Draw bodies and joints
-                                    </label>
+                                    <Check
+                                        label="Draw bodies and joints"
+                                        checked={ink()}
+                                        onChange={(on) => {
+                                            setInk(on);
+                                            paint();
+                                        }}
+                                    />
                                     <p class="tools-note">
                                         Heavy is awake, dashed is asleep, faint is fixed, red is a
                                         sensor.

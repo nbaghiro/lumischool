@@ -1,5 +1,6 @@
 .game-room {
-    width: min(1280px, calc(100% - 32px));
+    /* the page's own gutter is the only inset, so the head is as wide here as on every other tab */
+    width: min(1280px, 100%);
     margin: 28px auto 60px;
     &:not(.playing) {
         margin-top: 8px;
@@ -27,104 +28,12 @@
     [hidden] {
         display: none !important;
     }
-    /* the page's title is a note card on the map, centred over the games, as the other pages' titles
-       are; wider and shorter than a note, so the games start high on the page */
-    /* The grid cards' tape stands 16px above them, so this leaves the same 38px under the card as the page leaves above it. */
+    /* The head takes the page's own width and the space under it is the page's own card gap
+       (engine/ui/postcard.css, engine/ui/page.css), so the tab opens as every other tab does. */
     .game-heading {
         display: flex;
         justify-content: center;
-        padding: 0 8px 54px;
-    }
-    .game-heading .postcard.note {
-        width: min(100%, 640px);
-        padding: 16px 26px 16px;
-        gap: 4px;
-    }
-    .game-heading .postcard-msg {
-        gap: 4px;
-    }
-    .game-heading .postcard-title {
-        margin: 0;
-        font-size: clamp(28px, 2.4vw, 36px);
-        line-height: 1.05;
-    }
-    .game-heading .postcard-lead {
-        max-width: none;
-        margin: 0;
-        font-size: 15.5px;
-        line-height: 1.4;
-    }
-    .game-filters {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px 18px;
-        margin-top: 10px;
-    }
-    .game-search {
-        display: flex;
-        flex: 1 1 220px;
-        align-items: center;
-        gap: 12px;
-    }
-    .game-search input {
-        flex: 1;
-        min-width: 0;
-    }
-    /* Set as the chips' legends are, so the three filters read as one set. */
-    .game-filters legend,
-    .game-search-label {
-        width: 52px;
-        margin-right: 0;
-    }
-    .game-search-label {
-        font: 500 12px / 1 var(--f-mono);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--ink-soft);
-    }
-    .game-filters .filter-chip span {
-        justify-content: center;
-        min-width: 44px;
-    }
-    /* On a phone each label sits over its chips, so Any and the four grades keep to one line. */
-    @media (max-width: 520px) {
-        /* the page leaves 24px above the card on a phone */
-        .game-heading {
-            padding-bottom: 40px;
-        }
-        .game-filters .filter-chips legend {
-            float: none;
-            width: 100%;
-            margin-bottom: 6px;
-        }
-        .game-filters .filter-chips {
-            gap: 5px;
-        }
-        .game-filters .filter-chip span {
-            padding: 0 12px;
-        }
-        .game-search {
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .game-search-label {
-            width: 100%;
-        }
-    }
-    .game-none {
-        margin: 0 0 20px;
-        text-align: center;
-        font: 600 16px / 1.4 var(--f-read);
-        color: var(--ink-soft);
-    }
-    h1 {
-        font: 650 clamp(28px, 4vw, 46px)/1.2 var(--f-hand);
-        margin: 8px 0;
-    }
-    .game-kicker {
-        color: var(--pen);
-        font: 14px var(--f-mono);
+        padding-bottom: var(--card-gap);
     }
     .game-library {
         display: grid;
@@ -192,7 +101,7 @@
         gap: 12px;
     }
     .game-toolbar h1 {
-        font-size: 28px;
+        font: 650 28px / 1.2 var(--f-hand);
         flex: 1;
     }
     .game-toolbar select {
@@ -226,12 +135,6 @@
         margin-top: 20px;
         font-size: 14px;
     }
-    .game-options label {
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
     .game-keys {
         color: var(--ink-soft);
         font-size: 14px;
@@ -254,7 +157,7 @@
         outline-offset: 3px;
     }
 
-    .field {
+    .game-field {
         position: relative;
         overflow: hidden;
         flex: 0 0 auto;
@@ -655,12 +558,12 @@
     .board {
         align-items: center;
     }
-    .field {
+    .game-field {
         box-shadow: none;
         border-radius: 0;
     }
     /* a turn game's board stays a sheet on the table */
-    .field.scene {
+    .game-field.scene {
         border-radius: 4px;
         box-shadow:
             0 1px 0 #0000001a,
@@ -819,10 +722,6 @@
     .game-menu-heading h2 {
         font: 650 28px/1.2 var(--f-hand);
         margin: 8px 0 0;
-    }
-    .game-menu-heading .game-kicker {
-        font-size: 12px;
-        margin: 0;
     }
     .game-stamp {
         padding: 7px;

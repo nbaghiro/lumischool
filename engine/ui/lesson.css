@@ -544,3 +544,148 @@
     min-width: 0;
     padding: 0;
 }
+
+/* On paper a sheet is laid out as the old exercise-book sheets were, which the catalogue was written
+   to (.docs/parent-app.md, "Printing a lesson"): a square is 5 mm, the printer's margin is the sheet's
+   margin, text sits on the rows and a gap is one row. The widest scene (SCENE_COLS, 37 squares) and
+   the one square a question's number takes are the 38 squares A4 has inside Chrome's 10 mm margins,
+   which engine/ui/__tests__/lesson.test.ts holds this block to. Its page is 55 rows deep inside its
+   margins, so a sheet that runs on starts each page on a row and the squares under it line up. */
+@media print {
+    @page lesson {
+        margin: 11mm 10mm;
+    }
+    .ls-sheet {
+        page: lesson;
+        --sq: 5mm;
+        width: 100% !important;
+        padding: 0;
+        box-shadow: none;
+        rotate: none;
+    }
+    /* world.css's .wd-sheet sets a padding and a gap, and which of the two files loads last differs
+       from one visit to the next, which left some prints four squares narrower */
+    .ls-sheet.wd-sheet {
+        padding: 0;
+        gap: 0;
+    }
+    .ls-sheet .j-strip,
+    .ls-sheet.narrow .j-strip {
+        align-items: center;
+        height: calc(2 * var(--sq));
+        padding: 0;
+    }
+    .ls-sheet .ls-head {
+        gap: 0;
+        padding: 0 0 var(--sq);
+    }
+    .ls-sheet .ls-head h2 {
+        font: 700 7.2mm / 10mm var(--f-hand);
+    }
+    .ls-sheet .ls-sec {
+        gap: var(--sq);
+        padding: 0 0 var(--sq);
+    }
+    /* a heading takes two rows and its first block starts on the row after them */
+    .ls-sheet .ls-sec h3 {
+        margin-bottom: calc(-1 * var(--sq));
+        font-size: 5.2mm;
+        line-height: calc(2 * var(--sq));
+        break-after: avoid;
+    }
+    .ls-sheet :is(.ls-goal, .ls-say p, .ls-ask, .ls-answer, .ls-note, .ls-hints, .ls-grownups p) {
+        max-width: calc(34 * var(--sq));
+        font-size: 3.9mm;
+        line-height: var(--sq);
+    }
+    /* grades one and two read at two rows to a line, as their screen does */
+    .ls-sheet.big :is(.ls-goal, .ls-say p, .ls-ask) {
+        font-size: 5.4mm;
+        line-height: calc(2 * var(--sq));
+    }
+    .ls-sheet .ls-say p + p {
+        margin-top: var(--sq);
+    }
+    /* questions narrow enough to stand side by side share a row, and the rest take a row each */
+    .ls-sheet .ls-grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: var(--sq) calc(2 * var(--sq));
+    }
+    .ls-sheet .ls-q,
+    .ls-sheet.narrow .ls-q {
+        flex: 0 1 auto;
+        gap: 0;
+        min-width: 0;
+        max-width: 100%;
+        padding-left: var(--sq);
+    }
+    /* the answer and hints stand beside a drawing that leaves eight squares free, rather than under
+       it, so a question with the key takes no more rows than its drawing */
+    .ls-sheet .ls-q:has(> .scene-tile) {
+        flex-flow: row wrap;
+        align-items: flex-start;
+        gap: 0 var(--sq);
+    }
+    .ls-sheet .ls-q:has(> .scene-tile) > .ls-answer {
+        flex: 1 1 calc(8 * var(--sq));
+    }
+    /* the answer and each hint run on as one paragraph, a row saved for every hint a line would take */
+    .ls-sheet .ls-answer br {
+        display: none;
+    }
+    .ls-sheet .ls-answer .label:not(:first-child) {
+        margin-left: calc(var(--sq) / 2);
+    }
+    /* the sheet on the squares it was laid out on, which a grown-up can turn off before printing */
+    .ls-squared .ls-sheet {
+        background-image:
+            linear-gradient(var(--grid) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: var(--sq) var(--sq);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .ls-sheet .ls-n {
+        top: 0;
+        width: var(--sq);
+        height: var(--sq);
+        border: 0;
+        border-radius: 0;
+        font: 700 4mm / 5mm var(--f-hand);
+    }
+    .ls-sheet .ls-grownups,
+    .ls-sheet.narrow .ls-grownups {
+        gap: 0;
+        margin: 0;
+        padding: 0 0 0 var(--sq);
+        border-radius: 0;
+        background: none;
+    }
+    /* a question and a drawing never split across pages, and a drawing is kept short enough to share
+       a page with what is above it */
+    .ls-sheet :is(.scene-tile, .ls-q) {
+        break-inside: avoid;
+    }
+    .ls-sheet .ls-scene svg.scene-svg {
+        max-height: 14cm;
+    }
+}
+
+/* A long lesson prints in sittings (sittingsOf in engine/pack.ts) while the screen shows it whole and
+   in its order, so the sittings' headings and a section a sitting moves or cuts are paper's alone,
+   and the section whole in its place is the screen's (laidOut). */
+@media not print {
+    .ls-sheet .ls-on-paper {
+        display: none;
+    }
+}
+@media print {
+    .ls-sheet .ls-on-screen {
+        display: none;
+    }
+    .ls-sheet .ls-sitting-next {
+        break-before: page;
+    }
+}

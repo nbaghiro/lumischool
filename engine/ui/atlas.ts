@@ -66,6 +66,14 @@ export function atlas<Pixels = TexImageSource>(
     return {
         /** Everything the pages hold on the GPU. */
         bytes,
+        /** The size class a drawing `w` by `h` with its padding takes a cell of, or null when it takes none. */
+        classOf: (w: number, h: number): string | null =>
+            w > CELL || h > CELL ? null : `${classOf(w)}x${classOf(h)}`,
+        /** The size class of the cell a slot is in, and the page it is on. */
+        cellOf(slot: Slot): { key: string; page: GlTexture } | null {
+            const cell = cells.get(slot);
+            return cell ? { key: cell.key, page: cell.page.texture } : null;
+        },
         /** A cell for a drawing `w` by `h` with its padding, or null when none fits the budget. */
         place(w: number, h: number): Slot | null {
             if (w > CELL || h > CELL) return null;

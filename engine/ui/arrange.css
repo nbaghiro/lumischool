@@ -13,7 +13,8 @@
     pointer-events: none;
 }
 .ar-hands button,
-.ar-knife {
+.ar-knife,
+.ar-bar-set {
     position: absolute;
     pointer-events: auto;
     background: transparent;
@@ -136,4 +137,34 @@
     .ls-hints {
         display: none;
     }
+}
+
+/* a bar's slider runs up its column, nought at the foot, and is seen only when the keyboard is on it,
+   since the chart draws the bar and its handle */
+.ar-bar-set {
+    z-index: 1;
+    cursor: ns-resize;
+    appearance: none;
+    -webkit-appearance: none;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    opacity: 0;
+}
+.ar-bar-set:focus-visible {
+    opacity: 1;
+    background: transparent;
+}
+.ar-bar-set::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 0;
+    height: 0;
+}
+.ar-bar-set::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border: 0;
+}
+.ar-bar-set:disabled {
+    cursor: default;
 }

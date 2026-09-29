@@ -7,6 +7,8 @@ import {
     cutAreas,
     cutLayout,
     cuttingOf,
+    barHeights,
+    barsOf,
     plankAreas,
     plankLayout,
     plankOf,
@@ -571,18 +573,29 @@ export function renderLaidOut(host: Element, scene: Scene, o: SceneOptions): SVG
                     vopts,
                 );
                 break;
-            case "bargraph":
+            case "bargraph": {
+                // bars the child sets stand where they were set, with handles only while they are
+                // being set: read or printed, they are columns to shade, and once checked, as set
+                const bars = barsOf(c.v);
+                const shown = o.arranged?.[c.id];
+                const set = Number(v.set ?? 0);
                 r = render(
                     barGraph,
                     {
                         labels: labels(v.labels),
-                        values: nums(v.values),
+                        values:
+                            typeof bars === "object" && shown
+                                ? barHeights(bars, shown.places)
+                                : nums(v.values),
                         max: Number(v.max ?? 0),
                         color: markerOf(v.color, "sky"),
+                        set: set === 1 && (paper || !shown || shown.checked) ? 2 : set,
+                        touch: Number(v.touch ?? 0),
                     },
                     vopts,
                 );
                 break;
+            }
             case "art": {
                 const d = drawingOf(`file:${textOf(c, "asset")?.filled ?? ""}`);
                 if (d) r = render(d, d.params, vopts);
@@ -602,6 +615,9 @@ export function renderLaidOut(host: Element, scene: Scene, o: SceneOptions): SVG
                         labels: labels(v.labels),
                         values: nums(v.values),
                         max: Number(v.max ?? 0),
+                        min: Number(v.min ?? 0),
+                        per: Number(v.per ?? 1),
+                        step: Number(v.step ?? 0),
                         color: markerOf(v.color, "berry"),
                     },
                     vopts,

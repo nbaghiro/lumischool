@@ -101,12 +101,14 @@ const readDay = (v: unknown): ChildRecord["plan"][number]["days"][number] | null
     day(v.on) &&
     (v.kind === "lesson" || v.kind === "again" || v.kind === "practice" || v.kind === "off") &&
     (v.lesson === undefined || str(v.lesson)) &&
-    (v.note === undefined || str(v.note))
+    (v.note === undefined || str(v.note)) &&
+    (v.part === undefined || num(v.part))
         ? {
               on: v.on,
               kind: v.kind,
               ...(str(v.lesson) ? { lesson: v.lesson } : {}),
               ...(str(v.note) ? { note: v.note } : {}),
+              ...(num(v.part) ? { part: v.part } : {}),
           }
         : null;
 

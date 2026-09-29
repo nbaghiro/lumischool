@@ -201,7 +201,13 @@ export type MaskShape =
     | { kind: "disc"; x: number; y: number; r: number; soft: number }
     | { kind: "fill"; shape: GlShape }
     | { kind: "cut"; shape: GlShape }
-    | { kind: "strokes"; strokes: GlStrokes; width: number };
+    | {
+          kind: "strokes";
+          strokes: GlStrokes;
+          width: number;
+          /** Drawn `f` times their size about (x, y), so strokes made once serve a growing shape. */
+          grow?: { f: number; x: number; y: number };
+      };
 
 export interface GlMask {
     /** Null where the map knows the whole country. */
@@ -1166,14 +1172,22 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                             gl.uniform1f(at("soft"), s.soft);
                             gl.bindVertexArray(quadVao);
                             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-                        } else if (s.kind === "strokes")
+                        } else if (s.kind === "strokes") {
+                            const g = s.grow;
                             strokeRun(
                                 { strokes: s.strokes, colour: "#fff", width: s.width, dash: [] },
-                                view,
-                                pixel,
+                                g
+                                    ? [
+                                          view[0] * g.f,
+                                          view[1] * g.f,
+                                          view[2] + view[0] * g.x * (1 - g.f),
+                                          view[3] + view[1] * g.y * (1 - g.f),
+                                      ]
+                                    : view,
+                                g ? pixel / g.f : pixel,
                                 null,
                             );
-                        else if (s.kind === "fill")
+                        } else if (s.kind === "fill")
                             fill(s.shape, [1, 1, 1, 1], view, 0, screen, writes);
                         else {
                             gl.disable(gl.BLEND);

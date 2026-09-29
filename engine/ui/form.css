@@ -52,8 +52,7 @@
 }
 .field input,
 .field select,
-.zone-pick select,
-.game-search input {
+.zone-pick select {
     width: 100%;
     min-height: 44px;
     padding: 8px 2px 4px;
@@ -71,14 +70,12 @@
     color: var(--ink);
 }
 .field input:hover,
-.field select:hover,
-.game-search input:hover {
+.field select:hover {
     background: color-mix(in srgb, var(--sky) 10%, transparent);
 }
 .field input:focus-visible,
 .field select:focus-visible,
-.zone-pick select:focus-visible,
-.game-search input:focus-visible {
+.zone-pick select:focus-visible {
     outline: 2px dashed var(--pen);
     outline-offset: 4px;
     border-bottom-color: var(--pen);
@@ -95,24 +92,113 @@
     padding: 0;
     border: 0;
 }
+
+/* The search a tab's head carries (form.tsx): the field's name beside it rather than above it, and
+   what the page found on the same line while there is room for it. */
+.search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+}
+.search-field {
+    flex: 1 1 420px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+/* The name reads as one line: broken in two it looks like a fault rather than a label. */
+.search-field .field-label {
+    flex: none;
+    white-space: nowrap;
+}
+.search-field input {
+    flex: 1 1 200px;
+    margin-top: 0;
+    font-size: 18px;
+}
+.search-found {
+    margin: 0;
+    font: 700 15px / 1.3 var(--f-read);
+    color: var(--ink);
+    white-space: nowrap;
+}
+@media (max-width: 700px) {
+    .search-field {
+        flex-basis: 100%;
+        flex-wrap: wrap;
+    }
+    .search-field .field-label {
+        flex-basis: 100%;
+    }
+}
 .fieldset legend {
     margin-bottom: 2px;
 }
 
+/* The tick (form.tsx): the browser's box is laid over the whole row, unseen, so the row is the target
+   and the keyboard and a screen reader still have the real control; the box a reader sees is drawn in
+   the outline the buttons and choices use, and fills with the pen when ticked. */
 .check {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     min-height: 44px;
-    font-size: 14px;
+    font-size: 14.5px;
     line-height: 1.35;
     cursor: pointer;
 }
 .check input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.check-box {
     flex: none;
-    width: 20px;
-    height: 20px;
-    accent-color: var(--pen);
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 45%, var(--card));
+    border-radius: 6px;
+    background: var(--card);
+    transition:
+        background-color 120ms,
+        border-color 120ms;
+}
+.check-box::after {
+    content: "";
+    width: 10px;
+    height: 5px;
+    margin-top: -3px;
+    border-left: 2.5px solid var(--card);
+    border-bottom: 2.5px solid var(--card);
+    rotate: -45deg;
+    opacity: 0;
+}
+.check:hover .check-box {
+    border-color: var(--pen);
+}
+.check input:checked + .check-box {
+    border-color: var(--pen);
+    background: var(--pen);
+}
+.check input:checked + .check-box::after {
+    opacity: 1;
+}
+.check input:focus-visible + .check-box {
+    outline: 2px dashed var(--pen);
+    outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+    .check-box {
+        transition: none;
+    }
 }
 
 .acts {

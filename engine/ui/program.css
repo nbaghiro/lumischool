@@ -85,3 +85,30 @@
     outline: 2px dashed var(--pen);
     outline-offset: 3px;
 }
+.pg-figure[aria-pressed="true"] {
+    border-color: var(--pen);
+    box-shadow: inset 0 0 0 1px var(--pen);
+}
+.pg-number {
+    width: 5.5em;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 35%, #fff);
+    border-radius: 10px;
+    font: 600 17px / 1 var(--f-read);
+    color: var(--ink);
+}
+.pg-step {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 35%, #fff);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    font: 600 16px / 1 var(--f-read);
+}
+.pg-step:disabled {
+    opacity: 0.45;
+    cursor: default;
+}

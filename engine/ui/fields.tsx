@@ -1,6 +1,6 @@
 // The grown-ups' controls a sheet is filled in with, apart from form.tsx so the child's script never
 // carries them (.docs/structure.md): a field with its label, hint and what is wrong with it, a list
-// to choose from, the tick, a button that reads as a link, the time zone offered rather than asked,
+// to choose from, a button that reads as a link, the time zone offered rather than asked,
 // the eight-digit code in eight boxes, and a row to choose. Their styles are form.css, one sheet for
 // both.
 
@@ -93,25 +93,6 @@ export function SelectField(props: {
                 </For>
             </Select>
         </div>
-    );
-}
-
-export function Check(props: {
-    label: JSX.Element;
-    checked: boolean;
-    onChange: (checked: boolean) => void;
-    name?: string;
-}): JSX.Element {
-    return (
-        <label class="check">
-            <input
-                type="checkbox"
-                name={props.name}
-                checked={props.checked}
-                onChange={(e) => props.onChange(e.currentTarget.checked)}
-            />
-            <span>{props.label}</span>
-        </label>
     );
 }
 

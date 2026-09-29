@@ -109,6 +109,8 @@ export function Postcard(props: {
     note?: boolean;
     /** A note is untaped unless it stands on the map as a card of its own, such as a tab's heading. */
     taped?: boolean;
+    /** A tab's first card: one width, one set of paddings, and the page's controls under the words. */
+    head?: boolean;
     wide?: boolean;
     under?: boolean;
     reply?: boolean;
@@ -119,12 +121,33 @@ export function Postcard(props: {
     onMount(() => {
         if (props.focus !== false && !props.under && title) focusOnceShown(title);
     });
+    const Words = (): JSX.Element => (
+        <>
+            <p class="kicker">{props.kicker}</p>
+            <h1
+                id={id}
+                class="postcard-title"
+                tabindex={-1}
+                ref={(el) => {
+                    title = el;
+                }}
+            >
+                {props.title}
+            </h1>
+            <Show when={props.lead}>
+                <p class="postcard-lead" id={props.leadId}>
+                    {props.lead}
+                </p>
+            </Show>
+        </>
+    );
     return (
         <article
             class="postcard"
             classList={{
                 one: !props.address,
-                note: !!props.note,
+                "postcard-note": !!props.note,
+                "page-head": !!props.head,
                 wide: !!props.wide,
                 under: !!props.under,
                 reply: !!props.reply,
@@ -139,21 +162,10 @@ export function Postcard(props: {
                 <span class="postcard-tape r" aria-hidden="true" />
             </Show>
             <div class="postcard-msg">
-                <p class="kicker">{props.kicker}</p>
-                <h1
-                    id={id}
-                    class="postcard-title"
-                    tabindex={-1}
-                    ref={(el) => {
-                        title = el;
-                    }}
-                >
-                    {props.title}
-                </h1>
-                <Show when={props.lead}>
-                    <p class="postcard-lead" id={props.leadId}>
-                        {props.lead}
-                    </p>
+                <Show when={props.head} fallback={<Words />}>
+                    <div class="page-head-words">
+                        <Words />
+                    </div>
                 </Show>
                 {props.children}
             </div>

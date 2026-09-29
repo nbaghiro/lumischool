@@ -17,7 +17,8 @@ import type {
 } from "../../server/api";
 import type { Content, Family, Kid, Member } from "../../server/db/schema";
 import type { Draft, Envelope, EventKind } from "../answer";
-import type { PackLesson, PackScene } from "../pack";
+import type { PackBook, PackLesson, PackScene } from "../pack";
+import type { Page } from "../page";
 import {
     call as wireCall,
     list,
@@ -320,6 +321,14 @@ export async function addKid(input: {
     return kid ? { kid } : unreadable(a.status);
 }
 
+/** Moves a kid to the grade next to theirs, up or back, from today. */
+export async function moveKid(kid: string, grade: number): Promise<{ kid: Kid } | Failure> {
+    const a = await call("POST", `/api/kids/${encodeURIComponent(kid)}/move-up`, { grade });
+    if (!a.ok) return a.failure;
+    const moved = obj(a.body) ? readKid(a.body.kid) : null;
+    return moved ? { kid: moved } : unreadable(a.status);
+}
+
 /**
  * Opens a child view in this tab while preserving the shared parent session and sign-in hint.
  */
@@ -451,7 +460,7 @@ export async function pack(): Promise<PackView | Failure> {
 }
 
 /** A file of the pack, by the path its index names, under `dir`. */
-const packFile = (digest: string, dir: "lessons" | "scenes", file: string): string =>
+const packFile = (digest: string, dir: "lessons" | "scenes" | "books", file: string): string =>
     `/api/pack/${encodeURIComponent(digest)}/${dir}/${encodeURIComponent(file.replace(`${dir}/`, ""))}`;
 
 /**
@@ -487,6 +496,13 @@ const sceneAt = once(async (path): Promise<PackScene | Failure> => {
     return read.ok ? read.first : unreadable(a.status);
 });
 
+const bookAt = once(async (path): Promise<PackBook | Failure> => {
+    const [a, { readBook }] = await Promise.all([call("GET", path), readers()]);
+    if (!a.ok) return refused(a.failure);
+    const read = readBook(a.body);
+    return read.ok ? read.book : unreadable(a.status);
+});
+
 /** A lesson's file from the pack, which the browser may keep for a year. */
 export const packLesson = (digest: string, file: string): Promise<PackLesson | Failure> =>
     lessonAt(packFile(digest, "lessons", file));
@@ -494,6 +510,10 @@ export const packLesson = (digest: string, file: string): Promise<PackLesson | F
 /** A lesson's first drawing from the pack, for a page that shows the lesson without opening it. */
 export const packScene = (digest: string, file: string): Promise<PackScene | Failure> =>
     sceneAt(packFile(digest, "scenes", file));
+
+/** A book lesson's text from the pack, read when one of its sittings is opened. */
+export const packBook = (digest: string, file: string): Promise<PackBook | Failure> =>
+    bookAt(packFile(digest, "books", file));
 
 /** A new id for something this browser writes, which is what makes a retried append harmless. */
 export const newId = (): string => crypto.randomUUID();
@@ -649,21 +669,27 @@ function readArtwork(v: unknown): import("../../server/api").ArtworkSummary | nu
         updated_by: v.updated_by,
     };
 }
+/** A page as the API sends one (engine/page.ts), its items read by `read`, or null when it is not one. */
+function readPage<T>(v: unknown, read: (x: unknown) => T | null): Page<T> | null {
+    if (!obj(v) || !strOrNull(v.next)) return null;
+    const items = list(v.items, read);
+    if (!items) return null;
+    if (v.total === undefined) return { items, next: v.next };
+    return num(v.total) ? { items, next: v.next, total: v.total } : null;
+}
+/** A page of a gallery, newest first, narrowed to titles with words starting as `words` do. */
 export async function paintingList(
     scope: import("../../server/api").PaintingScope,
-    before?: string,
-): Promise<
-    { artworks: import("../../server/api").ArtworkSummary[]; next: string | null } | Failure
-> {
-    const a = await call(
-        "GET",
-        `/api/paintings?${new URLSearchParams({ ...(scope.kid_id ? { kid_id: scope.kid_id } : {}), ...(before ? { before } : {}) })}`,
-    );
+    after?: string,
+    words?: string,
+): Promise<Page<import("../../server/api").ArtworkSummary> | Failure> {
+    const q = new URLSearchParams();
+    if (scope.kid_id) q.set("kid_id", scope.kid_id);
+    if (after) q.set("after", after);
+    if (words?.trim()) q.set("q", words.trim());
+    const a = await call("GET", `/api/paintings?${q}`);
     if (!a.ok) return refused(a.failure);
-    const artworks = obj(a.body) ? list(a.body.artworks, readArtwork) : null;
-    return artworks && obj(a.body) && strOrNull(a.body.next)
-        ? { artworks, next: a.body.next }
-        : unreadable(a.status);
+    return readPage(a.body, readArtwork) ?? unreadable(a.status);
 }
 export async function paintingLoad(
     id: string,

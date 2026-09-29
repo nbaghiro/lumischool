@@ -1,5 +1,5 @@
 // A program as a child builds it in a pad's slots (program.tsx): blocks added from the tray, moved,
-// set inside a repeat or an if above them, their numbers changed, taken out and put back with undo.
+// set inside a repeat or an if above them, any of their numbers changed, taken out and put back with undo.
 // Each change says in words what it did, for a screen reader and the line under the pad. A block is
 // never further in than one step inside a repeat or an if above it, so the program is always one the
 // interpreter can read (.docs/coding.md, "The editor").
@@ -23,6 +23,17 @@ export interface Pad {
     slots: number;
     /** The tray is a set of cards to put in order: each used once, and its number fixed. */
     once: boolean;
+    /** The longest move the world has room for, its longer side in squares; 20 when not given. */
+    most?: number;
+}
+
+/** A number on a block: where it is in the words, what it is, and the least and most it may be. */
+export interface Figure {
+    at: number;
+    value: number;
+    what: string;
+    lo: number;
+    hi: number;
 }
 
 /** A change, and what it says; `build` is null when nothing changed. */
@@ -33,10 +44,37 @@ export interface Changed {
 
 export const EMPTY: Build = { blocks: [], chosen: -1 };
 
-const HOLDS = /^(repeat|if|otherwise|else|define|to)\b/i;
-const NUMBER = /-?\d+/;
-/** The most a block's number goes to. */
-const MOST = 20;
+const HOLDS = /^(repeat|for|if|otherwise|else|define|to)\b/i;
+// a number standing on its own, not the octave in a note such as E4
+const NUMBERS = /(?<![\w-])-?\d+(?!\w)/g;
+const MOVES = /^(go\s+)?(right|left|up|down|forward|back)$/i;
+
+/**
+ * What a number on a block means, read from the words before it, and so how far it goes: a turn in
+ * degrees less than a whole turn, a move no longer than the world, a count of times, a place in a
+ * list, and otherwise a number a name holds, which a list's cell has room for three figures of.
+ */
+function meaning(before: string, most: number): Pick<Figure, "what" | "lo" | "hi"> {
+    const words = before.trim().toLowerCase();
+    if (/^turn\s+(left|right)$/.test(words)) return { what: "degrees", lo: 1, hi: 359 };
+    if (MOVES.test(words)) return { what: "squares", lo: 1, hi: most };
+    if (/^repeat$/.test(words)) return { what: "times", lo: 1, hi: 99 };
+    if (/\bitem$/.test(words)) return { what: "place in the list", lo: 1, hi: 99 };
+    if (/^(clap|jump|spin|wave|stamp|hop|bow|play\s+\S+)$/.test(words))
+        return { what: "beats", lo: 1, hi: 20 };
+    if (words.endsWith("/")) return { what: "parts", lo: 1, hi: 99 };
+    return { what: "number", lo: -99, hi: 999 };
+}
+
+/** Every number on a block, in the order the words give them. */
+export function figuresOf(text: string, pad: Pad): Figure[] {
+    const most = Math.max(1, Math.round(pad.most ?? 20));
+    return [...text.matchAll(NUMBERS)].map((m) => ({
+        at: m.index,
+        value: Number(m[0]),
+        ...meaning(text.slice(0, m.index), most),
+    }));
+}
 
 /** The deepest a block at `i` may go: one further in than a repeat or an if above it, or level with the block above. */
 function deepest(blocks: readonly ProgramLine[], i: number): number {
@@ -126,14 +164,23 @@ export function deepen(b: Build, by: -1 | 1): Changed {
     };
 }
 
-/** The chosen block's number one more (1) or one fewer (-1), from 1 to 20. A card's number is fixed. */
-export function count(b: Build, pad: Pad, by: -1 | 1): Changed {
+/**
+ * The chosen block's number `which` (from 0, in the order the words give them) set to `to`, kept
+ * inside what the number means. A card's number is fixed.
+ */
+export function setCount(b: Build, pad: Pad, which: number, to: number): Changed {
     const here = b.blocks[b.chosen];
     if (!here || pad.once) return unchanged("");
-    const m = NUMBER.exec(here.text);
-    if (!m) return unchanged(`${here.text} has no number to change.`);
-    const n = Math.max(1, Math.min(MOST, Number(m[0]) + by));
-    const text = here.text.replace(NUMBER, String(n));
+    const f = figuresOf(here.text, pad)[which];
+    if (!f) return unchanged(`${here.text} has no number to change.`);
+    const n = Math.max(f.lo, Math.min(f.hi, Math.round(to)));
+    if (!Number.isFinite(n) || n === f.value)
+        return unchanged(
+            n === f.value && to !== f.value
+                ? `${here.text}: ${f.value} is ${n === f.hi ? "the most" : "the least"} it can be.`
+                : "",
+        );
+    const text = `${here.text.slice(0, f.at)}${n}${here.text.slice(f.at + String(f.value).length)}`;
     return {
         build: {
             blocks: b.blocks.map((x, i) => (i === b.chosen ? { ...x, text } : x)),
@@ -141,6 +188,15 @@ export function count(b: Build, pad: Pad, by: -1 | 1): Changed {
         },
         said: `${text}.`,
     };
+}
+
+/** The chosen block's number `which` one more (1) or one fewer (-1). */
+export function count(b: Build, pad: Pad, by: -1 | 1, which = 0): Changed {
+    const here = b.blocks[b.chosen];
+    if (!here || pad.once) return unchanged("");
+    const f = figuresOf(here.text, pad)[which];
+    if (!f) return unchanged(`${here.text} has no number to change.`);
+    return setCount(b, pad, which, f.value + by);
 }
 
 /** What the tools can do with the chosen block, for their buttons. */
@@ -154,7 +210,7 @@ export function can(
         down: !!here && b.chosen < b.blocks.length - 1,
         in: !!here && here.depth < deepest(b.blocks, b.chosen),
         out: !!here && here.depth > 0,
-        count: !!here && !pad.once && NUMBER.test(here.text),
+        count: !!here && !pad.once && figuresOf(here.text, pad).length > 0,
         take: !!here,
     };
 }

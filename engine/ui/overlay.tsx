@@ -3,7 +3,7 @@
 // with the same map and roll the grown-ups' map screen draws, from views the page hands in, since
 // only the page may build them. Where it looks is the address after the `#` (hash.ts), so back,
 // Escape and a shared link all work; focus is held inside it and given back on close; nothing is
-// recorded. It opens the same way over every page: the site's opening, the grown-ups' catalogue.
+// recorded. The site's opening opens it over its page.
 
 import "./overlay.css";
 import type { MapView } from "../space";

@@ -1,0 +1,28 @@
+.paged-end {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.paged-said,
+.paged-failed {
+    margin: 0;
+    color: var(--ink-soft);
+    font: 15px/1.4 var(--f-read);
+}
+.paged-failed {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 12px;
+    color: var(--ink);
+}
+.paged-retry {
+    min-height: 44px;
+    padding: 0 4px;
+    border: 0;
+    background: none;
+    color: var(--pen);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}

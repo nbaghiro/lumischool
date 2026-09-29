@@ -761,6 +761,9 @@ function partsOf(svg: SVGSVGElement, a: Declared, seed: number): Part[] {
     for (const [name, move] of Object.entries(a.parts ?? {})) {
         for (const frame of framesOf(svg)) {
             partEls(frame, name, move).forEach((el, i) => {
+                // a part the scene draws on its own (map-scene.ts) is known by one of these two marks
+                if (!el.hasAttribute("data-part") && !el.hasAttribute("data-anim-part"))
+                    el.setAttribute("data-anim-part", name);
                 const symmetry = Number(el.getAttribute("data-symmetry")) || undefined;
                 out.push({
                     el,

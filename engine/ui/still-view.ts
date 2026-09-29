@@ -41,7 +41,7 @@ export class StillView implements FieldView {
     constructor(o: { host: HTMLElement; art: Map<string, Drawing<unknown>> }) {
         this.art = o.art;
         this.el = document.createElement("div");
-        this.el.className = "field field-still";
+        this.el.className = "game-field field-still";
         this.ink = el("svg", { "aria-hidden": "true" });
         Object.assign(this.ink.style, {
             position: "absolute",

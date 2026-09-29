@@ -151,3 +151,44 @@ test("a part read off the shelf is named for the page to load, and drawn once it
     const svg = fake(draw(host, SCENE, { output: "paper" }));
     assert.deepEqual(drawn(svg), ["tenframe", "sweetjar"]);
 });
+
+test("a chart whose bars the child sets has handles only while they are being set, and stands each bar where it was set", () => {
+    const opt = (label: string) => ({ kind: "text" as const, label, value: label });
+    const chart: Scene = {
+        size: [12, 10],
+        nodes: [
+            {
+                type: "bargraph",
+                id: "chart",
+                v: { labels: [opt("A"), opt("B")], values: [2, 0], max: 4, set: 1 },
+                place: { rel: "at", x: 1, y: 1 },
+            },
+        ],
+        arrows: [],
+        marks: [],
+        boxes: { chart: { x: 1, y: 1, w: 10, h: 8 } },
+    };
+    // on the screen the palette is read off the page, which here has none set, so it reads as print's
+    Object.assign(globalThis, { getComputedStyle: () => ({ getPropertyValue: () => "" }) });
+    const size = (o: Parameters<typeof renderLaidOut>[2]): number =>
+        fake(renderLaidOut(host, chart, o)).all().length;
+    const read = size({});
+    const setting = size({ arranged: { chart: { places: [], checked: false } } });
+    const set = size({
+        arranged: { chart: { places: [{ piece: "bar(1)", at: 3 }], checked: false } },
+    });
+    const checked = size({
+        arranged: { chart: { places: [{ piece: "bar(1)", at: 3 }], checked: true } },
+    });
+    // read or printed, the columns are there to shade and no handle is drawn
+    assert.ok(setting > read);
+    // a bar set above nought is drawn filled
+    assert.ok(set > setting);
+    // let go, the handles go and the bars stay
+    assert.ok(checked < set && checked > read);
+    // on paper there are no handles, even while nothing is set
+    assert.equal(
+        size({ output: "paper", arranged: { chart: { places: [], checked: false } } }),
+        read,
+    );
+});

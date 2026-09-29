@@ -3,11 +3,14 @@ import type { Picture } from "../painting";
 import { isPicture } from "../painting";
 import type { ArtworkSummary } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
+import { onThisComputer } from "./device";
 import { Button } from "./form";
 import { Field } from "./fields";
 import { Portrait } from "./kids";
 import { Say } from "./say";
 import { Dialog, CloseX } from "./dialog";
+import type { Source } from "./paged";
+import { createPaged, ListEnd, readOnLastFocus } from "./paged-list";
 import { PaintingWorkspace, type PaintingLayout } from "./painting";
 import { IDEAS } from "./painting-ideas";
 import { downloadPicture, pictureThumbnail, renderPicture } from "./painting-preview";
@@ -21,6 +24,17 @@ import "./painting-gallery.css";
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
     typeof v === "object" && v !== null && !Array.isArray(v);
+
+const local = onThisComputer(location.hostname);
+
+/** The pictures a page of the wall holds, which the route also defaults to (.docs/pagination.md). */
+const PAGE = 24;
+
+/** Whose wall is read, and how many times it has been read again since a picture was saved or removed. */
+interface Wall {
+    kid_id: string | null;
+    round: number;
+}
 
 export function PaintingGallery(props: {
     gateway: PaintingGateway;
@@ -59,39 +73,31 @@ export function PaintingGallery(props: {
     const [rename, setRename] = createSignal<{ document: Picture; artwork: ArtworkSummary }>();
     const [title, setTitle] = createSignal("");
     const [importing, setImporting] = createSignal(false);
-    const [gallery, { refetch, mutate }] = createResource(child, async () => {
-        const owner = scope();
-        const [result, recovery] = await Promise.all([
-            props.gateway.list(owner),
-            loadPaintingRecovery(props.identityKey, owner).catch(() => []),
-        ]);
-        if ("error" in result)
-            return {
-                owner: owner.kid_id ?? "",
-                artworks: [],
-                recovery,
-                next: null as string | null,
-                error: "Your pictures could not be loaded. Try again when you are connected.",
-            };
-        return {
-            owner: owner.kid_id ?? "",
-            artworks: result.artworks,
-            recovery,
-            next: result.next,
-            error: "",
-        };
-    });
+    const [round, setRound] = createSignal(0);
+    const wall = (): Wall => ({ kid_id: child() || null, round: round() });
+    const source: Source<ArtworkSummary, Wall> = (w, after) =>
+        props.gateway.list({ kid_id: w.kid_id }, after ?? undefined);
+    const paged = createPaged(source, wall, { limit: PAGE });
+    const pictures = (): readonly ArtworkSummary[] => paged.state().items;
+    const [recovery, { refetch: refetchRecovery }] = createResource(child, () =>
+        loadPaintingRecovery(props.identityKey, scope()).catch(() => []),
+    );
+    /** Reads the wall again from the top, and the drafts kept on this device. */
+    const refetch = async (): Promise<void> => {
+        setRound(round() + 1);
+        await refetchRecovery();
+    };
     const saved = () => {
         if (shelf()) void refetch();
     };
     window.addEventListener("painting-saved", saved);
     onCleanup(() => window.removeEventListener("painting-saved", saved));
-    const visible = () => (gallery()?.owner === child() ? gallery() : undefined);
     const ownerName = () => props.children.find((kid) => kid.id === child())?.name;
     /** The line under the name: what is happening, or what to do with the pictures under it. */
     const lead = (): string => {
-        if (gallery.loading) return "Opening your pictures…";
-        return visible()?.artworks.length ? "Open a picture to go on painting it." : "";
+        const st = paged.state();
+        if (st.status === "loading" && st.pages === 0) return "Opening your pictures…";
+        return pictures().length ? "Open a picture to go on painting it." : "";
     };
     const fresh = (): Picture => ({
         version: 1,
@@ -266,26 +272,7 @@ export function PaintingGallery(props: {
         if (latest) openEditor(latest.document, latest.revision, latest);
         else openEditor(fresh(), 0);
     });
-    const morePictures = () =>
-        run(async () => {
-            const current = visible();
-            if (!current?.next) return;
-            const result = await props.gateway.list(scope(), current.next);
-            if ("error" in result) throw new Error("list");
-            if (current.owner !== child()) return;
-            mutate({
-                ...current,
-                artworks: [...current.artworks, ...result.artworks],
-                next: result.next,
-            });
-        });
-    const watchMore = (element: HTMLButtonElement) => {
-        const observer = new IntersectionObserver((entries) => {
-            if (entries.some((entry) => entry.isIntersecting)) void morePictures();
-        });
-        observer.observe(element);
-        onCleanup(() => observer.disconnect());
-    };
+    let wallBox: HTMLElement | undefined;
     return (
         <>
             <Show when={shelf()}>
@@ -293,10 +280,8 @@ export function PaintingGallery(props: {
                     <section
                         class="postcard painting-gallery"
                         aria-label="Painting gallery"
-                        onScroll={(event) => {
-                            const node = event.currentTarget;
-                            if (node.scrollHeight - node.scrollTop - node.clientHeight < 200)
-                                void morePictures();
+                        ref={(el) => {
+                            wallBox = el;
                         }}
                     >
                         <CloseX onClose={() => setShelf(false)} />
@@ -324,24 +309,15 @@ export function PaintingGallery(props: {
                             </div>
                         </header>
                         <Notice />
-                        <Show when={visible()?.error}>
-                            {(text) => (
-                                <Say
-                                    tone="error"
-                                    text={text()}
-                                    action={{ label: "Try again", run: () => void refetch() }}
-                                />
-                            )}
-                        </Show>
-                        <Show when={!gallery.loading && visible() && !visible()?.artworks.length}>
+                        <Show when={paged.state().status === "ready" && !pictures().length}>
                             <p class="note painting-gallery-empty">
                                 No pictures here yet. Start a new painting and it will appear.
                             </p>
                         </Show>
-                        <div class="painting-gallery-grid">
-                            <For each={visible()?.artworks}>
+                        <ul class="painting-gallery-grid" onFocusIn={readOnLastFocus(paged)}>
+                            <For each={pictures()}>
                                 {(artwork) => (
-                                    <div class="painting-item">
+                                    <li class="painting-item">
                                         <button
                                             class="painting-picture"
                                             disabled={busy()}
@@ -422,25 +398,20 @@ export function PaintingGallery(props: {
                                                 </button>
                                             </div>
                                         </details>
-                                    </div>
+                                    </li>
                                 )}
                             </For>
-                        </div>
-                        <Show when={visible()?.next}>
-                            <button
-                                type="button"
-                                class="btn second"
-                                aria-disabled={busy() ? true : undefined}
-                                ref={watchMore}
-                                onClick={() => void morePictures()}
-                            >
-                                More pictures
-                            </button>
-                        </Show>
-                        <Show when={visible()?.recovery.length}>
+                        </ul>
+                        <ListEnd
+                            paged={paged}
+                            arrived={(n) => `${n} more ${n === 1 ? "picture" : "pictures"}`}
+                            local={local}
+                            root={() => wallBox}
+                        />
+                        <Show when={recovery()?.length}>
                             <details class="painting-drafts">
                                 <summary>Unfinished drafts on this device</summary>
-                                <For each={visible()?.recovery}>
+                                <For each={recovery()}>
                                     {(entry) => (
                                         <button
                                             type="button"
@@ -467,7 +438,7 @@ export function PaintingGallery(props: {
                 {(item) => (
                     <PaintingWorkspace
                         layout={props.layout ?? "now"}
-                        pictures={visible()?.artworks.slice(0, 8)}
+                        pictures={pictures().slice(0, 8)}
                         onOpenPicture={(artwork) => void open(artwork)}
                         storageKey={props.storageKey}
                         document={item.document}

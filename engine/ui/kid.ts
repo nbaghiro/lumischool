@@ -6,7 +6,7 @@
 
 import type { KidRecord, KidState, KidView, PackView } from "../../server/api";
 import { check, type Draft, type Envelope } from "../answer";
-import type { PackLesson } from "../pack";
+import type { PackBook, PackLesson } from "../pack";
 import {
     call as wireCall,
     list,
@@ -559,27 +559,39 @@ export async function pack(kidId: string): Promise<PackView | Failure> {
         : unreadable(a.status);
 }
 
+/** A file of the pack under `dir`, by the path its index names, read by the pack's own reader. */
+async function packFile<T>(
+    kidId: string,
+    digest: string,
+    dir: "lessons" | "books",
+    file: string,
+    read: (readers: typeof import("../pack"), body: unknown) => T | null,
+): Promise<T | Failure> {
+    const name = encodeURIComponent(file.replace(`${dir}/`, ""));
+    const a = await answered(
+        await call("GET", kidPath(kidId, `pack/${encodeURIComponent(digest)}/${dir}/${name}`)),
+    );
+    if (!a.ok) return a.failure;
+    return read(await readers(), a.body) ?? unreadable(a.status);
+}
+
 /** A lesson's file from the pack, by the file its index names, which the browser may keep for a year. */
-export async function lesson(
+export const lesson = (
     kidId: string,
     digest: string,
     file: string,
-): Promise<PackLesson | Failure> {
-    const name = file.replace(/^lessons\//, "");
-    const a = await answered(
-        await call(
-            "GET",
-            kidPath(
-                kidId,
-                `pack/${encodeURIComponent(digest)}/lessons/${encodeURIComponent(name)}`,
-            ),
-        ),
-    );
-    if (!a.ok) return a.failure;
-    const { readLesson } = await readers();
-    const read = readLesson(a.body);
-    return read.ok ? read.lesson : unreadable(a.status);
-}
+): Promise<PackLesson | Failure> =>
+    packFile(kidId, digest, "lessons", file, (r, body) => {
+        const read = r.readLesson(body);
+        return read.ok ? read.lesson : null;
+    });
+
+/** A book lesson's text from the pack, by the file its index names, read when a sitting opens. */
+export const book = (kidId: string, digest: string, file: string): Promise<PackBook | Failure> =>
+    packFile(kidId, digest, "books", file, (r, body) => {
+        const read = r.readBook(body);
+        return read.ok ? read.book : null;
+    });
 
 /**
  * Leaves the children's view with the family's PIN. What is waiting is sent first, and while any of

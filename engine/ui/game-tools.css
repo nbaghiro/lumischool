@@ -91,16 +91,6 @@
     padding-left: 18px;
     font: 500 13px / 1.4 var(--f-mono);
 }
-.tools-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-}
-.tools-check input {
-    width: 22px;
-    height: 22px;
-}
 .tools-knob {
     display: flex;
     flex-direction: column;

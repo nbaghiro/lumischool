@@ -1,5 +1,5 @@
 // A question answered by arranging the drawing, on a sheet (lesson.tsx): weights to stand on a
-// see-saw plank, a cake to cut. The scene is drawn as it prints, through the sheet's drawer, with
+// see-saw plank, a cake to cut, the bars of a chart to set. The scene is drawn as it prints, through the sheet's drawer, with
 // what the child has put on it; this lays buttons over the pieces and the places they can go, so a
 // piece is dragged, or tapped and then its place tapped, and the keyboard reaches the same buttons.
 // Check lets the drawing go and says what the item's own feedback says. The boards, the layouts and
@@ -12,6 +12,8 @@ import type { Timing } from "../answer";
 import {
     bagIndex,
     bagPiece,
+    barHeights,
+    barPiece,
     CUT,
     PART,
     plankAreas,
@@ -20,10 +22,12 @@ import {
     plankStacks,
     type Arrangement,
     type Board,
+    type Bars,
     type Box,
     type Cutting,
     type Plank,
 } from "../arrange";
+import { barColumn, barValueAt } from "../parts/data/bargraph";
 import { swingTo } from "../motion/lever";
 import { U } from "../paper";
 import type { Scene } from "../scene";
@@ -49,6 +53,7 @@ export interface ArrangedPart {
     board: Board;
     plank: Plank | null;
     cutting: Cutting | null;
+    bars: Bars | null;
     /** An arrangement that is right, drawn once the last try is over. */
     key: Arrangement;
     /** Where the pieces stand now, for a sitting picked up again: as the child left a done question, or nothing. */
@@ -119,6 +124,7 @@ export function ArrangedQuestion(props: {
     let tile: HTMLDivElement | undefined;
     let hands: HTMLDivElement | undefined;
     const cutting = props.part.cutting;
+    const bars = props.part.bars;
     if (cutting)
         setKnife(
             Math.max(cutting.snap, Math.round(cutting.whole / 2 / cutting.snap) * cutting.snap),
@@ -223,7 +229,9 @@ export function ArrangedQuestion(props: {
             props.part.told?.say ??
                 (cutting
                     ? "Move the knife along the cake and press where a cut goes, or use the arrow keys and press Enter. Press a cut again to take it away."
-                    : "Drag a weight onto a step, or tap a weight and then a step. The props hold the plank level until you press Check."),
+                    : bars
+                      ? "Drag a bar up or down its dashed column, or tap the height it goes to. The arrow keys move it one square at a time."
+                      : "Drag a weight onto a step, or tap a weight and then a step. The props hold the plank level until you press Check."),
         );
     });
 
@@ -288,11 +296,29 @@ export function ArrangedQuestion(props: {
         tell(props.part.board.say(next));
     }
 
+    function setBar(i: number, at: number): void {
+        if (!bars || locked()) return;
+        if ((barHeights(bars, places())[i] ?? 0) === at) return;
+        const next = [
+            ...places().filter((x) => x.piece !== barPiece(i)),
+            ...(at > 0 ? [{ piece: barPiece(i), at }] : []),
+        ].sort((x, y) => x.piece.localeCompare(y.piece, "en", { numeric: true }));
+        setPlaces(next);
+        first ||= Date.now();
+        tell(props.part.board.say(next));
+    }
+
     function check(): void {
         if (locked()) return;
         const now = places();
         if (!now.length) {
-            tell(cutting ? "Make a cut first." : "Stand a weight on the plank first.");
+            tell(
+                cutting
+                    ? "Make a cut first."
+                    : bars
+                      ? "Set a bar first."
+                      : "Stand a weight on the plank first.",
+            );
             return;
         }
         const at = Date.now();
@@ -318,7 +344,13 @@ export function ArrangedQuestion(props: {
         setChecked(false);
         setTold(null);
         tell(props.part.board.say(places()));
-        focusKey(cutting ? "knife" : (places()[0]?.piece ?? bagPiece(0)));
+        focusKey(
+            cutting
+                ? "knife"
+                : bars
+                  ? barPiece(bars.open[0] ?? 0)
+                  : (places()[0]?.piece ?? bagPiece(0)),
+        );
     }
     function startAgain(): void {
         if (locked()) return;
@@ -632,6 +664,57 @@ export function ArrangedQuestion(props: {
         );
     };
 
+    /**
+     * The chart's bars: over each column the child sets, a slider up the column that takes the height
+     * a finger drags or taps to, a whole square at a time, and the arrow keys a square at a time.
+     */
+    const barHands = (b: Bars): JSX.Element => {
+        const layout = { labels: b.labels, values: b.values, max: b.top, touch: b.touch };
+        const heightAt = (clientY: number): number => {
+            if (!tile) return 0;
+            const f = frame(),
+                tr = tile.getBoundingClientRect();
+            return barValueAt(layout, ((clientY - tr.top) / f.zoom - f.oy) / (U * f.k) - box.y);
+        };
+        return (
+            <For each={b.open}>
+                {(i) => {
+                    const column = barColumn(layout, i);
+                    const label = b.labels[i] ?? "";
+                    const height = (): number => barHeights(b, places())[i] ?? 0;
+                    return (
+                        <input
+                            type="range"
+                            class="ar-bar-set"
+                            data-key={barPiece(i)}
+                            aria-label={`The bar for ${label}`}
+                            aria-valuetext={`${label}, ${height()}`}
+                            min={0}
+                            max={b.top}
+                            step={1}
+                            value={height()}
+                            disabled={locked()}
+                            style={cover({ x: column.x, y: 1, w: column.w, h: b.top })}
+                            onInput={(e) => setBar(i, Number(e.currentTarget.value))}
+                            onPointerDown={(e) => {
+                                if (locked() || e.button !== 0) return;
+                                // the bar follows the finger as the chart is drawn, not the range's own scale
+                                e.preventDefault();
+                                e.currentTarget.setPointerCapture(e.pointerId);
+                                e.currentTarget.focus();
+                                setBar(i, heightAt(e.clientY));
+                            }}
+                            onPointerMove={(e) => {
+                                if (!locked() && e.currentTarget.hasPointerCapture(e.pointerId))
+                                    setBar(i, heightAt(e.clientY));
+                            }}
+                        />
+                    );
+                }}
+            </For>
+        );
+    };
+
     return (
         <div class="ar" data-state={told()?.state ?? ""}>
             <div
@@ -648,6 +731,7 @@ export function ArrangedQuestion(props: {
                 >
                     <Show when={props.part.plank}>{(p) => plankHands(p())}</Show>
                     <Show when={props.part.cutting}>{(s) => cakeHands(s())}</Show>
+                    <Show when={props.part.bars}>{(b) => barHands(b())}</Show>
                 </div>
             </div>
             <div class="ar-bar">

@@ -1,37 +1,37 @@
 // A program a child builds on a sheet (lesson.tsx), for a question a `coding.builds` check marks. The
 // scene is drawn as it prints, through the sheet's drawer, and the pad is drawn again with the child's
 // blocks in its slots. Under it are the blocks to add, the slots as buttons to choose a block by, the
-// tools that change the chosen block, and Run it, which plays the program on the drawing a step at a
-// time and says what it did. The program model and the interpreter are engine/coding.ts, the pad's
-// rules are blocks.ts, and what a run records is the page's, through `Programming`.
+// tools that change the chosen block and any of its numbers, and Run it, which plays the program on
+// every drawing it touches through the player (code-runner.ts) and says what it did; Step plays it a
+// frame at a time and records nothing. The program model and the interpreter are engine/coding.ts,
+// the pad's rules are blocks.ts, and what a run records is the page's, through `Programming`.
 
 import "./program.css";
 import type { SceneDrawer } from "./scene";
-import { createSignal, For, onCleanup, onMount, Show, type JSX } from "solid-js";
+import { createSignal, For, Index, onCleanup, onMount, Show, type JSX } from "solid-js";
 import type { ProgramLine, Timing } from "../answer";
-import { keyOf, parse, run, shapeOf, writeLines, type Run } from "../coding";
-import { U } from "../paper";
-import { RUNS, setupOf, type Setup } from "../parts/coding/setup";
-import { valuesOf, type Scene, type SceneNode } from "../scene";
+import { writeLines } from "../coding";
+import { setupOf } from "../parts/coding/setup";
+import { valuesOf, type Scene } from "../scene";
 import {
     add,
     can,
     count,
     deepen,
     EMPTY,
+    figuresOf,
     move,
     placedFrom,
     remove,
+    setCount,
     slotWords,
     type Build,
     type Changed,
     type Pad,
 } from "./blocks";
-import { loadDrawings, type Shelf } from "./drawings";
-import { render } from "./svg";
-
-const isRecord = (v: unknown): v is Record<string, unknown> =>
-    typeof v === "object" && v !== null && !Array.isArray(v);
+import { player, redrawNode } from "./code-runner";
+import { Said } from "./code-controls";
+import { loadDrawings } from "./drawings";
 
 /** What a run told the child, and the program the pad shows: theirs, or a program that works once the last try is used. */
 export interface Built {
@@ -62,48 +62,11 @@ export interface Programming {
     hint(): string | null;
 }
 
-/** Seconds a step of the program takes to play. */
-const STEP = 0.4;
-
 const strings = (v: unknown): string[] =>
     Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 
 const whole = (v: unknown, or: number): number =>
     typeof v === "number" && Number.isFinite(v) ? Math.max(1, Math.round(v)) : or;
-
-/** What a program did, in words, once it has run. */
-function ranWords(r: Run, s: Setup): string {
-    if (r.problems.length) return `The program has a problem: ${r.problems[0] ?? ""}.`;
-    const last = r.frames.at(-1);
-    if (r.stopped === "bump")
-        return `It bumped into ${last?.bump?.why === "edge" ? "the edge" : "a rock"} on line ${last?.line ?? 0}.`;
-    if (r.stopped === "limit") return "It kept going and never stopped, so it was stopped.";
-    const w = s.world,
-        end = r.end;
-    if (w.flag !== null && keyOf(w, end.col, end.row) === w.flag)
-        return `It reached the flag${w.gems.size ? `, with ${end.got.length} of ${w.gems.size} gems` : ""}.`;
-    if (s.type === "turtle") {
-        const shape = shapeOf(r.segments, r.start);
-        if (shape === "none") return "It drew nothing.";
-        if (shape === "open") return "It drew a line that does not come back to the start.";
-        return `It drew a ${shape === "closed" ? "closed shape" : shape} and came back to the start.`;
-    }
-    if (s.type === "maze") return `It stopped on column ${end.col}, row ${end.row}.`;
-    return "That is the whole program.";
-}
-
-/** A part's nested drawing inside the scene, found by what it is and where the scene put it. */
-function drawnAt(tile: HTMLElement, node: SceneNode, scene: Scene): SVGSVGElement | null {
-    const box = scene.boxes[node.id];
-    const all = [
-        ...tile.querySelectorAll<SVGSVGElement>(`svg.scene-svg svg[data-visual="${node.type}"]`),
-    ];
-    return (
-        all.find((s) => box && Math.abs(Number(s.getAttribute("x")) - box.x * U) < 0.5) ??
-        all[0] ??
-        null
-    );
-}
 
 export function ProgramQuestion(props: {
     scene: Scene;
@@ -120,22 +83,25 @@ export function ProgramQuestion(props: {
     const padNode = props.scene.nodes.find((n) => n.id === props.part.pad);
     const worldNode = props.scene.nodes.find((n) => n.id === props.part.world);
     const padValues = padNode ? valuesOf(padNode.v) : {};
-    const worldValues = worldNode ? valuesOf(worldNode.v) : {};
+    const setup = worldNode ? setupOf(worldNode.type, valuesOf(worldNode.v)) : null;
     const pad: Pad = {
         tray: strings(padValues.tray),
         slots: whole(padValues.lines, 5),
         once: padValues.once === true,
+        most: setup ? Math.max(setup.world.cols, setup.world.rows) : 20,
     };
-    const setup = worldNode ? setupOf(worldNode.type, worldValues) : null;
     const told0 = props.part.told;
     const [build, setBuild] = createSignal<Build>(
         told0 ? { blocks: placedFrom(told0.lines, pad), chosen: -1 } : EMPTY,
     );
     const [told, setTold] = createSignal<Built | null>(told0);
     const [said, setSaid] = createSignal(told0?.say ?? "");
+    const [spoken, setSpoken] = createSignal("");
     const [playing, setPlaying] = createSignal(false);
     const [hints, setHints] = createSignal<string[]>(props.opened);
     const [hintable, setHintable] = createSignal(props.acts?.mayHint() ?? false);
+    /** Which number of the chosen block the number tools change, from 0. */
+    const [which, setWhich] = createSignal(0);
     const past: Build[] = [];
     const [undoable, setUndoable] = createSignal(false);
     const keep = (b: Build): void => {
@@ -143,80 +109,85 @@ export function ProgramQuestion(props: {
         if (past.length > 60) past.shift();
         setUndoable(true);
     };
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const done = (): boolean => (told()?.done ?? false) || props.closed;
     const locked = (): boolean => done() || playing();
     const shown = Date.now();
     let first = 0;
     let left = false;
     let tile: HTMLDivElement | undefined;
-    let shelf: Shelf | null = null;
-    let timer = 0;
+    let loaded = false;
     let running = 0;
     const away = (): void => {
         if (document.hidden) left = true;
     };
     document.addEventListener("visibilitychange", away);
-    onCleanup(() => {
-        document.removeEventListener("visibilitychange", away);
-        clearTimeout(timer);
-    });
 
-    /** A part drawn again with some settings changed, where the scene put it. */
-    function redraw(
-        node: SceneNode | undefined,
-        changes: Record<string, unknown>,
-        values: Record<string, unknown>,
-    ): void {
-        const d = node && shelf?.drawing(node.type);
-        const box = node && props.scene.boxes[node.id];
-        const was = node && tile ? drawnAt(tile, node, props.scene) : null;
-        if (!d || !box || !was || !tile) return;
-        const svg = render(
-            d,
-            { ...(isRecord(d.params) ? d.params : {}), ...values, ...changes },
-            { host: tile },
-        ).svg;
-        svg.removeAttribute("class");
-        svg.removeAttribute("style");
-        for (const [k, v] of Object.entries({
-            x: box.x * U,
-            y: box.y * U,
-            width: box.w * U,
-            height: box.h * U,
-        }))
-            svg.setAttribute(k, String(v));
-        was.replaceWith(svg);
-    }
     const drawPad = (): void => {
         const b = build();
-        redraw(
-            padNode,
-            {
-                placed: writeLines([...b.blocks]),
-                sel: b.chosen + 1,
-                used: pad.once ? b.blocks.map((x) => x.from) : [],
-                run: running,
-            },
-            padValues,
-        );
+        if (!tile || !padNode || !loaded) return;
+        redrawNode(tile, props.scene, padNode, {
+            placed: writeLines([...b.blocks]),
+            sel: b.chosen + 1,
+            used: pad.once ? b.blocks.map((x) => x.from) : [],
+            run: running,
+        });
     };
-    /** The drawing the program runs in, with `upto` of its steps run, or as the scene has it. */
-    const drawWorld = (code: string[] | null, upto: number): void => {
-        const key = worldNode ? RUNS[worldNode.type] : undefined;
-        if (!key) return;
-        redraw(worldNode, code === null ? {} : { [key]: code, upto }, worldValues);
-    };
+    /** The blocks in the slots, as lines of a program. */
+    const lines = (): ProgramLine[] =>
+        build().blocks.map((b) => ({ text: b.text, depth: b.depth }));
+    let timing: Timing | null = null;
+    const played = worldNode
+        ? player({
+              tile: () => tile,
+              scene: props.scene,
+              target: { mode: "build", node: worldNode, setup, listing: null },
+              reveal: false,
+              say: setSaid,
+              speak: setSpoken,
+              onLine: (line) => {
+                  running = line;
+                  drawPad();
+              },
+              onPlaying: setPlaying,
+              onEnd: (play, by) => {
+                  const acts = props.acts;
+                  const t = timing;
+                  timing = null;
+                  if (by !== "run" || !acts || !t) return;
+                  const blocks = lines();
+                  const b = acts.tried(blocks, t);
+                  // a program that draws random numbers is judged on every number they could be,
+                  // and this run showed one of them
+                  const chance =
+                      play.draws.length && b.state !== "right"
+                          ? " It has to work for every number random could give."
+                          : "";
+                  setTold(b);
+                  setSaid(`${said()} ${b.say}${chance}`.trim());
+                  setHintable(acts.mayHint());
+                  if (b.done) {
+                      setBuild({ blocks: placedFrom(b.lines, pad), chosen: -1 });
+                      if (b.state !== "right") played?.show(writeLines(b.lines));
+                  }
+                  drawPad();
+                  props.onTold?.(b);
+              },
+          })
+        : null;
+    onCleanup(() => {
+        document.removeEventListener("visibilitychange", away);
+        played?.forget();
+    });
 
     onMount(() => {
         if (!tile) return;
         tile.replaceChildren(props.draw(tile, props.scene, {}));
         const types = [padNode?.type, worldNode?.type].filter((t): t is string => !!t);
-        void loadDrawings(types).then((s) => {
-            shelf = s;
+        void loadDrawings(types).then(() => {
+            loaded = true;
             drawPad();
             const t = told();
-            if (t?.done) drawWorld(writeLines(t.lines), -1);
+            if (t?.done) played?.show(writeLines(t.lines));
         });
         if (!told0)
             setSaid("Tap a block to add it to the slots, then press Run it to see what it does.");
@@ -229,12 +200,14 @@ export function ProgramQuestion(props: {
         keep(build());
         setBuild(c.build);
         drawPad();
-        drawWorld(null, -1);
+        played?.reset();
+        setSaid(c.said);
     };
     const choose = (i: number): void => {
         const b = build();
         if (!b.blocks[i]) return;
         setBuild({ ...b, chosen: i });
+        setWhich(0);
         setSaid(`${slotWords(b, i)}. Change it with the buttons, or with the arrow keys.`);
         drawPad();
     };
@@ -245,14 +218,16 @@ export function ProgramQuestion(props: {
         setBuild(was);
         setSaid("Undone.");
         drawPad();
+        played?.reset();
+        setSaid("Undone.");
     };
     const clear = (): void => {
         if (!build().blocks.length) return;
         keep(build());
         setBuild(EMPTY);
-        setSaid("The slots are empty.");
         drawPad();
-        drawWorld(null, -1);
+        played?.reset();
+        setSaid("The slots are empty.");
     };
     const hint = (): void => {
         const acts = props.acts;
@@ -262,62 +237,39 @@ export function ProgramQuestion(props: {
         setHintable(acts.mayHint());
     };
 
-    /** Plays the program a step at a time, lighting the running slot, then judges it. */
+    /** Plays the program on the drawing, lighting the running slot, then judges it. */
     const runIt = (): void => {
         if (locked()) return;
-        const blocks = build().blocks.map((b) => ({ text: b.text, depth: b.depth }));
-        if (!blocks.length) {
+        if (!build().blocks.length) {
             setSaid("Put some blocks in the slots first.");
             return;
         }
         const now = Date.now();
-        const timing: Timing = {
+        timing = {
             k: "screen",
             toFirstInput: (first || now) - shown,
             toAnswer: now - (first || now),
             leftPage: left,
         };
-        const code = writeLines(blocks);
-        const r = setup
-            ? run(parse(code), setup.world, { event: setup.event, vars: setup.vars })
-            : null;
-        const acts = props.acts;
-        const finish = (): void => {
-            running = 0;
-            setPlaying(false);
-            if (!acts) return;
-            const b = acts.tried(blocks, timing);
-            const words = r && setup ? `${ranWords(r, setup)} ` : "";
-            setTold(b);
-            setSaid(`${words}${b.say}`);
-            setHintable(acts.mayHint());
-            if (b.done) setBuild({ blocks: placedFrom(b.lines, pad), chosen: -1 });
-            drawPad();
-            drawWorld(b.done ? writeLines(b.lines) : code, -1);
-            props.onTold?.(b);
-        };
-        if (!r || reduced || !r.frames.length) {
-            finish();
+        played?.run(writeLines(lines()));
+    };
+    /** One frame of the program, which is looking and not an answer. */
+    const stepIt = (): void => {
+        if (locked()) return;
+        if (!build().blocks.length) {
+            setSaid("Put some blocks in the slots first.");
             return;
         }
-        setPlaying(true);
-        setSaid("Running.");
-        let k = 0;
-        const step = (): void => {
-            k++;
-            const f = r.frames[k - 1];
-            running = f?.line ?? 0;
-            drawWorld(code, k);
-            drawPad();
-            if (k >= r.frames.length) {
-                timer = window.setTimeout(finish, STEP * 1000);
-                return;
-            }
-            timer = window.setTimeout(step, STEP * 1000);
-        };
-        drawWorld(code, 0);
-        timer = window.setTimeout(step, STEP * 500);
+        if (!first) first = Date.now();
+        played?.step(writeLines(lines()));
     };
+    /** The chosen block's numbers, and the one the number tools change. */
+    const figures = (): ReturnType<typeof figuresOf> => {
+        const here = build().blocks[build().chosen];
+        return here && !pad.once ? figuresOf(here.text, pad) : [];
+    };
+    const figure = (): ReturnType<typeof figuresOf>[number] | undefined =>
+        figures()[Math.min(which(), figures().length - 1)];
 
     const keys = (e: KeyboardEvent, i: number): void => {
         if (locked()) return;
@@ -336,9 +288,11 @@ export function ProgramQuestion(props: {
                     : choose(Math.min(b.blocks.length - 1, i + 1)),
             ArrowRight: () => change(deepen(b, 1)),
             ArrowLeft: () => change(deepen(b, -1)),
-            "+": () => change(count(b, pad, 1)),
-            "=": () => change(count(b, pad, 1)),
-            "-": () => change(count(b, pad, -1)),
+            "+": () => change(count(b, pad, 1, which())),
+            "=": () => change(count(b, pad, 1, which())),
+            "-": () => change(count(b, pad, -1, which())),
+            "]": () => setWhich(Math.min(figures().length - 1, which() + 1)),
+            "[": () => setWhich(Math.max(0, which() - 1)),
             Delete: () => change(remove(b)),
             Backspace: () => change(remove(b)),
         };
@@ -440,17 +394,53 @@ export function ProgramQuestion(props: {
                 >
                     Out
                 </button>
+                <Show when={figures().length > 1}>
+                    <Index each={figures()}>
+                        {(f, i) => (
+                            <button
+                                type="button"
+                                class="pg-figure"
+                                aria-pressed={i === which()}
+                                aria-label={`Number ${i + 1} of ${figures().length}: ${f().value}, ${f().what}`}
+                                disabled={locked()}
+                                onClick={() => setWhich(i)}
+                            >
+                                {f().value}
+                            </button>
+                        )}
+                    </Index>
+                </Show>
                 <button
                     type="button"
                     disabled={locked() || !tools().count}
-                    onClick={() => change(count(build(), pad, -1))}
+                    onClick={() => change(count(build(), pad, -1, which()))}
                 >
                     Fewer
                 </button>
+                <Show when={figure()}>
+                    {(f) => (
+                        <input
+                            class="pg-number"
+                            type="number"
+                            inputmode="numeric"
+                            aria-label={`The ${f().what}, from ${f().lo} to ${f().hi}`}
+                            min={f().lo}
+                            max={f().hi}
+                            value={f().value}
+                            disabled={locked()}
+                            onChange={(e) => {
+                                const to = Number(e.currentTarget.value);
+                                const c = setCount(build(), pad, which(), to);
+                                change(c);
+                                e.currentTarget.value = String(figure()?.value ?? to);
+                            }}
+                        />
+                    )}
+                </Show>
                 <button
                     type="button"
                     disabled={locked() || !tools().count}
-                    onClick={() => change(count(build(), pad, 1))}
+                    onClick={() => change(count(build(), pad, 1, which()))}
                 >
                     More
                 </button>
@@ -472,6 +462,10 @@ export function ProgramQuestion(props: {
                 <button type="button" class="ls-go" disabled={locked()} onClick={runIt}>
                     Run it
                 </button>
+                <button type="button" class="pg-step" disabled={locked()} onClick={stepIt}>
+                    Step
+                </button>
+                <Said said={spoken()} />
                 <Show when={hintable()}>
                     <button type="button" class="ls-hint" disabled={props.closed} onClick={hint}>
                         A hint

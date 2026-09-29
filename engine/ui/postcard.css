@@ -32,13 +32,45 @@
 .postcard.one.wide {
     width: min(100%, 700px);
 }
-.postcard.note {
+/* Not `note`: that class is the soft small text in form.css, and a card wearing it passed its
+   colour and size down to everything written on it. */
+.postcard.postcard-note {
     gap: 8px;
     width: min(100%, 470px);
     padding: 24px 28px 22px;
     box-shadow:
         0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
         0 14px 30px -20px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+/* Every grown-ups' tab opens with this one card: the kicker, the name, the line under it and the
+   page's own controls. The width is the page's `--head-w`. Three classes, so it beats a screen's own
+   `.gh > .postcard` and `.ga > .postcard` at two, and it stands after `.one.wide`, which is also
+   three, so it wins that one on order. */
+.page .postcard.page-head {
+    width: min(100%, var(--head-w));
+    margin-inline: auto;
+    padding: var(--card-pad-top) var(--card-pad) var(--card-pad-bottom);
+}
+/* The words and the controls share one wrapping row, so a head with a wide control group (the
+   calendar's child chooser) stands beside the words while the card is wide enough for both. */
+.page-head .postcard-msg {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-end;
+    gap: var(--stack) 20px;
+}
+.page-head-words {
+    display: flex;
+    flex: 1 1 280px;
+    flex-direction: column;
+    gap: var(--stack);
+    min-width: 0;
+}
+.page-head .postcard-msg > :not(.page-head-words) {
+    flex: 1 1 100%;
+}
+.page-head .postcard-msg > .beside {
+    flex: 1 1 340px;
 }
 .postcard-rule {
     grid-area: rule;
@@ -65,17 +97,24 @@
     min-width: 0;
     padding-top: 10px;
 }
-.postcard.one .postcard-msg {
+.postcard.one:not(.page-head) .postcard-msg {
     padding-right: 110px;
 }
-.postcard.one.note .postcard-msg {
+.postcard.one.postcard-note .postcard-msg {
     padding-right: 0;
+}
+/* A head keeps only its words clear of the stamp, so the controls under them take the whole card. */
+.postcard.page-head:has(.postcard-float) .page-head-words {
+    padding-right: 110px;
 }
 /* A postmark beside the stamp floats wider than a stamp alone: 26px in, the stamp's 78px and the
    postmark's 152px less its 70px overlap, less the card's 32px padding, and a gap. In step with
    .postcard-float, .stamp and .postmark; the phone hides the postmark and keeps its own room. */
 @media (min-width: 701px) {
-    .postcard.one:has(.postcard-float .postmark) .postcard-msg {
+    .postcard.one:not(.page-head):has(.postcard-float .postmark) .postcard-msg {
+        padding-right: 168px;
+    }
+    .postcard.page-head:has(.postcard-float .postmark) .page-head-words {
         padding-right: 168px;
     }
 }
@@ -164,23 +203,23 @@
     inset: 32% 22% 17%;
 }
 
-.postcard .kicker {
-    font: 500 11px / 1.3 var(--f-mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-}
+/* The one title on every card and every tab's head. Two classes, so it beats `.page h1` in
+   page.css, which is one class and one element and would otherwise set the reading font on any
+   title written as a bare heading. */
 .page .postcard-title {
-    font: 700 clamp(30px, 2.6vw, 40px) / 1.08 var(--f-hand);
+    font: 700 26px / 1 var(--f-hand);
     font-variation-settings:
         "INFM" 70,
         "BNCE" 20;
-    letter-spacing: 0;
+    letter-spacing: -0.015em;
+    color: var(--ink);
 }
+/* 60ch rather than a narrower measure: the head is as wide as the card, and a 34ch lead broke after
+   three or four words with half the card unused. */
 .postcard-lead {
-    max-width: 34ch;
-    font-size: 16.5px;
-    line-height: 1.55;
+    max-width: 60ch;
+    font-size: 15.5px;
+    line-height: 1.5;
     color: var(--ink-soft);
 }
 .postcard-ps {
@@ -321,14 +360,20 @@
             "msg"
             "links";
     }
+    .page .postcard-title {
+        font-size: 22px;
+    }
     .postcard-rule {
         height: 1.5px;
     }
     .postcard-links {
         padding-top: 0;
     }
-    .postcard-msg,
-    .postcard.one .postcard-msg {
+    .postcard:not(.page-head) .postcard-msg,
+    .postcard.one:not(.page-head) .postcard-msg {
+        padding-right: 86px;
+    }
+    .postcard.page-head:has(.postcard-float) .page-head-words {
         padding-right: 86px;
     }
     .postcard-corner,

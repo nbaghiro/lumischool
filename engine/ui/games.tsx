@@ -1,4 +1,4 @@
-import { Chips } from "./chips";
+import { Check, Search } from "./form";
 import { Icon } from "./icon";
 import { Postcard } from "./postcard";
 import { isChord, toolsFrom, TOOLS, type Tool } from "./game-tools";
@@ -63,20 +63,16 @@ function boardFor(o: ViewOptions & { onFrame: (t: number) => void }): Board & { 
         : new SceneView({ ...o, still: () => true, view: new StillView(o) });
 }
 
-type GameKind = "all" | "move" | "think";
-const KINDS: readonly { value: GameKind; label: string }[] = [
-    { value: "all", label: "Every game" },
-    { value: "move", label: "Move and explore" },
-    { value: "think", label: "Think and tinker" },
-];
-const GRADES: readonly { value: number | null; label: string }[] = [
-    { value: null, label: "Any" },
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-];
-const kindOf = (g: Game): GameKind => (g.group === "action" ? "move" : "think");
+/** Which of the two the library says a game is, under its name. */
+const kindOf = (g: Game): "move" | "think" => (g.group === "action" ? "move" : "think");
+const listed = (g: Game): boolean => g.listed !== false;
+
+/** What the search says it found, as Explore's does. */
+const foundLine = (n: number, of: number): string => {
+    if (n === of) return `All ${of} games`;
+    if (n === 0) return "No game matches. Try another word.";
+    return n === 1 ? "1 game matches" : `${n} games match`;
+};
 
 function Cover(props: { game: Game }): JSX.Element {
     let host: HTMLSpanElement | undefined;
@@ -563,20 +559,11 @@ export function Games(props: {
             });
         });
     });
-    const [kind, setKind] = createSignal<GameKind>("all");
-    const [grade, setGrade] = createSignal<number | null>(null);
     const [query, setQuery] = createSignal("");
+    const all = GAMES.filter(listed);
     const shown = (): Game[] => {
         const words = query().trim().toLowerCase();
-        const k = kind();
-        const n = grade();
-        return GAMES.filter(
-            (g) =>
-                g.listed !== false &&
-                (k === "all" || kindOf(g) === k) &&
-                (n === null || g.levels.some((l) => l.grades[0] <= n && n <= l.grades[1])) &&
-                (words === "" || g.title.toLowerCase().includes(words)),
-        );
+        return all.filter((g) => words === "" || g.title.toLowerCase().includes(words));
     };
     return (
         <section
@@ -593,46 +580,21 @@ export function Games(props: {
                     <>
                         <div class="game-heading">
                             <Postcard
-                                note
-                                taped
+                                head
                                 focus={false}
                                 kicker="A little room to play"
                                 title="Games"
                                 lead="Explore, experiment, and try another way. Pick something to play."
                             >
-                                <div class="game-filters">
-                                    <Chips
-                                        legend="Kind"
-                                        name="game-kind"
-                                        options={KINDS}
-                                        value={kind()}
-                                        onChange={setKind}
-                                    />
-                                    <Chips
-                                        legend="Grade"
-                                        name="game-grade"
-                                        options={GRADES}
-                                        value={grade()}
-                                        onChange={setGrade}
-                                    />
-                                    <label class="game-search">
-                                        <span class="game-search-label">Find</span>
-                                        <input
-                                            type="search"
-                                            placeholder="golf, river"
-                                            autocomplete="off"
-                                            value={query()}
-                                            onInput={(e) => setQuery(e.currentTarget.value)}
-                                        />
-                                    </label>
-                                </div>
+                                <Search
+                                    label="Search the games"
+                                    placeholder="golf, river"
+                                    value={query()}
+                                    onInput={setQuery}
+                                    found={foundLine(shown().length, all.length)}
+                                />
                             </Postcard>
                         </div>
-                        <Show when={shown().length === 0}>
-                            <p class="game-none">
-                                No game matches these. Try another grade or kind.
-                            </p>
-                        </Show>
                         <div class="game-library">
                             <For each={shown()}>
                                 {(g) => (
@@ -792,7 +754,7 @@ export function Games(props: {
                                     <Cover game={g()} />
                                 </div>
                                 <div>
-                                    <p class="game-kicker">
+                                    <p class="kicker">
                                         {begun() ? "A little breather" : "A little room to play"}
                                     </p>
                                     <h2>{g().title}</h2>
@@ -831,35 +793,26 @@ export function Games(props: {
                             <details class="game-help">
                                 <summary>Sound &amp; accessibility</summary>
                                 <div class="game-options">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={sound()}
-                                            onChange={(e) => {
-                                                audio ??= new AudioContext();
-                                                void audio.resume();
-                                                setSound(e.currentTarget.checked);
-                                                if (!e.currentTarget.checked) player.hush();
-                                            }}
-                                        />
-                                        Sound
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={quiet()}
-                                            onChange={(e) => setQuiet(e.currentTarget.checked)}
-                                        />
-                                        Reduced motion
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={text()}
-                                            onChange={(e) => setText(e.currentTarget.checked)}
-                                        />
-                                        Describe the scene
-                                    </label>
+                                    <Check
+                                        label="Sound"
+                                        checked={sound()}
+                                        onChange={(on) => {
+                                            audio ??= new AudioContext();
+                                            void audio.resume();
+                                            setSound(on);
+                                            if (!on) player.hush();
+                                        }}
+                                    />
+                                    <Check
+                                        label="Reduced motion"
+                                        checked={quiet()}
+                                        onChange={setQuiet}
+                                    />
+                                    <Check
+                                        label="Describe the scene"
+                                        checked={text()}
+                                        onChange={setText}
+                                    />
                                 </div>
                             </details>
                             <div class="game-actions game-menu-actions">
