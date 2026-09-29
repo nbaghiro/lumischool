@@ -29,10 +29,15 @@ const CATALOG = "engine/parts/catalog.ts";
 const BUDGET = {
     firstJs: 100_000,
     firstCss: 30_000,
-    data: 25_000,
+    // the sample child's run holds six years' worlds, and grades five and six at 36 lessons a term,
+    // with the reaches that light them, took it to 26,600
+    data: 27_000,
     mapJs: 1_850_000,
     kidsFirstJs: 125_000,
-    kidsMapJs: 380_000,
+    // every world is data the map reads, and the sixth year's three took it to 383,300 with nothing to
+    // trim; the map's handoff, its store of drawn pixels and its ranked drawing took it to 392,600
+    // (.docs/map-smoothness-plan.md)
+    kidsMapJs: 400_000,
     homeFirstJs: 95_000,
 };
 const KIDS = "apps/kids/index.html";
@@ -292,11 +297,7 @@ test("the site's data and the visitor's pack the build wrote agree: the journey 
     const lessons = index.index.lessons;
     assert.ok(lessons.length > 0);
     for (const l of lessons) {
-        assert.deepEqual(
-            Object.keys(l.levels),
-            ["medium"],
-            `${l.id} carries a level a visitor does not read`,
-        );
+        assert.deepEqual(l.levels, ["medium"], `${l.id} carries a level a visitor does not read`);
         assert.ok(existsSync(join(dir, l.file)), `${l.file} is not in the pack`);
         if (l.first !== null)
             assert.ok(existsSync(join(dir, l.first)), `${l.first} is not in the pack`);
@@ -321,7 +322,11 @@ test("the site's data and the visitor's pack the build wrote agree: the journey 
         child.now,
         "the journey is not the sample child over the pack the page reads",
     );
-    assert.equal(data.words.facts[0]?.n, String(lessons.length));
+    // the site counts the lessons of the grades a family may choose, not those still being written
+    assert.equal(
+        data.words.facts[0]?.n,
+        String(lessons.filter((l) => corpus.grades.includes(l.grade)).length),
+    );
     assert.equal(data.versions.length, data.words.day.versions);
     assert.ok(data.versions.length > 0, "the day's question is drawn no way at all");
     for (const v of data.versions) {

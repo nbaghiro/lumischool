@@ -4,11 +4,12 @@
 // (.docs/api.md, "a second, filtered pack of its own"), preloads for the site's map snapshots
 // (engine/ui/snapshot.ts), and preloads for the faces every app waits for before it draws
 // (engine/ui/fonts.ts), so that none of them waits for a script to ask (.docs/overworld.md,
-// "Performance"). The curriculum is compiled once per change of its text, kept under
-// node_modules/.cache/, and read back at every build and by the dev server, so it cannot go stale.
+// "Performance"). The curriculum is compiled once per change of its text or the sample's code, kept
+// under node_modules/.cache/, and read back at every build and by the dev server, so it cannot go
+// stale.
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Connect, HtmlTagDescriptor, IndexHtmlTransformContext, Plugin } from "vite";
 import { Workspace } from "../engine/notation/notation";
@@ -40,6 +41,22 @@ export const SITE_SNAPSHOTS = [
     { source: "engine/ui/snapshots/site-narrow.webp", media: "(max-width: 700px)" },
 ];
 
+/**
+ * The code the sample child's run is worked out by besides the curriculum: the worlds, their years
+ * and the sample itself, so a change to any of them makes the cached data again.
+ */
+const SAMPLE_SOURCES = (): string[] => [
+    ...readdirSync(join(ROOT, "school/worlds"))
+        .filter((f) => f.endsWith(".ts"))
+        .sort()
+        .map((f) => join(ROOT, "school/worlds", f)),
+    join(ROOT, "school/year.ts"),
+    join(ROOT, "tools/site-sample.ts"),
+    join(ROOT, "tools/pack.ts"),
+    // the pack's format, whose version a cached pack has to carry
+    join(ROOT, "engine/pack.ts"),
+];
+
 /** The visitor's pack and the site's data, as JSON text, for a pack served from `packAt`. */
 export interface Made {
     pack: Pack;
@@ -51,7 +68,7 @@ export const shortDigest = (digest: string): string => digest.slice(0, 10);
 
 /**
  * The visitor's pack and the site's data from the curriculum as it is now, compiled once and kept
- * under the cache by a hash of the curriculum's text, since compiling takes about fifteen seconds
+ * under the cache by a hash of the curriculum's text and the sample's code, since compiling takes about fifteen seconds
  * and the apps are built several times in one `npm run check`. `packAt` is where the page reads the
  * pack from, given its digest, which is the one part of the data that is not the curriculum's.
  */
@@ -59,6 +76,11 @@ export function made(packAt: (digest: string) => string): Made {
     const texts = curriculum();
     const key = createHash("sha256")
         .update(JSON.stringify(Object.entries(texts).sort(([a], [b]) => a.localeCompare(b))))
+        .update(
+            SAMPLE_SOURCES()
+                .map((f) => readFileSync(f, "utf8"))
+                .join("\n"),
+        )
         .digest("hex")
         .slice(0, 16);
     const dir = join(CACHE, key);

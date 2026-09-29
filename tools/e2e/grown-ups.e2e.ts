@@ -240,7 +240,7 @@ test("the bar stays as a grown-up moves between Home, Calendar and Explore and b
         expect(places.getByRole("link", { name })).toHaveAttribute("aria-current", "page");
     await current("Home");
     await places.getByRole("link", { name: "Calendar" }).click();
-    await atScreen(page, page.getByRole("heading", { name: "The calendar", exact: true }));
+    await atScreen(page, page.getByRole("heading", { name: "Calendar", exact: true }));
     await current("Calendar");
     await places.getByRole("link", { name: "Explore" }).click();
     await atScreen(page, page.getByRole("heading", { name: "Every lesson", level: 1 }));

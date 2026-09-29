@@ -16,7 +16,7 @@ test("the number machine: a pull drops the ball into the pocket that fills the f
     if (n === undefined) throw new Error("No number fills the first order");
     const power = powerFor(L, n);
     if (power === null) throw new Error("No pull reaches the pocket");
-    const field = await page.locator(".field").boundingBox();
+    const field = await page.locator(".game-field").boundingBox();
     const ball = await page.locator('[data-key="ball"]').boundingBox();
     if (!field || !ball) throw new Error("Missing the field or the ball");
     // squares to pixels from the view, which is the whole world across

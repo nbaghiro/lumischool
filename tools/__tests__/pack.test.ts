@@ -15,8 +15,12 @@ import { compileLessons, packOf, type BuiltPack } from "../pack";
 const ROOT = join(import.meta.dirname, "..", "..");
 const LESSONS = join(ROOT, "content/curriculum/lessons");
 
-/** Gzipped, in bytes: a lesson's file, and the index of every lesson. */
-const BUDGET = { lesson: 50_000, index: 60_000, scene: 4_000 };
+/**
+ * Gzipped, in bytes: a lesson's file, and the index of every lesson. Every view reads the index whole,
+ * at about 128 bytes a lesson, so 75,000 holds the 504 lessons of grades one to six with room for
+ * their longer goals (.docs/grades-5-6.md).
+ */
+const BUDGET = { lesson: 50_000, index: 75_000, scene: 4_000 };
 
 let compiled: PackLesson[] = [];
 let built: BuiltPack | null = null;
@@ -143,9 +147,6 @@ test("a lesson that declares levels carries each of them, hashed apart, and its 
     }
     for (const facts of built.index.lessons) {
         const lesson = lessons.get(facts.file);
-        assert.deepEqual(
-            Object.keys(facts.levels).sort(),
-            Object.keys(lesson?.levels ?? {}).sort(),
-        );
+        assert.deepEqual([...facts.levels].sort(), Object.keys(lesson?.levels ?? {}).sort());
     }
 });

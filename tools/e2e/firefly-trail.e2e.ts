@@ -11,7 +11,7 @@ test("Firefly trail: a finger held on each seed in turn flies the count to the e
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     // the first play is the authored layout, so the spot of each number is known before it is flown
     const s = start(0, 1);
-    const field = await page.locator(".field").boundingBox();
+    const field = await page.locator(".game-field").boundingBox();
     if (!field) throw new Error("Missing the field");
     // the finger stays down and moves to each seed in turn, as a child's would
     await page.mouse.move(field.x + field.width / 2, field.y + field.height / 2);

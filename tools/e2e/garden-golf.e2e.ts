@@ -7,7 +7,7 @@ for (const input of ["keyboard", "pointer", "reduced motion"]) {
         page,
     }, info) => {
         await page.goto("/games?g=golf&v=0&probe=1");
-        await expect(page.locator(".field")).toBeVisible();
+        await expect(page.locator(".game-field")).toBeVisible();
         await expect(page.locator(".game-menu")).not.toBeVisible();
         await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
         if (input === "reduced motion") {

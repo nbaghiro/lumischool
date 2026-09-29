@@ -41,7 +41,7 @@ test("penny shove accepts a forward flick and offers keyboard angle controls", a
     await expect.poll(async () => (await coin.boundingBox())?.x ?? 0).toBeGreaterThan(x);
     await page.getByRole("button", { name: "Turn left", exact: true }).click();
     // the aim line is ink on the field, so the picture changes
-    const field = page.locator(".field");
+    const field = page.locator(".game-field");
     const before = await field.screenshot();
     await page.keyboard.press("e");
     await expect.poll(async () => (await field.screenshot()).equals(before)).toBe(false);

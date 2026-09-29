@@ -171,7 +171,8 @@ function check(root: string): Findings {
                 target.startsWith(DB) ||
                 target === ANSWER ||
                 target === "engine/painting.ts" ||
-                target === "engine/teaching.ts"
+                target === "engine/teaching.ts" ||
+                target === "engine/page.ts"
             )
                 continue;
             if (spec.startsWith("node:")) continue;

@@ -1,7 +1,7 @@
 import { TEACHING_MATERIALS } from "../../school/tutoring-materials";
 // Fails when a line the world's guide can say breaks the rules on its voice (.docs/ai.md, "The
 // guide"): no first person about itself, no name of its own beyond "the firefly", no relational
-// vocabulary, no exclamation mark and no em-dash. The lines are the guide's fixed lines and the
+// vocabulary, no sending the child to Run or Step, no exclamation mark and no em-dash. The lines are the guide's fixed lines and the
 // words on its asks, every world's own lines, and every hint and rule line of the curriculum, which
 // the guide reads aloud; a question's own words are held to the marks only. The rules are
 // school/voice.ts, which the children's app holds its map's tips to in its own test. `--selftest`
@@ -84,6 +84,7 @@ function selftest(): number {
         ["My favourite is the bus.", "first-person"],
         ["The Firefly will show you.", "a-name"],
         ["You are my friend.", "relational"],
+        ["Press Run to see where the robot stops.", "press-run"],
         ["Well done!", "exclamation"],
         ["Count on — then check.", "em-dash"],
     ];
@@ -100,6 +101,7 @@ function selftest(): number {
         "Asking takes ?, a shout takes !, and telling takes a full stop.",
         "The firefly is not a friend.",
         "Count the empty squares.",
+        "Tapping the crab runs the script under when tapped.",
     ])
         if (breachesOf(ok, { words: true }).length) {
             process.stderr.write(

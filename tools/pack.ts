@@ -6,7 +6,7 @@ import { teachingForLesson } from "../school/tutoring-materials";
 import { createHash } from "node:crypto";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { compileLesson } from "../engine/notation/compile";
+import { compileLesson, compileVolume, volumeFile } from "../engine/notation/compile";
 import { Workspace } from "../engine/notation/notation";
 import {
     factsOf,
@@ -31,6 +31,8 @@ export interface BuiltPack {
     lessons: Map<string, string>;
     /** Each lesson's first drawing by its file, `scenes/<id>-<the first ten of its own sha256>.json`. */
     scenes: Map<string, string>;
+    /** Each book a kept lesson reads, by its file, `books/<id>-<the first ten of its notation's sha256>.json`. */
+    books: Map<string, string>;
 }
 
 const sha256 = (text: string): string => createHash("sha256").update(text, "utf8").digest("hex");
@@ -74,6 +76,16 @@ export function compileLessons(ws = new Workspace(curriculum())): PackLesson[] {
             );
         return read.lesson;
     });
+}
+
+/** Every volume of the curriculum as the pack carries it, by the file a book lesson names. */
+export function compileBooks(ws: Workspace): Map<string, string> {
+    return new Map(
+        [...ws.volumes.values()].map((v) => [
+            volumeFile(v.id, sha256(ws.textAt("volume", v.id, "medium"))),
+            JSON.stringify(compileVolume(v)),
+        ]),
+    );
 }
 
 /**
@@ -124,9 +136,11 @@ export function visitorOf(lesson: PackLesson): PackLesson {
 export function packOf(
     lessons: readonly PackLesson[],
     keep: (lesson: PackLesson) => PackLesson | null = (lesson) => lesson,
+    volumes: ReadonlyMap<string, string> = new Map(),
 ): BuiltPack {
     const files = new Map<string, string>();
     const scenes = new Map<string, string>();
+    const books = new Map<string, string>();
     const facts: LessonFacts[] = [];
     for (const lesson of lessons) {
         const original = keep(lesson);
@@ -155,32 +169,38 @@ export function packOf(
             scenes.set(first, sceneText);
         }
         facts.push(factsOf(kept, file, first));
+        const book = kept.book && volumes.get(kept.book.file);
+        if (kept.book && book) books.set(kept.book.file, book);
     }
     facts.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
     const index: PackIndex = { pack: PACK, lessons: facts };
     const indexText = JSON.stringify(index);
-    return { digest: sha256(indexText), index, indexText, lessons: files, scenes };
+    return { digest: sha256(indexText), index, indexText, lessons: files, scenes, books };
 }
 
 /**
  * Writes a pack to a folder the API serves it from: `<out>/<digest>/index.json`, each lesson under
- * `<out>/<digest>/lessons/` and its first drawing under `scenes/`, and `<out>/current` naming the
+ * `<out>/<digest>/lessons/`, its first drawing under `scenes/` and a book lesson's text under `books/`,
+ * and `<out>/current` naming the
  * digest, so an older pack's files can stay for the views that fetched their index before the change.
  */
 export function writePack(built: BuiltPack, out: string): string {
     const dir = join(out, built.digest);
     mkdirSync(join(dir, "lessons"), { recursive: true });
     mkdirSync(join(dir, "scenes"), { recursive: true });
+    mkdirSync(join(dir, "books"), { recursive: true });
     writeFileSync(join(dir, "index.json"), built.indexText);
     for (const [file, text] of built.lessons) writeFileSync(join(dir, file), text);
     for (const [file, text] of built.scenes) writeFileSync(join(dir, file), text);
+    for (const [file, text] of built.books) writeFileSync(join(dir, file), text);
     writeFileSync(join(out, "current"), `${built.digest}\n`);
     return dir;
 }
 
 if (import.meta.main) {
     const out = process.argv[2] ?? join(ROOT, "dist/pack");
-    const built = packOf(compileLessons());
+    const ws = new Workspace(curriculum());
+    const built = packOf(compileLessons(ws), undefined, compileBooks(ws));
     const dir = writePack(built, out);
     process.stdout.write(`${built.lessons.size} lessons in ${dir}\n`);
 }

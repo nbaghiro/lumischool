@@ -13,7 +13,7 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
     }, info) => {
         await page.goto("/games?g=sling&v=2");
         const player = page.locator(".game-player"),
-            field = page.locator(".field");
+            field = page.locator(".game-field");
         await expect(player).toHaveAttribute("data-game-ready", "true");
         await expect(field).toBeVisible();
         await expect(page.locator(".game-menu")).not.toBeVisible();
@@ -33,7 +33,7 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
             // at ten degrees; the game clamps a pull to its longest, so the shot does not depend on
             // the field's scale. The browser receives ordinary pointer events.
             const ball = await page.locator('[data-key="loaded:0"]').boundingBox();
-            const field = await page.locator(".field").boundingBox();
+            const field = await page.locator(".game-field").boundingBox();
             if (!ball || !field) throw new Error("Missing the loaded ball");
             const begin = { x: ball.x + ball.width / 2, y: ball.y + ball.height / 2 },
                 angle = (10 * Math.PI) / 180,

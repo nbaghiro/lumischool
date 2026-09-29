@@ -61,8 +61,14 @@ export const MODULES: Record<string, Module> = {
     numbers: { at: "engine/numbers", phase: "run", reach: [], packages: [] },
     expr: { at: "engine/expr", phase: "run", reach: ["numbers"], packages: [] },
     answer: { at: "engine/answer", phase: "run", reach: [], packages: [] },
+    page: { at: "engine/page", phase: "run", reach: [], packages: [] },
     scene: { at: "engine/scene", phase: "run", reach: ["paper", "expr", "parts"], packages: [] },
-    pack: { at: "engine/pack", phase: "run", reach: ["answer", "expr", "scene"], packages: [] },
+    pack: {
+        at: "engine/pack",
+        phase: "run",
+        reach: ["answer", "expr", "paper", "scene"],
+        packages: [],
+    },
     ink: {
         at: "engine/ink",
         phase: "run",
@@ -151,6 +157,7 @@ export const MODULES: Record<string, Module> = {
             "coding",
             "pigment",
             "numbers",
+            "page",
         ],
         packages: [
             "solid-js",
@@ -189,6 +196,7 @@ export const MODULES: Record<string, Module> = {
     tracks: { at: "school/tracks", phase: "run", reach: ["year"], packages: [] },
     voice: { at: "school/voice", phase: "run", reach: [], packages: [] },
     record: { at: "school/record", phase: "run", reach: ["answer", "numbers"], packages: [] },
+    catalogue: { at: "school/catalogue", phase: "run", reach: ["pack", "page"], packages: [] },
     family: {
         at: "school/family",
         phase: "run",
@@ -204,7 +212,7 @@ export const MODULES: Record<string, Module> = {
     db: {
         at: "server/db",
         phase: "server",
-        reach: ["answer", "painting", "teaching"],
+        reach: ["answer", "painting", "teaching", "page"],
         packages: [
             "drizzle-orm",
             "postgres",
@@ -231,6 +239,8 @@ export const MODULES: Record<string, Module> = {
             "tutoring-materials",
             "adaptive",
             "lessons",
+            "worlds/worlds",
+            "page",
         ],
         packages: [
             "node:crypto",
